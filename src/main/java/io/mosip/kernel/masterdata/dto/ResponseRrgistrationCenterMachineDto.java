@@ -4,13 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 
+ * @author Bal Vikash Sharma
+ * @since 1.0.0
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BiometricTypeRequestDto {
+public class ResponseRrgistrationCenterMachineDto {
 
-	private String id;
-	private String ver;
-	private String timestamp;
-	private BiometricTypeData request;
+	private String regCenterId;
+
+	private String machineId;
+
 }
