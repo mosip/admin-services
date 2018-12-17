@@ -1,10 +1,9 @@
-package io.mosip.kernel.masterdata.dto;
+package io.mosip.kernel.masterdata.dto.getresponse;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryDto;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Dto for response to user for user machine mappings
