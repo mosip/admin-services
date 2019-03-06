@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -14,13 +13,13 @@ import lombok.NoArgsConstructor;
 
 /**
  * 
- * @author Uday Kumar
+ * @author Bal Vikash Sharma
  * @version 1.0.0
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegCenterMachineUserReqDto<T> {
+public class RequestDto<T> {
 
 	private String id;
 	private String ver;
@@ -28,6 +27,6 @@ public class RegCenterMachineUserReqDto<T> {
 	private LocalDateTime timestamp;
 	@NotNull
 	@Valid
-	private List<T> request;
+	private T request;
 
 }
