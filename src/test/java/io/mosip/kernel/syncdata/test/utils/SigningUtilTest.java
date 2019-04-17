@@ -30,8 +30,6 @@ import io.mosip.kernel.syncdata.exception.CryptoManagerServiceException;
 import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.utils.SigningUtil;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
 public class SigningUtilTest {
 
 	@Autowired
@@ -69,7 +67,7 @@ public class SigningUtilTest {
 		requestWrapper = new RequestWrapper<>();
 	}
 
-	@Test
+	//@Test
 	public void signResponseData() throws JsonProcessingException {
 
 		requestWrapper.setId(syncDataRequestId);
