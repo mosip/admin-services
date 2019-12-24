@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -76,17 +77,36 @@ public class AuditUtil {
 	 * @param auditRequestDto
 	 *            the audit request dto
 	 */
-	public void auditRequest(String eventName, String eventType, String description) {
-		   eventCounter=new AtomicInteger();
-         String eventId="ADM-"+ eventCounter.incrementAndGet();
-		setAuditRequestDto(eventName, eventType, description,eventId);
+	@PostConstruct
+	private void init() {
+		if(System.getProperty("seqGen")==null) {
+		eventCounter = new AtomicInteger(500);
+		}else {
+			Integer eventCount=Integer.getInteger(System.getProperty("seqGen"));
+			eventCounter=new AtomicInteger(eventCount);
+		}
+		
 	}
 	
-	public void auditRequest(String eventName, String eventType, String description,String eventId) {
+	@PreDestroy
+    public void shutdown() throws Exception {
+		System.out.println("destroy");
+		System.setProperty("seqGen", String.valueOf(eventCounter));
+    }
+	
+		
+	
 
-		setAuditRequestDto(eventName, eventType, description,eventId);
+	public void auditRequest(String eventName, String eventType, String description) {
+
+		String eventId = "ADM-" + eventCounter.incrementAndGet();
+		setAuditRequestDto(eventName, eventType, description, eventId);
 	}
-	
+
+	public void auditRequest(String eventName, String eventType, String description, String eventId) {
+
+		setAuditRequestDto(eventName, eventType, description, eventId);
+	}
 
 	/**
 	 * Sets the audit request dto.
@@ -94,7 +114,7 @@ public class AuditUtil {
 	 * @param auditRequestDto
 	 *            the new audit request dto
 	 */
-	private void setAuditRequestDto(String eventName, String eventType, String description,String eventId) {
+	private void setAuditRequestDto(String eventName, String eventType, String description, String eventId) {
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		if (!validateSecurityContextHolder()) {
 
@@ -234,7 +254,8 @@ public class AuditUtil {
 				throw new AccessDeniedException("Access denied from AuthManager");
 			}
 		}
-		throw new MasterDataServiceException(AuditErrorCode.AUDIT_EXCEPTION.getErrorCode(),AuditErrorCode.AUDIT_EXCEPTION.getErrorMessage()+ex);
+		throw new MasterDataServiceException(AuditErrorCode.AUDIT_EXCEPTION.getErrorCode(),
+				AuditErrorCode.AUDIT_EXCEPTION.getErrorMessage() + ex);
 
 	}
 
