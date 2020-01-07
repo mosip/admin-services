@@ -1,9 +1,9 @@
 -- ---------------------------------------------------------------------------------------------------------
 -- Database Name: mosip_master
--- Release Version 	: 1.0.4
+-- Release Version 	: 1.0.5
 -- Purpose    		: Database Alter scripts for the release for Master DB.       
 -- Create By   		: Sadanandegowda DM
--- Created Date		: 30-Dec-2019
+-- Created Date		: 03-Jan-2020
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- -----------------------------------------------------------------------------------------------------------
@@ -18,6 +18,10 @@ ALTER TABLE master.registered_device_master DROP COLUMN IF EXISTS dprovider_sign
 ALTER TABLE master.registered_device_master_h DROP COLUMN IF EXISTS foundational_trust_signature;
 ALTER TABLE master.registered_device_master_h DROP COLUMN IF EXISTS foundational_trust_certificate;
 ALTER TABLE master.registered_device_master_h DROP COLUMN IF EXISTS dprovider_signature;
+
+ALTER TABLE master.registered_device_master ALTER COLUMN firmware TYPE character varying(256);
+
+ALTER TABLE master.registered_device_master_h ALTER COLUMN firmware TYPE character varying(256);
 
 -------------- Level 1 data load scripts ------------------------
 

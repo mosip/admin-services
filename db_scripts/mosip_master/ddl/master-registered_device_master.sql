@@ -25,7 +25,7 @@ CREATE TABLE master.registered_device_master(
 	provider_id character varying(36) NOT NULL,
 	provider_name character varying(128),
 	purpose character varying(64) NOT NULL,
-	firmware character varying(128),
+	firmware character varying(256),
 	make character varying(36),
 	model character varying(36),
 	expiry_date timestamp,
