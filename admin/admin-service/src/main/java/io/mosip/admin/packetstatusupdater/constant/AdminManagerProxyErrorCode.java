@@ -1,8 +1,8 @@
 package io.mosip.admin.packetstatusupdater.constant;
 
 public enum AdminManagerProxyErrorCode {
-	ADMIN_FETCH_EXCEPTION("ADM-PKT-000","Admin URL exicution exception");
-	
+	ADMIN_FETCH_EXCEPTION("ADM-PKT-000","Admin URL execution exception"),
+	ADMIN_UNKNOWNHOST_EXCEPTION("ADM-PKT-000","Admin unKnown Host exception");
 	
 	private final String errorCode;
 	private final String errorMessage;

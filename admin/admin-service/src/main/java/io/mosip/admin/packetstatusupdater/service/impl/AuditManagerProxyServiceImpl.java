@@ -1,5 +1,7 @@
 package io.mosip.admin.packetstatusupdater.service.impl;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
@@ -36,16 +38,26 @@ public class AuditManagerProxyServiceImpl implements AuditManagerProxyService {
 
 	@Override
 	public AuditManagerResponseDto logAdminAudit(AuditManagerRequestDto auditManagerRequestDto) {
+
 		AuditManagerResponseDto auditManagerResponseDto = new AuditManagerResponseDto();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		RequestWrapper<AuditManagerRequestDto> request = new RequestWrapper<>();
+
+		try {
+			auditManagerRequestDto.setHostIp(InetAddress.getLocalHost().getHostAddress());
+			auditManagerRequestDto.setHostName(InetAddress.getLocalHost().getHostName());
+		} catch (UnknownHostException ex) {
+			throw new MasterDataServiceException(AdminManagerProxyErrorCode.ADMIN_UNKNOWNHOST_EXCEPTION.getErrorCode(),
+					AdminManagerProxyErrorCode.ADMIN_UNKNOWNHOST_EXCEPTION.getErrorMessage(), ex);
+		}
 		request.setId("mosip.admin.audit");
-		request.setRequest(auditManagerRequestDto);
+		request.setVersion("0.1");
 		request.setRequesttime(LocalDateTime.now());
 		request.setRequest(auditManagerRequestDto);
-		HttpEntity<RequestWrapper<AuditManagerRequestDto>> entity = new HttpEntity<>(request,
-				headers);
+
+		HttpEntity<RequestWrapper<AuditManagerRequestDto>> entity = new HttpEntity<>(request, headers);
+
 		try {
 			Object returnEntityt = restTemplate.postForEntity(auditmanagerapi, entity, Object.class).getBody();
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
