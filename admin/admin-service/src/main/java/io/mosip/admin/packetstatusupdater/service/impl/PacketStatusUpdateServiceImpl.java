@@ -1,7 +1,15 @@
 package io.mosip.admin.packetstatusupdater.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +45,7 @@ import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * Packet Status Update service.
@@ -105,7 +114,15 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 				List<PacketStatusUpdateDto> packetStatusUpdateDtos = getPacketResponse(ArrayList.class,
 						response.getBody());
 				PacketStatusUpdateResponseDto regProcPacketStatusRequestDto = new PacketStatusUpdateResponseDto();
-				regProcPacketStatusRequestDto.setPacketStatusUpdateList(packetStatusUpdateDtos);
+				List<PacketStatusUpdateDto> packStautsDto = objectMapper.convertValue(packetStatusUpdateDtos,
+						new TypeReference<List<PacketStatusUpdateDto>>() {
+						});
+				packStautsDto.sort(createdDateTimesComparator);
+				List<PacketStatusUpdateDto> distinctStatusList = packStautsDto.stream()
+						.filter(distinctTypeCode(PacketStatusUpdateDto::getTransactionTypeCode))
+						.collect(Collectors.toList());
+				distinctStatusList.sort(createdDateTimesResultComparator);
+				regProcPacketStatusRequestDto.setPacketStatusUpdateList(distinctStatusList);
 				return regProcPacketStatusRequestDto;
 			}
 		} catch (HttpServerErrorException | HttpClientErrorException ex) {
@@ -216,6 +233,40 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 
 		}
 		return packetStatusUpdateDto;
+	}
+	
+	Comparator<PacketStatusUpdateDto> createdDateTimesComparator = new Comparator<PacketStatusUpdateDto>() {
+
+		@Override
+		public int compare(PacketStatusUpdateDto o1, PacketStatusUpdateDto o2) {
+			LocalDateTime o1CreatedDateTimes = DateUtils.parseToLocalDateTime(o1.getCreatedDateTimes());
+			LocalDateTime o2CreatedDateTimes = DateUtils.parseToLocalDateTime(o2.getCreatedDateTimes());
+			return o2CreatedDateTimes.compareTo(o1CreatedDateTimes);
+		}
+	};
+	
+	Comparator<PacketStatusUpdateDto> createdDateTimesResultComparator = new Comparator<PacketStatusUpdateDto>() {
+
+		@Override
+		public int compare(PacketStatusUpdateDto o1, PacketStatusUpdateDto o2) {
+			LocalDateTime o1CreatedDateTimes = DateUtils.parseToLocalDateTime(o1.getCreatedDateTimes());
+			LocalDateTime o2CreatedDateTimes = DateUtils.parseToLocalDateTime(o2.getCreatedDateTimes());
+			return o1CreatedDateTimes.compareTo(o2CreatedDateTimes);
+		}
+	};
+
+	@SafeVarargs
+	private static <T> Predicate<T> distinctTypeCode(Function<? super T, Object>... keyRetrievers) {
+
+		final Map<List<?>, Boolean> seen = new ConcurrentHashMap<>();
+
+		return t -> {
+
+			final List<?> keys = Arrays.stream(keyRetrievers).map(key -> key.apply(t)).collect(Collectors.toList());
+			return seen.putIfAbsent(keys, Boolean.TRUE) == null;
+
+		};
+
 	}
 
 }
