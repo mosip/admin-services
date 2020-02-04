@@ -38,12 +38,8 @@ public class AuditManagerRequestDto {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime actionTimeStamp;
 
-	@NotNull
-	@Size(min = 1, max = 128)
 	private String hostName;
 
-	@NotNull
-	@Size(min = 1, max = 16)
 	private String hostIp;
 
 	@NotNull
