@@ -108,7 +108,6 @@ jobs:
     - name: Publish the maven package
       run: |
         chmod +x ./deploy.sh
-        cd admin
         ./deploy.sh admin $GITHUB_WORKSPACE/settings.xml SNAPSHOT
       env:
         GPG_TTY: $(tty)
