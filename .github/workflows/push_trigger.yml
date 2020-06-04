@@ -114,7 +114,7 @@ jobs:
     - name: Analyze with SonarCloud
       run: |
         cd admin
-        ./mvnw -B verify sonar:sonar -Dsonar.projectKey=$PROJECT_KEY -Dsonar.organization=$ORG_KEY -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN
+        mvn sonar:sonar -Dsonar.projectKey=$PROJECT_KEY -Dsonar.organization=$ORG_KEY -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
