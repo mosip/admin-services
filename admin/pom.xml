@@ -179,23 +179,6 @@
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.sonarsource.scanner.maven</groupId>
-						<artifactId>sonar-maven-plugin</artifactId>
-						<version>${maven.sonar.plugin.version}</version>
-						<executions>
-							<execution>
-								<phase>verify</phase>
-								<goals>
-									<goal>sonar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
 	</profiles>
 
@@ -250,7 +233,7 @@
 					<artifactId>jacoco-maven-plugin</artifactId>
 					<version>${maven.jacoco.plugin.version}</version>
 				</plugin>
-<!--				<plugin>
+				<plugin>
 					<groupId>org.sonarsource.scanner.maven</groupId>
 					<artifactId>sonar-maven-plugin</artifactId>
 					<version>${maven.sonar.plugin.version}</version>
@@ -263,7 +246,7 @@
 						</execution>
 					</executions>
 				</plugin>
-				<plugin>
+<!--				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<version>${maven.javadoc.version}</version>
