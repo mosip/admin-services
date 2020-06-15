@@ -1,4 +1,4 @@
-package io.mosip.admin.packetstatusupdater.config;
+package io.mosip.admin.config;
 
 import javax.servlet.Filter;
 
@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
-import io.mosip.admin.packetstatusupdater.httpfilter.ReqResFilter;
+import io.mosip.admin.httpfilter.ReqResFilter;
 
 /**
  * 
