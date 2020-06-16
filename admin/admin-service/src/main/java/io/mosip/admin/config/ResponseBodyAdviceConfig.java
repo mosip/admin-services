@@ -1,4 +1,4 @@
-package io.mosip.admin.packetstatusupdater.config;
+package io.mosip.admin.config;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;

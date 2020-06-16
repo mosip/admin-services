@@ -1,4 +1,4 @@
-package io.mosip.admin.packetstatusupdater.config;
+package io.mosip.admin.config;
 
 import java.net.MalformedURLException;
 import java.net.URL;
