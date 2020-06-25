@@ -58,7 +58,7 @@
 		<maven.war.plugin.version>3.1.0</maven.war.plugin.version>
 		<maven.surefire.plugin.version>2.9</maven.surefire.plugin.version>
 		<maven.jacoco.plugin.version>0.8.1</maven.jacoco.plugin.version>
-		<maven.sonar.plugin.version>3.2</maven.sonar.plugin.version>
+		<maven.sonar.plugin.version>3.7.0.1746</maven.sonar.plugin.version>
 		<maven.javadoc.version>3.0.1</maven.javadoc.version>
 		<maven-shade-plugin.version>2.3</maven-shade-plugin.version>
 
@@ -166,38 +166,6 @@
 			<version>${jcl.to.slf4j.version}</version>
 		</dependency>
 	</dependencies>
-	
-	<profiles>
-		<profile>
-			<id>sonar</id>
-			<properties>
-				<sonar.sources>.</sonar.sources>
-				<sonar.inclusions>src/main/java/**,src/main/resources/**</sonar.inclusions>
-				<sonar.exclusions>${code.coverage.exclusions}</sonar.exclusions>
-				<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-			</properties>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.sonarsource.scanner.maven</groupId>
-						<artifactId>sonar-maven-plugin</artifactId>
-						<version>3.7.0.1746</version>
-						<executions>
-							<execution>
-								<phase>verify</phase>
-								<goals>
-									<goal>sonar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 
 	<build>
 		<pluginManagement>
@@ -231,7 +199,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
-					<version>${maven.war.plugin.version}</version>
+					<version>${maven.war.plugin.versoon}</version>
 					<configuration>
 						<archive>
 							<manifest>
@@ -254,22 +222,21 @@
 					<groupId>org.sonarsource.scanner.maven</groupId>
 					<artifactId>sonar-maven-plugin</artifactId>
 					<version>${maven.sonar.plugin.version}</version>
-					<executions>
-						<execution>
-							<phase>verify</phase>
-							<goals>
-								<goal>sonar</goal>
-							</goals>
-						</execution>
-					</executions>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>sonar</goal>
+								</goals>
+							</execution>
+						</executions>
 				</plugin>
-<!--				<plugin>
+				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<version>${maven.javadoc.version}</version>
 				</plugin>
--->
-				<plugin>
+<!--	         		<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<version>2.9.1</version>
@@ -285,7 +252,7 @@
                          			<additionalJOption>-Xdoclint:none</additionalJOption>
                 	  		</configuration>
                 	       	</plugin>
-			
+-->			
 				<plugin>
 				 	 <groupId>org.sonatype.plugins</groupId>
 				 	 <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -294,11 +261,11 @@
 				  	 <configuration>
 						<serverId>ossrh</serverId>
 						<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-						<autoReleaseAfterClose>false</autoReleaseAfterClose>
+						<autoReleaseAfterClose>true</autoReleaseAfterClose>
 				  	</configuration>
 				</plugin>
 			
-		 		<plugin>
+<!--		 		<plugin>
 				  	<groupId>org.apache.maven.plugins</groupId>
 				  	<artifactId>maven-source-plugin</artifactId>
 				  	<version>2.2.1</version>
@@ -311,8 +278,8 @@
 						</execution>
 				  	</executions>
 				</plugin>
-			
-				<plugin>
+-->			
+<!--				<plugin>
 				  	<groupId>org.apache.maven.plugins</groupId>
 				  	<artifactId>maven-gpg-plugin</artifactId>
 				  	<version>1.5</version>
@@ -323,16 +290,10 @@
 						  	<goals>
 								<goal>sign</goal>
 						  	</goals>
-						        <configuration>
-                						<gpgArguments>
-                    							<arg>--pinentry-mode</arg>
-                    							<arg>loopback</arg>
-                						</gpgArguments>
-            		 				</configuration>
 					      </execution>
 				  	</executions>
         			</plugin>
-			</plugins>
+-->			</plugins>
 		</pluginManagement>
 		<plugins>
 			<plugin>
@@ -363,14 +324,38 @@
 					</execution>
 				</executions>
 			</plugin>
-<!--			<plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
 					<aggregate>true</aggregate>
 				</configuration>
 			</plugin>
--->
+			<plugin>
+    			<groupId>pl.project13.maven</groupId>
+			<artifactId>git-commit-id-plugin</artifactId>
+			<version>3.0.1</version>
+			<executions>
+        			<execution>
+			        	<id>get-the-git-infos</id>
+					<goals>
+						<goal>revision</goal>
+            				</goals>
+            				<phase>validate</phase>
+ 				</execution>
+ 			</executions>
+ 			<configuration>
+				<generateGitPropertiesFile>true</generateGitPropertiesFile>
+				<generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+                    		<includeOnlyProperties>
+                        		<includeOnlyProperty>^git.build.(time|version)$</includeOnlyProperty>
+                        		<includeOnlyProperty>^git.commit.id.(abbrev|full)$</includeOnlyProperty>
+                    		</includeOnlyProperties>
+                    		<commitIdGenerationMode>full</commitIdGenerationMode>
+ 				<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+				<!-- <format>json</format> -->
+			</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>
