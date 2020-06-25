@@ -35,6 +35,7 @@ import io.mosip.admin.packetstatusupdater.constant.PacketStatusUpdateErrorCode;
 import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateDto;
 import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateResponseDto;
 import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
+import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import io.mosip.admin.packetstatusupdater.exception.ValidationException;
 import io.mosip.admin.packetstatusupdater.service.PacketStatusUpdateService;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
@@ -177,8 +178,8 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	private boolean authorizeRidWithZone(String rId) {
 		try {
 			HttpHeaders packetHeaders = new HttpHeaders();
-//			packetHeaders.set("Cookie",
-//					"Authorization=Mosip-TokeneyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMTAwMDYiLCJtb2JpbGUiOiI3OTE4MzA5ODYiLCJtYWlsIjoiYXVkcmEuYW1lenF1aXRhQHh5ei5jb20iLCJyb2xlIjoiUkVHSVNUUkFUSU9OX0FETUlOLFJFR0lTVFJBVElPTl9PRkZJQ0VSLFpPTkFMX0FETUlOLFJFR0lTVFJBVElPTl9TVVBFUlZJU09SLEdMT0JBTF9BRE1JTiIsIm5hbWUiOiJ0ZXN0IiwicklkIjoiMjc4NDc2NTczNjAwMDI1MjAxOTA4MjAxMDQ5NTciLCJpYXQiOjE1NzQ1OTkxNzIsImV4cCI6MTU3NDYwNTE3Mn0.va8-7sfCL1XlUcI4soQfy9ulNvFsjjI-H6jna7AMvFFoAPwgb3kYzxwBuFXzJcPHnLXaBBziiJXTHqOUwSph5g");
+			// packetHeaders.set("Cookie",
+			// "Authorization=Mosip-TokeneyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMTAwMDYiLCJtb2JpbGUiOiI3OTE4MzA5ODYiLCJtYWlsIjoiYXVkcmEuYW1lenF1aXRhQHh5ei5jb20iLCJyb2xlIjoiUkVHSVNUUkFUSU9OX0FETUlOLFJFR0lTVFJBVElPTl9PRkZJQ0VSLFpPTkFMX0FETUlOLFJFR0lTVFJBVElPTl9TVVBFUlZJU09SLEdMT0JBTF9BRE1JTiIsIm5hbWUiOiJ0ZXN0IiwicklkIjoiMjc4NDc2NTczNjAwMDI1MjAxOTA4MjAxMDQ5NTciLCJpYXQiOjE1NzQ1OTkxNzIsImV4cCI6MTU3NDYwNTE3Mn0.va8-7sfCL1XlUcI4soQfy9ulNvFsjjI-H6jna7AMvFFoAPwgb3kYzxwBuFXzJcPHnLXaBBziiJXTHqOUwSph5g");
 			packetHeaders.setContentType(MediaType.APPLICATION_JSON);
 			UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(zoneValidationUrl).queryParam("rid",
 					rId);
@@ -213,7 +214,15 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
 		T packetStatusUpdateDto = null;
 		if (!validationErrorsList.isEmpty()) {
-			throw new ValidationException(validationErrorsList);
+			if (validationErrorsList.size() == 1 && validationErrorsList.get(0).getErrorCode().equals("RPR-RTS-001")) {
+				throw new RequestException(PacketStatusUpdateErrorCode.RID_INVALID.getErrorCode(),
+						PacketStatusUpdateErrorCode.RID_INVALID.getErrorMessage());
+			} else if (validationErrorsList.size() == 1
+					&& validationErrorsList.get(0).getErrorCode().equals("KER-MSD-042")) {
+				throw new RequestException(PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorCode(),
+
+						PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorMessage());
+			}
 		}
 		ResponseWrapper<T> responseObject = null;
 		try {
@@ -234,7 +243,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 		}
 		return packetStatusUpdateDto;
 	}
-	
+
 	Comparator<PacketStatusUpdateDto> createdDateTimesComparator = new Comparator<PacketStatusUpdateDto>() {
 
 		@Override
@@ -244,7 +253,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 			return o2CreatedDateTimes.compareTo(o1CreatedDateTimes);
 		}
 	};
-	
+
 	Comparator<PacketStatusUpdateDto> createdDateTimesResultComparator = new Comparator<PacketStatusUpdateDto>() {
 
 		@Override

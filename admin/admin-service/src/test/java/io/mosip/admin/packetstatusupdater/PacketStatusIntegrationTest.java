@@ -193,10 +193,10 @@ public class PacketStatusIntegrationTest {
 		validatationResponse.setErrors(validationErrorList);
 		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(POSITIVE_RESPONSE_ZONE_VALIATION));
 		mockRestServiceServer.expect(requestTo(packetUpdateStatusUrl.toString() + "/"+primaryLang+"/1000012232223243224234"))
-		.andRespond(withSuccess().body(objectMapper.writeValueAsString(validatationResponse)));
+		.andRespond(withStatus(HttpStatus.FORBIDDEN).body(objectMapper.writeValueAsString(validatationResponse)));
 		
 		mockMvc.perform(
-				get("/packetstatusupdate").param("rid","1000012232223243224234")).andExpect(status().isOk());
+				get("/packetstatusupdate").param("rid","1000012232223243224234")).andExpect(status().isInternalServerError());
 		
 		
 	}

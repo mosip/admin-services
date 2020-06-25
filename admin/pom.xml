@@ -166,6 +166,38 @@
 			<version>${jcl.to.slf4j.version}</version>
 		</dependency>
 	</dependencies>
+	
+	<profiles>
+		<profile>
+			<id>sonar</id>
+			<properties>
+				<sonar.sources>.</sonar.sources>
+				<sonar.inclusions>src/main/java/**,src/main/resources/**</sonar.inclusions>
+				<sonar.exclusions>${code.coverage.exclusions}</sonar.exclusions>
+				<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+			</properties>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.sonarsource.scanner.maven</groupId>
+						<artifactId>sonar-maven-plugin</artifactId>
+						<version>3.7.0.1746</version>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>sonar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<build>
 		<pluginManagement>
@@ -231,12 +263,13 @@
 							</execution>
 						</executions>
 				</plugin>
-				<plugin>
+<!--				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<version>${maven.javadoc.version}</version>
 				</plugin>
-<!--	         		<plugin>
+-->
+				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<version>2.9.1</version>
@@ -252,7 +285,7 @@
                          			<additionalJOption>-Xdoclint:none</additionalJOption>
                 	  		</configuration>
                 	       	</plugin>
--->			
+			
 				<plugin>
 				 	 <groupId>org.sonatype.plugins</groupId>
 				 	 <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -261,11 +294,11 @@
 				  	 <configuration>
 						<serverId>ossrh</serverId>
 						<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-						<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						<autoReleaseAfterClose>false</autoReleaseAfterClose>
 				  	</configuration>
 				</plugin>
 			
-<!--		 		<plugin>
+		 		<plugin>
 				  	<groupId>org.apache.maven.plugins</groupId>
 				  	<artifactId>maven-source-plugin</artifactId>
 				  	<version>2.2.1</version>
@@ -278,8 +311,8 @@
 						</execution>
 				  	</executions>
 				</plugin>
--->			
-<!--				<plugin>
+			
+				<plugin>
 				  	<groupId>org.apache.maven.plugins</groupId>
 				  	<artifactId>maven-gpg-plugin</artifactId>
 				  	<version>1.5</version>
@@ -290,10 +323,16 @@
 						  	<goals>
 								<goal>sign</goal>
 						  	</goals>
+						        <configuration>
+                						<gpgArguments>
+                    							<arg>--pinentry-mode</arg>
+                    							<arg>loopback</arg>
+                						</gpgArguments>
+            		 				</configuration>
 					      </execution>
 				  	</executions>
         			</plugin>
--->			</plugins>
+			</plugins>
 		</pluginManagement>
 		<plugins>
 			<plugin>
@@ -324,7 +363,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
+<!--			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
