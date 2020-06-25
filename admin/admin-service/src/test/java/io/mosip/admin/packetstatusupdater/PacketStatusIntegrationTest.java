@@ -2,6 +2,8 @@ package io.mosip.admin.packetstatusupdater;
 
 
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.any;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
@@ -37,6 +39,7 @@ import io.mosip.admin.TestBootApplication;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 
 
 @SpringBootTest(classes = TestBootApplication.class)
@@ -67,6 +70,9 @@ public class PacketStatusIntegrationTest {
 	@MockBean
 	private AuditUtil auditUtil;
 	
+	@MockBean
+	private RidValidator<String> ridValidator;
+	
 	private List<ServiceError> validationErrorList=null;
 	
 	@Autowired
@@ -76,7 +82,8 @@ public class PacketStatusIntegrationTest {
 	
 	private String PARSE_ERROR_RESPONSE_REG_PROC="{\r\n    \"id\": \"mosip.registration.transaction\",\r\n    \"version\": \"1.0\",\r\n    \"responsetime\": \"2019-12-03T05:21:57.024Z\",\r\n    \"response\": [\r\n        {\r\n            \"id\": \"96939b0b-982f-431c-abe0-489cf4ca9734\",\r\n            \"registrationId\": \"10001100010000120190722123617\",\r\n            \"transactionTypeCode\": \"DEMOGRAPHIC_VERIFICATION\",\r\n            \"parentTransactionId\": \"85ed38a6-3fcc-42e7-9afd-366d424c93f7\",\r\n            \"statusCode\": \"IN_PROGRESS\",\r\n            \"statusComment\": null,\r\n            \"createdDateTimes\": \"2019-08-07T15:58:17.204\"\r\n        }\r\n\t],\t\r\n\t\t\t\r\n\t\t\t\"errors\":null\r\n\t\t\t";
 	
-	private String POSITIVE_RESPONSE_ZONE_VALIATION="{\r\n    \"id\": null,\r\n    \"version\": null,\r\n    \"responsetime\": \"2019-12-02T09:45:24.512Z\",\r\n    \"metadata\": null,\r\n    \"response\": true,\r\n    \"errors\": []\r\n}";
+	private String POSITIVE_RESPONSE_ZONE_VALIDATION="{\r\n    \"id\": null,\r\n    \"version\": null,\r\n    \"responsetime\": \"2019-12-02T09:45:24.512Z\",\r\n    \"metadata\": null,\r\n    \"response\": true,\r\n    \"errors\": []\r\n}";
+	private String NEGATIVE_RESPONSE_ZONE_VALIDATION="{\r\n    \"id\": null,\r\n    \"version\": null,\r\n    \"responsetime\": \"2019-12-02T09:45:24.512Z\",\r\n    \"metadata\": null,\r\n    \"response\": false,\r\n    \"errors\": []\r\n}";
 	@Before
 	public void setUp() {
 		mockRestServiceServer=MockRestServiceServer.bindTo(restTemplate).build();
@@ -86,6 +93,7 @@ public class PacketStatusIntegrationTest {
 		validationErrorList= new ArrayList<ServiceError>();
 		validationErrorList.add(serviceError);
 		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		when(ridValidator.validateId(any())).thenReturn(true);
 		
 	}
 	
@@ -94,7 +102,40 @@ public class PacketStatusIntegrationTest {
 	public void testPacketStatusUpdate() throws Exception {
 		UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(zoneValidationUrl).queryParam("rid",
 				"1000012232223243224234");
-		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(POSITIVE_RESPONSE_ZONE_VALIATION));
+		
+		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(POSITIVE_RESPONSE_ZONE_VALIDATION));
+		mockRestServiceServer.expect(requestTo(packetUpdateStatusUrl.toString() + "/"+primaryLang+"/1000012232223243224234"))
+		.andRespond(withSuccess().body(POSITIVE_RESPONSE_REG_PROC));
+		
+		mockMvc.perform(
+				get("/packetstatusupdate").param("rid","1000012232223243224234")).andExpect(status().isOk());
+		
+		
+	}
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void testPacketStatusUpdateInvalidRid() throws Exception {
+		UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(zoneValidationUrl).queryParam("rid",
+				"1000012232223243224234");
+		when(ridValidator.validateId(any())).thenReturn(false);
+		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(POSITIVE_RESPONSE_ZONE_VALIDATION));
+		mockRestServiceServer.expect(requestTo(packetUpdateStatusUrl.toString() + "/"+primaryLang+"/1000012232223243224234"))
+		.andRespond(withSuccess().body(POSITIVE_RESPONSE_REG_PROC));
+		
+		mockMvc.perform(
+				get("/packetstatusupdate").param("rid","1000012232223243224234")).andExpect(status().isOk());
+		
+		
+	}
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void testPacketStatusUpdateUnauthorizedZone() throws Exception {
+		UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(zoneValidationUrl).queryParam("rid",
+				"1000012232223243224234");
+		
+		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(NEGATIVE_RESPONSE_ZONE_VALIDATION));
 		mockRestServiceServer.expect(requestTo(packetUpdateStatusUrl.toString() + "/"+primaryLang+"/1000012232223243224234"))
 		.andRespond(withSuccess().body(POSITIVE_RESPONSE_REG_PROC));
 		
@@ -153,7 +194,7 @@ public class PacketStatusIntegrationTest {
 	public void testPacketStatusUpdate403ExcptionValidateionError() throws Exception {
 		UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(zoneValidationUrl).queryParam("rid",
 				"1000012232223243224234");
-		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(POSITIVE_RESPONSE_ZONE_VALIATION));
+		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(POSITIVE_RESPONSE_ZONE_VALIDATION));
 		ResponseWrapper<?> validatationResponse= new ResponseWrapper<>();
 		validatationResponse.setErrors(validationErrorList);
 		mockRestServiceServer.expect(requestTo(packetUpdateStatusUrl.toString() + "/"+primaryLang+"/1000012232223243224234"))
@@ -171,7 +212,7 @@ public class PacketStatusIntegrationTest {
 	public void testPacketStatusUpdate500ExcptionValidateionError() throws Exception {
 		UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(zoneValidationUrl).queryParam("rid",
 				"1000012232223243224234");
-		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(POSITIVE_RESPONSE_ZONE_VALIATION));
+		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(POSITIVE_RESPONSE_ZONE_VALIDATION));
 		ResponseWrapper<?> validatationResponse= new ResponseWrapper<>();
 		validatationResponse.setErrors(validationErrorList);
 		mockRestServiceServer.expect(requestTo(packetUpdateStatusUrl.toString() + "/"+primaryLang+"/1000012232223243224234"))
@@ -191,7 +232,7 @@ public class PacketStatusIntegrationTest {
 				"1000012232223243224234");
 		ResponseWrapper<?> validatationResponse= new ResponseWrapper<>();
 		validatationResponse.setErrors(validationErrorList);
-		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(POSITIVE_RESPONSE_ZONE_VALIATION));
+		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(POSITIVE_RESPONSE_ZONE_VALIDATION));
 		mockRestServiceServer.expect(requestTo(packetUpdateStatusUrl.toString() + "/"+primaryLang+"/1000012232223243224234"))
 		.andRespond(withStatus(HttpStatus.FORBIDDEN).body(objectMapper.writeValueAsString(validatationResponse)));
 		

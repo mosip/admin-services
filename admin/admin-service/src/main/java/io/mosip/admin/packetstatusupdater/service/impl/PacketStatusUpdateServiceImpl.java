@@ -45,6 +45,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 import io.mosip.kernel.core.util.DateUtils;
 
@@ -80,6 +81,9 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	private AuditUtil auditUtil;
 
 	private static final String SLASH = "/";
+	
+	@Autowired
+	private RidValidator<String> ridValidator;
 
 	/*
 	 * (non-Javadoc)
@@ -89,8 +93,14 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	 */
 	@Override
 	public PacketStatusUpdateResponseDto getStatus(String rId) {
-
-		authorizeRidWithZone(rId);
+		if(!ridValidator.validateId(rId)) {
+			throw new RequestException(PacketStatusUpdateErrorCode.RID_INVALID.getErrorCode(),
+					PacketStatusUpdateErrorCode.RID_INVALID.getErrorMessage());
+		}
+		if(!authorizeRidWithZone(rId)) {
+			throw new RequestException(PacketStatusUpdateErrorCode.ADMIN_UNAUTHORIZED.getErrorCode(),
+					PacketStatusUpdateErrorCode.ADMIN_UNAUTHORIZED.getErrorMessage());
+		}
 		return getPacketStatus(rId);
 	}
 
