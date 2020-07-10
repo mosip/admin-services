@@ -394,7 +394,7 @@
  				<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
 				<!-- <format>json</format> 
 			</configuration>
-			</plugin>-->
+			</plugin> -->
 		</plugins>
 	</build>
 </project>
