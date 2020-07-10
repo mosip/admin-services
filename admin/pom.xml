@@ -392,7 +392,7 @@
                     		</includeOnlyProperties>
                     		<commitIdGenerationMode>full</commitIdGenerationMode>
  				<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
-				<!-- <format>json</format> 
+				 <format>json</format> 
 			</configuration>
 			</plugin> -->
 		</plugins>
