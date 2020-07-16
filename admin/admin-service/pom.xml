@@ -11,7 +11,7 @@
 	</parent>
 	<artifactId>admin-service</artifactId>
 	<name>admin-service</name>
-	<version>1.0.7</version>
+	<version>1.0.7-rc1</version>
 	<url>http://maven.apache.org</url>
 	<packaging>jar</packaging>
 	<properties>
