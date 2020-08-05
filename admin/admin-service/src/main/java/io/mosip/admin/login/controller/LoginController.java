@@ -27,7 +27,7 @@ import io.mosip.admin.packetstatusupdater.util.AuditUtil;
  * 
  * @author Srinivasan
  */
-@RestController
+//@RestController
 public class LoginController {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
