@@ -37,7 +37,7 @@ import io.mosip.admin.login.service.LoginService;
  * @author Sasikumar Ganesan
  *
  */
-@Service
+//@Service
 public class LoginServiceImpl implements LoginService {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(LoginServiceImpl.class);
