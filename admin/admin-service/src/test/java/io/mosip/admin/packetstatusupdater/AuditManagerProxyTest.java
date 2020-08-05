@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,6 +41,7 @@ public class AuditManagerProxyTest {
 	@Autowired
 	private ObjectMapper mapper;
 
+	@Qualifier("restTemplate")
 	@MockBean
 	private RestTemplate mockRestTemplate;
 
