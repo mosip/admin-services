@@ -41,7 +41,7 @@ public class AuditManagerProxyTest {
 	@Autowired
 	private ObjectMapper mapper;
 
-	@Qualifier("restTemplateConfig")
+
 	@MockBean
 	private RestTemplate mockRestTemplate;
 
