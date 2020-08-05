@@ -1,77 +1,68 @@
 package io.mosip.admin.login.controller;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
+
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
 
 import io.mosip.admin.login.dto.AccessTokenResponseDTO;
 import io.mosip.admin.login.service.LoginService;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
-import io.mosip.kernel.core.http.ResponseFilter;
-import io.mosip.kernel.core.http.ResponseWrapper;
-
-
 
 /**
  * The Class PacketUpdateStatusController.
+ * 
  * @author Srinivasan
  */
 @RestController
 public class LoginController {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
-	
+
 	@Autowired
 	private AuditUtil auditUtil;
 
 	@Autowired
 	private LoginService loginService;
 
-	@GetMapping(value = "/login/{redirectURI}")
+	// @GetMapping(value = "/login/{redirectURI}")
 	public void login(@CookieValue("state") String state, @PathVariable("redirectURI") String redirectURI,
 			HttpServletResponse res) throws IOException {
 		String uri = loginService.getKeycloakURI(redirectURI, state);
-		LOGGER.info("redirect open id login uri " + uri );
+		LOGGER.info("redirect open id login uri " + uri);
 		res.setStatus(302);
 		res.sendRedirect(uri);
 	}
 
-	@GetMapping(value = "/login-redirect/{redirectURI}")
+	// @GetMapping(value = "/login-redirect/{redirectURI}")
 	public void loginRedirect(@PathVariable("redirectURI") String redirectURI, @RequestParam("state") String state,
 			@RequestParam("session_state") String sessionState, @RequestParam("code") String code,
 			@CookieValue("state") String stateCookie, HttpServletResponse res) throws IOException {
 		AccessTokenResponseDTO jwtResponseDTO = loginService.loginRedirect(state, sessionState, code, stateCookie,
 				redirectURI);
 		String uri = new String(Base64.decodeBase64(redirectURI.getBytes()));
-		LOGGER.info("login-redirect open id login uri " + uri );
+		LOGGER.info("login-redirect open id login uri " + uri);
 		Cookie cookie = createCookie(jwtResponseDTO.getAccessToken(), Integer.parseInt(jwtResponseDTO.getExpiresIn()));
-		//auditUtil.auditRequest(AuditConstant., eventType, description, eventId);
+		// auditUtil.auditRequest(AuditConstant., eventType, description, eventId);
 		res.addCookie(cookie);
 		res.setStatus(302);
 		res.sendRedirect(uri);
 	}
 
-	 /**
+	/**
 	 * API to validate token
 	 * 
 	 * 
@@ -80,22 +71,21 @@ public class LoginController {
 	 * @throws JsonMappingException
 	 * @throws JsonParseException
 	 */
-	/*@ResponseFilter
-	@GetMapping(value = "/authorize/validateToken")
-	public ResponseEntity validateAdminToken(HttpServletRequest request, HttpServletResponse res) {
-
-		String body = IOUtils.toString(request.getInputStream(), Charset.forName(request.getCharacterEncoding()));
-		try {
-			ResponseEntity<Object> exchange = restTemplate.exchange(firstUrl + request.getRequestURI(),
-					HttpMethod.valueOf(request.getMethod()),
-					new HttpEntity<>(body),
-					Object.class,
-					request.getParameterMap());
-			return exchange;
-		} catch (final HttpClientErrorException e) {
-			return new ResponseEntity<>(e.getResponseBodyAsByteArray(), e.getResponseHeaders(), e.getStatusCode());
-		}
-	} */
+	/*
+	 * @ResponseFilter
+	 * 
+	 * @GetMapping(value = "/authorize/validateToken") public ResponseEntity
+	 * validateAdminToken(HttpServletRequest request, HttpServletResponse res) {
+	 * 
+	 * String body = IOUtils.toString(request.getInputStream(),
+	 * Charset.forName(request.getCharacterEncoding())); try {
+	 * ResponseEntity<Object> exchange = restTemplate.exchange(firstUrl +
+	 * request.getRequestURI(), HttpMethod.valueOf(request.getMethod()), new
+	 * HttpEntity<>(body), Object.class, request.getParameterMap()); return
+	 * exchange; } catch (final HttpClientErrorException e) { return new
+	 * ResponseEntity<>(e.getResponseBodyAsByteArray(), e.getResponseHeaders(),
+	 * e.getStatusCode()); } }
+	 */
 
 	private Cookie createCookie(final String content, final int expirationTimeSeconds) {
 		final Cookie cookie = new Cookie(loginService.getAuthTokenHeader(), content);
