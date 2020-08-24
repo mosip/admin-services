@@ -98,7 +98,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     @Autowired
     Mapper mapper;
 
-    @Value("${mosip.kernel.packet-reciever-api-url}")
+  //  @Value("${mosip.kernel.packet-reciever-api-url}")
 	private String packetRecieverApiUrl;
     
     @Autowired
