@@ -19,6 +19,8 @@ public class BulkDataResponseDto {
 	
 	private int successCount;
 	
+	private String category;
+	
 	private String status;
 	
 	private String uploadedBy;

@@ -43,6 +43,9 @@ public class BulkUploadTranscation extends BaseEntity{
 	@Column(name="status_code")
 	private String statusCode;
 	
+	@Column(name="category")
+	private String category;
+	
 	@Column(name="record_count")
 	private int recordCount;
 	

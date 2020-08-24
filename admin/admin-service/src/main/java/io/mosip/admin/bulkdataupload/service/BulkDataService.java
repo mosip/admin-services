@@ -8,6 +8,7 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
+import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.admin.bulkdataupload.dto.BulkDataGetExtnDto;
 import io.mosip.admin.bulkdataupload.dto.BulkDataGetResponseDto;
@@ -29,7 +30,7 @@ public interface BulkDataService {
 	 * @param bulkDataRequestDto
 	 * @return
 	 */
-	public BulkDataResponseDto insertData(BulkDataRequestDto bulkDataRequestDto);
+	public BulkDataResponseDto insertDataToCSVFile(String tableName,String operation,String category,MultipartFile[] files);
 	
 	/**
 	 * update the bulk data
@@ -38,15 +39,8 @@ public interface BulkDataService {
 	 * @return
 
 	 */
-	public BulkDataResponseDto updateData(BulkDataRequestDto bulkDataRequestDto);
+	public BulkDataResponseDto bulkDataOperation(String tableName,String operation,String category,MultipartFile[] files);
 	
-	/**
-	 * Delete the bulk data
-	 * @param bulkDataRequestDto
-	 * @return
-	 *
-	 */
-	public BulkDataResponseDto deleteData(BulkDataRequestDto bulkDataRequestDto);
 	
 	/**
 	 * Get the transcation Details bassed on id
@@ -60,4 +54,6 @@ public interface BulkDataService {
 	 * @return
 	 */
 	public BulkDataGetResponseDto getAllTrascationDetails();
+	
+	public BulkDataResponseDto uploadPackets(MultipartFile[] files);
 }

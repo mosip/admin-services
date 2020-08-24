@@ -19,6 +19,8 @@ public class BulkDataGetExtnDto {
 	
 	private int count;
 	
+	private String category;
+	
 	private String status;
 	
 	private String statusDescription;
