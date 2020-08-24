@@ -15,6 +15,8 @@ public class BulkDataResponseDto {
 	
 	private String tableName;
 	
+	private String category;
+	
 	private String operation;
 	
 	private int successCount;

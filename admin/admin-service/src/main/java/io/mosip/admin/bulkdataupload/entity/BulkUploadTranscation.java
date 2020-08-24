@@ -55,6 +55,9 @@ public class BulkUploadTranscation extends BaseEntity{
 	@Column(name="upload_description")
 	private String uploadDescription;
 	
+	@Column(name="category")
+	private String category;
+	
 	@Column(name="lang_code")
 	private String langCode;
 
