@@ -45,27 +45,17 @@ public class BulkDataUploadController {
 	private BulkDataService bulkDataService;
 	
 	@PostMapping(value = { "/bulkupload" }, consumes = { "multipart/form-data" })
-	//@PreAuthorize("hasRole('MASTERDATA_ADMIN')")
+	@PreAuthorize("hasRole('MASTERDATA_ADMIN')")
 	public ResponseWrapper<BulkDataResponseDto> uploadData(@RequestParam("tableName") String tableName,@RequestParam("operation") String operation,@RequestParam("category") String category,
 	         @RequestParam("files") MultipartFile[] files) {
 		auditUtil.auditRequest(AuditConstant.BULKDATA_INSERT_API_CALLED,AuditConstant.AUDIT_SYSTEM,AuditConstant.BULKDATA_INSERT_API_CALLED,"ADM-2002");
 		ResponseWrapper<BulkDataResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(bulkDataService.insertDataToCSVFile(tableName,operation,category,files));
+		responseWrapper.setResponse(bulkDataService.bulkDataOperation(tableName,operation,category,files));
 		auditUtil.auditRequest(AuditConstant.BULKDATA_INSERT_SUCCESS,AuditConstant.AUDIT_SYSTEM,AuditConstant.BULKDATA_INSERT_API_CALLED,"ADM-2003");
 		return responseWrapper;
 		
 	}
-/*
-	@PostMapping(value = { "/bulkupload/multipart" }, consumes = { "multipart/form-data" })
-	@PreAuthorize("hasRole('MASTERDATA_ADMIN')")
-	public ResponseWrapper<BulkDataResponseDto> uploadPackets(@RequestParam("files") MultipartFile[] files) {
-		auditUtil.auditRequest(AuditConstant.BULKDATA_INSERT_API_CALLED,AuditConstant.AUDIT_SYSTEM,AuditConstant.BULKDATA_INSERT_API_CALLED,"ADM-2002");
-		ResponseWrapper<BulkDataResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(bulkDataService.uploadPackets(files));
-		auditUtil.auditRequest(AuditConstant.BULKDATA_INSERT_SUCCESS,AuditConstant.AUDIT_SYSTEM,AuditConstant.BULKDATA_INSERT_API_CALLED,"ADM-2003");
-		return responseWrapper;
-		
-	}*/
+
 	@GetMapping("/bulkupload/transcation/{transcationId}")
 	@PreAuthorize("hasRole('MASTERDATA_ADMIN')")
 	public ResponseWrapper<BulkDataGetExtnDto> getTranscationDetail(@PathVariable("transcationId") UUID transcationId) throws Exception {

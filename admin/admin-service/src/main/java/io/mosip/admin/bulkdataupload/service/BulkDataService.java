@@ -25,7 +25,7 @@ import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateResponseDto;
 public interface BulkDataService {
 
 	/**
-	 * insert the bulk data
+	 * perfrom crud operation in the masterdata
 	 * 
 	 * @param bulkDataRequestDto
 	 * @return
@@ -33,7 +33,7 @@ public interface BulkDataService {
 	public BulkDataResponseDto insertDataToCSVFile(String tableName,String operation,String category,MultipartFile[] files);
 	
 	/**
-	 * update the bulk data
+	 * perfrom the bulk data operation
 	 * 
 	 * @param bulkDataRequestDto
 	 * @return
@@ -55,5 +55,12 @@ public interface BulkDataService {
 	 */
 	public BulkDataGetResponseDto getAllTrascationDetails();
 	
-	public BulkDataResponseDto uploadPackets(MultipartFile[] files);
+	/**
+	 *  upload the packet
+	 * @param files
+	 * @param category
+	 * @return
+	 */
+	
+	public BulkDataResponseDto uploadPackets(MultipartFile[] files,String category);
 }
