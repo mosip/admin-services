@@ -14,6 +14,8 @@ import java.util.UUID;
 
 import javax.validation.ValidationException;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -48,9 +50,11 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -58,6 +62,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -98,7 +103,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     @Autowired
     Mapper mapper;
 
-  //  @Value("${mosip.kernel.packet-reciever-api-url}")
+    @Value("${mosip.kernel.packet-reciever-api-url}")
 	private String packetRecieverApiUrl;
     
     @Autowired
@@ -165,21 +170,152 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	}
 
 
-	@Override
-	public  BulkDataResponseDto insertDataToCSVFile(String tableName,String operation,String category,MultipartFile[] files)  {
-		
-		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
-		mapper.init();
-		//int count = 0;
-		Class<?> entity=mapper.getEntity(tableName);
-		String repoBeanName=mapper.getRepo(entity);
-    	JobBuilderFactory jobBuilderFactory = new JobBuilderFactory(jobRepository);
-    	StepBuilderFactory stepBuilderFactory = new StepBuilderFactory(jobRepository, platformTransactionManager);
-        //ItemReader<Object> itemReader;
-        List<String> failureMessage = null;
-        int[] numArr = {0};
+    	@Override
+    	public  BulkDataResponseDto insertDataToCSVFile(String tableName, String operation, String category,MultipartFile[] files)  {
+    		
+    		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
+    		mapper.init();
+    		Class<?> entity=mapper.getEntity(tableName);
+    		String repoBeanName=mapper.getRepo(entity);
+        	JobBuilderFactory jobBuilderFactory = new JobBuilderFactory(jobRepository);
+        	StepBuilderFactory stepBuilderFactory = new StepBuilderFactory(jobRepository, platformTransactionManager);
+            List<String> failureMessage = null;
+            int[] numArr = {0};
+            String[] status= {"PROCESS"};
+            Arrays.asList(files).stream().forEach(file -> {
+            	ItemReader<Object> itemReader;  
+                JobExecution jobExecution = null;
+                
+    			try {
+    				csvValidator(file.getOriginalFilename());
+    				itemReader = itemReader(file,entity);
+    				ItemWriter<List<Object>> itemWriter= itemWriter(repoBeanName);
+    		        ItemProcessor itemProcessor=processor(operation);
+    		        JobParameters parameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters();
+    		        jobExecution = jobLauncher.run(job(jobBuilderFactory, stepBuilderFactory, itemReader,itemProcessor, itemWriter),parameters);
+    				JobInstance jobInstence=new JobInstance(jobExecution.getJobId(), "ETL-file-load");
+    				StepExecution stepExecution=jobRepository.getLastStepExecution(jobInstence, "ETL-file-load");
+    				//failureMessage.add(jobExecution.getAllFailureExceptions().toString());
+    				status[0]=jobExecution.getStatus().toString();
+    				numArr[0]+=stepExecution.getReadCount();
+    			}catch (IOException e) {
+    				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
+    	  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
+    			}
+    			catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
+    					| JobParametersInvalidException e) {
+    				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
+    	  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
+    			}
+            });
+            
+            BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(numArr[0],operation,entity.getName(),category,failureMessage,status[0]);
+            bulkDataResponseDto=setResponseDetails(bulkUploadTranscation, tableName);
+    		return bulkDataResponseDto;
+    	}
 
-        //JobExecution jobExecution = null;
+    	@Override
+    	public BulkDataResponseDto bulkDataOperation(String tableName,String operation,String category,MultipartFile[] files) {
+    		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
+    		if(category.equalsIgnoreCase("masterdata")) {
+    			bulkDataResponseDto=insertDataToCSVFile(tableName, operation, category, files);
+    		}
+    		else if(category.equalsIgnoreCase("packet")) {
+    			bulkDataResponseDto=uploadPackets(files,category);
+    		}
+    		else {
+    			throw new IllegalArgumentException("Enter correct category");
+    		}
+            return bulkDataResponseDto;
+    	
+    	}
+
+    /*	@Override
+    	public BulkDataResponseDto deleteData(BulkDataRequestDto bulkDataRequestDto){
+    		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
+    		String tableName=bulkDataRequestDto.getTableName();
+    		String operation=bulkDataRequestDto.getOperation();
+    		mapper.init();
+    		Class<?> entity=mapper.getEntity(tableName);
+    		String repoBeanName=mapper.getRepo(entity);
+        	JobBuilderFactory jobBuilderFactory = new JobBuilderFactory(jobRepository);
+        	StepBuilderFactory stepBuilderFactory = new StepBuilderFactory(jobRepository, platformTransactionManager);
+            JobExecution jobExecution = null;
+            ItemReader<Object> itemReader;*/
+          	/*	try {
+          			csvValidator(bulkDataRequestDto.getCsvFile());
+          			itemReader = itemReader(bulkDataRequestDto.getCsvFile(),entity);
+          			ItemWriter<List<Object>> itemWriter= itemWriter(repoBeanName);
+          	        ItemProcessor itemProcessor=processor(operation);
+          	        JobParameters parameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters();
+          	        jobExecution = jobLauncher.run(job(jobBuilderFactory, stepBuilderFactory, itemReader,itemProcessor, itemWriter),parameters);
+          		} catch (IOException e) {
+          			throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
+          					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
+          		}
+          		catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
+          				| JobParametersInvalidException e) {
+          			throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
+          					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
+          		}    
+          		BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(jobExecution,operation,entity.getName());
+                bulkDataResponseDto=setResponseDetails(bulkUploadTranscation, tableName);*/
+        	//	return bulkDataResponseDto;
+    	//}*/
+    	
+    	@Override
+    	public BulkDataResponseDto uploadPackets(MultipartFile[] files, String category) {
+    		
+    		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
+    		List<String> fileNames = new ArrayList<>();
+    		int[] numArr = {0};
+    		String[] msgArr= {"FAILED"};
+    	      Arrays.asList(files).stream().forEach(file -> {
+    	    	 	
+    	    	 HttpHeaders headers = new HttpHeaders();
+    	         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+    	         MultiValueMap<String, String> fileMap = new LinkedMultiValueMap<>();
+    	         ContentDisposition contentDisposition = ContentDisposition
+    	                 .builder("form-data")
+    	                 .name("file")
+    	                 .filename(file.getOriginalFilename())
+    	                 .build();
+    	         fileMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
+    	        	         try {
+    	        	        	 HttpEntity<byte[]> fileEntity = new HttpEntity<>(file.getBytes(), fileMap);
+
+    	        		         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+    	        		         body.add("file", fileEntity);
+
+    	        		         HttpEntity<MultiValueMap<String, Object>> requestEntity =
+    	        		                 new HttpEntity<>(body, headers);
+
+    	             ResponseEntity<String> response = restTemplate.exchange(
+    	                     packetRecieverApiUrl,
+    	                     HttpMethod.POST,
+    	                     requestEntity,
+    	                     String.class);
+    	             JSONObject josnObject=new JSONObject(response.getBody());
+    	             if(!josnObject.get("response").equals(null)) {
+    	            	 numArr[0]++;
+    	            	 msgArr[0]="Success";
+    	             }
+    	         } catch (HttpClientErrorException e) {
+    	        	 throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
+    		  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
+    	         } catch (IOException e) {
+    	        	 throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
+    		  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
+    			} catch (JSONException e) {
+    				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
+    	  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
+    			}
+    	         fileNames.add(file.getOriginalFilename());
+    	      });
+    	      BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(numArr[0],null,null,category,null,msgArr[0]);
+    	      bulkDataResponseDto=setResponseDetails(bulkUploadTranscation, null);
+    		return bulkDataResponseDto;
+    	}
         Arrays.asList(files).stream().forEach(file -> {
         	ItemReader<Object> itemReader;  
             JobExecution jobExecution = null;
@@ -400,6 +536,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 				}else if(operation.equalsIgnoreCase("delete")) {
 					((BaseEntity) item).setCreatedBy(setCreateMetaData());
 					((BaseEntity) item).setCreatedDateTime(now);
+					((BaseEntity)item).setIsActive(false);
 					((BaseEntity) item).setIsDeleted(true);
 					((BaseEntity) item).setDeletedDateTime(now);
 				}	
@@ -422,15 +559,14 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	        return writer;
 	    }
 	    
-	    
-	    private BulkUploadTranscation saveTranscationDetails(int count,String operation,String entityName,String category,List<String> failureMessage) {
+	    private BulkUploadTranscation saveTranscationDetails(int count,String operation,String entityName,String category,List<String> failureMessage, String status) {
 	    	BulkUploadTranscation bulkUploadTranscation=new BulkUploadTranscation();
 	    	//JobInstance jobInstence=new JobInstance(jobExecution.getJobId(), "ETL-file-load");
 			//StepExecution stepExecution=jobRepository.getLastStepExecution(jobInstence, "ETL-file-load");
 	    	LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
 	    	bulkUploadTranscation.setIsActive(true);
 	    	bulkUploadTranscation.setLangCode("eng");
-	    	bulkUploadTranscation.setStatusCode("Success");
+	    	bulkUploadTranscation.setStatusCode(status);
 	    	bulkUploadTranscation.setCreatedBy(setCreateMetaData());
 	    	bulkUploadTranscation.setCreatedDateTime(now);
 	    	bulkUploadTranscation.setEntityName(entityName);
@@ -444,7 +580,6 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 			return bulkUploadTranscation;
 	    	
 	    }
-	    
 	    private BulkDataResponseDto setResponseDetails(BulkUploadTranscation bulkUploadTranscation,String tableName) {
 	    	
 	    	BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
@@ -457,7 +592,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	    	bulkDataResponseDto.setTimeStamp(bulkUploadTranscation.getCreatedDateTime().toString());
 	    	bulkDataResponseDto.setUploadedBy(bulkUploadTranscation.getUploadedBy());
 	    	return bulkDataResponseDto;
-	    }	    
+	    }    
 	    public static String setCreateMetaData() {
 	    	String contextUser="superadmin";
 			Authentication authN = SecurityContextHolder.getContext().getAuthentication();
