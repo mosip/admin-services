@@ -316,92 +316,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	      bulkDataResponseDto=setResponseDetails(bulkUploadTranscation, null);
     		return bulkDataResponseDto;
     	}
-        Arrays.asList(files).stream().forEach(file -> {
-        	ItemReader<Object> itemReader;  
-            JobExecution jobExecution = null;
-			try {
-				//csvValidator(bulkDataRequestDto.getCsvFile());
-				int readCount=0;
-				itemReader = itemReader(file,entity);
-				ItemWriter<List<Object>> itemWriter= itemWriter(repoBeanName);
-		        ItemProcessor itemProcessor=processor(operation);
-		        JobParameters parameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters();
-		        jobExecution = jobLauncher.run(job(jobBuilderFactory, stepBuilderFactory, itemReader,itemProcessor, itemWriter),parameters);
-				JobInstance jobInstence=new JobInstance(jobExecution.getJobId(), "ETL-file-load");
-				StepExecution stepExecution=jobRepository.getLastStepExecution(jobInstence, "ETL-file-load");
-				readCount=stepExecution.getReadCount();
-				System.out.println(">>>>>>>>>>>"+file.getOriginalFilename());
-				//failureMessage.add(stepExecution.getExitStatus().getExitDescription());
-				numArr[0]+=stepExecution.getReadCount();
-			}catch (IOException e) {
-				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
-	  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
-			}
-			catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
-					| JobParametersInvalidException e) {
-				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
-	  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
-			}
-        });
         
-        BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(numArr[0],operation,entity.getName(),category,failureMessage);
-        bulkDataResponseDto=setResponseDetails(bulkUploadTranscation, tableName);
-		return bulkDataResponseDto;
-	}
 
-	@Override
-	public BulkDataResponseDto bulkDataOperation(String tableName,String operation,String category,MultipartFile[] files) {
-		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
-		if(category.equalsIgnoreCase("masterdata")) {
-			bulkDataResponseDto=insertDataToCSVFile(tableName, operation, category, files);
-		}
-		else if(category.equalsIgnoreCase("packet")) {
-			bulkDataResponseDto=uploadPackets(files);
-		}
-		else {
-			throw new IllegalArgumentException("Enter correct category");
-		}
-        return bulkDataResponseDto;
-	
-	}
 
-	@Override
-	public BulkDataResponseDto uploadPackets(MultipartFile[] files) {
-		
-		BulkDataResponseDto packetResponseDto=new BulkDataResponseDto();
-		List<String> fileNames = new ArrayList<>();
-		
-	      Arrays.asList(files).stream().forEach(file -> {
-	    	 System.out.println(">>>file>>>"+file.getOriginalFilename());
-	    	   /* HttpHeaders headers = new HttpHeaders();
-	    	    // set `content-type` header
-	    	    headers.setContentType(MediaType.APPLICATION_JSON);
-	    	    // set `accept` header
-	    	   // headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-	    	    // create a map for post parameters
-	    	    Map<String, Object> map = new HashMap<>();
-	    	    map.put("file", file);
-	    	    HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);*/
-	    	 MultiValueMap<String, Object> formData = new LinkedMultiValueMap<String, Object>();
-	    	 
-	    	 try {
-				formData.add("file", new ByteArrayResource(file.getBytes()));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} // this is spring multipart file
-	    	 HttpHeaders headers = new HttpHeaders();
-	    	 headers.set("Content-Type", "multipart/form-data"); 
-	    	 headers.set("Accept", "text/plain"); 
-	    	 HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<MultiValueMap<String, Object>>(formData, headers);	    	
-	    	    // String result  = restTemplate.postForObject(uploadUri, requestEntity, String.class);
-	    	 ResponseEntity<String> response = this.restTemplate.exchange(packetRecieverApiUrl,HttpMethod.POST,requestEntity, String.class);
-	    	 System.out.println(">>>>>>>res.>>"+response+">>>>>>>"+response.getStatusCode());
-	         fileNames.add(file.getOriginalFilename());
-	      });
-	      System.out.println(">>>>>>>>>file names>>"+fileNames);
-		return packetResponseDto;
-	}
 
 /*	@Override
 	public BulkDataResponseDto deleteData(BulkDataRequestDto bulkDataRequestDto){
