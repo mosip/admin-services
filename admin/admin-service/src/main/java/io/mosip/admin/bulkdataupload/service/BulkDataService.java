@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.admin.bulkdataupload.dto.BulkDataGetExtnDto;
 import io.mosip.admin.bulkdataupload.dto.BulkDataGetResponseDto;
-import io.mosip.admin.bulkdataupload.dto.BulkDataRequestDto;
 import io.mosip.admin.bulkdataupload.dto.BulkDataResponseDto;
 import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateResponseDto;
 
@@ -61,6 +60,6 @@ public interface BulkDataService {
 	 * @param category
 	 * @return
 	 */
-	
-	public BulkDataResponseDto uploadPackets(MultipartFile[] files,String category);
+
+	public BulkDataResponseDto uploadPackets(MultipartFile[] files, String operation, String category);
 }

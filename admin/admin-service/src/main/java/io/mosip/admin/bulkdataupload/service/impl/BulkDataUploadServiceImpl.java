@@ -3,6 +3,9 @@ package io.mosip.admin.bulkdataupload.service.impl;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -71,7 +74,6 @@ import com.google.common.io.Files;
 import io.mosip.admin.bulkdataupload.constant.BulkUploadErrorCode;
 import io.mosip.admin.bulkdataupload.dto.BulkDataGetExtnDto;
 import io.mosip.admin.bulkdataupload.dto.BulkDataGetResponseDto;
-import io.mosip.admin.bulkdataupload.dto.BulkDataRequestDto;
 import io.mosip.admin.bulkdataupload.dto.BulkDataResponseDto;
 import io.mosip.admin.bulkdataupload.entity.BaseEntity;
 import io.mosip.admin.bulkdataupload.entity.BulkUploadTranscation;
@@ -116,6 +118,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     PlatformTransactionManager platformTransactionManager;
 
     private  Map<String,Class> entityMap=new HashMap<String, Class>();
+    
     
 	@Override
 	public BulkDataGetExtnDto getTrascationDetails(UUID transcationId) {
@@ -187,7 +190,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
                 JobExecution jobExecution = null;
                 
     			try {
-    				csvValidator(file.getOriginalFilename());
+    				csvValidator(file.getOriginalFilename(),file.getInputStream());
     				itemReader = itemReader(file,entity);
     				ItemWriter<List<Object>> itemWriter= itemWriter(repoBeanName);
     		        ItemProcessor itemProcessor=processor(operation);
@@ -209,7 +212,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     			}
             });
             
-            BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(numArr[0],operation,entity.getName(),category,failureMessage,status[0]);
+            BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(numArr[0],operation,entity.getClass().getName(),category,failureMessage,status[0]);
             bulkDataResponseDto=setResponseDetails(bulkUploadTranscation, tableName);
     		return bulkDataResponseDto;
     	}
@@ -221,7 +224,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     			bulkDataResponseDto=insertDataToCSVFile(tableName, operation, category, files);
     		}
     		else if(category.equalsIgnoreCase("packet")) {
-    			bulkDataResponseDto=uploadPackets(files,category);
+    			bulkDataResponseDto=uploadPackets(files,operation, category);
     		}
     		else {
     			throw new IllegalArgumentException("Enter correct category");
@@ -230,41 +233,10 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	
     	}
 
-    /*	@Override
-    	public BulkDataResponseDto deleteData(BulkDataRequestDto bulkDataRequestDto){
-    		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
-    		String tableName=bulkDataRequestDto.getTableName();
-    		String operation=bulkDataRequestDto.getOperation();
-    		mapper.init();
-    		Class<?> entity=mapper.getEntity(tableName);
-    		String repoBeanName=mapper.getRepo(entity);
-        	JobBuilderFactory jobBuilderFactory = new JobBuilderFactory(jobRepository);
-        	StepBuilderFactory stepBuilderFactory = new StepBuilderFactory(jobRepository, platformTransactionManager);
-            JobExecution jobExecution = null;
-            ItemReader<Object> itemReader;*/
-          	/*	try {
-          			csvValidator(bulkDataRequestDto.getCsvFile());
-          			itemReader = itemReader(bulkDataRequestDto.getCsvFile(),entity);
-          			ItemWriter<List<Object>> itemWriter= itemWriter(repoBeanName);
-          	        ItemProcessor itemProcessor=processor(operation);
-          	        JobParameters parameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters();
-          	        jobExecution = jobLauncher.run(job(jobBuilderFactory, stepBuilderFactory, itemReader,itemProcessor, itemWriter),parameters);
-          		} catch (IOException e) {
-          			throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
-          					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
-          		}
-          		catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
-          				| JobParametersInvalidException e) {
-          			throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
-          					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
-          		}    
-          		BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(jobExecution,operation,entity.getName());
-                bulkDataResponseDto=setResponseDetails(bulkUploadTranscation, tableName);*/
-        	//	return bulkDataResponseDto;
-    	//}*/
+ 
     	
     	@Override
-    	public BulkDataResponseDto uploadPackets(MultipartFile[] files, String category) {
+    	public BulkDataResponseDto uploadPackets(MultipartFile[] files,String operation, String category) {
     		
     		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
     		List<String> fileNames = new ArrayList<>();
@@ -312,7 +284,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     			}
     	         fileNames.add(file.getOriginalFilename());
     	      });
-    	      BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(numArr[0],null,null,category,null,msgArr[0]);
+    	      BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(numArr[0],operation,category,category,null,msgArr[0]);
     	      bulkDataResponseDto=setResponseDetails(bulkUploadTranscation, null);
     		return bulkDataResponseDto;
     	}
@@ -379,7 +351,6 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 		    DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
 	        lineTokenizer.setDelimiter(",");
 	        lineTokenizer.setStrict(false);
-	       // MultipartFile multi = null;
 	        FlatFileItemReader<Object> flatFileItemReader = new FlatFileItemReader<>();
 	        flatFileItemReader.setResource(new InputStreamResource(file.getInputStream()));
 	        flatFileItemReader.setName("CSV-Reader");
@@ -488,7 +459,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	    	bulkUploadTranscation.setCreatedDateTime(now);
 	    	bulkUploadTranscation.setEntityName(entityName);
 	    	bulkUploadTranscation.setUploadedBy(setCreateMetaData());
-	    	bulkUploadTranscation.setUpdatedDateTime(now);
+	    	bulkUploadTranscation.setUploadedDateTime(Timestamp.valueOf(now));
 	    	bulkUploadTranscation.setCategory(category);
 	    	//bulkUploadTranscation.setUploadDescription(failureMessage.toString());
 	    	bulkUploadTranscation.setUploadOperation(operation);
@@ -518,8 +489,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 			}
 			return contextUser;
 		}
-	    private void csvValidator(String csvFile) throws IOException {
-	    	String ext=Files.getFileExtension(csvFile);
+	    private void csvValidator(String csvFileName, InputStream csvFile) throws IOException {
+	    	String ext=Files.getFileExtension(csvFileName);
 	    	if(!ext.equalsIgnoreCase("csv")) {
 	    		throw new ValidationException("Supported format are only csv file");
 	    	}
@@ -527,7 +498,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	    	String line;
 	    	BufferedReader br;
 			try {
-				br = new BufferedReader(new FileReader(csvFile));
+				br = new BufferedReader(new InputStreamReader(csvFile));
 				while ((line = br.readLine()) != null) {
 			    	  String l = line.trim(); // Remove end of line. You can print line here.'
 			    	  

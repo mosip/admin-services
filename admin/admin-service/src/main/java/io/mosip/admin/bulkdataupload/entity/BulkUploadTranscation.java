@@ -1,6 +1,7 @@
 package io.mosip.admin.bulkdataupload.entity;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -43,7 +44,7 @@ public class BulkUploadTranscation extends BaseEntity{
 	@Column(name="status_code")
 	private String statusCode;
 	
-	@Column(name="category")
+	@Column(name="upload_category")
 	private String category;
 	
 	@Column(name="record_count")
