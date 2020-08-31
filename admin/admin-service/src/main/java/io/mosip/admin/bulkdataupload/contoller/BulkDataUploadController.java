@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.admin.bulkdataupload.dto.BulkDataGetExtnDto;
 import io.mosip.admin.bulkdataupload.dto.BulkDataGetResponseDto;
-import io.mosip.admin.bulkdataupload.dto.BulkDataRequestDto;
 import io.mosip.admin.bulkdataupload.dto.BulkDataResponseDto;
 import io.mosip.admin.bulkdataupload.service.BulkDataService;
 import io.mosip.admin.packetstatusupdater.constant.AuditConstant;
@@ -45,7 +44,7 @@ public class BulkDataUploadController {
 	private BulkDataService bulkDataService;
 	
 	@PostMapping(value = { "/bulkupload" }, consumes = { "multipart/form-data" })
-	@PreAuthorize("hasRole('MASTERDATA_ADMIN')")
+	//@PreAuthorize("hasRole('MASTERDATA_ADMIN')")
 	public ResponseWrapper<BulkDataResponseDto> uploadData(@RequestParam("tableName") String tableName,@RequestParam("operation") String operation,@RequestParam("category") String category,
 	         @RequestParam("files") MultipartFile[] files) {
 		auditUtil.auditRequest(AuditConstant.BULKDATA_INSERT_API_CALLED,AuditConstant.AUDIT_SYSTEM,AuditConstant.BULKDATA_INSERT_API_CALLED,"ADM-2002");
@@ -64,7 +63,7 @@ public class BulkDataUploadController {
 		return responseWrapper;
 	}
 	@GetMapping("/bulkupload/getAllTransactions")
-	@PreAuthorize("hasRole('MASTERDATA_ADMIN')")
+	//@PreAuthorize("hasRole('MASTERDATA_ADMIN')")
 	public ResponseWrapper<BulkDataGetResponseDto> getTranscationDetail() throws Exception {
 		ResponseWrapper<BulkDataGetResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(bulkDataService.getAllTrascationDetails());
