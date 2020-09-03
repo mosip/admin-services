@@ -1,7 +1,6 @@
 package io.mosip.admin.bulkdataupload.service.impl;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,7 +18,6 @@ import javax.validation.ValidationException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
@@ -28,7 +26,6 @@ import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -49,9 +46,11 @@ import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpEntity;
@@ -73,8 +72,8 @@ import com.google.common.io.Files;
 
 import io.mosip.admin.bulkdataupload.constant.BulkUploadErrorCode;
 import io.mosip.admin.bulkdataupload.dto.BulkDataGetExtnDto;
-import io.mosip.admin.bulkdataupload.dto.BulkDataGetResponseDto;
 import io.mosip.admin.bulkdataupload.dto.BulkDataResponseDto;
+import io.mosip.admin.bulkdataupload.dto.PageDto;
 import io.mosip.admin.bulkdataupload.entity.BaseEntity;
 import io.mosip.admin.bulkdataupload.entity.BulkUploadTranscation;
 import io.mosip.admin.bulkdataupload.repositories.BulkUploadTranscationRepository;
@@ -130,8 +129,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 			bulkDataGetExtnDto.setCount(bulkUploadTranscation.getRecordCount());
 			bulkDataGetExtnDto.setOperation(bulkUploadTranscation.getUploadOperation());
 			bulkDataGetExtnDto.setStatus(bulkUploadTranscation.getStatusCode());
+			bulkDataGetExtnDto.setCategory(bulkUploadTranscation.getCategory());
 			bulkDataGetExtnDto.setStatusDescription(bulkUploadTranscation.getUploadDescription());
-			bulkDataGetExtnDto.setTableName(bulkUploadTranscation.getEntityName());
+			bulkDataGetExtnDto.setEntityName(bulkUploadTranscation.getEntityName());
 			bulkDataGetExtnDto.setUploadedBy(bulkUploadTranscation.getUploadedBy());
 			bulkDataGetExtnDto.setTimeStamp(bulkUploadTranscation.getCreatedDateTime().toString());
 		} catch (Exception e) {
@@ -142,34 +142,39 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 		return  bulkDataGetExtnDto;
 	}
 
-	
+
 	@Override
-	public BulkDataGetResponseDto getAllTrascationDetails() {
-		BulkDataGetResponseDto bulkDataGetResponseDto=new BulkDataGetResponseDto();
-		BulkDataGetExtnDto bulkDataGetExtnDto=new BulkDataGetExtnDto();
+	public PageDto<BulkDataGetExtnDto> getAllTrascationDetails(int pageNumber, int pageSize, String sortBy, String category) {
+		Page<BulkUploadTranscation> pageData = null;
+		//BulkDataGetExtnDto bulkDataGetExtnDto=new BulkDataGetExtnDto();
 		List<BulkDataGetExtnDto> bulkDataGetExtnDtos=new ArrayList<BulkDataGetExtnDto>();
-		List<BulkUploadTranscation> bulkUploadTranscations=new ArrayList<BulkUploadTranscation>();
+		List<BulkDataGetExtnDto> bulkDataGetExtnDtos2=new ArrayList<BulkDataGetExtnDto>();
+		PageDto<BulkDataGetExtnDto> pageDto2=new PageDto<BulkDataGetExtnDto>();
 		try{
-			
-			bulkUploadTranscations=bulkTranscationRepo.findAll();
-			for(BulkUploadTranscation bulkUploadTranscation:bulkUploadTranscations){
-				
-				bulkDataGetExtnDto.setTranscationId(bulkUploadTranscation.getId());
-				bulkDataGetExtnDto.setCount(bulkUploadTranscation.getRecordCount());
-				bulkDataGetExtnDto.setOperation(bulkUploadTranscation.getUploadOperation());
-				bulkDataGetExtnDto.setStatus(bulkUploadTranscation.getStatusCode());
-				bulkDataGetExtnDto.setStatusDescription(bulkUploadTranscation.getUploadDescription());
-				bulkDataGetExtnDto.setTableName(bulkUploadTranscation.getEntityName());
-				bulkDataGetExtnDto.setUploadedBy(bulkUploadTranscation.getUploadedBy());
-				bulkDataGetExtnDto.setTimeStamp(bulkUploadTranscation.getCreatedDateTime().toString());
-				bulkDataGetExtnDtos.add(bulkDataGetExtnDto);	
+			pageData=bulkTranscationRepo.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString("asc"),sortBy)));
+			for(BulkUploadTranscation bulkUploadTranscation:pageData.getContent()){
+				BulkDataGetExtnDto bulkDataGetExtnDto=new BulkDataGetExtnDto();
+				if(bulkUploadTranscation.getCategory().equalsIgnoreCase(category)) {
+					bulkDataGetExtnDto.setTranscationId(bulkUploadTranscation.getId());
+					bulkDataGetExtnDto.setCount(bulkUploadTranscation.getRecordCount());
+					bulkDataGetExtnDto.setOperation(bulkUploadTranscation.getUploadOperation());
+					bulkDataGetExtnDto.setStatus(bulkUploadTranscation.getStatusCode());
+					bulkDataGetExtnDto.setStatusDescription(bulkUploadTranscation.getUploadDescription());
+					bulkDataGetExtnDto.setCategory(bulkUploadTranscation.getCategory());
+					bulkDataGetExtnDto.setEntityName(bulkUploadTranscation.getEntityName());
+					bulkDataGetExtnDto.setCategory(bulkUploadTranscation.getCategory());
+					bulkDataGetExtnDto.setUploadedBy(bulkUploadTranscation.getUploadedBy());
+					bulkDataGetExtnDto.setTimeStamp(bulkUploadTranscation.getCreatedDateTime().toString());
+					bulkDataGetExtnDtos2.add(bulkDataGetExtnDto);
+				}
 			}
 		}catch (Exception e) {
 			throw new DataNotFoundException(BulkUploadErrorCode.UNABLE_TO_RETRIEVE_TRANSCATION.getErrorCode(), 
 					BulkUploadErrorCode.UNABLE_TO_RETRIEVE_TRANSCATION.getErrorMessage(),e);
 		}
-		bulkDataGetResponseDto.setRecords(bulkDataGetExtnDtos);
-		return bulkDataGetResponseDto;
+		pageDto2 = new PageDto<BulkDataGetExtnDto>(pageData.getNumber(), pageData.getTotalPages(), pageData.getTotalElements(),
+				bulkDataGetExtnDtos2);
+		return pageDto2;
 	}
 
 
@@ -212,7 +217,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     			}
             });
             
-            BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(numArr[0],operation,entity.getClass().getName(),category,failureMessage,status[0]);
+            BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(numArr[0],operation,entity.getSimpleName(),category,failureMessage,status[0]);
             bulkDataResponseDto=setResponseDetails(bulkUploadTranscation, tableName);
     		return bulkDataResponseDto;
     	}
@@ -285,7 +290,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	         fileNames.add(file.getOriginalFilename());
     	      });
     	      BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(numArr[0],operation,category,category,null,msgArr[0]);
-    	      bulkDataResponseDto=setResponseDetails(bulkUploadTranscation, null);
+    	      bulkDataResponseDto=setResponseDetails(bulkUploadTranscation, category);
     		return bulkDataResponseDto;
     	}
         

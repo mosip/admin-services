@@ -13,7 +13,7 @@ public class BulkDataGetExtnDto {
 
     private UUID transcationId;
 	
-	private String tableName;
+	private String entityName;
 	
 	private String operation;
 	
