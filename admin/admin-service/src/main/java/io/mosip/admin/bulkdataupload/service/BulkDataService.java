@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import io.mosip.admin.bulkdataupload.dto.BulkDataGetExtnDto;
 import io.mosip.admin.bulkdataupload.dto.BulkDataGetResponseDto;
 import io.mosip.admin.bulkdataupload.dto.BulkDataResponseDto;
+import io.mosip.admin.bulkdataupload.dto.PageDto;
 import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateResponseDto;
 
 /**
@@ -52,7 +53,7 @@ public interface BulkDataService {
 	 * Get the all transcation Details
 	 * @return
 	 */
-	public BulkDataGetResponseDto getAllTrascationDetails();
+	public PageDto<BulkDataGetExtnDto> getAllTrascationDetails(int pageNumber, int pageSize, String sortBy, String category);
 	
 	/**
 	 *  upload the packet
