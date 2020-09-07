@@ -47,7 +47,7 @@ public interface BulkDataService {
 	 * @param transcationId
 	 * @return
 	 */
-	public BulkDataGetExtnDto getTrascationDetails(UUID transcationId);
+	public BulkDataGetExtnDto getTrascationDetails(String transcationId);
 	
 	/**
 	 * Get the all transcation Details

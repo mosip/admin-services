@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class BulkDataResponseDto {
 	
-	private UUID transcationId;
+	private String transcationId;
 	
 	private String tableName;
 	
@@ -22,6 +22,8 @@ public class BulkDataResponseDto {
 	private String category;
 	
 	private String status;
+	
+	private String statusDescription;
 	
 	private String uploadedBy;
 	

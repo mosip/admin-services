@@ -59,7 +59,7 @@ public class BulkDataUploadController {
 
 	@GetMapping("/bulkupload/transcation/{transcationId}")
 	//@PreAuthorize("hasRole('MASTERDATA_ADMIN')")
-	public ResponseWrapper<BulkDataGetExtnDto> getTranscationDetail(@PathVariable("transcationId") UUID transcationId) throws Exception {
+	public ResponseWrapper<BulkDataGetExtnDto> getTranscationDetail(@PathVariable("transcationId") String transcationId) throws Exception {
 		ResponseWrapper<BulkDataGetExtnDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(bulkDataService.getTrascationDetails(transcationId));
 		return responseWrapper;

@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class BulkDataGetExtnDto {
 
-    private UUID transcationId;
+    private String transcationId;
 	
 	private String entityName;
 	
