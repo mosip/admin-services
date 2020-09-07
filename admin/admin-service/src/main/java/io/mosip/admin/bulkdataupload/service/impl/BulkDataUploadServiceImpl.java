@@ -124,14 +124,14 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 		
 		BulkDataGetExtnDto bulkDataGetExtnDto=new BulkDataGetExtnDto();
 		try {
-			BulkUploadTranscation bulkUploadTranscation=bulkTranscationRepo.getOne(transcationId);
+			BulkUploadTranscation bulkUploadTranscation=bulkTranscationRepo.findTransactionById(transcationId);
 			bulkDataGetExtnDto.setTranscationId(bulkUploadTranscation.getId());
 			bulkDataGetExtnDto.setCount(bulkUploadTranscation.getRecordCount());
 			bulkDataGetExtnDto.setOperation(bulkUploadTranscation.getUploadOperation());
 			bulkDataGetExtnDto.setStatus(bulkUploadTranscation.getStatusCode());
-			bulkDataGetExtnDto.setCategory(bulkUploadTranscation.getCategory());
 			bulkDataGetExtnDto.setStatusDescription(bulkUploadTranscation.getUploadDescription());
 			bulkDataGetExtnDto.setEntityName(bulkUploadTranscation.getEntityName());
+			bulkDataGetExtnDto.setCategory(bulkUploadTranscation.getCategory());
 			bulkDataGetExtnDto.setUploadedBy(bulkUploadTranscation.getUploadedBy());
 			bulkDataGetExtnDto.setTimeStamp(bulkUploadTranscation.getCreatedDateTime().toString());
 		} catch (Exception e) {
@@ -441,7 +441,6 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	    @SuppressWarnings("unchecked")
 		public ItemWriter<List<Object>> itemWriter(String repoBeanName){
 	        RepositoryListItemWriter<List<Object>> writer = new RepositoryListItemWriter<>();
-	        //System.out.println(">>>>>>>>>>get c"+genericRepo.getRepository(Test.class));
 	        writer.setRepository((CrudRepository<?, ?>) applicationContext.getBean(repoBeanName));
 	        writer.setMethodName("save");
 	        try {
