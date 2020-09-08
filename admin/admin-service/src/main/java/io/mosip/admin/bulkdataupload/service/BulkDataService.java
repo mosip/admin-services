@@ -53,7 +53,7 @@ public interface BulkDataService {
 	 * Get the all transcation Details
 	 * @return
 	 */
-	public PageDto<BulkDataGetExtnDto> getAllTrascationDetails(int pageNumber, int pageSize, String sortBy, String category);
+	public PageDto<BulkDataGetExtnDto> getAllTrascationDetails(int pageNumber, int pageSize, String sortBy,String orderBy, String category);
 	
 	/**
 	 *  upload the packet
