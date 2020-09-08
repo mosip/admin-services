@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import javax.validation.ValidationException;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.batch.core.Job;
@@ -49,6 +50,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.repository.CrudRepository;
@@ -120,7 +122,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     
     
 	@Override
-	public BulkDataGetExtnDto getTrascationDetails(UUID transcationId) {
+	public BulkDataGetExtnDto getTrascationDetails(String transcationId) {
 		
 		BulkDataGetExtnDto bulkDataGetExtnDto=new BulkDataGetExtnDto();
 		try {
@@ -146,15 +148,15 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	@Override
 	public PageDto<BulkDataGetExtnDto> getAllTrascationDetails(int pageNumber, int pageSize, String sortBy, String category) {
 		Page<BulkUploadTranscation> pageData = null;
-		//BulkDataGetExtnDto bulkDataGetExtnDto=new BulkDataGetExtnDto();
 		List<BulkDataGetExtnDto> bulkDataGetExtnDtos=new ArrayList<BulkDataGetExtnDto>();
 		List<BulkDataGetExtnDto> bulkDataGetExtnDtos2=new ArrayList<BulkDataGetExtnDto>();
 		PageDto<BulkDataGetExtnDto> pageDto2=new PageDto<BulkDataGetExtnDto>();
 		try{
-			pageData=bulkTranscationRepo.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString("asc"),sortBy)));
+			Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString("asc"),sortBy));
+			pageData=bulkTranscationRepo.findByCategory(category,pageable);
 			for(BulkUploadTranscation bulkUploadTranscation:pageData.getContent()){
 				BulkDataGetExtnDto bulkDataGetExtnDto=new BulkDataGetExtnDto();
-				if(bulkUploadTranscation.getCategory().equalsIgnoreCase(category)) {
+				
 					bulkDataGetExtnDto.setTranscationId(bulkUploadTranscation.getId());
 					bulkDataGetExtnDto.setCount(bulkUploadTranscation.getRecordCount());
 					bulkDataGetExtnDto.setOperation(bulkUploadTranscation.getUploadOperation());
@@ -166,7 +168,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 					bulkDataGetExtnDto.setUploadedBy(bulkUploadTranscation.getUploadedBy());
 					bulkDataGetExtnDto.setTimeStamp(bulkUploadTranscation.getCreatedDateTime().toString());
 					bulkDataGetExtnDtos2.add(bulkDataGetExtnDto);
-				}
+				
 			}
 		}catch (Exception e) {
 			throw new DataNotFoundException(BulkUploadErrorCode.UNABLE_TO_RETRIEVE_TRANSCATION.getErrorCode(), 
@@ -187,7 +189,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     		String repoBeanName=mapper.getRepo(entity);
         	JobBuilderFactory jobBuilderFactory = new JobBuilderFactory(jobRepository);
         	StepBuilderFactory stepBuilderFactory = new StepBuilderFactory(jobRepository, platformTransactionManager);
-            List<String> failureMessage = null;
+        	List<String> failureMessage = new ArrayList<String>();
             int[] numArr = {0};
             String[] status= {"PROCESS"};
             Arrays.asList(files).stream().forEach(file -> {
@@ -203,9 +205,11 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     		        jobExecution = jobLauncher.run(job(jobBuilderFactory, stepBuilderFactory, itemReader,itemProcessor, itemWriter),parameters);
     				JobInstance jobInstence=new JobInstance(jobExecution.getJobId(), "ETL-file-load");
     				StepExecution stepExecution=jobRepository.getLastStepExecution(jobInstence, "ETL-file-load");
-    				//failureMessage.add(jobExecution.getAllFailureExceptions().toString());
     				status[0]=jobExecution.getStatus().toString();
     				numArr[0]+=stepExecution.getReadCount();
+    				if(status[0].equalsIgnoreCase("FAILED")) {
+    					failureMessage.add(stepExecution.getExitStatus().getExitDescription());
+    				}
     			}catch (IOException e) {
     				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
     	  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
@@ -246,9 +250,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
     		List<String> fileNames = new ArrayList<>();
     		int[] numArr = {0};
+    		List<String> failureMessage = new ArrayList<String>();
     		String[] msgArr= {"FAILED"};
-    	      Arrays.asList(files).stream().forEach(file -> {
-    	    	 	
+    	    Arrays.asList(files).stream().forEach(file -> {
     	    	 HttpHeaders headers = new HttpHeaders();
     	         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
     	         MultiValueMap<String, String> fileMap = new LinkedMultiValueMap<>();
@@ -276,6 +280,11 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	             if(!josnObject.get("response").equals(null)) {
     	            	 numArr[0]++;
     	            	 msgArr[0]="Success";
+    	             }else {
+    	            	 String str=josnObject.get("errors").toString();
+    	            	 JSONArray jsonArray=new JSONArray(str);
+    	            	 JSONObject josnObject1=new JSONObject(jsonArray.get(0).toString());
+    	            	 failureMessage.add(josnObject1.get("message").toString());
     	             }
     	         } catch (HttpClientErrorException e) {
     	        	 throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
@@ -289,7 +298,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     			}
     	         fileNames.add(file.getOriginalFilename());
     	      });
-    	      BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(numArr[0],operation,category,category,null,msgArr[0]);
+    	      BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(numArr[0],operation,category,category,failureMessage,msgArr[0]);
     	      bulkDataResponseDto=setResponseDetails(bulkUploadTranscation, category);
     		return bulkDataResponseDto;
     	}
@@ -453,8 +462,6 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	    
 	    private BulkUploadTranscation saveTranscationDetails(int count,String operation,String entityName,String category,List<String> failureMessage, String status) {
 	    	BulkUploadTranscation bulkUploadTranscation=new BulkUploadTranscation();
-	    	//JobInstance jobInstence=new JobInstance(jobExecution.getJobId(), "ETL-file-load");
-			//StepExecution stepExecution=jobRepository.getLastStepExecution(jobInstence, "ETL-file-load");
 	    	LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
 	    	bulkUploadTranscation.setIsActive(true);
 	    	bulkUploadTranscation.setLangCode("eng");
@@ -465,7 +472,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	    	bulkUploadTranscation.setUploadedBy(setCreateMetaData());
 	    	bulkUploadTranscation.setUploadedDateTime(Timestamp.valueOf(now));
 	    	bulkUploadTranscation.setCategory(category);
-	    	//bulkUploadTranscation.setUploadDescription(failureMessage.toString());
+	    	if(!failureMessage.isEmpty()) {
+	    		bulkUploadTranscation.setUploadDescription(failureMessage.toString());
+	    	}
 	    	bulkUploadTranscation.setUploadOperation(operation);
 	    	bulkUploadTranscation.setRecordCount(count);
 	    	bulkTranscationRepo.save(bulkUploadTranscation);
@@ -480,6 +489,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	    	bulkDataResponseDto.setStatus(bulkUploadTranscation.getStatusCode());
 	    	bulkDataResponseDto.setSuccessCount(bulkUploadTranscation.getRecordCount());
 	    	bulkDataResponseDto.setCategory(bulkUploadTranscation.getCategory());
+	    	bulkDataResponseDto.setStatusDescription(bulkUploadTranscation.getUploadDescription());
 	    	bulkDataResponseDto.setTableName(tableName);
 	    	bulkDataResponseDto.setTimeStamp(bulkUploadTranscation.getCreatedDateTime().toString());
 	    	bulkDataResponseDto.setUploadedBy(bulkUploadTranscation.getUploadedBy());

@@ -32,8 +32,8 @@ public class BulkUploadTranscation extends BaseEntity{
 	@Id
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
-	@Column(name = "id", columnDefinition = "VARCHAR(36)")
-	private UUID id;
+	@Column(name = "id")
+	private String id;
 	
 	@Column(name="entity_name")
 	private String entityName;
