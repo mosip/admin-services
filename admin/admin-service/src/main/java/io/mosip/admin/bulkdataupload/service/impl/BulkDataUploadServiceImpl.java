@@ -146,13 +146,13 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 
 
 	@Override
-	public PageDto<BulkDataGetExtnDto> getAllTrascationDetails(int pageNumber, int pageSize, String sortBy, String category) {
+	public PageDto<BulkDataGetExtnDto> getAllTrascationDetails(int pageNumber, int pageSize, String sortBy,String orderBy, String category) {
 		Page<BulkUploadTranscation> pageData = null;
 		List<BulkDataGetExtnDto> bulkDataGetExtnDtos=new ArrayList<BulkDataGetExtnDto>();
 		List<BulkDataGetExtnDto> bulkDataGetExtnDtos2=new ArrayList<BulkDataGetExtnDto>();
 		PageDto<BulkDataGetExtnDto> pageDto2=new PageDto<BulkDataGetExtnDto>();
 		try{
-			Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString("asc"),sortBy));
+			Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy),sortBy));
 			pageData=bulkTranscationRepo.findByCategory(category,pageable);
 			for(BulkUploadTranscation bulkUploadTranscation:pageData.getContent()){
 				BulkDataGetExtnDto bulkDataGetExtnDto=new BulkDataGetExtnDto();
