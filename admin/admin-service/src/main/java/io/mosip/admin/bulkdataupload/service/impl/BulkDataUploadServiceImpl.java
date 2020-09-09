@@ -190,6 +190,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
         	JobBuilderFactory jobBuilderFactory = new JobBuilderFactory(jobRepository);
         	StepBuilderFactory stepBuilderFactory = new StepBuilderFactory(jobRepository, platformTransactionManager);
         	List<String> failureMessage = new ArrayList<String>();
+        	//Map<String,String> failureMessage=new HashMap<String, String>();
             int[] numArr = {0};
             String[] status= {"PROCESS"};
             Arrays.asList(files).stream().forEach(file -> {
@@ -208,7 +209,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     				status[0]=jobExecution.getStatus().toString();
     				numArr[0]+=stepExecution.getReadCount();
     				if(status[0].equalsIgnoreCase("FAILED")) {
-    					failureMessage.add(stepExecution.getExitStatus().getExitDescription());
+    					//failureMessage.put(file.getOriginalFilename(), stepExecution.getExitStatus().getExitDescription());
+    					failureMessage.add("{csvFileName :"+file.getOriginalFilename()+", message :"+stepExecution.getExitStatus().getExitDescription()+"}");
     				}
     			}catch (IOException e) {
     				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
@@ -250,6 +252,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
     		List<String> fileNames = new ArrayList<>();
     		int[] numArr = {0};
+    		
+    		//Map<String,String> failureMessage=new HashMap<String, String>();
     		List<String> failureMessage = new ArrayList<String>();
     		String[] msgArr= {"FAILED"};
     	    Arrays.asList(files).stream().forEach(file -> {
@@ -284,7 +288,10 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	            	 String str=josnObject.get("errors").toString();
     	            	 JSONArray jsonArray=new JSONArray(str);
     	            	 JSONObject josnObject1=new JSONObject(jsonArray.get(0).toString());
-    	            	 failureMessage.add(josnObject1.get("message").toString());
+    	            	 
+    	            	 failureMessage.add("{packetId :"+file.getOriginalFilename()+", message :"+josnObject1.get("message").toString()+"}");
+    	            	// failureMessage.put(file.getOriginalFilename(), josnObject1.get("message").toString());
+    	           
     	             }
     	         } catch (HttpClientErrorException e) {
     	        	 throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
