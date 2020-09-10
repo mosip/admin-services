@@ -210,7 +210,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     				numArr[0]+=stepExecution.getReadCount();
     				if(status[0].equalsIgnoreCase("FAILED")) {
     					//failureMessage.put(file.getOriginalFilename(), stepExecution.getExitStatus().getExitDescription());
-    					failureMessage.add("{csvFileName :"+file.getOriginalFilename()+", message :"+stepExecution.getExitStatus().getExitDescription()+"}");
+    					failureMessage.add("{'csvFileName': '"+file.getOriginalFilename()+"', 'message': '"+stepExecution.getExitStatus().getExitDescription()+"'}");
     				}
     			}catch (IOException e) {
     				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
@@ -289,7 +289,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	            	 JSONArray jsonArray=new JSONArray(str);
     	            	 JSONObject josnObject1=new JSONObject(jsonArray.get(0).toString());
     	            	 
-    	            	 failureMessage.add("{packetId :"+file.getOriginalFilename()+", message :"+josnObject1.get("message").toString()+"}");
+    	            	 failureMessage.add("{'packetId': '"+file.getOriginalFilename()+"', 'message': '"+josnObject1.get("message").toString()+"'}");
     	            	// failureMessage.put(file.getOriginalFilename(), josnObject1.get("message").toString());
     	           
     	             }
