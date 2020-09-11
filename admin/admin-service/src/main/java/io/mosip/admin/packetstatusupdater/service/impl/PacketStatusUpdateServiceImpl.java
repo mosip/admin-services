@@ -160,11 +160,11 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 		auditUtil.auditRequest(String.format(AuditConstant.PKT_STATUS_UPD_FAILURE, "PacketStatusUpdate"),
 				AuditConstant.AUDIT_SYSTEM,
 				String.format(AuditConstant.FAILURE_DESC,
-						PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
-						PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorMessage()),
+						PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorCode(),
+						PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorMessage()),
 				"ADM-2003");
-		throw new MasterDataServiceException(PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
-				PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorMessage(), ex);
+		throw new MasterDataServiceException(PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorCode(),
+				PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorMessage(), ex);
 
 	}
 

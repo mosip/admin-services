@@ -11,6 +11,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -20,7 +21,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.admin.packetstatusupdater.constant.RequestErrorCode;
+import io.mosip.kernel.auth.adapter.constant.AuthAdapterErrorCode;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
@@ -58,15 +61,17 @@ public class ApiExceptionHandler {
 		return getErrorResponseEntity(e, HttpStatus.OK, httpServletRequest);
 	}
 
-	
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> onAccessDeniedException(
+			final HttpServletRequest httpServletRequest, final AccessDeniedException e) throws IOException {
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+		ServiceError error = new ServiceError(AuthAdapterErrorCode.FORBIDDEN.getErrorCode(),
+				AuthAdapterErrorCode.FORBIDDEN.getErrorMessage());
+		errorResponse.getErrors().add(error);
+		ExceptionUtils.logRootCause(e);
+		return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+	}
 
-	
-	
-	
-	
-	
-	
-	
 
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(
