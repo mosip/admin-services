@@ -87,6 +87,7 @@ public class Mapper {
     	loadRepo();
     }
     private void loadRepo() {
+    	repositoryMap.put(Gender.class, "genderTypeRepository");
     	repositoryMap.put( ApplicantValidDocument.class, "applicantValidDocumentRepository");
 		repositoryMap.put(Application.class, "applicationRepository");
 		repositoryMap.put(BiometricAttribute.class, "biometricAttributeRepository");
