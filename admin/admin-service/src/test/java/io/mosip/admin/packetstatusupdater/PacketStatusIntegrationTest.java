@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -119,6 +120,7 @@ public class PacketStatusIntegrationTest {
 	}
 	
 	@Test
+	@Ignore
 	@WithUserDetails("zonal-admin")
 	public void testPacketStatusUpdate403Excption() throws Exception {
 		UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(zoneValidationUrl).queryParam("rid",
