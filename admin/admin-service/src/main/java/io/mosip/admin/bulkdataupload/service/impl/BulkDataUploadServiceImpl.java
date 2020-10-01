@@ -5,14 +5,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.validation.ValidationException;
 
@@ -47,6 +48,9 @@ import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -366,6 +370,26 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 		         .start(step)
 		         .build();
 		}
+
+		public ConversionService testConversionService() {
+			DefaultConversionService testConversionService = new DefaultConversionService();
+			DefaultConversionService.addDefaultConverters(testConversionService);
+			testConversionService.addConverter(new Converter<String, LocalDateTime>() {
+				@Override
+				public LocalDateTime convert(String text) {
+					return LocalDateTime.parse(text, DateTimeFormatter.ISO_DATE_TIME);
+				}
+			});
+			testConversionService.addConverter(new Converter<String, LocalDate>() {
+
+				@Override
+				public LocalDate convert(String text) {
+					return LocalDate.parse(text, DateTimeFormatter.ISO_DATE);
+				}
+
+			});
+			return testConversionService;
+		}
 	 @StepScope
 	 private FlatFileItemReader<Object> itemReader(MultipartFile file, Class<?> clazz) throws IOException {
 		 
@@ -384,6 +408,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	        });
 	        BeanWrapperFieldSetMapper<Object> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
 	        fieldSetMapper.setTargetType(clazz);
+			fieldSetMapper.setConversionService(testConversionService());
 	        DefaultLineMapper<Object> defaultLineMapper = new DefaultLineMapper<>();
 	        defaultLineMapper.setLineTokenizer(lineTokenizer);
 	        defaultLineMapper.setFieldSetMapper(fieldSetMapper);
