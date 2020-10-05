@@ -1,11 +1,14 @@
 package io.mosip.kernel.syncdata.entity;
 
 import java.io.Serializable;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -14,26 +17,25 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * @author Dharmesh Khandelwal
+ * @author Sidhant Agarwal
  * @since 1.0.0
- *
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user_detail", schema = "master")
-public class UserDetails extends BaseEntity implements Serializable {
+@IdClass(UserDetailHistoryPk.class)
+@Table(name = "user_detail_h", schema = "master")
+public class UserDetailsHistory extends BaseEntity implements Serializable {
 
-	/**
-	 * Serializable version ID.
-	 */
-	private static final long serialVersionUID = -8541947587557590379L;
+	private static final long serialVersionUID = -8541941111557590379L;
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false, length = 36)
+	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
+			@AttributeOverride(name = "effDTimes", column = @Column(name = "eff_dtimes", nullable = false)) })
 	private String id;
+	private LocalDateTime effDTimes;
 
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
@@ -54,7 +56,7 @@ public class UserDetails extends BaseEntity implements Serializable {
 	private String statusCode;
 
 	@Column(name = "last_login_dtimes")
-	private LocalTime lastLoginDateTime;
+	private LocalDateTime lastLoginDateTime;
 
 	@Column(name = "last_login_method", length = 64)
 	private String lastLoginMethod;
