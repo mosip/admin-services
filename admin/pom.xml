@@ -165,6 +165,11 @@
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>${jcl.to.slf4j.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-logger-logback</artifactId>
+			<version>1.1.2-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	
 	<profiles>
