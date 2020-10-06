@@ -28,12 +28,6 @@
 			<artifactId>lombok</artifactId>
 			<version>${lombok.version}</version>
 			<scope>compile</scope>
-		</dependency>	
-		
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-logger-logback</artifactId>
-			<version>1.0.6</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
