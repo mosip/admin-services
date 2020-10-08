@@ -1,17 +1,18 @@
 package io.mosip.admin.config;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
+import java.util.List;
+
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.adapter.AbstractMethodInvokingDelegator;
 import org.springframework.batch.item.adapter.DynamicMethodInvocationException;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.MethodInvoker;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
-import java.util.List;
+import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 /**
  * This class will write the information in database
  * @author dhanendra
@@ -20,7 +21,7 @@ import java.util.List;
  */
 public class RepositoryListItemWriter<T> implements ItemWriter<T>, InitializingBean {
 
-    private CrudRepository<?, ?> repository;
+	private BaseRepository<?, ?> repository;
     private String methodName;
 
     public RepositoryListItemWriter() {
@@ -30,7 +31,7 @@ public class RepositoryListItemWriter<T> implements ItemWriter<T>, InitializingB
         this.methodName = methodName;
     }
 
-    public void setRepository(CrudRepository<?, ?> crudRepository) {
+	public void setRepository(BaseRepository<?, ?> crudRepository) {
         this.repository = crudRepository;
     }
 

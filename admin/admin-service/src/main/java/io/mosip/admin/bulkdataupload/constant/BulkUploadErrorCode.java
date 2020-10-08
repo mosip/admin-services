@@ -7,8 +7,9 @@ package io.mosip.admin.bulkdataupload.constant;
 public enum BulkUploadErrorCode {
 
 	UNABLE_TO_RETRIEVE_TRANSCATION("ADMN-BLK-TRNSCTNS-001","Unable ro retrieve the transactions"),
-	BULK_OPERATION_ERROR("ADMN-BLK-001","Any error occured during the bulk operation. If the category is masterdata, list operations are listed. If the category is packet, list of failed packet informations are listed");
-	
+	BULK_OPERATION_ERROR("ADMN-BLK-001",
+			"Any error occured during the bulk operation. If the category is masterdata, list operations are listed. If the category is packet, list of failed packet informations are listed"),
+	BULK_UPDATE_OPERATION_ERROR("ADM-BLK-001", "Data is not exist in db");
 	private final String errorCode;
 	private final String errorMessage;
 
