@@ -197,6 +197,10 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	@Override
     	public  BulkDataResponseDto insertDataToCSVFile(String tableName, String operation, String category,MultipartFile[] files)  {
     		
+			if (tableName.equals("") && operation.equals("")) {
+				throw new MasterDataServiceException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
+						BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage());
+			}
     		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
     		mapper.init();
     		Class<?> entity=mapper.getEntity(tableName);
@@ -257,7 +261,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     			bulkDataResponseDto=uploadPackets(files,operation, category);
     		}
     		else {
-    			throw new IllegalArgumentException("Enter correct category");
+				throw new MasterDataServiceException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
+						BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage());
     		}
             return bulkDataResponseDto;
     	
