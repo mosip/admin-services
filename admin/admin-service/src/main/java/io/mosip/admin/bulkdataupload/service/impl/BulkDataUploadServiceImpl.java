@@ -223,9 +223,13 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     				StepExecution stepExecution=jobRepository.getLastStepExecution(jobInstence, "ETL-file-load");
     				status[0]=jobExecution.getStatus().toString();
     				numArr[0]+=stepExecution.getReadCount();
-    				if(status[0].equalsIgnoreCase("FAILED")) {
-    					//failureMessage.put(file.getOriginalFilename(), stepExecution.getExitStatus().getExitDescription());
-						failureMessage.add(stepExecution.getExitStatus().getExitDescription());
+					if (status[0].equalsIgnoreCase("FAILED")) {
+						String msg = stepExecution.getExitStatus().getExitDescription().toString();
+						if (msg.length() >= 256) {
+							failureMessage.add(msg.substring(0, 250));
+						} else {
+							failureMessage.add(msg);
+						}
     				}
     			}catch (IOException e) {
     				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
@@ -326,40 +330,6 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	}
         
 
-
-
-/*	@Override
-	public BulkDataResponseDto deleteData(BulkDataRequestDto bulkDataRequestDto){
-		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
-		String tableName=bulkDataRequestDto.getTableName();
-		String operation=bulkDataRequestDto.getOperation();
-		mapper.init();
-		Class<?> entity=mapper.getEntity(tableName);
-		String repoBeanName=mapper.getRepo(entity);
-    	JobBuilderFactory jobBuilderFactory = new JobBuilderFactory(jobRepository);
-    	StepBuilderFactory stepBuilderFactory = new StepBuilderFactory(jobRepository, platformTransactionManager);
-        JobExecution jobExecution = null;
-        ItemReader<Object> itemReader;
-      		try {
-      			csvValidator(bulkDataRequestDto.getCsvFile());
-      			itemReader = itemReader(bulkDataRequestDto.getCsvFile(),entity);
-      			ItemWriter<List<Object>> itemWriter= itemWriter(repoBeanName);
-      	        ItemProcessor itemProcessor=processor(operation);
-      	        JobParameters parameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters();
-      	        jobExecution = jobLauncher.run(job(jobBuilderFactory, stepBuilderFactory, itemReader,itemProcessor, itemWriter),parameters);
-      		} catch (IOException e) {
-      			throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
-      					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
-      		}
-      		catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
-      				| JobParametersInvalidException e) {
-      			throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
-      					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
-      		}    
-      		BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(jobExecution,operation,entity.getName());
-            bulkDataResponseDto=setResponseDetails(bulkUploadTranscation, tableName);
-    		return bulkDataResponseDto;
-	}*/
 	public Job job(JobBuilderFactory jobBuilderFactory,
             StepBuilderFactory stepBuilderFactory,
             ItemReader<Object> itemReader,
@@ -563,7 +533,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	    	bulkUploadTranscation.setUploadedDateTime(Timestamp.valueOf(now));
 	    	bulkUploadTranscation.setCategory(category);
 	    	if(!failureMessage.isEmpty()) {
-				bulkUploadTranscation.setUploadDescription(failureMessage.toString().substring(0, 250));
+				bulkUploadTranscation.setUploadDescription(failureMessage.toString());
 	    	}
 	    	bulkUploadTranscation.setUploadOperation(operation);
 	    	bulkUploadTranscation.setRecordCount(count);
