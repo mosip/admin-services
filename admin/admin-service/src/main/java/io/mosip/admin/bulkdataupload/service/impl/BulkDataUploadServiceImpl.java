@@ -197,7 +197,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	@Override
     	public  BulkDataResponseDto insertDataToCSVFile(String tableName, String operation, String category,MultipartFile[] files)  {
     		
-			if (tableName.isBlank() && operation.isBlank()) {
+			if (tableName.isBlank() || operation.isBlank()) {
 				throw new MasterDataServiceException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
 						BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage());
 			}
