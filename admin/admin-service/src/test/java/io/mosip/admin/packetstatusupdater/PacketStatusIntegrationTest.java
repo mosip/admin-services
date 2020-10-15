@@ -181,7 +181,7 @@ public class PacketStatusIntegrationTest {
 		
 		
 		mockMvc.perform(
-				get("/packetstatusupdate").param("rid","1000012232223243224234")).andExpect(status().is5xxServerError());
+				get("/packetstatusupdate").param("rid", "1000012232223243224234")).andExpect(status().isOk());
 		
 		
 	}

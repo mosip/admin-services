@@ -15,6 +15,7 @@ import io.mosip.admin.bulkdataupload.dto.PageDto;
 import io.mosip.admin.bulkdataupload.service.BulkDataService;
 import io.mosip.admin.packetstatusupdater.constant.AuditConstant;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.swagger.annotations.ApiParam;
 
@@ -38,18 +39,22 @@ public class BulkDataUploadController {
 	
 	@PostMapping(value = { "/bulkupload" }, consumes = { "multipart/form-data" })
 	@PreAuthorize("hasRole('MASTERDATA_ADMIN')")
+	@ResponseFilter
 	public ResponseWrapper<BulkDataResponseDto> uploadData(@RequestParam("tableName") String tableName,@RequestParam("operation") String operation,@RequestParam("category") String category,
 	         @RequestParam("files") MultipartFile[] files) {
-		auditUtil.auditRequest(AuditConstant.BULKDATA_INSERT_API_CALLED,AuditConstant.AUDIT_SYSTEM,AuditConstant.BULKDATA_INSERT_API_CALLED,"ADM-2002");
+		auditUtil.auditRequest(AuditConstant.BULKUPLOAD_API_CALLED, AuditConstant.AUDIT_SYSTEM,
+				AuditConstant.BULKUPLOAD_API_CALLED, "ADM-2004");
 		ResponseWrapper<BulkDataResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(bulkDataService.bulkDataOperation(tableName,operation,category,files));
-		auditUtil.auditRequest(AuditConstant.BULKDATA_INSERT_SUCCESS,AuditConstant.AUDIT_SYSTEM,AuditConstant.BULKDATA_INSERT_API_CALLED,"ADM-2003");
+		auditUtil.auditRequest(AuditConstant.BULKUPLOAD_SUCCESS, AuditConstant.AUDIT_SYSTEM,
+				AuditConstant.BULKUPLOAD_API_CALLED, "ADM-2005");
 		return responseWrapper;
 		
 	}
 
 	@GetMapping("/bulkupload/transcation/{transcationId}")
 	@PreAuthorize("hasRole('MASTERDATA_ADMIN')")
+	@ResponseFilter
 	public ResponseWrapper<BulkDataGetExtnDto> getTranscationDetail(@PathVariable("transcationId") String transcationId) throws Exception {
 		ResponseWrapper<BulkDataGetExtnDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(bulkDataService.getTrascationDetails(transcationId));
@@ -57,6 +62,7 @@ public class BulkDataUploadController {
 	}
 	@GetMapping("/bulkupload/getAllTransactions")
 	@PreAuthorize("hasRole('MASTERDATA_ADMIN')")
+	@ResponseFilter
 	public ResponseWrapper<PageDto<BulkDataGetExtnDto>> getTranscationDetail(
 			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page no for the requested data", defaultValue = "0") int pageNumber,
 			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size for the requested data", defaultValue = "10") int pageSize,

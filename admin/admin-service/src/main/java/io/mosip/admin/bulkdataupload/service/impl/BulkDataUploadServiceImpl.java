@@ -89,8 +89,10 @@ import io.mosip.admin.bulkdataupload.repositories.BulkUploadTranscationRepositor
 import io.mosip.admin.bulkdataupload.service.BulkDataService;
 import io.mosip.admin.config.Mapper;
 import io.mosip.admin.config.RepositoryListItemWriter;
+import io.mosip.admin.packetstatusupdater.constant.AuditConstant;
 import io.mosip.admin.packetstatusupdater.exception.DataNotFoundException;
 import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
+import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 /**
@@ -113,6 +115,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     
     @Autowired
     Mapper mapper;
+
+	@Autowired
+	AuditUtil auditUtil;
 
 	@Autowired
 	EntityManager em;
@@ -236,11 +241,23 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 						}
     				}
     			}catch (IOException e) {
+					auditUtil.auditRequest(String.format(AuditConstant.BULKUPLOAD_FAILURE, "bulkupload"),
+							AuditConstant.AUDIT_SYSTEM,
+							String.format(AuditConstant.FAILURE_DESC,
+									BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
+									BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage()),
+							"ADM-2006");
     				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
     	  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
     			}
     			catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
     					| JobParametersInvalidException e) {
+					auditUtil.auditRequest(String.format(AuditConstant.BULKUPLOAD_FAILURE, "bulkupload"),
+							AuditConstant.AUDIT_SYSTEM,
+							String.format(AuditConstant.FAILURE_DESC,
+									BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
+									BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage()),
+							"ADM-2006");
     				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
     	  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
     			}
@@ -318,12 +335,30 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	           
     	             }
     	         } catch (HttpClientErrorException e) {
+					auditUtil.auditRequest(String.format(AuditConstant.BULKUPLOAD_FAILURE, "bulkupload"),
+							AuditConstant.AUDIT_SYSTEM,
+							String.format(AuditConstant.FAILURE_DESC,
+									BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
+									BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage()),
+							"ADM-2006");
     	        	 throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
     		  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
     	         } catch (IOException e) {
+					auditUtil.auditRequest(String.format(AuditConstant.BULKUPLOAD_FAILURE, "bulkupload"),
+							AuditConstant.AUDIT_SYSTEM,
+							String.format(AuditConstant.FAILURE_DESC,
+									BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
+									BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage()),
+							"ADM-2006");
     	        	 throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
     		  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
     			} catch (JSONException e) {
+					auditUtil.auditRequest(String.format(AuditConstant.BULKUPLOAD_FAILURE, "bulkupload"),
+							AuditConstant.AUDIT_SYSTEM,
+							String.format(AuditConstant.FAILURE_DESC,
+									BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
+									BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage()),
+							"ADM-2006");
     				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
     	  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
     			}
