@@ -91,6 +91,7 @@ import io.mosip.admin.config.Mapper;
 import io.mosip.admin.config.RepositoryListItemWriter;
 import io.mosip.admin.packetstatusupdater.exception.DataNotFoundException;
 import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
+import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 /**
@@ -198,7 +199,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	public  BulkDataResponseDto insertDataToCSVFile(String tableName, String operation, String category,MultipartFile[] files)  {
     		
 			if (tableName.isBlank() || operation.isBlank()) {
-				throw new MasterDataServiceException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
+				throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
 						BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage());
 			}
     		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
@@ -261,7 +262,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     			bulkDataResponseDto=uploadPackets(files,operation, category);
     		}
     		else {
-				throw new MasterDataServiceException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
+				throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
 						BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage());
     		}
             return bulkDataResponseDto;
