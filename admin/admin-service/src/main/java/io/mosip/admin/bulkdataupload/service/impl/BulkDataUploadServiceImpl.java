@@ -198,7 +198,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	@Override
     	public  BulkDataResponseDto insertDataToCSVFile(String tableName, String operation, String category,MultipartFile[] files)  {
     		
-			if (tableName.isBlank() || operation.isBlank()) {
+			if (tableName.isBlank() || operation.isBlank() || files==null ||files.length==0) {
 				throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
 						BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage());
 			}
@@ -273,6 +273,11 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	
     	@Override
     	public BulkDataResponseDto uploadPackets(MultipartFile[] files,String operation, String category) {
+    		
+    		if ( files==null ||files.length==0) {
+				throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
+						BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage());
+			}
     		
     		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
     		List<String> fileNames = new ArrayList<>();
