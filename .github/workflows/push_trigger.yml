@@ -105,8 +105,7 @@ jobs:
         mvn -B -U package -s $GITHUB_WORKSPACE/settings.xml --file pom.xml
     - name: Publish the maven package
       run: |
-        chmod +x ./deploy.sh
-        ./deploy.sh admin $GITHUB_WORKSPACE/settings.xml SNAPSHOT
+        mvn deploy -DskipTests -DaltDeploymentRepository=ossrh::default::${{ secrets.MAVEN_REPO_URL }} -s $GITHUB_WORKSPACE/settings.xml -f pom.xml
       env:
         GPG_TTY: $(tty)
     - name: Analyze with SonarCloud
