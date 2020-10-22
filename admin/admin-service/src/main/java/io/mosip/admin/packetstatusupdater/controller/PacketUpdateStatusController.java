@@ -11,6 +11,7 @@ import io.mosip.admin.packetstatusupdater.constant.AuditConstant;
 import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateResponseDto;
 import io.mosip.admin.packetstatusupdater.service.PacketStatusUpdateService;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
+import io.mosip.admin.packetstatusupdater.util.EventEnum;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 
@@ -40,10 +41,12 @@ public class PacketUpdateStatusController {
     @PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	public ResponseWrapper<PacketStatusUpdateResponseDto> validatePacket(@RequestParam(value = "rid") String rId) {
-		auditUtil.auditRequest(AuditConstant.PKT_STATUS_UPD_API_CALLED,AuditConstant.AUDIT_SYSTEM,AuditConstant.PKT_STATUS_UPD_API_CALLED,"ADM-2000");
+		//auditUtil.auditRequest(AuditConstant.PKT_STATUS_UPD_API_CALLED,AuditConstant.AUDIT_SYSTEM,AuditConstant.PKT_STATUS_UPD_API_CALLED,"ADM-2000");
+		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.PKT_STATUS_UPD_API_CALLED,rId));
 		ResponseWrapper<PacketStatusUpdateResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(packetUpdateStatusService.getStatus(rId));
-		auditUtil.auditRequest(AuditConstant.PKT_STATUS_UPD_SUCCESS,AuditConstant.AUDIT_SYSTEM,AuditConstant.PKT_STATUS_UPD_API_CALLED,"ADM-2001");
+		//auditUtil.auditRequest(AuditConstant.PKT_STATUS_UPD_SUCCESS,AuditConstant.AUDIT_SYSTEM,AuditConstant.PKT_STATUS_UPD_API_CALLED,"ADM-2001");
+		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.PKT_STATUS_UPD_SUCCESS,rId));
 		return responseWrapper;
 	}
 }

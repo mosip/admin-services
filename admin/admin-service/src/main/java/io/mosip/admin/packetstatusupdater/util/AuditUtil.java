@@ -74,20 +74,18 @@ public class AuditUtil {
 	/**
 	 * Audit request.
 	 *
-	 * @param auditRequestDto
-	 *            the audit request dto
+	 * @param auditRequestDto the audit request dto
 	 */
 	@PostConstruct
 	private void init() {
-		if(System.getProperty("seqGen")==null) {
-		eventCounter = new AtomicInteger(500);
-		}else {
-			Integer eventCount=Integer.getInteger(System.getProperty("seqGen"));
-			eventCounter=new AtomicInteger(eventCount);
+		if (System.getProperty("seqGen") == null) {
+			eventCounter = new AtomicInteger(500);
+		} else {
+			Integer eventCount = Integer.getInteger(System.getProperty("seqGen"));
+			eventCounter = new AtomicInteger(eventCount);
 		}
-		
+
 	}
-	
 
 	public void auditRequest(String eventName, String eventType, String description) {
 
@@ -103,8 +101,7 @@ public class AuditUtil {
 	/**
 	 * Sets the audit request dto.
 	 *
-	 * @param auditRequestDto
-	 *            the new audit request dto
+	 * @param auditRequestDto the new audit request dto
 	 */
 	private void setAuditRequestDto(String eventName, String eventType, String description, String eventId) {
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
@@ -249,6 +246,27 @@ public class AuditUtil {
 		throw new MasterDataServiceException(AuditErrorCode.AUDIT_EXCEPTION.getErrorCode(),
 				AuditErrorCode.AUDIT_EXCEPTION.getErrorMessage() + ex);
 
+	}
+	
+	public  void setAuditRequestDto(EventEnum eventEnum) {
+		AuditRequestDto auditRequestDto = new AuditRequestDto();
+	
+		auditRequestDto.setHostIp(hostIpAddress);
+		auditRequestDto.setHostName(hostName);
+		auditRequestDto.setApplicationId(APPLICATION_ID);
+		auditRequestDto.setApplicationName(APPLICATION_NAME);
+		auditRequestDto.setSessionUserId(SecurityContextHolder.getContext().getAuthentication().getName());
+		auditRequestDto.setSessionUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+		auditRequestDto.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+		auditRequestDto.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
+		auditRequestDto.setDescription(eventEnum.getDescription());
+		auditRequestDto.setEventType(eventEnum.getType());
+		auditRequestDto.setEventName(eventEnum.getName());
+		auditRequestDto.setModuleId("KER-MSD");
+		auditRequestDto.setModuleName("Kernel masterdata");
+		auditRequestDto.setId("User");
+		auditRequestDto.setIdType("Admin");
+		callAuditManager(auditRequestDto);
 	}
 
 }

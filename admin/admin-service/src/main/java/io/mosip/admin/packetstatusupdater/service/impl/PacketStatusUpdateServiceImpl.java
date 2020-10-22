@@ -39,6 +39,7 @@ import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import io.mosip.admin.packetstatusupdater.exception.ValidationException;
 import io.mosip.admin.packetstatusupdater.service.PacketStatusUpdateService;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
+import io.mosip.admin.packetstatusupdater.util.EventEnum;
 import io.mosip.kernel.auth.adapter.exception.AuthNException;
 import io.mosip.kernel.auth.adapter.exception.AuthZException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -89,16 +90,17 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	 */
 	@Override
 	public PacketStatusUpdateResponseDto getStatus(String rId) {
-
-		authorizeRidWithZone(rId);
+		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE,rId));
+		if(!authorizeRidWithZone(rId))
+			return null;
+		auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS);
 		return getPacketStatus(rId);
 	}
 
 	/**
 	 * Gets the packet status.
 	 *
-	 * @param rId
-	 *            the r id
+	 * @param rId the r id
 	 * @return the packet status
 	 */
 	@SuppressWarnings({ "unchecked" })
@@ -114,6 +116,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 			if (response.getStatusCode().is2xxSuccessful()) {
 				List<PacketStatusUpdateDto> packetStatusUpdateDtos = getPacketResponse(ArrayList.class,
 						response.getBody());
+				
 				PacketStatusUpdateResponseDto regProcPacketStatusRequestDto = new PacketStatusUpdateResponseDto();
 				List<PacketStatusUpdateDto> packStautsDto = objectMapper.convertValue(packetStatusUpdateDtos,
 						new TypeReference<List<PacketStatusUpdateDto>>() {
@@ -124,11 +127,15 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 						.collect(Collectors.toList());
 				distinctStatusList.sort(createdDateTimesResultComparator);
 				regProcPacketStatusRequestDto.setPacketStatusUpdateList(distinctStatusList);
+				distinctStatusList.stream().forEach(pcksts->{
+					auditUtil.setAuditRequestDto(EventEnum.getEventEnumBasedOnPAcketStatus(pcksts));
+				});
 				return regProcPacketStatusRequestDto;
 			}
 		} catch (HttpServerErrorException | HttpClientErrorException ex) {
 			throwRestExceptions(ex);
 		}
+		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.PACKET_STATUS_ERROR,rId));
 		return null;
 
 	}
@@ -136,33 +143,36 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	/**
 	 * Throw rest exceptions.
 	 *
-	 * @param ex
-	 *            the ex
+	 * @param ex the ex
 	 */
 	private void throwRestExceptions(HttpStatusCodeException ex) {
 		List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
 		if (ex.getRawStatusCode() == 401) {
 			if (!validationErrorsList.isEmpty()) {
-
+				auditUtil.setAuditRequestDto(EventEnum.AUTHEN_ERROR_401);
 				throw new AuthNException(validationErrorsList);
 			} else {
+				auditUtil.setAuditRequestDto(EventEnum.AUTH_FAILED_AUTH_MANAGER);
 				throw new BadCredentialsException("Authentication failed from AuthManager");
 			}
 		}
 		if (ex.getRawStatusCode() == 403) {
 			if (!validationErrorsList.isEmpty()) {
+				auditUtil.setAuditRequestDto(EventEnum.AUTHEN_ERROR_403);
 				throw new AuthZException(validationErrorsList);
 			} else {
+				auditUtil.setAuditRequestDto(EventEnum.ACCESS_DENIED);
 				throw new AccessDeniedException("Access denied from AuthManager");
 			}
 		}
-		auditUtil.auditRequest(String.format(AuditConstant.PKT_STATUS_UPD_FAILURE, "PacketStatusUpdate"),
+		/*auditUtil.auditRequest(String.format(AuditConstant.PKT_STATUS_UPD_FAILURE, "PacketStatusUpdate"),
 				AuditConstant.AUDIT_SYSTEM,
 				String.format(AuditConstant.FAILURE_DESC,
 						PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
 						PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorMessage()),
-				"ADM-2003");
+				"ADM-2003");*/
+		auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS_ERROR);
 		throw new MasterDataServiceException(PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
 				PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorMessage(), ex);
 
@@ -171,8 +181,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	/**
 	 * Authorize rid with zone.
 	 *
-	 * @param rId
-	 *            the r id
+	 * @param rId the r id
 	 * @return true, if successful
 	 */
 	private boolean authorizeRidWithZone(String rId) {
@@ -188,9 +197,13 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 					String.class);
 			if (response.getStatusCode().is2xxSuccessful()) {
 				boolean isAuthorized = getPacketResponse(Boolean.class, response.getBody());
+				if(isAuthorized)
+					auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE_SUCCESS,rId));
+				else
+					auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE_FAILURE,rId));
 				return isAuthorized;
 			}
-
+			auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE_FAILURE,rId));
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
 			throwRestExceptions(e);
 		}
@@ -200,12 +213,9 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	/**
 	 * Gets the packet response.
 	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param clazz
-	 *            the clazz
-	 * @param responseBody
-	 *            the response body
+	 * @param <T>          the generic type
+	 * @param clazz        the clazz
+	 * @param responseBody the response body
 	 * @return the packet response
 	 */
 
@@ -215,10 +225,12 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 		T packetStatusUpdateDto = null;
 		if (!validationErrorsList.isEmpty()) {
 			if (validationErrorsList.size() == 1 && validationErrorsList.get(0).getErrorCode().equals("RPR-RTS-001")) {
+				auditUtil.setAuditRequestDto(EventEnum.RID_INVALID);
 				throw new RequestException(PacketStatusUpdateErrorCode.RID_INVALID.getErrorCode(),
 						PacketStatusUpdateErrorCode.RID_INVALID.getErrorMessage());
 			} else if (validationErrorsList.size() == 1
 					&& validationErrorsList.get(0).getErrorCode().equals("KER-MSD-042")) {
+				auditUtil.setAuditRequestDto(EventEnum.CENTRE_NOT_EXISTS);
 				throw new RequestException(PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorCode(),
 
 						PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorMessage());
@@ -231,12 +243,13 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 			});
 			packetStatusUpdateDto = responseObject.getResponse();
 		} catch (NullPointerException | java.io.IOException exception) {
-			auditUtil.auditRequest(String.format(AuditConstant.PKT_STATUS_UPD_FAILURE, "PacketStatusUpdate"),
+			auditUtil.setAuditRequestDto(EventEnum.PACKET_JSON_PARSE_EXCEPTION);
+			/*auditUtil.auditRequest(String.format(AuditConstant.PKT_STATUS_UPD_FAILURE, "PacketStatusUpdate"),
 					AuditConstant.AUDIT_SYSTEM,
 					String.format(AuditConstant.FAILURE_DESC,
 							PacketStatusUpdateErrorCode.PACKET_JSON_PARSE_EXCEPTION.getErrorCode(),
 							PacketStatusUpdateErrorCode.PACKET_JSON_PARSE_EXCEPTION.getErrorMessage()),
-					"ADM-2004");
+					"ADM-2004");*/
 			throw new ParseResponseException(PacketStatusUpdateErrorCode.PACKET_JSON_PARSE_EXCEPTION.getErrorCode(),
 					PacketStatusUpdateErrorCode.PACKET_JSON_PARSE_EXCEPTION.getErrorMessage());
 
