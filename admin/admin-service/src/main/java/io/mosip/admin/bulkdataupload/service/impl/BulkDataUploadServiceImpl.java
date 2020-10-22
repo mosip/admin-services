@@ -12,9 +12,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnitUtil;
 import javax.validation.ValidationException;
 
 import org.json.JSONArray;
@@ -57,7 +61,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -88,6 +91,8 @@ import io.mosip.admin.config.Mapper;
 import io.mosip.admin.config.RepositoryListItemWriter;
 import io.mosip.admin.packetstatusupdater.exception.DataNotFoundException;
 import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
+import io.mosip.admin.packetstatusupdater.exception.RequestException;
+import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 /**
  * BulkDataUpload service 
@@ -109,6 +114,12 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     
     @Autowired
     Mapper mapper;
+
+	@Autowired
+	EntityManager em;
+
+	@Autowired
+	EntityManagerFactory emf;
 
     @Value("${mosip.kernel.packet-reciever-api-url}")
 	private String packetRecieverApiUrl;
@@ -187,6 +198,10 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	@Override
     	public  BulkDataResponseDto insertDataToCSVFile(String tableName, String operation, String category,MultipartFile[] files)  {
     		
+			if (tableName.isBlank() || operation.isBlank() || files==null ||files.length==0) {
+				throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
+						BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage());
+			}
     		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
     		mapper.init();
     		Class<?> entity=mapper.getEntity(tableName);
@@ -204,7 +219,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     			try {
     				csvValidator(file.getOriginalFilename(),file.getInputStream());
     				itemReader = itemReader(file,entity);
-    				ItemWriter<List<Object>> itemWriter= itemWriter(repoBeanName);
+					ItemWriter<List<Object>> itemWriter = itemWriterMapper(repoBeanName, operationMapper(operation),
+							entity);
     		        ItemProcessor itemProcessor=processor(operation);
     		        JobParameters parameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters();
     		        jobExecution = jobLauncher.run(job(jobBuilderFactory, stepBuilderFactory, itemReader,itemProcessor, itemWriter),parameters);
@@ -212,9 +228,13 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     				StepExecution stepExecution=jobRepository.getLastStepExecution(jobInstence, "ETL-file-load");
     				status[0]=jobExecution.getStatus().toString();
     				numArr[0]+=stepExecution.getReadCount();
-    				if(status[0].equalsIgnoreCase("FAILED")) {
-    					//failureMessage.put(file.getOriginalFilename(), stepExecution.getExitStatus().getExitDescription());
-    					failureMessage.add("{'csvFileName': '"+file.getOriginalFilename()+"', 'message': '"+stepExecution.getExitStatus().getExitDescription()+"'}");
+					if (status[0].equalsIgnoreCase("FAILED")) {
+						String msg = stepExecution.getExitStatus().getExitDescription().toString();
+						if (msg.length() >= 256) {
+							failureMessage.add(msg.substring(0, 250));
+						} else {
+							failureMessage.add(msg);
+						}
     				}
     			}catch (IOException e) {
     				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
@@ -242,7 +262,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     			bulkDataResponseDto=uploadPackets(files,operation, category);
     		}
     		else {
-    			throw new IllegalArgumentException("Enter correct category");
+				throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
+						BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage());
     		}
             return bulkDataResponseDto;
     	
@@ -252,6 +273,11 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	
     	@Override
     	public BulkDataResponseDto uploadPackets(MultipartFile[] files,String operation, String category) {
+    		
+    		if ( files==null ||files.length==0) {
+				throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
+						BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage());
+			}
     		
     		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
     		List<String> fileNames = new ArrayList<>();
@@ -315,40 +341,6 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	}
         
 
-
-
-/*	@Override
-	public BulkDataResponseDto deleteData(BulkDataRequestDto bulkDataRequestDto){
-		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
-		String tableName=bulkDataRequestDto.getTableName();
-		String operation=bulkDataRequestDto.getOperation();
-		mapper.init();
-		Class<?> entity=mapper.getEntity(tableName);
-		String repoBeanName=mapper.getRepo(entity);
-    	JobBuilderFactory jobBuilderFactory = new JobBuilderFactory(jobRepository);
-    	StepBuilderFactory stepBuilderFactory = new StepBuilderFactory(jobRepository, platformTransactionManager);
-        JobExecution jobExecution = null;
-        ItemReader<Object> itemReader;
-      		try {
-      			csvValidator(bulkDataRequestDto.getCsvFile());
-      			itemReader = itemReader(bulkDataRequestDto.getCsvFile(),entity);
-      			ItemWriter<List<Object>> itemWriter= itemWriter(repoBeanName);
-      	        ItemProcessor itemProcessor=processor(operation);
-      	        JobParameters parameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters();
-      	        jobExecution = jobLauncher.run(job(jobBuilderFactory, stepBuilderFactory, itemReader,itemProcessor, itemWriter),parameters);
-      		} catch (IOException e) {
-      			throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
-      					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
-      		}
-      		catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
-      				| JobParametersInvalidException e) {
-      			throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
-      					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
-      		}    
-      		BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(jobExecution,operation,entity.getName());
-            bulkDataResponseDto=setResponseDetails(bulkUploadTranscation, tableName);
-    		return bulkDataResponseDto;
-	}*/
 	public Job job(JobBuilderFactory jobBuilderFactory,
             StepBuilderFactory stepBuilderFactory,
             ItemReader<Object> itemReader,
@@ -416,38 +408,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	        return flatFileItemReader;
 
 	 }
-	/*	 @StepScope
-	private ItemWriter write() throws Exception{
 
-		//dBWriter.getRepo(clzz);
-		//applicationContext.getBean("");
-		
-		    ItemWriter itemWriter=new ItemWriter() {
-			String repoName=null;
-			GenericRepo obj=null;
-			boolean flag=false;
-			@Override
-			public void write(List items) throws Exception {
-				// TODO Auto-generated method stub@Scope(value = "step", proxyMode = ScopedProxyMode.INTERFACES)
-				System.out.println(items);
-				for(Object item:items) {
-				    repoName=mapper.getRepo(item.getClass());
-					obj=(GenericRepo)applicationContext.getBean(repoName);
-					
-					flag=obj.exists((Example<Object>) item);
-					System.out.println(">>>>>>>>>>flag  :"+flag);
-					if(!flag) {
-					obj.save(item);
-					}
-				}
-				 System.out.println(">>>>>>>ob"+obj);
-				// obj.saveAll(items);
-				// System.out.println("tes123t"+repoName);
-			}
-		};
-		return itemWriter;	
-	}
-	*/    
 	 public ItemProcessor processor(String operation) {
 		
 		 
@@ -461,15 +422,10 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 				if(operation.equalsIgnoreCase("insert")) {
 				((BaseEntity) item).setCreatedBy(setCreateMetaData());
 				((BaseEntity) item).setCreatedDateTime(now);
-				((BaseEntity)item).setIsActive(true);
 				}else if(operation.equalsIgnoreCase("update")) {
-					((BaseEntity) item).setCreatedBy(setCreateMetaData());
-					((BaseEntity) item).setCreatedDateTime(now);
 					((BaseEntity) item).setUpdatedBy(setCreateMetaData());
 					((BaseEntity) item).setUpdatedDateTime(now);
 				}else if(operation.equalsIgnoreCase("delete")) {
-					((BaseEntity) item).setCreatedBy(setCreateMetaData());
-					((BaseEntity) item).setCreatedDateTime(now);
 					((BaseEntity)item).setIsActive(false);
 					((BaseEntity) item).setIsDeleted(true);
 					((BaseEntity) item).setDeletedDateTime(now);
@@ -479,18 +435,101 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 		};
 		return itemprocessor;
 	 }
-	    @SuppressWarnings("unchecked")
-		public ItemWriter<List<Object>> itemWriter(String repoBeanName){
-	        RepositoryListItemWriter<List<Object>> writer = new RepositoryListItemWriter<>();
-	        writer.setRepository((CrudRepository<?, ?>) applicationContext.getBean(repoBeanName));
-	        writer.setMethodName("save");
-	        try {
-	            writer.afterPropertiesSet();
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	        return writer;
-	    }
+
+		@SuppressWarnings("unchecked")
+		public ItemWriter<List<Object>> insertItemWriter(String repoBeanName, String methodName) {
+			RepositoryListItemWriter<List<Object>> writer = new RepositoryListItemWriter<>();
+			writer.setRepository((BaseRepository<?, ?>) applicationContext.getBean(repoBeanName));
+			writer.setMethodName(methodName);
+			try {
+				writer.afterPropertiesSet();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return writer;
+		}
+
+		@SuppressWarnings("unchecked")
+		public <T extends BaseEntity, S> ItemWriter<List<Object>> updateItemWriter(String repoName, Class<?> entity) {
+
+			ItemWriter<List<Object>> writer = new ItemWriter<List<Object>>() {
+
+				@Autowired(required = false)
+				@Override
+				public void write(List<? extends List<Object>> items) throws Exception {
+					// TODO Auto-generated method stub
+					Iterator i$ = items.iterator();
+					BaseRepository baserepo = (BaseRepository) applicationContext.getBean(repoName);
+
+					while (i$.hasNext()) {
+
+						T object = (T) i$.next();
+						PersistenceUnitUtil util = emf.getPersistenceUnitUtil();
+						Object projectId = util.getIdentifier(object);
+						T machin = (T) em.find(entity, projectId);
+						try {
+						if (!machin.equals(null)) {
+							object.setCreatedBy(machin.getCreatedBy());
+							object.setCreatedDateTime(machin.getCreatedDateTime());
+							baserepo.save(object);
+						} else {
+							throw new MasterDataServiceException(
+									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorCode(),
+									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorMessage());
+						}
+						}catch(NullPointerException e) {
+							throw new MasterDataServiceException(
+									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorCode(),
+									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorMessage(),e);
+						}
+					}
+				}
+			};
+
+			return writer;
+		}
+
+		@SuppressWarnings("unchecked")
+		public <T extends BaseEntity, S> ItemWriter<List<Object>> deleteItemWriter(String repoName, Class<?> entity) {
+			ItemWriter<List<Object>> writer = new ItemWriter<List<Object>>() {
+
+				@Autowired(required = false)
+				@Override
+				public void write(List<? extends List<Object>> items) throws Exception {
+					// TODO Auto-generated method stub
+					Iterator i$ = items.iterator();
+					BaseRepository baserepo = (BaseRepository) applicationContext.getBean(repoName);
+
+					while (i$.hasNext()) {
+
+						T object = (T) i$.next();
+						PersistenceUnitUtil util = emf.getPersistenceUnitUtil();
+						Object projectId = util.getIdentifier(object);
+						T machin = (T) em.find(entity, projectId);
+						try {
+						if (!machin.equals(null)) {
+							object.setCreatedBy(machin.getCreatedBy());
+							object.setCreatedDateTime(machin.getCreatedDateTime());
+							object.setUpdatedBy(machin.getUpdatedBy());
+							object.setUpdatedDateTime(machin.getUpdatedDateTime());
+							baserepo.save(object);
+						} else {
+							throw new MasterDataServiceException(
+									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorCode(),
+									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorMessage());
+						}
+						} catch (NullPointerException e) {
+							throw new MasterDataServiceException(
+									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorCode(),
+									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorMessage(), e);
+						}
+					}
+
+				}
+			};
+
+			return writer;
+		}
 	    
 	    private BulkUploadTranscation saveTranscationDetails(int count,String operation,String entityName,String category,List<String> failureMessage, String status) {
 	    	BulkUploadTranscation bulkUploadTranscation=new BulkUploadTranscation();
@@ -505,7 +544,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	    	bulkUploadTranscation.setUploadedDateTime(Timestamp.valueOf(now));
 	    	bulkUploadTranscation.setCategory(category);
 	    	if(!failureMessage.isEmpty()) {
-	    		bulkUploadTranscation.setUploadDescription(failureMessage.toString());
+				bulkUploadTranscation.setUploadDescription(failureMessage.toString());
 	    	}
 	    	bulkUploadTranscation.setUploadOperation(operation);
 	    	bulkUploadTranscation.setRecordCount(count);
@@ -568,4 +607,22 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 			}
 	    	
 	    }
+
+		private static String operationMapper(String operationName) {
+			if (operationName.equalsIgnoreCase("insert"))
+				operationName = "create";
+
+			return operationName;
+		}
+
+		ItemWriter<List<Object>> itemWriterMapper(String repoBeanName, String operationName, Class<?> entity) {
+			ItemWriter<List<Object>> item = null;
+			if (operationName.equalsIgnoreCase("create"))
+				item = insertItemWriter(repoBeanName, operationName);
+			else if (operationName.equalsIgnoreCase("update"))
+				item = updateItemWriter(repoBeanName, entity);
+			else if (operationName.equalsIgnoreCase("delete"))
+				item = deleteItemWriter(repoBeanName, entity);
+			return item;
+		}
 }

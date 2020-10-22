@@ -8,7 +8,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,8 +31,8 @@ import io.mosip.admin.packetstatusupdater.dto.AuditRequestDto;
 import io.mosip.admin.packetstatusupdater.dto.AuditResponseDto;
 import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
 import io.mosip.admin.packetstatusupdater.exception.ValidationException;
-import io.mosip.kernel.auth.adapter.exception.AuthNException;
-import io.mosip.kernel.auth.adapter.exception.AuthZException;
+import io.mosip.kernel.core.authmanager.exception.AuthNException;
+import io.mosip.kernel.core.authmanager.exception.AuthZException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;

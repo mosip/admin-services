@@ -6,7 +6,7 @@
 
 	<groupId>io.mosip.admin</groupId>
 	<artifactId>admin-parent</artifactId>
-	<version>1.0.6</version>
+	<version>1.1.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
 	<name>admin</name>
@@ -164,6 +164,11 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>${jcl.to.slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-logger-logback</artifactId>
+			<version>1.1.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	

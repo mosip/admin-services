@@ -36,11 +36,10 @@ import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateDto;
 import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateResponseDto;
 import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
 import io.mosip.admin.packetstatusupdater.exception.RequestException;
-import io.mosip.admin.packetstatusupdater.exception.ValidationException;
 import io.mosip.admin.packetstatusupdater.service.PacketStatusUpdateService;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
-import io.mosip.kernel.auth.adapter.exception.AuthNException;
-import io.mosip.kernel.auth.adapter.exception.AuthZException;
+import io.mosip.kernel.core.authmanager.exception.AuthNException;
+import io.mosip.kernel.core.authmanager.exception.AuthZException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -160,11 +159,11 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 		auditUtil.auditRequest(String.format(AuditConstant.PKT_STATUS_UPD_FAILURE, "PacketStatusUpdate"),
 				AuditConstant.AUDIT_SYSTEM,
 				String.format(AuditConstant.FAILURE_DESC,
-						PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorCode(),
-						PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorMessage()),
+						PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
+						PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorMessage()),
 				"ADM-2003");
-		throw new MasterDataServiceException(PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorCode(),
-				PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorMessage(), ex);
+		throw new MasterDataServiceException(PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
+				PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorMessage()+ ex);
 
 	}
 
@@ -222,6 +221,12 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 				throw new RequestException(PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorCode(),
 
 						PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorMessage());
+			}
+			else if (validationErrorsList.size() == 1
+					&& validationErrorsList.get(0).getErrorCode().equals("ADM-PKT-001")) {
+				throw new RequestException(PacketStatusUpdateErrorCode.ADMIN_UNAUTHORIZED.getErrorCode(),
+
+						PacketStatusUpdateErrorCode.ADMIN_UNAUTHORIZED.getErrorMessage());
 			}
 		}
 		ResponseWrapper<T> responseObject = null;
