@@ -6,7 +6,7 @@
 
 	<groupId>io.mosip.admin</groupId>
 	<artifactId>admin-parent</artifactId>
-	<version>1.1.2-rc1</version>
+	<version>1.1.2-rc2</version>
 	<packaging>pom</packaging>
 	
 	<name>admin</name>
@@ -168,7 +168,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-logger-logback</artifactId>
-			<version>1.1.2-rc1</version>
+			<version>1.1.2-rc2</version>
 		</dependency>
 	</dependencies>
 	
@@ -205,7 +205,6 @@
 	</profiles>
 
 	<build>
-		<pluginManagement>
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -239,7 +238,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
-					<version>${maven.war.plugin.versoon}</version>
+					<version>3.2.2</version>
 					<configuration>
 						<archive>
 							<manifest>
@@ -332,9 +331,6 @@
 					      </execution>
 				  	</executions>
         			</plugin>
-			</plugins>
-		</pluginManagement>
-		<plugins>
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
