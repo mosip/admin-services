@@ -250,5 +250,25 @@ public class AuditUtil {
 				AuditErrorCode.AUDIT_EXCEPTION.getErrorMessage() + ex);
 
 	}
+	public  void setAuditRequestDto(EventEnum eventEnum) {
+		AuditRequestDto auditRequestDto = new AuditRequestDto();
+
+		auditRequestDto.setHostIp(hostIpAddress);
+		auditRequestDto.setHostName(hostName);
+		auditRequestDto.setApplicationId(APPLICATION_ID);
+		auditRequestDto.setApplicationName(APPLICATION_NAME);
+		auditRequestDto.setSessionUserId(SecurityContextHolder.getContext().getAuthentication().getName());
+		auditRequestDto.setSessionUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+		auditRequestDto.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+		auditRequestDto.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
+		auditRequestDto.setDescription(eventEnum.getDescription());
+		auditRequestDto.setEventType(eventEnum.getType());
+		auditRequestDto.setEventName(eventEnum.getName());
+		auditRequestDto.setModuleId("KER-MSD");
+		auditRequestDto.setModuleName("Kernel masterdata");
+		auditRequestDto.setId("User");
+		auditRequestDto.setIdType("Admin");
+		callAuditManager(auditRequestDto);
+	}
 
 }

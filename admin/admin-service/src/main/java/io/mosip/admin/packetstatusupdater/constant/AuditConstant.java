@@ -18,5 +18,6 @@ public class AuditConstant {
 	public static final String BULKDATA_UPDATE_SUCCESS = "System successfully decommissioned a %s";
 	public static final String BULKDATA_DELETE_API_CALLED = "%s bulkdata delete API called";
 	public static final String BULKDATA_DELETE_SUCCESS = "System successfully decommissioned a %s";
+	public static final String AUDIT_USER="USER";
 	
 }

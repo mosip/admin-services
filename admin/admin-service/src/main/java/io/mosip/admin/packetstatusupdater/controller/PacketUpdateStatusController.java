@@ -14,9 +14,9 @@ import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 
-
 /**
  * The Class PacketUpdateStatusController.
+ * 
  * @author Srinivasan
  */
 @RestController
@@ -26,7 +26,7 @@ public class PacketUpdateStatusController {
 	/** The packet update status service. */
 	@Autowired
 	private PacketStatusUpdateService packetUpdateStatusService;
-	
+
 	@Autowired
 	private AuditUtil auditUtil;
 
@@ -37,13 +37,14 @@ public class PacketUpdateStatusController {
 	 * @return the response wrapper
 	 */
 	@GetMapping
-    @PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	public ResponseWrapper<PacketStatusUpdateResponseDto> validatePacket(@RequestParam(value = "rid") String rId) {
-		auditUtil.auditRequest(AuditConstant.PKT_STATUS_UPD_API_CALLED,AuditConstant.AUDIT_SYSTEM,AuditConstant.PKT_STATUS_UPD_API_CALLED,"ADM-2000");
+
+		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.PKT_STATUS_UPD_API_CALLED, rId));
 		ResponseWrapper<PacketStatusUpdateResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(packetUpdateStatusService.getStatus(rId));
-		auditUtil.auditRequest(AuditConstant.PKT_STATUS_UPD_SUCCESS,AuditConstant.AUDIT_SYSTEM,AuditConstant.PKT_STATUS_UPD_API_CALLED,"ADM-2001");
+		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.PKT_STATUS_UPD_SUCCESS, rId));
 		return responseWrapper;
 	}
 }
