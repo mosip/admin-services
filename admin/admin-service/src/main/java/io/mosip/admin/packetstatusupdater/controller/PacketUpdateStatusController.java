@@ -37,7 +37,7 @@ public class PacketUpdateStatusController {
 	 * @return the response wrapper
 	 */
 	@GetMapping
-    @PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
 	public ResponseWrapper<PacketStatusUpdateResponseDto> validatePacket(@RequestParam(value = "rid") String rId) {
 		auditUtil.auditRequest(AuditConstant.PKT_STATUS_UPD_API_CALLED,AuditConstant.AUDIT_SYSTEM,AuditConstant.PKT_STATUS_UPD_API_CALLED,"ADM-2000");
