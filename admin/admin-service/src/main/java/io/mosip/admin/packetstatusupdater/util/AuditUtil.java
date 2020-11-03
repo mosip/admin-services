@@ -263,10 +263,11 @@ public class AuditUtil {
 		auditRequestDto.setDescription(eventEnum.getDescription());
 		auditRequestDto.setEventType(eventEnum.getType());
 		auditRequestDto.setEventName(eventEnum.getName());
-		auditRequestDto.setModuleId("KER-MSD");
-		auditRequestDto.setModuleName("Kernel masterdata");
-		auditRequestDto.setId("User");
-		auditRequestDto.setIdType("Admin");
+		auditRequestDto.setModuleId(eventEnum.getModuleId());
+		auditRequestDto.setModuleName(eventEnum.getModuleName());
+		auditRequestDto.setEventId(eventEnum.getEventId());
+		auditRequestDto.setId(eventEnum.getId());
+		auditRequestDto.setIdType(eventEnum.getIdType());
 		callAuditManager(auditRequestDto);
 	}
 
