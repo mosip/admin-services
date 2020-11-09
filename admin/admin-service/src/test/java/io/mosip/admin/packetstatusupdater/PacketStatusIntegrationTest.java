@@ -36,6 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.admin.TestBootApplication;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
+import io.mosip.admin.packetstatusupdater.util.EventEnum;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 
@@ -86,7 +87,7 @@ public class PacketStatusIntegrationTest {
 		serviceError.setMessage("Forbidden");
 		validationErrorList= new ArrayList<ServiceError>();
 		validationErrorList.add(serviceError);
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).setAuditRequestDto(EventEnum.ACCESS_DENIED);
 		
 	}
 	
