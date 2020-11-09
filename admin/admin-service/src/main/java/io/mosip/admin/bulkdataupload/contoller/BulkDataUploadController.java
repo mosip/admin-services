@@ -37,7 +37,7 @@ public class BulkDataUploadController {
 	private BulkDataService bulkDataService;
 	
 	@PostMapping(value = { "/bulkupload" }, consumes = { "multipart/form-data" })
-	@PreAuthorize("hasRole('MASTERDATA_ADMIN')")
+	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<BulkDataResponseDto> uploadData(@RequestParam("tableName") String tableName,@RequestParam("operation") String operation,@RequestParam("category") String category,
 	         @RequestParam("files") MultipartFile[] files) {
 		auditUtil.setAuditRequestDto(EventEnum.BULKDATA_UPLOAD_API_CALLED);
@@ -49,7 +49,7 @@ public class BulkDataUploadController {
 	}
 
 	@GetMapping("/bulkupload/transcation/{transcationId}")
-	@PreAuthorize("hasRole('MASTERDATA_ADMIN')")
+	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<BulkDataGetExtnDto> getTranscationDetail(@PathVariable("transcationId") String transcationId) throws Exception {
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_TRANSACTION,transcationId));
 		ResponseWrapper<BulkDataGetExtnDto> responseWrapper = new ResponseWrapper<>();
@@ -58,7 +58,7 @@ public class BulkDataUploadController {
 		return responseWrapper;
 	}
 	@GetMapping("/bulkupload/getAllTransactions")
-	@PreAuthorize("hasRole('MASTERDATA_ADMIN')")
+	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<PageDto<BulkDataGetExtnDto>> getTranscationDetail(
 			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page no for the requested data", defaultValue = "0") int pageNumber,
 			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size for the requested data", defaultValue = "10") int pageSize,
