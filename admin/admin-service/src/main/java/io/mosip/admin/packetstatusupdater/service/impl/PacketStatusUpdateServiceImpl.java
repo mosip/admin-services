@@ -46,6 +46,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.admin.packetstatusupdater.util.EventEnum;
 
 /**
  * Packet Status Update service.
@@ -89,7 +90,10 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	@Override
 	public PacketStatusUpdateResponseDto getStatus(String rId) {
 
-		authorizeRidWithZone(rId);
+		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE,rId));
+		if(!authorizeRidWithZone(rId))
+			return null;
+		auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS);
 		return getPacketStatus(rId);
 	}
 
@@ -123,11 +127,15 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 						.collect(Collectors.toList());
 				distinctStatusList.sort(createdDateTimesResultComparator);
 				regProcPacketStatusRequestDto.setPacketStatusUpdateList(distinctStatusList);
+				distinctStatusList.stream().forEach(pcksts->{
+					auditUtil.setAuditRequestDto(EventEnum.getEventEnumBasedOnPAcketStatus(pcksts));
+				});
 				return regProcPacketStatusRequestDto;
 			}
 		} catch (HttpServerErrorException | HttpClientErrorException ex) {
 			throwRestExceptions(ex);
 		}
+		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.PACKET_STATUS_ERROR,rId));
 		return null;
 
 	}
@@ -143,27 +151,25 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 
 		if (ex.getRawStatusCode() == 401) {
 			if (!validationErrorsList.isEmpty()) {
-
+				auditUtil.setAuditRequestDto(EventEnum.AUTHEN_ERROR_401);
 				throw new AuthNException(validationErrorsList);
 			} else {
+				auditUtil.setAuditRequestDto(EventEnum.AUTH_FAILED_AUTH_MANAGER);
 				throw new BadCredentialsException("Authentication failed from AuthManager");
 			}
 		}
 		if (ex.getRawStatusCode() == 403) {
 			if (!validationErrorsList.isEmpty()) {
+				auditUtil.setAuditRequestDto(EventEnum.AUTHEN_ERROR_403);
 				throw new AuthZException(validationErrorsList);
 			} else {
+				auditUtil.setAuditRequestDto(EventEnum.ACCESS_DENIED);
 				throw new AccessDeniedException("Access denied from AuthManager");
 			}
 		}
-		auditUtil.auditRequest(String.format(AuditConstant.PKT_STATUS_UPD_FAILURE, "PacketStatusUpdate"),
-				AuditConstant.AUDIT_SYSTEM,
-				String.format(AuditConstant.FAILURE_DESC,
-						PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
-						PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorMessage()),
-				"ADM-2003");
-		throw new MasterDataServiceException(PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
-				PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorMessage()+ ex);
+		auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS_ERROR);
+		throw new MasterDataServiceException(PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorCode(),
+				PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorMessage(), ex);
 
 	}
 
@@ -187,9 +193,13 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 					String.class);
 			if (response.getStatusCode().is2xxSuccessful()) {
 				boolean isAuthorized = getPacketResponse(Boolean.class, response.getBody());
+				if(isAuthorized)
+					auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE_SUCCESS,rId));
+				else
+					auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE_FAILURE,rId));
 				return isAuthorized;
 			}
-
+			auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE_FAILURE,rId));
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
 			throwRestExceptions(e);
 		}
@@ -214,19 +224,15 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 		T packetStatusUpdateDto = null;
 		if (!validationErrorsList.isEmpty()) {
 			if (validationErrorsList.size() == 1 && validationErrorsList.get(0).getErrorCode().equals("RPR-RTS-001")) {
+				auditUtil.setAuditRequestDto(EventEnum.RID_INVALID);
 				throw new RequestException(PacketStatusUpdateErrorCode.RID_INVALID.getErrorCode(),
 						PacketStatusUpdateErrorCode.RID_INVALID.getErrorMessage());
 			} else if (validationErrorsList.size() == 1
 					&& validationErrorsList.get(0).getErrorCode().equals("KER-MSD-042")) {
+				auditUtil.setAuditRequestDto(EventEnum.CENTRE_NOT_EXISTS);
 				throw new RequestException(PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorCode(),
 
 						PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorMessage());
-			}
-			else if (validationErrorsList.size() == 1
-					&& validationErrorsList.get(0).getErrorCode().equals("ADM-PKT-001")) {
-				throw new RequestException(PacketStatusUpdateErrorCode.ADMIN_UNAUTHORIZED.getErrorCode(),
-
-						PacketStatusUpdateErrorCode.ADMIN_UNAUTHORIZED.getErrorMessage());
 			}
 		}
 		ResponseWrapper<T> responseObject = null;
@@ -236,12 +242,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 			});
 			packetStatusUpdateDto = responseObject.getResponse();
 		} catch (NullPointerException | java.io.IOException exception) {
-			auditUtil.auditRequest(String.format(AuditConstant.PKT_STATUS_UPD_FAILURE, "PacketStatusUpdate"),
-					AuditConstant.AUDIT_SYSTEM,
-					String.format(AuditConstant.FAILURE_DESC,
-							PacketStatusUpdateErrorCode.PACKET_JSON_PARSE_EXCEPTION.getErrorCode(),
-							PacketStatusUpdateErrorCode.PACKET_JSON_PARSE_EXCEPTION.getErrorMessage()),
-					"ADM-2004");
+			auditUtil.setAuditRequestDto(EventEnum.PACKET_JSON_PARSE_EXCEPTION);
 			throw new ParseResponseException(PacketStatusUpdateErrorCode.PACKET_JSON_PARSE_EXCEPTION.getErrorCode(),
 					PacketStatusUpdateErrorCode.PACKET_JSON_PARSE_EXCEPTION.getErrorMessage());
 
@@ -284,3 +285,4 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	}
 
 }
+

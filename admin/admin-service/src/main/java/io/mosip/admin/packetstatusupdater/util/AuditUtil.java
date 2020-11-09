@@ -87,50 +87,6 @@ public class AuditUtil {
 		
 	}
 	
-
-	public void auditRequest(String eventName, String eventType, String description) {
-
-		String eventId = "ADM-" + eventCounter.incrementAndGet();
-		setAuditRequestDto(eventName, eventType, description, eventId);
-	}
-
-	public void auditRequest(String eventName, String eventType, String description, String eventId) {
-
-		setAuditRequestDto(eventName, eventType, description, eventId);
-	}
-
-	/**
-	 * Sets the audit request dto.
-	 *
-	 * @param auditRequestDto
-	 *            the new audit request dto
-	 */
-	private void setAuditRequestDto(String eventName, String eventType, String description, String eventId) {
-		AuditRequestDto auditRequestDto = new AuditRequestDto();
-		if (!validateSecurityContextHolder()) {
-
-		}
-
-		auditRequestDto.setEventId(eventId);
-		auditRequestDto.setId("NO_ID");
-		auditRequestDto.setIdType("NO_ID_TYPE");
-		auditRequestDto.setEventName(eventName);
-		auditRequestDto.setEventType(eventType);
-		auditRequestDto.setModuleId("KER-MSD");
-		auditRequestDto.setModuleName("Kernel masterdata");
-		auditRequestDto.setDescription(description);
-		auditRequestDto.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
-		auditRequestDto.setHostIp(hostIpAddress);
-		auditRequestDto.setHostName(hostName);
-		auditRequestDto.setApplicationId(APPLICATION_ID);
-		auditRequestDto.setApplicationName(APPLICATION_NAME);
-		auditRequestDto.setSessionUserId(SecurityContextHolder.getContext().getAuthentication().getName());
-		auditRequestDto.setSessionUserName(SecurityContextHolder.getContext().getAuthentication().getName());
-		auditRequestDto.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
-		callAuditManager(auditRequestDto);
-
-	}
-
 	/**
 	 * Validate security context holder.
 	 *
@@ -248,6 +204,27 @@ public class AuditUtil {
 		throw new MasterDataServiceException(AuditErrorCode.AUDIT_EXCEPTION.getErrorCode(),
 				AuditErrorCode.AUDIT_EXCEPTION.getErrorMessage() + ex);
 
+	}
+	public  void setAuditRequestDto(EventEnum eventEnum) {
+		AuditRequestDto auditRequestDto = new AuditRequestDto();
+
+		auditRequestDto.setHostIp(hostIpAddress);
+		auditRequestDto.setHostName(hostName);
+		auditRequestDto.setApplicationId(eventEnum.getApplicationId());
+		auditRequestDto.setApplicationName(eventEnum.getApplicationName());
+		auditRequestDto.setSessionUserId(SecurityContextHolder.getContext().getAuthentication().getName());
+		auditRequestDto.setSessionUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+		auditRequestDto.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+		auditRequestDto.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
+		auditRequestDto.setDescription(eventEnum.getDescription());
+		auditRequestDto.setEventType(eventEnum.getType());
+		auditRequestDto.setEventName(eventEnum.getName());
+		auditRequestDto.setModuleId(eventEnum.getModuleId());
+		auditRequestDto.setModuleName(eventEnum.getModuleName());
+		auditRequestDto.setEventId(eventEnum.getEventId());
+		auditRequestDto.setId(eventEnum.getId());
+		auditRequestDto.setIdType(eventEnum.getIdType());
+		callAuditManager(auditRequestDto);
 	}
 
 }

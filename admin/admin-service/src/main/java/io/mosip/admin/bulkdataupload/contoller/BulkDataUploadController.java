@@ -13,8 +13,8 @@ import io.mosip.admin.bulkdataupload.dto.BulkDataGetExtnDto;
 import io.mosip.admin.bulkdataupload.dto.BulkDataResponseDto;
 import io.mosip.admin.bulkdataupload.dto.PageDto;
 import io.mosip.admin.bulkdataupload.service.BulkDataService;
-import io.mosip.admin.packetstatusupdater.constant.AuditConstant;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
+import io.mosip.admin.packetstatusupdater.util.EventEnum;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.swagger.annotations.ApiParam;
 
@@ -40,10 +40,10 @@ public class BulkDataUploadController {
 	@PreAuthorize("hasRole('MASTERDATA_ADMIN')")
 	public ResponseWrapper<BulkDataResponseDto> uploadData(@RequestParam("tableName") String tableName,@RequestParam("operation") String operation,@RequestParam("category") String category,
 	         @RequestParam("files") MultipartFile[] files) {
-		auditUtil.auditRequest(AuditConstant.BULKDATA_INSERT_API_CALLED,AuditConstant.AUDIT_SYSTEM,AuditConstant.BULKDATA_INSERT_API_CALLED,"ADM-2002");
+		auditUtil.setAuditRequestDto(EventEnum.BULKDATA_UPLOAD_API_CALLED);
 		ResponseWrapper<BulkDataResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(bulkDataService.bulkDataOperation(tableName,operation,category,files));
-		auditUtil.auditRequest(AuditConstant.BULKDATA_INSERT_SUCCESS,AuditConstant.AUDIT_SYSTEM,AuditConstant.BULKDATA_INSERT_API_CALLED,"ADM-2003");
+		auditUtil.setAuditRequestDto(EventEnum.BULKDATA_UPLOAD_SUCCESS);
 		return responseWrapper;
 		
 	}
@@ -51,8 +51,10 @@ public class BulkDataUploadController {
 	@GetMapping("/bulkupload/transcation/{transcationId}")
 	@PreAuthorize("hasRole('MASTERDATA_ADMIN')")
 	public ResponseWrapper<BulkDataGetExtnDto> getTranscationDetail(@PathVariable("transcationId") String transcationId) throws Exception {
+		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_TRANSACTION,transcationId));
 		ResponseWrapper<BulkDataGetExtnDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(bulkDataService.getTrascationDetails(transcationId));
+		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_TRANSACTION_SUCCESS,transcationId));
 		return responseWrapper;
 	}
 	@GetMapping("/bulkupload/getAllTransactions")
@@ -63,8 +65,10 @@ public class BulkDataUploadController {
 			@RequestParam(name = "sortBy", defaultValue = "createdDateTime") @ApiParam(value = "sort the requested data based on param value", defaultValue = "createdDateTime") String sortBy,
 			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "order the requested data based on param", defaultValue = "desc") String orderBy,
 			@RequestParam(name = "category", defaultValue = "masterdata")  String category){
+		auditUtil.setAuditRequestDto(EventEnum.BULKDATA_TRANSACTION_ALL);
 		ResponseWrapper<PageDto<BulkDataGetExtnDto>> responseWrapper = new ResponseWrapper<PageDto<BulkDataGetExtnDto>>();
 		responseWrapper.setResponse(bulkDataService.getAllTrascationDetails(pageNumber,pageSize,sortBy,orderBy,category));
+		auditUtil.setAuditRequestDto(EventEnum.BULKDATA_TRANSACTION_ALL_SUCCESS);
 		return responseWrapper;
 	}
 	
