@@ -40,12 +40,10 @@ public class BulkDataUploadController {
 	@PreAuthorize("hasRole('MASTERDATA_ADMIN')")
 	public ResponseWrapper<BulkDataResponseDto> uploadData(@RequestParam("tableName") String tableName,@RequestParam("operation") String operation,@RequestParam("category") String category,
 	         @RequestParam("files") MultipartFile[] files) {
-		//auditUtil.auditRequest(AuditConstant.BULKDATA_INSERT_API_CALLED,AuditConstant.AUDIT_SYSTEM,AuditConstant.BULKDATA_INSERT_API_CALLED,"ADM-2002");
-		auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INSERT_API_CALLED);
+		auditUtil.setAuditRequestDto(EventEnum.BULKDATA_UPLOAD_API_CALLED);
 		ResponseWrapper<BulkDataResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(bulkDataService.bulkDataOperation(tableName,operation,category,files));
-		//auditUtil.auditRequest(AuditConstant.BULKDATA_INSERT_SUCCESS,AuditConstant.AUDIT_SYSTEM,AuditConstant.BULKDATA_INSERT_API_CALLED,"ADM-2003");
-		auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INSERT_SUCCESS);
+		auditUtil.setAuditRequestDto(EventEnum.BULKDATA_UPLOAD_SUCCESS);
 		return responseWrapper;
 		
 	}

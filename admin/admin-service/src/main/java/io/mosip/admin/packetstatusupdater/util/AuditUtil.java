@@ -87,50 +87,6 @@ public class AuditUtil {
 		
 	}
 	
-
-	public void auditRequest(String eventName, String eventType, String description) {
-
-		String eventId = "ADM-" + eventCounter.incrementAndGet();
-		setAuditRequestDto(eventName, eventType, description, eventId);
-	}
-
-	public void auditRequest(String eventName, String eventType, String description, String eventId) {
-
-		setAuditRequestDto(eventName, eventType, description, eventId);
-	}
-
-	/**
-	 * Sets the audit request dto.
-	 *
-	 * @param auditRequestDto
-	 *            the new audit request dto
-	 */
-	private void setAuditRequestDto(String eventName, String eventType, String description, String eventId) {
-		AuditRequestDto auditRequestDto = new AuditRequestDto();
-		if (!validateSecurityContextHolder()) {
-
-		}
-
-		auditRequestDto.setEventId(eventId);
-		auditRequestDto.setId("NO_ID");
-		auditRequestDto.setIdType("NO_ID_TYPE");
-		auditRequestDto.setEventName(eventName);
-		auditRequestDto.setEventType(eventType);
-		auditRequestDto.setModuleId("KER-MSD");
-		auditRequestDto.setModuleName("Kernel masterdata");
-		auditRequestDto.setDescription(description);
-		auditRequestDto.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
-		auditRequestDto.setHostIp(hostIpAddress);
-		auditRequestDto.setHostName(hostName);
-		auditRequestDto.setApplicationId(APPLICATION_ID);
-		auditRequestDto.setApplicationName(APPLICATION_NAME);
-		auditRequestDto.setSessionUserId(SecurityContextHolder.getContext().getAuthentication().getName());
-		auditRequestDto.setSessionUserName(SecurityContextHolder.getContext().getAuthentication().getName());
-		auditRequestDto.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
-		callAuditManager(auditRequestDto);
-
-	}
-
 	/**
 	 * Validate security context holder.
 	 *
@@ -254,8 +210,8 @@ public class AuditUtil {
 
 		auditRequestDto.setHostIp(hostIpAddress);
 		auditRequestDto.setHostName(hostName);
-		auditRequestDto.setApplicationId(APPLICATION_ID);
-		auditRequestDto.setApplicationName(APPLICATION_NAME);
+		auditRequestDto.setApplicationId(eventEnum.getApplicationId());
+		auditRequestDto.setApplicationName(eventEnum.getApplicationName());
 		auditRequestDto.setSessionUserId(SecurityContextHolder.getContext().getAuthentication().getName());
 		auditRequestDto.setSessionUserName(SecurityContextHolder.getContext().getAuthentication().getName());
 		auditRequestDto.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());

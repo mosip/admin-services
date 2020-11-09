@@ -206,9 +206,11 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	public  BulkDataResponseDto insertDataToCSVFile(String tableName, String operation, String category,MultipartFile[] files)  {
     		
 			if (tableName.isBlank() || operation.isBlank() || files==null ||files.length==0) {
+				auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_ARGUMENT);
 				throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
 						BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage());
 			}
+			auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD,"{category:'"+category+"',tablename:'"+tableName+"',operation:'"+operation+"'}"));
     		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
     		mapper.init();
     		Class<?> entity=mapper.getEntity(tableName);
@@ -220,7 +222,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
             int[] numArr = {0};
             String[] status= {"PROCESS"};
             Arrays.asList(files).stream().forEach(file -> {
-            	auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_INSERT_CSV,file.getOriginalFilename()));
+            	auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV,operation + " from "+file.getOriginalFilename()));
             	ItemReader<Object> itemReader;  
                 JobExecution jobExecution = null;
                 
@@ -229,10 +231,12 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     				itemReader = itemReader(file,entity);
 					ItemWriter<List<Object>> itemWriter = itemWriterMapper(repoBeanName, operationMapper(operation),
 							entity);
+					
     		        ItemProcessor itemProcessor=processor(operation);
     		        JobParameters parameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters();
     		        jobExecution = jobLauncher.run(job(jobBuilderFactory, stepBuilderFactory, itemReader,itemProcessor, itemWriter),parameters);
     				JobInstance jobInstence=new JobInstance(jobExecution.getJobId(), "ETL-file-load");
+    				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_JOBDETAILS,jobExecution.getJobId().toString()));
     				StepExecution stepExecution=jobRepository.getLastStepExecution(jobInstence, "ETL-file-load");
     				status[0]=jobExecution.getStatus().toString();
     				numArr[0]+=stepExecution.getReadCount();
@@ -240,22 +244,22 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 						String msg = stepExecution.getExitStatus().getExitDescription().toString();
 						if (msg.length() >= 256) {
 							failureMessage.add(msg.substring(0, 250));
-							auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_INSERT_CSV_STATUS_ERROR,"{'csvFileName': '"+file.getOriginalFilename()+"', 'message': '"+msg.substring(0, 250)+"'}"));
+							auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV_STATUS_ERROR,"{filename: '"+file.getOriginalFilename()+"',operation:'"+operation+"',jobid:'"+jobExecution.getJobId()+"', message: '"+msg.substring(0, 250)+"'}"));
 						} else {
 							failureMessage.add(msg);
-							auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_INSERT_CSV_STATUS_ERROR,"{'csvFileName': '"+file.getOriginalFilename()+"', 'message': '"+msg+"'}"));
+							auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV_STATUS_ERROR,"{filename: '"+file.getOriginalFilename()+"',operation:'"+operation+"',jobid:'"+jobExecution.getJobId()+"',message: '"+msg+"'}"));
 						}
     				}
     				else
-    				    auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_INSERT_CSV_STATUS,"{'csvFileName': '"+file.getOriginalFilename()+"', 'message': '"+jobExecution.getStatus().toString()+"'}"));
+    				    auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV_STATUS,"{fileName: '"+file.getOriginalFilename()+"',operation:'"+operation+"',jobid:'"+jobExecution.getJobId()+"',message: '"+jobExecution.getStatus().toString()+"'}"));
     			}catch (IOException e) {
-    				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,"masterdata - "+e.getMessage()));
+    				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,"{fileName: '"+file.getOriginalFilename()+"',operation:'"+operation+"',error: "+e.getMessage()+"}"));
     				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
     	  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
     			}
     			catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
     					| JobParametersInvalidException e) {
-    				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,"masterdata - "+e.getMessage()));
+    				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,"{fileName: '"+file.getOriginalFilename()+"',operation:'"+operation+"',error: "+e.getMessage()+"}"));
     				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
     	  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
     			}
@@ -269,7 +273,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	@Override
     	public BulkDataResponseDto bulkDataOperation(String tableName,String operation,String category,MultipartFile[] files) {
     		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
-			auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_INSERT_CATEGORY,category));
+    		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CATEGORY,category));
     		if(category.equalsIgnoreCase("masterdata")) {
     			bulkDataResponseDto=insertDataToCSVFile(tableName, operation, category, files);
     		}
@@ -290,10 +294,11 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	public BulkDataResponseDto uploadPackets(MultipartFile[] files,String operation, String category) {
     		
     		if ( files==null ||files.length==0) {
+    			auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_ARGUMENT);
 				throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
 						BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage());
 			}
-    		
+    		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD,"{category:'"+category+"',operation:'"+operation+"'}"));
     		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
     		List<String> fileNames = new ArrayList<>();
     		int[] numArr = {0};
@@ -302,6 +307,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     		List<String> failureMessage = new ArrayList<String>();
     		String[] msgArr= {"FAILED"};
     	    Arrays.asList(files).stream().forEach(file -> {
+    	    	auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_PACKET_UPLOAD, file.getOriginalFilename()));
     	    	 HttpHeaders headers = new HttpHeaders();
     	         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
     	         MultiValueMap<String, String> fileMap = new LinkedMultiValueMap<>();
@@ -329,7 +335,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	             if(!josnObject.get("response").equals(null)) {
     	            	 numArr[0]++;
     	            	 msgArr[0]="Success";
-    	            	 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_PACKET_STATUS,"{'packetId': '"+file.getOriginalFilename()+"', 'message': 'success'}"));
+    	            	 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_PACKET_STATUS,"{packetid: '"+file.getOriginalFilename()+"', message: 'success'}"));
     	            	 
     	             }else {
     	            	 String str=josnObject.get("errors").toString();
@@ -338,18 +344,18 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	            	 
     	            	 failureMessage.add("{'packetId': '"+file.getOriginalFilename()+"', 'message': '"+josnObject1.get("message").toString()+"'}");
     	            	// failureMessage.put(file.getOriginalFilename(), josnObject1.get("message").toString());
-    	                auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_PACKET_STATUS_ERROR,"{'packetId': '"+file.getOriginalFilename()+"', 'message': '"+josnObject1.get("message").toString()+"'}"));
+    	                auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_PACKET_STATUS_ERROR,"{packetid: '"+file.getOriginalFilename()+"', message: '"+josnObject1.get("message").toString()+"'}"));
     	             }
     	         } catch (HttpClientErrorException e) {
-    	        	 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,"packet-"+e.getMessage()));
+    	        	 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,"{packetid: '"+file.getOriginalFilename()+"',operation:'"+operation+"',error: "+e.getMessage()+"}"));
     	        	 throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
     		  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
     	         } catch (IOException e) {
-    	        	 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,"packet-"+e.getMessage()));
+    	        	 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,"{packetid: '"+file.getOriginalFilename()+"',operation:'"+operation+"',error: "+e.getMessage()+"}"));
     	        	 throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
     		  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
     			} catch (JSONException e) {
-    				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,"packet-"+e.getMessage()));
+    				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,"{packetid: '"+file.getOriginalFilename()+"',operation:'"+operation+"',error: "+e.getMessage()+"}"));
     				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
     	  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
     			}
@@ -552,7 +558,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 		}
 	    
 	    private BulkUploadTranscation saveTranscationDetails(int count,String operation,String entityName,String category,List<String> failureMessage, String status) {
-	    	auditUtil.setAuditRequestDto(EventEnum.BULKDATA_UPLOAD_TRANSACTION_API_CALLED);
+	    	auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_TRANSACTION_API_CALLED,"{operation:'"+operation+"',category:'"+operation+"',entity:'"+entityName+"'}"));
 	    	BulkUploadTranscation bulkUploadTranscation=new BulkUploadTranscation();
 	    	LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
 	    	bulkUploadTranscation.setIsActive(true);
@@ -569,8 +575,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	    	}
 	    	bulkUploadTranscation.setUploadOperation(operation);
 	    	bulkUploadTranscation.setRecordCount(count);
-	    	bulkTranscationRepo.save(bulkUploadTranscation);
-	    	auditUtil.setAuditRequestDto(EventEnum.BULKDATA_UPLOAD_TRANSACTION_API_SUCCESS);
+	    	BulkUploadTranscation b=bulkTranscationRepo.save(bulkUploadTranscation);
+	    	auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_TRANSACTION_API_SUCCESS,b.getId()));
 			return bulkUploadTranscation;
 	    	
 	    }
