@@ -199,7 +199,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 					auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE_FAILURE,rId));
 				return isAuthorized;
 			}
-			auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE_FAILURE,rId));
+			
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
 			throwRestExceptions(e);
 		}
