@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -92,9 +93,9 @@ import io.mosip.admin.config.RepositoryListItemWriter;
 import io.mosip.admin.packetstatusupdater.exception.DataNotFoundException;
 import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
 import io.mosip.admin.packetstatusupdater.exception.RequestException;
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.admin.packetstatusupdater.util.EventEnum;
+import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 /**
  * BulkDataUpload service 
@@ -406,6 +407,15 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 				}
 
 			});
+			testConversionService.addConverter(new Converter<String, LocalTime>() {
+
+				@Override
+				public LocalTime convert(String text) {
+					return LocalTime.parse(text, DateTimeFormatter.ISO_TIME);
+				}
+
+			});
+
 			return testConversionService;
 		}
 	 @StepScope
