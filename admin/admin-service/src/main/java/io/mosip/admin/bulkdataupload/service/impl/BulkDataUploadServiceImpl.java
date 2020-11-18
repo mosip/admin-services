@@ -4,18 +4,22 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -228,7 +232,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
                 JobExecution jobExecution = null;
                 
     			try {
-    				csvValidator(file.getOriginalFilename(),file.getInputStream());
+    				csvValidator(file.getOriginalFilename(),file.getInputStream(),entity);
     				itemReader = itemReader(file,entity);
 					ItemWriter<List<Object>> itemWriter = itemWriterMapper(repoBeanName, operationMapper(operation),
 							entity);
@@ -612,15 +616,27 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 			}
 			return contextUser;
 		}
-	    private void csvValidator(String csvFileName, InputStream csvFile) throws IOException {
+	    private void csvValidator(String csvFileName, InputStream csvFile,Class clazz) throws IOException {
 	    	String ext=Files.getFileExtension(csvFileName);
 	    	if(!ext.equalsIgnoreCase("csv")) {
 	    		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_EXT_VALIDATOR_ISSUE, csvFileName));
 	    		throw new ValidationException("Supported format are only csv file");
 	    	}
 	    	int count=0;
+	    	int lineCount=0;
 	    	String line;
 	    	BufferedReader br;
+	    	Map<Integer,Field> fieldMap=new HashMap<>();
+	    	List<String> clazzfields=new ArrayList<>();
+	    	List<String> superclazzfields=new ArrayList<>();
+	    	for (Field field : clazz.getDeclaredFields()) {
+				field.setAccessible(true);
+				clazzfields.add(field.getName());
+	    	}
+	    	for (Field field : clazz.getSuperclass().getDeclaredFields()) {
+				field.setAccessible(true);
+				superclazzfields.add(field.getName());
+	    	}
 			try {
 				br = new BufferedReader(new InputStreamReader(csvFile));
 				while ((line = br.readLine()) != null) {
@@ -628,27 +644,177 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 			    	  
 			    	  String[] columns = l.split(",");
 			    	  count=columns.length;
+			    	  lineCount++;
+			    	  
+			    	  for(int i=0;i<count;i++) {
+			    		  if(clazzfields.contains(columns[i])) {
+			    			  fieldMap.put(i, clazz.getDeclaredField(columns[i]));
+			    		  }
+			    		  else if(superclazzfields.contains(columns[i])) {
+			    			  fieldMap.put(i, clazz.getSuperclass().getDeclaredField(columns[i]));
+			    		  }
+			    		  else {
+			    			 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_INVALID_CSV_FILE, csvFileName));
+			  				throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"invalid field mentioned.The exception occured at line number "+lineCount);
+			  				
+			    		  }
+			    	  }
+			    	  
 			    	  break;
 				}
-
+				List<String> linelist=new ArrayList<>();
+				Set<String> lineSet=new HashSet<>();
 				while ((line = br.readLine()) != null) {
 					 String l = line.trim(); // Remove end of line. You can print line here.'  
 			    	 String[] columns = l.split(",");
+			    	 lineCount++;
+			    	 
 					 if (count!=columns.length) {
 						 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
 						 throw new ValidationException("all the rows have same number of element in csv file");
+					 }
+					 String il="";
+					 for(int i=0;i<columns.length;i++) {
+						 if(columns[i].isBlank()) {
+							 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
+							 throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"Field is missing.The exception occured at line number "+lineCount); 
+						 }
+						 
+						 if(!validateDataType(fieldMap.get(i),columns[i].trim())) {
+							 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
+							 throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"Invalid data type.The exception occured at line number "+lineCount); 
+						  
+						 }
+						 il=il+columns[i].trim();
+					 }
+					 linelist.add(il);
+					 lineSet.add(il);
+					 if(linelist.size()!=lineSet.size()) {
+						 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
+						 throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"Duplicate records found.The exception occured at line number "+lineCount);
 					 }
 				}
 			    br.close();
 			    
 			} catch (IOException e) {
+				lineCount++;
 				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_INVALID_CSV_FILE, csvFileName));
-				throw new ValidationException("invalid csv file",e);
+				throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"invalid csv file.The exception occured at line number "+lineCount,e);
 				
-			}
+			} catch (NoSuchFieldException | SecurityException e) {
+				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_INVALID_CSV_FILE, csvFileName));
+				throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"invalid field mentioned.The exception occured at line number "+lineCount,e);
+				
+			} 
 	    	
 	    }
 
+	    private boolean validateDataType(Field field, String value) {
+			String fieldType = field.getType().getTypeName();
+			if (LocalDateTime.class.getName().equals(fieldType)) {
+				try {
+					LocalDateTime.parse(value);
+				}catch(DateTimeParseException e) {
+					return false;
+				}
+			}
+			if (LocalTime.class.getName().equals(fieldType)) {
+				try {
+					LocalTime.parse(value);
+				}catch(DateTimeParseException e) {
+					return false;
+				}
+			}
+			if (LocalDate.class.getName().equals(fieldType)) {
+				try {
+					LocalDate.parse(value);
+				}catch(DateTimeParseException e) {
+					return false;
+				}
+			}
+			if (Long.class.getName().equals(fieldType)) {
+				try {
+					Long.parseLong(value);
+				}catch(NumberFormatException e) {
+					return false;
+				}
+			}
+			if (long.class.getName().equals(fieldType)) {
+				try {
+					Long.parseLong(value);
+				}catch(NumberFormatException e) {
+					return false;
+				}
+			}
+			if (Integer.class.getName().equals(fieldType)) {
+				try {
+					Integer.parseInt(value);
+				}catch(NumberFormatException  e) {
+					return false;
+				}
+			}
+			if (int.class.getName().equals(fieldType)) {
+				try {
+					Integer.parseInt(value);
+				}catch(NumberFormatException  e) {
+					return false;
+				}
+			}
+			if (Float.class.getName().equals(fieldType)) {
+				try {
+					Float.parseFloat(value);
+				}catch(NumberFormatException  e) {
+					return false;
+				}
+			}
+			if (float.class.getName().equals(fieldType)) {
+				try {
+					Float.parseFloat(value);
+				}catch(NumberFormatException  e) {
+					return false;
+				}
+			}
+			if (Double.class.getName().equals(fieldType)) {
+				try {
+					Double.parseDouble(value);
+				}catch(NumberFormatException  e) {
+					return false;
+				}
+			}
+			if (double.class.getName().equals(fieldType)) {
+				try {
+					Double.parseDouble(value);
+				}catch(NumberFormatException  e) {
+					return false;
+				}
+			}
+			if (Boolean.class.getName().equals(fieldType)) {
+				if(!value.equalsIgnoreCase("true")&&!value.equalsIgnoreCase("false")) {
+					return false;
+				}
+			}
+			if (boolean.class.getName().equals(fieldType)) {
+				if(!value.equalsIgnoreCase("true")&&!value.equalsIgnoreCase("false")) {
+					return false;
+				}
+			}
+			if (Short.class.getName().equals(fieldType)) {
+				try {
+					Short.valueOf(value);
+				}catch(NumberFormatException  e) {
+					return false;
+				} 
+			}
+			if (short.class.getName().equals(fieldType)) {
+				try {
+					Short.valueOf(value);
+				}catch(NumberFormatException  e) {
+					return false;
+				} 
+			}
+			return true;
+		}
+	    
 		private static String operationMapper(String operationName) {
 			if (operationName.equalsIgnoreCase("insert"))
 				operationName = "create";
