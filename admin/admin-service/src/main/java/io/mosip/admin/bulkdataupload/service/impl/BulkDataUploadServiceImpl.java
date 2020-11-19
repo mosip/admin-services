@@ -713,21 +713,21 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 			String fieldType = field.getType().getTypeName();
 			if (LocalDateTime.class.getName().equals(fieldType)) {
 				try {
-					LocalDateTime.parse(value);
+					LocalDateTime.parse(value, DateTimeFormatter.ISO_DATE_TIME);
 				}catch(DateTimeParseException e) {
 					return false;
 				}
 			}
 			if (LocalTime.class.getName().equals(fieldType)) {
 				try {
-					LocalTime.parse(value);
+					LocalTime.parse(value,DateTimeFormatter.ISO_TIME);
 				}catch(DateTimeParseException e) {
 					return false;
 				}
 			}
 			if (LocalDate.class.getName().equals(fieldType)) {
 				try {
-					LocalDate.parse(value);
+					LocalDate.parse(value,DateTimeFormatter.ISO_DATE);
 				}catch(DateTimeParseException e) {
 					return false;
 				}
