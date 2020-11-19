@@ -671,7 +671,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 			    	 
 					 if (count!=columns.length) {
 						 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
-						 throw new ValidationException("all the rows have same number of element in csv file");
+						 throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"all the rows have same number of element in csv file"); 
+						
 					 }
 					 String il="";
 					 for(int i=0;i<columns.length;i++) {
@@ -713,21 +714,21 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 			String fieldType = field.getType().getTypeName();
 			if (LocalDateTime.class.getName().equals(fieldType)) {
 				try {
-					LocalDateTime.parse(value);
+					LocalDateTime.parse(value, DateTimeFormatter.ISO_DATE_TIME);
 				}catch(DateTimeParseException e) {
 					return false;
 				}
 			}
 			if (LocalTime.class.getName().equals(fieldType)) {
 				try {
-					LocalTime.parse(value);
+					LocalTime.parse(value,DateTimeFormatter.ISO_TIME);
 				}catch(DateTimeParseException e) {
 					return false;
 				}
 			}
 			if (LocalDate.class.getName().equals(fieldType)) {
 				try {
-					LocalDate.parse(value);
+					LocalDate.parse(value,DateTimeFormatter.ISO_DATE);
 				}catch(DateTimeParseException e) {
 					return false;
 				}
