@@ -671,7 +671,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 			    	 
 					 if (count!=columns.length) {
 						 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
-						 throw new ValidationException("all the rows have same number of element in csv file");
+						 throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"all the rows have same number of element in csv file"); 
+						
 					 }
 					 String il="";
 					 for(int i=0;i<columns.length;i++) {
