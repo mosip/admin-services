@@ -712,6 +712,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 
 	    private boolean validateDataType(Field field, String value) {
 			String fieldType = field.getType().getTypeName();
+			if (value.equalsIgnoreCase("NULL")) {
+				return true;
+			}
 			if (LocalDateTime.class.getName().equals(fieldType)) {
 				try {
 					LocalDateTime.parse(value, DateTimeFormatter.ISO_DATE_TIME);

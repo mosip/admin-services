@@ -234,6 +234,12 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 
 						PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorMessage());
 			}
+			else if (validationErrorsList.size() == 1
+					&& validationErrorsList.get(0).getErrorCode().equals("ADM-PKT-001")) {
+				throw new RequestException(PacketStatusUpdateErrorCode.ADMIN_UNAUTHORIZED.getErrorCode(),
+
+						PacketStatusUpdateErrorCode.ADMIN_UNAUTHORIZED.getErrorMessage());
+			}
 		}
 		ResponseWrapper<T> responseObject = null;
 		try {
