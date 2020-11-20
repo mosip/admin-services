@@ -145,6 +145,7 @@ public class Mapper {
 		repositoryMap.put(TemplateFileFormat.class,"templateFileFormatRepository");
 		repositoryMap.put(TemplateType.class,"templateTypeRepository");
 		repositoryMap.put(Title.class,"titleRepository");
+		repositoryMap.put(UserDetails.class,"userDetailsRepository");
 		repositoryMap.put(UserDetailsHistory.class,"userDetailsHistoryRepository");
 		repositoryMap.put(ValidDocument.class,"validDocumentRepository");
 		repositoryMap.put(Zone.class,"zoneRepository");
