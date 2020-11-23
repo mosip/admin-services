@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -97,9 +98,11 @@ import io.mosip.admin.config.RepositoryListItemWriter;
 import io.mosip.admin.packetstatusupdater.exception.DataNotFoundException;
 import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
 import io.mosip.admin.packetstatusupdater.exception.RequestException;
+
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.admin.packetstatusupdater.util.EventEnum;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 /**
  * BulkDataUpload service 
@@ -411,6 +414,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 				}
 
 			});
+
 			testConversionService.addConverter(new Converter<String, LocalTime>() {
 
 				@Override
@@ -419,6 +423,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 				}
 
 			});
+
 
 			return testConversionService;
 		}
@@ -620,7 +625,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	    	String ext=Files.getFileExtension(csvFileName);
 	    	if(!ext.equalsIgnoreCase("csv")) {
 	    		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_EXT_VALIDATOR_ISSUE, csvFileName));
+
 	    		throw new ValidationException("Supported format are only csv file");
+
 	    	}
 	    	int count=0;
 	    	int lineCount=0;
@@ -671,8 +678,10 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 			    	 
 					 if (count!=columns.length) {
 						 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
+
 						 throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"all the rows have same number of element in csv file"); 
 						
+
 					 }
 					 String il="";
 					 for(int i=0;i<columns.length;i++) {
@@ -725,13 +734,16 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 			if (LocalTime.class.getName().equals(fieldType)) {
 				try {
 					LocalTime.parse(value,DateTimeFormatter.ISO_TIME);
+
 				}catch(DateTimeParseException e) {
 					return false;
 				}
 			}
 			if (LocalDate.class.getName().equals(fieldType)) {
 				try {
+
 					LocalDate.parse(value,DateTimeFormatter.ISO_DATE);
+
 				}catch(DateTimeParseException e) {
 					return false;
 				}
@@ -818,7 +830,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 			}
 			return true;
 		}
-	    
+
 		private static String operationMapper(String operationName) {
 			if (operationName.equalsIgnoreCase("insert"))
 				operationName = "create";
