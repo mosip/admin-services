@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PacketStatusUpdateDto {
-	
+
 	private String id;
 
 	private String registrationId;
