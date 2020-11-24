@@ -53,7 +53,22 @@ public enum EventEnum {
 	BULKDATA_TRANSACTION_ALL_SUCCESS("ADM-BLK-202",AuditConstant.AUDIT_SYSTEM,"Request to get all the transaction details","Getting transaction details for all the transactions is success","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 	BULKDATA_TRANSACTION_ALL_ERROR("ADM-BLK-409",AuditConstant.AUDIT_SYSTEM,"Request to get all the transaction details","Unable to retrieve transaction details","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 	BULKDATA_INVALID_ARGUMENT("ADM-BLK-410",AuditConstant.AUDIT_SYSTEM,"Request for bulkdata insert operation","Invalid argument","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
-	BULKDATA_PACKET_UPLOAD("ADM-BLK-112",AuditConstant.AUDIT_SYSTEM,"Request for bulkdata upload operation","Bulk data packet upload of %s file","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME);
+	BULKDATA_PACKET_UPLOAD("ADM-BLK-112",AuditConstant.AUDIT_SYSTEM,"Request for bulkdata upload operation","Bulk data packet upload of %s file","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME), 
+	VIRUS_SCAN("ADM-PKT-110",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s is virus scanned","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	VALIDATE_PACKET("ADM-PKT-111",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s is packet validated","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	OSI_VALIDATE("ADM-PKT-112",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s is osi validated","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	EXTERNAL_INTEGRATION("ADM-PKT-113",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s is external integration validated","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	DEMOGRAPHIC_VERIFICATION("ADM-PKT-114",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s is demographically verified","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	MANUAL_VERIFICATION("ADM-PKT-115",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s is manually verified","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	BIOGRAPHIC_VERIFICATION("ADM-PKT-116",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s is biometrically  verified","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	UIN_GENERATOR("ADM-PKT-117",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s has uin generated","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	NOTIFICATION("ADM-PKT-118",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s has notification sent","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	PACKET_REPROCESS("ADM-PKT-119",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s is being reprocessed","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	QUALITY_CHECK("ADM-PKT-120",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s has quality check done","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	BIOMETRIC_AUTHENTICATION("ADM-PKT-121",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s has Biometric Authentication done","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	SECUREZONE_NOTIFICATION("ADM-PKT-122",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s has notification received to securezone","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	PRINT("ADM-PKT-123",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s is at print","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	;
 	
 	
 	private final String eventId;
@@ -162,6 +177,34 @@ public enum EventEnum {
 			return getEventEnumWithValue(PRINT_SERVICE,ps.getRegistrationId());
 		if(ps.getTransactionTypeCode().equalsIgnoreCase("PRINT_POSTAL_SERVICE"))
 			return getEventEnumWithValue(PRINT_POSTAL_SERVICE,ps.getRegistrationId());
+		if(ps.getTransactionTypeCode().equalsIgnoreCase("VIRUS_SCAN")) 
+			return getEventEnumWithValue(VIRUS_SCAN,ps.getRegistrationId());
+		if(ps.getTransactionTypeCode().equalsIgnoreCase("VALIDATE_PACKET")) 
+			return getEventEnumWithValue(VALIDATE_PACKET,ps.getRegistrationId());
+		if(ps.getTransactionTypeCode().equalsIgnoreCase("OSI_VALIDATE")) 
+			return getEventEnumWithValue(OSI_VALIDATE,ps.getRegistrationId());
+		if(ps.getTransactionTypeCode().equalsIgnoreCase("EXTERNAL_INTEGRATION")) 
+			return getEventEnumWithValue(EXTERNAL_INTEGRATION,ps.getRegistrationId());
+		if(ps.getTransactionTypeCode().equalsIgnoreCase("DEMOGRAPHIC_VERIFICATION")) 
+			return getEventEnumWithValue(DEMOGRAPHIC_VERIFICATION,ps.getRegistrationId());
+		if(ps.getTransactionTypeCode().equalsIgnoreCase("MANUAL_VERIFICATION")) 
+			return getEventEnumWithValue(MANUAL_VERIFICATION,ps.getRegistrationId());
+		if(ps.getTransactionTypeCode().equalsIgnoreCase("BIOGRAPHIC_VERIFICATION")) 
+			return getEventEnumWithValue(BIOGRAPHIC_VERIFICATION,ps.getRegistrationId());
+		if(ps.getTransactionTypeCode().equalsIgnoreCase("UIN_GENERATOR")) 
+			return getEventEnumWithValue(UIN_GENERATOR,ps.getRegistrationId());
+		if(ps.getTransactionTypeCode().equalsIgnoreCase("NOTIFICATION")) 
+			return getEventEnumWithValue(NOTIFICATION,ps.getRegistrationId());
+		if(ps.getTransactionTypeCode().equalsIgnoreCase("PACKET_REPROCESS")) 
+			return getEventEnumWithValue(PACKET_REPROCESS,ps.getRegistrationId());
+		if(ps.getTransactionTypeCode().equalsIgnoreCase("QUALITY_CHECK")) 
+			return getEventEnumWithValue(QUALITY_CHECK,ps.getRegistrationId());
+		if(ps.getTransactionTypeCode().equalsIgnoreCase("BIOMETRIC_AUTHENTICATION")) 
+			return getEventEnumWithValue(BIOMETRIC_AUTHENTICATION,ps.getRegistrationId());
+		if(ps.getTransactionTypeCode().equalsIgnoreCase("SECUREZONE_NOTIFICATION")) 
+			return getEventEnumWithValue(SECUREZONE_NOTIFICATION,ps.getRegistrationId());
+		if(ps.getTransactionTypeCode().equalsIgnoreCase("PRINT")) 
+			return getEventEnumWithValue(PRINT,ps.getRegistrationId());
 		return null;
 		
 	}
