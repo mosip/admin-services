@@ -12,16 +12,22 @@ ARG spring_config_url
 # can be passed during Docker build as build time environment for artifactory URL
 ARG artifactory_url
 
+# can be passed during Docker build as build time environment for glowroot
+ARG is_glowroot
+
 # environment variable to pass active profile such as DEV, QA etc at docker runtime
 ENV active_profile_env=${active_profile}
 
 # environment variable to pass github branch to pickup configuration from, at docker runtime
 ENV spring_config_label_env=${spring_config_label}
 
-
 # environment variable to pass spring configuration url, at docker runtime
 ENV spring_config_url_env=${spring_config_url}
 
+ENV is_glowroot_env=${is_glowroot}
+
+# environment variable to pass artifactory url, at docker runtime
+ENV artifactory_url_env=${artifactory_url}
 
 # can be passed during Docker build as build time environment for github branch to pickup configuration from.
 ARG container_user=mosip
@@ -54,4 +60,14 @@ USER ${container_user_uid}:${container_user_gid}
 
 EXPOSE 8098
 
-CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","admin-service.jar"]
+CMD if [ "$is_glowroot_env" = "present" ]; then \
+    wget "${artifactory_url_env}"/artifactory/libs-release-local/io/mosip/testing/glowroot.zip ; \
+    unzip glowroot.zip ; \
+    rm -rf glowroot.zip ; \
+    sed -i 's/<service_name>/admin-service/g' glowroot/glowroot.properties ; \
+
+    java -jar -javaagent:glowroot/glowroot.jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" admin-service.jar ; \
+    else \
+
+    java -jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" admin-service.jar ; \
+    fi
