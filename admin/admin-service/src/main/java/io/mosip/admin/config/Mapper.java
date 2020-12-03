@@ -1,5 +1,10 @@
 package io.mosip.admin.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.stereotype.Component;
+
 import io.mosip.admin.bulkdataupload.entity.ApplicantValidDocument;
 import io.mosip.admin.bulkdataupload.entity.Application;
 import io.mosip.admin.bulkdataupload.entity.BiometricAttribute;
@@ -65,10 +70,6 @@ import io.mosip.admin.bulkdataupload.entity.UserDetailsHistory;
 import io.mosip.admin.bulkdataupload.entity.ValidDocument;
 import io.mosip.admin.bulkdataupload.entity.Zone;
 import io.mosip.admin.bulkdataupload.entity.ZoneUser;
-import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
-import java.util.Map;
 /**
  * This class give the repository based on entity
  * @author dhanendra
@@ -122,7 +123,7 @@ public class Mapper {
 		repositoryMap.put(MOSIPDeviceServiceHistory.class,"mosipDeviceServiceHistoryRepository");
 		repositoryMap.put(ReasonCategory.class,"reasonCategoryRepository");
 		repositoryMap.put(ReasonList.class,"reasonListRepository");
-		repositoryMap.put(RegExceptionalHoliday.class,"regExceptionalHolidayRepository");
+		repositoryMap.put(RegExceptionalHoliday.class, "RegExceptionalHolidayRepo");
 		repositoryMap.put(RegisteredDevice.class,"registeredDeviceRepository");
 		repositoryMap.put(RegisteredDeviceHistory.class,"registeredDeviceHistoryRepository");
 		repositoryMap.put(RegistrationCenter.class,"registrationCenterRepository");
@@ -144,6 +145,7 @@ public class Mapper {
 		repositoryMap.put(TemplateFileFormat.class,"templateFileFormatRepository");
 		repositoryMap.put(TemplateType.class,"templateTypeRepository");
 		repositoryMap.put(Title.class,"titleRepository");
+		repositoryMap.put(UserDetails.class,"userDetailsRepository");
 		repositoryMap.put(UserDetailsHistory.class,"userDetailsHistoryRepository");
 		repositoryMap.put(ValidDocument.class,"validDocumentRepository");
 		repositoryMap.put(Zone.class,"zoneRepository");

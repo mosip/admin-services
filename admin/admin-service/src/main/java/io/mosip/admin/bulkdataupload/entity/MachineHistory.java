@@ -98,5 +98,8 @@ public class MachineHistory extends BaseEntity implements Serializable {
 	 */
 	@Column(name = "key_index")
 	private String keyIndex;
+	
+	@Column(name = "regcntr_id", length = 10)
+	private String regCenterId;
 
 }

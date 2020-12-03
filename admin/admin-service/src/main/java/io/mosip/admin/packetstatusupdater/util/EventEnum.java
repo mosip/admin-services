@@ -152,7 +152,7 @@ public enum EventEnum {
 		
 		if(ps.getTransactionTypeCode().equalsIgnoreCase("PACKET_RECEIVER"))
 		{
-			if(null==ps.getParentTransactionCode() || ps.getParentTransactionCode().isBlank())
+			if(null==ps.getTransactionTypeCode() || ps.getTransactionTypeCode().isBlank())
 				return getEventEnumWithValue(PACKET_RECEIVER,ps.getRegistrationId());
 			return getEventEnumWithValue(PACKET_RECEIVER_WITH_TRANS_CODE,ps.getRegistrationId());
 		}
