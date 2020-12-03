@@ -140,7 +140,7 @@ public class Mapper {
 		repositoryMap.put(RegistrationCenterUserMachineHistory.class, "registrationCenterUserMachineHistoryRepository");
 		repositoryMap.put(RegistrationDeviceSubType.class,"registrationDeviceSubTypeRepository");
 		repositoryMap.put(RegistrationDeviceType.class,"registrationDeviceTypeRepository");
-		repositoryMap.put(RegWorkingNonWorking.class,"regWorkingNonWorkingRepo");
+		repositoryMap.put(RegWorkingNonWorking.class, "workingDaysRepo");
 		repositoryMap.put(Template.class,"templateRepository");
 		repositoryMap.put(TemplateFileFormat.class,"templateFileFormatRepository");
 		repositoryMap.put(TemplateType.class,"templateTypeRepository");
@@ -150,6 +150,7 @@ public class Mapper {
 		repositoryMap.put(ValidDocument.class,"validDocumentRepository");
 		repositoryMap.put(Zone.class,"zoneRepository");
 		repositoryMap.put(ZoneUser.class,"zoneUserRepository");
+		repositoryMap.put(DaysOfWeek.class, "daysOfWeekRepo");
     }
     public String getRepo(Class<?> clzz) {
     	return repositoryMap.get(clzz);
