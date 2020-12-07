@@ -1,5 +1,6 @@
 package io.mosip.kernel.syncdata.controller;
 
+import io.mosip.kernel.core.authmanager.model.AuthNResponse;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 
@@ -27,6 +28,19 @@ public class SyncAuthTokenController {
     public ResponseWrapper<String> getTokenWithUserIdPwd(@RequestBody @Valid RequestWrapper<String> requestWrapper) {
         ResponseWrapper<String> responseWrapper = new ResponseWrapper<String>();
         responseWrapper.setResponse(syncAuthTokenService.getAuthToken(requestWrapper.getRequest()));
+        return responseWrapper;
+    }
+
+    /**
+     * @Since 1.1.4
+     * @param requestWrapper
+     * @return
+     */
+    @ApiOperation(value = "API to send otp")
+    @PostMapping(value = "/authenticate/sendotp")
+    public ResponseWrapper<AuthNResponse> sendOTP(@RequestBody @Valid RequestWrapper<String> requestWrapper) {
+        ResponseWrapper<AuthNResponse> responseWrapper = new ResponseWrapper<>();
+        responseWrapper.setResponse(syncAuthTokenService.sendOTP(requestWrapper.getRequest()));
         return responseWrapper;
     }
 

@@ -5,6 +5,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.mosip.kernel.clientcrypto.dto.TpmCryptoRequestDto;
+import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
+import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
+import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
+import io.mosip.kernel.syncdata.dto.*;
+import io.mosip.kernel.syncdata.entity.Machine;
+import io.mosip.kernel.syncdata.exception.*;
+import io.mosip.kernel.syncdata.repository.MachineRepository;
+import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -32,18 +44,9 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.syncdata.constant.RegistrationCenterUserErrorCode;
 import io.mosip.kernel.syncdata.constant.UserDetailsErrorCode;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
-import io.mosip.kernel.syncdata.dto.SyncUserDetailDto;
-import io.mosip.kernel.syncdata.dto.SyncUserSaltDto;
-import io.mosip.kernel.syncdata.dto.UserDetailMapDto;
-import io.mosip.kernel.syncdata.dto.UserDetailRequestDto;
 import io.mosip.kernel.syncdata.dto.response.RegistrationCenterUserResponseDto;
 import io.mosip.kernel.syncdata.dto.response.UserDetailResponseDto;
 import io.mosip.kernel.syncdata.entity.UserDetails;
-import io.mosip.kernel.syncdata.exception.DataNotFoundException;
-import io.mosip.kernel.syncdata.exception.ParseResponseException;
-import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
-import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import io.mosip.kernel.syncdata.repository.UserDetailsRepository;
 import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
@@ -59,6 +62,8 @@ import io.mosip.kernel.syncdata.utils.MapperUtils;
 @RefreshScope
 @Service
 public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
+
+	private Logger logger = LoggerFactory.getLogger(SyncUserDetailsServiceImpl.class);
 
 	/** The rest template. */
 	@Autowired
@@ -90,6 +95,21 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 
 	@Autowired
 	UserDetailsRepository userDetailsRepository;
+
+	@Autowired
+	private SyncMasterDataServiceHelper serviceHelper;
+
+	@Autowired
+	private ClientCryptoManagerService clientCryptoManagerService;
+
+	@Autowired
+	private MapperUtils mapper;
+
+	@Autowired
+	private MachineRepository machineRepository;
+
+	@Value("${mosip.syncdata.tpm.required:false}")
+	private boolean isTPMRequired;
 
 	/*
 	 * (non-Javadoc)
@@ -168,8 +188,6 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 
 	/**
 	 * Gets the user detail from response.
-	 * 
-	 * @param <T>
 	 *
 	 * @param responseBody the response body
 	 * @return {@link UserDetailResponseDto}
@@ -291,6 +309,61 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 		String responseBody = response.getBody();
 		syncUserSaltDto = getUserSaltsFromResponse(responseBody);
 		return syncUserSaltDto;
+	}
+
+	@Override
+	public SyncUserDto getAllUserDetailsBasedOnKeyIndex(String keyIndex) {
+		RegistrationCenterMachineDto regCenterMachineDto = serviceHelper.getRegistrationCenterMachine(null, keyIndex);
+		List<Machine> machines = machineRepository.findByMachineIdAndIsActive(regCenterMachineDto.getMachineId());
+		if(machines == null || machines.isEmpty())
+			throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
+					MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
+
+		RegistrationCenterUserResponseDto registrationCenterResponseDto = getUsersBasedOnRegistrationCenterId(regCenterMachineDto.getRegCenterId());
+		List<String> userIds = registrationCenterResponseDto.getRegistrationCenterUsers()
+				.stream()
+				.map(RegistrationCenterUserDto::getUserId)
+				.collect(Collectors.toList());
+
+		UserDetailResponseDto userDetailResponseDto = getUserDetailsFromAuthServer(userIds);
+		SyncUserDto syncUserDto = new SyncUserDto();
+		if (userDetailResponseDto != null && userDetailResponseDto.getMosipUserDtoList() != null) {
+			List<UserDetailMapDto> userDetails = MapperUtils.mapUserDetailsToUserDetailMap(userDetailResponseDto.getMosipUserDtoList());
+			try {
+				if(userDetails.size() > 0) {
+					TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
+					tpmCryptoRequestDto.setValue(CryptoUtil.encodeBase64(mapper.getObjectAsJsonString(userDetails).getBytes()));
+					tpmCryptoRequestDto.setPublicKey(machines.get(0).getPublicKey());
+					tpmCryptoRequestDto.setTpm(this.isTPMRequired);
+					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
+					syncUserDto.setUserDetails(tpmCryptoResponseDto.getValue());
+				}
+			} catch (Exception e) {
+				logger.error("Failed to encrypt user data", e);
+			}
+		}
+		return syncUserDto;
+	}
+
+	private UserDetailResponseDto getUserDetailsFromAuthServer(List<String> userIds) {
+		StringBuilder userDetailsUri = new StringBuilder();
+		userDetailsUri.append(authUserDetailsBaseUri).append(authUserDetailsUri);
+		try {
+			HttpEntity<RequestWrapper<?>> userDetailReqEntity = getHttpRequest(userIds);
+			ResponseEntity<String> response = restTemplate.postForEntity(userDetailsUri.toString() + "/registrationclient",
+					userDetailReqEntity, String.class);
+			return getUserDetailFromResponse(response.getBody());
+		} catch (HttpServerErrorException | HttpClientErrorException ex) {
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+			if (ex.getRawStatusCode() == 401) {
+				throw  (!validationErrorsList.isEmpty()) ? new AuthNException(validationErrorsList) : new BadCredentialsException("Authentication failed from AuthManager");
+			}
+			if (ex.getRawStatusCode() == 403) {
+				throw (!validationErrorsList.isEmpty()) ? new AuthZException(validationErrorsList) : new AccessDeniedException("Access denied from AuthManager");
+			}
+			throw new SyncDataServiceException(UserDetailsErrorCode.USER_DETAILS_FETCH_EXCEPTION.getErrorCode(),
+					UserDetailsErrorCode.USER_DETAILS_FETCH_EXCEPTION.getErrorMessage(), ex);
+		}
 	}
 
 }

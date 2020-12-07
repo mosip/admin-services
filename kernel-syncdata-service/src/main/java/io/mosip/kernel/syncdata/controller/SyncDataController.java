@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 
 import javax.validation.Valid;
 
+import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,13 +22,6 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.syncdata.dto.ConfigDto;
-import io.mosip.kernel.syncdata.dto.IdSchemaDto;
-import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
-import io.mosip.kernel.syncdata.dto.SyncUserDetailDto;
-import io.mosip.kernel.syncdata.dto.SyncUserSaltDto;
-import io.mosip.kernel.syncdata.dto.UploadPublicKeyRequestDto;
-import io.mosip.kernel.syncdata.dto.UploadPublicKeyResponseDto;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
@@ -351,6 +345,24 @@ public class SyncDataController {
 		syncConfigResponse.setLastSyncTime(currentTimeStamp);
 		ResponseWrapper<ConfigDto> response = new ResponseWrapper<>();
 		response.setResponse(syncConfigResponse);
+		return response;
+	}
+
+	/**
+	 * API will get all the userDetails belonging to respective registration center based on keyindex provided
+	 * @param keyIndex
+	 * @return
+	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	@ResponseFilter
+	@GetMapping("/userdetails")
+	public ResponseWrapper<SyncUserDto> getUserDetailsBasedOnKeyIndex(
+			@RequestParam(value = "keyindex", required = true) String keyIndex) {
+		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
+		SyncUserDto syncUserDto = syncUserDetailsService.getAllUserDetailsBasedOnKeyIndex(keyIndex);
+		syncUserDto.setLastSyncTime(currentTimeStamp);
+		ResponseWrapper<SyncUserDto> response = new ResponseWrapper<>();
+		response.setResponse(syncUserDto);
 		return response;
 	}
 

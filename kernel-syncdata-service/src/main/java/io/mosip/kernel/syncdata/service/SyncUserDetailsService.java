@@ -1,6 +1,7 @@
 package io.mosip.kernel.syncdata.service;
 
 import io.mosip.kernel.syncdata.dto.SyncUserDetailDto;
+import io.mosip.kernel.syncdata.dto.SyncUserDto;
 import io.mosip.kernel.syncdata.dto.SyncUserSaltDto;
 
 /**
@@ -18,6 +19,7 @@ public interface SyncUserDetailsService {
 	 * @param regId - registration center id
 	 * @return {@link SyncUserDetailDto}
 	 */
+	@Deprecated
 	SyncUserDetailDto getAllUserDetail(String regId);
 
 	/**
@@ -28,4 +30,11 @@ public interface SyncUserDetailsService {
 	 */
 	@Deprecated
 	SyncUserSaltDto getUserSalts(String regId);
+
+	/**
+	 * get all the userDetails belonging to respective registration center based on keyindex provided
+	 * @param keyIndex
+	 * @return
+	 */
+	SyncUserDto getAllUserDetailsBasedOnKeyIndex(String keyIndex);
 }

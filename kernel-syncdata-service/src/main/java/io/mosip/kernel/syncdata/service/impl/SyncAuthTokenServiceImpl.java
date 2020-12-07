@@ -15,11 +15,13 @@ import io.mosip.kernel.core.authmanager.model.*;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.constant.SyncAuthErrorCode;
 import io.mosip.kernel.syncdata.dto.AuthLoginUser;
 import io.mosip.kernel.syncdata.dto.IdSchemaDto;
 import io.mosip.kernel.syncdata.dto.MachineAuthDto;
+import io.mosip.kernel.syncdata.dto.MachineOtpDto;
 import io.mosip.kernel.syncdata.dto.response.TokenResponseDto;
 import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.exception.RequestException;
@@ -45,6 +47,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -85,6 +88,9 @@ public class SyncAuthTokenServiceImpl {
     @Value("${mosip.kernel.registrationclient.secret.key}")
     private String secretKey;
 
+    @Value("${mosip.kernel.auth.sendotp.url}")
+    private String sendOTPUrl;
+
     @Autowired
     private ClientCryptoFacade clientCryptoFacade;
 
@@ -94,13 +100,12 @@ public class SyncAuthTokenServiceImpl {
     @Autowired
     private RestTemplate restTemplate;
 
-
-
     private static ObjectMapper objectMapper = new ObjectMapper();
 
     static  {
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     public String getAuthToken(String requestData) {
@@ -113,7 +118,7 @@ public class SyncAuthTokenServiceImpl {
             Machine machine = validateRequestData(header, payload, signature);
             try {
                 MachineAuthDto machineAuthDto = objectMapper.readValue(payload, MachineAuthDto.class);
-                validateRequestTimestamp(machineAuthDto);
+                validateRequestTimestamp(machineAuthDto.getTimestamp());
                 ResponseWrapper<TokenResponseDto> responseWrapper = getTokenResponseDTO(machineAuthDto);
                 String token = objectMapper.writeValueAsString(responseWrapper.getResponse());
                 byte[] cipher = clientCryptoFacade.encrypt(CryptoUtil.decodeBase64(machine.getPublicKey()),
@@ -126,6 +131,46 @@ public class SyncAuthTokenServiceImpl {
         }
         throw new RequestException(SyncAuthErrorCode.INVALID_REQUEST.getErrorCode(),
                 SyncAuthErrorCode.INVALID_REQUEST.getErrorMessage());
+    }
+
+    public AuthNResponse sendOTP(String requestData) {
+        String[] parts = requestData.split("\\.");
+        if(parts.length == 3) {
+            byte[] header = Base64.getUrlDecoder().decode(parts[0]);
+            byte[] payload = Base64.getUrlDecoder().decode(parts[1]);
+            byte[] signature = Base64.getUrlDecoder().decode(parts[2]);
+
+            validateRequestData(header, payload, signature);
+            try {
+                MachineOtpDto machineOtpDto = objectMapper.readValue(payload, MachineOtpDto.class);
+                validateRequestTimestamp(machineOtpDto.getTimestamp());
+
+                OtpUser otpUser = getOtpUser(machineOtpDto);
+                RequestWrapper<OtpUser> requestWrapper = new RequestWrapper<>();
+                requestWrapper.setRequest(otpUser);
+                requestWrapper.setRequesttime(LocalDateTime.now(ZoneId.of("UTC")));
+                UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(sendOTPUrl);
+                ResponseEntity<String> responseEntity = restTemplate.postForEntity(builder.build().toUri(),
+                        new HttpEntity<>(requestWrapper), String.class);
+
+                return objectMapper.readValue(responseEntity.getBody(), new TypeReference<AuthNResponse>() {});
+            } catch (Exception ex) {
+                logger.error("Failed to send otp", ex);
+            }
+        }
+        throw new RequestException(SyncAuthErrorCode.INVALID_REQUEST.getErrorCode(),
+                SyncAuthErrorCode.INVALID_REQUEST.getErrorMessage());
+    }
+
+    private OtpUser getOtpUser(MachineOtpDto machineOtpDto) {
+        OtpUser otpUser = new OtpUser();
+        otpUser.setUserId(machineOtpDto.getUserId());
+        otpUser.setOtpChannel(machineOtpDto.getOtpChannel());
+        otpUser.setAppId(machineOtpDto.getAppId());
+        otpUser.setUseridtype(machineOtpDto.getUseridtype());
+        otpUser.setTemplateVariables(machineOtpDto.getTemplateVariables());
+        otpUser.setContext(machineOtpDto.getContext());
+        return otpUser;
     }
 
 
@@ -154,12 +199,12 @@ public class SyncAuthTokenServiceImpl {
                 SyncAuthErrorCode.INVALID_REQUEST.getErrorMessage());
     }
 
-    private void validateRequestTimestamp(MachineAuthDto machineAuthDto) {
-        Objects.requireNonNull(machineAuthDto.getTimestamp());
-        long value = machineAuthDto.getTimestamp().until(LocalDateTime.now(ZoneOffset.UTC), ChronoUnit.MINUTES);
-        if(value <= 5) { return; }
+    private void validateRequestTimestamp(LocalDateTime requestTimestamp) {
+        Objects.requireNonNull(requestTimestamp);
+        long value = requestTimestamp.until(LocalDateTime.now(ZoneOffset.UTC), ChronoUnit.MINUTES);
+        if(value <= 5 && value >= 0) { return; }
 
-        logger.warn("Request timestamp validation failed : {}", machineAuthDto.getTimestamp());
+        logger.error("Request timestamp validation failed : {}", requestTimestamp);
         throw new RequestException(SyncAuthErrorCode.INVALID_REQUEST.getErrorCode(),
                 SyncAuthErrorCode.INVALID_REQUEST.getErrorMessage());
     }
@@ -205,10 +250,14 @@ public class SyncAuthTokenServiceImpl {
                 break;
         }
 
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         ResponseWrapper<TokenResponseDto> responseWrapper = objectMapper.readValue(responseEntity.getBody(),
                 new TypeReference<ResponseWrapper<TokenResponseDto>>() {});
+
+        if(Objects.nonNull(responseWrapper.getErrors()) && !responseWrapper.getErrors().isEmpty())
+            throw new RequestException(responseWrapper.getErrors().get(0).getErrorCode(),
+                    responseWrapper.getErrors().get(0).getMessage());
+
+        Objects.nonNull(responseWrapper.getResponse());
         responseWrapper.getResponse().setTimestamp(LocalDateTime.now(ZoneId.of("UTC")));
         return responseWrapper;
     }
