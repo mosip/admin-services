@@ -23,14 +23,9 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 	@Value("${mosip.secondary-language}")
 	private String secondaryLang;
 	
-	@Value("${spring.cloud.config.uri}")
-	private String cloudConfigUrl;
+//	@Value("${aplication.configuration.level.version}")
+//	private String version;
 	
-	@Value("${spring.cloud.config.name}")
-	private String cloudConfigName;
-	
-	@Value("${spring.profiles.active}")
-	private String activeProfile;
 	
 	@Autowired
 	private RestTemplate restTemplate;
@@ -38,16 +33,10 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 	@Override
 	public ApplicationConfigResponseDto getLanguageConfigDetails() {
 		ApplicationConfigResponseDto dto=new ApplicationConfigResponseDto();
-		try {
+		
 		dto.setPrimaryLangCode(primaryLangCode);
 		dto.setSecondaryLangCode(secondaryLang);
-		ResponseEntity<String> response = restTemplate.exchange(cloudConfigUrl+"/"+cloudConfigName+"/"+activeProfile, HttpMethod.GET, null, String.class);
-			dto.setVersion(JsonUtils.jsonToJacksonJson(response.getBody(), "version"));
-		} catch (Exception e) {
-			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_CONFIG_FETCH_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_CONFIG_FETCH_EXCEPTION.getErrorMessage() + " "
-							+ ExceptionUtils.parseException(e));
-		}
+//		dto.setVersion(version);
 		
 		return dto;
 	}
