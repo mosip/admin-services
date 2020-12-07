@@ -93,7 +93,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 
 		logger.info("syncClientSettings invoked for timespan from {} to {}", lastUpdated, currentTimestamp);
 				
-		RegistrationCenterMachineDto regCenterMachineDto = getRegistrationCenterMachine(regCenterId, keyIndex);
+		RegistrationCenterMachineDto regCenterMachineDto = serviceHelper.getRegistrationCenterMachine(regCenterId, keyIndex);
 		
 		String machineId = regCenterMachineDto.getMachineId();
 		String registrationCenterId = regCenterMachineDto.getRegCenterId();
@@ -165,50 +165,6 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		response.setDataToSync(list);
 		return response;
 	}
-	
-	/**
-	 * This method queries registrationCenterMachineRepository to fetch active registrationCenterMachine 
-	 * with input keyIndex.
-	 * 
-	 * KeyIndex is mandatory param
-	 * registrationCenterId is optional, if provided validates, if this matches the mapped registration center
-	 * 
-	 * @param registrationCenterId
-	 * @param keyIndex
-	 * @return RegistrationCenterMachineDto(machineId , registrationCenterId)
-	 * @throws SyncDataServiceException
-	 */
-	private RegistrationCenterMachineDto getRegistrationCenterMachine(String registrationCenterId, String keyIndex) throws SyncDataServiceException {
-		try {			
-			
-			List<Object[]> regCenterMachines = machineRepo.getRegistrationCenterMachineWithKeyIndex(keyIndex);
-			
-			if (regCenterMachines.isEmpty()) {
-				throw new RequestException(MasterDataErrorCode.INVALID_KEY_INDEX.getErrorCode(),
-						MasterDataErrorCode.INVALID_KEY_INDEX.getErrorMessage());
-			}
-			
-			String mappedRegCenterId = (String)((Object[])regCenterMachines.get(0))[0];
-			
-			if(mappedRegCenterId == null)
-				throw new RequestException(MasterDataErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
-						MasterDataErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
-			
-			if(registrationCenterId != null &&  !mappedRegCenterId.equals(registrationCenterId))
-				throw new RequestException(MasterDataErrorCode.REG_CENTER_UPDATED.getErrorCode(),
-						MasterDataErrorCode.REG_CENTER_UPDATED.getErrorMessage());
-			
-			return new RegistrationCenterMachineDto(mappedRegCenterId, (String)((Object[])regCenterMachines.get(0))[1]);
-			
-					
-		} catch (DataAccessException | DataAccessLayerException e) {
-			logger.error("Failed to fetch registrationCenterMachine : ", e);
-		}
-		
-		throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
-				MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorMessage());
-	}
-	
 	
 	@Override
 	public UploadPublicKeyResponseDto validateKeyMachineMapping(UploadPublicKeyRequestDto dto) {

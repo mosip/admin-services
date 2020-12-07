@@ -43,7 +43,8 @@ public class TestSecurityConfig extends WebSecurityConfigurerAdapter {
 	private String[] allowedEndPoints() {
 		return new String[] { "/assets/**", "/icons/**", "/screenshots/**", "/favicon**", "/**/favicon**", "/css/**",
 				"/js/**", "/*/error**", "/*/webjars/**", "/*/v2/api-docs", "/*/configuration/ui",
-				"/*/configuration/security", "/*/swagger-resources/**", "/*/swagger-ui.html" };
+				"/*/configuration/security", "/*/swagger-resources/**", "/*/swagger-ui.html" ,
+				"/**/authenticate/**"};
 	}
 
 	@Override

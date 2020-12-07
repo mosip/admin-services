@@ -8,12 +8,22 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withUnauthorizedRequest;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
+import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
+import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
+import io.mosip.kernel.syncdata.dto.SyncUserDto;
+import io.mosip.kernel.syncdata.entity.Machine;
+import io.mosip.kernel.syncdata.utils.MapperUtils;
+import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -68,6 +78,18 @@ public class SyncUserDetailsAndRolesServiceTest {
 	@MockBean
 	private SyncJobDefService registrationCenterUserService;
 
+	@Autowired
+	private SyncMasterDataServiceHelper serviceHelper;
+
+	@MockBean
+	private ClientCryptoManagerService clientCryptoManagerService;
+
+	@Autowired
+	private MapperUtils mapper;
+
+	@Value("${mosip.syncdata.tpm.required:false}")
+	private boolean isTPMRequired;
+
 	@Value("${mosip.kernel.syncdata.auth-manager-base-uri}")
 	private String authUserDetailsBaseUri;
 
@@ -92,6 +114,10 @@ public class SyncUserDetailsAndRolesServiceTest {
 
 	private List<UserDetails> registrationCenterUsers = null;
 
+	private String encodedTPMPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn4A-U6V4SpSeJmjl0xtBDgyFaHn1CvglvnpbczxiDakH6ks8tPvIYT4jDOU-9XaUYKuMFhLxS7G8qwJhv7GKpDQXphSXjgwv_l8A--KV6C1UVaHoAs4XuJPFdXneSd9uMH94GO6lWucyOyfaZLrf5F_--2Rr4ba4rBWw20OrAl1c7FrzjIQjzYXgnBMrvETXptxKKrMELwOOsuyc1Ju4wzPJHYjI0Em4q2BOcQLXqYjhsZhcYeTqBFxXjCOM3WQKLCIsh9RN8Hz-s8yJbQId6MKIS7HQNCTbhbjl1jdfwqRwmBaZz0Gt73I4_8SVCcCQzJWVsakLC1oJAFcmi3l_mQIDAQAB";
+	private byte[] tpmPublicKey = Base64.getUrlDecoder().decode(encodedTPMPublicKey);
+	private String keyIndex = "tetw:sdfsf:Sdfdfsd";
+	private List<Machine> machines = new ArrayList<Machine>();
 	
 
 	@Before
@@ -111,6 +137,10 @@ public class SyncUserDetailsAndRolesServiceTest {
 		userDetailsUri.append(authUserDetailsBaseUri).append(authUserDetailsUri);
 		builder = new StringBuilder();
 		builder.append(authBaseUri).append(authAllRolesUri);
+
+		Machine machine = new Machine("1001", "Laptop", "9876427", "172.12.01.128", "21:21:21:12", "1001",
+				"ENG", LocalDateTime.now(), encodedTPMPublicKey, keyIndex, "ZONE","10002", null,encodedTPMPublicKey, keyIndex);
+		machines.add(machine);
 
 	}
 
@@ -433,5 +463,25 @@ public class SyncUserDetailsAndRolesServiceTest {
 		mockRestServiceServer.expect(requestTo(builder.toString() + "/registrationclient"))
 				.andRespond(MockRestResponseCreators.withStatus(HttpStatus.FORBIDDEN));
 		syncRolesService.getAllRoles();
+	}
+
+	//======================
+
+	@Test
+	public void getAllUserDetailEncryptedTestCase() {
+		List<Object[]> queryResult = new ArrayList<>();
+		queryResult.add(new String[] {"regId", "mid"});
+		TpmCryptoResponseDto tpmCryptoResponseDto = new TpmCryptoResponseDto();
+		tpmCryptoResponseDto.setValue("testsetestsetset");
+		when(machineRespository.getRegistrationCenterMachineWithKeyIndex(Mockito.anyString())).thenReturn(queryResult);
+		when(userDetailsRepository.findByUsersByRegCenterId(Mockito.anyString())).thenReturn(registrationCenterUsers);
+		when(machineRespository.findByMachineIdAndIsActive(Mockito.anyString())).thenReturn(machines);
+		when(clientCryptoManagerService.csEncrypt(Mockito.any())).thenReturn(tpmCryptoResponseDto);
+		String response = "{\"id\":\"SYNCDATA.REQUEST\",\"version\":\"v1.0\",\"responsetime\":\"2019-03-31T10:40:29.935Z\",\"metadata\":null,\"response\":{\"mosipUserDtoList\":[{\"userId\":\"110001\",\"mobile\":\"9663175928\",\"mail\":\"110001@mosip.io\",\"langCode\":null,\"userPassword\":\"e1NTSEE1MTJ9L25EVy9tajdSblBMZFREYjF0dXB6TzdCTmlWczhKVnY1TXJ1aXRSZlBrSCtNVmJDTXVIM2lyb2thcVhsdlR6WkNKYXAwSncrSXc5SFc3aWRYUnpnaHBTQktrNXRSVTA3\",\"name\":\"user\",\"role\":\"REGISTRATION_ADMIN,REGISTRATION_OFFICER\"}]},\"errors\":null}";
+		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
+		mockRestServiceServer.expect(requestTo(userDetailsUri.toString() + "/registrationclient"))
+				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
+		SyncUserDto syncUserDto = syncUserDetailsService.getAllUserDetailsBasedOnKeyIndex(keyIndex);
+		Assert.assertNotNull(syncUserDto);
 	}
 }

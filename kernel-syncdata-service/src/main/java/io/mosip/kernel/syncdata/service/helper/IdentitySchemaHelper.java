@@ -115,9 +115,9 @@ public class IdentitySchemaHelper {
 			return pageDto.getData();
 			
 		} catch (Exception e) {
-			LOGGER.error("Failed to fetch latest schema", e);
-			throw new SyncDataServiceException(MasterDataErrorCode.SCHEMA_FETCH_FAILED.getErrorCode(), 
-					MasterDataErrorCode.SCHEMA_FETCH_FAILED.getErrorMessage() + " : " + 
+			LOGGER.error("Failed to fetch dynamic fields", e);
+			throw new SyncDataServiceException(MasterDataErrorCode.DYNAMIC_FIELD_FETCH_FAILED.getErrorCode(),
+					MasterDataErrorCode.DYNAMIC_FIELD_FETCH_FAILED.getErrorMessage() + " : " +
 							ExceptionUtils.buildMessage(e.getMessage(), e.getCause()));
 		}		
 	}
