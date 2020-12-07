@@ -152,6 +152,8 @@
 
 	<modules>
 		<module>admin-service</module>
+		<module>kernel-masterdata-service</module>
+        <module>kernel-syncdata-service</module>
 	</modules>
 
 	<dependencies>
@@ -372,7 +374,7 @@
 					<target>${maven.compiler.target}</target>
 				</configuration>
 			</plugin>	
-<!--			<plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
@@ -403,7 +405,7 @@
  				<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
 				 <format>json</format> 
 			</configuration>
-			</plugin> -->
+			</plugin> 
 		</plugins>
 	</build>
 </project>
