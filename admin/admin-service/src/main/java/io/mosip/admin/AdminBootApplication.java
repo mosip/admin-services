@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-@SpringBootApplication(scanBasePackages = { "io.mosip.admin.*", "io.mosip.kernel.auth.*" })
+@SpringBootApplication(scanBasePackages = { "io.mosip.admin.*", "${mosip.auth.adapter.impl.basepackage}" })
 @EnableAsync
 public class AdminBootApplication {
 
