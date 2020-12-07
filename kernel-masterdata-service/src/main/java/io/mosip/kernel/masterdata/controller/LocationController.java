@@ -118,6 +118,24 @@ public class LocationController {
 		responseWrapper.setResponse(locationHierarchyService.getLocationHierarchyByLangCode(locationCode, langCode));
 		return responseWrapper;
 	}
+	
+	
+	/**
+	 * 
+	 * @param locationCode location code
+	 * @param langCode     language code
+	 * @return list of location hierarchies
+	 */
+	@ResponseFilter
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN','GLOBAL_ADMIN','RESIDENT')")
+	@GetMapping(value = "info/{locationcode}/{langcode}")
+	public ResponseWrapper<LocationExtnDto> getLocationDetailsByLangCode(
+			@PathVariable("locationcode") String locationCode, @PathVariable("langcode") String langCode) {
+
+		ResponseWrapper<LocationExtnDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(locationHierarchyService.getLocationDetailsByLangCode(locationCode, langCode));
+		return responseWrapper;
+	}
 
 	/**
 	 * @param hierarchyName hierarchy Name

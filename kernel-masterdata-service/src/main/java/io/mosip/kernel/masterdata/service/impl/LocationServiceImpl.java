@@ -1101,4 +1101,25 @@ public class LocationServiceImpl implements LocationService {
 		return locationLevelResponseDto;
 	}
 
+	@Override
+	public LocationExtnDto getLocationDetailsByLangCode(String locationCode, String langCode) {
+		LocationExtnDto location = null;
+		
+		try {
+			Location loc = locationRepository
+					.findLocationByCodeAndLanguageCodeAndIsActiveTrue(locationCode,langCode);
+			if (loc!=null) {
+				location = MapperUtils.map(loc, LocationExtnDto.class);
+				
+			} else {
+				throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return location;
+	}
+
 }

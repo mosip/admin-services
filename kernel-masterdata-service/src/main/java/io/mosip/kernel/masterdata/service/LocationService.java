@@ -140,4 +140,6 @@ public interface LocationService {
 	public FilterResponseCodeDto locationFilterValues(FilterValueDto filterValueDto);
 
 	public LocationLevelResponseDto getLocationCodeByLangCode(String langCode);
+
+	public LocationExtnDto getLocationDetailsByLangCode(String locationCode, String langCode);
 }

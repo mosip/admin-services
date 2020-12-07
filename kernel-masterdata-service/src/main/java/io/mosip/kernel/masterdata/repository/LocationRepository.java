@@ -150,5 +150,8 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 	 */
 	@Query("FROM Location l WHERE l.langCode=?1 AND l.hierarchyLevel=?2")
 	Set<Location> findLocationByLangCodeLevel(String langCode, Short hierarchyLevel);
+	
+	@Query(value = "FROM Location l where l.code=?1 and l.langCode=?2 and (l.isDeleted is null or l.isDeleted=false) and isActive=true")
+	Location findLocationByCodeAndLanguageCodeAndIsActiveTrue(String locCode, String languagecode);
 
 }

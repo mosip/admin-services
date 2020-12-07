@@ -546,4 +546,31 @@ public class LocationControllerIntegrationTest {
 				.andExpect(status().isOk());
 	}
 	
+	@Test
+	@WithUserDetails("individual")
+	public void getInfonByLocCodeAndLangCode() throws Exception {
+		when(repo.findLocationByCodeAndLanguageCodeAndIsActiveTrue(Mockito.any(),Mockito.any())).thenReturn(location2);
+		
+		mockMvc.perform(get("/locations/info/MDDR/eng").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("individual")
+	public void getInfonByLocCodeAndLangCodeNotFound() throws Exception {
+		when(repo.findLocationByCodeAndLanguageCodeAndIsActiveTrue(Mockito.any(),Mockito.any())).thenReturn(null);
+		
+		mockMvc.perform(get("/locations/info/MDDR/eng").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("individual")
+	public void getInfonByLocCodeAndLangCodeDataAccessException() throws Exception {
+		when(repo.findLocationByCodeAndLanguageCodeAndIsActiveTrue(Mockito.any(),Mockito.any())).thenThrow(DataAccessLayerException.class);
+		
+		mockMvc.perform(get("/locations/info/MDDR/eng").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is5xxServerError());
+	}
+	
 }
