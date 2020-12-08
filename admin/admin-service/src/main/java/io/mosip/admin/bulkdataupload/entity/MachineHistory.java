@@ -66,6 +66,9 @@ public class MachineHistory extends BaseEntity implements Serializable {
 	@Column(name = "serial_num", nullable = false, length = 64)
 	private String serialNum;
 
+	@Column(name = "regcntr_id", length = 10)
+	private String regCenterId;
+
 	/**
 	 * Field for machine ip address
 	 */
@@ -93,13 +96,20 @@ public class MachineHistory extends BaseEntity implements Serializable {
 	@Column(name = "public_key", length=1024)
 	private String publicKey;
 	
+
 	/**
 	 * Field for reg machine public key SHA256 hash
 	 */
 	@Column(name = "key_index")
 	private String keyIndex;
 	
-	@Column(name = "regcntr_id", length = 10)
-	private String regCenterId;
+	@Column(name = "sign_public_key", nullable = true, length = 1024)
+	private String signPublicKey;
+
+	/**
+	 * Field for reg machine signature verification public key SHA256 hash
+	 */
+	@Column(name = "sign_key_index", nullable = true)
+	private String signKeyIndex;
 
 }

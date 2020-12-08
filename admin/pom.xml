@@ -207,7 +207,6 @@
 	</profiles>
 
 	<build>
-		<pluginManagement>
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -241,7 +240,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
-					<version>${maven.war.plugin.versoon}</version>
+					<version>${maven.war.plugin.version}</version>
 					<configuration>
 						<archive>
 							<manifest>
@@ -260,7 +259,7 @@
 					<artifactId>jacoco-maven-plugin</artifactId>
 					<version>${maven.jacoco.plugin.version}</version>
 				</plugin>
-				<plugin>
+			<!--	<plugin>
 					<groupId>org.sonarsource.scanner.maven</groupId>
 					<artifactId>sonar-maven-plugin</artifactId>
 					<version>${maven.sonar.plugin.version}</version>
@@ -272,7 +271,7 @@
 								</goals>
 							</execution>
 						</executions>
-				</plugin>
+				</plugin> -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
@@ -334,9 +333,6 @@
 					      </execution>
 				  	</executions>
         			</plugin>
-			</plugins>
-		</pluginManagement>
-		<plugins>
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
