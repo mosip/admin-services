@@ -482,8 +482,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	 }
 
 		@SuppressWarnings("unchecked")
-		public ItemWriter<List<Object>> insertItemWriter(String repoBeanName, String methodName) {
-			RepositoryListItemWriter<List<Object>> writer = new RepositoryListItemWriter<>();
+		public ItemWriter<List<Object>> insertItemWriter(String repoBeanName, String methodName, Class<?> entity) {
+			RepositoryListItemWriter<List<Object>> writer = new RepositoryListItemWriter<>(em,emf,entity);
 			writer.setRepository((BaseRepository<?, ?>) applicationContext.getBean(repoBeanName));
 			writer.setMethodName(methodName);
 			try {
@@ -841,7 +841,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 		ItemWriter<List<Object>> itemWriterMapper(String repoBeanName, String operationName, Class<?> entity) {
 			ItemWriter<List<Object>> item = null;
 			if (operationName.equalsIgnoreCase("create"))
-				item = insertItemWriter(repoBeanName, operationName);
+				item = insertItemWriter(repoBeanName, operationName,entity);
 			else if (operationName.equalsIgnoreCase("update"))
 				item = updateItemWriter(repoBeanName, entity);
 			else if (operationName.equalsIgnoreCase("delete"))

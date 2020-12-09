@@ -4,14 +4,21 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnitUtil;
+
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.adapter.AbstractMethodInvokingDelegator;
 import org.springframework.batch.item.adapter.DynamicMethodInvocationException;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.MethodInvoker;
 
+import io.mosip.admin.bulkdataupload.constant.BulkUploadErrorCode;
+import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 /**
  * This class will write the information in database
@@ -23,8 +30,16 @@ public class RepositoryListItemWriter<T> implements ItemWriter<T>, InitializingB
 
 	private BaseRepository<?, ?> repository;
     private String methodName;
-
+    private EntityManager em;
+    private EntityManagerFactory emf;
+    private Class<?> entity;
     public RepositoryListItemWriter() {
+    }
+    
+    public RepositoryListItemWriter(EntityManager em,EntityManagerFactory emf,Class<?> entity) {
+    	this.em=em;
+    	this.emf=emf;
+    	this.entity=entity;
     }
 
     public void setMethodName(String methodName) {
@@ -48,9 +63,17 @@ public class RepositoryListItemWriter<T> implements ItemWriter<T>, InitializingB
         Iterator i$ = items.iterator();
 
         while(i$.hasNext()) {
-            Object object = i$.next();
+        	Object object = i$.next();
+            PersistenceUnitUtil util = emf.getPersistenceUnitUtil();
+			Object projectId = util.getIdentifier(object);
+			T machin = (T) em.find(entity, projectId);
+			if(machin !=null) {
+				throw new RequestException(BulkUploadErrorCode.DUPLICATE_RECORD.getErrorCode(),
+						BulkUploadErrorCode.DUPLICATE_RECORD.getErrorMessage());
+			}
             invoker.setArguments(new Object[]{object});
             this.doInvoke(invoker);
+            
         }
 
     }
