@@ -369,8 +369,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     			}
     	         fileNames.add(file.getOriginalFilename());
     	      });
-    	      BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(numArr[0],operation,null,category,failureMessage,msgArr[0]);
-    	      bulkDataResponseDto=setResponseDetails(bulkUploadTranscation, null);
+    	      BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(numArr[0],operation,"",category,failureMessage,msgArr[0]);
+    	      bulkDataResponseDto=setResponseDetails(bulkUploadTranscation, "");
     		return bulkDataResponseDto;
     	}
         
