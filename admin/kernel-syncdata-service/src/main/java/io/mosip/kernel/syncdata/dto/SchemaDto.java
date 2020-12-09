@@ -54,6 +54,7 @@ public class SchemaDto {
 
 	private String alignmentGroup;
 	private RequiredOnDto visible;
+	private String changeAction;
 	
 	@EqualsAndHashCode.Include
 	public String caseIgnoredId() {
