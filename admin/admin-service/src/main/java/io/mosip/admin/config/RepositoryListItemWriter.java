@@ -4,6 +4,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnitUtil;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.adapter.AbstractMethodInvokingDelegator;
 import org.springframework.batch.item.adapter.DynamicMethodInvocationException;
@@ -12,7 +18,10 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.MethodInvoker;
 
+import io.mosip.admin.bulkdataupload.constant.BulkUploadErrorCode;
+import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+
 /**
  * This class will write the information in database
  * @author dhanendra
@@ -20,11 +29,19 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
  * @param <T>
  */
 public class RepositoryListItemWriter<T> implements ItemWriter<T>, InitializingBean {
-
+	private static final Logger LOGGER =  LoggerFactory.getLogger(RepositoryListItemWriter.class);
 	private BaseRepository<?, ?> repository;
     private String methodName;
-
+    private EntityManager em;
+    private EntityManagerFactory emf;
+    private Class<?> entity;
     public RepositoryListItemWriter() {
+    }
+    
+    public RepositoryListItemWriter(EntityManager em,EntityManagerFactory emf,Class<?> entity) {
+    	this.em=em;
+    	this.emf=emf;
+    	this.entity=entity;
     }
 
     public void setMethodName(String methodName) {
@@ -42,15 +59,23 @@ public class RepositoryListItemWriter<T> implements ItemWriter<T>, InitializingB
     }
 
     protected void doWrite(List<? extends T> items) throws Exception {
-        System.out.println("Writing to the repository with " + items.size() + " items.");
+    	LOGGER.info("SESSIONID", "bulkupload", "masterdata", "Writing to the repository with " + items.size() + " items.");
 
         MethodInvoker invoker = this.createMethodInvoker(this.repository, this.methodName);
         Iterator i$ = items.iterator();
 
         while(i$.hasNext()) {
-            Object object = i$.next();
+        	Object object = i$.next();
+            PersistenceUnitUtil util = emf.getPersistenceUnitUtil();
+			Object projectId = util.getIdentifier(object);
+			T machin = (T) em.find(entity, projectId);
+			if(machin !=null) {
+				throw new RequestException(BulkUploadErrorCode.DUPLICATE_RECORD.getErrorCode(),
+						BulkUploadErrorCode.DUPLICATE_RECORD.getErrorMessage());
+			}
             invoker.setArguments(new Object[]{object});
             this.doInvoke(invoker);
+            
         }
 
     }
