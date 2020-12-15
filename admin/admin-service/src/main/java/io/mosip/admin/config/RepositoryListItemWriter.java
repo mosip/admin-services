@@ -59,7 +59,7 @@ public class RepositoryListItemWriter<T> implements ItemWriter<T>, InitializingB
     }
 
     protected void doWrite(List<? extends T> items) throws Exception {
-    	LOGGER.info("SESSIONID", "masterdata", "", "Writing to the repository with " + items.size() + " items.");
+    	LOGGER.info("SESSIONID", "bulkupload", "masterdata", "Writing to the repository with " + items.size() + " items.");
 
         MethodInvoker invoker = this.createMethodInvoker(this.repository, this.methodName);
         Iterator i$ = items.iterator();
