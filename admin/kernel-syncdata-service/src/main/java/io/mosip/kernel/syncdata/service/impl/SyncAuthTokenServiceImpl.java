@@ -61,9 +61,6 @@ public class SyncAuthTokenServiceImpl {
 
     private static final Logger logger = LoggerFactory.getLogger(SyncAuthTokenServiceImpl.class);
 
-    @Value("${mosip.syncdata.tpm.required}")
-    private boolean isTPMRequired;
-
     @Value("${auth.token.header}")
     private String authTokenHeaderName;
 
@@ -122,7 +119,7 @@ public class SyncAuthTokenServiceImpl {
                 ResponseWrapper<TokenResponseDto> responseWrapper = getTokenResponseDTO(machineAuthDto);
                 String token = objectMapper.writeValueAsString(responseWrapper.getResponse());
                 byte[] cipher = clientCryptoFacade.encrypt(CryptoUtil.decodeBase64(machine.getPublicKey()),
-                        token.getBytes(), this.isTPMRequired);
+                        token.getBytes());
                 return CryptoUtil.encodeBase64(cipher);
 
             } catch (Exception ex) {
@@ -187,7 +184,7 @@ public class SyncAuthTokenServiceImpl {
 
             try {
                 boolean verified = clientCryptoFacade.validateSignature(CryptoUtil.decodeBase64(machines.get(0).getSignPublicKey()),
-                        signature, payload, isTPMRequired);
+                        signature, payload);
                 logger.info("validateRequestData verified : {}", verified);
                 if(verified) {  return machines.get(0); }
 
