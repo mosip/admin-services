@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.syncdata.constant.AdminServiceErrorCode;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.response.KeyPairGenerateResponseDto;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
@@ -51,9 +52,9 @@ public class KeymanagerHelper {
 
             return resp.getResponse();
         } catch (Exception e) {
-            LOGGER.error("Failed to fetch latest schema", e);
-            throw new SyncDataServiceException(MasterDataErrorCode.SCHEMA_FETCH_FAILED.getErrorCode(),
-                    MasterDataErrorCode.SCHEMA_FETCH_FAILED.getErrorMessage() + " : " +
+            LOGGER.error("Failed to fetch Certificate from keymanager", e);
+            throw new SyncDataServiceException(AdminServiceErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
+                    AdminServiceErrorCode.INTERNAL_SERVER_ERROR.getErrorMessage() + " : " +
                             ExceptionUtils.buildMessage(e.getMessage(), e.getCause()));
         }
     }
