@@ -81,9 +81,8 @@ public class MachineUtil {
 			try {
 				TPMT_PUBLIC tpmPublic = TPMT_PUBLIC.fromTpm(CryptoUtil.decodeBase64(encodedKey));
 				return CryptoUtil.encodeBase64(tpmPublic.toTpm());
-			} catch (Exception exception) {
-				logger.error("Failed to parse TPM public key using java.security.KeyFactory");
-
+			} catch (Throwable throwable) {
+				logger.error("Failed to parse TPM public key. Using java.security.KeyFactory, Considering it as NON-TPM key");
 				X509EncodedKeySpec keySpec = new X509EncodedKeySpec(CryptoUtil.decodeBase64(encodedKey));
 				KeyFactory kf = KeyFactory.getInstance(ALGORITHM);
 				PublicKey publicKey = kf.generatePublic(keySpec);
