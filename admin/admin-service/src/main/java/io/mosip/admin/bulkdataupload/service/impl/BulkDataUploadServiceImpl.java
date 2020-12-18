@@ -91,9 +91,18 @@ import io.mosip.admin.bulkdataupload.dto.BulkDataResponseDto;
 import io.mosip.admin.bulkdataupload.dto.PageDto;
 import io.mosip.admin.bulkdataupload.entity.BaseEntity;
 import io.mosip.admin.bulkdataupload.entity.BulkUploadTranscation;
+import io.mosip.admin.bulkdataupload.entity.Device;
+import io.mosip.admin.bulkdataupload.entity.DeviceHistory;
+import io.mosip.admin.bulkdataupload.entity.Machine;
+import io.mosip.admin.bulkdataupload.entity.MachineHistory;
+import io.mosip.admin.bulkdataupload.entity.UserDetails;
+import io.mosip.admin.bulkdataupload.entity.UserDetailsHistory;
+import io.mosip.admin.bulkdataupload.entity.ZoneUser;
+import io.mosip.admin.bulkdataupload.entity.ZoneUserHistory;
 import io.mosip.admin.bulkdataupload.repositories.BulkUploadTranscationRepository;
 import io.mosip.admin.bulkdataupload.service.BulkDataService;
 import io.mosip.admin.config.Mapper;
+import io.mosip.admin.config.MapperUtils;
 import io.mosip.admin.config.RepositoryListItemWriter;
 import io.mosip.admin.packetstatusupdater.exception.DataNotFoundException;
 import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
@@ -483,7 +492,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 
 		@SuppressWarnings("unchecked")
 		public ItemWriter<List<Object>> insertItemWriter(String repoBeanName, String methodName, Class<?> entity) {
-			RepositoryListItemWriter<List<Object>> writer = new RepositoryListItemWriter<>(em,emf,entity);
+			RepositoryListItemWriter<List<Object>> writer = new RepositoryListItemWriter<>(em,emf,entity,mapper,applicationContext);
 			writer.setRepository((BaseRepository<?, ?>) applicationContext.getBean(repoBeanName));
 			writer.setMethodName(methodName);
 			try {
@@ -517,6 +526,48 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 							object.setCreatedBy(machin.getCreatedBy());
 							object.setCreatedDateTime(machin.getCreatedDateTime());
 							baserepo.save(object);
+							String repoBeanName1;
+							BaseRepository baserepo1;
+				            switch(entity.getCanonicalName()) {
+				            case "io.mosip.admin.bulkdataupload.entity.ZoneUser":
+				        		repoBeanName1=mapper.getRepo(ZoneUserHistory.class);
+				        		baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
+				        		ZoneUserHistory userHistory = new ZoneUserHistory();
+				        		MapperUtils.map(object, userHistory);
+								MapperUtils.setBaseFieldValue(object, userHistory);
+								userHistory.setEffDTimes(userHistory.getUpdatedDateTime());
+								baserepo1.save(userHistory);
+				            break;
+				            case "io.mosip.admin.bulkdataupload.entity.UserDetails":
+				        		repoBeanName1=mapper.getRepo(UserDetailsHistory.class);
+				        		baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
+				        		UserDetailsHistory userDetailHistory = new UserDetailsHistory();
+				        		MapperUtils.map(object, userDetailHistory);
+								MapperUtils.setBaseFieldValue(object, userDetailHistory);
+								userDetailHistory.setEffDTimes(userDetailHistory.getUpdatedDateTime());
+								baserepo1.save(userDetailHistory);
+				            break;
+				            case "io.mosip.admin.bulkdataupload.entity.Machine":
+				        		repoBeanName1=mapper.getRepo(MachineHistory.class);
+				        		baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
+				        		MachineHistory machineHistory = new MachineHistory();
+				        		MapperUtils.map(object, machineHistory);
+								MapperUtils.setBaseFieldValue(object, machineHistory);
+								machineHistory.setEffectDateTime(machineHistory.getUpdatedDateTime());
+								baserepo1.save(machineHistory);
+				            break;
+				            case "io.mosip.admin.bulkdataupload.entity.Device":
+				        		repoBeanName1=mapper.getRepo(DeviceHistory.class);
+				        		baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
+				        		DeviceHistory deviceHistory = new DeviceHistory();
+				        		MapperUtils.map(object, deviceHistory);
+								MapperUtils.setBaseFieldValue(object, deviceHistory);
+								deviceHistory.setEffectDateTime(deviceHistory.getUpdatedDateTime());
+								baserepo1.save(deviceHistory);
+							break;
+							default:
+							break;
+				            }
 						} else {
 							throw new MasterDataServiceException(
 									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorCode(),
@@ -558,6 +609,49 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 							object.setUpdatedBy(machin.getUpdatedBy());
 							object.setUpdatedDateTime(machin.getUpdatedDateTime());
 							baserepo.save(object);
+							String repoBeanName1;
+				            BaseRepository baserepo1;
+				            switch(entity.getCanonicalName()) {
+				            case "io.mosip.admin.bulkdataupload.entity.ZoneUser":
+				        		repoBeanName1=mapper.getRepo(ZoneUserHistory.class);
+				        		baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
+				        		ZoneUserHistory userHistory = new ZoneUserHistory();
+				        		MapperUtils.map(object, userHistory);
+								MapperUtils.setBaseFieldValue(object, userHistory);
+								userHistory.setEffDTimes(userHistory.getDeletedDateTime());
+								baserepo1.save(userHistory);
+				            break;
+				            case "io.mosip.admin.bulkdataupload.entity.UserDetails":
+				        		repoBeanName1=mapper.getRepo(UserDetailsHistory.class);
+				        		baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
+				        		UserDetailsHistory userDetailHistory = new UserDetailsHistory();
+				        		MapperUtils.map(object, userDetailHistory);
+								MapperUtils.setBaseFieldValue(object, userDetailHistory);
+								userDetailHistory.setEffDTimes(userDetailHistory.getDeletedDateTime());
+								baserepo1.save(userDetailHistory);
+				            break;
+				            case "io.mosip.admin.bulkdataupload.entity.Machine":
+				        		repoBeanName1=mapper.getRepo(MachineHistory.class);
+				        		baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
+				        		MachineHistory machineHistory = new MachineHistory();
+				        		MapperUtils.map(object, machineHistory);
+								MapperUtils.setBaseFieldValue(object, machineHistory);
+								machineHistory.setEffectDateTime(machineHistory.getDeletedDateTime());
+								baserepo1.save(machineHistory);
+				            break;
+				            case "io.mosip.admin.bulkdataupload.entity.Device":
+				        		repoBeanName1=mapper.getRepo(DeviceHistory.class);
+				        		baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
+				        		DeviceHistory deviceHistory = new DeviceHistory();
+				        		MapperUtils.map(object, deviceHistory);
+								MapperUtils.setBaseFieldValue(object, deviceHistory);
+								deviceHistory.setEffectDateTime(deviceHistory.getDeletedDateTime());
+								baserepo1.save(deviceHistory);
+							break;
+							default:
+							break;
+				            }
+
 						} else {
 							throw new MasterDataServiceException(
 									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorCode(),
@@ -679,7 +773,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 					 if (count!=columns.length) {
 						 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
 
-						 throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"all the rows have same number of element in csv file"); 
+						 throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"all the rows should have same number of element in csv file"); 
 						
 
 					 }
