@@ -70,6 +70,7 @@ import io.mosip.admin.bulkdataupload.entity.UserDetailsHistory;
 import io.mosip.admin.bulkdataupload.entity.ValidDocument;
 import io.mosip.admin.bulkdataupload.entity.Zone;
 import io.mosip.admin.bulkdataupload.entity.ZoneUser;
+import io.mosip.admin.bulkdataupload.entity.ZoneUserHistory;
 /**
  * This class give the repository based on entity
  * @author dhanendra
@@ -151,6 +152,8 @@ public class Mapper {
 		repositoryMap.put(Zone.class,"zoneRepository");
 		repositoryMap.put(ZoneUser.class,"zoneUserRepository");
 		repositoryMap.put(DaysOfWeek.class, "daysOfWeekRepo");
+		repositoryMap.put(ZoneUserHistory.class,"zoneUserHistoryRepository");
+		
     }
     public String getRepo(Class<?> clzz) {
     	return repositoryMap.get(clzz);
@@ -222,7 +225,7 @@ public class Mapper {
 		entityMap.put("valid_document", ValidDocument.class);
 		entityMap.put("zone", Zone.class);
 		entityMap.put("zone_user", ZoneUser.class);
-	
+		entityMap.put("zone_user_h", ZoneUserHistory.class);
 	}
 	
 	public Class<?> getEntity(String tableName) {
