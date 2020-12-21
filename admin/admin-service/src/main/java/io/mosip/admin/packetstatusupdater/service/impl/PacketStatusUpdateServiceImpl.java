@@ -1,5 +1,6 @@
 package io.mosip.admin.packetstatusupdater.service.impl;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,8 +12,16 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,19 +30,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 import io.mosip.admin.packetstatusupdater.constant.AuditConstant;
 import io.mosip.admin.packetstatusupdater.constant.PacketStatusUpdateErrorCode;
+import io.mosip.admin.packetstatusupdater.dto.Metadata;
 import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateDto;
 import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateResponseDto;
+import io.mosip.admin.packetstatusupdater.dto.SecretKeyRequest;
+import io.mosip.admin.packetstatusupdater.dto.TokenRequestDTO;
 import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
 import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import io.mosip.admin.packetstatusupdater.service.PacketStatusUpdateService;
@@ -44,8 +60,10 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.logger.logback.factory.Logfactory;
 import io.mosip.admin.packetstatusupdater.util.EventEnum;
 
 /**
@@ -56,6 +74,9 @@ import io.mosip.admin.packetstatusupdater.util.EventEnum;
  */
 @Component
 public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService {
+	
+	private final Logger logger = Logfactory.getSlf4jLogger(PacketStatusUpdateServiceImpl.class);
+
 
 	/** The packet update status url. */
 	@Value("${mosip.kernel.packet-status-update-url}")
@@ -78,6 +99,9 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 
 	@Autowired
 	private AuditUtil auditUtil;
+	
+	@Autowired
+	private Environment environment;
 
 	private static final String SLASH = "/";
 
@@ -112,7 +136,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 			packetHeaders.setContentType(MediaType.APPLICATION_JSON);
 			StringBuilder urlBuilder = new StringBuilder();
 			urlBuilder.append(packetUpdateStatusUrl).append(SLASH).append(primaryLang).append(SLASH).append(rId);
-			ResponseEntity<String> response = restTemplate.exchange(urlBuilder.toString(), HttpMethod.GET, null,
+			ResponseEntity<String> response = restTemplate.exchange(urlBuilder.toString(), HttpMethod.GET, setRequestHeader(),
 					String.class);
 			if (response.getStatusCode().is2xxSuccessful()) {
 				List<PacketStatusUpdateDto> packetStatusUpdateDtos = getPacketResponse(ArrayList.class,
@@ -134,6 +158,12 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 			}
 		} catch (HttpServerErrorException | HttpClientErrorException ex) {
 			throwRestExceptions(ex);
+		} catch (RestClientException e) {
+			throw new MasterDataServiceException(PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
+					PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorMessage(), e);
+		} catch (IOException e) {
+			throw new MasterDataServiceException(PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
+					PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorMessage(), e);
 		}
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.PACKET_STATUS_ERROR,rId));
 		return null;
@@ -288,6 +318,52 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 
 		};
 
+	}
+	
+private HttpEntity<Object> setRequestHeader() throws IOException {
+		
+		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>();
+		String token="";
+		TokenRequestDTO<SecretKeyRequest> tokenRequestDTO = new TokenRequestDTO<SecretKeyRequest>();
+		tokenRequestDTO.setId(environment.getProperty("regproc.token.request.id"));
+		tokenRequestDTO.setMetadata(new Metadata());
+
+		tokenRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
+		tokenRequestDTO.setRequest(setSecretKeyRequestDTO());
+		tokenRequestDTO.setVersion(environment.getProperty("regproc.token.request.version"));
+
+		Gson gson = new Gson();
+		HttpClient httpClient = HttpClientBuilder.create().build();
+		HttpPost post = new HttpPost(environment.getProperty("KEYBASEDTOKENAPI"));
+		try {
+			StringEntity postingString = new StringEntity(gson.toJson(tokenRequestDTO));
+			post.setEntity(postingString);
+			post.setHeader("Content-type", "application/json");
+			HttpResponse response = httpClient.execute(post);
+			org.apache.http.HttpEntity entity = response.getEntity();
+			String responseBody = EntityUtils.toString(entity, "UTF-8");
+			Header[] cookie = response.getHeaders("Set-Cookie");
+			if (cookie.length == 0)
+				throw new MasterDataServiceException(PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
+						 "Token generation failed");
+			token = response.getHeaders("Set-Cookie")[0].getValue();
+				System.setProperty("token", token.substring(14, token.indexOf(';')));
+			
+		} catch (IOException e) {
+			logger.error("SESSIONID", "ADMIN-SERVICE",
+					"ADMIN-SERVICE", e.getMessage() + ExceptionUtils.getStackTrace(e));
+			throw e;
+			}
+		headers.add("Cookie", token);
+		return new HttpEntity<Object>(headers);
+	}
+
+	private SecretKeyRequest setSecretKeyRequestDTO() {
+		SecretKeyRequest request = new SecretKeyRequest();
+		request.setAppId(environment.getProperty("regproc.token.request.appid"));
+		request.setClientId(environment.getProperty("regproc.token.request.clientId"));
+		request.setSecretKey(environment.getProperty("regproc.token.request.secretKey"));
+		return request;
 	}
 
 }
