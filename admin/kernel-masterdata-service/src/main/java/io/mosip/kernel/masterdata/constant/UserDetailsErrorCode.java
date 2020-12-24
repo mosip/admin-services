@@ -5,15 +5,17 @@ package io.mosip.kernel.masterdata.constant;
  * @since 1.0.0
  *
  */
-public enum UserDetailsHistoryErrorCode {
+public enum UserDetailsErrorCode {
 	INVALID_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION("KER-USR-002", "Invalid Date Format"),
-	USER_HISTORY_FETCH_EXCEPTION("KER-USR-001", "Error occurred while retrieving User History"),
-	USER_HISTORY_NOT_FOUND_EXCEPTION("KER-USR-003", "User History not found"), USER_HISTORY_CREATE_FAILED("KER-USR-004", "User History creation failed");
+	USER_FETCH_EXCEPTION("KER-USR-004", "Error occurred while retrieving User details"),
+	USER_CREATION_EXCEPTION("KER-USR-005", "User creation failed"),
+	USER_UNMAP_EXCEPTION("KER-USR-006", "User unmap failed"),
+	USER_NOT_FOUND("KER-USR-006", "User not found");
 
 	private final String errorCode;
 	private final String errorMessage;
 
-	private UserDetailsHistoryErrorCode(final String errorCode, final String errorMessage) {
+	private UserDetailsErrorCode(final String errorCode, final String errorMessage) {
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
 	}
