@@ -158,6 +158,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			ud = MetaDataUtils.setCreateMetaData(userDetailsDto, UserDetails.class);
 			registrationCenterService.getRegistrationCentersByID(userDetailsDto.getRegCenterId()); //Throws exception if not found
 			userDetailsRepository.create(ud);
+			UserDetailsHistory udh = new UserDetailsHistory();
+				MapperUtils.map(ud, udh);
+				MapperUtils.setBaseFieldValue(ud, udh);
+				udh.setIsActive(true);
+				udh.setIsDeleted(false);
+				udh.setUpdatedBy(MetaDataUtils.getContextUser());
+				udh.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				userDetailsHistoryService.createUserDetailsHistory(udh);
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException e) {
 			auditUtil.auditRequest(
@@ -188,7 +196,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			UserDetailsHistory udh = new UserDetailsHistory();
 			MapperUtils.map(ud, udh);
 			MapperUtils.setBaseFieldValue(ud, udh);
-			udh.setIsActive(false);
+			udh.setIsActive(true);
 			udh.setIsDeleted(false);
 			udh.setUpdatedBy(MetaDataUtils.getContextUser());
 			//udh.setEffectDateTime(LocalDateTime.now(ZoneId.of("UTC")));
