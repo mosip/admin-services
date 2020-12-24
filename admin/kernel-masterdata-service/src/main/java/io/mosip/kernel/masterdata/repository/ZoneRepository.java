@@ -21,6 +21,9 @@ public interface ZoneRepository extends BaseRepository<Zone, CodeAndLanguageCode
 
 	@Query("FROM Zone zu WHERE zu.code=?1 and zu.langCode=?2 AND (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
 	public Zone findZoneByCodeAndLangCodeNonDeleted(String code, String langCode);
+	
+	@Query("FROM Zone zu WHERE zu.code=?1 and zu.langCode=?2 AND (zu.isDeleted IS NULL OR zu.isDeleted = false) AND zu.isActive=true")
+	public Zone findZoneByCodeAndLangCodeNonDeletedAndIsActive(String code, String langCode);
 
 	@Query("FROM Zone zu WHERE zu.code in (:zoneId) AND (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
 	public List<Zone> findListZonesFromZone(List<String> zoneId);

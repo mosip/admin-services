@@ -166,4 +166,22 @@ public class ZoneServiceImpl implements ZoneService {
 
 		return isAuthorized;
 	}
+
+	@Override
+	public ZoneNameResponseDto getZone(String zoneCode, String langCode) {
+		ZoneNameResponseDto zoneNameResponseDto = new ZoneNameResponseDto();
+		Zone zone = null;
+		try {
+		zone = zoneRepository.findZoneByCodeAndLangCodeNonDeletedAndIsActive(zoneCode,langCode);
+		if (zone == null) {
+			throw new DataNotFoundException(ZoneErrorCode.ZONE_ENTITY_NOT_FOUND.getErrorCode(),
+					ZoneErrorCode.ZONE_ENTITY_NOT_FOUND.getErrorMessage());
+		}
+		} catch (DataAccessException | DataAccessLayerException exception) {
+			throw new MasterDataServiceException(ZoneErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
+					ZoneErrorCode.INTERNAL_SERVER_ERROR.getErrorMessage());
+		}
+		zoneNameResponseDto.setZoneName(zone.getName());
+		return zoneNameResponseDto;
+	}
 }
