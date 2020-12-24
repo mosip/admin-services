@@ -108,8 +108,6 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 	@Autowired
 	private MachineRepository machineRepository;
 
-	@Value("${mosip.syncdata.tpm.required:false}")
-	private boolean isTPMRequired;
 
 	/*
 	 * (non-Javadoc)
@@ -159,7 +157,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 		UserDetailResponseDto userDetailResponseDto = getUserDetailFromResponse(responseBody);
 		if (userDetailResponseDto != null && userDetailResponseDto.getMosipUserDtoList() != null) {
 			List<UserDetailMapDto> userDetails = MapperUtils
-					.mapUserDetailsToUserDetailMap(userDetailResponseDto.getMosipUserDtoList());
+					.mapUserDetailsToUserDetailMap(userDetailResponseDto.getMosipUserDtoList(), registrationCenterUserDtos);
 			syncUserDetailDto = new SyncUserDetailDto();
 			syncUserDetailDto.setUserDetails(userDetails);
 		}
@@ -328,13 +326,13 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 		UserDetailResponseDto userDetailResponseDto = getUserDetailsFromAuthServer(userIds);
 		SyncUserDto syncUserDto = new SyncUserDto();
 		if (userDetailResponseDto != null && userDetailResponseDto.getMosipUserDtoList() != null) {
-			List<UserDetailMapDto> userDetails = MapperUtils.mapUserDetailsToUserDetailMap(userDetailResponseDto.getMosipUserDtoList());
+			List<UserDetailMapDto> userDetails = MapperUtils.mapUserDetailsToUserDetailMap(userDetailResponseDto.getMosipUserDtoList(),
+					registrationCenterResponseDto.getRegistrationCenterUsers());
 			try {
 				if(userDetails.size() > 0) {
 					TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
 					tpmCryptoRequestDto.setValue(CryptoUtil.encodeBase64(mapper.getObjectAsJsonString(userDetails).getBytes()));
 					tpmCryptoRequestDto.setPublicKey(machines.get(0).getPublicKey());
-					tpmCryptoRequestDto.setTpm(this.isTPMRequired);
 					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
 					syncUserDto.setUserDetails(tpmCryptoResponseDto.getValue());
 				}
