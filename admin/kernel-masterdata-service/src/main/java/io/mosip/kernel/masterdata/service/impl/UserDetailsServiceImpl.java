@@ -190,7 +190,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	public UserDetailsDto updateUser(UserDetailsDto userDetailsDto) {
 		UserDetails ud;
 		try {
-			userDetailsDto = masterdataCreationUtil.createMasterData(UserDetails.class, userDetailsDto);
+			userDetailsDto = masterdataCreationUtil.updateMasterData(UserDetails.class, userDetailsDto);
 			ud = MetaDataUtils.setCreateMetaData(userDetailsDto, UserDetails.class);
 			userDetailsRepository.update(ud);
 			UserDetailsHistory udh = new UserDetailsHistory();
