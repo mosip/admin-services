@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.Device;
-import io.mosip.kernel.masterdata.entity.Machine;
 
 /**
  * Repository function to fetching device details
@@ -72,6 +71,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 
 	@Query("FROM Device d where d.deviceSpecId = ?1 and (d.isDeleted is null or d.isDeleted = false) and d.isActive = true")
 	List<Device> findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(String deviceSpecId);
+
 
 	/**
 	 * This method trigger query to fetch the Device detail for the given id and
@@ -179,5 +179,8 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	List<Device> getAllDevicesList();
 	@Query("FROM Device WHERE regCenterId=?1 and(isDeleted is null or isDeleted =false) and isActive = true")
 	List<Device> findByRegIdAndIsDeletedFalseOrIsDeletedIsNull(String id);
+
+	@Query("FROM Device d where d.deviceSpecId = ?1 and (d.isDeleted is null or d.isDeleted = false) and d.isActive = true")
+	List<Device> findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(String deviceSpecId, String landCode);
 
 }

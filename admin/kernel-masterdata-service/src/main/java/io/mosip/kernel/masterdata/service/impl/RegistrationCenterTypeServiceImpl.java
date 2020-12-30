@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterTypeErrorCode;
@@ -155,7 +156,19 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 					.findByCodeAndLangCode(registrationCenterTypeDto.getCode(),
 							registrationCenterTypeDto.getLangCode());
 			if (registrationCenterTypeEntity != null) {
-
+				if (!registrationCenterTypeDto.getIsActive()) {
+					List<RegistrationCenter> registrationCenters = registrationCenterRepository
+							.findByCenterTypeCode(registrationCenterTypeDto.getCode());
+					if (!EmptyCheckUtils.isNullEmpty(registrationCenters)) {
+						throw new RequestException(
+								RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_UPDATE_MAPPING_EXCEPTION
+										.getErrorCode(),
+								RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_UPDATE_MAPPING_EXCEPTION
+										.getErrorMessage());
+					}
+					masterdataCreationUtil.updateMasterDataDeactivate(RegistrationCenterType.class,
+							registrationCenterTypeDto.getCode());
+				}
 				registrationCenterTypeDto = masterdataCreationUtil.updateMasterData(RegistrationCenterType.class,
 						registrationCenterTypeDto);
 				MetaDataUtils.setUpdateMetaData(registrationCenterTypeDto, registrationCenterTypeEntity, false);
