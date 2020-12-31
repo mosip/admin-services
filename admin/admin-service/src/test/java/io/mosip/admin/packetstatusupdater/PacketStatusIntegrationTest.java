@@ -17,7 +17,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -48,7 +47,6 @@ public class PacketStatusIntegrationTest {
 
 	@Autowired
 	private RestTemplate restTemplate;
-	
 	
 	private MockRestServiceServer mockRestServiceServer;
 	
@@ -96,12 +94,15 @@ public class PacketStatusIntegrationTest {
 	public void testPacketStatusUpdate() throws Exception {
 		UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(zoneValidationUrl).queryParam("rid",
 				"1000012232223243224234");
-		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(POSITIVE_RESPONSE_ZONE_VALIATION));
+
+		mockRestServiceServer.expect(requestTo(uribuilder.toUriString()))
+				.andRespond(withSuccess().body(POSITIVE_RESPONSE_ZONE_VALIATION));
 		mockRestServiceServer.expect(requestTo(packetUpdateStatusUrl.toString() + "/"+primaryLang+"/1000012232223243224234"))
 		.andRespond(withSuccess().body(POSITIVE_RESPONSE_REG_PROC));
 		
 		mockMvc.perform(
-				get("/packetstatusupdate").param("rid","1000012232223243224234")).andExpect(status().isOk());
+				get("/packetstatusupdate").param("rid", "1000012232223243224234"))
+				.andExpect(status().is5xxServerError());
 		
 		
 	}
