@@ -13,7 +13,9 @@ public enum MachineSpecificationErrorCode {
 
 	MACHINE_DELETE_DEPENDENCY_EXCEPTION("KER-MSD-122", "Cannot delete dependency found"),
 	MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION("KER-MSD-349", "No Machine exist for Machine Type name:%s"),
-	INVALID_MACHINE_TYPE_CODE__EXCEPTION("KER-MSD-722", "Invalid mtype_code received");
+	INVALID_MACHINE_TYPE_CODE__EXCEPTION("KER-MSD-722", "Invalid mtype_code received"),
+	MACHINE_SPECIFICATION_UPDATE_MAPPING_EXCEPTION("KER-MSD-088",
+			"Mapping exist before deactivating remove the mapping");
 
 	private final String errorCode;
 	private final String errorMessage;
