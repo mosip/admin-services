@@ -94,6 +94,8 @@ public class UserDetailsController {
 		userDetailsDto.setIsActive(true);
 		userDetailsDto.setLangCode(langCode);
 		userDetailsDto.setRegCenterId(regCenterId);
+		userDetailsDto.setName(userId);
+		userDetailsDto.setStatusCode("ACT");
 		responseWrapper.setResponse(userDetailsService.createUser(userDetailsDto));
 		return responseWrapper;
 	}
