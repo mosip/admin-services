@@ -23,8 +23,8 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 	@Value("${mosip.secondary-language}")
 	private String secondaryLang;
 	
-//	@Value("${aplication.configuration.level.version}")
-//	private String version;
+	@Value("${aplication.configuration.level.version}")
+	private String version;
 	
 	
 	@Autowired
@@ -36,7 +36,7 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 		
 		dto.setPrimaryLangCode(primaryLangCode);
 		dto.setSecondaryLangCode(secondaryLang);
-//		dto.setVersion(version);
+		dto.setVersion(version);
 		
 		return dto;
 	}
