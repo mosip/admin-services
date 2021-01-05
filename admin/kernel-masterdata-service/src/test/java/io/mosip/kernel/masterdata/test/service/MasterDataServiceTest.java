@@ -2418,7 +2418,7 @@ public class MasterDataServiceTest {
 				.thenReturn(null);
 		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(registCent);
-		Mockito.when(daysOfWeekRepo.findByAllGlobalWorkingTrue(Mockito.anyString())).thenReturn(globalDaysList);
+		Mockito.when(daysOfWeekRepo.findBylangCode(Mockito.anyString())).thenReturn(globalDaysList);
 
 		assertEquals("Monday",
 				regWorkingNonWorkingService.getWeekDaysList("10001", "eng").getWeekdays().get(0).getName());
