@@ -1677,7 +1677,7 @@ public class SyncClientSettingsIntegrationTest {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			JSONArray errors =  jsonObject.getJSONArray("errors");
 			assertNotNull(errors);
-			assertEquals(MasterDataErrorCode.INVALID_KEY_INDEX.getErrorCode(), errors.getJSONObject(0).getString("errorCode"));
+			assertEquals(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(), errors.getJSONObject(0).getString("errorCode"));
 		} catch(Throwable t) {
 			Assert.fail("Not expected response!");}
 	}	
