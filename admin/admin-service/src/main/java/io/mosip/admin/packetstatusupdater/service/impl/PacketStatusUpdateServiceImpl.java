@@ -29,6 +29,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -115,10 +118,23 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	public PacketStatusUpdateResponseDto getStatus(String rId) {
 
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE,rId));
-		if(!authorizeRidWithZone(rId))
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String authority=null;
+		for(GrantedAuthority x:authentication.getAuthorities()) {
+			if(x.getAuthority().equals("ROLE_GLOBAL_ADMIN")) {
+				authority=x.getAuthority();
+			}
+		}
+		if(authority !=null) {
+			auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS);
+			return getPacketStatus(rId);
+		}else {
+		if(!authorizeRidWithZone(rId)) {
 			return null;
+		}
 		auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS);
 		return getPacketStatus(rId);
+		}
 	}
 
 	/**
@@ -136,7 +152,8 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 			packetHeaders.setContentType(MediaType.APPLICATION_JSON);
 			StringBuilder urlBuilder = new StringBuilder();
 			urlBuilder.append(packetUpdateStatusUrl).append(SLASH).append(primaryLang).append(SLASH).append(rId);
-			ResponseEntity<String> response = restTemplate.exchange(urlBuilder.toString(), HttpMethod.GET, setRequestHeader(),
+			RestTemplate restTemplateregprc=new RestTemplate();
+			ResponseEntity<String> response = restTemplateregprc.exchange(urlBuilder.toString(), HttpMethod.GET, setRequestHeader(),
 					String.class);
 			if (response.getStatusCode().is2xxSuccessful()) {
 				List<PacketStatusUpdateDto> packetStatusUpdateDtos = getPacketResponse(ArrayList.class,
@@ -191,7 +208,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 		if (ex.getRawStatusCode() == 403) {
 			if (!validationErrorsList.isEmpty()) {
 				auditUtil.setAuditRequestDto(EventEnum.AUTHEN_ERROR_403);
-				throw new AuthZException(validationErrorsList);
+				throw new AccessDeniedException(validationErrorsList.get(0).getMessage());
 			} else {
 				auditUtil.setAuditRequestDto(EventEnum.ACCESS_DENIED);
 				throw new AccessDeniedException("Access denied from AuthManager");
@@ -347,14 +364,13 @@ private HttpEntity<Object> setRequestHeader() throws IOException {
 				throw new MasterDataServiceException(PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
 						 "Token generation failed");
 			token = response.getHeaders("Set-Cookie")[0].getValue();
-				System.setProperty("token", token.substring(14, token.indexOf(';')));
 			
 		} catch (IOException e) {
 			logger.error("SESSIONID", "ADMIN-SERVICE",
 					"ADMIN-SERVICE", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw e;
 			}
-		headers.add("Cookie", token);
+		headers.add("Cookie", token.substring(0, token.indexOf(';')));
 		return new HttpEntity<Object>(headers);
 	}
 
