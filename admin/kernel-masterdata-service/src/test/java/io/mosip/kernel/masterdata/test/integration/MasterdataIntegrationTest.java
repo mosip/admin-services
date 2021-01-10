@@ -7477,7 +7477,7 @@ public class MasterdataIntegrationTest {
 		device.setZoneCode("JRD");
 		device.setRegCenterId("676");
 		zones.add(zone);
-		System.out.println(primaryLang);
+		//System.out.println(primaryLang);
 		when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(Mockito.any())).thenReturn(Arrays.asList(new RegistrationCenter() ));
 		when(registrationCenterRepository.findByRegIdAndZone(Mockito.any(),Mockito.any())).thenReturn(Arrays.asList(new RegistrationCenter() ));
 		
@@ -7530,7 +7530,7 @@ public class MasterdataIntegrationTest {
 		zone.setCode("JRD");
 		List<Zone> zones = new ArrayList<>();
 		zones.add(zone);
-		System.out.println(primaryLang);
+		//System.out.println(primaryLang);
 		when(registrationCenterTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(),
 				Mockito.any())).thenReturn(regCenterType);
 		when(locationRepository.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(), Mockito.any()))
@@ -7556,7 +7556,7 @@ public class MasterdataIntegrationTest {
 		zone.setCode("JRD");
 		List<Zone> zones = new ArrayList<>();
 		zones.add(zone);
-		System.out.println(primaryLang);
+		//System.out.println(primaryLang);
 		when(registrationCenterTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(),
 				Mockito.any())).thenReturn(regCenterType);
 		when(locationRepository.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(), Mockito.any()))
