@@ -2,7 +2,8 @@ package io.mosip.kernel.syncdata.constant;
 
 public enum SyncAuthErrorCode {
 
-    INVALID_REQUEST("KER-SYN-AUTH-001", "Invalid Request");
+    INVALID_REQUEST("KER-SYN-AUTH-001", "Invalid Request"),
+    INVALID_REQUEST_TIME("KER-SYN-AUTH-002", "Invalid Request Time");
 
     private final String errorCode;
     private final String errorMessage;
