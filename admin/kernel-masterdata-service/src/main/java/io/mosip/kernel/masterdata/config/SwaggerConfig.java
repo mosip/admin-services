@@ -101,7 +101,7 @@ public class SwaggerConfig {
 				.paths(PathSelectors.regex("(?!/(error).*).*")).build();
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);
-			logger.info("\nSwagger Base URL: " + proto + "://" + hostWithPort + "\n");
+			logger.info("Swagger Base URL: {}://{}", proto, hostWithPort);
 		}
 
 		return docket;

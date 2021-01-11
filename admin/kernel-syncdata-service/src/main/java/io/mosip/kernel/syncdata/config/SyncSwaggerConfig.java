@@ -97,7 +97,7 @@ public class SyncSwaggerConfig {
 
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);
-			logger.debug("\nSwagger Base URL: " + proto + "://" + hostWithPort + "\n");
+			logger.debug("Swagger Base URL: {}://{}", proto, hostWithPort);
 		}
 
 		return docket;
