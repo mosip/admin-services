@@ -146,7 +146,6 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		DocumentType documentType = null;
 		DocumentTypePostResponseDto documentTypePostResponseDto = new DocumentTypePostResponseDto();
 		try {
-			System.out.println();
 			documentTypeDto = masterdataCreationUtil.createMasterData(DocumentType.class, documentTypeDto);
 			DocumentType entity = MetaDataUtils.setCreateMetaData(documentTypeDto, DocumentType.class);
 			documentType = documentTypeRepository.create(entity);

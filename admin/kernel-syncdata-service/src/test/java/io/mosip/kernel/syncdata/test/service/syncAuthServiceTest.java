@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
@@ -70,6 +71,12 @@ public class syncAuthServiceTest {
 
     @Value("${mosip.kernel.auth.sendotp.url}")
     private String sendOTPUrl;
+
+    @Value("${mosip.kernel.syncdata.auth.reqtime.maxlimit:-5}")
+    private int maxMinutes;
+
+    @Value("${mosip.kernel.syncdata.auth.reqtime.minlimit:5}")
+    private int minMinutes;
 
     @MockBean
     private ClientCryptoFacade clientCryptoFacade;
@@ -297,6 +304,28 @@ public class syncAuthServiceTest {
 
         AuthNResponse response = syncAuthTokenService.sendOTP(String.format("%s.%s.%s", header, payload, signature));
         assertNotNull(response);
+    }
+
+    @Test
+    public void validReqValidReqTimeCase() throws JsonProcessingException {
+        when(machineRepository.findBySignKeyIndexAndIsActive(Mockito.anyString())).thenReturn(machines);
+        when(clientCryptoFacade.validateSignature(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(true);
+
+        MachineAuthDto machineAuthDto = new MachineAuthDto();
+        machineAuthDto.setAuthType("New");
+        machineAuthDto.setPassword("test");
+        machineAuthDto.setUserId("test");
+        machineAuthDto.setTimestamp(LocalDateTime.now(ZoneOffset.UTC).plusMinutes(5));
+
+        MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
+        mockRestServer.expect(requestTo(newAuthTokenInternalUrl))
+                .andRespond(withSuccess().body(objectMapper.writeValueAsString(responseWrapper)));
+
+        String header = Base64.getUrlEncoder().encodeToString(String.format("{\"kid\":\"%s\"}", keyIndex).getBytes(StandardCharsets.UTF_8));
+        String payload = Base64.getUrlEncoder().encodeToString(objectMapper.writeValueAsString(machineAuthDto).getBytes(StandardCharsets.UTF_8));
+        String signature = Base64.getUrlEncoder().encodeToString("test-signature".getBytes(StandardCharsets.UTF_8));
+
+        syncAuthTokenService.getAuthToken(String.format("%s.%s.%s", header, payload, signature));
     }
 
     @Test(expected = RequestException.class)
