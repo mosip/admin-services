@@ -183,8 +183,21 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 
 		try {
 			if (StringUtils.isNotEmpty(primaryLang) && primaryLang.equals(deviceSpecifications.getLangCode())) {
-				
+				if(deviceSpecifications.getId() ==null || deviceSpecifications.getId().isBlank()) {
 				deviceSpecifications.setId(generateId());
+				}
+				else if(deviceSpecificationRepository.existsById(deviceSpecifications.getId())) {
+					auditUtil.auditRequest(
+							String.format(MasterDataConstant.FAILURE_CREATE, DeviceSpecification.class.getCanonicalName()),
+							MasterDataConstant.AUDIT_SYSTEM,
+							String.format(MasterDataConstant.FAILURE_DESC,
+									DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DUPLICATE_REQUEST_EXCEPTION.getErrorCode(),
+									DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DUPLICATE_REQUEST_EXCEPTION.getErrorMessage()),
+							"ADM-648");
+					throw new RequestException(
+							DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DUPLICATE_REQUEST_EXCEPTION.getErrorCode(),
+							DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DUPLICATE_REQUEST_EXCEPTION.getErrorMessage());
+				}
 			}
 			deviceSpecifications = masterdataCreationUtil.createMasterData(DeviceSpecification.class,
 					deviceSpecifications);

@@ -225,12 +225,23 @@ public class MasterdataCreationUtil {
 			Field idColumn = dtoClass.getDeclaredField(ID_COLUMN_NAME);
 			idColumn.setAccessible(true);
 			if (entity.equals(Device.class)) {
+				if(id == null || id.isBlank()) {
 				id = generateId();
 				E primary = getResultSet(entity, primaryLang, id, primaryKeyCol);
 				if (primary != null) {
 					idColumn.set(t, id);
 				} else {
 					idColumn.set(t, generateId());
+				}
+				}
+				else {
+					E primary = getResultSet(entity, primaryLang, id, primaryKeyCol);
+					if (primary == null) {
+					idColumn.set(t, id);
+					} else {
+					throw new RequestException(RequestErrorCode.REQUEST_ID_ALREADY_EXIST.getErrorCode(),
+							RequestErrorCode.REQUEST_ID_ALREADY_EXIST.getErrorMessage());
+					}
 				}
 			} else {
 				E primary = getResultSet(entity, primaryLang, id, primaryKeyCol);
