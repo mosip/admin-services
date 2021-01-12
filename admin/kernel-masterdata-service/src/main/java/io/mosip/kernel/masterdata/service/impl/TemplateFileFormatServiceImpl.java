@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,8 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 @Service
 public class TemplateFileFormatServiceImpl implements TemplateFileFormatService {
+
+	private static final Logger logger = LoggerFactory.getLogger(TemplateFileFormatServiceImpl.class);
 
 	@Autowired
 	private TemplateFileFormatRepository templateFileFormatRepository;
@@ -167,7 +171,7 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 						TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_NOT_FOUND.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
-			System.out.println(e.getMessage());
+			logger.error("TEMPLATE_FILE_FORMAT_DELETE_EXCEPTION", e);
 			throw new MasterDataServiceException(
 					TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_DELETE_EXCEPTION.getErrorCode(),
 					TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_DELETE_EXCEPTION.getErrorMessage() + " "
