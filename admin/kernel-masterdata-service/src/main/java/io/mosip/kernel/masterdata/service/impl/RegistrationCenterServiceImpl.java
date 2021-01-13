@@ -1650,4 +1650,45 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return filter;
 	}
 
+	
+	@Override
+	public PageDto<RegistrationCenterExtnDto> findRegistrationCenterByHierarchyLevelandTextAndLanguageCodePaginated(
+			String langCode, Short hierarchyLevel, String name, int pageNumber, int pageSize, String sortBy,
+			String orderBy) {
+		Page<RegistrationCenter> pageData = null;
+		List<RegistrationCenterExtnDto> registrationCenters = null;
+		PageDto<RegistrationCenterExtnDto> registrationCenterPages = null;
+		try {
+			Set<String> codes = getLocationCode(
+					locationService.getLocationByLangCodeAndHierarchyLevel(langCode, hierarchyLevel),
+					hierarchyLevel, name);
+			if (!EmptyCheckUtils.isNullEmpty(codes)) {
+				pageData = registrationCenterRepository.findRegistrationCenterByListOfLocationCodePaginated(codes,
+						langCode,PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
+				if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
+					registrationCenters = MapperUtils.mapAll(pageData.getContent(), RegistrationCenterExtnDto.class);
+					registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), 0, null,
+							  pageData.getTotalElements(), pageData.getTotalPages(),registrationCenters);
+				} else {
+					throw new DataNotFoundException(
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+				}
+			
+			} else {
+				throw new DataNotFoundException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			}
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+		
+		
+		return registrationCenterPages;
+	}
 }

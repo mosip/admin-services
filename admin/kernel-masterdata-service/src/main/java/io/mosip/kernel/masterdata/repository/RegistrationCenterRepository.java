@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -196,5 +198,11 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	
 	@Query("FROM RegistrationCenter WHERE id= ?1 and  zoneCode =?2  and (isDeleted is null or isDeleted = false) and isActive = true")
 	List<RegistrationCenter> findByRegIdAndZone(String regCenterId, String zoneCode);
+
+	
+	@Query(value = "FROM RegistrationCenter r  WHERE  r.langCode=:langcode AND r.locationCode in :codes AND (r.isDeleted is null or r.isDeleted = false) AND r.isActive = true",
+			countQuery = "SELECT count(*) FROM RegistrationCenter r  WHERE  r.langCode=:langcode AND r.locationCode in :codes AND (r.isDeleted is null or r.isDeleted = false) AND r.isActive = true")
+	Page<RegistrationCenter> findRegistrationCenterByListOfLocationCodePaginated(@Param("codes") Set<String> codes,
+			@Param("langcode") String langCode,Pageable pageable);
 
 }

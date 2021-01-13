@@ -53,13 +53,5 @@ public class ApplicationConfigIntegrationTests {
 		mockMvc.perform(get("/applicationconfigs")).andExpect(status().isOk());
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Test
-	@WithUserDetails("zonal-admin")
-	public void  getLanguageConfigDetailsExceptionTest() throws Exception {
-		RestClientException ex=new RestClientException("exception");
-		Mockito.when(restTemplate.exchange(Mockito.anyString(),Mockito.any(HttpMethod.class), Mockito.any(), Mockito.any(Class.class))).thenThrow(ex);
-		
-		mockMvc.perform(get("/applicationconfigs")).andExpect(status().isInternalServerError());
-	}
+	
 }

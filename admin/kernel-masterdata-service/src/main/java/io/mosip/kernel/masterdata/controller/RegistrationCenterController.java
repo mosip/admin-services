@@ -188,6 +188,33 @@ public class RegistrationCenterController {
 		return responseWrapper;
 
 	}
+	
+	/**
+	 * Function to fetch list of registration centers based on hierarchy level,text
+	 * and language code
+	 * 
+	 * @param langCode       input from user
+	 * @param hierarchyLevel input from user
+	 * @param name           input from user
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
+	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','PRE_REGISTRATION','REGISTRATION_PROCESSOR','ZONAL_ADMIN','GLOBAL_ADMIN')")
+	@ResponseFilter
+	@GetMapping("/registrationcenters/page/{langcode}/{hierarchylevel}/{name}")
+	public ResponseWrapper<PageDto<RegistrationCenterExtnDto>> getRegistrationCenterByHierarchyLevelAndTextAndlangCodePaginated(
+			@PathVariable("langcode") String langCode, @PathVariable("hierarchylevel") Short hierarchyLevel,
+			@PathVariable("name") String name,
+			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page no for the requested data", defaultValue = "0") int pageNumber,
+			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size for the requested data", defaultValue = "10") int pageSize,
+			@RequestParam(name = "sortBy", defaultValue = "createdDateTime") @ApiParam(value = "sort the requested data based on param value", defaultValue = "createdDateTime") String sortBy,
+			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "order the requested data based on param", defaultValue = "desc") OrderEnum orderBy) {
+		ResponseWrapper<PageDto<RegistrationCenterExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterService
+				.findRegistrationCenterByHierarchyLevelandTextAndLanguageCodePaginated(langCode, hierarchyLevel, name,
+						pageNumber, pageSize,sortBy, orderBy.name()));
+		return responseWrapper;
+
+	}
 
 	/**
 	 * Check whether the time stamp sent for the given registration center id is not

@@ -208,5 +208,9 @@ public interface RegistrationCenterService {
 	 * @return {@link IdResponseDto}.
 	 */
 	IdResponseDto decommissionRegCenter(String regCenterID);
+	
+	PageDto<RegistrationCenterExtnDto> findRegistrationCenterByHierarchyLevelandTextAndLanguageCodePaginated(String langCode,
+			Short hierarchyLevel, String name, int pageNumber, int pageSize, String sortBy, String orderBy);
+
 
 }
