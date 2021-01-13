@@ -47,6 +47,7 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpEntity;
@@ -2348,6 +2349,44 @@ public class MasterdataIntegrationTest {
 				.findAll(PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "createdDateTime"))))
 						.thenThrow(new DataAccessLayerException("errorCode", "errorMessage", new RuntimeException()));
 		mockMvc.perform(get("/registrationcenters/all")).andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void getRegistrationCenterByHierarchyLevelAndTextAndlangCodePaginatedTest() throws Exception {
+		Page<RegistrationCenter> page = new PageImpl<>(registrationCenters);
+		
+		when(locationRepository.getAllLocationsByLangCodeAndLevel(Mockito.anyString(), Mockito.anyShort()))
+		.thenReturn(locationHierarchies);
+		when(registrationCenterRepository.
+				findRegistrationCenterByListOfLocationCodePaginated(Mockito.anySet(),
+						Mockito.anyString(),(Pageable) Mockito.any(PageRequest.class)))
+						.thenReturn(page);
+		mockMvc.perform(get("/registrationcenters/page/ENG/2/PATANA?orderBy=desc&pageNumber=0&pageSize=10&sortBy=createdDateTime")).andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void getRegistrationCenterByHierarchyLevelAndTextAndlangCodePaginatedTestCodeNull() throws Exception {
+		Page<RegistrationCenter> page = new PageImpl<>(registrationCenters);
+		
+		when(locationRepository.getAllLocationsByLangCodeAndLevel(Mockito.anyString(), Mockito.anyShort()))
+		.thenReturn(null);
+		
+		mockMvc.perform(get("/registrationcenters/page/ENG/2/PATANA?orderBy=desc&pageNumber=0&pageSize=10&sortBy=createdDateTime")).andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void getRegistrationCenterByHierarchyLevelAndTextAndlangCodePaginatedTestPageNull() throws Exception {
+		
+		when(locationRepository.getAllLocationsByLangCodeAndLevel(Mockito.anyString(), Mockito.anyShort()))
+		.thenReturn(locationHierarchies);
+		when(registrationCenterRepository.
+				findRegistrationCenterByListOfLocationCodePaginated(Mockito.anySet(),
+						Mockito.anyString(),(Pageable) Mockito.any(PageRequest.class)))
+						.thenReturn(null);
+		mockMvc.perform(get("/registrationcenters/page/ENG/2/PATANA?orderBy=desc&pageNumber=0&pageSize=10&sortBy=createdDateTime")).andExpect(status().isOk());
 	}
 	// -----------------------------RegistrationCenterIntegrationTest----------------------------------
 
