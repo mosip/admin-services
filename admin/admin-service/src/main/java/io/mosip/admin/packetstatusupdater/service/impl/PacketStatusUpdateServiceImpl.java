@@ -205,7 +205,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 		if (ex.getRawStatusCode() == 403) {
 			if (!validationErrorsList.isEmpty()) {
 				auditUtil.setAuditRequestDto(EventEnum.AUTHEN_ERROR_403);
-				throw new AccessDeniedException(validationErrorsList.get(0).getMessage());
+				throw new AuthZException(validationErrorsList);
 			} else {
 				auditUtil.setAuditRequestDto(EventEnum.ACCESS_DENIED);
 				throw new AccessDeniedException("Access denied from AuthManager");
