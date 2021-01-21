@@ -29,6 +29,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -115,8 +118,16 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	public PacketStatusUpdateResponseDto getStatus(String rId) {
 
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE,rId));
-		if(!authorizeRidWithZone(rId))
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();	
+		for(GrantedAuthority x:authentication.getAuthorities()) {
+			if(x.getAuthority().equals("ROLE_GLOBAL_ADMIN")) {		
+				auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS);
+				return getPacketStatus(rId);
+			}
+		}	
+		if(!authorizeRidWithZone(rId)) {
 			return null;
+		}
 		auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS);
 		return getPacketStatus(rId);
 	}
@@ -136,7 +147,8 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 			packetHeaders.setContentType(MediaType.APPLICATION_JSON);
 			StringBuilder urlBuilder = new StringBuilder();
 			urlBuilder.append(packetUpdateStatusUrl).append(SLASH).append(primaryLang).append(SLASH).append(rId);
-			ResponseEntity<String> response = restTemplate.exchange(urlBuilder.toString(), HttpMethod.GET, setRequestHeader(),
+			RestTemplate restTemplate1=new RestTemplate();
+			ResponseEntity<String> response = restTemplate1.exchange(urlBuilder.toString(), HttpMethod.GET, setRequestHeader(),
 					String.class);
 			if (response.getStatusCode().is2xxSuccessful()) {
 				List<PacketStatusUpdateDto> packetStatusUpdateDtos = getPacketResponse(ArrayList.class,
@@ -145,23 +157,25 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 				List<PacketStatusUpdateDto> packStautsDto = objectMapper.convertValue(packetStatusUpdateDtos,
 						new TypeReference<List<PacketStatusUpdateDto>>() {
 						});
-				packStautsDto.sort(createdDateTimesComparator);
-				List<PacketStatusUpdateDto> distinctStatusList = packStautsDto.stream()
-						.filter(distinctTypeCode(PacketStatusUpdateDto::getTransactionTypeCode))
-						.collect(Collectors.toList());
-				distinctStatusList.sort(createdDateTimesResultComparator);
-				regProcPacketStatusRequestDto.setPacketStatusUpdateList(distinctStatusList);
-				distinctStatusList.stream().forEach(pcksts->{
+				packStautsDto.sort(createdDateTimesResultComparator);
+				regProcPacketStatusRequestDto.setPacketStatusUpdateList(packStautsDto);
+				packStautsDto.stream().forEach(pcksts->{
 					auditUtil.setAuditRequestDto(EventEnum.getEventEnumBasedOnPAcketStatus(pcksts));
 				});
 				return regProcPacketStatusRequestDto;
 			}
 		} catch (HttpServerErrorException | HttpClientErrorException ex) {
+			logger.error("SESSIONID", "ADMIN-SERVICE",
+					"ADMIN-SERVICE", ex.getMessage() + ExceptionUtils.getStackTrace(ex));
 			throwRestExceptions(ex);
 		} catch (RestClientException e) {
+			logger.error("SESSIONID", "ADMIN-SERVICE",
+					"ADMIN-SERVICE", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new MasterDataServiceException(PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
 					PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorMessage(), e);
 		} catch (IOException e) {
+			logger.error("SESSIONID", "ADMIN-SERVICE",
+					"ADMIN-SERVICE", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new MasterDataServiceException(PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
 					PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorMessage(), e);
 		}
@@ -231,6 +245,8 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 			}
 			auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE_FAILURE,rId));
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			logger.error("SESSIONID", "ADMIN-SERVICE",
+					"ADMIN-SERVICE", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throwRestExceptions(e);
 		}
 		return false;
@@ -255,17 +271,23 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 		if (!validationErrorsList.isEmpty()) {
 			if (validationErrorsList.size() == 1 && validationErrorsList.get(0).getErrorCode().equals("RPR-RTS-001")) {
 				auditUtil.setAuditRequestDto(EventEnum.RID_INVALID);
+				logger.error("SESSIONID", "ADMIN-SERVICE",
+						"ADMIN-SERVICE", PacketStatusUpdateErrorCode.RID_INVALID.getErrorMessage());
 				throw new RequestException(PacketStatusUpdateErrorCode.RID_INVALID.getErrorCode(),
 						PacketStatusUpdateErrorCode.RID_INVALID.getErrorMessage());
 			} else if (validationErrorsList.size() == 1
 					&& validationErrorsList.get(0).getErrorCode().equals("KER-MSD-042")) {
 				auditUtil.setAuditRequestDto(EventEnum.CENTRE_NOT_EXISTS);
+				logger.error("SESSIONID", "ADMIN-SERVICE",
+						"ADMIN-SERVICE", PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorMessage());
 				throw new RequestException(PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorCode(),
 
 						PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorMessage());
 			}
 			else if (validationErrorsList.size() == 1
 					&& validationErrorsList.get(0).getErrorCode().equals("ADM-PKT-001")) {
+				logger.error("SESSIONID", "ADMIN-SERVICE",
+						"ADMIN-SERVICE", PacketStatusUpdateErrorCode.ADMIN_UNAUTHORIZED.getErrorMessage());
 				throw new RequestException(PacketStatusUpdateErrorCode.ADMIN_UNAUTHORIZED.getErrorCode(),
 
 						PacketStatusUpdateErrorCode.ADMIN_UNAUTHORIZED.getErrorMessage());
@@ -279,6 +301,8 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 			packetStatusUpdateDto = responseObject.getResponse();
 		} catch (NullPointerException | java.io.IOException exception) {
 			auditUtil.setAuditRequestDto(EventEnum.PACKET_JSON_PARSE_EXCEPTION);
+			logger.error("SESSIONID", "ADMIN-SERVICE",
+					"ADMIN-SERVICE", exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			throw new ParseResponseException(PacketStatusUpdateErrorCode.PACKET_JSON_PARSE_EXCEPTION.getErrorCode(),
 					PacketStatusUpdateErrorCode.PACKET_JSON_PARSE_EXCEPTION.getErrorMessage());
 
@@ -347,14 +371,13 @@ private HttpEntity<Object> setRequestHeader() throws IOException {
 				throw new MasterDataServiceException(PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
 						 "Token generation failed");
 			token = response.getHeaders("Set-Cookie")[0].getValue();
-				System.setProperty("token", token.substring(14, token.indexOf(';')));
 			
 		} catch (IOException e) {
 			logger.error("SESSIONID", "ADMIN-SERVICE",
 					"ADMIN-SERVICE", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw e;
 			}
-		headers.add("Cookie", token);
+		headers.add("Cookie", token.substring(0, token.indexOf(';')));
 		return new HttpEntity<Object>(headers);
 	}
 
