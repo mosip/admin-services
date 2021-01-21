@@ -5,8 +5,10 @@ import java.util.concurrent.Executor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /**
  * Main class of Sync handler Application.
@@ -15,8 +17,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
  * @since 1.0.0
  */
 @SpringBootApplication(scanBasePackages = { "io.mosip.kernel.syncdata.*", "${mosip.auth.adapter.impl.basepackage}",
-		//"io.mosip.kernel.core.logger.config",
-		"io.mosip.kernel.core", "io.mosip.kernel.crypto", "io.mosip.kernel.clientcrypto.service.impl"})
+		"io.mosip.kernel.core", "io.mosip.kernel.crypto",
+		"io.mosip.kernel.signature.service","io.mosip.kernel.clientcrypto.service.impl",
+		"io.mosip.kernel.keymanagerservice.service", "io.mosip.kernel.keymanagerservice.util",
+		"io.mosip.kernel.keymanagerservice.helper", "io.mosip.kernel.keymanager",
+		"io.mosip.kernel.cryptomanager.util", "io.mosip.kernel.partnercertservice.helper",
+		"io.mosip.kernel.partnercertservice.service", "io.mosip.kernel.websub.api.client"})
 @EnableAsync
 public class SyncDataBootApplication {
 	/**
@@ -39,6 +45,16 @@ public class SyncDataBootApplication {
 		executor.setCorePoolSize(20);
 		executor.setMaxPoolSize(40);
 		executor.setThreadNamePrefix("SYNCDATA-Async-Thread-");
+		executor.initialize();
+		return executor;
+	}
+
+
+	@Bean
+	public TaskScheduler taskScheduler() {
+		ThreadPoolTaskScheduler executor = new ThreadPoolTaskScheduler();
+		executor.setThreadNamePrefix("SYNCDATA-Scheduler-");
+		executor.setPoolSize(5);
 		executor.initialize();
 		return executor;
 	}

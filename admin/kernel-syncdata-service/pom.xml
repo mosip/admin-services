@@ -225,6 +225,7 @@
 		<kernel.logger.version>1.2.0-SNAPSHOT</kernel.logger.version>
 		<kernel.crypto.version>1.2.0-SNAPSHOT</kernel.crypto.version>
 		<kernel.keymanager.version>1.2.0-SNAPSHOT</kernel.keymanager.version>
+		<kernel-websubclient-api.version>1.2.0-SNAPSHOT</kernel-websubclient-api.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -295,6 +296,12 @@
 				</exclusion>
 			</exclusions>
 			<classifier>lib</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-websubclient-api</artifactId>
+			<version>${kernel-websubclient-api.version}</version>
 		</dependency>
 
 	</dependencies>

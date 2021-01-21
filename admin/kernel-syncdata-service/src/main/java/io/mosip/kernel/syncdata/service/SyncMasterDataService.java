@@ -7,10 +7,7 @@ import java.util.concurrent.ExecutionException;
 import io.mosip.kernel.syncdata.dto.IdSchemaDto;
 import io.mosip.kernel.syncdata.dto.UploadPublicKeyRequestDto;
 import io.mosip.kernel.syncdata.dto.UploadPublicKeyResponseDto;
-import io.mosip.kernel.syncdata.dto.response.ClientPublicKeyResponseDto;
-import io.mosip.kernel.syncdata.dto.response.KeyPairGenerateResponseDto;
-import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
-import io.mosip.kernel.syncdata.dto.response.SyncDataResponseDto;
+import io.mosip.kernel.syncdata.dto.response.*;
 
 /**
  * Masterdata sync handler service
@@ -51,6 +48,12 @@ public interface SyncMasterDataService {
 	 */
 	IdSchemaDto getLatestPublishedIdSchema(LocalDateTime lastUpdated, double schemaVersion);
 
+	/**
+	 * Fetches certifcates from kernel-keymanager service based on the provided appId and refId
+	 * @param applicationId
+	 * @param referenceId
+	 * @return
+	 */
 	KeyPairGenerateResponseDto getCertificate(String applicationId, Optional<String> referenceId);
 
 	/**
@@ -59,4 +62,11 @@ public interface SyncMasterDataService {
 	 * @return
 	 */
 	ClientPublicKeyResponseDto getClientPublicKey(String machineId);
+
+	/**
+	 * Fetches all partner CA certs
+	 * @param lastUpdated
+	 * @param currentTimestamp
+	 */
+	CACertificates getPartnerCACertificates(LocalDateTime lastUpdated, LocalDateTime currentTimestamp);
 }

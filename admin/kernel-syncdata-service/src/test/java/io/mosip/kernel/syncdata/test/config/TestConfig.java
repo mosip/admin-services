@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class TestConfig {
 
-	@Bean
+	//@Bean
 	public RestTemplate restTemplateConfig()
 			throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
 

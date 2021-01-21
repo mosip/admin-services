@@ -1,0 +1,52 @@
+package io.mosip.kernel.syncdata.controller;
+
+import io.mosip.kernel.partnercertservice.dto.CACertificateRequestDto;
+import io.mosip.kernel.partnercertservice.service.spi.PartnerCertificateManagerService;
+import io.mosip.kernel.syncdata.websub.dto.EventModel;
+import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyIntent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
+
+/**
+ * Websub callback implementations
+ */
+@RestController
+public class WebsubCallbackController {
+
+    private static final Logger logger = LoggerFactory.getLogger(WebsubCallbackController.class);
+    private static final String CERTIFICATE_DATA = "certificateData";
+    private static final String PARTNER_DOMAIN = "partnerDomain";
+
+    @Autowired
+    private PartnerCertificateManagerService partnerCertificateManagerService;
+
+    @PostMapping(value = "${syncdata.websub.callback.url.path.ca-cert}", consumes = "application/json")
+    @PreAuthenticateContentAndVerifyIntent(secret = "${syncdata.websub.callback.secret.ca-cert}",
+            callback = "${syncdata.websub.callback.url.preauth.path.ca-cert}", topic = "${syncdata.websub.topic.ca-cert}")
+    public void handleCACertificate(@RequestBody EventModel eventModel) {
+        logger.info("ca_certificate EVENT RECEIVED");
+        Map<String, Object> data = eventModel.getEvent().getData();
+        CACertificateRequestDto caCertRequestDto = new CACertificateRequestDto();
+        if (data.containsKey(CERTIFICATE_DATA) && data.get(CERTIFICATE_DATA) instanceof String) {
+            caCertRequestDto.setCertificateData((String) data.get(CERTIFICATE_DATA));
+        }
+        if (data.containsKey(PARTNER_DOMAIN) && data.get(PARTNER_DOMAIN) instanceof String) {
+            caCertRequestDto.setPartnerDomain((String) data.get(PARTNER_DOMAIN));
+        }
+        partnerCertificateManagerService.uploadCACertificate(caCertRequestDto);
+    }
+
+    /*@GetMapping(value = "${syncdata.websub.callback.url.path.ca-cert}")
+    public String handleSubscribeCACertificate() {
+        logger.info("ca_certificate GET CALL RECEIVED");
+        return "Done";
+    }*/
+
+}

@@ -366,4 +366,22 @@ public class SyncDataController {
 		return response;
 	}
 
+	/**
+	 * Get all CA certificates from last updated time
+	 * @param lastUpdated
+	 * @return
+	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	@ResponseFilter
+	@GetMapping("/getcacertificates")
+	public ResponseWrapper<CACertificates> getCACertificates(@RequestParam(value = "lastupdated",
+			required = false) String lastUpdated) {
+		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
+		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
+		CACertificates caCertificates = masterDataService.getPartnerCACertificates(timestamp, currentTimeStamp);
+		ResponseWrapper<CACertificates> response = new ResponseWrapper<>();
+		response.setResponse(caCertificates);
+		return response;
+	}
+
 }
