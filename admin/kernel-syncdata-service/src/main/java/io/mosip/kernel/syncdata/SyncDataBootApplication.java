@@ -33,29 +33,4 @@ public class SyncDataBootApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SyncDataBootApplication.class, args);
 	}
-
-	/**
-	 * Creating bean of TaskExecutor to run Async tasks
-	 * 
-	 * @return {@link Executor}
-	 */
-	@Bean
-	public Executor taskExecutor() {
-		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(20);
-		executor.setMaxPoolSize(40);
-		executor.setThreadNamePrefix("SYNCDATA-Async-Thread-");
-		executor.initialize();
-		return executor;
-	}
-
-
-	@Bean
-	public TaskScheduler taskScheduler() {
-		ThreadPoolTaskScheduler executor = new ThreadPoolTaskScheduler();
-		executor.setThreadNamePrefix("SYNCDATA-Scheduler-");
-		executor.setPoolSize(5);
-		executor.initialize();
-		return executor;
-	}
 }

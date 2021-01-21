@@ -38,27 +38,5 @@ public class TestBootApplication {
 		SpringApplication.run(TestBootApplication.class, args);
 	}
 
-	/**
-	 * Creating bean of TaskExecutor to run Async tasks
-	 * 
-	 * @return {@link Executor}
-	 */
-	@Bean
-	public Executor taskExecutor() {
-		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(15);
-		executor.setMaxPoolSize(30);
-		executor.setThreadNamePrefix("SYNCDATA-Async-Thread-");
-		executor.initialize();
-		return executor;
-	}
 
-	@Bean
-	public TaskScheduler taskScheduler() {
-		ThreadPoolTaskScheduler executor = new ThreadPoolTaskScheduler();
-		executor.setThreadNamePrefix("SYNCDATA-Scheduler-");
-		executor.setPoolSize(5);
-		executor.initialize();
-		return executor;
-	}
 }
