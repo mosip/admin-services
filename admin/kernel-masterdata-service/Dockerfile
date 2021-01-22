@@ -60,7 +60,6 @@ CMD if [ "$is_glowroot_env" = "present" ]; then \
     wget -q --show-progress "${artifactory_url_env}"/artifactory/libs-release-local/io/mosip/testing/glowroot.zip ; \
     wget -q --show-progress "${iam_adapter_url_env}" -O kernel-auth-adapter.jar; \
     java -Dloader.path=./kernel-auth-adapter.jar -jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}"  -Dspring.cloud.config.uri="${spring_config_url_env}" kernel-masterdata-service.jar; \
-    apt-get update && apt-get install -y unzip ; \
     unzip glowroot.zip ; \
     rm -rf glowroot.zip ; \
     sed -i 's/<service_name>/kernel-masterdata-service/g' glowroot/glowroot.properties ; \

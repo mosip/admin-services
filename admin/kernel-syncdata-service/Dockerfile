@@ -65,7 +65,6 @@ EXPOSE 8089
 
 CMD if [ "$is_glowroot_env" = "present" ]; then \
     wget -q --show-progress "${artifactory_url_env}"/artifactory/libs-release-local/io/mosip/testing/glowroot.zip ; \
-    apt-get update && apt-get install -y unzip ; \
     unzip glowroot.zip ; \
     rm -rf glowroot.zip ; \
     sed -i 's/<service_name>/kernel-syncdata-service/g' glowroot/glowroot.properties ; \
