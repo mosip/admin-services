@@ -2,12 +2,11 @@ package io.mosip.kernel.syncdata.controller;
 
 import io.mosip.kernel.partnercertservice.dto.CACertificateRequestDto;
 import io.mosip.kernel.partnercertservice.service.spi.PartnerCertificateManagerService;
-import io.mosip.kernel.syncdata.websub.dto.EventModel;
+import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyIntent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,6 +40,7 @@ public class WebsubCallbackController {
             caCertRequestDto.setPartnerDomain((String) data.get(PARTNER_DOMAIN));
         }
         partnerCertificateManagerService.uploadCACertificate(caCertRequestDto);
+        logger.info("CA certs sync completed for {}", caCertRequestDto.getPartnerDomain());
     }
 
 }

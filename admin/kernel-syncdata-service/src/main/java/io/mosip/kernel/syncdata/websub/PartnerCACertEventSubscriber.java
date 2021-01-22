@@ -2,7 +2,7 @@ package io.mosip.kernel.syncdata.websub;
 
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.core.websub.spi.SubscriptionClient;
-import io.mosip.kernel.syncdata.websub.dto.EventModel;
+import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
 import io.mosip.kernel.websub.api.model.SubscriptionChangeResponse;
 import io.mosip.kernel.websub.api.model.UnsubscriptionRequest;
@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 
 import java.net.http.HttpHeaders;
@@ -115,13 +114,12 @@ public class PartnerCACertEventSubscriber implements ApplicationListener<Applica
             logger.info("Work around for web-sub notification issue after some time.");
             scheduleRetrySubscriptions();
         } else {
-            logger.info("Scheduling for re-subscription is Disabled as the re-subsctription delay value is: "
-                            + reSubscriptionDelaySecs);
+            logger.info("Scheduling for re-subscription is Disabled as the re-subsctription delay value is: {}", reSubscriptionDelaySecs);
         }
     }
 
     private void scheduleRetrySubscriptions() {
-        logger.info("Scheduling re-subscription every " + reSubscriptionDelaySecs + " seconds");
+        logger.info("Scheduling re-subscription every {} seconds", reSubscriptionDelaySecs);
         taskScheduler.scheduleAtFixedRate(this::retrySubscriptions, Instant.now().plusSeconds(reSubscriptionDelaySecs),
                 Duration.ofSeconds(reSubscriptionDelaySecs));
     }
