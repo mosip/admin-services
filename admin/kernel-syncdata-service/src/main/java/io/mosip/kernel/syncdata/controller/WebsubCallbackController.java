@@ -29,7 +29,7 @@ public class WebsubCallbackController {
 
     @PostMapping(value = "${syncdata.websub.callback.url.path.ca-cert}", consumes = "application/json")
     @PreAuthenticateContentAndVerifyIntent(secret = "${syncdata.websub.callback.secret.ca-cert}",
-            callback = "${syncdata.websub.callback.url.preauth.path.ca-cert}", topic = "${syncdata.websub.topic.ca-cert}")
+            callback = "/v1/syncdata/callback/partner/ca_certificate", topic = "${syncdata.websub.topic.ca-cert}")
     public void handleCACertificate(@RequestBody EventModel eventModel) {
         logger.info("ca_certificate EVENT RECEIVED");
         Map<String, Object> data = eventModel.getEvent().getData();
@@ -42,11 +42,5 @@ public class WebsubCallbackController {
         }
         partnerCertificateManagerService.uploadCACertificate(caCertRequestDto);
     }
-
-    /*@GetMapping(value = "${syncdata.websub.callback.url.path.ca-cert}")
-    public String handleSubscribeCACertificate() {
-        logger.info("ca_certificate GET CALL RECEIVED");
-        return "Done";
-    }*/
 
 }
