@@ -4,6 +4,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.util.concurrent.Executor;
 
 import javax.net.ssl.SSLContext;
 
@@ -11,15 +12,28 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class TestConfig {
 
-	@Bean
+	@Value("${syncdata.scheduler.pool.size:2}")
+	private int schedulerPoolSize;
+
+	@Value("${syncdata.task.max.pool.size:30}")
+	private int taskMaxPoolSize;
+
+	@Value("${syncdata.task.core.pool.size:15}")
+	private int taskCorePoolSize;
+
+	//@Bean
 	public RestTemplate restTemplateConfig()
 			throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
 
@@ -36,6 +50,30 @@ public class TestConfig {
 		requestFactory.setHttpClient(httpClient);
 		return new RestTemplate(requestFactory);
 
+	}
+
+	/**
+	 * Creating bean of TaskExecutor to run Async tasks
+	 *
+	 * @return {@link Executor}
+	 */
+	@Bean
+	public Executor taskExecutor() {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(taskCorePoolSize);
+		executor.setMaxPoolSize(taskMaxPoolSize);
+		executor.setThreadNamePrefix("SYNCDATA-Async-Thread-");
+		executor.initialize();
+		return executor;
+	}
+
+	@Bean
+	public TaskScheduler taskScheduler() {
+		ThreadPoolTaskScheduler executor = new ThreadPoolTaskScheduler();
+		executor.setThreadNamePrefix("SYNCDATA-Scheduler-");
+		executor.setPoolSize(schedulerPoolSize);
+		executor.initialize();
+		return executor;
 	}
 
 }

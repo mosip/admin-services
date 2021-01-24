@@ -14,12 +14,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.keymanagerservice.entity.CACertificateStore;
+import io.mosip.kernel.keymanagerservice.repository.CACertificateStoreRepository;
 import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.*;
 import io.mosip.kernel.syncdata.exception.*;
 import io.mosip.kernel.syncdata.service.helper.KeymanagerHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -84,6 +87,9 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 
 	@Autowired
 	private ObjectMapper objectMapper;
+
+	@Autowired
+	private CACertificateStoreRepository caCertificateStoreRepository;
 
 
 	@Override
@@ -207,6 +213,23 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 					MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
 
 		return new ClientPublicKeyResponseDto(machines.get(0).getSignPublicKey(), machines.get(0).getPublicKey());
+	}
+
+	@Override
+	public CACertificates getPartnerCACertificates(LocalDateTime lastUpdated, LocalDateTime currentTimestamp) {
+		CACertificates caCertificates = new CACertificates();
+		caCertificates.setCertificateDTOList(new ArrayList<CACertificateDTO>());
+
+		List<CACertificateStore> certs = caCertificateStoreRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimestamp);
+		if(certs == null)
+			return caCertificates;
+
+		for(CACertificateStore caCertificateStore : certs) {
+			CACertificateDTO caCertificateDTO = new CACertificateDTO();
+			BeanUtils.copyProperties(caCertificateStore, caCertificateDTO);
+			caCertificates.getCertificateDTOList().add(caCertificateDTO);
+		}
+		return caCertificates;
 	}
 
 	private MachineResponseDto getMachineById(String machineId) {

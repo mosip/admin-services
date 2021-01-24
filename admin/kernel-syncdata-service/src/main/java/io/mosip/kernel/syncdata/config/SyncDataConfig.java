@@ -33,7 +33,8 @@ import io.mosip.kernel.syncdata.constant.HibernatePersistenceConstant;
  *
  */
 @Configuration
-@EnableJpaRepositories(basePackages = "io.mosip.kernel.syncdata.repository", entityManagerFactoryRef = "syncDataEntityManager", transactionManagerRef = "syncDataTransactionManager")
+@EnableJpaRepositories(basePackages = {"io.mosip.kernel.syncdata.repository", "io.mosip.kernel.keymanagerservice.repository"},
+		entityManagerFactoryRef = "syncDataEntityManager", transactionManagerRef = "syncDataTransactionManager")
 public class SyncDataConfig {
 
 	@Autowired
@@ -54,7 +55,7 @@ public class SyncDataConfig {
 	public LocalContainerEntityManagerFactoryBean syncDataEntityManager() {
 		LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
 		entityManagerFactory.setDataSource(syncDataSource());
-		entityManagerFactory.setPackagesToScan("io.mosip.kernel.syncdata.entity");
+		entityManagerFactory.setPackagesToScan("io.mosip.kernel.syncdata.entity","io.mosip.kernel.keymanagerservice.entity");
 		entityManagerFactory.setJpaPropertyMap(jpaProperties());
 		entityManagerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
 		return entityManagerFactory;

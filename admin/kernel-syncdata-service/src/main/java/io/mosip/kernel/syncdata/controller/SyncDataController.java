@@ -137,6 +137,7 @@ public class SyncDataController {
 	 * 
 	 * @param keyIndex     - keyIndex mapped to machine
 	 * @param lastUpdated  - last sync updated time stamp
+	 * @param regCenterId  - regcenterId mapped to machine
 	 * @return {@link SyncDataResponseDto}
 	 * @throws InterruptedException - this method will throw interrupted Exception
 	 * @throws ExecutionException   - this method will throw exeution exception
@@ -146,13 +147,14 @@ public class SyncDataController {
 	@GetMapping("/clientsettings")
 	public ResponseWrapper<SyncDataResponseDto> syncClientSettings(
 			@RequestParam(value = "keyindex", required = true) String keyIndex,
-			@RequestParam(value = "lastupdated", required = false) String lastUpdated)
+			@RequestParam(value = "lastupdated", required = false) String lastUpdated,
+			@RequestParam(value = "regcenterId", required = false) String regCenterId)
 			throws InterruptedException, ExecutionException {
 
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		
-		SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettings(null, keyIndex,
+		SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettings(regCenterId, keyIndex,
 				timestamp, currentTimeStamp);
 
 		syncDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
@@ -174,6 +176,7 @@ public class SyncDataController {
 	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@ResponseFilter
 	@GetMapping("/clientsettings/{regcenterid}")
+	@Deprecated(forRemoval = true, since = "1.1.5")
 	public ResponseWrapper<SyncDataResponseDto> syncClientSettingsWithRegCenterId(
 			@PathVariable("regcenterid") String regCenterId,
 			@RequestParam(value = "lastupdated", required = false) String lastUpdated,
@@ -363,6 +366,24 @@ public class SyncDataController {
 		syncUserDto.setLastSyncTime(currentTimeStamp);
 		ResponseWrapper<SyncUserDto> response = new ResponseWrapper<>();
 		response.setResponse(syncUserDto);
+		return response;
+	}
+
+	/**
+	 * Get all CA certificates from last updated time
+	 * @param lastUpdated
+	 * @return
+	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	@ResponseFilter
+	@GetMapping("/getcacertificates")
+	public ResponseWrapper<CACertificates> getCACertificates(@RequestParam(value = "lastupdated",
+			required = false) String lastUpdated) {
+		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
+		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
+		CACertificates caCertificates = masterDataService.getPartnerCACertificates(timestamp, currentTimeStamp);
+		ResponseWrapper<CACertificates> response = new ResponseWrapper<>();
+		response.setResponse(caCertificates);
 		return response;
 	}
 
