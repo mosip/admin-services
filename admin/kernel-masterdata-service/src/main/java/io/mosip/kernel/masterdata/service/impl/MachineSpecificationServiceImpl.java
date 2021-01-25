@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.MachineSpecificationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.FilterData;
@@ -186,6 +187,19 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 					.findByIdAndLangCodeIsDeletedFalseorIsDeletedIsNull(machineSpecification.getId(),
 							machineSpecification.getLangCode());
 			if (renMachineSpecification != null) {
+				if (!machineSpecification.getIsActive()) {
+					List<Machine> machines = machineRepository
+							.findMachineBymachineSpecIdAndIsDeletedFalseorIsDeletedIsNull(machineSpecification.getId());
+					if (!EmptyCheckUtils.isNullEmpty(machines)) {
+						throw new RequestException(
+								MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_MAPPING_EXCEPTION
+										.getErrorCode(),
+								MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_MAPPING_EXCEPTION
+										.getErrorMessage());
+					}
+					masterdataCreationUtil.updateMasterDataDeactivate(MachineSpecification.class,
+							machineSpecification.getId());
+				}
 				machineSpecification = masterdataCreationUtil.updateMasterData(MachineSpecification.class,
 						machineSpecification);
 				MetaDataUtils.setUpdateMetaData(machineSpecification, renMachineSpecification, false);

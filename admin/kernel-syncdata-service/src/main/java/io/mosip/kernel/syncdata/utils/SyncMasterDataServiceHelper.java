@@ -1877,8 +1877,8 @@ public class SyncMasterDataServiceHelper {
 			List<Object[]> regCenterMachines = machineRepository.getRegistrationCenterMachineWithKeyIndex(keyIndex);
 
 			if (regCenterMachines.isEmpty()) {
-				throw new RequestException(MasterDataErrorCode.INVALID_KEY_INDEX.getErrorCode(),
-						MasterDataErrorCode.INVALID_KEY_INDEX.getErrorMessage());
+				throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
+						MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
 			}
 
 			String mappedRegCenterId = (String)((Object[])regCenterMachines.get(0))[0];

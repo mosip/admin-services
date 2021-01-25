@@ -10,7 +10,9 @@ public enum RegistrationCenterTypeErrorCode {
 			"Error occurred while updating Registration Center Type details"),
 	REGISTRATION_CENTER_TYPE_DELETE_EXCEPTION("KER-MSD-110",
 			"Error occurred while deleting Registration Center Type details"),
-	REGISTRATION_CENTER_TYPE_DELETE_DEPENDENCY_EXCEPTION("KER-MSD-127", "Cannot delete dependency found");
+	REGISTRATION_CENTER_TYPE_DELETE_DEPENDENCY_EXCEPTION("KER-MSD-127", "Cannot delete dependency found"),
+	REGISTRATION_CENTER_TYPE_UPDATE_MAPPING_EXCEPTION("KER-MSD-111",
+			"Mapping exist before deactivating remove the mapping");
 
 	private final String errorCode;
 	private final String errorMessage;
