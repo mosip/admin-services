@@ -1,6 +1,8 @@
 package io.mosip.kernel.masterdata.service;
 
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.UserDetailsHistoryResponseDto;
+import io.mosip.kernel.masterdata.entity.UserDetailsHistory;
 
 /**
  * @author Sidhant Agarwal
@@ -15,4 +17,9 @@ public interface UserDetailsHistoryService {
 	 */
 	UserDetailsHistoryResponseDto getByUserIdAndTimestamp(String userId, String effDTimes);
 
+	/**
+	 * @param userDetailsHistory 
+	 * @return id response dto
+	 */
+	IdResponseDto createUserDetailsHistory(UserDetailsHistory userDetailsHistory); 
 }

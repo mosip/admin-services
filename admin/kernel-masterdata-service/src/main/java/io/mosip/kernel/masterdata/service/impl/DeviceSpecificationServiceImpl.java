@@ -238,6 +238,20 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 					.findByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getId(),
 							deviceSpecification.getLangCode());
 			if (!EmptyCheckUtils.isNullEmpty(entity)) {
+				if (!deviceSpecification.getIsActive()) {
+					List<Device> devices = deviceRepository
+							.findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getId());
+					if (!EmptyCheckUtils.isNullEmpty(devices)) {
+						throw new RequestException(
+								DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_UPDATE_MAPPING_EXCEPTION
+										.getErrorCode(),
+								DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_UPDATE_MAPPING_EXCEPTION
+										.getErrorMessage());
+					}
+					masterdataCreationUtil.updateMasterDataDeactivate(DeviceSpecification.class,
+							deviceSpecification.getId());
+				}
+
 				deviceSpecification = masterdataCreationUtil.updateMasterData(DeviceSpecification.class,
 						deviceSpecification);
 				MetaDataUtils.setUpdateMetaData(deviceSpecification, entity, false);

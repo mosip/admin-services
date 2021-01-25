@@ -18,7 +18,8 @@ public enum DocumentTypeErrorCode {
 	DOCUMENT_TYPE_REACTIVATION_EXCEPTION("KER-MSD-093", "Can not reactivate the document type"),
 	DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION("KER-MSD-094", "Can not deactivate the deactivated document type"),
 	DOCUMENT_TYPE_MENDATORY_PARAMETER_MISSING_EXCEPTION("KER-MSD-095",
-			"Mendatory Parameter is missing in document type details");
+			"Mendatory Parameter is missing in document type details"),
+	DOCUMENT_TYPE_UPDATE_MAPPING_EXCEPTION("KER-MSD-119", "Mapping exist before deactivating remove the mapping");
 
 	private final String errorCode;
 	private final String errorMessage;

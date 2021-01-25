@@ -14,7 +14,8 @@ public enum DocumentCategoryErrorCode {
 	DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION("KER-MSD-014", "Document Category not found"),
 	DOCUMENT_CATEGORY_UPDATE_EXCEPTION("KER-MSD-089", "Error occured while updating Document Category details"),
 	DOCUMENT_CATEGORY_DELETE_EXCEPTION("KER-MSD-090", "Error occured while deleting Document Category details"),
-	DOCUMENT_CATEGORY_DELETE_DEPENDENCY_EXCEPTION("KER-MSD-123", "Cannot delete dependency found");
+	DOCUMENT_CATEGORY_DELETE_DEPENDENCY_EXCEPTION("KER-MSD-123", "Cannot delete dependency found"),
+	DOCUMENT_CATEGORY_UPDATE_MAPPING_EXCEPTION("KER-MSD-091", "Mapping exist before deactivating remove the mapping");
 
 	private final String errorCode;
 	private final String errorMessage;

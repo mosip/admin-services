@@ -72,7 +72,7 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 			}
 			// Fetch from global level .
 			else {
-				List<DaysOfWeek> globalDaysList = daysOfWeekRepo.findByAllGlobalWorkingTrue(langCode);
+				List<DaysOfWeek> globalDaysList = daysOfWeekRepo.findBylangCode(langCode);
 				if (globalDaysList != null && !globalDaysList.isEmpty()) {
 					weekdayList = globalDaysList.stream().map(day -> {
 						WeekDaysDto globalWorkingDay = new WeekDaysDto();
@@ -132,11 +132,26 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 				responseDto.setWorkingdays(workingDayList);
 
 			}
-			 else {
-					throw new DataNotFoundException(
-							WorkingNonWorkingDayErrorCode.WORKING_DAY_DATA_FOUND_EXCEPTION.getErrorCode(),
-							WorkingNonWorkingDayErrorCode.WORKING_DAY_DATA_FOUND_EXCEPTION.getErrorMessage());
+			else {
+				List<DaysOfWeek> globalDaysList = daysOfWeekRepo.findByAllGlobalWorkingTrue(langCode);
+				if (globalDaysList != null && !globalDaysList.isEmpty()) {
+					globalDaysList.sort((d1, d2) -> d1.getDaySeq() - d2.getDaySeq());
+					workingDayList = globalDaysList.stream().map(day -> {
+						WorkingDaysDto dto = new WorkingDaysDto();
+						dto.setLanguageCode(langCode);
+						dto.setName(day.getName());
+						dto.setOrder(day.getDaySeq());
+						return dto;
+					}).collect(Collectors.toList());
+
+					responseDto.setWorkingdays(workingDayList);
+				} else {
+				throw new DataNotFoundException(
+						WorkingNonWorkingDayErrorCode.WORKING_DAY_DATA_FOUND_EXCEPTION.getErrorCode(),
+						WorkingNonWorkingDayErrorCode.WORKING_DAY_DATA_FOUND_EXCEPTION.getErrorMessage());
 				}
+
+			}
 
 			
 		}

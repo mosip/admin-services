@@ -7,10 +7,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.UserDetailsHistoryErrorCode;
 import io.mosip.kernel.masterdata.dto.UserDetailsDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.UserDetailsHistoryResponseDto;
 import io.mosip.kernel.masterdata.entity.UserDetailsHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -68,5 +71,17 @@ public class UserDetailsHistoryServiceImpl implements UserDetailsHistoryService 
 		}
 		return userResponseDto;
 	}
+
+
+	@Override
+	@Transactional(propagation = Propagation.MANDATORY)
+	public IdResponseDto createUserDetailsHistory(UserDetailsHistory userDetailsHistory) {
+		UserDetailsHistory createdHistory;
+		createdHistory = userDetailsHistoryRepository.create(userDetailsHistory);
+		IdResponseDto idResponseDto = new IdResponseDto();
+		MapperUtils.map(createdHistory, idResponseDto);
+		return idResponseDto;
+	}
+
 
 }

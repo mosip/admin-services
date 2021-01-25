@@ -4,11 +4,14 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.TemplateFileFormatErrorCode;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
@@ -31,6 +34,8 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 @Service
 public class TemplateFileFormatServiceImpl implements TemplateFileFormatService {
+
+	private static final Logger logger = LoggerFactory.getLogger(TemplateFileFormatServiceImpl.class);
 
 	@Autowired
 	private TemplateFileFormatRepository templateFileFormatRepository;
@@ -98,13 +103,26 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 							templateFileFormatRequestDto.getLangCode());
 
 			if (templateFileFormat != null) {
+				if (!templateFileFormatRequestDto.getIsActive()) {
+					List<Template> templates = templateRepository
+							.findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(
+									templateFileFormatRequestDto.getCode());
+
+					if (!EmptyCheckUtils.isNullEmpty(templates)) {
+						throw new RequestException(
+								TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_UPDATE_MAPPING_EXCEPTION
+										.getErrorCode(),
+								TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_UPDATE_MAPPING_EXCEPTION
+										.getErrorMessage());
+					}
+					masterdataCreationUtil.updateMasterDataDeactivate(TemplateFileFormat.class,
+							templateFileFormatRequestDto.getCode());
+				}
 				templateFileFormatRequestDto = masterdataCreationUtil.updateMasterData(TemplateFileFormat.class,
 						templateFileFormatRequestDto);
 				MetaDataUtils.setUpdateMetaData(templateFileFormatDto, templateFileFormat, false);
 				templateFileFormatRepository.update(templateFileFormat);
-				if(!templateFileFormatRequestDto.getIsActive()) {
-					masterdataCreationUtil.updateMasterDataDeactivate(TemplateFileFormat.class, templateFileFormatRequestDto.getCode());
-				}
+
 			} else {
 
 				throw new RequestException(TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_NOT_FOUND.getErrorCode(),
@@ -153,7 +171,7 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 						TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_NOT_FOUND.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
-			System.out.println(e.getMessage());
+			logger.error("TEMPLATE_FILE_FORMAT_DELETE_EXCEPTION", e);
 			throw new MasterDataServiceException(
 					TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_DELETE_EXCEPTION.getErrorCode(),
 					TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_DELETE_EXCEPTION.getErrorMessage() + " "

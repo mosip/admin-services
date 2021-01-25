@@ -72,6 +72,14 @@ public interface RegistrationCenterService {
 	RegistrationCenterResponseDto getRegistrationCentersByIDAndLangCode(String registrationCenterId, String langCode);
 
 	/**
+	 * Function to fetch registration center using centerId.
+	 * 
+	 * @param registrationCenterId centerId of required center.
+	 * @return {@link RegistrationCenterResponseDto}
+	 */
+	RegistrationCenterResponseDto getRegistrationCentersByID(String registrationCenterId);
+
+	/**
 	 * Function to fetch registration centers list using location code and language
 	 * code.
 	 * 

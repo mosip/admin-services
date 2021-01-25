@@ -398,6 +398,37 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * getRegistrationCentersByIDAndLangCode(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public RegistrationCenterResponseDto getRegistrationCentersByID(String registrationCenterId) {
+		List<RegistrationCenterDto> registrationCenters = new ArrayList<>();
+
+		List<RegistrationCenter> registrationCenter = null;
+		try {
+			registrationCenter = registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(registrationCenterId);
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+		if (registrationCenter == null || registrationCenter.isEmpty()) {
+			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+		}
+
+		RegistrationCenterDto registrationCenterDto = MapperUtils.map(registrationCenter, RegistrationCenterDto.class);
+		registrationCenters.add(registrationCenterDto);
+		RegistrationCenterResponseDto response = new RegistrationCenterResponseDto();
+		response.setRegistrationCenters(registrationCenters);
+		return response;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
 	 * getAllRegistrationCenters()
 	 */
 	@Override

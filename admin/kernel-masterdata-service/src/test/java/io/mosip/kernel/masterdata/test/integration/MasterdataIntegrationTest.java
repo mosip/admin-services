@@ -3042,6 +3042,27 @@ public class MasterdataIntegrationTest {
 				.content(DeviceSpecificationJson)).andExpect(status().isInternalServerError());
 	}
 
+	@Test
+	@WithUserDetails("global-admin")
+	public void updateDeviceSpecificationExceptionTest() throws Exception {
+		RequestWrapper<DeviceSpecificationDto> requestDto;
+		requestDto = new RequestWrapper<>();
+		requestDto.setId("mosip.match.regcentr.DeviceSpecificationcode");
+		requestDto.setVersion("1.0.0");
+		deviceSpecificationDto.setIsActive(false);
+		requestDto.setRequest(deviceSpecificationDto);
+		List<Device> devices = new ArrayList<Device>();
+		devices.add(device);
+		String deviceSpecificationJson = mapper.writeValueAsString(requestDto);
+		when(deviceSpecificationRepository.findByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(Mockito.any(),
+				Mockito.any())).thenReturn(deviceSpecification);
+		when(deviceRepository.findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any(), Mockito.any()))
+				.thenReturn(null);
+		mockMvc.perform(
+				put("/devicespecifications").contentType(MediaType.APPLICATION_JSON).content(deviceSpecificationJson))
+				.andExpect(status().isOk());
+	}
+
 	// ---------------------------------DeviceTypeTest------------------------------------------------
 
 	@Test
@@ -3095,6 +3116,8 @@ public class MasterdataIntegrationTest {
 				.andExpect(status().isOk());
 	}
 
+	
+
 	@Test
 	@WithUserDetails("global-admin")
 	public void updateDeviceTypeExceptionTest() throws Exception {
@@ -3114,6 +3137,24 @@ public class MasterdataIntegrationTest {
 				.content(DeviceTypeJson)).andExpect(status().isInternalServerError());
 	}
 
+	@Test
+	@WithUserDetails("global-admin")
+	public void updateDeviceTypeWithIsActiveFalseTest() throws Exception {
+
+		deviceTypeDto.setIsActive(false);
+		RequestWrapper<DeviceTypeDto> requestDto = new RequestWrapper<>();
+		requestDto.setId("mosip.match.regcentr.Devicetypecode");
+		requestDto.setVersion("1.0.0");
+		requestDto.setRequest(deviceTypeDto);
+
+		String DeviceTypeJson = mapper.writeValueAsString(requestDto);
+
+		when(deviceTypeRepository.findDeviceTypeByCodeAndByLangCode(Mockito.any(), Mockito.any()))
+				.thenReturn(deviceType);
+		when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(), Mockito.any())).thenReturn(deviceSpecList);
+		mockMvc.perform(put("/devicetypes").contentType(MediaType.APPLICATION_JSON).content(DeviceTypeJson))
+				.andExpect(status().isOk());
+	}
 	// -------------------------------MachineSpecificationTest-------------------------------
 	@Test
 	@WithUserDetails("global-admin")
@@ -3273,6 +3314,26 @@ public class MasterdataIntegrationTest {
 				.content(content)).andExpect(status().isInternalServerError());
 
 	}
+	@Test 
+	@WithUserDetails("global-admin")
+	public void updateMachineSpecificationWithIsActiveFalseTest() throws Exception {
+
+		List<Machine> machines = new ArrayList<Machine>();
+		machines.add(machine);
+		RequestWrapper<MachineSpecificationDto> requestDto = new RequestWrapper<>();
+		requestDto.setId("mosip.machineSpecification.update");
+		requestDto.setVersion("1.0.0");
+		requestDto.setRequest(machineSpecificationDto);
+		String content = mapper.writeValueAsString(requestDto);
+		when(machineTypeRepository.findMachineTypeByCodeAndByLangCode(Mockito.any(), Mockito.any()))
+				.thenReturn(machineType);
+		when(machineRepository.findMachineBymachineSpecIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any()))
+				.thenReturn(machines);
+		mockMvc.perform(MockMvcRequestBuilders.put("/machinespecifications").contentType(MediaType.APPLICATION_JSON)
+				.content(content)).andExpect(status().isOk());
+
+	}
+
 	// -----------------------------------------------------------------------------------------------
 
 	@Test
@@ -3523,6 +3584,28 @@ public class MasterdataIntegrationTest {
 		when(masterdataCreationUtil.updateMasterData(MachineType.class, machineTypeDto)).thenReturn(machineTypeDto);
 		mockMvc.perform(MockMvcRequestBuilders.put("/machinetypes").contentType(MediaType.APPLICATION_JSON)
 				.content(machineTypeJson)).andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void updateMachineTypeWithIsActiveFalseTest() throws Exception {
+		List<MachineSpecification> machineSpecifications=new ArrayList<MachineSpecification>();
+		machineSpecifications.add(machineSpecification);
+		machineTypeDto.setIsActive(false);
+		RequestWrapper<MachineTypeDto> requestDto = new RequestWrapper<>();
+		requestDto.setId("mosip.match.regcentr.machinetypecode");
+		requestDto.setVersion("1.0.0");
+		requestDto.setRequest(machineTypeDto);
+
+		String machineTypeJson = mapper.writeValueAsString(requestDto);
+		when(machineTypeRepository.findtoUpdateMachineTypeByCodeAndByLangCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(machineType);
+		
+		when(machineSpecificationRepository.findMachineSpecificationByMachineTypeCodeAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
+		.thenReturn(machineSpecifications);
+
+		mockMvc.perform(put("/machinetypes").contentType(MediaType.APPLICATION_JSON).content(machineTypeJson))
+				.andExpect(status().isOk());
 	}
 	// --------------------------------DeviceTest-------------------------------------------------
 	@Test
@@ -4292,6 +4375,52 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	@WithUserDetails("global-admin")
+	public void updateDocumentCategoryWithIsActiveFalseTest() throws Exception {
+		List<ValidDocument> validDocuments = new ArrayList<ValidDocument>();
+		validDocuments.add(validDocument);
+		RequestWrapper<DocumentCategoryDto> requestDto = new RequestWrapper<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVersion("1.0");
+		DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
+		documentCategoryDto.setCode("D001");
+		documentCategoryDto.setDescription("Proof Of Identity");
+		documentCategoryDto.setIsActive(false);
+		documentCategoryDto.setLangCode("eng");
+		documentCategoryDto.setName("POI");
+		requestDto.setRequest(documentCategoryDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(documentCategoryRepository.findByCodeAndLangCode(Mockito.any(), Mockito.any())).thenReturn(category);
+		when(validDocumentRepository.findByDocCategoryCode(Mockito.any())).thenReturn(validDocuments);
+		mockMvc.perform(put("/documentcategories").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isOk());
+
+	}
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void updateDocumentTypeWithIsActiveFalseTest() throws Exception {
+		List<ValidDocument> validDocuments = new ArrayList<ValidDocument>();
+		validDocuments.add(validDocument);
+		RequestWrapper<DocumentTypeDto> requestDto = new RequestWrapper<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVersion("1.0");
+		DocumentTypeDto documentTypeDto = new DocumentTypeDto();
+		documentTypeDto.setCode("D001");
+		documentTypeDto.setDescription("identity card");
+		documentTypeDto.setIsActive(false);
+		documentTypeDto.setLangCode("eng");
+		documentTypeDto.setName("P001");
+		requestDto.setRequest(documentTypeDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(documentTypeRepository.findByCodeAndLangCode(Mockito.any(), Mockito.any())).thenReturn(type);
+		when(validDocumentRepository.findByDocTypeCode(Mockito.any())).thenReturn(validDocuments);
+		mockMvc.perform(put("/documentcategories").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isOk());
+
+	}
+
+	@Test
+	@WithUserDetails("global-admin")
 	public void deleteDocumentCategoryTest() throws Exception {
 		when(validDocumentRepository.findByDocCategoryCode(Mockito.anyString()))
 				.thenReturn(new ArrayList<ValidDocument>());
@@ -4961,6 +5090,35 @@ public class MasterdataIntegrationTest {
 		when(masterdataCreationUtil.updateMasterData(RegistrationCenterType.class, registrationCenterTypeDto))
 				.thenReturn(registrationCenterTypeDto);
 		when(registrationCenterTypeRepository.update(Mockito.any())).thenReturn(registrationCenterType);
+		mockMvc.perform(put("/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void updateRegistrationCenterTypeWithIsActiveFalseTest() throws Exception {
+		RequestWrapper<RegistrationCenterTypeDto> requestDto = new RequestWrapper<>();
+		List<RegistrationCenter> registrationCenters=new ArrayList<RegistrationCenter>();
+		registrationCenters.add(registrationCenter);
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVersion("1.0");
+		RegistrationCenterTypeDto registrationCenterTypeDto = new RegistrationCenterTypeDto();
+		registrationCenterTypeDto.setCode("D001");
+		registrationCenterTypeDto.setIsActive(false);
+		registrationCenterTypeDto.setLangCode("eng");
+		registrationCenterTypeDto.setName("POI");
+		registrationCenterTypeDto.setDescr("TEST DESCR");
+		requestDto.setRequest(registrationCenterTypeDto);
+		RegistrationCenterType registrationCenterType = new RegistrationCenterType();
+		registrationCenterType.setCode("D001");
+		registrationCenterType.setDescr("TEST DESCR");
+		registrationCenterType.setName("POI");
+		String contentJson = mapper.writeValueAsString(requestDto);
+
+		when(registrationCenterTypeRepository.findByCodeAndLangCode(Mockito.any(), Mockito.any()))
+				.thenReturn(registrationCenterType);
+		when(registrationCenterRepository.findByCenterTypeCode(Mockito.any()))
+		.thenReturn(registrationCenters);
 		mockMvc.perform(put("/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isOk());
 	}
@@ -7358,7 +7516,7 @@ public class MasterdataIntegrationTest {
 		device.setZoneCode("JRD");
 		device.setRegCenterId("676");
 		zones.add(zone);
-		System.out.println(primaryLang);
+		//System.out.println(primaryLang);
 		when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(Mockito.any())).thenReturn(Arrays.asList(new RegistrationCenter() ));
 		when(registrationCenterRepository.findByRegIdAndZone(Mockito.any(),Mockito.any())).thenReturn(Arrays.asList(new RegistrationCenter() ));
 		
@@ -7411,7 +7569,7 @@ public class MasterdataIntegrationTest {
 		zone.setCode("JRD");
 		List<Zone> zones = new ArrayList<>();
 		zones.add(zone);
-		System.out.println(primaryLang);
+		//System.out.println(primaryLang);
 		when(registrationCenterTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(),
 				Mockito.any())).thenReturn(regCenterType);
 		when(locationRepository.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(), Mockito.any()))
@@ -7437,7 +7595,7 @@ public class MasterdataIntegrationTest {
 		zone.setCode("JRD");
 		List<Zone> zones = new ArrayList<>();
 		zones.add(zone);
-		System.out.println(primaryLang);
+		//System.out.println(primaryLang);
 		when(registrationCenterTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(),
 				Mockito.any())).thenReturn(regCenterType);
 		when(locationRepository.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(), Mockito.any()))

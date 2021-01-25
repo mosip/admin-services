@@ -27,11 +27,13 @@ import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
+import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.repository.DeviceTypeRepository;
 import io.mosip.kernel.masterdata.service.DeviceTypeService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
@@ -64,6 +66,9 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 	 */
 	@Autowired
 	DeviceTypeRepository deviceTypeRepository;
+
+	@Autowired
+	DeviceSpecificationRepository deviceSpecificationRepository;
 
 	@Autowired
 	private FilterTypeValidator filterValidator;
@@ -128,17 +133,27 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 	@Override
 	public CodeAndLanguageCodeID updateDeviceType(DeviceTypeDto deviceTypeDto) {
 		CodeAndLanguageCodeID codeAndLanguageCodeID=new CodeAndLanguageCodeID();
+
 		//DeviceType deviceType=null;
 		try {
 			DeviceType deviceType = deviceTypeRepository.findDeviceTypeByCodeAndByLangCode(deviceTypeDto.getCode(), deviceTypeDto.getLangCode());
 			if (!EmptyCheckUtils.isNullEmpty(deviceType)) {
+				if(!deviceTypeDto.getIsActive()) {
+					List<DeviceSpecification> deviceSpecification = deviceSpecificationRepository
+							.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(
+									deviceTypeDto.getLangCode(), deviceTypeDto.getCode());
+
+					if (!EmptyCheckUtils.isNullEmpty(deviceSpecification)) {
+						throw new RequestException(
+								DeviceTypeErrorCode.DEVICE_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorCode(),
+								DeviceTypeErrorCode.DEVICE_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorMessage());
+					}
+					masterdataCreationUtil.updateMasterDataDeactivate(DeviceType.class, deviceTypeDto.getCode());
+				}
 				deviceTypeDto = masterdataCreationUtil.updateMasterData(DeviceType.class, deviceTypeDto);
 				MetaDataUtils.setUpdateMetaData(deviceTypeDto, deviceType, false);
 				deviceTypeRepository.update(deviceType);
 				MapperUtils.map(deviceType, codeAndLanguageCodeID);
-				if(!deviceTypeDto.getIsActive()) {
-					masterdataCreationUtil.updateMasterDataDeactivate(DeviceType.class, deviceTypeDto.getCode());
-				}
 			} else {
 				throw new RequestException(DeviceTypeErrorCode.DEVICE_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DeviceTypeErrorCode.DEVICE_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());

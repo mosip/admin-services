@@ -27,11 +27,13 @@ import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Machine;
+import io.mosip.kernel.masterdata.entity.MachineSpecification;
 import io.mosip.kernel.masterdata.entity.MachineType;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
+import io.mosip.kernel.masterdata.repository.MachineSpecificationRepository;
 import io.mosip.kernel.masterdata.repository.MachineTypeRepository;
 import io.mosip.kernel.masterdata.service.MachineTypeService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
@@ -61,6 +63,9 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 	 */
 	@Autowired
 	MachineTypeRepository machineTypeRepository;
+
+	@Autowired
+	MachineSpecificationRepository machineSpecificationRepository;
 
 	/**
 	 * Reference to {@link FilterTypeValidator}.
@@ -141,13 +146,22 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 		try {
 			MachineType machineType = machineTypeRepository.findtoUpdateMachineTypeByCodeAndByLangCode(machineTypeDto.getCode(),machineTypeDto.getLangCode());
 			if (!EmptyCheckUtils.isNullEmpty(machineType)) {
+				if (!machineTypeDto.getIsActive()) {
+					List<MachineSpecification> machineSpecifications = machineSpecificationRepository
+							.findMachineSpecificationByMachineTypeCodeAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(
+									machineTypeDto.getCode(), machineTypeDto.getLangCode());
+					if (!EmptyCheckUtils.isNullEmpty(machineSpecifications)) {
+						throw new RequestException(
+								MachineTypeErrorCode.MACHINE_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorCode(),
+								MachineTypeErrorCode.MACHINE_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorMessage());
+					}
+					masterdataCreationUtil.updateMasterDataDeactivate(MachineType.class, machineTypeDto.getCode());
+				}
 				machineTypeDto = masterdataCreationUtil.updateMasterData(MachineType.class, machineTypeDto);
 				MetaDataUtils.setUpdateMetaData(machineTypeDto, machineType, false);
 				machineTypeRepository.update(machineType);
 				MapperUtils.map(machineType, codeAndLanguageCodeID);
-				if(!machineTypeDto.getIsActive()) {
-					masterdataCreationUtil.updateMasterDataDeactivate(MachineType.class, machineTypeDto.getCode());
-				}
+
 			} else {
 				throw new RequestException(MachineTypeErrorCode.MACHINE_TYPE_NOT_FOUND.getErrorCode(),
 						MachineTypeErrorCode.MACHINE_TYPE_NOT_FOUND.getErrorMessage());
