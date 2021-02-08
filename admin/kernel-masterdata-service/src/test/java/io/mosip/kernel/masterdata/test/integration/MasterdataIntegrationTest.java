@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -61,6 +62,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -117,8 +120,10 @@ import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.dto.TemplateTypeDto;
 import io.mosip.kernel.masterdata.dto.TitleDto;
+import io.mosip.kernel.masterdata.dto.UserDetailsDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
 import io.mosip.kernel.masterdata.dto.WorkingNonWorkingDaysDto;
+import io.mosip.kernel.masterdata.dto.ZoneUserDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IndividualTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterUserMachineMappingHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.registerdevice.DeviceData;
@@ -171,6 +176,8 @@ import io.mosip.kernel.masterdata.entity.UserDetails;
 import io.mosip.kernel.masterdata.entity.UserDetailsHistory;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
 import io.mosip.kernel.masterdata.entity.Zone;
+import io.mosip.kernel.masterdata.entity.ZoneUser;
+import io.mosip.kernel.masterdata.entity.ZoneUserHistory;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.entity.id.CodeLangCodeAndRsnCatCodeID;
 import io.mosip.kernel.masterdata.entity.id.GenderID;
@@ -225,6 +232,8 @@ import io.mosip.kernel.masterdata.repository.TitleRepository;
 import io.mosip.kernel.masterdata.repository.UserDetailsHistoryRepository;
 import io.mosip.kernel.masterdata.repository.UserDetailsRepository;
 import io.mosip.kernel.masterdata.repository.ValidDocumentRepository;
+import io.mosip.kernel.masterdata.repository.ZoneRepository;
+import io.mosip.kernel.masterdata.repository.ZoneUserHistoryRepository;
 import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
@@ -271,6 +280,9 @@ public class MasterdataIntegrationTest {
 
 	@MockBean
 	ZoneUserRepository zoneUserRepository;
+	
+	@MockBean
+	ZoneUserHistoryRepository zoneUserHistoryRepo;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -284,7 +296,10 @@ public class MasterdataIntegrationTest {
 
 	UserDetailsHistory user;
 	List<UserDetailsHistory> users = new ArrayList<>();
-
+	UserDetails ud;
+	List<UserDetails> uds = new ArrayList<>();
+	UserDetailsDto userDetailsDto=new UserDetailsDto();
+	
 	@MockBean
 	private UserDetailsHistoryRepository userDetailsRepository;
 
@@ -488,7 +503,12 @@ public class MasterdataIntegrationTest {
 	private IndividualTypeRepository individualTypeRepository;
 	private IndividualTypeResponseDto individualTypeResponseDto;
 	private List<IndividualType> individualTypes = new ArrayList<>();
-
+	private ZoneUserDto zoneUserDto=new ZoneUserDto();
+	private ZoneUser zoneUser=new ZoneUser();
+	private ZoneUserHistory zoneUserhistory =new ZoneUserHistory();
+	private Zone zone=new Zone();
+	@MockBean
+	ZoneRepository zoneRepository;
 	@MockBean
 	private FoundationalTrustProviderRepository foundationalTrustProviderRepository;
 
@@ -572,6 +592,9 @@ public class MasterdataIntegrationTest {
 		templateFileFormatSetup();
 		registrationCenterDeviceHistorySetup();
 		userDetailsHistorySetup();
+		userDetailsSetup();
+		userDetailsDtoSetup();
+		zoneUserSetUp();
 		MSDcreateSetUp();
 
 		
@@ -587,6 +610,38 @@ public class MasterdataIntegrationTest {
 		doNothing().when(aditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 	}
 
+	private void zoneUserSetUp() {
+		zoneUserDto.setIsActive(true);
+		zoneUserDto.setLangCode("eng");
+		zoneUserDto.setUserId("110006");
+		zoneUserDto.setZoneCode("RFA");
+		zoneUser.setCreatedBy("110006");
+		zoneUser.setCreatedDateTime(LocalDateTime.now());
+		zoneUser.setIsActive(true);
+		zoneUser.setLangCode("eng");
+		zoneUser.setUpdatedBy("110006");
+		zoneUser.setUpdatedDateTime(LocalDateTime.now());
+		zoneUser.setUserId("110006");
+		zoneUser.setZoneCode("RFA");
+		zoneUserhistory.setEffDTimes(LocalDateTime.now());
+		zoneUserhistory.setCreatedBy("110006");
+		zoneUserhistory.setCreatedDateTime(LocalDateTime.now());
+		zoneUserhistory.setIsActive(true);
+		zoneUserhistory.setLangCode("eng");
+		zoneUserhistory.setUpdatedBy("110006");
+		zoneUserhistory.setUpdatedDateTime(LocalDateTime.now());
+		zoneUserhistory.setUserId("110006");
+		zoneUserhistory.setZoneCode("RFA");
+		zone.setCode("RFA");
+		zone.setCreatedBy("110006");
+		zone.setCreatedDateTime(LocalDateTime.now());
+		zone.setHierarchyLevel((short) 3);
+		zone.setHierarchyName("City");
+		zone.setLangCode("eng");
+		zone.setName("RAFALE");
+		zone.setParentZoneCode("KTA");
+	}
+
 	private void userDetailsHistorySetup() {
 		user = new UserDetailsHistory();
 		user.setId("11001");
@@ -598,6 +653,32 @@ public class MasterdataIntegrationTest {
 		user.setStatusCode("dwd");
 		user.setUin("dfwefw");
 		users.add(user);
+	}
+	
+	private void userDetailsSetup() {
+		userDetailsDto = new UserDetailsDto();
+		userDetailsDto.setId("11001");
+		userDetailsDto.setRegCenterId("10002");
+		userDetailsDto.setEmail("abcd");
+		userDetailsDto.setLangCode("eng");
+		userDetailsDto.setMobile("124134");
+		userDetailsDto.setName("abcd");
+		userDetailsDto.setStatusCode("dwd");
+		userDetailsDto.setUin("dfwefw");
+		
+	}
+	
+	private void userDetailsDtoSetup() {
+		ud = new UserDetails();
+		ud.setId("11001");
+		ud.setRegCenterId("10002");
+		ud.setEmail("abcd");
+		ud.setLangCode("eng");
+		ud.setMobile("124134");
+		ud.setName("abcd");
+		ud.setStatusCode("dwd");
+		ud.setUin("dfwefw");
+		uds.add(ud);
 	}
 
 	IndividualType fr;
@@ -8344,5 +8425,107 @@ public class MasterdataIntegrationTest {
 		when(locationHierarchyRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
 				Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/locationHierarchyLevels/{langcode}","ENG")).andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	@WithUserDetails("reg-processor")
+	public void getUserDetailByIdTest() throws Exception {
+
+		when(userRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString())).thenReturn(ud);
+		mockMvc.perform(get("/users/110001")).andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("reg-processor")
+	public void getUserDetailTest() throws Exception {
+		Page<UserDetails> pageData =new PageImpl<>(uds);
+		when( userRepository.findAllByIsDeletedFalseorIsDeletedIsNull(Mockito.any(Pageable.class))).thenReturn(pageData);
+		
+		when(userRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString())).thenReturn(ud);
+		mockMvc.perform(get("/users")).andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void createUserDetailTest() throws Exception {
+		when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(Mockito.anyString())).thenReturn(registrationCenterEntityList);
+		when(masterdataCreationUtil.createMasterData(Mockito.any(Class.class), Mockito.any(UserDetailsDto.class))).thenReturn(userDetailsDto);
+		when(userDetailsRepository.create(Mockito.any())).thenReturn(user);
+		when(userRepository.create(Mockito.any())).thenReturn(ud);
+		mockMvc.perform(post("/users/1001/eng/11011")).andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void updateUserDetailTest() throws Exception {
+		when(masterdataCreationUtil.updateMasterData(Mockito.any(Class.class), Mockito.any(UserDetailsDto.class))).thenReturn(userDetailsDto);
+		when(userDetailsRepository.create(Mockito.any())).thenReturn(user);
+		when(userRepository.update(Mockito.any())).thenReturn(ud);
+		mockMvc.perform(put("/users/1001/eng/11011")).andExpect(status().isOk());
+	}
+	@Test
+	@WithUserDetails("global-admin")
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void deleteUserDetailTest() throws Exception {
+		Optional<UserDetails> udo = Optional.of(ud);
+		when(userDetailsRepository.create(Mockito.any())).thenReturn(user);
+		when(userRepository.findById(Mockito.any())).thenReturn(udo);
+		doNothing().when(userRepository).delete(Mockito.any(UserDetails.class));
+		
+		mockMvc.perform(delete("/users/1001/")).andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void createZoneUserTest() throws Exception {
+		RequestWrapper<ZoneUserDto> requestDto;
+		requestDto = new RequestWrapper<>();
+		requestDto.setId("mosip.zone.user.id");
+		requestDto.setVersion("1.0");
+		requestDto.setRequest(zoneUserDto);
+		when(zoneUserRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
+				Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(null);
+		when(zoneUserRepository.findZoneUserByUserIdZoneCodeLangCodeIsActive(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(null);
+		when(zoneUserRepository.create(Mockito.any())).thenReturn(zoneUser);
+		when(zoneUserHistoryRepo.create(Mockito.any())).thenReturn(zoneUserhistory);
+		when(zoneRepository.findZoneByCodeAndLangCodeNonDeletedAndIsActive(Mockito.any(),Mockito.any())).thenReturn(zone);
+		mockMvc.perform(post("/zoneuser").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestDto))).andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void updateZoneUserTest() throws Exception {
+		RequestWrapper<ZoneUserDto> requestDto;
+		requestDto = new RequestWrapper<>();
+		requestDto.setId("mosip.zone.user.id");
+		requestDto.setVersion("1.0");
+		requestDto.setRequest(zoneUserDto);
+		when(zoneUserRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
+				Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(zoneUser);
+		when(zoneUserRepository.findZoneUserByUserIdZoneCodeLangCodeIsActive(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(null);
+		when(zoneUserRepository.update(Mockito.any())).thenReturn(zoneUser);
+		when(zoneUserHistoryRepo.create(Mockito.any())).thenReturn(zoneUserhistory);
+		when(zoneRepository.findZoneByCodeAndLangCodeNonDeletedAndIsActive(Mockito.any(),Mockito.any())).thenReturn(zone);
+		mockMvc.perform(put("/zoneuser").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestDto))).andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void deleteZoneUserTest() throws Exception {
+		
+		when(zoneUserRepository.findByUserIdAndZoneCode(Mockito.any(),Mockito.any())).thenReturn(Arrays.asList(zoneUser));
+		doNothing().when(zoneUserRepository).delete(Mockito.any());
+		when(zoneUserRepository.update(Mockito.any())).thenReturn(zoneUser);
+		when(zoneUserHistoryRepo.create(Mockito.any())).thenReturn(zoneUserhistory);
+		mockMvc.perform(delete("/zoneuser/110006/11000")).andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("reg-processor")
+	public void getZoneUserHistoryTest() throws Exception {
+		when(zoneUserHistoryRepo.getByUserIdAndTimestamp(Mockito.any(), Mockito.any())).thenReturn(Arrays.asList(zoneUserhistory));
+		mockMvc.perform(get("/zoneuser/history/110006/2021-02-08T03:54:33.489Z")).andExpect(status().isOk());
 	}
 }

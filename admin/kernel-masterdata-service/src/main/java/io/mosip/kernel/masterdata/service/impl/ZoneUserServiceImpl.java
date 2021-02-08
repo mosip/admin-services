@@ -149,14 +149,14 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 	}
 	private boolean getisActive(String userId,String langCode,String zoneCode,boolean isActive) {
 		if(langCode.equalsIgnoreCase(primaryLang)) {
-			Holiday holiday=zoneUserRepo.findZoneUserByUserIdZoneCodeLangCodeIsActive(userId,secondaryLang,zoneCode);
-			if(holiday==null) {
+			ZoneUser zoneUser=zoneUserRepo.findZoneUserByUserIdZoneCodeLangCodeIsActive(userId,secondaryLang,zoneCode);
+			if(zoneUser==null) {
 				return false;
 			}
 		}
 		if(langCode.equalsIgnoreCase(secondaryLang)) {
-			Holiday holiday=zoneUserRepo.findZoneUserByUserIdZoneCodeLangCodeIsActive(userId,primaryLang,zoneCode);
-			if(holiday==null) {
+			ZoneUser zoneUser=zoneUserRepo.findZoneUserByUserIdZoneCodeLangCodeIsActive(userId,primaryLang,zoneCode);
+			if(zoneUser==null) {
 				throw new MasterDataServiceException(RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorCode(),
 						RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorMessage());
 			}
@@ -164,10 +164,10 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		return isActive;
 	}
 	@Override
-	public IdResponseDto deleteZoneUserMapping(String userId) {
+	public IdResponseDto deleteZoneUserMapping(String userId,String zoneCode) {
 		IdResponseDto idResponse = new IdResponseDto();
 		try {
-			List<ZoneUser> zu = zoneUserRepo.findByUserId(userId);
+			List<ZoneUser> zu = zoneUserRepo.findByUserIdAndZoneCode(userId,zoneCode);
 			zu.forEach(user -> {
 				zoneUserRepo.delete(user);
 				ZoneUserHistory udh = new ZoneUserHistory();

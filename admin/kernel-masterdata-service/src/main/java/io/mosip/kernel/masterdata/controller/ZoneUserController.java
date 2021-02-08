@@ -45,11 +45,11 @@ public class ZoneUserController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@PutMapping(value="/zoneuser")
 	@ApiOperation(value = "Service to map Users with regcenter", notes = "Maps zone and User  and returns ZoneUserDto")
-	@ApiResponses({ @ApiResponse(code = 201, message = "When User and Registration center successfully mapped"),
+	@ApiResponses({ @ApiResponse(code = 201, message = "When User and zone successfully mapped"),
 			@ApiResponse(code = 400, message = "When Request is invalid"),
-			@ApiResponse(code = 404, message = "When No Regcenter found"),
+			@ApiResponse(code = 404, message = "When No zoneuser found"),
 			@ApiResponse(code = 500, message = "While mapping user to zone any error occured") })
-	public ResponseWrapper<ZoneUserExtnDto> mupdateapUserZone(@Valid @RequestBody RequestWrapper<ZoneUserDto> zoneUserDto) {
+	public ResponseWrapper<ZoneUserExtnDto> updateapUserZone(@Valid @RequestBody RequestWrapper<ZoneUserDto> zoneUserDto) {
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + ZoneUserController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.UPDATE_API_IS_CALLED + ZoneUserController.class.getCanonicalName());
@@ -64,8 +64,8 @@ public class ZoneUserController {
 	@ApiOperation(value = "Service to map Users with regcenter", notes = "Maps zone and User  and returns ZoneUserDto")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When User and Registration center successfully mapped"),
 			@ApiResponse(code = 400, message = "When Request is invalid"),
-			@ApiResponse(code = 404, message = "When No Regcenter found"),
-			@ApiResponse(code = 500, message = "While mapping user to regcenter any error occured") })
+			@ApiResponse(code = 404, message = "When No zoneuser found"),
+			@ApiResponse(code = 500, message = "While mapping user to zone any error occured") })
 	public ResponseWrapper<ZoneUserExtnDto> mapUserZone(@Valid @RequestBody RequestWrapper<ZoneUserDto> zoneUserDto) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + ZoneUserController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
@@ -78,20 +78,20 @@ public class ZoneUserController {
 	
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
-	@DeleteMapping("/zoneuser/{userid}")
-	@ApiOperation(value = "Service to map Users with regcenter", notes = "Maps User Detail and return User id")
-	@ApiResponses({ @ApiResponse(code = 201, message = "When User and Registration center successfully mapped"),
+	@DeleteMapping("/zoneuser/{userid}/{zonecode}")
+	@ApiOperation(value = "Service to map Users with regcenter", notes = "deletes zone and user mapping")
+	@ApiResponses({ @ApiResponse(code = 201, message = "When successfully deletes zone and user mapping"),
 			@ApiResponse(code = 400, message = "When Request is invalid"),
 			@ApiResponse(code = 404, message = "When No Regcenter found"),
-			@ApiResponse(code = 500, message = "While mapping user to regcenter any error occured") })
-	public ResponseWrapper<IdResponseDto> deleteMapUserZone(@Valid @NotEmpty @StringFormatter(min = 1, max = 256) @PathVariable("userid") String userId
-	 ) {
+			@ApiResponse(code = 500, message = "While mapping user to zone any error occured") })
+	public ResponseWrapper<IdResponseDto> deleteMapUserZone(@Valid @NotEmpty @StringFormatter(min = 1, max = 256) @PathVariable("userid") String userId,
+			@Valid @NotEmpty @StringFormatter(min = 1, max = 256) @PathVariable("zonecode") String zoneCode) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + ZoneUserController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.CREATE_API_IS_CALLED + ZoneUserController.class.getCanonicalName());
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		
-		responseWrapper.setResponse(zoneUserService.deleteZoneUserMapping(userId));
+		responseWrapper.setResponse(zoneUserService.deleteZoneUserMapping(userId,zoneCode));
 		return responseWrapper;
 	}
 	

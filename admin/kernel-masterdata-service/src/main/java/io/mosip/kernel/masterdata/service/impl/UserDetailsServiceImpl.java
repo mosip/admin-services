@@ -13,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.authmanager.model.UserDetailsResponseDto;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -94,6 +96,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
 	public IdResponseDto deleteUser(String id) {
 		IdResponseDto idResponse = new IdResponseDto();
 		try {
@@ -101,12 +104,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			ud.ifPresent(user -> {
 				userDetailsRepository.delete(user);
 				UserDetailsHistory udh = new UserDetailsHistory();
-				MapperUtils.map(ud, udh);
-				MapperUtils.setBaseFieldValue(ud, udh);
+				MapperUtils.map(user, udh);
+				MapperUtils.setBaseFieldValue(user, udh);
 				udh.setIsActive(false);
 				udh.setIsDeleted(true);
-				udh.setUpdatedBy(MetaDataUtils.getContextUser());
-				udh.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				udh.setCreatedBy(MetaDataUtils.getContextUser());
+				udh.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
 				userDetailsHistoryService.createUserDetailsHistory(udh);
 				MapperUtils.map(user, idResponse);
 			} );
@@ -121,11 +124,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			throw new MasterDataServiceException(UserDetailsErrorCode.USER_CREATION_EXCEPTION.getErrorCode(),
 			UserDetailsErrorCode.USER_UNMAP_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
-
-		
-		auditUtil.auditRequest(String.format(MasterDataConstant.USER_AND_REGISTRATION_CENTER_UNMAPPING_SUCCESS_MESSAGE, UserDetails.class.getSimpleName()),
-			MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
-			UserDetails.class.getSimpleName(), idResponse.getId()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.DECOMMISSION_SUCCESS, UserDetails.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.DECOMMISSION_SUCCESS,
+				 idResponse.getId()));
 		return idResponse;
 		
 	}
@@ -151,6 +152,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
 	public IdAndLanguageCodeID createUser(UserDetailsDto userDetailsDto) {
 		UserDetails ud;
 		try {
@@ -163,8 +165,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				MapperUtils.setBaseFieldValue(ud, udh);
 				udh.setIsActive(true);
 				udh.setIsDeleted(false);
-				udh.setUpdatedBy(MetaDataUtils.getContextUser());
-				udh.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				udh.setCreatedBy(MetaDataUtils.getContextUser());
+				udh.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
 				userDetailsHistoryService.createUserDetailsHistory(udh);
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException e) {
@@ -187,6 +189,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
 	public UserDetailsDto updateUser(UserDetailsDto userDetailsDto) {
 		UserDetails ud;
 		try {
@@ -198,9 +201,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			MapperUtils.setBaseFieldValue(ud, udh);
 			udh.setIsActive(true);
 			udh.setIsDeleted(false);
-			udh.setUpdatedBy(MetaDataUtils.getContextUser());
-			//udh.setEffectDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-			udh.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+			udh.setCreatedBy(MetaDataUtils.getContextUser());
+			udh.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
 			userDetailsHistoryService.createUserDetailsHistory(udh);
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException e) {
