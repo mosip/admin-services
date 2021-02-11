@@ -2,9 +2,11 @@ package io.mosip.kernel.masterdata.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +16,7 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.UserDetailsService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
@@ -97,6 +100,67 @@ public class UserDetailsController {
 		userDetailsDto.setName(userId);
 		userDetailsDto.setStatusCode("ACT");
 		responseWrapper.setResponse(userDetailsService.createUser(userDetailsDto));
+		return responseWrapper;
+	}
+	
+	/**
+	 * Put API to update a  row of Machine data
+	 * 
+	 * @param machineRequest input from user Machine DTO
+	 * 
+	 * @return Responding with Machine which is inserted successfully
+	 *         {@link ResponseEntity}
+	 */
+	@ResponseFilter
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PutMapping("/users/{id}/{lang}/{regcenterid}")
+	@ApiOperation(value = "Service to map Users with regcenter", notes = "updates User Detail and return User id")
+	@ApiResponses({ @ApiResponse(code = 201, message = "When User and Registration center successfully mapped"),
+			@ApiResponse(code = 400, message = "When Request is invalid"),
+			@ApiResponse(code = 404, message = "When No Regcenter found"),
+			@ApiResponse(code = 500, message = "While mapping user to regcenter any error occured") })
+	public ResponseWrapper<UserDetailsDto> updateUserRegCenter(@PathVariable("id") String userId, 
+	@PathVariable("lang") String langCode,
+	@PathVariable("regcenterid") String regCenterId
+	 ) {
+		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + UserDetailsController.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.UPDATE_API_IS_CALLED + UserDetailsController.class.getCanonicalName());
+		ResponseWrapper<UserDetailsDto> responseWrapper = new ResponseWrapper<>();
+		UserDetailsDto userDetailsDto = new UserDetailsDto();
+		userDetailsDto.setId(userId);
+		userDetailsDto.setIsActive(true);
+		userDetailsDto.setLangCode(langCode);
+		userDetailsDto.setRegCenterId(regCenterId);
+		userDetailsDto.setName(userId);
+		userDetailsDto.setStatusCode("ACT");
+		responseWrapper.setResponse(userDetailsService.updateUser(userDetailsDto));
+		return responseWrapper;
+	}
+	
+	/**
+	 * dalete API to delete a  row of Machine data
+	 * 
+	 * @param machineRequest input from user Machine DTO
+	 * 
+	 * @return Responding with Machine which is inserted successfully
+	 *         {@link ResponseEntity}
+	 */
+	@ResponseFilter
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@DeleteMapping("/users/{id}/")
+	@ApiOperation(value = "Service to map Users with regcenter", notes = "deletes User Detail and return User id")
+	@ApiResponses({ @ApiResponse(code = 201, message = "When User and Registration center successfully mapped"),
+			@ApiResponse(code = 400, message = "When Request is invalid"),
+			@ApiResponse(code = 404, message = "When No Regcenter found"),
+			@ApiResponse(code = 500, message = "While mapping user to regcenter any error occured") })
+	public ResponseWrapper<IdResponseDto> deleteUserRegCenter(@PathVariable("id") String userId) {
+		auditUtil.auditRequest(MasterDataConstant.DECOMMISION_API_CALLED + UserDetailsController.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.DECOMMISION_API_CALLED + UserDetailsController.class.getCanonicalName());
+		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
+		
+		responseWrapper.setResponse(userDetailsService.deleteUser(userId));
 		return responseWrapper;
 	}
 

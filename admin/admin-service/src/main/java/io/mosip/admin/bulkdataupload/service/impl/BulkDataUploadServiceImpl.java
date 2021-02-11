@@ -359,7 +359,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	            	 JSONArray jsonArray=new JSONArray(str);
     	            	 JSONObject josnObject1=new JSONObject(jsonArray.get(0).toString());
     	            	 
-    	            	 failureMessage.add("{'packetId': '"+file.getOriginalFilename()+"', 'message': '"+josnObject1.get("message").toString()+"'}");
+    	            	 failureMessage.add(failureMessage.contains(josnObject1.get("message").toString())?null:josnObject1.get("message").toString());
     	            	// failureMessage.put(file.getOriginalFilename(), josnObject1.get("message").toString());
     	                auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_PACKET_STATUS_ERROR,"{packetid: '"+file.getOriginalFilename()+"', message: '"+josnObject1.get("message").toString()+"'}"));
     	             }
