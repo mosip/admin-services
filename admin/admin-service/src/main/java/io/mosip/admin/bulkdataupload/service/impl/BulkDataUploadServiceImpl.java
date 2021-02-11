@@ -1,15 +1,16 @@
 package io.mosip.admin.bulkdataupload.service.impl;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -27,6 +28,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
 import javax.validation.ValidationException;
 
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -91,13 +93,9 @@ import io.mosip.admin.bulkdataupload.dto.BulkDataResponseDto;
 import io.mosip.admin.bulkdataupload.dto.PageDto;
 import io.mosip.admin.bulkdataupload.entity.BaseEntity;
 import io.mosip.admin.bulkdataupload.entity.BulkUploadTranscation;
-import io.mosip.admin.bulkdataupload.entity.Device;
 import io.mosip.admin.bulkdataupload.entity.DeviceHistory;
-import io.mosip.admin.bulkdataupload.entity.Machine;
 import io.mosip.admin.bulkdataupload.entity.MachineHistory;
-import io.mosip.admin.bulkdataupload.entity.UserDetails;
 import io.mosip.admin.bulkdataupload.entity.UserDetailsHistory;
-import io.mosip.admin.bulkdataupload.entity.ZoneUser;
 import io.mosip.admin.bulkdataupload.entity.ZoneUserHistory;
 import io.mosip.admin.bulkdataupload.repositories.BulkUploadTranscationRepository;
 import io.mosip.admin.bulkdataupload.service.BulkDataService;
@@ -107,11 +105,9 @@ import io.mosip.admin.config.RepositoryListItemWriter;
 import io.mosip.admin.packetstatusupdater.exception.DataNotFoundException;
 import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
 import io.mosip.admin.packetstatusupdater.exception.RequestException;
-
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.admin.packetstatusupdater.util.EventEnum;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 /**
  * BulkDataUpload service 
@@ -219,8 +215,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	}
 
 
-    	@Override
-    	public  BulkDataResponseDto insertDataToCSVFile(String tableName, String operation, String category,MultipartFile[] files)  {
+	private BulkDataResponseDto insertDataToCSVFile(String tableName, String operation, String category,
+			MultipartFile[] files) {
     		
 			if (tableName.isBlank() || operation.isBlank() || files==null ||files.length==0) {
 				auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_ARGUMENT);
@@ -244,11 +240,16 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
                 JobExecution jobExecution = null;
                 
     			try {
-    				csvValidator(file.getOriginalFilename(),file.getInputStream(),entity);
-    				itemReader = itemReader(file,entity);
+
+					String csvString = IOUtils.toString(file.getInputStream(), StandardCharsets.UTF_8);
+					String trimmedString = csvString.trim();
+					InputStream csvInputStream = new ByteArrayInputStream(
+							trimmedString.getBytes(StandardCharsets.UTF_8));
+					csvValidator(file.getOriginalFilename(), csvInputStream, entity);
+					InputStream csvStream = new ByteArrayInputStream(trimmedString.getBytes(StandardCharsets.UTF_8));
+					itemReader = itemReader(csvStream, entity);
 					ItemWriter<List<Object>> itemWriter = itemWriterMapper(repoBeanName, operationMapper(operation),
 							entity);
-					
     		        ItemProcessor itemProcessor=processor(operation);
     		        JobParameters parameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters();
     		        jobExecution = jobLauncher.run(job(jobBuilderFactory, stepBuilderFactory, itemReader,itemProcessor, itemWriter),parameters);
@@ -307,8 +308,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
      	}
 
     	
-    	@Override
-    	public BulkDataResponseDto uploadPackets(MultipartFile[] files,String operation, String category) {
+		private BulkDataResponseDto uploadPackets(MultipartFile[] files, String operation, String category) {
     		
     		if ( files==null ||files.length==0) {
     			auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_ARGUMENT);
@@ -384,7 +384,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     	}
         
 
-	public Job job(JobBuilderFactory jobBuilderFactory,
+		private Job job(JobBuilderFactory jobBuilderFactory,
             StepBuilderFactory stepBuilderFactory,
             ItemReader<Object> itemReader,
             ItemProcessor itemProcessor, // ItemProcessor<User, User> itemProcessor,
@@ -406,7 +406,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 		         .build();
 		}
 
-		public ConversionService testConversionService() {
+		private ConversionService testConversionService() {
 			DefaultConversionService testConversionService = new DefaultConversionService();
 			DefaultConversionService.addDefaultConverters(testConversionService);
 			testConversionService.addConverter(new Converter<String, LocalDateTime>() {
@@ -437,13 +437,13 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 			return testConversionService;
 		}
 	 @StepScope
-	 private FlatFileItemReader<Object> itemReader(MultipartFile file, Class<?> clazz) throws IOException {
+		private FlatFileItemReader<Object> itemReader(InputStream file, Class<?> clazz) throws IOException {
 		 
 		    DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
 	        lineTokenizer.setDelimiter(",");
 	        lineTokenizer.setStrict(false);
 	        FlatFileItemReader<Object> flatFileItemReader = new FlatFileItemReader<>();
-	        flatFileItemReader.setResource(new InputStreamResource(file.getInputStream()));
+			flatFileItemReader.setResource(new InputStreamResource(file));
 	        flatFileItemReader.setName("CSV-Reader");
 	        flatFileItemReader.setLinesToSkip(1);
 	        flatFileItemReader.setSkippedLinesCallback(new LineCallbackHandler() {
@@ -463,7 +463,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 
 	 }
 
-	 public ItemProcessor processor(String operation) {
+		private ItemProcessor processor(String operation) {
 		
 		 
 		 ItemProcessor itemprocessor=new ItemProcessor() {
@@ -491,7 +491,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	 }
 
 		@SuppressWarnings("unchecked")
-		public ItemWriter<List<Object>> insertItemWriter(String repoBeanName, String methodName, Class<?> entity) {
+		private ItemWriter<List<Object>> insertItemWriter(String repoBeanName, String methodName, Class<?> entity) {
 			RepositoryListItemWriter<List<Object>> writer = new RepositoryListItemWriter<>(em,emf,entity,mapper,applicationContext);
 			writer.setRepository((BaseRepository<?, ?>) applicationContext.getBean(repoBeanName));
 			writer.setMethodName(methodName);
@@ -504,7 +504,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 		}
 
 		@SuppressWarnings("unchecked")
-		public <T extends BaseEntity, S> ItemWriter<List<Object>> updateItemWriter(String repoName, Class<?> entity) {
+		private <T extends BaseEntity, S> ItemWriter<List<Object>> updateItemWriter(String repoName, Class<?> entity) {
 
 			ItemWriter<List<Object>> writer = new ItemWriter<List<Object>>() {
 
@@ -586,7 +586,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 		}
 
 		@SuppressWarnings("unchecked")
-		public <T extends BaseEntity, S> ItemWriter<List<Object>> deleteItemWriter(String repoName, Class<?> entity) {
+		private <T extends BaseEntity, S> ItemWriter<List<Object>> deleteItemWriter(String repoName, Class<?> entity) {
 			ItemWriter<List<Object>> writer = new ItemWriter<List<Object>>() {
 
 				@Autowired(required = false)
@@ -707,7 +707,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	    	bulkDataResponseDto.setUploadedBy(bulkUploadTranscation.getUploadedBy());
 	    	return bulkDataResponseDto;
 	    }    
-	    public static String setCreateMetaData() {
+
+		private static String setCreateMetaData() {
 	    	String contextUser="superadmin";
 			Authentication authN = SecurityContextHolder.getContext().getAuthentication();
 			if (!EmptyCheckUtils.isNullEmpty(authN)) {
@@ -715,7 +716,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 			}
 			return contextUser;
 		}
-	    private void csvValidator(String csvFileName, InputStream csvFile,Class clazz) throws IOException {
+
+		private void csvValidator(String csvFileName, InputStream csvFile, Class clazz) throws IOException {
 	    	String ext=Files.getFileExtension(csvFileName);
 	    	if(!ext.equalsIgnoreCase("csv")) {
 	    		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_EXT_VALIDATOR_ISSUE, csvFileName));
@@ -746,7 +748,6 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 			    	  String[] columns = l.split(",");
 			    	  count=columns.length;
 			    	  lineCount++;
-			    	  
 			    	  for(int i=0;i<count;i++) {
 			    		  if(clazzfields.contains(columns[i])) {
 			    			  fieldMap.put(i, clazz.getDeclaredField(columns[i]));
@@ -770,19 +771,19 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 			    	 String[] columns = l.split(",");
 			    	 lineCount++;
 			    	 
-					 if (count!=columns.length) {
+						if (count != columns.length) {
 						 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
 
 						 throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"all the rows should have same number of element in csv file.The exception occured at line number "+lineCount); 
 						
 
-					 }
+						}
 					 String il="";
 					 for(int i=0;i<columns.length;i++) {
-						 if(columns[i].isBlank()) {
+							if (columns[i].isBlank()) {
 							 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
 							 throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"Field is missing.The exception occured at line number "+lineCount); 
-						 }
+							}
 						 
 						 if(!validateDataType(fieldMap.get(i),columns[i].trim())) {
 							 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
@@ -798,8 +799,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 						 throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"Duplicate records found.The exception occured at line number "+lineCount);
 					 }
 				}
-			    br.close();
-			    
+				br.close();
 			} catch (IOException e) {
 				lineCount++;
 				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_INVALID_CSV_FILE, csvFileName));
