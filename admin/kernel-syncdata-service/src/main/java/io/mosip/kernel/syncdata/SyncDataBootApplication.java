@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
@@ -24,6 +25,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 		"io.mosip.kernel.cryptomanager.util", "io.mosip.kernel.partnercertservice.helper",
 		"io.mosip.kernel.partnercertservice.service", "io.mosip.kernel.websub.api.client"})
 @EnableAsync
+@EnableScheduling
 public class SyncDataBootApplication {
 	/**
 	 * Function to run the Master-Data-Service application

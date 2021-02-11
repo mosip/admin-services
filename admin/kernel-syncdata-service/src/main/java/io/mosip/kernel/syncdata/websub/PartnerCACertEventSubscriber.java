@@ -10,18 +10,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.net.http.HttpHeaders;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Date;
+
 
 @Component
-public class PartnerCACertEventSubscriber implements ApplicationListener<ApplicationReadyEvent> {
+public class PartnerCACertEventSubscriber /*implements ApplicationListener<ApplicationReadyEvent>*/ {
 
     private static final Logger logger = LoggerFactory.getLogger(PartnerCACertEventSubscriber.class);
 
@@ -57,8 +54,8 @@ public class PartnerCACertEventSubscriber implements ApplicationListener<Applica
     @Autowired
     protected SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscribe;
 
-    @Autowired
-    private TaskScheduler taskScheduler;
+    //@Autowired
+    //private TaskScheduler taskScheduler;
 
     /**
      * Try register topic partner service events.
@@ -103,7 +100,14 @@ public class PartnerCACertEventSubscriber implements ApplicationListener<Applica
         return false;
     }
 
-    @Override
+
+    @Scheduled(fixedDelayString = "${syncdata.websub.resubscription.delay.secs}",
+            initialDelayString = "${subscriptions-delay-on-startup}")
+    public void subscribeTopics() {
+        initSubsriptions();
+    }
+
+    /*@Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         logger.info("onApplicationEvent - scheduling subscription with startup delay: {}", initialSubscriptionDelay);
         taskScheduler.schedule(
@@ -133,5 +137,5 @@ public class PartnerCACertEventSubscriber implements ApplicationListener<Applica
                 return;
             }
         }
-    }
+    }*/
 }
