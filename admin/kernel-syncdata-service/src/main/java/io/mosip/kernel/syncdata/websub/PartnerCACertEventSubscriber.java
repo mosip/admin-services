@@ -106,36 +106,4 @@ public class PartnerCACertEventSubscriber /*implements ApplicationListener<Appli
     public void subscribeTopics() {
         initSubsriptions();
     }
-
-    /*@Override
-    public void onApplicationEvent(ApplicationReadyEvent event) {
-        logger.info("onApplicationEvent - scheduling subscription with startup delay: {}", initialSubscriptionDelay);
-        taskScheduler.schedule(
-                this::initSubsriptions,
-                new Date(System.currentTimeMillis() + initialSubscriptionDelay)
-        );
-        if (reSubscriptionDelaySecs > 0) {
-            logger.info("Work around for web-sub notification issue after some time.");
-            scheduleRetrySubscriptions();
-        } else {
-            logger.info("Scheduling for re-subscription is Disabled as the re-subsctription delay value is: {}", reSubscriptionDelaySecs);
-        }
-    }
-
-    private void scheduleRetrySubscriptions() {
-        logger.info("Scheduling re-subscription every {} seconds", reSubscriptionDelaySecs);
-        taskScheduler.scheduleAtFixedRate(this::retrySubscriptions, Instant.now().plusSeconds(reSubscriptionDelaySecs),
-                Duration.ofSeconds(reSubscriptionDelaySecs));
-    }
-
-    private void retrySubscriptions() {
-        // Call Init Subscriptions for the count until no error in the subscription.
-        // This will execute once first for sure if retry count is 0 or more. If the
-        // subscription fails it will retry subscriptions up to given retry count.
-        for (int i = 0; i <= retryCount; i++) {
-            if (initSubsriptions()) {
-                return;
-            }
-        }
-    }*/
 }

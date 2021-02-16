@@ -1,6 +1,8 @@
 package io.mosip.kernel.syncdata.controller;
 
+import io.mosip.kernel.partnercertservice.constant.PartnerCertManagerErrorConstants;
 import io.mosip.kernel.partnercertservice.dto.CACertificateRequestDto;
+import io.mosip.kernel.partnercertservice.exception.PartnerCertManagerException;
 import io.mosip.kernel.partnercertservice.service.spi.PartnerCertificateManagerService;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyIntent;
@@ -9,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -17,6 +20,7 @@ import java.util.Map;
  * Websub callback implementations
  */
 @RestController
+@RequestMapping("/websub/callback")
 public class WebsubCallbackController {
 
     private static final Logger logger = LoggerFactory.getLogger(WebsubCallbackController.class);
@@ -26,11 +30,11 @@ public class WebsubCallbackController {
     @Autowired
     private PartnerCertificateManagerService partnerCertificateManagerService;
 
-    @PostMapping(value = "${syncdata.websub.callback.url.path.ca-cert}", consumes = "application/json")
+    @PostMapping(value = "/cacert",consumes = "application/json")
     @PreAuthenticateContentAndVerifyIntent(secret = "${syncdata.websub.callback.secret.ca-cert}",
-            callback = "/v1/syncdata/callback/partner/ca_certificate", topic = "${syncdata.websub.topic.ca-cert}")
+            callback = "/v1/syncdata/websub/callback/cacert",topic = "${syncdata.websub.topic.ca-cert}")
     public void handleCACertificate(@RequestBody EventModel eventModel) {
-        logger.info("ca_certificate EVENT RECEIVED");
+        logger.debug("ca_certificate EVENT RECEIVED");
         Map<String, Object> data = eventModel.getEvent().getData();
         CACertificateRequestDto caCertRequestDto = new CACertificateRequestDto();
         if (data.containsKey(CERTIFICATE_DATA) && data.get(CERTIFICATE_DATA) instanceof String) {
@@ -39,8 +43,18 @@ public class WebsubCallbackController {
         if (data.containsKey(PARTNER_DOMAIN) && data.get(PARTNER_DOMAIN) instanceof String) {
             caCertRequestDto.setPartnerDomain((String) data.get(PARTNER_DOMAIN));
         }
-        partnerCertificateManagerService.uploadCACertificate(caCertRequestDto);
-        logger.info("CA certs sync completed for {}", caCertRequestDto.getPartnerDomain());
+        try {
+            partnerCertificateManagerService.uploadCACertificate(caCertRequestDto);
+            logger.info("CA certs sync completed for {}", caCertRequestDto.getPartnerDomain());
+        } catch (PartnerCertManagerException ex) {
+            if(PartnerCertManagerErrorConstants.INVALID_PARTNER_DOMAIN.getErrorCode().equals(ex.getErrorCode()) ||
+                    PartnerCertManagerErrorConstants.CERTIFICATE_EXIST_ERROR.getErrorCode().equals(ex.getErrorCode())) {
+                logger.error("Failed to insert CA cert {}", ex.getErrorText());
+                return;
+            }
+            logger.error("Failed to insert CA cert {}", ex);
+            throw ex;
+        }
     }
 
 }

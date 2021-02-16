@@ -2,6 +2,7 @@ package io.mosip.kernel.syncdata.config;
 
 import javax.servlet.Filter;
 
+import io.mosip.kernel.websub.api.filter.MultipleReadRequestBodyFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -35,27 +36,11 @@ public class Config {
 	@Value("${syncdata.task.core.pool.size:20}")
 	private int taskCorePoolSize;
 
-	/**
-	 * Produce Request Logging bean
-	 * 
-	 * @return Request logging bean
-	 */
-	@Bean
-	public CommonsRequestLoggingFilter logFilter() {
-		CommonsRequestLoggingFilter filter = new CommonsRequestLoggingFilter();
-		filter.setIncludeQueryString(true);
-		filter.setIncludePayload(true);
-		filter.setMaxPayloadLength(10000);
-		filter.setIncludeHeaders(false);
-		filter.setAfterMessagePrefix("REQUEST DATA : ");
-		return filter;
-	}
-
 	@Bean
 	public FilterRegistrationBean<Filter> registerCORSFilterBean() {
 		FilterRegistrationBean<Filter> corsBean = new FilterRegistrationBean<>();
 		corsBean.setFilter(registerCORSFilter());
-		corsBean.setOrder(1);
+		corsBean.setOrder(2);
 		return corsBean;
 	}
 
@@ -64,18 +49,6 @@ public class Config {
 		return new CorsFilter();
 	}
 
-	@Bean
-	public FilterRegistrationBean<Filter> registerReqResFilter() {
-		FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
-		filterRegistrationBean.setFilter(getReqResFilter());
-		filterRegistrationBean.setOrder(2);
-		return filterRegistrationBean;
-	}
-
-	@Bean
-	public Filter getReqResFilter() {
-		return new ReqResFilter();
-	}
 
 	/**
 	 * Creating bean of TaskExecutor to run Async tasks
@@ -102,4 +75,12 @@ public class Config {
 		return executor;
 	}
 
+
+	@Bean
+	public FilterRegistrationBean<MultipleReadRequestBodyFilter> registerMultipleReadRequestBodyFilter() {
+		FilterRegistrationBean<MultipleReadRequestBodyFilter> requestBodyReader = new FilterRegistrationBean();
+		requestBodyReader.setFilter(new MultipleReadRequestBodyFilter());
+		requestBodyReader.setOrder(1);
+		return requestBodyReader;
+	}
 }
