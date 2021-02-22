@@ -1,13 +1,18 @@
 package io.mosip.hotlist.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionException;
 
@@ -24,10 +29,22 @@ import io.mosip.hotlist.repository.HotlistRepository;
 import io.mosip.hotlist.security.HotlistSecurityManager;
 import io.mosip.hotlist.service.HotlistService;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.websub.model.Event;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
 
 @Service
 @Transactional
 public class HotlistServiceImpl implements HotlistService {
+
+	@Value("${mosip.hotlist.topic-to-publish}")
+	private String topic;
+
+	@Value("${websub.publish.url}")
+	private String webSubHubUrl;
+
+	@Value("${spring.application.name:HOTLIST}")
+	private String appId;
 
 	@Autowired
 	private HotlistRepository hotlistRepo;
@@ -37,6 +54,9 @@ public class HotlistServiceImpl implements HotlistService {
 
 	@Autowired
 	private ObjectMapper mapper;
+
+	@Autowired
+	private PublisherClient<String, EventModel, HttpHeaders> publisher;
 
 	@Override
 	public HotlistRequestResponseDTO block(HotlistRequestResponseDTO blockRequest) throws HotlistAppException {
@@ -48,6 +68,7 @@ public class HotlistServiceImpl implements HotlistService {
 				if (hotlistedOptionalData.isPresent()
 						&& hotlistedOptionalData.get().getExpiryDTimes().isBefore(DateUtils.getUTCCurrentDateTime())) {
 					hotlistRepo.delete(hotlistedOptionalData.get());
+					this.publishEvent(idHash, blockRequest.getIdType(), HotlistStatus.UNBLOCKED, null);
 					return this.block(blockRequest);
 				}
 				throw new HotlistAppException(HotlistErrorConstants.RECORD_EXISTS);
@@ -64,6 +85,7 @@ public class HotlistServiceImpl implements HotlistService {
 								: LocalDateTime.MAX.withYear(9999));
 				hotlistHRepo.save(mapper.convertValue(hotlist, HotlistHistory.class));
 				hotlistRepo.save(hotlist);
+				this.publishEvent(idHash, blockRequest.getIdType(), HotlistStatus.BLOCKED, hotlist.getExpiryDTimes());
 				return buildResponse(hotlist.getIdValue(), null, hotlist.getStatus(), null);
 			}
 		} catch (DataAccessException | TransactionException e) {
@@ -110,8 +132,10 @@ public class HotlistServiceImpl implements HotlistService {
 				hotlistHRepo.save(mapper.convertValue(hotlist, HotlistHistory.class));
 				if (updateRequest.getStatus().contentEquals(HotlistStatus.UNBLOCKED)) {
 					hotlistRepo.delete(hotlist);
+					this.publishEvent(idHash, updateRequest.getIdType(), HotlistStatus.UNBLOCKED, null);
 				} else {
 					hotlistRepo.save(hotlist);
+					this.publishEvent(idHash, updateRequest.getIdType(), hotlist.getStatus(), hotlist.getExpiryDTimes());
 				}
 				return buildResponse(hotlist.getIdValue(), null, hotlist.getStatus(), null);
 			} else {
@@ -130,6 +154,22 @@ public class HotlistServiceImpl implements HotlistService {
 		response.setStatus(status);
 		response.setExpiryTimestamp(expiryTimestamp);
 		return response;
+	}
+
+	private void publishEvent(String id, String idType, String status, LocalDateTime expiryTimestamp) {
+		EventModel payload = new EventModel();
+		payload.setPublisher(appId);
+		payload.setTopic(topic);
+		payload.setPublishedOn(DateUtils.getCurrentDateTimeString());
+		Event event = new Event();
+		Map<String, Object> data = new HashMap<>();
+		data.put("id", id);
+		data.put("idType", idType);
+		data.put("status", status);
+		data.put("expiryTimestamp", DateUtils.formatToISOString(expiryTimestamp));
+		event.setData(data);
+		payload.setEvent(event);
+		publisher.publishUpdate(topic, payload, MediaType.APPLICATION_JSON_VALUE, null, webSubHubUrl);
 	}
 
 }

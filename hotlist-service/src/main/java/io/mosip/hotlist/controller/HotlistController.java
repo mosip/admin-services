@@ -5,7 +5,10 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
 import io.mosip.hotlist.exception.HotlistAppException;
 import io.mosip.hotlist.service.HotlistService;
+import io.mosip.hotlist.validator.HotlistValidator;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -23,11 +27,19 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 public class HotlistController {
 
 	@Autowired
+	private HotlistValidator validator;
+
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.addValidators(validator);
+	}
+
+	@Autowired
 	private HotlistService hotlistService;
 
 	@PostMapping(path = "/block", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseWrapper<List<HotlistRequestResponseDTO>> block(
-			@RequestBody RequestWrapper<List<HotlistRequestResponseDTO>> request) {
+			@Validated @RequestBody RequestWrapper<List<HotlistRequestResponseDTO>> request) {
 		ResponseWrapper<List<HotlistRequestResponseDTO>> response = new ResponseWrapper<>();
 		response.setResponse(request.getRequest().stream().map(hotlistRequest -> {
 			try {

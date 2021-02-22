@@ -11,29 +11,31 @@ public enum HotlistErrorConstants {
 
 	INVALID_INPUT_PARAMETER("ADM-HTL-002", "Invalid Input Parameter - %s"),
 
-	INVALID_REQUEST("ADM-HTL-003", "Invalid Request"),
+	ID_TYPE_NOT_ALLOWED("ADM-HTL-003", "Input IdType is not allowed to hotlist"),
 
-	DATA_VALIDATION_FAILED("ADM-HTL-004", "Input Data Validation Failed"),
+	INVALID_REQUEST("ADM-HTL-004", "Invalid Request"),
 
-	DATABASE_ACCESS_ERROR("ADM-HTL-005", "Error occured while performing DB operations"),
+	DATA_VALIDATION_FAILED("ADM-HTL-005", "Input Data Validation Failed"),
 
-	NO_RECORD_FOUND("ADM-HTL-006", "No Record(s) found"),
+	DATABASE_ACCESS_ERROR("ADM-HTL-006", "Error occured while performing DB operations"),
 
-	RECORD_EXISTS("ADM-HTL-007", "Failed to hotlist as existing hotlist is still active"),
+	NO_RECORD_FOUND("ADM-HTL-007", "No Record(s) found"),
 
-	CLIENT_ERROR("ADM-HTL-008", "4XX - Client Error occured"),
+	RECORD_EXISTS("ADM-HTL-008", "Failed to hotlist as existing hotlist is still active"),
 
-	SERVER_ERROR("ADM-HTL-009", "5XX - Server Error occured"),
+	CLIENT_ERROR("ADM-HTL-009", "4XX - Client Error occured"),
 
-	CONNECTION_TIMED_OUT("ADM-HTL-010", "Connection timed out"),
+	SERVER_ERROR("ADM-HTL-010", "5XX - Server Error occured"),
 
-	AUTHORIZATION_FAILED("ADM-HTL-011", "Authorization Failed"),
+	CONNECTION_TIMED_OUT("ADM-HTL-011", "Connection timed out"),
 
-	AUTHENTICATION_FAILED("ADM-HTL-012", "Authentication Failed"),
+	AUTHORIZATION_FAILED("ADM-HTL-012", "Authorization Failed"),
 
-	ENCRYPTION_DECRYPTION_FAILED("ADM-HTL-013", "Failed to either encrypt/decrypt message using Kernel Crypto Manager"),
+	AUTHENTICATION_FAILED("ADM-HTL-013", "Authentication Failed"),
 
-	UNKNOWN_ERROR("ADM-HTL-014", "Unknown error occurred");
+	ENCRYPTION_DECRYPTION_FAILED("ADM-HTL-014", "Failed to either encrypt/decrypt message using Kernel Crypto Manager"),
+
+	UNKNOWN_ERROR("ADM-HTL-015", "Unknown error occurred");
 
 	private final String errorCode;
 

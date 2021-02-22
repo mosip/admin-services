@@ -1,6 +1,7 @@
 package io.mosip.hotlist.dto;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import io.mosip.kernel.core.exception.ServiceError;
 import lombok.Data;
@@ -17,4 +18,6 @@ public class HotlistRequestResponseDTO {
 	private LocalDateTime expiryTimestamp;
 	
 	private ServiceError error;
+	
+	private Map<String, String> metadata;
 }

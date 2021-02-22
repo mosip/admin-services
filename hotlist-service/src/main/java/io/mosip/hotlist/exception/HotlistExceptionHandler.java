@@ -7,6 +7,7 @@ import static io.mosip.hotlist.constant.HotlistErrorConstants.UNKNOWN_ERROR;
 
 import java.time.format.DateTimeParseException;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 
@@ -17,10 +18,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
 import io.mosip.kernel.core.exception.ServiceError;
@@ -30,6 +34,8 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 public class HotlistExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private static final String REQUEST_TIME = "requesttime";
+	private static final CharSequence EXPIRY_TIMESTAMP = "expiryTimestamp";
+	private static final String EXPIRY_TIMESTAMP_PATH = "request/%s/" + EXPIRY_TIMESTAMP;
 
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
@@ -63,10 +69,25 @@ public class HotlistExceptionHandler extends ResponseEntityExceptionHandler {
 //		mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 //				"handleExceptionInternal - \n"
 //						+ ExceptionUtils.getStackTrace(Objects.isNull(rootCause) ? ex : rootCause));
-		if (ex instanceof HttpMessageNotReadableException && org.apache.commons.lang3.exception.ExceptionUtils
+		if (ex instanceof MethodArgumentNotValidException) {
+			ResponseWrapper<HotlistRequestResponseDTO> response = new ResponseWrapper<>();
+			response.setErrors(((MethodArgumentNotValidException) ex).getBindingResult().getAllErrors().stream()
+					.map(objectError -> new ServiceError(objectError.getCode(), objectError.getDefaultMessage()))
+					.collect(Collectors.toList()));
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} else if (ex instanceof HttpMessageNotReadableException && org.apache.commons.lang3.exception.ExceptionUtils
 				.getRootCause(ex).getClass().isAssignableFrom(DateTimeParseException.class)) {
-			return new ResponseEntity<>(buildExceptionResponse(INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME)), HttpStatus.OK);
+			if (((HttpMessageNotReadableException) ex).getMessage().contains(EXPIRY_TIMESTAMP)) {
+				return new ResponseEntity<>(buildExceptionResponse(INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(INVALID_INPUT_PARAMETER.getErrorMessage(),
+								String.format(EXPIRY_TIMESTAMP_PATH,
+										((InvalidFormatException) ((HttpMessageNotReadableException) ex).getCause())
+												.getPath().get(1).getIndex()))),
+						HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(buildExceptionResponse(INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME)), HttpStatus.OK);
+			}
 		} else if (ex instanceof HttpMessageNotReadableException || ex instanceof ServletException
 				|| ex instanceof BeansException) {
 			return new ResponseEntity<>(
