@@ -1,4 +1,4 @@
-\c mosip_ida sysadmin
+\c mosip_hotlist sysadmin
 
 \set CSVDataPath '\'/home/dbadmin/mosip_hotlist'
 

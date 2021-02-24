@@ -13,7 +13,7 @@ echo "`date` : You logged on to DB deplyment server as : `whoami`"
 echo "`date` : MOSIP Database objects deployment started...."
 
 echo "=============================================================================================================="
-bash ./mosip_hotlist/mosip_hotlist_db_deploy.sh ./mosip_ida/mosip_hotlist_deploy.properties
+bash ./mosip_hotlist/mosip_hotlist_db_deploy.sh ./mosip_hotlist/mosip_hotlist_deploy.properties
 echo "=============================================================================================================="
 
 echo "`date` : MOSIP DB Deployment for Admin Services databases is completed, Please check the logs at respective logs directory for more information"

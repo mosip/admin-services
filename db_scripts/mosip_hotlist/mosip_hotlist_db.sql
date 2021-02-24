@@ -10,13 +10,13 @@ CREATE DATABASE mosip_hotlist
 COMMENT ON DATABASE mosip_hotlist IS 'Hotlisting related requests, transactions and mapping related data like virtual ids, tokens, etc. will be stored in this database';
 -- ddl-end --
 
-\c mosip_ida sysadmin
+\c mosip_hotlist sysadmin
 
--- object: ida | type: SCHEMA --
+-- object: hotlist | type: SCHEMA --
 DROP SCHEMA IF EXISTS hotlist CASCADE;
 CREATE SCHEMA hotlist;
 -- ddl-end --
-ALTER SCHEMA ida OWNER TO sysadmin;
+ALTER SCHEMA hotlist OWNER TO sysadmin;
 -- ddl-end --
 
 ALTER DATABASE mosip_hotlist SET search_path TO hotlist,pg_catalog,public;
