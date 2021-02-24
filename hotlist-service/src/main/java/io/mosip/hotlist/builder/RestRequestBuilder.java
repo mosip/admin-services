@@ -22,16 +22,22 @@ import org.springframework.util.MultiValueMap;
 import io.mosip.hotlist.constant.RestServicesConstants;
 import io.mosip.hotlist.dto.RestRequestDTO;
 import io.mosip.hotlist.exception.HotlistAppException;
+import io.mosip.hotlist.logger.HotlistLogger;
+import io.mosip.hotlist.security.HotlistSecurityManager;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import lombok.NoArgsConstructor;
 
 /**
- * A builder for creating and building RestRequest objects from properties
- * 
- * @author Manoj SP
+ * A builder for creating and building RestRequest objects from properties.
  *
+ * @author Manoj SP
  */
 @Component
+
+/**
+ * Instantiates a new rest request builder.
+ */
 @NoArgsConstructor
 public class RestRequestBuilder {
 
@@ -55,7 +61,7 @@ public class RestRequestBuilder {
 	private Environment env;
 
 	/** The logger. */
-//	private static Logger mosipLogger = IdRepoLogger.getLogger(RestRequestBuilder.class);
+	private static Logger mosipLogger = HotlistLogger.getLogger(RestRequestBuilder.class);
 
 	/**
 	 * Builds the rest request based on the rest service provided using
@@ -132,9 +138,9 @@ public class RestRequestBuilder {
 			headers.setContentType(MediaType.valueOf(env.getProperty(serviceName.concat(REST_HEADERS_MEDIA_TYPE))));
 			return headers;
 		} catch (InvalidMediaTypeException e) {
-//			mosipLogger.error(IdRepoSecurityManager.getUser(), METHOD_BUILD_REQUEST, "returnType",
-//					"throwing IDDataValidationException - INVALID_INPUT_PARAMETER"
-//							+ env.getProperty(serviceName.concat(REST_HEADERS_MEDIA_TYPE)));
+			mosipLogger.error(HotlistSecurityManager.getUser(), METHOD_BUILD_REQUEST, "returnType",
+					"throwing HotlistAppException - INVALID_INPUT_PARAMETER"
+							+ env.getProperty(serviceName.concat(REST_HEADERS_MEDIA_TYPE)));
 			throw new HotlistAppException(INVALID_INPUT_PARAMETER.getErrorCode(), String
 					.format(INVALID_INPUT_PARAMETER.getErrorMessage(), serviceName.concat(REST_HEADERS_MEDIA_TYPE)));
 		}
@@ -183,8 +189,8 @@ public class RestRequestBuilder {
 		if (returnType != null) {
 			request.setResponseType(returnType);
 		} else {
-//			mosipLogger.error(IdRepoSecurityManager.getUser(), METHOD_BUILD_REQUEST, "returnType",
-//					"throwing IDDataValidationException - INVALID_RETURN_TYPE");
+			mosipLogger.error(HotlistSecurityManager.getUser(), METHOD_BUILD_REQUEST, "returnType",
+					"throwing IDDataValidationException - INVALID_RETURN_TYPE");
 			throw new HotlistAppException(INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), "returnType"));
 		}
@@ -201,7 +207,7 @@ public class RestRequestBuilder {
 		if (!StringUtils.isEmpty(httpMethod)) {
 			request.setHttpMethod(HttpMethod.valueOf(httpMethod));
 		} else {
-//			mosipLogger.error(IdRepoSecurityManager.getUser(), METHOD_BUILD_REQUEST, "httpMethod",
+//			mosipLogger.error(HotlistSecurityManager.getUser(), METHOD_BUILD_REQUEST, "httpMethod",
 //					"throwing IDDataValidationException - INVALID_HTTP_METHOD" + httpMethod);
 			throw new HotlistAppException(INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), "httpMethod"));
@@ -219,7 +225,7 @@ public class RestRequestBuilder {
 		if (!StringUtils.isEmpty(uri)) {
 			request.setUri(uri);
 		} else {
-//			mosipLogger.error(IdRepoSecurityManager.getUser(), METHOD_BUILD_REQUEST, "uri",
+//			mosipLogger.error(HotlistSecurityManager.getUser(), METHOD_BUILD_REQUEST, "uri",
 //					"throwing IDDataValidationException - uri is empty or whitespace" + uri);
 			throw new HotlistAppException(INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), "uri"));

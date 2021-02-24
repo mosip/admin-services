@@ -30,9 +30,11 @@ import io.mosip.hotlist.dto.RestRequestDTO;
 import io.mosip.hotlist.exception.AuthenticationException;
 import io.mosip.hotlist.exception.RestRetryException;
 import io.mosip.hotlist.exception.RestServiceException;
+import io.mosip.hotlist.logger.HotlistLogger;
 import io.mosip.hotlist.security.HotlistSecurityManager;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.retry.WithRetry;
 import lombok.NoArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -75,7 +77,7 @@ public class RestHelper {
 	private static final String REQUEST_SYNC_RUNTIME_EXCEPTION = "requestSync-RuntimeException";
 
 	/** The mosipLogger. */
-//	private static Logger mosipLogger = IdRepoLogger.getLogger(RestHelper.class);
+	private static Logger mosipLogger = HotlistLogger.getLogger(RestHelper.class);
 	
 	@Autowired
 	private WebClient webClient;
@@ -93,30 +95,30 @@ public class RestHelper {
 	public <T> T requestSync(@Valid RestRequestDTO request) throws RestServiceException {
 		Object response;
 		try {
-//			mosipLogger.debug(HotlistSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-//					request.getUri());
+			mosipLogger.debug(HotlistSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+					request.getUri());
 			if (request.getTimeout() != null) {
 				response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
 			} else {
 				response = request(request).block();
 			}
 			checkErrorResponse(response, request.getResponseType());
-//			mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-//					"Received valid response");
+			mosipLogger.debug(HotlistSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+					"Received valid response");
 			return (T) response;
 		} catch (WebClientResponseException e) {
-//			mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-//					THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + e.getMessage()
-//							+ " \n Response Body : \n" + ExceptionUtils.getStackTrace(e));
+			mosipLogger.error(HotlistSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+					THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + e.getMessage()
+							+ " \n Response Body : \n" + ExceptionUtils.getStackTrace(e));
 			throw handleStatusError(e, request.getResponseType());
 		} catch (RuntimeException e) {
 			if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
-//				mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-//						THROWING_REST_SERVICE_EXCEPTION + "- CONNECTION_TIMED_OUT - \n " + e.getMessage());
+				mosipLogger.error(HotlistSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+						THROWING_REST_SERVICE_EXCEPTION + "- CONNECTION_TIMED_OUT - \n " + e.getMessage());
 				throw new RestRetryException(new RestServiceException(CONNECTION_TIMED_OUT, e));
 			} else {
-//				mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
-//						THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e.getMessage());
+				mosipLogger.error(HotlistSecurityManager.getUser(), CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
+						THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e.getMessage());
 				throw new RestRetryException(new RestServiceException(UNKNOWN_ERROR, e));
 			}
 		}
@@ -129,8 +131,8 @@ public class RestHelper {
 	 * @return the supplier
 	 */
 	public Supplier<Object> requestAsync(@Valid RestRequestDTO request) {
-//		mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
-//				PREFIX_REQUEST + request.getUri());
+		mosipLogger.debug(HotlistSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
+				PREFIX_REQUEST + request.getUri());
 		Mono<?> sendRequest = request(request);
 		sendRequest.subscribe();
 		return () -> sendRequest.block();
@@ -197,20 +199,20 @@ public class RestHelper {
 				ObjectNode responseNode = mapper.readValue(mapper.writeValueAsBytes(response), ObjectNode.class);
 				if (responseNode.has(ERRORS) && !responseNode.get(ERRORS).isNull() && responseNode.get(ERRORS).isArray()
 						&& responseNode.get(ERRORS).size() > 0) {
-//					mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, "checkErrorResponse",
-//							THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - "
-//									+ responseNode.get(ERRORS).toString());
+					mosipLogger.error(HotlistSecurityManager.getUser(), CLASS_REST_HELPER, "checkErrorResponse",
+							THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - "
+									+ responseNode.get(ERRORS).toString());
 					throw new RestServiceException(CLIENT_ERROR, responseNode.toString(),
 							mapper.readValue(responseNode.toString().getBytes(), responseType));
 				}
 			} else {
-//				mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, "checkErrorResponse",
-//						THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + "Response is null");
+				mosipLogger.error(HotlistSecurityManager.getUser(), CLASS_REST_HELPER, "checkErrorResponse",
+						THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + "Response is null");
 				throw new RestServiceException(CLIENT_ERROR);
 			}
 		} catch (IOException e) {
-//			mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, "checkErrorResponse",
-//					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e.getMessage());
+			mosipLogger.error(HotlistSecurityManager.getUser(), CLASS_REST_HELPER, "checkErrorResponse",
+					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e.getMessage());
 			throw new RestServiceException(UNKNOWN_ERROR, e);
 		}
 	}
@@ -227,8 +229,8 @@ public class RestHelper {
 	private RestServiceException handleStatusError(WebClientResponseException e, Class<?> responseType)
 			throws RestServiceException {
 		try {
-//			mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER,
-//					"request failed with status code :" + e.getRawStatusCode(), "\n\n" + e.getResponseBodyAsString());
+			mosipLogger.error(HotlistSecurityManager.getUser(), CLASS_REST_HELPER,
+					"request failed with status code :" + e.getRawStatusCode(), "\n\n" + e.getResponseBodyAsString());
 			if (e.getStatusCode().is4xxClientError()) {
 				if (e.getRawStatusCode() == HttpStatus.UNAUTHORIZED.value()) {
 					List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(e.getResponseBodyAsString());
@@ -239,20 +241,20 @@ public class RestHelper {
 					throw new RestRetryException(new AuthenticationException(errorList.get(0).getErrorCode(),
 							errorList.get(0).getMessage(), e.getRawStatusCode()));
 				} else {
-//					mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
-//							"Status error - returning RestServiceException - CLIENT_ERROR ");
+					mosipLogger.error(HotlistSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+							"Status error - returning RestServiceException - CLIENT_ERROR ");
 					throw new RestServiceException(CLIENT_ERROR, e.getResponseBodyAsString(),
 							mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType));
 				}
 			} else {
-//				mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
-//						"Status error - returning RestServiceException - SERVER_ERROR");
+				mosipLogger.error(HotlistSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+						"Status error - returning RestServiceException - SERVER_ERROR");
 				throw new RestRetryException(new RestServiceException(SERVER_ERROR, e.getResponseBodyAsString(),
 						mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType)));
 			}
 		} catch (IOException ex) {
-//			mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
-//					ex.getMessage());
+			mosipLogger.error(HotlistSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+					ex.getMessage());
 			return new RestServiceException(UNKNOWN_ERROR, ex);
 		}
 	}

@@ -15,21 +15,41 @@ import io.mosip.hotlist.entity.Hotlist;
 import io.mosip.hotlist.entity.HotlistHistory;
 import io.mosip.hotlist.exception.HotlistAppException;
 import io.mosip.hotlist.exception.HotlistAppUncheckedException;
+import io.mosip.hotlist.logger.HotlistLogger;
 import io.mosip.hotlist.security.HotlistSecurityManager;
+import io.mosip.kernel.core.logger.spi.Logger;
 
+/**
+ * The Class HotlistEntityInterceptor.
+ *
+ * @author Manoj SP
+ */
 @Component
 public class HotlistEntityInterceptor extends EmptyInterceptor {
 
 	/** The mosip logger. */
-//	private transient Logger mosipLogger = IdRepoLogger.getLogger(IdRepoEntityInterceptor.class);
+	private transient Logger mosipLogger = HotlistLogger.getLogger(HotlistEntityInterceptor.class);
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 4985336846122302850L;
+
+	/** The Constant HOTLIST_ENTITY_INTERCEPTOR. */
+	private static final String HOTLIST_ENTITY_INTERCEPTOR = "HotlistEntityInterceptor";
 
 	/** The security manager. */
 	@Autowired
 	private HotlistSecurityManager securityManager;
 	
+	/**
+	 * On save.
+	 *
+	 * @param entity the entity
+	 * @param id the id
+	 * @param state the state
+	 * @param propertyNames the property names
+	 * @param types the types
+	 * @return true, if successful
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -59,12 +79,22 @@ public class HotlistEntityInterceptor extends EmptyInterceptor {
 				return super.onSave(hotlistEntity, id, state, propertyNames, types);
 			}
 		} catch (HotlistAppException e) {
-//			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_ENTITY_INTERCEPTOR, "onSave", "\n" + e.getMessage());
+			mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_ENTITY_INTERCEPTOR, "onSave", "\n" + e.getMessage());
 			throw new HotlistAppUncheckedException(ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 		return super.onSave(entity, id, state, propertyNames, types);
 	}
 
+	/**
+	 * On load.
+	 *
+	 * @param entity the entity
+	 * @param id the id
+	 * @param state the state
+	 * @param propertyNames the property names
+	 * @param types the types
+	 * @return true, if successful
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -81,12 +111,23 @@ public class HotlistEntityInterceptor extends EmptyInterceptor {
 				state[indexOfData] = securityManager.decrypt((String) state[indexOfData]);
 			}
 		} catch (HotlistAppException e) {
-//			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_ENTITY_INTERCEPTOR, "onLoad", "\n" + e.getMessage());
+			mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_ENTITY_INTERCEPTOR, "onLoad", "\n" + e.getMessage());
 			throw new HotlistAppUncheckedException(ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 		return super.onLoad(entity, id, state, propertyNames, types);
 	}
 
+	/**
+	 * On flush dirty.
+	 *
+	 * @param entity the entity
+	 * @param id the id
+	 * @param currentState the current state
+	 * @param previousState the previous state
+	 * @param propertyNames the property names
+	 * @param types the types
+	 * @return true, if successful
+	 */
 	/* (non-Javadoc)
 	 * @see org.hibernate.EmptyInterceptor#onFlushDirty(java.lang.Object, java.io.Serializable, java.lang.Object[], java.lang.Object[], java.lang.String[], org.hibernate.type.Type[])
 	 */
@@ -101,7 +142,7 @@ public class HotlistEntityInterceptor extends EmptyInterceptor {
 				return super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types);
 			}
 		} catch (HotlistAppException e) {
-//			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_ENTITY_INTERCEPTOR, "onSave", "\n" + e.getMessage());
+			mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_ENTITY_INTERCEPTOR, "onSave", "\n" + e.getMessage());
 			throw new HotlistAppUncheckedException(ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 		return super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types);

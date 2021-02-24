@@ -11,6 +11,10 @@ import javax.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Manoj SP
+ *
+ */
 @Entity
 @IdClass(HotlistPK.class)
 @Data
@@ -28,10 +32,30 @@ public class Hotlist {
 	
 	private String status;
 	
-	@Column(name = "start_timestamp")
-	private LocalDateTime startDTimes;
+	private LocalDateTime startTimestamp;
 	
-	@Column(name = "expiry_timestamp")
-	private LocalDateTime expiryDTimes;
+	private LocalDateTime expiryTimestamp;
+	
+	@Column(name = "cr_by")
+	private String createdBy;
+
+	/** The created date time. */
+	@Column(name = "cr_dtimes")
+	private LocalDateTime createdDateTime;
+
+	/** The updated by. */
+	@Column(name = "upd_by")
+	private String updatedBy;
+
+	/** The updated date time. */
+	@Column(name = "upd_dtimes")
+	private LocalDateTime updatedDateTime;
+
+	/** The is deleted. */
+	private Boolean isDeleted;
+
+	/** The deleted date time. */
+	@Column(name = "del_dtimes")
+	private LocalDateTime deletedDateTime;
 
 }

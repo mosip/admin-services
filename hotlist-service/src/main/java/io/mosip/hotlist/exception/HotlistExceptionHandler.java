@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,48 +28,102 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
+import io.mosip.hotlist.logger.HotlistLogger;
+import io.mosip.hotlist.security.HotlistSecurityManager;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.logger.spi.Logger;
 
+/**
+ * The Class HotlistExceptionHandler.
+ *
+ * @author Manoj SP
+ */
 @RestControllerAdvice
 public class HotlistExceptionHandler extends ResponseEntityExceptionHandler {
 
+	/** The Constant REQUEST_TIME. */
 	private static final String REQUEST_TIME = "requesttime";
+	
+	/** The Constant EXPIRY_TIMESTAMP. */
 	private static final CharSequence EXPIRY_TIMESTAMP = "expiryTimestamp";
+	
+	/** The Constant EXPIRY_TIMESTAMP_PATH. */
 	private static final String EXPIRY_TIMESTAMP_PATH = "request/%s/" + EXPIRY_TIMESTAMP;
+	
+	/** The Constant HOTLIST_SERVICE. */
+	private static final String HOTLIST_SERVICE = "Hotlist-service";
+	
+	/** The Constant HOTLIST_EXCEPTION_HANDLER. */
+	private static final String HOTLIST_EXCEPTION_HANDLER = "HotlistExceptionHandler";
+	
+	
+	/** The mosip logger. */
+	private static Logger mosipLogger = HotlistLogger.getLogger(HotlistExceptionHandler.class);
 
+	/**
+	 * Handle all exceptions.
+	 *
+	 * @param ex the ex
+	 * @param request the request
+	 * @return the response entity
+	 */
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
-//		mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
-//				"handleAllExceptions - \n" + ExceptionUtils.getStackTrace(Objects.isNull(rootCause) ? ex : rootCause));
+		mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE, HOTLIST_EXCEPTION_HANDLER,
+				"handleAllExceptions - \n" + ExceptionUtils.getStackTrace(ex));
 		return new ResponseEntity<>(
 				buildExceptionResponse(UNKNOWN_ERROR.getErrorCode(), UNKNOWN_ERROR.getErrorMessage()), HttpStatus.OK);
 	}
 
+	/**
+	 * Handle access denied exception.
+	 *
+	 * @param ex the ex
+	 * @param request the request
+	 * @return the response entity
+	 */
 	@ExceptionHandler(AccessDeniedException.class)
 	protected ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
-//		mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
-//				"handleAccessDeniedException - \n"
-//						+ ExceptionUtils.getStackTrace(ex));
+		mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE, HOTLIST_EXCEPTION_HANDLER,
+				"handleAccessDeniedException - \n"
+						+ ExceptionUtils.getStackTrace(ex));
 		return new ResponseEntity<>(
 				buildExceptionResponse(AUTHORIZATION_FAILED.getErrorCode(), AUTHORIZATION_FAILED.getErrorMessage()),
 				HttpStatus.OK);
 	}
 
+	/**
+	 * Handle id app exception.
+	 *
+	 * @param ex the ex
+	 * @param request the request
+	 * @return the response entity
+	 */
 	@ExceptionHandler(HotlistAppException.class)
 	protected ResponseEntity<Object> handleIdAppException(HotlistAppException ex, WebRequest request) {
-//		mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
-//				"handleIdAppException - \n" + ExceptionUtils.getStackTrace(Objects.isNull(rootCause) ? ex : rootCause));
+		mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE, HOTLIST_EXCEPTION_HANDLER,
+				"handleIdAppException - \n" + ExceptionUtils.getStackTrace(ex));
 		return new ResponseEntity<>(
 				buildExceptionResponse(UNKNOWN_ERROR.getErrorCode(), UNKNOWN_ERROR.getErrorMessage()), HttpStatus.OK);
 	}
 
+	/**
+	 * Handle exception internal.
+	 *
+	 * @param ex the ex
+	 * @param errorMessage the error message
+	 * @param headers the headers
+	 * @param status the status
+	 * @param request the request
+	 * @return the response entity
+	 */
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object errorMessage,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-//		mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
-//				"handleExceptionInternal - \n"
-//						+ ExceptionUtils.getStackTrace(Objects.isNull(rootCause) ? ex : rootCause));
+		mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE, HOTLIST_EXCEPTION_HANDLER,
+				"handleExceptionInternal - \n"
+						+ ExceptionUtils.getStackTrace(ex));
 		if (ex instanceof MethodArgumentNotValidException) {
 			ResponseWrapper<HotlistRequestResponseDTO> response = new ResponseWrapper<>();
 			response.setErrors(((MethodArgumentNotValidException) ex).getBindingResult().getAllErrors().stream()
@@ -98,6 +153,13 @@ public class HotlistExceptionHandler extends ResponseEntityExceptionHandler {
 		}
 	}
 
+	/**
+	 * Builds the exception response.
+	 *
+	 * @param errorCode the error code
+	 * @param errorMessage the error message
+	 * @return the object
+	 */
 	private Object buildExceptionResponse(String errorCode, String errorMessage) {
 		ResponseWrapper<HotlistRequestResponseDTO> response = new ResponseWrapper<>();
 		response.setErrors(Collections.singletonList(new ServiceError(errorCode, errorMessage)));

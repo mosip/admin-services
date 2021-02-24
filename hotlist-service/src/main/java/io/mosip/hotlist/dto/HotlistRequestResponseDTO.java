@@ -6,6 +6,10 @@ import java.util.Map;
 import io.mosip.kernel.core.exception.ServiceError;
 import lombok.Data;
 
+/**
+ * @author Manoj SP
+ *
+ */
 @Data
 public class HotlistRequestResponseDTO {
 

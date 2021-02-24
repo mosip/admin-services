@@ -13,9 +13,8 @@ import lombok.NoArgsConstructor;
 /**
  * Crypto-Manager-Response model
  * 
- * @author Urvil Joshi
+ * @author Manoj SP
  *
- * @since 1.0.0
  */
 @Data
 @AllArgsConstructor

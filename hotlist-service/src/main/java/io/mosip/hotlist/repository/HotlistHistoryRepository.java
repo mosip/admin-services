@@ -5,6 +5,11 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.hotlist.entity.HotlistHistory;
 
+/**
+ * The Interface HotlistHistoryRepository.
+ *
+ * @author Manoj SP
+ */
 @Repository
 public interface HotlistHistoryRepository extends JpaRepository<HotlistHistory, String>{
 
