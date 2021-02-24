@@ -1,6 +1,5 @@
 package io.mosip.hotlist.constant;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class HotlistStatus.
  *

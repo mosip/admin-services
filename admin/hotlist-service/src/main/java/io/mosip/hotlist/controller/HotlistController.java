@@ -26,7 +26,6 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class HotlistController.
  *

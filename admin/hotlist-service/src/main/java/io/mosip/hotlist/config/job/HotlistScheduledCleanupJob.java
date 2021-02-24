@@ -35,7 +35,7 @@ public class HotlistScheduledCleanupJob {
 		try {
 			mosipLogger.info(HotlistSecurityManager.getUser(), "HotlistScheduledCleanupJob", "cleanupUnblockedIds",
 					"INITIATED CLEANUP OF UNBLOCKED IDs");
-			hotlistRepo.findByStatus(HotlistStatus.UNBLOCKED).forEach(hotlistRepo::delete);
+			hotlistRepo.findByStatusAndIsDeleted(HotlistStatus.UNBLOCKED, false).forEach(hotlistRepo::delete);
 		} catch (Exception e) {
 			mosipLogger.warn(HotlistSecurityManager.getUser(), "HotlistScheduledCleanupJob", "cleanupUnblockedIds",
 					"HOTLIST STATUS CLEANUP FAILED WITH EXCEPTION - " + ExceptionUtils.getStackTrace(e));
@@ -51,11 +51,26 @@ public class HotlistScheduledCleanupJob {
 		try {
 			mosipLogger.info(HotlistSecurityManager.getUser(), "HotlistScheduledCleanupJob", "cleanupExpiredIds",
 					"INITIATED CLEANUP OF EXPIRED IDs");
-			hotlistRepo.findByExpiryTimestampLessThan(DateUtils.getUTCCurrentDateTime()).forEach(hotlistRepo::delete);
+			hotlistRepo.findByExpiryTimestampLessThanAndIsDeleted(DateUtils.getUTCCurrentDateTime(), false).forEach(hotlistRepo::delete);
 		} catch (Exception e) {
 			mosipLogger.warn(HotlistSecurityManager.getUser(), "HotlistScheduledCleanupJob", "cleanupUnblockedIds",
 					"HOTLIST STATUS CLEANUP FAILED WITH EXCEPTION - " + ExceptionUtils.getStackTrace(e));
 		}
 	}
 
+
+	/**
+	 * Cleanup deleted ids.
+	 */
+	@Scheduled(initialDelayString = "#{60 * 60 * 1000 * ${mosip.hotlist.cleanup-schedule.init-delay}}", fixedRateString = "#{60 * 60 * 1000 * ${mosip.hotlist.cleanup-schedule.fixed-rate}}")
+	public void cleanupDeletedIds() {
+		try {
+			mosipLogger.info(HotlistSecurityManager.getUser(), "HotlistScheduledCleanupJob", "cleanupDeletedIds",
+					"INITIATED CLEANUP OF EXPIRED IDs");
+			hotlistRepo.findByIsDeleted(true).forEach(hotlistRepo::delete);
+		} catch (Exception e) {
+			mosipLogger.warn(HotlistSecurityManager.getUser(), "HotlistScheduledCleanupJob", "cleanupDeletedIds",
+					"HOTLIST STATUS CLEANUP FAILED WITH EXCEPTION - " + ExceptionUtils.getStackTrace(e));
+		}
+	}
 }

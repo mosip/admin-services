@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.hotlist.entity.Hotlist;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface HotlistRepository.
  *
@@ -23,32 +22,44 @@ public interface HotlistRepository extends JpaRepository<Hotlist, String>{
 	 *
 	 * @param idHash the id hash
 	 * @param idType the id type
+	 * @param isDeleted the is deleted
 	 * @return the optional
 	 */
-	Optional<Hotlist> findByIdHashAndIdType(String idHash, String idType);
+	Optional<Hotlist> findByIdHashAndIdTypeAndIsDeleted(String idHash, String idType, Boolean isDeleted);
 	
 	/**
 	 * Exists by id hash and id type.
 	 *
 	 * @param idHash the id hash
 	 * @param idType the id type
+	 * @param isDeleted the is deleted
 	 * @return the boolean
 	 */
-	Boolean existsByIdHashAndIdType(String idHash, String idType);
+	Boolean existsByIdHashAndIdTypeAndIsDeleted(String idHash, String idType, Boolean isDeleted);
 
 	/**
 	 * Find by status.
 	 *
 	 * @param status the status
+	 * @param isDeleted the is deleted
 	 * @return the list
 	 */
-	List<Hotlist> findByStatus(String status);
+	List<Hotlist> findByStatusAndIsDeleted(String status, Boolean isDeleted);
 
 	/**
 	 * Find by expiry timestamp less than current timestamp.
 	 *
 	 * @param currentTimestamp the current timestamp
+	 * @param isDeleted the is deleted
 	 * @return the list
 	 */
-	List<Hotlist> findByExpiryTimestampLessThan(LocalDateTime currentTimestamp);
+	List<Hotlist> findByExpiryTimestampLessThanAndIsDeleted(LocalDateTime currentTimestamp, Boolean isDeleted);
+	
+	/**
+	 * Find by is deleted.
+	 *
+	 * @param isDeleted the is deleted
+	 * @return the list
+	 */
+	List<Hotlist> findByIsDeleted(Boolean isDeleted);
 }

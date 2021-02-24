@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.mosip.hotlist.dto.RestRequestDTO;
 import io.mosip.hotlist.exception.AuthenticationException;
-import io.mosip.hotlist.exception.RestRetryException;
+import io.mosip.hotlist.exception.HotlistRetryException;
 import io.mosip.hotlist.exception.RestServiceException;
 import io.mosip.hotlist.logger.HotlistLogger;
 import io.mosip.hotlist.security.HotlistSecurityManager;
@@ -115,11 +115,11 @@ public class RestHelper {
 			if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
 				mosipLogger.error(HotlistSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						THROWING_REST_SERVICE_EXCEPTION + "- CONNECTION_TIMED_OUT - \n " + e.getMessage());
-				throw new RestRetryException(new RestServiceException(CONNECTION_TIMED_OUT, e));
+				throw new HotlistRetryException(new RestServiceException(CONNECTION_TIMED_OUT, e));
 			} else {
 				mosipLogger.error(HotlistSecurityManager.getUser(), CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
 						THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e.getMessage());
-				throw new RestRetryException(new RestServiceException(UNKNOWN_ERROR, e));
+				throw new HotlistRetryException(new RestServiceException(UNKNOWN_ERROR, e));
 			}
 		}
 	}
@@ -238,7 +238,7 @@ public class RestHelper {
 							e.getRawStatusCode());
 				} else if (e.getRawStatusCode() == HttpStatus.FORBIDDEN.value()) {
 					List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(e.getResponseBodyAsString());
-					throw new RestRetryException(new AuthenticationException(errorList.get(0).getErrorCode(),
+					throw new HotlistRetryException(new AuthenticationException(errorList.get(0).getErrorCode(),
 							errorList.get(0).getMessage(), e.getRawStatusCode()));
 				} else {
 					mosipLogger.error(HotlistSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
@@ -249,7 +249,7 @@ public class RestHelper {
 			} else {
 				mosipLogger.error(HotlistSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 						"Status error - returning RestServiceException - SERVER_ERROR");
-				throw new RestRetryException(new RestServiceException(SERVER_ERROR, e.getResponseBodyAsString(),
+				throw new HotlistRetryException(new RestServiceException(SERVER_ERROR, e.getResponseBodyAsString(),
 						mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType)));
 			}
 		} catch (IOException ex) {
