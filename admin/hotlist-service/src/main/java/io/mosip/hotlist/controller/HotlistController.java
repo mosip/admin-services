@@ -75,12 +75,6 @@ public class HotlistController {
 	@Autowired
 	private AuditHelper auditHelper;
 
-	@GetMapping("endpoints")
-	public ResponseEntity<List<String>> getEndpoints() {
-		return new ResponseEntity<>(requestMappingHandlerMapping.getHandlerMethods().keySet().stream()
-				.map(RequestMappingInfo::toString).collect(Collectors.toList()), HttpStatus.OK);
-	}
-
 	/**
 	 * Block.
 	 *
