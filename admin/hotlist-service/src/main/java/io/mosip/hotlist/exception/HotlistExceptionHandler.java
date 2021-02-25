@@ -44,27 +44,26 @@ public class HotlistExceptionHandler extends ResponseEntityExceptionHandler {
 
 	/** The Constant REQUEST_TIME. */
 	private static final String REQUEST_TIME = "requesttime";
-	
+
 	/** The Constant EXPIRY_TIMESTAMP. */
 	private static final CharSequence EXPIRY_TIMESTAMP = "expiryTimestamp";
-	
+
 	/** The Constant EXPIRY_TIMESTAMP_PATH. */
 	private static final String EXPIRY_TIMESTAMP_PATH = "request/%s/" + EXPIRY_TIMESTAMP;
-	
+
 	/** The Constant HOTLIST_SERVICE. */
 	private static final String HOTLIST_SERVICE = "Hotlist-service";
-	
+
 	/** The Constant HOTLIST_EXCEPTION_HANDLER. */
 	private static final String HOTLIST_EXCEPTION_HANDLER = "HotlistExceptionHandler";
-	
-	
+
 	/** The mosip logger. */
 	private static Logger mosipLogger = HotlistLogger.getLogger(HotlistExceptionHandler.class);
 
 	/**
 	 * Handle all exceptions.
 	 *
-	 * @param ex the ex
+	 * @param ex      the ex
 	 * @param request the request
 	 * @return the response entity
 	 */
@@ -79,15 +78,14 @@ public class HotlistExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Handle access denied exception.
 	 *
-	 * @param ex the ex
+	 * @param ex      the ex
 	 * @param request the request
 	 * @return the response entity
 	 */
 	@ExceptionHandler(AccessDeniedException.class)
 	protected ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
 		mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE, HOTLIST_EXCEPTION_HANDLER,
-				"handleAccessDeniedException - \n"
-						+ ExceptionUtils.getStackTrace(ex));
+				"handleAccessDeniedException - \n" + ExceptionUtils.getStackTrace(ex));
 		return new ResponseEntity<>(
 				buildExceptionResponse(AUTHORIZATION_FAILED.getErrorCode(), AUTHORIZATION_FAILED.getErrorMessage()),
 				HttpStatus.OK);
@@ -96,7 +94,7 @@ public class HotlistExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Handle id app exception.
 	 *
-	 * @param ex the ex
+	 * @param ex      the ex
 	 * @param request the request
 	 * @return the response entity
 	 */
@@ -111,19 +109,20 @@ public class HotlistExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Handle exception internal.
 	 *
-	 * @param ex the ex
+	 * @param ex           the ex
 	 * @param errorMessage the error message
-	 * @param headers the headers
-	 * @param status the status
-	 * @param request the request
+	 * @param headers      the headers
+	 * @param status       the status
+	 * @param request      the request
 	 * @return the response entity
 	 */
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object errorMessage,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE, HOTLIST_EXCEPTION_HANDLER,
-				"handleExceptionInternal - \n"
-						+ ExceptionUtils.getStackTrace(ex));
+				"handleExceptionInternal - \n" + (ex instanceof MethodArgumentNotValidException
+						? ((MethodArgumentNotValidException) ex).getBindingResult().getAllErrors()
+						: ExceptionUtils.getStackTrace(ex)));
 		if (ex instanceof MethodArgumentNotValidException) {
 			ResponseWrapper<HotlistRequestResponseDTO> response = new ResponseWrapper<>();
 			response.setErrors(((MethodArgumentNotValidException) ex).getBindingResult().getAllErrors().stream()
@@ -156,7 +155,7 @@ public class HotlistExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Builds the exception response.
 	 *
-	 * @param errorCode the error code
+	 * @param errorCode    the error code
 	 * @param errorMessage the error message
 	 * @return the object
 	 */

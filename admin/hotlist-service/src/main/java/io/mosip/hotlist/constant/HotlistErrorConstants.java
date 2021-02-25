@@ -19,7 +19,7 @@ public enum HotlistErrorConstants {
 	INVALID_INPUT_PARAMETER("ADM-HTL-002", "Invalid Input Parameter - %s"),
 
 	/** The id type not allowed. */
-	ID_TYPE_NOT_ALLOWED("ADM-HTL-003", "Input IdType is not allowed to hotlist"),
+	ID_TYPE_NOT_ALLOWED("ADM-HTL-003", "Input IdType not allowed to hotlist"),
 
 	/** The invalid request. */
 	INVALID_REQUEST("ADM-HTL-004", "Invalid Request"),

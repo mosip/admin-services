@@ -1,11 +1,16 @@
 package io.mosip.hotlist.controller;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -14,6 +19,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import io.mosip.hotlist.constant.AuditEvents;
 import io.mosip.hotlist.constant.AuditModules;
@@ -63,7 +70,16 @@ public class HotlistController {
 	private HotlistService hotlistService;
 
 	@Autowired
+	private RequestMappingHandlerMapping requestMappingHandlerMapping;
+
+	@Autowired
 	private AuditHelper auditHelper;
+
+	@GetMapping("endpoints")
+	public ResponseEntity<List<String>> getEndpoints() {
+		return new ResponseEntity<>(requestMappingHandlerMapping.getHandlerMethods().keySet().stream()
+				.map(RequestMappingInfo::toString).collect(Collectors.toList()), HttpStatus.OK);
+	}
 
 	/**
 	 * Block.
@@ -100,10 +116,12 @@ public class HotlistController {
 	 * @param id     the id
 	 * @param idType the id type
 	 * @return the response wrapper
+	 * @throws MethodArgumentNotValidException
 	 */
 	@GetMapping(path = "/{idType}/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseWrapper<HotlistRequestResponseDTO> retrieveHotlist(@PathVariable String id,
-			@PathVariable String idType) {
+			@PathVariable String idType) throws MethodArgumentNotValidException {
+		validateIdandIdType(id, idType);
 		ResponseWrapper<HotlistRequestResponseDTO> response = new ResponseWrapper<>();
 		try {
 			response.setResponse(hotlistService.retrieveHotlist(id, idType));
@@ -147,5 +165,18 @@ public class HotlistController {
 			}
 		}).collect(Collectors.toList()));
 		return response;
+	}
+
+	private void validateIdandIdType(String id, String idType) throws MethodArgumentNotValidException {
+		HotlistRequestResponseDTO request = new HotlistRequestResponseDTO();
+		request.setId(id);
+		request.setIdType(idType);
+		RequestWrapper<List<HotlistRequestResponseDTO>> requestWrapper = new RequestWrapper<>();
+		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(requestWrapper, "request");
+		requestWrapper.setRequest(Collections.singletonList(request));
+		validator.validate(requestWrapper, errors);
+		if (errors.hasErrors()) {
+			throw new MethodArgumentNotValidException(null, errors);
+		}
 	}
 }
