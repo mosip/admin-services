@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.hotlist.constant.AuditEvents;
+import io.mosip.hotlist.constant.AuditModules;
 import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
 import io.mosip.hotlist.exception.HotlistAppException;
+import io.mosip.hotlist.helper.AuditHelper;
 import io.mosip.hotlist.logger.HotlistLogger;
 import io.mosip.hotlist.security.HotlistSecurityManager;
 import io.mosip.hotlist.service.HotlistService;
@@ -33,6 +36,10 @@ import io.mosip.kernel.core.logger.spi.Logger;
  */
 @RestController
 public class HotlistController {
+
+	private static final String BLOCK = "block";
+
+	private static final String HOTLIST_CONTROLLER = "HotlistController";
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = HotlistLogger.getLogger(HotlistController.class);
@@ -55,6 +62,9 @@ public class HotlistController {
 	@Autowired
 	private HotlistService hotlistService;
 
+	@Autowired
+	private AuditHelper auditHelper;
+
 	/**
 	 * Block.
 	 *
@@ -67,11 +77,17 @@ public class HotlistController {
 		ResponseWrapper<List<HotlistRequestResponseDTO>> response = new ResponseWrapper<>();
 		response.setResponse(request.getRequest().stream().map(hotlistRequest -> {
 			try {
-				return hotlistService.block(hotlistRequest);
+				HotlistRequestResponseDTO blockResponse = hotlistService.block(hotlistRequest);
+				auditHelper.audit(AuditModules.HOTLIST_SERVICE, AuditEvents.BLOCK_REQUEST,
+						HotlistSecurityManager.hash(hotlistRequest.getId().getBytes()), hotlistRequest.getIdType(),
+						"HOTLIST REQUESTED");
+				return blockResponse;
 			} catch (HotlistAppException e) {
-				mosipLogger.error(HotlistSecurityManager.getUser(), "HotlistController", "block", e.getMessage());
+				mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_CONTROLLER, BLOCK, e.getMessage());
 				HotlistRequestResponseDTO errorResponse = new HotlistRequestResponseDTO();
 				errorResponse.setError(new ServiceError(e.getErrorCode(), e.getErrorText()));
+				auditHelper.auditError(AuditModules.HOTLIST_SERVICE, AuditEvents.BLOCK_REQUEST,
+						HotlistSecurityManager.hash(hotlistRequest.getId().getBytes()), hotlistRequest.getIdType(), e);
 				return errorResponse;
 			}
 		}).collect(Collectors.toList()));
@@ -81,7 +97,7 @@ public class HotlistController {
 	/**
 	 * Retrieve hotlist.
 	 *
-	 * @param id the id
+	 * @param id     the id
 	 * @param idType the id type
 	 * @return the response wrapper
 	 */
@@ -91,11 +107,15 @@ public class HotlistController {
 		ResponseWrapper<HotlistRequestResponseDTO> response = new ResponseWrapper<>();
 		try {
 			response.setResponse(hotlistService.retrieveHotlist(id, idType));
+			auditHelper.audit(AuditModules.HOTLIST_SERVICE, AuditEvents.BLOCK_REQUEST,
+					HotlistSecurityManager.hash(id.getBytes()), idType, "RETRIEVE HOTLIST REQUESTED");
 		} catch (HotlistAppException e) {
-			mosipLogger.error(HotlistSecurityManager.getUser(), "HotlistController", "block", e.getMessage());
+			mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_CONTROLLER, BLOCK, e.getMessage());
 			HotlistRequestResponseDTO errorResponse = new HotlistRequestResponseDTO();
 			errorResponse.setError(new ServiceError(e.getErrorCode(), e.getErrorText()));
 			response.setResponse(errorResponse);
+			auditHelper.auditError(AuditModules.HOTLIST_SERVICE, AuditEvents.BLOCK_REQUEST,
+					HotlistSecurityManager.hash(id.getBytes()), idType, e);
 		}
 		return response;
 	}
@@ -110,13 +130,19 @@ public class HotlistController {
 	public ResponseWrapper<List<HotlistRequestResponseDTO>> update(
 			@RequestBody RequestWrapper<List<HotlistRequestResponseDTO>> request) {
 		ResponseWrapper<List<HotlistRequestResponseDTO>> response = new ResponseWrapper<>();
-		response.setResponse(request.getRequest().stream().map(t -> {
+		response.setResponse(request.getRequest().stream().map(hotlistRequest -> {
 			try {
-				return hotlistService.updateHotlist(t);
+				HotlistRequestResponseDTO updateHotlistResponse = hotlistService.updateHotlist(hotlistRequest);
+				auditHelper.audit(AuditModules.HOTLIST_SERVICE, AuditEvents.BLOCK_REQUEST,
+						HotlistSecurityManager.hash(hotlistRequest.getId().getBytes()), hotlistRequest.getIdType(),
+						"UPDATE HOTLIST REQUESTED");
+				return updateHotlistResponse;
 			} catch (HotlistAppException e) {
-				mosipLogger.error(HotlistSecurityManager.getUser(), "HotlistController", "block", e.getMessage());
+				mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_CONTROLLER, BLOCK, e.getMessage());
 				HotlistRequestResponseDTO errorResponse = new HotlistRequestResponseDTO();
 				errorResponse.setError(new ServiceError(e.getErrorCode(), e.getErrorText()));
+				auditHelper.auditError(AuditModules.HOTLIST_SERVICE, AuditEvents.BLOCK_REQUEST,
+						HotlistSecurityManager.hash(hotlistRequest.getId().getBytes()), hotlistRequest.getIdType(), e);
 				return errorResponse;
 			}
 		}).collect(Collectors.toList()));

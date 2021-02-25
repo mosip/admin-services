@@ -58,6 +58,10 @@ public class HotlistSecurityManager {
 	@Value("${mosip.hotlist.crypto.app-id}")
 	public String appId;
 
+	/** The app id. */
+	@Value("${mosip.hotlist.crypto.ref-id}")
+	public String refId;
+
 	/**
 	 * Gets the user.
 	 *
@@ -98,7 +102,7 @@ public class HotlistSecurityManager {
 	 */
 	public String encrypt(String dataToEncrypt) throws HotlistAppException {
 		RequestWrapper<CryptomanagerRequestDto> requestWrapper = new RequestWrapper<>();
-		CryptomanagerRequestDto request = new CryptomanagerRequestDto(appId, null, DateUtils.getUTCCurrentDateTime(),
+		CryptomanagerRequestDto request = new CryptomanagerRequestDto(appId, refId, DateUtils.getUTCCurrentDateTime(),
 				dataToEncrypt, null, null, true);
 		requestWrapper.setRequest(request);
 		return encryptDecryptData(restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_ENCRYPT, requestWrapper,
@@ -114,7 +118,7 @@ public class HotlistSecurityManager {
 	 */
 	public String decrypt(String dataToDecrypt) throws HotlistAppException {
 		RequestWrapper<CryptomanagerRequestDto> requestWrapper = new RequestWrapper<>();
-		CryptomanagerRequestDto request = new CryptomanagerRequestDto(appId, null, DateUtils.getUTCCurrentDateTime(),
+		CryptomanagerRequestDto request = new CryptomanagerRequestDto(appId, refId, DateUtils.getUTCCurrentDateTime(),
 				dataToDecrypt, null, null, true);
 		requestWrapper.setRequest(request);
 		return encryptDecryptData(restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT, requestWrapper,

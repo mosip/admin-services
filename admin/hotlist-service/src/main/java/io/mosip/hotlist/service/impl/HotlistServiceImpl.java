@@ -38,6 +38,12 @@ import io.mosip.kernel.core.util.DateUtils;
 @Transactional
 public class HotlistServiceImpl implements HotlistService {
 
+	private static final String RETRIEVE_HOTLIST = "retrieveHotlist";
+
+	private static final String BLOCK = "block";
+
+	private static final String HOTLIST_SERVICE_IMPL = "HotlistServiceImpl";
+
 	/** The mosip logger. */
 	private static Logger mosipLogger = HotlistLogger.getLogger(HotlistServiceImpl.class);
 
@@ -88,7 +94,7 @@ public class HotlistServiceImpl implements HotlistService {
 					eventHandler.publishEvent(idHash, blockRequest.getIdType(), HotlistStatus.UNBLOCKED, null);
 					return this.block(blockRequest);
 				}
-				mosipLogger.error(HotlistSecurityManager.getUser(), "HotlistServiceImpl", "block",
+				mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE_IMPL, BLOCK,
 						"RECORD ALREADY EXISTS");
 				throw new HotlistAppException(HotlistErrorConstants.RECORD_EXISTS);
 			} else {
@@ -108,10 +114,10 @@ public class HotlistServiceImpl implements HotlistService {
 				hotlistHRepo.save(mapper.convertValue(hotlist, HotlistHistory.class));
 				hotlistRepo.save(hotlist);
 				eventHandler.publishEvent(idHash, blockRequest.getIdType(), status, hotlist.getExpiryTimestamp());
-				return buildResponse(hotlist.getIdValue(), null, hotlist.getStatus(), null);
+				return buildResponse(hotlist.getIdValue(), null, blockRequest.getStatus(), null);
 			}
 		} catch (DataAccessException | TransactionException e) {
-			mosipLogger.error(HotlistSecurityManager.getUser(), "HotlistServiceImpl", "block", e.getMessage());
+			mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE_IMPL, BLOCK, e.getMessage());
 			throw new HotlistAppException(HotlistErrorConstants.DATABASE_ACCESS_ERROR, e);
 		}
 	}
@@ -140,7 +146,7 @@ public class HotlistServiceImpl implements HotlistService {
 				return buildResponse(id, idType, HotlistStatus.UNBLOCKED, null);
 			}
 		} catch (DataAccessException | TransactionException e) {
-			mosipLogger.error(HotlistSecurityManager.getUser(), "HotlistServiceImpl", "retrieveHotlist",
+			mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE_IMPL, RETRIEVE_HOTLIST,
 					e.getMessage());
 			throw new HotlistAppException(HotlistErrorConstants.DATABASE_ACCESS_ERROR, e);
 		}
@@ -180,14 +186,14 @@ public class HotlistServiceImpl implements HotlistService {
 					hotlistRepo.save(hotlist);
 					eventHandler.publishEvent(idHash, updateRequest.getIdType(), status, hotlist.getExpiryTimestamp());
 				}
-				return buildResponse(hotlist.getIdValue(), null, hotlist.getStatus(), null);
+				return buildResponse(hotlist.getIdValue(), null, updateRequest.getStatus(), null);
 			} else {
-				mosipLogger.error(HotlistSecurityManager.getUser(), "HotlistServiceImpl", "updateHotlist",
+				mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE_IMPL, "updateHotlist",
 						"NO RECORDS FOUND TO UPDATE");
 				throw new HotlistAppException(HotlistErrorConstants.NO_RECORD_FOUND);
 			}
 		} catch (DataAccessException | TransactionException e) {
-			mosipLogger.error(HotlistSecurityManager.getUser(), "HotlistServiceImpl", "updateHotlist", e.getMessage());
+			mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE_IMPL, "updateHotlist", e.getMessage());
 			throw new HotlistAppException(HotlistErrorConstants.DATABASE_ACCESS_ERROR, e);
 		}
 	}
