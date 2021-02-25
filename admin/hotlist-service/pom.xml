@@ -24,10 +24,12 @@
 
 		<!-- spring properties -->
 		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
+		<spring-webflux.version>5.0.6.RELEASE</spring-webflux.version>
 
 		<!-- kernel properties -->
 		<kernel-core.version>1.2.0-SNAPSHOT</kernel-core.version>
 		<kernel-websubclient-api.version>1.2.0-SNAPSHOT</kernel-websubclient-api.version>
+		<kernel-logger-logback.version>1.2.0-SNAPSHOT</kernel-logger-logback.version>
 	</properties>
 
 	<dependencies>
@@ -55,6 +57,16 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-websubclient-api</artifactId>
 			<version>${kernel-websubclient-api.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-logger-logback</artifactId>
+			<version>${kernel-logger-logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webflux</artifactId>
+			<version>${spring-webflux.version}</version>
 		</dependency>
 	</dependencies>
 	<build>
