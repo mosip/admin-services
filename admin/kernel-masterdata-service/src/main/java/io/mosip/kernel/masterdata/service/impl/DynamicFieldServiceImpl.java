@@ -1,6 +1,8 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -54,16 +56,20 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	 * io.mosip.kernel.masterdata.service.DynamicFieldService#getAllDynamicField()
 	 */
 	@Override
-	public PageDto<DynamicFieldResponseDto> getAllDynamicField(int pageNumber, int pageSize, String sortBy, String orderBy, String langCode) {
+	public PageDto<DynamicFieldResponseDto> getAllDynamicField(int pageNumber, int pageSize, String sortBy, String orderBy, String langCode,
+															   LocalDateTime lastUpdated, LocalDateTime currentTimestamp) {
 		List<DynamicFieldResponseDto> list = new ArrayList<>();		
 		PageDto<DynamicFieldResponseDto> pagedFields = new PageDto<>(pageNumber, 0, 0, list);
 		Page<DynamicField> pagedResult = null;
-		
+
+		if (lastUpdated == null) {
+			lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+		}
 		try {
 			
 			PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy));			
-			pagedResult = langCode == null ? dynamicFieldRepository.findAllDynamicFields(pageRequest) : 
-				dynamicFieldRepository.findAllDynamicFieldsByLangCode(langCode, pageRequest);
+			pagedResult = langCode == null ? dynamicFieldRepository.findAllLatestDynamicFields(lastUpdated, currentTimestamp, pageRequest) :
+				dynamicFieldRepository.findAllLatestDynamicFieldsByLangCode(langCode,lastUpdated, currentTimestamp, pageRequest);
 			
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorCode(),

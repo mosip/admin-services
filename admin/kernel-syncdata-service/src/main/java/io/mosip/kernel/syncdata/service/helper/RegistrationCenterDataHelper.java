@@ -50,31 +50,31 @@ public class RegistrationCenterDataHelper {
 	}
 	
 	public void retrieveData(final SyncMasterDataServiceHelper serviceHelper, final List<CompletableFuture> futures) {
-		this.registrationCenterTypes = serviceHelper.getRegistrationCenterType(this.machineId, this.lastUpdated, this.currentTimestamp);
+		//this.registrationCenterTypes = serviceHelper.getRegistrationCenterType(this.machineId, this.lastUpdated, this.currentTimestamp);
 		this.registrationCenters = serviceHelper.getRegistrationCenter(this.machineId, this.lastUpdated, this.currentTimestamp);
 		this.registrationCenterMachines = serviceHelper.getRegistrationCenterMachines(this.regCenterId, this.lastUpdated, this.currentTimestamp);
-		this.registrationCenterDevices = serviceHelper.getRegistrationCenterDevices(this.regCenterId, this.lastUpdated, this.currentTimestamp);
+		/*this.registrationCenterDevices = serviceHelper.getRegistrationCenterDevices(this.regCenterId, this.lastUpdated, this.currentTimestamp);
 		this.registrationCenterMachineDevices = serviceHelper.getRegistrationCenterMachineDevices(this.regCenterId, this.lastUpdated, this.currentTimestamp);
-		this.registrationCenterUserMachines = serviceHelper.getRegistrationCenterUserMachines(this.regCenterId, this.lastUpdated, this.currentTimestamp);
+		this.registrationCenterUserMachines = serviceHelper.getRegistrationCenterUserMachines(this.regCenterId, this.lastUpdated, this.currentTimestamp);*/
 		this.registrationCenterUsers = serviceHelper.getRegistrationCenterUsers(this.regCenterId, this.lastUpdated, this.currentTimestamp);
 
-		futures.add(this.registrationCenterTypes);
+		//futures.add(this.registrationCenterTypes);
 		futures.add(this.registrationCenters);
 		futures.add(this.registrationCenterMachines);
-		futures.add(this.registrationCenterDevices);
+		/*futures.add(this.registrationCenterDevices);
 		futures.add(this.registrationCenterMachineDevices);
-		futures.add(this.registrationCenterUserMachines);
+		futures.add(this.registrationCenterUserMachines);*/
 		futures.add(this.registrationCenterUsers);
 	}
 	
 	public void fillRetrievedData(final SyncMasterDataServiceHelper serviceHelper, final List<SyncDataBaseDto> list) 
 			throws InterruptedException, ExecutionException {
-		list.add(serviceHelper.getSyncDataBaseDto(RegistrationCenterType.class, "structured", this.registrationCenterTypes.get(), this.publicKey));
+		//list.add(serviceHelper.getSyncDataBaseDto(RegistrationCenterType.class, "structured", this.registrationCenterTypes.get(), this.publicKey));
 		list.add(serviceHelper.getSyncDataBaseDto(RegistrationCenter.class, "structured", this.registrationCenters.get(), this.publicKey));
 		list.add(serviceHelper.getSyncDataBaseDto(RegistrationCenterMachine.class, "structured", this.registrationCenterMachines.get(), this.publicKey));
-		list.add(serviceHelper.getSyncDataBaseDto(RegistrationCenterDevice.class, "structured", this.registrationCenterDevices.get(), this.publicKey));
+		/*list.add(serviceHelper.getSyncDataBaseDto(RegistrationCenterDevice.class, "structured", this.registrationCenterDevices.get(), this.publicKey));
 		list.add(serviceHelper.getSyncDataBaseDto(RegistrationCenterMachineDevice.class, "structured", this.registrationCenterMachineDevices.get(), this.publicKey));
-		list.add(serviceHelper.getSyncDataBaseDto(RegistrationCenterUserMachine.class, "structured", this.registrationCenterUserMachines.get(), this.publicKey));
+		list.add(serviceHelper.getSyncDataBaseDto(RegistrationCenterUserMachine.class, "structured", this.registrationCenterUserMachines.get(), this.publicKey));*/
 		list.add(serviceHelper.getSyncDataBaseDto(RegistrationCenterUser.class, "structured", this.registrationCenterUsers.get(), this.publicKey));
 	}
 

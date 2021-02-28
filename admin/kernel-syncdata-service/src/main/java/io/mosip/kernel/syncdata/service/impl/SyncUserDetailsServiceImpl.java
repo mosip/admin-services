@@ -312,10 +312,6 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 	@Override
 	public SyncUserDto getAllUserDetailsBasedOnKeyIndex(String keyIndex) {
 		RegistrationCenterMachineDto regCenterMachineDto = serviceHelper.getRegistrationCenterMachine(null, keyIndex);
-		List<Machine> machines = machineRepository.findByMachineIdAndIsActive(regCenterMachineDto.getMachineId());
-		if(machines == null || machines.isEmpty())
-			throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
-					MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
 
 		RegistrationCenterUserResponseDto registrationCenterResponseDto = getUsersBasedOnRegistrationCenterId(regCenterMachineDto.getRegCenterId());
 		List<String> userIds = registrationCenterResponseDto.getRegistrationCenterUsers()
@@ -332,7 +328,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 				if(userDetails.size() > 0) {
 					TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
 					tpmCryptoRequestDto.setValue(CryptoUtil.encodeBase64(mapper.getObjectAsJsonString(userDetails).getBytes()));
-					tpmCryptoRequestDto.setPublicKey(machines.get(0).getPublicKey());
+					tpmCryptoRequestDto.setPublicKey(regCenterMachineDto.getPublicKey());
 					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
 					syncUserDto.setUserDetails(tpmCryptoResponseDto.getValue());
 				}

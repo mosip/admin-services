@@ -120,4 +120,28 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 	@Modifying
 	@Query("UPDATE DynamicField SET isDeleted=true, updatedDateTime=?2, updatedBy=?3 WHERE (isDeleted is null OR isDeleted = false) and id=?1")
 	int deleteDynamicField(String id, LocalDateTime updatedDateTime, String updatedBy);
+
+
+	/**
+	 * Get All dynamic fields based on pagination
+	 *
+	 * @param langCode
+	 * @param pageable
+	 * @return
+	 */
+	@Query(value="SELECT * FROM master.dynamic_field WHERE lang_code=?1 and ((cr_dtimes BETWEEN ?2 AND ?3) or (upd_dtimes BETWEEN ?2 AND ?3) or (del_dtimes BETWEEN ?2 AND ?3))",
+			countQuery="SELECT COUNT(id) FROM master.dynamic_field WHERE lang_code=?1 and ((cr_dtimes BETWEEN ?2 AND ?3) or (upd_dtimes BETWEEN ?2 AND ?3) or (del_dtimes BETWEEN ?2 AND ?3))",
+			nativeQuery = true)
+	Page<DynamicField> findAllLatestDynamicFieldsByLangCode(String langCode, LocalDateTime lastUpdated,
+															LocalDateTime currentTimeStamp, Pageable pageable);
+
+	/**
+	 * Get All dynamic fields based on pagination
+	 * @param pageable
+	 * @return
+	 */
+	@Query(value="SELECT * FROM master.dynamic_field WHERE ((cr_dtimes BETWEEN ?1 AND ?2) or (upd_dtimes BETWEEN ?1 AND ?2) or (del_dtimes BETWEEN ?1 AND ?2))",
+			countQuery="SELECT COUNT(id) FROM master.dynamic_field WHERE ((cr_dtimes BETWEEN ?1 AND ?2) or (upd_dtimes BETWEEN ?1 AND ?2) or (del_dtimes BETWEEN ?1 AND ?2))",
+			nativeQuery= true)
+	Page<DynamicField> findAllLatestDynamicFields(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp, Pageable pageable);
 }

@@ -39,22 +39,22 @@ public class ApplicationDataHelper {
 	}
 
 	public void retrieveData(final SyncMasterDataServiceHelper serviceHelper, final List<CompletableFuture> futures) {
-		this.applications = serviceHelper.getApplications(this.lastUpdated, this.currentTimestamp);
+		//this.applications = serviceHelper.getApplications(this.lastUpdated, this.currentTimestamp);
 		this.appAuthenticationMethods = serviceHelper.getAppAuthenticationMethodDetails(this.lastUpdated, this.currentTimestamp);
-		this.appDetails = serviceHelper.getAppDetails(this.lastUpdated, this.currentTimestamp);
+		//this.appDetails = serviceHelper.getAppDetails(this.lastUpdated, this.currentTimestamp);
 		this.appRolePriorities = serviceHelper.getAppRolePriorityDetails(this.lastUpdated, this.currentTimestamp);
 		
-		futures.add(this.applications);
+		//futures.add(this.applications);
 		futures.add(this.appAuthenticationMethods);
-		futures.add(this.appDetails);
+		//futures.add(this.appDetails);
 		futures.add(this.appRolePriorities);
 	}	
 	
 	public void fillRetrievedData(final SyncMasterDataServiceHelper serviceHelper, final List<SyncDataBaseDto> list) 
 			throws InterruptedException, ExecutionException {
-		list.add(serviceHelper.getSyncDataBaseDto(Application.class, "structured", this.applications.get(), this.publicKey));
+		//list.add(serviceHelper.getSyncDataBaseDto(Application.class, "structured", this.applications.get(), this.publicKey));
 		list.add(serviceHelper.getSyncDataBaseDto(AppAuthenticationMethod.class, "structured", this.appAuthenticationMethods.get(), this.publicKey));
-		list.add(serviceHelper.getSyncDataBaseDto(AppDetail.class, "structured", this.appDetails.get(), this.publicKey));
+		//list.add(serviceHelper.getSyncDataBaseDto(AppDetail.class, "structured", this.appDetails.get(), this.publicKey));
 		list.add(serviceHelper.getSyncDataBaseDto(AppRolePriority.class, "structured", this.appRolePriorities.get(), this.publicKey));
 	}
 }

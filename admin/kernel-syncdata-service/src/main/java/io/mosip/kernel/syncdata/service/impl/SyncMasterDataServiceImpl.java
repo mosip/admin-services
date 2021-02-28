@@ -18,7 +18,9 @@ import io.mosip.kernel.keymanagerservice.entity.CACertificateStore;
 import io.mosip.kernel.keymanagerservice.repository.CACertificateStoreRepository;
 import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.*;
+import io.mosip.kernel.syncdata.entity.AppDetail;
 import io.mosip.kernel.syncdata.exception.*;
+import io.mosip.kernel.syncdata.repository.AppDetailRepository;
 import io.mosip.kernel.syncdata.service.helper.KeymanagerHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,6 +93,9 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	@Autowired
 	private CACertificateStoreRepository caCertificateStoreRepository;
 
+	@Autowired
+	private AppDetailRepository appDetailRepository;
+
 
 	@Override
 	public SyncDataResponseDto syncClientSettings(String regCenterId, String keyIndex,
@@ -104,41 +109,38 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		String machineId = regCenterMachineDto.getMachineId();
 		String registrationCenterId = regCenterMachineDto.getRegCenterId();
 
-		List<Machine> machines = machineRepo.findByMachineIdAndIsActive(machineId);
-		if(machines == null || machines.isEmpty())
-			throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
-					MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
-		
 		SyncDataResponseDto response = new SyncDataResponseDto();
 		
 		List<CompletableFuture> futures = new ArrayList<CompletableFuture>();
 		
-		ApplicationDataHelper applicationDataHelper = new ApplicationDataHelper(lastUpdated, currentTimestamp, machines.get(0).getPublicKey());
+		ApplicationDataHelper applicationDataHelper = new ApplicationDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		applicationDataHelper.retrieveData(serviceHelper, futures);		
 		
-		MachineDataHelper machineDataHelper = new MachineDataHelper(registrationCenterId, lastUpdated, currentTimestamp, machines.get(0).getPublicKey());
+		MachineDataHelper machineDataHelper = new MachineDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		machineDataHelper.retrieveData(serviceHelper, futures);		
 		
-		DeviceDataHelper deviceDataHelper = new DeviceDataHelper(registrationCenterId, lastUpdated, currentTimestamp, machines.get(0).getPublicKey());
-		deviceDataHelper.retrieveData(serviceHelper, futures);
+		//DeviceDataHelper deviceDataHelper = new DeviceDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
+		//deviceDataHelper.retrieveData(serviceHelper, futures);
 		
-		IndividualDataHelper individualDataHelper = new IndividualDataHelper(lastUpdated, currentTimestamp, machines.get(0).getPublicKey());
+		IndividualDataHelper individualDataHelper = new IndividualDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		individualDataHelper.retrieveData(serviceHelper, futures);
 		
 		RegistrationCenterDataHelper RegistrationCenterDataHelper = new RegistrationCenterDataHelper(registrationCenterId, machineId, 
-				lastUpdated, currentTimestamp, machines.get(0).getPublicKey());
+				lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		RegistrationCenterDataHelper.retrieveData(serviceHelper, futures);
-		
-		TemplateDataHelper templateDataHelper = new TemplateDataHelper(lastUpdated, currentTimestamp, machines.get(0).getPublicKey());
+
+		AppDetail appDetail = appDetailRepository.findByNameAndLangCode("Registration Client", "eng");
+		TemplateDataHelper templateDataHelper = new TemplateDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey(),
+				appDetail != null ? appDetail.getId() : "10003");
 		templateDataHelper.retrieveData(serviceHelper, futures);
 		
-		DocumentDataHelper documentDataHelper = new DocumentDataHelper(lastUpdated, currentTimestamp, machines.get(0).getPublicKey());
+		DocumentDataHelper documentDataHelper = new DocumentDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		documentDataHelper.retrieveData(serviceHelper, futures);
 		
-		HistoryDataHelper historyDataHelper = new HistoryDataHelper(registrationCenterId, lastUpdated, currentTimestamp, machines.get(0).getPublicKey());
-		historyDataHelper.retrieveData(serviceHelper, futures);
+		//HistoryDataHelper historyDataHelper = new HistoryDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
+		//historyDataHelper.retrieveData(serviceHelper, futures);
 		
-		MiscellaneousDataHelper miscellaneousDataHelper = new MiscellaneousDataHelper(machineId, lastUpdated, currentTimestamp, machines.get(0).getPublicKey());
+		MiscellaneousDataHelper miscellaneousDataHelper = new MiscellaneousDataHelper(machineId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		miscellaneousDataHelper.retrieveData(serviceHelper, futures);		
 		
 		CompletableFuture array [] = new CompletableFuture[futures.size()];
@@ -157,16 +159,16 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		List<SyncDataBaseDto> list = new ArrayList<SyncDataBaseDto>();		
 		applicationDataHelper.fillRetrievedData(serviceHelper, list);
 		machineDataHelper.fillRetrievedData(serviceHelper, list);
-		deviceDataHelper.fillRetrievedData(serviceHelper, list);
+		//deviceDataHelper.fillRetrievedData(serviceHelper, list);
 		individualDataHelper.fillRetrievedData(serviceHelper, list);
 		RegistrationCenterDataHelper.fillRetrievedData(serviceHelper, list);
 		templateDataHelper.fillRetrievedData(serviceHelper, list);
 		documentDataHelper.fillRetrievedData(serviceHelper, list);
-		historyDataHelper.fillRetrievedData(serviceHelper, list);
+		//historyDataHelper.fillRetrievedData(serviceHelper, list);
 		miscellaneousDataHelper.fillRetrievedData(serviceHelper, list);
 		
 		//Fills dynamic field data
-		identitySchemaHelper.fillRetrievedData(list, machines.get(0).getPublicKey());
+		identitySchemaHelper.fillRetrievedData(list, regCenterMachineDto.getPublicKey(), lastUpdated);
 		
 		response.setDataToSync(list);
 		return response;

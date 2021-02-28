@@ -470,10 +470,10 @@ public class SyncUserDetailsAndRolesServiceTest {
 	@Test
 	public void getAllUserDetailEncryptedTestCase() {
 		List<Object[]> queryResult = new ArrayList<>();
-		queryResult.add(new String[] {"regId", "mid"});
+		queryResult.add(new String[] {"regId", "mid", "publickey"});
 		TpmCryptoResponseDto tpmCryptoResponseDto = new TpmCryptoResponseDto();
 		tpmCryptoResponseDto.setValue("testsetestsetset");
-		when(machineRespository.getRegistrationCenterMachineWithKeyIndex(Mockito.anyString())).thenReturn(queryResult);
+		when(machineRespository.getRegistrationCenterMachineWithKeyIndexWithoutStatusCheck(Mockito.anyString())).thenReturn(queryResult);
 		when(userDetailsRepository.findByUsersByRegCenterId(Mockito.anyString())).thenReturn(registrationCenterUsers);
 		when(machineRespository.findByMachineIdAndIsActive(Mockito.anyString())).thenReturn(machines);
 		when(clientCryptoManagerService.csEncrypt(Mockito.any())).thenReturn(tpmCryptoResponseDto);
