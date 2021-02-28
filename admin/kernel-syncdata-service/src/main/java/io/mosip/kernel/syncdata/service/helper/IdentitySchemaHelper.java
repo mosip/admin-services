@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import io.mosip.kernel.core.util.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,9 +57,9 @@ public class IdentitySchemaHelper {
 	@Autowired
 	private SyncMasterDataServiceHelper serviceHelper;
 	
-	public void fillRetrievedData(final List<SyncDataBaseDto> list, String publicKey)
+	public void fillRetrievedData(final List<SyncDataBaseDto> list, String publicKey, LocalDateTime lastUpdated)
 			throws InterruptedException, ExecutionException {
-		List<DynamicFieldDto> fields = getAllDynamicFields();
+		List<DynamicFieldDto> fields = getAllDynamicFields(lastUpdated);
 				
 		Map<String, List<DynamicFieldDto>> data = new HashMap<String, List<DynamicFieldDto>>();
 		for(DynamicFieldDto dto : fields) {
@@ -99,9 +100,10 @@ public class IdentitySchemaHelper {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<DynamicFieldDto> getAllDynamicFields() {
+	public List<DynamicFieldDto> getAllDynamicFields(LocalDateTime lastUpdated) {
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(dynamicfieldUrl);
+			if(lastUpdated != null) {	builder.queryParam("lastUpdated", DateUtils.formatToISOString(lastUpdated)); }
 			ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().toUri(), String.class);
 						
 			objectMapper.registerModule(new JavaTimeModule());

@@ -27,4 +27,7 @@ public class RegistrationCenterMachineDto extends BaseDto {
 	@Size(min = 1, max = 36)
 	private String machineId;
 
+	@NotNull
+	private String publicKey;
+
 }

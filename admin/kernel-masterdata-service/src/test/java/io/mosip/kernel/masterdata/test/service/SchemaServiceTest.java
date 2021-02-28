@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.test.service;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -132,15 +133,17 @@ public class SchemaServiceTest {
 	@Test
 	@WithUserDetails("reg-officer")
 	public void testFetchAllDynamicFields() throws Exception {		
-		Mockito.when(dynamicFieldRepository.findAllDynamicFields(pageRequest)).thenReturn(fieldPagedResult);		
-		dynamicFieldService.getAllDynamicField(0, 10, "cr_dtimes", "desc", null);
+		Mockito.when(dynamicFieldRepository.findAllDynamicFields(pageRequest)).thenReturn(fieldPagedResult);
+		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
+		dynamicFieldService.getAllDynamicField(0, 10, "cr_dtimes", "desc", null, null, currentTimeStamp);
 	}
 	
 	@Test
 	@WithUserDetails("reg-officer")
 	public void testFetchAllDynamicFieldsByLangCode() throws Exception {		
-		Mockito.when(dynamicFieldRepository.findAllDynamicFieldsByLangCode("eng", pageRequest)).thenReturn(fieldPagedResult);		
-		dynamicFieldService.getAllDynamicField(0, 10, "cr_dtimes", "desc", "eng");
+		Mockito.when(dynamicFieldRepository.findAllDynamicFieldsByLangCode("eng", pageRequest)).thenReturn(fieldPagedResult);
+		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
+		dynamicFieldService.getAllDynamicField(0, 10, "cr_dtimes", "desc", "eng", null, currentTimeStamp);
 	}
 	
 	@Test

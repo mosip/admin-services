@@ -24,15 +24,17 @@ public class TemplateDataHelper {
 	CompletableFuture<List<TemplateTypeDto>> templateTypes = null;
 
 	private String publicKey;
+	private String moduleId;
 	
-	public TemplateDataHelper( LocalDateTime lastUpdated, LocalDateTime currentTimestamp, String publicKey) {
+	public TemplateDataHelper( LocalDateTime lastUpdated, LocalDateTime currentTimestamp, String publicKey, String moduleId) {
 		this.lastUpdated = lastUpdated;
 		this.currentTimestamp = currentTimestamp;
 		this.publicKey = publicKey;
+		this.moduleId = moduleId;
 	}
 	
 	public void retrieveData(final SyncMasterDataServiceHelper serviceHelper, final List<CompletableFuture> futures) {
-		this.templates = serviceHelper.getTemplates(this.lastUpdated, this.currentTimestamp);
+		this.templates = serviceHelper.getTemplates(this.moduleId, this.lastUpdated, this.currentTimestamp);
 		this.templateFileFormats = serviceHelper.getTemplateFileFormats(this.lastUpdated, this.currentTimestamp);
 		this.templateTypes = serviceHelper.getTemplateTypes(this.lastUpdated, this.currentTimestamp);	
 		
