@@ -5,6 +5,8 @@ import io.mosip.kernel.masterdata.dto.DynamicFieldValueDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 
+import java.time.LocalDateTime;
+
 /**
  * Methods to create / update / inactivate / addValues dynamic field
  * 
@@ -22,7 +24,8 @@ public interface DynamicFieldService {
 	 * @param langCode
 	 * @return
 	 */
-	public PageDto<DynamicFieldResponseDto> getAllDynamicField(int pageNumber, int pageSize, String sortBy, String orderBy, String langCode);
+	public PageDto<DynamicFieldResponseDto> getAllDynamicField(int pageNumber, int pageSize, String sortBy, String orderBy, String langCode,
+															   LocalDateTime lastUpdated, LocalDateTime currentTimestamp);
 	
 	/**
 	 * create dynamic field

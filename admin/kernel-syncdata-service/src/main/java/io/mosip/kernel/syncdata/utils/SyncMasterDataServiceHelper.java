@@ -496,7 +496,7 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link TemplateDto}
 	 */
 	@Async
-	public CompletableFuture<List<TemplateDto>> getTemplates(LocalDateTime lastUpdated,
+	public CompletableFuture<List<TemplateDto>> getTemplates(String moduleId, LocalDateTime lastUpdated,
 			LocalDateTime currentTimeStamp) {
 		List<TemplateDto> templates = null;
 		List<Template> templateList = null;
@@ -505,7 +505,7 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			templateList = templateRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+			templateList = templateRepository.findAllLatestCreatedUpdateDeletedByModule(lastUpdated, currentTimeStamp, moduleId);
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
@@ -1874,7 +1874,7 @@ public class SyncMasterDataServiceHelper {
 	public RegistrationCenterMachineDto getRegistrationCenterMachine(String registrationCenterId, String keyIndex) throws SyncDataServiceException {
 		try {
 
-			List<Object[]> regCenterMachines = machineRepository.getRegistrationCenterMachineWithKeyIndex(keyIndex);
+			List<Object[]> regCenterMachines = machineRepository.getRegistrationCenterMachineWithKeyIndexWithoutStatusCheck(keyIndex);
 
 			if (regCenterMachines.isEmpty()) {
 				throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
@@ -1891,7 +1891,8 @@ public class SyncMasterDataServiceHelper {
 				throw new RequestException(MasterDataErrorCode.REG_CENTER_UPDATED.getErrorCode(),
 						MasterDataErrorCode.REG_CENTER_UPDATED.getErrorMessage());
 
-			return new RegistrationCenterMachineDto(mappedRegCenterId, (String)((Object[])regCenterMachines.get(0))[1]);
+			return new RegistrationCenterMachineDto(mappedRegCenterId, (String)((Object[])regCenterMachines.get(0))[1],
+					 (String)((Object[])regCenterMachines.get(0))[2]);
 
 
 		} catch (DataAccessException | DataAccessLayerException e) {
