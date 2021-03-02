@@ -182,13 +182,14 @@ public class SyncAuthTokenServiceImpl {
         Header jwtheader = jwtParser.parseHeader(new String(header));
 
         if(Objects.nonNull(jwtheader.getKeyId())) {
-            List<Machine> machines = machineRepository.findBySignKeyIndexAndIsActive(jwtheader.getKeyId());
+            List<Machine> machines = machineRepository.findBySignKeyIndex(jwtheader.getKeyId());
 
             if(Objects.isNull(machines) || machines.isEmpty())
                 throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
                         MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
 
             try {
+                logger.info("validateRequestData for machine : {} with status : {}", machines.get(0).getId(), machines.get(0).getIsActive());
                 boolean verified = clientCryptoFacade.validateSignature(CryptoUtil.decodeBase64(machines.get(0).getSignPublicKey()),
                         signature, payload);
                 logger.info("validateRequestData verified : {}", verified);

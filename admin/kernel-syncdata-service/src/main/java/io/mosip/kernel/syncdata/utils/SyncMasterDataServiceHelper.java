@@ -1823,13 +1823,12 @@ public class SyncMasterDataServiceHelper {
 		return CompletableFuture.completedFuture(deviceSubTypeDPMDtos);
 	}
 
-	public SyncDataBaseDto getSyncDataBaseDto(Class entityClass, String entityType, List entities, String publicKey) {
-		return getSyncDataBaseDto(entityClass.getSimpleName(), entityType, entities, publicKey);
+	public void getSyncDataBaseDto(Class entityClass, String entityType, List entities, String publicKey, List result) {
+		getSyncDataBaseDto(entityClass.getSimpleName(), entityType, entities, publicKey, result);
 	}
 
 	@SuppressWarnings("unchecked")
-	public SyncDataBaseDto getSyncDataBaseDto(String entityName, String entityType, List entities, String publicKey) {
-		String data = null;
+	public void getSyncDataBaseDto(String entityName, String entityType, List entities, String publicKey, List result) {
 		if(null != entities) {
 			List<String> list = Collections.synchronizedList(new ArrayList<String>());
 			entities.parallelStream().filter(Objects::nonNull).forEach(obj -> {
@@ -1850,13 +1849,12 @@ public class SyncMasterDataServiceHelper {
 					tpmCryptoRequestDto.setPublicKey(publicKey);
 					tpmCryptoRequestDto.setTpm(this.isTPMRequired);
 					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
-					data = tpmCryptoResponseDto.getValue();
+					result.add(new SyncDataBaseDto(entityName, entityType, tpmCryptoResponseDto.getValue()));
 				}
 			} catch (Exception e) {
 				logger.error("Failed to encrypt "+ entityName +" data to json", e);
 			}
 		}
-		return new SyncDataBaseDto(entityName, entityType, data);
 	}
 
 	/**

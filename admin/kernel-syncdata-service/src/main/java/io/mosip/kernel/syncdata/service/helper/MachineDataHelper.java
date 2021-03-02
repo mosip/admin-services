@@ -45,7 +45,7 @@ public class MachineDataHelper {
 	
 	public void fillRetrievedData(final SyncMasterDataServiceHelper serviceHelper, final List<SyncDataBaseDto> list) 
 			throws InterruptedException, ExecutionException {
-		list.add(serviceHelper.getSyncDataBaseDto(Machine.class, "structured", this.machineDetails.get(), this.publicKey));
+		serviceHelper.getSyncDataBaseDto(Machine.class, "structured", this.machineDetails.get(), this.publicKey, list);
 		//list.add(serviceHelper.getSyncDataBaseDto(MachineSpecification.class, "structured", this.machineSpecification.get(), this.publicKey));
 		//list.add(serviceHelper.getSyncDataBaseDto(MachineType.class, "structured", this.machineType.get(), this.publicKey));
 	}
