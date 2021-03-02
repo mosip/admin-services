@@ -95,6 +95,12 @@ public interface MachineRepository extends JpaRepository<Machine, String> {
 	@Query("From Machine m WHERE lower(m.signKeyIndex) = lower(?1) and (m.isDeleted is null or m.isDeleted =false) and m.isActive = true")
 	List<Machine> findBySignKeyIndexAndIsActive(String signKeyIndex);
 
+	@Query("From Machine m WHERE lower(m.signKeyIndex) = lower(?1) and (m.isDeleted is null or m.isDeleted =false)")
+	List<Machine> findBySignKeyIndex(String signKeyIndex);
+
 	@Query(value = "select distinct mm.regcntr_id , mm.id, mm.public_key from  master.machine_master mm where lower(mm.key_index) = lower(?1)", nativeQuery = true)
 	List<Object[]> getRegistrationCenterMachineWithKeyIndexWithoutStatusCheck(String keyIndex);
+
+	@Query("From Machine m WHERE lower(m.name) = lower(?1)  and (m.isDeleted is null or m.isDeleted =false)")
+	List<Machine> findByMachineName(String machineName);
 }

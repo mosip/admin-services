@@ -53,8 +53,8 @@ public class ApplicationDataHelper {
 	public void fillRetrievedData(final SyncMasterDataServiceHelper serviceHelper, final List<SyncDataBaseDto> list) 
 			throws InterruptedException, ExecutionException {
 		//list.add(serviceHelper.getSyncDataBaseDto(Application.class, "structured", this.applications.get(), this.publicKey));
-		list.add(serviceHelper.getSyncDataBaseDto(AppAuthenticationMethod.class, "structured", this.appAuthenticationMethods.get(), this.publicKey));
+		serviceHelper.getSyncDataBaseDto(AppAuthenticationMethod.class, "structured", this.appAuthenticationMethods.get(), this.publicKey, list);
 		//list.add(serviceHelper.getSyncDataBaseDto(AppDetail.class, "structured", this.appDetails.get(), this.publicKey));
-		list.add(serviceHelper.getSyncDataBaseDto(AppRolePriority.class, "structured", this.appRolePriorities.get(), this.publicKey));
+		serviceHelper.getSyncDataBaseDto(AppRolePriority.class, "structured", this.appRolePriorities.get(), this.publicKey, list);
 	}
 }

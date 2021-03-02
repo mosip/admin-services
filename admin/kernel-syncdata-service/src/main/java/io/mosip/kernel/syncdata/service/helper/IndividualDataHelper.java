@@ -82,9 +82,9 @@ public class IndividualDataHelper {
 		list.add(serviceHelper.getSyncDataBaseDto(Language.class, "structured", this.languages.get(), this.publicKey));
 		list.add(serviceHelper.getSyncDataBaseDto(Gender.class, "structured", this.genders.get(), this.publicKey));
 		list.add(serviceHelper.getSyncDataBaseDto(IdType.class, "structured", this.idTypes.get(), this.publicKey));*/
-		list.add(serviceHelper.getSyncDataBaseDto(Location.class, "structured", this.locationHierarchy.get(), this.publicKey));
-		list.add(serviceHelper.getSyncDataBaseDto(ReasonCategory.class, "structured", this.reasonCategory.get(), this.publicKey));
-		list.add(serviceHelper.getSyncDataBaseDto(ReasonList.class, "structured",this.reasonList.get(), this.publicKey));
+		serviceHelper.getSyncDataBaseDto(Location.class, "structured", this.locationHierarchy.get(), this.publicKey, list);
+		serviceHelper.getSyncDataBaseDto(ReasonCategory.class, "structured", this.reasonCategory.get(), this.publicKey, list);
+		serviceHelper.getSyncDataBaseDto(ReasonList.class, "structured",this.reasonList.get(), this.publicKey,list);
 		/*list.add(serviceHelper.getSyncDataBaseDto(IndividualType.class, "structured", this.individualTypeList.get(), this.publicKey));
 		list.add(serviceHelper.getSyncDataBaseDto(BiometricType.class, "structured", this.biometricTypes.get(), this.publicKey));
 		list.add(serviceHelper.getSyncDataBaseDto(BiometricAttribute.class, "structured", this.biometricAttributes.get(), this.publicKey));*/

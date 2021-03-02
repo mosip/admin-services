@@ -72,8 +72,8 @@ public class IdentitySchemaHelper {
 				data.get(dto.getName()).add(dto);			
 		}	
 		
-		for(String key : data.keySet()) {			
-			list.add(serviceHelper.getSyncDataBaseDto(key, "dynamic", data.get(key), publicKey));
+		for(String key : data.keySet()) {
+			serviceHelper.getSyncDataBaseDto(key, "dynamic", data.get(key), publicKey, list);
 		}
 	}
 	

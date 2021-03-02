@@ -258,14 +258,15 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
 	@Override
 	public ConfigDto getConfigDetails(String machineName) {
-		LOGGER.info("getConfigDetails() started for machine id >>> {}", machineName);
+		LOGGER.debug("getConfigDetails() started for machine id >>> {}", machineName);
 
 		//TODO - need to invoke masterdata API ?
-		List<Machine> machines = machineRepo.findByMachineNameAndIsActive(machineName);
+		List<Machine> machines = machineRepo.findByMachineName(machineName);
 		if(machines == null || machines.isEmpty())
 			throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
 					MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
 
+		LOGGER.info("getConfigDetails() started for machine : {} with status {}", machineName,  machines.get(0).getIsActive());
 		JSONObject config = new JSONObject();
 		JSONObject globalConfig = getConfigDetailsResponse(globalConfigFileName);
 		JSONObject regConfig = getConfigDetailsResponse(regCenterfileName);
