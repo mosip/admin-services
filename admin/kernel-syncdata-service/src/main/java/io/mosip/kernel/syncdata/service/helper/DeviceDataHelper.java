@@ -55,8 +55,8 @@ public class DeviceDataHelper {
 	
 	public void fillRetrievedData(final SyncMasterDataServiceHelper serviceHelper, final List<SyncDataBaseDto> list) 
 			throws InterruptedException, ExecutionException {
-		list.add(serviceHelper.getSyncDataBaseDto(Device.class, "structured", this.devices.get(), this.publicKey));
-		list.add(serviceHelper.getSyncDataBaseDto(DeviceSpecification.class, "structured", this.deviceSpecifications.get(), this.publicKey));
-		list.add(serviceHelper.getSyncDataBaseDto(DeviceType.class, "structured", this.deviceTypes.get(), this.publicKey));
+		serviceHelper.getSyncDataBaseDto(Device.class, "structured", this.devices.get(), this.publicKey, list);
+		serviceHelper.getSyncDataBaseDto(DeviceSpecification.class, "structured", this.deviceSpecifications.get(), this.publicKey, list);
+		serviceHelper.getSyncDataBaseDto(DeviceType.class, "structured", this.deviceTypes.get(), this.publicKey,list);
 	}
 }

@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.controller;
 
 import javax.validation.Valid;
 
+import io.mosip.kernel.masterdata.utils.LocalDateTimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 @RestController
 @RequestMapping(value = "/dynamicfields")
 @Api(tags = { "Dynamic Field" })
@@ -32,6 +36,9 @@ public class DynamicFieldController {
 	
 	@Autowired
 	private DynamicFieldService dynamicFieldService;
+
+	@Autowired
+	LocalDateTimeUtil localDateTimeUtil;
 	
 	@ResponseFilter
 	@GetMapping
@@ -42,9 +49,13 @@ public class DynamicFieldController {
 			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size", defaultValue = "10") int pageSize,
 			@RequestParam(name = "sortBy", defaultValue = "cr_dtimes") @ApiParam(value = "sort on field name", defaultValue = "cr_dtimes") String sortBy,
 			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "sort order", defaultValue = "desc") OrderEnum orderBy,
-			@RequestParam(name = "langCode", required = false) @ApiParam(value = "Lang Code", required = false) String langCode) {
+			@RequestParam(name = "langCode", required = false) @ApiParam(value = "Lang Code", required = false) String langCode,
+			@RequestParam(name = "lastUpdated", required = false) @ApiParam(value = "last updated rows", required = false) String lastUpdated) {
 		ResponseWrapper<PageDto<DynamicFieldResponseDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(dynamicFieldService.getAllDynamicField(pageNumber, pageSize, sortBy, orderBy.name(), langCode));
+		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
+		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
+		responseWrapper.setResponse(dynamicFieldService.getAllDynamicField(pageNumber, pageSize, sortBy, orderBy.name(), langCode,
+				timestamp, currentTimeStamp));
 		return responseWrapper;
 	}
 	

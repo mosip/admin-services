@@ -56,10 +56,10 @@ public class HistoryDataHelper {
 	
 	public void fillRetrievedData(final SyncMasterDataServiceHelper serviceHelper, final List<SyncDataBaseDto> list) 
 			throws InterruptedException, ExecutionException {
-		list.add(serviceHelper.getSyncDataBaseDto(RegistrationCenterUserHistory.class, "structured", this.registrationCenterUserHistoryList.get(), this.publicKey));
+		/*list.add(serviceHelper.getSyncDataBaseDto(RegistrationCenterUserHistory.class, "structured", this.registrationCenterUserHistoryList.get(), this.publicKey));
 		list.add(serviceHelper.getSyncDataBaseDto(RegistrationCenterUserMachineHistory.class, "structured", this.registrationCenterUserMachineMappingHistoryList.get(), this.publicKey));
 		list.add(serviceHelper.getSyncDataBaseDto(RegistrationCenterMachineDeviceHistory.class, "structured", this.registrationCenterMachineDeviceHistoryList.get(), this.publicKey));
 		list.add(serviceHelper.getSyncDataBaseDto(RegistrationCenterDeviceHistory.class, "structured", this.registrationCenterDeviceHistoryList.get(), this.publicKey));
 		list.add(serviceHelper.getSyncDataBaseDto(RegistrationCenterMachineHistory.class, "structured", this.registrationCenterMachineHistoryList.get(), this.publicKey));
-	}
+*/	}
 }

@@ -24,15 +24,17 @@ public class TemplateDataHelper {
 	CompletableFuture<List<TemplateTypeDto>> templateTypes = null;
 
 	private String publicKey;
+	private String moduleId;
 	
-	public TemplateDataHelper( LocalDateTime lastUpdated, LocalDateTime currentTimestamp, String publicKey) {
+	public TemplateDataHelper( LocalDateTime lastUpdated, LocalDateTime currentTimestamp, String publicKey, String moduleId) {
 		this.lastUpdated = lastUpdated;
 		this.currentTimestamp = currentTimestamp;
 		this.publicKey = publicKey;
+		this.moduleId = moduleId;
 	}
 	
 	public void retrieveData(final SyncMasterDataServiceHelper serviceHelper, final List<CompletableFuture> futures) {
-		this.templates = serviceHelper.getTemplates(this.lastUpdated, this.currentTimestamp);
+		this.templates = serviceHelper.getTemplates(this.moduleId, this.lastUpdated, this.currentTimestamp);
 		this.templateFileFormats = serviceHelper.getTemplateFileFormats(this.lastUpdated, this.currentTimestamp);
 		this.templateTypes = serviceHelper.getTemplateTypes(this.lastUpdated, this.currentTimestamp);	
 		
@@ -43,8 +45,8 @@ public class TemplateDataHelper {
 	
 	public void fillRetrievedData(final SyncMasterDataServiceHelper serviceHelper, final List<SyncDataBaseDto> list) 
 			throws InterruptedException, ExecutionException {
-		list.add(serviceHelper.getSyncDataBaseDto(Template.class, "structured", this.templates.get(), this.publicKey));
-		list.add(serviceHelper.getSyncDataBaseDto(TemplateFileFormat.class, "structured", this.templateFileFormats.get(), this.publicKey));
-		list.add(serviceHelper.getSyncDataBaseDto(TemplateType.class, "structured", this.templateTypes.get(), this.publicKey));
+		serviceHelper.getSyncDataBaseDto(Template.class, "structured", this.templates.get(), this.publicKey,list);
+		serviceHelper.getSyncDataBaseDto(TemplateFileFormat.class, "structured", this.templateFileFormats.get(), this.publicKey,list);
+		serviceHelper.getSyncDataBaseDto(TemplateType.class, "structured", this.templateTypes.get(), this.publicKey,list);
 	}
 }

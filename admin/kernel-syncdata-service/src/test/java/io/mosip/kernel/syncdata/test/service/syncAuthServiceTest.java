@@ -128,7 +128,7 @@ public class syncAuthServiceTest {
 
     @Test
     public void validTokenCase() throws JsonProcessingException {
-        when(machineRepository.findBySignKeyIndexAndIsActive(Mockito.anyString())).thenReturn(machines);
+        when(machineRepository.findBySignKeyIndex(Mockito.anyString())).thenReturn(machines);
         when(clientCryptoFacade.validateSignature(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(true);
 
         MachineAuthDto machineAuthDto = new MachineAuthDto();
@@ -151,7 +151,7 @@ public class syncAuthServiceTest {
 
     @Test
     public void validRefreshTokenCase() throws JsonProcessingException {
-        when(machineRepository.findBySignKeyIndexAndIsActive(Mockito.anyString())).thenReturn(machines);
+        when(machineRepository.findBySignKeyIndex(Mockito.anyString())).thenReturn(machines);
         when(clientCryptoFacade.validateSignature(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(true);
 
         MachineAuthDto machineAuthDto = new MachineAuthDto();
@@ -174,7 +174,7 @@ public class syncAuthServiceTest {
 
     @Test
     public void validateOtpCase() throws JsonProcessingException {
-        when(machineRepository.findBySignKeyIndexAndIsActive(Mockito.anyString())).thenReturn(machines);
+        when(machineRepository.findBySignKeyIndex(Mockito.anyString())).thenReturn(machines);
         when(clientCryptoFacade.validateSignature(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(true);
 
         MachineAuthDto machineAuthDto = new MachineAuthDto();
@@ -197,7 +197,7 @@ public class syncAuthServiceTest {
 
     @Test(expected = RequestException.class)
     public void requestWithOldReqTimestamp() throws JsonProcessingException {
-        when(machineRepository.findBySignKeyIndexAndIsActive(Mockito.anyString())).thenReturn(machines);
+        when(machineRepository.findBySignKeyIndex(Mockito.anyString())).thenReturn(machines);
         when(clientCryptoFacade.validateSignature(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(true);
 
         MachineAuthDto machineAuthDto = new MachineAuthDto();
@@ -219,7 +219,7 @@ public class syncAuthServiceTest {
 
     @Test(expected = RequestException.class)
     public void requestWithFutureReqTimestamp() throws JsonProcessingException {
-        when(machineRepository.findBySignKeyIndexAndIsActive(Mockito.anyString())).thenReturn(machines);
+        when(machineRepository.findBySignKeyIndex(Mockito.anyString())).thenReturn(machines);
         when(clientCryptoFacade.validateSignature(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(true);
 
         MachineAuthDto machineAuthDto = new MachineAuthDto();
@@ -241,7 +241,7 @@ public class syncAuthServiceTest {
 
     @Test(expected = RequestException.class)
     public void requestWithInvalidKeyIndex() throws JsonProcessingException {
-        when(machineRepository.findBySignKeyIndexAndIsActive(Mockito.anyString())).thenReturn(machines);
+        when(machineRepository.findBySignKeyIndex(Mockito.anyString())).thenReturn(machines);
         when(clientCryptoFacade.validateSignature(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(true);
 
         MachineAuthDto machineAuthDto = new MachineAuthDto();
@@ -263,7 +263,7 @@ public class syncAuthServiceTest {
 
     @Test(expected = RequestException.class)
     public void requestWithInvalidSignature() throws JsonProcessingException {
-        when(machineRepository.findBySignKeyIndexAndIsActive(Mockito.anyString())).thenReturn(machines);
+        when(machineRepository.findBySignKeyIndex(Mockito.anyString())).thenReturn(machines);
         when(clientCryptoFacade.validateSignature(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(false);
 
         MachineAuthDto machineAuthDto = new MachineAuthDto();
@@ -283,7 +283,7 @@ public class syncAuthServiceTest {
 
     @Test
     public void validOtpReqCase() throws JsonProcessingException {
-        when(machineRepository.findBySignKeyIndexAndIsActive(Mockito.anyString())).thenReturn(machines);
+        when(machineRepository.findBySignKeyIndex(Mockito.anyString())).thenReturn(machines);
         when(clientCryptoFacade.validateSignature(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(true);
 
         MachineOtpDto machineOtpDto = new MachineOtpDto();
@@ -308,7 +308,7 @@ public class syncAuthServiceTest {
 
     @Test
     public void validReqValidReqTimeCase() throws JsonProcessingException {
-        when(machineRepository.findBySignKeyIndexAndIsActive(Mockito.anyString())).thenReturn(machines);
+        when(machineRepository.findBySignKeyIndex(Mockito.anyString())).thenReturn(machines);
         when(clientCryptoFacade.validateSignature(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(true);
 
         MachineAuthDto machineAuthDto = new MachineAuthDto();
@@ -330,7 +330,7 @@ public class syncAuthServiceTest {
 
     @Test(expected = RequestException.class)
     public void validOtpReqInvalidReqTimeCase() throws JsonProcessingException {
-        when(machineRepository.findBySignKeyIndexAndIsActive(Mockito.anyString())).thenReturn(machines);
+        when(machineRepository.findBySignKeyIndex(Mockito.anyString())).thenReturn(machines);
         when(clientCryptoFacade.validateSignature(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(true);
 
         MachineOtpDto machineOtpDto = new MachineOtpDto();

@@ -31,4 +31,6 @@ public interface AppDetailRepository extends JpaRepository<AppDetail, IdAndLangu
 	List<AppDetail> findByLastUpdatedTimeAndCurrentTimeStamp(LocalDateTime lastTimeUpdate,
 			LocalDateTime currentTimeStamp);
 
+
+	AppDetail findByNameAndLangCode(String name, String langCode);
 }

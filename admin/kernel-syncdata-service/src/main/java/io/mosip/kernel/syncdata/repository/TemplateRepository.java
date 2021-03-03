@@ -27,4 +27,7 @@ public interface TemplateRepository extends JpaRepository<Template, String> {
 	 */
 	@Query("FROM Template WHERE (createdDateTime BETWEEN ?1 AND ?2) OR (updatedDateTime BETWEEN ?1 AND ?2)  OR (deletedDateTime BETWEEN ?1 AND ?2)")
 	List<Template> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp);
+
+	@Query("FROM Template WHERE moduleId=?3 AND ((createdDateTime BETWEEN ?1 AND ?2) OR (updatedDateTime BETWEEN ?1 AND ?2)  OR (deletedDateTime BETWEEN ?1 AND ?2))")
+	List<Template> findAllLatestCreatedUpdateDeletedByModule(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp, String moduleId);
 }
