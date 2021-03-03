@@ -68,14 +68,11 @@ public class MiscellaneousDataHelper {
 	
 	public void fillRetrievedData(final SyncMasterDataServiceHelper serviceHelper, final List<SyncDataBaseDto> list) 
 			throws InterruptedException, ExecutionException {
-		list.add(serviceHelper.getSyncDataBaseDto(Holiday.class, "structured", this.holidays.get(), this.publicKey));
-		list.add(serviceHelper.getSyncDataBaseDto(BlacklistedWords.class, "structured", this.blacklistedWords.get(), this.publicKey));
-		
-		list.add(serviceHelper.getSyncDataBaseDto(ScreenAuthorization.class, "structured", this.screenAuthorizations.get(), this.publicKey));
-		list.add(serviceHelper.getSyncDataBaseDto(ScreenDetail.class, "structured", this.screenDetails.get(), this.publicKey));
-		
-		list.add(serviceHelper.getSyncDataBaseDto(ProcessList.class, "structured", this.processList.get(), this.publicKey));
-
-		list.add(serviceHelper.getSyncDataBaseDto(SyncJobDef.class, "structured", this.syncJobDefDtos.get(), this.publicKey));
+		serviceHelper.getSyncDataBaseDto(Holiday.class, "structured", this.holidays.get(), this.publicKey, list);
+		serviceHelper.getSyncDataBaseDto(BlacklistedWords.class, "structured", this.blacklistedWords.get(), this.publicKey,list);
+		serviceHelper.getSyncDataBaseDto(ScreenAuthorization.class, "structured", this.screenAuthorizations.get(), this.publicKey,list);
+		serviceHelper.getSyncDataBaseDto(ScreenDetail.class, "structured", this.screenDetails.get(), this.publicKey,list);
+		serviceHelper.getSyncDataBaseDto(ProcessList.class, "structured", this.processList.get(), this.publicKey, list);
+		serviceHelper.getSyncDataBaseDto(SyncJobDef.class, "structured", this.syncJobDefDtos.get(), this.publicKey, list);
 	}
 }

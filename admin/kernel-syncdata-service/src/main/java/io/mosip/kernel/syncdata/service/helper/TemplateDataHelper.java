@@ -45,8 +45,8 @@ public class TemplateDataHelper {
 	
 	public void fillRetrievedData(final SyncMasterDataServiceHelper serviceHelper, final List<SyncDataBaseDto> list) 
 			throws InterruptedException, ExecutionException {
-		list.add(serviceHelper.getSyncDataBaseDto(Template.class, "structured", this.templates.get(), this.publicKey));
-		list.add(serviceHelper.getSyncDataBaseDto(TemplateFileFormat.class, "structured", this.templateFileFormats.get(), this.publicKey));
-		list.add(serviceHelper.getSyncDataBaseDto(TemplateType.class, "structured", this.templateTypes.get(), this.publicKey));
+		serviceHelper.getSyncDataBaseDto(Template.class, "structured", this.templates.get(), this.publicKey,list);
+		serviceHelper.getSyncDataBaseDto(TemplateFileFormat.class, "structured", this.templateFileFormats.get(), this.publicKey,list);
+		serviceHelper.getSyncDataBaseDto(TemplateType.class, "structured", this.templateTypes.get(), this.publicKey,list);
 	}
 }
