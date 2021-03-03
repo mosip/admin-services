@@ -767,17 +767,18 @@ public class SyncClientSettingsIntegrationTest {
 	}
 	
 		
-	private String syncDataUrl = "/clientsettings?lastupdated=2018-11-01T12:10:01.021Z&keyindex=abcd";	
+	private String syncDataUrl = "/clientsettings?lastUpdated=2018-11-01T12:10:01.021Z&keyindex=abcd";
 		
 	private String syncDataUrlWithoutInput = "/clientsettings";
-	private String syncDataUrlWithOnlyLastUpdated = "/clientsettings?lastupdated=2018-11-01T12:10:01.021Z";	
+	private String syncDataUrlWithOnlyLastUpdated = "/clientsettings?lastUpdated=2018-11-01T12:10:01.021Z";
 	private String syncDataUrlWithOnlyKeyIndex = "/clientsettings?keyindex=abcd";
 	
 	private String syncDataUrlRegCenterId = "/clientsettings/{regcenterId}";
 	private String syncDataUrlRegCenterIdWithKeyIndex = "/clientsettings/{regcenterId}?keyindex=abcd";
-	private String syncDataUrlRegCenterIdWithKeyIndexAndLastUpdated = "/clientsettings/{regcenterId}?keyindex=abcd&lastupdated=2018-11-01T12:10:01.021Z";	
+	private String syncDataUrlRegCenterIdWithKeyIndexAndLastUpdated = "/clientsettings/{regcenterId}?keyindex=abcd&lastUpdated=2018-11-01T12:10:01.021Z";
 	
-	private String syncDataUrlWithInvalidTimestamp = "/clientsettings?lastupdated=2018-15-01T123:101:01.021Z&keyindex=abcd";
+	private String syncDataUrlWithInvalidTimestamp = "/clientsettings?lastUpdated=2018-15-01T123:101:01.021Z&keyindex=abcd";
+	private String syncDataUrlWithKeyIndexAndRegCenterId = "/clientsettings?keyindex=abcd&regcenterId=1002";
 
 	
 
@@ -885,7 +886,7 @@ public class SyncClientSettingsIntegrationTest {
 		when(applicationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -900,7 +901,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(machineRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -915,7 +916,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(machineSpecificationRepository.findLatestByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -929,7 +930,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(machineTypeRepository.findLatestByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -943,7 +944,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(deviceRepository.findLatestDevicesByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -957,7 +958,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(deviceSpecificationRepository.findLatestDeviceTypeByRegCenterId(Mockito.anyString(), Mockito.any(),
 				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -971,7 +972,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(deviceTypeRepository.findLatestDeviceTypeByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -985,7 +986,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(templateRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -999,7 +1000,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(templateFileFormatRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1013,7 +1014,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(templateTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1027,7 +1028,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(holidayRepository.findAllLatestCreatedUpdateDeletedByMachineId(Mockito.anyString(), Mockito.any(),
 				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1041,7 +1042,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(biometricAttributeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1055,7 +1056,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(biometricTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1069,7 +1070,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(documentCategoryRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1083,7 +1084,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(documentTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1097,7 +1098,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(languageRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1111,7 +1112,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(genderTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1125,7 +1126,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(locationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1139,7 +1140,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(idTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1153,7 +1154,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(registrationCenterRepository.findLatestRegistrationCenterByMachineId(Mockito.anyString(), Mockito.any(),
 				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1167,7 +1168,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(registrationCenterTypeRepository.findLatestRegistrationCenterTypeByMachineId(Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1181,7 +1182,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(registrationCenterTypeRepository.findLatestRegistrationCenterTypeByMachineId(Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1195,7 +1196,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1209,7 +1210,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(reasonCategoryRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1223,7 +1224,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(reasonListRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1237,7 +1238,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(titleRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1251,7 +1252,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(validDocumentRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1265,7 +1266,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(machineRepository.findAllLatestCreatedUpdatedDeleted(Mockito.anyString(), Mockito.any(),
 				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1279,7 +1280,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(deviceRepository.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(
 				Mockito.anyString(), Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1294,7 +1295,7 @@ public class SyncClientSettingsIntegrationTest {
 		when(machineRepository
 				.findAllLatestCreatedUpdatedDeleted(Mockito.anyString(), Mockito.any(), Mockito.any()))
 						.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1309,7 +1310,7 @@ public class SyncClientSettingsIntegrationTest {
 		when(machineRepository
 				.findAllLatestCreatedUpdatedDeleted(Mockito.anyString(), Mockito.any(), Mockito.any()))
 						.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1323,7 +1324,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(userDetailsHistoryRepository.findLatestRegistrationCenterUserHistory(Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1337,7 +1338,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(userDetailsHistoryRepository.findLatestRegistrationCenterUserHistory(Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1352,7 +1353,7 @@ public class SyncClientSettingsIntegrationTest {
 		when(machineHistoryRepository
 				.findLatestRegistrationCenterMachineHistory(Mockito.anyString(), Mockito.any(), Mockito.any()))
 						.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1367,7 +1368,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(deviceProviderRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1382,7 +1383,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(deviceServiceRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1397,7 +1398,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(registeredDeviceRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any(),
 				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1412,7 +1413,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(foundationalTrustProviderRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1427,7 +1428,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(deviceTypeDPMRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1442,7 +1443,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(deviceSubTypeDPMRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1456,7 +1457,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(machineHistoryRepository.findLatestRegistrationCenterMachineHistory(Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1470,7 +1471,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(deviceHistoryRepository.findLatestRegistrationCenterDeviceHistory(Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1485,7 +1486,7 @@ public class SyncClientSettingsIntegrationTest {
 		when(machineHistoryRepository
 				.findLatestRegistrationCenterMachineHistory(Mockito.anyString(), Mockito.any(), Mockito.any()))
 						.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1500,7 +1501,7 @@ public class SyncClientSettingsIntegrationTest {
 		when(machineRepository.findByMachineIdAndIsActive(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1515,7 +1516,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(applicantValidDocumentRespository.findAllByTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1530,7 +1531,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(individualTypeRepository.findAllIndvidualTypeByTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1546,7 +1547,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(deviceRepository.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(
 				Mockito.anyString(), Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1563,7 +1564,7 @@ public class SyncClientSettingsIntegrationTest {
 		when(appAuthenticationMethodRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1591,7 +1592,7 @@ public class SyncClientSettingsIntegrationTest {
 		when(appDetailRepository.findByLastUpdatedTimeAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1607,7 +1608,7 @@ public class SyncClientSettingsIntegrationTest {
 		when(appRolePriorityRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1624,7 +1625,7 @@ public class SyncClientSettingsIntegrationTest {
 		when(screenAuthorizationRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1640,7 +1641,7 @@ public class SyncClientSettingsIntegrationTest {
 		when(processListRepository.findByLastUpdatedTimeAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1655,7 +1656,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(screenDetailRepo.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1688,7 +1689,7 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		when(machineRepository.getRegistrationCenterMachineWithKeyIndex(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1703,7 +1704,7 @@ public class SyncClientSettingsIntegrationTest {
 		when(machineRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any(), Mockito.any())).
 			thenThrow(RuntimeException.class);
 		
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isInternalServerError()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1716,21 +1717,23 @@ public class SyncClientSettingsIntegrationTest {
 	@WithUserDetails(value= "reg-officer")
 	public void syncClientSettingsForUpdatedRegCenterId() throws Exception {
 		mockSuccess();
-		String [] regcenterMachineId = {"1001", "230030"};
+		String [] regcenterMachineId = {"1001", "230030", "ewerwerwerer"};
 		List<Object[]> data = new ArrayList<Object[]>();
 		data.add(regcenterMachineId);
 		
-		when(machineRepository.getRegistrationCenterMachineWithKeyIndex(Mockito.anyString()))
+		when(machineRepository.getRegistrationCenterMachineWithKeyIndexWithoutStatusCheck(Mockito.anyString()))
 				.thenReturn(data);
 		
-		MvcResult result = mockMvc.perform(get(syncDataUrlRegCenterIdWithKeyIndex, "1002")).andExpect(status().isOk()).andReturn();
+		MvcResult result = mockMvc.perform(get(syncDataUrlWithKeyIndexAndRegCenterId)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
+			System.out.println("Response >>>> " + jsonObject);
 			JSONArray errors =  jsonObject.getJSONArray("errors");
 			assertNotNull(errors);
 			assertEquals(MasterDataErrorCode.REG_CENTER_UPDATED.getErrorCode(), errors.getJSONObject(0).getString("errorCode"));
 		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
+			Assert.fail("Not expected response!");
+		}
 	}
 
 }

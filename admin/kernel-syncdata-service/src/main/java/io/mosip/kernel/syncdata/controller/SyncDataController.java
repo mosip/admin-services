@@ -146,7 +146,8 @@ public class SyncDataController {
 	@GetMapping("/clientsettings")
 	public ResponseWrapper<SyncDataResponseDto> syncClientSettings(
 			@RequestParam(value = "keyindex", required = true) String keyIndex,
-			@RequestParam(value = "lastupdated", required = false) String lastUpdated)
+			@RequestParam(value = "lastUpdated", required = false) String lastUpdated,
+			@RequestParam(value = "regcenterId", required = false) String regCenterId)
 			throws InterruptedException, ExecutionException {
 
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
