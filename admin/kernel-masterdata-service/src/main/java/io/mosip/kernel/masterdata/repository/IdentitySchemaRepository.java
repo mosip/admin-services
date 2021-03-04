@@ -3,7 +3,6 @@ package io.mosip.kernel.masterdata.repository;
 import java.time.LocalDateTime;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -40,6 +39,14 @@ public interface IdentitySchemaRepository extends BaseRepository<IdentitySchema,
 	 */
 	@Query("FROM IdentitySchema WHERE idVersion=?1 AND isActive = true AND status='PUBLISHED'")
 	IdentitySchema findPublishedIdentitySchema(double ver);
+	
+	/**
+	 * Get published identity schema based on id
+	 * @param id
+	 * @return
+	 */
+	@Query("FROM IdentitySchema WHERE id=?1 AND isActive = true AND status='PUBLISHED'")
+	IdentitySchema findPublishedIdentitySchema(String id);
 	
 	/**
 	 * Get All Identity schema based on pagination
