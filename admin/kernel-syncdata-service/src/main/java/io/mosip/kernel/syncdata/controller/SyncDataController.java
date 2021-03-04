@@ -153,7 +153,7 @@ public class SyncDataController {
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		
-		SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettings(null, keyIndex,
+		SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettings(regCenterId, keyIndex,
 				timestamp, currentTimeStamp);
 
 		syncDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));

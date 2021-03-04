@@ -95,7 +95,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 			LocalDateTime lastUpdated, LocalDateTime currentTimestamp) 
 					throws InterruptedException, ExecutionException {
 
-		logger.info("syncClientSettings invoked for timespan from {} to {}", lastUpdated, currentTimestamp);
+		logger.info("syncClientSettings invoked for timespan from {} to {} for regcenter {}", lastUpdated, currentTimestamp, regCenterId);
 				
 		RegistrationCenterMachineDto regCenterMachineDto = serviceHelper.getRegistrationCenterMachine(regCenterId, keyIndex);
 		
