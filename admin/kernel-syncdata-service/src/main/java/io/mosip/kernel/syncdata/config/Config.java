@@ -20,21 +20,6 @@ import io.mosip.kernel.syncdata.httpfilter.ReqResFilter;
 @Configuration
 public class Config {
 
-	/**
-	 * Produce Request Logging bean
-	 * 
-	 * @return Request logging bean
-	 */
-	@Bean
-	public CommonsRequestLoggingFilter logFilter() {
-		CommonsRequestLoggingFilter filter = new CommonsRequestLoggingFilter();
-		filter.setIncludeQueryString(true);
-		filter.setIncludePayload(true);
-		filter.setMaxPayloadLength(10000);
-		filter.setIncludeHeaders(false);
-		filter.setAfterMessagePrefix("REQUEST DATA : ");
-		return filter;
-	}
 
 	@Bean
 	public FilterRegistrationBean<Filter> registerCORSFilterBean() {
@@ -49,17 +34,5 @@ public class Config {
 		return new CorsFilter();
 	}
 
-	@Bean
-	public FilterRegistrationBean<Filter> registerReqResFilter() {
-		FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
-		filterRegistrationBean.setFilter(getReqResFilter());
-		filterRegistrationBean.setOrder(2);
-		return filterRegistrationBean;
-	}
-
-	@Bean
-	public Filter getReqResFilter() {
-		return new ReqResFilter();
-	}
 
 }
