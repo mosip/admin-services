@@ -136,7 +136,7 @@ public class UISpecServiceImpl implements UISpecService {
 
 		UISpec uiSpecEntity = MetaDataUtils.setCreateMetaData(dto, UISpec.class);
 
-		uiSpecEntity.setIsActive(false);
+		uiSpecEntity.setIsActive(false);		
 		uiSpecEntity.setStatus(STATUS_DRAFT);
 		uiSpecEntity.setVersion(0);
 		uiSpecEntity.setJsonSpec(getIdAttributeJsonString(dto.getJsonspec()));
@@ -312,9 +312,9 @@ public class UISpecServiceImpl implements UISpecService {
 
 		UISpec uiSpecObjectFromDb = getUISpecById(id);
 		uiSpecObjectFromDb.setDomain(dto.getDomain());
-		uiSpecObjectFromDb.setDomain(dto.getTitle());
-		uiSpecObjectFromDb.setDomain(dto.getDescription());
-		uiSpecObjectFromDb.setDomain(dto.getIdentityschemaid());
+		uiSpecObjectFromDb.setTitle(dto.getTitle());
+		uiSpecObjectFromDb.setDescription(dto.getDescription());
+		uiSpecObjectFromDb.setIdentitySchemaId(dto.getIdentityschemaid());
 		uiSpecObjectFromDb.setJsonSpec(getIdAttributeJsonString(dto.getJsonspec()));
 		uiSpecObjectFromDb.setUpdatedBy(MetaDataUtils.getContextUser());
 		uiSpecObjectFromDb.setUpdatedDateTime(MetaDataUtils.getCurrentDateTime());
