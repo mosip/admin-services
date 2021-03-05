@@ -62,6 +62,9 @@ public class MasterdataCreationUtil {
 	@Value("${mosip.secondary-language:ara}")
 	private String secondaryLang;
 
+	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
+	private String supportedLang;
+
 	/**
 	 * Field for interface used to interact with the persistence context.
 	 */
@@ -148,18 +151,13 @@ public class MasterdataCreationUtil {
 	private <T, E> T callMethodBasedOnFilters(Class<E> entity, T t, String langCode, String id, String primaryId,
 			boolean activeDto, boolean activePrimary, String primaryKeyCol, Class<?> dtoClass, boolean priSecIdentical)
 			throws NoSuchFieldException, IllegalAccessException {
-		if (langCode.equals(primaryLang) || priSecIdentical) {
-
-			return primaryBehaviour(primaryKeyCol, dtoClass, entity, id, activeDto, t, priSecIdentical);
-
-		}
-		else if (langCode.equals(secondaryLang) && !priSecIdentical) {
-			return secondaryBehaviour(id, entity, primaryKeyCol, activePrimary, activeDto, dtoClass, t,
-					priSecIdentical);
+		if (supportedLang.contains(langCode.toLowerCase())) {
+			return t;
 		} else {
 			throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
 					String.format(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage(), langCode));
 		}
+
 	}
 
 	private String setPrimaryKeyColAndEntField(String primaryKeyCol, Field entField) {
