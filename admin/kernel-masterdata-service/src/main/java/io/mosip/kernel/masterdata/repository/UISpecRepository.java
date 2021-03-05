@@ -28,7 +28,7 @@ public interface UISpecRepository extends BaseRepository<UISpec, String>{
 	List<UISpec> findLatestPublishedUISpec(String domain);
 	
 	
-	@Query("FROM UISpec WHERE version = (select max(b.version) from UISpec b where "
+	@Query("FROM UISpec WHERE domain = ?1 AND type = ?2 AND isActive = true And status='PUBLISHED' and version = (select max(b.version) from UISpec b where "
 			+ "(b.isDeleted is null OR b.isDeleted = false) AND b.domain = ?1 AND b.type = ?2 AND b.isActive = true And b.status='PUBLISHED')")
 	UISpec findLatestPublishedUISpec(String domain, String type);
 	
