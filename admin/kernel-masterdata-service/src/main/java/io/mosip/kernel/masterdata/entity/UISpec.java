@@ -35,6 +35,9 @@ public class UISpec extends BaseEntity{
 	
 	@Column(name = "domain", nullable = false)
 	private String domain;
+
+	@Column(name = "type", nullable = false)
+	private String type;
 	
 	@Column(name = "title", nullable = false, length=50)
 	private String title;

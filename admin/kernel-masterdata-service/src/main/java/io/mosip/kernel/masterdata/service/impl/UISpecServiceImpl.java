@@ -6,10 +6,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -21,12 +18,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.UISpecErrorCode;
-import io.mosip.kernel.masterdata.dto.SchemaDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.entity.IdentitySchema;
 import io.mosip.kernel.masterdata.entity.UISpec;
@@ -36,6 +31,7 @@ import io.mosip.kernel.masterdata.repository.IdentitySchemaRepository;
 import io.mosip.kernel.masterdata.repository.UISpecRepository;
 import io.mosip.kernel.masterdata.service.UISpecService;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecDto;
+import io.mosip.kernel.masterdata.uispec.dto.UISpecKeyValuePair;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecPublishDto;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
@@ -51,10 +47,6 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 @Transactional
 public class UISpecServiceImpl implements UISpecService {
 
-	private static final String DOCUMENT_TYPE = "documentType";
-	private static final String BIOMETRICS_TYPE = "biometricsType";
-	private static final String NONE = "none";
-
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@Autowired
@@ -67,32 +59,47 @@ public class UISpecServiceImpl implements UISpecService {
 	 * 
 	 */
 	@Override
-	public UISpecResponseDto getLatestUISpec(String domain) {
-		UISpec uiSpecObjectFromDb = null;
+	public List<UISpecResponseDto> getLatestUISpec(String domain) {
+		List<UISpec> uiSpecObjectsFromDb = new ArrayList<UISpec>();
 		try {
-			uiSpecObjectFromDb = uiSpecRepository.findLatestPublishedUISpec(domain);
+			uiSpecObjectsFromDb = uiSpecRepository.findLatestPublishedUISpec(domain);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_FETCH_EXCEPTION.getErrorCode(),
 					UISpecErrorCode.UI_SPEC_FETCH_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
-		if (uiSpecObjectFromDb == null) {
+		if (uiSpecObjectsFromDb.isEmpty()) {
 			throw new DataNotFoundException(UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorCode(),
 					UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		return prepareResponse(uiSpecObjectFromDb);
+
+		return prepareResponse(uiSpecObjectsFromDb);
+	}
+
+	/**
+	 * 
+	 * @param specs
+	 * @return
+	 */
+	private List<UISpecResponseDto> prepareResponse(List<UISpec> specs) {
+		List<UISpecResponseDto> response = new ArrayList<>();
+		for (UISpec spec : specs) {
+			response.add(prepareResponse(spec));
+		}
+
+		return response;
 	}
 
 	/**
 	 * 
 	 */
 	@Override
-	public UISpecResponseDto getUISpec(double version, String domain) {
-		UISpec uiSpecFromDb = uiSpecRepository.findPublishedUISpec(version, domain);
-		if (uiSpecFromDb == null) {
+	public List<UISpecResponseDto> getUISpec(double version, String domain) {
+		List<UISpec> uiSpecsFromDb = uiSpecRepository.findPublishedUISpec(version, domain);
+		if (uiSpecsFromDb == null || uiSpecsFromDb.isEmpty()) {
 			throw new DataNotFoundException(UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorCode(),
 					UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		return prepareResponse(uiSpecFromDb);
+		return prepareResponse(uiSpecsFromDb);
 	}
 
 	/**
@@ -129,33 +136,52 @@ public class UISpecServiceImpl implements UISpecService {
 	 */
 	@Override
 	public UISpecResponseDto defineUISpec(UISpecDto dto) {
-		validateIdentityShema(dto.getIdentityschemaid());
-		validateDuplicateFields(dto.getJsonspec());
-		validateDocumentFields(dto.getJsonspec());
-		validateBiometricFields(dto.getJsonspec());
+		validateIdentityShema(dto.getIdentitySchemaId());
+		isJSONValid(dto.getJsonspec());
 
 		UISpec uiSpecEntity = MetaDataUtils.setCreateMetaData(dto, UISpec.class);
 
-		uiSpecEntity.setIsActive(false);		
+		uiSpecEntity.setIsActive(false);
+		uiSpecEntity.setIdentitySchemaId(dto.getIdentitySchemaId());
 		uiSpecEntity.setStatus(STATUS_DRAFT);
 		uiSpecEntity.setVersion(0);
-		uiSpecEntity.setJsonSpec(getIdAttributeJsonString(dto.getJsonspec()));
+		uiSpecEntity.setJsonSpec(dto.getJsonspec());
 		uiSpecEntity.setId(UUID.randomUUID().toString());
+		uiSpecEntity.setIsDeleted(false);
 		uiSpecEntity.setEffectiveFrom(LocalDateTime.now(ZoneId.of(ZoneOffset.UTC.getId())));
 		try {
 			uiSpecRepository.save(uiSpecEntity);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_INSERT_EXCEPTION.getErrorCode(),
-					ExceptionUtils.parseException(e));
+					UISpecErrorCode.UI_SPEC_INSERT_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
 		}
 		return prepareResponse(uiSpecEntity);
 	}
 
+	/**
+	 * 
+	 * @param jsonInString
+	 */
+	private void isJSONValid(String jsonInString) {
+		try {
+			objectMapper.readTree(jsonInString);
+		} catch (IOException e) {
+			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_VALUE_PARSE_ERROR.getErrorCode(),
+					UISpecErrorCode.UI_SPEC_VALUE_PARSE_ERROR.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
+		}
+	}
+
+	/**
+	 * 
+	 * @param id
+	 */
 	private void validateIdentityShema(String id) {
 		IdentitySchema schema = identitySchemaRepository.findPublishedIdentitySchema(id);
 		if (schema == null) {
-			throw new DataNotFoundException(UISpecErrorCode.UI_SPEC_SCHEMA_NOT_FOUND_EXCEPTION.getErrorCode(),
-					UISpecErrorCode.UI_SPEC_SCHEMA_NOT_FOUND_EXCEPTION.getErrorMessage());
+			throw new DataNotFoundException(UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorCode(),
+					UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
 	}
 
@@ -166,138 +192,22 @@ public class UISpecServiceImpl implements UISpecService {
 	 */
 	private UISpecResponseDto prepareResponse(UISpec entity) {
 		UISpecResponseDto response = new UISpecResponseDto();
-
+		List<UISpecKeyValuePair> spec = new ArrayList<UISpecKeyValuePair>();
 		response.setId(entity.getId());
 		response.setVersion(entity.getVersion());
 		response.setDomain(entity.getDomain());
 		response.setTitle(entity.getTitle());
 		response.setDescription(entity.getDescription());
 		response.setIdentitySchemaId(entity.getIdentitySchemaId());
-		response.setJsonSpec(convertJSONStringToSchemaDTO(entity.getJsonSpec()));
 		response.setStatus(entity.getStatus());
 		response.setCreatedBy(entity.getCreatedBy());
 		response.setCreatedOn(entity.getCreatedDateTime());
 		response.setUpdatedBy(entity.getUpdatedBy());
 		response.setUpdatedOn(entity.getUpdatedDateTime());
 		response.setEffectiveFrom(entity.getEffectiveFrom());
+		spec.add(new UISpecKeyValuePair(entity.getType(), entity.getJsonSpec()));
+		response.setJsonSpec(spec);
 		return response;
-	}
-
-	/**
-	 * 
-	 * @param jsonSpec
-	 * @return
-	 */
-	private List<SchemaDto> convertJSONStringToSchemaDTO(String jsonSpec) {
-		List<SchemaDto> listOfSchemaDto = new ArrayList<>();
-		try {
-			listOfSchemaDto = objectMapper.readValue(jsonSpec == null ? "[]" : jsonSpec,
-					new TypeReference<List<SchemaDto>>() {
-					});
-		} catch (IOException e) {
-			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_VALUE_PARSE_ERROR.getErrorCode(),
-					ExceptionUtils.parseException(e));
-		}
-		return listOfSchemaDto;
-	}
-
-	/**
-	 * 
-	 * @param jsonspec
-	 * @return
-	 */
-	private String getIdAttributeJsonString(List<SchemaDto> jsonspec) {
-		try {
-			return objectMapper.writeValueAsString(jsonspec);
-		} catch (IOException e) {
-			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_VALUE_PARSE_ERROR.getErrorCode(),
-					ExceptionUtils.parseException(e));
-		}
-	}
-
-	/**
-	 * 
-	 * @param jsonspec
-	 */
-	private void validateBiometricFields(List<SchemaDto> jsonspec) {
-		validateSubType(jsonspec, BIOMETRICS_TYPE);
-		List<SchemaDto> fields = jsonspec.stream().filter(obj -> BIOMETRICS_TYPE.equalsIgnoreCase(obj.getType()))
-				.collect(Collectors.toList());
-		if (fields != null) {
-			Map<String, List<SchemaDto>> fieldsGroupedBySubType = fields.stream()
-					.collect(Collectors.groupingBy(SchemaDto::getSubType)).entrySet().stream()
-					.filter(e -> e.getValue().size() > 1)
-					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-			if (fieldsGroupedBySubType != null) {
-				for (Entry<String, List<SchemaDto>> entry : fieldsGroupedBySubType.entrySet()) {
-					List<SchemaDto> listOfSpecs = entry.getValue();
-					if (entry.getKey() != null || NONE.equalsIgnoreCase(entry.getKey())) {
-						throw new MasterDataServiceException(
-								UISpecErrorCode.UI_SPEC_SUB_TYPE_REQUIRED_EXCEPTION.getErrorCode(),
-								String.format(UISpecErrorCode.UI_SPEC_SUB_TYPE_REQUIRED_EXCEPTION.getErrorMessage(),
-										listOfSpecs.get(0).getId()));
-					}
-					List<String> tempBioAttributes = new ArrayList<String>();
-					for (SchemaDto spec : listOfSpecs) {
-						if (spec.getBioAttributes() == null) {
-							throw new MasterDataServiceException(
-									UISpecErrorCode.UI_SPEC_BIO_ATTRIBUTES_REQUIRED_EXCEPTION.getErrorCode(),
-									String.format(
-											UISpecErrorCode.UI_SPEC_BIO_ATTRIBUTES_REQUIRED_EXCEPTION.getErrorMessage(),
-											spec.getId()));
-						}
-						tempBioAttributes.addAll(spec.getBioAttributes());
-					}
-					List<String> distinctBioAttributes = tempBioAttributes.stream().distinct()
-							.collect(Collectors.toList());
-					if (tempBioAttributes.size() > distinctBioAttributes.size()) {
-						throw new MasterDataServiceException(
-								UISpecErrorCode.UI_SPEC_BIO_ATTRIBUTES_DUPLICATED_EXCEPTION.getErrorCode(),
-								String.format(
-										UISpecErrorCode.UI_SPEC_BIO_ATTRIBUTES_DUPLICATED_EXCEPTION.getErrorMessage(),
-										listOfSpecs.get(0).getId()));
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * 
-	 * @param jsonspec
-	 */
-	private void validateDocumentFields(List<SchemaDto> jsonspec) {
-		validateSubType(jsonspec, DOCUMENT_TYPE);
-	}
-
-	/**
-	 * 
-	 * @param jsonspec
-	 * @param documentType
-	 */
-	private void validateSubType(List<SchemaDto> jsonspec, String documentType) {
-		List<SchemaDto> fields = jsonspec.stream().filter(obj -> documentType.equalsIgnoreCase(obj.getType()))
-				.collect(Collectors.toList());
-
-		for (SchemaDto dto : fields) {
-			if ("none".equalsIgnoreCase(dto.getSubType()))
-				throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_SUB_TYPE_REQUIRED_EXCEPTION.getErrorCode(),
-						String.format(UISpecErrorCode.UI_SPEC_SUB_TYPE_REQUIRED_EXCEPTION.getErrorMessage(),
-								dto.getId()));
-		}
-	}
-
-	/**
-	 * 
-	 * @param jsonspec
-	 */
-	private void validateDuplicateFields(List<SchemaDto> jsonspec) {
-		List<String> duplicates = jsonspec.stream().collect(Collectors.groupingBy(SchemaDto::caseIgnoredId)).entrySet()
-				.stream().filter(e -> e.getValue().size() > 1).map(Map.Entry::getKey).collect(Collectors.toList());
-		if (duplicates != null && duplicates.size() > 0) {
-			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_DUPLICATE_FIELD_EXCEPTION.getErrorCode(),
-					String.format(UISpecErrorCode.UI_SPEC_DUPLICATE_FIELD_EXCEPTION.getErrorMessage(), duplicates));
-		}
 	}
 
 	/**
@@ -305,19 +215,21 @@ public class UISpecServiceImpl implements UISpecService {
 	 */
 	@Override
 	public UISpecResponseDto updateUISpec(String id, UISpecDto dto) {
-		validateIdentityShema(dto.getIdentityschemaid());
-		validateDuplicateFields(dto.getJsonspec());
-		validateDocumentFields(dto.getJsonspec());
-		validateBiometricFields(dto.getJsonspec());
-
+		validateIdentityShema(dto.getIdentitySchemaId());
+		isJSONValid(dto.getJsonspec());
 		UISpec uiSpecObjectFromDb = getUISpecById(id);
+		if (STATUS_PUBLISHED.equalsIgnoreCase(uiSpecObjectFromDb.getStatus())) {
+			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_ALREADY_PUBLISHED.getErrorCode(),
+					UISpecErrorCode.UI_SPEC_ALREADY_PUBLISHED.getErrorMessage() + "Cannot update the same.");
+		}
 		uiSpecObjectFromDb.setDomain(dto.getDomain());
 		uiSpecObjectFromDb.setTitle(dto.getTitle());
 		uiSpecObjectFromDb.setDescription(dto.getDescription());
-		uiSpecObjectFromDb.setIdentitySchemaId(dto.getIdentityschemaid());
-		uiSpecObjectFromDb.setJsonSpec(getIdAttributeJsonString(dto.getJsonspec()));
+		uiSpecObjectFromDb.setIdentitySchemaId(dto.getIdentitySchemaId());
+		uiSpecObjectFromDb.setJsonSpec(dto.getJsonspec());
 		uiSpecObjectFromDb.setUpdatedBy(MetaDataUtils.getContextUser());
 		uiSpecObjectFromDb.setUpdatedDateTime(MetaDataUtils.getCurrentDateTime());
+		uiSpecObjectFromDb.setType(dto.getType());
 		uiSpecRepository.save(uiSpecObjectFromDb);
 		return prepareResponse(uiSpecObjectFromDb);
 	}
@@ -336,7 +248,8 @@ public class UISpecServiceImpl implements UISpecService {
 			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_ALREADY_PUBLISHED.getErrorCode(),
 					UISpecErrorCode.UI_SPEC_ALREADY_PUBLISHED.getErrorMessage());
 		}
-		UISpec latestPublishedUISpec = uiSpecRepository.findLatestPublishedUISpec(uiSpecObjectFromDb.getDomain());
+		UISpec latestPublishedUISpec = uiSpecRepository.findLatestPublishedUISpec(uiSpecObjectFromDb.getDomain(),
+				uiSpecObjectFromDb.getType());
 		double currentVersion = latestPublishedUISpec == null ? 0.1 : (latestPublishedUISpec.getVersion() + 0.1);
 
 		uiSpecObjectFromDb.setVersion(currentVersion);
@@ -382,5 +295,29 @@ public class UISpecServiceImpl implements UISpecService {
 
 		}
 		return id;
+	}
+
+	@Override
+	public List<UISpecResponseDto> getUISpec(double version, String domain, String type) {
+		List<UISpec> specsFromDb = new ArrayList<UISpec>();
+		UISpec uiSpecFromDb = uiSpecRepository.findPublishedUISpec(version, domain, type);
+		if (uiSpecFromDb == null) {
+			throw new DataNotFoundException(UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorCode(),
+					UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+		specsFromDb.add(uiSpecFromDb);
+		return prepareResponse(specsFromDb);
+	}
+
+	@Override
+	public List<UISpecResponseDto> getUISpec(String domain, String type) {
+		List<UISpec> specsFromDb = new ArrayList<UISpec>();
+		UISpec uiSpecFromDb = uiSpecRepository.findLatestPublishedUISpec(domain, type);
+		if (uiSpecFromDb == null) {
+			throw new DataNotFoundException(UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorCode(),
+					UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+		specsFromDb.add(uiSpecFromDb);
+		return prepareResponse(specsFromDb);
 	}
 }

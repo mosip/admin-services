@@ -1,11 +1,8 @@
 package io.mosip.kernel.masterdata.uispec.dto;
 
-import java.util.List;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
-import io.mosip.kernel.masterdata.dto.SchemaDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,13 +11,17 @@ import lombok.Data;
 @ApiModel(description = "Model representing a ui spec request")
 public class UISpecDto {
 	
-	@ApiModelProperty(notes = "identityschemaid",required = true)
+	@ApiModelProperty(notes = "identitySchemaId",required = true)
 	@NotEmpty
-	private String identityschemaid;
+	private String identitySchemaId;
 	
 	@ApiModelProperty(notes = "domain to which spec is defining", required = true)
 	@NotEmpty
 	private String domain;
+
+	@ApiModelProperty(notes = "UI Spec type", required = true)
+	@NotBlank
+	private String type;
 	
 	@ApiModelProperty(notes = "UI Spec title", required = true)
 	@NotBlank
@@ -32,5 +33,5 @@ public class UISpecDto {
 	
 	@ApiModelProperty(notes = "UISpec", required = true)
 	@NotEmpty
-	private List<SchemaDto> jsonspec;
+	private String jsonspec;
 }

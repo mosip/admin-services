@@ -8,14 +8,9 @@ public enum UISpecErrorCode {
 	UI_SPEC_NOT_FOUND_EXCEPTION("KER-UIS-004", "UI spec not found"),
 	NO_PUBLISHED_UI_SPEC_FOUND_EXCEPTION("KER-UIS-005", "No published UI spec"),
 	UI_SPEC_ALREADY_PUBLISHED("KER-UIS-006", "UI spec already published"),
-	UI_SPEC_EFFECTIVE_FROM_IS_OLDER("UIS-UIS-007", "UI spec effective from date cannot be older"),
-	UI_SPEC_DUPLICATE_FIELD_EXCEPTION("KER-UIS-008", "Duplicate fields found %s"),
-	UI_SPEC_SUB_TYPE_REQUIRED_EXCEPTION("KER-UIS-009", "SubType is required for field %s"),
-	UI_SPEC_BIO_ATTRIBUTES_REQUIRED_EXCEPTION("KER-UIS-010", "BioAttributes are required for field %s"),
-	UI_SPEC_BIO_ATTRIBUTES_DUPLICATED_EXCEPTION("KER-UIS-011",
-			"Same BioAttributes used in field with same SubType : %s"),
-	UI_SPEC_VALUE_PARSE_ERROR("KER-UIS-012", "Error while parsing json string"),
-	UI_SPEC_SCHEMA_NOT_FOUND_EXCEPTION("KER-UIS-013", "identity schema not found");
+	UI_SPEC_EFFECTIVE_FROM_IS_OLDER("UIS-UIS-007", "UI spec effective from date cannot be older"),	
+	UI_SPEC_VALUE_PARSE_ERROR("KER-UIS-008", "Error while parsing json string")	;
+	
 
 	private final String errorCode;
 	private final String errorMessage;

@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
+import java.util.List;
+
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecDto;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecPublishDto;
@@ -19,16 +21,33 @@ public interface UISpecService {
 	/**
 	 * Fetch active and latest versioned ui spec based on domain
 	 * 
-	 * @return
+	 * @returnge
 	 */
-	public UISpecResponseDto getLatestUISpec(String domain);
+	public List<UISpecResponseDto> getLatestUISpec(String domain);
 
 	/**
 	 * Fetch active ui spec based on version and domain
 	 * 
 	 * @return
 	 */
-	public UISpecResponseDto getUISpec(double idVersion,String domain);
+	public List<UISpecResponseDto> getUISpec(double version,String domain);
+	
+	/**
+	 * 
+	 * @param idVersion
+	 * @param domain
+	 * @param type
+	 * @return
+	 */
+	public List<UISpecResponseDto> getUISpec(double version,String domain,String type);
+	
+	/**
+	 * 
+	 * @param domain
+	 * @param type
+	 * @return
+	 */
+	public List<UISpecResponseDto> getUISpec(String domain,String type);
 
 	/**
 	 * Fetches all active ui spec's both in DRAFT and PUBLISHED status

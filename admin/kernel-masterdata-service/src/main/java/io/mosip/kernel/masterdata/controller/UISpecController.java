@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,14 +104,26 @@ public class UISpecController {
 	@GetMapping("/{domain}/latest")
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_CLIENT','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','RESIDENT')")
 	@ApiOperation(value = "Service to fetch latest published ui specification of a domain")
-	public ResponseWrapper<UISpecResponseDto> getLatestPublishedSchema(@PathVariable String domain,
-			@RequestParam(name = "version", defaultValue = "0", required = false) @ApiParam(value = "version", defaultValue = "0") double version) {
-		ResponseWrapper<UISpecResponseDto> response = new ResponseWrapper<UISpecResponseDto>();
-		if (version <= 0) {
+	public ResponseWrapper<List<UISpecResponseDto>> getLatestPublishedSchema(@PathVariable String domain,
+			@RequestParam(name = "version", defaultValue = "0", required = false) @ApiParam(value = "version", defaultValue = "0") double version,
+			@RequestParam(name = "type", required = false) @ApiParam(value = "type") String type) {
+		ResponseWrapper<List<UISpecResponseDto>> response = new ResponseWrapper<List<UISpecResponseDto>>();
+		if (version <= 0 && (type == null || type.isBlank() || type.isEmpty())) {
 			response.setResponse(uiSpecService.getLatestUISpec(domain));
 			return response;
 		}
-		response.setResponse(uiSpecService.getUISpec(version, domain));
+
+		if (version >= 0 && (type.isBlank() || type.isEmpty())) {
+			response.setResponse(uiSpecService.getUISpec(version, domain));
+			return response;
+		}
+
+		if (version <= 0 && !type.isBlank()) {
+			response.setResponse(uiSpecService.getUISpec(domain, type));
+			return response;
+		}
+		
+		response.setResponse(uiSpecService.getUISpec(version,domain, type));
 		return response;
 	}
 }

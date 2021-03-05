@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.test.controller;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -111,7 +113,7 @@ public class UISpecControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void getLatestUISpec() throws Exception {
-		Mockito.when(uiSpecService.getLatestUISpec(Mockito.anyString())).thenReturn(new UISpecResponseDto());
+		Mockito.when(uiSpecService.getLatestUISpec(Mockito.anyString())).thenReturn(new ArrayList<>());
 		mockMvc.perform(MockMvcRequestBuilders.get("/uispec/regclient/latest"))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
