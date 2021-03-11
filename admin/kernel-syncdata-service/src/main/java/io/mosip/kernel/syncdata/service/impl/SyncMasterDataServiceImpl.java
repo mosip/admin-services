@@ -112,8 +112,8 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		MachineDataHelper machineDataHelper = new MachineDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		machineDataHelper.retrieveData(serviceHelper, futures);		
 		
-		//DeviceDataHelper deviceDataHelper = new DeviceDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		//deviceDataHelper.retrieveData(serviceHelper, futures);
+		DeviceDataHelper deviceDataHelper = new DeviceDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
+		deviceDataHelper.retrieveData(serviceHelper, futures);
 		
 		IndividualDataHelper individualDataHelper = new IndividualDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		individualDataHelper.retrieveData(serviceHelper, futures);
