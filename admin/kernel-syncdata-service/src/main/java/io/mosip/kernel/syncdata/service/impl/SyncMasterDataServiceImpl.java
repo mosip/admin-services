@@ -152,7 +152,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		List<SyncDataBaseDto> list = new ArrayList<SyncDataBaseDto>();		
 		applicationDataHelper.fillRetrievedData(serviceHelper, list);
 		machineDataHelper.fillRetrievedData(serviceHelper, list);
-		//deviceDataHelper.fillRetrievedData(serviceHelper, list);
+		deviceDataHelper.fillRetrievedData(serviceHelper, list);
 		individualDataHelper.fillRetrievedData(serviceHelper, list);
 		RegistrationCenterDataHelper.fillRetrievedData(serviceHelper, list);
 		templateDataHelper.fillRetrievedData(serviceHelper, list);
