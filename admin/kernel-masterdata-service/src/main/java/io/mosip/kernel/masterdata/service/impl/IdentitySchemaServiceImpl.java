@@ -210,6 +210,7 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 		entity.setSchemaJson("{}");
 		entity.setId(UUID.randomUUID().toString());
 		entity.setLangCode("eng");
+		entity.setIsDeleted(false);
 	
 		try {
 			entity = identitySchemaRepository.create(entity);			
