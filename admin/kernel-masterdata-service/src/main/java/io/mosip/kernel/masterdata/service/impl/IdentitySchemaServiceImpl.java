@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -58,7 +59,8 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 	@Autowired
 	private UISpecService uiSpecService;
 
-	private String defaultDomain = "registration-client";
+	@Value("${mosip.ui.spec.default.domain:registration-client}")
+	private String defaultDomain;
 
 	/*
 	 * (non-Javadoc)
