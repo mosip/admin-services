@@ -42,8 +42,11 @@ public class UISpec extends BaseEntity{
 	@Column(name = "title", nullable = false, length=50)
 	private String title;
 	
-	@Column(name="identity_schema_id",nullable = false)
+	@Column(name="identity_schema_id", nullable = false)
 	private String identitySchemaId;
+	
+	@Column(name="identity_schema_version", nullable = false)
+	private double idSchemaVersion;
 	
 	@Column(name = "description", nullable = false, length=50)
 	private String description;	
@@ -54,7 +57,7 @@ public class UISpec extends BaseEntity{
 	@Column(name = "status_code", nullable = false, length=16)
 	private String status;
 	
-	@Column(name = "add_props", nullable = false)
+	@Column(name = "add_props", nullable = true)
 	private boolean additionalProperties;
 		 
 	@Column(name = "effective_from", nullable = false)

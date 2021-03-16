@@ -13,6 +13,7 @@ public class UISpecResponseDto {
 	private String title;
 	private String description;
 	private String identitySchemaId;
+	private double idSchemaVersion;
 	private String domain;
 	private List<UISpecKeyValuePair> jsonSpec;
 	private String status;

@@ -24,6 +24,14 @@ public interface UISpecService {
 	 * @returnge
 	 */
 	public List<UISpecResponseDto> getLatestUISpec(String domain);
+	
+	/**
+	 * 
+	 * @param identitySchemaId
+	 * @param domain
+	 * @return
+	 */
+	public List<UISpecResponseDto> getLatestUISpec(String identitySchemaId,String domain);
 
 	/**
 	 * Fetch active ui spec based on version and domain
@@ -48,6 +56,15 @@ public interface UISpecService {
 	 * @return
 	 */
 	public List<UISpecResponseDto> getUISpec(String domain,String type);
+	
+	/**
+	 * 
+	 * @param identitySchemaId
+	 * @param domain
+	 * @param type
+	 * @return
+	 */
+	public List<UISpecResponseDto> getUISpec(String identitySchemaId,String domain, String type);
 
 	/**
 	 * Fetches all active ui spec's both in DRAFT and PUBLISHED status
@@ -88,6 +105,17 @@ public interface UISpecService {
 	 * @param id
 	 * @return
 	 */
-	public String deleteUISpec(String id);
+	public String deleteUISpec(String id);	
+
+	/**
+	 * 
+	 * @param domain
+	 * @param version
+	 * @param type
+	 * @param identitySchemaVersion
+	 * @return
+	 */
+	public List<UISpecResponseDto> getLatestPublishedUISpec(String domain, double version, String type,
+			double identitySchemaVersion);
 
 }

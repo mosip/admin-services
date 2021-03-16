@@ -34,4 +34,5 @@ public class UISpecDto {
 	@ApiModelProperty(notes = "UISpec", required = true)
 	@NotEmpty
 	private String jsonspec;
+	
 }

@@ -106,24 +106,10 @@ public class UISpecController {
 	@ApiOperation(value = "Service to fetch latest published ui specification of a domain")
 	public ResponseWrapper<List<UISpecResponseDto>> getLatestPublishedSchema(@PathVariable String domain,
 			@RequestParam(name = "version", defaultValue = "0", required = false) @ApiParam(value = "version", defaultValue = "0") double version,
-			@RequestParam(name = "type", required = false) @ApiParam(value = "type") String type) {
+			@RequestParam(name = "type", required = false) @ApiParam(value = "typeof the ui spec. Supported comma separted values") String type,
+			@RequestParam(name = "identitySchemaVersion", defaultValue = "0", required = false) @ApiParam(value = "version", defaultValue = "0") double identitySchemaVersion) {
 		ResponseWrapper<List<UISpecResponseDto>> response = new ResponseWrapper<List<UISpecResponseDto>>();
-		if (version <= 0 && (type == null || type.isBlank() || type.isEmpty())) {
-			response.setResponse(uiSpecService.getLatestUISpec(domain));
-			return response;
-		}
-
-		if (version >= 0 && (type.isBlank() || type.isEmpty())) {
-			response.setResponse(uiSpecService.getUISpec(version, domain));
-			return response;
-		}
-
-		if (version <= 0 && !type.isBlank()) {
-			response.setResponse(uiSpecService.getUISpec(domain, type));
-			return response;
-		}
-		
-		response.setResponse(uiSpecService.getUISpec(version,domain, type));
+		response.setResponse(uiSpecService.getLatestPublishedUISpec(domain, version, type, identitySchemaVersion));
 		return response;
 	}
 }

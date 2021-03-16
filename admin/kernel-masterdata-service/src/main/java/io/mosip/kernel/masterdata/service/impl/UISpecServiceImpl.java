@@ -7,9 +7,12 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -47,6 +50,8 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 @Transactional
 public class UISpecServiceImpl implements UISpecService {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(UISpecServiceImpl.class);
+
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@Autowired
@@ -60,19 +65,12 @@ public class UISpecServiceImpl implements UISpecService {
 	 */
 	@Override
 	public List<UISpecResponseDto> getLatestUISpec(String domain) {
-		List<UISpec> uiSpecObjectsFromDb = new ArrayList<UISpec>();
-		try {
-			uiSpecObjectsFromDb = uiSpecRepository.findLatestPublishedUISpec(domain);
-		} catch (DataAccessException | DataAccessLayerException e) {
-			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_FETCH_EXCEPTION.getErrorCode(),
-					UISpecErrorCode.UI_SPEC_FETCH_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
-		}
-		if (uiSpecObjectsFromDb.isEmpty()) {
+		List<UISpec> typesByDomain = uiSpecRepository.findTypesByDomain(domain);
+		if (typesByDomain.isEmpty()) {
 			throw new DataNotFoundException(UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorCode(),
 					UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-
-		return prepareResponse(uiSpecObjectsFromDb);
+		return prepareResponse(typesByDomain);
 	}
 
 	/**
@@ -85,7 +83,6 @@ public class UISpecServiceImpl implements UISpecService {
 		for (UISpec spec : specs) {
 			response.add(prepareResponse(spec));
 		}
-
 		return response;
 	}
 
@@ -115,18 +112,17 @@ public class UISpecServiceImpl implements UISpecService {
 					PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
 
 		} catch (DataAccessException | DataAccessLayerException e) {
+			LOGGER.error("Error occured while getting all ui specs ", e);
 			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_FETCH_EXCEPTION.getErrorCode(),
-					UISpecErrorCode.UI_SPEC_FETCH_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
+					UISpecErrorCode.UI_SPEC_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (pagedResult != null && pagedResult.getContent() != null) {
 			pagedResult.getContent().forEach(entity -> {
 				response.add(prepareResponse(entity));
 			});
-
 			results.setPageNo(pagedResult.getNumber());
 			results.setTotalPages(pagedResult.getTotalPages());
 			results.setTotalItems(pagedResult.getTotalElements());
-
 		}
 		return results;
 	}
@@ -136,13 +132,16 @@ public class UISpecServiceImpl implements UISpecService {
 	 */
 	@Override
 	public UISpecResponseDto defineUISpec(UISpecDto dto) {
-		validateIdentityShema(dto.getIdentitySchemaId());
+		validateAndGetTypes("process,schema");
+		validateAndGetTypes("process");
+		validateAndGetTypes("process;schema");
+		IdentitySchema identitySchema = validateIdentityShema(dto.getIdentitySchemaId());
 		isJSONValid(dto.getJsonspec());
-
 		UISpec uiSpecEntity = MetaDataUtils.setCreateMetaData(dto, UISpec.class);
 
 		uiSpecEntity.setIsActive(false);
 		uiSpecEntity.setIdentitySchemaId(dto.getIdentitySchemaId());
+		uiSpecEntity.setIdSchemaVersion(identitySchema.getIdVersion());
 		uiSpecEntity.setStatus(STATUS_DRAFT);
 		uiSpecEntity.setVersion(0);
 		uiSpecEntity.setJsonSpec(dto.getJsonspec());
@@ -152,6 +151,7 @@ public class UISpecServiceImpl implements UISpecService {
 		try {
 			uiSpecRepository.save(uiSpecEntity);
 		} catch (DataAccessLayerException | DataAccessException e) {
+			LOGGER.error("Error occured while inserting the ui spec ", e);
 			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_INSERT_EXCEPTION.getErrorCode(),
 					UISpecErrorCode.UI_SPEC_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
@@ -167,9 +167,9 @@ public class UISpecServiceImpl implements UISpecService {
 		try {
 			objectMapper.readTree(jsonInString);
 		} catch (IOException e) {
+			LOGGER.error("Given jsonSpec is not a valid json object ", e);
 			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_VALUE_PARSE_ERROR.getErrorCode(),
-					UISpecErrorCode.UI_SPEC_VALUE_PARSE_ERROR.getErrorMessage() + " "
-							+ ExceptionUtils.parseException(e));
+					UISpecErrorCode.UI_SPEC_VALUE_PARSE_ERROR.getErrorMessage());
 		}
 	}
 
@@ -177,12 +177,13 @@ public class UISpecServiceImpl implements UISpecService {
 	 * 
 	 * @param id
 	 */
-	private void validateIdentityShema(String id) {
+	private IdentitySchema validateIdentityShema(String id) {
 		IdentitySchema schema = identitySchemaRepository.findPublishedIdentitySchema(id);
 		if (schema == null) {
 			throw new DataNotFoundException(UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorCode(),
 					UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
+		return schema;
 	}
 
 	/**
@@ -205,6 +206,7 @@ public class UISpecServiceImpl implements UISpecService {
 		response.setUpdatedBy(entity.getUpdatedBy());
 		response.setUpdatedOn(entity.getUpdatedDateTime());
 		response.setEffectiveFrom(entity.getEffectiveFrom());
+		response.setIdSchemaVersion(entity.getIdSchemaVersion());
 		spec.add(new UISpecKeyValuePair(entity.getType(), entity.getJsonSpec()));
 		response.setJsonSpec(spec);
 		return response;
@@ -215,17 +217,18 @@ public class UISpecServiceImpl implements UISpecService {
 	 */
 	@Override
 	public UISpecResponseDto updateUISpec(String id, UISpecDto dto) {
-		validateIdentityShema(dto.getIdentitySchemaId());
+		IdentitySchema identitySchema = validateIdentityShema(dto.getIdentitySchemaId());
 		isJSONValid(dto.getJsonspec());
 		UISpec uiSpecObjectFromDb = getUISpecById(id);
 		if (STATUS_PUBLISHED.equalsIgnoreCase(uiSpecObjectFromDb.getStatus())) {
 			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_ALREADY_PUBLISHED.getErrorCode(),
-					UISpecErrorCode.UI_SPEC_ALREADY_PUBLISHED.getErrorMessage() + "Cannot update the same.");
+					UISpecErrorCode.UI_SPEC_ALREADY_PUBLISHED.getErrorMessage());
 		}
 		uiSpecObjectFromDb.setDomain(dto.getDomain());
 		uiSpecObjectFromDb.setTitle(dto.getTitle());
 		uiSpecObjectFromDb.setDescription(dto.getDescription());
 		uiSpecObjectFromDb.setIdentitySchemaId(dto.getIdentitySchemaId());
+		uiSpecObjectFromDb.setIdSchemaVersion(identitySchema.getIdVersion());
 		uiSpecObjectFromDb.setJsonSpec(dto.getJsonspec());
 		uiSpecObjectFromDb.setUpdatedBy(MetaDataUtils.getContextUser());
 		uiSpecObjectFromDb.setUpdatedDateTime(MetaDataUtils.getCurrentDateTime());
@@ -248,7 +251,7 @@ public class UISpecServiceImpl implements UISpecService {
 			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_ALREADY_PUBLISHED.getErrorCode(),
 					UISpecErrorCode.UI_SPEC_ALREADY_PUBLISHED.getErrorMessage());
 		}
-		UISpec latestPublishedUISpec = uiSpecRepository.findLatestPublishedUISpec(uiSpecObjectFromDb.getDomain(),
+		UISpec latestPublishedUISpec = uiSpecRepository.findLatestVersion(uiSpecObjectFromDb.getDomain(),
 				uiSpecObjectFromDb.getType());
 		double currentVersion = latestPublishedUISpec == null ? 0.1 : (latestPublishedUISpec.getVersion() + 0.1);
 
@@ -289,9 +292,9 @@ public class UISpecServiceImpl implements UISpecService {
 						UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 		} catch (DataAccessException | DataAccessLayerException e) {
+			LOGGER.error("Error occured while deleting the ui spec ", e);
 			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_UPDATE_EXCEPTION.getErrorCode(),
-					UISpecErrorCode.UI_SPEC_UPDATE_EXCEPTION.getErrorMessage() + " "
-							+ ExceptionUtils.parseException(e));
+					UISpecErrorCode.UI_SPEC_UPDATE_EXCEPTION.getErrorMessage());
 
 		}
 		return id;
@@ -300,24 +303,71 @@ public class UISpecServiceImpl implements UISpecService {
 	@Override
 	public List<UISpecResponseDto> getUISpec(double version, String domain, String type) {
 		List<UISpec> specsFromDb = new ArrayList<UISpec>();
-		UISpec uiSpecFromDb = uiSpecRepository.findPublishedUISpec(version, domain, type);
-		if (uiSpecFromDb == null) {
+		List<String> types = validateAndGetTypes(type);
+		specsFromDb = uiSpecRepository.findPublishedUISpec(version, domain, types);
+		if (specsFromDb.isEmpty()) {
 			throw new DataNotFoundException(UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorCode(),
 					UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		specsFromDb.add(uiSpecFromDb);
 		return prepareResponse(specsFromDb);
 	}
 
 	@Override
 	public List<UISpecResponseDto> getUISpec(String domain, String type) {
-		List<UISpec> specsFromDb = new ArrayList<UISpec>();
-		UISpec uiSpecFromDb = uiSpecRepository.findLatestPublishedUISpec(domain, type);
-		if (uiSpecFromDb == null) {
+		List<String> types = validateAndGetTypes(type);
+		List<UISpec> specsFromDb = uiSpecRepository.findLatestPublishedUISpec(domain, types);
+		if (specsFromDb.isEmpty()) {
 			throw new DataNotFoundException(UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorCode(),
 					UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		specsFromDb.add(uiSpecFromDb);
+
 		return prepareResponse(specsFromDb);
+	}
+
+	private List<String> validateAndGetTypes(String typeInString) {
+		String[] arrayOfTypes = typeInString.split(",");
+		List<String> types = new ArrayList<String>();
+		for (String type : arrayOfTypes) {
+			types.add(type);
+		}
+		return types;
+	}
+
+	@Override
+	public List<UISpecResponseDto> getUISpec(String identitySchemaId, String domain, String type) {
+		List<String> types = validateAndGetTypes(type);
+		return prepareResponse(
+				uiSpecRepository.findLatestPublishedUISpecByIdentitySchema(identitySchemaId, domain, types));
+	}
+
+	@Override
+	public List<UISpecResponseDto> getLatestUISpec(String identitySchemaId, String domain) {
+		return prepareResponse(uiSpecRepository.findTypesByDomainAndSchema(domain, identitySchemaId));
+	}
+
+	@Override
+	public List<UISpecResponseDto> getLatestPublishedUISpec(String domain, double version, String type,
+			double identitySchemaVersion) {		
+		if (version <= 0 && (type == null || type.isBlank() || type.isEmpty())) {
+			return filterByIdentitySchemaVersion(getLatestUISpec(domain), identitySchemaVersion);
+		}
+
+		if (version >= 0 && (type == null || type.isBlank() || type.isEmpty())) {
+			return filterByIdentitySchemaVersion(getUISpec(version, domain), identitySchemaVersion);
+		}
+
+		if (version <= 0 && !type.isBlank()) {
+			return filterByIdentitySchemaVersion(getUISpec(domain, type), identitySchemaVersion);
+		}
+		return filterByIdentitySchemaVersion(getUISpec(version, domain, type), identitySchemaVersion);
+	}
+
+	private List<UISpecResponseDto> filterByIdentitySchemaVersion(List<UISpecResponseDto> response,
+			double identitySchemaVersion) {
+		if (identitySchemaVersion > 0) {
+			return response.stream().filter(spec -> spec.getIdSchemaVersion() == identitySchemaVersion)
+					.collect(Collectors.toList());
+		}
+		return response;
 	}
 }
