@@ -13,6 +13,7 @@ import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
 import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.syncdata.exception.DataNotFoundException;
 import io.mosip.kernel.syncdata.exception.RequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.syncdata.constant.LocationHierarchyErrorCode;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
 import io.mosip.kernel.syncdata.dto.AppDetailDto;
@@ -49,6 +51,7 @@ import io.mosip.kernel.syncdata.dto.IdTypeDto;
 import io.mosip.kernel.syncdata.dto.IndividualTypeDto;
 import io.mosip.kernel.syncdata.dto.LanguageDto;
 import io.mosip.kernel.syncdata.dto.LocationDto;
+import io.mosip.kernel.syncdata.dto.LocationHierarchyLevelDto;
 import io.mosip.kernel.syncdata.dto.MachineDto;
 import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.syncdata.dto.MachineTypeDto;
@@ -102,6 +105,7 @@ import io.mosip.kernel.syncdata.entity.IdType;
 import io.mosip.kernel.syncdata.entity.IndividualType;
 import io.mosip.kernel.syncdata.entity.Language;
 import io.mosip.kernel.syncdata.entity.Location;
+import io.mosip.kernel.syncdata.entity.LocationHierarchy;
 import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.entity.MachineHistory;
 import io.mosip.kernel.syncdata.entity.MachineSpecification;
@@ -146,6 +150,7 @@ import io.mosip.kernel.syncdata.repository.HolidayRepository;
 import io.mosip.kernel.syncdata.repository.IdTypeRepository;
 import io.mosip.kernel.syncdata.repository.IndividualTypeRepository;
 import io.mosip.kernel.syncdata.repository.LanguageRepository;
+import io.mosip.kernel.syncdata.repository.LocationHierarchyRepository;
 import io.mosip.kernel.syncdata.repository.LocationRepository;
 import io.mosip.kernel.syncdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
@@ -177,7 +182,7 @@ import io.mosip.kernel.syncdata.service.SyncJobDefService;
  */
 @Component
 public class SyncMasterDataServiceHelper {
-	
+
 	private Logger logger = LoggerFactory.getLogger(SyncMasterDataServiceHelper.class);
 
 	@Autowired
@@ -272,6 +277,8 @@ public class SyncMasterDataServiceHelper {
 	private MachineHistoryRepository machineHistoryRepository;
 	@Autowired
 	private DeviceHistoryRepository deviceHistoryRepository;
+	@Autowired
+	private LocationHierarchyRepository locationHierarchyRepository;
 
 	@Autowired
 	private ClientCryptoManagerService clientCryptoManagerService;
@@ -328,6 +335,48 @@ public class SyncMasterDataServiceHelper {
 		}
 
 		return CompletableFuture.completedFuture(machineDetailDtoList);
+	}
+
+	/**
+	 * Method to fetch location hierarchy details
+	 * 
+	 * @param lastUpdated      lastUpdated time-stamp
+	 * @param currentTimeStamp current time stamp
+	 * 
+	 * @return list of {@link LocationHierarchyLevelDto} list of locationHierarchyList dto
+	 */
+	@Async
+	public CompletableFuture<List<LocationHierarchyLevelDto>> getLocationHierarchyList(LocalDateTime lastUpdated,
+			LocalDateTime currentTimeStamp) {
+
+		List<LocationHierarchy> locationHierarchyList = null;
+		List<LocationHierarchyLevelDto> locationHierarchyLevelDtos = new ArrayList<LocationHierarchyLevelDto>();
+		try {
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			locationHierarchyList = locationHierarchyRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdated,
+					currentTimeStamp);
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new SyncDataServiceException(
+					LocationHierarchyErrorCode.LOCATION_HIERARCHY_FETCH_EXCEPTION.getErrorCode(),
+					LocationHierarchyErrorCode.LOCATION_HIERARCHY_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e) + e);
+		}
+		if (!locationHierarchyList.isEmpty()) {
+
+			locationHierarchyList.forEach(locationHierarchy -> {
+				LocationHierarchyLevelDto responseDto = new LocationHierarchyLevelDto();
+				responseDto.setHierarchyLevel(locationHierarchy.getHierarchyLevel());
+				responseDto.setHierarchyLevelName(locationHierarchy.getHierarchyLevelName());
+				responseDto.setIsActive(locationHierarchy.getIsActive());
+				responseDto.setLangCode(locationHierarchy.getLangCode());
+				locationHierarchyLevelDtos.add(responseDto);
+			});
+
+		}
+
+		return CompletableFuture.completedFuture(locationHierarchyLevelDtos);
 	}
 
 	/**
@@ -505,7 +554,8 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			templateList = templateRepository.findAllLatestCreatedUpdateDeletedByModule(lastUpdated, currentTimeStamp, moduleId);
+			templateList = templateRepository.findAllLatestCreatedUpdateDeletedByModule(lastUpdated, currentTimeStamp,
+					moduleId);
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
@@ -1083,26 +1133,25 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			machines = machineRepository
-					.findAllLatestCreatedUpdatedDeleted(regCenterId, lastUpdated, currentTimeStamp);
+			machines = machineRepository.findAllLatestCreatedUpdatedDeleted(regCenterId, lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
 		if (machines != null && !machines.isEmpty()) {
-			for(Machine machine : machines) {
-				
-				RegistrationCenterMachineDto dto=new RegistrationCenterMachineDto();
+			for (Machine machine : machines) {
+
+				RegistrationCenterMachineDto dto = new RegistrationCenterMachineDto();
 				dto.setIsActive(machine.getIsActive());
 				dto.setIsDeleted(machine.getIsDeleted());
 				dto.setLangCode(machine.getLangCode());
 				dto.setMachineId(machine.getId());
 				dto.setRegCenterId(machine.getRegCenterId());
 				registrationCenterMachineDtos.add(dto);
-				
+
 			}
-			
+
 		}
 		return CompletableFuture.completedFuture(registrationCenterMachineDtos);
 	}
@@ -1123,26 +1172,26 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			devices = deviceRepository
-					.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(regId, lastUpdated, currentTimeStamp);
+			devices = deviceRepository.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(regId, lastUpdated,
+					currentTimeStamp);
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_DEVICE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
 		if (devices != null && !devices.isEmpty()) {
-			for(Device device : devices) {
-				
-				RegistrationCenterDeviceDto dto=new RegistrationCenterDeviceDto();
+			for (Device device : devices) {
+
+				RegistrationCenterDeviceDto dto = new RegistrationCenterDeviceDto();
 				dto.setIsActive(device.getIsActive());
 				dto.setIsDeleted(device.getIsDeleted());
 				dto.setLangCode(device.getLangCode());
 				dto.setDeviceId(device.getId());
 				dto.setRegCenterId(device.getRegCenterId());
 				registrationCenterDeviceDtos.add(dto);
-				
+
 			}
-			
+
 		}
 		return CompletableFuture.completedFuture(registrationCenterDeviceDtos);
 	}
@@ -1165,10 +1214,9 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			machines = machineRepository
-					.findAllLatestCreatedUpdatedDeleted(regId, lastUpdated, currentTimeStamp);
-			devices = deviceRepository
-					.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(regId, lastUpdated, currentTimeStamp);
+			machines = machineRepository.findAllLatestCreatedUpdatedDeleted(regId, lastUpdated, currentTimeStamp);
+			devices = deviceRepository.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(regId, lastUpdated,
+					currentTimeStamp);
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(
@@ -1176,21 +1224,25 @@ public class SyncMasterDataServiceHelper {
 		}
 		if (machines != null && !machines.isEmpty()) {
 			if (devices != null && !devices.isEmpty()) {
-				for(Device device : devices) {
-					for(Machine machine : machines) {
-						if(device.getLangCode().equals(machine.getLangCode())) {
-							RegistrationCenterMachineDeviceDto dto=new RegistrationCenterMachineDeviceDto();
-							if(device.getIsActive() == null&& machine.getIsActive()!= null)dto.setIsActive(machine.getIsActive());
-							if(machine.getIsActive() == null&& device.getIsActive()!= null)dto.setIsActive(device.getIsActive());
-							if(device.getIsActive() != null && machine.getIsActive()!= null) {
+				for (Device device : devices) {
+					for (Machine machine : machines) {
+						if (device.getLangCode().equals(machine.getLangCode())) {
+							RegistrationCenterMachineDeviceDto dto = new RegistrationCenterMachineDeviceDto();
+							if (device.getIsActive() == null && machine.getIsActive() != null)
+								dto.setIsActive(machine.getIsActive());
+							if (machine.getIsActive() == null && device.getIsActive() != null)
+								dto.setIsActive(device.getIsActive());
+							if (device.getIsActive() != null && machine.getIsActive() != null) {
 								dto.setIsActive(device.getIsActive() && machine.getIsActive());
 							}
-							if(device.getIsDeleted() == null&& machine.getIsDeleted()!= null)dto.setIsDeleted(machine.getIsDeleted());
-							if(machine.getIsDeleted() == null&& device.getIsDeleted()!= null)dto.setIsDeleted(device.getIsDeleted());
-							if(device.getIsDeleted() != null && machine.getIsDeleted()!= null) {
+							if (device.getIsDeleted() == null && machine.getIsDeleted() != null)
+								dto.setIsDeleted(machine.getIsDeleted());
+							if (machine.getIsDeleted() == null && device.getIsDeleted() != null)
+								dto.setIsDeleted(device.getIsDeleted());
+							if (device.getIsDeleted() != null && machine.getIsDeleted() != null) {
 								dto.setIsDeleted(device.getIsDeleted() && machine.getIsDeleted());
 							}
-							
+
 							dto.setLangCode(device.getLangCode());
 							dto.setDeviceId(device.getId());
 							dto.setMachineId(machine.getId());
@@ -1199,7 +1251,7 @@ public class SyncMasterDataServiceHelper {
 						}
 					}
 				}
-			
+
 			}
 		}
 		return CompletableFuture.completedFuture(registrationCenterMachineDeviceDtos);
@@ -1223,9 +1275,9 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			machines = machineRepository
-					.findAllLatestCreatedUpdatedDeleted(regId, lastUpdated, currentTimeStamp);
-			userDetails=userDetailsRepository.findAllLatestCreatedUpdatedDeleted(regId, lastUpdated, currentTimeStamp);
+			machines = machineRepository.findAllLatestCreatedUpdatedDeleted(regId, lastUpdated, currentTimeStamp);
+			userDetails = userDetailsRepository.findAllLatestCreatedUpdatedDeleted(regId, lastUpdated,
+					currentTimeStamp);
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(
@@ -1234,18 +1286,22 @@ public class SyncMasterDataServiceHelper {
 		}
 		if (machines != null && !machines.isEmpty()) {
 			if (userDetails != null && !userDetails.isEmpty()) {
-				for(UserDetails userDetail : userDetails) {
-					for(Machine machine : machines) {
-						if(userDetail.getLangCode().equals(machine.getLangCode())) {
-							RegistrationCenterUserMachineMappingDto dto=new RegistrationCenterUserMachineMappingDto();
-							if(userDetail.getIsActive() == null&& machine.getIsActive()!= null)dto.setIsActive(machine.getIsActive());
-							if(machine.getIsActive() == null&& userDetail.getIsActive()!= null)dto.setIsActive(userDetail.getIsActive());
-							if(userDetail.getIsActive() != null && machine.getIsActive()!= null) {
+				for (UserDetails userDetail : userDetails) {
+					for (Machine machine : machines) {
+						if (userDetail.getLangCode().equals(machine.getLangCode())) {
+							RegistrationCenterUserMachineMappingDto dto = new RegistrationCenterUserMachineMappingDto();
+							if (userDetail.getIsActive() == null && machine.getIsActive() != null)
+								dto.setIsActive(machine.getIsActive());
+							if (machine.getIsActive() == null && userDetail.getIsActive() != null)
+								dto.setIsActive(userDetail.getIsActive());
+							if (userDetail.getIsActive() != null && machine.getIsActive() != null) {
 								dto.setIsActive(userDetail.getIsActive() && machine.getIsActive());
 							}
-							if(userDetail.getIsDeleted() == null&& machine.getIsDeleted()!= null)dto.setIsDeleted(machine.getIsDeleted());
-							if(machine.getIsDeleted() == null&& userDetail.getIsDeleted()!= null)dto.setIsDeleted(userDetail.getIsDeleted());
-							if(userDetail.getIsDeleted() != null && machine.getIsDeleted()!= null) {
+							if (userDetail.getIsDeleted() == null && machine.getIsDeleted() != null)
+								dto.setIsDeleted(machine.getIsDeleted());
+							if (machine.getIsDeleted() == null && userDetail.getIsDeleted() != null)
+								dto.setIsDeleted(userDetail.getIsDeleted());
+							if (userDetail.getIsDeleted() != null && machine.getIsDeleted() != null) {
 								dto.setIsDeleted(userDetail.getIsDeleted() && machine.getIsDeleted());
 							}
 							dto.setLangCode(userDetail.getLangCode());
@@ -1256,7 +1312,7 @@ public class SyncMasterDataServiceHelper {
 						}
 					}
 				}
-			
+
 			}
 		}
 		return CompletableFuture.completedFuture(registrationCenterUserMachineMappingDtos);
@@ -1279,26 +1335,26 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			userDetails=userDetailsRepository.findAllLatestCreatedUpdatedDeleted(regId, lastUpdated, currentTimeStamp);
-
+			userDetails = userDetailsRepository.findAllLatestCreatedUpdatedDeleted(regId, lastUpdated,
+					currentTimeStamp);
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_USER_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
 		if (userDetails != null && !userDetails.isEmpty()) {
-			for(UserDetails userDetail : userDetails) {
-				
-				RegistrationCenterUserDto dto=new RegistrationCenterUserDto();
+			for (UserDetails userDetail : userDetails) {
+
+				RegistrationCenterUserDto dto = new RegistrationCenterUserDto();
 				dto.setIsActive(userDetail.getIsActive());
 				dto.setIsDeleted(userDetail.getIsDeleted());
 				dto.setLangCode(userDetail.getLangCode());
 				dto.setUserId(userDetail.getId());
 				dto.setRegCenterId(userDetail.getRegCenterId());
 				registrationCenterUserDtos.add(dto);
-				
+
 			}
-			
+
 		}
 		return CompletableFuture.completedFuture(registrationCenterUserDtos);
 	}
@@ -1320,8 +1376,8 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			userHistoryList = userDetailsHistoryRepository
-					.findLatestRegistrationCenterUserHistory(regId, lastUpdated, currentTimeStamp);
+			userHistoryList = userDetailsHistoryRepository.findLatestRegistrationCenterUserHistory(regId, lastUpdated,
+					currentTimeStamp);
 
 		} catch (DataAccessException e) {
 
@@ -1332,9 +1388,9 @@ public class SyncMasterDataServiceHelper {
 					e);
 		}
 		if (userHistoryList != null && !userHistoryList.isEmpty()) {
-			for(UserDetailsHistory userDetail : userHistoryList) {
-				
-				RegistrationCenterUserHistoryDto dto=new RegistrationCenterUserHistoryDto();
+			for (UserDetailsHistory userDetail : userHistoryList) {
+
+				RegistrationCenterUserHistoryDto dto = new RegistrationCenterUserHistoryDto();
 				dto.setIsActive(userDetail.getIsActive());
 				dto.setIsDeleted(userDetail.getIsDeleted());
 				dto.setLangCode(userDetail.getLangCode());
@@ -1342,9 +1398,9 @@ public class SyncMasterDataServiceHelper {
 				dto.setRegCntrId(userDetail.getRegCenterId());
 				dto.setEffectDateTimes(userDetail.getEffDTimes());
 				registrationCenterUserHistoryDtos.add(dto);
-				
+
 			}
-			
+
 		}
 		return CompletableFuture.completedFuture(registrationCenterUserHistoryDtos);
 	}
@@ -1367,11 +1423,10 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			machines = machineHistoryRepository
-					.findLatestRegistrationCenterMachineHistory(regId, lastUpdated, currentTimeStamp);
-			userDetails = userDetailsHistoryRepository
-					.findLatestRegistrationCenterUserHistory(regId, lastUpdated, currentTimeStamp);
-			
+			machines = machineHistoryRepository.findLatestRegistrationCenterMachineHistory(regId, lastUpdated,
+					currentTimeStamp);
+			userDetails = userDetailsHistoryRepository.findLatestRegistrationCenterUserHistory(regId, lastUpdated,
+					currentTimeStamp);
 
 		} catch (DataAccessException e) {
 
@@ -1383,21 +1438,23 @@ public class SyncMasterDataServiceHelper {
 		}
 		if (machines != null && !machines.isEmpty()) {
 			if (userDetails != null && !userDetails.isEmpty()) {
-				for(UserDetailsHistory userDetail : userDetails) {
-					for(MachineHistory machine : machines) {
-						if(userDetail.getLangCode().equals(machine.getLangCode())) {
-							RegistrationCenterUserMachineMappingHistoryDto dto=new RegistrationCenterUserMachineMappingHistoryDto();
+				for (UserDetailsHistory userDetail : userDetails) {
+					for (MachineHistory machine : machines) {
+						if (userDetail.getLangCode().equals(machine.getLangCode())) {
+							RegistrationCenterUserMachineMappingHistoryDto dto = new RegistrationCenterUserMachineMappingHistoryDto();
 							dto.setCntrId(userDetail.getRegCenterId());
 							dto.setMachineId(machine.getId());
 							dto.setUsrId(userDetail.getId());
-							if(machine.getEffectDateTime()!=null &&userDetail.getEffDTimes() !=null) {
-							dto.setEffectivetimes(machine.getEffectDateTime().isAfter( userDetail.getEffDTimes())? machine.getEffectDateTime() : userDetail.getEffDTimes() );
+							if (machine.getEffectDateTime() != null && userDetail.getEffDTimes() != null) {
+								dto.setEffectivetimes(machine.getEffectDateTime().isAfter(userDetail.getEffDTimes())
+										? machine.getEffectDateTime()
+										: userDetail.getEffDTimes());
 							}
 							registrationCenterUserMachineMappingHistoryDtos.add(dto);
 						}
 					}
 				}
-			
+
 			}
 		}
 		return CompletableFuture.completedFuture(registrationCenterUserMachineMappingHistoryDtos);
@@ -1421,10 +1478,10 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			machines = machineHistoryRepository
-					.findLatestRegistrationCenterMachineHistory(regId, lastUpdated, currentTimeStamp);
-			deviceHistoryList = deviceHistoryRepository
-					.findLatestRegistrationCenterDeviceHistory(regId, lastUpdated, currentTimeStamp);
+			machines = machineHistoryRepository.findLatestRegistrationCenterMachineHistory(regId, lastUpdated,
+					currentTimeStamp);
+			deviceHistoryList = deviceHistoryRepository.findLatestRegistrationCenterDeviceHistory(regId, lastUpdated,
+					currentTimeStamp);
 		} catch (DataAccessException e) {
 
 			throw new SyncDataServiceException(
@@ -1435,35 +1492,43 @@ public class SyncMasterDataServiceHelper {
 		}
 		if (machines != null && !machines.isEmpty()) {
 			if (deviceHistoryList != null && !deviceHistoryList.isEmpty()) {
-				for(DeviceHistory device : deviceHistoryList) {
-					for(MachineHistory machine : machines) {
-						if(device.getLangCode().equals(device.getLangCode())) {
-							RegistrationCenterMachineDeviceHistoryDto dto=new RegistrationCenterMachineDeviceHistoryDto();
+				for (DeviceHistory device : deviceHistoryList) {
+					for (MachineHistory machine : machines) {
+						if (device.getLangCode().equals(device.getLangCode())) {
+							RegistrationCenterMachineDeviceHistoryDto dto = new RegistrationCenterMachineDeviceHistoryDto();
 							dto.setRegCenterId(device.getRegCenterId());
 							dto.setMachineId(machine.getId());
 							dto.setDeviceId(device.getId());
-							if(device.getIsActive() == null)dto.setIsActive(machine.getIsActive());
-							if(machine.getIsActive() == null)dto.setIsActive(device.getIsActive());
-							if(device.getIsActive() != null && machine.getIsActive()!= null) {
+							if (device.getIsActive() == null)
+								dto.setIsActive(machine.getIsActive());
+							if (machine.getIsActive() == null)
+								dto.setIsActive(device.getIsActive());
+							if (device.getIsActive() != null && machine.getIsActive() != null) {
 								dto.setIsActive(device.getIsActive() && machine.getIsActive());
 							}
-							if(device.getIsDeleted() == null)dto.setIsDeleted(machine.getIsDeleted());
-							if(machine.getIsDeleted() == null)dto.setIsDeleted(device.getIsDeleted());
-							if(device.getIsDeleted() != null && machine.getIsDeleted()!= null) {
+							if (device.getIsDeleted() == null)
+								dto.setIsDeleted(machine.getIsDeleted());
+							if (machine.getIsDeleted() == null)
+								dto.setIsDeleted(device.getIsDeleted());
+							if (device.getIsDeleted() != null && machine.getIsDeleted() != null) {
 								dto.setIsDeleted(device.getIsDeleted() && machine.getIsDeleted());
 							}
-							if(device.getEffectDateTime() == null)dto.setEffectivetimes(machine.getEffectDateTime());
-							if(machine.getEffectDateTime() == null)dto.setEffectivetimes(device.getEffectDateTime());
-							if(device.getEffectDateTime() != null && machine.getEffectDateTime()!= null) {
-								dto.setEffectivetimes(machine.getEffectDateTime().isAfter( device.getEffectDateTime())? machine.getEffectDateTime() : device.getEffectDateTime() );
+							if (device.getEffectDateTime() == null)
+								dto.setEffectivetimes(machine.getEffectDateTime());
+							if (machine.getEffectDateTime() == null)
+								dto.setEffectivetimes(device.getEffectDateTime());
+							if (device.getEffectDateTime() != null && machine.getEffectDateTime() != null) {
+								dto.setEffectivetimes(machine.getEffectDateTime().isAfter(device.getEffectDateTime())
+										? machine.getEffectDateTime()
+										: device.getEffectDateTime());
 							}
 							dto.setLangCode(device.getLangCode());
-							
+
 							registrationCenterMachineDeviceHistoryDtos.add(dto);
 						}
 					}
 				}
-			
+
 			}
 		}
 		return CompletableFuture.completedFuture(registrationCenterMachineDeviceHistoryDtos);
@@ -1486,8 +1551,8 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			deviceHistoryList = deviceHistoryRepository
-					.findLatestRegistrationCenterDeviceHistory(regId, lastUpdated, currentTimeStamp);
+			deviceHistoryList = deviceHistoryRepository.findLatestRegistrationCenterDeviceHistory(regId, lastUpdated,
+					currentTimeStamp);
 
 		} catch (DataAccessException e) {
 
@@ -1498,9 +1563,9 @@ public class SyncMasterDataServiceHelper {
 					e);
 		}
 		if (deviceHistoryList != null && !deviceHistoryList.isEmpty()) {
-			for(DeviceHistory device : deviceHistoryList) {
-				
-				RegistrationCenterDeviceHistoryDto dto=new RegistrationCenterDeviceHistoryDto();
+			for (DeviceHistory device : deviceHistoryList) {
+
+				RegistrationCenterDeviceHistoryDto dto = new RegistrationCenterDeviceHistoryDto();
 				dto.setIsActive(device.getIsActive());
 				dto.setIsDeleted(device.getIsDeleted());
 				dto.setLangCode(device.getLangCode());
@@ -1508,9 +1573,9 @@ public class SyncMasterDataServiceHelper {
 				dto.setRegCenterId(device.getRegCenterId());
 				dto.setEffectivetimes(device.getEffectDateTime());
 				registrationCenterDeviceHistoryDtos.add(dto);
-				
+
 			}
-			
+
 		}
 		return CompletableFuture.completedFuture(registrationCenterDeviceHistoryDtos);
 	}
@@ -1532,8 +1597,8 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			machineHistoryList = machineHistoryRepository
-					.findLatestRegistrationCenterMachineHistory(regId, lastUpdated, currentTimeStamp);
+			machineHistoryList = machineHistoryRepository.findLatestRegistrationCenterMachineHistory(regId, lastUpdated,
+					currentTimeStamp);
 
 		} catch (DataAccessException e) {
 
@@ -1544,9 +1609,9 @@ public class SyncMasterDataServiceHelper {
 					e);
 		}
 		if (machineHistoryList != null && !machineHistoryList.isEmpty()) {
-			for(MachineHistory machineHistory : machineHistoryList) {
-				
-				RegistrationCenterMachineHistoryDto dto=new RegistrationCenterMachineHistoryDto();
+			for (MachineHistory machineHistory : machineHistoryList) {
+
+				RegistrationCenterMachineHistoryDto dto = new RegistrationCenterMachineHistoryDto();
 				dto.setIsActive(machineHistory.getIsActive());
 				dto.setIsDeleted(machineHistory.getIsDeleted());
 				dto.setLangCode(machineHistory.getLangCode());
@@ -1554,9 +1619,9 @@ public class SyncMasterDataServiceHelper {
 				dto.setRegCenterId(machineHistory.getRegCenterId());
 				dto.setEffectivetimes(machineHistory.getEffectDateTime());
 				registrationCenterMachineHistoryDtos.add(dto);
-				
+
 			}
-			
+
 		}
 		return CompletableFuture.completedFuture(registrationCenterMachineHistoryDtos);
 	}
@@ -1758,7 +1823,6 @@ public class SyncMasterDataServiceHelper {
 		return CompletableFuture.completedFuture(screenDetailDtos);
 	}
 
-
 	@Async
 	public CompletableFuture<List<FoundationalTrustProviderDto>> getFPDetails(LocalDateTime lastUpdatedTime,
 			LocalDateTime currentTimeStamp) {
@@ -1829,69 +1893,73 @@ public class SyncMasterDataServiceHelper {
 
 	@SuppressWarnings("unchecked")
 	public void getSyncDataBaseDto(String entityName, String entityType, List entities, String publicKey, List result) {
-		if(null != entities) {
+		if (null != entities) {
 			List<String> list = Collections.synchronizedList(new ArrayList<String>());
 			entities.parallelStream().filter(Objects::nonNull).forEach(obj -> {
 				try {
 					String json = mapper.getObjectAsJsonString(obj);
-					if(json != null) {
+					if (json != null) {
 						list.add(json);
 					}
 				} catch (Exception e) {
-					logger.error("Failed to map "+ entityName +" data to json", e);
+					logger.error("Failed to map " + entityName + " data to json", e);
 				}
 			});
 
 			try {
-				if(list.size() > 0) {
+				if (list.size() > 0) {
 					TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
-					tpmCryptoRequestDto.setValue(CryptoUtil.encodeBase64(mapper.getObjectAsJsonString(list).getBytes()));
+					tpmCryptoRequestDto
+							.setValue(CryptoUtil.encodeBase64(mapper.getObjectAsJsonString(list).getBytes()));
 					tpmCryptoRequestDto.setPublicKey(publicKey);
 					tpmCryptoRequestDto.setTpm(this.isTPMRequired);
-					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
+					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService
+							.csEncrypt(tpmCryptoRequestDto);
 					result.add(new SyncDataBaseDto(entityName, entityType, tpmCryptoResponseDto.getValue()));
 				}
 			} catch (Exception e) {
-				logger.error("Failed to encrypt "+ entityName +" data to json", e);
+				logger.error("Failed to encrypt " + entityName + " data to json", e);
 			}
 		}
 	}
 
 	/**
-	 * This method queries registrationCenterMachineRepository to fetch active registrationCenterMachine
-	 * with input keyIndex.
+	 * This method queries registrationCenterMachineRepository to fetch active
+	 * registrationCenterMachine with input keyIndex.
 	 *
-	 * KeyIndex is mandatory param
-	 * registrationCenterId is optional, if provided validates, if this matches the mapped registration center
+	 * KeyIndex is mandatory param registrationCenterId is optional, if provided
+	 * validates, if this matches the mapped registration center
 	 *
 	 * @param registrationCenterId
 	 * @param keyIndex
 	 * @return RegistrationCenterMachineDto(machineId , registrationCenterId)
 	 * @throws SyncDataServiceException
 	 */
-	public RegistrationCenterMachineDto getRegistrationCenterMachine(String registrationCenterId, String keyIndex) throws SyncDataServiceException {
+	public RegistrationCenterMachineDto getRegistrationCenterMachine(String registrationCenterId, String keyIndex)
+			throws SyncDataServiceException {
 		try {
 
-			List<Object[]> regCenterMachines = machineRepository.getRegistrationCenterMachineWithKeyIndexWithoutStatusCheck(keyIndex);
+			List<Object[]> regCenterMachines = machineRepository
+					.getRegistrationCenterMachineWithKeyIndexWithoutStatusCheck(keyIndex);
 
 			if (regCenterMachines.isEmpty()) {
 				throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
 						MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
 			}
 
-			String mappedRegCenterId = (String)((Object[])regCenterMachines.get(0))[0];
+			String mappedRegCenterId = (String) ((Object[]) regCenterMachines.get(0))[0];
 
-			if(mappedRegCenterId == null)
+			if (mappedRegCenterId == null)
 				throw new RequestException(MasterDataErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 						MasterDataErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 
-			if(registrationCenterId != null &&  !mappedRegCenterId.equals(registrationCenterId))
+			if (registrationCenterId != null && !mappedRegCenterId.equals(registrationCenterId))
 				throw new RequestException(MasterDataErrorCode.REG_CENTER_UPDATED.getErrorCode(),
 						MasterDataErrorCode.REG_CENTER_UPDATED.getErrorMessage());
 
-			return new RegistrationCenterMachineDto(mappedRegCenterId, (String)((Object[])regCenterMachines.get(0))[1],
-					 (String)((Object[])regCenterMachines.get(0))[2]);
-
+			return new RegistrationCenterMachineDto(mappedRegCenterId,
+					(String) ((Object[]) regCenterMachines.get(0))[1],
+					(String) ((Object[]) regCenterMachines.get(0))[2]);
 
 		} catch (DataAccessException | DataAccessLayerException e) {
 			logger.error("Failed to fetch registrationCenterMachine : ", e);
