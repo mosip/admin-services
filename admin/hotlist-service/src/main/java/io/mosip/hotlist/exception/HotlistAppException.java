@@ -2,16 +2,12 @@ package io.mosip.hotlist.exception;
 
 import io.mosip.hotlist.constant.HotlistErrorConstants;
 import io.mosip.kernel.core.exception.BaseCheckedException;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /**
  * The Class HotlistAppException.
  *
  * @author Manoj SP
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
 public class HotlistAppException extends BaseCheckedException {
 
 	/** The Constant serialVersionUID. */

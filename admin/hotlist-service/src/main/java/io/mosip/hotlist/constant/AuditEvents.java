@@ -11,7 +11,7 @@ public enum AuditEvents {
 
 	RETRIEVE_HOTLIST("IDR-002", "System Event"),
 
-	UPDATE_HOTLIST("IDR-003", "System Event");
+	UNBLOCK_HOTLIST("IDR-003", "System Event");
 
 	/** The event id. */
 	private final String eventId;

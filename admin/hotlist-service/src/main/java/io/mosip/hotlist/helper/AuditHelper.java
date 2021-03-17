@@ -4,9 +4,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.hotlist.builder.AuditRequestBuilder;
 import io.mosip.hotlist.builder.RestRequestBuilder;
 import io.mosip.hotlist.constant.AuditEvents;
@@ -45,10 +42,6 @@ public class AuditHelper {
 	@Autowired
 	private RestRequestBuilder restBuilder;
 
-	/** The mapper. */
-	@Autowired
-	private ObjectMapper mapper;
-
 	/**
 	 * Audit - method to call audit service and store audit details.
 	 *
@@ -85,13 +78,7 @@ public class AuditHelper {
 	 * @param e      the e
 	 */
 	public void auditError(AuditModules module, AuditEvents event, String id, String idType, Throwable e) {
-		try {
-			this.audit(module, event, id, idType,
-					mapper.writeValueAsString(ExceptionUtils.getStackTrace(ExceptionUtils.getRootCause(e))));
-		} catch (JsonProcessingException ex) {
-			mosipLogger.error(HotlistSecurityManager.getUser(), "AuditRequestBuilder", "auditError",
-					"Exception : " + ExceptionUtils.getStackTrace(ex));
-		}
+		this.audit(module, event, id, idType, ExceptionUtils.getStackTrace(e));
 	}
 
 }

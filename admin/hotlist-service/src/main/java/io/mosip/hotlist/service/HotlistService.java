@@ -36,5 +36,5 @@ public interface HotlistService {
 	 * @return the hotlist request response DTO
 	 * @throws HotlistAppException the hotlist app exception
 	 */
-	public HotlistRequestResponseDTO updateHotlist(HotlistRequestResponseDTO blockRequest) throws HotlistAppException;
+	public HotlistRequestResponseDTO unblock(HotlistRequestResponseDTO unblockRequest) throws HotlistAppException;
 }

@@ -69,7 +69,7 @@ public class HotlistConfig {
 			publisher.registerTopic(topic, webSubHubUrl);
 		} catch (Exception e) {
 			mosipLogger.warn(HotlistSecurityManager.getUser(), "HotlistConfig", "registerTopic",
-					"IGNORING THIS ERROR AS TOPIC IS ALREADY REGISTERED");
+					"IGNORING THIS ERROR AS TOPIC IS ALREADY REGISTERED - " + e.getMessage());
 		}
 	}
 

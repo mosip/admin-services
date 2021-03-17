@@ -73,8 +73,8 @@ public class AuditRequestBuilder {
 		auditRequest.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
 		auditRequest.setHostName(hostName);
 		auditRequest.setHostIp(hostAddress);
-		auditRequest.setApplicationId(env.getProperty(appId));
-		auditRequest.setApplicationName(env.getProperty(appId));
+		auditRequest.setApplicationId(appId);
+		auditRequest.setApplicationName(appId);
 		auditRequest.setSessionUserId("sessionUserId");
 		auditRequest.setSessionUserName("sessionUserName");
 		auditRequest.setId(id);

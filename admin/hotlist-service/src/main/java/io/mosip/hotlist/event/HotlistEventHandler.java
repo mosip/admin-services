@@ -1,4 +1,4 @@
-package io.mosip.hotlist.handler;
+package io.mosip.hotlist.event;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
