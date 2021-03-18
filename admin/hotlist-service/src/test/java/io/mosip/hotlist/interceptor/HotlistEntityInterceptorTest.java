@@ -1,4 +1,4 @@
-package io.mosip.hotlist.test;
+package io.mosip.hotlist.interceptor;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -19,7 +19,6 @@ import io.mosip.hotlist.entity.Hotlist;
 import io.mosip.hotlist.entity.HotlistHistory;
 import io.mosip.hotlist.exception.HotlistAppException;
 import io.mosip.hotlist.exception.HotlistAppUncheckedException;
-import io.mosip.hotlist.interceptor.HotlistEntityInterceptor;
 import io.mosip.hotlist.security.HotlistSecurityManager;
 
 /**

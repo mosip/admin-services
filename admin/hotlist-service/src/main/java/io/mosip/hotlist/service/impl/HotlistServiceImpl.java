@@ -38,10 +38,13 @@ import io.mosip.kernel.core.util.DateUtils;
 @Transactional
 public class HotlistServiceImpl implements HotlistService {
 
+	/** The Constant RETRIEVE_HOTLIST. */
 	private static final String RETRIEVE_HOTLIST = "retrieveHotlist";
 
+	/** The Constant BLOCK. */
 	private static final String BLOCK = "block";
 
+	/** The Constant HOTLIST_SERVICE_IMPL. */
 	private static final String HOTLIST_SERVICE_IMPL = "HotlistServiceImpl";
 
 	/** The mosip logger. */
@@ -71,6 +74,7 @@ public class HotlistServiceImpl implements HotlistService {
 	@Autowired
 	private ObjectMapper mapper;
 
+	/** The event handler. */
 	@Autowired
 	private HotlistEventHandler eventHandler;
 
@@ -128,7 +132,7 @@ public class HotlistServiceImpl implements HotlistService {
 								: HotlistStatus.UNBLOCKED,
 						hotlistedData.getExpiryTimestamp());
 			} else {
-				return buildResponse(id, idType, HotlistStatus.UNBLOCKED, null);
+				return buildResponse(id, idType, HotlistStatus.UNBLOCKED, LocalDateTime.MAX.withYear(9999));
 			}
 		} catch (DataAccessException | TransactionException e) {
 			mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE_IMPL, RETRIEVE_HOTLIST, e.getMessage());
@@ -151,16 +155,24 @@ public class HotlistServiceImpl implements HotlistService {
 			Optional<Hotlist> hotlistedOptionalData = hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(idHash,
 					unblockRequest.getIdType(), false);
 			if (hotlistedOptionalData.isPresent()) {
-				return updateHotlist(unblockRequest, idHash, status, hotlistedOptionalData);
-			} else {
-				return buildResponse(unblockRequest.getId(), null, HotlistStatus.UNBLOCKED, null);
+				updateHotlist(unblockRequest, idHash, status, hotlistedOptionalData);
 			}
+			return buildResponse(unblockRequest.getId(), null, HotlistStatus.UNBLOCKED, null);
 		} catch (DataAccessException | TransactionException e) {
 			mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE_IMPL, "unblock", e.getMessage());
 			throw new HotlistAppException(HotlistErrorConstants.DATABASE_ACCESS_ERROR, e);
 		}
 	}
 
+	/**
+	 * Update hotlist.
+	 *
+	 * @param updateRequest         the update request
+	 * @param idHash                the id hash
+	 * @param status                the status
+	 * @param hotlistedOptionalData the hotlisted optional data
+	 * @return the hotlist request response DTO
+	 */
 	private HotlistRequestResponseDTO updateHotlist(HotlistRequestResponseDTO updateRequest, String idHash,
 			String status, Optional<Hotlist> hotlistedOptionalData) {
 		Hotlist hotlist = hotlistedOptionalData.get();
@@ -168,24 +180,27 @@ public class HotlistServiceImpl implements HotlistService {
 		hotlist.setUpdatedBy(HotlistSecurityManager.getUser());
 		hotlist.setUpdatedDateTime(DateUtils.getUTCCurrentDateTime());
 		hotlistHRepo.save(mapper.convertValue(hotlist, HotlistHistory.class));
-		if (hotlist.getStatus().contentEquals(HotlistStatus.UNBLOCKED)) {
-			eventHandler.publishEvent(idHash, updateRequest.getIdType(), HotlistStatus.UNBLOCKED, null);
-		} else {
-			hotlistRepo.save(hotlist);
-			eventHandler.publishEvent(idHash, updateRequest.getIdType(), status, hotlist.getExpiryTimestamp());
-		}
+		hotlistRepo.save(hotlist);
+		eventHandler.publishEvent(idHash, updateRequest.getIdType(), status, hotlist.getExpiryTimestamp());
 		return buildResponse(hotlist.getIdValue(), null, updateRequest.getStatus(), null);
 	}
 
+	/**
+	 * Builds the hotlist entity.
+	 *
+	 * @param request the request
+	 * @param idHash  the id hash
+	 * @param status  the status
+	 * @param hotlist the hotlist
+	 */
 	private void buildHotlistEntity(HotlistRequestResponseDTO request, String idHash, String status, Hotlist hotlist) {
 		hotlist.setIdHash(idHash);
 		hotlist.setIdValue(request.getId());
 		hotlist.setIdType(request.getIdType());
 		hotlist.setStatus(status);
 		hotlist.setStartTimestamp(DateUtils.getUTCCurrentDateTime());
-		hotlist.setExpiryTimestamp(
-				Objects.nonNull(request.getExpiryTimestamp()) ? request.getExpiryTimestamp()
-						: LocalDateTime.MAX.withYear(9999));
+		hotlist.setExpiryTimestamp(Objects.nonNull(request.getExpiryTimestamp()) ? request.getExpiryTimestamp()
+				: LocalDateTime.MAX.withYear(9999));
 	}
 
 	/**

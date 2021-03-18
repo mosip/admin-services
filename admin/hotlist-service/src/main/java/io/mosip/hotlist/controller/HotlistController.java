@@ -107,7 +107,7 @@ public class HotlistController {
 	public ResponseWrapper<HotlistRequestResponseDTO> retrieveHotlist(@PathVariable String id,
 			@PathVariable String idType) throws MethodArgumentNotValidException {
 		ResponseWrapper<HotlistRequestResponseDTO> response = new ResponseWrapper<>();
-		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(response, "request");
+		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new HotlistRequestResponseDTO(), "request");
 		validator.validateId(id, errors);
 		validator.validateIdType(idType, errors);
 		if (errors.hasErrors()) {

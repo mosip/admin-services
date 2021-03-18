@@ -4,6 +4,7 @@ import static io.mosip.hotlist.constant.HotlistErrorConstants.ID_TYPE_NOT_ALLOWE
 import static io.mosip.hotlist.constant.HotlistErrorConstants.INVALID_INPUT_PARAMETER;
 import static io.mosip.hotlist.constant.HotlistErrorConstants.MISSING_INPUT_PARAMETER;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,6 +19,7 @@ import io.mosip.hotlist.constant.HotlistStatus;
 import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
 import io.mosip.hotlist.logger.HotlistLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
@@ -66,6 +68,7 @@ public class HotlistValidator implements Validator {
 		validateId(request.getId(), errors);
 		validateIdType(request.getIdType(), errors);
 		validateStatus(request.getStatus(), errors);
+		validateExpiryTimestamp(request.getExpiryTimestamp(), errors);
 	}
 
 	/**
@@ -117,11 +120,19 @@ public class HotlistValidator implements Validator {
 	 * @param errors the errors
 	 */
 	private void validateStatus(String status, Errors errors) {
-		if (Objects.nonNull(status) && (StringUtils.isBlank(status)
-				|| (!HotlistStatus.BLOCKED.contentEquals(status) && !HotlistStatus.UNBLOCKED.contentEquals(status)))) {
+		if (Objects.nonNull(status)
+				&& (!HotlistStatus.BLOCKED.contentEquals(status) && !HotlistStatus.UNBLOCKED.contentEquals(status))) {
 			mosipLogger.debug("Input status is invalid");
 			errors.reject(INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), "status"));
+		}
+	}
+
+	private void validateExpiryTimestamp(LocalDateTime expiryTimestamp, Errors errors) {
+		if (Objects.nonNull(expiryTimestamp) && expiryTimestamp.isBefore(DateUtils.getUTCCurrentDateTime())) {
+			mosipLogger.debug("Expiry Timestamp is past dated");
+			errors.reject(INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), "expiryTimestamp"));
 		}
 	}
 }
