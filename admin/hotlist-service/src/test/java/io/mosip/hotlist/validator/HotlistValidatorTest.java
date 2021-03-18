@@ -15,6 +15,7 @@ import org.springframework.validation.BeanPropertyBindingResult;
 
 import io.mosip.hotlist.constant.HotlistStatus;
 import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
@@ -51,11 +52,6 @@ public class HotlistValidatorTest {
 	@Test
 	public void testNullIdType() {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new HotlistRequestResponseDTO(), "request");
-//		HotlistRequestResponseDTO request = new HotlistRequestResponseDTO();
-//		request.setId(null);
-//		request.setIdType("idType");
-//		request.setStatus(HotlistStatus.BLOCKED);
-//		request.setExpiryTimestamp(DateUtils.getUTCCurrentDateTime());
 		validator.validateIdType(null, errors);
 		assertTrue(errors.getAllErrors().get(0).getCode().contentEquals(MISSING_INPUT_PARAMETER.getErrorCode()));
 		assertTrue(errors.getAllErrors().get(0).getDefaultMessage()
@@ -95,7 +91,9 @@ public class HotlistValidatorTest {
 		request.setIdType("idType");
 		request.setStatus(null);
 		request.setExpiryTimestamp(DateUtils.getUTCCurrentDateTime());
-		validator.validate(request, errors);
+		RequestWrapper<Object> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(request);
+		validator.validate(requestWrapper, errors);
 		assertFalse(errors.hasErrors());
 	}
 
@@ -107,7 +105,9 @@ public class HotlistValidatorTest {
 		request.setIdType("idType");
 		request.setStatus(" ");
 		request.setExpiryTimestamp(DateUtils.getUTCCurrentDateTime());
-		validator.validate(request, errors);
+		RequestWrapper<Object> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(request);
+		validator.validate(requestWrapper, errors);
 		assertTrue(errors.getAllErrors().get(0).getCode().contentEquals(INVALID_INPUT_PARAMETER.getErrorCode()));
 		assertTrue(errors.getAllErrors().get(0).getDefaultMessage()
 				.contentEquals(String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), "status")));
@@ -121,7 +121,9 @@ public class HotlistValidatorTest {
 		request.setIdType("idType");
 		request.setStatus(HotlistStatus.BLOCKED);
 		request.setExpiryTimestamp(DateUtils.getUTCCurrentDateTime());
-		validator.validate(request, errors);
+		RequestWrapper<Object> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(request);
+		validator.validate(requestWrapper, errors);
 		assertFalse(errors.hasErrors());
 	}
 
@@ -133,7 +135,9 @@ public class HotlistValidatorTest {
 		request.setIdType("idType");
 		request.setStatus(HotlistStatus.UNBLOCKED);
 		request.setExpiryTimestamp(DateUtils.getUTCCurrentDateTime());
-		validator.validate(request, errors);
+		RequestWrapper<Object> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(request);
+		validator.validate(requestWrapper, errors);
 		assertFalse(errors.hasErrors());
 	}
 
@@ -145,7 +149,9 @@ public class HotlistValidatorTest {
 		request.setIdType("idType");
 		request.setStatus(HotlistStatus.BLOCKED);
 		request.setExpiryTimestamp(null);
-		validator.validate(request, errors);
+		RequestWrapper<Object> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(request);
+		validator.validate(requestWrapper, errors);
 		assertFalse(errors.hasErrors());
 	}
 
@@ -157,7 +163,9 @@ public class HotlistValidatorTest {
 		request.setIdType("idType");
 		request.setStatus(HotlistStatus.BLOCKED);
 		request.setExpiryTimestamp(DateUtils.getUTCCurrentDateTime().withYear(2000));
-		validator.validate(request, errors);
+		RequestWrapper<Object> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(request);
+		validator.validate(requestWrapper, errors);
 		assertTrue(errors.getAllErrors().get(0).getCode().contentEquals(INVALID_INPUT_PARAMETER.getErrorCode()));
 		assertTrue(errors.getAllErrors().get(0).getDefaultMessage()
 				.contentEquals(String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), "expiryTimestamp")));
@@ -171,7 +179,9 @@ public class HotlistValidatorTest {
 		request.setIdType("idType");
 		request.setStatus(HotlistStatus.BLOCKED);
 		request.setExpiryTimestamp(DateUtils.getUTCCurrentDateTime().withYear(9999));
-		validator.validate(request, errors);
+		RequestWrapper<Object> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(request);
+		validator.validate(requestWrapper, errors);
 		assertFalse(errors.hasErrors());
 	}
 }

@@ -89,7 +89,7 @@ public class HotlistServiceImpl implements HotlistService {
 	public HotlistRequestResponseDTO block(HotlistRequestResponseDTO blockRequest) throws HotlistAppException {
 		try {
 			String idHash = HotlistSecurityManager.hash(blockRequest.getId().getBytes());
-			String status = getStatus(blockRequest.getStatus(), blockRequest.getExpiryTimestamp());
+			String status = getStatus(HotlistStatus.BLOCKED, blockRequest.getExpiryTimestamp());
 			Optional<Hotlist> hotlistedOptionalData = hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(idHash,
 					blockRequest.getIdType(), false);
 			if (hotlistedOptionalData.isPresent()) {
@@ -151,11 +151,11 @@ public class HotlistServiceImpl implements HotlistService {
 	public HotlistRequestResponseDTO unblock(HotlistRequestResponseDTO unblockRequest) throws HotlistAppException {
 		try {
 			String idHash = HotlistSecurityManager.hash(unblockRequest.getId().getBytes());
-			String status = getStatus(unblockRequest.getStatus(), unblockRequest.getExpiryTimestamp());
 			Optional<Hotlist> hotlistedOptionalData = hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(idHash,
 					unblockRequest.getIdType(), false);
 			if (hotlistedOptionalData.isPresent()) {
-				updateHotlist(unblockRequest, idHash, status, hotlistedOptionalData);
+				unblockRequest.setExpiryTimestamp(DateUtils.getUTCCurrentDateTime());
+				updateHotlist(unblockRequest, idHash, HotlistStatus.UNBLOCKED, hotlistedOptionalData);
 			}
 			return buildResponse(unblockRequest.getId(), null, HotlistStatus.UNBLOCKED, null);
 		} catch (DataAccessException | TransactionException e) {
@@ -211,10 +211,9 @@ public class HotlistServiceImpl implements HotlistService {
 	 * @return the status
 	 */
 	private String getStatus(String status, LocalDateTime expiryTimestamp) {
-		return Objects.isNull(status) ? HotlistStatus.BLOCKED
-				: Objects.isNull(expiryTimestamp) ? HotlistStatus.BLOCKED
-						: expiryTimestamp.isAfter(DateUtils.getUTCCurrentDateTime()) ? HotlistStatus.BLOCKED
-								: HotlistStatus.UNBLOCKED;
+		return Objects.isNull(expiryTimestamp) ? status
+				: expiryTimestamp.isAfter(DateUtils.getUTCCurrentDateTime()) ? HotlistStatus.BLOCKED
+						: HotlistStatus.UNBLOCKED;
 	}
 
 	/**

@@ -78,7 +78,7 @@ public class HotlistSecurityManagerTest {
 			throws JsonParseException, JsonMappingException, JsonProcessingException, IOException, HotlistAppException {
 		ResponseWrapper<ObjectNode> response = new ResponseWrapper<>();
 		ObjectNode responseNode = mapper.createObjectNode();
-		responseNode.put("data", "data");
+		responseNode.put("data", "ZGF0YQ==");
 		response.setResponse(responseNode);
 		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any(Class.class)))
 				.thenReturn(new RestRequestDTO());

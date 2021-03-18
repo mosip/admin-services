@@ -18,6 +18,7 @@ import org.springframework.validation.Validator;
 import io.mosip.hotlist.constant.HotlistStatus;
 import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
 import io.mosip.hotlist.logger.HotlistLogger;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
@@ -53,7 +54,7 @@ public class HotlistValidator implements Validator {
 	 */
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return clazz.isAssignableFrom(HotlistRequestResponseDTO.class);
+		return clazz.isAssignableFrom(RequestWrapper.class);
 	}
 
 	/**
@@ -62,9 +63,10 @@ public class HotlistValidator implements Validator {
 	 * @param target the target
 	 * @param errors the errors
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void validate(Object target, Errors errors) {
-		HotlistRequestResponseDTO request = (HotlistRequestResponseDTO) target;
+		HotlistRequestResponseDTO request = ((RequestWrapper<HotlistRequestResponseDTO>) target).getRequest();
 		validateId(request.getId(), errors);
 		validateIdType(request.getIdType(), errors);
 		validateStatus(request.getStatus(), errors);

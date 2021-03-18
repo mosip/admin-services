@@ -23,6 +23,7 @@ import io.mosip.hotlist.logger.HotlistLogger;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils2;
 
@@ -33,7 +34,7 @@ import io.mosip.kernel.core.util.HMACUtils2;
  */
 @Component
 public class HotlistSecurityManager {
-	
+
 	/** The mosip logger. */
 	private static Logger mosipLogger = HotlistLogger.getLogger(HotlistSecurityManager.class);
 
@@ -103,7 +104,7 @@ public class HotlistSecurityManager {
 	public String encrypt(String dataToEncrypt) throws HotlistAppException {
 		RequestWrapper<CryptomanagerRequestDto> requestWrapper = new RequestWrapper<>();
 		CryptomanagerRequestDto request = new CryptomanagerRequestDto(appId, refId, DateUtils.getUTCCurrentDateTime(),
-				dataToEncrypt, null, null, true);
+				CryptoUtil.encodeBase64(dataToEncrypt.getBytes()), null, null, true);
 		requestWrapper.setRequest(request);
 		return encryptDecryptData(restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_ENCRYPT, requestWrapper,
 				ResponseWrapper.class));
@@ -121,8 +122,8 @@ public class HotlistSecurityManager {
 		CryptomanagerRequestDto request = new CryptomanagerRequestDto(appId, refId, DateUtils.getUTCCurrentDateTime(),
 				dataToDecrypt, null, null, true);
 		requestWrapper.setRequest(request);
-		return encryptDecryptData(restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT, requestWrapper,
-				ResponseWrapper.class));
+		return new String(CryptoUtil.decodeBase64(encryptDecryptData(restBuilder
+				.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT, requestWrapper, ResponseWrapper.class))));
 	}
 
 	/**
