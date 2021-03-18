@@ -131,10 +131,7 @@ public class UISpecServiceImpl implements UISpecService {
 	 * 
 	 */
 	@Override
-	public UISpecResponseDto defineUISpec(UISpecDto dto) {
-		validateAndGetTypes("process,schema");
-		validateAndGetTypes("process");
-		validateAndGetTypes("process;schema");
+	public UISpecResponseDto defineUISpec(UISpecDto dto) {		
 		IdentitySchema identitySchema = validateIdentityShema(dto.getIdentitySchemaId());
 		isJSONValid(dto.getJsonspec());
 		UISpec uiSpecEntity = MetaDataUtils.setCreateMetaData(dto, UISpec.class);
@@ -147,6 +144,7 @@ public class UISpecServiceImpl implements UISpecService {
 		uiSpecEntity.setJsonSpec(dto.getJsonspec());
 		uiSpecEntity.setId(UUID.randomUUID().toString());
 		uiSpecEntity.setIsDeleted(false);
+		uiSpecEntity.setAdditionalProperties(false);
 		uiSpecEntity.setEffectiveFrom(LocalDateTime.now(ZoneId.of(ZoneOffset.UTC.getId())));
 		try {
 			uiSpecRepository.save(uiSpecEntity);
