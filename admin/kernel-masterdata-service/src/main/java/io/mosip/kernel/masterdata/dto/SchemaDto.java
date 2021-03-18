@@ -73,6 +73,8 @@ class ValidatorDto {
 	private String validator;
 	
 	private List<String> arguments;
+	
+	private String langCode;
 }
 
 @Data
