@@ -217,7 +217,7 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 		identitySchema.setUpdatedBy(MetaDataUtils.getContextUser());
 		identitySchema.setUpdatedDateTime(MetaDataUtils.getCurrentDateTime());
 		identitySchema.setIdVersion(currentVersion);
-		
+
 		try {
 
 		} catch (DataAccessException | DataAccessLayerException e) {
@@ -286,46 +286,62 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 		return id;
 	}
 
+	/**
+	 * This method will get the latest published schema based on version, domain and
+	 * type
+	 * 
+	 * This is back ward compatible.
+	 * 
+	 * By default will bring the ui spec with domain as 'registration-client'.
+	 */
 	@Override
 	public Map<String, Object> getLatestPublishedSchema(double version, String domain, String type)
 			throws JSONException {
 		IdSchemaResponseDto response = null;
-		List<UISpecResponseDto> uiSpecs = new ArrayList<>();
 		if (domain == null || domain.isEmpty() || domain.isBlank()) {
 			domain = defaultDomain;
 		}
+        LOGGER.info("Getting latest published schema with version domain type", version, domain, type);
+		
+        // with identity schema version absent and type is absent
 		if (version <= 0 && (type == null || type.isBlank() || type.isEmpty())) {
-			response = getLatestSchema();
-			if(response != null)
-				uiSpecs = uiSpecService.getLatestUISpec(response.getId(),domain);
+			response = getLatestSchema();						
+			LOGGER.info("Retrived latest published schema with out type");
+			return populateResponse(response, uiSpecService.getLatestUISpec(response.getId(), domain));
 		}
 
+		// with identity schema version absent and type is present
 		if (version <= 0 && !(type == null || type.isBlank() || type.isEmpty())) {
 			response = getLatestSchema();
-			if(response != null)
-				uiSpecs = uiSpecService.getUISpec(response.getId(),domain, type);
+			LOGGER.info("Retrived latest published schema with type");			
+			return populateResponse(response, uiSpecService.getUISpec(response.getId(), domain, type));
 		}
 
+		// with identity schema version and type is absent
 		if (version > 0 && (type == null || type.isBlank() || type.isEmpty())) {
 			response = getIdentitySchema(version);
-			if(response != null)	
-				uiSpecs = uiSpecService.getLatestUISpec(response.getId(),domain);
-		}
-
-		if (version > 0 && !(type == null || type.isBlank() || type.isEmpty())) {
+			LOGGER.info("Retrived latest published schema with version");			
+			return populateResponse(response, uiSpecService.getLatestUISpec(response.getId(), domain));
+		}else {
+			// with identity schema version and type present
 			response = getIdentitySchema(version);
-			if(response != null)
-				uiSpecs = uiSpecService.getUISpec(response.getId(),domain, type);
+			LOGGER.info("Retrived latest published schema with version and type");			
+			return populateResponse(response, uiSpecService.getUISpec(response.getId(), domain, type));
 		}
-
-		return populateResponse(response, uiSpecs);
 	}
 
+	/**
+	 * 
+	 * @param dto
+	 * @param uiSpecs
+	 * @return
+	 * @throws JSONException
+	 */
 	private Map<String, Object> populateResponse(IdSchemaResponseDto dto, List<UISpecResponseDto> uiSpecs)
-			throws JSONException {		
+			throws JSONException {
 		Map<String, Object> jsonData = new HashMap<>();
 		jsonData.put("id", dto.getId());
-		jsonData.put("idVersion",dto.getIdVersion());
+		jsonData.put("idVersion", dto.getIdVersion());
 		jsonData.put("title", dto.getTitle());
 		jsonData.put("description", dto.getDescription());
 		jsonData.put("schemaJson", dto.getSchemaJson());
@@ -335,7 +351,7 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 					jsonData.put(keyValue.getType(), keyValue.getSpec());
 				}
 			}
-		}		
+		}
 		jsonData.put("status", dto.getStatus());
 		jsonData.put("effectiveFrom", dto.getEffectiveFrom());
 		jsonData.put("createdBy", dto.getCreatedBy());
@@ -345,6 +361,11 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 		return jsonData;
 	}
 
+	/**
+	 * 
+	 * @param entity
+	 * @return
+	 */
 	private IdSchemaResponseDto getIdentitySchemaDto(IdentitySchema entity) {
 		IdSchemaResponseDto dto = new IdSchemaResponseDto();
 		dto.setId(entity.getId());

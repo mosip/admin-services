@@ -61,7 +61,7 @@ public class UISpecServiceImpl implements UISpecService {
 	private IdentitySchemaRepository identitySchemaRepository;
 
 	/**
-	 * 
+	 * Method to bring latest ui spec for given domain
 	 */
 	@Override
 	public List<UISpecResponseDto> getLatestUISpec(String domain) {
@@ -87,7 +87,7 @@ public class UISpecServiceImpl implements UISpecService {
 	}
 
 	/**
-	 * 
+	 * Gets ui spec for given version and domain
 	 */
 	@Override
 	public List<UISpecResponseDto> getUISpec(double version, String domain) {
@@ -100,7 +100,7 @@ public class UISpecServiceImpl implements UISpecService {
 	}
 
 	/**
-	 * 
+	 * Gets all ui specs
 	 */
 	@Override
 	public PageDto<UISpecResponseDto> getAllUISpecs(int pageNumber, int pageSize, String sortBy, String orderBy) {
@@ -128,7 +128,7 @@ public class UISpecServiceImpl implements UISpecService {
 	}
 
 	/**
-	 * 
+	 * Creates ui spec
 	 */
 	@Override
 	public UISpecResponseDto defineUISpec(UISpecDto dto) {		
@@ -158,7 +158,7 @@ public class UISpecServiceImpl implements UISpecService {
 	}
 
 	/**
-	 * 
+	 *  Validates string is valid json or not
 	 * @param jsonInString
 	 */
 	private void isJSONValid(String jsonInString) {
@@ -296,8 +296,11 @@ public class UISpecServiceImpl implements UISpecService {
 
 		}
 		return id;
-	}
+	}	
 
+	/**
+	 * 
+	 */
 	@Override
 	public List<UISpecResponseDto> getUISpec(double version, String domain, String type) {
 		List<UISpec> specsFromDb = new ArrayList<UISpec>();
@@ -310,6 +313,9 @@ public class UISpecServiceImpl implements UISpecService {
 		return prepareResponse(specsFromDb);
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public List<UISpecResponseDto> getUISpec(String domain, String type) {
 		List<String> types = validateAndGetTypes(type);
@@ -322,6 +328,11 @@ public class UISpecServiceImpl implements UISpecService {
 		return prepareResponse(specsFromDb);
 	}
 
+	/**
+	 * 
+	 * @param typeInString
+	 * @return
+	 */
 	private List<String> validateAndGetTypes(String typeInString) {
 		String[] arrayOfTypes = typeInString.split(",");
 		List<String> types = new ArrayList<String>();
@@ -331,6 +342,9 @@ public class UISpecServiceImpl implements UISpecService {
 		return types;
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public List<UISpecResponseDto> getUISpec(String identitySchemaId, String domain, String type) {
 		List<String> types = validateAndGetTypes(type);
@@ -338,28 +352,44 @@ public class UISpecServiceImpl implements UISpecService {
 				uiSpecRepository.findLatestPublishedUISpecByIdentitySchema(identitySchemaId, domain, types));
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public List<UISpecResponseDto> getLatestUISpec(String identitySchemaId, String domain) {
 		return prepareResponse(uiSpecRepository.findTypesByDomainAndSchema(domain, identitySchemaId));
 	}
 
+	/**
+	 * Gets latest published ui spec
+	 */
 	@Override
 	public List<UISpecResponseDto> getLatestPublishedUISpec(String domain, double version, String type,
 			double identitySchemaVersion) {		
+		
+		//latest ui spec and type is not present
 		if (version <= 0 && (type == null || type.isBlank() || type.isEmpty())) {
 			return filterByIdentitySchemaVersion(getLatestUISpec(domain), identitySchemaVersion);
 		}
 
+		//with ui spec version and domain and type is null
 		if (version >= 0 && (type == null || type.isBlank() || type.isEmpty())) {
 			return filterByIdentitySchemaVersion(getUISpec(version, domain), identitySchemaVersion);
 		}
 
+		//with latest ui spec and type
 		if (version <= 0 && !type.isBlank()) {
 			return filterByIdentitySchemaVersion(getUISpec(domain, type), identitySchemaVersion);
 		}
 		return filterByIdentitySchemaVersion(getUISpec(version, domain, type), identitySchemaVersion);
 	}
 
+	/**
+	 * 
+	 * @param response
+	 * @param identitySchemaVersion
+	 * @return
+	 */
 	private List<UISpecResponseDto> filterByIdentitySchemaVersion(List<UISpecResponseDto> response,
 			double identitySchemaVersion) {
 		if (identitySchemaVersion > 0) {
