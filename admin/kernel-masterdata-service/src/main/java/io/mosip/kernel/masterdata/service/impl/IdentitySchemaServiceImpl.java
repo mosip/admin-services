@@ -78,8 +78,9 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 					PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
 
 		} catch (DataAccessException | DataAccessLayerException e) {
+			LOGGER.error("Error while fetching all schema", e);
 			throw new MasterDataServiceException(SchemaErrorCode.SCHEMA_FETCH_EXCEPTION.getErrorCode(),
-					SchemaErrorCode.SCHEMA_FETCH_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
+					SchemaErrorCode.SCHEMA_FETCH_EXCEPTION.getErrorMessage());
 		}
 
 		if (pagedResult != null && pagedResult.getContent() != null) {
