@@ -108,7 +108,7 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 		} catch (DataAccessException | DataAccessLayerException e) {
 			LOGGER.error("Error while fetching latest schema", e);
 			throw new MasterDataServiceException(SchemaErrorCode.SCHEMA_FETCH_EXCEPTION.getErrorCode(),
-					SchemaErrorCode.SCHEMA_FETCH_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
+					SchemaErrorCode.SCHEMA_FETCH_EXCEPTION.getErrorMessage());
 		}
 
 		if (identitySchema == null)
@@ -132,7 +132,7 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 		} catch (DataAccessException | DataAccessLayerException e) {
 			LOGGER.error("Error while fetching schema ver: " + version, e);
 			throw new MasterDataServiceException(SchemaErrorCode.SCHEMA_FETCH_EXCEPTION.getErrorCode(),
-					SchemaErrorCode.SCHEMA_FETCH_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
+					SchemaErrorCode.SCHEMA_FETCH_EXCEPTION.getErrorMessage());
 		}
 
 		if (identitySchema == null)
@@ -160,14 +160,14 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 		entity.setId(UUID.randomUUID().toString());
 		entity.setLangCode("eng");
 		entity.setIsDeleted(false);
-
+		entity.setAdditionalProperties(false);
 		try {
 			entity = identitySchemaRepository.create(entity);
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			LOGGER.error("Error while creating identity schema", e);
 			throw new MasterDataServiceException(SchemaErrorCode.SCHEMA_INSERT_EXCEPTION.getErrorCode(),
-					ExceptionUtils.parseException(e));
+					SchemaErrorCode.SCHEMA_INSERT_EXCEPTION.getErrorMessage());
 		}
 		return getIdentitySchemaDto(entity);
 	}
@@ -218,10 +218,10 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 		identitySchema.setUpdatedDateTime(MetaDataUtils.getCurrentDateTime());
 		identitySchema.setIdVersion(currentVersion);
 
-		try {
-
+		try {			
+			identitySchemaRepository.save(identitySchema);
 		} catch (DataAccessException | DataAccessLayerException e) {
-			LOGGER.error("Error while publishing identity schema : " + dto.getId(), e);
+			LOGGER.error("Error while publishing identity schema : " , dto.getId(), e);
 			throw new MasterDataServiceException(SchemaErrorCode.SCHEMA_UPDATE_EXCEPTION.getErrorCode(),
 					SchemaErrorCode.SCHEMA_UPDATE_EXCEPTION.getErrorMessage());
 
@@ -254,9 +254,9 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 		try {
 			identitySchemaRepository.save(entity);
 		} catch (DataAccessException | DataAccessLayerException e) {
-			LOGGER.error("Error while updating identity schema : " + id, e);
+			LOGGER.error("Error while updating identity schema : " , id, e);
 			throw new MasterDataServiceException(SchemaErrorCode.SCHEMA_UPDATE_EXCEPTION.getErrorCode(),
-					SchemaErrorCode.SCHEMA_UPDATE_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
+					SchemaErrorCode.SCHEMA_UPDATE_EXCEPTION.getErrorMessage());
 		}
 		return getIdentitySchemaDto(entity);
 	}
@@ -279,7 +279,7 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 			}
 
 		} catch (DataAccessException | DataAccessLayerException e) {
-			LOGGER.error("Error while deleting identity schema : " + id, e);
+			LOGGER.error("Error while deleting identity schema : " , id, e);
 			throw new MasterDataServiceException(SchemaErrorCode.SCHEMA_UPDATE_EXCEPTION.getErrorCode(),
 					SchemaErrorCode.SCHEMA_UPDATE_EXCEPTION.getErrorMessage());
 		}
