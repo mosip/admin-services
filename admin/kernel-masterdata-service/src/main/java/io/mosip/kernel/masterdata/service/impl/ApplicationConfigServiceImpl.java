@@ -34,6 +34,11 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 		return dto;
 	}
 
+	/**
+	 * This method will spilt the configuration value and sends as a response in desired format.
+	 * uiConfigs will look like primaryLangCode:eng,secondaryLang:ara,version:1.1.2
+	 * 
+	 */
 	@Override
 	public Map<String,String> getConfigValues(){
 		Map<String, String> response = new HashMap<String, String>();
