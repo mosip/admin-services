@@ -50,12 +50,6 @@ public class Config {
 	public Filter registerCORSFilter() {
 		return new CorsFilter();
 	}
-	
-	@Primary
-	@Bean(name = "authRestTemplate")
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
-	}
 
 
 	/**

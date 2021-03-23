@@ -113,10 +113,6 @@ public class LocationHierarchyServiceImpl implements LocationHierarchyService {
 		if (locationHierarchyList != null && !locationHierarchyList.isEmpty()) {
 			locationHierarchyLevelDtos = MapperUtils.mapAll(locationHierarchyList, LocationHierarchyLevelDto.class);
 
-		} else {
-			throw new DataNotFoundException(
-					LocationHierarchyErrorCode.LOCATION_HIERARCHY_NOT_FOUND_EXCEPTION.getErrorCode(),
-					LocationHierarchyErrorCode.LOCATION_HIERARCHY_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
 		locationHierarchyLevelResponseDto.setLocationHierarchyLevels(locationHierarchyLevelDtos);
 		return locationHierarchyLevelResponseDto;

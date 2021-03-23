@@ -21,7 +21,6 @@ import io.mosip.kernel.syncdata.exception.RequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpEntity;
@@ -37,7 +36,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.syncdata.config.MosipEnvironment;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
 import io.mosip.kernel.syncdata.dto.AppDetailDto;
@@ -290,10 +288,9 @@ public class SyncMasterDataServiceHelper {
 	@Value("${mosip.syncdata.tpm.required:false}")
 	private boolean isTPMRequired;
 
-	@Autowired
-	MosipEnvironment mosipEnvironment;
+	@Value("${mosip.kernel.masterdata.locationhierarchylevels.uri}")
+	private String locationHirerarchyUrl;
 
-	@Qualifier("authRestTemplate")
 	@Autowired
 	RestTemplate restTemplate;
 
@@ -367,7 +364,6 @@ public class SyncMasterDataServiceHelper {
 		LocationHierarchyLevelResponseDto locationHierarchyResponseDto = null;
 		List<LocationHierarchyDto> locationHierarchyLevelDtos = new ArrayList<LocationHierarchyDto>();
 
-		final String url = mosipEnvironment.getLocationHierarchyUrl();
 		HttpHeaders headers = new HttpHeaders();
 
 		String lastUpdatedTime = null;
@@ -375,9 +371,10 @@ public class SyncMasterDataServiceHelper {
 		if (lastUpdated != null) {
 			DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 			lastUpdatedTime = lastUpdated.format(formatter);
-			builder = UriComponentsBuilder.fromHttpUrl(url).queryParam("lastUpdated", lastUpdatedTime + "Z");
+			builder = UriComponentsBuilder.fromHttpUrl(locationHirerarchyUrl).queryParam("lastUpdated",
+					lastUpdatedTime + "Z");
 		} else {
-			builder = UriComponentsBuilder.fromHttpUrl(url);
+			builder = UriComponentsBuilder.fromHttpUrl(locationHirerarchyUrl);
 		}
 
 		ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET,
@@ -387,17 +384,15 @@ public class SyncMasterDataServiceHelper {
 			List<ServiceError> validationErrorsList = null;
 			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
 			if (!validationErrorsList.isEmpty()) {
-				// throw new SyncServiceException(validationErrorsList);
+				throw new SyncServiceException(validationErrorsList);
 			}
 			ResponseWrapper<?> responseObject;
 			try {
 				responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
-				if (responseObject.getResponse() != null) {
-					locationHierarchyResponseDto = objectMapper.readValue(
-							objectMapper.writeValueAsString(responseObject.getResponse()),
-							LocationHierarchyLevelResponseDto.class);
-					locationHierarchyLevelDtos = locationHierarchyResponseDto.getLocationHierarchyLevels();
-				}
+				locationHierarchyResponseDto = objectMapper.readValue(
+						objectMapper.writeValueAsString(responseObject.getResponse()),
+						LocationHierarchyLevelResponseDto.class);
+				locationHierarchyLevelDtos = locationHierarchyResponseDto.getLocationHierarchyLevels();
 			} catch (Exception e) {
 				throw new SyncDataServiceException(
 						MasterDataErrorCode.LOCATION_HIERARCHY_DESERIALIZATION_FAILED.getErrorCode(),

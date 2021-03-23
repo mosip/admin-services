@@ -38,7 +38,7 @@ public class LocationHierarchyHelper {
 			throws InterruptedException, ExecutionException {
 		// list.add(serviceHelper.getSyncDataBaseDto(Application.class, "structured",
 		// this.applications.get(), this.publicKey));
-		serviceHelper.getSyncDataBaseDto(LocationHierarchy.class, "structured", this.locationHierarchyLevelDtos.get(),
+		serviceHelper.getSyncDataBaseDto(LocationHierarchyDto.class, "structured", this.locationHierarchyLevelDtos.get(),
 				this.publicKey, list);
 	}
 
