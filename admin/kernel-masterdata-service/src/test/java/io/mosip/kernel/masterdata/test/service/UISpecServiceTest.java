@@ -256,7 +256,7 @@ public class UISpecServiceTest {
 	public void publishUISpecTest_02() {
 		Mockito.when(uiSpecRepository.findUISpecById("13")).thenReturn(publishedUISpec);
 		UISpecPublishDto request = new UISpecPublishDto();
-		request.setEffectiveFrom(LocalDateTime.now());
+		request.setEffectiveFrom(LocalDateTime.now(ZoneId.of(ZoneOffset.UTC.getId())).plusHours(5));
 		request.setId("13");
 		try {
 			uiSpecService.publishUISpec(request);
