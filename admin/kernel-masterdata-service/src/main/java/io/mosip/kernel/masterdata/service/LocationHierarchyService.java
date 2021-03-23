@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
+import java.time.LocalDateTime;
+
 import io.mosip.kernel.masterdata.dto.LocationHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -17,16 +19,13 @@ public interface LocationHierarchyService {
 	 * This abstract method to fetch LocationHierarchy details for given
 	 * LocationHierarchy level and language code
 	 * 
-	 * @param level
-	 *            LocationHierarchy level given by user
-	 * @param langCode
-	 *            Language code given by user
+	 * @param level    LocationHierarchy level given by user
+	 * @param langCode Language code given by user
 	 * @return LocationHierarchyLevelResponseDto LocationHierarchy details for given
 	 *         LocationHierarchy level and language code
-	 * @throws MasterDataServiceException
-	 *             if any error occurs while retrieving LocationHierarchy Details
-	 * @throws DataNotFoundException
-	 *             if no Location Hierarchy found
+	 * @throws MasterDataServiceException if any error occurs while retrieving
+	 *                                    LocationHierarchy Details
+	 * @throws DataNotFoundException      if no Location Hierarchy found
 	 *
 	 */
 
@@ -36,15 +35,25 @@ public interface LocationHierarchyService {
 	 * This abstract method to fetch LocationHierarchy level detail list based on
 	 * the given language code
 	 * 
-	 * @param langCode
-	 *            Language code given by user
+	 * @param langCode Language code given by user
 	 * @return LocationHierarchyLevelResponseDto Location-Hierarchy-level details
 	 *         based on the given language code
-	 * @throws MasterDataServiceException
-	 *             if any error occurs while retrieving LocationHierarchy level list
-	 * @throws DataNotFoundException
-	 *             if no LocationHierarchy level found
+	 * @throws MasterDataServiceException if any error occurs while retrieving
+	 *                                    LocationHierarchy level list
+	 * @throws DataNotFoundException      if no LocationHierarchy level found
 	 *
 	 */
 	public LocationHierarchyLevelResponseDto getLocationHierarchyLangCode(String langCode);
+
+	/**
+	 * This abstract method to fetch LocationHierarchy level detail list based on lastUpdated
+	 * 
+	 * @return LocationHierarchyLevelResponseDto Location-Hierarchy-level details
+	 * 
+	 * @throws MasterDataServiceException if any error occurs while retrieving
+	 *                                    LocationHierarchy level list
+	 * @throws DataNotFoundException      if no LocationHierarchy level found
+	 *
+	 */
+	public LocationHierarchyLevelResponseDto getLocationHierarchy(LocalDateTime lastUpdated, LocalDateTime currentTimestamp);
 }
