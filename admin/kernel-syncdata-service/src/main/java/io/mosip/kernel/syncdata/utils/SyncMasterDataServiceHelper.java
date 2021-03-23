@@ -2,6 +2,7 @@ package io.mosip.kernel.syncdata.utils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,19 +14,30 @@ import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
 import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.syncdata.exception.DataNotFoundException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.syncdata.exception.RequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.syncdata.constant.LocationHierarchyErrorCode;
+import io.mosip.kernel.syncdata.config.MosipEnvironment;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
 import io.mosip.kernel.syncdata.dto.AppDetailDto;
@@ -36,8 +48,6 @@ import io.mosip.kernel.syncdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.syncdata.dto.BiometricTypeDto;
 import io.mosip.kernel.syncdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.syncdata.dto.DeviceDto;
-import io.mosip.kernel.syncdata.dto.DeviceProviderDto;
-import io.mosip.kernel.syncdata.dto.DeviceServiceDto;
 import io.mosip.kernel.syncdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.syncdata.dto.DeviceSubTypeDPMDto;
 import io.mosip.kernel.syncdata.dto.DeviceTypeDPMDto;
@@ -51,14 +61,14 @@ import io.mosip.kernel.syncdata.dto.IdTypeDto;
 import io.mosip.kernel.syncdata.dto.IndividualTypeDto;
 import io.mosip.kernel.syncdata.dto.LanguageDto;
 import io.mosip.kernel.syncdata.dto.LocationDto;
-import io.mosip.kernel.syncdata.dto.LocationHierarchyLevelDto;
+import io.mosip.kernel.syncdata.dto.LocationHierarchyDto;
+import io.mosip.kernel.syncdata.dto.LocationHierarchyLevelResponseDto;
 import io.mosip.kernel.syncdata.dto.MachineDto;
 import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.syncdata.dto.MachineTypeDto;
 import io.mosip.kernel.syncdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.syncdata.dto.ProcessListDto;
 import io.mosip.kernel.syncdata.dto.ReasonListDto;
-import io.mosip.kernel.syncdata.dto.RegisteredDeviceDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
@@ -90,8 +100,6 @@ import io.mosip.kernel.syncdata.entity.BiometricType;
 import io.mosip.kernel.syncdata.entity.BlacklistedWords;
 import io.mosip.kernel.syncdata.entity.Device;
 import io.mosip.kernel.syncdata.entity.DeviceHistory;
-import io.mosip.kernel.syncdata.entity.DeviceProvider;
-import io.mosip.kernel.syncdata.entity.DeviceService;
 import io.mosip.kernel.syncdata.entity.DeviceSpecification;
 import io.mosip.kernel.syncdata.entity.DeviceSubTypeDPM;
 import io.mosip.kernel.syncdata.entity.DeviceType;
@@ -105,7 +113,6 @@ import io.mosip.kernel.syncdata.entity.IdType;
 import io.mosip.kernel.syncdata.entity.IndividualType;
 import io.mosip.kernel.syncdata.entity.Language;
 import io.mosip.kernel.syncdata.entity.Location;
-import io.mosip.kernel.syncdata.entity.LocationHierarchy;
 import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.entity.MachineHistory;
 import io.mosip.kernel.syncdata.entity.MachineSpecification;
@@ -113,7 +120,6 @@ import io.mosip.kernel.syncdata.entity.MachineType;
 import io.mosip.kernel.syncdata.entity.ProcessList;
 import io.mosip.kernel.syncdata.entity.ReasonCategory;
 import io.mosip.kernel.syncdata.entity.ReasonList;
-import io.mosip.kernel.syncdata.entity.RegisteredDevice;
 import io.mosip.kernel.syncdata.entity.RegistrationCenter;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterType;
 import io.mosip.kernel.syncdata.entity.ScreenAuthorization;
@@ -126,6 +132,7 @@ import io.mosip.kernel.syncdata.entity.UserDetails;
 import io.mosip.kernel.syncdata.entity.UserDetailsHistory;
 import io.mosip.kernel.syncdata.entity.ValidDocument;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
+import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import io.mosip.kernel.syncdata.repository.AppAuthenticationMethodRepository;
 import io.mosip.kernel.syncdata.repository.AppDetailRepository;
 import io.mosip.kernel.syncdata.repository.AppRolePriorityRepository;
@@ -150,7 +157,6 @@ import io.mosip.kernel.syncdata.repository.HolidayRepository;
 import io.mosip.kernel.syncdata.repository.IdTypeRepository;
 import io.mosip.kernel.syncdata.repository.IndividualTypeRepository;
 import io.mosip.kernel.syncdata.repository.LanguageRepository;
-import io.mosip.kernel.syncdata.repository.LocationHierarchyRepository;
 import io.mosip.kernel.syncdata.repository.LocationRepository;
 import io.mosip.kernel.syncdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
@@ -277,14 +283,22 @@ public class SyncMasterDataServiceHelper {
 	private MachineHistoryRepository machineHistoryRepository;
 	@Autowired
 	private DeviceHistoryRepository deviceHistoryRepository;
-	@Autowired
-	private LocationHierarchyRepository locationHierarchyRepository;
 
 	@Autowired
 	private ClientCryptoManagerService clientCryptoManagerService;
 
 	@Value("${mosip.syncdata.tpm.required:false}")
 	private boolean isTPMRequired;
+
+	@Autowired
+	MosipEnvironment mosipEnvironment;
+
+	@Qualifier("authRestTemplate")
+	@Autowired
+	RestTemplate restTemplate;
+
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	/**
 	 * Method to fetch machine details by regCenter id
@@ -343,37 +357,51 @@ public class SyncMasterDataServiceHelper {
 	 * @param lastUpdated      lastUpdated time-stamp
 	 * @param currentTimeStamp current time stamp
 	 * 
-	 * @return list of {@link LocationHierarchyLevelDto} list of locationHierarchyList dto
+	 * @return list of {@link LocationHierarchyLevelDto} list of
+	 *         locationHierarchyList dto
 	 */
 	@Async
-	public CompletableFuture<List<LocationHierarchyLevelDto>> getLocationHierarchyList(LocalDateTime lastUpdated,
+	public CompletableFuture<List<LocationHierarchyDto>> getLocationHierarchyList(LocalDateTime lastUpdated,
 			LocalDateTime currentTimeStamp) {
 
-		List<LocationHierarchy> locationHierarchyList = null;
-		List<LocationHierarchyLevelDto> locationHierarchyLevelDtos = new ArrayList<LocationHierarchyLevelDto>();
-		try {
-			if (lastUpdated == null) {
-				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
-			}
-			locationHierarchyList = locationHierarchyRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdated,
-					currentTimeStamp);
-		} catch (DataAccessException | DataAccessLayerException e) {
-			throw new SyncDataServiceException(
-					LocationHierarchyErrorCode.LOCATION_HIERARCHY_FETCH_EXCEPTION.getErrorCode(),
-					LocationHierarchyErrorCode.LOCATION_HIERARCHY_FETCH_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e) + e);
+		LocationHierarchyLevelResponseDto locationHierarchyResponseDto = null;
+		List<LocationHierarchyDto> locationHierarchyLevelDtos = new ArrayList<LocationHierarchyDto>();
+
+		final String url = mosipEnvironment.getLocationHierarchyUrl();
+		HttpHeaders headers = new HttpHeaders();
+
+		String lastUpdatedTime = null;
+		UriComponentsBuilder builder = null;
+		if (lastUpdated != null) {
+			DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+			lastUpdatedTime = lastUpdated.format(formatter);
+			builder = UriComponentsBuilder.fromHttpUrl(url).queryParam("lastUpdated", lastUpdatedTime + "Z");
+		} else {
+			builder = UriComponentsBuilder.fromHttpUrl(url);
 		}
-		if (!locationHierarchyList.isEmpty()) {
 
-			locationHierarchyList.forEach(locationHierarchy -> {
-				LocationHierarchyLevelDto responseDto = new LocationHierarchyLevelDto();
-				responseDto.setHierarchyLevel(locationHierarchy.getHierarchyLevel());
-				responseDto.setHierarchyLevelName(locationHierarchy.getHierarchyLevelName());
-				responseDto.setIsActive(locationHierarchy.getIsActive());
-				responseDto.setLangCode(locationHierarchy.getLangCode());
-				locationHierarchyLevelDtos.add(responseDto);
-			});
+		ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET,
+				new HttpEntity<Object>(headers), String.class);
+		if (response.getStatusCode().equals(HttpStatus.OK)) {
+			String responseBody = response.getBody();
+			List<ServiceError> validationErrorsList = null;
+			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+			if (!validationErrorsList.isEmpty()) {
+				throw new SyncServiceException(validationErrorsList);
+			}
+			ResponseWrapper<?> responseObject;
+			try {
+				responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
+				locationHierarchyResponseDto = objectMapper.readValue(
+						objectMapper.writeValueAsString(responseObject.getResponse()),
+						LocationHierarchyLevelResponseDto.class);
+				locationHierarchyLevelDtos = locationHierarchyResponseDto.getLocationHierarchyLevels();
 
+			} catch (Exception e) {
+				throw new SyncDataServiceException(
+						MasterDataErrorCode.LOCATION_HIERARCHY_DESERIALIZATION_FAILED.getErrorCode(),
+						MasterDataErrorCode.LOCATION_HIERARCHY_DESERIALIZATION_FAILED.getErrorMessage());
+			}
 		}
 
 		return CompletableFuture.completedFuture(locationHierarchyLevelDtos);

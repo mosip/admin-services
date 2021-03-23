@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 import io.mosip.kernel.syncdata.httpfilter.CorsFilter;
@@ -47,6 +49,12 @@ public class Config {
 	@Bean
 	public Filter registerCORSFilter() {
 		return new CorsFilter();
+	}
+	
+	@Primary
+	@Bean(name = "authRestTemplate")
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
 	}
 
 
