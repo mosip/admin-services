@@ -49,7 +49,7 @@ RUN find /target -name '*.jar' -executable -type f "-print0" | xargs "-0" cp -t 
     && rm -rf /target \
     && mv *.jar hotlist-service.jar 
 
-EXPOSE 8091
+EXPOSE 8095
 
 CMD if [ "$is_glowroot_env" = "present" ]; then \
     wget "${artifactory_url_env}"/artifactory/libs-release-local/io/mosip/testing/glowroot.zip ; \
