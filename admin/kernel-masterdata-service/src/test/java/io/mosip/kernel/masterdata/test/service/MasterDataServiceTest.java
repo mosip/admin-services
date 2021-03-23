@@ -259,7 +259,6 @@ public class MasterDataServiceTest {
 	List<Location> locationHierarchies = null;
 	List<Location> locationHierarchyList = null;
 	List<LocationHierarchy> locationHierarchyLevelList = null;
-	List<LocationHierarchy> locationHierarchyLevelList1 = null;
 	List<Object[]> locObjList = null;
 	LocationCodeResponseDto locationCodeResponseDto = null;
 	Location locationHierarchy = null;
@@ -1806,18 +1805,6 @@ public class MasterDataServiceTest {
 				.getLocationHierarchy(dateTime, currentTimestamp);
 		Assert.assertEquals("Country",
 				locationHierarchyResponseDto.getLocationHierarchyLevels().get(0).getHierarchyLevelName());
-
-	}
-
-	@Test(expected = DataNotFoundException.class)
-	public void getLocationHierachyLevelFailureTest() {
-
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		LocalDateTime dateTime = LocalDateTime.parse("2020-03-23T07:39:19.342Z", formatter);
-		LocalDateTime currentTimestamp = LocalDateTime.now();
-		Mockito.when(locationHierarchyRepository1.findByLastUpdatedAndCurrentTimeStamp(dateTime, currentTimestamp))
-				.thenReturn(locationHierarchyLevelList1);
-		locationHierarchyLevelService.getLocationHierarchy(dateTime, currentTimestamp);
 
 	}
 

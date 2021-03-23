@@ -994,23 +994,6 @@ public class MasterdataControllerTest {
 
 	}
 
-	@Test
-	@WithUserDetails("individual")
-	public void getLocationDataByHierarchyLevelsFailureTest() throws Exception {
-
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		LocalDateTime dateTime = LocalDateTime.parse("2020-03-23T07:39:19.342Z", formatter);
-		LocalDateTime currentTimestamp = LocalDateTime.now();
-		
-		Mockito.when(localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimestamp, "2020-03-23T07:39:19.342Z")).thenReturn(dateTime);
-		Mockito.when(locationHierarchyService.getLocationHierarchy(dateTime, currentTimestamp))
-				.thenThrow(new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
-						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage()));
-		mockMvc.perform(MockMvcRequestBuilders.get("/locationHierarchyLevels"))
-				.andExpect(MockMvcResultMatchers.status().isOk());
-
-	}
-
 	/*
 	 * //
 	 * -------------------------------RegistrationCenterControllerTest--------------
