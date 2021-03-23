@@ -77,7 +77,6 @@ public class UISpecServiceTest {
 
 		draftedUISpec = new UISpec();
 		draftedUISpec.setId("11");
-		draftedUISpec.setAdditionalProperties(false);
 		draftedUISpec.setEffectiveFrom(LocalDateTime.now());
 		draftedUISpec.setVersion(0);
 		draftedUISpec.setJsonSpec("[]");
@@ -88,7 +87,6 @@ public class UISpecServiceTest {
 
 		publishedUISpec = new UISpec();
 		publishedUISpec.setId("13");
-		publishedUISpec.setAdditionalProperties(false);
 		publishedUISpec.setEffectiveFrom(LocalDateTime.now());
 		publishedUISpec.setVersion(0);
 		publishedUISpec.setJsonSpec("[]");

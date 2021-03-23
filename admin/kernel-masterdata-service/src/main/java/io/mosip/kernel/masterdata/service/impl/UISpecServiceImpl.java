@@ -144,7 +144,6 @@ public class UISpecServiceImpl implements UISpecService {
 		uiSpecEntity.setJsonSpec(dto.getJsonspec());
 		uiSpecEntity.setId(UUID.randomUUID().toString());
 		uiSpecEntity.setIsDeleted(false);
-		uiSpecEntity.setAdditionalProperties(false);
 		uiSpecEntity.setEffectiveFrom(LocalDateTime.now(ZoneId.of(ZoneOffset.UTC.getId())));
 		try {
 			uiSpecRepository.save(uiSpecEntity);
@@ -178,8 +177,8 @@ public class UISpecServiceImpl implements UISpecService {
 	private IdentitySchema validateIdentityShema(String id) {
 		IdentitySchema schema = identitySchemaRepository.findPublishedIdentitySchema(id);
 		if (schema == null) {
-			throw new DataNotFoundException(UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorCode(),
-					UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorMessage());
+			throw new DataNotFoundException(UISpecErrorCode.IDENTITY_SPEC_VALUE_PARSE_ERROR.getErrorCode(),
+					UISpecErrorCode.IDENTITY_SPEC_VALUE_PARSE_ERROR.getErrorMessage());
 		}
 		return schema;
 	}

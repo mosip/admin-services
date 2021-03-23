@@ -9,7 +9,8 @@ public enum UISpecErrorCode {
 	NO_PUBLISHED_UI_SPEC_FOUND_EXCEPTION("KER-UIS-005", "No published UI spec"),
 	UI_SPEC_ALREADY_PUBLISHED("KER-UIS-006", "UI spec already published"),
 	UI_SPEC_EFFECTIVE_FROM_IS_OLDER("UIS-UIS-007", "UI spec effective from date cannot be older"),	
-	UI_SPEC_VALUE_PARSE_ERROR("KER-UIS-008", "Error while parsing json string")	;
+	UI_SPEC_VALUE_PARSE_ERROR("KER-UIS-008", "Error while parsing json string"),
+	IDENTITY_SPEC_VALUE_PARSE_ERROR("KER-UIS-009", "Identity schema not found");
 	
 
 	private final String errorCode;

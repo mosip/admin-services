@@ -56,9 +56,6 @@ public class UISpec extends BaseEntity{
 	
 	@Column(name = "status_code", nullable = false, length=16)
 	private String status;
-	
-	@Column(name = "add_props", nullable = true)
-	private boolean additionalProperties;
 		 
 	@Column(name = "effective_from", nullable = false)
 	private LocalDateTime effectiveFrom;

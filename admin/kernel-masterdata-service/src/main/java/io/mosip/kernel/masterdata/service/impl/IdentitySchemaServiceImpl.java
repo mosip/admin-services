@@ -41,7 +41,6 @@ import io.mosip.kernel.masterdata.service.IdentitySchemaService;
 import io.mosip.kernel.masterdata.service.UISpecService;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecKeyValuePair;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
-import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 @Service
