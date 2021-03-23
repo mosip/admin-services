@@ -243,7 +243,7 @@ public class UISpecServiceTest {
 	@WithUserDetails("global-admin")
 	public void publishUISpecTest_01() {
 		UISpecPublishDto request = new UISpecPublishDto();
-		request.setEffectiveFrom(LocalDateTime.now());
+		request.setEffectiveFrom(LocalDateTime.now(ZoneId.of(ZoneOffset.UTC.getId())).plusHours(5));
 		try {
 			uiSpecService.publishUISpec(request);
 		} catch (MasterDataServiceException e) {
