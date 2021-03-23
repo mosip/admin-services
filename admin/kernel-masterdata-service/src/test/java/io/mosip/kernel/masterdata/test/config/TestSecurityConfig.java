@@ -81,6 +81,7 @@ public class TestSecurityConfig extends WebSecurityConfigurerAdapter {
 				Arrays.asList(new SimpleGrantedAuthority("ROLE_DEVICE_PROVIDER"))));
 		users.add(new User("global-admin", "mosip", Arrays.asList(new SimpleGrantedAuthority("ROLE_GLOBAL_ADMIN"))));
 		users.add(new User("resident", "mosip", Arrays.asList(new SimpleGrantedAuthority("ROLE_RESIDENT"))));
+		
 		return new InMemoryUserDetailsManager(users);
 	}
 }

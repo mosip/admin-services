@@ -3,7 +3,6 @@ package io.mosip.kernel.masterdata.repository;
 import java.time.LocalDateTime;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -42,6 +41,14 @@ public interface IdentitySchemaRepository extends BaseRepository<IdentitySchema,
 	IdentitySchema findPublishedIdentitySchema(double ver);
 	
 	/**
+	 * Get published identity schema based on id
+	 * @param id
+	 * @return
+	 */
+	@Query("FROM IdentitySchema WHERE id=?1 AND isActive = true AND status='PUBLISHED'")
+	IdentitySchema findPublishedIdentitySchema(String id);
+	
+	/**
 	 * Get All Identity schema based on pagination
 	 * 
 	 * @param isActive
@@ -51,22 +58,7 @@ public interface IdentitySchemaRepository extends BaseRepository<IdentitySchema,
 	@Query(value="select * FROM master.identity_schema WHERE is_active=?1 AND (is_deleted is null OR is_deleted = false)", 
 			countQuery="select count(id) FROM master.identity_schema WHERE is_active=?1 AND (is_deleted is null OR is_deleted = false)",
 			nativeQuery= true)
-	Page<IdentitySchema> findAllIdentitySchema(boolean isActive, Pageable pageable);
-	
-	/**
-	 * update idAttributeJson in identity_schema table based on id
-	 * update is allowed only on schema's in DRAFT status
-	 * 
-	 * @param id
-	 * @param idAttributeJson
-	 * @param isActive
-	 * @param updatedDateTime
-	 * @param updatedBy
-	 * @return
-	 */
-	@Modifying
-	@Query("UPDATE IdentitySchema i SET i.idAttributeJson=?2, i.isActive=?3 , i.updatedDateTime=?4, i.updatedBy=?5 WHERE i.id =?1 AND i.status='DRAFT' AND (i.isDeleted is null or i.isDeleted =false)")
-	int updateIdentitySchema(String id, String idAttributeJson, boolean isActive, LocalDateTime updatedDateTime, String updatedBy);
+	Page<IdentitySchema> findAllIdentitySchema(boolean isActive, Pageable pageable);	
 	
 	/**
 	 * update identity_schema in DRAFT status to PUBLISHED status and also increment schema_version by 0.1

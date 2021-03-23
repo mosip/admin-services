@@ -1,20 +1,25 @@
 package io.mosip.kernel.masterdata.dto.getresponse;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Map;
 
-import io.mosip.kernel.masterdata.dto.SchemaDto;
 import lombok.Data;
 
 @Data
-public class IdSchemaResponseDto {
+public class IdSchemaResponseDto implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	//Map<String, Object> jsonData = new HashMap<>();
+	
 	private String id;	
 	private double idVersion;
 	private String title;
 	private String description;
-	private List<SchemaDto> schema;
-	private String schemaJson;
+	private String schemaJson;	
 	private String status;
 	private LocalDateTime effectiveFrom;
 	private String createdBy;

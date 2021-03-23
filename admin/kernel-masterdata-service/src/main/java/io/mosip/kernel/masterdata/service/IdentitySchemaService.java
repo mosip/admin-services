@@ -1,5 +1,9 @@
 package io.mosip.kernel.masterdata.service;
 
+import java.util.Map;
+
+import org.json.JSONException;
+
 import io.mosip.kernel.masterdata.dto.IdSchemaPublishDto;
 import io.mosip.kernel.masterdata.dto.IdentitySchemaDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IdSchemaResponseDto;
@@ -64,5 +68,15 @@ public interface IdentitySchemaService {
 	 * @return
 	 */
 	public String deleteSchema(String id);
+	
+	/**
+	 * 
+	 * @param version
+	 * @param domain
+	 * @param type
+	 * @return
+	 * @throws JSONException 
+	 */
+	public  Map<String, Object> getLatestPublishedSchema(double version, String domain, String type) throws JSONException;
 	
 }
