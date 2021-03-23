@@ -177,8 +177,8 @@ public class UISpecServiceImpl implements UISpecService {
 	private IdentitySchema validateIdentityShema(String id) {
 		IdentitySchema schema = identitySchemaRepository.findPublishedIdentitySchema(id);
 		if (schema == null) {
-			throw new DataNotFoundException(UISpecErrorCode.IDENTITY_SPEC_VALUE_PARSE_ERROR.getErrorCode(),
-					UISpecErrorCode.IDENTITY_SPEC_VALUE_PARSE_ERROR.getErrorMessage());
+			throw new DataNotFoundException(UISpecErrorCode.IDENTITY_SPEC_NOT_FOUND_ERROR.getErrorCode(),
+					UISpecErrorCode.IDENTITY_SPEC_NOT_FOUND_ERROR.getErrorMessage());
 		}
 		return schema;
 	}
