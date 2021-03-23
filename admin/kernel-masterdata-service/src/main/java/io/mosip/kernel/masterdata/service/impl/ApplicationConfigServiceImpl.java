@@ -2,19 +2,14 @@ package io.mosip.kernel.masterdata.service.impl;
 
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import java.util.HashMap;
+import java.util.Map;
 
-import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationConfigResponseDto;
-import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.service.ApplicationConfigService;
-import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 @Component
 public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 	@Value("${mosip.primary-language}")
@@ -26,9 +21,8 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 	@Value("${aplication.configuration.level.version}")
 	private String version;
 	
-	
-	@Autowired
-	private RestTemplate restTemplate;
+	@Value("${mosip.admin.ui.configs}")
+	private String uiConfigs;
 	
 	@Override
 	public ApplicationConfigResponseDto getLanguageConfigDetails() {
@@ -37,8 +31,21 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 		dto.setPrimaryLangCode(primaryLangCode);
 		dto.setSecondaryLangCode(secondaryLang);
 		dto.setVersion(version);
-		
 		return dto;
 	}
 
+	/**
+	 * This method will spilt the configuration value and sends as a response in desired format.
+	 * uiConfigs will look like primaryLangCode:eng,secondaryLang:ara,version:1.1.2
+	 * 
+	 */
+	@Override
+	public Map<String,String> getConfigValues(){
+		Map<String, String> response = new HashMap<String, String>();
+		String[] arrayOfKeys = uiConfigs.split(",");
+		for (String key : arrayOfKeys) {
+			response.put(key.split(":")[0], key.split(":")[1]);
+		}
+		return response;
+	}
 }
