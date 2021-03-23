@@ -387,16 +387,17 @@ public class SyncMasterDataServiceHelper {
 			List<ServiceError> validationErrorsList = null;
 			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
 			if (!validationErrorsList.isEmpty()) {
-				throw new SyncServiceException(validationErrorsList);
+				// throw new SyncServiceException(validationErrorsList);
 			}
 			ResponseWrapper<?> responseObject;
 			try {
 				responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
-				locationHierarchyResponseDto = objectMapper.readValue(
-						objectMapper.writeValueAsString(responseObject.getResponse()),
-						LocationHierarchyLevelResponseDto.class);
-				locationHierarchyLevelDtos = locationHierarchyResponseDto.getLocationHierarchyLevels();
-
+				if (responseObject.getResponse() != null) {
+					locationHierarchyResponseDto = objectMapper.readValue(
+							objectMapper.writeValueAsString(responseObject.getResponse()),
+							LocationHierarchyLevelResponseDto.class);
+					locationHierarchyLevelDtos = locationHierarchyResponseDto.getLocationHierarchyLevels();
+				}
 			} catch (Exception e) {
 				throw new SyncDataServiceException(
 						MasterDataErrorCode.LOCATION_HIERARCHY_DESERIALIZATION_FAILED.getErrorCode(),
