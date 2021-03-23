@@ -3,6 +3,8 @@ package io.mosip.kernel.masterdata.test.service;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -268,7 +270,7 @@ public class UISpecServiceTest {
 	public void publishUISpecTest_03() {
 		Mockito.when(uiSpecRepository.findUISpecById("11")).thenReturn(draftedUISpec);
 		UISpecPublishDto request = new UISpecPublishDto();
-		request.setEffectiveFrom(LocalDateTime.now());
+		request.setEffectiveFrom(LocalDateTime.now(ZoneId.of(ZoneOffset.UTC.getId())).plusHours(5));
 		request.setId("11");
 		String id = uiSpecService.publishUISpec(request);
 		assertEquals("11", id);
@@ -280,7 +282,7 @@ public class UISpecServiceTest {
 		Mockito.when(uiSpecRepository.findUISpecById("11")).thenReturn(draftedUISpec);
 		Mockito.when(uiSpecRepository.findLatestPublishedUISpec(Mockito.anyString())).thenReturn(uiSpecs);
 		UISpecPublishDto request = new UISpecPublishDto();
-		request.setEffectiveFrom(LocalDateTime.now());
+		request.setEffectiveFrom(LocalDateTime.now(ZoneId.of(ZoneOffset.UTC.getId())).plusHours(5));
 		request.setId("11");
 		String id = uiSpecService.publishUISpec(request);
 		assertEquals("11", id);
@@ -292,7 +294,7 @@ public class UISpecServiceTest {
 		Mockito.when(uiSpecRepository.findUISpecById("11")).thenReturn(draftedUISpec);
 		Mockito.when(uiSpecRepository.findLatestPublishedUISpec(Mockito.anyString())).thenReturn(null);
 		UISpecPublishDto request = new UISpecPublishDto();
-		request.setEffectiveFrom(LocalDateTime.now());
+		request.setEffectiveFrom(LocalDateTime.now(ZoneId.of(ZoneOffset.UTC.getId())).plusHours(5));
 		request.setId("11");
 		String id = uiSpecService.publishUISpec(request);
 		assertEquals("11", id);
