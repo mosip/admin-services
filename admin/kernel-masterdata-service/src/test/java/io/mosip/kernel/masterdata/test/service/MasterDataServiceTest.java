@@ -1799,7 +1799,7 @@ public class MasterDataServiceTest {
 		LocalDateTime dateTime = LocalDateTime.parse("2020-03-23T07:39:19.342Z", formatter);
 		LocalDateTime currentTimestamp = LocalDateTime.now();
 
-		Mockito.when(locationHierarchyRepository1.findByLastUpdatedAndCurrentTimeStamp(dateTime, currentTimestamp))
+		Mockito.when(locationHierarchyRepository1.findAllByLastUpdatedAndCurrentTimeStamp(dateTime, currentTimestamp))
 				.thenReturn(locationHierarchyLevelList);
 		LocationHierarchyLevelResponseDto locationHierarchyResponseDto = locationHierarchyLevelService
 				.getLocationHierarchy(dateTime, currentTimestamp);

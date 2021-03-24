@@ -122,9 +122,6 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		MachineDataHelper machineDataHelper = new MachineDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		machineDataHelper.retrieveData(serviceHelper, futures);
 		
-		LocationHierarchyHelper locationHierarchyHelper = new LocationHierarchyHelper(lastUpdated, currentTimestamp,regCenterMachineDto.getPublicKey());
-		locationHierarchyHelper.retrieveData(serviceHelper, futures);
-		
 		//DeviceDataHelper deviceDataHelper = new DeviceDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		//deviceDataHelper.retrieveData(serviceHelper, futures);
 		
@@ -145,6 +142,9 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		
 		//HistoryDataHelper historyDataHelper = new HistoryDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		//historyDataHelper.retrieveData(serviceHelper, futures);
+
+		LocationHierarchyHelper locationHierarchyHelper = new LocationHierarchyHelper(lastUpdated, regCenterMachineDto.getPublicKey());
+		locationHierarchyHelper.retrieveData(serviceHelper, futures);
 		
 		MiscellaneousDataHelper miscellaneousDataHelper = new MiscellaneousDataHelper(machineId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		miscellaneousDataHelper.retrieveData(serviceHelper, futures);		
@@ -173,9 +173,6 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		documentDataHelper.fillRetrievedData(serviceHelper, list);
 		//historyDataHelper.fillRetrievedData(serviceHelper, list);
 		miscellaneousDataHelper.fillRetrievedData(serviceHelper, list);
-		
-		//Fills dynamic field data
-		identitySchemaHelper.fillRetrievedData(list, regCenterMachineDto.getPublicKey(), lastUpdated);
 		
 		response.setDataToSync(list);
 		return response;

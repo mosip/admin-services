@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoRequestDto;
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
 import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
@@ -17,7 +19,10 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.exception.RequestException;
+import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,56 +42,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
-import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
-import io.mosip.kernel.syncdata.dto.AppDetailDto;
-import io.mosip.kernel.syncdata.dto.AppRolePriorityDto;
-import io.mosip.kernel.syncdata.dto.ApplicantValidDocumentDto;
-import io.mosip.kernel.syncdata.dto.ApplicationDto;
-import io.mosip.kernel.syncdata.dto.BiometricAttributeDto;
-import io.mosip.kernel.syncdata.dto.BiometricTypeDto;
-import io.mosip.kernel.syncdata.dto.BlacklistedWordsDto;
-import io.mosip.kernel.syncdata.dto.DeviceDto;
-import io.mosip.kernel.syncdata.dto.DeviceSpecificationDto;
-import io.mosip.kernel.syncdata.dto.DeviceSubTypeDPMDto;
-import io.mosip.kernel.syncdata.dto.DeviceTypeDPMDto;
-import io.mosip.kernel.syncdata.dto.DeviceTypeDto;
-import io.mosip.kernel.syncdata.dto.DocumentCategoryDto;
-import io.mosip.kernel.syncdata.dto.DocumentTypeDto;
-import io.mosip.kernel.syncdata.dto.FoundationalTrustProviderDto;
-import io.mosip.kernel.syncdata.dto.GenderDto;
-import io.mosip.kernel.syncdata.dto.HolidayDto;
-import io.mosip.kernel.syncdata.dto.IdTypeDto;
-import io.mosip.kernel.syncdata.dto.IndividualTypeDto;
-import io.mosip.kernel.syncdata.dto.LanguageDto;
-import io.mosip.kernel.syncdata.dto.LocationDto;
-import io.mosip.kernel.syncdata.dto.LocationHierarchyDto;
-import io.mosip.kernel.syncdata.dto.LocationHierarchyLevelResponseDto;
-import io.mosip.kernel.syncdata.dto.MachineDto;
-import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
-import io.mosip.kernel.syncdata.dto.MachineTypeDto;
-import io.mosip.kernel.syncdata.dto.PostReasonCategoryDto;
-import io.mosip.kernel.syncdata.dto.ProcessListDto;
-import io.mosip.kernel.syncdata.dto.ReasonListDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceHistoryDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDeviceDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDeviceHistoryDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineHistoryDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterTypeDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterUserHistoryDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingHistoryDto;
-import io.mosip.kernel.syncdata.dto.ScreenAuthorizationDto;
-import io.mosip.kernel.syncdata.dto.ScreenDetailDto;
-import io.mosip.kernel.syncdata.dto.SyncJobDefDto;
-import io.mosip.kernel.syncdata.dto.TemplateDto;
-import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
-import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
-import io.mosip.kernel.syncdata.dto.TitleDto;
-import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.response.SyncDataBaseDto;
 import io.mosip.kernel.syncdata.entity.AppAuthenticationMethod;
 import io.mosip.kernel.syncdata.entity.AppDetail;
@@ -291,8 +246,11 @@ public class SyncMasterDataServiceHelper {
 	@Value("${mosip.kernel.masterdata.locationhierarchylevels.uri}")
 	private String locationHirerarchyUrl;
 
+	@Value("${mosip.kernel.syncdata-service-dynamicfield-url}")
+	private String dynamicfieldUrl;
+
 	@Autowired
-	RestTemplate restTemplate;
+	private RestTemplate restTemplate;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -352,44 +310,28 @@ public class SyncMasterDataServiceHelper {
 	 * Method to fetch location hierarchy details
 	 * 
 	 * @param lastUpdated      lastUpdated time-stamp
-	 * @param currentTimeStamp current time stamp
 	 * 
-	 * @return list of {@link LocationHierarchyLevelDto} list of
+	 * @return list of {@link LocationHierarchyDto} list of
 	 *         locationHierarchyList dto
 	 */
 	@Async
-	public CompletableFuture<List<LocationHierarchyDto>> getLocationHierarchyList(LocalDateTime lastUpdated,
-			LocalDateTime currentTimeStamp) {
-
-		LocationHierarchyLevelResponseDto locationHierarchyResponseDto = null;
+	public CompletableFuture<List<LocationHierarchyDto>> getLocationHierarchyList(LocalDateTime lastUpdated) {
 		List<LocationHierarchyDto> locationHierarchyLevelDtos = new ArrayList<LocationHierarchyDto>();
 
-		HttpHeaders headers = new HttpHeaders();
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(locationHirerarchyUrl);
+		if(lastUpdated != null) {	builder.queryParam("lastUpdated", DateUtils.formatToISOString(lastUpdated)); }
+		ResponseEntity<String> response = restTemplate.getForEntity(builder.build().toUri(), String.class);
 
-		String lastUpdatedTime = null;
-		UriComponentsBuilder builder = null;
-		if (lastUpdated != null) {
-			DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-			lastUpdatedTime = lastUpdated.format(formatter);
-			builder = UriComponentsBuilder.fromHttpUrl(locationHirerarchyUrl).queryParam("lastUpdated",
-					lastUpdatedTime + "Z");
-		} else {
-			builder = UriComponentsBuilder.fromHttpUrl(locationHirerarchyUrl);
-		}
-
-		ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET,
-				new HttpEntity<Object>(headers), String.class);
 		if (response.getStatusCode().equals(HttpStatus.OK)) {
 			String responseBody = response.getBody();
-			List<ServiceError> validationErrorsList = null;
-			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
 			if (!validationErrorsList.isEmpty()) {
 				throw new SyncServiceException(validationErrorsList);
 			}
-			ResponseWrapper<?> responseObject;
+
 			try {
-				responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
-				locationHierarchyResponseDto = objectMapper.readValue(
+				ResponseWrapper<?> responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
+				LocationHierarchyLevelResponseDto locationHierarchyResponseDto = objectMapper.readValue(
 						objectMapper.writeValueAsString(responseObject.getResponse()),
 						LocationHierarchyLevelResponseDto.class);
 				locationHierarchyLevelDtos = locationHierarchyResponseDto.getLocationHierarchyLevels();
@@ -399,7 +341,6 @@ public class SyncMasterDataServiceHelper {
 						MasterDataErrorCode.LOCATION_HIERARCHY_DESERIALIZATION_FAILED.getErrorMessage());
 			}
 		}
-
 		return CompletableFuture.completedFuture(locationHierarchyLevelDtos);
 	}
 
@@ -1911,6 +1852,31 @@ public class SyncMasterDataServiceHelper {
 		return CompletableFuture.completedFuture(deviceSubTypeDPMDtos);
 	}
 
+	@Async
+	public CompletableFuture<List<DynamicFieldDto>> getAllDynamicFields(LocalDateTime lastUpdated) {
+		try {
+			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(dynamicfieldUrl);
+			if(lastUpdated != null) {	builder.queryParam("lastUpdated", DateUtils.formatToISOString(lastUpdated)); }
+			ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().toUri(), String.class);
+
+			objectMapper.registerModule(new JavaTimeModule());
+			ResponseWrapper<PageDto<DynamicFieldDto>> resp = objectMapper.readValue(responseEntity.getBody(),
+					new TypeReference<ResponseWrapper<PageDto<DynamicFieldDto>>>() {});
+
+			if(resp.getErrors() != null && !resp.getErrors().isEmpty())
+				throw new SyncInvalidArgumentException(resp.getErrors());
+
+			PageDto<DynamicFieldDto> pageDto = resp.getResponse();
+			return CompletableFuture.completedFuture(pageDto.getData());
+
+		} catch (Exception e) {
+			logger.error("Failed to fetch dynamic fields", e);
+			throw new SyncDataServiceException(MasterDataErrorCode.DYNAMIC_FIELD_FETCH_FAILED.getErrorCode(),
+					MasterDataErrorCode.DYNAMIC_FIELD_FETCH_FAILED.getErrorMessage() + " : " +
+							ExceptionUtils.buildMessage(e.getMessage(), e.getCause()));
+		}
+	}
+
 	public void getSyncDataBaseDto(Class entityClass, String entityType, List entities, String publicKey, List result) {
 		getSyncDataBaseDto(entityClass.getSimpleName(), entityType, entities, publicKey, result);
 	}
@@ -1992,5 +1958,4 @@ public class SyncMasterDataServiceHelper {
 		throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
 				MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorMessage());
 	}
-
 }
