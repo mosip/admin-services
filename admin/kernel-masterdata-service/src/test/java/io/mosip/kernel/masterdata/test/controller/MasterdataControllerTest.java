@@ -1224,6 +1224,15 @@ public class MasterdataControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.get("/workingdays/10001/101")).andExpect(status().isOk());
 
 	}
+	
+	@Test
+	@WithUserDetails("reg-processor")
+	public void workDaysControllerByLangCodeTest() throws Exception {
+
+		Mockito.when(regWorkingNonWorkingService.getWorkingDays("eng")).thenReturn(workingDaysResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/workingdays/eng")).andExpect(status().isOk());
+
+	}
 
 	// -----------------------------ExceptionalHolidayControllerTest------------------------
 	@Test
