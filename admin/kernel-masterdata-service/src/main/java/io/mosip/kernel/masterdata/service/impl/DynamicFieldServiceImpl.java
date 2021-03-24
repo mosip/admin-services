@@ -134,12 +134,9 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 				throw new RequestException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
-			if (!dto.isActive()) {
-				dynamicFieldRepository.updateDynamicFieldIsActive(dto.getName(), dto.isActive(),
+			dynamicFieldRepository.updateDynamicFieldIsActive(dto.getName(), dto.isActive(),
 						MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser());
-			}
 			entity = dynamicFieldRepository.findDynamicFieldById(id);
-			
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_UPDATE_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
