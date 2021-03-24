@@ -106,7 +106,7 @@ public class LocationHierarchyServiceImpl implements LocationHierarchyService {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
 
-			List<LocationHierarchy> locationHierarchyList = locationHierarchyRepository.findAllByLastUpdatedAndCurrentTimeStamp(lastUpdated,
+			List<LocationHierarchy> locationHierarchyList = locationHierarchyRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdated,
 					currentTimestamp);
 
 			if (locationHierarchyList != null && !locationHierarchyList.isEmpty()) {
