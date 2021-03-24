@@ -21,6 +21,12 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 	@Value("${aplication.configuration.level.version}")
 	private String version;
 	
+	@Value("${mosip.recommended.centers.locCode}")
+	private String locationHierarchyLevel;
+	
+	@Value("${mosip.supported-languages}")
+	private String supportedLanguages;
+	
 	@Value("${mosip.admin.ui.configs}")
 	private String uiConfigs;
 	
@@ -31,6 +37,8 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 		dto.setPrimaryLangCode(primaryLangCode);
 		dto.setSecondaryLangCode(secondaryLang);
 		dto.setVersion(version);
+		dto.setLocationHierarchyLevel(locationHierarchyLevel);
+		dto.setSupportedLanguages(supportedLanguages);
 		return dto;
 	}
 
@@ -42,7 +50,7 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 	@Override
 	public Map<String,String> getConfigValues(){
 		Map<String, String> response = new HashMap<String, String>();
-		String[] arrayOfKeys = uiConfigs.split(",");
+		String[] arrayOfKeys = uiConfigs.split(";");
 		for (String key : arrayOfKeys) {
 			response.put(key.split(":")[0], key.split(":")[1]);
 		}

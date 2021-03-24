@@ -347,8 +347,14 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 		jsonData.put("schemaJson", dto.getSchemaJson());
 		if (!uiSpecs.isEmpty()) {
 			for (UISpecResponseDto uiSpec : uiSpecs) {
-				for (UISpecKeyValuePair keyValue : uiSpec.getJsonSpec()) {
-					jsonData.put(keyValue.getType(), keyValue.getSpec());
+				for (UISpecKeyValuePair keyValue : uiSpec.getJsonSpec()) {					
+					try {
+						jsonData.put(keyValue.getType(), objectMapper.readTree(keyValue.getSpec()));
+					} catch (IOException e) {
+						LOGGER.error("Given UI Spec is not a valid json object ", e);
+						throw new MasterDataServiceException(SchemaErrorCode.VALUE_PARSE_ERROR.getErrorCode(),
+								SchemaErrorCode.VALUE_PARSE_ERROR.getErrorMessage());
+					}
 				}
 			}
 		}
