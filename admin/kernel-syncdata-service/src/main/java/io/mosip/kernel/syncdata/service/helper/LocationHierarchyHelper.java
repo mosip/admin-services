@@ -37,7 +37,7 @@ public class LocationHierarchyHelper {
 
 	public void fillRetrievedData(final SyncMasterDataServiceHelper serviceHelper, final List<SyncDataBaseDto> list)
 			throws InterruptedException, ExecutionException {
-		serviceHelper.getSyncDataBaseDto(LocationHierarchyDto.class, "structured", this.locationHierarchyLevelDtos.get(),
+		serviceHelper.getSyncDataBaseDto(LocationHierarchy.class, "structured", this.locationHierarchyLevelDtos.get(),
 				this.publicKey, list);
 
 		//Fills dynamic field data
