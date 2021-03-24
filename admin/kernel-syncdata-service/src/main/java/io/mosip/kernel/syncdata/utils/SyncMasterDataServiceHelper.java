@@ -1854,20 +1854,29 @@ public class SyncMasterDataServiceHelper {
 
 	@Async
 	public CompletableFuture<List<DynamicFieldDto>> getAllDynamicFields(LocalDateTime lastUpdated) {
+		List<DynamicFieldDto> result = new ArrayList<>();
 		try {
-			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(dynamicfieldUrl);
-			if(lastUpdated != null) {	builder.queryParam("lastUpdated", DateUtils.formatToISOString(lastUpdated)); }
-			ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().toUri(), String.class);
+			PageDto<DynamicFieldDto> pageDto = null;
+			int pageNo = 0;
+			do {
+				UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(dynamicfieldUrl);
+				if(lastUpdated != null) {	builder.queryParam("lastUpdated", DateUtils.formatToISOString(lastUpdated)); }
+				builder.queryParam("pageNumber", pageNo++);
+				//its with default sort on crd_dtimes
+				ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().toUri(), String.class);
 
-			objectMapper.registerModule(new JavaTimeModule());
-			ResponseWrapper<PageDto<DynamicFieldDto>> resp = objectMapper.readValue(responseEntity.getBody(),
-					new TypeReference<ResponseWrapper<PageDto<DynamicFieldDto>>>() {});
+				objectMapper.registerModule(new JavaTimeModule());
+				ResponseWrapper<PageDto<DynamicFieldDto>> resp = objectMapper.readValue(responseEntity.getBody(),
+						new TypeReference<ResponseWrapper<PageDto<DynamicFieldDto>>>() {});
 
-			if(resp.getErrors() != null && !resp.getErrors().isEmpty())
-				throw new SyncInvalidArgumentException(resp.getErrors());
+				if(resp.getErrors() != null && !resp.getErrors().isEmpty())
+					throw new SyncInvalidArgumentException(resp.getErrors());
 
-			PageDto<DynamicFieldDto> pageDto = resp.getResponse();
-			return CompletableFuture.completedFuture(pageDto.getData());
+				pageDto = resp.getResponse();
+				result.addAll(pageDto.getData());
+			} while(pageNo < pageDto.getTotalPages());
+
+			return CompletableFuture.completedFuture(result);
 
 		} catch (Exception e) {
 			logger.error("Failed to fetch dynamic fields", e);
