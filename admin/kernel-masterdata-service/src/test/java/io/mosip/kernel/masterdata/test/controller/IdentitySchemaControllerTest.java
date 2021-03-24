@@ -25,8 +25,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.masterdata.entity.DynamicField;
 import io.mosip.kernel.masterdata.entity.IdentitySchema;
 import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
@@ -45,8 +43,6 @@ import io.mosip.kernel.masterdata.test.TestBootApplication;
 @SpringBootTest(classes = TestBootApplication.class)
 @AutoConfigureMockMvc
 public class IdentitySchemaControllerTest {
-	
-	private ObjectMapper objectMapper = new ObjectMapper();
 	
 	@Autowired
 	public MockMvc mockMvc;
@@ -99,12 +95,12 @@ public class IdentitySchemaControllerTest {
 		fieldPagedResult = new PageImpl<DynamicField>(list);		
 		
 		List<IdentitySchema> schemaList = new ArrayList<IdentitySchema>();
-		IdentitySchema draftSchema = new IdentitySchema();
+		draftSchema = new IdentitySchema();
 		draftSchema.setId("11");
 		draftSchema.setAdditionalProperties(false);
 		draftSchema.setEffectiveFrom(LocalDateTime.now());
 		draftSchema.setIdVersion(0);
-		draftSchema.setIdAttributeJson("[]");
+		//draftSchema.setIdAttributeJson("[]");
 		draftSchema.setIsActive(true);
 		draftSchema.setIsDeleted(false);
 		draftSchema.setSchemaJson("{}");
@@ -116,7 +112,7 @@ public class IdentitySchemaControllerTest {
 		publishedSchema.setAdditionalProperties(false);
 		publishedSchema.setEffectiveFrom(LocalDateTime.now());
 		publishedSchema.setIdVersion(0.1);
-		publishedSchema.setIdAttributeJson("[]");
+		//publishedSchema.setIdAttributeJson("[]");
 		publishedSchema.setIsActive(true);
 		publishedSchema.setIsDeleted(false);
 		publishedSchema.setSchemaJson("{}");
@@ -217,9 +213,7 @@ public class IdentitySchemaControllerTest {
 		
 	@Test
 	@WithUserDetails("global-admin")
-	public void updateIdentitySchema() throws Exception {		
-		Mockito.when(identitySchemaRepository.updateIdentitySchema(Mockito.anyString(), Mockito.anyString(), 
-				Mockito.anyBoolean(), Mockito.any(LocalDateTime.class), Mockito.anyString())).thenReturn(1);		
+	public void updateIdentitySchema() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.put("/idschema")
 				.param("id", "test-test-test-test")
 				.contentType(MediaType.APPLICATION_JSON)

@@ -83,7 +83,8 @@ public enum MasterDataErrorCode {
 	MACHINE_INVALID_PUBLIC_KEY("KER-SNC-165", "Invalid public key provided"),
 
 	SCHEMA_FETCH_FAILED("KER-SNC-166", "Identity schema fetch failed"),
-	DYNAMIC_FIELD_FETCH_FAILED("KER-SNC-167", "Dynamic fields fetch failed");
+	DYNAMIC_FIELD_FETCH_FAILED("KER-SNC-167", "Dynamic fields fetch failed"),
+	LOCATION_HIERARCHY_DESERIALIZATION_FAILED("KER-SNC-168", "Location hierarchy deserialization failed");
 
 	private final String errorCode;
 	private final String errorMessage;
