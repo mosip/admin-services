@@ -22,8 +22,8 @@ public class LocationHierarchyDto extends BaseDto implements Serializable {
 	 */
 	private static final long serialVersionUID = 4552110961570300174L;
 
-	private Short locationHierarchylevel;
+	private Short hierarchyLevel;
 
-	private String locationHierarchyName;
+	private String hierarchyLevelName;
 
 }

@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,8 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.LocationHierarchyErrorCode;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyLevelDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyLevelResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
+import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.entity.LocationHierarchy;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -89,5 +93,29 @@ public class LocationHierarchyServiceImpl implements LocationHierarchyService {
 		}
 		locationHierarchyLevelResponseDto.setLocationHierarchyLevels(locationHierarchyLevelDtos);
 		return locationHierarchyLevelResponseDto;
+	}
+
+	@Override
+	public LocationHierarchyLevelResponseDto getLocationHierarchy(LocalDateTime lastUpdated,
+			LocalDateTime currentTimestamp) {
+		LocationHierarchyLevelResponseDto locationHierarchyLevelResponseDto = new LocationHierarchyLevelResponseDto();
+		List<LocationHierarchy> locationHierarchyList = null;
+		List<LocationHierarchyLevelDto> locationHierarchyLevelDtos = new ArrayList<LocationHierarchyLevelDto>();
+		try {
+			locationHierarchyList = locationHierarchyRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdated,
+					currentTimestamp);
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new MasterDataServiceException(
+					LocationHierarchyErrorCode.LOCATION_HIERARCHY_FETCH_EXCEPTION.getErrorCode(),
+					LocationHierarchyErrorCode.LOCATION_HIERARCHY_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e) + e);
+		}
+		if (locationHierarchyList != null && !locationHierarchyList.isEmpty()) {
+			locationHierarchyLevelDtos = MapperUtils.mapAll(locationHierarchyList, LocationHierarchyLevelDto.class);
+
+		}
+		locationHierarchyLevelResponseDto.setLocationHierarchyLevels(locationHierarchyLevelDtos);
+		return locationHierarchyLevelResponseDto;
+
 	}
 }

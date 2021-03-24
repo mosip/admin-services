@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +42,8 @@ import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypePutReqDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
+import io.mosip.kernel.masterdata.dto.LocationHierarchyLevelDto;
+import io.mosip.kernel.masterdata.dto.LocationHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceHistoryDto;
@@ -109,6 +112,7 @@ import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.service.ExceptionalHolidayService;
 import io.mosip.kernel.masterdata.service.LanguageService;
+import io.mosip.kernel.masterdata.service.LocationHierarchyService;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.service.RegWorkingNonWorkingService;
@@ -207,8 +211,6 @@ public class MasterDataServiceTest {
 	@Autowired
 	DocumentCategoryService documentCategoryService;
 
-	
-
 	@MockBean
 	RegWorkingNonWorkingRepo regWorkingNonWorkingRepo;
 	@MockBean
@@ -251,11 +253,17 @@ public class MasterDataServiceTest {
 	@Autowired
 	LocationService locationHierarchyService;
 
+	@Autowired
+	LocationHierarchyService locationHierarchyLevelService;
+
 	List<Location> locationHierarchies = null;
 	List<Location> locationHierarchyList = null;
+	List<LocationHierarchy> locationHierarchyLevelList = null;
 	List<Object[]> locObjList = null;
 	LocationCodeResponseDto locationCodeResponseDto = null;
 	Location locationHierarchy = null;
+	LocationHierarchy locationHierarchyLevel = null;
+	LocationHierarchy locationHierarchyLevel1 = null;
 	Location locationHierarchy1 = null;
 	LocationDto locationDtos = null;
 	Location locationHierarchy2 = null;
@@ -314,7 +322,6 @@ public class MasterDataServiceTest {
 
 	private BiometricTypeDto biometricTypeDto;
 
-
 	@Before
 	public void setUp() {
 
@@ -334,6 +341,8 @@ public class MasterDataServiceTest {
 
 		locationServiceSetup();
 
+		locationHierarchyLevelSetup();
+
 		templateServiceSetup();
 
 		templateFileFormatSetup();
@@ -343,8 +352,7 @@ public class MasterDataServiceTest {
 		registrationCenterSetup();
 		updateRegistrationCenter();
 
-		
-		LocationHierarchy hierarchy=new LocationHierarchy((short) 3, "City", "eng");
+		LocationHierarchy hierarchy = new LocationHierarchy((short) 3, "City", "eng");
 		when(locationHierarchyRepository1.findByLangCodeAndLevelAndName(Mockito.anyString(), Mockito.anyShort(),
 				Mockito.anyString())).thenReturn(hierarchy);
 		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
@@ -446,6 +454,31 @@ public class MasterDataServiceTest {
 		locationDto1.setIsActive(false);
 		requestLocationDto1 = new RequestWrapper<>();
 		requestLocationDto1.setRequest(locationDto1);
+
+	}
+
+	private void locationHierarchyLevelSetup() {
+
+		locationHierarchyLevelList = new ArrayList<LocationHierarchy>();
+		locationHierarchyLevel = new LocationHierarchy();
+		locationHierarchyLevel.setCreatedBy("sds");
+		locationHierarchyLevel.setHierarchyLevel((short) 0);
+		locationHierarchyLevel.setHierarchyLevelName("Country");
+		locationHierarchyLevel.setIsActive(true);
+		locationHierarchyLevel.setIsDeleted(false);
+		locationHierarchyLevel.setLangCode("eng");
+		locationHierarchyLevel.setUpdatedBy(null);
+		locationHierarchyLevelList.add(locationHierarchyLevel);
+
+		locationHierarchyLevel1 = new LocationHierarchy();
+		locationHierarchyLevel1.setCreatedBy("sds");
+		locationHierarchyLevel1.setHierarchyLevel((short) 1);
+		locationHierarchyLevel1.setHierarchyLevelName("Region");
+		locationHierarchyLevel1.setIsActive(true);
+		locationHierarchyLevel1.setIsDeleted(false);
+		locationHierarchyLevel1.setLangCode("eng");
+		locationHierarchyLevel1.setUpdatedBy(null);
+		locationHierarchyLevelList.add(locationHierarchyLevel1);
 
 	}
 
@@ -930,8 +963,6 @@ public class MasterDataServiceTest {
 
 	}
 
-	
-
 	List<RegCenterPutReqDto> updRequestNotAllLang = null;
 	List<RegCenterPutReqDto> updRequestInvalideID = null;
 	List<RegCenterPutReqDto> updRequestDuplicateIDLang = null;
@@ -1331,7 +1362,6 @@ public class MasterDataServiceTest {
 				.thenThrow(DataAccessResourceFailureException.class);
 		biometricAttributeService.getBiometricAttribute(biometricTypeCode, langCode);
 	}
-
 
 	// ------------------ BiometricTypeServiceTest -----------------//
 
@@ -1762,6 +1792,22 @@ public class MasterDataServiceTest {
 		locationHierarchyService.getLocationHierarchyByLangCode("IND", "HIN");
 	}
 
+	@Test()
+	public void getLocationHierachyLevelTest() {
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		LocalDateTime dateTime = LocalDateTime.parse("2020-03-23T07:39:19.342Z", formatter);
+		LocalDateTime currentTimestamp = LocalDateTime.now();
+
+		Mockito.when(locationHierarchyRepository1.findByLastUpdatedAndCurrentTimeStamp(dateTime, currentTimestamp))
+				.thenReturn(locationHierarchyLevelList);
+		LocationHierarchyLevelResponseDto locationHierarchyResponseDto = locationHierarchyLevelService
+				.getLocationHierarchy(dateTime, currentTimestamp);
+		Assert.assertEquals("Country",
+				locationHierarchyResponseDto.getLocationHierarchyLevels().get(0).getHierarchyLevelName());
+
+	}
+
 	/**
 	 * @Test public void locationHierarchySaveTest() {
 	 *       Mockito.when(locationHierarchyRepository.create(Mockito.any())).thenReturn(locationHierarchy);
@@ -1800,8 +1846,11 @@ public class MasterDataServiceTest {
 	public void updateLocationDetailsExceptionTest() {
 		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any())).thenReturn(locationHierarchy);
 		Mockito.when(locationHierarchyRepository.update(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		Mockito.when(locationHierarchyRepository.findByNameAndLevelLangCode(Mockito.any(),Mockito.anyShort(), Mockito.any())).thenReturn(null);
-		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(), Mockito.any())).thenReturn(locationHierarchyList);
+		Mockito.when(locationHierarchyRepository.findByNameAndLevelLangCode(Mockito.any(), Mockito.anyShort(),
+				Mockito.any())).thenReturn(null);
+		Mockito.when(
+				locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(), Mockito.any()))
+				.thenReturn(locationHierarchyList);
 		locationHierarchyService.updateLocationDetails(requestLocationDto.getRequest());
 	}
 
@@ -2371,8 +2420,9 @@ public class MasterDataServiceTest {
 		registCent.setId("10001");
 		registCent.setLangCode("eng");
 
-		Mockito.when(regWorkingNonWorkingRepo.findByregistrationCenterIdAndlanguagecodeForWorkingDays(Mockito.anyString(),
-				Mockito.anyString())).thenReturn(nameSeqDtoList);
+		Mockito.when(regWorkingNonWorkingRepo
+				.findByregistrationCenterIdAndlanguagecodeForWorkingDays(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(nameSeqDtoList);
 		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(registCent);
 		assertEquals("Monday",
@@ -2397,7 +2447,7 @@ public class MasterDataServiceTest {
 				.thenReturn(workingDaysDtos);
 		assertEquals("Monday",
 				regWorkingNonWorkingService.getWeekDaysList("10001", "eng").getWeekdays().get(0).getName());
-		
+
 	}
 
 	@Test
@@ -2422,7 +2472,7 @@ public class MasterDataServiceTest {
 
 		assertEquals("Monday",
 				regWorkingNonWorkingService.getWeekDaysList("10001", "eng").getWeekdays().get(0).getName());
-		
+
 	}
 
 	@Test(expected = DataNotFoundException.class)
@@ -2455,19 +2505,21 @@ public class MasterDataServiceTest {
 	@Test(expected = DataNotFoundException.class)
 	public void getWorkingServiceFailureTest() {
 
-		Mockito.when(regWorkingNonWorkingRepo.findByregistrationCenterIdAndlanguagecodeForWorkingDays(Mockito.anyString(),
-				Mockito.anyString())).thenReturn(null);
+		Mockito.when(regWorkingNonWorkingRepo
+				.findByregistrationCenterIdAndlanguagecodeForWorkingDays(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(null);
 		regWorkingNonWorkingService.getWorkingDays("10001", "eng");
 	}
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getWorkingServiceFailureTest2() {
 
-		Mockito.when(regWorkingNonWorkingRepo.findByregistrationCenterIdAndlanguagecodeForWorkingDays(Mockito.anyString(),
-				Mockito.anyString())).thenThrow(new DataAccessLayerException("", "", new Throwable()));
+		Mockito.when(regWorkingNonWorkingRepo
+				.findByregistrationCenterIdAndlanguagecodeForWorkingDays(Mockito.anyString(), Mockito.anyString()))
+				.thenThrow(new DataAccessLayerException("", "", new Throwable()));
 		regWorkingNonWorkingService.getWorkingDays("10001", "eng");
 	}
-	
+
 	@Test(expected = MasterDataServiceException.class)
 	public void exceptionalHolidaysFailureTest2() {
 

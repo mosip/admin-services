@@ -18,6 +18,9 @@ public class ApplicationConfigResponseDto {
 	
 	@ApiModelProperty(value = "Current Version", required = true, dataType = "java.lang.String")
 	private String version;
-
+	
+	private String locationHierarchyLevel;
+	
+	private String supportedLanguages;
 	
 }

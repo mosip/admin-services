@@ -19,9 +19,12 @@ import io.mosip.kernel.keymanagerservice.repository.CACertificateStoreRepository
 import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.*;
 import io.mosip.kernel.syncdata.entity.AppDetail;
+import io.mosip.kernel.syncdata.entity.LocationHierarchy;
 import io.mosip.kernel.syncdata.exception.*;
 import io.mosip.kernel.syncdata.repository.AppDetailRepository;
 import io.mosip.kernel.syncdata.service.helper.KeymanagerHelper;
+import io.mosip.kernel.syncdata.service.helper.LocationHierarchyHelper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -117,7 +120,10 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		applicationDataHelper.retrieveData(serviceHelper, futures);		
 		
 		MachineDataHelper machineDataHelper = new MachineDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		machineDataHelper.retrieveData(serviceHelper, futures);		
+		machineDataHelper.retrieveData(serviceHelper, futures);
+		
+		LocationHierarchyHelper locationHierarchyHelper = new LocationHierarchyHelper(lastUpdated, currentTimestamp,regCenterMachineDto.getPublicKey());
+		locationHierarchyHelper.retrieveData(serviceHelper, futures);
 		
 		//DeviceDataHelper deviceDataHelper = new DeviceDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		//deviceDataHelper.retrieveData(serviceHelper, futures);
@@ -159,6 +165,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		List<SyncDataBaseDto> list = new ArrayList<SyncDataBaseDto>();		
 		applicationDataHelper.fillRetrievedData(serviceHelper, list);
 		machineDataHelper.fillRetrievedData(serviceHelper, list);
+		locationHierarchyHelper.fillRetrievedData(serviceHelper, list);
 		//deviceDataHelper.fillRetrievedData(serviceHelper, list);
 		individualDataHelper.fillRetrievedData(serviceHelper, list);
 		RegistrationCenterDataHelper.fillRetrievedData(serviceHelper, list);
