@@ -35,6 +35,7 @@ import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
 import io.mosip.kernel.masterdata.service.DynamicFieldService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 @Service
@@ -47,6 +48,8 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	@Autowired
 	private DynamicFieldRepository dynamicFieldRepository;
 	
+	@Autowired
+	private MasterdataCreationUtil masterdataCreationUtil;
 	
 	
 	/*
@@ -131,7 +134,10 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 				throw new RequestException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
-			
+			if (!dto.isActive()) {
+				dynamicFieldRepository.updateDynamicFieldIsActive(dto.getName(), dto.isActive(),
+						MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser());
+			}
 			entity = dynamicFieldRepository.findDynamicFieldById(id);
 			
 		} catch (DataAccessLayerException | DataAccessException e) {

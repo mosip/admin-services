@@ -94,6 +94,23 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 			+ " WHERE (isDeleted is null OR isDeleted = false) and id=?1")
 	int updateDynamicField(String id, String description, String langCode, String dataType, boolean isActive, 
 			LocalDateTime updatedDateTime, String updatedBy);
+
+	/**
+	 * Update all the fields of dynamic field except name
+	 * 
+	 * @param id
+	 * @param description
+	 * @param langCode
+	 * @param dataType
+	 * @param isActive
+	 * @param updatedDateTime
+	 * @param updatedBy
+	 * @return
+	 */
+	@Modifying
+	@Query("UPDATE DynamicField SET isActive=?2 , updatedDateTime=?3, updatedBy=?4"
+			+ " WHERE (isDeleted is null OR isDeleted = false) and name=?1")
+	int updateDynamicFieldIsActive(String name, boolean isActive, LocalDateTime updatedDateTime, String updatedBy);
 	
 	/**
 	 * Update dynamic field value specific to a language code
