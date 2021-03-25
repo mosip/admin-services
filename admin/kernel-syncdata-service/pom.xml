@@ -303,7 +303,6 @@
 			<artifactId>kernel-websubclient-api</artifactId>
 			<version>${kernel-websubclient-api.version}</version>
 		</dependency>
-
 	</dependencies>
 	
 <distributionManagement>

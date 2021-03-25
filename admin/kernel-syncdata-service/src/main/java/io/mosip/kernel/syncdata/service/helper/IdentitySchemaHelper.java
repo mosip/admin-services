@@ -51,31 +51,9 @@ public class IdentitySchemaHelper {
 	@Value("${mosip.kernel.syncdata-service-idschema-url}")
 	private String idSchemaUrl;
 	
-	@Value("${mosip.kernel.syncdata-service-dynamicfield-url}")
-	private String dynamicfieldUrl;
-	
 	@Autowired
 	private SyncMasterDataServiceHelper serviceHelper;
-	
-	public void fillRetrievedData(final List<SyncDataBaseDto> list, String publicKey, LocalDateTime lastUpdated)
-			throws InterruptedException, ExecutionException {
-		List<DynamicFieldDto> fields = getAllDynamicFields(lastUpdated);
-				
-		Map<String, List<DynamicFieldDto>> data = new HashMap<String, List<DynamicFieldDto>>();
-		for(DynamicFieldDto dto : fields) {
-			if(!data.containsKey(dto.getName())) {
-				List<DynamicFieldDto> langBasedData = new ArrayList<DynamicFieldDto>();
-				langBasedData.add(dto);
-				data.put(dto.getName(), langBasedData);
-			}
-			else
-				data.get(dto.getName()).add(dto);			
-		}	
-		
-		for(String key : data.keySet()) {
-			serviceHelper.getSyncDataBaseDto(key, "dynamic", data.get(key), publicKey, list);
-		}
-	}
+
 	
 	public IdSchemaDto getLatestIdentitySchema(LocalDateTime lastUpdated, double schemaVersion) {
 		try {
@@ -95,31 +73,6 @@ public class IdentitySchemaHelper {
 			LOGGER.error("Failed to fetch latest schema", e);
 			throw new SyncDataServiceException(MasterDataErrorCode.SCHEMA_FETCH_FAILED.getErrorCode(), 
 					MasterDataErrorCode.SCHEMA_FETCH_FAILED.getErrorMessage() + " : " + 
-							ExceptionUtils.buildMessage(e.getMessage(), e.getCause()));
-		}		
-	}
-	
-	@SuppressWarnings("unchecked")
-	public List<DynamicFieldDto> getAllDynamicFields(LocalDateTime lastUpdated) {
-		try {
-			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(dynamicfieldUrl);
-			if(lastUpdated != null) {	builder.queryParam("lastUpdated", DateUtils.formatToISOString(lastUpdated)); }
-			ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().toUri(), String.class);
-						
-			objectMapper.registerModule(new JavaTimeModule());
-			ResponseWrapper<PageDto<DynamicFieldDto>> resp = objectMapper.readValue(responseEntity.getBody(), 
-					new TypeReference<ResponseWrapper<PageDto<DynamicFieldDto>>>() {});
-			
-			if(resp.getErrors() != null && !resp.getErrors().isEmpty())
-				throw new SyncInvalidArgumentException(resp.getErrors());
-			
-			PageDto<DynamicFieldDto> pageDto = resp.getResponse();
-			return pageDto.getData();
-			
-		} catch (Exception e) {
-			LOGGER.error("Failed to fetch dynamic fields", e);
-			throw new SyncDataServiceException(MasterDataErrorCode.DYNAMIC_FIELD_FETCH_FAILED.getErrorCode(),
-					MasterDataErrorCode.DYNAMIC_FIELD_FETCH_FAILED.getErrorMessage() + " : " +
 							ExceptionUtils.buildMessage(e.getMessage(), e.getCause()));
 		}		
 	}

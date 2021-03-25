@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,22 +100,24 @@ public class LocationHierarchyServiceImpl implements LocationHierarchyService {
 	public LocationHierarchyLevelResponseDto getLocationHierarchy(LocalDateTime lastUpdated,
 			LocalDateTime currentTimestamp) {
 		LocationHierarchyLevelResponseDto locationHierarchyLevelResponseDto = new LocationHierarchyLevelResponseDto();
-		List<LocationHierarchy> locationHierarchyList = null;
-		List<LocationHierarchyLevelDto> locationHierarchyLevelDtos = new ArrayList<LocationHierarchyLevelDto>();
+		locationHierarchyLevelResponseDto.setLocationHierarchyLevels(new ArrayList<>());
 		try {
-			locationHierarchyList = locationHierarchyRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdated,
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+
+			List<LocationHierarchy> locationHierarchyList = locationHierarchyRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdated,
 					currentTimestamp);
+
+			if (locationHierarchyList != null && !locationHierarchyList.isEmpty()) {
+				locationHierarchyLevelResponseDto.getLocationHierarchyLevels().addAll(MapperUtils.mapAll(locationHierarchyList, LocationHierarchyLevelDto.class));
+			}
+
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					LocationHierarchyErrorCode.LOCATION_HIERARCHY_FETCH_EXCEPTION.getErrorCode(),
-					LocationHierarchyErrorCode.LOCATION_HIERARCHY_FETCH_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e) + e);
+					LocationHierarchyErrorCode.LOCATION_HIERARCHY_FETCH_EXCEPTION.getErrorMessage(), e);
 		}
-		if (locationHierarchyList != null && !locationHierarchyList.isEmpty()) {
-			locationHierarchyLevelDtos = MapperUtils.mapAll(locationHierarchyList, LocationHierarchyLevelDto.class);
-
-		}
-		locationHierarchyLevelResponseDto.setLocationHierarchyLevels(locationHierarchyLevelDtos);
 		return locationHierarchyLevelResponseDto;
 
 	}
