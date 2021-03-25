@@ -9,11 +9,13 @@ import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyInte
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,6 +32,9 @@ public class WebsubCallbackController {
     @Autowired
     private PartnerCertificateManagerService partnerCertificateManagerService;
 
+    @Value("#{'${mosip.syncdata.partner.allowed.domains:FTM,DEVICE}'.split(',')}")
+    private List<String> partnerAllowedDomains;
+
     @PostMapping(value = "/cacert",consumes = "application/json")
     @PreAuthenticateContentAndVerifyIntent(secret = "${syncdata.websub.callback.secret.ca-cert}",
             callback = "/v1/syncdata/websub/callback/cacert",topic = "${syncdata.websub.topic.ca-cert}")
@@ -40,7 +45,8 @@ public class WebsubCallbackController {
         if (data.containsKey(CERTIFICATE_DATA) && data.get(CERTIFICATE_DATA) instanceof String) {
             caCertRequestDto.setCertificateData((String) data.get(CERTIFICATE_DATA));
         }
-        if (data.containsKey(PARTNER_DOMAIN) && data.get(PARTNER_DOMAIN) instanceof String) {
+        if (data.containsKey(PARTNER_DOMAIN) && data.get(PARTNER_DOMAIN) instanceof String &&
+                partnerAllowedDomains.contains((String) data.get(PARTNER_DOMAIN))) {
             caCertRequestDto.setPartnerDomain((String) data.get(PARTNER_DOMAIN));
         }
         try {
