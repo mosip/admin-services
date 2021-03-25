@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +49,8 @@ import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.ExceptionalHolidayDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
+import io.mosip.kernel.masterdata.dto.LocationHierarchyLevelDto;
+import io.mosip.kernel.masterdata.dto.LocationHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.WeekDaysResponseDto;
 import io.mosip.kernel.masterdata.dto.WorkingDaysResponseDto;
@@ -87,6 +90,7 @@ import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.service.ExceptionalHolidayService;
 import io.mosip.kernel.masterdata.service.LanguageService;
+import io.mosip.kernel.masterdata.service.LocationHierarchyService;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.RegWorkingNonWorkingService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
@@ -94,6 +98,7 @@ import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.mosip.kernel.masterdata.utils.LocalDateTimeUtil;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
@@ -197,11 +202,16 @@ public class MasterdataControllerTest {
 	@MockBean
 	private LocationService locationService;
 
+	@MockBean
+	private LocationHierarchyService locationHierarchyService;
+
 	LocationDto locationDto = null;
 	LocationResponseDto locationResponseDto = null;
 	List<Object[]> locObjList = null;
 	LocationHierarchyResponseDto locationHierarchyResponseDto = null;
 	PostLocationCodeResponseDto locationCodeDto = null;
+	LocationHierarchyLevelResponseDto locationHierarchyLevelResponseDto = null;
+	LocationHierarchyLevelDto locationHierarchyLevelDto = null;
 
 	@MockBean
 	private HolidayRepository holidayRepository;
@@ -228,6 +238,9 @@ public class MasterdataControllerTest {
 
 	@MockBean
 	private TemplateFileFormatService templateFileFormatService;
+	
+	@MockBean
+	LocalDateTimeUtil localDateTimeUtil;
 
 	private ObjectMapper mapper;
 
@@ -254,6 +267,7 @@ public class MasterdataControllerTest {
 		idTypeSetup();
 
 		locationSetup();
+		locationHierarchyLevelSetup();
 
 		registrationCenterController();
 		blackListedWordSetUp();
@@ -340,9 +354,30 @@ public class MasterdataControllerTest {
 	LocationPostResponseDto locationPostResponseDto = null;
 	LocationPutResponseDto locationPutResponseDto = null;
 
+	private void locationHierarchyLevelSetup() {
+		List<LocationHierarchyLevelDto> locationHierarchyDtos = new ArrayList<>();
+		
+		locationHierarchyLevelDto = new LocationHierarchyLevelDto();
+		locationHierarchyLevelDto.setHierarchyLevel((short) 0);
+		locationHierarchyLevelDto.setHierarchyLevelName("Country");
+		locationHierarchyLevelDto.setIsActive(true);
+		locationHierarchyLevelDto.setLangCode("eng");
+
+		locationHierarchyDtos.add(locationHierarchyLevelDto);
+		locationHierarchyLevelDto.setHierarchyLevel((short) 1);
+		locationHierarchyLevelDto.setHierarchyLevelName("Region");
+		locationHierarchyLevelDto.setIsActive(true);
+		locationHierarchyLevelDto.setLangCode("eng");
+		locationHierarchyDtos.add(locationHierarchyLevelDto);
+
+		locationHierarchyLevelResponseDto = new LocationHierarchyLevelResponseDto();
+		locationHierarchyLevelResponseDto.setLocationHierarchyLevels(locationHierarchyDtos);
+	}
+
 	private void locationSetup() {
 		List<LocationDto> locationHierarchies = new ArrayList<>();
 		List<LocationHierarchyDto> locationHierarchyDtos = new ArrayList<>();
+
 		locationResponseDto = new LocationResponseDto();
 		locationDto = new LocationDto();
 		locationDto.setCode("IND");
@@ -941,6 +976,21 @@ public class MasterdataControllerTest {
 						LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage()));
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations/locationhierarchy/123"))
 				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
+
+	}
+
+	@Test
+	@WithUserDetails("individual")
+	public void getLocationDataByHierarchyLevelsSuccessTest() throws Exception {
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		LocalDateTime dateTime = LocalDateTime.parse("2020-03-23T07:39:19.342Z", formatter);
+		LocalDateTime currentTimestamp = LocalDateTime.now();
+		
+		Mockito.when(localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimestamp, "2020-03-23T07:39:19.342Z")).thenReturn(dateTime);
+		Mockito.when(locationHierarchyService.getLocationHierarchy(dateTime, currentTimestamp)).thenReturn(locationHierarchyLevelResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/locationHierarchyLevels"))
+				.andExpect(MockMvcResultMatchers.status().isOk());
 
 	}
 

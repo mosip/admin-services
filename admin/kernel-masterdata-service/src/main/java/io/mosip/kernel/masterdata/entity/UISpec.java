@@ -12,10 +12,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-
 /**
  * 
- * @author Anusha
+ * @author Nagarjuna
  *
  */
 
@@ -24,36 +23,40 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "identity_schema", schema = "master")
-public class IdentitySchema extends BaseEntity {
-	
+@Table(name = "ui_spec", schema = "master")
+public class UISpec extends BaseEntity{
+
 	@Id
 	@Column(name = "id", nullable = false)
 	private String id;
 	
-	//id_version is generated only when schema is published
-	@Column(name = "id_version", nullable = false)
-	private double idVersion;
+	@Column(name = "version", nullable = false)
+	private double version;
 	
-	@Column(name = "title", nullable = true, length=50)
+	@Column(name = "domain", nullable = false)
+	private String domain;
+
+	@Column(name = "type", nullable = false)
+	private String type;
+	
+	@Column(name = "title", nullable = false, length=50)
 	private String title;
+	
+	@Column(name="identity_schema_id", nullable = false)
+	private String identitySchemaId;
+	
+	@Column(name="identity_schema_version", nullable = false)
+	private double idSchemaVersion;
 	
 	@Column(name = "description", nullable = false, length=50)
 	private String description;	
 	
-	//schema_json is built only when schema is published
-	@Column(name = "schema_json", nullable = false, length=10240)
-	private String schemaJson;
+	@Column(name = "json_spec", nullable = false, length=10240)
+	private String jsonSpec;
 	
 	@Column(name = "status_code", nullable = false, length=16)
 	private String status;
-	
-	@Column(name = "add_props", nullable = false)
-	private boolean additionalProperties;
 		 
 	@Column(name = "effective_from", nullable = false)
 	private LocalDateTime effectiveFrom;
-	
-	@Column(name = "lang_code", nullable = false)
-	private String langCode;
 }

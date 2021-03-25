@@ -1,7 +1,10 @@
 package io.mosip.kernel.masterdata.controller;
 
+import java.util.Map;
+
 import javax.validation.Valid;
 
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -100,13 +103,12 @@ public class SchemaController {
 	@GetMapping("/latest")
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_CLIENT','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','RESIDENT')")
 	@ApiOperation(value = "Service to fetch latest published identity schema")
-	public ResponseWrapper<IdSchemaResponseDto> getLatestPublishedSchema(
-			@RequestParam(name = "schemaVersion", defaultValue = "0", required = false) @ApiParam(value = "schema version", defaultValue = "0") double schemaVersion) {
-		ResponseWrapper<IdSchemaResponseDto> responseWrapper = new ResponseWrapper<>();
-		if(schemaVersion <= 0)
-			responseWrapper.setResponse(identitySchemaService.getLatestSchema());
-		else
-			responseWrapper.setResponse(identitySchemaService.getIdentitySchema(schemaVersion));
+	public ResponseWrapper<Map<String, Object>> getLatestPublishedSchema(
+			@RequestParam(name = "schemaVersion", defaultValue = "0", required = false) @ApiParam(value = "schema version", defaultValue = "0") double schemaVersion,
+			@RequestParam(name = "domain", required = false) @ApiParam(value = "domain of the ui spec") String domain,
+			@RequestParam(name = "type", required = false) @ApiParam(value = "type of the ui spec. Supported comma separted values") String type) throws JSONException {
+		ResponseWrapper<Map<String, Object>> responseWrapper = new ResponseWrapper<>();
+			responseWrapper.setResponse(identitySchemaService.getLatestPublishedSchema(schemaVersion,domain,type));
 		return responseWrapper;
 	}
 
