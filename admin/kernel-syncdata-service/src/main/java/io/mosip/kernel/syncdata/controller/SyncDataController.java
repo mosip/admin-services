@@ -383,6 +383,7 @@ public class SyncDataController {
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		CACertificates caCertificates = masterDataService.getPartnerCACertificates(timestamp, currentTimeStamp);
 		ResponseWrapper<CACertificates> response = new ResponseWrapper<>();
+		caCertificates.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
 		response.setResponse(caCertificates);
 		return response;
 	}

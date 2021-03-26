@@ -1,6 +1,7 @@
 package io.mosip.kernel.syncdata.service.impl;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -222,15 +223,15 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		CACertificates caCertificates = new CACertificates();
 		caCertificates.setCertificateDTOList(new ArrayList<CACertificateDTO>());
 
+		if (lastUpdated == null) {
+			lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+		}
+
 		List<CACertificateStore> certs = caCertificateStoreRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimestamp);
 		if(certs == null)
 			return caCertificates;
 
-		for(CACertificateStore caCertificateStore : certs) {
-			CACertificateDTO caCertificateDTO = new CACertificateDTO();
-			BeanUtils.copyProperties(caCertificateStore, caCertificateDTO);
-			caCertificates.getCertificateDTOList().add(caCertificateDTO);
-		}
+		caCertificates.getCertificateDTOList().addAll(MapperUtils.mapAll(certs, CACertificateDTO.class));
 		return caCertificates;
 	}
 
