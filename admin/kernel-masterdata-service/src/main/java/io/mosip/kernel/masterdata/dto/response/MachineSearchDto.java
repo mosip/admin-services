@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.dto.response;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -80,6 +81,12 @@ public class MachineSearchDto extends BaseDto {
 	@Size(min = 1, max = 3)
 	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
 	private String langCode;
+
+	@ApiModelProperty(value = "publicKey", required = true, dataType = "java.lang.String")
+	private String publicKey;
+	
+	@ApiModelProperty(value = "signPublicKey", required = true, dataType = "java.lang.String")
+	private String signPublicKey;
 
 	/**
 	 * Field for is validity of the Device
