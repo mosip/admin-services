@@ -13,8 +13,13 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.ZoneErrorCode;
+import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.getresponse.ZoneNameResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.ZoneExtnDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.entity.ZoneUser;
@@ -26,7 +31,9 @@ import io.mosip.kernel.masterdata.repository.ZoneRepository;
 import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
 import io.mosip.kernel.masterdata.service.ZoneService;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.ZoneUtils;
+import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 
 /**
  * Zone Service Implementation
@@ -50,6 +57,12 @@ public class ZoneServiceImpl implements ZoneService {
 
 	@Autowired
 	private RegistrationCenterRepository registrationCenterRepo;
+	
+	@Autowired
+	private FilterColumnValidator filterColumnValidator;
+	
+	@Autowired
+	private MasterDataFilterHelper masterDataFilterHelper;
 
 	@Value("${mosip.kernel.registrationcenterid.length}")
 	private int centerIdLength;
@@ -183,5 +196,29 @@ public class ZoneServiceImpl implements ZoneService {
 		}
 		zoneNameResponseDto.setZoneName(zone.getName());
 		return zoneNameResponseDto;
+	}
+
+	@Override
+	public FilterResponseCodeDto zoneFilterValues(FilterValueDto filterValueDto) {
+		// TODO Auto-generated method stub
+		FilterResponseCodeDto filterResponseDto = new FilterResponseCodeDto();
+		List<ColumnCodeValue> columnValueList = new ArrayList<>();
+
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Zone.class)) {
+			for (FilterDto filterDto : filterValueDto.getFilters()) {
+				List<FilterData> filterValues = masterDataFilterHelper.filterValuesWithCode(Zone.class, filterDto,
+						filterValueDto, "code");
+				filterValues.forEach(filterValue -> {
+					ColumnCodeValue columnValue = new ColumnCodeValue();
+					columnValue.setFieldCode(filterValue.getFieldCode());
+					columnValue.setFieldID(filterDto.getColumnName());
+					columnValue.setFieldValue(filterValue.getFieldValue());
+					columnValueList.add(columnValue);
+				});
+			}
+
+			filterResponseDto.setFilters(columnValueList);
+		}
+		return filterResponseDto;
 	}
 }
