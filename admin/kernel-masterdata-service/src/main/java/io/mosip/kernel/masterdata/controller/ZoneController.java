@@ -26,6 +26,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.extn.ZoneExtnDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.service.ZoneService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
@@ -109,14 +110,14 @@ public class ZoneController {
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseCodeDto> machineFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
-		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + MachineDto.class.getCanonicalName(),
+		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + Zone.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.FILTER_API_IS_CALLED + MachineDto.class.getCanonicalName());
+				MasterDataConstant.FILTER_API_IS_CALLED + Zone.class.getCanonicalName());
 		ResponseWrapper<FilterResponseCodeDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(zoneService.zoneFilterValues(request.getRequest()));
-		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER, MachineDto.class.getCanonicalName()),
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER, Zone.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, MachineDto.class.getCanonicalName()));
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, Zone.class.getCanonicalName()));
 		return responseWrapper;
 	}
 
