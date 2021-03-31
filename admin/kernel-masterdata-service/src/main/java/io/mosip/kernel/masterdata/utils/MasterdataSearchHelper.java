@@ -12,8 +12,10 @@ import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
+import javax.persistence.Id;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.Table;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -36,6 +38,9 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
+import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
+import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
+import io.mosip.kernel.masterdata.dto.MissingIdDataDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
@@ -44,6 +49,7 @@ import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.Zone;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
@@ -604,6 +610,70 @@ public class MasterdataSearchHelper {
 				PageRequest.of(searchDto.getPagination().getPageStart(), searchDto.getPagination().getPageFetch()),
 				query.getResultList().size());
 
+	}
+
+	@SuppressWarnings("unchecked")
+	public <E> List<MissingCodeDataDto> fetchValuesWithCode(Class<E> entity, String langCode) {
+		String tableName = entity.getAnnotation(Table.class).name();
+		String SchemaName = entity.getAnnotation(Table.class).schema();
+
+		String nativeQuery = "select A.code, A.lang_code from (select distinct code, lang_code from " + SchemaName + "."
+				+ tableName + ") A  left join (select distinct code, lang_code from " + SchemaName + "." + tableName
+				+ " where lang_code=:langCode) B on A.code=B.code where B.code is null";
+
+		boolean isColumnExist = false;
+		for (Field entField : entity.getDeclaredFields()) {
+			if (entField.isAnnotationPresent(Id.class)) {
+				entField.setAccessible(true);
+				if (entField.getName() != null && entField.getName().equals("code")) {
+					isColumnExist = true;
+				}
+			}
+		}
+		if (!isColumnExist) {
+			throw new MasterDataServiceException(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
+					ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage());
+		}
+		Query query = entityManager.createNativeQuery(nativeQuery, entity);
+		query.setParameter("langCode", langCode);
+		List<Object[]> result = query.getResultList();
+
+		List<MissingCodeDataDto> results = result.stream()
+				.map(e -> new MissingCodeDataDto(e[0].toString(), e[1].toString())).collect(Collectors.toList());
+		return results;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <E> List<MissingIdDataDto> fetchValuesWithId(Class<E> entity, String langCode) {
+		String tableName = entity.getAnnotation(Table.class).name();
+		String SchemaName = entity.getAnnotation(Table.class).schema();
+
+		String nativeQuery = "select A.id, A.lang_code from (select distinct id, lang_code from " + SchemaName + "."
+				+ tableName + ") A  left join (select distinct id, lang_code from " + SchemaName + "." + tableName
+				+ " where lang_code=:langCode) B on A.id=B.id where B.id is null";
+
+		boolean isColumnExist = false;
+		for (Field entField : entity.getDeclaredFields()) {
+			if (entField.isAnnotationPresent(Id.class)) {
+				entField.setAccessible(true);
+				if (entField.getName() != null && entField.getName().equals("id")) {
+					isColumnExist = true;
+				}
+			}
+		}
+		if (!isColumnExist) {
+			throw new MasterDataServiceException(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
+					ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage());
+		}
+
+		Query query = entityManager.createNativeQuery(nativeQuery);
+		query.setParameter("langCode", langCode);
+		List<Object[]> result = query.getResultList();
+
+		List<MissingIdDataDto> results = result.stream()
+				.map(e -> new MissingIdDataDto(e[0].toString(), e[1].toString())).collect(Collectors.toList());
+
+		return results;
 	}
 
 	private void setDeviceQueryParams(Query query, List<SearchFilter> list) {
