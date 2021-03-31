@@ -634,7 +634,7 @@ public class MasterdataSearchHelper {
 			throw new MasterDataServiceException(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
 					ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage());
 		}
-		Query query = entityManager.createNativeQuery(nativeQuery, entity);
+		Query query = entityManager.createNativeQuery(nativeQuery);
 		query.setParameter("langCode", langCode);
 		List<Object[]> result = query.getResultList();
 
