@@ -108,7 +108,7 @@ public class ZoneController {
 	@ResponseFilter
 	@PostMapping("/filtervalues")
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
-	public ResponseWrapper<FilterResponseCodeDto> machineFilterValues(
+	public ResponseWrapper<FilterResponseCodeDto> zoneFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + Zone.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
