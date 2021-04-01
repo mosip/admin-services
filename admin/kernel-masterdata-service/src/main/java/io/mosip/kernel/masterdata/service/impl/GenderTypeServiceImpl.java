@@ -18,6 +18,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.GenderTypeErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
+import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
@@ -316,9 +317,11 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	}
 
 	@Override
-	public PageResponseDto<GenderExtnDto> searchGenderTypes(SearchDto request) {
+	public PageResponseDto<GenderExtnDto> searchGenderTypes(SearchDto request, boolean addMissingData) {
 		PageResponseDto<GenderExtnDto> pageDto = new PageResponseDto<>();
 		List<GenderExtnDto> genderTypeExtns = null;
+		List<GenderExtnDto> genderTypeExtnsForMissingData = new ArrayList<GenderExtnDto>();
+
 		if (filterTypeValidator.validate(GenderExtnDto.class, request.getFilters())) {
 			Pagination pagination = request.getPagination();
 			List<SearchSort> sort = request.getSort();
@@ -326,8 +329,22 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 			request.setPagination(new Pagination(0, Integer.MAX_VALUE));
 			request.setSort(Collections.emptyList());
 			Page<Gender> page = masterDataSearchHelper.searchMasterdata(Gender.class, request, null);
+
+			if (addMissingData) {
+				List<MissingCodeDataDto> missingCodeDataDto = masterDataSearchHelper.fetchValuesWithCode(Gender.class,
+						request.getLanguageCode());
+				missingCodeDataDto.forEach(missingCodeData -> {
+					GenderExtnDto genderExtnDto = new GenderExtnDto();
+					genderExtnDto.setCode(missingCodeData.getCode());
+					genderExtnDto.setLangCode(missingCodeData.getLangcode());
+					genderTypeExtnsForMissingData.add(genderExtnDto);
+				});
+			}
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				genderTypeExtns = MapperUtils.mapAll(page.getContent(), GenderExtnDto.class);
+				for (GenderExtnDto genderExtnDto : genderTypeExtnsForMissingData) {
+					genderTypeExtns.add(genderExtnDto);
+				}
 				pageDto = pageUtils.sortPage(genderTypeExtns, sort, pagination);
 			}
 		}

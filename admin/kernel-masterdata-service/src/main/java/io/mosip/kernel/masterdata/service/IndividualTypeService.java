@@ -1,16 +1,13 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.IndividualTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IndividualTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.IndividualTypeExtnDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineExtnDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
  * This class provides operation related to Individual type.
@@ -49,7 +46,7 @@ public interface IndividualTypeService {
 	 * @param dto the searchDTO
 	 * @return {@link PageResponseDto} containing pages of the searched values.
 	 */
-	public PageResponseDto<IndividualTypeExtnDto> searchIndividuals(SearchDto dto);
+	public PageResponseDto<IndividualTypeExtnDto> searchIndividuals(SearchDto dto, boolean addMissingData);
 	
 	/**
 	 * Method to create Individual Types

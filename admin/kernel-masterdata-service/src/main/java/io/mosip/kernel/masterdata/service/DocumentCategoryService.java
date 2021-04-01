@@ -92,7 +92,7 @@ public interface DocumentCategoryService {
 	 * @param dto the searchDTO
 	 * @return {@link PageResponseDto} containing pages of the searched values.
 	 */
-	public PageResponseDto<DocumentCategoryExtnDto> searchDocCategories(SearchDto dto);
+	public PageResponseDto<DocumentCategoryExtnDto> searchDocCategories(SearchDto dto, boolean addMissingData);
 
 	/**
 	 * Method that returns the column values of specific filter column name.

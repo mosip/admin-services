@@ -199,12 +199,12 @@ public class GenderTypeController {
 	@ResponseFilter
 	@PostMapping("/gendertypes/search")
 	public ResponseWrapper<PageResponseDto<GenderExtnDto>> searchGenderTypes(
-			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+			@RequestBody @Valid RequestWrapper<SearchDto> request, @RequestParam boolean addMissingData) {
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + GenderExtnDto.class.getSimpleName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.SEARCH_API_IS_CALLED + GenderExtnDto.class.getSimpleName(), "ADM-560");
 		ResponseWrapper<PageResponseDto<GenderExtnDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(genderTypeService.searchGenderTypes(request.getRequest()));
+		responseWrapper.setResponse(genderTypeService.searchGenderTypes(request.getRequest(), addMissingData));
 		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_SEARCH + BlacklistedWordsExtnDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.SUCCESSFUL_SEARCH_DESC + BlacklistedWordsExtnDto.class.getCanonicalName(),

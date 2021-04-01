@@ -86,7 +86,7 @@ public interface GenderTypeService {
 	 */
 	PageDto<GenderExtnDto> getGenderTypes(int pageNumber, int pageSize, String sortBy, String orderBy);
 
-	PageResponseDto<GenderExtnDto> searchGenderTypes(SearchDto request);
+	PageResponseDto<GenderExtnDto> searchGenderTypes(SearchDto request, boolean addMissingData);
 
 	FilterResponseDto genderFilterValues(FilterValueDto request);
 

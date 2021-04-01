@@ -25,6 +25,7 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypePutReqDto;
+import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
@@ -364,9 +365,11 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 * .mosip.kernel.masterdata.dto.request.SearchDto)
 	 */
 	@Override
-	public PageResponseDto<DocumentTypeExtnDto> searchDocumentTypes(SearchDto dto) {
+	public PageResponseDto<DocumentTypeExtnDto> searchDocumentTypes(SearchDto dto, boolean addMissingData) {
 		PageResponseDto<DocumentTypeExtnDto> pageDto = new PageResponseDto<>();
 		List<DocumentTypeExtnDto> doumentTypes = null;
+		List<DocumentTypeExtnDto> doumentTypesForMissingData = new ArrayList<DocumentTypeExtnDto>();
+		
 		if (filterTypeValidator.validate(DocumentTypeExtnDto.class, dto.getFilters())) {
 			Pagination pagination = dto.getPagination();
 			List<SearchSort> sort = dto.getSort();
@@ -374,8 +377,22 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 			dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
 			dto.setSort(Collections.emptyList());
 			Page<DocumentType> page = masterdataSearchHelper.searchMasterdata(DocumentType.class, dto, null);
+
+			if (addMissingData) {
+				List<MissingCodeDataDto> missingCodeDataDto = masterdataSearchHelper
+						.fetchValuesWithCode(DocumentType.class, dto.getLanguageCode());
+				missingCodeDataDto.forEach(missingCodeData -> {
+					DocumentTypeExtnDto documentTypeExtnDto = new DocumentTypeExtnDto();
+					documentTypeExtnDto.setCode(missingCodeData.getCode());
+					documentTypeExtnDto.setLangCode(missingCodeData.getLangcode());
+					doumentTypesForMissingData.add(documentTypeExtnDto);
+				});
+			}
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				doumentTypes = MapperUtils.mapAll(page.getContent(), DocumentTypeExtnDto.class);
+				for (DocumentTypeExtnDto doumentType : doumentTypesForMissingData) {
+					doumentTypes.add(doumentType);
+				}
 				pageDto = pageUtils.sortPage(doumentTypes, sort, pagination);
 			}
 		}
