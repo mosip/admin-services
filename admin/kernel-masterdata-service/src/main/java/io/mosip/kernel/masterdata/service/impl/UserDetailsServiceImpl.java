@@ -52,6 +52,7 @@ import io.mosip.kernel.masterdata.entity.ZoneUser;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.ValidationException;
 import io.mosip.kernel.masterdata.repository.UserDetailsHistoryRepository;
 import io.mosip.kernel.masterdata.repository.UserDetailsRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
@@ -402,7 +403,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		UsersDto usersDto = null;
 		validationErrorsList = io.mosip.kernel.core.exception.ExceptionUtils.getServiceErrorList(responseBody);
 		if (!validationErrorsList.isEmpty()) {
-			//
+			throw new ValidationException(validationErrorsList);
 		}
 		ResponseWrapper<?> responseObject = null;
 		try {
