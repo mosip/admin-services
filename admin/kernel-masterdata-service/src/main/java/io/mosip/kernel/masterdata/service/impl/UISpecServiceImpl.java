@@ -269,8 +269,8 @@ public class UISpecServiceImpl implements UISpecService {
 	private UISpec getUISpecById(String id) {
 		UISpec uiSpecObjectFromDb = uiSpecRepository.findUISpecById(id);
 		if (uiSpecObjectFromDb == null) {
-			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_UPDATE_EXCEPTION.getErrorCode(),
-					UISpecErrorCode.UI_SPEC_UPDATE_EXCEPTION.getErrorMessage());
+			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorCode(),
+					UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorMessage());
 
 		}
 		return uiSpecObjectFromDb;

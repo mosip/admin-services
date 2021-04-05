@@ -247,7 +247,7 @@ public class UISpecServiceTest {
 		try {
 			uiSpecService.publishUISpec(request);
 		} catch (MasterDataServiceException e) {
-			assertEquals(UISpecErrorCode.UI_SPEC_UPDATE_EXCEPTION.getErrorCode(), e.getErrorCode());
+			assertEquals(UISpecErrorCode.UI_SPEC_NOT_FOUND_EXCEPTION.getErrorCode(), e.getErrorCode());
 		}
 	}
 

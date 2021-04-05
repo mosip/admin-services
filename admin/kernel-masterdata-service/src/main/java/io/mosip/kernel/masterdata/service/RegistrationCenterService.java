@@ -18,6 +18,7 @@ import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
+import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
@@ -75,9 +76,9 @@ public interface RegistrationCenterService {
 	 * Function to fetch registration center using centerId.
 	 * 
 	 * @param registrationCenterId centerId of required center.
-	 * @return {@link RegistrationCenterResponseDto}
+	 * @return {@link RegistrationCenter}
 	 */
-	RegistrationCenterResponseDto getRegistrationCentersByID(String registrationCenterId);
+	List<RegistrationCenter> getRegistrationCentersByID(String registrationCenterId);
 
 	/**
 	 * Function to fetch registration centers list using location code and language
