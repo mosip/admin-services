@@ -199,9 +199,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	public UserDetailsDto updateUser(UserDetailsDto userDetailsDto) {
 		UserDetails ud;
 		try {
+			boolean isActive=userDetailsDto.getIsActive();
 			userDetailsDto = masterdataCreationUtil.updateMasterData(UserDetails.class, userDetailsDto);
+			userDetailsDto.setIsActive(isActive);
 			ud = MetaDataUtils.setCreateMetaData(userDetailsDto, UserDetails.class);
-			ud.setIsActive(userDetailsDto.getIsActive());
 			userDetailsRepository.update(ud);
 			UserDetailsHistory udh = new UserDetailsHistory();
 			MapperUtils.map(ud, udh);
