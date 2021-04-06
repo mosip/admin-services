@@ -15,6 +15,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsDto;
+import io.mosip.kernel.masterdata.dto.UsersDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -161,6 +162,23 @@ public class UserDetailsController {
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		
 		responseWrapper.setResponse(userDetailsService.deleteUser(userId));
+		return responseWrapper;
+	}
+	
+	/**
+	 * This api will bring all users from iam by calling kernel auth service api.
+	 * @param roleName
+	 * @return
+	 */	
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@ResponseFilter
+	@GetMapping(value = "/usersdetails")
+	public ResponseWrapper<UsersDto>  getUsersDetails(@RequestParam(required = false,name ="roleName") String roleName) {
+		ResponseWrapper<UsersDto> responseWrapper = new ResponseWrapper<>();
+		auditUtil.auditRequest(MasterDataConstant.GET_USER_DETAILS_API_IS_CALLED + UserDetailsController.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.GET_USER_DETAILS_API_IS_CALLED + UserDetailsController.class.getCanonicalName());
+		responseWrapper.setResponse(userDetailsService.getUsers(roleName));
 		return responseWrapper;
 	}
 

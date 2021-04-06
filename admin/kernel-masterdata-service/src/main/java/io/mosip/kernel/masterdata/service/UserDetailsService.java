@@ -2,14 +2,16 @@ package io.mosip.kernel.masterdata.service;
 
 import java.util.List;
 
-import io.mosip.kernel.core.authmanager.model.UserDetailsResponseDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsDto;
+import io.mosip.kernel.masterdata.dto.UsersDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.UserDetailsHistoryResponseDto;
-import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterUserID;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 
 /**
  * @author Sidhant Agarwal
@@ -94,5 +96,13 @@ public interface UserDetailsService {
 	 */
 	public UserDetailsDto updateUser(UserDetailsDto user);
 
-
+	/**
+	 * Abstract method to get all users from the IAM.
+	 * 
+	 * Will call auth service to get all users
+	 * 
+	 * @param roleName
+	 * @return
+	 */
+	public UsersDto getUsers(String roleName);
 }
