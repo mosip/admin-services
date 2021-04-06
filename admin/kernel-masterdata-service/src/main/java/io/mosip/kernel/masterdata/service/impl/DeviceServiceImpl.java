@@ -473,9 +473,7 @@ public class DeviceServiceImpl implements DeviceService {
 					}
 				});
 
-				for (DeviceSearchDto device : deviceListForMissingData) {
-					devices.add(device);
-				}
+				devices.addAll(deviceListForMissingData);
 				pageDto = pageUtils.sortPage(devices, sort, pagination);
 
 			}

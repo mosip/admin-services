@@ -342,9 +342,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 			}
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				genderTypeExtns = MapperUtils.mapAll(page.getContent(), GenderExtnDto.class);
-				for (GenderExtnDto genderExtnDto : genderTypeExtnsForMissingData) {
-					genderTypeExtns.add(genderExtnDto);
-				}
+				genderTypeExtns.addAll(genderTypeExtnsForMissingData);
 				pageDto = pageUtils.sortPage(genderTypeExtns, sort, pagination);
 			}
 		}

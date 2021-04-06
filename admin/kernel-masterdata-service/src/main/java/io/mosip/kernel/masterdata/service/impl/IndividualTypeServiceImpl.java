@@ -172,9 +172,7 @@ public class IndividualTypeServiceImpl implements IndividualTypeService {
 
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				individuals = MapperUtils.mapAll(page.getContent(), IndividualTypeExtnDto.class);
-				for (IndividualTypeExtnDto individual : individualsForMissingData) {
-					individuals.add(individual);
-				}
+				individuals.addAll(individualsForMissingData);
 				pageDto = pageUtils.sortPage(individuals, sort, pagination);
 			}
 		}

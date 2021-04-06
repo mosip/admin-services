@@ -523,9 +523,7 @@ public class HolidayServiceImpl implements HolidayService {
 						MapperUtils.map(entry.getValue().get(0), holidaySearchDto);
 						resultDto.add(holidaySearchDto);
 					}
-					for (HolidaySearchDto holiday : resultDtoForMissingData) {
-						resultDto.add(holiday);
-					}
+					resultDto.addAll(resultDtoForMissingData);
 				}
 
 				pageDto = pageUtils.sortPage(resultDto, sort, pagination);

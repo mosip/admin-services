@@ -390,9 +390,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 			}
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				doumentTypes = MapperUtils.mapAll(page.getContent(), DocumentTypeExtnDto.class);
-				for (DocumentTypeExtnDto doumentType : doumentTypesForMissingData) {
-					doumentTypes.add(doumentType);
-				}
+				doumentTypes.addAll(doumentTypesForMissingData);
 				pageDto = pageUtils.sortPage(doumentTypes, sort, pagination);
 			}
 		}

@@ -410,9 +410,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 			}
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				documentCategories = MapperUtils.mapAll(page.getContent(), DocumentCategoryExtnDto.class);
-				for (DocumentCategoryExtnDto documentCategory : documentCategoriesForMissingData) {
-					documentCategories.add(documentCategory);
-				}
+				documentCategories.addAll(documentCategoriesForMissingData);
 				pageDto = pageUtils.sortPage(documentCategories, sort, pagination);
 			}
 		}

@@ -441,9 +441,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				devices = MapperUtils.mapAll(page.getContent(), DeviceSpecificationExtnDto.class);
 				setDeviceTypeName(devices);
-				for (DeviceSpecificationExtnDto device : devicesForMissingData) {
-					devices.add(device);
-				}
+				devices.addAll(devicesForMissingData);
 				pageDto = pageUtils.sortPage(devices, sort, pagination);
 			}
 
