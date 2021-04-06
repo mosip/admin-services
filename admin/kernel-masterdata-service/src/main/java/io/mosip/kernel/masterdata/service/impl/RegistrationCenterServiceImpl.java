@@ -750,7 +750,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
 			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
 				registrationCenters = MapperUtils.mapAll(pageData.getContent(), RegistrationCenterExtnDto.class);
-				registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), 0, null,
+				registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), pageData.getSize(), pageData.getSort(),
 						pageData.getTotalPages(), (int) pageData.getTotalElements(), registrationCenters);
 			} else {
 				throw new DataNotFoundException(
@@ -1698,7 +1698,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 						langCode,PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
 				if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
 					registrationCenters = MapperUtils.mapAll(pageData.getContent(), RegistrationCenterExtnDto.class);
-					registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), 0, null,
+					registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), pageData.getSize(), pageData.getSort(),
 							  pageData.getTotalElements(), pageData.getTotalPages(),registrationCenters);
 				} else {
 					throw new DataNotFoundException(
