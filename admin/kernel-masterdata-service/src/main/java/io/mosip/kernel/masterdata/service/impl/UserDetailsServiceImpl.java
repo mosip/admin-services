@@ -70,7 +70,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Override
 	public UserDetailsDto getUser(String id) {
 		UserDetails ud = userDetailsRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(id);
+		if(ud!=null) {
 		return getDto(ud);
+		}
+		else {
+			throw new DataNotFoundException(UserDetailsErrorCode.USER_NOT_FOUND.getErrorCode(),
+					UserDetailsErrorCode.USER_NOT_FOUND.getErrorMessage());
+		}
 	}
 
 	@Override
@@ -195,6 +201,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		try {
 			userDetailsDto = masterdataCreationUtil.updateMasterData(UserDetails.class, userDetailsDto);
 			ud = MetaDataUtils.setCreateMetaData(userDetailsDto, UserDetails.class);
+			ud.setIsActive(userDetailsDto.getIsActive());
 			userDetailsRepository.update(ud);
 			UserDetailsHistory udh = new UserDetailsHistory();
 			MapperUtils.map(ud, udh);

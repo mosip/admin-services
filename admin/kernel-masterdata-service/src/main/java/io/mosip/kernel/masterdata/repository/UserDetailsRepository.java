@@ -26,7 +26,7 @@ public interface UserDetailsRepository extends BaseRepository<UserDetails, Strin
 	nativeQuery = true)
 	public List<UserDetails> findByRegIdAndIsDeletedFalseOrIsDeletedIsNull(String centerId, Pageable pageable);
 
-	@Query("FROM UserDetails m where m.id = ?1 and (m.isDeleted is null or m.isDeleted = false) and m.isActive = true")
+	@Query("FROM UserDetails m where m.id = ?1 and (m.isDeleted is null or m.isDeleted = false)")
 	UserDetails findByIdAndIsDeletedFalseorIsDeletedIsNull(String id);
 
 	@Query("FROM UserDetails m where (m.isDeleted is null or m.isDeleted = false) and m.isActive = true")
