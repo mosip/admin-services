@@ -4,6 +4,8 @@ import java.util.List;
 
 import io.mosip.kernel.masterdata.dto.getresponse.ZoneNameResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.ZoneExtnDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 
 /**
  * Zone service
@@ -38,4 +40,6 @@ public interface ZoneService {
 	public boolean authorizeZone(String rId);
 
 	public ZoneNameResponseDto getZone(String zoneCode, String langCode);
+
+	public FilterResponseCodeDto zoneFilterValues(FilterValueDto filterValueDto);
 }

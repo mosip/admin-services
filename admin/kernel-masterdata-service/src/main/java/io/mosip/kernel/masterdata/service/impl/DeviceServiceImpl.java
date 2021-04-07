@@ -28,6 +28,7 @@ import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.DevicePutReqDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
+import io.mosip.kernel.masterdata.dto.MissingIdDataDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
@@ -345,9 +346,11 @@ public class DeviceServiceImpl implements DeviceService {
 	 * .masterdata.dto.request.SearchDto)
 	 */
 	@Override
-	public PageResponseDto<DeviceSearchDto> searchDevice(SearchDto dto) {
+	public PageResponseDto<DeviceSearchDto> searchDevice(SearchDto dto, boolean addMissingData) {
 		PageResponseDto<DeviceSearchDto> pageDto = new PageResponseDto<>();
+		
 		List<DeviceSearchDto> devices = null;
+		List<DeviceSearchDto> deviceListForMissingData = new ArrayList<>();
 		List<SearchFilter> addList = new ArrayList<>();
 		List<SearchFilter> mapStatusList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
@@ -445,10 +448,20 @@ public class DeviceServiceImpl implements DeviceService {
 				page = masterdataSearchHelper.searchMasterdata(Device.class, dto,
 						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			} else {
-
 				page = masterdataSearchHelper.nativeDeviceQuerySearch(dto, typeName, zones, isAssigned);
-
 			}
+
+			if (addMissingData) {
+				List<MissingIdDataDto> missingIdDataDto = masterdataSearchHelper.fetchValuesWithId(Device.class,
+						langCode);
+				missingIdDataDto.forEach(missingIdData -> {
+					DeviceSearchDto deviceSearchDto = new DeviceSearchDto();
+					deviceSearchDto.setId(missingIdData.getId());
+					deviceSearchDto.setLangCode(missingIdData.getLangcode());
+					deviceListForMissingData.add(deviceSearchDto);
+				});
+			}
+
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				devices = MapperUtils.mapAll(page.getContent(), DeviceSearchDto.class);
 				setDeviceMetadata(devices, zones);
@@ -459,6 +472,8 @@ public class DeviceServiceImpl implements DeviceService {
 						device.setMapStatus("unassigned");
 					}
 				});
+
+				devices.addAll(deviceListForMissingData);
 				pageDto = pageUtils.sortPage(devices, sort, pagination);
 
 			}

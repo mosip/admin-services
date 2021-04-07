@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,15 +10,25 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ZoneNameResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.ZoneExtnDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.service.ZoneService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import io.swagger.annotations.Api;
 
@@ -35,6 +46,9 @@ public class ZoneController {
 
 	@Autowired
 	private ZoneService zoneService;
+	
+	@Autowired
+	private AuditUtil auditUtil;
 
 	/**
 	 * api to fetch the logged-in user zone hierarchy
@@ -82,6 +96,28 @@ public class ZoneController {
 	public ResponseWrapper<Boolean> authorizeZone(@NotBlank @RequestParam("rid") String rId) {
 		ResponseWrapper<Boolean> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(zoneService.authorizeZone(rId));
+		return responseWrapper;
+	}
+	
+	/**
+	 * Api to filter Zone based on column and type provided.
+	 * 
+	 * @param request the request DTO.
+	 * @return the {@link FilterResponseDto}.
+	 */
+	@ResponseFilter
+	@PostMapping("/filtervalues")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	public ResponseWrapper<FilterResponseCodeDto> zoneFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + Zone.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.FILTER_API_IS_CALLED + Zone.class.getCanonicalName());
+		ResponseWrapper<FilterResponseCodeDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(zoneService.zoneFilterValues(request.getRequest()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER, Zone.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, Zone.class.getCanonicalName()));
 		return responseWrapper;
 	}
 

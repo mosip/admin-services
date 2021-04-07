@@ -100,7 +100,7 @@ public interface HolidayService {
 	 * @param dto the search DTO.
 	 * @return the {@link PageResponseDto}.
 	 */
-	public PageResponseDto<HolidaySearchDto> searchHolidays(SearchDto dto);
+	public PageResponseDto<HolidaySearchDto> searchHolidays(SearchDto dto, boolean addMissingData);
 
 	/**
 	 * Method to filter holidays based on column and type provided.

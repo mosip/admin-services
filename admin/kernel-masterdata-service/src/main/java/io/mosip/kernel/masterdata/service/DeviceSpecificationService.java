@@ -103,7 +103,7 @@ public interface DeviceSpecificationService {
 	public PageDto<DeviceSpecificationExtnDto> getAllDeviceSpecifications(int pageNumber, int pageSize, String sortBy,
 			String orderBy);
 
-	public PageResponseDto<DeviceSpecificationExtnDto> searchDeviceSpec(SearchDto dto);
+	public PageResponseDto<DeviceSpecificationExtnDto> searchDeviceSpec(SearchDto dto, boolean addMissingData);
 
 	/**
 	 * Method that returns the column values of specific filter column name.

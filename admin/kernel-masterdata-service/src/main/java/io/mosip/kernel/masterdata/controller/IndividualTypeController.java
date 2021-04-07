@@ -104,14 +104,14 @@ public class IndividualTypeController {
 	@ResponseFilter
 	@PostMapping("/search")
 	public ResponseWrapper<PageResponseDto<IndividualTypeExtnDto>> searchIndividuals(
-			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+			@RequestBody @Valid RequestWrapper<SearchDto> request, @RequestParam boolean addMissingData) {
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SEARCH_API_IS_CALLED, IndividualTypeDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM,
 				String.format(MasterDataConstant.SEARCH_API_IS_CALLED, IndividualTypeDto.class.getSimpleName()),
 				"ADM-589");
 		ResponseWrapper<PageResponseDto<IndividualTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(individualTypeService.searchIndividuals(request.getRequest()));
+		responseWrapper.setResponse(individualTypeService.searchIndividuals(request.getRequest(), addMissingData));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, IndividualTypeDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM,
