@@ -1605,7 +1605,10 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<RegistrationCenter> regCenterById = registrationCenterRepository.findByRegId(dto.getId());
 		RegistrationCenterExtnDto registrationCenterExtnDto = new RegistrationCenterExtnDto();
 		if (regCenterById.isEmpty()) {
-			// throw error
+			auditException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
 		RegistrationCenter regCenterByLangCode = regCenterById.stream()
 				.filter(rc -> rc.getLangCode().equals(dto.getLangCode())).findFirst().orElse(null);

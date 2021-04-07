@@ -188,12 +188,11 @@ public class RegistrationCenter extends BaseEntity implements Cloneable,Serializ
 	@Column(name = "zone_code", length = 36)
 	private String zoneCode;
 	
-	public Object clone() 
-    {
+	public Object clone() {
 		try {
-        return super.clone();
-		}catch(Exception ex) {
+			return super.clone();
+		} catch (Exception ex) {
 			return null;
 		}
-    } 
+	} 
 }
