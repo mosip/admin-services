@@ -1642,6 +1642,10 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		objectToCreate.setAddressLine2(dto.getAddressLine2());
 		objectToCreate.setAddressLine3(dto.getAddressLine3());
 		objectToCreate.setLangCode(dto.getLangCode());
+		objectToCreate.setCreatedBy(MetaDataUtils.getContextUser());
+		objectToCreate.setCreatedDateTime(MetaDataUtils.getCurrentDateTime());
+		objectToCreate.setUpdatedBy(null);
+		objectToCreate.setUpdatedDateTime(null);
 		registrationCenterRepository.create(objectToCreate);
 		RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();
 		MapperUtils.map(objectToCreate, registrationCenterHistory);
