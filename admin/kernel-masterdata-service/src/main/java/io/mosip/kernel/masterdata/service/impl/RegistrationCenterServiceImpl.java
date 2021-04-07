@@ -1654,7 +1654,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
 						RegCenterPutReqDto.class.getSimpleName(), registrationCenterExtnDto.getId()),
 				"ADM-533");
-		return MapperUtils.map(regCenterByLangCode, registrationCenterExtnDto);
+		return MapperUtils.map(objectToCreate, registrationCenterExtnDto);
 	}
 
 	@Override
