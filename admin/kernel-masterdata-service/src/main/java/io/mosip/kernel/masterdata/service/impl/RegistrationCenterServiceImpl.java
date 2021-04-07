@@ -1702,7 +1702,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				dto.getLongitude(), dto.getLocationCode(), dto.getContactPhone(), dto.getNumberOfKiosks(),
 				dto.getHolidayLocationCode(), dto.getWorkingHours(), dto.getPerKioskProcessTime(),
 				dto.getCenterStartTime(), dto.getCenterEndTime(), dto.getTimeZone(), dto.getLunchStartTime(),
-				dto.getLunchEndTime(), dto.getZoneCode(), dto.getId());
+				dto.getLunchEndTime(), dto.getZoneCode(), dto.getId(),MetaDataUtils.getContextUser(), MetaDataUtils.getCurrentDateTime());
 		if (updatedRows > 0) {
 			List<RegistrationCenter> updRegistrationCenters = registrationCenterRepository.findByRegId(dto.getId());
 			updateWorkingNonWorking(updRegistrationCenters.get(0), dto.getWorkingNonWorkingDays(), errors);

@@ -209,10 +209,10 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	@Query("FROM RegistrationCenter WHERE id= ?1")
 	List<RegistrationCenter> findByRegId(String regCenterId);
 	
-	@Query("UPDATE RegistrationCenter rc SET rc.centerTypeCode=?1,latitude=?2,longitude=?3,locationCode=?4,contactPhone=?5,numberOfKiosks=?6,holidayLocationCode=?7,workingHours=?8,perKioskProcessTime=?9,centerStartTime=?10,centerEndTime=?11,timeZone=?12,lunchStartTime=?13,lunchEndTime=?14,zoneCode=?15 where rc.id=?16")
+	@Query("UPDATE RegistrationCenter rc SET rc.centerTypeCode=?1,rc.latitude=?2,rc.longitude=?3,rc.locationCode=?4,rc.contactPhone=?5,rc.numberOfKiosks=?6,rc.holidayLocationCode=?7,rc.workingHours=?8,rc.perKioskProcessTime=?9,rc.centerStartTime=?10,rc.centerEndTime=?11,rc.timeZone=?12,rc.lunchStartTime=?13,rc.lunchEndTime=?14,rc.zoneCode=?15,rc.updatedBy = ?17, rc.updatedDateTime =?18 where rc.id=?16")
 	@Modifying
 	int updateRegCenter(String centerTypeCode,String latitude ,String longitude,String locationCode,
 			String contactPhone,Short numberOfKiosks,String holidayLocationCode,String workingHours,
 			LocalTime perKioskProcessTime,LocalTime centerStartTime,LocalTime centerEndTime,String timeZone,
-			LocalTime lunchStartTime,LocalTime lunchEndTime,String zoneCode,String id);
+			LocalTime lunchStartTime,LocalTime lunchEndTime,String zoneCode,String id,String updatedBy, LocalDateTime updatedDateTime);
 }
