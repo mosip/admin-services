@@ -221,20 +221,20 @@ public interface RegistrationCenterService {
 	IdResponseDto decommissionRegCenter(String regCenterID);
 	
 	PageDto<RegistrationCenterExtnDto> findRegistrationCenterByHierarchyLevelandTextAndLanguageCodePaginated(String langCode,
-			Short hierarchyLevel, String name, int pageNumber, int pageSize, String sortBy, String orderBy);
+			Short hierarchyLevel, String name, int pageNumber, int pageSize, String sortBy, String orderBy);	
 	
 	/**
-	 * This method updates the registration center by admin.
-	 * 
-	 * @param RegCenterPutReqDto - pass the List of registration center DTO to
-	 *                           update.
-	 * 
-	 * @return RegistrationCenterPutResponseDto - return updated registration
-	 *         centers complete DTO
+	 * This method updates the language specific columns of reg center
+	 * @param reqRegistrationCenterDto
+	 * @return
 	 */
-
 	public RegistrationCenterExtnDto updateRegistrationCenterWithLanguageSpecific(@Valid RegCenterLanguageSpecificPutDto reqRegistrationCenterDto);
 	
+	/**
+	 * This method updates the non language specific columns of reg center
+	 * @param reqRegistrationCenterDto
+	 * @return
+	 */
 	public RegistrationCenterExtnDto updateRegistrationCenterWithNonLanguageSpecific(@Valid RegCenterNonLanguageSpecificPutDto reqRegistrationCenterDto);
 
 

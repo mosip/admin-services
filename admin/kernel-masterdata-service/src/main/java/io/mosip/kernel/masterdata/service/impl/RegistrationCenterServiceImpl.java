@@ -1627,6 +1627,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			registrationCenterHistory.setEffectivetimes(LocalDateTime.now());
 			registrationCenterHistory.setUpdatedDateTime(regCenterByLangCode.getUpdatedDateTime());
 			registrationCenterHistoryRepository.create(registrationCenterHistory);
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.SUCCESSFUL_UPDATE, RegCenterPutReqDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
+							RegCenterPutReqDto.class.getSimpleName(), registrationCenterExtnDto.getId()),
+					"ADM-533");
 			return MapperUtils.map(regCenterByLangCode, registrationCenterExtnDto);
 
 		}		
@@ -1644,6 +1649,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		registrationCenterHistory.setEffectivetimes(LocalDateTime.now());
 		registrationCenterHistory.setUpdatedDateTime(objectToCreate.getUpdatedDateTime());
 		registrationCenterHistoryRepository.create(registrationCenterHistory);
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, RegCenterPutReqDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
+						RegCenterPutReqDto.class.getSimpleName(), registrationCenterExtnDto.getId()),
+				"ADM-533");
 		return MapperUtils.map(regCenterByLangCode, registrationCenterExtnDto);
 	}
 
@@ -1705,7 +1715,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			registrationCenterExtnDto = MapperUtils.map(updRegistrationCenters.get(0), registrationCenterExtnDto);
 			updateRegistartionCenterHistory(updRegistrationCenters);
 		}
-
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, RegCenterPutReqDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
+						RegCenterPutReqDto.class.getSimpleName(), registrationCenterExtnDto.getId()),
+				"ADM-533");
 		return registrationCenterExtnDto;
 	}
 	
