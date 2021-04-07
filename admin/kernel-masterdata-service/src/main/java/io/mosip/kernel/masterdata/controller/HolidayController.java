@@ -204,14 +204,14 @@ public class HolidayController {
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<HolidaySearchDto>> searchMachine(
 
-			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+			@RequestBody @Valid RequestWrapper<SearchDto> request, @RequestParam boolean addMissingData) {
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SEARCH_API_IS_CALLED, HolidaySearchDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM,
 				String.format(MasterDataConstant.SEARCH_API_IS_CALLED, HolidaySearchDto.class.getSimpleName()),
 				"ADM-595");
 		ResponseWrapper<PageResponseDto<HolidaySearchDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(holidayService.searchHolidays(request.getRequest()));
+		responseWrapper.setResponse(holidayService.searchHolidays(request.getRequest(), addMissingData));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, HolidaySearchDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM,

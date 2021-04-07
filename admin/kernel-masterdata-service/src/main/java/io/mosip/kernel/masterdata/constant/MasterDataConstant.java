@@ -99,6 +99,7 @@ public class MasterDataConstant {
 	public static final String SERIAL_NO = "serialNo";
 	public static final String TYPE = "type";
 	public static final String SUBTYPE = "subType";
+	public static final String GET_USER_DETAILS_API_IS_CALLED = "GET user details API called::";
 
 	public static final String AUDIT_SYSTEM = "SYSTEM";
 }

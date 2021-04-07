@@ -6,20 +6,17 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
-import io.mosip.kernel.masterdata.constant.RequestErrorCode;
 import io.mosip.kernel.masterdata.constant.UserDetailsHistoryErrorCode;
 import io.mosip.kernel.masterdata.constant.ZoneUserErrorCode;
 import io.mosip.kernel.masterdata.dto.ZoneUserDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserExtnDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
-import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.ZoneUser;
 import io.mosip.kernel.masterdata.entity.ZoneUserHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -35,6 +32,7 @@ import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+
 @Component
 public class ZoneUserServiceImpl implements ZoneUserService {
 	
@@ -56,12 +54,6 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 
 	@Autowired
 	private AuditUtil auditUtil;
-	
-	@Value("${mosip.primary-language:eng}")
-	private String primaryLang;
-
-	@Value("${mosip.secondary-language:ara}")
-	private String secondaryLang;
 	
 	@Override
 	public ZoneUserExtnDto createZoneUserMapping(ZoneUserDto zoneUserDto) {
@@ -147,22 +139,23 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		
 		return MapperUtils.map(zu, dto);
 	}
-	private boolean getisActive(String userId,String langCode,String zoneCode,boolean isActive) {
-		if(langCode.equalsIgnoreCase(primaryLang)) {
-			ZoneUser zoneUser=zoneUserRepo.findZoneUserByUserIdZoneCodeLangCodeIsActive(userId,secondaryLang,zoneCode);
-			if(zoneUser==null) {
-				return false;
-			}
-		}
-		if(langCode.equalsIgnoreCase(secondaryLang)) {
-			ZoneUser zoneUser=zoneUserRepo.findZoneUserByUserIdZoneCodeLangCodeIsActive(userId,primaryLang,zoneCode);
-			if(zoneUser==null) {
-				throw new MasterDataServiceException(RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorCode(),
-						RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorMessage());
-			}
+
+	/**
+	 * 
+	 * @param userId
+	 * @param langCode
+	 * @param zoneCode
+	 * @param isActive
+	 * @return
+	 */
+	private boolean getisActive(String userId, String langCode, String zoneCode, boolean isActive) {
+		List<ZoneUser> allZoneUsers = zoneUserRepo.findByUserIdAndZoneCode(userId, zoneCode);
+		if (allZoneUsers.stream().filter(a -> a.getIsActive() == false).count() > 0) {
+			return false;
 		}
 		return isActive;
 	}
+	
 	@Override
 	public IdResponseDto deleteZoneUserMapping(String userId,String zoneCode) {
 		IdResponseDto idResponse = new IdResponseDto();
@@ -196,6 +189,7 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		
 			return idResponse;
 	}
+	
 	@Override
 	public ZoneUserHistoryResponseDto getHistoryByUserIdAndTimestamp(String userId, String effDTimes) {
 		List<ZoneUserHistory> userDetails = null;
@@ -224,5 +218,10 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 			userResponseDto.setUserResponseDto(MapperUtils.mapAll(userDetails, ZoneUserExtnDto.class));
 		}
 		return userResponseDto;
+	}
+	
+	@Override
+	public ZoneUser getZoneUser(String userId, String langCode, String zoneCode) {
+		return zoneUserRepo.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(userId,langCode,zoneCode);
 	}
 }

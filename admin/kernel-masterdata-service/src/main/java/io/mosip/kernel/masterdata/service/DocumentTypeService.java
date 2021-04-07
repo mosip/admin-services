@@ -92,7 +92,7 @@ public interface DocumentTypeService {
 	 * @param dto contains the data for searching and sorting.
 	 * @return list of document type with all the metadata.
 	 */
-	public PageResponseDto<DocumentTypeExtnDto> searchDocumentTypes(SearchDto dto);
+	public PageResponseDto<DocumentTypeExtnDto> searchDocumentTypes(SearchDto dto, boolean addMissingData);
 
 	/**
 	 * Method to fetch all Document Type details based on language code

@@ -70,6 +70,10 @@ import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.WeekDaysDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.response.LocationPostResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationPutResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
@@ -96,6 +100,7 @@ import io.mosip.kernel.masterdata.service.RegWorkingNonWorkingService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
+import io.mosip.kernel.masterdata.service.ZoneService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.LocalDateTimeUtil;
@@ -238,6 +243,9 @@ public class MasterdataControllerTest {
 
 	@MockBean
 	private TemplateFileFormatService templateFileFormatService;
+	
+	@MockBean
+	private ZoneService zoneService;
 	
 	@MockBean
 	LocalDateTimeUtil localDateTimeUtil;
@@ -1243,6 +1251,40 @@ public class MasterdataControllerTest {
 				.thenReturn(exceptionalHolidayResponseDto);
 		mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10001/eng")).andExpect(status().isOk());
 
+	}
+	
+	@Test
+	@WithUserDetails("test")
+	public void zoneFilterValuesTest() throws Exception {
+
+		FilterValueDto filterValueDto = new FilterValueDto();
+		List<FilterDto> filters = new ArrayList<FilterDto>();
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("name");
+		filterDto.setText("SAFi");
+		filterDto.setType("unique");
+		filters.add(filterDto);
+		filterValueDto.setFilters(filters);
+		filterValueDto.setLanguageCode("eng");
+
+		FilterResponseCodeDto filterResponseCodeDto = new FilterResponseCodeDto();
+		List<ColumnCodeValue> ResponseFilters = new ArrayList<ColumnCodeValue>();
+		ColumnCodeValue codeValue = new ColumnCodeValue();
+		codeValue.setFieldCode("MRS");
+		codeValue.setFieldID("name");
+		codeValue.setFieldValue("Marrakesh-Safi");
+		ResponseFilters.add(codeValue);
+		filterResponseCodeDto.setFilters(ResponseFilters);
+
+		RequestWrapper<FilterValueDto> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(filterValueDto);
+
+		Mockito.when(zoneService.zoneFilterValues(Mockito.any())).thenReturn(filterResponseCodeDto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/zones/filtervalues").characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(requestWrapper));
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
 }

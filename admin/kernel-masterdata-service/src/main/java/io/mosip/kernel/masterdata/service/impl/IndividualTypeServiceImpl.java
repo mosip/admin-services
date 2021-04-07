@@ -17,6 +17,7 @@ import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.IndividualTypeErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.IndividualTypeDto;
+import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IndividualTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.IndividualTypeExtnDto;
@@ -145,9 +146,11 @@ public class IndividualTypeServiceImpl implements IndividualTypeService {
 	 * .mosip.kernel.masterdata.dto.request.SearchDto)
 	 */
 	@Override
-	public PageResponseDto<IndividualTypeExtnDto> searchIndividuals(SearchDto dto) {
+	public PageResponseDto<IndividualTypeExtnDto> searchIndividuals(SearchDto dto, boolean addMissingData) {
 		PageResponseDto<IndividualTypeExtnDto> pageDto = new PageResponseDto<>();
 		List<IndividualTypeExtnDto> individuals = null;
+		List<IndividualTypeExtnDto> individualsForMissingData = new ArrayList<IndividualTypeExtnDto>();
+
 		if (filterTypeValidator.validate(IndividualTypeExtnDto.class, dto.getFilters())) {
 			Pagination pagination = dto.getPagination();
 			List<SearchSort> sort = dto.getSort();
@@ -155,9 +158,22 @@ public class IndividualTypeServiceImpl implements IndividualTypeService {
 			dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
 			dto.setSort(Collections.emptyList());
 			Page<IndividualType> page = masterDataSearchHelper.searchMasterdata(IndividualType.class, dto, null);
+
+			if (addMissingData) {
+				List<MissingCodeDataDto> missingCodeDataDto = masterDataSearchHelper
+						.fetchValuesWithCode(IndividualType.class, dto.getLanguageCode());
+				missingCodeDataDto.forEach(missingCodeData -> {
+					IndividualTypeExtnDto individualTypeExtnDto = new IndividualTypeExtnDto();
+					individualTypeExtnDto.setCode(missingCodeData.getCode());
+					individualTypeExtnDto.setLangCode(missingCodeData.getLangcode());
+					individualsForMissingData.add(individualTypeExtnDto);
+				});
+			}
+
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				individuals = MapperUtils.mapAll(page.getContent(), IndividualTypeExtnDto.class);
-				pageDto = pageUtils.sortPage(individuals,sort, pagination);
+				individuals.addAll(individualsForMissingData);
+				pageDto = pageUtils.sortPage(individuals, sort, pagination);
 			}
 		}
 		return pageDto;

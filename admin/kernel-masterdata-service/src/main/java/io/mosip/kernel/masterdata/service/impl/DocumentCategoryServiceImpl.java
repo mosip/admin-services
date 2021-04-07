@@ -22,6 +22,7 @@ import io.mosip.kernel.masterdata.constant.DeviceTypeErrorCode;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
+import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentCategoryExtnDto;
@@ -383,9 +384,11 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * searchDocCategories(io.mosip.kernel.masterdata.dto.request.SearchDto)
 	 */
 	@Override
-	public PageResponseDto<DocumentCategoryExtnDto> searchDocCategories(SearchDto dto) {
+	public PageResponseDto<DocumentCategoryExtnDto> searchDocCategories(SearchDto dto, boolean addMissingData) {
 		PageResponseDto<DocumentCategoryExtnDto> pageDto = new PageResponseDto<>();
 		List<DocumentCategoryExtnDto> documentCategories = null;
+		List<DocumentCategoryExtnDto> documentCategoriesForMissingData = new ArrayList<DocumentCategoryExtnDto>();
+
 		pageUtils.validateSortField(DocumentCategory.class, dto.getSort());
 		if (filterTypeValidator.validate(DocumentCategoryExtnDto.class, dto.getFilters())) {
 			Pagination pagination = dto.getPagination();
@@ -394,8 +397,20 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 			dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
 			dto.setSort(Collections.emptyList());
 			Page<DocumentCategory> page = masterDataSearchHelper.searchMasterdata(DocumentCategory.class, dto, null);
+
+			if (addMissingData) {
+				List<MissingCodeDataDto> missingCodeDataDto = masterDataSearchHelper
+						.fetchValuesWithCode(DocumentCategory.class, dto.getLanguageCode());
+				missingCodeDataDto.forEach(missingCodeData -> {
+					DocumentCategoryExtnDto documentCategoryExtnDto = new DocumentCategoryExtnDto();
+					documentCategoryExtnDto.setCode(missingCodeData.getCode());
+					documentCategoryExtnDto.setLangCode(missingCodeData.getLangcode());
+					documentCategoriesForMissingData.add(documentCategoryExtnDto);
+				});
+			}
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				documentCategories = MapperUtils.mapAll(page.getContent(), DocumentCategoryExtnDto.class);
+				documentCategories.addAll(documentCategoriesForMissingData);
 				pageDto = pageUtils.sortPage(documentCategories, sort, pagination);
 			}
 		}
