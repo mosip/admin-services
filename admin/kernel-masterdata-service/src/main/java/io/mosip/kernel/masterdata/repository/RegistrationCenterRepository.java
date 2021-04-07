@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 
@@ -205,4 +206,13 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	Page<RegistrationCenter> findRegistrationCenterByListOfLocationCodePaginated(@Param("codes") Set<String> codes,
 			@Param("langcode") String langCode,Pageable pageable);
 
+	@Query("FROM RegistrationCenter WHERE id= ?1")
+	List<RegistrationCenter> findByRegId(String regCenterId);
+	
+	@Query("UPDATE RegistrationCenter rc SET rc.centerTypeCode=?1,latitude=?2,longitude=?3,locationCode=?4,contactPhone=?5,numberOfKiosks=?6,holidayLocationCode=?7,workingHours=?8,perKioskProcessTime=?9,centerStartTime=?10,centerEndTime=?11,timeZone=?12,lunchStartTime=?13,lunchEndTime=?14,zoneCode=?15 where rc.id=?16")
+	@Modifying
+	int updateRegCenter(String centerTypeCode,String latitude ,String longitude,String locationCode,
+			String contactPhone,Short numberOfKiosks,String holidayLocationCode,String workingHours,
+			LocalTime perKioskProcessTime,LocalTime centerStartTime,LocalTime centerEndTime,String timeZone,
+			LocalTime lunchStartTime,LocalTime lunchEndTime,String zoneCode,String id);
 }

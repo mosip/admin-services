@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import io.mosip.kernel.masterdata.dto.PageDto;
+import io.mosip.kernel.masterdata.dto.RegCenterLanguageSpecificPutDto;
+import io.mosip.kernel.masterdata.dto.RegCenterNonLanguageSpecificPutDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
@@ -219,6 +221,20 @@ public interface RegistrationCenterService {
 	
 	PageDto<RegistrationCenterExtnDto> findRegistrationCenterByHierarchyLevelandTextAndLanguageCodePaginated(String langCode,
 			Short hierarchyLevel, String name, int pageNumber, int pageSize, String sortBy, String orderBy);
+	
+	/**
+	 * This method updates the registration center by admin.
+	 * 
+	 * @param RegCenterPutReqDto - pass the List of registration center DTO to
+	 *                           update.
+	 * 
+	 * @return RegistrationCenterPutResponseDto - return updated registration
+	 *         centers complete DTO
+	 */
+
+	public RegistrationCenterExtnDto updateRegistrationCenterWithLanguageSpecific(@Valid RegCenterLanguageSpecificPutDto reqRegistrationCenterDto);
+	
+	public RegistrationCenterExtnDto updateRegistrationCenterWithNonLanguageSpecific(@Valid RegCenterNonLanguageSpecificPutDto reqRegistrationCenterDto);
 
 
 }

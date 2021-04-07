@@ -40,7 +40,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "registration_center", schema = "master")
 @IdClass(IdAndLanguageCodeID.class)
-public class RegistrationCenter extends BaseEntity implements Serializable {
+public class RegistrationCenter extends BaseEntity implements Cloneable,Serializable {
 
 	/**
 	 * Serializable version ID.
@@ -187,4 +187,13 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 
 	@Column(name = "zone_code", length = 36)
 	private String zoneCode;
+	
+	public Object clone() 
+    {
+		try {
+        return super.clone();
+		}catch(Exception ex) {
+			return null;
+		}
+    } 
 }
