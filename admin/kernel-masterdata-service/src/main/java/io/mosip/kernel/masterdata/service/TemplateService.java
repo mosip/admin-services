@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.TemplateExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -61,6 +62,8 @@ public interface TemplateService {
 	 * @return {@linkplain IdAndLanguageCodeID}
 	 */
 	public IdAndLanguageCodeID updateTemplates(TemplateDto template);
+	
+	public StatusResponseDto updateTemplates(String id, boolean isActive);
 
 	/**
 	 * Method to delete template based on provided template id

@@ -16,6 +16,7 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.TemplateFileFormatErrorCode;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.TemplateFileFormat;
@@ -245,5 +246,54 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 		}
 		templateFileFormatResponseDto.setTemplateFileFormats(templateFileFormatDtoList);
 		return templateFileFormatResponseDto;
+	}
+
+	@Override
+	public StatusResponseDto updateTemplateFileFormat(String code, boolean isActive) {
+		// TODO Auto-generated method stub
+		StatusResponseDto response = new StatusResponseDto();
+
+		List<TemplateFileFormat> templateFileFormats = null;
+		try {
+			templateFileFormats = templateFileFormatRepository.findtoUpdateTemplateFileFormatByCode(code);
+		} catch (DataAccessException | DataAccessLayerException accessException) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, TemplateFileFormat.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_FETCH_EXCEPTION.getErrorCode(),
+							TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_FETCH_EXCEPTION.getErrorMessage()),
+					"ADM-833");
+			throw new MasterDataServiceException(
+					TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_FETCH_EXCEPTION.getErrorCode(),
+					TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(accessException));
+		}
+
+		if (templateFileFormats != null && !templateFileFormats.isEmpty()) {
+			if (!isActive) {
+				List<Template> templates = templateRepository
+						.findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(code);
+				if (!EmptyCheckUtils.isNullEmpty(templates)) {
+					throw new RequestException(
+							TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_UPDATE_MAPPING_EXCEPTION.getErrorCode(),
+							TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_UPDATE_MAPPING_EXCEPTION
+									.getErrorMessage());
+				}
+			}
+			masterdataCreationUtil.updateMasterDataStatus(TemplateFileFormat.class, code, isActive, "code");
+		} else {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, TemplateFileFormat.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_NOT_FOUND.getErrorCode(),
+							TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_NOT_FOUND.getErrorMessage()),
+					"ADM-834");
+			throw new DataNotFoundException(TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_NOT_FOUND.getErrorCode(),
+					TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_NOT_FOUND.getErrorMessage());
+		}
+		response.setStatus("Status updated successfully for Template File Formats");
+		return response;
 	}
 }

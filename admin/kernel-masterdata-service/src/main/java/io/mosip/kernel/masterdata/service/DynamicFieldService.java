@@ -4,6 +4,7 @@ import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldValueDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 
 import java.time.LocalDateTime;
 
@@ -49,5 +50,7 @@ public interface DynamicFieldService {
 	 * @return
 	 */
 	public String updateFieldValue(String fieldId, DynamicFieldValueDto dto);
+	
+	public StatusResponseDto updateDynamicField(String id, boolean isActive);
 	
 }

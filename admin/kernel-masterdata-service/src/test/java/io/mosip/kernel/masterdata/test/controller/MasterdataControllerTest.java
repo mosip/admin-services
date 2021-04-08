@@ -65,6 +65,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.WeekDaysDto;
@@ -90,14 +91,19 @@ import io.mosip.kernel.masterdata.service.ApplicationService;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
+import io.mosip.kernel.masterdata.service.DeviceService;
+import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
+import io.mosip.kernel.masterdata.service.DeviceTypeService;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
+import io.mosip.kernel.masterdata.service.DynamicFieldService;
 import io.mosip.kernel.masterdata.service.ExceptionalHolidayService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationHierarchyService;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.RegWorkingNonWorkingService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
+import io.mosip.kernel.masterdata.service.RegistrationCenterTypeService;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.service.ZoneService;
@@ -171,6 +177,18 @@ public class MasterdataControllerTest {
 
 	@MockBean
 	private DocumentTypeService documentTypeService;
+	
+	@MockBean
+	private DeviceService deviceService;
+	
+	@MockBean
+	private DeviceSpecificationService deviceSpecificationService;
+	
+	@MockBean
+	private DeviceTypeService deviceTypeService;
+	
+	@MockBean
+	private DynamicFieldService dynamicFieldService;
 
 	// private final String DOCUMENT_TYPE_EXPECTED = "{ \"documents\": [ { \"code\":
 	// \"addhar\", \"name\": \"adhar card\", \"description\": \"Uid\", \"langCode\":
@@ -225,6 +243,9 @@ public class MasterdataControllerTest {
 
 	@MockBean
 	private RegistrationCenterService registrationCenterService;
+	
+	@MockBean
+	RegistrationCenterTypeService registrationCenterTypeService;
 
 	private RegistrationCenter registrationCenter;
 	private List<Holiday> holidays;
@@ -729,6 +750,21 @@ public class MasterdataControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/101/eng"))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
+	
+	@Test
+	@WithUserDetails("test")
+	public void updateDocumentCategoryStatusTest() throws Exception {
+
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Document Categories");
+		Mockito.when(documentCategoryService.updateDocumentCategory(Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(dto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/documentcategories").characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("code", "ABC")
+				.param("isActive", "true");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
 
 	// -------------------------------DocumentTypeControllerTest--------------------------
 	@Test
@@ -751,6 +787,20 @@ public class MasterdataControllerTest {
 						"No documents found for specified document category code and language code"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/documenttypes/poc/eng"))
 				.andExpect(MockMvcResultMatchers.status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("test")
+	public void updateDocumentTypeStatusTest() throws Exception {
+
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Document Types");
+		Mockito.when(documentTypeService.updateDocumentType(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(dto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/documenttypes").characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("code", "ABC")
+				.param("isActive", "true");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
 	@Test
@@ -1079,6 +1129,20 @@ public class MasterdataControllerTest {
 				.thenReturn(templateResponseDto);
 		mockMvc.perform(MockMvcRequestBuilders.get("/templates/templatetypecodes/EMAIL")).andExpect(status().isOk());
 	}
+	
+	@Test
+	@WithUserDetails("test")
+	public void updateTemplateStatusTest() throws Exception {
+
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Templates");
+		Mockito.when(templateService.updateTemplates(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(dto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/templates").characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("id", "html")
+				.param("isActive", "true");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
 
 	// -----------------------------TemplateFileFormatControllerTest------------------------
 
@@ -1108,6 +1172,21 @@ public class MasterdataControllerTest {
 						+ "    \"isActive\": true,\n" + "    \"langCode\": \"xxx\"\n" + "  }\n" + "}"))
 
 				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("test")
+	public void updateFileFormatStatusTest() throws Exception {
+
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Templates File Formats");
+		Mockito.when(templateFileFormatService.updateTemplateFileFormat(Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(dto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/templatefileformats").characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("code", "12345")
+				.param("isActive", "true");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
 	@Test
@@ -1148,6 +1227,78 @@ public class MasterdataControllerTest {
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper));
 		mockMvc.perform(requestBuilder).andExpect(status().isOk())
 				.andExpect(jsonPath("$.response.code", is("Invalid")));
+	}
+	
+	@Test
+	@WithUserDetails("test")
+	public void updateBlackListedWordStatusTest() throws Exception {
+
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for BlacklistedWords");
+		Mockito.when(blacklistedWordsService.updateBlackListedWordStatus(Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(dto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/blacklistedwords").characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("word", "ABC")
+				.param("isActive", "true");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void updateDeviceStatusTest() throws Exception {
+
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Devices");
+		Mockito.when(deviceService.updateDeviceStatus(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(dto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/devices").characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("id", "ABC")
+				.param("isActive", "true");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void updateDeviceSpecificationStatusTest() throws Exception {
+
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Device Specification");
+		Mockito.when(deviceSpecificationService.updateDeviceSpecification(Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(dto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/devicespecifications").characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("id", "ABC")
+				.param("isActive", "true");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void updateDeviceTypeStatusTest() throws Exception {
+
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Device Type");
+		Mockito.when(deviceTypeService.updateDeviceType(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(dto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/devicetypes").characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("code", "ABC")
+				.param("isActive", "true");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void updateDynamicFieldStatusTest() throws Exception {
+
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Dynamic Fields");
+		Mockito.when(dynamicFieldService.updateDynamicField(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(dto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/dynamicfields").characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("id", "ABC")
+				.param("isActive", "true");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
 	@Test
@@ -1212,6 +1363,37 @@ public class MasterdataControllerTest {
 
 		mockMvc.perform(get("/registrationcenters/validate/1/eng/2017-12-12T17:59:59.999Z")).andExpect(status().isOk());
 
+	}
+	
+	@Test
+	@WithUserDetails("test")
+	public void updateRegistrationCenterAdminStatusTest() throws Exception {
+
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Registration Centers");
+		Mockito.when(registrationCenterService.updateRegistrationCenter(Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(dto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/registrationcenters").characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("id", "10002")
+				.param("isActive", "true");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("test")
+	public void updateRegistrationCenterTypeStatusTest() throws Exception {
+
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Registration Center Types");
+		Mockito.when(
+				registrationCenterTypeService.updateRegistrationCenterType(Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(dto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/registrationcentertypes")
+				.characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
+				.contentType(MediaType.APPLICATION_JSON).param("code", "BCC").param("isActive", "true");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
 	// -----------------------------WorkingDayControllerTest------------------------

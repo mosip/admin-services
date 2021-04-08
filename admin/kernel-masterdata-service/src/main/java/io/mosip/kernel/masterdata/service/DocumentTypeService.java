@@ -6,6 +6,7 @@ import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypePutReqDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.DocumentTypePostResponseDto;
@@ -102,5 +103,7 @@ public interface DocumentTypeService {
 	 * @return DocumentTypeResponseDto
 	 */
 	public DocumentTypeResponseDto getAllDocumentTypeByLaguageCode(String langCode);
+	
+	public StatusResponseDto updateDocumentType(String code, boolean isActive);
 
 }

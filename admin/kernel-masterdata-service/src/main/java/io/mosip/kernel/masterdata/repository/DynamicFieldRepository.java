@@ -50,6 +50,9 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 	 */
 	@Query("FROM DynamicField WHERE (isDeleted is null OR isDeleted = false) and id=?1")
 	DynamicField findDynamicFieldById(String id);
+
+	@Query("FROM DynamicField WHERE (isDeleted is null OR isDeleted = false) and id=?1")
+	List<DynamicField> findToUpdateDynamicFieldById(String id);
 	
 	/**
 	 *  Get dynamic field based on id and langCode

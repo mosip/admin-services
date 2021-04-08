@@ -16,6 +16,7 @@ import io.mosip.kernel.masterdata.constant.ZoneUserErrorCode;
 import io.mosip.kernel.masterdata.dto.ZoneUserDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserExtnDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserHistoryResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.ZoneUser;
 import io.mosip.kernel.masterdata.entity.ZoneUserHistory;
@@ -223,5 +224,41 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 	@Override
 	public ZoneUser getZoneUser(String userId, String langCode, String zoneCode) {
 		return zoneUserRepo.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(userId,langCode,zoneCode);
+	}
+	
+	@Override
+	public StatusResponseDto updateZoneUserMapping(String code, boolean isActive) {
+		// TODO Auto-generated method stub
+		StatusResponseDto response = new StatusResponseDto();
+
+		List<ZoneUser> zoneUsers = null;
+		try {
+			zoneUsers = zoneUserRepo.findtoUpdateZoneUserByCode(code);
+		} catch (DataAccessException | DataAccessLayerException accessException) {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, ZoneUser.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							ZoneUserErrorCode.ZONE_FETCH_EXCEPTION.getErrorCode(),
+							ZoneUserErrorCode.ZONE_FETCH_EXCEPTION.getErrorMessage()),
+					"ADM-835");
+			throw new MasterDataServiceException(ZoneUserErrorCode.ZONE_FETCH_EXCEPTION.getErrorCode(),
+					ZoneUserErrorCode.ZONE_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(accessException));
+		}
+
+		if (zoneUsers != null && !zoneUsers.isEmpty()) {
+			masterdataCreationUtil.updateMasterDataStatus(ZoneUser.class, code, isActive, "zoneCode");
+		} else {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, ZoneUser.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							ZoneUserErrorCode.ZONE_NOT_FOUND_EXCEPTION.getErrorCode(),
+							ZoneUserErrorCode.ZONE_NOT_FOUND_EXCEPTION.getErrorMessage()),
+					"ADM-836");
+			throw new DataNotFoundException(ZoneUserErrorCode.ZONE_NOT_FOUND_EXCEPTION.getErrorCode(),
+					ZoneUserErrorCode.ZONE_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+		response.setStatus("Status updated successfully for Zone");
+		return response;
 	}
 }

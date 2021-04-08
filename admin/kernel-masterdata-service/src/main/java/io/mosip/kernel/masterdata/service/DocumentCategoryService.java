@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentCategoryExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -101,4 +102,6 @@ public interface DocumentCategoryService {
 	 * @return the response containing the filter values.
 	 */
 	public FilterResponseDto docCategoriesFilterValues(FilterValueDto filterValueDto);
+	
+	public StatusResponseDto updateDocumentCategory(String code, boolean isActive);
 }

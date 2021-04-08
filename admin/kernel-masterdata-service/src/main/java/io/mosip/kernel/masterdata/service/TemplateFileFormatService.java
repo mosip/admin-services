@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -38,6 +39,8 @@ public interface TemplateFileFormatService {
 	 *             if any error occurred while updating Device
 	 */
 	public CodeAndLanguageCodeID updateTemplateFileFormat(TemplateFileFormatDto templateFileFormatRequestDto);
+	
+	public StatusResponseDto updateTemplateFileFormat(String code, boolean isActive);
 
 	/**
 	 * Method to delete TemplateFileFormat based on code provided.

@@ -21,6 +21,9 @@ public interface DeviceTypeRepository extends BaseRepository<DeviceType, String>
 	@Query("FROM DeviceType d where (isDeleted is null OR isDeleted = false) AND isActive = true")
 	List<DeviceType> findAllDeviceTypeByIsActiveAndIsDeletedFalseOrNull();
 	
+	@Query("FROM DeviceType d where (isDeleted is null OR isDeleted = false) AND d.code = ?1")
+	List<DeviceType> findtoUpdateDeviceTypeByCode(String code);
+	
 	@Query(value="FROM DeviceType d where d.code = ?1 and d.langCode =?2")
 	DeviceType findDeviceTypeByCodeAndByLangCode(String code, String langCode);
 	

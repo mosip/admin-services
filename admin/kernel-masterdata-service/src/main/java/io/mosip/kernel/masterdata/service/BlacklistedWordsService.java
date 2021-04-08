@@ -6,6 +6,7 @@ import io.mosip.kernel.masterdata.dto.BlackListedWordsUpdateDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.BlacklistedWordsExtnDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
@@ -93,5 +94,7 @@ public interface BlacklistedWordsService {
 	 * @return the response containing the filter values.
 	 */
 	public FilterResponseDto blackListedWordsFilterValues(FilterValueDto filterValueDto);
+	
+	public StatusResponseDto updateBlackListedWordStatus(String word, boolean isActive);
 
 }

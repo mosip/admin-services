@@ -41,6 +41,9 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 	@Query("FROM DeviceSpecification d where d.langCode = ?1 and d.deviceTypeCode = ?2 and (d.isDeleted is null or d.isDeleted = false) and d.isActive = true")
 	List<DeviceSpecification> findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode,
 			String deviceTypeCode);
+	
+	@Query("FROM DeviceSpecification d where d.deviceTypeCode = ?2 and (d.isDeleted is null or d.isDeleted = false) and d.isActive = true")
+	List<DeviceSpecification> findByDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(String deviceTypeCode);
 
 	/**
 	 * This method trigger query to fetch the Device Specification detail for the
@@ -67,6 +70,9 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 
 	@Query("FROM DeviceSpecification d where d.id = ?1 and d.langCode =?2 and (d.isDeleted is null or d.isDeleted = false)")
 	DeviceSpecification findByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(String id, String langCode);
+	
+	@Query("FROM DeviceSpecification d where d.id = ?1 and (d.isDeleted is null or d.isDeleted = false)")
+	List<DeviceSpecification> findtoUpdateDeviceSpecById(String id);
 
 	@Query("FROM DeviceSpecification d where  (d.isDeleted is null or d.isDeleted = false) and d.isActive = true")
 	List<DeviceSpecification> findAllDeviceSpecByIsActiveAndIsDeletedIsNullOrFalse();

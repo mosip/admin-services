@@ -1,11 +1,14 @@
 package io.mosip.kernel.masterdata.controller;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 import javax.validation.Valid;
 
-import io.mosip.kernel.masterdata.utils.LocalDateTimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,18 +19,19 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldValueDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.service.DynamicFieldService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.mosip.kernel.masterdata.utils.LocalDateTimeUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 @RestController
 @RequestMapping(value = "/dynamicfields")
@@ -39,6 +43,9 @@ public class DynamicFieldController {
 
 	@Autowired
 	LocalDateTimeUtil localDateTimeUtil;
+	
+	@Autowired
+	AuditUtil auditUtil;
 	
 	@ResponseFilter
 	@GetMapping
@@ -90,6 +97,25 @@ public class DynamicFieldController {
 			@Valid @RequestBody RequestWrapper<DynamicFieldValueDto> dynamicFieldValueDto) {
 		ResponseWrapper<String> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(dynamicFieldService.updateFieldValue(fieldName, dynamicFieldValueDto.getRequest()));
+		return responseWrapper;
+	}
+	
+	@ResponseFilter
+	@PatchMapping
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	@ApiOperation(value = "Service to update dynamic field")
+	public ResponseWrapper<StatusResponseDto> updateDynamicFieldStatus(@RequestParam boolean isActive,
+			@RequestParam String id) {
+		auditUtil.auditRequest(MasterDataConstant.STATUS_API_IS_CALLED + DynamicFieldDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_API_IS_CALLED + DynamicFieldDto.class.getCanonicalName(), "ADM-681");
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(dynamicFieldService.updateDynamicField(id, isActive));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.STATUS_UPDATED_SUCCESS, DynamicFieldDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.STATUS_UPDATED_SUCCESS, DynamicFieldDto.class.getCanonicalName()),
+				"ADM-682");
 		return responseWrapper;
 	}
 

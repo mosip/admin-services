@@ -24,16 +24,20 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.SchemaErrorCode;
 import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldValueDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.entity.DynamicField;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
 import io.mosip.kernel.masterdata.service.DynamicFieldService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -50,6 +54,9 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
+	
+	@Autowired
+	AuditUtil auditUtil;
 	
 	
 	/*
@@ -251,6 +258,43 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		}	
 		
 		return objectMapper.writeValueAsString(valueDtoList);
+	}
+
+	@Override
+	public StatusResponseDto updateDynamicField(String id, boolean isActive) {
+		// TODO Auto-generated method stub
+		StatusResponseDto response = new StatusResponseDto();
+
+		List<DynamicField> dynamicFields = null;
+		try {
+			dynamicFields = dynamicFieldRepository.findToUpdateDynamicFieldById(id);
+		} catch (DataAccessException | DataAccessLayerException | NullPointerException e) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, DynamicFieldDto.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorCode(),
+							SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorMessage()),
+					"ADM-829");
+			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorCode(),
+					e.getMessage() + ExceptionUtils.parseException(e));
+		}
+
+		if (dynamicFields != null && !dynamicFields.isEmpty()) {
+			masterdataCreationUtil.updateMasterDataStatus(DynamicField.class, id, isActive, "id");
+		} else {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, DynamicFieldDto.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
+							SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage()),
+					"ADM-830");
+			throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
+					SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+		response.setStatus("Status updated successfully for Dynamic Fields");
+		return response;
 	}
 
 }

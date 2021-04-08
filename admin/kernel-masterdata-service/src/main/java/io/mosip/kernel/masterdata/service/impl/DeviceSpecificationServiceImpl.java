@@ -27,6 +27,7 @@ import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.MissingIdDataDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceSpecificationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
@@ -475,6 +476,55 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		filter.setType(FilterTypeEnum.EQUALS.name());
 		filter.setValue(deviceType.getCode());
 		return filter;
+	}
+
+	@Override
+	public StatusResponseDto updateDeviceSpecification(String id, boolean isActive) {
+		// TODO Auto-generated method stub
+		StatusResponseDto response = new StatusResponseDto();
+
+		List<DeviceSpecification> deviceSpecifications = null;
+		try {
+			deviceSpecifications = deviceSpecificationRepository.findtoUpdateDeviceSpecById(id);
+		} catch (DataAccessException | DataAccessLayerException accessException) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, DeviceSpecificationDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorCode(),
+							DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorMessage()),
+					"ADM-651");
+			throw new MasterDataServiceException(
+					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorCode(),
+					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(accessException));
+		}
+
+		if (deviceSpecifications != null && !deviceSpecifications.isEmpty()) {
+			if (!isActive) {
+				List<Device> devices = deviceRepository.findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(id);
+				if (!EmptyCheckUtils.isNullEmpty(devices)) {
+					throw new RequestException(
+							DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_UPDATE_MAPPING_EXCEPTION.getErrorCode(),
+							DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_UPDATE_MAPPING_EXCEPTION
+									.getErrorMessage());
+				}
+			}
+			masterdataCreationUtil.updateMasterDataStatus(DeviceSpecification.class, id, isActive, "id");
+		} else {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, DeviceSpecificationDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+							DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage()),
+					"ADM-652");
+			throw new DataNotFoundException(
+					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+		response.setStatus("Status updated successfully for Device Specifications");
+		return response;
 	}
 
 }

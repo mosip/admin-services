@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,6 +27,7 @@ import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -414,6 +416,28 @@ public class RegistrationCenterController {
 				"ADM-523");
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterService.decommissionRegCenter(regCenterID));
+		return responseWrapper;
+	}
+	
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	@ResponseFilter
+	@PatchMapping("/registrationcenters")
+	public ResponseWrapper<StatusResponseDto> updateRegistrationCenterAdminStatus(@Valid @RequestParam boolean isActive,
+			@RequestParam String id) {
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.STATUS_API_IS_CALLED,
+						RegistrationCenterSearchDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.STATUS_API_IS_CALLED,
+						RegistrationCenterSearchDto.class.getSimpleName()),
+				"ADM-524");
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterService.updateRegistrationCenter(id, isActive));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.STATUS_UPDATED_SUCCESS,
+						RegistrationCenterSearchDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.STATUS_UPDATED_SUCCESS,
+						RegistrationCenterSearchDto.class.getSimpleName()),
+				"ADM-525");
 		return responseWrapper;
 	}
 }

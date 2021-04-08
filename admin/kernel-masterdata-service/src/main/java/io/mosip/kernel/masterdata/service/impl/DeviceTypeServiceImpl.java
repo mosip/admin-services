@@ -18,6 +18,7 @@ import io.mosip.kernel.masterdata.constant.DeviceTypeErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -264,6 +265,50 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 
 		}
 		return filterResponseDto;
+	}
+
+	@Override
+	public StatusResponseDto updateDeviceType(String code, boolean isActive) {
+		// TODO Auto-generated method stub
+		StatusResponseDto response = new StatusResponseDto();
+
+		List<DeviceType> deviceTypes = null;
+		try {
+			deviceTypes = deviceTypeRepository.findtoUpdateDeviceTypeByCode(code);
+		} catch (DataAccessException | DataAccessLayerException accessException) {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, DeviceType.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DeviceTypeErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorCode(),
+							DeviceTypeErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorMessage()),
+					"ADM-638");
+			throw new MasterDataServiceException(DeviceTypeErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorCode(),
+					DeviceTypeErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(accessException));
+		}
+
+		if (deviceTypes != null && !deviceTypes.isEmpty()) {
+			if (!isActive) {
+				List<DeviceSpecification> deviceSpecification = deviceSpecificationRepository
+						.findByDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(code);
+				if (!EmptyCheckUtils.isNullEmpty(deviceSpecification)) {
+					throw new RequestException(DeviceTypeErrorCode.DEVICE_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorCode(),
+							DeviceTypeErrorCode.DEVICE_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorMessage());
+				}
+			}
+			masterdataCreationUtil.updateMasterDataStatus(DeviceType.class, code, isActive, "code");
+		} else {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, DeviceType.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DeviceTypeErrorCode.DEVICE_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
+							DeviceTypeErrorCode.DEVICE_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage()),
+					"ADM-639");
+			throw new DataNotFoundException(DeviceTypeErrorCode.DEVICE_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
+					DeviceTypeErrorCode.DEVICE_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+		response.setStatus("Status updated successfully for Device Types");
+		return response;
 	}
 
 }

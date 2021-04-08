@@ -20,10 +20,10 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
-import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.TemplateErrorCode;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.TemplateExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -35,7 +35,6 @@ import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -420,6 +419,41 @@ public class TemplateServiceImpl implements TemplateService {
 			filterResponseDto.setFilters(columnValueList);
 		}
 		return filterResponseDto;
+	}
+
+	@Override
+	public StatusResponseDto updateTemplates(String id, boolean isActive) {
+		// TODO Auto-generated method stub
+		StatusResponseDto response = new StatusResponseDto();
+
+		List<Template> templates = null;
+		try {
+			templates = templateRepository.findtoUpdateTemplateById(id);
+		} catch (DataAccessException | DataAccessLayerException accessException) {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, Template.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
+							TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage()),
+					"ADM-817");
+			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
+					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(accessException));
+		}
+
+		if (templates != null && !templates.isEmpty()) {
+			masterdataCreationUtil.updateMasterDataStatus(Template.class, id, isActive, "id");
+		} else {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, Template.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC, TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
+							TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage()),
+					"ADM-818");
+			throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
+					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
+		}
+		response.setStatus("Status updated successfully for Templates");
+		return response;
 	}
 
 }

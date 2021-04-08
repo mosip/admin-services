@@ -10,6 +10,7 @@ import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -208,6 +209,8 @@ public interface RegistrationCenterService {
 	 */
 
 	public RegistrationCenterExtnDto updateRegistrationCenter(@Valid RegCenterPutReqDto reqRegistrationCenterDto);
+	
+	public StatusResponseDto updateRegistrationCenter(String id, boolean isActive);
 
 	/**
 	 * Service method to decommission registration center.

@@ -28,6 +28,7 @@ import io.mosip.kernel.masterdata.dto.DocumentTypePutReqDto;
 import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.DocumentTypePostResponseDto;
@@ -422,6 +423,51 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		}
 		documentTypeResponseDto.setDocumenttypes(documentTypeDtoList);
 		return documentTypeResponseDto;
+	}
+
+	@Override
+	public StatusResponseDto updateDocumentType(String code, boolean isActive) {
+		// TODO Auto-generated method stub
+		StatusResponseDto response = new StatusResponseDto();
+		List<DocumentType> documentTypesList = null;
+
+		try {
+			documentTypesList = documentTypeRepository.findtoUpdateDocumentTypeByCode(code);
+		} catch (DataAccessException | DataAccessLayerException | NullPointerException e) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, DocumentType.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DocumentTypeErrorCode.DOCUMENT_TYPE_FETCH_EXCEPTION.getErrorCode(),
+							DocumentTypeErrorCode.DOCUMENT_TYPE_FETCH_EXCEPTION.getErrorMessage()),
+					"ADM-827");
+			throw new MasterDataServiceException(DocumentTypeErrorCode.DOCUMENT_TYPE_FETCH_EXCEPTION.getErrorCode(),
+					e.getMessage() + ExceptionUtils.parseException(e));
+		}
+
+		if (documentTypesList != null && !documentTypesList.isEmpty()) {
+			if (!isActive) {
+				List<ValidDocument> validDocuments = validDocumentRepository.findByDocTypeCode(code);
+				if (!EmptyCheckUtils.isNullEmpty(validDocuments)) {
+					throw new RequestException(
+							DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorCode(),
+							DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorMessage());
+				}
+			}
+			masterdataCreationUtil.updateMasterDataStatus(DocumentType.class, code, isActive, "code");
+		} else {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, DocumentType.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
+							DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage()),
+					"ADM-828");
+			throw new DataNotFoundException(DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
+					DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+		response.setStatus("Status updated successfully for Document Types");
+		return response;
 	}
 
 }

@@ -4,14 +4,15 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -21,8 +22,8 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.ZoneUserDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserExtnDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserHistoryResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
-import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.UserDetailsHistoryService;
 import io.mosip.kernel.masterdata.service.ZoneUserService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
@@ -105,6 +106,22 @@ public class ZoneUserController {
 			@PathVariable("eff_dtimes") String effDtimes) {
 		ResponseWrapper<ZoneUserHistoryResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(zoneUserService.getHistoryByUserIdAndTimestamp(userId, effDtimes));
+		return responseWrapper;
+	}
+	
+	@ResponseFilter
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PatchMapping(value = "/zoneuser")
+	public ResponseWrapper<StatusResponseDto> updateapUserZoneStatus(@Valid @RequestParam boolean isActive,
+			@RequestParam String code) {
+		auditUtil.auditRequest(MasterDataConstant.STATUS_API_IS_CALLED + ZoneUserController.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_API_IS_CALLED + ZoneUserController.class.getCanonicalName());
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(zoneUserService.updateZoneUserMapping(code, isActive));
+		auditUtil.auditRequest(MasterDataConstant.STATUS_UPDATED_SUCCESS + ZoneUserController.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_UPDATED_SUCCESS + ZoneUserController.class.getCanonicalName());
 		return responseWrapper;
 	}
 
