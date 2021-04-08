@@ -17,11 +17,10 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.util.EmptyCheckUtils;
-import io.mosip.kernel.masterdata.constant.DeviceTypeErrorCode;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
+import io.mosip.kernel.masterdata.dto.DocumentCategoryPutDto;
 import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
@@ -245,7 +244,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * updateDocumentCategory(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID updateDocumentCategory(DocumentCategoryDto categoryDto) {
+	public CodeAndLanguageCodeID updateDocumentCategory(DocumentCategoryPutDto categoryDto) {
 
 		CodeAndLanguageCodeID documentCategoryId = new CodeAndLanguageCodeID();
 
@@ -257,16 +256,15 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 							categoryDto.getLangCode());
 
 			if (documentCategory != null) {
-				if(!categoryDto.getIsActive()) {
-					List<ValidDocument> validDocuments = validDocumentRepository
-							.findByDocCategoryCode(categoryDto.getCode());
-					if (!EmptyCheckUtils.isNullEmpty(validDocuments)) {
-						throw new RequestException(
-								DeviceTypeErrorCode.DEVICE_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorCode(),
-								DeviceTypeErrorCode.DEVICE_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorMessage());
-					}
-					masterdataCreationUtil.updateMasterDataDeactivate(DocumentCategory.class, categoryDto.getCode());
-				}
+				/*
+				 * if(!categoryDto.getIsActive()) { List<ValidDocument> validDocuments =
+				 * validDocumentRepository .findByDocCategoryCode(categoryDto.getCode()); if
+				 * (!EmptyCheckUtils.isNullEmpty(validDocuments)) { throw new RequestException(
+				 * DeviceTypeErrorCode.DEVICE_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorCode(),
+				 * DeviceTypeErrorCode.DEVICE_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorMessage());
+				 * } masterdataCreationUtil.updateMasterDataDeactivate(DocumentCategory.class,
+				 * categoryDto.getCode()); }
+				 */
 				categoryDto = masterdataCreationUtil.updateMasterData(DocumentCategory.class, categoryDto);
 				MetaDataUtils.setUpdateMetaData(categoryDto, documentCategory, false);
 				documentCategoryRepository.update(documentCategory);

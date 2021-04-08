@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -103,8 +102,6 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	@Autowired
 	MasterDataFilterHelper masterDataFilterHelper;
 
-	@Value("${mosip.primary-language}")
-	private String primaryLanguage;
 
 	@Autowired
 	private PageUtils pageUtils;
@@ -459,7 +456,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 				validDocumentDto.setDocCategoryCode(docCatCode);
 				validDocumentDto.setDocTypeCode(docTypeCode);
 				validDocumentDto.setIsActive(true);
-				validDocumentDto.setLangCode(primaryLanguage);
+				validDocumentDto.setLangCode(validDocument.getLangCode());
 				ValidDocumentID validDocumentID = createValidDocument(validDocumentDto);
 				responseDto.setStatus(MasterDataConstant.MAPPED_SUCCESSFULLY);
 				responseDto

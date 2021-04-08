@@ -2,8 +2,6 @@ package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalDateTime;
 
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.mosip.kernel.masterdata.validator.StringFormatter;
@@ -65,9 +63,5 @@ public class MOSIPDeviceServicePUTDto {
 	@StringFormatter(min = 1, max = 36)
 	@ApiModelProperty(value = "softBinaryHash", required = true, dataType = "java.lang.Byte")
 	private String swBinaryHash;
-
-	@NotNull
-	@ApiModelProperty(value = "isActive", dataType = "java.lang.Boolean")
-	private Boolean isActive;
 
 }

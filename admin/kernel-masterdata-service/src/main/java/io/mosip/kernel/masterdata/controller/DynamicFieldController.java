@@ -1,8 +1,10 @@
 package io.mosip.kernel.masterdata.controller;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 import javax.validation.Valid;
 
-import io.mosip.kernel.masterdata.utils.LocalDateTimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,16 +20,15 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
+import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldValueDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.service.DynamicFieldService;
+import io.mosip.kernel.masterdata.utils.LocalDateTimeUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 @RestController
 @RequestMapping(value = "/dynamicfields")
@@ -75,7 +76,7 @@ public class DynamicFieldController {
 	@ApiOperation(value = "Service to update dynamic field")
 	public ResponseWrapper<DynamicFieldResponseDto> updateDynamicField (
 			@RequestParam(name = "id") @ApiParam(value = "field id") String id,
-			@Valid @RequestBody RequestWrapper<DynamicFieldDto> dynamicFieldDto) {
+			@Valid @RequestBody RequestWrapper<DynamicFieldPutDto> dynamicFieldDto) {
 		ResponseWrapper<DynamicFieldResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(dynamicFieldService.updateDynamicField(id, dynamicFieldDto.getRequest()));
 		return responseWrapper;

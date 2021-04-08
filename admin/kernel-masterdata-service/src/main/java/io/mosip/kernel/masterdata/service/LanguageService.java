@@ -1,7 +1,9 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.LanguageDto;
+import io.mosip.kernel.masterdata.dto.LanguagePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -52,7 +54,7 @@ public interface LanguageService {
 	 * @throws MasterDataServiceException if any error occurred while saving
 	 *                                    languages
 	 */
-	CodeResponseDto updateLanguage(LanguageDto requestDto);
+	CodeResponseDto updateLanguage(LanguagePutDto requestDto);
 
 	/**
 	 * This method is used to delete a language present in database.
@@ -61,5 +63,14 @@ public interface LanguageService {
 	 * @return the language code deleted.
 	 */
 	CodeResponseDto deleteLanguage(String code);
+
+	/**
+	 * This method is used to update language status in database.
+	 * 
+	 * @param code
+	 * @param isActive
+	 * @return
+	 */
+	StatusResponseDto updateLanguageStatus(String code, boolean isActive);
 
 }

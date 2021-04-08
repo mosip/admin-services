@@ -20,6 +20,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
+import io.mosip.kernel.masterdata.dto.DocumentCategoryPutDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
@@ -153,7 +154,7 @@ public class DocumentCategoryController {
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to update document category", notes = "Update document category and return composite id")
 	public ResponseWrapper<CodeAndLanguageCodeID> updateDocumentCategory(
-			@ApiParam("Document category DTO to update") @Valid @RequestBody RequestWrapper<DocumentCategoryDto> category) {
+			@ApiParam("Document category DTO to update") @Valid @RequestBody RequestWrapper<DocumentCategoryPutDto> category) {
 
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + DocumentCategoryDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,

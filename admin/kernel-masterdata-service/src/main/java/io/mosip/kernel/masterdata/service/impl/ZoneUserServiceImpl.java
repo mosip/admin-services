@@ -6,6 +6,7 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ import io.mosip.kernel.masterdata.constant.ZoneUserErrorCode;
 import io.mosip.kernel.masterdata.dto.ZoneUserDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserExtnDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserHistoryResponseDto;
+import io.mosip.kernel.masterdata.dto.ZoneUserPutDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.ZoneUser;
 import io.mosip.kernel.masterdata.entity.ZoneUserHistory;
@@ -49,6 +51,9 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 	@Autowired
 	ZoneUserRepository zoneUserRepo;
 	
+	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
+	private String supportedLang;
+
 	@Autowired
 	ZoneUserHistoryRepository zoneUserHistoryRepo;
 
@@ -70,7 +75,9 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 				throw new MasterDataServiceException(ZoneUserErrorCode.DUPLICATE_REQUEST.getErrorCode(),
 						ZoneUserErrorCode.DUPLICATE_REQUEST.getErrorMessage() );	
 			}
-			zu.setIsActive(getisActive(zoneUserDto.getUserId(),zoneUserDto.getLangCode(),zoneUserDto.getZoneCode(),zoneUserDto.getIsActive() ));
+			// zu.setIsActive(getisActive(zoneUserDto.getUserId(),zoneUserDto.getLangCode(),zoneUserDto.getZoneCode(),zoneUserDto.getIsActive()
+			// ));
+			zu.setIsActive(zoneUserDto.getIsActive());
 			zu = MetaDataUtils.setCreateMetaData(zoneUserDto, ZoneUser.class);
 			zoneservice.getZone(zoneUserDto.getZoneCode(),zoneUserDto.getLangCode());//Throws exception if not found
 			zu=zoneUserRepo.create(zu);
@@ -97,7 +104,7 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		return MapperUtils.map(zu, zoneUserDto1);
 	}
 	@Override
-	public ZoneUserExtnDto updateZoneUserMapping(ZoneUserDto zoneUserDto) {
+	public ZoneUserExtnDto updateZoneUserMapping(ZoneUserPutDto zoneUserDto) {
 		ZoneUser zu=new ZoneUser();
 		ZoneUserExtnDto dto=new ZoneUserExtnDto();
 		try {
@@ -114,7 +121,8 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 							ZoneUserErrorCode.USER_MAPPING_NOT_PRSENT_IN_DB.getErrorMessage() );		
 			 }
 			 zoneservice.getZone(zoneUserDto.getZoneCode(),zoneUserDto.getLangCode());//Throws exception if not found
-			 zu.setIsActive(getisActive(zoneUserDto.getUserId(),zoneUserDto.getLangCode(),zoneUserDto.getZoneCode(),zoneUserDto.getIsActive() ));
+				// zu.setIsActive(getisActive(zoneUserDto.getUserId(),zoneUserDto.getLangCode(),zoneUserDto.getZoneCode(),zoneUserDto.getIsActive()
+				// ));
 			zu = MetaDataUtils.setUpdateMetaData(zoneUserDto, zu, false);
 			zu=zoneUserRepo.update(zu);
 			ZoneUserHistory zuh = new ZoneUserHistory();
@@ -148,14 +156,27 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 	 * @param isActive
 	 * @return
 	 */
-	private boolean getisActive(String userId, String langCode, String zoneCode, boolean isActive) {
-		List<ZoneUser> allZoneUsers = zoneUserRepo.findByUserIdAndZoneCode(userId, zoneCode);
-		if (allZoneUsers.stream().filter(a -> a.getIsActive() == false).count() > 0) {
-			return false;
-		}
-		return isActive;
-	}
+	/*
+	 * private boolean getisActive(String userId, String langCode, String zoneCode,
+	 * boolean isActive) { List<ZoneUser> allZoneUsers =
+	 * zoneUserRepo.findByUserIdAndZoneCode(userId, zoneCode); if
+	 * (allZoneUsers.stream().filter(a -> a.getIsActive() == false).count() > 0) {
+	 * return false; } return isActive; }
+	 */
 	
+	/*
+	 * private boolean getisActive(String userId,String langCode,String
+	 * zoneCode,boolean isActive) { if(supportedLang.contains(langCode)) { ZoneUser
+	 * zoneUser=zoneUserRepo.findZoneUserByUserIdZoneCodeLangCodeIsActive(userId,
+	 * secondaryLang,zoneCode); if(zoneUser==null) { return false; } }
+	 * if(langCode.equalsIgnoreCase(secondaryLang)) { ZoneUser
+	 * zoneUser=zoneUserRepo.findZoneUserByUserIdZoneCodeLangCodeIsActive(userId,
+	 * primaryLang,zoneCode); if(zoneUser==null) { throw new
+	 * MasterDataServiceException(RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.
+	 * getErrorCode(),
+	 * RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorMessage()); } } return
+	 * isActive; }
+	 */
 	@Override
 	public IdResponseDto deleteZoneUserMapping(String userId,String zoneCode) {
 		IdResponseDto idResponse = new IdResponseDto();

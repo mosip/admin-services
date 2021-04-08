@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,6 +26,7 @@ import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
 import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.HolidayExtnDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
@@ -150,6 +152,25 @@ public class HolidayController {
 		return responseWrapper;
 	}
 
+	/**
+	 * Method to update status of holiday
+	 * 
+	 * @param holiday input values to update the data
+	 * @return id of updated Holiday data
+	 */
+	@ResponseFilter
+	@PatchMapping
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	@ApiOperation(value = "to update a holiday status", response = HolidayIDDto.class)
+	public ResponseWrapper<StatusResponseDto> updateHolidayStatus(@RequestParam String holidayId,
+			@RequestParam boolean isActive) {
+		auditUtil.auditRequest(MasterDataConstant.STATUS_API_IS_CALLED + HolidayUpdateDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_API_IS_CALLED + HolidayUpdateDto.class.getSimpleName(), "ADM-2165");
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<StatusResponseDto>();
+		responseWrapper.setResponse(holidayService.updateHolidayStatus(holidayId, isActive));
+		return responseWrapper;
+}
 	/**
 	 * Method to delete holidays
 	 * 

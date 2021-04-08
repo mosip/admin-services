@@ -474,7 +474,6 @@ public class MapperUtils {
 			dto.setHolidayDate(date);
 			dto.setHolidayName(holiday.getHolidayName());
 			dto.setLangCode(holiday.getLangCode());
-			dto.setIsActive(holiday.getIsActive());
 			dto.setLocationCode(holiday.getLocationCode());
 			dto.setHolidayDesc(holiday.getHolidayDesc());
 			holidayDtos.add(dto);

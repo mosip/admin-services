@@ -21,6 +21,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecificationPutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceSpecificationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceSpecificationExtnDto;
@@ -158,7 +159,7 @@ public class DeviceSpecificationController {
 			@ApiResponse(code = 404, message = "When No device specification found"),
 			@ApiResponse(code = 500, message = "While updating device specification any error occured") })
 	public ResponseWrapper<IdAndLanguageCodeID> updateDeviceSpecification(
-			@Valid @RequestBody RequestWrapper<DeviceSpecificationDto> deviceSpecification) {
+			@Valid @RequestBody RequestWrapper<DeviceSpecificationPutDto> deviceSpecification) {
 		deviceSpecificationValidator.validate(deviceSpecification.getRequest());
 		auditUtil.auditRequest(
 				MasterDataConstant.UPDATE_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(),

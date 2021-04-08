@@ -4,7 +4,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +20,8 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.ZoneUserDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserExtnDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserHistoryResponseDto;
+import io.mosip.kernel.masterdata.dto.ZoneUserPutDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
-import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.UserDetailsHistoryService;
 import io.mosip.kernel.masterdata.service.ZoneUserService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
@@ -49,7 +48,8 @@ public class ZoneUserController {
 			@ApiResponse(code = 400, message = "When Request is invalid"),
 			@ApiResponse(code = 404, message = "When No zoneuser found"),
 			@ApiResponse(code = 500, message = "While mapping user to zone any error occured") })
-	public ResponseWrapper<ZoneUserExtnDto> updateapUserZone(@Valid @RequestBody RequestWrapper<ZoneUserDto> zoneUserDto) {
+	public ResponseWrapper<ZoneUserExtnDto> updateapUserZone(
+			@Valid @RequestBody RequestWrapper<ZoneUserPutDto> zoneUserDto) {
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + ZoneUserController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.UPDATE_API_IS_CALLED + ZoneUserController.class.getCanonicalName());

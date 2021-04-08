@@ -47,8 +47,8 @@ public class ZoneUtils {
 	@Value("mosip.kernel.masterdata.zone-heirarchy-path-delimiter:/")
 	private String hierarchyPathDelimiter;
 
-	@Value("${mosip.primary-language}")
-	private String primaryLangugage;
+	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
+	private String supportedLang;
 
 	/**
 	 * Method to get the all the users zones based on the passed list of zone and
@@ -193,7 +193,7 @@ public class ZoneUtils {
 					langSpecificZones = zones.stream().filter(i -> i.getLangCode().equals(langCode))
 							.collect(Collectors.toList());
 				} else {
-					langSpecificZones = zones.stream().filter(i -> i.getLangCode().equals(primaryLangugage))
+					langSpecificZones = zones.stream().filter(i -> supportedLang.contains(i.getLangCode()))
 							.collect(Collectors.toList());
 				}
 				List<Node<Zone>> tree = zoneTree.createTree(langSpecificZones);

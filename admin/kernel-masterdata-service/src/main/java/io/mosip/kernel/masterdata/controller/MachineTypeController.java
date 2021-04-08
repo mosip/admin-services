@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +18,9 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.MachineTypeDto;
+import io.mosip.kernel.masterdata.dto.MachineTypePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
@@ -101,7 +104,7 @@ public class MachineTypeController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Machine Type any error occured") })
 	public ResponseWrapper<CodeAndLanguageCodeID> updateMachineType(
-			@Valid @RequestBody RequestWrapper<MachineTypeDto> machineType) {
+			@Valid @RequestBody RequestWrapper<MachineTypePutDto> machineType) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + MachineTypeDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.CREATE_API_IS_CALLED + MachineTypeDto.class.getCanonicalName(), "ADM-651");
@@ -111,6 +114,28 @@ public class MachineTypeController {
 				String.format(MasterDataConstant.SUCCESSFUL_CREATE, MachineTypeDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
 				String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC, MachineTypeDto.class.getCanonicalName()),
+				"ADM-652");
+		return responseWrapper;
+	}
+
+	@ResponseFilter
+	@PatchMapping("/machinetypes")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@ApiOperation(value = "Service to save Machine Type", notes = "update the MachineType status and return  code and isActive")
+	@ApiResponses({ @ApiResponse(code = 201, message = "When Machine Type successfully created"),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 500, message = "While creating Machine Type any error occured") })
+	public ResponseWrapper<StatusResponseDto> updateMachineTypeStatus(
+			@RequestParam String code, @RequestParam boolean isActive) {
+		auditUtil.auditRequest(MasterDataConstant.STATUS_API_IS_CALLED + MachineTypeDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_API_IS_CALLED + MachineTypeDto.class.getCanonicalName(), "ADM-652");
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(machinetypeService.updateMachineTypeStatus(code, isActive));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_UPDATED_STATUS, MachineTypeDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_UPDATED_STATUS, MachineTypeDto.class.getCanonicalName()),
 				"ADM-652");
 		return responseWrapper;
 	}

@@ -7,6 +7,7 @@ import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
 import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.HolidayExtnDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
@@ -73,6 +74,15 @@ public interface HolidayService {
 	 * @throws MasterDataServiceException when entered data not updated
 	 */
 	public HolidayIDDto updateHoliday(HolidayUpdateDto holidayDto);
+
+	/**
+	 * Method to update status of holiday
+	 * 
+	 * @param holidayDto input values for holidays
+	 * @return primary key of entered row of holiday data
+	 * @throws MasterDataServiceException when entered data not updated
+	 */
+	public StatusResponseDto updateHolidayStatus(String holidayId, boolean isActive);
 
 	/**
 	 * Method to delete the holidays

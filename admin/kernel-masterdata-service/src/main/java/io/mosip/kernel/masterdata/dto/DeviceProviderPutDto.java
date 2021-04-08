@@ -3,8 +3,6 @@ package io.mosip.kernel.masterdata.dto;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.Range;
-
 import io.mosip.kernel.masterdata.validator.StringFormatter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -46,10 +44,5 @@ public class DeviceProviderPutDto {
 	@ApiModelProperty(value = "certificateAlias", dataType = "java.lang.String")
 	private String certificateAlias;
 
-	/**
-	 * Field for is active
-	 */
-	@NotNull
-	private Boolean isActive;
 
 }

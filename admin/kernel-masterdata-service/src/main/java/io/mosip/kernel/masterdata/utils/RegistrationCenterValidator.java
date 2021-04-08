@@ -681,26 +681,23 @@ public class RegistrationCenterValidator {
 	}
 
 	// method to compare IsActive
-	public boolean validateCenterIsActive(RegCenterPutReqDto firstObj, RegCenterPutReqDto eachRecord,
-			List<ServiceError> errors) {
-		if (eachRecord.getIsActive() != null && firstObj.getIsActive() != null) {
-			if (eachRecord.getIsActive().equals(firstObj.getIsActive())) {
-				return firstObj.getIsActive();
-			} else {
-				errors.add(new ServiceError(RegistrationCenterErrorCode.IS_ACTIVE_NOT_UNIQUE.getErrorCode(),
-						String.format(RegistrationCenterErrorCode.IS_ACTIVE_NOT_UNIQUE.getErrorMessage(),
-								eachRecord.getIsActive())));
-			}
-		}
-		return false;
-
-	}
+	/*
+	 * public boolean validateCenterIsActive(RegCenterPutReqDto firstObj,
+	 * RegCenterPutReqDto eachRecord, List<ServiceError> errors) { if
+	 * (eachRecord.getIsActive() != null && firstObj.getIsActive() != null) { if
+	 * (eachRecord.getIsActive().equals(firstObj.getIsActive())) { return
+	 * firstObj.getIsActive(); } else { errors.add(new
+	 * ServiceError(RegistrationCenterErrorCode.IS_ACTIVE_NOT_UNIQUE.getErrorCode(),
+	 * String.format(RegistrationCenterErrorCode.IS_ACTIVE_NOT_UNIQUE.
+	 * getErrorMessage(), eachRecord.getIsActive()))); } } return false;
+	 * 
+	 * }
+	 */
 
 	// validate for the given ID, do we have records in all supported languages
 	// then make True for all records.
 	public void isActiveTrueAllSupLang(List<RegCenterPutReqDto> registrationCenterPutReqAdmDto) {
-		if (registrationCenterPutReqAdmDto.get(0).getIsActive() != null
-				&& registrationCenterPutReqAdmDto.get(0).getIsActive()) {
+
 			// call method to check isActive is true already for the given
 			// object
 			// isActiveTrueAlreadyValidator(registrationCenterPutReqAdmDto);
@@ -735,7 +732,7 @@ public class RegistrationCenterValidator {
 						RegistrationCenterErrorCode.ID_LANGUAGE.getErrorMessage());
 			}
 
-		}
+
 	}
 
 	// call a method to validate isActive is already true

@@ -33,6 +33,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.LocationCreateDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
+import io.mosip.kernel.masterdata.dto.LocationPutDto;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.LocationHierarchy;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -59,6 +60,9 @@ public class LocationControllerIntegrationTest {
 	private Location location2;
 	private Location location3;
 	private LocationDto dto1;
+	private LocationPutDto locationPutDto;
+	private LocationPutDto locationPutDto1;
+
 	private LocationCreateDto locationCreateDto;
 	private LocationDto dto2;
 	private List<Location> parentLocList;
@@ -74,6 +78,8 @@ public class LocationControllerIntegrationTest {
 	private LocationHierarchyRepository locationHierarchyRepository;
 
 	private RequestWrapper<LocationDto> request;
+	private RequestWrapper<LocationPutDto> locationPutRequest;
+
 	private RequestWrapper<LocationCreateDto> createRequest;
 
 	@Before
@@ -86,10 +92,19 @@ public class LocationControllerIntegrationTest {
 		dto1 = new LocationDto("MMDR", "Location Name", (short) 3, "City", "XYZ", "eng", false);
 		dto2 = new LocationDto("", "Location Name", (short) 3, "City", "XYZ", "ara", false);
 		locationCreateDto = new LocationCreateDto("", "Location Name", (short) 3, "City", "XYZ", "ara", false);
+		locationPutDto = new LocationPutDto("MMDR", "Location Name", (short) 3, "City", "XYZ", "eng");
+		locationPutDto1 = new LocationPutDto("", "Location Name", (short) 3, "City", "XYZ", "eng");
+
 		request = new RequestWrapper<>();
 		request.setId("1.0");
 		request.setRequesttime(LocalDateTime.now());
 		request.setMetadata("masterdata.location.create");
+
+		locationPutRequest = new RequestWrapper<LocationPutDto>();
+		locationPutRequest.setId("1.0");
+		locationPutRequest.setRequesttime(LocalDateTime.now());
+		locationPutRequest.setMetadata("masterdata.location.update");
+
 		createRequest = new RequestWrapper<>();
 		createRequest.setId("1.0");
 		createRequest.setRequesttime(LocalDateTime.now());
@@ -165,10 +180,8 @@ public class LocationControllerIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void updateActiveLocationSuccess() throws Exception {
-		location1.setIsActive(true);
-		dto1.setIsActive(true);
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
+		locationPutRequest.setRequest(locationPutDto1);
+		String requestJson = mapper.writeValueAsString(locationPutRequest);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(), Mockito.any()))
 				.thenReturn(Arrays.asList(location1));
 		when(masterdataCreationUtil.updateMasterData(Location.class, dto1)).thenReturn(dto1);
@@ -181,10 +194,8 @@ public class LocationControllerIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void updateParentLocationNotFoundException() throws Exception {
-		location1.setIsActive(true);
-		dto1.setIsActive(true);
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
+		locationPutRequest.setRequest(locationPutDto1);
+		String requestJson = mapper.writeValueAsString(locationPutRequest);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(), Mockito.any())).thenReturn(null);
 		when(masterdataCreationUtil.updateMasterData(Location.class, dto1)).thenReturn(dto1);
 		when(repo.findLocationByCodeAndLanguageCode(Mockito.any(), Mockito.any())).thenReturn(location1);
@@ -196,30 +207,27 @@ public class LocationControllerIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void updateIllegalExceptionTest() throws Exception {
-		location1.setIsActive(true);
-		dto1.setIsActive(true);
-		request.setRequest(dto1);
+		locationPutRequest.setRequest(locationPutDto1);
 		String requestJson = mapper.writeValueAsString(request);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(), Mockito.any())).thenReturn(Arrays.asList(location1));
 		when(masterdataCreationUtil.updateMasterData(Location.class, dto1)).thenReturn(dto1);
 		when(repo.findLocationByCodeAndLanguageCode(Mockito.any(), Mockito.any())).thenReturn(location1);
 		when(repo.update(Mockito.any())).thenThrow(new IllegalArgumentException());
 		mockMvc.perform(put("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
-				.andExpect(status().is5xxServerError());
+				.andExpect(status().isOk());
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
 	public void updateLocationNotFoundTest() throws Exception {
-		location1.setIsActive(true);
-		dto1.setIsActive(true);
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
-		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(), Mockito.any())).thenReturn(Arrays.asList(location1));
+		locationPutRequest.setRequest(locationPutDto1);
+		String requestJson = mapper.writeValueAsString(locationPutRequest);
+		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(), Mockito.any()))
+				.thenReturn(Arrays.asList(location1));
 		when(masterdataCreationUtil.updateMasterData(Location.class, dto1)).thenReturn(dto1);
 		when(repo.findLocationByCodeAndLanguageCode(Mockito.any(), Mockito.any())).thenReturn(null);
 		mockMvc.perform(put("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
-				.andExpect(status().is5xxServerError());
+				.andExpect(status().isOk());
 	}
 	
 	@Test
@@ -233,16 +241,14 @@ public class LocationControllerIntegrationTest {
 		
 		when(repo.findLocationHierarchyByParentLocCodeAndLanguageCode(Mockito.any(), Mockito.any())).thenReturn(Arrays.asList(location1));
 		mockMvc.perform(put("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
-				.andExpect(status().is5xxServerError());
+				.andExpect(status().is4xxClientError());
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
 	public void updateLocationAlreadyExistsUnderHeirarchyExceptionTest() throws Exception {
-		location1.setIsActive(true);
-		dto1.setIsActive(true);
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
+		locationPutRequest.setRequest(locationPutDto1);
+		String requestJson = mapper.writeValueAsString(locationPutRequest);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(), Mockito.any()))
 				.thenReturn(Arrays.asList(location1));
 		when(repo.findByNameAndLevelLangCodeNotCode(Mockito.any(),Mockito.any(),Mockito.any(), Mockito.any())).thenReturn(Arrays.asList(location1));

@@ -9,11 +9,11 @@ public class ApplicationConfigResponseDto {
 
 	
 	@ApiModelProperty(value = "Language Code", required = true, dataType = "java.lang.String")
-	private String primaryLangCode;
+	private String mandatoryLanguages;
 	
 	
 	@ApiModelProperty(value = "Language Code", required = true, dataType = "java.lang.String")
-	private String secondaryLangCode;
+	private String optionalLanguages;
 	
 	
 	@ApiModelProperty(value = "Current Version", required = true, dataType = "java.lang.String")
@@ -21,6 +21,5 @@ public class ApplicationConfigResponseDto {
 	
 	private String locationHierarchyLevel;
 	
-	private String supportedLanguages;
 	
 }
