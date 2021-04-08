@@ -61,6 +61,18 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 	 * This method trigger query to fetch the Device Specification detail for the
 	 * given device specification id.
 	 *
+	 * @param id id provided by user
+	 * 
+	 * @return List Device specific Details fetched from database
+	 */
+
+	@Query("FROM DeviceSpecification d where d.id = ?1 and (d.isDeleted is null or d.isDeleted = false)")
+	List<DeviceSpecification> findDeviceSpecById(String id);
+
+	/**
+	 * This method trigger query to fetch the Device Specification detail for the
+	 * given device specification id.
+	 *
 	 * @param id       id provided by user
 	 * 
 	 * @param langCode langCode provided by user

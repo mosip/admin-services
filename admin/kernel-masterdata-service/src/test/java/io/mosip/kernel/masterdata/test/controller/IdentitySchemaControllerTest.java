@@ -154,7 +154,7 @@ public class IdentitySchemaControllerTest {
 	@WithUserDetails("global-admin")
 	public void updateDynamicField() throws Exception {		
 		Mockito.when(dynamicFieldRepository.updateDynamicField(Mockito.anyString(), Mockito.anyString(),  Mockito.anyString(), 
-				 Mockito.anyString(),  Mockito.anyBoolean(), Mockito.any(LocalDateTime.class),  Mockito.anyString())).thenReturn(1);		
+				Mockito.anyString(), Mockito.any(LocalDateTime.class), Mockito.anyString())).thenReturn(1);
 		mockMvc.perform(MockMvcRequestBuilders.put("/dynamicfields")
 				.param("id", "1122")
 				.contentType(MediaType.APPLICATION_JSON)

@@ -23,6 +23,7 @@ import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.DeviceSpecificationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecificationPutDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.MissingIdDataDto;
@@ -108,11 +109,8 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
 	
-	@Value("${mosip.primary-language:eng}")
-	private String primaryLang;
-
-	@Value("${mosip.secondary-language:ara}")
-	private String secondaryLang;
+	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
+	private String supportedLang;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -184,7 +182,8 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 
 
 		try {
-			if (StringUtils.isNotEmpty(primaryLang) && primaryLang.equals(deviceSpecifications.getLangCode())) {
+			if (StringUtils.isNotEmpty(supportedLang)
+					&& supportedLang.contains(deviceSpecifications.getLangCode().toLowerCase())) {
 				
 				deviceSpecifications.setId(generateId());
 			}
@@ -220,8 +219,8 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		UUID uuid = UUID.randomUUID();
 		String uniqueId = uuid.toString();
 		
-		DeviceSpecification deviceSpecification = deviceSpecificationRepository
-				.findDeviceSpecificationByIDAndLangCode(uniqueId,primaryLang);
+		List<DeviceSpecification> deviceSpecification = deviceSpecificationRepository
+				.findDeviceSpecById(uniqueId);
 			
 		return deviceSpecification ==null?uniqueId:generateId();
 	}
@@ -233,27 +232,25 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	 * updateDeviceSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public IdAndLanguageCodeID updateDeviceSpecification(DeviceSpecificationDto deviceSpecification) {
+	public IdAndLanguageCodeID updateDeviceSpecification(DeviceSpecificationPutDto deviceSpecification) {
 		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		try {
 			DeviceSpecification entity = deviceSpecificationRepository
 					.findByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getId(),
 							deviceSpecification.getLangCode());
 			if (!EmptyCheckUtils.isNullEmpty(entity)) {
-				if (!deviceSpecification.getIsActive()) {
-					List<Device> devices = deviceRepository
-							.findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getId());
-					if (!EmptyCheckUtils.isNullEmpty(devices)) {
-						throw new RequestException(
-								DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_UPDATE_MAPPING_EXCEPTION
-										.getErrorCode(),
-								DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_UPDATE_MAPPING_EXCEPTION
-										.getErrorMessage());
-					}
-					masterdataCreationUtil.updateMasterDataDeactivate(DeviceSpecification.class,
-							deviceSpecification.getId());
-				}
-
+				/*
+				 * if (!deviceSpecification.getIsActive()) { List<Device> devices =
+				 * deviceRepository .findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(
+				 * deviceSpecification.getId()); if (!EmptyCheckUtils.isNullEmpty(devices)) {
+				 * throw new RequestException(
+				 * DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_UPDATE_MAPPING_EXCEPTION
+				 * .getErrorCode(),
+				 * DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_UPDATE_MAPPING_EXCEPTION
+				 * .getErrorMessage()); }
+				 * masterdataCreationUtil.updateMasterDataDeactivate(DeviceSpecification.class,
+				 * deviceSpecification.getId()); }
+				 */
 				deviceSpecification = masterdataCreationUtil.updateMasterData(DeviceSpecification.class,
 						deviceSpecification);
 				MetaDataUtils.setUpdateMetaData(deviceSpecification, entity, false);
@@ -302,7 +299,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		IdResponseDto idResponseDto = new IdResponseDto();
 		try {
 			List<DeviceSpecification> deviceSpecifications = deviceSpecificationRepository
-					.findByIdAndIsDeletedFalseorIsDeletedIsNull(id);
+					.findDeviceSpecById(id);
 
 			if (!deviceSpecifications.isEmpty()) {
 				for (DeviceSpecification deviceSpecification : deviceSpecifications) {

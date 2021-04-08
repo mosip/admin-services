@@ -34,6 +34,7 @@ import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.RegcenterBaseDto;
+import io.mosip.kernel.masterdata.dto.WorkingNonWorkingDaysDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
@@ -680,26 +681,23 @@ public class RegistrationCenterValidator {
 	}
 
 	// method to compare IsActive
-	public boolean validateCenterIsActive(RegCenterPutReqDto firstObj, RegCenterPutReqDto eachRecord,
-			List<ServiceError> errors) {
-		if (eachRecord.getIsActive() != null && firstObj.getIsActive() != null) {
-			if (eachRecord.getIsActive().equals(firstObj.getIsActive())) {
-				return firstObj.getIsActive();
-			} else {
-				errors.add(new ServiceError(RegistrationCenterErrorCode.IS_ACTIVE_NOT_UNIQUE.getErrorCode(),
-						String.format(RegistrationCenterErrorCode.IS_ACTIVE_NOT_UNIQUE.getErrorMessage(),
-								eachRecord.getIsActive())));
-			}
-		}
-		return false;
-
-	}
+	/*
+	 * public boolean validateCenterIsActive(RegCenterPutReqDto firstObj,
+	 * RegCenterPutReqDto eachRecord, List<ServiceError> errors) { if
+	 * (eachRecord.getIsActive() != null && firstObj.getIsActive() != null) { if
+	 * (eachRecord.getIsActive().equals(firstObj.getIsActive())) { return
+	 * firstObj.getIsActive(); } else { errors.add(new
+	 * ServiceError(RegistrationCenterErrorCode.IS_ACTIVE_NOT_UNIQUE.getErrorCode(),
+	 * String.format(RegistrationCenterErrorCode.IS_ACTIVE_NOT_UNIQUE.
+	 * getErrorMessage(), eachRecord.getIsActive()))); } } return false;
+	 * 
+	 * }
+	 */
 
 	// validate for the given ID, do we have records in all supported languages
 	// then make True for all records.
 	public void isActiveTrueAllSupLang(List<RegCenterPutReqDto> registrationCenterPutReqAdmDto) {
-		if (registrationCenterPutReqAdmDto.get(0).getIsActive() != null
-				&& registrationCenterPutReqAdmDto.get(0).getIsActive()) {
+
 			// call method to check isActive is true already for the given
 			// object
 			// isActiveTrueAlreadyValidator(registrationCenterPutReqAdmDto);
@@ -734,7 +732,7 @@ public class RegistrationCenterValidator {
 						RegistrationCenterErrorCode.ID_LANGUAGE.getErrorMessage());
 			}
 
-		}
+
 	}
 
 	// call a method to validate isActive is already true
@@ -796,29 +794,27 @@ public class RegistrationCenterValidator {
 		return uniqueId;
 	}
 
-	public void validateRegCenterUpdate(RegCenterPutReqDto registrationCenterDto, List<ServiceError> errors) {
-		String latitude = registrationCenterDto.getLatitude();
-		String longitude = registrationCenterDto.getLongitude();
-
-		zoneUserMapValidation(registrationCenterDto, errors, getZoneIdsForUser());
-		zoneStartEndTimeGtrValidation(registrationCenterDto, errors);
-		lunchStartEndTimeGrtValidation(registrationCenterDto, errors);
+	public void validateRegCenterUpdate(String zoneCode,LocalTime centerStartTime, LocalTime centerEndTime,
+			LocalTime lunchStartingTime,LocalTime lunchEndingTime,String latitude,String longitude,WorkingNonWorkingDaysDto workingNonWorkingDaysDto,List<ServiceError> errors) {
+		zoneUserMapValidation(zoneCode, errors, getZoneIdsForUser());
+		zoneStartEndTimeGtrValidation(centerStartTime,centerEndTime, errors);
+		lunchStartEndTimeGrtValidation(lunchStartingTime, lunchEndingTime, centerStartTime, centerEndTime, errors);
 		formatValidationLongitudeLatitude(errors, latitude, longitude);
-		checkWorkingNonworking(errors, registrationCenterDto);
+		checkWorkingNonworking(errors, workingNonWorkingDaysDto);
 		// holidayVlidation(registrationCenterDto, errors);
 
 	}
 
-	private void checkWorkingNonworking(List<ServiceError> errors, RegCenterPutReqDto registrationCenterDto) {
-		if (registrationCenterDto.getWorkingNonWorkingDays() != null) {
+	private void checkWorkingNonworking(List<ServiceError> errors, WorkingNonWorkingDaysDto workingNonWorkingDaysDto) {
+		if (workingNonWorkingDaysDto != null) {
 			String fieldName = null;
 			Boolean value = null;
 			Map<String, Boolean> workMap = new HashMap<>();
-			Field[] fieldList = registrationCenterDto.getWorkingNonWorkingDays().getClass().getDeclaredFields();
+			Field[] fieldList = workingNonWorkingDaysDto.getClass().getDeclaredFields();
 			for (Field field : fieldList) {
 				try {
 					field.setAccessible(true);
-					value = (Boolean) field.get(registrationCenterDto.getWorkingNonWorkingDays());
+					value = (Boolean) field.get(workingNonWorkingDaysDto);
 					fieldName = field.getName();
 					if (value != null) {
 						workMap.put(fieldName, value);
@@ -851,14 +847,14 @@ public class RegistrationCenterValidator {
 	// validation to check entered zoneCode is mapped with eligible user or not
 	// and
 	// is valid zoneCode
-	private void zoneUserMapValidation(RegCenterPutReqDto registrationCenterDto, List<ServiceError> errors,
+	private void zoneUserMapValidation(String zoneCode, List<ServiceError> errors,
 			List<String> zoneIds) {
 
 		if (!zoneIds.isEmpty()) {
-			if (!zoneIds.contains(registrationCenterDto.getZoneCode())) {
+			if (!zoneIds.contains(zoneCode)) {
 				errors.add(new ServiceError(RegistrationCenterErrorCode.INVALIDE_ZONE.getErrorCode(),
 						String.format(RegistrationCenterErrorCode.INVALIDE_ZONE.getErrorMessage(),
-								registrationCenterDto.getZoneCode())));
+								zoneCode)));
 			}
 		}
 	}
@@ -866,49 +862,50 @@ public class RegistrationCenterValidator {
 	// validation to check the RegCenter Lunch Start Time is greater
 	// than RegCenter
 	// Lunch End Time
-	private void lunchStartEndTimeGrtValidation(RegCenterPutReqDto registrationCenterDto, List<ServiceError> errors) {
+	private void lunchStartEndTimeGrtValidation(LocalTime lunchStartingTime,LocalTime lunchEndingTime,
+			LocalTime centerStartTime,LocalTime centerEndTime,List<ServiceError> errors) {
 		// validation to check the RegCenter Lunch Start Time is greater than
 		// RegCenter
 		// Lunch End Time
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 		LocalTime lunchStartTime = LocalTime.parse("00:00:00", formatter);
-		if ((registrationCenterDto.getLunchStartTime() != null
-				&& !registrationCenterDto.getLunchStartTime().equals(lunchStartTime))
-				&& registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
+		if ((lunchStartingTime != null
+				&& !lunchStartingTime.equals(lunchStartTime))
+				&& lunchStartingTime.isAfter(lunchEndingTime)) {
 			errors.add(new ServiceError(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorCode(),
 					String.format(
 							RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorMessage(),
-							registrationCenterDto.getLunchEndTime())));
+							lunchEndingTime)));
 
 		}
-		if ((registrationCenterDto.getLunchEndTime() != null
-				&& !registrationCenterDto.getLunchEndTime().equals(lunchStartTime))
-				&& registrationCenterDto.getLunchEndTime().isAfter(registrationCenterDto.getCenterEndTime())) {
+		if ((lunchEndingTime != null
+				&& !lunchEndingTime.equals(lunchStartTime))
+				&& lunchEndingTime.isAfter(centerEndTime)) {
 			errors.add(new ServiceError(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_END_CENTER_END_EXCEPTION.getErrorCode(),
 					String.format(RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_END_CENTER_END_EXCEPTION
-							.getErrorMessage(), registrationCenterDto.getLunchEndTime())));
+							.getErrorMessage(), lunchEndingTime)));
 
 		}
-		if ((registrationCenterDto.getLunchStartTime() != null
-				&& !registrationCenterDto.getLunchStartTime().equals(lunchStartTime))
-				&& registrationCenterDto.getLunchStartTime().isBefore(registrationCenterDto.getCenterStartTime())) {
+		if ((lunchStartingTime != null
+				&& !lunchStartingTime.equals(lunchStartTime))
+				&& lunchStartingTime.isBefore(centerStartTime)) {
 			errors.add(new ServiceError(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_CENTER_END_EXCEPTION.getErrorCode(),
 					String.format(RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_CENTER_END_EXCEPTION
-							.getErrorMessage(), registrationCenterDto.getLunchEndTime())));
+							.getErrorMessage(), lunchEndingTime)));
 		}
 	}
 
 	// validation to check the RegCenter Start Time is greater than
 	// RegCenter End Time
-	private void zoneStartEndTimeGtrValidation(RegCenterPutReqDto registrationCenterDto, List<ServiceError> errors) {
-		if (registrationCenterDto.getCenterStartTime().isAfter(registrationCenterDto.getCenterEndTime())) {
+	private void zoneStartEndTimeGtrValidation(LocalTime centerStartTime, LocalTime centerEndTime, List<ServiceError> errors) {
+		if (centerStartTime.isAfter(centerEndTime)) {
 			errors.add(new ServiceError(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorCode(),
 					String.format(RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorMessage(),
-							registrationCenterDto.getCenterEndTime())));
+							centerEndTime)));
 		}
 	}
 

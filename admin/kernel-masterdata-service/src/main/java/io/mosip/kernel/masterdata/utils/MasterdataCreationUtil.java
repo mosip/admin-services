@@ -182,23 +182,6 @@ public class MasterdataCreationUtil {
 				activeDto = (boolean) field.get(t);
 			}
 		}
-		if (supportedLang.contains(langCode.toLowerCase())) {
-			if (activeDto) {
-				isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
-				isActive.setAccessible(true);
-				isActive.set(t, Boolean.TRUE);
-				updatePrimaryToTrue(entity, id, primaryKeyCol, true);
-			}
-			if (!activeDto) {
-				isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
-				isActive.setAccessible(true);
-				isActive.set(t, Boolean.FALSE);
-				updatePrimaryToTrue(entity, id, primaryKeyCol, false);
-			}
-		} else {
-			throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
-					String.format(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage(), langCode));
-		}
 			return t;
 	}
 
@@ -258,6 +241,7 @@ public class MasterdataCreationUtil {
 		}
 		return null;
 	}
+
 	public <E> int updateMasterDataDeactivate(Class<E> entity, String code) {
 		List<Predicate> predicates = new ArrayList<Predicate>();
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -270,16 +254,7 @@ public class MasterdataCreationUtil {
 		Query executableQuery = entityManager.createQuery(update);
 		return executableQuery.executeUpdate();
 	}
-	private <E> Predicate setCode(CriteriaBuilder builder, Root<E> root, String code) {
-		if (code != null && !code.isEmpty()) {
-			Path<Object> langCodePath = root.get(CODE_COLUMN_NAME);
-			if (langCodePath != null) {
-				return builder.equal(langCodePath, code);
-			}
-		}
-		return null;
-	}
-	
+
 	public <E> int updateMasterDataStatus(Class<E> entity, String primaryKeyValue, boolean isActive, String column) {
 		List<Predicate> predicates = new ArrayList<Predicate>();
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -292,11 +267,22 @@ public class MasterdataCreationUtil {
 		Query executableQuery = entityManager.createQuery(update);
 		return executableQuery.executeUpdate();
 	}
+
 	private <E> Predicate setColumn(CriteriaBuilder builder, Root<E> root, String primaryKeyValue, String column) {
 		if (primaryKeyValue != null && !primaryKeyValue.isEmpty()) {
 			Path<Object> langCodePath = root.get(column);
 			if (langCodePath != null) {
 				return builder.equal(langCodePath, primaryKeyValue);
+			}
+		}
+		return null;
+	}
+
+	private <E> Predicate setCode(CriteriaBuilder builder, Root<E> root, String code) {
+		if (code != null && !code.isEmpty()) {
+			Path<Object> langCodePath = root.get(CODE_COLUMN_NAME);
+			if (langCodePath != null) {
+				return builder.equal(langCodePath, code);
 			}
 		}
 		return null;

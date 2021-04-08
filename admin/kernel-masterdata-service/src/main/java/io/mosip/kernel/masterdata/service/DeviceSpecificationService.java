@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service;
 import java.util.List;
 
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecificationPutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceSpecificationExtnDto;
@@ -76,7 +77,7 @@ public interface DeviceSpecificationService {
 	 *                                    device Specification
 	 */
 
-	public IdAndLanguageCodeID updateDeviceSpecification(DeviceSpecificationDto deviceSpecification);
+	public IdAndLanguageCodeID updateDeviceSpecification(DeviceSpecificationPutDto deviceSpecification);
 
 	/**
 	 * Function to delete Device Specification

@@ -34,6 +34,7 @@ import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.MachineTypeDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
@@ -151,14 +152,8 @@ public class MachineServiceImpl implements MachineService {
 	@Autowired
 	private RegistrationCenterHistoryRepository registrationCenterHistoryRepository;
 
-	/**
-	 * get list of secondary languages supported by MOSIP from configuration file
-	 */
-	@Value("${mosip.primary-language}")
-	private String primaryLang;
-
-	@Value("${mosip.primary-language}")
-	private String primaryLangCode;
+	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
+	private String supportedLang;
 
 	@Autowired
 	private RegistrationCenterRepository regCenterRepository;
@@ -359,11 +354,12 @@ public class MachineServiceImpl implements MachineService {
 		String typeName = null;
 		String langCode = null;
 
-		if (dto.getLanguageCode().equals("all")) {
-			langCode = primaryLangCode;
-		} else {
-			langCode = dto.getLanguageCode();
-		}
+		/*
+		 * if (dto.getLanguageCode().equals("all")) { langCode = primaryLangCode; } else
+		 * {
+		 */
+		langCode = dto.getLanguageCode();
+
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
 			if (MasterDataConstant.ZONE.equalsIgnoreCase(column)) {
@@ -799,7 +795,7 @@ public class MachineServiceImpl implements MachineService {
 			
 			machineEntity = MetaDataUtils.setCreateMetaData(machinePostReqDto, Machine.class);
 
-			if (StringUtils.isNotEmpty(primaryLang) && primaryLang.equals(machinePostReqDto.getLangCode())) {
+			if (StringUtils.isNotEmpty(supportedLang) && supportedLang.contains(machinePostReqDto.getLangCode())) {
 				// MachineId from the mid_Seq Table,MachineId get by calling MachineIdGenerator
 				// API method generateMachineId()
 				uniqueId = registrationCenterValidator.generateMachineIdOrvalidateWithDB(uniqueId);
@@ -871,7 +867,7 @@ public class MachineServiceImpl implements MachineService {
 		boolean isInSameHierarchy = false;
 		Zone registrationCenterZone = null;
 		List<String> zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
-		List<RegistrationCenter> centers=regCenterRepository.findByRegIdAndLangCode(regCenterId, primaryLangCode);
+		List<RegistrationCenter> centers = regCenterRepository.findByRegId(regCenterId);
 		for (Zone zone : userZones) {
 
 			if (zone.getCode().equals(centers.get(0).getZoneCode())) {
@@ -928,7 +924,7 @@ public class MachineServiceImpl implements MachineService {
 
 				// call method to update NumKiosis value in regCneter table.
 				// for the regCenter id which has been mapped with the given machine id
-				updateNumKiosksRegCenter(machinePutReqDto, renMachine);
+				// updateNumKiosksRegCenter(machinePutReqDto, renMachine);
 
 				// updating registration center
 				updMachineEntity = MetaDataUtils.setUpdateMetaData(machinePutReqDto, renMachine, false);
@@ -984,9 +980,58 @@ public class MachineServiceImpl implements MachineService {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * updateRegistrationCenter1(java.util.List)
+	 */
+	@Transactional
+	@Override
+	public StatusResponseDto updateMachineStatus(String id, boolean isActive) {
+
+		StatusResponseDto statusResponseDto = new StatusResponseDto();
+		try {
+			List<Machine> machines = machineRepository
+					.findMachineById(id);
+			if (machines != null) {
+				masterdataCreationUtil.updateMasterDataStatus(Machine.class, id, isActive, "id");
+				updateNumKiosksRegCenter(isActive, machines.get(0));
+			} else {
+				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, Machine.class.getSimpleName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,
+								MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+								MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage()),
+						"ADM-542");
+				throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+			statusResponseDto.setStatus("Status updated successfully for machine");
+		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException
+				| SecurityException exception) {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, Machine.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorCode(),
+							MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage()
+									+ ExceptionUtils.parseException(exception)),
+					"ADM-543");
+			throw new MasterDataServiceException(MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(exception));
+		}
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_UPDATE, Machine.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
+						Machine.class.getSimpleName(), id),
+				"ADM-544");
+		return statusResponseDto;
+
+	}
+
 	// method to update the NumKiosis for the regCenter id which has got mapped with
 	// machine id
-	private void updateNumKiosksRegCenter(MachinePutReqDto machinePutReqDto, Machine renMachine) {
+	private void updateNumKiosksRegCenter(boolean isActive, Machine renMachine) {
 		
 
 		// given machine id is attached to regCenter center or not
@@ -996,7 +1041,7 @@ public class MachineServiceImpl implements MachineService {
 					.findByRegIdAndIsDeletedFalseOrNull(regCenterId);
 
 			// requested machine is true and in DB machine false state
-			if (machinePutReqDto.getIsActive() && !renMachine.getIsActive()) {
+			if (isActive && !renMachine.getIsActive()) {
 
 				// update the NumberOfKiosks by 1(increase)
 				for (RegistrationCenter registrationCenter : renRegistrationCenters) {
@@ -1011,7 +1056,7 @@ public class MachineServiceImpl implements MachineService {
 				}
 
 				// requested machine is false and in DB machine true state
-			} else if (!machinePutReqDto.getIsActive() && renMachine.getIsActive()) {
+			} else if (!isActive && renMachine.getIsActive()) {
 
 				// update the NumberOfKiosks by 1(Decrease)
 				for (RegistrationCenter registrationCenter : renRegistrationCenters) {

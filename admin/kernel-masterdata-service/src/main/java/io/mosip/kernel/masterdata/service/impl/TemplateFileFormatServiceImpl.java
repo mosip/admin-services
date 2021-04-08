@@ -15,6 +15,7 @@ import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.TemplateFileFormatErrorCode;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
+import io.mosip.kernel.masterdata.dto.TemplateFileFormatPutDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
@@ -90,9 +91,9 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 	}
 
 	@Override
-	public CodeAndLanguageCodeID updateTemplateFileFormat(TemplateFileFormatDto templateFileFormatRequestDto) {
+	public CodeAndLanguageCodeID updateTemplateFileFormat(TemplateFileFormatPutDto templateFileFormatRequestDto) {
 
-		TemplateFileFormatDto templateFileFormatDto = templateFileFormatRequestDto;
+		TemplateFileFormatPutDto templateFileFormatDto = templateFileFormatRequestDto;
 
 		CodeAndLanguageCodeID templateFileFormatId = new CodeAndLanguageCodeID();
 
@@ -104,21 +105,20 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 							templateFileFormatRequestDto.getLangCode());
 
 			if (templateFileFormat != null) {
-				if (!templateFileFormatRequestDto.getIsActive()) {
-					List<Template> templates = templateRepository
-							.findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(
-									templateFileFormatRequestDto.getCode());
-
-					if (!EmptyCheckUtils.isNullEmpty(templates)) {
-						throw new RequestException(
-								TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_UPDATE_MAPPING_EXCEPTION
-										.getErrorCode(),
-								TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_UPDATE_MAPPING_EXCEPTION
-										.getErrorMessage());
-					}
-					masterdataCreationUtil.updateMasterDataDeactivate(TemplateFileFormat.class,
-							templateFileFormatRequestDto.getCode());
-				}
+				/*
+				 * if (!templateFileFormatRequestDto.getIsActive()) { List<Template> templates =
+				 * templateRepository
+				 * .findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(
+				 * templateFileFormatRequestDto.getCode());
+				 * 
+				 * if (!EmptyCheckUtils.isNullEmpty(templates)) { throw new RequestException(
+				 * TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_UPDATE_MAPPING_EXCEPTION
+				 * .getErrorCode(),
+				 * TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_UPDATE_MAPPING_EXCEPTION
+				 * .getErrorMessage()); }
+				 * masterdataCreationUtil.updateMasterDataDeactivate(TemplateFileFormat.class,
+				 * templateFileFormatRequestDto.getCode()); }
+				 */
 				templateFileFormatRequestDto = masterdataCreationUtil.updateMasterData(TemplateFileFormat.class,
 						templateFileFormatRequestDto);
 				MetaDataUtils.setUpdateMetaData(templateFileFormatDto, templateFileFormat, false);

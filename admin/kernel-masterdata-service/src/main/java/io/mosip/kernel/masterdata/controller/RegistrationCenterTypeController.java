@@ -21,6 +21,7 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterTypePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterTypeExtnDto;
@@ -95,7 +96,7 @@ public class RegistrationCenterTypeController {
 	@PutMapping("/registrationcentertypes")
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<CodeAndLanguageCodeID> updateRegistrationCenterType(
-			@Valid @RequestBody RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeDto) {
+			@Valid @RequestBody RequestWrapper<RegistrationCenterTypePutDto> registrationCenterTypeDto) {
 		auditUtil.auditRequest(
 				MasterDataConstant.UPDATE_API_IS_CALLED + RegistrationCenterTypeDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,

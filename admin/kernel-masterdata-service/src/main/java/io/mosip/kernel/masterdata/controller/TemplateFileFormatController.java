@@ -21,6 +21,7 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
+import io.mosip.kernel.masterdata.dto.TemplateFileFormatPutDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
@@ -89,7 +90,7 @@ public class TemplateFileFormatController {
 			@ApiResponse(code = 404, message = "When TemplateFileFormat is not found"),
 			@ApiResponse(code = 500, message = "While updating TemplateFileFormat any error occured") })
 	public ResponseWrapper<CodeAndLanguageCodeID> updateDevice(
-			@Valid @RequestBody RequestWrapper<TemplateFileFormatDto> templateFileFormatRequestDto) {
+			@Valid @RequestBody RequestWrapper<TemplateFileFormatPutDto> templateFileFormatRequestDto) {
 
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(

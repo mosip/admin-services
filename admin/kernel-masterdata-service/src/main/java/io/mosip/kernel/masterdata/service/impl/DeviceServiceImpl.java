@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -50,7 +49,6 @@ import io.mosip.kernel.masterdata.entity.DeviceHistory;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
-
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -127,12 +125,6 @@ public class DeviceServiceImpl implements DeviceService {
 
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
-
-	@Value("${mosip.primary-language}")
-	private String primaryLangCode;
-
-	@Value("${mosip.secondary-language:ara}")
-	private String secondaryLang;
 
 	@Autowired
 	private AuditUtil auditUtil;
@@ -362,11 +354,7 @@ public class DeviceServiceImpl implements DeviceService {
 		boolean isAssigned = true;
 		String typeName = null;
 		String langCode = null;
-		if (dto.getLanguageCode().equals("all")) {
-			langCode = primaryLangCode;
-		} else {
-			langCode = dto.getLanguageCode();
-		}
+		langCode = dto.getLanguageCode();
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
 
@@ -857,16 +845,7 @@ public class DeviceServiceImpl implements DeviceService {
 
 			devicePutReqDto = masterdataCreationUtil.updateMasterData(Device.class, devicePutReqDto);
 
-			if (renDevice == null && primaryLangCode.equals(devicePutReqDto.getLangCode())) {
-				auditUtil.auditRequest(
-						String.format(MasterDataConstant.FAILURE_DECOMMISSION, DeviceDto.class.getSimpleName()),
-						MasterDataConstant.AUDIT_SYSTEM,
-						String.format(MasterDataConstant.FAILURE_DESC, DeviceErrorCode.DECOMMISSIONED.getErrorCode(),
-								DeviceErrorCode.DECOMMISSIONED.getErrorMessage()),
-						"ADM-515");
-				throw new MasterDataServiceException(DeviceErrorCode.DECOMMISSIONED.getErrorCode(),
-						DeviceErrorCode.DECOMMISSIONED.getErrorMessage());
-			} else if (renDevice == null && secondaryLang.equals(devicePutReqDto.getLangCode())) {
+			if (renDevice == null) {
 				// create new entry
 				Device crtDeviceEntity = new Device();
 				crtDeviceEntity = MetaDataUtils.setCreateMetaData(devicePutReqDto, crtDeviceEntity.getClass());
@@ -884,7 +863,6 @@ public class DeviceServiceImpl implements DeviceService {
 			if (renDevice != null) {
 				// updating registration center
 				updDeviecEntity = MetaDataUtils.setUpdateMetaData(devicePutReqDto, renDevice, false);
-				updDeviecEntity.setIsActive(devicePutReqDto.getIsActive());
 
 				// updating Device
 				updDevice = deviceRepository.update(updDeviecEntity);
@@ -946,7 +924,7 @@ public class DeviceServiceImpl implements DeviceService {
 		boolean isInSameHierarchy = false;
 		Zone registrationCenterZone = null;
 		List<String> zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
-		List<RegistrationCenter> centers=regCenterRepository.findByRegIdAndLangCode(regCenterId, primaryLangCode);
+		List<RegistrationCenter> centers = regCenterRepository.findByRegId(regCenterId);
 		for (Zone zone : userZones) {
 
 			if (zone.getCode().equals(centers.get(0).getZoneCode())) {

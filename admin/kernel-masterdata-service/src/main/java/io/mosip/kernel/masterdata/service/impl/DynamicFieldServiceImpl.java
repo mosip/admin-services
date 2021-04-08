@@ -27,6 +27,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.SchemaErrorCode;
 import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
+import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldValueDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
@@ -131,18 +132,19 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	 */
 	@Override
 	@Transactional
-	public DynamicFieldResponseDto updateDynamicField(String id, DynamicFieldDto dto) {
+	public DynamicFieldResponseDto updateDynamicField(String id, DynamicFieldPutDto dto) {
 		DynamicField entity = null;
 		try {
 			int updatedRows = dynamicFieldRepository.updateDynamicField(id, dto.getDescription(), dto.getLangCode(), 
-					dto.getDataType(), dto.isActive(), MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser());
+					dto.getDataType(), MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser());
 			
 			if (updatedRows < 1) {
 				throw new RequestException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
-			dynamicFieldRepository.updateDynamicFieldIsActive(dto.getName(), dto.isActive(),
-						MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser());
+			// dynamicFieldRepository.updateDynamicFieldIsActive(dto.getName(),
+			// MetaDataUtils.getCurrentDateTime(),
+			// MetaDataUtils.getContextUser());
 			entity = dynamicFieldRepository.findDynamicFieldById(id);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_UPDATE_EXCEPTION.getErrorCode(),

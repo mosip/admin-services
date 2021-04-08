@@ -220,7 +220,6 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 						MOSIPDeviceServiceErrorCode.REG_DEVICE_SUB_TYPE_NOT_FOUND.getErrorMessage());
 			}
 			entity = MetaDataUtils.setUpdateMetaData(dto, renEntity, false);
-			entity.setIsActive(dto.getIsActive());
 			byte[] swNinaryHashArr = dto.getSwBinaryHash().getBytes();
 			entity.setSwBinaryHash(swNinaryHashArr);
 			updMosipDeviceService = mosipDeviceServiceRepository.update(entity);

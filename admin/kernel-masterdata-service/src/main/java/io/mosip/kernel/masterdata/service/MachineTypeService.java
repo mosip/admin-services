@@ -1,7 +1,9 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.MachineTypeDto;
+import io.mosip.kernel.masterdata.dto.MachineTypePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
@@ -61,5 +63,8 @@ public interface MachineTypeService {
 	 */
 	public FilterResponseCodeDto machineTypesFilterValues(FilterValueDto filterValueDto);
 
-	public CodeAndLanguageCodeID updateMachineType(MachineTypeDto request);
+	public CodeAndLanguageCodeID updateMachineType(MachineTypePutDto request);
+
+	public StatusResponseDto updateMachineTypeStatus(String code, boolean isActive);
+
 }

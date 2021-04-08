@@ -21,6 +21,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.TemplatePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
@@ -157,7 +158,7 @@ public class TemplateController {
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
 	public ResponseWrapper<IdAndLanguageCodeID> updateTemplate(
-			@Valid @RequestBody RequestWrapper<TemplateDto> template) {
+			@Valid @RequestBody RequestWrapper<TemplatePutDto> template) {
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + TemplateDto.class.getSimpleName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.UPDATE_API_IS_CALLED + TemplateDto.class.getSimpleName(), "ADM-807");

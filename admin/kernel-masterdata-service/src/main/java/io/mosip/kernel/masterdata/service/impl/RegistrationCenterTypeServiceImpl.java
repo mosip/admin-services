@@ -23,6 +23,7 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterTypePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterTypeExtnDto;
@@ -149,7 +150,7 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 	 * updateRegistrationCenterType(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID updateRegistrationCenterType(RegistrationCenterTypeDto registrationCenterTypeDto) {
+	public CodeAndLanguageCodeID updateRegistrationCenterType(RegistrationCenterTypePutDto registrationCenterTypeDto) {
 		CodeAndLanguageCodeID registrationCenterTypeId = new CodeAndLanguageCodeID();
 		MapperUtils.mapFieldValues(registrationCenterTypeDto, registrationCenterTypeId);
 		try {
@@ -157,19 +158,18 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 					.findByCodeAndLangCode(registrationCenterTypeDto.getCode(),
 							registrationCenterTypeDto.getLangCode());
 			if (registrationCenterTypeEntity != null) {
-				if (!registrationCenterTypeDto.getIsActive()) {
-					List<RegistrationCenter> registrationCenters = registrationCenterRepository
-							.findByCenterTypeCode(registrationCenterTypeDto.getCode());
-					if (!EmptyCheckUtils.isNullEmpty(registrationCenters)) {
-						throw new RequestException(
-								RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_UPDATE_MAPPING_EXCEPTION
-										.getErrorCode(),
-								RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_UPDATE_MAPPING_EXCEPTION
-										.getErrorMessage());
-					}
-					masterdataCreationUtil.updateMasterDataDeactivate(RegistrationCenterType.class,
-							registrationCenterTypeDto.getCode());
-				}
+				/*
+				 * if (!registrationCenterTypeDto.getIsActive()) { List<RegistrationCenter>
+				 * registrationCenters = registrationCenterRepository
+				 * .findByCenterTypeCode(registrationCenterTypeDto.getCode()); if
+				 * (!EmptyCheckUtils.isNullEmpty(registrationCenters)) { throw new
+				 * RequestException( RegistrationCenterTypeErrorCode.
+				 * REGISTRATION_CENTER_TYPE_UPDATE_MAPPING_EXCEPTION .getErrorCode(),
+				 * RegistrationCenterTypeErrorCode.
+				 * REGISTRATION_CENTER_TYPE_UPDATE_MAPPING_EXCEPTION .getErrorMessage()); }
+				 * masterdataCreationUtil.updateMasterDataDeactivate(RegistrationCenterType.
+				 * class, registrationCenterTypeDto.getCode()); }
+				 */
 				registrationCenterTypeDto = masterdataCreationUtil.updateMasterData(RegistrationCenterType.class,
 						registrationCenterTypeDto);
 				MetaDataUtils.setUpdateMetaData(registrationCenterTypeDto, registrationCenterTypeEntity, false);

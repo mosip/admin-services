@@ -22,6 +22,7 @@ import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.TemplateErrorCode;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.TemplatePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
@@ -75,6 +76,9 @@ public class TemplateServiceImpl implements TemplateService {
 	@Autowired
 	private FilterTypeValidator filterTypeValidator;
 
+	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
+	private String supportedLang;
+
 	@Autowired
 	private FilterColumnValidator filterColumnValidator;
 
@@ -92,12 +96,6 @@ public class TemplateServiceImpl implements TemplateService {
 
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
-
-	@Value("${mosip.primary-language:eng}")
-	private String primaryLang;
-
-	@Value("${mosip.secondary-language:ara}")
-	private String secondaryLang;
 
 
 	/*
@@ -191,7 +189,7 @@ public class TemplateServiceImpl implements TemplateService {
 		Template templateEntity;
 		
 		try {
-			if (StringUtils.isNotEmpty(primaryLang) && primaryLang.equals(template.getLangCode())) {
+			if (StringUtils.isNotEmpty(supportedLang) && supportedLang.contains(template.getLangCode())) {
 				String uniqueId = generateId();
 				template.setId(uniqueId);
 			}
@@ -226,8 +224,8 @@ public class TemplateServiceImpl implements TemplateService {
 		UUID uuid = UUID.randomUUID();
 		String uniqueId = uuid.toString();
 		
-		Template template = templateRepository
-				.findTemplateByIDAndLangCode(uniqueId,primaryLang);
+		List<Template> template = templateRepository
+				.findAllByCodeAndIsDeletedFalseOrIsDeletedIsNull(uniqueId);
 			
 		return template ==null?uniqueId:generateId();
 	}
@@ -240,7 +238,7 @@ public class TemplateServiceImpl implements TemplateService {
 	 * kernel.masterdata.dto.TemplateDto)
 	 */
 	@Override
-	public IdAndLanguageCodeID updateTemplates(TemplateDto template) {
+	public IdAndLanguageCodeID updateTemplates(TemplatePutDto template) {
 		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		try {
 			Template entity = templateRepository.findTemplateByIDAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(

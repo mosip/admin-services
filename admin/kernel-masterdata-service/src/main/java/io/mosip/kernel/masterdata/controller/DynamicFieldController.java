@@ -22,6 +22,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
+import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldValueDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
@@ -82,7 +83,7 @@ public class DynamicFieldController {
 	@ApiOperation(value = "Service to update dynamic field")
 	public ResponseWrapper<DynamicFieldResponseDto> updateDynamicField (
 			@RequestParam(name = "id") @ApiParam(value = "field id") String id,
-			@Valid @RequestBody RequestWrapper<DynamicFieldDto> dynamicFieldDto) {
+			@Valid @RequestBody RequestWrapper<DynamicFieldPutDto> dynamicFieldDto) {
 		ResponseWrapper<DynamicFieldResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(dynamicFieldService.updateDynamicField(id, dynamicFieldDto.getRequest()));
 		return responseWrapper;

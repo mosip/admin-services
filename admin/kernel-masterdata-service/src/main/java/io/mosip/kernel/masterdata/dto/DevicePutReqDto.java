@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.Range;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.mosip.kernel.masterdata.validator.StringFormatter;
@@ -78,11 +76,7 @@ public class DevicePutReqDto {
 	@ValidLangCode(message = "Language Code is Invalid")
 	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
 	private String langCode;
-	/**
-	 * Field for is active
-	 */
-	@NotNull
-	private Boolean isActive;
+
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime validityDateTime;

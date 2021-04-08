@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
+import io.mosip.kernel.masterdata.dto.DocumentCategoryPutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
@@ -63,7 +64,7 @@ public interface DocumentCategoryService {
 	 * @param category the request dto.
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
-	public CodeAndLanguageCodeID updateDocumentCategory(DocumentCategoryDto category);
+	public CodeAndLanguageCodeID updateDocumentCategory(DocumentCategoryPutDto category);
 
 	/**
 	 * Method to delete Document Category based on id provided.

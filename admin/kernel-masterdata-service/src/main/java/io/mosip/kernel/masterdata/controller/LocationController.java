@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,6 +23,7 @@ import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.LocationCreateDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationLevelResponseDto;
+import io.mosip.kernel.masterdata.dto.LocationPutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
@@ -163,12 +165,25 @@ public class LocationController {
 	@PutMapping
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	public ResponseWrapper<LocationPutResponseDto> updateLocationHierarchyDetails(
-			@Valid @RequestBody RequestWrapper<LocationDto> locationRequestDto) {
+			@Valid @RequestBody RequestWrapper<LocationPutDto> locationRequestDto) {
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + LocationDto.class.getSimpleName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.UPDATE_API_IS_CALLED + LocationDto.class.getSimpleName(), "ADM-569");
 		ResponseWrapper<LocationPutResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(locationHierarchyService.updateLocationDetails(locationRequestDto.getRequest()));
+		return responseWrapper;
+	}
+
+	@ResponseFilter
+	@PatchMapping
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	public ResponseWrapper<StatusResponseDto> updateLocationStatus(@RequestParam String code,
+			@RequestParam boolean isActive) {
+		auditUtil.auditRequest(MasterDataConstant.STATUS_API_IS_CALLED + LocationDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_API_IS_CALLED + LocationDto.class.getSimpleName(), "ADM-570");
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(locationHierarchyService.updateLocationStatus(code, isActive));
 		return responseWrapper;
 	}
 

@@ -23,6 +23,7 @@ import io.mosip.kernel.masterdata.dto.ZoneUserDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserExtnDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
+import io.mosip.kernel.masterdata.dto.ZoneUserPutDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.service.UserDetailsHistoryService;
 import io.mosip.kernel.masterdata.service.ZoneUserService;
@@ -50,7 +51,8 @@ public class ZoneUserController {
 			@ApiResponse(code = 400, message = "When Request is invalid"),
 			@ApiResponse(code = 404, message = "When No zoneuser found"),
 			@ApiResponse(code = 500, message = "While mapping user to zone any error occured") })
-	public ResponseWrapper<ZoneUserExtnDto> updateapUserZone(@Valid @RequestBody RequestWrapper<ZoneUserDto> zoneUserDto) {
+	public ResponseWrapper<ZoneUserExtnDto> updateapUserZone(
+			@Valid @RequestBody RequestWrapper<ZoneUserPutDto> zoneUserDto) {
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + ZoneUserController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.UPDATE_API_IS_CALLED + ZoneUserController.class.getCanonicalName());

@@ -209,7 +209,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		try {
 			userDetailsDto = masterdataCreationUtil.createMasterData(UserDetails.class, userDetailsDto);
 			ud = MetaDataUtils.setCreateMetaData(userDetailsDto, UserDetails.class);
-			List<RegistrationCenter> regCenters = registrationCenterService.getRegistrationCentersByID(userDetailsDto.getRegCenterId()); //Throws exception if not found
+			List<RegistrationCenter> regCenters = registrationCenterService
+					.getRegistrationCentersByID(userDetailsDto.getRegCenterId()); // Throws exception if not found
 			validateZoneUserMapping(regCenters,userDetailsDto.getLangCode(),userDetailsDto.getId());
 			userDetailsRepository.create(ud);
 			UserDetailsHistory udh = new UserDetailsHistory();

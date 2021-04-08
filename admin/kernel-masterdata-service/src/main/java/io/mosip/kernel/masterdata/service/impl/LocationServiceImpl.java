@@ -34,6 +34,7 @@ import io.mosip.kernel.masterdata.dto.LocationCreateDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationLevelDto;
 import io.mosip.kernel.masterdata.dto.LocationLevelResponseDto;
+import io.mosip.kernel.masterdata.dto.LocationPutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
@@ -296,7 +297,7 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	@Override
 	@Transactional
-	public LocationPutResponseDto updateLocationDetails(LocationDto locationDto) {
+	public LocationPutResponseDto updateLocationDetails(LocationPutDto locationDto) {
 		LocationPutResponseDto postLocationCodeResponseDto = new LocationPutResponseDto();
 		try {
 			if (!EmptyCheckUtils.isNullEmpty(locationDto.getParentLocCode())) {
@@ -327,14 +328,14 @@ public class LocationServiceImpl implements LocationService {
 						String.format(LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorMessage(),
 								locationDto.getName()));
 			}
-			if (!CollectionUtils.isEmpty(locationRepository.findLocationHierarchyByParentLocCodeAndLanguageCode(
-					locationDto.getCode(), locationDto.getLangCode()))) {
-				if (!locationDto.getIsActive()) {
-					throw new MasterDataServiceException(
-							LocationErrorCode.LOCATION_CHILD_STATUS_EXCEPTION.getErrorCode(),
-							LocationErrorCode.LOCATION_CHILD_STATUS_EXCEPTION.getErrorMessage());
-				}
-			}
+			/*
+			 * if (!CollectionUtils.isEmpty(locationRepository.
+			 * findLocationHierarchyByParentLocCodeAndLanguageCode( locationDto.getCode(),
+			 * locationDto.getLangCode()))) { if (!locationDto.getIsActive()) { throw new
+			 * MasterDataServiceException(
+			 * LocationErrorCode.LOCATION_CHILD_STATUS_EXCEPTION.getErrorCode(),
+			 * LocationErrorCode.LOCATION_CHILD_STATUS_EXCEPTION.getErrorMessage()); } }
+			 */
 			locationDto = masterDataCreateUtil.updateMasterData(Location.class, locationDto);
 			Location location = locationRepository.findLocationByCodeAndLanguageCode(locationDto.getCode(),
 					locationDto.getLangCode());
@@ -366,6 +367,38 @@ public class LocationServiceImpl implements LocationService {
 						LocationDto.class.getSimpleName(), postLocationCodeResponseDto.getCode()),
 				"ADM-580");
 		return postLocationCodeResponseDto;
+	}
+
+	@Override
+	@Transactional
+	public StatusResponseDto updateLocationStatus(String code, boolean isActive) {
+		StatusResponseDto statusResponseDto = new StatusResponseDto();
+		try {
+			List<Location> locations = locationRepository.findLocationByCode(code);
+			if (!EmptyCheckUtils.isNullEmpty(locations)) {
+				masterDataCreateUtil.updateMasterDataStatus(Location.class, code, isActive, "code");
+			}
+			else {
+				throw new MasterDataServiceException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+			statusResponseDto.setStatus("Status updated successfully for location");
+		} catch (IllegalArgumentException | SecurityException e) {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, LocationDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorCode(),
+							LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage()
+									+ ExceptionUtils.parseException(e)),
+					"ADM-580");
+			throw new MasterDataServiceException(LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
+		}
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_UPDATE, LocationDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
+						LocationDto.class.getSimpleName()),
+				"ADM-581");
+		return statusResponseDto;
 	}
 
 	/*

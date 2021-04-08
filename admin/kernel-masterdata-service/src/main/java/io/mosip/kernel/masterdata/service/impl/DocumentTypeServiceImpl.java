@@ -197,17 +197,17 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 					documentTypeDto.getLangCode());
 			if (documentType != null) {
 
-				if (!documentTypeDto.getIsActive()) {
-					List<ValidDocument> validDocuments = validDocumentRepository
-							.findByDocTypeCode(documentTypeDto.getCode());
-
-					if (!EmptyCheckUtils.isNullEmpty(validDocuments)) {
-						throw new RequestException(
-								DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorCode(),
-								DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorMessage());
-					}
-					masterdataCreationUtil.updateMasterDataDeactivate(DocumentType.class, documentTypeDto.getCode());
-				}
+				/*
+				 * if (!documentTypeDto.getIsActive()) { List<ValidDocument> validDocuments =
+				 * validDocumentRepository .findByDocTypeCode(documentTypeDto.getCode());
+				 * 
+				 * if (!EmptyCheckUtils.isNullEmpty(validDocuments)) { throw new
+				 * RequestException(
+				 * DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorCode(),
+				 * DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorMessage(
+				 * )); } masterdataCreationUtil.updateMasterDataDeactivate(DocumentType.class,
+				 * documentTypeDto.getCode()); }
+				 */
 				// if ((documentTypeDto.getIsActive() == Boolean.TRUE) &&
 				// (documentType.getIsActive() == Boolean.TRUE)) {
 				// throw new RequestException(

@@ -22,6 +22,8 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.PageDto;
+import io.mosip.kernel.masterdata.dto.RegCenterLanguageSpecificPutDto;
+import io.mosip.kernel.masterdata.dto.RegCenterNonLanguageSpecificPutDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
@@ -438,6 +440,50 @@ public class RegistrationCenterController {
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.STATUS_UPDATED_SUCCESS,
 						RegistrationCenterSearchDto.class.getSimpleName()),
 				"ADM-525");
+		return responseWrapper;
+	}
+
+	/**
+	 * API to update only language specific columns
+	 * @param reqRegistrationCenterDto
+	 * @return
+	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	@ResponseFilter
+	@PutMapping("/registrationcenters/language")
+	public ResponseWrapper<RegistrationCenterExtnDto> updateRegistrationCenterLanguageSpecifi(
+			@RequestBody @Valid RequestWrapper<RegCenterLanguageSpecificPutDto> reqRegistrationCenterDto) {
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.UPDATE_API_IS_CALLED,
+						RegistrationCenterSearchDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.UPDATE_API_IS_CALLED,
+						RegistrationCenterSearchDto.class.getSimpleName()),
+				"ADM-522");
+		ResponseWrapper<RegistrationCenterExtnDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper
+				.setResponse(registrationCenterService.updateRegistrationCenterWithLanguageSpecific(reqRegistrationCenterDto.getRequest()));
+		return responseWrapper;
+	}
+	
+	/**
+	 * API to update only non-language specific columns
+	 * @param reqRegistrationCenterDto
+	 * @return
+	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	@ResponseFilter
+	@PutMapping("/registrationcenters/nonlanguage")
+	public ResponseWrapper<RegistrationCenterExtnDto> updateRegistrationCenterNonLanguageSpecifi(
+			@RequestBody @Valid RequestWrapper<RegCenterNonLanguageSpecificPutDto> reqRegistrationCenterDto) {
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.UPDATE_API_IS_CALLED,
+						RegistrationCenterSearchDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.UPDATE_API_IS_CALLED,
+						RegistrationCenterSearchDto.class.getSimpleName()),
+				"ADM-522");
+		ResponseWrapper<RegistrationCenterExtnDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper
+				.setResponse(registrationCenterService.updateRegistrationCenterWithNonLanguageSpecific(reqRegistrationCenterDto.getRequest()));
 		return responseWrapper;
 	}
 }

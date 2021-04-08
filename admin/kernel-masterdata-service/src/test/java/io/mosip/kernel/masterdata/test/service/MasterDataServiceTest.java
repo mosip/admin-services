@@ -44,10 +44,12 @@ import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyLevelResponseDto;
+import io.mosip.kernel.masterdata.dto.LocationPutDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceHistoryDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
+import io.mosip.kernel.masterdata.dto.TemplateFileFormatPutDto;
 import io.mosip.kernel.masterdata.dto.WorkingDaysResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
@@ -310,6 +312,9 @@ public class MasterDataServiceTest {
 	RequestWrapper<LocationDto> requestLocationDto = null;
 	RequestWrapper<LocationDto> requestLocationDto1 = null;
 
+	RequestWrapper<LocationPutDto> requestLocationPutDto = null;
+	RequestWrapper<LocationPutDto> requestLocationPutDto1 = null;
+
 	@MockBean
 	private TemplateRepository templateRepository;
 
@@ -323,6 +328,8 @@ public class MasterDataServiceTest {
 	private List<TemplateFileFormat> templateFileFormats = new ArrayList<TemplateFileFormat>();
 
 	private RequestWrapper<TemplateFileFormatDto> templateFileFormatRequestDto;
+
+	private RequestWrapper<TemplateFileFormatPutDto> templateFileFormatPutRequestDto;
 
 	@Autowired
 	private TemplateService templateService;
@@ -525,6 +532,16 @@ public class MasterDataServiceTest {
 		requestLocationDto = new RequestWrapper<>();
 		requestLocationDto.setRequest(locationDto);
 
+		LocationPutDto locationPutDto = new LocationPutDto();
+		locationPutDto.setCode("KAR");
+		locationPutDto.setName("KARNATAKA");
+		locationPutDto.setHierarchyLevel((short) 2);
+		locationPutDto.setHierarchyName("STATE");
+		locationPutDto.setLangCode("FRA");
+		locationPutDto.setParentLocCode("IND");
+		requestLocationPutDto = new RequestWrapper<LocationPutDto>();
+		requestLocationPutDto.setRequest(locationPutDto);
+
 		locationHierarchyList = new ArrayList<>();
 		locationHierarchy3 = new Location();
 		locationHierarchy3.setCode("KAR");
@@ -549,6 +566,15 @@ public class MasterDataServiceTest {
 		requestLocationDto1 = new RequestWrapper<>();
 		requestLocationDto1.setRequest(locationDto1);
 
+		LocationPutDto locationPutDto1 = new LocationPutDto();
+		locationPutDto1.setCode("IND");
+		locationPutDto1.setName("INDIA");
+		locationPutDto1.setHierarchyLevel((short) 1);
+		locationPutDto1.setHierarchyName("CONTRY");
+		locationPutDto1.setLangCode("HIN");
+		locationPutDto1.setParentLocCode(null);
+		requestLocationPutDto1 = new RequestWrapper<LocationPutDto>();
+		requestLocationPutDto1.setRequest(locationPutDto1);
 	}
 
 	private void locationHierarchyLevelSetup() {
@@ -801,7 +827,12 @@ public class MasterDataServiceTest {
 		templateFileFormatDto.setCode("xml");
 		templateFileFormatDto.setLangCode("eng");
 		templateFileFormatDto.setIsActive(true);
-
+		TemplateFileFormatPutDto templateFileFormatPutDto = new TemplateFileFormatPutDto();
+		templateFileFormatPutDto.setCode("xml");
+		templateFileFormatPutDto.setLangCode("eng");
+		templateFileFormatPutDto.setDescription("test");
+		templateFileFormatPutRequestDto = new RequestWrapper<TemplateFileFormatPutDto>();
+		templateFileFormatPutRequestDto.setRequest(templateFileFormatPutDto);
 		templateFileFormatRequestDto.setRequest(templateFileFormatDto);
 	}
 
@@ -1136,7 +1167,6 @@ public class MasterDataServiceTest {
 		registrationCenterPutReqAdmDto1.setLunchEndTime(lunchEndTime);
 		registrationCenterPutReqAdmDto1.setTimeZone("UTC");
 		registrationCenterPutReqAdmDto1.setWorkingHours("9");
-		registrationCenterPutReqAdmDto1.setIsActive(false);
 		registrationCenterPutReqAdmDto1.setZoneCode("JRD");
 		updRequestNotAllLang.add(registrationCenterPutReqAdmDto1);
 		updRequestInvalideID.add(registrationCenterPutReqAdmDto1);
@@ -1167,7 +1197,6 @@ public class MasterDataServiceTest {
 		registrationCenterPutReqAdmDto2.setLunchEndTime(lunchEndTime);
 		registrationCenterPutReqAdmDto2.setTimeZone("UTC");
 		registrationCenterPutReqAdmDto2.setWorkingHours("9");
-		registrationCenterPutReqAdmDto2.setIsActive(false);
 		registrationCenterPutReqAdmDto2.setZoneCode("JRD");
 		updRequestNotAllLang.add(registrationCenterPutReqAdmDto2);
 		updRequestInvalideID.add(registrationCenterPutReqAdmDto2);
@@ -1198,7 +1227,6 @@ public class MasterDataServiceTest {
 		registrationCenterPutReqAdmDto3.setLunchEndTime(lunchEndTime);
 		registrationCenterPutReqAdmDto3.setTimeZone("UTC");
 		registrationCenterPutReqAdmDto3.setWorkingHours("9");
-		registrationCenterPutReqAdmDto3.setIsActive(false);
 		registrationCenterPutReqAdmDto3.setZoneCode("JRD");
 		updRequestInvalideID.add(registrationCenterPutReqAdmDto3);
 
@@ -1223,7 +1251,6 @@ public class MasterDataServiceTest {
 		registrationCenterPutReqAdmDto4.setLunchEndTime(lunchEndTime);
 		registrationCenterPutReqAdmDto4.setTimeZone("UTC");
 		registrationCenterPutReqAdmDto4.setWorkingHours("9");
-		registrationCenterPutReqAdmDto4.setIsActive(false);
 		registrationCenterPutReqAdmDto4.setZoneCode("JRD");
 		updRequestSetLongitudeInvalide.add(registrationCenterPutReqAdmDto4);
 
@@ -1248,7 +1275,6 @@ public class MasterDataServiceTest {
 		registrationCenterPutReqAdmDto5.setLunchEndTime(lunchEndTime);
 		registrationCenterPutReqAdmDto5.setTimeZone("UTC");
 		registrationCenterPutReqAdmDto5.setWorkingHours("9");
-		registrationCenterPutReqAdmDto5.setIsActive(false);
 		registrationCenterPutReqAdmDto5.setZoneCode("JRD");
 		updRequestDuplicateIDLang.add(registrationCenterPutReqAdmDto5);
 		updRequestDuplicateIDLang.add(registrationCenterPutReqAdmDto5);
@@ -1274,7 +1300,6 @@ public class MasterDataServiceTest {
 		registrationCenterPutReqAdmDto6.setLunchEndTime(lunchEndTime);
 		registrationCenterPutReqAdmDto6.setTimeZone("UTC");
 		registrationCenterPutReqAdmDto6.setWorkingHours("9");
-		registrationCenterPutReqAdmDto6.setIsActive(false);
 		registrationCenterPutReqAdmDto6.setZoneCode("JRD");
 		updRequestCenterTime.add(registrationCenterPutReqAdmDto6);
 
@@ -1299,7 +1324,6 @@ public class MasterDataServiceTest {
 		registrationCenterPutReqAdmDto7.setLunchEndTime(lunchEndTimeSm);
 		registrationCenterPutReqAdmDto7.setTimeZone("UTC");
 		registrationCenterPutReqAdmDto7.setWorkingHours("9");
-		registrationCenterPutReqAdmDto7.setIsActive(false);
 		registrationCenterPutReqAdmDto7.setZoneCode("JRD");
 		updRequestLunchTime.add(registrationCenterPutReqAdmDto7);
 
@@ -1324,7 +1348,6 @@ public class MasterDataServiceTest {
 		registrationCenterPutReqAdmDto8.setLunchEndTime(lunchEndTime);
 		registrationCenterPutReqAdmDto8.setTimeZone("UTC");
 		registrationCenterPutReqAdmDto8.setWorkingHours("9");
-		registrationCenterPutReqAdmDto8.setIsActive(false);
 		registrationCenterPutReqAdmDto8.setZoneCode("JJJ");
 		updRequestZoneCode.add(registrationCenterPutReqAdmDto8);
 	}
@@ -1363,8 +1386,11 @@ public class MasterDataServiceTest {
 	}
 
 	@Test
-	public void addApplicationDataSuccess() {
+	public void addApplicationDataSuccess()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		Mockito.when(applicationRepository.create(Mockito.any())).thenReturn(application1);
+		when(masterdataCreationUtil.createMasterData(Mockito.eq(Application.class), Mockito.any()))
+				.thenReturn(applicationRequestWrapper.getRequest());
 
 		CodeAndLanguageCodeID codeAndLanguageCodeId = applicationService
 				.createApplication(applicationRequestWrapper.getRequest());
@@ -1373,8 +1399,11 @@ public class MasterDataServiceTest {
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void addApplicationDataFetchException() {
+	public void addApplicationDataFetchException()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		Mockito.when(applicationRepository.create(Mockito.any())).thenThrow(DataAccessLayerException.class);
+		when(masterdataCreationUtil.createMasterData(Mockito.eq(Application.class), Mockito.any()))
+				.thenReturn(applicationRequestWrapper.getRequest());
 		applicationService.createApplication(applicationRequestWrapper.getRequest());
 	}
 
@@ -1516,8 +1545,11 @@ public class MasterDataServiceTest {
 	}
 
 	@Test
-	public void addBiometricTypeDataSuccess() {
+	public void addBiometricTypeDataSuccess()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		Mockito.when(biometricTypeRepository.create(Mockito.any())).thenReturn(biometricType1);
+		when(masterdataCreationUtil.createMasterData(Mockito.eq(BiometricType.class), Mockito.any()))
+				.thenReturn(biometricTypeRequestWrapper.getRequest());
 
 		CodeAndLanguageCodeID codeAndLanguageCodeId = biometricTypeService
 				.createBiometricType(biometricTypeRequestWrapper.getRequest());
@@ -1526,8 +1558,11 @@ public class MasterDataServiceTest {
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void addBiometricTypeDataInsertException() {
+	public void addBiometricTypeDataInsertException()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		Mockito.when(biometricTypeRepository.create(Mockito.any())).thenThrow(DataAccessLayerException.class);
+		when(masterdataCreationUtil.createMasterData(Mockito.eq(BiometricType.class), Mockito.any()))
+				.thenReturn(biometricTypeRequestWrapper.getRequest());
 		biometricTypeService.createBiometricType(biometricTypeRequestWrapper.getRequest());
 	}
 
@@ -1844,8 +1879,11 @@ public class MasterDataServiceTest {
 	}
 
 	@Test
-	public void addDocumentcategoryDataSuccess() {
+	public void addDocumentcategoryDataSuccess()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		Mockito.when(documentCategoryRepository.create(Mockito.any())).thenReturn(documentCategory2);
+		when(masterdataCreationUtil.createMasterData(Mockito.eq(DocumentCategory.class), Mockito.any()))
+				.thenReturn(documentCategoryRequestDto.getRequest());
 
 		CodeAndLanguageCodeID codeAndLanguageCodeId = documentCategoryService
 				.createDocumentCategory(documentCategoryRequestDto.getRequest());
@@ -1854,8 +1892,11 @@ public class MasterDataServiceTest {
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void addDocumentcategoryDataFetchException() {
+	public void addDocumentcategoryDataFetchException()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		Mockito.when(documentCategoryRepository.create(Mockito.any())).thenThrow(DataAccessLayerException.class);
+		when(masterdataCreationUtil.createMasterData(Mockito.eq(DocumentCategory.class), Mockito.any()))
+				.thenReturn(documentCategoryRequestDto.getRequest());
 		documentCategoryService.createDocumentCategory(documentCategoryRequestDto.getRequest());
 	}
 	
@@ -1993,6 +2034,10 @@ public class MasterDataServiceTest {
 	}
 
 	/**
+	 * @throws SecurityException 
+	 * @throws NoSuchFieldException 
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
 	 * @Test public void locationHierarchySaveTest() {
 	 *       Mockito.when(locationHierarchyRepository.create(Mockito.any())).thenReturn(locationHierarchy);
 	 *       locationHierarchyService.createLocationHierarchy(requestLocationDto.getRequest());
@@ -2006,28 +2051,33 @@ public class MasterDataServiceTest {
 	 * 
 	 **/
 	@Test(expected = MasterDataServiceException.class)
-	public void updateLocationDetailsIsActiveTest() {
+	public void updateLocationDetailsIsActiveTest()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 
 		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any())).thenReturn(locationHierarchy2);
 		Mockito.when(locationHierarchyRepository
 				.findLocationHierarchyByParentLocCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(locationHierarchyList);
+		when(masterdataCreationUtil.updateMasterData(Mockito.eq(Location.class), Mockito.any()))
+				.thenReturn(requestLocationPutDto1.getRequest());
 
-		locationHierarchyService.updateLocationDetails(requestLocationDto1.getRequest());
+		locationHierarchyService.updateLocationDetails(requestLocationPutDto1.getRequest());
 	}
 
-	@Ignore
+
 	@Test
+	@Ignore
 	public void updateLocationDetailsTest() {
 
 		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any())).thenReturn(locationHierarchy);
 		Mockito.when(locationHierarchyRepository.update(Mockito.any())).thenReturn(locationHierarchy);
 
-		locationHierarchyService.updateLocationDetails(requestLocationDto.getRequest());
+		locationHierarchyService.updateLocationDetails(requestLocationPutDto.getRequest());
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void updateLocationDetailsExceptionTest() {
+	public void updateLocationDetailsExceptionTest()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any())).thenReturn(locationHierarchy);
 		Mockito.when(locationHierarchyRepository.update(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		Mockito.when(locationHierarchyRepository.findByNameAndLevelLangCode(Mockito.any(), Mockito.anyShort(),
@@ -2035,14 +2085,15 @@ public class MasterDataServiceTest {
 		Mockito.when(
 				locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(), Mockito.any()))
 				.thenReturn(locationHierarchyList);
-		locationHierarchyService.updateLocationDetails(requestLocationDto.getRequest());
+		when(masterdataCreationUtil.updateMasterData(Mockito.eq(Location.class), Mockito.any()))
+				.thenReturn(requestLocationPutDto.getRequest());
+		locationHierarchyService.updateLocationDetails(requestLocationPutDto.getRequest());
 	}
 
-	@Ignore
 	@Test(expected = RequestException.class)
 	public void updateLocationDetailsDataNotFoundTest() {
 		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any())).thenReturn(null);
-		locationHierarchyService.updateLocationDetails(requestLocationDto.getRequest());
+		locationHierarchyService.updateLocationDetails(requestLocationPutDto.getRequest());
 	}
 
 	@Test
@@ -2232,8 +2283,11 @@ public class MasterDataServiceTest {
 
 	// ------------------------------------TemplateFileFormatServiceTest---------------------------//
 	@Test
-	public void addTemplateFileFormatSuccess() {
+	public void addTemplateFileFormatSuccess()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		Mockito.when(templateFileFormatRepository.create(Mockito.any())).thenReturn(templateFileFormat);
+		when(masterdataCreationUtil.createMasterData(Mockito.eq(TemplateFileFormat.class), Mockito.any()))
+				.thenReturn(templateFileFormatRequestDto.getRequest());
 
 		CodeAndLanguageCodeID codeAndLanguageCodeId = templateFileFormatService
 				.createTemplateFileFormat(templateFileFormatRequestDto.getRequest());
@@ -2242,8 +2296,11 @@ public class MasterDataServiceTest {
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void addTemplateFileFormatInsertExceptionTest() {
+	public void addTemplateFileFormatInsertExceptionTest()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		Mockito.when(templateFileFormatRepository.create(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		when(masterdataCreationUtil.createMasterData(Mockito.eq(TemplateFileFormat.class), Mockito.any()))
+				.thenReturn(templateFileFormatRequestDto.getRequest());
 		templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto.getRequest());
 	}
 
@@ -2252,7 +2309,7 @@ public class MasterDataServiceTest {
 		Mockito.when(templateFileFormatRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(),
 				Mockito.any())).thenReturn(templateFileFormat);
 		Mockito.when(templateFileFormatRepository.update(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		templateFileFormatService.updateTemplateFileFormat(templateFileFormatRequestDto.getRequest());
+		templateFileFormatService.updateTemplateFileFormat(templateFileFormatPutRequestDto.getRequest());
 	}
 
 	@Test(expected = MasterDataServiceException.class)
@@ -2356,21 +2413,22 @@ public class MasterDataServiceTest {
 	}
 
 	@Test
-	public void updateDocumentTypeSuccessTest() {
+	public void updateDocumentTypeSuccessTest()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 
 		DocumentTypePutReqDto documentTypeDto = new DocumentTypePutReqDto();
 		documentTypeDto.setCode("code");
-		documentTypeDto.setIsActive(Boolean.TRUE);
 		documentTypeDto.setLangCode("eng");
 
 		DocumentType documentType = new DocumentType();
 		documentType.setCode(documentTypeDto.getCode());
-		documentType.setIsActive(!documentTypeDto.getIsActive());
 		documentType.setLangCode(documentTypeDto.getLangCode());
 
 		Mockito.when(
 				documentTypeRepository.findByCodeAndLangCode(documentTypeDto.getCode(), documentTypeDto.getLangCode()))
 				.thenReturn(documentType);
+		when(masterdataCreationUtil.updateMasterData(Mockito.eq(DocumentType.class), Mockito.any()))
+				.thenReturn(documentTypeDto);
 
 		documentTypeService.updateDocumentType(documentTypeDto);
 

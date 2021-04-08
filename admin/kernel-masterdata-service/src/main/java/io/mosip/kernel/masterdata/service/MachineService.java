@@ -5,6 +5,7 @@ import io.mosip.kernel.masterdata.dto.MachinePostReqDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -148,5 +149,7 @@ public interface MachineService {
 	 *                                    decommissioning the Machine
 	 */
 	public IdResponseDto decommissionMachine(String machineId);
+
+	public StatusResponseDto updateMachineStatus(String id, boolean isActive);
 
 }

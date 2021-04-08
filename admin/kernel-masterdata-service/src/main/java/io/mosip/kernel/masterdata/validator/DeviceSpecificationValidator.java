@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.DeviceSpecificationErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecificationPutDto;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.DeviceTypeRepository;
@@ -29,6 +30,16 @@ public class DeviceSpecificationValidator {
 
 		DeviceType entity = deviceTypeRepository
 				.findDeviceTypeByCodeAndByLangCode(request.getDeviceTypeCode(), request.getLangCode());
+		if (EmptyCheckUtils.isNullEmpty(entity)) {
+			throw new RequestException(DeviceSpecificationErrorCode.INVALID_DEVICE_TYPE_CODE__EXCEPTION.getErrorCode(),
+					DeviceSpecificationErrorCode.INVALID_DEVICE_TYPE_CODE__EXCEPTION.getErrorMessage());
+		}
+	}
+
+	public void validate(DeviceSpecificationPutDto request) {
+
+		DeviceType entity = deviceTypeRepository.findDeviceTypeByCodeAndByLangCode(request.getDeviceTypeCode(),
+				request.getLangCode());
 		if (EmptyCheckUtils.isNullEmpty(entity)) {
 			throw new RequestException(DeviceSpecificationErrorCode.INVALID_DEVICE_TYPE_CODE__EXCEPTION.getErrorCode(),
 					DeviceSpecificationErrorCode.INVALID_DEVICE_TYPE_CODE__EXCEPTION.getErrorMessage());

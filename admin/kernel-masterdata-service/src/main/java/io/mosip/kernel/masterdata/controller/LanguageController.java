@@ -6,18 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
+import io.mosip.kernel.masterdata.dto.LanguagePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.swagger.annotations.Api;
@@ -76,9 +80,25 @@ public class LanguageController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Language found"),
 			@ApiResponse(code = 500, message = "While updating Language any error occured") })
-	public ResponseWrapper<CodeResponseDto> updateLanguage(@Valid @RequestBody RequestWrapper<LanguageDto> language) {
+	public ResponseWrapper<CodeResponseDto> updateLanguage(
+			@Valid @RequestBody RequestWrapper<LanguagePutDto> language) {
 		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(languageService.updateLanguage(language.getRequest()));
+		return responseWrapper;
+	}
+
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@ResponseFilter
+	@PatchMapping
+	@ApiOperation(value = "Service to update Language status", notes = "Update Language and return status")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When Language status successfully updated"),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No Language found"),
+			@ApiResponse(code = 500, message = "While updating Language any error occured") })
+	public ResponseWrapper<StatusResponseDto> updateLanguageStatus(@RequestParam String code,
+			@RequestParam boolean isActive) {
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(languageService.updateLanguageStatus(code, isActive));
 		return responseWrapper;
 	}
 
