@@ -22,6 +22,7 @@ import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.FilterData;
+import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
@@ -321,10 +322,14 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 	 * searchRegistrationCenterTypes(io.mosip.kernel.masterdata.dto.request.
 	 * SearchDto)
 	 */
+	@SuppressWarnings("null")
 	@Override
-	public PageResponseDto<RegistrationCenterTypeExtnDto> searchRegistrationCenterTypes(SearchDto dto) {
+	public PageResponseDto<RegistrationCenterTypeExtnDto> searchRegistrationCenterTypes(SearchDto dto,
+			boolean addMissingData) {
 		PageResponseDto<RegistrationCenterTypeExtnDto> pageDto = new PageResponseDto<>();
 		List<RegistrationCenterTypeExtnDto> registrationCenterTypes = null;
+		List<RegistrationCenterTypeExtnDto> regisTypeListForMissingData = new ArrayList<RegistrationCenterTypeExtnDto>();
+
 		if (filterTypeValidator.validate(RegistrationCenterTypeExtnDto.class, dto.getFilters())) {
 			Pagination pagination = dto.getPagination();
 			List<SearchSort> sort = dto.getSort();
@@ -334,8 +339,21 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 			pageUtils.validateSortField(RegistrationCenterType.class, sort);
 			Page<RegistrationCenterType> page = masterdataSearchHelper.searchMasterdata(RegistrationCenterType.class,
 					dto, null);
+			if (addMissingData) {
+				List<MissingCodeDataDto> missingCodeDataDtos = masterdataSearchHelper
+						.fetchValuesWithCode(RegistrationCenterType.class, dto.getLanguageCode());
+				missingCodeDataDtos.forEach(missingCodeData -> {
+					RegistrationCenterTypeExtnDto registrationCenterTypeExtnDto = new RegistrationCenterTypeExtnDto();
+					registrationCenterTypeExtnDto.setCode(missingCodeData.getCode());
+					registrationCenterTypeExtnDto.setLangCode(missingCodeData.getLangcode());
+					regisTypeListForMissingData.add(registrationCenterTypeExtnDto);
+				});
+			}
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				registrationCenterTypes = MapperUtils.mapAll(page.getContent(), RegistrationCenterTypeExtnDto.class);
+				for (RegistrationCenterTypeExtnDto registrationCenterTypeExtnDto : regisTypeListForMissingData) {
+					registrationCenterTypes.add(registrationCenterTypeExtnDto);
+				}
 				pageDto = pageUtils.sortPage(registrationCenterTypes, sort, pagination);
 			}
 		}

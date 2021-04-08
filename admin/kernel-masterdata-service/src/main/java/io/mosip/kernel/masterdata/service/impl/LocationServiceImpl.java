@@ -35,6 +35,7 @@ import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationLevelDto;
 import io.mosip.kernel.masterdata.dto.LocationLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationPutDto;
+import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
@@ -66,6 +67,7 @@ import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
@@ -106,6 +108,9 @@ public class LocationServiceImpl implements LocationService {
 
 	@Autowired
 	private MasterdataCreationUtil masterDataCreateUtil;
+
+	@Autowired
+	private MasterdataSearchHelper masterdataSearchHelper;
 
 	@Autowired
 	private PageUtils pageUtils;
@@ -682,9 +687,11 @@ public class LocationServiceImpl implements LocationService {
 	 * @see io.mosip.kernel.masterdata.service.LocationService#searchLocation(io.
 	 * mosip. kernel.masterdata.dto.request.SearchDto)
 	 */
+	@SuppressWarnings("null")
 	@Override
-	public PageResponseDto<LocationSearchDto> searchLocation(SearchDto dto) {
+	public PageResponseDto<LocationSearchDto> searchLocation(SearchDto dto, boolean addMissingData) {
 		PageResponseDto<LocationSearchDto> pageDto = null;
+		List<LocationSearchDto> locationListForMissingData = new ArrayList<LocationSearchDto>();
 		String active = null;
 		boolean isActive = true;
 		List<LocationSearchDto> responseDto = new ArrayList<>();
@@ -750,6 +757,19 @@ public class LocationServiceImpl implements LocationService {
 				}
 				count++;
 			}
+		}
+		if (addMissingData) {
+			List<MissingCodeDataDto> missingCodeDataDtos = masterdataSearchHelper.fetchValuesWithCode(Location.class,
+					dto.getLanguageCode());
+			missingCodeDataDtos.forEach(missingCodeData -> {
+				LocationSearchDto locationSearchDto = new LocationSearchDto();
+				locationSearchDto.setCode(missingCodeData.getCode());
+				locationSearchDto.setLangCode(missingCodeData.getLangcode());
+				locationListForMissingData.add(locationSearchDto);
+			});
+		}
+		for (LocationSearchDto locationSearchDto : locationListForMissingData) {
+			responseDto.add(locationSearchDto);
 		}
 		Pagination pagination = dto.getPagination();
 		List<SearchSort> sort = dto.getSort();

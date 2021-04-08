@@ -21,6 +21,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.TemplateErrorCode;
+import io.mosip.kernel.masterdata.dto.MissingIdDataDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.TemplatePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
@@ -371,10 +372,13 @@ public class TemplateServiceImpl implements TemplateService {
 	 * io.mosip.kernel.masterdata.service.TemplateService#searchTemplates(io.mosip.
 	 * kernel.masterdata.dto.request.SearchDto)
 	 */
+	@SuppressWarnings("null")
 	@Override
-	public PageResponseDto<TemplateExtnDto> searchTemplates(SearchDto searchDto) {
+	public PageResponseDto<TemplateExtnDto> searchTemplates(SearchDto searchDto, boolean addMissingData) {
 		PageResponseDto<TemplateExtnDto> pageDto = new PageResponseDto<>();
 		List<TemplateExtnDto> templates = null;
+		List<TemplateExtnDto> templateListForMissingData = new ArrayList<TemplateExtnDto>();
+
 		if (filterTypeValidator.validate(TemplateExtnDto.class, searchDto.getFilters())) {
 			Pagination pagination = searchDto.getPagination();
 			List<SearchSort> sort = searchDto.getSort();
@@ -382,8 +386,21 @@ public class TemplateServiceImpl implements TemplateService {
 			searchDto.setSort(Collections.emptyList());
 			pageUtils.validateSortField(Template.class, sort);
 			Page<Template> page = masterDataSearchHelper.searchMasterdata(Template.class, searchDto, null);
+			if (addMissingData) {
+				List<MissingIdDataDto> missingIdDataDtos = masterDataSearchHelper.fetchValuesWithId(Template.class,
+						searchDto.getLanguageCode());
+				missingIdDataDtos.forEach(missingIdData -> {
+					TemplateExtnDto templateExtnDto = new TemplateExtnDto();
+					templateExtnDto.setId(missingIdData.getId());
+					templateExtnDto.setLangCode(missingIdData.getLangcode());
+					templateListForMissingData.add(templateExtnDto);
+				});
+			}
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				templates = MapperUtils.mapAll(page.getContent(), TemplateExtnDto.class);
+				for (TemplateExtnDto templateExtnDto : templateListForMissingData) {
+					templates.add(templateExtnDto);
+				}
 				pageDto = pageUtils.sortPage(templates, sort, pagination);
 			}
 		}

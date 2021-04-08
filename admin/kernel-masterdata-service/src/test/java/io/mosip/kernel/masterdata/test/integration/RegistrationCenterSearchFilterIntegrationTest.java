@@ -33,7 +33,6 @@ import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
@@ -174,7 +173,8 @@ public class RegistrationCenterSearchFilterIntegrationTest {
 		when(filterTypeValidator.validate(Mockito.any(),Mockito.any())).thenReturn(true);
 		when(serviceHelper.searchCenter(Mockito.any(),Mockito.any(),Mockito.any(),Mockito.any(),Mockito.any())).
 		thenReturn(new PageResponseDto<>(1, 20, 30, null));
-		mockMvc.perform(post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(json)
+				.param("addMissingData", "true"))
 				.andExpect(status().isOk());
 	}
 	
@@ -196,7 +196,8 @@ public class RegistrationCenterSearchFilterIntegrationTest {
 		doNothing().when(serviceHelper).centerTypeSearch(Mockito.any(), Mockito.any(), Mockito.any());
 		when(serviceHelper.locationSearch(Mockito.any())).thenReturn(null);
 		when(filterTypeValidator.validate(Mockito.any(),Mockito.any())).thenReturn(false);
-		mockMvc.perform(post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(json)
+				.param("addMissingData", "true"))
 				.andExpect(status().isOk());
 	}
 	

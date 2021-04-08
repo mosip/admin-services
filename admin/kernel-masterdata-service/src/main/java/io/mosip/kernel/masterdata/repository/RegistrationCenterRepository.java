@@ -170,9 +170,6 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	@Query("FROM RegistrationCenter WHERE id= ?1 and lang_code=?2 ")
 	List<RegistrationCenter> findByRegIdAndLangCode(String id, String langCode);
 
-	@Query("FROM RegistrationCenter WHERE id= ?1")
-	List<RegistrationCenter> findByRegId(String id);
-
 	/**
 	 * Method to decommission the reg-center.
 	 * 

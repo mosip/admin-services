@@ -53,7 +53,7 @@ public interface MachineTypeService {
 	 * @param dto the search DTO.
 	 * @return the {@link MachineTypeExtnDto}.
 	 */
-	public PageResponseDto<MachineTypeExtnDto> searchMachineType(SearchDto dto);
+	public PageResponseDto<MachineTypeExtnDto> searchMachineType(SearchDto dto, boolean addMissingData);
 
 	/**
 	 * Method to filter Machine Types based on column and type provided.

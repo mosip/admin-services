@@ -25,6 +25,7 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.masterdata.dto.MachineSpecificationPutDto;
+import io.mosip.kernel.masterdata.dto.MissingIdDataDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineSpecificationExtnDto;
@@ -401,11 +402,15 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	 * @see io.mosip.kernel.masterdata.service.MachineSpecificationService#
 	 * searchMachineSpecification(io.mosip.kernel.masterdata.dto.request.SearchDto)
 	 */
+	@SuppressWarnings("null")
 	@Override
-	public PageResponseDto<MachineSpecificationExtnDto> searchMachineSpecification(SearchDto searchRequestDto) {
+	public PageResponseDto<MachineSpecificationExtnDto> searchMachineSpecification(SearchDto searchRequestDto,
+			boolean addMissingData) {
 		PageResponseDto<MachineSpecificationExtnDto> pageDto = new PageResponseDto<>();
 
 		List<MachineSpecificationExtnDto> machineSpecifications = null;
+		List<MachineSpecificationExtnDto> machineSpecificationListForMissingData = new ArrayList<MachineSpecificationExtnDto>();
+
 		List<SearchFilter> addList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
 		pageUtils.validateSortField(MachineSpecification.class, searchRequestDto.getSort());
@@ -432,9 +437,23 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 			OptionalFilter optionalFilter = new OptionalFilter(addList);
 			Page<MachineSpecification> page = masterdataSearchHelper.searchMasterdata(MachineSpecification.class,
 					searchRequestDto, new OptionalFilter[] { optionalFilter });
+			if (addMissingData) {
+				List<MissingIdDataDto> missingIdDataDtos = masterdataSearchHelper
+						.fetchValuesWithId(MachineSpecification.class,
+						searchRequestDto.getLanguageCode());
+				missingIdDataDtos.forEach(missingIdData -> {
+					MachineSpecificationExtnDto machineSpecificationExtnDto = new MachineSpecificationExtnDto();
+					machineSpecificationExtnDto.setId(missingIdData.getId());
+					machineSpecificationExtnDto.setLangCode(missingIdData.getLangcode());
+					machineSpecificationListForMissingData.add(machineSpecificationExtnDto);
+				});
+			}
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				machineSpecifications = MapperUtils.mapAll(page.getContent(), MachineSpecificationExtnDto.class);
 				setMachineTypeName(machineSpecifications);
+				for (MachineSpecificationExtnDto machineSpecificationExtnDto : machineSpecificationListForMissingData) {
+					machineSpecifications.add(machineSpecificationExtnDto);
+				}
 				pageDto = pageUtils.sortPage(machineSpecifications, sort, pagination);
 			}
 		}

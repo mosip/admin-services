@@ -39,6 +39,7 @@ import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.ExceptionalHolidayPutPostDto;
 import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
+import io.mosip.kernel.masterdata.dto.MissingIdDataDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.RegCenterLanguageSpecificPutDto;
 import io.mosip.kernel.masterdata.dto.RegCenterNonLanguageSpecificPutDto;
@@ -96,6 +97,7 @@ import io.mosip.kernel.masterdata.utils.LocationUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.utils.RegistrationCenterServiceHelper;
@@ -172,6 +174,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	@Autowired
 	private RegistrationCenterServiceHelper serviceHelper;
+
+	@Autowired
+	private MasterdataSearchHelper masterdataSearchHelper;
 
 	@Autowired
 	private MasterDataFilterHelper masterDataFilterHelper;
@@ -738,9 +743,12 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
 	 * searchRegistrationCenter(io.mosip.kernel.masterdata.dto.request. SearchDto)
 	 */
+	@SuppressWarnings("null")
 	@Override
-	public PageResponseDto<RegistrationCenterSearchDto> searchRegistrationCenter(SearchDto dto) {
+	public PageResponseDto<RegistrationCenterSearchDto> searchRegistrationCenter(SearchDto dto,
+			boolean addMissingData) {
 		PageResponseDto<RegistrationCenterSearchDto> pageDto = new PageResponseDto<>();
+		List<RegistrationCenterSearchDto> registrationCenterListForMissingData = new ArrayList<RegistrationCenterSearchDto>();
 		List<SearchFilter> addList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
 		List<SearchFilter> locationFilter = new ArrayList<>();
@@ -792,13 +800,27 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		dto.getFilters().removeAll(removeList);
 		dto.getFilters().addAll(addList);
-
+		if (addMissingData) {
+			List<MissingIdDataDto> missingIdDataDtos = masterdataSearchHelper
+					.fetchValuesWithId(RegistrationCenter.class,
+					dto.getLanguageCode());
+			missingIdDataDtos.forEach(missingIdData -> {
+				RegistrationCenterSearchDto registrationCenterSearchDto = new RegistrationCenterSearchDto();
+				registrationCenterSearchDto.setId(missingIdData.getId());
+				registrationCenterSearchDto.setLangCode(missingIdData.getLangcode());
+				registrationCenterListForMissingData.add(registrationCenterSearchDto);
+			});
+		}
 		if (filterTypeValidator.validate(RegistrationCenterSearchDto.class, dto.getFilters()) && flag) {
 			// searching registration center
 			if (locationFilters.isEmpty()) {
 				pageDto = serviceHelper.searchCenter(dto, locationFilter, zoneFilter, zones, locations);
 			} else {
 				pageDto = serviceHelper.searchCenterLocFilter(dto, locationFilters, zoneFilter, zones, locations);
+
+			}
+			for (RegistrationCenterSearchDto registrationCenterSearchDto : registrationCenterListForMissingData) {
+				pageDto.getData().add(registrationCenterSearchDto);
 			}
 		}
 		return pageDto;
