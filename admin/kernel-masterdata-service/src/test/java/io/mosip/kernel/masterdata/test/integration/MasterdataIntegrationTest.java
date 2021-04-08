@@ -8450,6 +8450,7 @@ public class MasterdataIntegrationTest {
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void createUserDetailTest() throws Exception {
 		when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(Mockito.anyString())).thenReturn(registrationCenterEntityList);
+		when(zoneUserRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(zoneUser);
 		when(masterdataCreationUtil.createMasterData(Mockito.any(Class.class), Mockito.any(UserDetailsDto.class))).thenReturn(userDetailsDto);
 		when(userDetailsRepository.create(Mockito.any())).thenReturn(user);
 		when(userRepository.create(Mockito.any())).thenReturn(ud);

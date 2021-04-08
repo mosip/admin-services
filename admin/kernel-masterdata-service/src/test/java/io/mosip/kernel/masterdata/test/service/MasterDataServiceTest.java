@@ -40,6 +40,7 @@ import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypePutReqDto;
+import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyLevelDto;
@@ -64,6 +65,10 @@ import io.mosip.kernel.masterdata.dto.getresponse.WeekDaysDto;
 import io.mosip.kernel.masterdata.dto.getresponse.WorkingDaysDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegCenterMachineDeviceHistoryResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.entity.Application;
 import io.mosip.kernel.masterdata.entity.BiometricAttribute;
 import io.mosip.kernel.masterdata.entity.BiometricType;
@@ -120,10 +125,13 @@ import io.mosip.kernel.masterdata.service.RegistrationCenterDeviceHistoryService
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
+import io.mosip.kernel.masterdata.service.ZoneService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.ZoneUtils;
+import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 
 /**
  * @author Bal Vikash Sharma
@@ -224,6 +232,12 @@ public class MasterDataServiceTest {
 
 	@MockBean
 	ExceptionalHolidayRepository exceptionalHolidayRepository;
+	
+	@MockBean
+	private FilterColumnValidator filterColumnValidator;
+	
+	@MockBean
+	private MasterDataFilterHelper masterDataFilterHelper;
 
 	private DocumentCategory documentCategory1;
 	private DocumentCategory documentCategory2;
@@ -252,6 +266,9 @@ public class MasterDataServiceTest {
 
 	@Autowired
 	LocationService locationHierarchyService;
+	
+	@Autowired
+	private ZoneService zoneService;
 
 	@Autowired
 	LocationHierarchyService locationHierarchyLevelService;
@@ -2527,5 +2544,97 @@ public class MasterDataServiceTest {
 				.thenThrow(new DataAccessLayerException("", "", new Throwable()));
 		exceptionalHolidayService.getAllExceptionalHolidays("10001", "eng");
 	}
+	
+	@Test
+	public void getWorkingDaysByLangCodeService() {
 
+		List<DaysOfWeek> globalDaysList = new ArrayList<DaysOfWeek>();
+		
+		DaysOfWeek daysOfWeek = new DaysOfWeek();
+		daysOfWeek.setCode("101");
+		daysOfWeek.setGlobalWorking(true);
+		daysOfWeek.setDaySeq((short) 1);
+		daysOfWeek.setLangCode("eng");
+		daysOfWeek.setName("Monday");
+		globalDaysList.add(daysOfWeek);
+
+		Mockito.when(daysOfWeekRepo.findByAllGlobalWorkingTrue(Mockito.anyString()))
+				.thenReturn(globalDaysList);
+		assertEquals("Monday",
+				regWorkingNonWorkingService.getWorkingDays("eng").getWorkingdays().get(0).getName());
+	}
+	
+	@Test(expected = MasterDataServiceException.class)
+	public void getWorkingDaysServiceFailureTest() {
+		List<WorkingDaysDto> workingDaysDtos = new ArrayList<>();
+		WorkingDaysDto workingDaysDto = new WorkingDaysDto();
+
+		workingDaysDtos.add(workingDaysDto);
+
+		Mockito.when(daysOfWeekRepo.findByAllGlobalWorkingTrue(Mockito.anyString()))
+				.thenThrow(DataAccessLayerException.class);
+		regWorkingNonWorkingService.getWorkingDays("eng");
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void getWorkingServiceFailureTest1() {
+
+		Mockito.when(daysOfWeekRepo.findByAllGlobalWorkingTrue(Mockito.anyString()))
+				.thenReturn(null);
+		regWorkingNonWorkingService.getWorkingDays("eng");
+	}
+	
+	@Test()
+	public void zoneFilterValuesTest() {
+
+		FilterValueDto filterValueDto = new FilterValueDto();
+		List<FilterDto> filters = new ArrayList<FilterDto>();
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("name");
+		filterDto.setText("SAFi");
+		filterDto.setType("unique");
+		filters.add(filterDto);
+		filterValueDto.setFilters(filters);
+		filterValueDto.setLanguageCode("eng");
+
+		FilterResponseCodeDto filterResponseCodeDto = new FilterResponseCodeDto();
+		List<ColumnCodeValue> ResponseFilters = new ArrayList<ColumnCodeValue>();
+		ColumnCodeValue codeValue = new ColumnCodeValue();
+		codeValue.setFieldCode("MRS");
+		codeValue.setFieldID("name");
+		codeValue.setFieldValue("Marrakesh-Safi");
+		ResponseFilters.add(codeValue);
+		filterResponseCodeDto.setFilters(ResponseFilters);
+
+		List<FilterData> filterValues = new ArrayList<FilterData>();
+		FilterData filterData = new FilterData("MRS", "Marrakesh-Safi");
+		filterValues.add(filterData);
+
+		Mockito.when(filterColumnValidator.validate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
+		Mockito.when(masterDataFilterHelper.filterValuesWithCode(Mockito.any(), Mockito.any(), Mockito.any(),
+				Mockito.anyString())).thenReturn(filterValues);
+		FilterResponseCodeDto response = zoneService.zoneFilterValues(filterValueDto);
+		Assert.assertEquals(filterResponseCodeDto, response);
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void zoneFilterValuesFailureTest() {
+
+		FilterValueDto filterValueDto = new FilterValueDto();
+		List<FilterDto> filters = new ArrayList<FilterDto>();
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("code");
+		filterDto.setText("SAFi");
+		filterDto.setType("unique");
+		filters.add(filterDto);
+		filterValueDto.setFilters(filters);
+		filterValueDto.setLanguageCode("eng");
+
+		Mockito.when(filterColumnValidator.validate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
+		Mockito.when(masterDataFilterHelper.filterValuesWithCode(Mockito.any(), Mockito.any(), Mockito.any(),
+				Mockito.anyString())).thenThrow(MasterDataServiceException.class);
+		zoneService.zoneFilterValues(filterValueDto);
+
+	}
+	  
 }

@@ -71,7 +71,7 @@ public class LocationHierarchyController {
 	 * @return LocationHierarchyLevelResponseDto Location Hierarchy Levels from DB
 	 *         {@link LocationHierarchyLevelResponseDto}
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','INDIVIDUAL','PRE_REGISTRATION','REGISTRATION_PROCESSOR','Default')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','INDIVIDUAL','PRE_REGISTRATION','REGISTRATION_PROCESSOR','Default','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_OPERATOR','REGISTRATION_SUPERVISOR')")
 	@ResponseFilter
 	@GetMapping(value = "/locationHierarchyLevels")
 	@ApiOperation(value = "Retrieve all location Hierarchy Level details", notes = "Retrieve all location Hierarchy Levels ")

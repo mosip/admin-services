@@ -56,9 +56,7 @@ import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
-import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
-import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
 import io.mosip.kernel.masterdata.entity.DaysOfWeek;
@@ -401,9 +399,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * getRegistrationCentersByIDAndLangCode(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public RegistrationCenterResponseDto getRegistrationCentersByID(String registrationCenterId) {
-		List<RegistrationCenterDto> registrationCenters = new ArrayList<>();
-
+	public List<RegistrationCenter> getRegistrationCentersByID(String registrationCenterId) {
 		List<RegistrationCenter> registrationCenter = null;
 		try {
 			registrationCenter = registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(registrationCenterId);
@@ -417,12 +413,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
-
-		RegistrationCenterDto registrationCenterDto = MapperUtils.map(registrationCenter, RegistrationCenterDto.class);
-		registrationCenters.add(registrationCenterDto);
-		RegistrationCenterResponseDto response = new RegistrationCenterResponseDto();
-		response.setRegistrationCenters(registrationCenters);
-		return response;
+		return registrationCenter;
 	}
 
 	/*
@@ -750,7 +741,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
 			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
 				registrationCenters = MapperUtils.mapAll(pageData.getContent(), RegistrationCenterExtnDto.class);
-				registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), 0, null,
+				registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), pageData.getSize(), pageData.getSort(),
 						pageData.getTotalPages(), (int) pageData.getTotalElements(), registrationCenters);
 			} else {
 				throw new DataNotFoundException(
@@ -1698,7 +1689,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 						langCode,PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
 				if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
 					registrationCenters = MapperUtils.mapAll(pageData.getContent(), RegistrationCenterExtnDto.class);
-					registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), 0, null,
+					registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), pageData.getSize(), pageData.getSort(),
 							  pageData.getTotalElements(), pageData.getTotalPages(),registrationCenters);
 				} else {
 					throw new DataNotFoundException(

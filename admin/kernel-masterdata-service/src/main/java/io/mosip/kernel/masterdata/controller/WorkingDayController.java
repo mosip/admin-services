@@ -80,5 +80,28 @@ public class WorkingDayController {
 		responseWrapper.setResponse(service.getWorkingDays(regCenterId, langCode));
 		return responseWrapper;
 	}
+	
+	/**
+	 * 
+	 * Function to fetch working days detail based on given Language code.
+	 * 
+	 * @param WorkingDaysRequest
+	 * @return WorkingDaysResponseDto working days based on given lang code {@link WorkingDaysResponseDto}
+	 */
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PRE_REGISTRATION','REGISTRATION_SUPERVISOR','REGISTRATION_PROCESSOR','REGISTRATION_OFFICER','INDIVIDUAL')")
+	@ResponseFilter
+	@GetMapping(value = "/workingdays/{langCode}")
+	@ApiOperation(value = "Retrieve all working Days for given Lang Code", notes = "Retrieve all working Days for given Languge Code")
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When working days retrieved from database for the given lang Code"),
+			@ApiResponse(code = 404, message = "When No working days found for the given lang Code"),
+			@ApiResponse(code = 500, message = "While retrieving working days any error occured") })
+	public ResponseWrapper<WorkingDaysResponseDto> getWorkingDaysByLangCode(
+			@ValidLangCode(message = "Language Code is Invalid") @PathVariable("langCode") String langCode) {
+
+		ResponseWrapper<WorkingDaysResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(service.getWorkingDays(langCode));
+		return responseWrapper;
+	}
 
 }

@@ -47,7 +47,7 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 	public WeekDaysResponseDto getWeekDaysList(String regCenterId, String langCode) {
 
 		List<WeekDaysDto> weekdayList = null;
-		
+
 		WeekDaysResponseDto weekdays = new WeekDaysResponseDto();
 		RegistrationCenter registrationCenter = null;
 
@@ -85,12 +85,12 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 
 					weekdays.setWeekdays(weekdayList);
 				} else {
-				throw new DataNotFoundException(
-						WorkingNonWorkingDayErrorCode.WEEK_DAY_DATA_FOUND_EXCEPTION.getErrorCode(),
-						WorkingNonWorkingDayErrorCode.WEEK_DAY_DATA_FOUND_EXCEPTION.getErrorMessage());
-			}
+					throw new DataNotFoundException(
+							WorkingNonWorkingDayErrorCode.WEEK_DAY_DATA_FOUND_EXCEPTION.getErrorCode(),
+							WorkingNonWorkingDayErrorCode.WEEK_DAY_DATA_FOUND_EXCEPTION.getErrorMessage());
+				}
 
-		}
+			}
 		}
 
 		return weekdays;
@@ -106,7 +106,8 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 		Objects.requireNonNull(langCode);
 		RegistrationCenter registrationCenter = null;
 		try {
-			nameSeqList = workingDaysRepo.findByregistrationCenterIdAndlanguagecodeForWorkingDays(regCenterId, langCode);
+			nameSeqList = workingDaysRepo.findByregistrationCenterIdAndlanguagecodeForWorkingDays(regCenterId,
+					langCode);
 			registrationCenter = registrationCenterRepository.findByIdAndLangCode(regCenterId, langCode);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
@@ -131,8 +132,7 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 				}).collect(Collectors.toList());
 				responseDto.setWorkingdays(workingDayList);
 
-			}
-			else {
+			} else {
 				List<DaysOfWeek> globalDaysList = daysOfWeekRepo.findByAllGlobalWorkingTrue(langCode);
 				if (globalDaysList != null && !globalDaysList.isEmpty()) {
 					globalDaysList.sort((d1, d2) -> d1.getDaySeq() - d2.getDaySeq());
@@ -146,14 +146,50 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 
 					responseDto.setWorkingdays(workingDayList);
 				} else {
-				throw new DataNotFoundException(
-						WorkingNonWorkingDayErrorCode.WORKING_DAY_DATA_FOUND_EXCEPTION.getErrorCode(),
-						WorkingNonWorkingDayErrorCode.WORKING_DAY_DATA_FOUND_EXCEPTION.getErrorMessage());
+					throw new DataNotFoundException(
+							WorkingNonWorkingDayErrorCode.WORKING_DAY_DATA_FOUND_EXCEPTION.getErrorCode(),
+							WorkingNonWorkingDayErrorCode.WORKING_DAY_DATA_FOUND_EXCEPTION.getErrorMessage());
 				}
 
 			}
 
-			
+		}
+
+		return responseDto;
+	}
+
+	@Override
+	public WorkingDaysResponseDto getWorkingDays(String langCode) {
+		// TODO Auto-generated method stub
+		List<WorkingDaysDto> workingDayList = null;
+		WorkingDaysResponseDto responseDto = new WorkingDaysResponseDto();
+		Objects.requireNonNull(langCode);
+
+		List<DaysOfWeek> globalDaysList = null;
+		try {
+			globalDaysList = daysOfWeekRepo.findByAllGlobalWorkingTrue(langCode);
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new MasterDataServiceException(
+					WorkingNonWorkingDayErrorCode.WORKING_DAY_TABLE_NOT_ACCESSIBLE.getErrorCode(),
+					WorkingNonWorkingDayErrorCode.WORKING_DAY_TABLE_NOT_ACCESSIBLE.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+
+		if (globalDaysList != null && !globalDaysList.isEmpty()) {
+			globalDaysList.sort((d1, d2) -> d1.getDaySeq() - d2.getDaySeq());
+			workingDayList = globalDaysList.stream().map(day -> {
+				WorkingDaysDto dto = new WorkingDaysDto();
+				dto.setLanguageCode(langCode);
+				dto.setName(day.getName());
+				dto.setOrder(day.getDaySeq());
+				return dto;
+			}).collect(Collectors.toList());
+
+			responseDto.setWorkingdays(workingDayList);
+		} else {
+			throw new DataNotFoundException(
+					WorkingNonWorkingDayErrorCode.WORKING_DAY_DATA_FOUND_EXCEPTION.getErrorCode(),
+					WorkingNonWorkingDayErrorCode.WORKING_DAY_DATA_FOUND_EXCEPTION.getErrorMessage());
 		}
 
 		return responseDto;

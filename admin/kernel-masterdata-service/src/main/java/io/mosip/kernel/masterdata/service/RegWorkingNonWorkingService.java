@@ -8,5 +8,7 @@ public interface RegWorkingNonWorkingService {
 	WeekDaysResponseDto getWeekDaysList(String regCenterId, String langCode);
 
 	WorkingDaysResponseDto getWorkingDays(String regCenterId, String dayCode);
+	
+	WorkingDaysResponseDto getWorkingDays(String langCode);
 
 }

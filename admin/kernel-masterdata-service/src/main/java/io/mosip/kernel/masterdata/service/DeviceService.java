@@ -97,7 +97,7 @@ public interface DeviceService {
 	 * @param searchRequestDto the search DTO.
 	 * @return the {@link PageResponseDto}.
 	 */
-	public PageResponseDto<DeviceSearchDto> searchDevice(SearchDto searchRequestDto);
+	public PageResponseDto<DeviceSearchDto> searchDevice(SearchDto searchRequestDto, boolean addMissingData);
 
 	/**
 	 * Method to filter Device based on column and type provided.
