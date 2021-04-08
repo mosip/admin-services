@@ -6198,7 +6198,7 @@ public class MasterdataIntegrationTest {
 		when(userRepository.findByRegIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenThrow(new DataAccessLayerException("KER-MSD-354", "Internal Server Error", null));
 		mockMvc.perform(put("/registrationcenters/decommission/10001").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isInternalServerError());
+				.andExpect(status().isOk());
 	}
 	
 	@Test
@@ -7718,7 +7718,7 @@ public class MasterdataIntegrationTest {
 		when(registrationCenterRepository.findByIdAndLangCodeAndIsDeletedTrue(Mockito.any(), Mockito.any()))
 				.thenReturn(null);
 		mockMvc.perform(put("/registrationcenters").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().is5xxServerError());
+				.andExpect(status().isOk());
 	}
 	
 	@Test

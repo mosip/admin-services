@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import io.mosip.kernel.masterdata.dto.PageDto;
+import io.mosip.kernel.masterdata.dto.RegCenterLanguageSpecificPutDto;
+import io.mosip.kernel.masterdata.dto.RegCenterNonLanguageSpecificPutDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
@@ -219,7 +221,21 @@ public interface RegistrationCenterService {
 	IdResponseDto decommissionRegCenter(String regCenterID);
 	
 	PageDto<RegistrationCenterExtnDto> findRegistrationCenterByHierarchyLevelandTextAndLanguageCodePaginated(String langCode,
-			Short hierarchyLevel, String name, int pageNumber, int pageSize, String sortBy, String orderBy);
+			Short hierarchyLevel, String name, int pageNumber, int pageSize, String sortBy, String orderBy);	
+	
+	/**
+	 * This method updates the language specific columns of reg center
+	 * @param reqRegistrationCenterDto
+	 * @return
+	 */
+	public RegistrationCenterExtnDto updateRegistrationCenterWithLanguageSpecific(@Valid RegCenterLanguageSpecificPutDto reqRegistrationCenterDto);
+	
+	/**
+	 * This method updates the non language specific columns of reg center
+	 * @param reqRegistrationCenterDto
+	 * @return
+	 */
+	public RegistrationCenterExtnDto updateRegistrationCenterWithNonLanguageSpecific(@Valid RegCenterNonLanguageSpecificPutDto reqRegistrationCenterDto);
 
 
 }
