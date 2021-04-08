@@ -82,6 +82,9 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	 */
 	@Query("FROM Template WHERE id =?1 AND (isDeleted is null OR isDeleted = false) and isActive = true")
 	List<Template> findTemplateByIDAndIsDeletedFalseOrIsDeletedIsNull(String id);
+	
+	@Query("FROM Template WHERE id =?1 AND (isDeleted is null OR isDeleted = false)")
+	List<Template> findtoUpdateTemplateById(String id);
 
 	/**
 	 * To fetch the template by id

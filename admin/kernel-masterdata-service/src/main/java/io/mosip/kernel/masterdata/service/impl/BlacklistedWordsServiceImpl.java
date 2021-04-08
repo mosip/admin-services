@@ -31,6 +31,7 @@ import io.mosip.kernel.masterdata.dto.BlackListedWordsUpdateDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.BlacklistedWordsExtnDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -51,6 +52,7 @@ import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
+import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
@@ -84,6 +86,9 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 
 	@Autowired
 	MasterdataSearchHelper masterDataSearchHelper;
+	
+	@Autowired
+	MasterdataCreationUtil masterdataCreationUtil;
 
 	@Autowired
 	MasterDataFilterHelper masterDataFilterHelper;
@@ -435,5 +440,44 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 			filterResponseDto.setFilters(columnValueList);
 		}
 		return filterResponseDto;
+	}
+
+	@Override
+	public StatusResponseDto updateBlackListedWordStatus(String word, boolean isActive) {
+		// TODO Auto-generated method stub
+		StatusResponseDto response = new StatusResponseDto();
+
+		List<BlacklistedWords> wordEntity = null;
+		try {
+			wordEntity = blacklistedWordsRepository.findtoUpdateBlacklistedWordByWord(word);
+		} catch (DataAccessException | DataAccessLayerException accessException) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, BlackListedWordsUpdateDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							BlacklistedWordsErrorCode.BLACKLISTED_WORDS_UPDATE_EXCEPTION.getErrorCode(),
+							BlacklistedWordsErrorCode.BLACKLISTED_WORDS_UPDATE_EXCEPTION.getErrorMessage()),
+					"ADM-559");
+			throw new MasterDataServiceException(
+					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
+					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(accessException));
+		}
+
+		if (wordEntity != null && !wordEntity.isEmpty()) {
+			masterdataCreationUtil.updateMasterDataStatus(BlacklistedWords.class, word, isActive, "word");
+		} else {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, BlackListedWordsUpdateDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorCode(),
+							BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorMessage()),
+					"ADM-560");
+			throw new DataNotFoundException(BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorCode(),
+					BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorMessage());
+		}
+		response.setStatus("Status updated successfully for BlacklistedWords");
+		return response;
 	}
 }

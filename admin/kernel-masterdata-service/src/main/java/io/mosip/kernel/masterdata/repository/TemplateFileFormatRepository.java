@@ -29,6 +29,9 @@ public interface TemplateFileFormatRepository extends BaseRepository<TemplateFil
 	 */
 	@Query("FROM TemplateFileFormat WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false)")
 	TemplateFileFormat findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String code, String langCode);
+	
+	@Query("FROM TemplateFileFormat WHERE code =?1 AND (isDeleted is null OR isDeleted = false)")
+	List<TemplateFileFormat> findtoUpdateTemplateFileFormatByCode(String code);
 
 	/**
 	 * Delete TemplateFileFormat based on code provided.

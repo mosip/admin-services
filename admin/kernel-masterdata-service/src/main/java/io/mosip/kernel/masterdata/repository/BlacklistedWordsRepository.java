@@ -51,6 +51,9 @@ public interface BlacklistedWordsRepository extends BaseRepository<BlacklistedWo
 	@Query("FROM BlacklistedWords blw WHERE lower(blw.word) = lower(?1) AND blw.langCode = ?2 ")
 	BlacklistedWords findByOnlyWordAndLangCode(String word, String langCode);
 
+	@Query("FROM BlacklistedWords blw WHERE lower(blw.word) = ?1 AND (blw.isDeleted IS NULL OR blw.isDeleted = false)")
+	List<BlacklistedWords> findtoUpdateBlacklistedWordByWord(String word);
+
 	/**
 	 * Method to delete the blacklisted word
 	 * 

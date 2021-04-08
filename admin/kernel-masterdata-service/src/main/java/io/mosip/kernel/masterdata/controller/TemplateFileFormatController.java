@@ -7,22 +7,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatPutDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -43,6 +48,9 @@ public class TemplateFileFormatController {
 
 	@Autowired
 	private TemplateFileFormatService templateFileFormatService;
+	
+	@Autowired
+	private AuditUtil auditUtil;
 
 	/**
 	 * API to create a templatefileformat
@@ -165,6 +173,23 @@ public class TemplateFileFormatController {
 
 		ResponseWrapper<TemplateFileFormatResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(templateFileFormatService.getTemplateFileFormatLangCode(langCode));
+		return responseWrapper;
+	}
+	
+	@ResponseFilter
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PatchMapping
+	@ApiOperation(value = "Service to update TemplateFileFormat", notes = "Update TemplateFileFormat and return TemplateFileFormat code")
+	public ResponseWrapper<StatusResponseDto> updateFileFormatStatus(@Valid @RequestParam boolean isActive,
+			@RequestParam String code) {
+		auditUtil.auditRequest(MasterDataConstant.STATUS_API_IS_CALLED + TemplateFileFormatDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_API_IS_CALLED + TemplateFileFormatDto.class.getSimpleName(), "ADM-831");
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(templateFileFormatService.updateTemplateFileFormat(code, isActive));
+		auditUtil.auditRequest(MasterDataConstant.STATUS_UPDATED_SUCCESS + TemplateFileFormatDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_UPDATED_SUCCESS + TemplateFileFormatDto.class.getSimpleName(), "ADM-832");
 		return responseWrapper;
 	}
 }

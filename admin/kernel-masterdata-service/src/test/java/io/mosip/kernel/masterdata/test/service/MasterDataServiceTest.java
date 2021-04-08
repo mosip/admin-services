@@ -60,6 +60,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.LocationCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.WeekDaysDto;
 import io.mosip.kernel.masterdata.dto.getresponse.WorkingDaysDto;
@@ -74,13 +75,17 @@ import io.mosip.kernel.masterdata.entity.BiometricAttribute;
 import io.mosip.kernel.masterdata.entity.BiometricType;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.DaysOfWeek;
+import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
+import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.DocumentType;
+import io.mosip.kernel.masterdata.entity.DynamicField;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.LocationHierarchy;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.TemplateFileFormat;
 import io.mosip.kernel.masterdata.entity.Zone;
@@ -93,16 +98,19 @@ import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.masterdata.repository.BiometricTypeRepository;
 import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.repository.DaysOfWeekListRepo;
+import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.repository.DeviceTypeRepository;
 import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
+import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
 import io.mosip.kernel.masterdata.repository.ExceptionalHolidayRepository;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.repository.LocationHierarchyRepository;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.repository.RegWorkingNonWorkingRepo;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
 import io.mosip.kernel.masterdata.repository.TemplateFileFormatRepository;
 import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.service.ApplicationService;
@@ -110,9 +118,12 @@ import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
 import io.mosip.kernel.masterdata.service.DeviceHistoryService;
+import io.mosip.kernel.masterdata.service.DeviceService;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
+import io.mosip.kernel.masterdata.service.DeviceTypeService;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
+import io.mosip.kernel.masterdata.service.DynamicFieldService;
 import io.mosip.kernel.masterdata.service.ExceptionalHolidayService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationHierarchyService;
@@ -121,12 +132,14 @@ import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.service.RegWorkingNonWorkingService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterDeviceHistoryService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
+import io.mosip.kernel.masterdata.service.RegistrationCenterTypeService;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.service.ZoneService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
+import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.ZoneUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
@@ -188,14 +201,26 @@ public class MasterDataServiceTest {
 
 	@Autowired
 	private BlacklistedWordsService blacklistedWordsService;
+	
+	@Autowired
+	private DeviceService deviceService;
 
 	@Autowired
 	private RegistrationCenterService registrationCenterService;
+	
+	@Autowired
+	private RegistrationCenterTypeService registrationCenterTypeService;
 
 	private RegistrationCenter registrationCenter;
+	
+	private List<RegistrationCenter> registrationCenters = new ArrayList<RegistrationCenter>();
+	List<RegistrationCenterType> registrationCenterTypes = new ArrayList<RegistrationCenterType>();
 
 	@MockBean
 	private RegistrationCenterRepository registrationCenterRepository;
+	
+	@MockBean
+	private RegistrationCenterTypeRepository registrationCenterTypeRepository;
 
 	@MockBean
 	private BlacklistedWordsRepository wordsRepository;
@@ -300,6 +325,7 @@ public class MasterDataServiceTest {
 	private TemplateFileFormatService templateFileFormatService;
 
 	private TemplateFileFormat templateFileFormat;
+	private List<TemplateFileFormat> templateFileFormats = new ArrayList<TemplateFileFormat>();
 
 	private RequestWrapper<TemplateFileFormatDto> templateFileFormatRequestDto;
 
@@ -311,21 +337,39 @@ public class MasterDataServiceTest {
 	private List<Template> templateList = new ArrayList<>();
 
 	private TemplateResponseDto templateResponseDto;
+	
+	@MockBean
+	private DynamicFieldRepository dynamicFieldRepository;
+	
+	@Autowired
+	private DynamicFieldService dynamicFieldService;
 
 	@MockBean
 	DocumentTypeRepository documentTypeRepository;
+	
+	@MockBean
+	DeviceRepository deviceRepository;
 
 	@Autowired
 	DocumentTypeService documentTypeService;
+	
+	@Autowired
+	private DeviceTypeService deviceTypeService;
 
 	List<DocumentType> documents = null;
-
+	List<Device> devices = null;
+	List<DeviceType> deviceTypes = null;
+	List<DynamicField> dynamicFields = null;
+	
 	// -----------------------------DeviceType-------------------------------------------------
 	@MockBean
 	private DeviceTypeRepository deviceTypeRepository;
 
 	@MockBean
 	private MetaDataUtils metaUtils;
+	
+	@MockBean
+	MasterdataCreationUtil masterdataCreationUtil;
 
 	// -----------------------------DeviceSpecification----------------------------------
 
@@ -368,8 +412,15 @@ public class MasterDataServiceTest {
 		templateFileFormatSetup();
 
 		documentTypeSetup();
+		
+		deviceSetup();
+		
+		deviceTypeSetup();
+		
+		dynamicFieldsSetup();
 
 		registrationCenterSetup();
+		registrationCenterTypeSetup();
 		updateRegistrationCenter();
 
 		LocationHierarchy hierarchy = new LocationHierarchy((short) 3, "City", "eng");
@@ -393,6 +444,36 @@ public class MasterDataServiceTest {
 		documentType1.setDescription("residensial_proof_desc");
 		documentType1.setIsActive(true);
 		documents.add(documentType1);
+	}
+
+	private void deviceSetup() {
+		devices = new ArrayList<Device>();
+		Device device = new Device();
+		device.setId("123");
+		device.setIsActive(true);
+		device.setLangCode("eng");
+		device.setName("mock");
+		devices.add(device);
+	}
+	
+	private void deviceTypeSetup() {
+		deviceTypes = new ArrayList<DeviceType>();
+		DeviceType deviceType = new DeviceType();
+		deviceType.setCode("ECR");
+		deviceType.setIsActive(true);
+		deviceType.setLangCode("eng");
+		deviceType.setName("mock");
+		deviceTypes.add(deviceType);
+	}
+	
+	private void dynamicFieldsSetup() {
+		dynamicFields = new ArrayList<DynamicField>();
+		DynamicField dynamicField = new DynamicField();
+		dynamicField.setId("COD");
+		dynamicField.setIsActive(true);
+		dynamicField.setLangCode("eng");
+		dynamicField.setName("mock");
+		dynamicFields.add(dynamicField);
 	}
 
 	private void templateServiceSetup() {
@@ -739,6 +820,7 @@ public class MasterDataServiceTest {
 		templateFileFormat = new TemplateFileFormat();
 		templateFileFormat.setCode("xml");
 		templateFileFormat.setLangCode("eng");
+		templateFileFormats.add(templateFileFormat);
 
 		templateFileFormatRequestDto = new RequestWrapper<TemplateFileFormatDto>();
 		TemplateFileFormatDto templateFileFormatDto = new TemplateFileFormatDto();
@@ -790,6 +872,7 @@ public class MasterDataServiceTest {
 		registrationCenter.setLatitude("12.9180722");
 		registrationCenter.setLongitude("77.5028792");
 		registrationCenter.setLangCode("ENG");
+		registrationCenters.add(registrationCenter);
 
 		// ----
 		LocalTime centerStartTime = LocalTime.of(1, 10, 10, 30);
@@ -1005,6 +1088,15 @@ public class MasterDataServiceTest {
 		registrationCenterDto8.setZoneCode("JJJ");
 		requestLunchTime.add(registrationCenterDto8);
 
+	}
+	
+	private void registrationCenterTypeSetup() {
+		RegistrationCenterType centerType = new RegistrationCenterType();
+		centerType.setCode("AFD");
+		centerType.setIsActive(true);
+		centerType.setLangCode("eng");
+		registrationCenterTypes.add(centerType);
+		
 	}
 
 	List<RegCenterPutReqDto> updRequestNotAllLang = null;
@@ -1294,8 +1386,11 @@ public class MasterDataServiceTest {
 	}
 
 	@Test
-	public void addApplicationDataSuccess() {
+	public void addApplicationDataSuccess()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		Mockito.when(applicationRepository.create(Mockito.any())).thenReturn(application1);
+		when(masterdataCreationUtil.createMasterData(Mockito.eq(Application.class), Mockito.any()))
+				.thenReturn(applicationRequestWrapper.getRequest());
 
 		CodeAndLanguageCodeID codeAndLanguageCodeId = applicationService
 				.createApplication(applicationRequestWrapper.getRequest());
@@ -1304,8 +1399,11 @@ public class MasterDataServiceTest {
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void addApplicationDataFetchException() {
+	public void addApplicationDataFetchException()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		Mockito.when(applicationRepository.create(Mockito.any())).thenThrow(DataAccessLayerException.class);
+		when(masterdataCreationUtil.createMasterData(Mockito.eq(Application.class), Mockito.any()))
+				.thenReturn(applicationRequestWrapper.getRequest());
 		applicationService.createApplication(applicationRequestWrapper.getRequest());
 	}
 
@@ -1447,8 +1545,11 @@ public class MasterDataServiceTest {
 	}
 
 	@Test
-	public void addBiometricTypeDataSuccess() {
+	public void addBiometricTypeDataSuccess()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		Mockito.when(biometricTypeRepository.create(Mockito.any())).thenReturn(biometricType1);
+		when(masterdataCreationUtil.createMasterData(Mockito.eq(BiometricType.class), Mockito.any()))
+				.thenReturn(biometricTypeRequestWrapper.getRequest());
 
 		CodeAndLanguageCodeID codeAndLanguageCodeId = biometricTypeService
 				.createBiometricType(biometricTypeRequestWrapper.getRequest());
@@ -1457,8 +1558,11 @@ public class MasterDataServiceTest {
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void addBiometricTypeDataInsertException() {
+	public void addBiometricTypeDataInsertException()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		Mockito.when(biometricTypeRepository.create(Mockito.any())).thenThrow(DataAccessLayerException.class);
+		when(masterdataCreationUtil.createMasterData(Mockito.eq(BiometricType.class), Mockito.any()))
+				.thenReturn(biometricTypeRequestWrapper.getRequest());
 		biometricTypeService.createBiometricType(biometricTypeRequestWrapper.getRequest());
 	}
 
@@ -1511,7 +1615,7 @@ public class MasterDataServiceTest {
 		BlacklistedWordsResponseDto actual = blacklistedWordsService.getAllBlacklistedWordsBylangCode("ENG");
 		assertEquals(actual.getBlacklistedwords().size(), expected);
 	}
-
+	
 	@Test(expected = MasterDataServiceException.class)
 	public void testGetAllBlackListedWordsFetchException() {
 		when(wordsRepository.findAllByLangCode(Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
@@ -1546,6 +1650,31 @@ public class MasterDataServiceTest {
 	public void testGetAllBlackListedWordsServiceException() {
 		when(wordsRepository.findAllByLangCode(Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
 		blacklistedWordsService.getAllBlacklistedWordsBylangCode("ENG");
+	}
+	
+	@Test
+	public void updateBlackListedWordStatusSuccessTest() {
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for BlacklistedWords");
+
+		when(wordsRepository.findtoUpdateBlacklistedWordByWord(Mockito.anyString())).thenReturn(words);
+		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(BlacklistedWords.class), Mockito.anyString(),
+				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
+		StatusResponseDto actual = blacklistedWordsService.updateBlackListedWordStatus("abc", false);
+		Assert.assertEquals(dto, actual);
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void updateBlackListedWordStatusFailureTest() {
+		when(wordsRepository.findtoUpdateBlacklistedWordByWord(Mockito.anyString()))
+				.thenThrow(MasterDataServiceException.class);
+		blacklistedWordsService.updateBlackListedWordStatus("abc", false);
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void updateBlackListedWordStatusFailureDataNotFoundTest() {
+		when(wordsRepository.findtoUpdateBlacklistedWordByWord(Mockito.anyString())).thenReturn(null);
+		blacklistedWordsService.updateBlackListedWordStatus("abc", false);
 	}
 
 	// ------------------ DeviceSpecificationServiceTest -----------------//
@@ -1640,6 +1769,34 @@ public class MasterDataServiceTest {
 		deviceSpecificationService.findDeviceSpecByLangCodeAndDevTypeCode(languageCode, deviceTypeCode);
 
 	}
+	
+	@Test
+	public void updateDeviceSpecificationStatusSuccessTest() {
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Device Specifications");
+
+		when(deviceSpecificationRepository.findtoUpdateDeviceSpecById(Mockito.anyString()))
+				.thenReturn(deviceSpecifications);
+		when(deviceRepository.findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(null);
+		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(DeviceSpecification.class), Mockito.anyString(),
+				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
+		StatusResponseDto actual = deviceSpecificationService.updateDeviceSpecification("abc", false);
+		Assert.assertEquals(dto, actual);
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void updateDeviceSpecificationStatusFailureTest() {
+		when(deviceSpecificationRepository.findtoUpdateDeviceSpecById(Mockito.anyString()))
+				.thenThrow(MasterDataServiceException.class);
+		deviceSpecificationService.updateDeviceSpecification("abc", false);
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void updateDeviceSpecificationStatusFailureDataNotFoundTest() {
+		when(deviceSpecificationRepository.findtoUpdateDeviceSpecById(Mockito.anyString())).thenReturn(null);
+		deviceSpecificationService.updateDeviceSpecification("abc", false);
+	}
 
 	// ------------------ DocumentCategoryServiceTest -----------------//
 
@@ -1722,8 +1879,11 @@ public class MasterDataServiceTest {
 	}
 
 	@Test
-	public void addDocumentcategoryDataSuccess() {
+	public void addDocumentcategoryDataSuccess()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		Mockito.when(documentCategoryRepository.create(Mockito.any())).thenReturn(documentCategory2);
+		when(masterdataCreationUtil.createMasterData(Mockito.eq(DocumentCategory.class), Mockito.any()))
+				.thenReturn(documentCategoryRequestDto.getRequest());
 
 		CodeAndLanguageCodeID codeAndLanguageCodeId = documentCategoryService
 				.createDocumentCategory(documentCategoryRequestDto.getRequest());
@@ -1732,9 +1892,38 @@ public class MasterDataServiceTest {
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void addDocumentcategoryDataFetchException() {
+	public void addDocumentcategoryDataFetchException()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		Mockito.when(documentCategoryRepository.create(Mockito.any())).thenThrow(DataAccessLayerException.class);
+		when(masterdataCreationUtil.createMasterData(Mockito.eq(DocumentCategory.class), Mockito.any()))
+				.thenReturn(documentCategoryRequestDto.getRequest());
 		documentCategoryService.createDocumentCategory(documentCategoryRequestDto.getRequest());
+	}
+	
+	@Test
+	public void updateDocumentCategoryStatusSuccessTest() {
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Document Categories");
+
+		when(documentCategoryRepository.findtoUpdateDocumentCategoryByCode(Mockito.anyString()))
+				.thenReturn(documentCategoryList);
+		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(DocumentCategory.class), Mockito.anyString(),
+				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
+		StatusResponseDto actual = documentCategoryService.updateDocumentCategory("abc", true);
+		assertEquals(dto, actual);
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void updateDocumentCategoryStatusFailureTest() {
+		when(documentCategoryRepository.findtoUpdateDocumentCategoryByCode(Mockito.anyString()))
+				.thenThrow(MasterDataServiceException.class);
+		documentCategoryService.updateDocumentCategory("abc", false);
+	}
+
+	@Test(expected = RequestException.class)
+	public void updateDocumentCategoryStatusFailureDataNotFoundTest() {
+		when(documentCategoryRepository.findtoUpdateDocumentCategoryByCode(Mockito.anyString())).thenReturn(null);
+		documentCategoryService.updateDocumentCategory("abc", false);
 	}
 
 	// ------------------ LanguageServiceTest -----------------//
@@ -1845,6 +2034,10 @@ public class MasterDataServiceTest {
 	}
 
 	/**
+	 * @throws SecurityException 
+	 * @throws NoSuchFieldException 
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
 	 * @Test public void locationHierarchySaveTest() {
 	 *       Mockito.when(locationHierarchyRepository.create(Mockito.any())).thenReturn(locationHierarchy);
 	 *       locationHierarchyService.createLocationHierarchy(requestLocationDto.getRequest());
@@ -1858,12 +2051,15 @@ public class MasterDataServiceTest {
 	 * 
 	 **/
 	@Test(expected = MasterDataServiceException.class)
-	public void updateLocationDetailsIsActiveTest() {
+	public void updateLocationDetailsIsActiveTest()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 
 		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any())).thenReturn(locationHierarchy2);
 		Mockito.when(locationHierarchyRepository
 				.findLocationHierarchyByParentLocCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(locationHierarchyList);
+		when(masterdataCreationUtil.updateMasterData(Mockito.eq(Location.class), Mockito.any()))
+				.thenReturn(requestLocationPutDto1.getRequest());
 
 		locationHierarchyService.updateLocationDetails(requestLocationPutDto1.getRequest());
 	}
@@ -1880,7 +2076,8 @@ public class MasterDataServiceTest {
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void updateLocationDetailsExceptionTest() {
+	public void updateLocationDetailsExceptionTest()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any())).thenReturn(locationHierarchy);
 		Mockito.when(locationHierarchyRepository.update(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		Mockito.when(locationHierarchyRepository.findByNameAndLevelLangCode(Mockito.any(), Mockito.anyShort(),
@@ -1888,6 +2085,8 @@ public class MasterDataServiceTest {
 		Mockito.when(
 				locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(), Mockito.any()))
 				.thenReturn(locationHierarchyList);
+		when(masterdataCreationUtil.updateMasterData(Mockito.eq(Location.class), Mockito.any()))
+				.thenReturn(requestLocationPutDto.getRequest());
 		locationHierarchyService.updateLocationDetails(requestLocationPutDto.getRequest());
 	}
 
@@ -2056,11 +2255,39 @@ public class MasterDataServiceTest {
 		assertEquals(templateList.get(0).getId(), templateResponseDto.getTemplates().get(0).getId());
 		assertEquals(templateList.get(0).getName(), templateResponseDto.getTemplates().get(0).getName());
 	}
+	
+	@Test
+	public void updateTemplateStatusSuccessTest() {
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Templates");
+
+		when(templateRepository.findtoUpdateTemplateById(Mockito.anyString())).thenReturn(templateList);
+		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(Template.class), Mockito.anyString(),
+				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
+		StatusResponseDto actual = templateService.updateTemplates("abc", false);
+		assertEquals(dto, actual);
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void updateTemplateStatusFailureTest() {
+		when(templateRepository.findtoUpdateTemplateById(Mockito.anyString()))
+				.thenThrow(MasterDataServiceException.class);
+		templateService.updateTemplates("abc", false);
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void updateTemplateStatusFailureDataNotFoundTest() {
+		when(templateRepository.findtoUpdateTemplateById(Mockito.anyString())).thenReturn(null);
+		templateService.updateTemplates("abc", false);
+	}
 
 	// ------------------------------------TemplateFileFormatServiceTest---------------------------//
 	@Test
-	public void addTemplateFileFormatSuccess() {
+	public void addTemplateFileFormatSuccess()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		Mockito.when(templateFileFormatRepository.create(Mockito.any())).thenReturn(templateFileFormat);
+		when(masterdataCreationUtil.createMasterData(Mockito.eq(TemplateFileFormat.class), Mockito.any()))
+				.thenReturn(templateFileFormatRequestDto.getRequest());
 
 		CodeAndLanguageCodeID codeAndLanguageCodeId = templateFileFormatService
 				.createTemplateFileFormat(templateFileFormatRequestDto.getRequest());
@@ -2069,8 +2296,11 @@ public class MasterDataServiceTest {
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void addTemplateFileFormatInsertExceptionTest() {
+	public void addTemplateFileFormatInsertExceptionTest()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		Mockito.when(templateFileFormatRepository.create(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		when(masterdataCreationUtil.createMasterData(Mockito.eq(TemplateFileFormat.class), Mockito.any()))
+				.thenReturn(templateFileFormatRequestDto.getRequest());
 		templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto.getRequest());
 	}
 
@@ -2105,6 +2335,33 @@ public class MasterDataServiceTest {
 		Mockito.when(templateFileFormatRepository.deleteTemplateFileFormat(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(0);
 		templateFileFormatService.deleteTemplateFileFormat(templateFileFormatRequestDto.getRequest().getCode());
+	}
+	
+	@Test
+	public void updateFileFormatStatusSuccessTest() {
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Template File Formats");
+		Mockito.when(templateRepository.findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any()))
+				.thenReturn(null);
+		when(templateFileFormatRepository.findtoUpdateTemplateFileFormatByCode(Mockito.anyString()))
+				.thenReturn(templateFileFormats);
+		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(Template.class), Mockito.anyString(),
+				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
+		StatusResponseDto actual = templateFileFormatService.updateTemplateFileFormat("abc", false);
+		assertEquals(dto, actual);
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void updateFileFormatStatusFailureTest() {
+		when(templateFileFormatRepository.findtoUpdateTemplateFileFormatByCode(Mockito.anyString()))
+				.thenThrow(MasterDataServiceException.class);
+		templateFileFormatService.updateTemplateFileFormat("abc", false);
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void updateFileFormatStatusFailureDataNotFoundTest() {
+		when(templateFileFormatRepository.findtoUpdateTemplateFileFormatByCode(Mockito.anyString())).thenReturn(null);
+		templateFileFormatService.updateTemplateFileFormat("abc", false);
 	}
 
 	// ----------------------------------DocumentTypeServiceTest-------------------------//
@@ -2156,7 +2413,8 @@ public class MasterDataServiceTest {
 	}
 
 	@Test
-	public void updateDocumentTypeSuccessTest() {
+	public void updateDocumentTypeSuccessTest()
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 
 		DocumentTypePutReqDto documentTypeDto = new DocumentTypePutReqDto();
 		documentTypeDto.setCode("code");
@@ -2169,9 +2427,36 @@ public class MasterDataServiceTest {
 		Mockito.when(
 				documentTypeRepository.findByCodeAndLangCode(documentTypeDto.getCode(), documentTypeDto.getLangCode()))
 				.thenReturn(documentType);
+		when(masterdataCreationUtil.updateMasterData(Mockito.eq(DocumentType.class), Mockito.any()))
+				.thenReturn(documentTypeDto);
 
 		documentTypeService.updateDocumentType(documentTypeDto);
 
+	}
+	
+	@Test
+	public void updateDocumentTypeStatusSuccessTest() {
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Document Types");
+
+		when(documentTypeRepository.findtoUpdateDocumentTypeByCode(Mockito.anyString())).thenReturn(documents);
+		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(DocumentType.class), Mockito.anyString(),
+				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
+		StatusResponseDto actual = documentTypeService.updateDocumentType("abc", true);
+		assertEquals(dto, actual);
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void updateDocumentTypeStatusFailureTest() {
+		when(documentTypeRepository.findtoUpdateDocumentTypeByCode(Mockito.anyString()))
+				.thenThrow(MasterDataServiceException.class);
+		documentTypeService.updateDocumentType("abc", false);
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void updateDocumentTypeStatusFailureDataNotFoundTest() {
+		when(documentTypeRepository.findtoUpdateDocumentTypeByCode(Mockito.anyString())).thenReturn(null);
+		documentTypeService.updateDocumentType("abc", false);
 	}
 
 	/*---------------------- Blacklisted word validator----------------------*/
@@ -2340,6 +2625,62 @@ public class MasterDataServiceTest {
 		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-1217:59:59.999Z");
 
 	}
+	
+	@Test
+	public void updateRegistrationCenterAdminStatusSuccessTest() {
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Registration Centers");
+
+		when(registrationCenterRepository.findByRegCenterIdAndIsDeletedFalseOrNull(Mockito.anyString()))
+				.thenReturn(registrationCenters);
+		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(RegistrationCenter.class), Mockito.anyString(),
+				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
+		StatusResponseDto actual = registrationCenterService.updateRegistrationCenter("abc", false);
+		assertEquals(dto, actual);
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void updateRegistrationCenterAdminStatusFailureTest() {
+		when(registrationCenterRepository.findByRegCenterIdAndIsDeletedFalseOrNull(Mockito.anyString()))
+				.thenThrow(MasterDataServiceException.class);
+		registrationCenterService.updateRegistrationCenter("abc", false);
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void updateRegistrationCenterAdminStatusFailureDataNotFoundTest() {
+		when(registrationCenterRepository.findByRegCenterIdAndIsDeletedFalseOrNull(Mockito.anyString()))
+				.thenReturn(null);
+		registrationCenterService.updateRegistrationCenter("abc", false);
+	}
+	
+	@Test
+	public void updateRegistrationCenterTypeStatusSuccessTest() {
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Registration Center Types");
+
+		when(registrationCenterTypeRepository.findtoUpdateRegistrationCenterTypeByCode(Mockito.anyString()))
+				.thenReturn(registrationCenterTypes);
+		when(registrationCenterRepository.findByCenterTypeCode(Mockito.anyString())).thenReturn(null);
+		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(RegistrationCenterType.class), Mockito.anyString(),
+				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
+		StatusResponseDto actual = registrationCenterTypeService.updateRegistrationCenterType("abc", false);
+		assertEquals(dto, actual);
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void updateRegistrationCenterTypeStatusFailureTest() {
+		when(registrationCenterTypeRepository.findtoUpdateRegistrationCenterTypeByCode(Mockito.anyString()))
+				.thenThrow(MasterDataServiceException.class);
+		registrationCenterTypeService.updateRegistrationCenterType("abc", false);
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void updateRegistrationCenterTypeStatusFailureDataNotFoundTest() {
+		when(registrationCenterTypeRepository.findtoUpdateRegistrationCenterTypeByCode(Mockito.anyString()))
+				.thenReturn(null);
+		registrationCenterTypeService.updateRegistrationCenterType("abc", false);
+	}
+
 	// ---------------------------------Registration Center
 	// TestCases----------------------------------
 	/*
@@ -2651,7 +2992,82 @@ public class MasterDataServiceTest {
 		Mockito.when(masterDataFilterHelper.filterValuesWithCode(Mockito.any(), Mockito.any(), Mockito.any(),
 				Mockito.anyString())).thenThrow(MasterDataServiceException.class);
 		zoneService.zoneFilterValues(filterValueDto);
-
 	}
-	  
+	
+	@Test
+	public void updateDeviceStatusSuccessTest() {
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Devices");
+
+		when(deviceRepository.findtoUpdateDeviceById(Mockito.anyString())).thenReturn(devices);
+		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(Device.class), Mockito.anyString(),
+				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
+		StatusResponseDto actual = deviceService.updateDeviceStatus("abc", false);
+		Assert.assertEquals(dto, actual);
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void updateDeviceStatusFailureTest() {
+		when(deviceRepository.findtoUpdateDeviceById(Mockito.anyString())).thenThrow(MasterDataServiceException.class);
+		deviceService.updateDeviceStatus("abc", false);
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void updateDeviceStatusFailureDataNotFoundTest() {
+		when(deviceRepository.findtoUpdateDeviceById(Mockito.anyString())).thenReturn(null);
+		deviceService.updateDeviceStatus("abc", false);
+	}
+
+	@Test
+	public void updateDeviceTypeStatusSuccessTest() {
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Device Types");
+
+		when(deviceTypeRepository.findtoUpdateDeviceTypeByCode(Mockito.anyString())).thenReturn(deviceTypes);
+		when(deviceSpecificationRepository.findByDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(null);
+		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(DeviceType.class), Mockito.anyString(),
+				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
+		StatusResponseDto actual = deviceTypeService.updateDeviceType("abc", false);
+		Assert.assertEquals(dto, actual);
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void updateDeviceTypeStatusFailureTest() {
+		when(deviceTypeRepository.findtoUpdateDeviceTypeByCode(Mockito.anyString()))
+				.thenThrow(MasterDataServiceException.class);
+		deviceTypeService.updateDeviceType("abc", false);
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void updateDeviceTypeStatusFailureDataNotFoundTest() {
+		when(deviceTypeRepository.findtoUpdateDeviceTypeByCode(Mockito.anyString())).thenReturn(null);
+		deviceTypeService.updateDeviceType("abc", false);
+	}
+	
+	@Test
+	public void updateDynamicFieldStatusSuccessTest() {
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Dynamic Fields");
+
+		when(dynamicFieldRepository.findToUpdateDynamicFieldById(Mockito.anyString())).thenReturn(dynamicFields);
+		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(DynamicField.class), Mockito.anyString(),
+				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
+		StatusResponseDto actual = dynamicFieldService.updateDynamicField("abc", false);
+		assertEquals(dto, actual);
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void updateDynamicFieldStatusFailureTest() {
+		when(dynamicFieldRepository.findToUpdateDynamicFieldById(Mockito.anyString()))
+				.thenThrow(MasterDataServiceException.class);
+		dynamicFieldService.updateDynamicField("abc", false);
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void updateDynamicFieldStatusFailureDataNotFoundTest() {
+		when(dynamicFieldRepository.findToUpdateDynamicFieldById(Mockito.anyString())).thenReturn(null);
+		dynamicFieldService.updateDynamicField("abc", false);
+	}
+
 }

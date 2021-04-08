@@ -50,6 +50,7 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.WorkingNonWorkingDaysDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
@@ -1613,6 +1614,44 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return registrationCenterPages;
 	}
 
+	@Override
+	public StatusResponseDto updateRegistrationCenter(String id, boolean isActive) {
+		// TODO Auto-generated method stub
+		StatusResponseDto response = new StatusResponseDto();
+
+		List<RegistrationCenter> registrationCenters = null;
+		try {
+			registrationCenters = registrationCenterRepository.findByRegCenterIdAndIsDeletedFalseOrNull(id);
+		} catch (DataAccessException | DataAccessLayerException accessException) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, RegistrationCenter.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()),
+					"ADM-534");
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(accessException));
+		}
+
+		if (registrationCenters != null && !registrationCenters.isEmpty()) {
+			masterdataCreationUtil.updateMasterDataStatus(RegistrationCenter.class, id, isActive, "id");
+		} else {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, RegistrationCenter.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage()),
+					"ADM-535");
+			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+		}
+		response.setStatus("Status updated successfully for Registration Centers");
+		return response;
+	}
 	/**
 	 * Get the reg center by id
 	 * filter with given lang code
@@ -1756,5 +1795,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			registrationCenterHistory.setUpdatedDateTime(updRegistrationCenter.getUpdatedDateTime());
 			registrationCenterHistoryRepository.create(registrationCenterHistory);
 		}
+
 	}
 }

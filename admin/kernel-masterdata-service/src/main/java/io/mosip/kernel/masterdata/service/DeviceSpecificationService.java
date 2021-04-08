@@ -5,6 +5,7 @@ import java.util.List;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationPutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceSpecificationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -112,5 +113,7 @@ public interface DeviceSpecificationService {
 	 * @return the response containing the filter values.
 	 */
 	public FilterResponseCodeDto deviceSpecFilterValues(FilterValueDto filterValueDto);
+	
+	public StatusResponseDto updateDeviceSpecification(String id, boolean isActive);
 
 }

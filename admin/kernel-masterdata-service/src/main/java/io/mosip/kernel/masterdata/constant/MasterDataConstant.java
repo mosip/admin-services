@@ -58,7 +58,6 @@ public class MasterDataConstant {
 	public static final String SUCCESSFUL_FILTER_DESC = " System successfully searched filter values for %s";
 	public static final String FILTER_FAILED = "%s - Filter Failure";
 	public static final String CREATE_API_IS_CALLED = "Create API called::";
-	public static final String STATUS_API_IS_CALLED = "Status API called::";
 	public static final String SUCCESSFUL_UPDATED_STATUS = "Updated status %s - successfully";
 	public static final String FAILURE_TO_UPDATE_STATUS = "Update status %s - failure";
 
@@ -67,6 +66,8 @@ public class MasterDataConstant {
 	public static final String SUCCESSFUL_UPDATE_DESC = "System successfully updated a %s";
 	public static final String FAILURE_CREATE = "Create %s - Failure";
 	public static final String UPDATE_API_IS_CALLED = "Update API called::";
+	public static final String STATUS_API_IS_CALLED = "Status API called::";
+	public static final String STATUS_UPDATED_SUCCESS = "Status Updated Successfully::";
 	public static final String SUCCESSFUL_UPDATE = "Update %s - Success";
 	public static final String FAILURE_UPDATE = "Update %s - Failure";
 	public static final String DECOMMISION_API_CALLED = "%s Decommission API called";

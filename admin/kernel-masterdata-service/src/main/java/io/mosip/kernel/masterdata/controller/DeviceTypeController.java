@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,7 @@ import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
@@ -192,5 +194,24 @@ public class DeviceTypeController {
 				"ADM-636");
 		return responseWrapper;
 	}
+	
+	@ResponseFilter
+	@PatchMapping("/devicetypes")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	public ResponseWrapper<StatusResponseDto> updateDeviceTypeStatus(@Valid @RequestParam boolean isActive,
+			@RequestParam String code) {
+		auditUtil.auditRequest(MasterDataConstant.STATUS_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName(), "ADM-637");
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(deviceTypeService.updateDeviceType(code, isActive));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.STATUS_UPDATED_SUCCESS, DeviceTypeDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.STATUS_UPDATED_SUCCESS, DeviceTypeDto.class.getCanonicalName()),
+				"ADM-638");
+		return responseWrapper;
+	}
+
 
 }
