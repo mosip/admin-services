@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,6 +26,7 @@ import io.mosip.kernel.masterdata.dto.MachinePostReqDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -336,6 +338,30 @@ public class MachineController {
 				MasterDataConstant.UPDATE_API_IS_CALLED + MachinePutReqDto.class.getCanonicalName());
 		ResponseWrapper<MachineExtnDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineService.updateMachine(machineCenterDto.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * This method updates Machine status by Admin.
+	 * 
+	 * @param machineCenterDto the request DTO for updating machine.
+	 * @return the response i.e. the updated machine.
+	 */
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@ResponseFilter
+	@PatchMapping("/machines")
+	@ApiOperation(value = "Service to upadte Machine", notes = "Update Machine status and return status")
+	@ApiResponses({ @ApiResponse(code = 201, message = "When Machine successfully updated"),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No Machine found"),
+			@ApiResponse(code = 500, message = "While updating Machine any error occured") })
+	public ResponseWrapper<StatusResponseDto> updateMachienStatus(@RequestParam String id,
+			@RequestParam boolean isActive) {
+		auditUtil.auditRequest(MasterDataConstant.STATUS_API_IS_CALLED + MachinePutReqDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_API_IS_CALLED + MachinePutReqDto.class.getCanonicalName());
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(machineService.updateMachineStatus(id, isActive));
 		return responseWrapper;
 	}
 }

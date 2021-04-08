@@ -2,8 +2,6 @@ package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalDate;
 
-import javax.validation.constraints.NotBlank;
-
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
@@ -34,9 +32,6 @@ public class HolidayUpdateDto {
 	
 	
 	private String langCode;
-
-	
-	private Boolean isActive;
 
 
 }

@@ -10,7 +10,9 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.LanguageErrorCode;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
+import io.mosip.kernel.masterdata.dto.LanguagePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -20,6 +22,7 @@ import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
@@ -34,6 +37,9 @@ public class LanguageServiceImpl implements LanguageService {
 	 */
 	@Autowired
 	private LanguageRepository languageRepository;
+
+	@Autowired
+	private MasterdataCreationUtil masterdataCreationUtil;
 
 	/**
 	 * (non-Javadoc)
@@ -93,7 +99,7 @@ public class LanguageServiceImpl implements LanguageService {
 	 * kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeResponseDto updateLanguage(LanguageDto languageDto) {
+	public CodeResponseDto updateLanguage(LanguagePutDto languageDto) {
 		CodeResponseDto code = new CodeResponseDto();
 		try {
 			Language language = languageRepository.findLanguageByCode(languageDto.getCode());
@@ -110,6 +116,33 @@ public class LanguageServiceImpl implements LanguageService {
 					LanguageErrorCode.LANGUAGE_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		return code;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.LanguageService#updateLanguageStatus(io.
+	 * mosip. kernel.masterdata.dto.RequestDto)
+	 */
+	@Override
+	public StatusResponseDto updateLanguageStatus(String code, boolean isActive) {
+		StatusResponseDto statusResponseDto=new StatusResponseDto();
+		try {
+			Language language = languageRepository.findLanguageByCode(code);
+			if (!EmptyCheckUtils.isNullEmpty(language)) {
+				masterdataCreationUtil.updateMasterDataStatus(Language.class, code, isActive, "code");
+			} else {
+				throw new RequestException(LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorCode(),
+						LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorMessage());
+			}
+			statusResponseDto.setStatus("Status updated successfully for language");
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_UPDATE_EXCEPTION.getErrorCode(),
+					LanguageErrorCode.LANGUAGE_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
+		}
+
+		return statusResponseDto;
 	}
 
 	/*

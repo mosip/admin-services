@@ -17,6 +17,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
+import io.mosip.kernel.masterdata.dto.DeviceTypePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -102,7 +103,7 @@ public class DeviceTypeController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Device Type any error occured") })
 	public ResponseWrapper<CodeAndLanguageCodeID> updateDeviceType(
-			@Valid @RequestBody RequestWrapper<DeviceTypeDto> deviceTypes) {
+			@Valid @RequestBody RequestWrapper<DeviceTypePutDto> deviceTypes) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.CREATE_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName(), "ADM-630");

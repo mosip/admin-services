@@ -17,7 +17,9 @@ import io.mosip.kernel.masterdata.constant.MachineTypeErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.MachineTypeDto;
+import io.mosip.kernel.masterdata.dto.MachineTypePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -141,11 +143,11 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 	}
 	
 	@Override
-	public CodeAndLanguageCodeID updateMachineType(MachineTypeDto machineTypeDto) {
+	public CodeAndLanguageCodeID updateMachineType(MachineTypePutDto machineTypeDto) {
 		CodeAndLanguageCodeID codeAndLanguageCodeID = new CodeAndLanguageCodeID();
 		try {
 			MachineType machineType = machineTypeRepository.findtoUpdateMachineTypeByCodeAndByLangCode(machineTypeDto.getCode(),machineTypeDto.getLangCode());
-			if (!EmptyCheckUtils.isNullEmpty(machineType)) {
+			/*if (!EmptyCheckUtils.isNullEmpty(machineType)) {
 				if (!machineTypeDto.getIsActive()) {
 					List<MachineSpecification> machineSpecifications = machineSpecificationRepository
 							.findMachineSpecificationByMachineTypeCodeAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(
@@ -156,16 +158,17 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 								MachineTypeErrorCode.MACHINE_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorMessage());
 					}
 					masterdataCreationUtil.updateMasterDataDeactivate(MachineType.class, machineTypeDto.getCode());
-				}
+				}*/
 				machineTypeDto = masterdataCreationUtil.updateMasterData(MachineType.class, machineTypeDto);
 				MetaDataUtils.setUpdateMetaData(machineTypeDto, machineType, false);
 				machineTypeRepository.update(machineType);
 				MapperUtils.map(machineType, codeAndLanguageCodeID);
 
-			} else {
-				throw new RequestException(MachineTypeErrorCode.MACHINE_TYPE_NOT_FOUND.getErrorCode(),
-						MachineTypeErrorCode.MACHINE_TYPE_NOT_FOUND.getErrorMessage());
-			}
+				/*
+				 * } else { throw new
+				 * RequestException(MachineTypeErrorCode.MACHINE_TYPE_NOT_FOUND.getErrorCode(),
+				 * MachineTypeErrorCode.MACHINE_TYPE_NOT_FOUND.getErrorMessage()); }
+				 */
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException e) {
 			auditUtil.auditRequest(
@@ -183,6 +186,48 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
 						MachineType.class.getSimpleName(), codeAndLanguageCodeID.getCode()));
 		return codeAndLanguageCodeID;
+	}
+
+	@Override
+	public StatusResponseDto updateMachineTypeStatus(String code, boolean isActive) {
+		StatusResponseDto statusResponseDto = new StatusResponseDto();
+		try {
+			List<MachineType> machineTypes = machineTypeRepository.findtoUpdateMachineTypeByCode(code);
+
+			if (!EmptyCheckUtils.isNullEmpty(machineTypes)) {
+				if (!isActive) {
+				List<MachineSpecification> machineSpecifications = machineSpecificationRepository
+							.findMachineSpecificationByMachineTypeCodeAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(
+							code);
+				if (!EmptyCheckUtils.isNullEmpty(machineSpecifications)) {
+						throw new RequestException(
+								MachineTypeErrorCode.MACHINE_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorCode(),
+								MachineTypeErrorCode.MACHINE_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorMessage());
+					}
+				}
+				masterdataCreationUtil.updateMasterDataStatus(MachineType.class, code, isActive, "code");
+				statusResponseDto.setStatus("Status updated successfully for machineType");
+		} else {
+			throw new RequestException(MachineTypeErrorCode.MACHINE_TYPE_NOT_FOUND.getErrorCode(),
+					MachineTypeErrorCode.MACHINE_TYPE_NOT_FOUND.getErrorMessage());
+		}
+
+	} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | SecurityException e) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_TO_UPDATE_STATUS, MachineType.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_TO_UPDATE_STATUS,
+							MachineTypeErrorCode.MACHINE_TYPE_UPDATE_EXCEPTION.getErrorCode(),
+							MachineTypeErrorCode.MACHINE_TYPE_UPDATE_EXCEPTION.getErrorMessage()),
+					"ADM-657");
+			throw new MasterDataServiceException(MachineTypeErrorCode.MACHINE_TYPE_UPDATE_EXCEPTION.getErrorCode(),
+					MachineTypeErrorCode.MACHINE_TYPE_UPDATE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_UPDATE, MachineType.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
+						MachineType.class.getSimpleName(), code));
+		return statusResponseDto;
 	}
 	/*codeLangCodeId
 	 * (non-Javadoc)

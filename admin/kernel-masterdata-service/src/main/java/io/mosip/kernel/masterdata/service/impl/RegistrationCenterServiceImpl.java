@@ -239,7 +239,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		supportedLanguages = new HashSet<>(Arrays.asList(secondaryLang.split(",")));
 		supportedLanguages.add(primaryLang);
 	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -257,7 +256,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<HolidayDto> holidayDto = null;
 		List<Holiday> holidays = null;
 		String holidayLocationCode = "";
-
 		Objects.requireNonNull(registrationCenterId);
 		Objects.requireNonNull(year);
 		Objects.requireNonNull(langCode);
@@ -741,7 +739,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
 			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
 				registrationCenters = MapperUtils.mapAll(pageData.getContent(), RegistrationCenterExtnDto.class);
-				registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), pageData.getSize(), pageData.getSort(),
+				registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), 0, null,
 						pageData.getTotalPages(), (int) pageData.getTotalElements(), registrationCenters);
 			} else {
 				throw new DataNotFoundException(
@@ -1383,7 +1381,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					// updating registration center
 					updRegistrationCenterEntity = MetaDataUtils.setUpdateMetaData(regCenterPutReqDto,
 							renRegistrationCenter, false);
-					updRegistrationCenterEntity.setIsActive(regCenterPutReqDto.getIsActive());
 					updRegistrationCenter = registrationCenterRepository.update(updRegistrationCenterEntity);
 
 					// New code start ****
@@ -1689,7 +1686,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 						langCode,PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
 				if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
 					registrationCenters = MapperUtils.mapAll(pageData.getContent(), RegistrationCenterExtnDto.class);
-					registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), pageData.getSize(), pageData.getSort(),
+					registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), 0, null,
 							  pageData.getTotalElements(), pageData.getTotalPages(),registrationCenters);
 				} else {
 					throw new DataNotFoundException(

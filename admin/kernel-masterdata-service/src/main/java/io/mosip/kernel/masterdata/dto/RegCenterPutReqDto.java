@@ -8,8 +8,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.Range;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.mosip.kernel.masterdata.validator.StringFormatter;
@@ -51,9 +49,6 @@ public class RegCenterPutReqDto {
 
 	@Size(min = 0, max = 128)
 	private String contactPerson;
-
-	@NotNull
-	private Boolean isActive;
 
 	@NotNull
 	@StringFormatter(min = 1, max = 36)

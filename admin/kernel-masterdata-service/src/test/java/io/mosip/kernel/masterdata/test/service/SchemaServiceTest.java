@@ -26,6 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.SchemaErrorCode;
 import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
+import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldValueDto;
 import io.mosip.kernel.masterdata.dto.IdSchemaPublishDto;
 import io.mosip.kernel.masterdata.dto.IdentitySchemaDto;
@@ -163,13 +164,12 @@ public class SchemaServiceTest {
 	@WithUserDetails("global-admin")
 	public void testUpdateDynamicField() throws Exception {		
 		Mockito.when(dynamicFieldRepository.updateDynamicField(Mockito.anyString(), Mockito.anyString(),  Mockito.anyString(), 
-				 Mockito.anyString(),  Mockito.anyBoolean(), Mockito.any(LocalDateTime.class),  Mockito.anyString())).thenReturn(0);
+				Mockito.anyString(), Mockito.any(LocalDateTime.class), Mockito.anyString())).thenReturn(0);
 		
 		Mockito.when(dynamicFieldRepository.findDynamicFieldById(Mockito.anyString())).thenReturn(bloodTypeField);
 		
-		DynamicFieldDto dto = new DynamicFieldDto();
+		DynamicFieldPutDto dto = new DynamicFieldPutDto();
 		dto.setName("bloodType");
-		dto.setActive(false);
 		dto.setDataType("simpleType");
 		dto.setLangCode("eng");
 		

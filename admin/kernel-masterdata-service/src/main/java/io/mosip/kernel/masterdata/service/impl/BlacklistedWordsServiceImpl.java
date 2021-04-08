@@ -333,7 +333,6 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 			params.put("oldWord", dto.getOldWord().toLowerCase());
 		if (dto.getDescription() != null && !dto.getDescription().isEmpty())
 			params.put("description", dto.getDescription());
-		params.put("isActive", dto.getIsActive());
 		params.put("updatedBy", MetaDataUtils.getContextUser());
 		params.put("updatedDateTime", LocalDateTime.now(ZoneId.of("UTC")));
 		params.put("langCode", dto.getLangCode());

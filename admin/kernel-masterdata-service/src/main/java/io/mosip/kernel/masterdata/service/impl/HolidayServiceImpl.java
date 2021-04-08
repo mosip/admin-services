@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -24,10 +23,10 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
-import io.mosip.kernel.masterdata.constant.RequestErrorCode;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.HolidayIDDto;
 import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
@@ -35,6 +34,7 @@ import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.HolidayExtnDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -96,12 +96,9 @@ public class HolidayServiceImpl implements HolidayService {
 
 	@Autowired
 	private AuditUtil auditUtil;
-	
-	@Value("${mosip.primary-language:eng}")
-	private String primaryLang;
 
-	@Value("${mosip.secondary-language:ara}")
-	private String secondaryLang;
+	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
+	private String supportedLang;
 
 	private static final String UPDATE_HOLIDAY_QUERY = "UPDATE Holiday h SET h.isActive = :isActive ,h.updatedBy = :updatedBy , h.updatedDateTime = :updatedDateTime, h.holidayDesc = :holidayDesc,h.holidayId.holidayDate=:holidayDate,h.holidayId.holidayName = :holidayName   WHERE h.holidayId.locationCode = :locationCode  and h.holidayId.holidayId = :holidayId and h.holidayId.langCode = :langCode and (h.isDeleted is null or h.isDeleted = false)";
 	private static final int DEFAULT_HOLIDAY_ID = 2000001;
@@ -233,8 +230,8 @@ public class HolidayServiceImpl implements HolidayService {
 					throw new RequestException(HolidayErrorCode.DUPLICATE_REQUEST.getErrorCode(),
 							HolidayErrorCode.DUPLICATE_REQUEST.getErrorMessage());
 				}
-				holidayDto.setIsActive(getisActive(holidayDto.getHolidayName(),holidayDto.getHolidayDate(),holidayDto.getLangCode(),
-						holidayDto.getLocationCode(),holidayDto.getIsActive()));
+				// holidayDto.setIsActive(getisActive(holidayDto.getHolidayName(),holidayDto.getHolidayDate(),holidayDto.getLangCode(),
+				// holidayDto.getLocationCode(),holidayDto.getIsActive()));
 				entity = MetaDataUtils.setCreateMetaData(holidayDto, Holiday.class);
 				List<Holiday> hols=holidayRepository.findHolidayByHolidayDateHolidayName(holidayDto.getHolidayDate(),holidayDto.getHolidayName());
 				List<Holiday> holidays=holidayRepository.findAll();
@@ -255,12 +252,15 @@ public class HolidayServiceImpl implements HolidayService {
 			}
 			
 			holiday = holidayRepository.create(entity);
-			if(holiday.getIsActive()==true && holiday.getLangCode().equalsIgnoreCase(secondaryLang)) {
-				Holiday primholiday=holidayRepository.findHolidayByHolidayNameHolidayDateLocationCodeLangCode(holiday.getHolidayName(),holiday.getHolidayDate(),
-						holiday.getLocationCode(),primaryLang);
-				primholiday.setIsActive(true);
-				holidayRepository.update(primholiday);
-			}
+			/*
+			 * if (holiday.getIsActive() == true &&
+			 * supportedLang.contains(holiday.getLangCode())) { Holiday
+			 * primholiday=holidayRepository.
+			 * findHolidayByHolidayNameHolidayDateLocationCodeLangCode(holiday.
+			 * getHolidayName(),holiday.getHolidayDate(),
+			 * holiday.getLocationCode(),primaryLang); primholiday.setIsActive(true);
+			 * holidayRepository.update(primholiday); }
+			 */
 			MapperUtils.map(holiday, holidayId);
 			}
 		}catch (DataAccessLayerException | DataAccessException | IllegalArgumentException |  SecurityException e) {
@@ -280,24 +280,22 @@ public class HolidayServiceImpl implements HolidayService {
 		return holidayId;
 	}
 
-	private boolean getisActive(String holidayName,LocalDate holidayDate,String langCode,String locationCode,boolean isActive) {
-		if(langCode.equalsIgnoreCase(primaryLang)) {
-			Holiday holiday=holidayRepository.findHolidayByHolidayNameHolidayDateLocationCodeLangCode(holidayName,holidayDate,
-					locationCode,secondaryLang);
-			if(holiday==null) {
-				return false;
-			}
-		}
-		if(langCode.equalsIgnoreCase(secondaryLang)) {
-			Holiday holiday=holidayRepository.findHolidayByHolidayNameHolidayDateLocationCodeLangCode(holidayName,holidayDate,
-					locationCode,primaryLang);
-			if(holiday==null) {
-				throw new MasterDataServiceException(RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorCode(),
-						RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorMessage());
-			}
-		}
-		return isActive;
-	}
+	/*
+	 * private boolean getisActive(String holidayName,LocalDate holidayDate,String
+	 * langCode,String locationCode,boolean isActive) {
+	 * if(langCode.equalsIgnoreCase(primaryLang)) { Holiday
+	 * holiday=holidayRepository.
+	 * findHolidayByHolidayNameHolidayDateLocationCodeLangCode(holidayName,
+	 * holidayDate, locationCode,secondaryLang); if(holiday==null) { return false; }
+	 * } if(langCode.equalsIgnoreCase(secondaryLang)) { Holiday
+	 * holiday=holidayRepository.
+	 * findHolidayByHolidayNameHolidayDateLocationCodeLangCode(holidayName,
+	 * holidayDate, locationCode,primaryLang); if(holiday==null) { throw new
+	 * MasterDataServiceException(RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.
+	 * getErrorCode(),
+	 * RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorMessage()); } } return
+	 * isActive; }
+	 */
 
 	/*
 	 * (non-Javadoc)
@@ -321,9 +319,8 @@ public class HolidayServiceImpl implements HolidayService {
 				throw new RequestException(HolidayErrorCode.UPDATE_HOLIDAY_LOCATION_INVALID.getErrorCode(),
 						HolidayErrorCode.UPDATE_HOLIDAY_LOCATION_INVALID.getErrorMessage());
 			}
-			holidayDto.setIsActive(getisActive(holidayDto.getHolidayName(),holidayDto.getHolidayDate(),holidayDto.getLangCode(),
-					holidayDto.getLocationCode(),holidayDto.getIsActive()));
 			Map<String, Object> params = bindDtoToMap(holidayDto);
+			params.put("isActive", locations.get(0).getIsActive());
 			int noOfRowAffected = holidayRepository.createQueryUpdateOrDelete(UPDATE_HOLIDAY_QUERY, params);			
 			if (noOfRowAffected != 0) {
 				idDto = mapToHolidayIdDto(holidayDto);
@@ -352,6 +349,42 @@ public class HolidayServiceImpl implements HolidayService {
 				String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC, Holiday.class.getSimpleName(), idDto),
 				"ADM-2165");
 		return idDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.HolidayService#updateHoliday(io.mosip.
+	 * kernel.masterdata.dto.RequestDto)
+	 */
+	@Override
+	public StatusResponseDto updateHolidayStatus(String holidayId, boolean isActive) {
+		StatusResponseDto statusResponseDto = new StatusResponseDto();
+		try {
+			int id = Integer.parseInt(holidayId);
+			List<Holiday> holidays = holidayRepository.findById(id);
+			if (!EmptyCheckUtils.isNullEmpty(holidays)) {
+				masterdataCreationUtil.updateMasterDataStatus(Holiday.class, holidayId, isActive, "id");
+			} else {
+				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, Holiday.class.getSimpleName()),
+						MasterDataConstant.AUDIT_SYSTEM, String.format(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
+								HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorMessage()),
+						"ADM-2166");
+				throw new RequestException(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
+						HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorMessage());
+			}
+			statusResponseDto.setStatus("Status updated successfully for holiday");
+		} catch (DataAccessException | DataAccessLayerException | IllegalArgumentException | SecurityException e) {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, Holiday.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(HolidayErrorCode.HOLIDAY_UPDATE_EXCEPTION.getErrorCode(),
+							HolidayErrorCode.HOLIDAY_UPDATE_EXCEPTION.getErrorMessage()),
+					"ADM-2166");
+			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_UPDATE_EXCEPTION.getErrorCode(),
+					HolidayErrorCode.HOLIDAY_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
+		}
+		return statusResponseDto;
 	}
 
 	/*
@@ -388,7 +421,6 @@ public class HolidayServiceImpl implements HolidayService {
 		Map<String, Object> params = new HashMap<>();
 		params.put("holidayId", dto.getHolidayId());
 		params.put("holidayDesc", dto.getHolidayDesc());
-		params.put("isActive", dto.getIsActive());
 		params.put("holidayDate", dto.getHolidayDate());
 		params.put("holidayName", dto.getHolidayName());
 		params.put("updatedBy", MetaDataUtils.getContextUser());

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,7 +20,9 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
+import io.mosip.kernel.masterdata.dto.MachineSpecificationPutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineSpecificationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -109,7 +112,7 @@ public class MachineSpecificationController {
 			@ApiResponse(code = 404, message = "When No Machine Specification found"),
 			@ApiResponse(code = 500, message = "While updating Machine Specification any error occured") })
 	public ResponseWrapper<IdAndLanguageCodeID> updateMachineSpecification(
-			@Valid @RequestBody RequestWrapper<MachineSpecificationDto> machineSpecification) {
+			@Valid @RequestBody RequestWrapper<MachineSpecificationPutDto> machineSpecification) {
 		machineSpecificationValidator.validate(machineSpecification.getRequest());
 		auditUtil.auditRequest(
 				MasterDataConstant.UPDATE_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName(),
@@ -123,6 +126,38 @@ public class MachineSpecificationController {
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
 						MachineSpecificationDto.class.getCanonicalName()),
 				"ADM-666");
+		return responseWrapper;
+	}
+
+	/**
+	 * Patch API to update status of Machine Specification data
+	 * 
+	 * @param machineSpecification input Machine specification DTO from user
+	 * @return ResponseEntity Machine Specification ID which is successfully updated
+	 */
+	@ResponseFilter
+	@PatchMapping("/machinespecifications")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@ApiOperation(value = "Service to update Machine Specification status", notes = "update Machine Spacification status and return Machine Spacification status ")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When Machine Specification status successfully updated"),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No Machine Specification found"),
+			@ApiResponse(code = 500, message = "While updating Machine Specification any error occured") })
+	public ResponseWrapper<StatusResponseDto> updateMachineSpecificationStatus(@RequestParam String code,
+			@RequestParam boolean isActive) {
+		auditUtil.auditRequest(
+				MasterDataConstant.STATUS_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName(), "ADM-660");
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper
+				.setResponse(machineSpecificationService.updateMachineSpecificationStatus(code, isActive));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_UPDATED_STATUS,
+						MachineSpecificationDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATED_STATUS,
+						MachineSpecificationDto.class.getCanonicalName()),
+				"ADM-668");
 		return responseWrapper;
 	}
 

@@ -1,11 +1,6 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,19 +33,9 @@ public class ExceptionalHolidaysServiceImpl implements ExceptionalHolidayService
 	@Autowired
 	private RegistrationCenterRepository regCenterRepo;
 
-	@Value("${mosip.primary-language}")
-	private String primaryLang;
+	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
+	private String supportedLang;
 
-	@Value("${mosip.secondary-language}")
-	private String secondaryLang;
-
-	private Set<String> supportedLanguages;
-
-	@PostConstruct
-	public void constructRegEx() {
-		supportedLanguages = new HashSet<>(Arrays.asList(secondaryLang.split(",")));
-		supportedLanguages.add(primaryLang);
-	}
 
 	@Override
 	public ExceptionalHolidayResponseDto getAllExceptionalHolidays(String regCenterId, String langCode) {
@@ -58,7 +43,7 @@ public class ExceptionalHolidaysServiceImpl implements ExceptionalHolidayService
 		List<ExceptionalHolidayDto> excepHolidays = null;
 		List<ExceptionalHoliday> exeptionalHolidayList = null;
 		try {
-			if (!supportedLanguages.contains(langCode)) {
+			if (!supportedLang.contains(langCode)) {
 				throw new MasterDataServiceException(ExceptionalHolidayErrorCode.INVALIDE_LANGCODE.getErrorCode(),
 						ExceptionalHolidayErrorCode.INVALIDE_LANGCODE.getErrorMessage());
 			}

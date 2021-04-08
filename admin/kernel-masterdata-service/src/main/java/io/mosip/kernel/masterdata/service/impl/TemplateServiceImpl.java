@@ -20,9 +20,9 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
-import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.TemplateErrorCode;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.TemplatePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.TemplateExtnDto;
@@ -35,7 +35,6 @@ import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -76,6 +75,9 @@ public class TemplateServiceImpl implements TemplateService {
 	@Autowired
 	private FilterTypeValidator filterTypeValidator;
 
+	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
+	private String supportedLang;
+
 	@Autowired
 	private FilterColumnValidator filterColumnValidator;
 
@@ -93,12 +95,6 @@ public class TemplateServiceImpl implements TemplateService {
 
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
-
-	@Value("${mosip.primary-language:eng}")
-	private String primaryLang;
-
-	@Value("${mosip.secondary-language:ara}")
-	private String secondaryLang;
 
 
 	/*
@@ -192,7 +188,7 @@ public class TemplateServiceImpl implements TemplateService {
 		Template templateEntity;
 		
 		try {
-			if (StringUtils.isNotEmpty(primaryLang) && primaryLang.equals(template.getLangCode())) {
+			if (StringUtils.isNotEmpty(supportedLang) && supportedLang.contains(template.getLangCode())) {
 				String uniqueId = generateId();
 				template.setId(uniqueId);
 			}
@@ -227,8 +223,8 @@ public class TemplateServiceImpl implements TemplateService {
 		UUID uuid = UUID.randomUUID();
 		String uniqueId = uuid.toString();
 		
-		Template template = templateRepository
-				.findTemplateByIDAndLangCode(uniqueId,primaryLang);
+		List<Template> template = templateRepository
+				.findAllByCodeAndIsDeletedFalseOrIsDeletedIsNull(uniqueId);
 			
 		return template ==null?uniqueId:generateId();
 	}
@@ -241,7 +237,7 @@ public class TemplateServiceImpl implements TemplateService {
 	 * kernel.masterdata.dto.TemplateDto)
 	 */
 	@Override
-	public IdAndLanguageCodeID updateTemplates(TemplateDto template) {
+	public IdAndLanguageCodeID updateTemplates(TemplatePutDto template) {
 		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		try {
 			Template entity = templateRepository.findTemplateByIDAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(

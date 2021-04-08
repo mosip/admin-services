@@ -32,6 +32,15 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	List<Holiday> findAllById(int id);
 
 	/**
+	 * Get all the holidays for a specific id
+	 * 
+	 * @param id holiday id input from user
+	 * @return list of holidays for a particular id
+	 */
+	@Query("FROM Holiday where holidayId=?1 and (isDeleted = false or isDeleted is null)")
+	List<Holiday> findById(int id);
+
+	/**
 	 * Fetch all the non deleted holidays
 	 * 
 	 * @return list of {@link Holiday}
@@ -122,6 +131,7 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	
 	@Query(value = "select A.* from (select distinct * from master.loc_holiday) A left join (select distinct holiday_date, lang_code from master.loc_holiday where lang_code=?1) B on A.holiday_date=B.holiday_date where B.holiday_date is null", nativeQuery = true)
 	List<Holiday> findHolidayForMissingData(String langCode);
+
 
 	@Query(value = "SELECT * FROM loc_holiday where lang_code=?2 and location_code IN (SELECT code  FROM location where hierarchy_level <=?1 and lang_code=?2)", nativeQuery = true)
 	List<Holiday> findHoildayByLocationCodeAndLangCode(int level, String langCode);

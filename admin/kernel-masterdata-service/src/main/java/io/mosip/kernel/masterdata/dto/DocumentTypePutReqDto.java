@@ -1,10 +1,7 @@
 package io.mosip.kernel.masterdata.dto;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.Range;
 
 import io.mosip.kernel.masterdata.validator.StringFormatter;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
@@ -42,8 +39,5 @@ public class DocumentTypePutReqDto {
 	@ApiModelProperty(value = "Language Code", required = true, dataType = "java.lang.String")
 	private String langCode;
 
-	@NotNull
-	@ApiModelProperty(value = "Application isActive Status", required = true, dataType = "java.lang.Boolean")
-	private Boolean isActive;
 
 }

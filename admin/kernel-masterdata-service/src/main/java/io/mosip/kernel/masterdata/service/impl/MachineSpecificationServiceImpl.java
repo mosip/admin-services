@@ -24,7 +24,9 @@ import io.mosip.kernel.masterdata.constant.MachineSpecificationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
+import io.mosip.kernel.masterdata.dto.MachineSpecificationPutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineSpecificationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
@@ -108,11 +110,8 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
 	
-	@Value("${mosip.primary-language:eng}")
-	private String primaryLang;
-
-	@Value("${mosip.secondary-language:ara}")
-	private String secondaryLang;
+	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
+	private String supportedLang;
 
 	/*
 	 * (non-Javadoc)
@@ -127,7 +126,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 
 
 		try {
-			if (StringUtils.isNotEmpty(primaryLang) && primaryLang.equals(machineSpecification.getLangCode())) {
+			if (StringUtils.isNotEmpty(supportedLang) && supportedLang.contains(machineSpecification.getLangCode())) {
 				String uniqueId = generateId();
 				machineSpecification.setId(uniqueId);
 			}
@@ -165,8 +164,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		UUID uuid = UUID.randomUUID();
 		String uniqueId = uuid.toString();
 		
-		MachineSpecification machineSpecification = machineSpecificationRepository
-				.findMachineSpecificationByIDAndLangCode(uniqueId,primaryLang);
+		List<MachineSpecification> machineSpecification = machineSpecificationRepository.findMachineSpecById(uniqueId);
 			
 		return machineSpecification ==null?uniqueId:generateId();
 	}
@@ -179,7 +177,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	 * updateMachineSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public IdAndLanguageCodeID updateMachineSpecification(MachineSpecificationDto machineSpecification) {
+	public IdAndLanguageCodeID updateMachineSpecification(MachineSpecificationPutDto machineSpecification) {
 		MachineSpecification updMachineSpecification = null;
 
 		try {
@@ -187,19 +185,19 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 					.findByIdAndLangCodeIsDeletedFalseorIsDeletedIsNull(machineSpecification.getId(),
 							machineSpecification.getLangCode());
 			if (renMachineSpecification != null) {
-				if (!machineSpecification.getIsActive()) {
-					List<Machine> machines = machineRepository
-							.findMachineBymachineSpecIdAndIsDeletedFalseorIsDeletedIsNull(machineSpecification.getId());
-					if (!EmptyCheckUtils.isNullEmpty(machines)) {
-						throw new RequestException(
-								MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_MAPPING_EXCEPTION
-										.getErrorCode(),
-								MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_MAPPING_EXCEPTION
-										.getErrorMessage());
-					}
-					masterdataCreationUtil.updateMasterDataDeactivate(MachineSpecification.class,
-							machineSpecification.getId());
-				}
+				/*
+				 * if (!machineSpecification.getIsActive()) { List<Machine> machines =
+				 * machineRepository
+				 * .findMachineBymachineSpecIdAndIsDeletedFalseorIsDeletedIsNull(
+				 * machineSpecification.getId()); if (!EmptyCheckUtils.isNullEmpty(machines)) {
+				 * throw new RequestException(
+				 * MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_MAPPING_EXCEPTION
+				 * .getErrorCode(),
+				 * MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_MAPPING_EXCEPTION
+				 * .getErrorMessage()); }
+				 * masterdataCreationUtil.updateMasterDataDeactivate(MachineSpecification.class,
+				 * machineSpecification.getId()); }
+				 */
 				machineSpecification = masterdataCreationUtil.updateMasterData(MachineSpecification.class,
 						machineSpecification);
 				MetaDataUtils.setUpdateMetaData(machineSpecification, renMachineSpecification, false);
@@ -238,6 +236,59 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
 						MachineSpecification.class.getSimpleName(), idAndLanguageCodeID.getId()));
 		return idAndLanguageCodeID;
+	}
+
+	@Override
+	public StatusResponseDto updateMachineSpecificationStatus(String id, boolean isActive) {
+		StatusResponseDto statusResponseDto = new StatusResponseDto();
+
+		try {
+			List<MachineSpecification> machineSpecification = machineSpecificationRepository.findMachineSpecById(id);
+			if (machineSpecification != null) {
+				if (!isActive) {
+					List<Machine> machines = machineRepository
+							.findMachineBymachineSpecIdAndIsDeletedFalseorIsDeletedIsNull(id);
+					if (!EmptyCheckUtils.isNullEmpty(machines)) {
+						throw new RequestException(
+								MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_MAPPING_EXCEPTION
+										.getErrorCode(),
+								MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_MAPPING_EXCEPTION
+										.getErrorMessage());
+					}
+				}
+				masterdataCreationUtil.updateMasterDataStatus(MachineSpecification.class, id, isActive, "id");
+			} else {
+				auditUtil.auditRequest(
+						String.format(MasterDataConstant.FAILURE_UPDATE, MachineSpecification.class.getCanonicalName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,
+								MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+								MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION
+										.getErrorMessage()),
+						"ADM-674");
+				throw new RequestException(
+						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+			statusResponseDto.setStatus("Status updated successfully for MachineSpecification");
+		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | SecurityException e) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, MachineSpecification.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorCode(),
+							MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorMessage()),
+					"ADM-675");
+			throw new MasterDataServiceException(
+					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorCode(),
+					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, MachineSpecification.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
+						MachineSpecification.class.getSimpleName(), id));
+		return statusResponseDto;
 	}
 
 	/*
