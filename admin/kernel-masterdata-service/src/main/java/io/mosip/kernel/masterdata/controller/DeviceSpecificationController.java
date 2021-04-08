@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,6 +25,7 @@ import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationPutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceSpecificationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceSpecificationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -259,5 +261,26 @@ public class DeviceSpecificationController {
 				MasterDataConstant.SUCCESSFUL_FILTER_DESC + DeviceSpecificationDto.class.getCanonicalName(), "ADM-646");
 		return responseWrapper;
 	}
+	
+	@ResponseFilter
+	@PatchMapping("/devicespecifications")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@ApiOperation(value = "Service to update device specification", notes = "update Device Specification")
+	public ResponseWrapper<StatusResponseDto> updateDeviceSpecificationStatus(@Valid @RequestParam boolean isActive,
+			@RequestParam String id) {
+		auditUtil.auditRequest(
+				MasterDataConstant.STATUS_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(), "ADM-647");
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(deviceSpecificationService.updateDeviceSpecification(id, isActive));
+		auditUtil.auditRequest(
+				MasterDataConstant.STATUS_UPDATED_SUCCESS + DeviceSpecificationDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_UPDATED_SUCCESS + DeviceSpecificationDto.class.getCanonicalName(), "ADM-648");
+
+		return responseWrapper;
+	}
+
 
 }

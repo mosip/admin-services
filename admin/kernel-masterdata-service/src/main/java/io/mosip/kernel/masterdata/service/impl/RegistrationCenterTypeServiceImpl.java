@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterTypeErrorCode;
@@ -24,6 +25,7 @@ import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
@@ -338,5 +340,56 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 			}
 		}
 		return pageDto;
+	}
+
+	@Override
+	public StatusResponseDto updateRegistrationCenterType(String code, boolean isActive) {
+		// TODO Auto-generated method stub
+		StatusResponseDto response = new StatusResponseDto();
+
+		List<RegistrationCenterType> registrationCenterTypes = null;
+		try {
+			registrationCenterTypes = registrationCenterTypeRepository.findtoUpdateRegistrationCenterTypeByCode(code);
+		} catch (DataAccessException | DataAccessLayerException accessException) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, RegistrationCenterType.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_FETCH_EXCEPTION.getErrorCode(),
+							RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_FETCH_EXCEPTION.getErrorMessage()),
+					"ADM-555");
+			throw new MasterDataServiceException(
+					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(accessException));
+		}
+
+		if (registrationCenterTypes != null && !registrationCenterTypes.isEmpty()) {
+			if (!isActive) {
+				List<RegistrationCenter> registrationCenters = registrationCenterRepository.findByCenterTypeCode(code);
+				if (!EmptyCheckUtils.isNullEmpty(registrationCenters)) {
+					throw new RequestException(
+							RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_UPDATE_MAPPING_EXCEPTION
+									.getErrorCode(),
+							RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_UPDATE_MAPPING_EXCEPTION
+									.getErrorMessage());
+				}
+			}
+			masterdataCreationUtil.updateMasterDataStatus(RegistrationCenterType.class, code, isActive, "code");
+		} else {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, RegistrationCenterType.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
+							RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION
+									.getErrorMessage()),
+					"ADM-556");
+			throw new DataNotFoundException(
+					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
+					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+		response.setStatus("Status updated successfully for Registration Center Types");
+		return response;
 	}
 }

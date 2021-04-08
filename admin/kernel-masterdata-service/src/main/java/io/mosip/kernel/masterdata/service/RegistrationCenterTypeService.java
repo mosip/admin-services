@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -37,6 +38,8 @@ public interface RegistrationCenterTypeService {
 	 * @return the response {@link CodeAndLanguageCodeID}.
 	 */
 	public CodeAndLanguageCodeID updateRegistrationCenterType(RegistrationCenterTypePutDto registrationCenterTypeDto);
+	
+	public StatusResponseDto updateRegistrationCenterType(String code, boolean isActive);
 
 	/**
 	 * Method to delete registration center type.

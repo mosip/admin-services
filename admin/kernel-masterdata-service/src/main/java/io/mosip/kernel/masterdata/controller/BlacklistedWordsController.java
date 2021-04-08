@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,6 +25,7 @@ import io.mosip.kernel.masterdata.dto.BlacklistedWordListRequestDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.BlacklistedWordsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -260,6 +262,27 @@ public class BlacklistedWordsController {
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.SUCCESSFUL_FILTER_DESC + BlacklistedWordsExtnDto.class.getCanonicalName(),
 				"ADM-551");
+		return responseWrapper;
+	}
+
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_ADMIN')")
+	@ResponseFilter
+	@PatchMapping
+	@ApiOperation(value = "update the blacklisted word")
+	public ResponseWrapper<StatusResponseDto> updateBlackListedWordStatus(@RequestParam boolean isActive,
+			@RequestParam String word) {
+		auditUtil.auditRequest(
+				MasterDataConstant.STATUS_API_IS_CALLED + BlackListedWordsUpdateDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_API_IS_CALLED + BlackListedWordsUpdateDto.class.getCanonicalName(),
+				"ADM-552");
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(blacklistedWordsService.updateBlackListedWordStatus(word, isActive));
+		auditUtil.auditRequest(
+				MasterDataConstant.STATUS_UPDATED_SUCCESS + BlackListedWordsUpdateDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_UPDATED_SUCCESS + BlackListedWordsUpdateDto.class.getCanonicalName(),
+				"ADM-553");
 		return responseWrapper;
 	}
 }

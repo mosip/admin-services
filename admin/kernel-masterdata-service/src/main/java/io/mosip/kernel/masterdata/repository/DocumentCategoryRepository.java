@@ -63,4 +63,7 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	
 	@Query("FROM DocumentCategory WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false)")
 	DocumentCategory findByCodeAndLangCode(String code, String langCode);
+	
+	@Query("FROM DocumentCategory WHERE code =?1 AND (isDeleted is null OR isDeleted = false)")
+	List<DocumentCategory> findtoUpdateDocumentCategoryByCode(String code);
 }

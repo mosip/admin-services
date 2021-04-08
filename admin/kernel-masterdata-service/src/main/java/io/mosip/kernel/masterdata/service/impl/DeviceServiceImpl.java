@@ -31,6 +31,7 @@ import io.mosip.kernel.masterdata.dto.MissingIdDataDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
@@ -944,6 +945,41 @@ public class DeviceServiceImpl implements DeviceService {
 			throw new RequestException(DeviceErrorCode.INVALID_CENTER_ZONE.getErrorCode(),
 					DeviceErrorCode.INVALID_CENTER_ZONE.getErrorMessage());
 		}
+	}
+
+	@Override
+	public StatusResponseDto updateDeviceStatus(String id, boolean isActive) {
+		// TODO Auto-generated method stub
+		StatusResponseDto response = new StatusResponseDto();
+
+		List<Device> devices = null;
+		try {
+			devices = deviceRepository.findtoUpdateDeviceById(id);
+		} catch (DataAccessException | DataAccessLayerException accessException) {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, DeviceDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorCode(),
+							DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage()),
+					"ADM-517");
+			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorCode(),
+					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(accessException));
+		}
+		if (devices != null && !devices.isEmpty()) {
+			masterdataCreationUtil.updateMasterDataStatus(Device.class, id, isActive, "id");
+		} else {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, DeviceDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DeviceErrorCode.DEVICE_NOT_EXISTS_EXCEPTION.getErrorCode(),
+							DeviceErrorCode.DEVICE_NOT_EXISTS_EXCEPTION.getErrorMessage()),
+					"ADM-518");
+			throw new DataNotFoundException(DeviceErrorCode.DEVICE_NOT_EXISTS_EXCEPTION.getErrorCode(),
+					DeviceErrorCode.DEVICE_NOT_EXISTS_EXCEPTION.getErrorMessage());
+		}
+		response.setStatus("Status updated successfully for Devices");
+		return response;
 	}
 
 }

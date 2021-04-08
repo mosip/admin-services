@@ -209,9 +209,6 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	Page<RegistrationCenter> findRegistrationCenterByListOfLocationCodePaginated(@Param("codes") Set<String> codes,
 			@Param("langcode") String langCode,Pageable pageable);
 
-	@Query("FROM RegistrationCenter WHERE id= ?1")
-	List<RegistrationCenter> findByRegId(String regCenterId);
-	
 	@Query("UPDATE RegistrationCenter rc SET rc.centerTypeCode=?1,rc.latitude=?2,rc.longitude=?3,rc.locationCode=?4,rc.contactPhone=?5,rc.numberOfKiosks=?6,rc.holidayLocationCode=?7,rc.workingHours=?8,rc.perKioskProcessTime=?9,rc.centerStartTime=?10,rc.centerEndTime=?11,rc.timeZone=?12,rc.lunchStartTime=?13,rc.lunchEndTime=?14,rc.zoneCode=?15,rc.updatedBy = ?17, rc.updatedDateTime =?18 where rc.id=?16")
 	@Modifying
 	int updateRegCenter(String centerTypeCode,String latitude ,String longitude,String locationCode,

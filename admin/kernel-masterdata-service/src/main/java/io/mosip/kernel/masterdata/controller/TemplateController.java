@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,6 +23,7 @@ import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.TemplatePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.TemplateExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -278,6 +280,23 @@ public class TemplateController {
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER, TemplateDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM,
 				String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC, TemplateDto.class.getSimpleName()), "ADM-811");
+		return responseWrapper;
+	}
+	
+	@ResponseFilter
+	@PatchMapping
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@ApiOperation(value = "Service to update template ", notes = "update Template  and return  code ")
+	public ResponseWrapper<StatusResponseDto> updateTemplateStatus(@Valid @RequestParam boolean isActive,
+			@RequestParam String id) {
+		auditUtil.auditRequest(MasterDataConstant.STATUS_API_IS_CALLED + TemplateDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_API_IS_CALLED + TemplateDto.class.getSimpleName(), "ADM-812");
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(templateService.updateTemplates(id, isActive));
+		auditUtil.auditRequest(MasterDataConstant.STATUS_UPDATED_SUCCESS + TemplateDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_UPDATED_SUCCESS + TemplateDto.class.getSimpleName(), "ADM-813");
 		return responseWrapper;
 	}
 }

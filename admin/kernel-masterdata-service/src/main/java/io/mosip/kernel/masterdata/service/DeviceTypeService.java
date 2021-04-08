@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
@@ -65,6 +66,9 @@ public interface DeviceTypeService {
 	 * @param request
 	 * @return
 	 */
+	
+	public StatusResponseDto updateDeviceType(String code, boolean isActive);
+
 	public CodeAndLanguageCodeID updateDeviceType(DeviceTypePutDto request);
 
 }

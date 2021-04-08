@@ -83,6 +83,9 @@ public interface RegistrationCenterTypeRepository
 	 */
 	@Query("FROM RegistrationCenterType WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false)")
 	RegistrationCenterType findByCodeAndLangCode(String code, String langCode);
+	
+	@Query("FROM RegistrationCenterType WHERE code =?1 AND (isDeleted is null OR isDeleted = false)")
+	List<RegistrationCenterType> findtoUpdateRegistrationCenterTypeByCode(String code);
 
 	/**
 	 * This method triggers query to fetch registration center type

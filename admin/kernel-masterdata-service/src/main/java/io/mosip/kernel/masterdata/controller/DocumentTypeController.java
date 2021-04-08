@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,6 +25,7 @@ import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypePutReqDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
@@ -242,6 +244,26 @@ public class DocumentTypeController {
 			@PathVariable("langcode") String langCode) {
 		ResponseWrapper<DocumentTypeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentTypeService.getAllDocumentTypeByLaguageCode(langCode));
+		return responseWrapper;
+	}
+	
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@ResponseFilter
+	@PatchMapping("/documenttypes")
+	@ApiOperation(value = "Service to update document type")
+	public ResponseWrapper<StatusResponseDto> updateDocumentTypeStatus(@RequestParam boolean isActive,
+			@RequestParam String code) {
+		auditUtil.auditRequest(MasterDataConstant.STATUS_API_IS_CALLED + DocumentTypePutReqDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_API_IS_CALLED + DocumentTypePutReqDto.class.getCanonicalName(), "ADM-687");
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentTypeService.updateDocumentType(code, isActive));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.STATUS_UPDATED_SUCCESS,
+						DocumentTypePutReqDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.STATUS_UPDATED_SUCCESS,
+						DocumentTypePutReqDto.class.getCanonicalName()),
+				"ADM-688");
 		return responseWrapper;
 	}
 

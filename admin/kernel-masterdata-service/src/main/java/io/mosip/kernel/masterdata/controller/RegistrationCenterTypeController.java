@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,6 +23,7 @@ import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -195,6 +197,26 @@ public class RegistrationCenterTypeController {
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,
 						RegistrationCenterTypeExtnDto.class.getCanonicalName()),
 				"ADM-551");
+		return responseWrapper;
+	}
+	
+	@ResponseFilter
+	@PatchMapping("/registrationcentertypes")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	public ResponseWrapper<StatusResponseDto> updateRegistrationCenterTypeStatus(@Valid @RequestParam boolean isActive,
+			@RequestParam String code) {
+		auditUtil.auditRequest(
+				MasterDataConstant.STATUS_API_IS_CALLED + RegistrationCenterTypeDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_API_IS_CALLED + RegistrationCenterTypeDto.class.getCanonicalName(),
+				"ADM-552");
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterTypeService.updateRegistrationCenterType(code, isActive));
+		auditUtil.auditRequest(
+				MasterDataConstant.STATUS_UPDATED_SUCCESS + RegistrationCenterTypeDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_UPDATED_SUCCESS + RegistrationCenterTypeDto.class.getCanonicalName(),
+				"ADM-553");
 		return responseWrapper;
 	}
 }

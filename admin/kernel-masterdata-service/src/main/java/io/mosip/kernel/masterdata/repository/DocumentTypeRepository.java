@@ -62,6 +62,9 @@ public interface DocumentTypeRepository extends BaseRepository<DocumentType, Cod
 	 */
 	@Query("FROM DocumentType WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false)")
 	DocumentType findByCodeAndLangCode(String code, String langCode);
+	
+	@Query("FROM DocumentType WHERE code =?1 AND (isDeleted is null OR isDeleted = false)")
+	List<DocumentType> findtoUpdateDocumentTypeByCode(String code);
 
 	/**
 	 * Get all Document type of a specific language using language code

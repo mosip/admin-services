@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,6 +25,7 @@ import io.mosip.kernel.masterdata.dto.DocumentCategoryPutDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentCategoryExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -262,6 +264,25 @@ public class DocumentCategoryController {
 				MasterDataConstant.AUDIT_SYSTEM,
 				String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC, DocumentCategoryDto.class.getCanonicalName()),
 				"ADM-801");
+		return responseWrapper;
+	}
+	
+	@ResponseFilter
+	@PatchMapping("/documentcategories")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	@ApiOperation(value = "Service to update document category", notes = "Update document category")
+	public ResponseWrapper<StatusResponseDto> updateDocumentCategoryStatus(@RequestParam boolean isActive,
+			@RequestParam String code) {
+		auditUtil.auditRequest(MasterDataConstant.STATUS_API_IS_CALLED + DocumentCategoryDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_API_IS_CALLED + DocumentCategoryDto.class.getCanonicalName(), "ADM-802");
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentCategoryService.updateDocumentCategory(code, isActive));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.STATUS_UPDATED_SUCCESS, DocumentCategoryDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.STATUS_UPDATED_SUCCESS, DocumentCategoryDto.class.getCanonicalName()),
+				"ADM-803");
 		return responseWrapper;
 	}
 }
