@@ -143,6 +143,7 @@ public class DeviceTypeController {
 		return responseWrapper;
 	}
 
+
 	/**
 	 * Api to search Device Type based on filters provided.
 	 * 
@@ -154,12 +155,12 @@ public class DeviceTypeController {
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Retrieve all Device Types for the given Filter parameters", notes = "Retrieve all Device Types for the given Filter parameters")
 	public ResponseWrapper<PageResponseDto<DeviceTypeExtnDto>> deviceTypeSearch(
-			@Valid @RequestBody RequestWrapper<SearchDto> request) {
+			@Valid @RequestBody RequestWrapper<SearchDto> request, @RequestParam boolean addMissingData) {
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName(), "ADM-633");
 		ResponseWrapper<PageResponseDto<DeviceTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(deviceTypeService.deviceTypeSearch(request.getRequest()));
+		responseWrapper.setResponse(deviceTypeService.deviceTypeSearch(request.getRequest(), addMissingData));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, DeviceTypeDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,

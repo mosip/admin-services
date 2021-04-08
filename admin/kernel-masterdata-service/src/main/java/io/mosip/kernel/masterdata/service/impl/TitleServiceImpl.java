@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.TitleErrorCode;
+import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
 import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
@@ -294,10 +295,13 @@ public class TitleServiceImpl implements TitleService {
 	 * io.mosip.kernel.masterdata.service.TitleService#searchTitles(io.mosip.kernel.
 	 * masterdata.dto.request.SearchDto)
 	 */
+	@SuppressWarnings("null")
 	@Override
-	public PageResponseDto<TitleExtnDto> searchTitles(SearchDto searchDto) {
+	public PageResponseDto<TitleExtnDto> searchTitles(SearchDto searchDto, boolean addMissingData) {
 		PageResponseDto<TitleExtnDto> pageDto = new PageResponseDto<>();
 		List<TitleExtnDto> titles = null;
+		List<TitleExtnDto> titleListForMissingData = new ArrayList<TitleExtnDto>();
+
 		if (filterTypeValidator.validate(TitleExtnDto.class, searchDto.getFilters())) {
 			Pagination pagination = searchDto.getPagination();
 			List<SearchSort> sort = searchDto.getSort();
@@ -305,10 +309,25 @@ public class TitleServiceImpl implements TitleService {
 			searchDto.setSort(Collections.emptyList());
 			pageUtils.validateSortField(Title.class, sort);
 			Page<Title> page = masterDataSearchHelper.searchMasterdata(Title.class, searchDto, null);
+			if (addMissingData) {
+				List<MissingCodeDataDto> missingCodeDataDtos = masterDataSearchHelper.fetchValuesWithCode(Title.class,
+						searchDto.getLanguageCode());
+				missingCodeDataDtos.forEach(missingCodeData -> {
+					TitleExtnDto titleExtnDto = new TitleExtnDto();
+					titleExtnDto.setCode(missingCodeData.getCode());
+					titleExtnDto.setLangCode(missingCodeData.getLangcode());
+					titleListForMissingData.add(titleExtnDto);
+				});
+			}
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				titles = MapperUtils.mapAll(page.getContent(), TitleExtnDto.class);
+				for (TitleExtnDto titleExtnDto : titleListForMissingData) {
+					titles.add(titleExtnDto);
+				}
+
 				pageDto = pageUtils.sortPage(titles, sort, pagination);
 			}
+
 		}
 		return pageDto;
 

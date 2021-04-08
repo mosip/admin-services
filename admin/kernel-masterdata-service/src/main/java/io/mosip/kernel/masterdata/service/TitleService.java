@@ -95,7 +95,7 @@ public interface TitleService {
 	 * @param searchDto the search dto
 	 * @return {@link PageResponseDto} the page response dto
 	 */
-	PageResponseDto<TitleExtnDto> searchTitles(SearchDto searchDto);
+	PageResponseDto<TitleExtnDto> searchTitles(SearchDto searchDto, boolean addMissingData);
 
 	/**
 	 * Filter titles.

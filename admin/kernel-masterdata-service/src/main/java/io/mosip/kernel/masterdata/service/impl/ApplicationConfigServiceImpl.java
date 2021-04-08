@@ -12,6 +12,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.ApplicationConfigResponseDto;
 import io.mosip.kernel.masterdata.service.ApplicationConfigService;
 @Component
 public class ApplicationConfigServiceImpl implements ApplicationConfigService {
+
 	@Value("${mosip.mandatory-languages}")
 	private String mandatoryLang;
 

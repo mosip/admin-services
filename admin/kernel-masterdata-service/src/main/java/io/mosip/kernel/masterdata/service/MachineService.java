@@ -105,7 +105,7 @@ public interface MachineService {
 	 * @param dto the search DTO.
 	 * @return the {@link PageResponseDto}.
 	 */
-	public PageResponseDto<MachineSearchDto> searchMachine(SearchDto dto);
+	public PageResponseDto<MachineSearchDto> searchMachine(SearchDto dto, boolean addMissingData);
 
 	/**
 	 * Method to filter Machine based on column and type provided.

@@ -144,6 +144,11 @@ public class MasterdataSearchHelper {
 
 	}
 
+	public <E> List<E> getMissingData(String tableName, String langCode) {
+
+		return null;
+	}
+
 	/**
 	 * Method to add the filters to the criteria query
 	 * 

@@ -75,5 +75,6 @@ public interface RegistrationCenterTypeService {
 	 * @param dto contains the data for searching and sorting.
 	 * @return list of document type with all the metadata.
 	 */
-	public PageResponseDto<RegistrationCenterTypeExtnDto> searchRegistrationCenterTypes(SearchDto dto);
+	public PageResponseDto<RegistrationCenterTypeExtnDto> searchRegistrationCenterTypes(SearchDto dto,
+			boolean addMissingData);
 }

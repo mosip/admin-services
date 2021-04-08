@@ -18,6 +18,7 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.MachineTypeDto;
 import io.mosip.kernel.masterdata.dto.MachineTypePutDto;
+import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineTypeExtnDto;
@@ -266,22 +267,37 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 	 * io.mosip.kernel.masterdata.service.MachineTypeService#searchMachineType(io.
 	 * mosip.kernel.masterdata.dto.request.SearchDto)
 	 */
+	@SuppressWarnings("null")
 	@Override
-	public PageResponseDto<MachineTypeExtnDto> searchMachineType(SearchDto dto) {
+	public PageResponseDto<MachineTypeExtnDto> searchMachineType(SearchDto dto, boolean addMissingData) {
 		PageResponseDto<MachineTypeExtnDto> pageDto = new PageResponseDto<>();
 		List<MachineTypeExtnDto> machineTypes = null;
+		List<MachineTypeExtnDto> machineTypeListForMissingData = new ArrayList<MachineTypeExtnDto>();
+
 		List<SearchFilter> addList = new ArrayList<>();
 		if (filterValidator.validate(MachineTypeExtnDto.class, dto.getFilters())) {
 			pageUtils.validateSortField(MachineType.class, dto.getSort());
 			OptionalFilter optionalFilter = new OptionalFilter(addList);
 			Page<MachineType> page = masterdataSearchHelper.searchMasterdata(MachineType.class, dto,
 					new OptionalFilter[] { optionalFilter });
+			if (addMissingData) {
+				List<MissingCodeDataDto> missingCodeDataDtos = masterdataSearchHelper
+						.fetchValuesWithCode(MachineType.class, dto.getLanguageCode());
+				missingCodeDataDtos.forEach(missingCodeData -> {
+					MachineTypeExtnDto machineTypeExtnDto = new MachineTypeExtnDto();
+					machineTypeExtnDto.setCode(missingCodeData.getCode());
+					machineTypeExtnDto.setLangCode(missingCodeData.getLangcode());
+					machineTypeListForMissingData.add(machineTypeExtnDto);
+				});
+			}
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				pageDto = PageUtils.pageResponse(page);
 				machineTypes = MapperUtils.mapAll(page.getContent(), MachineTypeExtnDto.class);
+				for (MachineTypeExtnDto machineTypeExtnDto : machineTypeListForMissingData) {
+					machineTypes.add(machineTypeExtnDto);
+				}
 				pageDto.setData(machineTypes);
 			}
-
 		}
 		return pageDto;
 	}
