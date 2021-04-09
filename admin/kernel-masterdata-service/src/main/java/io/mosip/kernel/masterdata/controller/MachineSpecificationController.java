@@ -143,7 +143,7 @@ public class MachineSpecificationController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine Specification found"),
 			@ApiResponse(code = 500, message = "While updating Machine Specification any error occured") })
-	public ResponseWrapper<StatusResponseDto> updateMachineSpecificationStatus(@RequestParam String code,
+	public ResponseWrapper<StatusResponseDto> updateMachineSpecificationStatus(@RequestParam String id,
 			@RequestParam boolean isActive) {
 		auditUtil.auditRequest(
 				MasterDataConstant.STATUS_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName(),
@@ -151,7 +151,7 @@ public class MachineSpecificationController {
 				MasterDataConstant.STATUS_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName(), "ADM-660");
 		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
-				.setResponse(machineSpecificationService.updateMachineSpecificationStatus(code, isActive));
+				.setResponse(machineSpecificationService.updateMachineSpecificationStatus(id, isActive));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_UPDATED_STATUS,
 						MachineSpecificationDto.class.getCanonicalName()),

@@ -98,9 +98,13 @@ import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.service.DynamicFieldService;
 import io.mosip.kernel.masterdata.service.ExceptionalHolidayService;
+import io.mosip.kernel.masterdata.service.HolidayService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationHierarchyService;
 import io.mosip.kernel.masterdata.service.LocationService;
+import io.mosip.kernel.masterdata.service.MachineService;
+import io.mosip.kernel.masterdata.service.MachineSpecificationService;
+import io.mosip.kernel.masterdata.service.MachineTypeService;
 import io.mosip.kernel.masterdata.service.RegWorkingNonWorkingService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterTypeService;
@@ -226,6 +230,15 @@ public class MasterdataControllerTest {
 	private LocationService locationService;
 
 	@MockBean
+	private MachineService machineService;
+
+	@MockBean
+	private MachineSpecificationService machineSpecificationService;
+
+	@MockBean
+	private MachineTypeService machineTypeService;
+
+	@MockBean
 	private LocationHierarchyService locationHierarchyService;
 
 	LocationDto locationDto = null;
@@ -246,6 +259,9 @@ public class MasterdataControllerTest {
 	
 	@MockBean
 	RegistrationCenterTypeService registrationCenterTypeService;
+
+	@MockBean
+	HolidayService holidayService;
 
 	private RegistrationCenter registrationCenter;
 	private List<Holiday> holidays;
@@ -1380,6 +1396,95 @@ public class MasterdataControllerTest {
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 	
+	@Test
+	@WithUserDetails("test")
+	public void updateHolidayStatusTest() throws Exception {
+
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Holiday");
+		Mockito.when(
+				holidayService.updateHolidayStatus(Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(dto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/holidays")
+				.characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
+				.contentType(MediaType.APPLICATION_JSON).param("holidayId", "10005").param("isActive", "true");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void updateLanguageStatusTest() throws Exception {
+
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Language");
+		Mockito.when(languageService.updateLanguageStatus(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(dto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/languages").characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("code", "ara")
+				.param("isActive", "true");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void updateLocationStatusTest() throws Exception {
+
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Location");
+		Mockito.when(locationService.updateLocationStatus(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(dto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/locations").characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("code", "NTH")
+				.param("isActive", "true");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void updateMachineStatusTest() throws Exception {
+
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Machine");
+		Mockito.when(machineService.updateMachineStatus(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(dto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/machines").characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("id", "11008")
+				.param("isActive", "true");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void updateMachineSpecificationStatusTest() throws Exception {
+
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for MachineSpecification");
+		Mockito.when(
+				machineSpecificationService.updateMachineSpecificationStatus(Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(dto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/machinespecifications")
+				.characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
+				.contentType(MediaType.APPLICATION_JSON).param("id", "11009").param("isActive", "true");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void updateMachineTypeStatusTest() throws Exception {
+
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for MachineType");
+		Mockito.when(machineTypeService.updateMachineTypeStatus(Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(dto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/machinetypes").characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("code", "AGB")
+				.param("isActive", "true");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+
 	@Test
 	@WithUserDetails("test")
 	public void updateRegistrationCenterTypeStatusTest() throws Exception {
