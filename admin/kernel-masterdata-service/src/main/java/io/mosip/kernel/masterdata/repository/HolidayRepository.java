@@ -37,6 +37,15 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	 * @param id holiday id input from user
 	 * @return list of holidays for a particular id
 	 */
+	@Query(value = "UPDATE master.loc_holiday SET is_active=?2 WHERE id=?1 RETURNING *", nativeQuery = true)
+	List<Holiday> updateHolidayById(int id, boolean isActive);
+
+	/**
+	 * Get all the holidays for a specific id
+	 * 
+	 * @param id holiday id input from user
+	 * @return list of holidays for a particular id
+	 */
 	@Query("FROM Holiday where holidayId=?1 and (isDeleted = false or isDeleted is null)")
 	List<Holiday> findById(int id);
 

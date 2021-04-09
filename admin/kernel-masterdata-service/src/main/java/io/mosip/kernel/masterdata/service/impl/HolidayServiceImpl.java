@@ -365,7 +365,9 @@ public class HolidayServiceImpl implements HolidayService {
 			int id = Integer.parseInt(holidayId);
 			List<Holiday> holidays = holidayRepository.findById(id);
 			if (!EmptyCheckUtils.isNullEmpty(holidays)) {
-				masterdataCreationUtil.updateMasterDataStatus(Holiday.class, holidayId, isActive, "id");
+				// masterdataCreationUtil.updateMasterDataStatus(Holiday.class, holidayId,
+				// isActive, "id");
+				holidayRepository.updateHolidayById(id, isActive);
 			} else {
 				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, Holiday.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM, String.format(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
