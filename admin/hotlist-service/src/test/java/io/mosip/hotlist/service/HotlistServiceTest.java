@@ -21,7 +21,6 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.hotlist.constant.HotlistErrorConstants;
-import io.mosip.hotlist.constant.HotlistStatus;
 import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
 import io.mosip.hotlist.entity.Hotlist;
 import io.mosip.hotlist.event.HotlistEventHandler;
@@ -29,6 +28,7 @@ import io.mosip.hotlist.exception.HotlistAppException;
 import io.mosip.hotlist.repository.HotlistHistoryRepository;
 import io.mosip.hotlist.repository.HotlistRepository;
 import io.mosip.hotlist.service.impl.HotlistServiceImpl;
+import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
