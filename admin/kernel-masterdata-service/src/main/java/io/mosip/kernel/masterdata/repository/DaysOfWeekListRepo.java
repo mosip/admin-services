@@ -18,7 +18,13 @@ public interface DaysOfWeekListRepo extends BaseRepository<DaysOfWeek, WeekDayId
 	@Query("FROM DaysOfWeek where langCode=?1 and (isDeleted is null or isDeleted = false) and isActive = true")
 	List<DaysOfWeek> findBylangCode(String langCode);
 
+	@Query("FROM DaysOfWeek where (isDeleted is null or isDeleted = false) and isActive = true")
+	List<DaysOfWeek> findDaysOfWeek();
+
 	@Query("SELECT d from DaysOfWeek d where d.langCode=?1 and d.isGlobalWorking=true and (d.isDeleted is null or d.isDeleted = false) and d.isActive = true")
 	List<DaysOfWeek> findByAllGlobalWorkingTrue(String langCode);
+
+	@Query("SELECT d from DaysOfWeek d where d.isGlobalWorking=true and (d.isDeleted is null or d.isDeleted = false) and d.isActive = true")
+	List<DaysOfWeek> findByAllGlobalWorkingTrue();
 
 }

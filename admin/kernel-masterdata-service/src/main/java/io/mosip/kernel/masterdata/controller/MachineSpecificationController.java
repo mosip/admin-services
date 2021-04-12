@@ -231,7 +231,8 @@ public class MachineSpecificationController {
 	@PostMapping(value = "/machinespecifications/search")
 	@ApiOperation(value = "Retrieve all machine specifications for the given Filter parameters", notes = "Retrieve all machine specifications for the given Filter parameters")
 	public ResponseWrapper<PageResponseDto<MachineSpecificationExtnDto>> searchMachineSpecification(
-			@Valid @RequestBody RequestWrapper<SearchDto> request, @RequestParam boolean addMissingData) {
+			@Valid @RequestBody RequestWrapper<SearchDto> request,
+			@RequestParam(required = false) boolean addMissingData) {
 		auditUtil.auditRequest(
 				MasterDataConstant.SEARCH_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,

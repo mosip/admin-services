@@ -244,7 +244,8 @@ public class TemplateController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of templates"),
 			@ApiResponse(code = 500, message = "Error occured while retrieving templates") })
 	public ResponseWrapper<PageResponseDto<TemplateExtnDto>> searchTemplates(
-			@RequestBody @Valid RequestWrapper<SearchDto> request, @RequestParam boolean addMissingData) {
+			@RequestBody @Valid RequestWrapper<SearchDto> request,
+			@RequestParam(required = false) boolean addMissingData) {
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SEARCH_API_IS_CALLED, TemplateDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM,

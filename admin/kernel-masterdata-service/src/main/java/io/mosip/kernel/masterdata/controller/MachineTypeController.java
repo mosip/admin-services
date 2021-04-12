@@ -178,7 +178,7 @@ public class MachineTypeController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<MachineTypeExtnDto>> searchMachineType(
 			@ApiParam(value = "Request DTO to search Machine Types") @RequestBody @Valid RequestWrapper<SearchDto> request,
-			@RequestParam boolean addMissingData) {
+			@RequestParam(required = false) boolean addMissingData) {
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + MachineTypeDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.SEARCH_API_IS_CALLED + MachineTypeDto.class.getCanonicalName(), "ADM-653");

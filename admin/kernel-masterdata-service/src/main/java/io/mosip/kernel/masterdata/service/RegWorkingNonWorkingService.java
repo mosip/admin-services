@@ -5,10 +5,10 @@ import io.mosip.kernel.masterdata.dto.WorkingDaysResponseDto;
 
 public interface RegWorkingNonWorkingService {
 
-	WeekDaysResponseDto getWeekDaysList(String regCenterId, String langCode);
+	WeekDaysResponseDto getWeekDaysList(String regCenterId);
 
-	WorkingDaysResponseDto getWorkingDays(String regCenterId, String dayCode);
+	WorkingDaysResponseDto getWorkingDays(String regCenterId);
 	
-	WorkingDaysResponseDto getWorkingDays(String langCode);
+	WorkingDaysResponseDto getWorkingDaysByLangCode(String langCode);
 
 }
