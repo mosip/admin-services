@@ -44,18 +44,19 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 	private RegistrationCenterRepository registrationCenterRepository;
 
 	@Override
-	public WeekDaysResponseDto getWeekDaysList(String regCenterId) {
+	public WeekDaysResponseDto getWeekDaysList(String regCenterId, String langCode) {
 
 		List<WeekDaysDto> weekdayList = null;
 
 		WeekDaysResponseDto weekdays = new WeekDaysResponseDto();
-		List<RegistrationCenter> registrationCenter = null;
+		RegistrationCenter registrationCenter = null;
 
 		Objects.requireNonNull(regCenterId);
+		Objects.requireNonNull(langCode);
 
 		try {
-			weekdayList = workingDaysRepo.findByregistrationCenterIdForWeekDays(regCenterId);
-			registrationCenter = registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(regCenterId);
+			weekdayList = workingDaysRepo.findByregistrationCenterIdAndlangCodeForWeekDays(regCenterId, langCode);
+			registrationCenter = registrationCenterRepository.findByIdAndLangCode(regCenterId, langCode);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					WorkingNonWorkingDayErrorCode.WORKING_DAY_TABLE_NOT_ACCESSIBLE.getErrorCode(),
@@ -71,7 +72,7 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 			}
 			// Fetch from global level .
 			else {
-				List<DaysOfWeek> globalDaysList = daysOfWeekRepo.findDaysOfWeek();
+				List<DaysOfWeek> globalDaysList = daysOfWeekRepo.findBylangCode(langCode);
 				if (globalDaysList != null && !globalDaysList.isEmpty()) {
 					weekdayList = globalDaysList.stream().map(day -> {
 						WeekDaysDto globalWorkingDay = new WeekDaysDto();
@@ -96,16 +97,18 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 	}
 
 	@Override
-	public WorkingDaysResponseDto getWorkingDays(String regCenterId) {
+	public WorkingDaysResponseDto getWorkingDays(String regCenterId, String langCode) {
 
 		List<WorkingDaysDto> workingDayList = null;
 		List<DayNameAndSeqListDto> nameSeqList = null;
 		WorkingDaysResponseDto responseDto = new WorkingDaysResponseDto();
 		Objects.requireNonNull(regCenterId);
-		List<RegistrationCenter> registrationCenter = null;
+		Objects.requireNonNull(langCode);
+		RegistrationCenter registrationCenter = null;
 		try {
-			nameSeqList = workingDaysRepo.findByregistrationCenterIdForWorkingDays(regCenterId);
-			registrationCenter = registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(regCenterId);
+			nameSeqList = workingDaysRepo.findByregistrationCenterIdAndlanguagecodeForWorkingDays(regCenterId,
+					langCode);
+			registrationCenter = registrationCenterRepository.findByIdAndLangCode(regCenterId, langCode);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					WorkingNonWorkingDayErrorCode.WORKING_DAY_TABLE_NOT_ACCESSIBLE.getErrorCode(),
@@ -122,6 +125,7 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 				nameSeqList.sort((d1, d2) -> d1.getDaySeq() - d2.getDaySeq());
 				workingDayList = nameSeqList.stream().map(nameSeq -> {
 					WorkingDaysDto dto = new WorkingDaysDto();
+					dto.setLanguageCode(langCode);
 					dto.setName(nameSeq.getName());
 					dto.setOrder(nameSeq.getDaySeq());
 					return dto;
@@ -129,12 +133,12 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 				responseDto.setWorkingdays(workingDayList);
 
 			} else {
-				List<DaysOfWeek> globalDaysList = daysOfWeekRepo.findByAllGlobalWorkingTrue();
+				List<DaysOfWeek> globalDaysList = daysOfWeekRepo.findByAllGlobalWorkingTrue(langCode);
 				if (globalDaysList != null && !globalDaysList.isEmpty()) {
 					globalDaysList.sort((d1, d2) -> d1.getDaySeq() - d2.getDaySeq());
 					workingDayList = globalDaysList.stream().map(day -> {
 						WorkingDaysDto dto = new WorkingDaysDto();
-						dto.setLanguageCode(day.getLangCode());
+						dto.setLanguageCode(langCode);
 						dto.setName(day.getName());
 						dto.setOrder(day.getDaySeq());
 						return dto;
@@ -155,10 +159,11 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 	}
 
 	@Override
-	public WorkingDaysResponseDto getWorkingDaysByLangCode(String langCode) {
+	public WorkingDaysResponseDto getWorkingDays(String langCode) {
 		// TODO Auto-generated method stub
 		List<WorkingDaysDto> workingDayList = null;
 		WorkingDaysResponseDto responseDto = new WorkingDaysResponseDto();
+		Objects.requireNonNull(langCode);
 
 		List<DaysOfWeek> globalDaysList = null;
 		try {
@@ -174,7 +179,7 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 			globalDaysList.sort((d1, d2) -> d1.getDaySeq() - d2.getDaySeq());
 			workingDayList = globalDaysList.stream().map(day -> {
 				WorkingDaysDto dto = new WorkingDaysDto();
-				dto.setLanguageCode(day.getLangCode());
+				dto.setLanguageCode(langCode);
 				dto.setName(day.getName());
 				dto.setOrder(day.getDaySeq());
 				return dto;

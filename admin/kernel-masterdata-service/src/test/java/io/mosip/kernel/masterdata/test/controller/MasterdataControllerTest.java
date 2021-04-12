@@ -1506,8 +1506,8 @@ public class MasterdataControllerTest {
 	@WithUserDetails("reg-processor")
 	public void weekDaysControllerTest() throws Exception {
 
-		Mockito.when(regWorkingNonWorkingService.getWeekDaysList("10001")).thenReturn(weekDaysResponseDto);
-		mockMvc.perform(MockMvcRequestBuilders.get("/weekdays/10001")).andExpect(status().isOk());
+		Mockito.when(regWorkingNonWorkingService.getWeekDaysList("10001", "eng")).thenReturn(weekDaysResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/weekdays/10001/eng")).andExpect(status().isOk());
 
 	}
 
@@ -1515,8 +1515,8 @@ public class MasterdataControllerTest {
 	@WithUserDetails("reg-processor")
 	public void workDaysControllerTest() throws Exception {
 
-		Mockito.when(regWorkingNonWorkingService.getWorkingDays("10001")).thenReturn(workingDaysResponseDto);
-		mockMvc.perform(MockMvcRequestBuilders.get("/workingdays/10001")).andExpect(status().isOk());
+		Mockito.when(regWorkingNonWorkingService.getWorkingDays("10001", "101")).thenReturn(workingDaysResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/workingdays/10001/101")).andExpect(status().isOk());
 
 	}
 	
@@ -1525,7 +1525,7 @@ public class MasterdataControllerTest {
 	public void workDaysControllerByLangCodeTest() throws Exception {
 
 		Mockito.when(regWorkingNonWorkingService.getWorkingDays("eng")).thenReturn(workingDaysResponseDto);
-		mockMvc.perform(MockMvcRequestBuilders.get("/workingdays/langCode/eng")).andExpect(status().isOk());
+		mockMvc.perform(MockMvcRequestBuilders.get("/workingdays/eng")).andExpect(status().isOk());
 
 	}
 
