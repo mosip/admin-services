@@ -53,7 +53,7 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * @since 1.1.5-SNAPSHOT
+ * @since 1.1.5-rc1
  */
 @RefreshScope
 @Service
