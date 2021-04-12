@@ -153,7 +153,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		List<DeviceSpecificationDto> deviceSpecificationDtoList = null;
 		try {
 			deviceSpecificationList = deviceSpecificationRepository
-					.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode, deviceTypeCode);
+					.findByDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(deviceTypeCode);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorCode(),
@@ -222,7 +222,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		List<DeviceSpecification> deviceSpecification = deviceSpecificationRepository
 				.findDeviceSpecById(uniqueId);
 			
-		return deviceSpecification ==null?uniqueId:generateId();
+		return deviceSpecification.isEmpty() ? uniqueId : generateId();
 	}
 
 	/*

@@ -167,7 +167,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		
 		List<MachineSpecification> machineSpecification = machineSpecificationRepository.findMachineSpecById(uniqueId);
 			
-		return machineSpecification ==null?uniqueId:generateId();
+		return machineSpecification.isEmpty() ? uniqueId : generateId();
 	}
 
 

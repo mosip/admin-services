@@ -38,7 +38,7 @@ public class MachineHistoryController {
 
 	/**
 	 * Get api to fetch a machine history details based on given Machine ID,
-	 * Language code and effective date time
+	 * and effective date time
 	 * 
 	 * @param id          input machine Id from User
 	 * @param langCode    input Language Code from user
@@ -50,14 +50,15 @@ public class MachineHistoryController {
 
 	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
-	@GetMapping(value = "/{id}/{langcode}/{effdatetimes}")
-	@ApiOperation(value = "Retrieve all Machine History Details for the given Languge Code, ID and Effective date time", notes = "Retrieve all Machine Detail for given Languge Code and ID")
+	@GetMapping(value = { "/{id}/{effdatetimes}", "/{id}/{langcode}/{effdatetimes}" })
+	@ApiOperation(value = "Retrieve all Machine History Details for the given ID and Effective date time, /langCode pathparam will be deprecated soon", notes = "Retrieve all Machine Detail for given ID")
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Machine History Details retrieved from database for the given Languge Code, ID and Effective date time"),
-			@ApiResponse(code = 404, message = "When No Machine History Details found for the given Languge Code, ID and Effective date time"),
+			@ApiResponse(code = 200, message = "When Machine History Details retrieved from database for the given ID and Effective date time"),
+			@ApiResponse(code = 404, message = "When No Machine History Details found for the given ID and Effective date time"),
 			@ApiResponse(code = 500, message = "While retrieving Machine History Details any error occured") })
 	public ResponseWrapper<MachineHistoryResponseDto> getMachineHistoryIdLangEff(@PathVariable("id") String id,
-			@PathVariable("langcode") String langCode, @PathVariable("effdatetimes") String dateAndTime) {
+			@PathVariable(value = "langcode", required = false) String langCode,
+			@PathVariable("effdatetimes") String dateAndTime) {
 
 		ResponseWrapper<MachineHistoryResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(macHistoryService.getMachineHistroyIdLangEffDTime(id, langCode, dateAndTime));

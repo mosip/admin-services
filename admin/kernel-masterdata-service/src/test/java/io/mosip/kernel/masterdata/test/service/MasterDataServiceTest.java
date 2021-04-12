@@ -1722,8 +1722,8 @@ public class MasterDataServiceTest {
 	public void findDeviceSpecificationByLangugeCodeAndDeviceTypeCodeTest() {
 		String languageCode = "ENG";
 		String deviceTypeCode = "operating_sys";
-		Mockito.when(deviceSpecificationRepository
-				.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode, deviceTypeCode))
+		Mockito.when(
+				deviceSpecificationRepository.findByDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(deviceTypeCode))
 				.thenReturn(deviceSpecificationListWithDeviceTypeCode);
 
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
@@ -1734,7 +1734,6 @@ public class MasterDataServiceTest {
 				deviceSpecificationListWithDeviceTypeCode.get(0).getName());
 		Assert.assertEquals(deviceSpecificationDtos.get(0).getDeviceTypeCode(),
 				deviceSpecificationListWithDeviceTypeCode.get(0).getDeviceTypeCode());
-
 	}
 
 	@Test(expected = DataNotFoundException.class)
@@ -1763,11 +1762,10 @@ public class MasterDataServiceTest {
 	public void dataAccessExceptionnDeviceSpecificationByDevicTypeCodeTest() {
 		String languageCode = "ENG";
 		String deviceTypeCode = "operating_sys";
-		Mockito.when(deviceSpecificationRepository
-				.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode, deviceTypeCode))
+		Mockito.when(
+				deviceSpecificationRepository.findByDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(deviceTypeCode))
 				.thenThrow(DataAccessResourceFailureException.class);
 		deviceSpecificationService.findDeviceSpecByLangCodeAndDevTypeCode(languageCode, deviceTypeCode);
-
 	}
 	
 	@Test

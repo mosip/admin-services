@@ -79,6 +79,7 @@ public class DeviceSpecificationController {
 	 *         on given language code
 	 * 
 	 */
+/*	@Deprecated
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER','GLOBAL_ADMIN','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
 	@GetMapping("/devicespecifications/{langcode}")
@@ -95,7 +96,7 @@ public class DeviceSpecificationController {
 		ResponseWrapper<DeviceSpecificationResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(new DeviceSpecificationResponseDto(deviceSpecificationDtos));
 		return responseWrapper;
-	}
+	}*/
 
 	/**
 	 * Function to fetch list of device specification details based on language code
@@ -108,14 +109,15 @@ public class DeviceSpecificationController {
 	 */
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER','GLOBAL_ADMIN')")
 	@ResponseFilter
-	@GetMapping("/devicespecifications/{langcode}/{devicetypecode}")
+	@GetMapping(value = {"/devicespecifications/{devicetypecode}", "/devicespecifications/{langcode}/{devicetypecode}"})
 	@ApiOperation(value = "Retrieve all Device Specification for specific langCode and DeviceTypeCode", notes = "Retrieve all DeviceSpecification for specific langCode and DeviceTypeCode")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Device Specification retrieved from database for specific langCode and DeviceTypeCode "),
 			@ApiResponse(code = 404, message = "When No Device Specificationfound for specific langCode and DeviceTypeCode"),
 			@ApiResponse(code = 500, message = "While retrieving Device Specifications any error occured") })
 	public ResponseWrapper<DeviceSpecificationResponseDto> getDeviceSpecificationByLanguageCodeAndDeviceTypeCode(
-			@PathVariable("langcode") String langCode, @PathVariable("devicetypecode") String deviceTypeCode) {
+			@PathVariable(value = "langcode", required = false) String langCode,
+			@PathVariable("devicetypecode") String deviceTypeCode) {
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
 				.findDeviceSpecByLangCodeAndDevTypeCode(langCode, deviceTypeCode);
 
