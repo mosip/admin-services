@@ -67,7 +67,7 @@ public class WorkingDayController {
 	 */
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PRE_REGISTRATION','REGISTRATION_SUPERVISOR','REGISTRATION_PROCESSOR','REGISTRATION_OFFICER','INDIVIDUAL')")
 	@ResponseFilter
-	@GetMapping(value = { "/workingdays/{registrationCenterID}/{langCode}", "/workingdays/{registrationCenterID}" })
+	@GetMapping(value = { "/workingdays/{registrationCenterID}/{langCode}", "/regWorkingdays/{registrationCenterID}" })
 	@ApiOperation(value = "Retrieve all working Days for given Registration center ID, /langCode pathparam will be deprecated soon", notes = "Retrieve all working Days for given Registration center ID and Languge Code")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When working days retrieved from database for the given Registration center ID"),
@@ -91,7 +91,7 @@ public class WorkingDayController {
 	 */
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PRE_REGISTRATION','REGISTRATION_SUPERVISOR','REGISTRATION_PROCESSOR','REGISTRATION_OFFICER','INDIVIDUAL')")
 	@ResponseFilter
-	@GetMapping(value = "/workingdays/langCode/{langCode}")
+	@GetMapping(value = "/workingdays/{langCode}")
 	@ApiOperation(value = "Retrieve all working Days for given Lang Code", notes = "Retrieve all working Days for given Languge Code")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When working days retrieved from database for the given lang Code"),
