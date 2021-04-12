@@ -639,9 +639,21 @@ public class MasterdataSearchHelper {
 			throw new MasterDataServiceException(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
 					ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage());
 		}
-		Query query = entityManager.createNativeQuery(nativeQuery);
-		query.setParameter("langCode", langCode);
-		List<Object[]> result = query.getResultList();
+
+		List<Object[]> result = null;
+		try {
+			Query query = entityManager.createNativeQuery(nativeQuery);
+			query.setParameter("langCode", langCode);
+			result = query.getResultList();
+		} catch (HibernateException hibernateException) {
+			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(),
+					hibernateException.getMessage(), hibernateException);
+		} catch (RequestException e) {
+			throw e;
+		} catch (RuntimeException runtimeException) {
+			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+					runtimeException.getMessage(), runtimeException);
+		}
 
 		List<MissingCodeDataDto> results = result.stream()
 				.map(e -> new MissingCodeDataDto(e[0].toString(), e[1].toString())).collect(Collectors.toList());
@@ -671,9 +683,20 @@ public class MasterdataSearchHelper {
 					ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage());
 		}
 
-		Query query = entityManager.createNativeQuery(nativeQuery);
-		query.setParameter("langCode", langCode);
-		List<Object[]> result = query.getResultList();
+		List<Object[]> result = null;
+		try {
+			Query query = entityManager.createNativeQuery(nativeQuery);
+			query.setParameter("langCode", langCode);
+			result = query.getResultList();
+		} catch (HibernateException hibernateException) {
+			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(),
+					hibernateException.getMessage(), hibernateException);
+		} catch (RequestException e) {
+			throw e;
+		} catch (RuntimeException runtimeException) {
+			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+					runtimeException.getMessage(), runtimeException);
+		}
 
 		List<MissingIdDataDto> results = result.stream()
 				.map(e -> new MissingIdDataDto(e[0].toString(), e[1].toString())).collect(Collectors.toList());
