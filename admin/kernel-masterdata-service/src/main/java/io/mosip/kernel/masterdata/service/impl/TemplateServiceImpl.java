@@ -228,7 +228,7 @@ public class TemplateServiceImpl implements TemplateService {
 		List<Template> template = templateRepository
 				.findAllByCodeAndIsDeletedFalseOrIsDeletedIsNull(uniqueId);
 			
-		return template ==null?uniqueId:generateId();
+		return template.isEmpty() ? uniqueId : generateId();
 	}
 
 	/*

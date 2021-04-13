@@ -222,7 +222,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		List<DeviceSpecification> deviceSpecification = deviceSpecificationRepository
 				.findDeviceSpecById(uniqueId);
 			
-		return deviceSpecification ==null?uniqueId:generateId();
+		return deviceSpecification.isEmpty() ? uniqueId : generateId();
 	}
 
 	/*
