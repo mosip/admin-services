@@ -233,7 +233,8 @@ public class MachineController {
 	@PostMapping("/machines/search")
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<MachineSearchDto>> searchMachine(
-			@RequestBody @Valid RequestWrapper<SearchDto> request, @RequestParam boolean addMissingData) {
+			@RequestBody @Valid RequestWrapper<SearchDto> request,
+			@RequestParam(required = false) boolean addMissingData) {
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + MachineSearchDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.SEARCH_API_IS_CALLED + MachineSearchDto.class.getCanonicalName());

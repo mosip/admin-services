@@ -304,7 +304,8 @@ public class RegistrationCenterController {
 	@PostMapping("/registrationcenters/search")
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<RegistrationCenterSearchDto>> searchRegistrationCenter(
-			@RequestBody @Valid RequestWrapper<SearchDto> request, @RequestParam boolean addMissingData) {
+			@RequestBody @Valid RequestWrapper<SearchDto> request,
+			@RequestParam(required = false) boolean addMissingData) {
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SEARCH_API_IS_CALLED,
 						RegistrationCenterSearchDto.class.getSimpleName()),

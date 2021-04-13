@@ -227,7 +227,8 @@ public class DocumentCategoryController {
 	@PostMapping("/documentcategories/search")
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<DocumentCategoryExtnDto>> searchDocCategories(
-			@RequestBody @Valid RequestWrapper<SearchDto> request, @RequestParam boolean addMissingData) {
+			@RequestBody @Valid RequestWrapper<SearchDto> request,
+			@RequestParam(required = false) boolean addMissingData) {
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.SEARCH_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(), "ADM-698");

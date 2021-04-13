@@ -21,9 +21,9 @@ public interface RegWorkingNonWorkingRepo extends BaseRepository<RegWorkingNonWo
 	List<DayNameAndSeqListDto> findByregistrationCenterIdAndlanguagecodeForWorkingDays(String regCenterId,
 			String langcode);
 
-	@Query("SELECT new io.mosip.kernel.masterdata.dto.getresponse.WeekDaysDto(d.name,d.isGlobalWorking,w.dayCode,w.languagecode,w.isWorking) "
+	@Query("SELECT new io.mosip.kernel.masterdata.dto.getresponse.WeekDaysDto(d.name,d.isGlobalWorking,w.dayCode,d.langCode,w.isWorking) "
 			+ "FROM RegWorkingNonWorking w RIGHT JOIN w.daysOfWeek d "
-			+ "where w.registrationCenterId=?1 and w.languagecode=?2 and w.isActive = true")
+			+ "where w.registrationCenterId=?1 and d.langCode=?2 and w.isActive = true")
 	List<WeekDaysDto> findByregistrationCenterIdAndlangCodeForWeekDays(String regCenterId, String langCode);
 
 	@Query("From RegWorkingNonWorking where registrationCenterId=?1 and languagecode=?2 and (isDeleted is null or isDeleted = false) and isActive = true")
