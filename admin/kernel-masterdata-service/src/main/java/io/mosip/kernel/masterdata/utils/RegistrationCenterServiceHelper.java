@@ -197,8 +197,8 @@ public class RegistrationCenterServiceHelper {
 	}
 
 	private void setWorkingNonWorking(List<RegistrationCenterSearchDto> registrationCenters) {
-		List<String> requiredIds = registrationCenters.stream().map((RegistrationCenterSearchDto::getId)).collect(Collectors.toList());
-		List<RegWorkingNonWorking> workingNonWorkingDays = regWorkingNonWorkingRepo.findByRegCenterIds(requiredIds);
+		List<RegWorkingNonWorking> workingNonWorkingDays = regWorkingNonWorkingRepo.findByRegCenterIds(
+				registrationCenters.stream().map((RegistrationCenterSearchDto::getId)).collect(Collectors.toList()));
 		registrationCenters.stream().forEach(i -> setWorking(i, workingNonWorkingDays));
 	}
 
