@@ -18,7 +18,8 @@ public enum MasterdataSearchErrorCode {
 	ERROR_OCCURED_WHILE_SORTING("KER-MSD-359", "Error occured while sorting"),
 	INVALID_SORT_FIELD("KER-MSD-357", "Invalid sort field %s"), INVALID_VALUE("KER-MSD-390", "Invalid filter value"),
 	LAST_UPDATED_PARSE_EXCEPTION("KER-MSD-360", "Erro occurred while parsing lastUpdated timesatamp"),
-	INVALID_TIMESTAMP_EXCEPTION("KER-MSD-361", "Timestamp cannot be future date");
+	INVALID_TIMESTAMP_EXCEPTION("KER-MSD-361", "Timestamp cannot be future date"),
+	INVALID_LANGCODE("KER-MSD-999","Language Code is Invalid");
 
 	/**
 	 * The error code.
