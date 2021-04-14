@@ -39,7 +39,7 @@ public class MachineType extends BaseEntity implements Serializable {
 	@Column(name = "code")
 	private String code;
 
-	@Id
+
 	@Column(name = "lang_code")
 	private String langCode;
 

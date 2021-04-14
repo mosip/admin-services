@@ -3,7 +3,6 @@ package io.mosip.kernel.masterdata.entity;
 import java.io.Serializable;
 
 import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -34,9 +33,10 @@ public class TemplateFileFormat extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1051422672381211978L;
 
 	@Id
-	@AttributeOverrides({ @AttributeOverride(name = "code", column = @Column(name = "code", nullable = false)),
-			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
+	@AttributeOverride(name = "code", column = @Column(name = "code", nullable = false))
 	private String code;
+
+	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
 
 	@Column(name = "descr")

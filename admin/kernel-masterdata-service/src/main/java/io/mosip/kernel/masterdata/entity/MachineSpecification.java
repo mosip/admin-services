@@ -3,14 +3,12 @@ package io.mosip.kernel.masterdata.entity;
 import java.io.Serializable;
 
 import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -42,9 +40,10 @@ public class MachineSpecification extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
-			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
+	@AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36))
 	private String id;
+
+	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
 
 	/**
@@ -84,9 +83,7 @@ public class MachineSpecification extends BaseEntity implements Serializable {
 	private String description;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumns({
-			@JoinColumn(name = "mtyp_code", referencedColumnName = "code", insertable = false, updatable = false),
-			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	@JoinColumn(name = "mtyp_code", referencedColumnName = "code", insertable = false, updatable = false)
 	private MachineType machineType;
 
 }
