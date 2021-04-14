@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import io.mosip.kernel.masterdata.entity.RegistrationCenter;
+import io.mosip.kernel.masterdata.service.GenericService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -71,6 +73,9 @@ public class RegistrationCenterController {
 
 	@Autowired
 	private AuditUtil auditUtil;
+
+	@Autowired
+	private GenericService genericService;
 
 	/**
 	 * Function to fetch registration centers list using location code and language
@@ -485,6 +490,21 @@ public class RegistrationCenterController {
 		ResponseWrapper<RegistrationCenterExtnDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(registrationCenterService.updateRegistrationCenterWithNonLanguageSpecific(reqRegistrationCenterDto.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * Function to fetch missing centers in the provided language code
+	 *
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
+	 */
+	@ResponseFilter
+	@GetMapping("/registrationcenters/missingids/{langcode}")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	public ResponseWrapper<List<String>> getMissingRegistrationCentersDetails(
+			@PathVariable("langcode") String langCode) {
+		ResponseWrapper<List<String>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(genericService.getMissingData(RegistrationCenter.class, langCode));
 		return responseWrapper;
 	}
 }

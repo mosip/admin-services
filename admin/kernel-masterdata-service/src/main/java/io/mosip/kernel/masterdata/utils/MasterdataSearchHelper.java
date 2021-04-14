@@ -3,11 +3,7 @@ package io.mosip.kernel.masterdata.utils;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.persistence.Column;
@@ -25,6 +21,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.NonNull;
 import org.hibernate.HibernateException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
@@ -63,6 +60,7 @@ import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 @Transactional(readOnly = true)
 public class MasterdataSearchHelper {
 
+	private static String MISSING_IDS_QUERY = "select distinct A.COL from ( select distinct COL, lang_code from TABLE ) A left join ( select distinct COL, lang_code from TABLE where lang_code=:langCode ) B on A.COL=B.COL where B.COL is null";
 	private static final String LANGCODE_COLUMN_NAME = "langCode";
 	private static final String ENTITY_IS_NULL = "entity is null";
 	private static final String WILD_CARD_CHARACTER = "%";
@@ -144,10 +142,6 @@ public class MasterdataSearchHelper {
 
 	}
 
-	public <E> List<E> getMissingData(String tableName, String langCode) {
-
-		return null;
-	}
 
 	/**
 	 * Method to add the filters to the criteria query
@@ -617,34 +611,18 @@ public class MasterdataSearchHelper {
 
 	}
 
-	@SuppressWarnings("unchecked")
-	public <E> List<MissingCodeDataDto> fetchValuesWithCode(Class<E> entity, String langCode) {
+	public <E> List<String> fetchMissingValues(Class<E> entity, @NonNull String langCode) {
 		String tableName = entity.getAnnotation(Table.class).name();
-		String SchemaName = entity.getAnnotation(Table.class).schema();
+		String schemaName = entity.getAnnotation(Table.class).schema();
+		String colName = getIdColumnName(entity);
 
-		String nativeQuery = "select A.code, A.lang_code from (select distinct code, lang_code from " + SchemaName + "."
-				+ tableName + ") A  left join (select distinct code, lang_code from " + SchemaName + "." + tableName
-				+ " where lang_code=:langCode) B on A.code=B.code where B.code is null";
+		String nativeQuery = MISSING_IDS_QUERY.replaceAll("COL", colName).replaceAll("TABLE",
+				String.format("%s.%s", schemaName, tableName));
 
-		boolean isColumnExist = false;
-		for (Field entField : entity.getDeclaredFields()) {
-			if (entField.isAnnotationPresent(Id.class)) {
-				entField.setAccessible(true);
-				if (entField.getName() != null && entField.getName().equals("code")) {
-					isColumnExist = true;
-				}
-			}
-		}
-		if (!isColumnExist) {
-			throw new MasterDataServiceException(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
-					ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage());
-		}
-
-		List<Object[]> result = null;
 		try {
 			Query query = entityManager.createNativeQuery(nativeQuery);
 			query.setParameter("langCode", langCode);
-			result = query.getResultList();
+			return query.getResultList();
 		} catch (HibernateException hibernateException) {
 			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(),
 					hibernateException.getMessage(), hibernateException);
@@ -654,54 +632,21 @@ public class MasterdataSearchHelper {
 			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
 					runtimeException.getMessage(), runtimeException);
 		}
-
-		List<MissingCodeDataDto> results = result.stream()
-				.map(e -> new MissingCodeDataDto(e[0].toString(), e[1].toString())).collect(Collectors.toList());
-		return results;
 	}
 
-	@SuppressWarnings("unchecked")
-	public <E> List<MissingIdDataDto> fetchValuesWithId(Class<E> entity, String langCode) {
-		String tableName = entity.getAnnotation(Table.class).name();
-		String SchemaName = entity.getAnnotation(Table.class).schema();
-
-		String nativeQuery = "select A.id, A.lang_code from (select distinct id, lang_code from " + SchemaName + "."
-				+ tableName + ") A  left join (select distinct id, lang_code from " + SchemaName + "." + tableName
-				+ " where lang_code=:langCode) B on A.id=B.id where B.id is null";
-
-		boolean isColumnExist = false;
-		for (Field entField : entity.getDeclaredFields()) {
-			if (entField.isAnnotationPresent(Id.class)) {
-				entField.setAccessible(true);
-				if (entField.getName() != null && entField.getName().equals("id")) {
-					isColumnExist = true;
-				}
+	private String getIdColumnName(Class entity) throws MasterDataServiceException {
+		String columnName = "id";
+		try {
+			columnName = entity.getDeclaredField("id").getName();
+		} catch (NoSuchFieldException e) {
+			try {
+				columnName = entity.getDeclaredField("code").getName();
+			} catch (NoSuchFieldException e1) {
+				throw new MasterDataServiceException(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
+						ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage());
 			}
 		}
-		if (!isColumnExist) {
-			throw new MasterDataServiceException(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
-					ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage());
-		}
-
-		List<Object[]> result = null;
-		try {
-			Query query = entityManager.createNativeQuery(nativeQuery);
-			query.setParameter("langCode", langCode);
-			result = query.getResultList();
-		} catch (HibernateException hibernateException) {
-			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(),
-					hibernateException.getMessage(), hibernateException);
-		} catch (RequestException e) {
-			throw e;
-		} catch (RuntimeException runtimeException) {
-			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
-					runtimeException.getMessage(), runtimeException);
-		}
-
-		List<MissingIdDataDto> results = result.stream()
-				.map(e -> new MissingIdDataDto(e[0].toString(), e[1].toString())).collect(Collectors.toList());
-
-		return results;
+		return columnName;
 	}
 
 	private void setDeviceQueryParams(Query query, List<SearchFilter> list) {
