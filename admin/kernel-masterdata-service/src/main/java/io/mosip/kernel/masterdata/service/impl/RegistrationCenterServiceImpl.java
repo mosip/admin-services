@@ -39,7 +39,6 @@ import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.ExceptionalHolidayPutPostDto;
 import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
-import io.mosip.kernel.masterdata.dto.MissingIdDataDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.RegCenterLanguageSpecificPutDto;
 import io.mosip.kernel.masterdata.dto.RegCenterNonLanguageSpecificPutDto;
@@ -97,7 +96,6 @@ import io.mosip.kernel.masterdata.utils.LocationUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
-import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.utils.RegistrationCenterServiceHelper;
@@ -174,10 +172,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	@Autowired
 	private RegistrationCenterServiceHelper serviceHelper;
-
-	@Autowired
-	private MasterdataSearchHelper masterdataSearchHelper;
-
+	
 	@Autowired
 	private MasterDataFilterHelper masterDataFilterHelper;
 
@@ -189,11 +184,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	@Autowired
 	private LocationRepository locationRepository;
-	/**
-	 * get list of secondary languages supported by MOSIP from configuration file
-	 */
-	@Value("${mosip.mandatory-languages}")
-	private String mandatoryLanguage;
 	
 	@Autowired
 	private AuditUtil auditUtil;
@@ -1103,40 +1093,33 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	private List<ExceptionalHolidayPutPostDto> setRegExpHolidayDto(RegistrationCenter registrationCenter,
 			List<ExceptionalHolidayPutPostDto> exceptionalHolidayDtoList) {
 		List<RegExceptionalHoliday> dbRegExpHolidays = regExceptionalHolidayRepository
-				.findByRegIdAndLangcode(registrationCenter.getId(), registrationCenter.getLangCode());
-		if (dbRegExpHolidays.isEmpty()) {
-			dbRegExpHolidays = regExceptionalHolidayRepository.findByRegIdAndLangcode(registrationCenter.getId(),
-					mandatoryLanguage);
-		}
+				.findByRegId(registrationCenter.getId());
+
 		if (!dbRegExpHolidays.isEmpty()) {
 			for (RegExceptionalHoliday regExceptionalHoliday : dbRegExpHolidays) {
-				ExceptionalHolidayPutPostDto exceptionalHolidayDto = MapperUtils.map(regExceptionalHoliday,
-						ExceptionalHolidayPutPostDto.class);
+				ExceptionalHolidayPutPostDto exceptionalHolidayDto = new ExceptionalHolidayPutPostDto();
 				exceptionalHolidayDto
 						.setExceptionHolidayDate(regExceptionalHoliday.getExceptionHolidayDate().toString());
+				exceptionalHolidayDto.setExceptionHolidayName(regExceptionalHoliday.getExceptionHolidayName());
+				exceptionalHolidayDto.setExceptionHolidayReson(regExceptionalHoliday.getExceptionHolidayReson());
 				exceptionalHolidayDtoList.add(exceptionalHolidayDto);
 			}
 		}
 		return exceptionalHolidayDtoList;
 	}
-
-	// set response for working_non_working for both primary and sencodary
-	// language
+	
+	/**
+	 * 
+	 * @param registrationCenter
+	 * @return
+	 */
 	@Transactional
 	private WorkingNonWorkingDaysDto setResponseDtoWorkingNonWorking(RegistrationCenter registrationCenter) {
-		// if((primaryLang.equals(regCenterPostReqDto.getLangCode()) ||
-		// regCenterPostReqDto.getWorkingNonWorkingDays() != null) ||
-		// secondaryLang.equals(regCenterPostReqDto.getLangCode()) ){
 		List<RegWorkingNonWorking> workingNonWorkingDays = regWorkingNonWorkingRepo
-				.findByRegCenterIdAndlanguagecode(registrationCenter.getId(), registrationCenter.getLangCode());
-		if (workingNonWorkingDays.isEmpty()) {
-			workingNonWorkingDays = regWorkingNonWorkingRepo
-					.findByRegCenterIdAndlanguagecode(registrationCenter.getId(), mandatoryLanguage);
-		}
+				.findByRegCenterId(registrationCenter.getId());		
 		WorkingNonWorkingDaysDto workDays = new WorkingNonWorkingDaysDto();
 		if (!workingNonWorkingDays.isEmpty()) {
 			for (RegWorkingNonWorking working : workingNonWorkingDays)
-
 				switch (working.getDayCode()) {
 				case "101":
 					workDays.setSun(working.isWorking());
@@ -1173,11 +1156,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		if (!reqExceptionalHolidayDtos.isEmpty()) {
 			List<LocalDate> dbHolidayList = holidayRepository.findHolidayByLocationCode1(holidayLocationCode,
 					registrationCenterEntity.getLangCode());
-
 			if (!dbHolidayList.isEmpty()) {
-				// List<ExceptionalHolidayDto> exceptionalHolidayDtos =
-				// reqExceptionalHolidayDto;
-				if (!reqExceptionalHolidayDtos.isEmpty()) { // ***
+				if (!reqExceptionalHolidayDtos.isEmpty()) { 
 					for (ExceptionalHolidayPutPostDto expHoliday : reqExceptionalHolidayDtos) {
 						if (dbHolidayList.contains(LocalDate.parse((expHoliday.getExceptionHolidayDate())))) {
 							throw new MasterDataServiceException(

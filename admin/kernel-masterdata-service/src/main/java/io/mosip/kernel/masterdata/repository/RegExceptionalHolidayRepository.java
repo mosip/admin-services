@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
@@ -29,5 +30,8 @@ public interface RegExceptionalHolidayRepository
 
 	@Query("From RegExceptionalHoliday where registrationCenterId=?1  and exceptionHolidayDate= ?2 ")
 	public Object findByRegIdAndExpHoliday(String registrationCenterId, LocalDate exceptionHolidayDate);
+	
+	@Query("From RegExceptionalHoliday where registrationCenterId IN :registrationCenterIds and (isDeleted is null or isDeleted = false) and isActive = true")
+	public List<RegExceptionalHoliday> findByRegIds(@Param("registrationCenterIds") List<String> registrationCenterIds);
 
 }

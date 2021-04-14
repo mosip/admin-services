@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
@@ -34,5 +35,7 @@ public interface RegWorkingNonWorkingRepo extends BaseRepository<RegWorkingNonWo
 
 	@Query("From RegWorkingNonWorking where languagecode=?1 and (isDeleted is null or isDeleted = false) and isActive = true")
 	List<RegWorkingNonWorking> findByLanguagecode(String languageCode);
-
+	
+	@Query("From RegWorkingNonWorking where registrationCenterId IN :registrationCenterIds and (isDeleted is null or isDeleted = false) and isActive = true")
+	List<RegWorkingNonWorking> findByRegCenterIds(@Param("registrationCenterIds") List<String> registrationCenterIds);
 }

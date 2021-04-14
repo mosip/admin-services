@@ -116,17 +116,13 @@ public class RegistrationCenterServiceHelper {
 		List<SearchSort> sort = dto.getSort();
 		dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
 		dto.setSort(Collections.emptyList());
-		List<RegWorkingNonWorking> workingNonWorkingDays = regWorkingNonWorkingRepo
-				.findByLanguagecode(dto.getLanguageCode());
-		List<RegExceptionalHoliday> exceptionalHoliday = regExceptionalHolidayRepository
-				.findByLangcode(dto.getLanguageCode());
 		Page<RegistrationCenter> page = masterdataSearchHelper.searchMasterdata(RegistrationCenter.class, dto,
 				new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 		if (page.getContent() != null && !page.getContent().isEmpty()) {
 			registrationCenters = MapperUtils.mapAll(page.getContent(), RegistrationCenterSearchDto.class);
 			setCenterMetadata(registrationCenters, locations, zones);
-			setWorkingNonWorking(registrationCenters, workingNonWorkingDays);
-			setExceptionalHoliday(registrationCenters, exceptionalHoliday);
+			setWorkingNonWorking(registrationCenters);
+			setExceptionalHoliday(registrationCenters);
 			pageDto = pageUtils.sortPage(registrationCenters, sort, pagination);
 		}
 
@@ -143,10 +139,6 @@ public class RegistrationCenterServiceHelper {
 		List<SearchSort> sort = dto.getSort();
 		dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
 		dto.setSort(Collections.emptyList());
-		List<RegWorkingNonWorking> workingNonWorkingDays = regWorkingNonWorkingRepo
-				.findByLanguagecode(dto.getLanguageCode());
-		List<RegExceptionalHoliday> exceptionalHoliday = regExceptionalHolidayRepository
-				.findByLangcode(dto.getLanguageCode());
 		int count=0;
 		for(List<SearchFilter> locationFilter:locationFilters) {
 			OptionalFilter optionalFilter = new OptionalFilter(locationFilter);
@@ -168,8 +160,8 @@ public class RegistrationCenterServiceHelper {
 				registrationCenters = swapregCenters;		
 			}
 			setCenterMetadata(registrationCenters, locations, zones);
-			setWorkingNonWorking(registrationCenters, workingNonWorkingDays);
-			setExceptionalHoliday(registrationCenters, exceptionalHoliday);
+			setWorkingNonWorking(registrationCenters);
+			setExceptionalHoliday(registrationCenters);
 			pageDto = pageUtils.sortPage(registrationCenters, sort, pagination);
 		}else {
 			pageDto=new PageResponseDto<>();
@@ -180,8 +172,9 @@ public class RegistrationCenterServiceHelper {
 		return pageDto;
 	}
 
-	private void setExceptionalHoliday(List<RegistrationCenterSearchDto> registrationCenters,
-			List<RegExceptionalHoliday> exceptionalHoliday) {
+	private void setExceptionalHoliday(List<RegistrationCenterSearchDto> registrationCenters) {
+		List<RegExceptionalHoliday> exceptionalHoliday = regExceptionalHolidayRepository
+				.findByRegIds(registrationCenters.stream().map(RegistrationCenterSearchDto::getId).collect(Collectors.toList()));
 		registrationCenters.forEach(i -> setExceptionalHoliday(i, exceptionalHoliday));
 
 	}
@@ -195,15 +188,17 @@ public class RegistrationCenterServiceHelper {
 						ExceptionalHolidayPutPostDto.class);
 				exceptionalHolidayDto
 						.setExceptionHolidayDate(regExceptionalHoliday.getExceptionHolidayDate().toString());
+				exceptionalHolidayDto.setExceptionHolidayName(regExceptionalHoliday.getExceptionHolidayName());
+				exceptionalHolidayDto.setExceptionHolidayReson(regExceptionalHoliday.getExceptionHolidayReson());
 				exceptionalHolidayPutPostDtoList.add(exceptionalHolidayDto);
 			}
 		}
 		registrationCenterSearchDto.setExceptionalHolidayPutPostDto(exceptionalHolidayPutPostDtoList);
 	}
 
-	private void setWorkingNonWorking(List<RegistrationCenterSearchDto> registrationCenters,
-			List<RegWorkingNonWorking> workingNonWorkingDays) {
-
+	private void setWorkingNonWorking(List<RegistrationCenterSearchDto> registrationCenters) {
+		List<String> requiredIds = registrationCenters.stream().map((RegistrationCenterSearchDto::getId)).collect(Collectors.toList());
+		List<RegWorkingNonWorking> workingNonWorkingDays = regWorkingNonWorkingRepo.findByRegCenterIds(requiredIds);
 		registrationCenters.stream().forEach(i -> setWorking(i, workingNonWorkingDays));
 	}
 
