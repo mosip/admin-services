@@ -134,8 +134,7 @@ public class LocationSearchFilterIntegrationTest {
 		when(locationHierarchyRepository.findByheirarchyLevalNameAndLangCode(Mockito.anyString(), Mockito.anyString())).thenReturn(1);
 		when(locationRepository.findLocationByHierarchyLevel(Mockito.anyShort(), Mockito.anyString(),
 				Mockito.anyString(), Mockito.anyBoolean())).thenReturn(location);
-		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json)
-				.param("addMissingData", "true"))
+		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 	
@@ -173,8 +172,7 @@ public class LocationSearchFilterIntegrationTest {
 		when(locationTree.findRootNode(Mockito.any())).thenReturn(tree.get(0));
 		when(locationTree.findLeafs(Mockito.any())).thenReturn(tree);
 		when(locationTree.getParentHierarchy(Mockito.any())).thenReturn(locations);
-		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json)
-				.param("addMissingData", "true"))
+		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 
@@ -196,8 +194,7 @@ public class LocationSearchFilterIntegrationTest {
 		when(locationRepository.findAllByLangCode(Mockito.anyString())).thenReturn(locations);
 		when(locationRepository.findLocationByHierarchyLevelContains(Mockito.anyShort(), Mockito.anyString(),
 				Mockito.anyString(), Mockito.anyBoolean())).thenReturn(Arrays.asList(location));
-		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json)
-				.param("addMissingData", "true"))
+		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 
@@ -232,8 +229,7 @@ public class LocationSearchFilterIntegrationTest {
 		when(locationTree.findNode(Mockito.any(),Mockito.anyString())).thenReturn(tree.get(0));
 		when(locationTree.findLeafs(Mockito.any())).thenReturn(tree);
 		when(locationTree.getParentHierarchy(Mockito.any())).thenReturn(locations);
-		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json)
-				.param("addMissingData", "true"))
+		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 
@@ -256,8 +252,7 @@ public class LocationSearchFilterIntegrationTest {
 		when(locationRepository.findLocationByHierarchyLevelContains(Mockito.anyShort(), Mockito.anyString(),
 				Mockito.anyString(), Mockito.anyBoolean())).thenReturn(Arrays.asList(location));
 		MvcResult response = mockMvc
-				.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json)
-						.param("addMissingData", "true"))
+				.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andReturn();
 		String errorResponse = response.getResponse().getContentAsString();
 		ResponseWrapper<LocationSearchDto> responseWrapper = objectMapper.readValue(errorResponse,

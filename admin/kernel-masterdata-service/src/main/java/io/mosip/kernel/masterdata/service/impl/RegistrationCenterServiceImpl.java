@@ -745,10 +745,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 */
 	@SuppressWarnings("null")
 	@Override
-	public PageResponseDto<RegistrationCenterSearchDto> searchRegistrationCenter(SearchDto dto,
-			boolean addMissingData) {
+	public PageResponseDto<RegistrationCenterSearchDto> searchRegistrationCenter(SearchDto dto) {
 		PageResponseDto<RegistrationCenterSearchDto> pageDto = new PageResponseDto<>();
-		List<RegistrationCenterSearchDto> registrationCenterListForMissingData = new ArrayList<RegistrationCenterSearchDto>();
 		List<SearchFilter> addList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
 		List<SearchFilter> locationFilter = new ArrayList<>();
@@ -800,17 +798,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		dto.getFilters().removeAll(removeList);
 		dto.getFilters().addAll(addList);
-		if (addMissingData) {
-			List<MissingIdDataDto> missingIdDataDtos = masterdataSearchHelper
-					.fetchValuesWithId(RegistrationCenter.class,
-					dto.getLanguageCode());
-			missingIdDataDtos.forEach(missingIdData -> {
-				RegistrationCenterSearchDto registrationCenterSearchDto = new RegistrationCenterSearchDto();
-				registrationCenterSearchDto.setId(missingIdData.getId());
-				registrationCenterSearchDto.setLangCode(missingIdData.getLangcode());
-				registrationCenterListForMissingData.add(registrationCenterSearchDto);
-			});
-		}
 		if (filterTypeValidator.validate(RegistrationCenterSearchDto.class, dto.getFilters()) && flag) {
 			// searching registration center
 			if (locationFilters.isEmpty()) {
@@ -818,9 +805,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			} else {
 				pageDto = serviceHelper.searchCenterLocFilter(dto, locationFilters, zoneFilter, zones, locations);
 
-			}
-			for (RegistrationCenterSearchDto registrationCenterSearchDto : registrationCenterListForMissingData) {
-				pageDto.getData().add(registrationCenterSearchDto);
 			}
 		}
 		return pageDto;

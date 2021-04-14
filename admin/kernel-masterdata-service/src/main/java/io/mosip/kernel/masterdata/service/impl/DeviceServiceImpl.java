@@ -349,11 +349,10 @@ public class DeviceServiceImpl implements DeviceService {
 	 * .masterdata.dto.request.SearchDto)
 	 */
 	@Override
-	public PageResponseDto<DeviceSearchDto> searchDevice(SearchDto dto, boolean addMissingData) {
+	public PageResponseDto<DeviceSearchDto> searchDevice(SearchDto dto) {
 		PageResponseDto<DeviceSearchDto> pageDto = new PageResponseDto<>();
 		
 		List<DeviceSearchDto> devices = null;
-		List<DeviceSearchDto> deviceListForMissingData = new ArrayList<>();
 		List<SearchFilter> addList = new ArrayList<>();
 		List<SearchFilter> mapStatusList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
@@ -450,17 +449,6 @@ public class DeviceServiceImpl implements DeviceService {
 				page = masterdataSearchHelper.nativeDeviceQuerySearch(dto, typeName, zones, isAssigned);
 			}
 
-			if (addMissingData) {
-				List<MissingIdDataDto> missingIdDataDto = masterdataSearchHelper.fetchValuesWithId(Device.class,
-						langCode);
-				missingIdDataDto.forEach(missingIdData -> {
-					DeviceSearchDto deviceSearchDto = new DeviceSearchDto();
-					deviceSearchDto.setId(missingIdData.getId());
-					deviceSearchDto.setLangCode(missingIdData.getLangcode());
-					deviceListForMissingData.add(deviceSearchDto);
-				});
-			}
-
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				devices = MapperUtils.mapAll(page.getContent(), DeviceSearchDto.class);
 				setDeviceMetadata(devices, zones);
@@ -472,7 +460,6 @@ public class DeviceServiceImpl implements DeviceService {
 					}
 				});
 
-				devices.addAll(deviceListForMissingData);
 				pageDto = pageUtils.sortPage(devices, sort, pagination);
 
 			}

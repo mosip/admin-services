@@ -317,10 +317,9 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	}
 
 	@Override
-	public PageResponseDto<GenderExtnDto> searchGenderTypes(SearchDto request, boolean addMissingData) {
+	public PageResponseDto<GenderExtnDto> searchGenderTypes(SearchDto request) {
 		PageResponseDto<GenderExtnDto> pageDto = new PageResponseDto<>();
 		List<GenderExtnDto> genderTypeExtns = null;
-		List<GenderExtnDto> genderTypeExtnsForMissingData = new ArrayList<GenderExtnDto>();
 
 		if (filterTypeValidator.validate(GenderExtnDto.class, request.getFilters())) {
 			Pagination pagination = request.getPagination();
@@ -330,19 +329,8 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 			request.setSort(Collections.emptyList());
 			Page<Gender> page = masterDataSearchHelper.searchMasterdata(Gender.class, request, null);
 
-			if (addMissingData) {
-				List<MissingCodeDataDto> missingCodeDataDto = masterDataSearchHelper.fetchValuesWithCode(Gender.class,
-						request.getLanguageCode());
-				missingCodeDataDto.forEach(missingCodeData -> {
-					GenderExtnDto genderExtnDto = new GenderExtnDto();
-					genderExtnDto.setCode(missingCodeData.getCode());
-					genderExtnDto.setLangCode(missingCodeData.getLangcode());
-					genderTypeExtnsForMissingData.add(genderExtnDto);
-				});
-			}
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				genderTypeExtns = MapperUtils.mapAll(page.getContent(), GenderExtnDto.class);
-				genderTypeExtns.addAll(genderTypeExtnsForMissingData);
 				pageDto = pageUtils.sortPage(genderTypeExtns, sort, pagination);
 			}
 		}

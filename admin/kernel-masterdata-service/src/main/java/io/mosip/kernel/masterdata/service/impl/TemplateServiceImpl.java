@@ -374,10 +374,9 @@ public class TemplateServiceImpl implements TemplateService {
 	 */
 	@SuppressWarnings("null")
 	@Override
-	public PageResponseDto<TemplateExtnDto> searchTemplates(SearchDto searchDto, boolean addMissingData) {
+	public PageResponseDto<TemplateExtnDto> searchTemplates(SearchDto searchDto) {
 		PageResponseDto<TemplateExtnDto> pageDto = new PageResponseDto<>();
 		List<TemplateExtnDto> templates = null;
-		List<TemplateExtnDto> templateListForMissingData = new ArrayList<TemplateExtnDto>();
 
 		if (filterTypeValidator.validate(TemplateExtnDto.class, searchDto.getFilters())) {
 			Pagination pagination = searchDto.getPagination();
@@ -386,21 +385,8 @@ public class TemplateServiceImpl implements TemplateService {
 			searchDto.setSort(Collections.emptyList());
 			pageUtils.validateSortField(Template.class, sort);
 			Page<Template> page = masterDataSearchHelper.searchMasterdata(Template.class, searchDto, null);
-			if (addMissingData) {
-				List<MissingIdDataDto> missingIdDataDtos = masterDataSearchHelper.fetchValuesWithId(Template.class,
-						searchDto.getLanguageCode());
-				missingIdDataDtos.forEach(missingIdData -> {
-					TemplateExtnDto templateExtnDto = new TemplateExtnDto();
-					templateExtnDto.setId(missingIdData.getId());
-					templateExtnDto.setLangCode(missingIdData.getLangcode());
-					templateListForMissingData.add(templateExtnDto);
-				});
-			}
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				templates = MapperUtils.mapAll(page.getContent(), TemplateExtnDto.class);
-				for (TemplateExtnDto templateExtnDto : templateListForMissingData) {
-					templates.add(templateExtnDto);
-				}
 				pageDto = pageUtils.sortPage(templates, sort, pagination);
 			}
 		}

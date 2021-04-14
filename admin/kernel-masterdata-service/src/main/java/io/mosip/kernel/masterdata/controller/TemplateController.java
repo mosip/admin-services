@@ -244,14 +244,13 @@ public class TemplateController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of templates"),
 			@ApiResponse(code = 500, message = "Error occured while retrieving templates") })
 	public ResponseWrapper<PageResponseDto<TemplateExtnDto>> searchTemplates(
-			@RequestBody @Valid RequestWrapper<SearchDto> request,
-			@RequestParam(required = false) boolean addMissingData) {
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SEARCH_API_IS_CALLED, TemplateDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM,
 				String.format(MasterDataConstant.SEARCH_API_IS_CALLED, TemplateDto.class.getSimpleName()), "ADM-808");
 		ResponseWrapper<PageResponseDto<TemplateExtnDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(templateService.searchTemplates(request.getRequest(), addMissingData));
+		responseWrapper.setResponse(templateService.searchTemplates(request.getRequest()));
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_SEARCH, TemplateDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM,
 				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, TemplateDto.class.getSimpleName()), "ADM-809");

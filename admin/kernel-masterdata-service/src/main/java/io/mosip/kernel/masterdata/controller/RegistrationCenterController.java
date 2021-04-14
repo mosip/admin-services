@@ -304,8 +304,7 @@ public class RegistrationCenterController {
 	@PostMapping("/registrationcenters/search")
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<RegistrationCenterSearchDto>> searchRegistrationCenter(
-			@RequestBody @Valid RequestWrapper<SearchDto> request,
-			@RequestParam(required = false) boolean addMissingData) {
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SEARCH_API_IS_CALLED,
 						RegistrationCenterSearchDto.class.getSimpleName()),
@@ -314,7 +313,7 @@ public class RegistrationCenterController {
 				"ADM-517");
 		ResponseWrapper<PageResponseDto<RegistrationCenterSearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
-				.setResponse(registrationCenterService.searchRegistrationCenter(request.getRequest(), addMissingData));
+				.setResponse(registrationCenterService.searchRegistrationCenter(request.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, RegistrationCenterSearchDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,

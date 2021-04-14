@@ -342,10 +342,9 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	@SuppressWarnings("null")
 	@Override
-	public PageResponseDto<MachineSearchDto> searchMachine(SearchDto dto, boolean addMissingData) {
+	public PageResponseDto<MachineSearchDto> searchMachine(SearchDto dto) {
 		PageResponseDto<MachineSearchDto> pageDto = new PageResponseDto<>();
 		List<MachineSearchDto> machines = null;
-		List<MachineSearchDto> machineListForMissingData = new ArrayList<MachineSearchDto>();
 		List<SearchFilter> addList = new ArrayList<>();
 		List<SearchFilter> mapStatusList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
@@ -463,16 +462,6 @@ public class MachineServiceImpl implements MachineService {
 			} else {
 				page = masterdataSearchHelper.nativeMachineQuerySearch(dto, typeName, zones, isAssigned);
 			}
-			if (addMissingData) {
-				List<MissingIdDataDto> missingIdDataDtos = masterdataSearchHelper.fetchValuesWithId(Machine.class,
-						dto.getLanguageCode());
-				missingIdDataDtos.forEach(missingIdData -> {
-					MachineSearchDto machineSearchDto = new MachineSearchDto();
-					machineSearchDto.setId(missingIdData.getId());
-					machineSearchDto.setLangCode(missingIdData.getLangcode());
-					machineListForMissingData.add(machineSearchDto);
-				});
-			}
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				machines = MapperUtils.mapAll(page.getContent(), MachineSearchDto.class);
 				setMachineMetadata(machines, zones);
@@ -483,9 +472,6 @@ public class MachineServiceImpl implements MachineService {
 						machine.setMapStatus("unassigned");
 					}
 				});
-				for (MachineSearchDto machineSearchDto : machineListForMissingData) {
-					machines.add(machineSearchDto);
-				}
 				pageDto = pageUtils.sortPage(machines, sort, pagination);
 			}
 

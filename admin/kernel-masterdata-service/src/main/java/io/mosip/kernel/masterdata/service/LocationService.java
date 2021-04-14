@@ -127,7 +127,7 @@ public interface LocationService {
 	 * @param dto input from user
 	 * @return response dto containing location values
 	 */
-	public PageResponseDto<LocationSearchDto> searchLocation(SearchDto dto, boolean addMissingData);
+	public PageResponseDto<LocationSearchDto> searchLocation(SearchDto dto);
 
 	/**
 	 * Service method to filter location values

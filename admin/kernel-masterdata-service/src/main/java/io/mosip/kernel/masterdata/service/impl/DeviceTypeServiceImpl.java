@@ -223,11 +223,10 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 	 */
 	@SuppressWarnings("null")
 	@Override
-	public PageResponseDto<DeviceTypeExtnDto> deviceTypeSearch(SearchDto searchRequestDto, boolean addMissingData) {
+	public PageResponseDto<DeviceTypeExtnDto> deviceTypeSearch(SearchDto searchRequestDto) {
 		PageResponseDto<DeviceTypeExtnDto> pageDto = new PageResponseDto<>();
 
 		List<DeviceTypeExtnDto> deviceTypeList = null;
-		List<DeviceTypeExtnDto> deviceTypeListForMissingData = new ArrayList<DeviceTypeExtnDto>();
 
 		if (filterValidator.validate(DeviceTypeExtnDto.class, searchRequestDto.getFilters())) {
 			Pagination pagination = searchRequestDto.getPagination();
@@ -236,21 +235,9 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 			searchRequestDto.setPagination(new Pagination(0, Integer.MAX_VALUE));
 			searchRequestDto.setSort(Collections.emptyList());
 			Page<DeviceType> page = masterdataSearchHelper.searchMasterdata(DeviceType.class, searchRequestDto, null);
-			if (addMissingData) {
-				List<MissingCodeDataDto> missingCodeDataDtos = masterdataSearchHelper
-						.fetchValuesWithCode(DeviceType.class, searchRequestDto.getLanguageCode());
-				missingCodeDataDtos.forEach(missingCodeData -> {
-					DeviceTypeExtnDto deviceTypeExtnDto = new DeviceTypeExtnDto();
-					deviceTypeExtnDto.setCode(missingCodeData.getCode());
-					deviceTypeExtnDto.setLangCode(missingCodeData.getLangcode());
-					deviceTypeListForMissingData.add(deviceTypeExtnDto);
-				});
-			}
+
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				deviceTypeList = MapperUtils.mapAll(page.getContent(), DeviceTypeExtnDto.class);
-				for (DeviceTypeExtnDto deviceTypeExtnDto : deviceTypeListForMissingData) {
-					deviceTypeList.add(deviceTypeExtnDto);
-				}
 				pageDto = pageUtils.sortPage(deviceTypeList, sort, pagination);
 			}
 

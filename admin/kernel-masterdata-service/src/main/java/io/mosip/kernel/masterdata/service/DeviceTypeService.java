@@ -51,7 +51,7 @@ public interface DeviceTypeService {
 	 * @param searchRequestDto the search DTO.
 	 * @return the {@link PageResponseDto}.
 	 */
-	public PageResponseDto<DeviceTypeExtnDto> deviceTypeSearch(SearchDto searchRequestDto, boolean addMissingData);
+	public PageResponseDto<DeviceTypeExtnDto> deviceTypeSearch(SearchDto searchRequestDto);
 
 	/**
 	 * Method to filter Device Type based on column and type provided.

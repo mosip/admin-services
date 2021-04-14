@@ -173,8 +173,7 @@ public class RegistrationCenterSearchFilterIntegrationTest {
 		when(filterTypeValidator.validate(Mockito.any(),Mockito.any())).thenReturn(true);
 		when(serviceHelper.searchCenter(Mockito.any(),Mockito.any(),Mockito.any(),Mockito.any(),Mockito.any())).
 		thenReturn(new PageResponseDto<>(1, 20, 30, null));
-		mockMvc.perform(post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(json)
-				.param("addMissingData", "true"))
+		mockMvc.perform(post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 	
@@ -196,8 +195,7 @@ public class RegistrationCenterSearchFilterIntegrationTest {
 		doNothing().when(serviceHelper).centerTypeSearch(Mockito.any(), Mockito.any(), Mockito.any());
 		when(serviceHelper.locationSearch(Mockito.any())).thenReturn(null);
 		when(filterTypeValidator.validate(Mockito.any(),Mockito.any())).thenReturn(false);
-		mockMvc.perform(post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(json)
-				.param("addMissingData", "true"))
+		mockMvc.perform(post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 	
