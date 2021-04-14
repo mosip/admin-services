@@ -1,6 +1,9 @@
 package io.mosip.kernel.masterdata.test.service;
 
+
+
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doNothing;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,10 +15,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.kernel.masterdata.constant.ZoneUserErrorCode;
+import io.mosip.kernel.masterdata.dto.ZoneUserDto;
 import io.mosip.kernel.masterdata.entity.ZoneUser;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
 import io.mosip.kernel.masterdata.service.ZoneUserService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 
 /**
  * 
@@ -33,6 +40,9 @@ public class ZoneServiceTest {
 	@Autowired
 	ZoneUserService zoneUserService;
 	
+	@MockBean
+	private AuditUtil auditUtil;
+	
 	ZoneUser zoneUser = null;
 	
 	@Before
@@ -43,6 +53,7 @@ public class ZoneServiceTest {
 		zoneUser.setLangCode("eng");
 		zoneUser.setUserId("110124");
 		zoneUser.setZoneCode("NTH");
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 	}
 	
 	@Test
@@ -57,5 +68,23 @@ public class ZoneServiceTest {
 		Mockito.when(zoneUserRepo.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),Mockito.anyString(),Mockito.anyString())).thenReturn(null);
 		ZoneUser response = zoneUserService.getZoneUser("110124", "eng", "NTH");
 		assertEquals(null, response);
+	}
+	
+	@Test
+	public void zoneUserMappingTest() {
+		Mockito.when(zoneUserRepo.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),Mockito.anyString(),Mockito.anyString())).thenReturn(null);
+		Mockito.when(zoneUserRepo.findByUserId(Mockito.anyString())).thenReturn(zoneUser);
+		
+		ZoneUserDto request = new ZoneUserDto();
+		request.setIsActive(true);
+		request.setLangCode("fra");
+		request.setUserId("11006");
+		request.setZoneCode("KTR");
+		try {
+			zoneUserService.createZoneUserMapping(request);
+		}catch(MasterDataServiceException ex) {
+			assertEquals(ZoneUserErrorCode.USER_MAPPING_PRSENT_IN_DB.getErrorCode(), ex.getErrorCode());
+		}
+		
 	}
 }
