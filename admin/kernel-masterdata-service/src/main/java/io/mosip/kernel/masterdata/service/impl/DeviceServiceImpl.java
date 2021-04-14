@@ -8,9 +8,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -123,6 +126,9 @@ public class DeviceServiceImpl implements DeviceService {
 	@Autowired
 	private ZoneService zoneService;
 
+	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
+	private String supportedLang;
+
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
 
@@ -198,6 +204,7 @@ public class DeviceServiceImpl implements DeviceService {
 	public DeviceExtnDto createDevice(DeviceDto deviceDto) {
 		Device device = null;
 		Device entity = null;
+		String uniqueId = null;
 		DeviceHistory entityHistory = null;
 		DeviceExtnDto deviceExtnDto = new DeviceExtnDto();
 		try {
@@ -206,8 +213,11 @@ public class DeviceServiceImpl implements DeviceService {
 				validateRegistrationCenter(deviceDto.getRegCenterId());
 				validateRegistrationCenterZone(deviceDto.getZoneCode(),deviceDto.getRegCenterId());
 			}
+			if (StringUtils.isNotEmpty(supportedLang)
+					&& supportedLang.contains(deviceDto.getLangCode().toLowerCase())) {
+				deviceDto.setId(generateId());
+			}
 			
-			deviceDto = masterdataCreationUtil.createMasterData(Device.class, deviceDto);
 			if (deviceDto != null) {
 				entity = MetaDataUtils.setCreateMetaData(deviceDto, Device.class);
 				entityHistory = MetaDataUtils.setCreateMetaData(deviceDto, DeviceHistory.class);
@@ -228,7 +238,7 @@ public class DeviceServiceImpl implements DeviceService {
 					"ADM-507");
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
-		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e1) {
+		} catch (IllegalArgumentException | SecurityException e1) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e1));
@@ -980,6 +990,14 @@ public class DeviceServiceImpl implements DeviceService {
 		}
 		response.setStatus("Status updated successfully for Devices");
 		return response;
+	}
+
+	private String generateId() throws DataAccessLayerException, DataAccessException {
+		UUID uuid = UUID.randomUUID();
+		String uniqueId = uuid.toString();
+		List<Device> devices = deviceRepository
+				.findDeviceByIdAndIsDeletedFalseorIsDeletedIsNullNoIsActive(uniqueId);
+		return devices.isEmpty() ? uniqueId : generateId();
 	}
 
 }

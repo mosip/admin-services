@@ -795,7 +795,7 @@ public class MachineServiceImpl implements MachineService {
 		Machine machineEntity = null;
 		MachineHistory machineHistoryEntity = null;
 		Machine crtMachine = null;
-		String uniqueId = "";
+		String uniqueId = null;
 		String machineZone = machinePostReqDto.getZoneCode();
 
 		// call method to check the machineZone will come under Accessed user zone or
@@ -814,7 +814,7 @@ public class MachineServiceImpl implements MachineService {
 			if (StringUtils.isNotEmpty(supportedLang) && supportedLang.contains(machinePostReqDto.getLangCode())) {
 				// MachineId from the mid_Seq Table,MachineId get by calling MachineIdGenerator
 				// API method generateMachineId()
-				uniqueId = registrationCenterValidator.generateMachineIdOrvalidateWithDB(uniqueId);
+				uniqueId = registrationCenterValidator.generateMachineIdOrvalidateWithDB();
 				machineEntity.setId(uniqueId);
 			}
 			
