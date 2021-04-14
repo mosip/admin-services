@@ -1020,8 +1020,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				if (registrationCenterEntity != null) {
 
 					registrationCenterEntity.setId(registrationCenterIdGenerator.generateRegistrationCenterId());
-					if(registrationCenterEntity.getNumberOfKiosks() == null)
+					if (registrationCenterEntity.getNumberOfKiosks() == null) {
 						registrationCenterEntity.setNumberOfKiosks((short) 0);
+					}
 
 					// registrationCenterEntity.setIsActive(false);
 					registrationCenter = registrationCenterRepository.create(registrationCenterEntity);
