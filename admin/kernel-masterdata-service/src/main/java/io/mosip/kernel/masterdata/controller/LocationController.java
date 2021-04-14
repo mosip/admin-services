@@ -274,13 +274,12 @@ public class LocationController {
 	@ResponseFilter
 	@PostMapping("/search")
 	public ResponseWrapper<PageResponseDto<LocationSearchDto>> searchLocation(
-			@RequestBody @Valid RequestWrapper<SearchDto> request,
-			@RequestParam(required = false) boolean addMissingData) {
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + LocationSearchDto.class.getSimpleName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.SEARCH_API_IS_CALLED + LocationSearchDto.class.getSimpleName(), "ADM-570");
 		ResponseWrapper<PageResponseDto<LocationSearchDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(locationHierarchyService.searchLocation(request.getRequest(), addMissingData));
+		responseWrapper.setResponse(locationHierarchyService.searchLocation(request.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, LocationSearchDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM,

@@ -177,8 +177,7 @@ public interface RegistrationCenterService {
 	 * @param searchDto search criteria for the registration center
 	 * @return list of registration centers
 	 */
-	public PageResponseDto<RegistrationCenterSearchDto> searchRegistrationCenter(SearchDto searchDto,
-			boolean addMissingData);
+	public PageResponseDto<RegistrationCenterSearchDto> searchRegistrationCenter(SearchDto searchDto);
 
 	/**
 	 * Method to filter registration center based on column and type provided.

@@ -483,7 +483,7 @@ public class HolidayServiceImpl implements HolidayService {
 	}
 
 	@Override
-	public PageResponseDto<HolidaySearchDto> searchHolidays(SearchDto dto,boolean addMissingData) {
+	public PageResponseDto<HolidaySearchDto> searchHolidays(SearchDto dto) {
 		PageResponseDto<HolidaySearchDto> pageDto = new PageResponseDto<>();
 		List<HolidayExtnDto> holidayDtos = null;
 		List<SearchFilter> addList = new ArrayList<>();
@@ -527,7 +527,6 @@ public class HolidayServiceImpl implements HolidayService {
 			dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
 			dto.setSort(Collections.emptyList());
 			List<HolidaySearchDto> resultDto = new ArrayList<>();
-			List<HolidaySearchDto> resultDtoForMissingData = new ArrayList<>();
 			
 			pageUtils.validateSortField(HolidaySearchDto.class, Holiday.class, sort);
 			if (filterValidator.validate(HolidaySearchDto.class, dto.getFilters())) {
@@ -535,18 +534,6 @@ public class HolidayServiceImpl implements HolidayService {
 				Page<Holiday> page = masterdataSearchHelper.searchMasterdata(Holiday.class, dto,
 						new OptionalFilter[] { optionalFilter });
 
-				if (addMissingData) {
-					List<Holiday> holidayList = holidayRepository.findHolidayForMissingData(dto.getLanguageCode());
-					holidayList.forEach(holiday -> {
-						HolidaySearchDto holidaySearchDto = new HolidaySearchDto();
-						holidaySearchDto.setHolidayName(holiday.getHolidayName());
-						holidaySearchDto.setHolidayId(holiday.getHolidayId());
-						holidaySearchDto.setLocationCode(holiday.getLocationCode());
-						holidaySearchDto.setHolidayDate(holiday.getHolidayDate());
-						holidaySearchDto.setLangCode(holiday.getLangCode());
-						resultDtoForMissingData.add(holidaySearchDto);
-					});
-				}
 				if (page.getContent() != null && !page.getContent().isEmpty()) {
 					holidayDtos = MapperUtils.mapAll(page.getContent(), HolidayExtnDto.class);
 					Map<Integer, List<HolidayExtnDto>> holidayPerHolidayType = holidayDtos.stream()
@@ -557,7 +544,6 @@ public class HolidayServiceImpl implements HolidayService {
 						MapperUtils.map(entry.getValue().get(0), holidaySearchDto);
 						resultDto.add(holidaySearchDto);
 					}
-					resultDto.addAll(resultDtoForMissingData);
 				}
 
 				pageDto = pageUtils.sortPage(resultDto, sort, pagination);

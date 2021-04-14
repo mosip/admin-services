@@ -324,11 +324,9 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 	 */
 	@SuppressWarnings("null")
 	@Override
-	public PageResponseDto<RegistrationCenterTypeExtnDto> searchRegistrationCenterTypes(SearchDto dto,
-			boolean addMissingData) {
+	public PageResponseDto<RegistrationCenterTypeExtnDto> searchRegistrationCenterTypes(SearchDto dto) {
 		PageResponseDto<RegistrationCenterTypeExtnDto> pageDto = new PageResponseDto<>();
 		List<RegistrationCenterTypeExtnDto> registrationCenterTypes = null;
-		List<RegistrationCenterTypeExtnDto> regisTypeListForMissingData = new ArrayList<RegistrationCenterTypeExtnDto>();
 
 		if (filterTypeValidator.validate(RegistrationCenterTypeExtnDto.class, dto.getFilters())) {
 			Pagination pagination = dto.getPagination();
@@ -339,21 +337,8 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 			pageUtils.validateSortField(RegistrationCenterType.class, sort);
 			Page<RegistrationCenterType> page = masterdataSearchHelper.searchMasterdata(RegistrationCenterType.class,
 					dto, null);
-			if (addMissingData) {
-				List<MissingCodeDataDto> missingCodeDataDtos = masterdataSearchHelper
-						.fetchValuesWithCode(RegistrationCenterType.class, dto.getLanguageCode());
-				missingCodeDataDtos.forEach(missingCodeData -> {
-					RegistrationCenterTypeExtnDto registrationCenterTypeExtnDto = new RegistrationCenterTypeExtnDto();
-					registrationCenterTypeExtnDto.setCode(missingCodeData.getCode());
-					registrationCenterTypeExtnDto.setLangCode(missingCodeData.getLangcode());
-					regisTypeListForMissingData.add(registrationCenterTypeExtnDto);
-				});
-			}
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				registrationCenterTypes = MapperUtils.mapAll(page.getContent(), RegistrationCenterTypeExtnDto.class);
-				for (RegistrationCenterTypeExtnDto registrationCenterTypeExtnDto : regisTypeListForMissingData) {
-					registrationCenterTypes.add(registrationCenterTypeExtnDto);
-				}
 				pageDto = pageUtils.sortPage(registrationCenterTypes, sort, pagination);
 			}
 		}

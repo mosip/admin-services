@@ -219,8 +219,7 @@ public class DeviceSpecificationController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@PostMapping("/devicespecifications/search")
 	public ResponseWrapper<PageResponseDto<DeviceSpecificationExtnDto>> deviceSpecificationSearch(
-			@RequestBody @Valid RequestWrapper<SearchDto> requestWrapper,
-			@RequestParam(required = false) boolean addMissingData) {
+			@RequestBody @Valid RequestWrapper<SearchDto> requestWrapper) {
 		auditUtil.auditRequest(
 				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceSpecificationExtnDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
@@ -228,7 +227,7 @@ public class DeviceSpecificationController {
 				"ADM-642");
 		ResponseWrapper<PageResponseDto<DeviceSpecificationExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
-				.setResponse(deviceSpecificationService.searchDeviceSpec(requestWrapper.getRequest(), addMissingData));
+				.setResponse(deviceSpecificationService.searchDeviceSpec(requestWrapper.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_SEARCH,
 						DeviceSpecificationExtnDto.class.getCanonicalName()),

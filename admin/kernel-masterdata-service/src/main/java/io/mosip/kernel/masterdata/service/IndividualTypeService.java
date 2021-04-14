@@ -46,7 +46,7 @@ public interface IndividualTypeService {
 	 * @param dto the searchDTO
 	 * @return {@link PageResponseDto} containing pages of the searched values.
 	 */
-	public PageResponseDto<IndividualTypeExtnDto> searchIndividuals(SearchDto dto, boolean addMissingData);
+	public PageResponseDto<IndividualTypeExtnDto> searchIndividuals(SearchDto dto);
 	
 	/**
 	 * Method to create Individual Types

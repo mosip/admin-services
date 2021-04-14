@@ -297,10 +297,9 @@ public class TitleServiceImpl implements TitleService {
 	 */
 	@SuppressWarnings("null")
 	@Override
-	public PageResponseDto<TitleExtnDto> searchTitles(SearchDto searchDto, boolean addMissingData) {
+	public PageResponseDto<TitleExtnDto> searchTitles(SearchDto searchDto) {
 		PageResponseDto<TitleExtnDto> pageDto = new PageResponseDto<>();
 		List<TitleExtnDto> titles = null;
-		List<TitleExtnDto> titleListForMissingData = new ArrayList<TitleExtnDto>();
 
 		if (filterTypeValidator.validate(TitleExtnDto.class, searchDto.getFilters())) {
 			Pagination pagination = searchDto.getPagination();
@@ -309,22 +308,8 @@ public class TitleServiceImpl implements TitleService {
 			searchDto.setSort(Collections.emptyList());
 			pageUtils.validateSortField(Title.class, sort);
 			Page<Title> page = masterDataSearchHelper.searchMasterdata(Title.class, searchDto, null);
-			if (addMissingData) {
-				List<MissingCodeDataDto> missingCodeDataDtos = masterDataSearchHelper.fetchValuesWithCode(Title.class,
-						searchDto.getLanguageCode());
-				missingCodeDataDtos.forEach(missingCodeData -> {
-					TitleExtnDto titleExtnDto = new TitleExtnDto();
-					titleExtnDto.setCode(missingCodeData.getCode());
-					titleExtnDto.setLangCode(missingCodeData.getLangcode());
-					titleListForMissingData.add(titleExtnDto);
-				});
-			}
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				titles = MapperUtils.mapAll(page.getContent(), TitleExtnDto.class);
-				for (TitleExtnDto titleExtnDto : titleListForMissingData) {
-					titles.add(titleExtnDto);
-				}
-
 				pageDto = pageUtils.sortPage(titles, sort, pagination);
 			}
 

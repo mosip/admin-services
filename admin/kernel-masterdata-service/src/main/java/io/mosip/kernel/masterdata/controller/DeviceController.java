@@ -231,13 +231,12 @@ public class DeviceController {
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Retrieve all Devices for the given Filter parameters", notes = "Retrieve all Devices for the given Filter parameters")
 	public ResponseWrapper<PageResponseDto<DeviceSearchDto>> searchDevice(
-			@Valid @RequestBody RequestWrapper<SearchDto> request,
-			@RequestParam(required = false) boolean addMissingData) {
+			@Valid @RequestBody RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + DeviceDto.class.getSimpleName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceDto.class.getSimpleName(), "ADM-503");
 		ResponseWrapper<PageResponseDto<DeviceSearchDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(deviceService.searchDevice(request.getRequest(), addMissingData));
+		responseWrapper.setResponse(deviceService.searchDevice(request.getRequest()));
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_SEARCH, DeviceDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM,
 				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, Device.class.getSimpleName()), "ADM-504");

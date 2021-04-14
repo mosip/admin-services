@@ -101,7 +101,7 @@ public interface TemplateService {
 	 * @param searchDto the search dto
 	 * @return {@link PageResponseDto}the page response dto
 	 */
-	public PageResponseDto<TemplateExtnDto> searchTemplates(SearchDto searchDto, boolean addMissingData);
+	public PageResponseDto<TemplateExtnDto> searchTemplates(SearchDto searchDto);
 
 	/**
 	 * Filter templates.

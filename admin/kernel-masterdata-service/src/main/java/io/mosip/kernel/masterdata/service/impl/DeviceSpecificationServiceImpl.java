@@ -385,12 +385,11 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	}
 
 	@Override
-	public PageResponseDto<DeviceSpecificationExtnDto> searchDeviceSpec(SearchDto dto, boolean addMissingData) {
+	public PageResponseDto<DeviceSpecificationExtnDto> searchDeviceSpec(SearchDto dto) {
 		PageResponseDto<DeviceSpecificationExtnDto> pageDto = new PageResponseDto<>();
 		List<SearchFilter> addList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
 		List<DeviceSpecificationExtnDto> devices = null;
-		List<DeviceSpecificationExtnDto> devicesForMissingData = new ArrayList<>();;
 		List<SearchFilter> deviceCodeFilter = null;
 
 		for (SearchFilter filter : dto.getFilters()) {
@@ -425,21 +424,10 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 			OptionalFilter optionalFilterForDeviceTypeName = new OptionalFilter(deviceCodeFilter);
 			Page<DeviceSpecification> page = masterDataSearchHelper.searchMasterdata(DeviceSpecification.class, dto,
 					new OptionalFilter[] { optionalFilter, optionalFilterForDeviceTypeName });
-			
-			if (addMissingData) {
-				List<MissingIdDataDto> missingIdDataDto = masterDataSearchHelper.fetchValuesWithId(DeviceSpecification.class,
-						dto.getLanguageCode());
-				missingIdDataDto.forEach(missingIdData -> {
-					DeviceSpecificationExtnDto deviceSpecificationExtnDto = new DeviceSpecificationExtnDto();
-					deviceSpecificationExtnDto.setId(missingIdData.getId());
-					deviceSpecificationExtnDto.setLangCode(missingIdData.getLangcode());
-					devicesForMissingData.add(deviceSpecificationExtnDto);
-				});
-			}
+
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				devices = MapperUtils.mapAll(page.getContent(), DeviceSpecificationExtnDto.class);
 				setDeviceTypeName(devices);
-				devices.addAll(devicesForMissingData);
 				pageDto = pageUtils.sortPage(devices, sort, pagination);
 			}
 

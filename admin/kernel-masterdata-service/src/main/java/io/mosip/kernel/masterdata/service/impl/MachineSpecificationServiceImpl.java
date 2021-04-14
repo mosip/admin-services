@@ -404,12 +404,10 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	 */
 	@SuppressWarnings("null")
 	@Override
-	public PageResponseDto<MachineSpecificationExtnDto> searchMachineSpecification(SearchDto searchRequestDto,
-			boolean addMissingData) {
+	public PageResponseDto<MachineSpecificationExtnDto> searchMachineSpecification(SearchDto searchRequestDto) {
 		PageResponseDto<MachineSpecificationExtnDto> pageDto = new PageResponseDto<>();
 
 		List<MachineSpecificationExtnDto> machineSpecifications = null;
-		List<MachineSpecificationExtnDto> machineSpecificationListForMissingData = new ArrayList<MachineSpecificationExtnDto>();
 
 		List<SearchFilter> addList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
@@ -437,23 +435,9 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 			OptionalFilter optionalFilter = new OptionalFilter(addList);
 			Page<MachineSpecification> page = masterdataSearchHelper.searchMasterdata(MachineSpecification.class,
 					searchRequestDto, new OptionalFilter[] { optionalFilter });
-			if (addMissingData) {
-				List<MissingIdDataDto> missingIdDataDtos = masterdataSearchHelper
-						.fetchValuesWithId(MachineSpecification.class,
-						searchRequestDto.getLanguageCode());
-				missingIdDataDtos.forEach(missingIdData -> {
-					MachineSpecificationExtnDto machineSpecificationExtnDto = new MachineSpecificationExtnDto();
-					machineSpecificationExtnDto.setId(missingIdData.getId());
-					machineSpecificationExtnDto.setLangCode(missingIdData.getLangcode());
-					machineSpecificationListForMissingData.add(machineSpecificationExtnDto);
-				});
-			}
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				machineSpecifications = MapperUtils.mapAll(page.getContent(), MachineSpecificationExtnDto.class);
 				setMachineTypeName(machineSpecifications);
-				for (MachineSpecificationExtnDto machineSpecificationExtnDto : machineSpecificationListForMissingData) {
-					machineSpecifications.add(machineSpecificationExtnDto);
-				}
 				pageDto = pageUtils.sortPage(machineSpecifications, sort, pagination);
 			}
 		}
