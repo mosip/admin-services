@@ -5,6 +5,9 @@ package io.mosip.kernel.masterdata.test.service;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doNothing;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -85,6 +88,21 @@ public class ZoneServiceTest {
 		}catch(MasterDataServiceException ex) {
 			assertEquals(ZoneUserErrorCode.USER_MAPPING_PRSENT_IN_DB.getErrorCode(), ex.getErrorCode());
 		}
+		
+	}
+	
+	@Test
+	public void getZoneUsersTest() {
+		List<ZoneUser> zoneMappedUsers = new ArrayList<ZoneUser>();
+		zoneMappedUsers.add(zoneUser);
+		List<String> userIds = new ArrayList<String>();
+		userIds.add("1234");
+		userIds.add("45678");
+		userIds.add("1264");
+		userIds.add("45678");
+		Mockito.when(zoneUserRepo.findByUserIds(userIds)).thenReturn(zoneMappedUsers);
+		List<ZoneUser> users = zoneUserService.getZoneUsers(userIds);
+		assertEquals("eng", users.get(0).getLangCode());
 		
 	}
 }
