@@ -135,7 +135,7 @@ public class TemplateFileFormatController {
 	 */
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
-	@GetMapping(value = { "code/{code}", "/{code}/{langcode}" })
+	@GetMapping(value = { "/code/{code}", "/{code}/{langcode}" })
 	@ApiOperation(value = "Retrieve all TemplateFileFormat Details, /langCode pathparam will be deprecated soon", notes = "Retrieve all TemplateFileFormat Detail for given code")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When TemplateFileFormat Details retrieved from database for the give Code"),
