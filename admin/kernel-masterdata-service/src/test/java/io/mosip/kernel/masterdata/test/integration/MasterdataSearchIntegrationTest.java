@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import io.mosip.kernel.masterdata.dto.MissingDataDto;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -40,8 +41,6 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.MachineTypeDto;
-import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
-import io.mosip.kernel.masterdata.dto.MissingIdDataDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceSpecificationExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
@@ -218,8 +217,8 @@ public class MasterdataSearchIntegrationTest {
 	private List<Device> devices;
 	private RegistrationCenterType registrationCenterType;
 	private List<RegistrationCenterType> registrationCenterTypes;
-	private List<String> missingIdDataDtoList = new ArrayList<String>();
-	private List<String> missingCodeDataDtoList = new ArrayList<String>();
+	private List<Object[]> missingIdDataDtoList = new ArrayList<>();
+	private List<Object[]> missingCodeDataDtoList = new ArrayList<>();
 
 	@Value("${mosip.primary-language}")
 	private String primaryLangCode;
@@ -425,8 +424,11 @@ public class MasterdataSearchIntegrationTest {
 		machine.setLangCode("eng");
 		machines.add(machine);
 
-		missingIdDataDtoList.add("30012");
-		missingCodeDataDtoList.add("1233");
+		/*missingIdDataDtoList.add("30012");
+		missingCodeDataDtoList.add("1233");*/
+
+		missingIdDataDtoList.add(new String[] {"30012", null, null});
+		missingCodeDataDtoList.add(new String[] {"1233", null, null});
 
 		when(filterTypeValidator.validate(Mockito.eq(LocationExtnDto.class), Mockito.anyList())).thenReturn(true);
 		when(filterTypeValidator.validate(Mockito.eq(RegistrationCenterTypeExtnDto.class), Mockito.anyList()))
@@ -987,7 +989,7 @@ public class MasterdataSearchIntegrationTest {
 		Page<Device> pageContentData = new PageImpl<>(Arrays.asList(device));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
-		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(Device.class), Mockito.any()))
+		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(Device.class), Mockito.any(), Mockito.anyString()))
 				.thenReturn(missingIdDataDtoList);
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk());
 	}
@@ -1006,7 +1008,7 @@ public class MasterdataSearchIntegrationTest {
 		Page<Device> pageContentData = new PageImpl<>(Arrays.asList(device));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
-		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(Device.class), Mockito.any()))
+		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
 				.thenReturn(missingIdDataDtoList);
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk());
 	}
@@ -1059,7 +1061,7 @@ public class MasterdataSearchIntegrationTest {
 				.thenReturn(devspecs);
 		when(masterdataSearchHelper.nativeDeviceQuerySearch(Mockito.any(), Mockito.any(), Mockito.any(),
 				Mockito.anyBoolean())).thenReturn(new PageImpl<>(devices, PageRequest.of(0, 10), 1));
-		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(Device.class), Mockito.any()))
+		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
 				.thenReturn(missingIdDataDtoList);
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk());
 	}
@@ -1080,7 +1082,7 @@ public class MasterdataSearchIntegrationTest {
 		when(deviceRepository.findMappedDeviceId(deviceSearchDto.getLanguageCode())).thenReturn(deviceIdList);
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
-		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(Device.class), Mockito.any()))
+		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
 				.thenReturn(missingIdDataDtoList);
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk());
 
@@ -1101,7 +1103,7 @@ public class MasterdataSearchIntegrationTest {
 		Page<Device> pageContentData = new PageImpl<>(Arrays.asList());
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
-		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(Device.class), Mockito.any()))
+		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
 				.thenReturn(missingIdDataDtoList);
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk());
 	}
@@ -1122,7 +1124,7 @@ public class MasterdataSearchIntegrationTest {
 		when(deviceRepository.findNotMappedDeviceId(deviceSearchDto.getLanguageCode())).thenReturn(deviceIdList);
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
-		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(Device.class), Mockito.any()))
+		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
 				.thenReturn(missingIdDataDtoList);
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk());
 	}
@@ -1142,7 +1144,7 @@ public class MasterdataSearchIntegrationTest {
 		Page<Device> pageContentData = new PageImpl<>(Arrays.asList(device));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
-		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(Device.class), Mockito.any()))
+		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
 				.thenReturn(missingIdDataDtoList);
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk());
 	}
@@ -1517,7 +1519,7 @@ public class MasterdataSearchIntegrationTest {
 				.thenThrow(new ValidationException(errors));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DocumentType.class), Mockito.any(SearchDto.class),
 				Mockito.any())).thenReturn(page);
-		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(DocumentType.class), Mockito.any()))
+		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(DocumentType.class), Mockito.any(), Mockito.any()))
 				.thenReturn(missingCodeDataDtoList);
 		mockMvc.perform(post("/documenttypes/search").contentType(MediaType.APPLICATION_JSON).content(contentJson)).andExpect(status().isOk());
 	}
@@ -1678,7 +1680,7 @@ public class MasterdataSearchIntegrationTest {
 				.thenReturn(true);
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DeviceSpecification.class), Mockito.any(),
 				Mockito.any())).thenReturn(pageContentData);
-		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(DeviceSpecification.class), Mockito.any()))
+		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(DeviceSpecification.class), Mockito.any(), Mockito.any()))
 				.thenReturn(missingIdDataDtoList);
 		mockMvc.perform(post("/devicespecifications/search").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk());
 	}
@@ -1702,7 +1704,7 @@ public class MasterdataSearchIntegrationTest {
 				.thenReturn(pageContentData);
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DeviceSpecification.class), Mockito.any(),
 				Mockito.any())).thenReturn(pageContentSpecificationData);
-		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(DeviceSpecification.class), Mockito.any()))
+		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(DeviceSpecification.class), Mockito.any(), Mockito.any()))
 				.thenReturn(missingIdDataDtoList);
 		mockMvc.perform(post("/devicespecifications/search").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk());
 	}
@@ -1724,7 +1726,7 @@ public class MasterdataSearchIntegrationTest {
 				.thenReturn(pageContentData);
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DeviceSpecification.class), Mockito.any(),
 				Mockito.any())).thenReturn(pageContentSpecificationData);
-		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(DeviceSpecification.class), Mockito.any()))
+		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(DeviceSpecification.class), Mockito.any(), Mockito.any()))
 				.thenReturn(missingIdDataDtoList);
 		mockMvc.perform(post("/devicespecifications/search").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk());
 	}
@@ -1853,7 +1855,7 @@ public class MasterdataSearchIntegrationTest {
 		Page<Gender> pageContentData = new PageImpl<>(Arrays.asList(gender));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Gender.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
-		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(Gender.class), Mockito.any()))
+		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(Gender.class), Mockito.any(), Mockito.any()))
 				.thenReturn(missingCodeDataDtoList);
 		mockMvc.perform(post("/gendertypes/search").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk());
 	}
@@ -2080,7 +2082,7 @@ public class MasterdataSearchIntegrationTest {
 		Page<IndividualType> pageContentData = new PageImpl<>(Arrays.asList(individual));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(IndividualType.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
-		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(IndividualType.class), Mockito.any()))
+		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(IndividualType.class), Mockito.any(), Mockito.any()))
 				.thenReturn(missingCodeDataDtoList);
 		mockMvc.perform(post("/individualtypes/search").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk());
 	}
