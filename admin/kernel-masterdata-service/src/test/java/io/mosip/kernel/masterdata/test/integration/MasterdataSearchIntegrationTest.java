@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import io.mosip.kernel.masterdata.dto.MissingDataDto;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -1268,11 +1267,14 @@ public class MasterdataSearchIntegrationTest {
 	@WithUserDetails("global-admin")
 	public void filterMachineTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
+
 		filterDto.setColumnName("name");
 		filterDto.setType("all");
 		filterDto.setText("text");
 		filterDto.setText("re");
+		SearchFilter searchFilter = new SearchFilter();
 		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setOptionalFilters(Arrays.asList(searchFilter));
 		filterValueDto.setFilters(Arrays.asList(filterDto));
 		filterValueDto.setLanguageCode("eng");
 		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
@@ -1352,7 +1354,9 @@ public class MasterdataSearchIntegrationTest {
 		filterDto.setColumnName("name");
 		filterDto.setType("all");
 		filterDto.setText("rd");
+		SearchFilter searchFilter = new SearchFilter();
 		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setOptionalFilters(Arrays.asList(searchFilter));
 		filterValueDto.setFilters(Arrays.asList(filterDto));
 		filterValueDto.setLanguageCode("eng");
 		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
@@ -1373,7 +1377,9 @@ public class MasterdataSearchIntegrationTest {
 		filterDto.setColumnName("name");
 		filterDto.setType("all");
 		filterDto.setText("rd");
+		SearchFilter searchFilter = new SearchFilter();
 		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setOptionalFilters(Arrays.asList(searchFilter));
 		filterValueDto.setFilters(Arrays.asList(filterDto));
 		filterValueDto.setLanguageCode("eng");
 		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
@@ -1392,7 +1398,9 @@ public class MasterdataSearchIntegrationTest {
 		filterDto.setColumnName("name");
 		filterDto.setType("all");
 		filterDto.setText("rd");
+		SearchFilter searchFilter = new SearchFilter();
 		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setOptionalFilters(Arrays.asList(searchFilter));
 		filterValueDto.setFilters(Arrays.asList(filterDto));
 		filterValueDto.setLanguageCode("eng");
 		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
@@ -1410,7 +1418,9 @@ public class MasterdataSearchIntegrationTest {
 		filterDto.setColumnName("name");
 		filterDto.setType("all");
 		filterDto.setText("rd");
+		SearchFilter searchFilter = new SearchFilter();
 		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setOptionalFilters(Arrays.asList(searchFilter));
 		filterValueDto.setFilters(Arrays.asList(filterDto));
 		filterValueDto.setLanguageCode("eng");
 		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
@@ -1919,7 +1929,9 @@ public class MasterdataSearchIntegrationTest {
 		filterDto.setColumnName("id");
 		filterDto.setType("all");
 		filterDto.setText("100");
+		SearchFilter searchFilter = new SearchFilter();
 		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setOptionalFilters(Arrays.asList(searchFilter));
 		filterValueDto.setFilters(Arrays.asList(filterDto));
 		filterValueDto.setLanguageCode("eng");
 		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
@@ -1940,7 +1952,10 @@ public class MasterdataSearchIntegrationTest {
 		filterDto.setColumnName("name");
 		filterDto.setType("unique");
 		filterDto.setText("Center");
+
+		SearchFilter searchFilter = new SearchFilter();
 		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setOptionalFilters(Arrays.asList(searchFilter));
 		filterValueDto.setFilters(Arrays.asList(filterDto));
 		filterValueDto.setLanguageCode("eng");
 		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
