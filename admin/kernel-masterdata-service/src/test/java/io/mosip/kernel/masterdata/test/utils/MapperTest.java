@@ -73,7 +73,7 @@ public class MapperTest {
 		MapperUtils.setBaseFieldValue(d1, d2);
 
 		assertNull(d2.getCode());
-		assertTrue(d2.getIsActive());
+		assertNull(d2.getIsActive());
 	}
 
 	@Test
