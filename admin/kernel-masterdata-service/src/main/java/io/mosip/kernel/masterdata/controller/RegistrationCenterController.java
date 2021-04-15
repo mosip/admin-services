@@ -494,13 +494,13 @@ public class RegistrationCenterController {
 	}
 
 	/**
-	 * Function to fetch missing centers in the provided language code
+	 * Function to fetch missing ids/codes in the provided language code
 	 *
-	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
+	 * @return List<String> list of missing ids/ codes
 	 */
 	@ResponseFilter
 	@GetMapping("/registrationcenters/missingids/{langcode}")
-	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<List<String>> getMissingRegistrationCentersDetails(
 			@PathVariable("langcode") String langCode) {
 		ResponseWrapper<List<String>> responseWrapper = new ResponseWrapper<>();
