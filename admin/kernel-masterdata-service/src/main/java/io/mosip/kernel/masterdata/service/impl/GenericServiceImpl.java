@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
+import io.mosip.kernel.masterdata.dto.MissingDataDto;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.service.GenericService;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,13 +22,27 @@ public class GenericServiceImpl implements GenericService {
     private MasterdataSearchHelper masterdataSearchHelper;
 
     @Override
-    public List<String> getMissingData(Class entity, String langCode) {
+    public List<MissingDataDto> getMissingData(Class entity, String langCode, String fieldName) {
+        List<MissingDataDto> list = new ArrayList<>();
 
         if (!supportedLanguages.contains(langCode)) {
             throw new MasterDataServiceException(MasterdataSearchErrorCode.INVALID_LANGCODE.getErrorCode(),
                     MasterdataSearchErrorCode.INVALID_LANGCODE.getErrorMessage());
         }
 
-        return masterdataSearchHelper.fetchMissingValues(entity, langCode);
+        List<Object[]> resultSet = masterdataSearchHelper.fetchMissingValues(entity, langCode, fieldName);
+        for(Object[] obj : resultSet) {
+            String identifier = (String)obj[0];
+            if(!list.stream().anyMatch(dto -> dto.getId().equals(identifier))) {
+                MissingDataDto dto = new MissingDataDto();
+                dto.setId(identifier);
+                dto.setLangCode((String)obj[1]);
+                if(obj.length > 2) {
+                    dto.setFieldValue((String)obj[2]);
+                }
+                list.add(dto);
+            }
+        }
+        return list;
     }
 }

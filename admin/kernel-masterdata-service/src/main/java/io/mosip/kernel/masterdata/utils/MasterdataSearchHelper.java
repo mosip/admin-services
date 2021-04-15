@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
-import javax.persistence.Id;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.Table;
@@ -21,6 +20,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import io.mosip.kernel.masterdata.dto.MissingDataDto;
 import lombok.NonNull;
 import org.hibernate.HibernateException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -36,8 +36,6 @@ import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
-import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
-import io.mosip.kernel.masterdata.dto.MissingIdDataDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
@@ -60,7 +58,8 @@ import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 @Transactional(readOnly = true)
 public class MasterdataSearchHelper {
 
-	private static String MISSING_IDS_QUERY = "select distinct A.COL from ( select distinct COL, lang_code from TABLE ) A left join ( select distinct COL, lang_code from TABLE where lang_code=:langCode ) B on A.COL=B.COL where B.COL is null";
+	private static String MISSING_IDS_QUERY = "select distinct A.ID, A.lang_code from ( select distinct ID, lang_code from TABLE ) A left join ( select distinct ID, lang_code from TABLE where lang_code=:langCode ) B on A.ID=B.ID where B.ID is null";
+	private static String MISSING_IDS_QUERY_WITH_FIELDNAME = "select distinct A.ID, A.lang_code, A.FIELD from ( select distinct ID, FIELD, lang_code from TABLE ) A left join ( select distinct ID, lang_code from TABLE where lang_code=:langCode ) B on A.ID=B.ID where B.ID is null";
 	private static final String LANGCODE_COLUMN_NAME = "langCode";
 	private static final String ENTITY_IS_NULL = "entity is null";
 	private static final String WILD_CARD_CHARACTER = "%";
@@ -611,13 +610,25 @@ public class MasterdataSearchHelper {
 
 	}
 
-	public <E> List<String> fetchMissingValues(Class<E> entity, @NonNull String langCode) {
+	public <E> List<Object[]> fetchMissingValues(Class<E> entity, @NonNull String langCode, String fieldName) {
 		String tableName = entity.getAnnotation(Table.class).name();
 		String schemaName = entity.getAnnotation(Table.class).schema();
-		String colName = getIdColumnName(entity);
+		String colName = getColumnName(entity, "id") == null ? getColumnName(entity, "code") : "id";
+		if(colName == null)
+			throw new MasterDataServiceException(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
+					ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage());
 
-		String nativeQuery = MISSING_IDS_QUERY.replaceAll("COL", colName).replaceAll("TABLE",
+		String nativeQuery = MISSING_IDS_QUERY.replaceAll("ID", colName).replaceAll("TABLE",
 				String.format("%s.%s", schemaName, tableName));
+
+		if(fieldName != null)  {
+			String columnName = getColumnName(entity, fieldName);
+			if(columnName == null)
+				throw new MasterDataServiceException(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
+						ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage());
+			nativeQuery = MISSING_IDS_QUERY_WITH_FIELDNAME.replaceAll("ID", colName).replaceAll("TABLE",
+					String.format("%s.%s", schemaName, tableName)).replaceAll("FIELD", columnName);
+		}
 
 		try {
 			Query query = entityManager.createNativeQuery(nativeQuery);
@@ -634,17 +645,11 @@ public class MasterdataSearchHelper {
 		}
 	}
 
-	private String getIdColumnName(Class entity) throws MasterDataServiceException {
-		String columnName = "id";
+	private String getColumnName(Class entity, String fieldName) {
+		String columnName = null;
 		try {
-			columnName = entity.getDeclaredField("id").getName();
+			columnName = entity.getDeclaredField(fieldName).getName();
 		} catch (NoSuchFieldException e) {
-			try {
-				columnName = entity.getDeclaredField("code").getName();
-			} catch (NoSuchFieldException e1) {
-				throw new MasterDataServiceException(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
-						ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage());
-			}
 		}
 		return columnName;
 	}
