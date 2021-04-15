@@ -90,8 +90,9 @@ public class MasterdataCreationUtil {
 				id = (String) field.get(t);
 			}
 
+			//NOTE: is_active flag update should be handled only with patch API
 			if (field.getName() != null && field.getName().equals(ISACTIVE_COLUMN_NAME)) {
-				activeDto = (boolean) field.get(t);
+				activeDto = false; //(boolean) field.get(t);
 			}
 		}
 		return callMethodBasedOnFilters(entity, t, langCode, id, primaryId, activeDto, activePrimary, primaryKeyCol,
@@ -153,7 +154,7 @@ public class MasterdataCreationUtil {
 	public <E, T> T updateMasterData(Class<E> entity, T t)
 			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		String langCode = null, id = null;
-		boolean activeDto = false, activePrimary = false, activeSecondary = false;
+		boolean activePrimary = false, activeSecondary = false;
 		String primaryKeyCol = null, nameCol = null, nameValue = null;
 		Field isActive;
 		Class<?> dtoClass = t.getClass();
@@ -178,9 +179,10 @@ public class MasterdataCreationUtil {
 				id = (String) field.get(t);
 			}
 
-			if (field.getName() != null && field.getName().equals(ISACTIVE_COLUMN_NAME)) {
+			//NOTE: is_active flag update should be handled only with patch API
+			/*if (field.getName() != null && field.getName().equals(ISACTIVE_COLUMN_NAME)) {
 				activeDto = (boolean) field.get(t);
-			}
+			}*/
 		}
 			return t;
 	}
