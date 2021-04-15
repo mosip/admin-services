@@ -189,7 +189,7 @@ public class UserDetailsController {
 	}
 	
 	/**
-	 * This api will bring all users from iam by calling kernel auth service api.
+	 * This api is for searching the user details.
 	 * @param roleName
 	 * @return
 	 */	

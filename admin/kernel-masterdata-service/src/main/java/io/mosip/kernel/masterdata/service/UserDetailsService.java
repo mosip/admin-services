@@ -5,7 +5,6 @@ import java.util.List;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsDto;
 import io.mosip.kernel.masterdata.dto.UsersDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.TemplateExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
