@@ -3059,13 +3059,13 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(get("/devicespecifications/{langcode}", "ENG")).andExpect(status().isOk());
 	}
 
-	/*@Test
+	@Test
 	@WithUserDetails("zonal-admin")
 	public void findDeviceSpecLangcodeFetchExceptionTest() throws Exception {
-		when(deviceSpecificationRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+		when(deviceSpecificationRepository.findAllDeviceSpecByIsActiveAndIsDeletedIsNullOrFalse())
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/devicespecifications/{langcode}", "ENG")).andExpect(status().isInternalServerError());
-	}*/
+	}
 
 	// --------------------------------------------
 	@Test
@@ -3574,13 +3574,13 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(get("/machines/{langcode}", "ENG")).andExpect(status().isOk());
 	}
 
-	/*@Test
+	@Test
 	@WithUserDetails("global-admin")
 	public void getMachineLangcodeFetchExceptionTest() throws Exception {
-		when(machineRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+		when(machineRepository.findAllByIsDeletedFalseOrIsDeletedIsNull())
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/machines/{langcode}", "ENG")).andExpect(status().isInternalServerError());
-	}*/
+		mockMvc.perform(get("/getmachines/{langcode}", "ENG")).andExpect(status().isInternalServerError());
+	}
 
 	// ---------------------------------------------------------------------------------------
 	@Test
@@ -8235,13 +8235,13 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(get("/templatefileformats/{langcode}", "ENG")).andExpect(status().isOk());
 	}
 
-	/*@Test
+	@Test
 	@WithUserDetails("global-admin")
 	public void getTemplateFileFormatLangCodeFetchExceptionTest() throws Exception {
-		when(templateFileFormatRepository.findAllByLangCodeAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString()
-				)).thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/templatefileformats/{langcode}", "ENG")).andExpect(status().isInternalServerError());
-	}*/
+		when(templateFileFormatRepository.findAllByIsDeletedFalseorIsDeletedIsNull())
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/gettemplatefileformats/{langcode}", "ENG")).andExpect(status().isInternalServerError());
+	}
 	
 	@Test
 	@WithUserDetails("global-admin")

@@ -56,4 +56,7 @@ public interface TemplateFileFormatRepository extends BaseRepository<TemplateFil
 	
 	@Query("FROM TemplateFileFormat t where  t.langCode = ?1 and (t.isDeleted is null or t.isDeleted = false) and t.isActive = true")
 	List<TemplateFileFormat> findAllByLangCodeAndIsDeletedFalseorIsDeletedIsNull(String langCode);
+	
+	@Query("FROM TemplateFileFormat t where (t.isDeleted is null or t.isDeleted = false) and t.isActive = true")
+	List<TemplateFileFormat> findAllByIsDeletedFalseorIsDeletedIsNull();
 }

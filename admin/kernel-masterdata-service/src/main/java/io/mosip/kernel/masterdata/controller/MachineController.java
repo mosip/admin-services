@@ -94,27 +94,27 @@ public class MachineController {
 
 	/**
 	 * 
-	 * Function to fetch machine detail based on given Language code
+	 * Function to fetch machine detail based
 	 * 
 	 * @param langCode pass language code as String
 	 * 
 	 * @return MachineResponseDto machine detail based on given Language code
 	 *         {@link MachineResponseDto}
 	 */
-/*	@Deprecated
+	@Deprecated
 	@ResponseFilter
-	@GetMapping(value = "/machines/{langcode}")
+	@GetMapping(value = { "/getmachines", "/getmachines/{langcode}" })
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_CLIENT','REGISTRATION_PROCESSOR')")
-	@ApiOperation(value = "Retrieve all Machine Details for given Languge Code", notes = "Retrieve all Machine Detail for given Languge Code")
+	@ApiOperation(value = "Retrieve all Machine Details, /langCode pathparam will be deprecated soon", notes = "Retrieve all Machine Detail")
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given Languge Code"),
-			@ApiResponse(code = 404, message = "When No Machine Details found for the given Languge Code"),
+			@ApiResponse(code = 200, message = "When Machine Details retrieved from database"),
+			@ApiResponse(code = 404, message = "When No Machine Details found"),
 			@ApiResponse(code = 500, message = "While retrieving Machine Details any error occured") })
-	public ResponseWrapper<MachineResponseDto> getMachineLangcode(@PathVariable("langcode") String langCode) {
+	public ResponseWrapper<MachineResponseDto> getMachineLangcode(@PathVariable(value = "langcode", required = false) String langCode) {
 		ResponseWrapper<MachineResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineService.getMachine(langCode));
 		return responseWrapper;
-	}*/
+	}
 
 	/**
 	 * Function to fetch a all machines details

@@ -229,7 +229,7 @@ public class MachineServiceImpl implements MachineService {
 		List<Machine> machineList = null;
 		List<MachineDto> machineDtoList = null;
 		try {
-			machineList = machineRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
+			machineList = machineRepository.findAllByIsDeletedFalseOrIsDeletedIsNull();
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
