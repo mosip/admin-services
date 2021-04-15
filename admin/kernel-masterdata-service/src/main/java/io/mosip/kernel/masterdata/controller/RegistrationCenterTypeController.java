@@ -183,7 +183,7 @@ public class RegistrationCenterTypeController {
 	@PostMapping("/registrationcentertypes/search")
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<RegistrationCenterTypeExtnDto>> searchRegistrationCenterType(
-			@RequestBody @Valid RequestWrapper<SearchDto> request, @RequestParam boolean addMissingData) {
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(
 				MasterDataConstant.SEARCH_API_IS_CALLED + RegistrationCenterTypeExtnDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
@@ -191,7 +191,7 @@ public class RegistrationCenterTypeController {
 				"ADM-550");
 		ResponseWrapper<PageResponseDto<RegistrationCenterTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(
-				registrationCenterTypeService.searchRegistrationCenterTypes(request.getRequest(), addMissingData));
+				registrationCenterTypeService.searchRegistrationCenterTypes(request.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_SEARCH,
 						RegistrationCenterTypeExtnDto.class.getCanonicalName()),

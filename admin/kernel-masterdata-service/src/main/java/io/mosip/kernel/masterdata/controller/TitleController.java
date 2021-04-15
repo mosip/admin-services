@@ -196,12 +196,12 @@ public class TitleController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of titles"),
 			@ApiResponse(code = 500, message = "Error occured while searching title") })
 	public ResponseWrapper<PageResponseDto<TitleExtnDto>> searchTitles(
-			@RequestBody @Valid RequestWrapper<SearchDto> request, @RequestParam boolean addMissingData) {
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(String.format(MasterDataConstant.SEARCH_API_IS_CALLED, TitleDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM,
 				String.format(MasterDataConstant.SEARCH_API_IS_CALLED, TitleDto.class.getSimpleName()), "ADM-819");
 		ResponseWrapper<PageResponseDto<TitleExtnDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(titleService.searchTitles(request.getRequest(), addMissingData));
+		responseWrapper.setResponse(titleService.searchTitles(request.getRequest()));
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_SEARCH, TitleDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM,
 				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, TitleDto.class.getSimpleName()), "ADM-820");

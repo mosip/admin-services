@@ -6399,7 +6399,7 @@ public class MasterdataIntegrationTest {
 		when(registrationCenterRepository.findByRegIdAndLangCode(Mockito.any(),Mockito.any())).thenReturn(Arrays.asList(new RegistrationCenter() ));
 		when(zoneUtils.getUserZones()).thenReturn(zonesMachines);
 		when(masterdataCreationUtil.createMasterData(Machine.class, reqPostMachine)).thenReturn(reqPostMachine);
-		when(registrationCenterValidator.generateMachineIdOrvalidateWithDB(Mockito.any())).thenReturn("10001");
+		when(registrationCenterValidator.generateMachineIdOrvalidateWithDB()).thenReturn("10001");
 		when(machineRepository.create(Mockito.any())).thenReturn(machineEntity);
 		when(machineHistoryRepository.create(Mockito.any())).thenReturn(machineHistory);
 		mockMvc.perform(post("/machines").contentType(MediaType.APPLICATION_JSON).content(machineJson))
@@ -6420,7 +6420,7 @@ public class MasterdataIntegrationTest {
 		when(registrationCenterRepository.findByRegIdAndZone(Mockito.any(),Mockito.any())).thenReturn(Arrays.asList(new RegistrationCenter() ));
 		when(zoneUtils.getUserZones()).thenReturn(zonesMachines);
 		when(masterdataCreationUtil.createMasterData(Machine.class, reqPostMachine)).thenReturn(reqPostMachine);
-		when(registrationCenterValidator.generateMachineIdOrvalidateWithDB(Mockito.any())).thenReturn("10001");
+		when(registrationCenterValidator.generateMachineIdOrvalidateWithDB()).thenReturn("10001");
 		when(machineRepository.create(Mockito.any())).thenReturn(machineEntity);
 		when(machineHistoryRepository.create(Mockito.any())).thenReturn(machineHistory);
 		mockMvc.perform(post("/machines").contentType(MediaType.APPLICATION_JSON).content(machineJson))
@@ -6444,7 +6444,7 @@ public class MasterdataIntegrationTest {
 		when(registrationCenterRepository.findByRegIdAndLangCode(Mockito.any(),Mockito.any())).thenReturn(Arrays.asList(center));
 		when(zoneUtils.getUserZones()).thenReturn(zonesMachines);
 		when(masterdataCreationUtil.createMasterData(Machine.class, reqPostMachine)).thenReturn(reqPostMachine);
-		when(registrationCenterValidator.generateMachineIdOrvalidateWithDB(Mockito.any())).thenReturn("10001");
+		when(registrationCenterValidator.generateMachineIdOrvalidateWithDB()).thenReturn("10001");
 		when(machineRepository.create(Mockito.any())).thenReturn(machineEntity);
 		when(machineHistoryRepository.create(Mockito.any())).thenReturn(machineHistory);
 		mockMvc.perform(post("/machines").contentType(MediaType.APPLICATION_JSON).content(machineJson))
@@ -6465,7 +6465,7 @@ public class MasterdataIntegrationTest {
 		
 		when(zoneUtils.getUserZones()).thenReturn(zonesMachines);
 		when(masterdataCreationUtil.createMasterData(Machine.class, reqPostMachine)).thenReturn(reqPostMachine);
-		when(registrationCenterValidator.generateMachineIdOrvalidateWithDB(Mockito.any())).thenReturn("10001");
+		when(registrationCenterValidator.generateMachineIdOrvalidateWithDB()).thenReturn("10001");
 		Mockito.when(machineRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
 		
@@ -6520,7 +6520,7 @@ public class MasterdataIntegrationTest {
 		
 		when(zoneUtils.getUserZones()).thenReturn(zonesMachines);
 		when(masterdataCreationUtil.createMasterData(Machine.class, reqPostMachine)).thenReturn(reqPostMachine);
-		when(registrationCenterValidator.generateMachineIdOrvalidateWithDB(Mockito.any())).thenReturn("10001");
+		when(registrationCenterValidator.generateMachineIdOrvalidateWithDB()).thenReturn("10001");
 		when(machineRepository.create(Mockito.any())).thenReturn(machineEntity);
 		when(machineHistoryRepository.create(Mockito.any())).thenReturn(machineHistory);
 		mockMvc.perform(post("/machines").contentType(MediaType.APPLICATION_JSON).content(machineJson))
@@ -8158,7 +8158,7 @@ public class MasterdataIntegrationTest {
 		try {
 			when(zoneUtils.getUserZones()).thenReturn(zonesMachines);
 			//when(masterdataCreationUtil.createMasterData(Machine.class, req)).thenReturn(req);
-			when(registrationCenterValidator.generateMachineIdOrvalidateWithDB(Mockito.any())).thenReturn("10001");
+			when(registrationCenterValidator.generateMachineIdOrvalidateWithDB()).thenReturn("10001");
 			when(machineRepository.create(Mockito.any())).thenReturn(machineEntity);
 			when(machineHistoryRepository.create(Mockito.any())).thenReturn(machineHistory);
 			
@@ -8199,7 +8199,7 @@ public class MasterdataIntegrationTest {
 			
 			when(zoneUtils.getUserZones()).thenReturn(zonesMachines);
 			when(masterdataCreationUtil.createMasterData(Machine.class, req)).thenReturn(req);
-			when(registrationCenterValidator.generateMachineIdOrvalidateWithDB(Mockito.any())).thenReturn("10001");
+			when(registrationCenterValidator.generateMachineIdOrvalidateWithDB()).thenReturn("10001");
 			when(machineRepository.create(Mockito.any())).thenReturn(machineEntity);
 			when(machineHistoryRepository.create(Mockito.any())).thenReturn(machineHistory);
 			

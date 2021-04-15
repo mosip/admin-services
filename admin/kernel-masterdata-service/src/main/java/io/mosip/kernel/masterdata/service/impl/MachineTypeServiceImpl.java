@@ -269,10 +269,9 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 	 */
 	@SuppressWarnings("null")
 	@Override
-	public PageResponseDto<MachineTypeExtnDto> searchMachineType(SearchDto dto, boolean addMissingData) {
+	public PageResponseDto<MachineTypeExtnDto> searchMachineType(SearchDto dto) {
 		PageResponseDto<MachineTypeExtnDto> pageDto = new PageResponseDto<>();
 		List<MachineTypeExtnDto> machineTypes = null;
-		List<MachineTypeExtnDto> machineTypeListForMissingData = new ArrayList<MachineTypeExtnDto>();
 
 		List<SearchFilter> addList = new ArrayList<>();
 		if (filterValidator.validate(MachineTypeExtnDto.class, dto.getFilters())) {
@@ -280,22 +279,10 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 			OptionalFilter optionalFilter = new OptionalFilter(addList);
 			Page<MachineType> page = masterdataSearchHelper.searchMasterdata(MachineType.class, dto,
 					new OptionalFilter[] { optionalFilter });
-			if (addMissingData) {
-				List<MissingCodeDataDto> missingCodeDataDtos = masterdataSearchHelper
-						.fetchValuesWithCode(MachineType.class, dto.getLanguageCode());
-				missingCodeDataDtos.forEach(missingCodeData -> {
-					MachineTypeExtnDto machineTypeExtnDto = new MachineTypeExtnDto();
-					machineTypeExtnDto.setCode(missingCodeData.getCode());
-					machineTypeExtnDto.setLangCode(missingCodeData.getLangcode());
-					machineTypeListForMissingData.add(machineTypeExtnDto);
-				});
-			}
+
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				pageDto = PageUtils.pageResponse(page);
 				machineTypes = MapperUtils.mapAll(page.getContent(), MachineTypeExtnDto.class);
-				for (MachineTypeExtnDto machineTypeExtnDto : machineTypeListForMissingData) {
-					machineTypes.add(machineTypeExtnDto);
-				}
 				pageDto.setData(machineTypes);
 			}
 		}

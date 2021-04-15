@@ -10,5 +10,4 @@ public interface RegWorkingNonWorkingService {
 	WorkingDaysResponseDto getWorkingDays(String regCenterId, String dayCode);
 	
 	WorkingDaysResponseDto getWorkingDays(String langCode);
-
 }

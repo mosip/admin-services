@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -89,8 +88,7 @@ public class Machine extends BaseEntity implements Serializable {
 	private String regCenterId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumns({ @JoinColumn(name = "mspec_id", referencedColumnName = "id", insertable = false, updatable = false),
-			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	@JoinColumn(name = "mspec_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private MachineSpecification machineSpecification;
 
 	@Transient

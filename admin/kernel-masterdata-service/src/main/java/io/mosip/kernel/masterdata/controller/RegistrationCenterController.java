@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import io.mosip.kernel.masterdata.dto.*;
+import io.mosip.kernel.masterdata.entity.RegistrationCenter;
+import io.mosip.kernel.masterdata.service.GenericService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,12 +24,6 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
-import io.mosip.kernel.masterdata.dto.PageDto;
-import io.mosip.kernel.masterdata.dto.RegCenterLanguageSpecificPutDto;
-import io.mosip.kernel.masterdata.dto.RegCenterNonLanguageSpecificPutDto;
-import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
-import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
@@ -71,6 +68,9 @@ public class RegistrationCenterController {
 
 	@Autowired
 	private AuditUtil auditUtil;
+
+	@Autowired
+	private GenericService genericService;
 
 	/**
 	 * Function to fetch registration centers list using location code and language
@@ -304,7 +304,7 @@ public class RegistrationCenterController {
 	@PostMapping("/registrationcenters/search")
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<RegistrationCenterSearchDto>> searchRegistrationCenter(
-			@RequestBody @Valid RequestWrapper<SearchDto> request, @RequestParam boolean addMissingData) {
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SEARCH_API_IS_CALLED,
 						RegistrationCenterSearchDto.class.getSimpleName()),
@@ -313,7 +313,7 @@ public class RegistrationCenterController {
 				"ADM-517");
 		ResponseWrapper<PageResponseDto<RegistrationCenterSearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
-				.setResponse(registrationCenterService.searchRegistrationCenter(request.getRequest(), addMissingData));
+				.setResponse(registrationCenterService.searchRegistrationCenter(request.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, RegistrationCenterSearchDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,
@@ -485,6 +485,22 @@ public class RegistrationCenterController {
 		ResponseWrapper<RegistrationCenterExtnDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(registrationCenterService.updateRegistrationCenterWithNonLanguageSpecific(reqRegistrationCenterDto.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * Function to fetch missing ids/codes in the provided language code
+	 *
+	 * @return List<String> list of missing ids/ codes
+	 */
+	@ResponseFilter
+	@GetMapping("/registrationcenters/missingids/{langcode}")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	public ResponseWrapper<List<MissingDataDto>> getMissingRegistrationCentersDetails(
+			@PathVariable("langcode") String langCode,
+			@RequestParam(required = false) String fieldName) {
+		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(genericService.getMissingData(RegistrationCenter.class, langCode, fieldName));
 		return responseWrapper;
 	}
 }

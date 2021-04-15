@@ -146,10 +146,9 @@ public class IndividualTypeServiceImpl implements IndividualTypeService {
 	 * .mosip.kernel.masterdata.dto.request.SearchDto)
 	 */
 	@Override
-	public PageResponseDto<IndividualTypeExtnDto> searchIndividuals(SearchDto dto, boolean addMissingData) {
+	public PageResponseDto<IndividualTypeExtnDto> searchIndividuals(SearchDto dto) {
 		PageResponseDto<IndividualTypeExtnDto> pageDto = new PageResponseDto<>();
 		List<IndividualTypeExtnDto> individuals = null;
-		List<IndividualTypeExtnDto> individualsForMissingData = new ArrayList<IndividualTypeExtnDto>();
 
 		if (filterTypeValidator.validate(IndividualTypeExtnDto.class, dto.getFilters())) {
 			Pagination pagination = dto.getPagination();
@@ -159,20 +158,8 @@ public class IndividualTypeServiceImpl implements IndividualTypeService {
 			dto.setSort(Collections.emptyList());
 			Page<IndividualType> page = masterDataSearchHelper.searchMasterdata(IndividualType.class, dto, null);
 
-			if (addMissingData) {
-				List<MissingCodeDataDto> missingCodeDataDto = masterDataSearchHelper
-						.fetchValuesWithCode(IndividualType.class, dto.getLanguageCode());
-				missingCodeDataDto.forEach(missingCodeData -> {
-					IndividualTypeExtnDto individualTypeExtnDto = new IndividualTypeExtnDto();
-					individualTypeExtnDto.setCode(missingCodeData.getCode());
-					individualTypeExtnDto.setLangCode(missingCodeData.getLangcode());
-					individualsForMissingData.add(individualTypeExtnDto);
-				});
-			}
-
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				individuals = MapperUtils.mapAll(page.getContent(), IndividualTypeExtnDto.class);
-				individuals.addAll(individualsForMissingData);
 				pageDto = pageUtils.sortPage(individuals, sort, pagination);
 			}
 		}

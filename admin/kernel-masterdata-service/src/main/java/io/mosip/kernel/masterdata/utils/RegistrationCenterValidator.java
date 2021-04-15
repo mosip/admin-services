@@ -28,7 +28,6 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idgenerator.spi.MachineIdGenerator;
 import io.mosip.kernel.core.idgenerator.spi.RegistrationCenterIdGenerator;
-import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
@@ -778,20 +777,12 @@ public class RegistrationCenterValidator {
 	MachineRepository machineRepository;
 
 	// call method generate ID or validate with DB
-	public String generateMachineIdOrvalidateWithDB(String uniqueId) {
-		if (uniqueId.isEmpty()) {
-			// Get Machine Id by calling MachineIdGenerator API
-			uniqueId = machineIdGenerator.generateMachineId();
-		} else {
-			List<Machine> renMachine = machineRepository
+	public String generateMachineIdOrvalidateWithDB() {
+		String uniqueId = machineIdGenerator.generateMachineId();
+		List<Machine> renMachine = machineRepository
 					.findMachineByIdAndIsDeletedFalseorIsDeletedIsNullNoIsActive(uniqueId);
-			if (renMachine.isEmpty()) {
-				// for the given ID, we don't have data in primary language
-				throw new RequestException(MachineErrorCode.MACHINE_ID.getErrorCode(),
-						String.format(MachineErrorCode.MACHINE_ID.getErrorMessage(), uniqueId));
-			}
-		}
-		return uniqueId;
+
+		return renMachine.isEmpty() ? uniqueId : generateMachineIdOrvalidateWithDB();
 	}
 
 	public void validateRegCenterUpdate(String zoneCode,LocalTime centerStartTime, LocalTime centerEndTime,

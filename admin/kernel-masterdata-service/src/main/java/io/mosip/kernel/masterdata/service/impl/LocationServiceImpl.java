@@ -689,9 +689,8 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	@SuppressWarnings("null")
 	@Override
-	public PageResponseDto<LocationSearchDto> searchLocation(SearchDto dto, boolean addMissingData) {
+	public PageResponseDto<LocationSearchDto> searchLocation(SearchDto dto) {
 		PageResponseDto<LocationSearchDto> pageDto = null;
-		List<LocationSearchDto> locationListForMissingData = new ArrayList<LocationSearchDto>();
 		String active = null;
 		boolean isActive = true;
 		List<LocationSearchDto> responseDto = new ArrayList<>();
@@ -757,19 +756,6 @@ public class LocationServiceImpl implements LocationService {
 				}
 				count++;
 			}
-		}
-		if (addMissingData) {
-			List<MissingCodeDataDto> missingCodeDataDtos = masterdataSearchHelper.fetchValuesWithCode(Location.class,
-					dto.getLanguageCode());
-			missingCodeDataDtos.forEach(missingCodeData -> {
-				LocationSearchDto locationSearchDto = new LocationSearchDto();
-				locationSearchDto.setCode(missingCodeData.getCode());
-				locationSearchDto.setLangCode(missingCodeData.getLangcode());
-				locationListForMissingData.add(locationSearchDto);
-			});
-		}
-		for (LocationSearchDto locationSearchDto : locationListForMissingData) {
-			responseDto.add(locationSearchDto);
 		}
 		Pagination pagination = dto.getPagination();
 		List<SearchSort> sort = dto.getSort();

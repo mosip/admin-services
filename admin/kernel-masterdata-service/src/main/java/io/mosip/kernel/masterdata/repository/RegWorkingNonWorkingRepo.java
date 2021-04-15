@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
@@ -21,9 +22,9 @@ public interface RegWorkingNonWorkingRepo extends BaseRepository<RegWorkingNonWo
 	List<DayNameAndSeqListDto> findByregistrationCenterIdAndlanguagecodeForWorkingDays(String regCenterId,
 			String langcode);
 
-	@Query("SELECT new io.mosip.kernel.masterdata.dto.getresponse.WeekDaysDto(d.name,d.isGlobalWorking,w.dayCode,w.languagecode,w.isWorking) "
+	@Query("SELECT new io.mosip.kernel.masterdata.dto.getresponse.WeekDaysDto(d.name,d.isGlobalWorking,w.dayCode,d.langCode,w.isWorking) "
 			+ "FROM RegWorkingNonWorking w RIGHT JOIN w.daysOfWeek d "
-			+ "where w.registrationCenterId=?1 and w.languagecode=?2 and w.isActive = true")
+			+ "where w.registrationCenterId=?1 and d.langCode=?2 and w.isActive = true")
 	List<WeekDaysDto> findByregistrationCenterIdAndlangCodeForWeekDays(String regCenterId, String langCode);
 
 	@Query("From RegWorkingNonWorking where registrationCenterId=?1 and languagecode=?2 and (isDeleted is null or isDeleted = false) and isActive = true")
@@ -34,5 +35,7 @@ public interface RegWorkingNonWorkingRepo extends BaseRepository<RegWorkingNonWo
 
 	@Query("From RegWorkingNonWorking where languagecode=?1 and (isDeleted is null or isDeleted = false) and isActive = true")
 	List<RegWorkingNonWorking> findByLanguagecode(String languageCode);
-
+	
+	@Query("From RegWorkingNonWorking where registrationCenterId IN :registrationCenterIds and (isDeleted is null or isDeleted = false) and isActive = true")
+	List<RegWorkingNonWorking> findByRegCenterIds(@Param("registrationCenterIds") List<String> registrationCenterIds);
 }

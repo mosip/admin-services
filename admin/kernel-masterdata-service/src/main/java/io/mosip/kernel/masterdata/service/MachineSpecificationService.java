@@ -86,8 +86,7 @@ public interface MachineSpecificationService {
 	 * @param searchRequestDto the search DTO.
 	 * @return the {@link PageResponseDto}.
 	 */
-	public PageResponseDto<MachineSpecificationExtnDto> searchMachineSpecification(SearchDto searchRequestDto,
-			boolean addMissingData);
+	public PageResponseDto<MachineSpecificationExtnDto> searchMachineSpecification(SearchDto searchRequestDto);
 
 	/**
 	 * Method to filter machine specification based on column and type provided.
