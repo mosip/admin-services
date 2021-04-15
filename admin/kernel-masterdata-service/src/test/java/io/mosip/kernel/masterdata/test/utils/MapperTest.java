@@ -3,13 +3,13 @@ package io.mosip.kernel.masterdata.test.utils;
 import static io.mosip.kernel.masterdata.utils.MapperUtils.map;
 import static io.mosip.kernel.masterdata.utils.MetaDataUtils.setCreateMetaData;
 import static io.mosip.kernel.masterdata.utils.MetaDataUtils.setUpdateMetaData;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,11 +68,12 @@ public class MapperTest {
 		LanguageDto d1 = new LanguageDto();
 		LanguageDto d2 = new LanguageDto();
 		d1.setCode("HIN");
+		d1.setIsActive(true);
 
 		MapperUtils.setBaseFieldValue(d1, d2);
 
 		assertNull(d2.getCode());
-
+		assertTrue(d2.getIsActive());
 	}
 
 	@Test
@@ -82,6 +83,7 @@ public class MapperTest {
 
 		dto.setCode("ENG");
 		dto.setFamily("English");
+		dto.setIsActive(false);
 
 		entity.setCode("eng");
 		entity.setFamily("english");
@@ -99,6 +101,39 @@ public class MapperTest {
 		assertTrue(entity.getNativeName().equals("english"));
 		assertTrue(entity.getUpdatedBy() != null);
 		assertTrue(entity.getUpdatedDateTime() != null);
+		assertTrue(entity.getIsActive());
+	}
+
+	@Test
+	public void testSetUpdateMetaDataWithIsActive() {
+		LanguageDto dto = new LanguageDto();
+		Language entity = new Language();
+
+		dto.setCode("ENG");
+		dto.setFamily("English");
+		dto.setIsActive(true);
+
+		entity.setIsActive(false);
+		setUpdateMetaData(dto, entity, false);
+
+		assertTrue(entity.getCode().equals(dto.getCode()));
+		assertTrue(entity.getFamily().equals(dto.getFamily()));
+		assertFalse(entity.getIsActive());
+	}
+
+	@Test
+	public void testSetCreateMetaDataWithIsActive() {
+		LanguageDto dto = new LanguageDto();
+
+		dto.setCode("ENG");
+		dto.setFamily("English");
+		dto.setIsActive(true);
+
+		Language entity = setCreateMetaData(dto, Language.class);
+
+		assertNotNull(entity.getCreatedDateTime());
+		assertNotNull(entity.getCreatedBy());
+		assertFalse(entity.getIsActive());
 	}
 
 	

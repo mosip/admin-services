@@ -7,15 +7,13 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
+import org.apache.commons.collections4.ListUtils;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -64,6 +62,9 @@ public class MapperUtils {
 	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	private static final String SOURCE_NULL_MESSAGE = "source should not be null";
 	private static final String DESTINATION_NULL_MESSAGE = "destination should not be null";
+
+	private static final String ISACTIVE_COLUMN_NAME = "isActive";
+	private static final String ISDELETE_COLUMN_NAME = "isDeleted";
 
 	/**
 	 * This flag is used to restrict copy null values.
@@ -250,16 +251,19 @@ public class MapperUtils {
 			Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
 			Field[] destinationFields = destination.getClass().getSuperclass().getDeclaredFields();
 			mapFieldValues(source, destination, sourceFields, destinationFields);
-			sourceFields = source.getClass().getDeclaredFields();
-			mapFieldValues(source, destination, sourceFields, destinationFields);
+			//sourceFields = source.getClass().getDeclaredFields();
+			//mapFieldValues(source, destination, sourceFields, destinationFields);
 			return;
 		}
 		if (sourceSupername.equals(baseDtoClassName) && destinationSupername.equals(baseEntityClassName)) {
 			Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
 			Field[] destinationFields = destination.getClass().getSuperclass().getDeclaredFields();
+			destinationFields = Arrays.stream(destinationFields)
+					.filter(f -> !f.getName().equals(ISACTIVE_COLUMN_NAME) && !f.getName().equals(ISDELETE_COLUMN_NAME))
+					.collect(Collectors.toList()).toArray(new Field[0]);
 			mapFieldValues(source, destination, sourceFields, destinationFields);
-			destinationFields = destination.getClass().getDeclaredFields();
-			mapFieldValues(source, destination, sourceFields, destinationFields);
+			//destinationFields = destination.getClass().getDeclaredFields();
+			//mapFieldValues(source, destination, sourceFields, destinationFields);
 			return;
 		}
 
@@ -272,6 +276,9 @@ public class MapperUtils {
 			// if destination is an entity
 			Field[] sourceFields = source.getClass().getDeclaredFields();
 			Field[] destinationFields = destination.getClass().getSuperclass().getDeclaredFields();
+			destinationFields = Arrays.stream(destinationFields)
+					.filter(f -> !f.getName().equals(ISACTIVE_COLUMN_NAME) && !f.getName().equals(ISDELETE_COLUMN_NAME))
+					.collect(Collectors.toList()).toArray(new Field[0]);
 			mapFieldValues(source, destination, sourceFields, destinationFields);
 		} else {
 			if (!sourceSupername.equals(objectClassName) && !destinationSupername.equals(objectClassName)) {
@@ -385,8 +392,6 @@ public class MapperUtils {
 	 * @param <D>         is a type parameter
 	 * @param source      which value is going to be mapped
 	 * @param destination where values is going to be mapped
-	 * @param sf          source fields
-	 * @param dtf         destination fields
 	 */
 	private static <D, S> void mapFieldValues(S source, D destination, Field[] sourceFields,
 			Field[] destinationFields) {

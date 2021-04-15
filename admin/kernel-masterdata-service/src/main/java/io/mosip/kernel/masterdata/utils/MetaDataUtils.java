@@ -105,6 +105,8 @@ public class MetaDataUtils {
 
 		D entity = (D) MapperUtils.map(source, destinationClass);
 
+		entity.setIsActive(false);
+		entity.setIsDeleted(false);
 		setCreatedDateTime(contextUser, entity);
 		return entity;
 	}
@@ -121,6 +123,8 @@ public class MetaDataUtils {
 
 		dtoList.forEach(dto -> {
 			D entity = (D) MapperUtils.map(dto, entityClass);
+			entity.setIsActive(false);
+			entity.setIsDeleted(false);
 			setCreatedDateTime(contextUser, entity);
 			entities.add(entity);
 		});
