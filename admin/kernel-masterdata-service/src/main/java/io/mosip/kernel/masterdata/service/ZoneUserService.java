@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.masterdata.dto.ZoneUserDto;
@@ -24,4 +26,6 @@ public interface ZoneUserService {
 	public ZoneUserHistoryResponseDto getHistoryByUserIdAndTimestamp( String userId, String date);
 	
 	public ZoneUser getZoneUser(String userId, String langCode, String zoneCode);
+	
+	public List<ZoneUser> getZoneUsers(List<String> userIds);
 }
