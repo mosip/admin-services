@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -133,8 +134,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			Page<UserDetails> pageData = userDetailsRepository
 					.findAllByIsDeletedFalseorIsDeletedIsNull(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(direction), sortBy)));
 			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
-				userDetails = MapperUtils.mapAll(pageData.getContent(), UserDetailsExtnDto.class);
-				pageDto = new PageDto<>(pageData.getNumber(), pageSize, pageData.getSort(), pageData.getTotalElements(), pageData.getTotalPages(), userDetails);
+				userDetails = MapperUtils.mapAll(pageData.getContent(), UserDetailsExtnDto.class);				
+				pageDto = new PageDto<>(pageData.getNumber(), pageSize, pageData.getSort(), pageData.getTotalElements(), pageData.getTotalPages(), getZonesForUsers(userDetails));
 			} else {
 				throw new DataNotFoundException(UserDetailsErrorCode.USER_NOT_FOUND.getErrorCode(),
 						UserDetailsErrorCode.USER_NOT_FOUND.getErrorMessage());
@@ -145,6 +146,21 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 							+ ExceptionUtils.parseException(exception));
 		}
 		return pageDto;
+	}
+
+	private List<UserDetailsExtnDto> getZonesForUsers(List<UserDetailsExtnDto> userDetails) {
+		List<UserDetailsExtnDto> mappedUserDetails = new ArrayList<UserDetailsExtnDto>();
+		List<ZoneUser> zoneUsers = zoneUserService.getZoneUsers(userDetails.stream().map(UserDetailsExtnDto::getId).collect(Collectors.toList()));
+		for (UserDetailsExtnDto userDetail : userDetails) {
+			ZoneUser mappedZone = zoneUsers.stream().filter(us->us.getUserId().equals(userDetail.getId())).findFirst().orElse(null);
+			if(mappedZone != null) {
+				userDetail.setZoneCode(mappedZone.getZoneCode());
+				mappedUserDetails.add(userDetail);
+			}else {
+				mappedUserDetails.add(userDetail);
+			}
+		}
+		return mappedUserDetails;
 	}
 
 	@Override

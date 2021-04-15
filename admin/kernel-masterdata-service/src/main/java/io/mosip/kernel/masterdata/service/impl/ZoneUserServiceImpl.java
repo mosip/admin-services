@@ -266,4 +266,8 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		response.setStatus("Status updated successfully for Zone");
 		return response;
 	}
+	@Override
+	public List<ZoneUser> getZoneUsers(List<String> userIds) {
+		return zoneUserRepo.findByUserIds(userIds);
+	}
 }
