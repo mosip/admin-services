@@ -78,7 +78,7 @@ public class MachineController {
 	 *         Language code {@link MachineResponseDto}
 	 */
 	@ResponseFilter
-	@GetMapping(value = { "/machines/{id}", "/machines/{id}/{langcode}" })
+	@GetMapping(value = { "/machines/id/{id}", "/machines/{id}/{langcode}" })
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_CLIENT','REGISTRATION_PROCESSOR','RESIDENT')")
 	@ApiOperation(value = "Retrieve all Machine Details, /langCode pathparam will be deprecated soon", notes = "Retrieve all Machine Detail for given ID")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given ID"),
@@ -103,7 +103,7 @@ public class MachineController {
 	 */
 	@Deprecated
 	@ResponseFilter
-	@GetMapping(value = { "/getmachines", "/getmachines/{langcode}" })
+	@GetMapping(value = { "/machines/{langcode}" })
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_CLIENT','REGISTRATION_PROCESSOR')")
 	@ApiOperation(value = "Retrieve all Machine Details, /langCode pathparam will be deprecated soon", notes = "Retrieve all Machine Detail")
 	@ApiResponses({

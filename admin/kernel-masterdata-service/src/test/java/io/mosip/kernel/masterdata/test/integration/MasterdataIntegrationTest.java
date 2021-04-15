@@ -3579,7 +3579,7 @@ public class MasterdataIntegrationTest {
 	public void getMachineLangcodeFetchExceptionTest() throws Exception {
 		when(machineRepository.findAllByIsDeletedFalseOrIsDeletedIsNull())
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/getmachines/{langcode}", "ENG")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/machines/{langcode}", "ENG")).andExpect(status().isInternalServerError());
 	}
 
 	// ---------------------------------------------------------------------------------------
@@ -8240,7 +8240,7 @@ public class MasterdataIntegrationTest {
 	public void getTemplateFileFormatLangCodeFetchExceptionTest() throws Exception {
 		when(templateFileFormatRepository.findAllByIsDeletedFalseorIsDeletedIsNull())
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/gettemplatefileformats/{langcode}", "ENG")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/templatefileformats/{langcode}", "ENG")).andExpect(status().isInternalServerError());
 	}
 	
 	@Test

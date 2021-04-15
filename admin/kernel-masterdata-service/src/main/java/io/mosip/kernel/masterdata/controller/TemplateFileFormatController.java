@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,6 +42,7 @@ import io.swagger.annotations.ApiResponses;
  *
  */
 @RestController
+@RequestMapping("/templatefileformats")
 @Api(tags = { "TemplateFileFormat" })
 public class TemplateFileFormatController {
 
@@ -60,7 +62,7 @@ public class TemplateFileFormatController {
 	 */
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
-	@PostMapping(value = "/templatefileformats")
+	@PostMapping
 	public ResponseWrapper<CodeAndLanguageCodeID> createTemplateFileFormat(
 			@Valid @RequestBody RequestWrapper<TemplateFileFormatDto> templateFileFormatRequestDto) {
 
@@ -81,7 +83,7 @@ public class TemplateFileFormatController {
 	 */
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
-	@PutMapping(value = "/templatefileformats")
+	@PutMapping
 	@ApiOperation(value = "Service to update TemplateFileFormat", notes = "Update TemplateFileFormat and return TemplateFileFormat id")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When TemplateFileFormat updated successfully"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
@@ -105,7 +107,7 @@ public class TemplateFileFormatController {
 	 */
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
-	@DeleteMapping("/templatefileformats/{code}")
+	@DeleteMapping("/{code}")
 	@ApiOperation(value = "Service to delete TemplateFileFormat", notes = "Delete TemplateFileFormat and return code")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When TemplateFileFormat successfully deleted"),
 			@ApiResponse(code = 400, message = "When path is invalid"),
@@ -133,7 +135,7 @@ public class TemplateFileFormatController {
 	 */
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
-	@GetMapping(value = { "/templatefileformats/{code}", "/templatefileformats/{code}/{langcode}" })
+	@GetMapping(value = { "code/{code}", "/{code}/{langcode}" })
 	@ApiOperation(value = "Retrieve all TemplateFileFormat Details, /langCode pathparam will be deprecated soon", notes = "Retrieve all TemplateFileFormat Detail for given code")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When TemplateFileFormat Details retrieved from database for the give Code"),
@@ -162,7 +164,7 @@ public class TemplateFileFormatController {
 	@Deprecated
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
-	@GetMapping(value = { "/templatefileformats", "/gettemplatefileformats/{langcode}" })
+	@GetMapping(value = { "", "/{langcode}" })
 	@ApiOperation(value = "Retrieve all TemplateFileFormat Details, /langCode pathparam will be deprecated soon", notes = "Retrieve all TemplateFileFormat Detail")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When TemplateFileFormat Details retrieved from database"),
@@ -178,7 +180,7 @@ public class TemplateFileFormatController {
 	
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
-	@PatchMapping(value = "/templatefileformats")
+	@PatchMapping
 	@ApiOperation(value = "Service to update TemplateFileFormat", notes = "Update TemplateFileFormat and return TemplateFileFormat code")
 	public ResponseWrapper<StatusResponseDto> updateFileFormatStatus(@Valid @RequestParam boolean isActive,
 			@RequestParam String code) {

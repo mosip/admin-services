@@ -108,7 +108,7 @@ public class DeviceSpecificationController {
 	 */
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER','GLOBAL_ADMIN')")
 	@ResponseFilter
-	@GetMapping(value = {"/getdevicespecifications/{devicetypecode}", "/devicespecifications/{langcode}/{devicetypecode}"})
+	@GetMapping(value = {"/devicespecifications/devicetypecode/{devicetypecode}", "/devicespecifications/{langcode}/{devicetypecode}"})
 	@ApiOperation(value = "Retrieve all Device Specification for DeviceTypeCode, /langCode pathparam will be deprecated soon", notes = "Retrieve all DeviceSpecification for specific DeviceTypeCode")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Device Specification retrieved from database for specific DeviceTypeCode "),
