@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,9 +45,15 @@ import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsDto;
 import io.mosip.kernel.masterdata.dto.UsersDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.TemplateExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.Pagination;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
+import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.UserDetails;
 import io.mosip.kernel.masterdata.entity.UserDetailsHistory;
 import io.mosip.kernel.masterdata.entity.ZoneUser;
@@ -63,8 +70,13 @@ import io.mosip.kernel.masterdata.service.ZoneUserService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
  * @author Sidhant Agarwal
@@ -86,6 +98,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Autowired
 	MasterdataCreationUtil masterdataCreationUtil;
 
+	@Autowired
+	private FilterTypeValidator filterTypeValidator;
+
+	@Autowired
+	private MasterdataSearchHelper masterDataSearchHelper;
+	
+	@Autowired
+	private PageUtils pageUtils;
+	
 	@Autowired
 	RegistrationCenterService registrationCenterService;
 
@@ -448,4 +469,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				String.format(MasterDataConstant.GET_ALL_SUCCESS_DESC, UsersDto.class.getSimpleName()));
 		return usersDto;
 	}
+
+	@Override
+	public PageResponseDto<UserDetailsExtnDto> searchUserDetails(SearchDto searchDto) {
+		PageResponseDto<UserDetailsExtnDto> pageDto = new PageResponseDto<>();
+		List<UserDetailsExtnDto> userDetails = null;		
+		Page<UserDetails> page = masterDataSearchHelper.searchMasterdata(UserDetails.class, searchDto,null);
+		if (page.getContent() != null && !page.getContent().isEmpty()) {
+			userDetails = MapperUtils.mapAll(page.getContent(), UserDetailsExtnDto.class);
+			pageDto = pageUtils.sortPage(getZonesForUsers(userDetails), searchDto.getSort(), searchDto.getPagination());
+		}
+		return pageDto;
+	}
 }
+
