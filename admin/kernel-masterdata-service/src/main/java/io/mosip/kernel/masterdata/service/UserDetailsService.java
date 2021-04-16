@@ -104,5 +104,6 @@ public interface UserDetailsService {
 	 * @param roleName
 	 * @return
 	 */
-	public UsersDto getUsers(String roleName);
+	public UsersDto getUsers(String roleName,int pageStart, int pageFetch,
+			String email, String firstName, String lastName, String username);
 }

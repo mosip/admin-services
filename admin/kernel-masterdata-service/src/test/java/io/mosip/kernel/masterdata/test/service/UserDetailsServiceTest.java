@@ -609,9 +609,9 @@ public class UserDetailsServiceTest {
 				"  \"errors\": null\r\n" + 
 				"}";
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();	
-		mockRestServiceServer.expect(requestTo(userDetailsUri.toString() + "/admin"))
+		mockRestServiceServer.expect(requestTo(userDetailsUri.toString() + "/admin?pageStart=0&pageFetch=100"))
 		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
-		userDetailsService.getUsers("");
+		userDetailsService.getUsers("", 0, 0, "", "", "", "");
 	}
 	
 	@Test
@@ -684,8 +684,8 @@ public class UserDetailsServiceTest {
 				"}";
 		
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();	
-		mockRestServiceServer.expect(requestTo(userDetailsUri.toString() + "/admin?roleName=AUTH"))
+		mockRestServiceServer.expect(requestTo(userDetailsUri.toString() + "/admin?roleName=AUTH&pageStart=0&pageFetch=100"))
 		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
-		userDetailsService.getUsers("AUTH");
+		userDetailsService.getUsers("AUTH",0,0,"","","","");
 	}
 }

@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,6 +39,7 @@ import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.UserDetailsErrorCode;
 import io.mosip.kernel.masterdata.dto.PageDto;
@@ -110,6 +112,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	/** admin realm id. */
 	@Value("${mosip.iam.admin-realm-id:admin}")
 	private String adminRealmId;
+	
+	@Value("${mosip.keycloak.max-no-of-users:100}")
+	private String maxUsers;
 	
 	@Autowired
 	ZoneUserService zoneUserService;
@@ -370,16 +375,31 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	 * 
 	 */
 	@Override
-	public UsersDto getUsers(String roleName) {
-		ResponseEntity<String> response = null;
+	public UsersDto getUsers(String roleName,int pageStart, int pageFetch,
+			String email, String firstName, String lastName, String userName) {
+		ResponseEntity<String> response = null;		
+		UriComponentsBuilder uriComponentsBuilder = null;
 		try {
-			StringBuilder uriBuilder = new StringBuilder();
-			String userDetailsUrl = uriBuilder.append(authBaseUrl).append(authServiceName) + "/" + adminRealmId;
-			if (roleName != null && !roleName.isBlank() && !roleName.isEmpty()) {
-				userDetailsUrl = userDetailsUrl + "?roleName=" + roleName;
+			uriComponentsBuilder = UriComponentsBuilder.fromUriString(authBaseUrl + authServiceName + "/" + adminRealmId);
+			if (StringUtils.isNotBlank(roleName)) {				
+				uriComponentsBuilder.queryParam("roleName",roleName);
 			}
+			if(StringUtils.isNotBlank(email)) {
+				uriComponentsBuilder.queryParam("email", email);
+			}
+			if(StringUtils.isNotBlank(firstName)) {
+				uriComponentsBuilder.queryParam("firstName", firstName);
+			}
+			if(StringUtils.isNotBlank(lastName)) {
+				uriComponentsBuilder.queryParam("lastName", lastName);
+			}
+			if(StringUtils.isNotBlank(userName)) {
+				uriComponentsBuilder.queryParam("userName", userName);
+			}
+			uriComponentsBuilder.queryParam("pageStart", pageStart);
+			uriComponentsBuilder.queryParam("pageFetch", pageFetch == 0 ? maxUsers:pageFetch);
 			HttpEntity<RequestWrapper<?>> httpRequest = getHttpRequest();
-			response = restTemplate.exchange(userDetailsUrl, HttpMethod.GET, httpRequest, String.class);
+			response = restTemplate.exchange(uriComponentsBuilder.toUriString(), HttpMethod.GET, httpRequest, String.class);
 		} catch (HttpServerErrorException | HttpClientErrorException ex) {
 			List<ServiceError> validationErrorsList = io.mosip.kernel.core.exception.ExceptionUtils
 					.getServiceErrorList(ex.getResponseBodyAsString());
