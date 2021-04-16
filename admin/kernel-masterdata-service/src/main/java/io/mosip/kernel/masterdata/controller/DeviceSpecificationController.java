@@ -71,24 +71,24 @@ public class DeviceSpecificationController {
 	DeviceSpecificationValidator deviceSpecificationValidator;
 
 	/**
-	 * Function to fetch list of device specification details based on language code
+	 * Function to fetch list of device specification details
 	 * 
 	 * @param langCode pass language code as String
 	 * 
-	 * @return DeviceSpecificationResponseDto all device Specification details based
-	 *         on given language code
+	 * @return DeviceSpecificationResponseDto all device Specification details
 	 * 
 	 */
+	@Deprecated
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER','GLOBAL_ADMIN','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
-	@GetMapping("/devicespecifications/{langcode}")
-	@ApiOperation(value = "Retrieve all Device Specification for given Languge Code", notes = "Retrieve all DeviceSpecification for the given Languge Code")
+	@GetMapping(value = {"/devicespecifications", "/devicespecifications/{langcode}"})
+	@ApiOperation(value = "Retrieve all Device Specification, /langCode pathparam will be deprecated soon", notes = "Retrieve all DeviceSpecification")
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Device Specification retrieved from database for the given Languge Code "),
-			@ApiResponse(code = 404, message = "When No Device Specificationfound for the given Languge Code and ID"),
+			@ApiResponse(code = 200, message = "When Device Specification retrieved from database "),
+			@ApiResponse(code = 404, message = "When No Device Specificationfound for the given ID"),
 			@ApiResponse(code = 500, message = "While retrieving Device Specifications any error occured") })
 	public ResponseWrapper<DeviceSpecificationResponseDto> getDeviceSpecificationByLanguageCode(
-			@PathVariable("langcode") String langCode) {
+			@PathVariable(value = "langcode", required = false) String langCode) {
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
 				.findDeviceSpecificationByLangugeCode(langCode);
 
@@ -108,14 +108,15 @@ public class DeviceSpecificationController {
 	 */
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER','GLOBAL_ADMIN')")
 	@ResponseFilter
-	@GetMapping("/devicespecifications/{langcode}/{devicetypecode}")
-	@ApiOperation(value = "Retrieve all Device Specification for specific langCode and DeviceTypeCode", notes = "Retrieve all DeviceSpecification for specific langCode and DeviceTypeCode")
+	@GetMapping(value = {"/devicespecifications/devicetypecode/{devicetypecode}", "/devicespecifications/{langcode}/{devicetypecode}"})
+	@ApiOperation(value = "Retrieve all Device Specification for DeviceTypeCode, /langCode pathparam will be deprecated soon", notes = "Retrieve all DeviceSpecification for specific DeviceTypeCode")
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Device Specification retrieved from database for specific langCode and DeviceTypeCode "),
-			@ApiResponse(code = 404, message = "When No Device Specificationfound for specific langCode and DeviceTypeCode"),
+			@ApiResponse(code = 200, message = "When Device Specification retrieved from database for specific DeviceTypeCode "),
+			@ApiResponse(code = 404, message = "When No Device Specificationfound for specific DeviceTypeCode"),
 			@ApiResponse(code = 500, message = "While retrieving Device Specifications any error occured") })
 	public ResponseWrapper<DeviceSpecificationResponseDto> getDeviceSpecificationByLanguageCodeAndDeviceTypeCode(
-			@PathVariable("langcode") String langCode, @PathVariable("devicetypecode") String deviceTypeCode) {
+			@PathVariable(value = "langcode", required = false) String langCode,
+			@PathVariable("devicetypecode") String deviceTypeCode) {
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
 				.findDeviceSpecByLangCodeAndDevTypeCode(langCode, deviceTypeCode);
 

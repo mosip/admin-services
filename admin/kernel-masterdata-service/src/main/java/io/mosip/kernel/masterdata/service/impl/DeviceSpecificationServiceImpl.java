@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -122,7 +121,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		List<DeviceSpecificationDto> deviceSpecificationDtoList = null;
 		try {
 			deviceSpecificationList = deviceSpecificationRepository
-					.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode);
+					.findAllDeviceSpecByIsActiveAndIsDeletedIsNullOrFalse();
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorCode(),
@@ -152,7 +151,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		List<DeviceSpecificationDto> deviceSpecificationDtoList = null;
 		try {
 			deviceSpecificationList = deviceSpecificationRepository
-					.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode, deviceTypeCode);
+					.findByDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(deviceTypeCode);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorCode(),
@@ -176,19 +175,17 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	 * createDeviceSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public IdAndLanguageCodeID createDeviceSpecification(DeviceSpecificationDto deviceSpecifications) {
+	public IdAndLanguageCodeID createDeviceSpecification(DeviceSpecificationDto deviceSpecification) {
 		DeviceSpecification renDeviceSpecification = null;
 
 
 		try {
-			if (StringUtils.isNotEmpty(supportedLang)
-					&& supportedLang.contains(deviceSpecifications.getLangCode().toLowerCase())) {
-				
-				deviceSpecifications.setId(generateId());
+			if (deviceSpecification.getId() == null || deviceSpecification.getId().isBlank()) {
+				deviceSpecification.setId(generateId());
 			}
-			deviceSpecifications = masterdataCreationUtil.createMasterData(DeviceSpecification.class,
-					deviceSpecifications);
-			DeviceSpecification entity = MetaDataUtils.setCreateMetaData(deviceSpecifications,
+			deviceSpecification = masterdataCreationUtil.createMasterData(DeviceSpecification.class,
+					deviceSpecification);
+			DeviceSpecification entity = MetaDataUtils.setCreateMetaData(deviceSpecification,
 					DeviceSpecification.class);
 			renDeviceSpecification = deviceSpecificationRepository.create(entity);
 			Objects.requireNonNull(renDeviceSpecification);

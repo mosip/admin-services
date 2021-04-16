@@ -142,7 +142,9 @@ public class RegistrationCenterSearchFilterIntegrationTest {
 		filterDto.setColumnName("Zone");
 		filterDto.setType("invalidType");
 		filterDto.setText("abc");
+		SearchFilter searchFilter = new SearchFilter();
 		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setOptionalFilters(Arrays.asList(searchFilter));
 		filterValueDto.setFilters(Arrays.asList(filterDto));
 		filterValueDto.setLanguageCode("eng");
 		requestDto = new RequestWrapper<>();

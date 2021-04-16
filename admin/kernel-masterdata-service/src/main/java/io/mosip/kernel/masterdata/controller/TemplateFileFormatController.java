@@ -123,7 +123,7 @@ public class TemplateFileFormatController {
 	/**
 	 * 
 	 * Function to fetch TemplateFileFormat detail based on given TemplateFileFormat
-	 * code and Language code.
+	 * code.
 	 * 
 	 * @param TemplateFileFormat
 	 *            code pass TemplateFileFormat code as String
@@ -135,14 +135,15 @@ public class TemplateFileFormatController {
 	 */
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
-	@GetMapping(value = "/{code}/{langcode}")
-	@ApiOperation(value = "Retrieve all TemplateFileFormat Details for given Languge Code", notes = "Retrieve all TemplateFileFormat Detail for given Languge Code and code")
+	@GetMapping(value = { "/code/{code}", "/{code}/{langcode}" })
+	@ApiOperation(value = "Retrieve all TemplateFileFormat Details, /langCode pathparam will be deprecated soon", notes = "Retrieve all TemplateFileFormat Detail for given code")
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "When TemplateFileFormat Details retrieved from database for the given Languge Code and Code"),
-			@ApiResponse(code = 404, message = "When No TemplateFileFormat Details found for the given Languge Code and Code"),
+			@ApiResponse(code = 200, message = "When TemplateFileFormat Details retrieved from database for the give Code"),
+			@ApiResponse(code = 404, message = "When No TemplateFileFormat Details found for the given Code"),
 			@ApiResponse(code = 500, message = "While retrieving TemplateFileFormat Details any error occured") })
 	public ResponseWrapper<TemplateFileFormatResponseDto> getTemplateFileFormatCodeandLangCode(
-			@PathVariable("code") String templateFileFormatCode, @PathVariable("langcode") String langCode) {
+			@PathVariable("code") String templateFileFormatCode,
+			@PathVariable(value = "langcode", required = false) String langCode) {
 
 		ResponseWrapper<TemplateFileFormatResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(
@@ -152,7 +153,7 @@ public class TemplateFileFormatController {
 
 	/**
 	 * 
-	 * Function to fetch TemplateFileFormat detail based on given Language code.
+	 * Function to fetch TemplateFileFormat detail based.
 	 * 
 	 * @param langCode
 	 *            pass language code as String
@@ -160,16 +161,17 @@ public class TemplateFileFormatController {
 	 *         given TemplateFileFormat code and Language code
 	 *         {@link TemplateFileFormatResponseDto}
 	 */
+	@Deprecated
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
-	@GetMapping(value = "/{langcode}")
-	@ApiOperation(value = "Retrieve all TemplateFileFormat Details for given Languge Code", notes = "Retrieve all TemplateFileFormat Detail for given Languge Code")
+	@GetMapping(value = { "", "/{langcode}" })
+	@ApiOperation(value = "Retrieve all TemplateFileFormat Details, /langCode pathparam will be deprecated soon", notes = "Retrieve all TemplateFileFormat Detail")
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "When TemplateFileFormat Details retrieved from database for the given Languge Code"),
-			@ApiResponse(code = 404, message = "When No TemplateFileFormat Details found for the given Languge Code"),
+			@ApiResponse(code = 200, message = "When TemplateFileFormat Details retrieved from database"),
+			@ApiResponse(code = 404, message = "When No TemplateFileFormat Details found"),
 			@ApiResponse(code = 500, message = "While retrieving TemplateFileFormat Details any error occured") })
 	public ResponseWrapper<TemplateFileFormatResponseDto> getTemplateFileFormatLangCode(
-			@PathVariable("langcode") String langCode) {
+			@PathVariable(value = "langcode", required = false) String langCode) {
 
 		ResponseWrapper<TemplateFileFormatResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(templateFileFormatService.getTemplateFileFormatLangCode(langCode));
