@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
+import io.mosip.kernel.masterdata.dto.MissingDataDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.TemplatePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
@@ -31,7 +34,9 @@ import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
+import io.mosip.kernel.masterdata.service.GenericService;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
@@ -59,6 +64,9 @@ public class TemplateController {
 
 	@Autowired
 	private AuditUtil auditUtil;
+	
+	@Autowired
+	private GenericService genericService;
 
 	/**
 	 * Method to fetch all Template details
@@ -297,6 +305,21 @@ public class TemplateController {
 		auditUtil.auditRequest(MasterDataConstant.STATUS_UPDATED_SUCCESS + TemplateDto.class.getSimpleName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.STATUS_UPDATED_SUCCESS + TemplateDto.class.getSimpleName(), "ADM-813");
+		return responseWrapper;
+	}
+	
+	/**
+	 * Function to fetch missing ids/codes in the provided language code
+	 *
+	 * @return List<String> list of missing ids/ codes
+	 */
+	@ResponseFilter
+	@GetMapping("/missingids/{langcode}")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	public ResponseWrapper<List<MissingDataDto>> getMissingTemplateDetails(
+			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
+		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(genericService.getMissingData(Template.class, langCode, fieldName));
 		return responseWrapper;
 	}
 }

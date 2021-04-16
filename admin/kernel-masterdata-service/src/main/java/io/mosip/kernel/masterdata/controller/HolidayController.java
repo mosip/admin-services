@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.HolidayIDDto;
 import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
 import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
+import io.mosip.kernel.masterdata.dto.MissingDataDto;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
@@ -33,6 +36,8 @@ import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.HolidaySearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.Holiday;
+import io.mosip.kernel.masterdata.service.GenericService;
 import io.mosip.kernel.masterdata.service.HolidayService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.validator.HolidayValidator;
@@ -63,6 +68,9 @@ public class HolidayController {
 	
 	@Autowired
 	private HolidayValidator holidayValidator;
+	
+	@Autowired
+	private GenericService genericService;
 
 	/**
 	 * This method returns all holidays present in master db
@@ -253,6 +261,21 @@ public class HolidayController {
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.holidaysFilterValues(request.getRequest()));
+		return responseWrapper;
+	}
+	
+	/**
+	 * Function to fetch missing ids/codes in the provided language code
+	 *
+	 * @return List<String> list of missing ids/ codes
+	 */
+	@ResponseFilter
+	@GetMapping("/missingids/{langcode}")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	public ResponseWrapper<List<MissingDataDto>> getMissingHolidayDetails(
+			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
+		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(genericService.getMissingData(Holiday.class, langCode, fieldName));
 		return responseWrapper;
 	}
 
