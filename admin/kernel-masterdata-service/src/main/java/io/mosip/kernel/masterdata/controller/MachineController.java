@@ -70,7 +70,7 @@ public class MachineController {
 
 	/**
 	 * 
-	 * Function to fetch machine detail based on given Machine ID and Language code.
+	 * Function to fetch machine detail based on given Machine ID.
 	 * 
 	 * @param machineId pass Machine ID as String
 	 * @param langCode  pass language code as String
@@ -78,15 +78,14 @@ public class MachineController {
 	 *         Language code {@link MachineResponseDto}
 	 */
 	@ResponseFilter
-	@GetMapping(value = "/machines/{id}/{langcode}")
+	@GetMapping(value = { "/machines/id/{id}", "/machines/{id}/{langcode}" })
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_CLIENT','REGISTRATION_PROCESSOR','RESIDENT')")
-	@ApiOperation(value = "Retrieve all Machine Details for given Languge Code", notes = "Retrieve all Machine Detail for given Languge Code and ID")
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given Languge Code and ID"),
-			@ApiResponse(code = 404, message = "When No Machine Details found for the given Languge Code and ID"),
+	@ApiOperation(value = "Retrieve all Machine Details, /langCode pathparam will be deprecated soon", notes = "Retrieve all Machine Detail for given ID")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given ID"),
+			@ApiResponse(code = 404, message = "When No Machine Details found for the given ID"),
 			@ApiResponse(code = 500, message = "While retrieving Machine Details any error occured") })
 	public ResponseWrapper<MachineResponseDto> getMachineIdLangcode(@PathVariable("id") String machineId,
-			@PathVariable("langcode") String langCode) {
+			@PathVariable(value = "langcode", required = false) String langCode) {
 
 		ResponseWrapper<MachineResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineService.getMachine(machineId, langCode));
@@ -95,22 +94,23 @@ public class MachineController {
 
 	/**
 	 * 
-	 * Function to fetch machine detail based on given Language code
+	 * Function to fetch machine detail based
 	 * 
 	 * @param langCode pass language code as String
 	 * 
 	 * @return MachineResponseDto machine detail based on given Language code
 	 *         {@link MachineResponseDto}
 	 */
+	@Deprecated
 	@ResponseFilter
-	@GetMapping(value = "/machines/{langcode}")
+	@GetMapping(value = { "/machines/{langcode}" })
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_CLIENT','REGISTRATION_PROCESSOR')")
-	@ApiOperation(value = "Retrieve all Machine Details for given Languge Code", notes = "Retrieve all Machine Detail for given Languge Code")
+	@ApiOperation(value = "Retrieve all Machine Details, /langCode pathparam will be deprecated soon", notes = "Retrieve all Machine Detail")
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given Languge Code"),
-			@ApiResponse(code = 404, message = "When No Machine Details found for the given Languge Code"),
+			@ApiResponse(code = 200, message = "When Machine Details retrieved from database"),
+			@ApiResponse(code = 404, message = "When No Machine Details found"),
 			@ApiResponse(code = 500, message = "While retrieving Machine Details any error occured") })
-	public ResponseWrapper<MachineResponseDto> getMachineLangcode(@PathVariable("langcode") String langCode) {
+	public ResponseWrapper<MachineResponseDto> getMachineLangcode(@PathVariable(value = "langcode", required = false) String langCode) {
 		ResponseWrapper<MachineResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineService.getMachine(langCode));
 		return responseWrapper;

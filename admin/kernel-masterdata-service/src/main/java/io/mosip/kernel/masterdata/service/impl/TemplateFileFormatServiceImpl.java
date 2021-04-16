@@ -197,7 +197,7 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 		TemplateFileFormatResponseDto templateFileFormatResponseDto = new TemplateFileFormatResponseDto();
 		try {
 			templateFileFormatList = templateFileFormatRepository
-					.findAllByCodeAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(templateFileFormatCode, langCode);
+					.findAllByCodeAndIsDeletedFalseorIsDeletedIsNull(templateFileFormatCode);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_FETCH_EXCEPTION.getErrorCode(),
@@ -228,8 +228,7 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 		List<TemplateFileFormatDto> templateFileFormatDtoList = null;
 		TemplateFileFormatResponseDto templateFileFormatResponseDto = new TemplateFileFormatResponseDto();
 		try {
-			templateFileFormatList = templateFileFormatRepository
-					.findAllByLangCodeAndIsDeletedFalseorIsDeletedIsNull(langCode);
+			templateFileFormatList = templateFileFormatRepository.findAllByIsDeletedFalseorIsDeletedIsNull();
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_FETCH_EXCEPTION.getErrorCode(),

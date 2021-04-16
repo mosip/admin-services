@@ -66,8 +66,7 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 		MachineHistoryResponseDto machineHistoryResponseDto = new MachineHistoryResponseDto();
 		try {
 			macHistoryList = machineHistoryRepository
-					.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(id,
-							langCode, lDateAndTime);
+					.findByFirstByIdAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(id, lDateAndTime);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorCode(),
 					MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorMessage()

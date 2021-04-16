@@ -3062,7 +3062,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void findDeviceSpecLangcodeFetchExceptionTest() throws Exception {
-		when(deviceSpecificationRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+		when(deviceSpecificationRepository.findAllDeviceSpecByIsActiveAndIsDeletedIsNullOrFalse())
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/devicespecifications/{langcode}", "ENG")).andExpect(status().isInternalServerError());
 	}
@@ -3089,8 +3089,8 @@ public class MasterdataIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void findDeviceSpecByLangCodeAndDevTypeCodeFetchExceptionTest() throws Exception {
-		when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(
-				Mockito.anyString(), Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
+		when(deviceSpecificationRepository.findByDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/devicespecifications/{langcode}/{devicetypecode}", "ENG", "laptop"))
 				.andExpect(status().isInternalServerError());
 	}
@@ -3552,8 +3552,8 @@ public class MasterdataIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void getMachineIdLangcodeFetchExceptionTest() throws Exception {
-		when(machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString(),
-				Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
+		when(machineRepository.findMachineByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/machines/{id}/{langcode}", "1000", "ENG")).andExpect(status().isInternalServerError());
 	}
 
@@ -3577,7 +3577,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void getMachineLangcodeFetchExceptionTest() throws Exception {
-		when(machineRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+		when(machineRepository.findAllByIsDeletedFalseOrIsDeletedIsNull())
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/machines/{langcode}", "ENG")).andExpect(status().isInternalServerError());
 	}
@@ -3928,8 +3928,8 @@ public class MasterdataIntegrationTest {
 	@WithUserDetails("reg-processor")
 	public void getMachineHistroyIdLangEffDTimeNullResponseTest() throws Exception {
 		when(machineHistoryRepository
-				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
-						Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(null);
+				.findByFirstByIdAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+						Mockito.anyString(), Mockito.any())).thenReturn(null);
 		mockMvc.perform(
 				get("/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956Z"))
 				.andExpect(status().isOk());
@@ -3939,8 +3939,8 @@ public class MasterdataIntegrationTest {
 	@WithUserDetails("reg-processor")
 	public void getMachineHistroyIdLangEffDTimeFetchExceptionTest() throws Exception {
 		when(machineHistoryRepository
-				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
-						Mockito.anyString(), Mockito.anyString(), Mockito.any()))
+				.findByFirstByIdAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+						Mockito.anyString(), Mockito.any()))
 								.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(
 				get("/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956Z"))
@@ -8238,8 +8238,8 @@ public class MasterdataIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void getTemplateFileFormatLangCodeFetchExceptionTest() throws Exception {
-		when(templateFileFormatRepository.findAllByLangCodeAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString()
-				)).thenThrow(DataRetrievalFailureException.class);
+		when(templateFileFormatRepository.findAllByIsDeletedFalseorIsDeletedIsNull())
+				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/templatefileformats/{langcode}", "ENG")).andExpect(status().isInternalServerError());
 	}
 	
@@ -8264,9 +8264,10 @@ public class MasterdataIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void getTemplateFileFormatCodeLangcodeFetchExceptionTest() throws Exception {
-		when(templateFileFormatRepository.findAllByCodeAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString(),
-				Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/templatefileformats/{code}/{langcode}", "1000", "ENG")).andExpect(status().isInternalServerError());
+		when(templateFileFormatRepository.findAllByCodeAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/templatefileformats/{code}/{langcode}", "1000", "ENG"))
+				.andExpect(status().isInternalServerError());
 	}
 //----------------------------------------Template Type ------------------------------------------
 	@Test

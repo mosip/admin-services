@@ -42,7 +42,7 @@ public class MachineSpecification extends BaseEntity implements Serializable {
 
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
-
+	
 	/**
 	 * Field for machine Specification name
 	 */
