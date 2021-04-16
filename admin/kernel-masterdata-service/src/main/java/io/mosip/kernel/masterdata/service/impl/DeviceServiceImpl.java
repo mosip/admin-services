@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -212,11 +211,9 @@ public class DeviceServiceImpl implements DeviceService {
 				validateRegistrationCenter(deviceDto.getRegCenterId());
 				validateRegistrationCenterZone(deviceDto.getZoneCode(),deviceDto.getRegCenterId());
 			}
-			if (StringUtils.isNotEmpty(supportedLang)
-					&& supportedLang.contains(deviceDto.getLangCode().toLowerCase())) {
+			if (deviceDto.getId() == null || deviceDto.getId().isBlank()) {
 				deviceDto.setId(generateId());
 			}
-			
 			if (deviceDto != null) {
 				entity = MetaDataUtils.setCreateMetaData(deviceDto, Device.class);
 				entityHistory = MetaDataUtils.setCreateMetaData(deviceDto, DeviceHistory.class);

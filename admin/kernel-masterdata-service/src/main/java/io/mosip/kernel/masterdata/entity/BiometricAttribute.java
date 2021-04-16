@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -55,9 +54,7 @@ public class BiometricAttribute extends BaseEntity implements Serializable {
 	private String biometricTypeCode;
 
 	@ManyToOne
-	@JoinColumns({
-			@JoinColumn(name = "bmtyp_code", referencedColumnName = "code", insertable = false, updatable = false),
-			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	@JoinColumn(name = "bmtyp_code", referencedColumnName = "code", insertable = false, updatable = false)
 	private BiometricType biometricType;
 
 }
