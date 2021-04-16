@@ -7,6 +7,8 @@ import io.mosip.kernel.masterdata.dto.UserDetailsDto;
 import io.mosip.kernel.masterdata.dto.UsersDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterUserID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -105,4 +107,11 @@ public interface UserDetailsService {
 	 * @return
 	 */
 	public UsersDto getUsers(String roleName);
+	
+	/**
+	 * 
+	 * @param searchDto
+	 * @return
+	 */
+	public PageResponseDto<UserDetailsExtnDto> searchUserDetails(SearchDto searchDto);
 }

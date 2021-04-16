@@ -46,6 +46,8 @@ import io.mosip.kernel.masterdata.dto.UsersDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.UserDetails;
 import io.mosip.kernel.masterdata.entity.UserDetailsHistory;
@@ -64,7 +66,9 @@ import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.PageUtils;
 
 /**
  * @author Sidhant Agarwal
@@ -86,6 +90,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Autowired
 	MasterdataCreationUtil masterdataCreationUtil;
 
+	@Autowired
+	private MasterdataSearchHelper masterDataSearchHelper;
+	
+	@Autowired
+	private PageUtils pageUtils;
+	
 	@Autowired
 	RegistrationCenterService registrationCenterService;
 
@@ -448,4 +458,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				String.format(MasterDataConstant.GET_ALL_SUCCESS_DESC, UsersDto.class.getSimpleName()));
 		return usersDto;
 	}
+
+	@Override
+	public PageResponseDto<UserDetailsExtnDto> searchUserDetails(SearchDto searchDto) {
+		PageResponseDto<UserDetailsExtnDto> pageDto = new PageResponseDto<>();
+		List<UserDetailsExtnDto> userDetails = null;		
+		Page<UserDetails> page = masterDataSearchHelper.searchMasterdata(UserDetails.class, searchDto,null);
+		if (page.getContent() != null && !page.getContent().isEmpty()) {
+			userDetails = MapperUtils.mapAll(page.getContent(), UserDetailsExtnDto.class);
+			pageDto = pageUtils.sortPage(getZonesForUsers(userDetails), searchDto.getSort(), searchDto.getPagination());
+		}
+		return pageDto;
+	}
 }
+
