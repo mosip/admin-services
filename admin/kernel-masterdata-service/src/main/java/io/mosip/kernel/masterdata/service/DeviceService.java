@@ -127,5 +127,36 @@ public interface DeviceService {
 	public DeviceExtnDto updateDevice(DevicePutReqDto devicePutReqDto);
 	
 	public StatusResponseDto updateDeviceStatus(String id, boolean isActive);
+	
+	/**
+	 * This abstract method to fetch Devices details for given DeviceType Code
+	 * 
+	 * @param devideTypeCode devideTypeCode from user
+	 * @return DeviceLangCodeResponseDto Returning all Devices Details for given
+	 *         DeviceType Code {@link DeviceLangCodeResponseDto}
+	 * @throws MasterDataServiceException if any error occurs while retrieving
+	 *                                    device
+	 * 
+	 * @throws DataNotFoundException      if no Device found
+	 *
+	 */
+	public DeviceLangCodeResponseDto getDeviceByDeviceType(String devideTypeCode);
+	
+	/**
+	 * This abstract method to fetch Devices details for given Language code and
+	 * DeviceType Code
+	 * 
+	 * @param langCode       language code is optional
+	 * We are not using language code. we using this method for language code in future if we want to use 
+	 * @param devideTypeCode devideTypeCode from user
+	 * @return DeviceLangCodeResponseDto Returning all Devices Details for given
+	 *         Language code and DeviceType Code {@link DeviceLangCodeResponseDto}
+	 * @throws MasterDataServiceException if any error occurs while retrieving
+	 *                                    device
+	 * 
+	 * @throws DataNotFoundException      if no Device found
+	 *
+	 */
+	public DeviceLangCodeResponseDto getDeviceByLangCodeAndDeviceType(String langCode, String devideTypeCode);
 
 }

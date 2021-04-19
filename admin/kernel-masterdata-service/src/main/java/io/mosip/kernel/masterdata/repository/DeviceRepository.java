@@ -185,5 +185,8 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 
 	@Query("FROM Device d where d.deviceSpecId = ?1 and (d.isDeleted is null or d.isDeleted = false) and d.isActive = true")
 	List<Device> findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(String deviceSpecId, String landCode);
+	
+	@Query(value = "select d.id, d.name, d.mac_address, d.serial_num, d.ip_address, d.dspec_id, d.lang_code, d.is_active, d.validity_end_dtimes, d.zone_code, s.dtyp_code from master.device_master  d, master.device_spec s where  d.dspec_id = s.id  and d.lang_code = s.lang_code and s.dtyp_code = ?1 and (d.is_deleted is null or d.is_deleted = false) and d.is_active = true", nativeQuery = true)
+	List<Object[]> findByDtypeCode(String deviceTypeCode);
 
 }

@@ -19,6 +19,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.ApplicationService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * Controller APIs to get Application types details
@@ -57,6 +58,7 @@ public class ApplicationController {
 	 * 
 	 * @return All Application details
 	 */
+	@Deprecated
 	@PreAuthorize("hasAnyRole('RESIDENT','GLOBAL_ADMIN','ZONAL_ADMIN','INDIVIDUAL','REGISTRATION_PROCESSOR','PRE_REGISTRATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
 	@GetMapping("/{langcode}")
@@ -76,13 +78,15 @@ public class ApplicationController {
 	 * 
 	 * @return Application detail
 	 */
+	
 	@PreAuthorize("hasAnyRole('RESIDENT','GLOBAL_ADMIN','ZONAL_ADMIN','INDIVIDUAL','REGISTRATION_PROCESSOR','PRE_REGISTRATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
-	@GetMapping("/{code}/{langcode}")
+	@GetMapping(value = {"/{code}/{langcode}", "/getApplication/{code}"})
+	@ApiOperation(value = "Retrieve all Application for given code, /langCode pathparam will be deprecated soon", notes = "Retrieve all application for given code and Languge Code")
 	public ResponseWrapper<ApplicationResponseDto> getApplicationByCodeAndLanguageCode(
-			@PathVariable("code") String code, @PathVariable("langcode") String langCode) {
+			@PathVariable("code") String code, @PathVariable(value = "langcode", required = false) String langCode) {
 		ResponseWrapper<ApplicationResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(applicationService.getApplicationByCodeAndLanguageCode(code, langCode));
+		responseWrapper.setResponse(applicationService.getApplicationByCodeAndOptionalLanguageCode(code, langCode));
 		return responseWrapper;
 	}
 

@@ -63,4 +63,32 @@ public interface BiometricTypeService {
 	 * @throws MasterDataServiceException If fails to insert the Biometric Type
 	 */
 	public CodeAndLanguageCodeID createBiometricType(BiometricTypeDto biometricTypeRequestDto);
+	
+	/**
+	 * Method to fetch all Biometric Type details based on code
+	 * 
+	 * @param code     The id of Biometric Type
+	 * 
+	 * @return BiometricTypeResponseDto
+	 * 
+	 * @throws MasterDataServiceException If fails to fetch required Biometric Type
+	 * 
+	 * @throws DataNotFoundException      If given required Biometric Type not found
+	 */
+	public BiometricTypeResponseDto getBiometricTypeByCode(String code);
+	
+	/**
+	 * Method to fetch all Biometric Type details based on id and language code
+	 * 
+	 * @param code     The id of Biometric Type
+	 * 
+	 * @param langCode The language code
+	 * 
+	 * @return BiometricTypeResponseDto
+	 * 
+	 * @throws MasterDataServiceException If fails to fetch required Biometric Type
+	 * 
+	 * @throws DataNotFoundException      If given required Biometric Type not found
+	 */
+	public BiometricTypeResponseDto getBiometricTypeByCodeAndOptionalLangCode(String code, String langCode);
 }

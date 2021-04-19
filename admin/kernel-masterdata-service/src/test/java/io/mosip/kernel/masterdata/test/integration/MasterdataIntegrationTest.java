@@ -3752,7 +3752,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void getDeviceLangCodeAndDeviceTypeSuccessTest() throws Exception {
-		when(deviceRepository.findByLangCodeAndDtypeCode(Mockito.anyString(), Mockito.anyString()))
+		when(deviceRepository.findByDtypeCode(Mockito.anyString()))
 				.thenReturn(objectList);
 		mockMvc.perform(get("/devices/{languagecode}/{deviceType}", "ENG", "LaptopCode")).andExpect(status().isOk());
 	}

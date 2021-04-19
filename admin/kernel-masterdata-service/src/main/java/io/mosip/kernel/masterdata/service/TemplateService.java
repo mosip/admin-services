@@ -110,5 +110,16 @@ public interface TemplateService {
 	 * @return {@link PageResponseDto}the page response dto
 	 */
 	public FilterResponseDto filterTemplates(FilterValueDto filterValueDto);
+	
+	/**
+	 * To fetch all the {@link Template} based on language code and template type
+	 * code
+	 * 
+	 * @param langCode         the language code
+	 * @param templateTypeCode the template type code
+	 * @return {@link TemplateResponseDto}
+	 */
+	public TemplateResponseDto getAllTemplateByOptionalLanguageCodeAndTemplateTypeCode(String langCode,
+			String templateTypeCode);
 
 }

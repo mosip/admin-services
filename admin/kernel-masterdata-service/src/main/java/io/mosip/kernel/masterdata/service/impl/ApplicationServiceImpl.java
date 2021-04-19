@@ -175,4 +175,46 @@ public class ApplicationServiceImpl implements ApplicationService {
 						ApplicationDto.class.getSimpleName(), application.getCode()));
 		return applicationToCodeandlanguagecodeDefaultMapper.map(application);
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.ApplicationService#
+	 * getApplicationByCode(java.lang.String)
+	 */
+	@Override
+	public ApplicationResponseDto getApplicationByCode(String code) {
+		Application application;
+		List<ApplicationDto> applicationDtoList = new ArrayList<>();
+		try {
+			application = applicationRepository.findByCodeAndIsDeletedFalseOrIsDeletedIsNull(code);
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
+					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
+		}
+		if (application != null) {
+			applicationDtoList.add(applicationtoToApplicationDtoDefaultMapper.map(application));
+		} else {
+			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+					ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+		ApplicationResponseDto applicationResponseDto = new ApplicationResponseDto();
+		applicationResponseDto.setApplicationtypes(applicationDtoList);
+		return applicationResponseDto;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.ApplicationService#
+	 * getApplicationByCodeAndOptionalLanguageCode(java.lang.String, java.lang.String)
+	 * 
+	 * Here we are not using languageCode. In future if we want we will call the languageCode method.
+	 * That is the reason we are creating separate method
+	 */
+	@Override
+	public ApplicationResponseDto getApplicationByCodeAndOptionalLanguageCode(String code, String languageCode) {
+		return getApplicationByCode(code);
+	}
 }

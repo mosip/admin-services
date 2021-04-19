@@ -44,5 +44,22 @@ public interface ApplicationService {
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	public CodeAndLanguageCodeID createApplication(ApplicationDto application);
+	
+	/**
+	 * Get An Application by code and language code
+	 * 
+	 * @param code     the code
+	 * @return {@link ApplicationResponseDto}
+	 */
+	public ApplicationResponseDto getApplicationByCode(String code);
+	
+	/**
+	 * Get An Application by code and language code
+	 * 
+	 * @param code     the code
+	 * @param langCode the language code is optional
+	 * @return {@link ApplicationResponseDto}
+	 */
+	public ApplicationResponseDto getApplicationByCodeAndOptionalLanguageCode(String code, String langCode);
 
 }

@@ -177,5 +177,48 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 		return biometricTypeToCodeandlanguagecodeDefaultMapper.map(biometricType);
 
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.BiometricTypeService#
+	 * getBiometricTypeByCode(java.lang.String)
+	 */
+	@Override
+	public BiometricTypeResponseDto getBiometricTypeByCode(String code) {
+		BiometricType biometricType;
+		BiometricTypeDto biometricTypeDto;
+		try {
+			biometricType = biometricTypeRepository.findByCodeAndIsDeletedFalseOrIsDeletedIsNull(code);
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new MasterDataServiceException(BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
+					BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
+		}
+
+		if (biometricType != null) {
+			biometricTypeDto = biometricTypeTobiometricTypeDtoDefaultMapper.map(biometricType);
+		} else {
+			throw new DataNotFoundException(BiometricTypeErrorCode.BIOMETRIC_TYPE_NOT_FOUND.getErrorCode(),
+					BiometricTypeErrorCode.BIOMETRIC_TYPE_NOT_FOUND.getErrorMessage());
+		}
+		List<BiometricTypeDto> biometricTypeDtos = new ArrayList<>();
+		biometricTypeDtos.add(biometricTypeDto);
+		BiometricTypeResponseDto biometricTypeResponseDto = new BiometricTypeResponseDto();
+		biometricTypeResponseDto.setBiometrictypes(biometricTypeDtos);
+		return biometricTypeResponseDto;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.BiometricTypeService#
+	 * getBiometricTypeByCodeAndOptionalLangCode(java.lang.String, java.lang.String)
+	 * we are not using langCode now. In future if we want to use will call getBiometricTypeByCodeAndLangCode method.
+	 */
+	@Override
+	public BiometricTypeResponseDto getBiometricTypeByCodeAndOptionalLangCode(String code, String langCode) {
+		return getBiometricTypeByCode(code);
+	}
 
 }

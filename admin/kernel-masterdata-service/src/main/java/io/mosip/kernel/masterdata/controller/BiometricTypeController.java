@@ -20,6 +20,7 @@ import io.mosip.kernel.masterdata.entity.BiometricType;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * Controller APIs to get Biometric types details
@@ -58,6 +59,7 @@ public class BiometricTypeController {
 	 * 
 	 * @return All Biometric type details
 	 */
+	@Deprecated
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_PROCESSOR','REGISTRATION_OFFICER')")
 	@ResponseFilter
 	@GetMapping("/{langcode}")
@@ -78,12 +80,13 @@ public class BiometricTypeController {
 	 */
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_PROCESSOR','REGISTRATION_OFFICER')")
 	@ResponseFilter
-	@GetMapping("/{code}/{langcode}")
+	@GetMapping(value = {"/{code}/{langcode}", "/getBiometricType/{code}"})
+	@ApiOperation(value = "Retrieve all BiometricType for given code, /langCode pathparam will be deprecated soon", notes = "Retrieve all biometric type for given code and Languge Code")
 	public ResponseWrapper<BiometricTypeResponseDto> getBiometricTypeByCodeAndLangCode(
-			@PathVariable("code") String code, @PathVariable("langcode") String langCode) {
+			@PathVariable("code") String code, @PathVariable(value = "langcode", required = false) String langCode) {
 
 		ResponseWrapper<BiometricTypeResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(biometricTypeService.getBiometricTypeByCodeAndLangCode(code, langCode));
+		responseWrapper.setResponse(biometricTypeService.getBiometricTypeByCodeAndOptionalLangCode(code, langCode));
 		return responseWrapper;
 	}
 

@@ -455,5 +455,19 @@ public class TemplateServiceImpl implements TemplateService {
 		response.setStatus("Status updated successfully for Templates");
 		return response;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.TemplateService#
+	 * getAllTemplateByOptionalLanguageCodeAndTemplateTypeCode(java.lang.String,
+	 * java.lang.String)
+	 */
+	@Override
+	public TemplateResponseDto getAllTemplateByOptionalLanguageCodeAndTemplateTypeCode(String languageCode,
+			String templateTypeCode) {
+		return getAllTemplateByTemplateTypeCode(templateTypeCode);
+
+	}
 
 }

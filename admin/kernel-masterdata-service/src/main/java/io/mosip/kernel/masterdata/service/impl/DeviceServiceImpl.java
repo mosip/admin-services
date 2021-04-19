@@ -983,5 +983,38 @@ public class DeviceServiceImpl implements DeviceService {
 				.findDeviceByIdAndIsDeletedFalseorIsDeletedIsNullNoIsActive(uniqueId);
 		return devices.isEmpty() ? uniqueId : generateId();
 	}
+	
+	@Override
+	public DeviceLangCodeResponseDto getDeviceByDeviceType(String dtypeCode) {
+
+		List<Object[]> objectList = null;
+		List<DeviceLangCodeDtypeDto> deviceLangCodeDtypeDtoList = null;
+		DeviceLangCodeResponseDto deviceLangCodeResponseDto = new DeviceLangCodeResponseDto();
+		try {
+			objectList = deviceRepository.findByDtypeCode(dtypeCode);
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorCode(),
+					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
+		}
+		if (objectList != null && !objectList.isEmpty()) {
+			deviceLangCodeDtypeDtoList = MapperUtils.mapDeviceDto(objectList);
+		} else {
+			throw new DataNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
+					DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+		deviceLangCodeResponseDto.setDevices(deviceLangCodeDtypeDtoList);
+		return deviceLangCodeResponseDto;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.DeviceService#
+	 * getDeviceByLangCodeAndDeviceType(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public DeviceLangCodeResponseDto getDeviceByLangCodeAndDeviceType(String langCode, String dtypeCode) {
+		return getDeviceByDeviceType(dtypeCode);
+	}
 
 }

@@ -86,6 +86,7 @@ public class TemplateController {
 	 * @param langCode the language code
 	 * @return All {@link TemplateDto}
 	 */
+	@Deprecated
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','PRE_REGISTRATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION','AUTH','ZONAL_ADMIN','GLOBAL_ADMIN','PRE_REGISTRATION_ADMIN','RESIDENT','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
 	@GetMapping("/{langcode}")
@@ -111,13 +112,13 @@ public class TemplateController {
 	 */
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','PRE_REGISTRATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION','AUTH','ZONAL_ADMIN','GLOBAL_ADMIN','PRE_REGISTRATION_ADMIN','RESIDENT','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
-	@GetMapping("/{langcode}/{templatetypecode}")
+	@GetMapping(value = { "/{langcode}/{templatetypecode}", "/getTemplate/{templatetypecode}"})
 	public ResponseWrapper<TemplateResponseDto> getAllTemplateBylangCodeAndTemplateTypeCode(
-			@PathVariable("langcode") String langCode, @PathVariable("templatetypecode") String templateTypeCode) {
+			@PathVariable(name = "langcode", required = false) String langCode, @PathVariable("templatetypecode") String templateTypeCode) {
 
 		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(
-				templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(langCode, templateTypeCode));
+				templateService.getAllTemplateByOptionalLanguageCodeAndTemplateTypeCode(langCode, templateTypeCode));
 		return responseWrapper;
 	}
 

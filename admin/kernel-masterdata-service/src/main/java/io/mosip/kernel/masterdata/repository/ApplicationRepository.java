@@ -44,5 +44,14 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 */
 	@Query("FROM Application WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false) AND isActive = true")
 	Application findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String code, String languageCode);
+	
+	/**
+	 * Get Application type by specific id
+	 * 
+	 * @param code         -code
+	 * @return {@link Application}
+	 */
+	@Query("FROM Application WHERE code =?1 AND (isDeleted is null OR isDeleted = false) AND isActive = true")
+	Application findByCodeAndIsDeletedFalseOrIsDeletedIsNull(String code);
 
 }
