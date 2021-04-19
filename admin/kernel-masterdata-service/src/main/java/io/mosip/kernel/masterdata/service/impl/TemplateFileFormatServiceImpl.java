@@ -63,13 +63,10 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 
 		TemplateFileFormat templateFileFormat;
 		try {
-			templateFileFormatRequestDto = masterdataCreationUtil.createMasterData(TemplateFileFormat.class,
-					templateFileFormatRequestDto);
 			TemplateFileFormat entity = MetaDataUtils.setCreateMetaData(templateFileFormatRequestDto,
 					TemplateFileFormat.class);
 			templateFileFormat = templateFileFormatRepository.create(entity);
-		} catch (DataAccessException | DataAccessLayerException | IllegalArgumentException | IllegalAccessException
-				| NoSuchFieldException | SecurityException e) {
+		} catch (DataAccessException | DataAccessLayerException | IllegalArgumentException | SecurityException e) {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.CREATE_ERROR_AUDIT, TemplateFileFormat.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,

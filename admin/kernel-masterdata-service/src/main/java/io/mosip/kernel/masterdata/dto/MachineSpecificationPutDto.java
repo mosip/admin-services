@@ -4,7 +4,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import io.mosip.kernel.masterdata.validator.StringFormatter;
-import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -49,9 +48,11 @@ public class MachineSpecificationPutDto {
 	@Size(min = 0, max = 256)
 	@ApiModelProperty(value = "description", required = true, dataType = "java.lang.String")
 	private String description;
-
-	@ValidLangCode(message = "Language Code is Invalid")
-	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
-	private String langCode;
+	/*
+	 * @ValidLangCode(message = "Language Code is Invalid")
+	 * 
+	 * @ApiModelProperty(value = "langCode", required = true, dataType =
+	 * "java.lang.String") private String langCode;
+	 */
 
 }

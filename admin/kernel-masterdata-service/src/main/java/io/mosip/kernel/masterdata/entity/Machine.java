@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -40,10 +41,10 @@ public class Machine extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = -5585825705521742941L;
 
 	@Id
-	@Column(name = "id", nullable = false)
+	@AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 10))
 	private String id;
 
-	@Column(name = "lang_code", nullable = false, length = 3)
+	@Column(name = "lang_code", nullable = true, length = 3)
 	private String langCode;
 
 	/**

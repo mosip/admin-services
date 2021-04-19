@@ -18,14 +18,13 @@ import io.mosip.kernel.masterdata.constant.DeviceTypeErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypePutDto;
-import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
@@ -102,10 +101,9 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 	public CodeAndLanguageCodeID createDeviceType(DeviceTypeDto deviceType) {
 		DeviceType renDeviceType = null;
 		try {
-			deviceType = masterdataCreationUtil.createMasterData(DeviceType.class, deviceType);
 			DeviceType entity = MetaDataUtils.setCreateMetaData(deviceType, DeviceType.class);
 			renDeviceType = deviceTypeRepository.create(entity);
-		} catch (DataAccessLayerException | IllegalAccessException | NoSuchFieldException | DataAccessException
+		} catch (DataAccessLayerException | DataAccessException
 				| IllegalArgumentException | SecurityException e) {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_CREATE, DeviceType.class.getCanonicalName()),
@@ -223,7 +221,7 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 	 */
 	@SuppressWarnings("null")
 	@Override
-	public PageResponseDto<DeviceTypeExtnDto> deviceTypeSearch(SearchDto searchRequestDto) {
+	public PageResponseDto<DeviceTypeExtnDto> deviceTypeSearch(SearchDtoWithoutLangCode searchRequestDto) {
 		PageResponseDto<DeviceTypeExtnDto> pageDto = new PageResponseDto<>();
 
 		List<DeviceTypeExtnDto> deviceTypeList = null;
@@ -234,7 +232,8 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 			pageUtils.validateSortField(DeviceTypeExtnDto.class, DeviceType.class, sort);
 			searchRequestDto.setPagination(new Pagination(0, Integer.MAX_VALUE));
 			searchRequestDto.setSort(Collections.emptyList());
-			Page<DeviceType> page = masterdataSearchHelper.searchMasterdata(DeviceType.class, searchRequestDto, null);
+			Page<DeviceType> page = masterdataSearchHelper.searchMasterdataWithoutLangCode(DeviceType.class,
+					searchRequestDto, null);
 
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				deviceTypeList = MapperUtils.mapAll(page.getContent(), DeviceTypeExtnDto.class);

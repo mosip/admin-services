@@ -561,12 +561,10 @@ public class MasterdataControllerTest {
 		biometricTypeDto1.setCode("1");
 		biometricTypeDto1.setName("DNA MATCHING");
 		biometricTypeDto1.setDescription(null);
-		biometricTypeDto1.setLangCode("eng");
 
 		biometricTypeDto2.setCode("3");
 		biometricTypeDto2.setName("EYE SCAN");
 		biometricTypeDto2.setDescription(null);
-		biometricTypeDto2.setLangCode("eng");
 
 		biometricTypeDtoList.add(biometricTypeDto1);
 		biometricTypeDtoList.add(biometricTypeDto2);

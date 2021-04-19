@@ -129,8 +129,17 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	@Query(value = "select m.id from master.machine_master m where m.regcntr_id is  null and m.lang_code=?1", nativeQuery = true)
 	List<String> findNotMappedMachineId(String langCode);
 
+	@Query(value = "select m.id from master.machine_master m where m.regcntr_id is not null", nativeQuery = true)
+	List<String> findMappedMachineId();
+
+	@Query(value = "select m.id from master.machine_master m where m.regcntr_id is  null", nativeQuery = true)
+	List<String> findNotMappedMachineId();
+
 	@Query(value = "Select * from master.machine_spec ms where (ms.is_deleted is null or ms.is_deleted = false) and ms.is_active = true and ms.mtyp_code IN (select code from master.machine_type mt where mt.name=?1) and ms.lang_code=?2", nativeQuery = true)
 	List<Object[]> findMachineSpecByMachineTypeNameAndLangCode(String name, String langCode);
+
+	@Query(value = "Select * from master.machine_spec ms where (ms.is_deleted is null or ms.is_deleted = false) and ms.is_active = true and ms.mtyp_code IN (select code from master.machine_type mt where mt.name=?1)", nativeQuery = true)
+	List<Object[]> findMachineSpecByMachineTypeName(String name);
 
 	/**
 	 * This method trigger query to fetch the Machine detail for the given id code.

@@ -757,7 +757,6 @@ public class MasterDataServiceTest {
 		biometricTypeDto.setCode("1");
 		biometricTypeDto.setName("DNA MATCHING");
 		biometricTypeDto.setDescription(null);
-		biometricTypeDto.setLangCode("eng");
 		biometricTypeDto.setIsActive(true);
 		// request.setBiometricType(biometricTypeDto);
 		biometricTypeRequestWrapper.setRequest(biometricTypeDto);
@@ -825,7 +824,6 @@ public class MasterDataServiceTest {
 		templateFileFormatRequestDto = new RequestWrapper<TemplateFileFormatDto>();
 		TemplateFileFormatDto templateFileFormatDto = new TemplateFileFormatDto();
 		templateFileFormatDto.setCode("xml");
-		templateFileFormatDto.setLangCode("eng");
 		templateFileFormatDto.setIsActive(true);
 		TemplateFileFormatPutDto templateFileFormatPutDto = new TemplateFileFormatPutDto();
 		templateFileFormatPutDto.setCode("xml");
@@ -1554,7 +1552,6 @@ public class MasterDataServiceTest {
 		CodeAndLanguageCodeID codeAndLanguageCodeId = biometricTypeService
 				.createBiometricType(biometricTypeRequestWrapper.getRequest());
 		assertEquals(biometricTypeRequestWrapper.getRequest().getCode(), codeAndLanguageCodeId.getCode());
-		assertEquals(biometricTypeRequestWrapper.getRequest().getLangCode(), codeAndLanguageCodeId.getLangCode());
 	}
 
 	@Test(expected = MasterDataServiceException.class)

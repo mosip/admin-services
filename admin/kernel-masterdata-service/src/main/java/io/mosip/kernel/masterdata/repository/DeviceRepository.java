@@ -111,6 +111,9 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	@Query(value = "select d.id from master.device_master d where d.regcntr_id is not null and d.lang_code=?1", nativeQuery = true)
 	List<String> findMappedDeviceId(String langCode);
 
+	@Query(value = "select d.id from master.device_master d where d.regcntr_id is not null", nativeQuery = true)
+	List<String> findMappedDeviceId();
+
 	/**
 	 * This method trigger query to fetch the Device id's those are not mapped with
 	 * the regCenterId
@@ -121,8 +124,14 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	@Query(value = "select d.id from master.device_master d where d.regcntr_id is null and d.lang_code=?1", nativeQuery = true)
 	List<String> findNotMappedDeviceId(String langCode);
 
+	@Query(value = "select d.id from master.device_master d where d.regcntr_id is null", nativeQuery = true)
+	List<String> findNotMappedDeviceId();
+
 	@Query(value = "Select * from master.device_spec ds where (ds.is_deleted is null or ds.is_deleted = false) and ds.is_active = true and ds.dtyp_code IN (select code from master.device_type dt where dt.name=?1) and ds.lang_code=?2", nativeQuery = true)
 	List<Object[]> findDeviceSpecByDeviceTypeNameAndLangCode(String typeName, String langCode);
+
+	@Query(value = "Select * from master.device_spec ds where (ds.is_deleted is null or ds.is_deleted = false) and ds.is_active = true and ds.dtyp_code IN (select code from master.device_type dt where dt.name=?1)", nativeQuery = true)
+	List<Object[]> findDeviceSpecByDeviceTypeName(String typeName);
 
 	@Query(value = "select d.name from master.registration_center r,master.device_master d where r.id=d.regcntr_id   and r.lang_code=d.lang_code and d.id in(?1) and d.lang_code=?2", nativeQuery = true)
 	List<String> findDeviceNameByDevicesAndLangCode(List<String> devices, String langCode);

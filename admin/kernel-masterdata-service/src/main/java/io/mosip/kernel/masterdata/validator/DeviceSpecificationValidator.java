@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.validator;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,9 +30,8 @@ public class DeviceSpecificationValidator {
 	 */
 	public void validate(DeviceSpecificationDto request) {
 
-		DeviceType entity = deviceTypeRepository
-				.findDeviceTypeByCodeAndByLangCode(request.getDeviceTypeCode(), request.getLangCode());
-		if (EmptyCheckUtils.isNullEmpty(entity)) {
+		List<DeviceType> entities = deviceTypeRepository.findtoUpdateDeviceTypeByCode(request.getDeviceTypeCode());
+		if (EmptyCheckUtils.isNullEmpty(entities)) {
 			throw new RequestException(DeviceSpecificationErrorCode.INVALID_DEVICE_TYPE_CODE__EXCEPTION.getErrorCode(),
 					DeviceSpecificationErrorCode.INVALID_DEVICE_TYPE_CODE__EXCEPTION.getErrorMessage());
 		}
@@ -38,9 +39,8 @@ public class DeviceSpecificationValidator {
 
 	public void validate(DeviceSpecificationPutDto request) {
 
-		DeviceType entity = deviceTypeRepository.findDeviceTypeByCodeAndByLangCode(request.getDeviceTypeCode(),
-				request.getLangCode());
-		if (EmptyCheckUtils.isNullEmpty(entity)) {
+		List<DeviceType> entities = deviceTypeRepository.findtoUpdateDeviceTypeByCode(request.getDeviceTypeCode());
+		if (EmptyCheckUtils.isNullEmpty(entities)) {
 			throw new RequestException(DeviceSpecificationErrorCode.INVALID_DEVICE_TYPE_CODE__EXCEPTION.getErrorCode(),
 					DeviceSpecificationErrorCode.INVALID_DEVICE_TYPE_CODE__EXCEPTION.getErrorMessage());
 		}

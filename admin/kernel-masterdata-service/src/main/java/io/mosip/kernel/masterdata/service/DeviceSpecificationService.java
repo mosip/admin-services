@@ -4,12 +4,12 @@ import java.util.List;
 
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationPutDto;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceSpecificationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -104,7 +104,7 @@ public interface DeviceSpecificationService {
 	public PageDto<DeviceSpecificationExtnDto> getAllDeviceSpecifications(int pageNumber, int pageSize, String sortBy,
 			String orderBy);
 
-	public PageResponseDto<DeviceSpecificationExtnDto> searchDeviceSpec(SearchDto dto);
+	public PageResponseDto<DeviceSpecificationExtnDto> searchDeviceSpec(SearchDtoWithoutLangCode dto);
 
 	/**
 	 * Method that returns the column values of specific filter column name.

@@ -8,7 +8,6 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.mosip.kernel.masterdata.validator.StringFormatter;
-import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -73,10 +72,12 @@ public class DevicePutReqDto {
 	/**
 	 * Field for language code
 	 */
-	@ValidLangCode(message = "Language Code is Invalid")
-	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
-	private String langCode;
-
+	/*
+	 * @ValidLangCode(message = "Language Code is Invalid")
+	 * 
+	 * @ApiModelProperty(value = "langCode", required = true, dataType =
+	 * "java.lang.String") private String langCode;
+	 */
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime validityDateTime;
@@ -86,7 +87,6 @@ public class DevicePutReqDto {
 	@ApiModelProperty(value = "zoneCode", required = true, dataType = "java.lang.String")
 	private String zoneCode;
 	
-	@StringFormatter(min = 0, max = 10)
 	@ApiModelProperty(value = "regCenterId", required = true, dataType = "java.lang.String")
 	private String regCenterId;
 

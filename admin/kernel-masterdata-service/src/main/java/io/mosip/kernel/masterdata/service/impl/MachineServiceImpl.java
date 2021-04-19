@@ -33,6 +33,7 @@ import io.mosip.kernel.masterdata.dto.MachinePostReqDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.MachineTypeDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineExtnDto;
@@ -341,7 +342,7 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	@SuppressWarnings("null")
 	@Override
-	public PageResponseDto<MachineSearchDto> searchMachine(SearchDto dto) {
+	public PageResponseDto<MachineSearchDto> searchMachine(SearchDtoWithoutLangCode dto) {
 		PageResponseDto<MachineSearchDto> pageDto = new PageResponseDto<>();
 		List<MachineSearchDto> machines = null;
 		List<SearchFilter> addList = new ArrayList<>();
@@ -353,14 +354,6 @@ public class MachineServiceImpl implements MachineService {
 		boolean flag = true;
 		boolean isAssigned = true;
 		String typeName = null;
-		String langCode = null;
-
-		/*
-		 * if (dto.getLanguageCode().equals("all")) { langCode = primaryLangCode; } else
-		 * {
-		 */
-		langCode = dto.getLanguageCode();
-
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
 			if (MasterDataConstant.ZONE.equalsIgnoreCase(column)) {
@@ -376,7 +369,7 @@ public class MachineServiceImpl implements MachineService {
 			if (column.equalsIgnoreCase("mapStatus")) {
 
 				if (filter.getValue().equalsIgnoreCase("assigned")) {
-					mappedMachineIdList = machineRepository.findMappedMachineId(langCode);
+					mappedMachineIdList = machineRepository.findMappedMachineId();
 					mapStatusList.addAll(buildRegistrationCenterMachineTypeSearchFilter(mappedMachineIdList));
 					if (!dto.getFilters().isEmpty() && mappedMachineIdList.isEmpty()) {
 						pageDto = pageUtils.sortPage(machines, dto.getSort(), dto.getPagination());
@@ -385,7 +378,7 @@ public class MachineServiceImpl implements MachineService {
 
 				} else {
 					if (filter.getValue().equalsIgnoreCase("unassigned")) {
-						mappedMachineIdList = machineRepository.findNotMappedMachineId(langCode);
+						mappedMachineIdList = machineRepository.findNotMappedMachineId();
 						mapStatusList.addAll(buildRegistrationCenterMachineTypeSearchFilter(mappedMachineIdList));
 						isAssigned = false;
 						if (!dto.getFilters().isEmpty() && mappedMachineIdList.isEmpty()) {
@@ -414,7 +407,7 @@ public class MachineServiceImpl implements MachineService {
 				typeName = filter.getValue();
 				if (filterValidator.validate(MachineTypeDto.class, Arrays.asList(filter))) {
 					List<Object[]> machineSpecs = machineRepository
-							.findMachineSpecByMachineTypeNameAndLangCode(typeName, langCode);
+							.findMachineSpecByMachineTypeName(typeName);
 					
 					addList.addAll(buildMachineSpecificationSearchFilter(machineSpecs));
 				}
@@ -456,7 +449,7 @@ public class MachineServiceImpl implements MachineService {
 			else if (mapStatusList.isEmpty() || addList.isEmpty()) {
 				addList.addAll(mapStatusList);
 				optionalFilter = new OptionalFilter(addList);
-				page = masterdataSearchHelper.searchMasterdata(Machine.class, dto,
+				page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Machine.class, dto,
 						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			} else {
 				page = masterdataSearchHelper.nativeMachineQuerySearch(dto, typeName, zones, isAssigned);
@@ -521,12 +514,10 @@ public class MachineServiceImpl implements MachineService {
 		List<RegistrationCenter> registrationCenterList = machineUtil.getAllRegistrationCenters();
 		list.forEach(machineSearchDto -> {
 			machineList.forEach(machine -> {
-				if (machine.getId().equals(machineSearchDto.getId())
-						&& machine.getLangCode().equals(machineSearchDto.getLangCode())) {
+				if (machine.getId().equals(machineSearchDto.getId())) {
 					String regId = machine.getRegCenterId();
 					registrationCenterList.forEach(registrationCenter -> {
-						if (registrationCenter.getId().equals(regId)
-								&& machine.getLangCode().equals(registrationCenter.getLangCode())) {
+						if (registrationCenter.getId().equals(regId)) {
 							machineSearchDto.setMapStatus(registrationCenter.getName());
 						}
 					});
@@ -793,16 +784,12 @@ public class MachineServiceImpl implements MachineService {
 				validateRegistrationCenterZone(machineZone,machinePostReqDto.getRegCenterId());
 			}
 			// call method to set isActive value based on primary/Secondary language
-			machinePostReqDto = masterdataCreationUtil.createMasterData(Machine.class, machinePostReqDto);
+			// machinePostReqDto = masterdataCreationUtil.createMasterData(Machine.class,
+			// machinePostReqDto);
 			
 			machineEntity = MetaDataUtils.setCreateMetaData(machinePostReqDto, Machine.class);
-
-			if (StringUtils.isNotEmpty(supportedLang) && supportedLang.contains(machinePostReqDto.getLangCode())) {
-				// MachineId from the mid_Seq Table,MachineId get by calling MachineIdGenerator
-				// API method generateMachineId()
-				uniqueId = registrationCenterValidator.generateMachineIdOrvalidateWithDB();
-				machineEntity.setId(uniqueId);
-			}
+			uniqueId = registrationCenterValidator.generateMachineIdOrvalidateWithDB();
+			machineEntity.setId(uniqueId);
 			
 			//machine name to be stored in lowercase
 			machineEntity.setName(machinePostReqDto.getName());
@@ -819,8 +806,8 @@ public class MachineServiceImpl implements MachineService {
 			machineHistoryEntity.setCreatedDateTime(crtMachine.getCreatedDateTime());
 			machineHistoryService.createMachineHistory(machineHistoryEntity);
 
-		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
-				| NoSuchFieldException | SecurityException exception) {
+		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException
+				| SecurityException exception) {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_DECOMMISSION, MachineDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
@@ -916,9 +903,8 @@ public class MachineServiceImpl implements MachineService {
 				validateRegistrationCenterZone(machineZone,machinePutReqDto.getRegCenterId());
 			}
 			// find requested machine is there or not in Machine Table
-			Machine renMachine = machineRepository
-					.findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNullWithoutActiveStatusCheck(
-							machinePutReqDto.getId(), machinePutReqDto.getLangCode());
+			List<Machine> renMachine = machineRepository
+					.findMachineById(machinePutReqDto.getId());
 
 			if (renMachine != null) {
 
@@ -929,7 +915,7 @@ public class MachineServiceImpl implements MachineService {
 				// updateNumKiosksRegCenter(machinePutReqDto, renMachine);
 
 				// updating registration center
-				updMachineEntity = MetaDataUtils.setUpdateMetaData(machinePutReqDto, renMachine, false);
+				updMachineEntity = MetaDataUtils.setUpdateMetaData(machinePutReqDto, renMachine.get(0), false);
 
 				//machine name to be stored in lowercase
 				updMachineEntity.setName(machinePutReqDto.getName());

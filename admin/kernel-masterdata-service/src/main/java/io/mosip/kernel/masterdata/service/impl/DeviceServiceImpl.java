@@ -30,6 +30,7 @@ import io.mosip.kernel.masterdata.dto.DevicePutReqDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
@@ -345,7 +346,7 @@ public class DeviceServiceImpl implements DeviceService {
 	 * .masterdata.dto.request.SearchDto)
 	 */
 	@Override
-	public PageResponseDto<DeviceSearchDto> searchDevice(SearchDto dto) {
+	public PageResponseDto<DeviceSearchDto> searchDevice(SearchDtoWithoutLangCode dto) {
 		PageResponseDto<DeviceSearchDto> pageDto = new PageResponseDto<>();
 		
 		List<DeviceSearchDto> devices = null;
@@ -358,15 +359,13 @@ public class DeviceServiceImpl implements DeviceService {
 		boolean flag = true;
 		boolean isAssigned = true;
 		String typeName = null;
-		String langCode = null;
-		langCode = dto.getLanguageCode();
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
 
 			if (column.equalsIgnoreCase("mapStatus")) {
 
 				if (filter.getValue().equalsIgnoreCase("assigned")) {
-					mappedDeviceIdList = deviceRepository.findMappedDeviceId(langCode);
+					mappedDeviceIdList = deviceRepository.findMappedDeviceId();
 					mapStatusList.addAll(buildRegistrationCenterDeviceTypeSearchFilter(mappedDeviceIdList));
 					if (!dto.getFilters().isEmpty() && mappedDeviceIdList.isEmpty()) {
 						pageDto = pageUtils.sortPage(devices, dto.getSort(), dto.getPagination());
@@ -375,7 +374,7 @@ public class DeviceServiceImpl implements DeviceService {
 
 				} else {
 					if (filter.getValue().equalsIgnoreCase("unassigned")) {
-						mappedDeviceIdList = deviceRepository.findNotMappedDeviceId(langCode);
+						mappedDeviceIdList = deviceRepository.findNotMappedDeviceId();
 						mapStatusList.addAll(buildRegistrationCenterDeviceTypeSearchFilter(mappedDeviceIdList));
 						isAssigned = false;
 						if (!dto.getFilters().isEmpty() && mappedDeviceIdList.isEmpty()) {
@@ -402,7 +401,7 @@ public class DeviceServiceImpl implements DeviceService {
 				if (filterValidator.validate(DeviceTypeDto.class, Arrays.asList(filter))) {
 
 					List<Object[]> dSpecs = deviceRepository
-							.findDeviceSpecByDeviceTypeNameAndLangCode(filter.getValue(), langCode);
+							.findDeviceSpecByDeviceTypeName(filter.getValue());
 
 					removeList.add(filter);
 					addList.addAll(buildDeviceSpecificationSearchFilter(dSpecs));
@@ -439,7 +438,7 @@ public class DeviceServiceImpl implements DeviceService {
 			Page<Device> page = null;
 			if (mapStatusList.isEmpty() || addList.isEmpty()) {
 				addList.addAll(mapStatusList);
-				page = masterdataSearchHelper.searchMasterdata(Device.class, dto,
+				page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Device.class, dto,
 						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			} else {
 				page = masterdataSearchHelper.nativeDeviceQuerySearch(dto, typeName, zones, isAssigned);
@@ -449,7 +448,7 @@ public class DeviceServiceImpl implements DeviceService {
 				devices = MapperUtils.mapAll(page.getContent(), DeviceSearchDto.class);
 				setDeviceMetadata(devices, zones);
 				setDeviceTypeNames(devices);
-				setMapStatus(devices, dto.getLanguageCode());
+				setMapStatus(devices);
 				devices.forEach(device -> {
 					if (device.getMapStatus() == null) {
 						device.setMapStatus("unassigned");
@@ -502,18 +501,16 @@ public class DeviceServiceImpl implements DeviceService {
 	 * 
 	 * @param list the {@link DeviceSearchDto}.
 	 */
-	private void setMapStatus(List<DeviceSearchDto> list, String langCode) {
+	private void setMapStatus(List<DeviceSearchDto> list) {
 
 		List<Device> deviceList = deviceRepository.getAllDevicesList();
 		List<RegistrationCenter> registrationCenterList = deviceUtil.getAllRegistrationCenters();
 		list.forEach(deviceSearchDto -> {
 			deviceList.forEach(device -> {
-				if (device.getId().equals(deviceSearchDto.getId())
-						&& device.getLangCode().equals(deviceSearchDto.getLangCode())) {
+				if (device.getId().equals(deviceSearchDto.getId())) {
 					String regId = device.getRegCenterId();
 					registrationCenterList.forEach(registrationCenter -> {
-						if (registrationCenter.getId().equals(regId)
-								&& device.getLangCode().equals(registrationCenter.getLangCode())) {
+						if (registrationCenter.getId().equals(regId)) {
 							deviceSearchDto.setMapStatus(registrationCenter.getName());
 						}
 					});
@@ -834,8 +831,7 @@ public class DeviceServiceImpl implements DeviceService {
 				validateRegistrationCenterZone(devicePutReqDto.getZoneCode(),devicePutReqDto.getRegCenterId());
 			}
 			// find requested device is there or not in Device Table
-			Device renDevice = deviceRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNullNoIsActive(
-					devicePutReqDto.getId(), devicePutReqDto.getLangCode());
+			List<Device> renDevice = deviceRepository.findtoUpdateDeviceById(devicePutReqDto.getId());
 
 			devicePutReqDto = masterdataCreationUtil.updateMasterData(Device.class, devicePutReqDto);
 
@@ -856,7 +852,7 @@ public class DeviceServiceImpl implements DeviceService {
 			}
 			if (renDevice != null) {
 				// updating registration center
-				updDeviecEntity = MetaDataUtils.setUpdateMetaData(devicePutReqDto, renDevice, false);
+				updDeviecEntity = MetaDataUtils.setUpdateMetaData(devicePutReqDto, renDevice.get(0), false);
 
 				// updating Device
 				updDevice = deviceRepository.update(updDeviecEntity);
@@ -960,7 +956,7 @@ public class DeviceServiceImpl implements DeviceService {
 					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(accessException));
 		}
-		if (devices != null && !devices.isEmpty()) {
+		if (devices != null) {
 			masterdataCreationUtil.updateMasterDataStatus(Device.class, id, isActive, "id");
 		} else {
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, DeviceDto.class.getSimpleName()),

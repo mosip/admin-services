@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.validator;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,9 +27,8 @@ public class MachineSpecificationValidator {
 	 */
 	public void validate(MachineSpecificationDto request) {
 
-		MachineType entity = machineTypeRepository.findMachineTypeByCodeAndByLangCode(request.getMachineTypeCode(),
-				request.getLangCode());
-		if (EmptyCheckUtils.isNullEmpty(entity)) {
+		List<MachineType> entities = machineTypeRepository.findtoUpdateMachineTypeByCode(request.getMachineTypeCode());
+		if (EmptyCheckUtils.isNullEmpty(entities)) {
 			throw new RequestException(
 					MachineSpecificationErrorCode.INVALID_MACHINE_TYPE_CODE__EXCEPTION.getErrorCode(),
 					MachineSpecificationErrorCode.INVALID_MACHINE_TYPE_CODE__EXCEPTION.getErrorMessage());
@@ -41,9 +42,8 @@ public class MachineSpecificationValidator {
 	 */
 	public void validate(MachineSpecificationPutDto request) {
 
-		MachineType entity = machineTypeRepository.findMachineTypeByCodeAndByLangCode(request.getMachineTypeCode(),
-				request.getLangCode());
-		if (EmptyCheckUtils.isNullEmpty(entity)) {
+		List<MachineType> entities = machineTypeRepository.findtoUpdateMachineTypeByCode(request.getMachineTypeCode());
+		if (EmptyCheckUtils.isNullEmpty(entities)) {
 			throw new RequestException(
 					MachineSpecificationErrorCode.INVALID_MACHINE_TYPE_CODE__EXCEPTION.getErrorCode(),
 					MachineSpecificationErrorCode.INVALID_MACHINE_TYPE_CODE__EXCEPTION.getErrorMessage());

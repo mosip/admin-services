@@ -25,6 +25,7 @@ import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationPutDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.FilterData;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceSpecificationExtnDto;
@@ -178,19 +179,16 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	public IdAndLanguageCodeID createDeviceSpecification(DeviceSpecificationDto deviceSpecification) {
 		DeviceSpecification renDeviceSpecification = null;
 
-
 		try {
 			if (deviceSpecification.getId() == null || deviceSpecification.getId().isBlank()) {
 				deviceSpecification.setId(generateId());
 			}
-			deviceSpecification = masterdataCreationUtil.createMasterData(DeviceSpecification.class,
-					deviceSpecification);
 			DeviceSpecification entity = MetaDataUtils.setCreateMetaData(deviceSpecification,
 					DeviceSpecification.class);
 			renDeviceSpecification = deviceSpecificationRepository.create(entity);
 			Objects.requireNonNull(renDeviceSpecification);
 		} catch (DataAccessLayerException | DataAccessException | NullPointerException | IllegalArgumentException
-				| IllegalAccessException | NoSuchFieldException | SecurityException e) {
+				| SecurityException e) {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_CREATE, DeviceSpecification.class.getCanonicalName()),
 					MasterDataConstant.AUDIT_SYSTEM,
@@ -231,10 +229,9 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	public IdAndLanguageCodeID updateDeviceSpecification(DeviceSpecificationPutDto deviceSpecification) {
 		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		try {
-			DeviceSpecification entity = deviceSpecificationRepository
-					.findByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getId(),
-							deviceSpecification.getLangCode());
-			if (!EmptyCheckUtils.isNullEmpty(entity)) {
+			List<DeviceSpecification> entities = deviceSpecificationRepository
+					.findDeviceSpecById(deviceSpecification.getId());
+			if (!EmptyCheckUtils.isNullEmpty(entities)) {
 				/*
 				 * if (!deviceSpecification.getIsActive()) { List<Device> devices =
 				 * deviceRepository .findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(
@@ -249,10 +246,10 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 				 */
 				deviceSpecification = masterdataCreationUtil.updateMasterData(DeviceSpecification.class,
 						deviceSpecification);
-				MetaDataUtils.setUpdateMetaData(deviceSpecification, entity, false);
-				deviceSpecificationRepository.update(entity);
-				idAndLanguageCodeID.setId(entity.getId());
-				idAndLanguageCodeID.setLangCode(entity.getLangCode());
+				MetaDataUtils.setUpdateMetaData(deviceSpecification, entities.get(0), false);
+				deviceSpecificationRepository.update(entities.get(0));
+				idAndLanguageCodeID.setId(entities.get(0).getId());
+				idAndLanguageCodeID.setLangCode(entities.get(0).getLangCode());
 			} else {
 				auditUtil.auditRequest(
 						String.format(MasterDataConstant.FAILURE_UPDATE, DeviceSpecification.class.getCanonicalName()),
@@ -381,7 +378,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	}
 
 	@Override
-	public PageResponseDto<DeviceSpecificationExtnDto> searchDeviceSpec(SearchDto dto) {
+	public PageResponseDto<DeviceSpecificationExtnDto> searchDeviceSpec(SearchDtoWithoutLangCode dto) {
 		PageResponseDto<DeviceSpecificationExtnDto> pageDto = new PageResponseDto<>();
 		List<SearchFilter> addList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
@@ -418,7 +415,8 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		if (filterValidator.validate(DeviceSpecificationExtnDto.class, dto.getFilters())) {
 			OptionalFilter optionalFilter = new OptionalFilter(addList);
 			OptionalFilter optionalFilterForDeviceTypeName = new OptionalFilter(deviceCodeFilter);
-			Page<DeviceSpecification> page = masterDataSearchHelper.searchMasterdata(DeviceSpecification.class, dto,
+			Page<DeviceSpecification> page = masterDataSearchHelper.searchMasterdataWithoutLangCode(
+					DeviceSpecification.class, dto,
 					new OptionalFilter[] { optionalFilter, optionalFilterForDeviceTypeName });
 
 			if (page.getContent() != null && !page.getContent().isEmpty()) {

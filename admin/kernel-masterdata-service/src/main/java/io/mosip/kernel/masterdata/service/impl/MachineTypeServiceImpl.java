@@ -18,13 +18,12 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.MachineTypeDto;
 import io.mosip.kernel.masterdata.dto.MachineTypePutDto;
-import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
@@ -118,11 +117,9 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 
 
 		try {
-			machineType = masterdataCreationUtil.createMasterData(MachineType.class, machineType);
 			MachineType entity = MetaDataUtils.setCreateMetaData(machineType, MachineType.class);
 			renMachineType = machineTypeRepository.create(entity);
-		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
-				| NoSuchFieldException | SecurityException e) {
+		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | SecurityException e) {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_CREATE, MachineType.class.getCanonicalName()),
 					MasterDataConstant.AUDIT_SYSTEM,
@@ -146,8 +143,10 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 	@Override
 	public CodeAndLanguageCodeID updateMachineType(MachineTypePutDto machineTypeDto) {
 		CodeAndLanguageCodeID codeAndLanguageCodeID = new CodeAndLanguageCodeID();
+		MachineType updMachineType = null;
 		try {
-			MachineType machineType = machineTypeRepository.findtoUpdateMachineTypeByCodeAndByLangCode(machineTypeDto.getCode(),machineTypeDto.getLangCode());
+			List<MachineType> machineTypes = machineTypeRepository
+					.findtoUpdateMachineTypeByCode(machineTypeDto.getCode());
 			/*if (!EmptyCheckUtils.isNullEmpty(machineType)) {
 				if (!machineTypeDto.getIsActive()) {
 					List<MachineSpecification> machineSpecifications = machineSpecificationRepository
@@ -161,9 +160,9 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 					masterdataCreationUtil.updateMasterDataDeactivate(MachineType.class, machineTypeDto.getCode());
 				}*/
 				machineTypeDto = masterdataCreationUtil.updateMasterData(MachineType.class, machineTypeDto);
-				MetaDataUtils.setUpdateMetaData(machineTypeDto, machineType, false);
-				machineTypeRepository.update(machineType);
-				MapperUtils.map(machineType, codeAndLanguageCodeID);
+				updMachineType = MetaDataUtils.setUpdateMetaData(machineTypeDto, machineTypes.get(0), false);
+				machineTypeRepository.update(updMachineType);
+				MapperUtils.map(updMachineType, codeAndLanguageCodeID);
 
 				/*
 				 * } else { throw new
@@ -269,7 +268,7 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 	 */
 	@SuppressWarnings("null")
 	@Override
-	public PageResponseDto<MachineTypeExtnDto> searchMachineType(SearchDto dto) {
+	public PageResponseDto<MachineTypeExtnDto> searchMachineType(SearchDtoWithoutLangCode dto) {
 		PageResponseDto<MachineTypeExtnDto> pageDto = new PageResponseDto<>();
 		List<MachineTypeExtnDto> machineTypes = null;
 
@@ -277,7 +276,7 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 		if (filterValidator.validate(MachineTypeExtnDto.class, dto.getFilters())) {
 			pageUtils.validateSortField(MachineType.class, dto.getSort());
 			OptionalFilter optionalFilter = new OptionalFilter(addList);
-			Page<MachineType> page = masterdataSearchHelper.searchMasterdata(MachineType.class, dto,
+			Page<MachineType> page = masterdataSearchHelper.searchMasterdataWithoutLangCode(MachineType.class, dto,
 					new OptionalFilter[] { optionalFilter });
 
 			if (page.getContent() != null && !page.getContent().isEmpty()) {

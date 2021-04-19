@@ -4,18 +4,15 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,7 +36,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "device_master", schema = "master")
-@IdClass(IdAndLanguageCodeID.class)
 public class Device extends BaseEntity implements Serializable {
 
 	/**
@@ -48,9 +44,10 @@ public class Device extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = -5585825705521742941L;
 
 	@Id
-	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
-			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
+	@AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36))
 	private String id;
+
+	@Column(name = "lang_code", nullable = true, length = 3)
 	private String langCode;
 
 	/**
@@ -89,7 +86,7 @@ public class Device extends BaseEntity implements Serializable {
 	@Column(name = "zone_code", length = 36)
 	private String zoneCode;
 	
-	@Column(name = "regcntr_id", length = 10)
+	@Column(name = "regcntr_id", nullable = true, length = 10)
 	private String regCenterId;
 
 	@ManyToOne(fetch = FetchType.LAZY)

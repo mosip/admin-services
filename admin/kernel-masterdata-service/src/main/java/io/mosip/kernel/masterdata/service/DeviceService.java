@@ -4,13 +4,13 @@ import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DevicePutReqDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.DeviceSearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
@@ -97,7 +97,7 @@ public interface DeviceService {
 	 * @param searchRequestDto the search DTO.
 	 * @return the {@link PageResponseDto}.
 	 */
-	public PageResponseDto<DeviceSearchDto> searchDevice(SearchDto searchRequestDto);
+	public PageResponseDto<DeviceSearchDto> searchDevice(SearchDtoWithoutLangCode searchRequestDto);
 
 	/**
 	 * Method to filter Device based on column and type provided.
