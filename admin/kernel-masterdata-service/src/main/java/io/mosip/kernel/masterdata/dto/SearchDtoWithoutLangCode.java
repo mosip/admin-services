@@ -27,8 +27,7 @@ public class SearchDtoWithoutLangCode {
 	// @NotNull
 	private Pagination pagination;
 
-	/*
-	 * @ValidLangCode(message = "Language Code is Invalid") private String
-	 * languageCode;
-	 */
+	@Deprecated
+	private String languageCode;
+
 }

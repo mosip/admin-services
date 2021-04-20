@@ -72,12 +72,11 @@ public class DevicePutReqDto {
 	/**
 	 * Field for language code
 	 */
-	/*
-	 * @ValidLangCode(message = "Language Code is Invalid")
-	 * 
-	 * @ApiModelProperty(value = "langCode", required = true, dataType =
-	 * "java.lang.String") private String langCode;
-	 */
+	@Deprecated
+	private String langCode;
+
+	@Deprecated
+	private boolean isActive;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime validityDateTime;

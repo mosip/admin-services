@@ -5,20 +5,17 @@ import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
 import io.mosip.kernel.masterdata.validator.StringFormatter;
+import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import lombok.Data;
 
-/**
- * @author Sidhant Agarwal
- * @since 1.0.0
- */
 @Data
-public class UserDetailsDto {
+public class UserDetailsGetExtnDto {
 
 	@NotNull
 	@StringFormatter(min = 1, max = 36)
 	private String id;
 
-
+	@ValidLangCode(message = "Language Code is Invalid")
 	private String langCode;
 
 	@Null
@@ -40,7 +37,7 @@ public class UserDetailsDto {
 	@Null
 	@StringFormatter(min = 0, max = 16)
 	private String statusCode;
-	
+
 	@NotNull
 	@StringFormatter(min = 1, max = 10)
 	private String regCenterId;
@@ -48,4 +45,5 @@ public class UserDetailsDto {
 	@NotNull
 	private Boolean isActive;
 
+	private String zoneCode;
 }

@@ -34,12 +34,8 @@ public class BiometricTypeDto {
 	@ApiModelProperty(value = "Application description", required = false, dataType = "java.lang.String")
 	private String description;
 
-	/*
-	 * @ValidLangCode(message = "Language Code is Invalid")
-	 * 
-	 * @ApiModelProperty(value = "Language Code", required = true, dataType =
-	 * "java.lang.String") private String langCode;
-	 */
+	@Deprecated
+	private String langCode;
 
 	@NotNull
 	@ApiModelProperty(value = "Application isActive Status", required = true, dataType = "java.lang.Boolean")

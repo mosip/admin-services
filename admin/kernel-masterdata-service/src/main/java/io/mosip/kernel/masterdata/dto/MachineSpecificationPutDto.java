@@ -30,6 +30,9 @@ public class MachineSpecificationPutDto {
 	@ApiModelProperty(value = "brand", required = true, dataType = "java.lang.String")
 	private String brand;
 
+	@Deprecated
+	private boolean isActive;
+
 	@NotNull
 	@StringFormatter(min = 1, max = 16)
 	@ApiModelProperty(value = "model", required = true, dataType = "java.lang.String")
@@ -48,11 +51,8 @@ public class MachineSpecificationPutDto {
 	@Size(min = 0, max = 256)
 	@ApiModelProperty(value = "description", required = true, dataType = "java.lang.String")
 	private String description;
-	/*
-	 * @ValidLangCode(message = "Language Code is Invalid")
-	 * 
-	 * @ApiModelProperty(value = "langCode", required = true, dataType =
-	 * "java.lang.String") private String langCode;
-	 */
+
+	@Deprecated
+	private String langCode;
 
 }

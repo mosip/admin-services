@@ -29,6 +29,9 @@ public class DynamicFieldPutDto {
 	@ValidLangCode(message = "Language Code is Invalid")
 	private String langCode;
 
+	@Deprecated
+	private boolean isActive;
+
 	@NotBlank
 	@ApiModelProperty(notes = "Data Type", example = "string", required = true)
 	@Size(min = 3, max = 20)

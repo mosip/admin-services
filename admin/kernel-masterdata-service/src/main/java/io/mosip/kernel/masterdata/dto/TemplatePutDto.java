@@ -25,6 +25,9 @@ public class TemplatePutDto {
 	@ApiModelProperty(value = "Template description", required = false, dataType = "java.lang.String")
 	private String description;
 
+	@Deprecated
+	private boolean isActive;
+
 	@NotNull
 	@StringFormatter(min = 1, max = 36)
 	@ApiModelProperty(value = "Template file format code", required = true, dataType = "java.lang.String")

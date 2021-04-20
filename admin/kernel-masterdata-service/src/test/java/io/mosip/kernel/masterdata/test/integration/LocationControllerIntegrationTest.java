@@ -92,8 +92,8 @@ public class LocationControllerIntegrationTest {
 		dto1 = new LocationDto("MMDR", "Location Name", (short) 3, "City", "XYZ", "eng", false);
 		dto2 = new LocationDto("", "Location Name", (short) 3, "City", "XYZ", "ara", false);
 		locationCreateDto = new LocationCreateDto("", "Location Name", (short) 3, "City", "XYZ", "ara", false);
-		locationPutDto = new LocationPutDto("MMDR", "Location Name", (short) 3, "City", "XYZ", "eng");
-		locationPutDto1 = new LocationPutDto("", "Location Name", (short) 3, "City", "XYZ", "eng");
+		locationPutDto = new LocationPutDto("MMDR", "Location Name", (short) 3, "City", "XYZ", false, "eng");
+		locationPutDto1 = new LocationPutDto("", "Location Name", (short) 3, "City", "XYZ", false, "eng");
 
 		request = new RequestWrapper<>();
 		request.setId("1.0");

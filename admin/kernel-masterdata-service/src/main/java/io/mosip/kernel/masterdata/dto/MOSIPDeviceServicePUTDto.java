@@ -38,6 +38,9 @@ public class MOSIPDeviceServicePUTDto {
 	@ApiModelProperty(value = "deviceTypeCode", required = true, dataType = "java.lang.String")
 	private String regDeviceTypeCode;
 
+	@Deprecated
+	private boolean isActive;
+
 	
 	@StringFormatter(min = 1, max = 36)
 	@ApiModelProperty(value = "deviceSubCode", required = true, dataType = "java.lang.String")

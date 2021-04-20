@@ -34,6 +34,9 @@ public class LanguagePutDto {
 	@ApiModelProperty(value = "Language Family", dataType = "java.lang.String")
 	private String family;
 
+	@Deprecated
+	private boolean isActive;
+
 	/**
 	 * Field for language native name
 	 */

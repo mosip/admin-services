@@ -34,6 +34,8 @@ public class DocumentCategoryPutDto {
 	@ApiModelProperty(value = "Application description", required = false, dataType = "java.lang.String")
 	private String description;
 
+	@Deprecated
+	private boolean isActive;
 	/**
 	 * The Language Code.
 	 */

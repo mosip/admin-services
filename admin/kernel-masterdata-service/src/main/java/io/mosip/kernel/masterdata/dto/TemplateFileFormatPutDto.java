@@ -20,6 +20,9 @@ public class TemplateFileFormatPutDto {
 	@ApiModelProperty(value = "TemplateFileFormat description", required = false, dataType = "java.lang.String")
 	private String description;
 
+	@Deprecated
+	private boolean isActive;
+
 	@ValidLangCode(message = "Language Code is Invalid")
 	@ApiModelProperty(value = "Language code", required = true, dataType = "java.lang.String")
 	private String langCode;

@@ -16,6 +16,9 @@ public class ZoneUserPutDto {
 	@StringFormatter(min = 1, max = 256)
 	private String userId;
 
+	@Deprecated
+	private boolean isActive;
+
 	@NotNull
 	@StringFormatter(min = 1, max = 3)
 	private String langCode;

@@ -44,6 +44,7 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.UserDetailsErrorCode;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsDto;
+import io.mosip.kernel.masterdata.dto.UserDetailsGetExtnDto;
 import io.mosip.kernel.masterdata.dto.UsersDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
@@ -60,6 +61,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.ValidationException;
 import io.mosip.kernel.masterdata.repository.UserDetailsHistoryRepository;
 import io.mosip.kernel.masterdata.repository.UserDetailsRepository;
+import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.service.UserDetailsHistoryService;
 import io.mosip.kernel.masterdata.service.UserDetailsService;
@@ -129,13 +131,21 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Autowired
 	ZoneUserService zoneUserService;
 	
+	@Autowired
+	ZoneUserRepository zoneUserRepository;
+
 	@Override
-	public UserDetailsDto getUser(String id) {
+	public UserDetailsGetExtnDto getUser(String id) {
 		UserDetails ud = userDetailsRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(id);
-		if(ud!=null) {
-		return getDto(ud);
-		}
-		else {
+		ZoneUser zu = zoneUserRepository.findZoneByUserIdNonDeleted(id);
+
+		if (ud != null) {
+			UserDetailsGetExtnDto userDetailsExtnDto = MapperUtils.map(ud, UserDetailsGetExtnDto.class);
+			if (zu != null) {
+				userDetailsExtnDto.setZoneCode(zu.getZoneCode());
+			}
+			return userDetailsExtnDto;
+		} else {
 			throw new DataNotFoundException(UserDetailsErrorCode.USER_NOT_FOUND.getErrorCode(),
 					UserDetailsErrorCode.USER_NOT_FOUND.getErrorMessage());
 		}

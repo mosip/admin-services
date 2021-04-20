@@ -4,6 +4,7 @@ import java.util.List;
 
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsDto;
+import io.mosip.kernel.masterdata.dto.UserDetailsGetExtnDto;
 import io.mosip.kernel.masterdata.dto.UsersDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -32,7 +33,7 @@ public interface UserDetailsService {
 	 * @throws DataNotFoundException      if no User found
 	 *
 	 */
-	public UserDetailsDto getUser(String id);
+	public UserDetailsGetExtnDto getUser(String id);
 
 	/**
 	 * This method provides with all templates.

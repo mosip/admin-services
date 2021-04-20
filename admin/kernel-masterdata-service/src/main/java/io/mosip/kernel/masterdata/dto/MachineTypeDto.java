@@ -25,12 +25,8 @@ public class MachineTypeDto {
 	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")
 	private String code;
 
-	/*
-	 * @ValidLangCode(message = "Language Code is Invalid")
-	 * 
-	 * @ApiModelProperty(value = "langCode", required = true, dataType =
-	 * "java.lang.String") private String langCode;
-	 */
+	@Deprecated
+	private String langCode;
 
 	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })
 	@NotNull
