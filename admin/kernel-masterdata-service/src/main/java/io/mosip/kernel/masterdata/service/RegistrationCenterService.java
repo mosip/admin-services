@@ -240,5 +240,12 @@ public interface RegistrationCenterService {
 	 */
 	public RegistrationCenterExtnDto updateRegistrationCenterWithNonLanguageSpecific(@Valid RegCenterNonLanguageSpecificPutDto reqRegistrationCenterDto);
 
+	/**
+	 *
+	 * @param zoneCode
+	 * @param langCode
+	 * @return
+	 */
+	RegistrationCenterResponseDto getRegistrationCentersByZoneCode(String zoneCode, String langCode);
 
 }

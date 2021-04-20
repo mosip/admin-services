@@ -215,4 +215,8 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 			String contactPhone,Short numberOfKiosks,String holidayLocationCode,String workingHours,
 			LocalTime perKioskProcessTime,LocalTime centerStartTime,LocalTime centerEndTime,String timeZone,
 			LocalTime lunchStartTime,LocalTime lunchEndTime,String zoneCode,String id,String updatedBy, LocalDateTime updatedDateTime);
+
+
+	@Query("FROM RegistrationCenter WHERE zoneCode =?1 and langCode =?2 and (isDeleted is null or isDeleted = false) and isActive = true")
+	List<RegistrationCenter> findAllActiveByZoneCodeAndLangCode(String zoneCode, String langCode);
 }
