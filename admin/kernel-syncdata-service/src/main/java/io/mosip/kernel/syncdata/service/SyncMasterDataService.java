@@ -46,7 +46,7 @@ public interface SyncMasterDataService {
 	 * @param lastUpdated
 	 * @return
 	 */
-	IdSchemaDto getLatestPublishedIdSchema(LocalDateTime lastUpdated, double schemaVersion);
+	IdSchemaDto getLatestPublishedIdSchema(LocalDateTime lastUpdated, double schemaVersion, String domain, String type);
 
 	/**
 	 * Fetches certifcates from kernel-keymanager service based on the provided appId and refId

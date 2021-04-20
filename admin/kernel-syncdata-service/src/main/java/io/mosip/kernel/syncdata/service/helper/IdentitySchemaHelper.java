@@ -55,10 +55,17 @@ public class IdentitySchemaHelper {
 	private SyncMasterDataServiceHelper serviceHelper;
 
 	
-	public IdSchemaDto getLatestIdentitySchema(LocalDateTime lastUpdated, double schemaVersion) {
+	public IdSchemaDto getLatestIdentitySchema(LocalDateTime lastUpdated, double schemaVersion, String domain,
+			String type) {
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(idSchemaUrl);
 			builder.queryParam("schemaVersion", schemaVersion);
+			if (domain != null) {
+				builder.queryParam("domain", domain);
+			}
+			if (type != null) {
+				builder.queryParam("type", type);
+			}
 			ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().toUri(), String.class);
 			
 			objectMapper.registerModule(new JavaTimeModule());
