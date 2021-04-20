@@ -154,12 +154,10 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 
 		BiometricType biometricType = null;
 		try {
-			biometricTypeRequestDto = masterdataCreationUtil.createMasterData(BiometricType.class,
-					biometricTypeRequestDto);
+
 			BiometricType entity = MetaDataUtils.setCreateMetaData(biometricTypeRequestDto, BiometricType.class);
 			biometricType = biometricTypeRepository.create(entity);
-		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
-				| NoSuchFieldException | SecurityException e) {
+		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | SecurityException e) {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_CREATE, GenderTypeDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,

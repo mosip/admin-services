@@ -55,12 +55,10 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 
 		TemplateType templateType;
 		try {
-			templateTypeDto = masterdataCreationUtil.createMasterData(TemplateType.class, templateTypeDto);
 			TemplateType entity = MetaDataUtils.setCreateMetaData(templateTypeDto, TemplateType.class);
 			templateType = templateTypeRepository.create(entity);
 
-		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
-				| NoSuchFieldException | SecurityException e) {
+		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | SecurityException e) {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.CREATE_ERROR_AUDIT, TemplateType.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,

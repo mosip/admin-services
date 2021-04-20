@@ -4,12 +4,12 @@ import io.mosip.kernel.masterdata.constant.MachinePutReqDto;
 import io.mosip.kernel.masterdata.dto.MachinePostReqDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
@@ -105,7 +105,7 @@ public interface MachineService {
 	 * @param dto the search DTO.
 	 * @return the {@link PageResponseDto}.
 	 */
-	public PageResponseDto<MachineSearchDto> searchMachine(SearchDto dto);
+	public PageResponseDto<MachineSearchDto> searchMachine(SearchDtoWithoutLangCode dto);
 
 	/**
 	 * Method to filter Machine based on column and type provided.

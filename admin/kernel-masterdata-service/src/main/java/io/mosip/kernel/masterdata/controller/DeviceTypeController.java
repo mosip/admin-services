@@ -19,11 +19,11 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypePutDto;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
@@ -157,7 +157,7 @@ public class DeviceTypeController {
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Retrieve all Device Types for the given Filter parameters", notes = "Retrieve all Device Types for the given Filter parameters")
 	public ResponseWrapper<PageResponseDto<DeviceTypeExtnDto>> deviceTypeSearch(
-			@Valid @RequestBody RequestWrapper<SearchDto> request) {
+			@Valid @RequestBody RequestWrapper<SearchDtoWithoutLangCode> request) {
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName(), "ADM-633");

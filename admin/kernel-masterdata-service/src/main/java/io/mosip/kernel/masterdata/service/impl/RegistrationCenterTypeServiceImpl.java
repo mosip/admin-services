@@ -22,7 +22,6 @@ import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.FilterData;
-import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypePutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;

@@ -1,11 +1,8 @@
 package io.mosip.kernel.masterdata.dto;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import io.mosip.kernel.masterdata.validator.StringFormatter;
-import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -22,9 +19,12 @@ public class TemplateFileFormatDto {
 	private String description;
 
 
-	@ValidLangCode(message = "Language Code is Invalid")
-	@ApiModelProperty(value = "Language code", required = true, dataType = "java.lang.String")
-	private String langCode;
+	/*
+	 * @ValidLangCode(message = "Language Code is Invalid")
+	 * 
+	 * @ApiModelProperty(value = "Language code", required = true, dataType =
+	 * "java.lang.String") private String langCode;
+	 */
 
 	@NotNull
 	@ApiModelProperty(value = "TemplateFileFormat isActive status", required = true, dataType = "java.lang.Boolean")

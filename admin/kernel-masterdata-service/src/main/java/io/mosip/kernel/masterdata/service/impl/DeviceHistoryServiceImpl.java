@@ -90,4 +90,5 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
 		MapperUtils.map(createdHistory, idResponseDto);
 		return idResponseDto;
 	}
+
 }

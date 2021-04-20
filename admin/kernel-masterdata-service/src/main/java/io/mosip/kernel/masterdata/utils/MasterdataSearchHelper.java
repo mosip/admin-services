@@ -3,7 +3,11 @@ package io.mosip.kernel.masterdata.utils;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.persistence.Column;
@@ -20,8 +24,6 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import io.mosip.kernel.masterdata.dto.MissingDataDto;
-import lombok.NonNull;
 import org.hibernate.HibernateException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
@@ -36,6 +38,7 @@ import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
@@ -47,6 +50,7 @@ import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
+import lombok.NonNull;
 
 /**
  * Generating dynamic query for masterdata based on the search filters.
@@ -143,6 +147,66 @@ public class MasterdataSearchHelper {
 
 
 	/**
+	 * Method to search and sort the masterdata.
+	 * 
+	 * @param entity          the entity class for which search will be applied
+	 * @param searchDto       which contains the list of filters, sort and
+	 *                        pagination
+	 * @param optionalFilters filters to be considered as 'or' statements
+	 * 
+	 * @return {@link Page} of entity
+	 */
+	public <E> Page<E> searchMasterdataWithoutLangCode(Class<E> entity, SearchDtoWithoutLangCode searchDto,
+			OptionalFilter[] optionalFilters) {
+		long rows = 0l;
+		List<E> result;
+		Objects.requireNonNull(entity, ENTITY_IS_NULL);
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<E> selectQuery = criteriaBuilder.createQuery(entity);
+		CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+		// root Query
+		Root<E> rootQuery = selectQuery.from(entity);
+		// count query
+		countQuery.select(criteriaBuilder.count(countQuery.from(entity)));
+		// applying filters
+		filterQueryWithoutLang(criteriaBuilder, rootQuery, selectQuery, countQuery, searchDto.getFilters(),
+				optionalFilters);
+
+		// applying sorting
+		sortQuery(criteriaBuilder, rootQuery, selectQuery, searchDto.getSort());
+
+		try {
+			// creating executable query from select criteria query
+			TypedQuery<E> executableQuery = entityManager.createQuery(selectQuery);
+			// creating executable query from count criteria query
+			TypedQuery<Long> countExecutableQuery = entityManager.createQuery(countQuery);
+			// getting the rows count
+			rows = countExecutableQuery.getSingleResult();
+			// adding pagination
+			paginationQuery(executableQuery, searchDto.getPagination());
+			// executing query and returning data
+			result = executableQuery.getResultList();
+		} catch (HibernateException hibernateException) {
+			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(),
+					hibernateException.getMessage(), hibernateException);
+		} catch (RequestException e) {
+			throw e;
+		} catch (RuntimeException runtimeException) {
+			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+					runtimeException.getMessage(), runtimeException);
+		}
+		return new PageImpl<>(result,
+				PageRequest.of(searchDto.getPagination().getPageStart(), searchDto.getPagination().getPageFetch()),
+				rows);
+
+	}
+
+	public <E> List<E> getMissingData(String tableName, String langCode) {
+
+		return null;
+	}
+
+	/**
 	 * Method to add the filters to the criteria query
 	 * 
 	 * @param builder     used to construct criteria queries
@@ -168,6 +232,40 @@ public class MasterdataSearchHelper {
 		Predicate langCodePredicate = setLangCode(builder, root, langCode);
 		if (langCodePredicate != null) {
 			predicates.add(langCodePredicate);
+		}
+		Predicate isDeletedTrue = builder.equal(root.get(DECOMISSION), Boolean.FALSE);
+		Predicate isDeletedNull = builder.isNull(root.get(DECOMISSION));
+		Predicate isDeleted = builder.or(isDeletedTrue, isDeletedNull);
+		predicates.add(isDeleted);
+		if (!predicates.isEmpty()) {
+			Predicate whereClause = builder.and(predicates.toArray(new Predicate[predicates.size()]));
+			selectQuery.where(whereClause);
+			countQuery.where(whereClause);
+		}
+
+	}
+
+	/**
+	 * Method to add the filters to the criteria query
+	 * 
+	 * @param builder     used to construct criteria queries
+	 * @param root        root type in the from clause,always refers entity
+	 * @param selectQuery criteria select query
+	 * @param countQuery  criteria count query
+	 * @param filters     list of {@link SearchFilter}
+	 * @param langCode    language code if applicable
+	 */
+	private <E> void filterQueryWithoutLang(CriteriaBuilder builder, Root<E> root, CriteriaQuery<E> selectQuery,
+			CriteriaQuery<Long> countQuery, List<SearchFilter> filters, OptionalFilter[] optionalFilters) {
+		final List<Predicate> predicates = new ArrayList<>();
+		if (filters != null && !filters.isEmpty()) {
+			filters.stream().filter(this::validateFilters).map(i -> buildFilters(builder, root, i))
+					.filter(Objects::nonNull).collect(Collectors.toCollection(() -> predicates));
+		}
+
+		if (optionalFilters != null && optionalFilters.length != 0) {
+			Arrays.stream(optionalFilters).forEach(i -> buildOptionalFilter(builder, root, i, predicates));
+
 		}
 		Predicate isDeletedTrue = builder.equal(root.get(DECOMISSION), Boolean.FALSE);
 		Predicate isDeletedNull = builder.isNull(root.get(DECOMISSION));
@@ -518,7 +616,7 @@ public class MasterdataSearchHelper {
 		return false;
 	}
 
-	public Page<Machine> nativeMachineQuerySearch(SearchDto searchDto, String typeName, List<Zone> zones,
+	public Page<Machine> nativeMachineQuerySearch(SearchDtoWithoutLangCode searchDto, String typeName, List<Zone> zones,
 			boolean isAssigned) {
 		List<String> zoneCodes = new ArrayList<>();
 		zones.stream().forEach(zone -> {
@@ -531,15 +629,15 @@ public class MasterdataSearchHelper {
 			nativeQuery = new StringBuilder().append("SELECT * FROM master.machine_master m where m.regcntr_id is null and");
 
 		}
-
-		if (searchDto.getLanguageCode().equals("all")) {
-
-			nativeQuery.append(
-					" m.mspec_id in(select id from master.machine_spec ms , master.machine_type mt where ms.mtyp_code= mt.code and mt.name=:typeName) AND m.zone_code in (:zoneCode)");
-		} else {
-			nativeQuery.append(
-					" m.lang_code=:langCode and m.mspec_id in(select id from master.machine_spec ms , master.machine_type mt where ms.mtyp_code= mt.code and mt.name=:typeName and ms.lang_code=:langCode and ms.lang_code=mt.lang_code) AND m.zone_code in (:zoneCode)");
-		}
+		/*
+		 * if (searchDto.getLanguageCode().equals("all")) {
+		 * 
+		 * nativeQuery.append(
+		 * " m.mspec_id in(select id from master.machine_spec ms , master.machine_type mt where ms.mtyp_code= mt.code and mt.name=:typeName) AND m.zone_code in (:zoneCode)"
+		 * ); } else { nativeQuery.append(
+		 * " m.lang_code=:langCode and m.mspec_id in(select id from master.machine_spec ms , master.machine_type mt where ms.mtyp_code= mt.code and mt.name=:typeName and ms.lang_code=:langCode and ms.lang_code=mt.lang_code) AND m.zone_code in (:zoneCode)"
+		 * ); }
+		 */
 
 		Iterator<SearchFilter> searchIterator = searchDto.getFilters().iterator();
 		while (searchIterator.hasNext()) {
@@ -549,9 +647,10 @@ public class MasterdataSearchHelper {
 		}
 
 		Query query = entityManager.createNativeQuery(nativeQuery.toString(), Machine.class);
-		if (!searchDto.getLanguageCode().equals("all")) {
-			query.setParameter(LANGCODE_COLUMN_NAME, searchDto.getLanguageCode());
-		}
+		/*
+		 * if (!searchDto.getLanguageCode().equals("all")) {
+		 * query.setParameter(LANGCODE_COLUMN_NAME, searchDto.getLanguageCode()); }
+		 */
 		setMachineQueryParams(query, searchDto.getFilters());
 		query.setParameter(TYPE_NAME, typeName);
 		query.setParameter("zoneCode", zoneCodes);
@@ -563,7 +662,7 @@ public class MasterdataSearchHelper {
 
 	}
 
-	public Page<Device> nativeDeviceQuerySearch(SearchDto searchDto, String typeName, List<Zone> zones,
+	public Page<Device> nativeDeviceQuerySearch(SearchDtoWithoutLangCode searchDto, String typeName, List<Zone> zones,
 			boolean isAssigned) {
 		List<String> zoneCodes = new ArrayList<>();
 		zones.stream().forEach(zone -> {
@@ -577,13 +676,13 @@ public class MasterdataSearchHelper {
 
 		}
 
-		if (searchDto.getLanguageCode().equals("all")) {
-			nativeQuery.append(
-					"  m.dspec_id in(select id from master.device_spec ms , master.device_type mt where ms.dtyp_code= mt.code and mt.name=:typeName) AND m.zone_code in (:zoneCode)");
-		} else {
-			nativeQuery.append(
-					" m.lang_code=:langCode and m.dspec_id in(select id from master.device_spec ms , master.device_type mt where ms.dtyp_code= mt.code and mt.name=:typeName and ms.lang_code=:langCode and ms.lang_code=mt.lang_code) AND m.zone_code in (:zoneCode)");
-		}
+		/*
+		 * if (searchDto.getLanguageCode().equals("all")) { nativeQuery.append(
+		 * "  m.dspec_id in(select id from master.device_spec ms , master.device_type mt where ms.dtyp_code= mt.code and mt.name=:typeName) AND m.zone_code in (:zoneCode)"
+		 * ); } else { nativeQuery.append(
+		 * " m.lang_code=:langCode and m.dspec_id in(select id from master.device_spec ms , master.device_type mt where ms.dtyp_code= mt.code and mt.name=:typeName and ms.lang_code=:langCode and ms.lang_code=mt.lang_code) AND m.zone_code in (:zoneCode)"
+		 * ); }
+		 */
 		Iterator<SearchFilter> searchIterator = searchDto.getFilters().iterator();
 		while (searchIterator.hasNext()) {
 			SearchFilter searchFilter = searchIterator.next();
@@ -597,9 +696,10 @@ public class MasterdataSearchHelper {
 		Query query = entityManager.createNativeQuery(nativeQuery.toString(), Device.class);
 
 		setDeviceQueryParams(query, searchDto.getFilters());
-		if (!searchDto.getLanguageCode().equals("all")) {
-			query.setParameter(LANGCODE_COLUMN_NAME, searchDto.getLanguageCode());
-		}
+		/*
+		 * if (!searchDto.getLanguageCode().equals("all")) {
+		 * query.setParameter(LANGCODE_COLUMN_NAME, searchDto.getLanguageCode()); }
+		 */
 		query.setParameter(TYPE_NAME, typeName);
 		query.setParameter("zoneCode", zoneCodes);
 		List<Device> result = query.getResultList();

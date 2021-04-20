@@ -35,7 +35,7 @@ public class ZoneUser extends BaseEntity implements Serializable {
 	@Column(name = "usr_id", nullable = false, length = 256)
 	private String userId;
 
-	@Column(name = "lang_code", nullable = false, length = 3)
+	@Column(name = "lang_code", nullable = true, length = 3)
 	private String langCode;
 
 }

@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -25,6 +24,7 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.masterdata.dto.MachineSpecificationPutDto;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineSpecificationExtnDto;
@@ -126,18 +126,14 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 
 
 		try {
-			if (StringUtils.isNotEmpty(supportedLang) && supportedLang.contains(machineSpecification.getLangCode())) {
-				String uniqueId = generateId();
-				machineSpecification.setId(uniqueId);
-			}
-			machineSpecification = masterdataCreationUtil.createMasterData(MachineSpecification.class,
-					machineSpecification);
+			String uniqueId = generateId();
+			machineSpecification.setId(uniqueId);
 			MachineSpecification entity = MetaDataUtils.setCreateMetaData(machineSpecification,
 					MachineSpecification.class);
 			renMachineSpecification = machineSpecificationRepository.create(entity);
 			Objects.requireNonNull(renMachineSpecification);
 		} catch (DataAccessLayerException | DataAccessException | NullPointerException | IllegalArgumentException
-				| IllegalAccessException | NoSuchFieldException | SecurityException e) {
+				| SecurityException e) {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_CREATE, MachineSpecification.class.getCanonicalName()),
 					MasterDataConstant.AUDIT_SYSTEM,
@@ -181,10 +177,9 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		MachineSpecification updMachineSpecification = null;
 
 		try {
-			MachineSpecification renMachineSpecification = machineSpecificationRepository
-					.findByIdAndLangCodeIsDeletedFalseorIsDeletedIsNull(machineSpecification.getId(),
-							machineSpecification.getLangCode());
-			if (renMachineSpecification != null) {
+			List<MachineSpecification> renMachineSpecifications = machineSpecificationRepository
+					.findMachineSpecById(machineSpecification.getId());
+			if (!renMachineSpecifications.isEmpty()) {
 				/*
 				 * if (!machineSpecification.getIsActive()) { List<Machine> machines =
 				 * machineRepository
@@ -200,8 +195,9 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 				 */
 				machineSpecification = masterdataCreationUtil.updateMasterData(MachineSpecification.class,
 						machineSpecification);
-				MetaDataUtils.setUpdateMetaData(machineSpecification, renMachineSpecification, false);
-				updMachineSpecification = machineSpecificationRepository.update(renMachineSpecification);
+				updMachineSpecification = MetaDataUtils.setUpdateMetaData(machineSpecification,
+						renMachineSpecifications.get(0), false);
+				updMachineSpecification = machineSpecificationRepository.update(updMachineSpecification);
 			} else {
 				auditUtil.auditRequest(
 						String.format(MasterDataConstant.FAILURE_UPDATE, MachineSpecification.class.getCanonicalName()),
@@ -403,7 +399,8 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	 */
 	@SuppressWarnings("null")
 	@Override
-	public PageResponseDto<MachineSpecificationExtnDto> searchMachineSpecification(SearchDto searchRequestDto) {
+	public PageResponseDto<MachineSpecificationExtnDto> searchMachineSpecification(
+			SearchDtoWithoutLangCode searchRequestDto) {
 		PageResponseDto<MachineSpecificationExtnDto> pageDto = new PageResponseDto<>();
 
 		List<MachineSpecificationExtnDto> machineSpecifications = null;
@@ -432,7 +429,8 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		searchRequestDto.setSort(Collections.emptyList());
 		if (filterValidator.validate(MachineSpecificationExtnDto.class, searchRequestDto.getFilters())) {
 			OptionalFilter optionalFilter = new OptionalFilter(addList);
-			Page<MachineSpecification> page = masterdataSearchHelper.searchMasterdata(MachineSpecification.class,
+			Page<MachineSpecification> page = masterdataSearchHelper.searchMasterdataWithoutLangCode(
+					MachineSpecification.class,
 					searchRequestDto, new OptionalFilter[] { optionalFilter });
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				machineSpecifications = MapperUtils.mapAll(page.getContent(), MachineSpecificationExtnDto.class);

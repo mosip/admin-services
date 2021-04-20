@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.mosip.kernel.masterdata.validator.OptionalStringFormatter;
 import io.mosip.kernel.masterdata.validator.StringFormatter;
-import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -69,11 +68,13 @@ public class MachinePutReqDto {
 	/**
 	 * Field for language code
 	 */
-	@ValidLangCode(message = "Language Code is Invalid")
-//	@NotBlank
-//	@Size(min = 1, max = 3)
-	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
-	private String langCode;
+	/*
+	 * @ValidLangCode(message = "Language Code is Invalid") // @NotBlank
+	 * // @Size(min = 1, max = 3)
+	 * 
+	 * @ApiModelProperty(value = "langCode", required = true, dataType =
+	 * "java.lang.String") private String langCode;
+	 */
 
 	/**
 	 * Field for is validity of the Device

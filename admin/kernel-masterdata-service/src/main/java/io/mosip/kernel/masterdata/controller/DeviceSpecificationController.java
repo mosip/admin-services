@@ -23,13 +23,13 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationPutDto;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceSpecificationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceSpecificationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
@@ -220,7 +220,7 @@ public class DeviceSpecificationController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@PostMapping("/devicespecifications/search")
 	public ResponseWrapper<PageResponseDto<DeviceSpecificationExtnDto>> deviceSpecificationSearch(
-			@RequestBody @Valid RequestWrapper<SearchDto> requestWrapper) {
+			@RequestBody @Valid RequestWrapper<SearchDtoWithoutLangCode> requestWrapper) {
 		auditUtil.auditRequest(
 				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceSpecificationExtnDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
