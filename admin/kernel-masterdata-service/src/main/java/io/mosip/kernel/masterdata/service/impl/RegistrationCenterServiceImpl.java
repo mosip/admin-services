@@ -1748,7 +1748,30 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				"ADM-533");
 		return registrationCenterExtnDto;
 	}
-	
+
+	@Override
+	public RegistrationCenterResponseDto getRegistrationCentersByZoneCode(String zoneCode, String langCode) {
+		List<RegistrationCenter> registrationCentersList = null;
+		try {
+			registrationCentersList = registrationCenterRepository.findAllActiveByZoneCodeAndLangCode(zoneCode, langCode);
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+		if (registrationCentersList.isEmpty()) {
+			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+		}
+		List<RegistrationCenterDto> registrationCentersDtoList = null;
+		registrationCentersDtoList = MapperUtils.mapAll(registrationCentersList, RegistrationCenterDto.class);
+		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
+		registrationCenterResponseDto.setRegistrationCenters(registrationCentersDtoList);
+		return registrationCenterResponseDto;
+	}
+
 	private void updateRegistartionCenterHistory(List<RegistrationCenter> updRegistrationCenters) {
 		for (RegistrationCenter updRegistrationCenter : updRegistrationCenters) {
 			RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();

@@ -503,4 +503,14 @@ public class RegistrationCenterController {
 		responseWrapper.setResponse(genericService.getMissingData(RegistrationCenter.class, langCode, fieldName));
 		return responseWrapper;
 	}
+
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	@ResponseFilter
+	@GetMapping("/getzonespecificregistrationcenters/{langcode}/{zonecode}")
+	public ResponseWrapper<RegistrationCenterResponseDto> getCenterSpecificToZone(@PathVariable("langcode") String langCode,
+																@PathVariable("zonecode") String zoneCode) {
+		ResponseWrapper<RegistrationCenterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterService.getRegistrationCentersByZoneCode(zoneCode, langCode));
+		return responseWrapper;
+	}
 }
