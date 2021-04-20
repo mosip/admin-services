@@ -31,7 +31,11 @@ public class RegistrationCenterTypePutDto {
 	@NotNull
 	@StringFormatter(min = 1, max = 64)
 	private String name;
+
+	@Deprecated
+	private boolean isActive;
 	/**
+	 * 
 	 * description of the registration center type.
 	 */
 

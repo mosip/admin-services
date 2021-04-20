@@ -43,6 +43,9 @@ public class MachinePutReqDto {
 	@Size(min = 0, max = 64)
 	@ApiModelProperty(value = "serialNum", required = false, dataType = "java.lang.String")
 	private String serialNum;
+
+	@Deprecated
+	private boolean isActive;
 	/**
 	 * Field for machine mac address
 	 */
@@ -68,13 +71,8 @@ public class MachinePutReqDto {
 	/**
 	 * Field for language code
 	 */
-	/*
-	 * @ValidLangCode(message = "Language Code is Invalid") // @NotBlank
-	 * // @Size(min = 1, max = 3)
-	 * 
-	 * @ApiModelProperty(value = "langCode", required = true, dataType =
-	 * "java.lang.String") private String langCode;
-	 */
+	@Deprecated
+	private String langCode;
 
 	/**
 	 * Field for is validity of the Device

@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsDto;
+import io.mosip.kernel.masterdata.dto.UserDetailsGetExtnDto;
 import io.mosip.kernel.masterdata.dto.UsersDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -28,8 +30,8 @@ import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.UserDetailsService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -57,8 +59,8 @@ public class UserDetailsController {
 			@ApiResponse(code = 400, message = "When path param id is null or invalid"),
 			@ApiResponse(code = 404, message = "When No user found"),
 			@ApiResponse(code = 500, message = "Error occurred when we attempted to fetch the user") })
-	public ResponseWrapper<UserDetailsDto> getUserById(@PathVariable("id") String userId) {
-		ResponseWrapper<UserDetailsDto> responseWrapper = new ResponseWrapper<>();
+	public ResponseWrapper<UserDetailsGetExtnDto> getUserById(@PathVariable("id") String userId) {
+		ResponseWrapper<UserDetailsGetExtnDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(userDetailsService.getUser(userId));
 		return responseWrapper;
 	}
@@ -92,7 +94,7 @@ public class UserDetailsController {
 			@ApiResponse(code = 404, message = "When No Regcenter found"),
 			@ApiResponse(code = 500, message = "While mapping user to regcenter any error occured") })
 	public ResponseWrapper<IdAndLanguageCodeID> mapUserRegCenter(@PathVariable("id") String userId, 
-	@PathVariable("lang") String langCode,
+			@PathVariable("lang") String langCode,
 	@PathVariable("regcenterid") String regCenterId
 	 ) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + UserDetailsController.class.getCanonicalName(),
@@ -127,7 +129,7 @@ public class UserDetailsController {
 			@ApiResponse(code = 404, message = "When No Regcenter found"),
 			@ApiResponse(code = 500, message = "While mapping user to regcenter any error occured") })
 	public ResponseWrapper<UserDetailsDto> updateUserRegCenter(@PathVariable("id") String userId, 
-	@PathVariable("lang") String langCode,
+			@PathVariable("lang") String langCode,
 	@PathVariable("regcenterid") String regCenterId
 	 ) {
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + UserDetailsController.class.getCanonicalName(),
@@ -145,6 +147,7 @@ public class UserDetailsController {
 		return responseWrapper;
 	}
 	
+
 	/**
 	 * dalete API to delete a  row of Machine data
 	 * 

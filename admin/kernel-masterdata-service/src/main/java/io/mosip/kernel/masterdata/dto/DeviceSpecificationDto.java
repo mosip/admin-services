@@ -50,13 +50,8 @@ public class DeviceSpecificationDto {
 	@ApiModelProperty(value = "description", required = true, dataType = "java.lang.String")
 	private String description;
 
-
-	/*
-	 * @ValidLangCode(message = "Language Code is Invalid")
-	 * 
-	 * @ApiModelProperty(value = "langCode", required = true, dataType =
-	 * "java.lang.String") private String langCode;
-	 */
+	@Deprecated
+	private String langCode;
 
 	@NotNull
 	private Boolean isActive;

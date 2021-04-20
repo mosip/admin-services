@@ -67,10 +67,8 @@ public class MachinePostReqDto {
 	/**
 	 * Field for language code
 	 */
-	// @ValidLangCode(message = "Language Code is Invalid")
-	// @ApiModelProperty(value = "langCode", required = true, dataType =
-	// "java.lang.String")
-	// private String langCode;
+	@Deprecated
+	private String langCode;
 	/**
 	 * Field for is active
 	 */

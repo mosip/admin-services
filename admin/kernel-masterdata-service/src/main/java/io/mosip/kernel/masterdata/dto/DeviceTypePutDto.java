@@ -6,7 +6,6 @@ import javax.validation.constraints.Size;
 import io.mosip.kernel.masterdata.validator.FilterType;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.mosip.kernel.masterdata.validator.StringFormatter;
-import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -18,9 +17,11 @@ public class DeviceTypePutDto {
 	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")
 	private String code;
 
-	@ValidLangCode(message = "Language Code is Invalid")
-	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
+	@Deprecated
 	private String langCode;
+
+	@Deprecated
+	private boolean isActive;
 
 	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })
 	@NotNull

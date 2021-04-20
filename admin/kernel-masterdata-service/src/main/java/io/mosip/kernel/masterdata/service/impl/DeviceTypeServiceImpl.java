@@ -137,9 +137,9 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 
 		//DeviceType deviceType=null;
 		try {
-			DeviceType deviceType = deviceTypeRepository.findDeviceTypeByCodeAndByLangCode(deviceTypePutDto.getCode(),
-					deviceTypePutDto.getLangCode());
-			if (!EmptyCheckUtils.isNullEmpty(deviceType)) {
+			List<DeviceType> deviceTypes = deviceTypeRepository
+					.findtoUpdateDeviceTypeByCode(deviceTypePutDto.getCode());
+			if (!EmptyCheckUtils.isNullEmpty(deviceTypes)) {
 				/*
 				 * if(!deviceTypeDto.getIsActive()) { List<DeviceSpecification>
 				 * deviceSpecification = deviceSpecificationRepository
@@ -154,7 +154,7 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 				 * deviceTypeDto.getCode()); }
 				 */
 				deviceTypePutDto = masterdataCreationUtil.updateMasterData(DeviceType.class, deviceTypePutDto);
-				MetaDataUtils.setUpdateMetaData(deviceTypePutDto, deviceType, false);
+				DeviceType deviceType = MetaDataUtils.setUpdateMetaData(deviceTypePutDto, deviceTypes.get(0), false);
 				deviceTypeRepository.update(deviceType);
 				MapperUtils.map(deviceType, codeAndLanguageCodeID);
 			} else {
