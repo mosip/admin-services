@@ -21,7 +21,7 @@ public class DeviceTypePutDto {
 	private String langCode;
 
 	@Deprecated
-	private boolean isActive;
+	private Boolean isActive;
 
 	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })
 	@NotNull

@@ -51,7 +51,7 @@ public class DeviceSpecificationPutDto {
 	private String langCode;
 
 	@Deprecated
-	private boolean isActive;
+	private Boolean isActive;
 
 
 }

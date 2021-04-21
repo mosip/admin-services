@@ -2,15 +2,18 @@ package io.mosip.kernel.masterdata.service;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsGetExtnDto;
+import io.mosip.kernel.masterdata.dto.UserDetailsPutDto;
 import io.mosip.kernel.masterdata.dto.UsersDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterUserID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -97,7 +100,7 @@ public interface UserDetailsService {
 	 * @throws MasterDataServiceException if any error occurred while updating
 	 *                                    User
 	 */
-	public UserDetailsDto updateUser(UserDetailsDto user);
+	public UserDetailsPutDto updateUser(UserDetailsPutDto user);
 
 	/**
 	 * Abstract method to get all users from the IAM.
@@ -117,5 +120,7 @@ public interface UserDetailsService {
 	 * @return
 	 */
 	public PageResponseDto<UserDetailsExtnDto> searchUserDetails(SearchDto searchDto);
+
+	public StatusResponseDto updateUserStatus(String id, @Valid boolean isActive);
 
 }

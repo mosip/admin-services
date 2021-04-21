@@ -17,7 +17,7 @@ public class DynamicFieldValuePutDto {
 	private String value;
 
 	@Deprecated
-	private boolean isActive;
+	private Boolean isActive;
 
 	@NotBlank
 	private String langCode;

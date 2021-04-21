@@ -38,7 +38,7 @@ public class LocationPutDto {
 	private String parentLocCode;
 
 	@Deprecated
-	private boolean isActive;
+	private Boolean isActive;
 
 	@ValidLangCode(message = "Language Code is Invalid")
 	private String langCode;

@@ -35,7 +35,7 @@ public class LanguagePutDto {
 	private String family;
 
 	@Deprecated
-	private boolean isActive;
+	private Boolean isActive;
 
 	/**
 	 * Field for language native name

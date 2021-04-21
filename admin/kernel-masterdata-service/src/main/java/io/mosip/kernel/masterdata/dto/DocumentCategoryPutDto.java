@@ -35,7 +35,8 @@ public class DocumentCategoryPutDto {
 	private String description;
 
 	@Deprecated
-	private boolean isActive;
+	private Boolean isActive;
+
 	/**
 	 * The Language Code.
 	 */

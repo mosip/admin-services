@@ -35,8 +35,7 @@ public class DocumentTypePutReqDto {
 	private String description;
 
 	@Deprecated
-	private boolean isActive;
-
+	private Boolean isActive;
 
 	@ValidLangCode(message = "Language Code is Invalid")
 	@ApiModelProperty(value = "Language Code", required = true, dataType = "java.lang.String")

@@ -77,6 +77,9 @@ public class RegCenterPutReqDto {
 	@Size(min = 0, max = 32)
 	private String workingHours;
 
+	@Deprecated
+	private Boolean isActive;
+
 	@NotNull
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
 	private LocalTime perKioskProcessTime;

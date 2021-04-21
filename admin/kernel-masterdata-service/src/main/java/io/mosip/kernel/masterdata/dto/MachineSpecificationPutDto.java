@@ -31,7 +31,7 @@ public class MachineSpecificationPutDto {
 	private String brand;
 
 	@Deprecated
-	private boolean isActive;
+	private Boolean isActive;
 
 	@NotNull
 	@StringFormatter(min = 1, max = 16)

@@ -30,7 +30,7 @@ public class DynamicFieldPutDto {
 	private String langCode;
 
 	@Deprecated
-	private boolean isActive;
+	private Boolean isActive;
 
 	@NotBlank
 	@ApiModelProperty(notes = "Data Type", example = "string", required = true)

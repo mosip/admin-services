@@ -45,7 +45,7 @@ public class MachinePutReqDto {
 	private String serialNum;
 
 	@Deprecated
-	private boolean isActive;
+	private Boolean isActive;
 	/**
 	 * Field for machine mac address
 	 */

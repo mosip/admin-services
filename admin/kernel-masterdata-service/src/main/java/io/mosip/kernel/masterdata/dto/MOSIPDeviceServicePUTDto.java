@@ -39,7 +39,7 @@ public class MOSIPDeviceServicePUTDto {
 	private String regDeviceTypeCode;
 
 	@Deprecated
-	private boolean isActive;
+	private Boolean isActive;
 
 	
 	@StringFormatter(min = 1, max = 36)
