@@ -484,10 +484,10 @@ public class DeviceServiceImpl implements DeviceService {
 		list.forEach(deviceSearchDto -> {
 			deviceSpecifications.forEach(s -> {
 				if (s.getId().equals(deviceSearchDto.getDeviceSpecId())
-						&& s.getLangCode().equals(deviceSearchDto.getLangCode())) {
+				) {
 					String typeCode = s.getDeviceTypeCode();
 					deviceTypes.forEach(mt -> {
-						if (mt.getCode().equals(typeCode) && mt.getLangCode().equals(s.getLangCode())) {
+						if (mt.getCode().equals(typeCode)) {
 							deviceSearchDto.setDeviceTypeName(mt.getName());
 						}
 					});
