@@ -50,7 +50,7 @@ public class MasterdataCreationUtil {
 	private static final String NAME_COLUMN_NAME = "name";
 
 
-	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
+	@Value("#{'${mosip.mandatory-languages:}'.concat('${mosip.optional-languages:}')}")
 	private String supportedLang;
 
 	/**
@@ -103,13 +103,14 @@ public class MasterdataCreationUtil {
 	private <T, E> T callMethodBasedOnFilters(Class<E> entity, T t, String langCode, String id, String primaryId,
 			boolean activeDto, boolean activePrimary, String primaryKeyCol, Class<?> dtoClass, boolean priSecIdentical)
 			throws NoSuchFieldException, IllegalAccessException {
-		if (supportedLang.contains(langCode.toLowerCase())) {
+		if(langCode == null)
 			return t;
-		} else {
-			throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
-					String.format(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage(), langCode));
-		}
 
+		if (supportedLang.contains(langCode))
+			return t;
+
+		throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
+				String.format(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage(), langCode));
 	}
 
 	private String setPrimaryKeyColAndEntField(String primaryKeyCol, Field entField) {

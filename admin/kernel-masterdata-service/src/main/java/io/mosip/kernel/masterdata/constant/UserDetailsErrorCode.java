@@ -15,7 +15,8 @@ public enum UserDetailsErrorCode {
 	USER_DETAILS_PARSE_ERROR("KER-USR-009","Error occured while parsing auth service userdetails response"),
 	ZONE_USER_MAPPING_ERROR("KER-USR-010","Error occured while zone user mapping"),
 	ZONE_USER_MAPPING_NOT_ACTIVE("KER-USR-011","Zone user mapping is not active"),
-	CENTER_LANG_MAPPING_NOT_EXISTS("KER-USR-012","Reg center is not exists for given language");;
+	CENTER_LANG_MAPPING_NOT_EXISTS("KER-USR-012","Reg center is not exists for given language"),
+	USER_ALREADY_EXISTS("KER-USR-013", "User already exists");
 
 	private final String errorCode;
 	private final String errorMessage;

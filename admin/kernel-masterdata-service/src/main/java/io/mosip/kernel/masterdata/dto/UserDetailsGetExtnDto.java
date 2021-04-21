@@ -15,7 +15,8 @@ public class UserDetailsGetExtnDto {
 	@StringFormatter(min = 1, max = 36)
 	private String id;
 
-	@ValidLangCode(message = "Language Code is Invalid")
+	@Deprecated
+	@Null
 	private String langCode;
 
 	@Null

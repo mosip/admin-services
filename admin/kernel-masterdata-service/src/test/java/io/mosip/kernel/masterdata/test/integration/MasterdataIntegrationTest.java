@@ -8465,7 +8465,7 @@ public class MasterdataIntegrationTest {
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void createUserDetailTest() throws Exception {
 		when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(Mockito.anyString())).thenReturn(registrationCenterEntityList);
-		when(zoneUserRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(zoneUser);
+		when(zoneUserRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString())).thenReturn(zoneUser);
 		when(masterdataCreationUtil.createMasterData(Mockito.any(Class.class), Mockito.any(UserDetailsDto.class))).thenReturn(userDetailsDto);
 		when(userDetailsRepository.create(Mockito.any())).thenReturn(user);
 		when(userRepository.create(Mockito.any())).thenReturn(ud);
@@ -8501,8 +8501,8 @@ public class MasterdataIntegrationTest {
 		requestDto.setId("mosip.zone.user.id");
 		requestDto.setVersion("1.0");
 		requestDto.setRequest(zoneUserDto);
-		when(zoneUserRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
-				Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(null);
+		when(zoneUserRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(
+				Mockito.any(),Mockito.any())).thenReturn(null);
 		when(zoneUserRepository.findZoneUserByUserIdZoneCodeLangCodeIsActive(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(null);
 		when(zoneUserRepository.create(Mockito.any())).thenReturn(zoneUser);
 		when(zoneUserHistoryRepo.create(Mockito.any())).thenReturn(zoneUserhistory);
@@ -8518,8 +8518,8 @@ public class MasterdataIntegrationTest {
 		requestDto.setId("mosip.zone.user.id");
 		requestDto.setVersion("1.0");
 		requestDto.setRequest(zoneUserDto);
-		when(zoneUserRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
-				Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(zoneUser);
+		when(zoneUserRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(
+				Mockito.any(), Mockito.any())).thenReturn(zoneUser);
 		when(zoneUserRepository.findZoneUserByUserIdZoneCodeLangCodeIsActive(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(null);
 		when(zoneUserRepository.update(Mockito.any())).thenReturn(zoneUser);
 		when(zoneUserHistoryRepo.create(Mockito.any())).thenReturn(zoneUserhistory);

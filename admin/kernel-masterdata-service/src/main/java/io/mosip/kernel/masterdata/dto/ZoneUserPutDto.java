@@ -19,8 +19,7 @@ public class ZoneUserPutDto {
 	@Deprecated
 	private boolean isActive;
 
-	@NotNull
-	@StringFormatter(min = 1, max = 3)
+	@Deprecated
 	private String langCode;
 
 }

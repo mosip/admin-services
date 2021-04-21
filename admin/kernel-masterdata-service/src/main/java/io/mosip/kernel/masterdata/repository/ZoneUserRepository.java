@@ -30,8 +30,8 @@ public interface ZoneUserRepository extends BaseRepository<ZoneUser, ZoneUserId>
 	@Query("FROM ZoneUser zu WHERE zu.userId=?1 and zu.zoneCode=?2 ")
 	public List<ZoneUser> findByUserIdAndZoneCode(String userId, String zoneCode);
 
-	@Query("FROM ZoneUser zu WHERE zu.userId=?1 and zu.langCode=?2 and zu.zoneCode=?3 and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
-	public ZoneUser findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String userId, String langCode, String zoneCode);
+	@Query("FROM ZoneUser zu WHERE zu.userId=?1 and zu.zoneCode=?2 and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
+	public ZoneUser findByIdAndIsDeletedFalseOrIsDeletedIsNull(String userId, String zoneCode);
 
 	@Query("FROM ZoneUser zu WHERE zu.zoneCode=?1 and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
 	public List<ZoneUser> findtoUpdateZoneUserByCode(String zoneCode);

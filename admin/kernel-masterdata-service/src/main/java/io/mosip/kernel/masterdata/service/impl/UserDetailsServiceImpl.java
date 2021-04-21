@@ -245,20 +245,44 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
-	public IdAndLanguageCodeID createUser(UserDetailsDto userDetailsDto) {
+	public UserDetailsGetExtnDto createUser(UserDetailsDto userDetailsDto) {
 		UserDetails ud;
 		try {
+			Optional<UserDetails> result = userDetailsRepository.findById(userDetailsDto.getId());
+			if(result.isPresent())
+				throw new MasterDataServiceException(UserDetailsErrorCode.USER_ALREADY_EXISTS.getErrorCode(),
+						UserDetailsErrorCode.USER_ALREADY_EXISTS.getErrorMessage());
+
+			List<RegistrationCenter> regCenters = registrationCenterService.getRegistrationCentersByID(userDetailsDto.getRegCenterId());
+			if(regCenters == null || regCenters.isEmpty()) {
+				auditUtil.auditRequest(
+						String.format(MasterDataConstant.GET_ALL, UserDetails.class.getSimpleName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,
+								UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorCode(),
+								UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorMessage()));
+				throw new MasterDataServiceException(UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorCode(),
+						UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorMessage());
+			}
+
+			//Zone user mapping should be handled in zoneuser API, here we only validate mapping
+			//Commenting this it cannot be directly validated, as user could belong to parent zone
+			/*ZoneUser zoneUser =  zoneUserService.getZoneUser(userDetailsDto.getId(), regCenters.get(0).getZoneCode());
+			if(zoneUser == null) {
+				throw new MasterDataServiceException(UserDetailsErrorCode.ZONE_USER_MAPPING_ERROR.getErrorCode(),
+						UserDetailsErrorCode.ZONE_USER_MAPPING_ERROR.getErrorMessage());
+			}*/
+
 			userDetailsDto = masterdataCreationUtil.createMasterData(UserDetails.class, userDetailsDto);
 			ud = MetaDataUtils.setCreateMetaData(userDetailsDto, UserDetails.class);
-			List<RegistrationCenter> regCenters = registrationCenterService
-					.getRegistrationCentersByID(userDetailsDto.getRegCenterId()); // Throws exception if not found
-			validateZoneUserMapping(regCenters,userDetailsDto.getLangCode(),userDetailsDto.getId());
+			ud.setIsActive(true);
+
 			userDetailsRepository.create(ud);
+
 			UserDetailsHistory udh = new UserDetailsHistory();
 				MapperUtils.map(ud, udh);
 				MapperUtils.setBaseFieldValue(ud, udh);
 				udh.setIsActive(true);
-				udh.setIsDeleted(false);
 				udh.setCreatedBy(MetaDataUtils.getContextUser());
 				udh.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
 				userDetailsHistoryService.createUserDetailsHistory(udh);
@@ -274,92 +298,53 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			UserDetailsErrorCode.USER_CREATION_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 
-		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
-		MapperUtils.map(ud, idAndLanguageCodeID);
+		UserDetailsGetExtnDto userDetailsGetExtnDto = new UserDetailsGetExtnDto();
+		MapperUtils.map(ud, userDetailsGetExtnDto);
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_CREATE, UserDetails.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
-				UserDetails.class.getSimpleName(), idAndLanguageCodeID.getId()));
-		return idAndLanguageCodeID;
+				UserDetails.class.getSimpleName(), userDetailsGetExtnDto.getId()));
+		return userDetailsGetExtnDto;
 	}
 
-	/**
-	 * Validates zone user mapping
-	 * if mapping not exists, creates new mapping
-	 * if mapping is not-active, throws error
-	 * @param regCenters
-	 * @param langCode
-	 * @param id
-	 */
-	private void validateZoneUserMapping(List<RegistrationCenter> regCenters, String langCode, String id) {
-		RegistrationCenter requiredRegCenter = regCenters.stream()
-				.filter(lc -> lc.getLangCode().equalsIgnoreCase(langCode)).collect(Collectors.toList()).get(0);
-		if (requiredRegCenter == null) {
-			auditUtil.auditRequest(
-					String.format(MasterDataConstant.GET_ALL, UserDetails.class.getSimpleName()),
-					MasterDataConstant.AUDIT_SYSTEM,
-					String.format(MasterDataConstant.FAILURE_DESC,
-							UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorCode(),
-							UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorMessage()));
-			throw new MasterDataServiceException(UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorCode(),
-					UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorMessage());
-		}
-		ZoneUser zoneUser =  zoneUserService.getZoneUser(id, langCode, requiredRegCenter.getZoneCode());
-		if(zoneUser == null) {
-			createZoneUserMapping(langCode,requiredRegCenter.getZoneCode(),id);
-		}
-		if(zoneUser != null && !zoneUser.getIsActive()) {
-			auditUtil.auditRequest(
-					String.format(MasterDataConstant.GET_ALL, UserDetails.class.getSimpleName()),
-					MasterDataConstant.AUDIT_SYSTEM,
-					String.format(MasterDataConstant.FAILURE_DESC,
-							UserDetailsErrorCode.ZONE_USER_MAPPING_NOT_ACTIVE.getErrorCode(),
-							UserDetailsErrorCode.ZONE_USER_MAPPING_NOT_ACTIVE.getErrorMessage()));
-			throw new MasterDataServiceException(UserDetailsErrorCode.ZONE_USER_MAPPING_NOT_ACTIVE.getErrorCode(),
-					UserDetailsErrorCode.ZONE_USER_MAPPING_NOT_ACTIVE.getErrorMessage());
-		}
-	}
-
-	/**
-	 * Creates zone user mapping 
-	 * @param langCode
-	 * @param zoneCode
-	 * @param id
-	 */
-	private void createZoneUserMapping(String langCode, String zoneCode, String id) {
-		ZoneUserDto zoneUserDto = new ZoneUserDto();
-		zoneUserDto.setIsActive(true);
-		zoneUserDto.setLangCode(langCode);
-		zoneUserDto.setUserId(id);
-		zoneUserDto.setZoneCode(zoneCode);
-		try {
-			zoneUserService.createZoneUserMapping(zoneUserDto);
-		} catch (Exception e) {
-			auditUtil.auditRequest(
-					String.format(MasterDataConstant.CREATE_ERROR_AUDIT, UserDetails.class.getSimpleName()),
-					MasterDataConstant.AUDIT_SYSTEM,
-					String.format(MasterDataConstant.FAILURE_DESC,
-							UserDetailsErrorCode.ZONE_USER_MAPPING_ERROR.getErrorCode(),
-							UserDetailsErrorCode.ZONE_USER_MAPPING_ERROR.getErrorMessage()));
-			throw new MasterDataServiceException(UserDetailsErrorCode.ZONE_USER_MAPPING_ERROR.getErrorCode(),
-					UserDetailsErrorCode.ZONE_USER_MAPPING_ERROR.getErrorMessage() + ExceptionUtils.parseException(e));
-		}
-	}
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
 	public UserDetailsDto updateUser(UserDetailsDto userDetailsDto) {
 		UserDetails ud;
 		try {
+			Optional<UserDetails> result = userDetailsRepository.findById(userDetailsDto.getId());
+			if(!result.isPresent())
+				throw new MasterDataServiceException(UserDetailsErrorCode.USER_NOT_FOUND.getErrorCode(),
+						UserDetailsErrorCode.USER_NOT_FOUND.getErrorMessage());
+
+			List<RegistrationCenter> regCenters = registrationCenterService.getRegistrationCentersByID(userDetailsDto.getRegCenterId()); //Throws exception if not found
+
+			if(regCenters == null || regCenters.isEmpty()) {
+				auditUtil.auditRequest(
+						String.format(MasterDataConstant.GET_ALL, UserDetails.class.getSimpleName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,
+								UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorCode(),
+								UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorMessage()));
+				throw new MasterDataServiceException(UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorCode(),
+						UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorMessage());
+			}
+			//Zone user mapping should be handled in zoneuser API, here we only validate mapping
+			//Commenting this it cannot be directly validated, as user could belong to parent zone
+			/*ZoneUser zoneUser =  zoneUserService.getZoneUser(userDetailsDto.getId(), regCenters.get(0).getZoneCode());
+			if(zoneUser == null) {
+				throw new MasterDataServiceException(UserDetailsErrorCode.ZONE_USER_MAPPING_ERROR.getErrorCode(),
+						UserDetailsErrorCode.ZONE_USER_MAPPING_ERROR.getErrorMessage());
+			}*/
+
 			userDetailsDto = masterdataCreationUtil.updateMasterData(UserDetails.class, userDetailsDto);
 			ud = MetaDataUtils.setCreateMetaData(userDetailsDto, UserDetails.class);
-			List<RegistrationCenter> regCenters = registrationCenterService.getRegistrationCentersByID(userDetailsDto.getRegCenterId()); //Throws exception if not found
-			validateZoneUserMapping(regCenters,userDetailsDto.getLangCode(),userDetailsDto.getId());
+			ud.setIsActive(userDetailsDto.getIsActive());
+
 			userDetailsRepository.update(ud);
 			UserDetailsHistory udh = new UserDetailsHistory();
 			MapperUtils.map(ud, udh);
 			MapperUtils.setBaseFieldValue(ud, udh);
-			udh.setIsActive(true);
-			udh.setIsDeleted(false);
 			udh.setCreatedBy(MetaDataUtils.getContextUser());
 			udh.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
 			userDetailsHistoryService.createUserDetailsHistory(udh);
@@ -381,7 +366,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		return userDetailsDto;
 	}
 
-	
+	/*
 	private UserDetailsDto getDto(UserDetails ud){
 		UserDetailsDto udDto = new UserDetailsDto();
 		udDto.setId(ud.getId());
@@ -389,7 +374,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		udDto.setIsActive(ud.getIsActive());
 		udDto.setLangCode(ud.getLangCode());
 		return udDto;
-	}
+	}*/
 
 	/**
 	 * 

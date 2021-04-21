@@ -61,21 +61,21 @@ public class ZoneServiceTest {
 	
 	@Test
 	public void getZoneUserTest() {
-		Mockito.when(zoneUserRepo.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),Mockito.anyString(),Mockito.anyString())).thenReturn(zoneUser);
-		ZoneUser response = zoneUserService.getZoneUser("110124", "eng", "NTH");
+		Mockito.when(zoneUserRepo.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),Mockito.anyString())).thenReturn(zoneUser);
+		ZoneUser response = zoneUserService.getZoneUser("110124",  "NTH");
 		assertEquals("eng", response.getLangCode());
 	}
 	
 	@Test
 	public void getZoneUserTest_01() {
-		Mockito.when(zoneUserRepo.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),Mockito.anyString(),Mockito.anyString())).thenReturn(null);
-		ZoneUser response = zoneUserService.getZoneUser("110124", "eng", "NTH");
+		Mockito.when(zoneUserRepo.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),Mockito.anyString())).thenReturn(null);
+		ZoneUser response = zoneUserService.getZoneUser("110124", "NTH");
 		assertEquals(null, response);
 	}
 	
 	@Test
 	public void zoneUserMappingTest() {
-		Mockito.when(zoneUserRepo.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),Mockito.anyString(),Mockito.anyString())).thenReturn(null);
+		Mockito.when(zoneUserRepo.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),Mockito.anyString())).thenReturn(null);
 		Mockito.when(zoneUserRepo.findByUserId(Mockito.anyString())).thenReturn(zoneUser);
 		
 		ZoneUserDto request = new ZoneUserDto();
