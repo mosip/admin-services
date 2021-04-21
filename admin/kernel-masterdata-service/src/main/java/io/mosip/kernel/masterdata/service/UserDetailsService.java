@@ -85,7 +85,7 @@ public interface UserDetailsService {
 	 * @return IdAndLanguageCodeID updated user id and language code.
 	 * 
 	 */
-	public IdAndLanguageCodeID createUser(UserDetailsDto userDetailsDto);
+	public UserDetailsGetExtnDto createUser(UserDetailsDto userDetailsDto);
 
 	/**
 	 * Abstract method to update User Details to the database

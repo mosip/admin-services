@@ -18,9 +18,6 @@ public class UserDetailsDto {
 	@StringFormatter(min = 1, max = 36)
 	private String id;
 
-
-	private String langCode;
-
 	@Null
 	@Size(min = 0, max = 28)
 	private String uin;
@@ -47,5 +44,8 @@ public class UserDetailsDto {
 
 	@NotNull
 	private Boolean isActive;
+
+	@Deprecated
+	private String langCode;
 
 }

@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.controller;
 
 import javax.validation.Valid;
 
+import io.mosip.kernel.masterdata.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,10 +19,6 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
-import io.mosip.kernel.masterdata.dto.PageDto;
-import io.mosip.kernel.masterdata.dto.UserDetailsDto;
-import io.mosip.kernel.masterdata.dto.UserDetailsGetExtnDto;
-import io.mosip.kernel.masterdata.dto.UsersDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
@@ -78,80 +75,59 @@ public class UserDetailsController {
 	}
 
 	/**
-	 * Post API to insert a new row of Machine data
+	 * Post API to insert a new row of user
 	 * 
-	 * @param machineRequest input from user Machine DTO
+	 * @param userDetailsDto input from user DTO
 	 * 
 	 * @return Responding with Machine which is inserted successfully
 	 *         {@link ResponseEntity}
 	 */
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
-	@PostMapping("/users/{id}/{lang}/{regcenterid}")
+	@PostMapping("usercentermapping")
 	@ApiOperation(value = "Service to map Users with regcenter", notes = "Maps User Detail and return User id")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When User and Registration center successfully mapped"),
 			@ApiResponse(code = 400, message = "When Request is invalid"),
 			@ApiResponse(code = 404, message = "When No Regcenter found"),
 			@ApiResponse(code = 500, message = "While mapping user to regcenter any error occured") })
-	public ResponseWrapper<IdAndLanguageCodeID> mapUserRegCenter(@PathVariable("id") String userId, 
-			@PathVariable("lang") String langCode,
-	@PathVariable("regcenterid") String regCenterId
-	 ) {
+	public ResponseWrapper<UserDetailsGetExtnDto> mapUserRegCenter(@RequestBody UserDetailsDto userDetailsDto) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + UserDetailsController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.CREATE_API_IS_CALLED + UserDetailsController.class.getCanonicalName());
-		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
-		UserDetailsDto userDetailsDto = new UserDetailsDto();
-		userDetailsDto.setId(userId);
-		userDetailsDto.setIsActive(true);
-		userDetailsDto.setLangCode(langCode);
-		userDetailsDto.setRegCenterId(regCenterId);
-		userDetailsDto.setName(userId);
-		userDetailsDto.setStatusCode("ACT");
+		ResponseWrapper<UserDetailsGetExtnDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(userDetailsService.createUser(userDetailsDto));
 		return responseWrapper;
 	}
 	
 	/**
-	 * Put API to update a  row of Machine data
+	 * Put API to update a  row of user
 	 * 
-	 * @param machineRequest input from user Machine DTO
+	 * @param userDetailsDto input from user DTO
 	 * 
 	 * @return Responding with Machine which is inserted successfully
 	 *         {@link ResponseEntity}
 	 */
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
-	@PutMapping("/users/{id}/{lang}/{regcenterid}")
+	@PutMapping("/usercentermapping")
 	@ApiOperation(value = "Service to map Users with regcenter", notes = "updates User Detail and return User id")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When User and Registration center successfully mapped"),
 			@ApiResponse(code = 400, message = "When Request is invalid"),
 			@ApiResponse(code = 404, message = "When No Regcenter found"),
 			@ApiResponse(code = 500, message = "While mapping user to regcenter any error occured") })
-	public ResponseWrapper<UserDetailsDto> updateUserRegCenter(@PathVariable("id") String userId, 
-			@PathVariable("lang") String langCode,
-	@PathVariable("regcenterid") String regCenterId
-	 ) {
+	public ResponseWrapper<UserDetailsDto> updateUserRegCenter(@RequestBody UserDetailsDto userDetailsDto) {
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + UserDetailsController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.UPDATE_API_IS_CALLED + UserDetailsController.class.getCanonicalName());
 		ResponseWrapper<UserDetailsDto> responseWrapper = new ResponseWrapper<>();
-		UserDetailsDto userDetailsDto = new UserDetailsDto();
-		userDetailsDto.setId(userId);
-		userDetailsDto.setIsActive(true);
-		userDetailsDto.setLangCode(langCode);
-		userDetailsDto.setRegCenterId(regCenterId);
-		userDetailsDto.setName(userId);
-		userDetailsDto.setStatusCode("ACT");
 		responseWrapper.setResponse(userDetailsService.updateUser(userDetailsDto));
 		return responseWrapper;
 	}
 	
 
 	/**
-	 * dalete API to delete a  row of Machine data
-	 * 
-	 * @param machineRequest input from user Machine DTO
+	 * Delete API to delete a  row of user data
+	 *
 	 * 
 	 * @return Responding with Machine which is inserted successfully
 	 *         {@link ResponseEntity}

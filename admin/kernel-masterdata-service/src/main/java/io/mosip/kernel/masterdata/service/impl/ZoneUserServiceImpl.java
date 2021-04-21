@@ -53,7 +53,7 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 	@Autowired
 	ZoneUserRepository zoneUserRepo;
 	
-	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
+	@Value("#{'${mosip.mandatory-languages:}'.concat('${mosip.optional-languages:}')}")
 	private String supportedLang;
 
 	@Autowired
@@ -66,8 +66,8 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 	public ZoneUserExtnDto createZoneUserMapping(ZoneUserDto zoneUserDto) {
 		ZoneUser zu=new ZoneUser();
 		try {
-			if(zoneUserRepo.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
-					zoneUserDto.getUserId(), zoneUserDto.getLangCode(),zoneUserDto.getZoneCode())!=null) {
+			if(zoneUserRepo.findByIdAndIsDeletedFalseOrIsDeletedIsNull(
+					zoneUserDto.getUserId(), zoneUserDto.getZoneCode())!=null) {
 				auditUtil.auditRequest(
 						String.format(MasterDataConstant.FAILURE_CREATE, ZoneUser.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
@@ -90,7 +90,10 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 			}
 			zu.setIsActive(zoneUserDto.getIsActive());
 			zu = MetaDataUtils.setCreateMetaData(zoneUserDto, ZoneUser.class);
-			zoneservice.getZone(zoneUserDto.getZoneCode(),zoneUserDto.getLangCode());//Throws exception if not found
+
+			//Throws exception if not found
+			zoneservice.getZone(zoneUserDto.getZoneCode(), supportedLang.split(",")[0]);
+
 			zu=zoneUserRepo.create(zu);
 			ZoneUserHistory zuh = new ZoneUserHistory();
 			MapperUtils.map(zu, zuh);
@@ -114,13 +117,15 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		ZoneUserExtnDto zoneUserDto1=new ZoneUserExtnDto();
 		return MapperUtils.map(zu, zoneUserDto1);
 	}
+
+
 	@Override
 	public ZoneUserExtnDto updateZoneUserMapping(ZoneUserPutDto zoneUserDto) {
 		ZoneUser zu=new ZoneUser();
 		ZoneUserExtnDto dto=new ZoneUserExtnDto();
 		try {
-			 zu = zoneUserRepo.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
-					zoneUserDto.getUserId(), zoneUserDto.getLangCode(),zoneUserDto.getZoneCode());
+			 zu = zoneUserRepo.findByIdAndIsDeletedFalseOrIsDeletedIsNull(
+					zoneUserDto.getUserId(),zoneUserDto.getZoneCode());
 			 if(zu ==null) {
 				 auditUtil.auditRequest(
 							String.format(MasterDataConstant.FAILURE_UPDATE, ZoneUser.class.getSimpleName()),
@@ -131,9 +136,9 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 					throw new MasterDataServiceException(ZoneUserErrorCode.USER_MAPPING_NOT_PRSENT_IN_DB.getErrorCode(),
 							ZoneUserErrorCode.USER_MAPPING_NOT_PRSENT_IN_DB.getErrorMessage() );		
 			 }
-			 zoneservice.getZone(zoneUserDto.getZoneCode(),zoneUserDto.getLangCode());//Throws exception if not found
-				// zu.setIsActive(getisActive(zoneUserDto.getUserId(),zoneUserDto.getLangCode(),zoneUserDto.getZoneCode(),zoneUserDto.getIsActive()
-				// ));
+
+			//Throws exception if not found
+			zoneservice.getZone(zoneUserDto.getZoneCode(),  supportedLang.split(",")[0]);
 			zu = MetaDataUtils.setUpdateMetaData(zoneUserDto, zu, false);
 			zu=zoneUserRepo.update(zu);
 			ZoneUserHistory zuh = new ZoneUserHistory();
@@ -193,7 +198,7 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		}
 		idResponse.setId(userId);
 		
-			return idResponse;
+		return idResponse;
 	}
 	
 	@Override
@@ -227,8 +232,8 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 	}
 	
 	@Override
-	public ZoneUser getZoneUser(String userId, String langCode, String zoneCode) {
-		return zoneUserRepo.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(userId,langCode,zoneCode);
+	public ZoneUser getZoneUser(String userId, String zoneCode) {
+		return zoneUserRepo.findByIdAndIsDeletedFalseOrIsDeletedIsNull(userId, zoneCode);
 	}
 	
 	@Override

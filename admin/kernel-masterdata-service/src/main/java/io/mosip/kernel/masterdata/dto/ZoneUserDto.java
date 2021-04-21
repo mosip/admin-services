@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.dto;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 import io.mosip.kernel.masterdata.validator.StringFormatter;
 import lombok.Data;
@@ -14,8 +15,7 @@ public class ZoneUserDto {
 	@StringFormatter(min = 1, max = 256)
 	private String userId;
 
-	@NotNull
-	@StringFormatter(min = 1, max = 3)
+	@Deprecated
 	private String langCode;
 	
 	@NotNull

@@ -37,13 +37,13 @@ public class UserDetailsHistory extends BaseEntity implements Serializable {
 	private String id;
 	private LocalDateTime effDTimes;
 
-	@Column(name = "lang_code", nullable = false, length = 3)
+	@Column(name = "lang_code", length = 3)
 	private String langCode;
 
 	@Column(name = "uin", length = 28)
 	private String uin;
 
-	@Column(name = "name", nullable = false, length = 64)
+	@Column(name = "name", length = 64)
 	private String name;
 
 	@Column(name = "email", length = 64)
@@ -52,7 +52,7 @@ public class UserDetailsHistory extends BaseEntity implements Serializable {
 	@Column(name = "mobile", length = 16)
 	private String mobile;
 
-	@Column(name = "status_code", nullable = false, length = 36)
+	@Column(name = "status_code", length = 36)
 	private String statusCode;
 
 	@Column(name = "last_login_dtimes")

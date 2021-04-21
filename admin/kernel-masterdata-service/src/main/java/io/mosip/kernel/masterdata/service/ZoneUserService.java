@@ -25,7 +25,7 @@ public interface ZoneUserService {
 
 	public ZoneUserHistoryResponseDto getHistoryByUserIdAndTimestamp( String userId, String date);
 	
-	public ZoneUser getZoneUser(String userId, String langCode, String zoneCode);
+	public ZoneUser getZoneUser(String userId, String zoneCode);
 	
 	public List<ZoneUser> getZoneUsers(List<String> userIds);
 }
