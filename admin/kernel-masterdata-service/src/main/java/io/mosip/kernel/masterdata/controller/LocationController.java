@@ -346,7 +346,7 @@ public class LocationController {
 	public ResponseWrapper<List<MissingDataDto>> getMissingLocationDetails(
 			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
 		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(genericService.getMissingData(Location.class, langCode, fieldName));
+		responseWrapper.setResponse(genericService.getMissingData(Location.class, langCode, "code", fieldName));
 		return responseWrapper;
 	}
 

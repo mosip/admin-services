@@ -15,14 +15,14 @@ import java.util.List;
 @Service
 public class GenericServiceImpl implements GenericService {
 
-    @Value("#{'${mosip.mandatory-languages:}'.concat('${mosip.optional-languages:}')}")
+    @Value("#{'${mosip.mandatory-languages:}'.concat(',').concat('${mosip.optional-languages:}')}")
     private String supportedLanguages;
 
     @Autowired
     private MasterdataSearchHelper masterdataSearchHelper;
 
     @Override
-    public List<MissingDataDto> getMissingData(Class entity, String langCode, String fieldName) {
+    public List<MissingDataDto> getMissingData(Class entity, String langCode, String idFieldName, String fieldName) {
         List<MissingDataDto> list = new ArrayList<>();
 
         if (!supportedLanguages.contains(langCode)) {
@@ -30,9 +30,9 @@ public class GenericServiceImpl implements GenericService {
                     MasterdataSearchErrorCode.INVALID_LANGCODE.getErrorMessage());
         }
 
-        List<Object[]> resultSet = masterdataSearchHelper.fetchMissingValues(entity, langCode, fieldName);
+        List<Object[]> resultSet = masterdataSearchHelper.fetchMissingValues(entity, langCode, idFieldName, fieldName);
         for(Object[] obj : resultSet) {
-            String identifier = (String)obj[0];
+            String identifier = obj[0] instanceof String ? (String)obj[0] : String.valueOf(obj[0]);
             if(!list.stream().anyMatch(dto -> dto.getId().equals(identifier))) {
                 MissingDataDto dto = new MissingDataDto();
                 dto.setId(identifier);

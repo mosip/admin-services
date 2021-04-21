@@ -275,7 +275,7 @@ public class HolidayController {
 	public ResponseWrapper<List<MissingDataDto>> getMissingHolidayDetails(
 			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
 		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(genericService.getMissingData(Holiday.class, langCode, fieldName));
+		responseWrapper.setResponse(genericService.getMissingData(Holiday.class, langCode, "holidayId", fieldName));
 		return responseWrapper;
 	}
 

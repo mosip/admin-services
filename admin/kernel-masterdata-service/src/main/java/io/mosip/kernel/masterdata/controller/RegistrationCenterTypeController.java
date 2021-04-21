@@ -239,7 +239,7 @@ public class RegistrationCenterTypeController {
 	public ResponseWrapper<List<MissingDataDto>> getMissingRegistrationCentersTypesDetails(
 			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
 		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(genericService.getMissingData(RegistrationCenterType.class, langCode, fieldName));
+		responseWrapper.setResponse(genericService.getMissingData(RegistrationCenterType.class, langCode, "code", fieldName));
 		return responseWrapper;
 	}
 }

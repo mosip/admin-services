@@ -46,11 +46,13 @@ public class RegistrationCenterType extends BaseEntity implements Serializable {
 	/**
 	 * The code of the registration center type.
 	 */
+	@Column(name = "code", length = 36)
 	private String code;
 
 	/**
 	 * The language code of the registration center type.
 	 */
+	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
 
 	/**
