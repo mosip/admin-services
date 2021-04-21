@@ -302,12 +302,14 @@ public class SyncDataController {
 	@GetMapping(value = "/latestidschema", produces = "application/json")
 	public ResponseWrapper<IdSchemaDto> getLatestPublishedIdSchema(
 			@RequestParam(value = "lastupdated", required = false) String lastUpdated,
-			@RequestParam(value = "schemaVersion", defaultValue = "0", required = false) double schemaVersion) {
+			@RequestParam(value = "schemaVersion", defaultValue = "0", required = false) double schemaVersion,
+			@RequestParam(name = "domain", required = false) String domain,
+			@RequestParam(name = "type", required = false) String type) {
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		
 		ResponseWrapper<IdSchemaDto> response = new ResponseWrapper<>();
-		response.setResponse(masterDataService.getLatestPublishedIdSchema(timestamp, schemaVersion));
+		response.setResponse(masterDataService.getLatestPublishedIdSchema(timestamp, schemaVersion, domain, type));
 		return response;
 	}
 
