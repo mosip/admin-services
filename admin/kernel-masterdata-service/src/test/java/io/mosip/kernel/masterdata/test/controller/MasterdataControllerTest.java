@@ -974,7 +974,7 @@ public class MasterdataControllerTest {
 				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
 		mockMvc.perform(MockMvcRequestBuilders.put("/locations").contentType(MediaType.APPLICATION_JSON)
 				.content(LOCATION_JSON_EXPECTED_POST))
-				.andExpect(MockMvcResultMatchers.status().isOk());
+				.andExpect(MockMvcResultMatchers.status().is5xxServerError());
 	}
 
 	@Test

@@ -241,7 +241,7 @@ public class LocationControllerIntegrationTest {
 		
 		when(repo.findLocationHierarchyByParentLocCodeAndLanguageCode(Mockito.any(), Mockito.any())).thenReturn(Arrays.asList(location1));
 		mockMvc.perform(put("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
-				.andExpect(status().is4xxClientError());
+				.andExpect(status().is5xxServerError());
 	}
 	
 	@Test
