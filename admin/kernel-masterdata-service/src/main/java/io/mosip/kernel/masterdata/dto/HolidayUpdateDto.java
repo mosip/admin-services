@@ -31,7 +31,7 @@ public class HolidayUpdateDto {
 	private String holidayDesc;
 	
 	@Deprecated
-	private boolean isActive;
+	private Boolean isActive;
 	
 	private String langCode;
 

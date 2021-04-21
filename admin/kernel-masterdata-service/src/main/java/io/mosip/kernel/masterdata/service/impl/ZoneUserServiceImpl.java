@@ -17,9 +17,8 @@ import io.mosip.kernel.masterdata.constant.ZoneUserErrorCode;
 import io.mosip.kernel.masterdata.dto.ZoneUserDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserExtnDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserHistoryResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
-
 import io.mosip.kernel.masterdata.dto.ZoneUserPutDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.ZoneUser;
 import io.mosip.kernel.masterdata.entity.ZoneUserHistory;
@@ -53,7 +52,7 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 	@Autowired
 	ZoneUserRepository zoneUserRepo;
 	
-	@Value("#{'${mosip.mandatory-languages:}'.concat('${mosip.optional-languages:}')}")
+	@Value("#{'${mosip.mandatory-languages:}'.concat(',').concat('${mosip.optional-languages:}')}")
 	private String supportedLang;
 
 	@Autowired

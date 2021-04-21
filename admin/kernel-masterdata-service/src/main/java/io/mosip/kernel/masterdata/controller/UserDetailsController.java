@@ -2,12 +2,12 @@ package io.mosip.kernel.masterdata.controller;
 
 import javax.validation.Valid;
 
-import io.mosip.kernel.masterdata.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,11 +19,16 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.dto.PageDto;
+import io.mosip.kernel.masterdata.dto.UserDetailsDto;
+import io.mosip.kernel.masterdata.dto.UserDetailsGetExtnDto;
+import io.mosip.kernel.masterdata.dto.UserDetailsPutDto;
+import io.mosip.kernel.masterdata.dto.UsersDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.UserDetailsService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
@@ -115,15 +120,30 @@ public class UserDetailsController {
 			@ApiResponse(code = 400, message = "When Request is invalid"),
 			@ApiResponse(code = 404, message = "When No Regcenter found"),
 			@ApiResponse(code = 500, message = "While mapping user to regcenter any error occured") })
-	public ResponseWrapper<UserDetailsDto> updateUserRegCenter(@RequestBody UserDetailsDto userDetailsDto) {
+	public ResponseWrapper<UserDetailsPutDto> updateUserRegCenter(@RequestBody UserDetailsPutDto userDetailsDto) {
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + UserDetailsController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.UPDATE_API_IS_CALLED + UserDetailsController.class.getCanonicalName());
-		ResponseWrapper<UserDetailsDto> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<UserDetailsPutDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(userDetailsService.updateUser(userDetailsDto));
 		return responseWrapper;
 	}
 	
+	@ResponseFilter
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PatchMapping(value = "/usercentermapping")
+	public ResponseWrapper<StatusResponseDto> updateUserRegCenterStatus(@Valid @RequestParam boolean isActive,
+			@RequestParam String id) {
+		auditUtil.auditRequest(MasterDataConstant.STATUS_API_IS_CALLED + ZoneUserController.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_API_IS_CALLED + ZoneUserController.class.getCanonicalName());
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(userDetailsService.updateUserStatus(id, isActive));
+		auditUtil.auditRequest(MasterDataConstant.STATUS_UPDATED_SUCCESS + ZoneUserController.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_UPDATED_SUCCESS + ZoneUserController.class.getCanonicalName());
+		return responseWrapper;
+	}
 
 	/**
 	 * Delete API to delete a  row of user data

@@ -76,7 +76,7 @@ public class DevicePutReqDto {
 	private String langCode;
 
 	@Deprecated
-	private boolean isActive;
+	private Boolean isActive;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime validityDateTime;

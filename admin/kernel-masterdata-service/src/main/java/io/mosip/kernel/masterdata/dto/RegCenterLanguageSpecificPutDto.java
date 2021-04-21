@@ -31,9 +31,6 @@ public class RegCenterLanguageSpecificPutDto {
 	@ValidLangCode(message = "Language Code is Invalid")
 	private String langCode;
 
-	@Deprecated
-	private boolean isActive;
-
 	@Size(min = 0, max = 128)
 	private String contactPerson;
 }

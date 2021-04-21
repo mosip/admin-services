@@ -45,8 +45,9 @@ import io.mosip.kernel.masterdata.constant.UserDetailsErrorCode;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsGetExtnDto;
+import io.mosip.kernel.masterdata.dto.UserDetailsPutDto;
 import io.mosip.kernel.masterdata.dto.UsersDto;
-import io.mosip.kernel.masterdata.dto.ZoneUserDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
@@ -55,7 +56,6 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.UserDetails;
 import io.mosip.kernel.masterdata.entity.UserDetailsHistory;
 import io.mosip.kernel.masterdata.entity.ZoneUser;
-import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.ValidationException;
@@ -188,6 +188,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		return mappedUserDetails;
 	}
 
+
+
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
 	public IdResponseDto deleteUser(String id) {
@@ -309,7 +311,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
-	public UserDetailsDto updateUser(UserDetailsDto userDetailsDto) {
+	public UserDetailsPutDto updateUser(UserDetailsPutDto userDetailsDto) {
 		UserDetails ud;
 		try {
 			Optional<UserDetails> result = userDetailsRepository.findById(userDetailsDto.getId());
@@ -339,7 +341,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 			userDetailsDto = masterdataCreationUtil.updateMasterData(UserDetails.class, userDetailsDto);
 			ud = MetaDataUtils.setCreateMetaData(userDetailsDto, UserDetails.class);
-			ud.setIsActive(userDetailsDto.getIsActive());
+			// ud.setIsActive(userDetailsDto.getIsActive());
 
 			userDetailsRepository.update(ud);
 			UserDetailsHistory udh = new UserDetailsHistory();
@@ -366,6 +368,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		return userDetailsDto;
 	}
 
+
+
 	/*
 	private UserDetailsDto getDto(UserDetails ud){
 		UserDetailsDto udDto = new UserDetailsDto();
@@ -379,6 +383,32 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	/**
 	 * 
 	 */
+	
+	@Override
+	public StatusResponseDto updateUserStatus(String id, boolean isActive) {
+		// TODO Auto-generated method stub
+		StatusResponseDto response = new StatusResponseDto();
+		UserDetails ud;
+		try {
+			Optional<UserDetails> result = userDetailsRepository.findById(id);
+			if (result != null && !result.isEmpty()) {
+				masterdataCreationUtil.updateMasterDataStatus(UserDetails.class, id, isActive, "id");
+			} else {
+				throw new MasterDataServiceException(UserDetailsErrorCode.USER_NOT_FOUND.getErrorCode(),
+						UserDetailsErrorCode.USER_NOT_FOUND.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException e) {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, ZoneUser.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC, UserDetailsErrorCode.USER_NOT_FOUND.getErrorCode(),
+							UserDetailsErrorCode.USER_NOT_FOUND.getErrorMessage()),
+					"ADM-836");
+			throw new MasterDataServiceException(UserDetailsErrorCode.USER_NOT_FOUND.getErrorCode(),
+					UserDetailsErrorCode.USER_NOT_FOUND.getErrorMessage());
+		}
+		response.setStatus("Status updated successfully for User");
+		return response;
+	}
 	@Override
 	public UsersDto getUsers(String roleName,int pageStart, int pageFetch,
 			String email, String firstName, String lastName, String userName) {

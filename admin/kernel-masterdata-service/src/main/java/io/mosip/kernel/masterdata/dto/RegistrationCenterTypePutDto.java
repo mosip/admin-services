@@ -33,7 +33,8 @@ public class RegistrationCenterTypePutDto {
 	private String name;
 
 	@Deprecated
-	private boolean isActive;
+	private Boolean isActive;
+
 	/**
 	 * 
 	 * description of the registration center type.

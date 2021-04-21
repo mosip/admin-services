@@ -3,9 +3,7 @@ package io.mosip.kernel.masterdata.dto;
 
 import javax.validation.constraints.NotNull;
 
-
 import io.mosip.kernel.masterdata.validator.StringFormatter;
-import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import lombok.Data;
 
 /**
@@ -25,7 +23,7 @@ public class ValidDocumentDto {
 	@StringFormatter(min = 1, max = 36)
 	private String docCategoryCode;
 
-	@ValidLangCode(message = "Language Code is Invalid")
+	@Deprecated
 	private String langCode;
 
 	@NotNull

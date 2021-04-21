@@ -17,7 +17,7 @@ public class ZoneUserPutDto {
 	private String userId;
 
 	@Deprecated
-	private boolean isActive;
+	private Boolean isActive;
 
 	@Deprecated
 	private String langCode;

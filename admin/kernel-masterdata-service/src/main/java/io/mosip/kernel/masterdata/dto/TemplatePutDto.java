@@ -26,7 +26,7 @@ public class TemplatePutDto {
 	private String description;
 
 	@Deprecated
-	private boolean isActive;
+	private Boolean isActive;
 
 	@NotNull
 	@StringFormatter(min = 1, max = 36)
