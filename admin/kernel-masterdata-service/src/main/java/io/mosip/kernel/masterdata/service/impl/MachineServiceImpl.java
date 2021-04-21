@@ -492,10 +492,10 @@ public class MachineServiceImpl implements MachineService {
 		list.forEach(machineSearchDto -> {
 			machineSpecifications.forEach(s -> {
 				if (s.getId().equals(machineSearchDto.getMachineSpecId())
-						&& s.getLangCode().equals(machineSearchDto.getLangCode())) {
+				) {
 					String typeCode = s.getMachineTypeCode();
 					machineTypes.forEach(mt -> {
-						if (mt.getCode().equals(typeCode) && mt.getLangCode().equals(s.getLangCode())) {
+						if (mt.getCode().equals(typeCode)) {
 							machineSearchDto.setMachineTypeName(mt.getName());
 						}
 					});
