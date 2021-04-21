@@ -500,7 +500,7 @@ public class RegistrationCenterController {
 			@PathVariable("langcode") String langCode,
 			@RequestParam(required = false) String fieldName) {
 		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(genericService.getMissingData(RegistrationCenter.class, langCode, fieldName));
+		responseWrapper.setResponse(genericService.getMissingData(RegistrationCenter.class, langCode, "id",fieldName));
 		return responseWrapper;
 	}
 

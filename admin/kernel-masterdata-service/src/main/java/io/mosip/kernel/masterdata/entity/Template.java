@@ -42,7 +42,9 @@ public class Template extends BaseEntity implements Serializable {
 	@Id
 	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
 			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
+	@Column(name = "id", nullable = false, length = 36)
 	private String id;
+	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
 
 	@Column(name = "name", nullable = false, length = 128)

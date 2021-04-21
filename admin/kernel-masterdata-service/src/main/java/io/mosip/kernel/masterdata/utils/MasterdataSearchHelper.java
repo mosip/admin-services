@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.utils;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,12 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
@@ -253,7 +249,7 @@ public class MasterdataSearchHelper {
 	 * @param selectQuery criteria select query
 	 * @param countQuery  criteria count query
 	 * @param filters     list of {@link SearchFilter}
-	 * @param langCode    language code if applicable
+	 * @param optionalFilters    list of {@link SearchFilter}
 	 */
 	private <E> void filterQueryWithoutLang(CriteriaBuilder builder, Root<E> root, CriteriaQuery<E> selectQuery,
 			CriteriaQuery<Long> countQuery, List<SearchFilter> filters, OptionalFilter[] optionalFilters) {
@@ -710,13 +706,14 @@ public class MasterdataSearchHelper {
 
 	}
 
-	public <E> List<Object[]> fetchMissingValues(Class<E> entity, @NonNull String langCode, String fieldName) {
+	public <E> List<Object[]> fetchMissingValues(@NonNull Class<E> entity, @NonNull String langCode,
+												 @NonNull String idFieldName, String fieldName) {
 		String tableName = entity.getAnnotation(Table.class).name();
 		String schemaName = entity.getAnnotation(Table.class).schema();
-		String colName = getColumnName(entity, "id") == null ? getColumnName(entity, "code") : "id";
+		String colName = getColumnName(entity, idFieldName);
 		if(colName == null)
 			throw new MasterDataServiceException(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
-					ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage());
+					String.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage(), idFieldName));
 
 		String nativeQuery = MISSING_IDS_QUERY.replaceAll("ID", colName).replaceAll("TABLE",
 				String.format("%s.%s", schemaName, tableName));
@@ -725,7 +722,7 @@ public class MasterdataSearchHelper {
 			String columnName = getColumnName(entity, fieldName);
 			if(columnName == null)
 				throw new MasterDataServiceException(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
-						ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage());
+						String.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage(), fieldName));
 			nativeQuery = MISSING_IDS_QUERY_WITH_FIELDNAME.replaceAll("ID", colName).replaceAll("TABLE",
 					String.format("%s.%s", schemaName, tableName)).replaceAll("FIELD", columnName);
 		}
@@ -745,10 +742,13 @@ public class MasterdataSearchHelper {
 		}
 	}
 
-	private String getColumnName(Class entity, String fieldName) {
+	private String  getColumnName(Class entity, String fieldName) {
 		String columnName = null;
 		try {
-			columnName = entity.getDeclaredField(fieldName).getName();
+			Column column = entity.getDeclaredField(fieldName).getAnnotation(Column.class);
+			if(column != null)
+				return column.name();
+
 		} catch (NoSuchFieldException e) {
 		}
 		return columnName;

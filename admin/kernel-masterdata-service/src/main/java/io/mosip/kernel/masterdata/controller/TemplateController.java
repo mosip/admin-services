@@ -319,7 +319,7 @@ public class TemplateController {
 	public ResponseWrapper<List<MissingDataDto>> getMissingTemplateDetails(
 			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
 		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(genericService.getMissingData(Template.class, langCode, fieldName));
+		responseWrapper.setResponse(genericService.getMissingData(Template.class, langCode, "id", fieldName));
 		return responseWrapper;
 	}
 }
