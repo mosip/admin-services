@@ -48,9 +48,11 @@ import io.mosip.kernel.masterdata.dto.UserDetailsGetExtnDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsPutDto;
 import io.mosip.kernel.masterdata.dto.UsersDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.UserDetails;
@@ -72,7 +74,9 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.OptionalFilter;
 import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
  * @author Sidhant Agarwal
@@ -97,6 +101,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Autowired
 	private MasterdataSearchHelper masterDataSearchHelper;
 	
+	@Autowired
+	private FilterTypeValidator filterValidator;
+
 	@Autowired
 	private PageUtils pageUtils;
 	
@@ -505,13 +512,21 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 
 	@Override
-	public PageResponseDto<UserDetailsExtnDto> searchUserDetails(SearchDto searchDto) {
+	public PageResponseDto<UserDetailsExtnDto> searchUserDetails(SearchDto dto) {
 		PageResponseDto<UserDetailsExtnDto> pageDto = new PageResponseDto<>();
-		List<UserDetailsExtnDto> userDetails = null;		
-		Page<UserDetails> page = masterDataSearchHelper.searchMasterdata(UserDetails.class, searchDto,null);
-		if (page.getContent() != null && !page.getContent().isEmpty()) {
-			userDetails = MapperUtils.mapAll(page.getContent(), UserDetailsExtnDto.class);
-			pageDto = pageUtils.sortPage(getZonesForUsers(userDetails), searchDto.getSort(), searchDto.getPagination());
+		List<UserDetailsExtnDto> userDetails = null;
+		List<SearchFilter> addList = new ArrayList<>();
+		if (filterValidator.validate(MachineTypeExtnDto.class, dto.getFilters())) {
+			pageUtils.validateSortField(UserDetails.class, dto.getSort());
+			OptionalFilter optionalFilter = new OptionalFilter(addList);
+			Page<UserDetails> page = masterDataSearchHelper.searchMasterdata(UserDetails.class, dto,
+					new OptionalFilter[] { optionalFilter });
+
+			if (page.getContent() != null && !page.getContent().isEmpty()) {
+				pageDto = PageUtils.pageResponse(page);
+				userDetails = MapperUtils.mapAll(page.getContent(), UserDetailsExtnDto.class);
+				pageDto.setData(userDetails);
+			}
 		}
 		return pageDto;
 	}
