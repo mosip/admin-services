@@ -27,6 +27,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.orm.hibernate5.HibernateObjectRetrievalFailureException;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -3041,28 +3042,59 @@ public class MasterDataServiceTest {
 	}
 	
 	@Test
+	@WithUserDetails("reg-officer")
+	public void updateAllDynamicFieldStatusSuccessTest() {
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Dynamic Fields");
+
+		when(dynamicFieldRepository.updateAllDynamicFieldIsActive(Mockito.anyString(), Mockito.anyBoolean(),
+				Mockito.any(), Mockito.anyString())).thenReturn(1);
+		StatusResponseDto actual = dynamicFieldService.updateDynamicFieldStatus("abc", false);
+		assertEquals(dto, actual);
+	}
+
+	@Test
+	@WithUserDetails("reg-officer")
 	public void updateDynamicFieldStatusSuccessTest() {
 		StatusResponseDto dto = new StatusResponseDto();
 		dto.setStatus("Status updated successfully for Dynamic Fields");
 
-		when(dynamicFieldRepository.findToUpdateDynamicFieldById(Mockito.anyString())).thenReturn(dynamicFields);
-		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(DynamicField.class), Mockito.anyString(),
-				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
-		StatusResponseDto actual = dynamicFieldService.updateDynamicField("abc", false);
+		when(dynamicFieldRepository.updateDynamicFieldIsActive(Mockito.anyString(), Mockito.anyBoolean(),
+				Mockito.any(), Mockito.anyString())).thenReturn(1);
+		StatusResponseDto actual = dynamicFieldService.updateDynamicFieldValueStatus("abc", false);
 		assertEquals(dto, actual);
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void updateDynamicFieldStatusFailureTest() {
-		when(dynamicFieldRepository.findToUpdateDynamicFieldById(Mockito.anyString()))
-				.thenThrow(MasterDataServiceException.class);
-		dynamicFieldService.updateDynamicField("abc", false);
+	@WithUserDetails("reg-officer")
+	public void updateAllDynamicFieldStatusFailureTest() {
+		when(dynamicFieldRepository.updateAllDynamicFieldIsActive(Mockito.anyString(), Mockito.anyBoolean(),
+				Mockito.any(), Mockito.anyString())).thenThrow(MasterDataServiceException.class);
+		dynamicFieldService.updateDynamicFieldStatus("abc", false);
 	}
 
 	@Test(expected = DataNotFoundException.class)
+	@WithUserDetails("reg-officer")
+	public void updateAllDynamicFieldStatusFailureDataNotFoundTest() {
+		when(dynamicFieldRepository.updateAllDynamicFieldIsActive(Mockito.anyString(), Mockito.anyBoolean(),
+				Mockito.any(), Mockito.anyString())).thenReturn(0);
+		dynamicFieldService.updateDynamicFieldStatus("abc", false);
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	@WithUserDetails("reg-officer")
+	public void updateDynamicFieldStatusFailureTest() {
+		when(dynamicFieldRepository.updateDynamicFieldIsActive(Mockito.anyString(), Mockito.anyBoolean(),
+				Mockito.any(), Mockito.anyString())).thenThrow(MasterDataServiceException.class);
+		dynamicFieldService.updateDynamicFieldValueStatus("abc", false);
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	@WithUserDetails("reg-officer")
 	public void updateDynamicFieldStatusFailureDataNotFoundTest() {
-		when(dynamicFieldRepository.findToUpdateDynamicFieldById(Mockito.anyString())).thenReturn(null);
-		dynamicFieldService.updateDynamicField("abc", false);
+		when(dynamicFieldRepository.updateDynamicFieldIsActive(Mockito.anyString(), Mockito.anyBoolean(),
+				Mockito.any(), Mockito.anyString())).thenReturn(0);
+		dynamicFieldService.updateDynamicFieldValueStatus("abc", false);
 	}
 
 }

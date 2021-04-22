@@ -120,11 +120,10 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 
 	@Override
 	public ZoneUserExtnDto updateZoneUserMapping(ZoneUserPutDto zoneUserDto) {
-		ZoneUser zu=new ZoneUser();
+		ZoneUser zu= null;
 		ZoneUserExtnDto dto=new ZoneUserExtnDto();
 		try {
-			 zu = zoneUserRepo.findByIdAndIsDeletedFalseOrIsDeletedIsNull(
-					zoneUserDto.getUserId(),zoneUserDto.getZoneCode());
+			 zu = zoneUserRepo.findZoneByUserIdActiveAndNonDeleted(zoneUserDto.getUserId());
 			 if(zu ==null) {
 				 auditUtil.auditRequest(
 							String.format(MasterDataConstant.FAILURE_UPDATE, ZoneUser.class.getSimpleName()),
@@ -134,6 +133,9 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 									ZoneUserErrorCode.USER_MAPPING_NOT_PRSENT_IN_DB.getErrorMessage()));
 					throw new MasterDataServiceException(ZoneUserErrorCode.USER_MAPPING_NOT_PRSENT_IN_DB.getErrorCode(),
 							ZoneUserErrorCode.USER_MAPPING_NOT_PRSENT_IN_DB.getErrorMessage() );		
+			 }
+			 else {
+				 deleteZoneUserMapping(zu.getUserId(), zu.getZoneCode());
 			 }
 
 			//Throws exception if not found

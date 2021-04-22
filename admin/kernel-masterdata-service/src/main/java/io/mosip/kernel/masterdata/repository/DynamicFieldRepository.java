@@ -50,26 +50,6 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 	 */
 	@Query("FROM DynamicField WHERE (isDeleted is null OR isDeleted = false) and id=?1")
 	DynamicField findDynamicFieldById(String id);
-
-	@Query("FROM DynamicField WHERE (isDeleted is null OR isDeleted = false) and id=?1")
-	List<DynamicField> findToUpdateDynamicFieldById(String id);
-	
-	/**
-	 *  Get dynamic field based on id and langCode
-	 * @param id
-	 * @param langCode
-	 * @return
-	 */
-	@Query("FROM DynamicField WHERE (isDeleted is null OR isDeleted = false) and id=?1 and langCode=?2")
-	DynamicField findDynamicFieldByIdAndLangCode(String id, String langCode);
-	
-	/**
-	 * 
-	 * @param fieldName
-	 * @return
-	 */
-	@Query("FROM DynamicField WHERE lower(name)=lower(?1)")
-	List<DynamicField> findAllDynamicFieldByName(String fieldName);
 	
 	/**
 	 * 
@@ -78,33 +58,37 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 	 * @return
 	 */
 	@Query("FROM DynamicField WHERE lower(name)=lower(?1) and langCode=?2")
-	DynamicField findDynamicFieldByNameAndLangCode(String fieldName, String langCode);
-	
+	List<DynamicField> findAllDynamicFieldByNameAndLangCode(String fieldName, String langCode);
+
 	/**
-	 *  Update all the fields of dynamic field except name
-	 *  
-	 * @param id
-	 * @param description
-	 * @param langCode
-	 * @param dataType
-	 * @param isActive
-	 * @param updatedDateTime
-	 * @param updatedBy
+	 *
+	 * @param fieldName
 	 * @return
 	 */
-	@Modifying
-	@Query("UPDATE DynamicField SET description=?2, langCode=?3, dataType=?4 , updatedDateTime=?5, updatedBy=?6"
-			+ " WHERE (isDeleted is null OR isDeleted = false) and id=?1")
-	int updateDynamicField(String id, String description, String langCode, String dataType,
-			LocalDateTime updatedDateTime, String updatedBy);
+	@Query("FROM DynamicField WHERE lower(name)=lower(?1)")
+	List<DynamicField> findAllDynamicFieldByName(String fieldName);
 
 	/**
 	 * Update all the fields of dynamic field except name
-	 * 
 	 * @param id
 	 * @param description
 	 * @param langCode
 	 * @param dataType
+	 * @param updatedDateTime
+	 * @param updatedBy
+	 * @param fieldVal
+	 * @return
+	 */
+	@Modifying
+	@Query("UPDATE DynamicField SET description=?2, langCode=?3, dataType=?4 , updatedDateTime=?5, updatedBy=?6, valueJson=?7"
+			+ " WHERE (isDeleted is null OR isDeleted = false) and id=?1")
+	int updateDynamicField(String id, String description, String langCode, String dataType,
+			LocalDateTime updatedDateTime, String updatedBy, String fieldVal);
+
+	/**
+	 * Update status of dynamic field of particular name
+	 *
+	 * @param name
 	 * @param isActive
 	 * @param updatedDateTime
 	 * @param updatedBy
@@ -113,7 +97,12 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 	@Modifying
 	@Query("UPDATE DynamicField SET isActive=?2 , updatedDateTime=?3, updatedBy=?4"
 			+ " WHERE (isDeleted is null OR isDeleted = false) and name=?1")
-	int updateDynamicFieldIsActive(String name, boolean isActive, LocalDateTime updatedDateTime, String updatedBy);
+	int updateAllDynamicFieldIsActive(String name, boolean isActive, LocalDateTime updatedDateTime, String updatedBy);
+
+	@Modifying
+	@Query("UPDATE DynamicField SET isActive=?2 , updatedDateTime=?3, updatedBy=?4"
+			+ " WHERE (isDeleted is null OR isDeleted = false) and id=?1")
+	int updateDynamicFieldIsActive(String id, boolean isActive, LocalDateTime updatedDateTime, String updatedBy);
 	
 	/**
 	 * Update dynamic field value specific to a language code
@@ -164,4 +153,28 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 			countQuery="SELECT COUNT(id) FROM master.dynamic_field WHERE ((cr_dtimes BETWEEN ?1 AND ?2) or (upd_dtimes BETWEEN ?1 AND ?2) or (del_dtimes BETWEEN ?1 AND ?2))",
 			nativeQuery= true)
 	Page<DynamicField> findAllLatestDynamicFields(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp, Pageable pageable);
+
+
+	/**
+	 * Get All dynamic fields based on pagination
+	 *
+	 * @param langCode
+	 * @param pageable
+	 * @return
+	 */
+	@Query(value="SELECT DISTINCT name, lang_code FROM master.dynamic_field WHERE lang_code=?1 and ((cr_dtimes BETWEEN ?2 AND ?3) or (upd_dtimes BETWEEN ?2 AND ?3) or (del_dtimes BETWEEN ?2 AND ?3))",
+			countQuery="SELECT SUM(count) as count FROM (SELECT count(id) FROM master.dynamic_field WHERE lang_code=?1 and ((cr_dtimes BETWEEN ?2 AND ?3) or (upd_dtimes BETWEEN ?2 AND ?3) or (del_dtimes BETWEEN ?2 AND ?3)) GROUP BY name, lang_code) dual",
+			nativeQuery = true)
+	Page<Object[]> findAllLatestDynamicFieldNamesByLangCode(String langCode, LocalDateTime lastUpdated,
+															LocalDateTime currentTimeStamp, Pageable pageable);
+
+	/**
+	 * Get All dynamic fields based on pagination
+	 * @param pageable
+	 * @return
+	 */
+	@Query(value="SELECT DISTINCT name, lang_code FROM master.dynamic_field WHERE ((cr_dtimes BETWEEN ?1 AND ?2) or (upd_dtimes BETWEEN ?1 AND ?2) or (del_dtimes BETWEEN ?1 AND ?2))",
+			countQuery="SELECT SUM(count) as count FROM (SELECT count(id) FROM master.dynamic_field WHERE ((cr_dtimes BETWEEN ?1 AND ?2) or (upd_dtimes BETWEEN ?1 AND ?2) or (del_dtimes BETWEEN ?1 AND ?2)) GROUP BY name, lang_code) dual",
+			nativeQuery= true)
+	Page<Object[]> findAllLatestDynamicFieldNames(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp, Pageable pageable);
 }

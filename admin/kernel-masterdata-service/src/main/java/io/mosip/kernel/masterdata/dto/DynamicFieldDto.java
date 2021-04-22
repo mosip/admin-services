@@ -6,12 +6,14 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.json.JSONObject;
 
 
 /**
@@ -43,7 +45,5 @@ public class DynamicFieldDto {
 	@NotBlank
 	private String description;
 	
-	private List<DynamicFieldValueDto> fieldVal;
-	
-	private boolean isActive;
+	private JsonNode fieldVal;
 }
