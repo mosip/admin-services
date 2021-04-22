@@ -5,6 +5,7 @@ import java.time.ZoneOffset;
 
 import javax.validation.Valid;
 
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DynamicFieldExtnDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,14 +53,14 @@ public class DynamicFieldController {
 	@GetMapping
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','INDIVIDUAL','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','Default')")
 	@ApiOperation(value = "Service to fetch all dynamic fields")
-	public ResponseWrapper<PageDto<DynamicFieldResponseDto>> getAllDynamicFields(
+	public ResponseWrapper<PageDto<DynamicFieldExtnDto>> getAllDynamicFields(
 			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page number", defaultValue = "0") int pageNumber,
 			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size", defaultValue = "10") int pageSize,
-			@RequestParam(name = "sortBy", defaultValue = "cr_dtimes") @ApiParam(value = "sort on field name", defaultValue = "cr_dtimes") String sortBy,
+			@RequestParam(name = "sortBy", defaultValue = "name") @ApiParam(value = "sort on field name", defaultValue = "name") String sortBy,
 			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "sort order", defaultValue = "desc") OrderEnum orderBy,
 			@RequestParam(name = "langCode", required = false) @ApiParam(value = "Lang Code", required = false) String langCode,
 			@RequestParam(name = "lastUpdated", required = false) @ApiParam(value = "last updated rows", required = false) String lastUpdated) {
-		ResponseWrapper<PageDto<DynamicFieldResponseDto>> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<PageDto<DynamicFieldExtnDto>> responseWrapper = new ResponseWrapper<>();
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		responseWrapper.setResponse(dynamicFieldService.getAllDynamicField(pageNumber, pageSize, sortBy, orderBy.name(), langCode,
@@ -88,30 +89,38 @@ public class DynamicFieldController {
 		responseWrapper.setResponse(dynamicFieldService.updateDynamicField(id, dynamicFieldDto.getRequest()));
 		return responseWrapper;
 	}
+
 	
 	@ResponseFilter
-	@PutMapping("values")
+	@PatchMapping("/all")
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to update dynamic field")
-	public ResponseWrapper<String> updateFieldValue (
-			@RequestParam(name = "id") @ApiParam(value = "field name") String fieldName,
-			@Valid @RequestBody RequestWrapper<DynamicFieldValueDto> dynamicFieldValueDto) {
-		ResponseWrapper<String> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(dynamicFieldService.updateFieldValue(fieldName, dynamicFieldValueDto.getRequest()));
+	public ResponseWrapper<StatusResponseDto> updateAllDynamicFieldStatus(@RequestParam boolean isActive,
+			@RequestParam String fieldName) {
+		auditUtil.auditRequest(MasterDataConstant.STATUS_API_IS_CALLED + DynamicFieldDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.STATUS_API_IS_CALLED + DynamicFieldDto.class.getCanonicalName(), "ADM-681");
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(dynamicFieldService.updateDynamicFieldStatus(fieldName, isActive));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.STATUS_UPDATED_SUCCESS, DynamicFieldDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.STATUS_UPDATED_SUCCESS, DynamicFieldDto.class.getCanonicalName()),
+				"ADM-682");
 		return responseWrapper;
 	}
-	
+
 	@ResponseFilter
 	@PatchMapping
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to update dynamic field")
 	public ResponseWrapper<StatusResponseDto> updateDynamicFieldStatus(@RequestParam boolean isActive,
-			@RequestParam String id) {
+																	   @RequestParam String id) {
 		auditUtil.auditRequest(MasterDataConstant.STATUS_API_IS_CALLED + DynamicFieldDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.STATUS_API_IS_CALLED + DynamicFieldDto.class.getCanonicalName(), "ADM-681");
 		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(dynamicFieldService.updateDynamicField(id, isActive));
+		responseWrapper.setResponse(dynamicFieldService.updateDynamicFieldValueStatus(id, isActive));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.STATUS_UPDATED_SUCCESS, DynamicFieldDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,

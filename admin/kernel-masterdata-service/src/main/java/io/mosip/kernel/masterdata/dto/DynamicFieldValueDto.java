@@ -1,22 +1,19 @@
 package io.mosip.kernel.masterdata.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
+import org.json.JSONObject;
 
 @Data
-@EqualsAndHashCode(of = {"code", "langCode"})
 public class DynamicFieldValueDto {
 
 	@NotBlank
-	private String code;
-	
+	private String id;
+
 	@NotBlank
-	private String value;
-	
-	private boolean isActive;
-	
-	@NotBlank
-	private String langCode;
+	private JSONObject fieldVal;
 }

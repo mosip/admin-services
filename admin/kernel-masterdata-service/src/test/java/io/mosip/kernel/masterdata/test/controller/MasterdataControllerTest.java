@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -286,6 +287,9 @@ public class MasterdataControllerTest {
 	
 	@MockBean
 	LocalDateTimeUtil localDateTimeUtil;
+
+	@MockBean
+	DynamicFieldRepository dynamicFieldRepository;
 
 	private ObjectMapper mapper;
 
@@ -1303,11 +1307,27 @@ public class MasterdataControllerTest {
 
 	@Test
 	@WithUserDetails("test")
+	public void updateAllDynamicFieldStatusTest() throws Exception {
+
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Dynamic Fields");
+		Mockito.when(dynamicFieldRepository.updateAllDynamicFieldIsActive(Mockito.anyString(), Mockito.anyBoolean(), Mockito.any(),
+				Mockito.anyString())).thenReturn(1);
+		Mockito.when(dynamicFieldService.updateDynamicFieldStatus(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(dto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/dynamicfields/all").characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("fieldName", "ABC")
+				.param("isActive", "true");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
 	public void updateDynamicFieldStatusTest() throws Exception {
 
 		StatusResponseDto dto = new StatusResponseDto();
 		dto.setStatus("Status updated successfully for Dynamic Fields");
-		Mockito.when(dynamicFieldService.updateDynamicField(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(dto);
+		Mockito.when(dynamicFieldService.updateDynamicFieldValueStatus(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(dto);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/dynamicfields").characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("id", "ABC")

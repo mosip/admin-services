@@ -3,15 +3,18 @@ package io.mosip.kernel.masterdata.dto;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.json.JSONObject;
 
 @Data
 @NoArgsConstructor
@@ -29,9 +32,6 @@ public class DynamicFieldPutDto {
 	@ValidLangCode(message = "Language Code is Invalid")
 	private String langCode;
 
-	@Deprecated
-	private Boolean isActive;
-
 	@NotBlank
 	@ApiModelProperty(notes = "Data Type", example = "string", required = true)
 	@Size(min = 3, max = 20)
@@ -40,6 +40,7 @@ public class DynamicFieldPutDto {
 	@NotBlank
 	private String description;
 
-	private List<DynamicFieldValuePutDto> fieldVal;
+	@NotNull
+	private JsonNode fieldVal;
 
 }

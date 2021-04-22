@@ -154,7 +154,7 @@ public class IdentitySchemaControllerTest {
 	@WithUserDetails("global-admin")
 	public void updateDynamicField() throws Exception {		
 		Mockito.when(dynamicFieldRepository.updateDynamicField(Mockito.anyString(), Mockito.anyString(),  Mockito.anyString(), 
-				Mockito.anyString(), Mockito.any(LocalDateTime.class), Mockito.anyString())).thenReturn(1);
+				Mockito.anyString(), Mockito.any(LocalDateTime.class), Mockito.anyString(), Mockito.anyString())).thenReturn(1);
 		mockMvc.perform(MockMvcRequestBuilders.put("/dynamicfields")
 				.param("id", "1122")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -162,20 +162,7 @@ public class IdentitySchemaControllerTest {
 						"{\"name\": \"bloodType\",\"dataType\":\"simpleType\",\"description\":\"test desc\",\"isActive\":false,\"langCode\":\"eng\"}}"))
 		.andExpect(MockMvcResultMatchers.status().isOk());
 	}
-	
-	@Test
-	@WithUserDetails("global-admin")
-	public void updateDynamicFieldValue() throws Exception {		
-		Mockito.when(dynamicFieldRepository.updateDynamicFieldValue(Mockito.anyString(), Mockito.anyString(),  Mockito.anyString(), 
-				 Mockito.any(LocalDateTime.class),  Mockito.anyString())).thenReturn(1);		
-		mockMvc.perform(MockMvcRequestBuilders.put("/dynamicfields/values")
-				.param("id", "1122")
-				.contentType(MediaType.APPLICATION_JSON)				
-				.content("{\"id\":\"string\",\"version\":\"string\",\"requesttime\":\"2018-12-17T07:15:06.724Z\",\"request\":"
-						+"{\"name\": \"martialStatus\",\"dataType\":\"simpleType\",\"description\":\"test desc\",\"isActive\":false,\"langCode\":\"eng\",\"values\":"
-						+ "[{\"value\":\"married\",\"code\":\"MS1\",\"isActive\":true},{\"value\":\"single\",\"code\":\"MS2\",\"isActive\":true}]"
-						+ "}}")).andExpect(MockMvcResultMatchers.status().isOk());
-	}
+
 	
 	@Test
 	@WithUserDetails("global-admin")

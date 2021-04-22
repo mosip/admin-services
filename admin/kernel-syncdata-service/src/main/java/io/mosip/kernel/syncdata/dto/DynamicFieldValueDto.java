@@ -1,15 +1,15 @@
 package io.mosip.kernel.syncdata.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(of = {"code", "langCode"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DynamicFieldValueDto {
 
 	
 	private String code;	
 	private String value;	
-	private boolean isActive;	
-	private String langCode;
+	private boolean isActive;
 }

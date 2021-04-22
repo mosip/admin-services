@@ -7,6 +7,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -153,18 +154,17 @@ public class SchemaServiceTest {
 		
 		DynamicFieldDto dto = new DynamicFieldDto();
 		dto.setName("bloodType");
-		dto.setActive(true);
 		dto.setDataType("simpleType");
 		dto.setLangCode("eng");
 		
 		dynamicFieldService.createDynamicField(dto);
 	}
 	
-	@Test(expected = RequestException.class)
+	@Test(expected = DataNotFoundException.class)
 	@WithUserDetails("global-admin")
 	public void testUpdateDynamicField() throws Exception {		
 		Mockito.when(dynamicFieldRepository.updateDynamicField(Mockito.anyString(), Mockito.anyString(),  Mockito.anyString(), 
-				Mockito.anyString(), Mockito.any(LocalDateTime.class), Mockito.anyString())).thenReturn(0);
+				Mockito.anyString(), Mockito.any(LocalDateTime.class), Mockito.anyString(), Mockito.anyString())).thenReturn(0);
 		
 		Mockito.when(dynamicFieldRepository.findDynamicFieldById(Mockito.anyString())).thenReturn(bloodTypeField);
 		
@@ -175,38 +175,7 @@ public class SchemaServiceTest {
 		
 		dynamicFieldService.updateDynamicField("1233", dto);
 	}
-	
-	@Test
-	@WithUserDetails("global-admin")
-	public void testUpdateDynamicFieldValue() throws Exception {		
-		Mockito.when(dynamicFieldRepository.updateDynamicFieldValue(Mockito.anyString(), Mockito.anyString(),  Mockito.anyString(), 
-				 Mockito.any(LocalDateTime.class),  Mockito.anyString())).thenReturn(1);
-		
-		Mockito.when(dynamicFieldRepository.findDynamicFieldById(Mockito.anyString())).thenReturn(bloodTypeField);
-		
-		DynamicFieldValueDto dto = new DynamicFieldValueDto();
-		dto.setActive(true);
-		dto.setCode("BT1");
-		dto.setValue("Ove");
-		dto.setLangCode("eng");
-		
-		assertEquals("1233", dynamicFieldService.updateFieldValue("1233", dto));
-	}
-	
-	@Test(expected = RequestException.class)
-	@WithUserDetails("global-admin")
-	public void testUpdateDynamicFieldValueWithFieldNotFound() throws Exception {		
-		Mockito.when(dynamicFieldRepository.updateDynamicFieldValue(Mockito.anyString(), Mockito.anyString(),  Mockito.anyString(), 
-				 Mockito.any(LocalDateTime.class),  Mockito.anyString())).thenReturn(1);
-	
-		DynamicFieldValueDto dto = new DynamicFieldValueDto();
-		dto.setActive(true);
-		dto.setCode("BT1");
-		dto.setValue("Ove");
-		dto.setLangCode("eng");
-		
-		assertEquals("1233", dynamicFieldService.updateFieldValue("1233", dto));
-	}
+
 	
 	@Test
 	@WithUserDetails("reg-officer")

@@ -5,10 +5,17 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DynamicFieldExtnDto;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,11 +74,9 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	 * io.mosip.kernel.masterdata.service.DynamicFieldService#getAllDynamicField()
 	 */
 	@Override
-	public PageDto<DynamicFieldResponseDto> getAllDynamicField(int pageNumber, int pageSize, String sortBy, String orderBy, String langCode,
+	public PageDto<DynamicFieldExtnDto> getAllDynamicField(int pageNumber, int pageSize, String sortBy, String orderBy, String langCode,
 															   LocalDateTime lastUpdated, LocalDateTime currentTimestamp) {
-		List<DynamicFieldResponseDto> list = new ArrayList<>();		
-		PageDto<DynamicFieldResponseDto> pagedFields = new PageDto<>(pageNumber, 0, 0, list);
-		Page<DynamicField> pagedResult = null;
+		Page<Object[]> pagedResult = null;
 
 		if (lastUpdated == null) {
 			lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -79,18 +84,33 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		try {
 			
 			PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy));			
-			pagedResult = langCode == null ? dynamicFieldRepository.findAllLatestDynamicFields(lastUpdated, currentTimestamp, pageRequest) :
-				dynamicFieldRepository.findAllLatestDynamicFieldsByLangCode(langCode,lastUpdated, currentTimestamp, pageRequest);
+			pagedResult = langCode == null ? dynamicFieldRepository.findAllLatestDynamicFieldNames(lastUpdated, currentTimestamp, pageRequest) :
+				dynamicFieldRepository.findAllLatestDynamicFieldNamesByLangCode(langCode,lastUpdated, currentTimestamp, pageRequest);
 			
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorCode(),
 					SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
 		}
-		
+
+		List<DynamicFieldExtnDto> list = new ArrayList<>();
+		PageDto<DynamicFieldExtnDto> pagedFields = new PageDto<>(pageNumber, 0, 0, list);
+
 		if(pagedResult != null && pagedResult.getContent() != null) {
-			pagedResult.getContent().forEach(entity -> {
-				list.add(getDynamicFieldDto(entity));
+			pagedResult.getContent().forEach( result -> {
+
+				String fieldName = (String) result[0];
+				String lang = (String) result[1];
+
+				List<DynamicField> fields = dynamicFieldRepository.findAllDynamicFieldByName(fieldName);
+
+				if(fields != null && !fields.isEmpty()) {
+					Map<String, List<DynamicField>> groupedValues = fields
+							.stream()
+							.collect(Collectors.groupingBy(DynamicField::getLangCode));
+
+					list.add(getDynamicFieldDto(groupedValues.get(lang)));
+				}
 			});
 			
 			pagedFields.setPageNo(pagedResult.getNumber());
@@ -108,13 +128,13 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	 */
 	@Override
 	@Transactional
-	public DynamicFieldResponseDto createDynamicField(DynamicFieldDto dto) {		
-		checkIfDynamicFieldExists(dto.getName(), dto.getLangCode());		
+	public DynamicFieldResponseDto createDynamicField(DynamicFieldDto dto) {
 		DynamicField entity = MetaDataUtils.setCreateMetaData(dto, DynamicField.class);
-		entity.setIsActive(true);
-		entity.setIsDeleted(false);
 		entity.setId(UUID.randomUUID().toString());
-		entity.setValueJson(getValueJson(dto.getFieldVal()));
+
+		if(dto.getFieldVal() != null)
+			entity.setValueJson(dto.getFieldVal().toString());
+
 		try {
 			entity = dynamicFieldRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
@@ -136,15 +156,14 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		DynamicField entity = null;
 		try {
 			int updatedRows = dynamicFieldRepository.updateDynamicField(id, dto.getDescription(), dto.getLangCode(), 
-					dto.getDataType(), MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser());
+					dto.getDataType(), MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser(),
+					dto.getFieldVal() != null ? dto.getFieldVal().toString() : "{}");
 			
 			if (updatedRows < 1) {
-				throw new RequestException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
+				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
-			// dynamicFieldRepository.updateDynamicFieldIsActive(dto.getName(),
-			// MetaDataUtils.getCurrentDateTime(),
-			// MetaDataUtils.getContextUser());
+
 			entity = dynamicFieldRepository.findDynamicFieldById(id);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_UPDATE_EXCEPTION.getErrorCode(),
@@ -153,68 +172,51 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		return getDynamicFieldDto(entity);
 	}
 
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.kernel.masterdata.service.DynamicFieldService#updateFieldValue()
-	 */
+
 	@Override
 	@Transactional
-	public String updateFieldValue(String fieldId, DynamicFieldValueDto dto) {		
-		DynamicField entity = null;
+	public StatusResponseDto updateDynamicFieldStatus(String fieldName, boolean isActive) {
+		StatusResponseDto response = new StatusResponseDto();
 		try {
-			entity = dynamicFieldRepository.findDynamicFieldById(fieldId);
-			if(entity == null)
-				throw new RequestException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
-						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
-			
-			String fieldVal = getFieldValue(entity.getValueJson(), dto);
-			
-			int updatedRows = dynamicFieldRepository.updateDynamicFieldValue(fieldId, fieldVal, dto.getLangCode(), 
+			int updatedRows = dynamicFieldRepository.updateAllDynamicFieldIsActive(fieldName, isActive,
 					MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser());
-			
+
 			if (updatedRows < 1) {
-				throw new RequestException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
+				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
-			
-		} catch (DataAccessLayerException | DataAccessException | JsonProcessingException e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_UPDATE_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
-		return fieldId;		
-	}
-	
-	private String getValueJson(List<DynamicFieldValueDto> fieldValues) {
-		String valueJson = "[]";
-		try {
-			if(fieldValues == null)
-				return valueJson;
-			
-			for(DynamicFieldValueDto valueDto : fieldValues) {
-				valueJson = getFieldValue(valueJson, valueDto);
-			}
-		} catch(JsonProcessingException e) {
-			LOGGER.error("Failed to parse field value passed : ", e);
-		}
-		return valueJson;
+		response.setStatus("Status updated successfully for Dynamic Fields");
+		return response;
 	}
 
-		
-	private void checkIfDynamicFieldExists(String fieldName, String langCode) {
-		DynamicField dynamicField = dynamicFieldRepository.findDynamicFieldByNameAndLangCode(fieldName, langCode);
-		
-		if(dynamicField != null) {
-			throw new RequestException(SchemaErrorCode.DYNAMIC_FIELD_ALREADY_EXISTS.getErrorCode(),
-					SchemaErrorCode.DYNAMIC_FIELD_ALREADY_EXISTS.getErrorMessage());
-		}		
+	@Override
+	@Transactional
+	public StatusResponseDto updateDynamicFieldValueStatus(String id, boolean isActive) {
+		StatusResponseDto response = new StatusResponseDto();
+		try {
+			int updatedRows = dynamicFieldRepository.updateDynamicFieldIsActive(id, isActive,
+					MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser());
+
+			if (updatedRows < 1) {
+				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
+						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_UPDATE_EXCEPTION.getErrorCode(),
+					ExceptionUtils.parseException(e));
+		}
+		response.setStatus("Status updated successfully for Dynamic Fields");
+		return response;
 	}
-	
+
+
 	private DynamicFieldResponseDto getDynamicFieldDto(DynamicField entity) {
 		DynamicFieldResponseDto dto = new DynamicFieldResponseDto();
-		dto.setActive(entity.getIsActive());
+		dto.setIsActive(entity.getIsActive());
 		dto.setDataType(entity.getDataType());
 		dto.setDescription(entity.getDescription());
 		dto.setId(entity.getId());
@@ -224,79 +226,42 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		dto.setCreatedOn(entity.getCreatedDateTime());
 		dto.setUpdatedBy(entity.getUpdatedBy());
 		dto.setUpdatedOn(entity.getUpdatedDateTime());
-		dto.setFieldVal(convertJsonStringToFieldValueDto(entity.getValueJson()));
+		try {
+			dto.setFieldVal(entity.getValueJson() != null ? objectMapper.readTree(entity.getValueJson()) : null);
+		} catch (IOException e) {
+			LOGGER.error("Failed to parse field value json object : ", e);
+		}
 		return dto;
 	}
-	
-	
-	private List<DynamicFieldValueDto> convertJsonStringToFieldValueDto(String jsonString) {
-		List<DynamicFieldValueDto> valueDtoList = new ArrayList<>();
-		try {
-			valueDtoList = objectMapper.readValue(jsonString == null ? "[]" : jsonString, new TypeReference<List<DynamicFieldValueDto>>() {});
-		} catch (IOException e) {
-			throw new MasterDataServiceException(SchemaErrorCode.VALUE_PARSE_ERROR.getErrorCode(),
-					ExceptionUtils.parseException(e));
-		}
-		return valueDtoList;
-	}
-	
-	//TODO should also validate datatype but how will you do it for non-english languages ?
-	private String getFieldValue(String jsonString, DynamicFieldValueDto dto) throws JsonProcessingException {
-		List<DynamicFieldValueDto> valueDtoList = convertJsonStringToFieldValueDto(jsonString);
-				
-		boolean updatedExisting = false;
-		if(valueDtoList != null) {
-			for (DynamicFieldValueDto fieldValDto : valueDtoList) {
-				if(fieldValDto.equals(dto)) {
-					fieldValDto.setActive(dto.isActive());
-					fieldValDto.setValue(dto.getValue());
-					updatedExisting = true;
-					break;
+
+	private DynamicFieldExtnDto getDynamicFieldDto(List<DynamicField> dynamicFields) {
+		dynamicFields = dynamicFields
+				.stream()
+				.sorted((o1, o2) -> o1.getCreatedDateTime().compareTo(o2.getCreatedDateTime()))
+				.collect(Collectors.toList());
+
+		List<JsonNode> jsonArray = new ArrayList<>();
+		dynamicFields.forEach(dynamicField -> {
+			try {
+				if(dynamicField.getValueJson() != null &&
+						dynamicField.getIsActive() && (dynamicField.getIsDeleted() != null && !dynamicField.getIsDeleted() )) {
+					jsonArray.add(objectMapper.readTree(dynamicField.getValueJson()));
 				}
-			}
-			
-			if(!updatedExisting)
-				valueDtoList.add(dto);
-		}	
-		
-		return objectMapper.writeValueAsString(valueDtoList);
+			} catch (IOException e) { }
+		});
+
+		DynamicFieldExtnDto dto = new DynamicFieldExtnDto();
+		dto.setIsActive(dynamicFields.stream().anyMatch(field -> field.getIsActive()));
+		dto.setDataType(dynamicFields.get(0).getDataType());
+		dto.setDescription(dynamicFields.get(0).getDescription());
+		dto.setId(dynamicFields.get(0).getId());
+		dto.setLangCode(dynamicFields.get(0).getLangCode());
+		dto.setName(dynamicFields.get(0).getName());
+		dto.setCreatedBy(dynamicFields.get(0).getCreatedBy());
+		dto.setCreatedOn(dynamicFields.get(0).getCreatedDateTime());
+		dto.setUpdatedBy(dynamicFields.get(0).getUpdatedBy());
+		dto.setUpdatedOn(dynamicFields.get(0).getUpdatedDateTime());
+		dto.setFieldVal(jsonArray);
+		return dto;
 	}
-
-	@Override
-	public StatusResponseDto updateDynamicField(String id, boolean isActive) {
-		// TODO Auto-generated method stub
-		StatusResponseDto response = new StatusResponseDto();
-
-		List<DynamicField> dynamicFields = null;
-		try {
-			dynamicFields = dynamicFieldRepository.findToUpdateDynamicFieldById(id);
-		} catch (DataAccessException | DataAccessLayerException | NullPointerException e) {
-			auditUtil.auditRequest(
-					String.format(MasterDataConstant.FAILURE_UPDATE, DynamicFieldDto.class.getCanonicalName()),
-					MasterDataConstant.AUDIT_SYSTEM,
-					String.format(MasterDataConstant.FAILURE_DESC,
-							SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorCode(),
-							SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorMessage()),
-					"ADM-829");
-			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage() + ExceptionUtils.parseException(e));
-		}
-
-		if (dynamicFields != null && !dynamicFields.isEmpty()) {
-			masterdataCreationUtil.updateMasterDataStatus(DynamicField.class, id, isActive, "id");
-		} else {
-			auditUtil.auditRequest(
-					String.format(MasterDataConstant.FAILURE_UPDATE, DynamicFieldDto.class.getCanonicalName()),
-					MasterDataConstant.AUDIT_SYSTEM,
-					String.format(MasterDataConstant.FAILURE_DESC,
-							SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
-							SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage()),
-					"ADM-830");
-			throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
-					SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
-		}
-		response.setStatus("Status updated successfully for Dynamic Fields");
-		return response;
-	}
-
 }
