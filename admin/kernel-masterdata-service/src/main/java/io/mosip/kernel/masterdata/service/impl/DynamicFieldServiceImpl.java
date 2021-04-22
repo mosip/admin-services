@@ -33,7 +33,6 @@ import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldSearchResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DynamicFieldExtnDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.FieldResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
@@ -231,7 +230,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		PageResponseDto<DynamicFieldSearchResponseDto> pageDto = new PageResponseDto<>();
 		List<DynamicFieldSearchResponseDto> dynamicFieldExtnDtos = null;
 		List<SearchFilter> addList = new ArrayList<>();
-		if (filterTypeValidator.validate(MachineTypeExtnDto.class, dto.getFilters())) {
+		if (filterTypeValidator.validate(DynamicField.class, dto.getFilters())) {
 			pageUtils.validateSortField(DynamicField.class, dto.getSort());
 			OptionalFilter optionalFilter = new OptionalFilter(addList);
 			Page<DynamicField> page = masterdataSearchHelper.searchMasterdata(DynamicField.class, dto,
