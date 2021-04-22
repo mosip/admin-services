@@ -33,10 +33,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldSearchResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DynamicFieldExtnDto;
-import io.mosip.kernel.masterdata.dto.postresponse.FieldResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.DynamicField;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -49,7 +46,6 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import io.mosip.kernel.masterdata.utils.OptionalFilter;
 import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
@@ -135,13 +131,9 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 
 	@Override
 	public List<String> getDistinctDynamicFields() {
-		List<String> distinctDynamicField = null;
+		List<String> distinctDynamicField = new ArrayList<String>();
 		try {
 			distinctDynamicField = dynamicFieldRepository.getDistinctDynamicFields();
-			if (distinctDynamicField.size() < 1) {
-				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
-						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
-			}
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorCode(),
@@ -203,8 +195,9 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	}
 
 	@Override
-	public IdResponseDto deleteDynamicFieldValue(String id) {
-		IdResponseDto idResponseDto=new IdResponseDto();
+	@Transactional
+	public StatusResponseDto deleteDynamicFieldValue(String id) {
+		StatusResponseDto statusResponseDto = new StatusResponseDto();
 		try {
 			int deletedRows = dynamicFieldRepository.deleteDynamicField(id, MetaDataUtils.getCurrentDateTime(),
 					MetaDataUtils.getContextUser());
@@ -213,18 +206,19 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
-			idResponseDto.setId(id);
+			statusResponseDto.setStatus("DynamicField deleted successfully");
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_DELETE_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
-		return idResponseDto;
+		return statusResponseDto;
 	}
 
 
 	@Override
-	public FieldResponseDto deleteDynamicField(String fieldName) {
-		FieldResponseDto fieldResponseDto = new FieldResponseDto();
+	@Transactional
+	public StatusResponseDto deleteDynamicField(String fieldName) {
+		StatusResponseDto statusResponseDto = new StatusResponseDto();
 		try {
 			int deletedRows = dynamicFieldRepository.deleteAllDynamicField(fieldName,
 					MetaDataUtils.getCurrentDateTime(),
@@ -234,29 +228,23 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
-			fieldResponseDto.setFieldName(fieldName);
+			statusResponseDto.setStatus("DynamicField deleted successfully");
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_DELETE_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
-		return fieldResponseDto;
+		return statusResponseDto;
 	}
 
 	@Override
 	public PageResponseDto<DynamicFieldSearchResponseDto> searchDynamicFields(SearchDto dto) {
 		PageResponseDto<DynamicFieldSearchResponseDto> pageDto = new PageResponseDto<>();
 		List<DynamicFieldSearchResponseDto> dynamicFieldExtnDtos = null;
-		List<SearchFilter> addList = new ArrayList<>();
-		if (filterTypeValidator.validate(DynamicField.class, dto.getFilters())) {
-			pageUtils.validateSortField(DynamicField.class, dto.getSort());
-			OptionalFilter optionalFilter = new OptionalFilter(addList);
-			Page<DynamicField> page = masterdataSearchHelper.searchMasterdata(DynamicField.class, dto,
-					new OptionalFilter[] { optionalFilter });
-			if (page.getContent() != null && !page.getContent().isEmpty()) {
-				pageDto = PageUtils.pageResponse(page);
-				dynamicFieldExtnDtos = MapperUtils.mapAll(page.getContent(), DynamicFieldSearchResponseDto.class);
-				pageDto.setData(dynamicFieldExtnDtos);
-			}
+		Page<DynamicField> page = masterdataSearchHelper.searchMasterdata(DynamicField.class, dto, null);
+		if (page.getContent() != null && !page.getContent().isEmpty()) {
+			dynamicFieldExtnDtos = MapperUtils.mapAll(page.getContent(), DynamicFieldSearchResponseDto.class);
+			pageDto = PageUtils.pageResponse(page);
+			pageDto.setData(dynamicFieldExtnDtos);
 		}
 		return pageDto;
 	}

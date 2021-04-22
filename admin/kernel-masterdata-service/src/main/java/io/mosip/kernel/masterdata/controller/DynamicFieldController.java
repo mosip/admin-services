@@ -31,8 +31,6 @@ import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldSearchResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DynamicFieldExtnDto;
-import io.mosip.kernel.masterdata.dto.postresponse.FieldResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.service.DynamicFieldService;
@@ -151,11 +149,11 @@ public class DynamicFieldController {
 	@DeleteMapping("/all/{fieldName}")
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to delete dynamic field")
-	public ResponseWrapper<FieldResponseDto> deleteAllDynamicField(@PathVariable("fieldName") String fieldName) {
+	public ResponseWrapper<StatusResponseDto> deleteAllDynamicField(@PathVariable("fieldName") String fieldName) {
 		auditUtil.auditRequest(MasterDataConstant.DELETE_API_IS_CALLED + DynamicFieldDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.DELETE_API_IS_CALLED + DynamicFieldDto.class.getCanonicalName(), "ADM-681");
-		ResponseWrapper<FieldResponseDto> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(dynamicFieldService.deleteDynamicField(fieldName));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.DELETE_SUCCESS, DynamicFieldDto.class.getCanonicalName()),
@@ -169,12 +167,12 @@ public class DynamicFieldController {
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to delete dynamic field")
-	public ResponseWrapper<IdResponseDto> deleteDynamicField(@PathVariable("id") String id)
+	public ResponseWrapper<StatusResponseDto> deleteDynamicField(@PathVariable("id") String id)
 	{
 		auditUtil.auditRequest(MasterDataConstant.DELETE_API_IS_CALLED + DynamicFieldDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.DELETE_API_IS_CALLED + DynamicFieldDto.class.getCanonicalName(), "ADM-681");
-		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(dynamicFieldService.deleteDynamicFieldValue(id));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.DELETE_SUCCESS, DynamicFieldDto.class.getCanonicalName()),

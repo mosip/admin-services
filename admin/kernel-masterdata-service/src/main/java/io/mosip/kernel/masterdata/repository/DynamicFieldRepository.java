@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.DynamicField;
@@ -130,12 +129,10 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 	 * @return
 	 */
 	@Modifying
-	@Transactional
 	@Query("UPDATE DynamicField SET isDeleted=true, updatedDateTime=?2, updatedBy=?3 WHERE id=?1 AND (isDeleted is null OR isDeleted = false)")
 	int deleteDynamicField(String id, LocalDateTime updatedDateTime, String updatedBy);
 
 	@Modifying
-	@Transactional
 	@Query("UPDATE DynamicField SET isDeleted=true, updatedDateTime=?2, updatedBy=?3 WHERE name=?1 AND (isDeleted is null OR isDeleted = false)")
 	int deleteAllDynamicField(String fieldName, LocalDateTime updatedDateTime, String updatedBy);
 

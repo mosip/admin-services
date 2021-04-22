@@ -10,8 +10,6 @@ import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldSearchResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DynamicFieldExtnDto;
-import io.mosip.kernel.masterdata.dto.postresponse.FieldResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 
@@ -65,9 +63,9 @@ public interface DynamicFieldService {
 	 */
 	public StatusResponseDto updateDynamicFieldValueStatus(String id, boolean isActive);
 
-	public IdResponseDto deleteDynamicFieldValue(String id);
+	public StatusResponseDto deleteDynamicFieldValue(String id);
 
-	public FieldResponseDto deleteDynamicField(String fieldName);
+	public StatusResponseDto deleteDynamicField(String fieldName);
 
 	public PageResponseDto<DynamicFieldSearchResponseDto> searchDynamicFields(SearchDto request);
 
