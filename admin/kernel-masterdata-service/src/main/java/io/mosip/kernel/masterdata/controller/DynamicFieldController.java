@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.controller;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -71,6 +72,16 @@ public class DynamicFieldController {
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		responseWrapper.setResponse(dynamicFieldService.getAllDynamicField(pageNumber, pageSize, sortBy, orderBy.name(), langCode,
 				timestamp, currentTimeStamp));
+		return responseWrapper;
+	}
+
+	@ResponseFilter
+	@GetMapping("/distinct")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','INDIVIDUAL','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','Default')")
+	@ApiOperation(value = "Service to fetch distinct dynamic fields")
+	public ResponseWrapper<List<String>> getDistinctDynamicFields(){
+		ResponseWrapper<List<String>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(dynamicFieldService.getDistinctDynamicFields());
 		return responseWrapper;
 	}
 	

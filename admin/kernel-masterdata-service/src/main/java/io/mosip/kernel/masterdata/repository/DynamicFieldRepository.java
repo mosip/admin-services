@@ -105,6 +105,8 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 			+ " WHERE (isDeleted is null OR isDeleted = false) and id=?1")
 	int updateDynamicFieldIsActive(String id, boolean isActive, LocalDateTime updatedDateTime, String updatedBy);
 	
+	@Query("SELECT DISTINCT name FROM DynamicField WHERE (isDeleted is null or isDeleted = false)")
+	List<String> getDistinctDynamicFields();
 	/**
 	 * Update dynamic field value specific to a language code
 	 * 

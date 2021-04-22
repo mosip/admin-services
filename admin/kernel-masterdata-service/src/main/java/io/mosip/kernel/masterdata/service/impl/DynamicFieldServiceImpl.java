@@ -133,6 +133,23 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		return pagedFields;
 	}
 
+	@Override
+	public List<String> getDistinctDynamicFields() {
+		List<String> distinctDynamicField = null;
+		try {
+			distinctDynamicField = dynamicFieldRepository.getDistinctDynamicFields();
+			if (distinctDynamicField.size() < 1) {
+				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
+						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorCode(),
+					ExceptionUtils.parseException(e));
+		}
+		return distinctDynamicField;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
