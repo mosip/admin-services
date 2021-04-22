@@ -94,7 +94,7 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 	 * @param updatedBy
 	 * @return
 	 */
-	@Modifying
+	
 	@Query("UPDATE DynamicField SET isActive=?2 , updatedDateTime=?3, updatedBy=?4"
 			+ " WHERE (isDeleted is null OR isDeleted = false) and name=?1")
 	int updateAllDynamicFieldIsActive(String name, boolean isActive, LocalDateTime updatedDateTime, String updatedBy);
@@ -104,6 +104,8 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 			+ " WHERE (isDeleted is null OR isDeleted = false) and id=?1")
 	int updateDynamicFieldIsActive(String id, boolean isActive, LocalDateTime updatedDateTime, String updatedBy);
 	
+	@Query("SELECT DISTINCT name FROM DynamicField WHERE (isDeleted is null or isDeleted = false)")
+	List<String> getDistinctDynamicFields();
 	/**
 	 * Update dynamic field value specific to a language code
 	 * 
@@ -127,8 +129,12 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 	 * @return
 	 */
 	@Modifying
-	@Query("UPDATE DynamicField SET isDeleted=true, updatedDateTime=?2, updatedBy=?3 WHERE (isDeleted is null OR isDeleted = false) and id=?1")
+	@Query("UPDATE DynamicField SET isDeleted=true, updatedDateTime=?2, updatedBy=?3 WHERE id=?1 AND (isDeleted is null OR isDeleted = false)")
 	int deleteDynamicField(String id, LocalDateTime updatedDateTime, String updatedBy);
+
+	@Modifying
+	@Query("UPDATE DynamicField SET isDeleted=true, updatedDateTime=?2, updatedBy=?3 WHERE name=?1 AND (isDeleted is null OR isDeleted = false)")
+	int deleteAllDynamicField(String fieldName, LocalDateTime updatedDateTime, String updatedBy);
 
 
 	/**

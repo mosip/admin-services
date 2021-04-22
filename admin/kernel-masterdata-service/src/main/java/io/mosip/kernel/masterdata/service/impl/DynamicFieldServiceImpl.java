@@ -11,11 +11,6 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.DynamicFieldExtnDto;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,29 +21,33 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.SchemaErrorCode;
 import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
-import io.mosip.kernel.masterdata.dto.DynamicFieldValueDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldSearchResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DynamicFieldExtnDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.DynamicField;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
 import io.mosip.kernel.masterdata.service.DynamicFieldService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 @Service
 public class DynamicFieldServiceImpl implements DynamicFieldService {
@@ -63,6 +62,16 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
 	
+	@Autowired
+	private MasterdataSearchHelper masterdataSearchHelper;
+
+	@Autowired
+	private FilterTypeValidator filterTypeValidator;
+
+	@Autowired
+	private PageUtils pageUtils;
+
+
 	@Autowired
 	AuditUtil auditUtil;
 	
@@ -120,6 +129,19 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		return pagedFields;
 	}
 
+	@Override
+	public List<String> getDistinctDynamicFields() {
+		List<String> distinctDynamicField = new ArrayList<String>();
+		try {
+			distinctDynamicField = dynamicFieldRepository.getDistinctDynamicFields();
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorCode(),
+					ExceptionUtils.parseException(e));
+		}
+		return distinctDynamicField;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -172,6 +194,60 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		return getDynamicFieldDto(entity);
 	}
 
+	@Override
+	@Transactional
+	public StatusResponseDto deleteDynamicFieldValue(String id) {
+		StatusResponseDto statusResponseDto = new StatusResponseDto();
+		try {
+			int deletedRows = dynamicFieldRepository.deleteDynamicField(id, MetaDataUtils.getCurrentDateTime(),
+					MetaDataUtils.getContextUser());
+
+			if (deletedRows < 1) {
+				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
+						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+			statusResponseDto.setStatus("DynamicField deleted successfully");
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_DELETE_EXCEPTION.getErrorCode(),
+					ExceptionUtils.parseException(e));
+		}
+		return statusResponseDto;
+	}
+
+
+	@Override
+	@Transactional
+	public StatusResponseDto deleteDynamicField(String fieldName) {
+		StatusResponseDto statusResponseDto = new StatusResponseDto();
+		try {
+			int deletedRows = dynamicFieldRepository.deleteAllDynamicField(fieldName,
+					MetaDataUtils.getCurrentDateTime(),
+					MetaDataUtils.getContextUser());
+
+			if (deletedRows < 1) {
+				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
+						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+			statusResponseDto.setStatus("DynamicField deleted successfully");
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_DELETE_EXCEPTION.getErrorCode(),
+					ExceptionUtils.parseException(e));
+		}
+		return statusResponseDto;
+	}
+
+	@Override
+	public PageResponseDto<DynamicFieldSearchResponseDto> searchDynamicFields(SearchDto dto) {
+		PageResponseDto<DynamicFieldSearchResponseDto> pageDto = new PageResponseDto<>();
+		List<DynamicFieldSearchResponseDto> dynamicFieldExtnDtos = null;
+		Page<DynamicField> page = masterdataSearchHelper.searchMasterdata(DynamicField.class, dto, null);
+		if (page.getContent() != null && !page.getContent().isEmpty()) {
+			dynamicFieldExtnDtos = MapperUtils.mapAll(page.getContent(), DynamicFieldSearchResponseDto.class);
+			pageDto = PageUtils.pageResponse(page);
+			pageDto.setData(dynamicFieldExtnDtos);
+		}
+		return pageDto;
+	}
 
 	@Override
 	@Transactional

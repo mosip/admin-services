@@ -123,7 +123,7 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		ZoneUser zu= null;
 		ZoneUserExtnDto dto=new ZoneUserExtnDto();
 		try {
-			 zu = zoneUserRepo.findZoneByUserIdActiveAndNonDeleted(zoneUserDto.getUserId());
+			zu = zoneUserRepo.findByUserId(zoneUserDto.getUserId());
 			 if(zu ==null) {
 				 auditUtil.auditRequest(
 							String.format(MasterDataConstant.FAILURE_UPDATE, ZoneUser.class.getSimpleName()),
