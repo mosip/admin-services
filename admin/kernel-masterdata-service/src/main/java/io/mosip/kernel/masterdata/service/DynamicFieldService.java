@@ -4,11 +4,15 @@ import java.time.LocalDateTime;
 
 import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
-import io.mosip.kernel.masterdata.dto.DynamicFieldValueDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldSearchResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DynamicFieldExtnDto;
+import io.mosip.kernel.masterdata.dto.postresponse.FieldResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 
 /**
  * Methods to create / update / inactivate / addValues dynamic field
@@ -59,5 +63,11 @@ public interface DynamicFieldService {
 	 * @return
 	 */
 	public StatusResponseDto updateDynamicFieldValueStatus(String id, boolean isActive);
+
+	public IdResponseDto deleteDynamicFieldValue(String id);
+
+	public FieldResponseDto deleteDynamicField(String fieldName);
+
+	public PageResponseDto<DynamicFieldSearchResponseDto> searchDynamicFields(SearchDto request);
 	
 }

@@ -9,6 +9,8 @@ public enum SchemaErrorCode {
 	
 	DYNAMIC_FIELD_FETCH_EXCEPTION("KER-SCH-001", "Error occurred while fetching dynamic fields"),
 	DYNAMIC_FIELD_INSERT_EXCEPTION("KER-SCH-002", "Error occurred while inserting dynamic field"),
+	DYNAMIC_FIELD_DELETE_EXCEPTION("KER-SCH-020", "Error occurred while deleting dynamic field"),
+
 	DYNAMIC_FIELD_NOT_FOUND_EXCEPTION("KER-SCH-003", "Dynamic field not found"),
 		
 	SCHEMA_FETCH_EXCEPTION("KER-SCH-004", "Error occurred while fetching Identity schema"),
