@@ -1,2 +1,2 @@
 id,uin,name,email,mobile,statusCode,regCenterId,langCode,lastLoginDateTime,lastLoginMethod,isActive
-110122,9317596857,Niyati,niyati.swami@technoforte.co.in,9110289775,ACT,10001,eng,2020-12-10T06:12:52.994Z,PWD,TRUE
+110122,9317596857,TestUser,test.user@technoforte.co.in,9220289879,ACT,10001,eng,2020-12-10T06:12:52.994Z,PWD,TRUE
