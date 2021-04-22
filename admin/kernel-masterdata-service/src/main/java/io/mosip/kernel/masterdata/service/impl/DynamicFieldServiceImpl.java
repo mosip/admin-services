@@ -186,7 +186,6 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
-			e.printStackTrace();
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_UPDATE_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
@@ -207,7 +206,6 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
-			e.printStackTrace();
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_UPDATE_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
