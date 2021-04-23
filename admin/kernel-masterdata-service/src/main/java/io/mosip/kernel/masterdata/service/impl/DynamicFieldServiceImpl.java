@@ -42,7 +42,6 @@ import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
 import io.mosip.kernel.masterdata.service.DynamicFieldService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
-import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -236,13 +235,17 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		return statusResponseDto;
 	}
 
+	@SuppressWarnings("null")
 	@Override
 	public PageResponseDto<DynamicFieldSearchResponseDto> searchDynamicFields(SearchDto dto) {
 		PageResponseDto<DynamicFieldSearchResponseDto> pageDto = new PageResponseDto<>();
-		List<DynamicFieldSearchResponseDto> dynamicFieldExtnDtos = null;
+		List<DynamicFieldSearchResponseDto> dynamicFieldExtnDtos = new ArrayList<DynamicFieldSearchResponseDto>();
 		Page<DynamicField> page = masterdataSearchHelper.searchMasterdata(DynamicField.class, dto, null);
 		if (page.getContent() != null && !page.getContent().isEmpty()) {
-			dynamicFieldExtnDtos = MapperUtils.mapAll(page.getContent(), DynamicFieldSearchResponseDto.class);
+			for (DynamicField dynamicDto : page.getContent()) {
+				DynamicFieldSearchResponseDto dynamicFieldDto = getDynamicFieldSearchResponseDto(dynamicDto);
+				dynamicFieldExtnDtos.add(dynamicFieldDto);
+			}
 			pageDto = PageUtils.pageResponse(page);
 			pageDto.setData(dynamicFieldExtnDtos);
 		}
@@ -310,6 +313,21 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		return dto;
 	}
 
+	private DynamicFieldSearchResponseDto getDynamicFieldSearchResponseDto(DynamicField entity) {
+		DynamicFieldSearchResponseDto dto = new DynamicFieldSearchResponseDto();
+		dto.setIsActive(entity.getIsActive());
+		dto.setDataType(entity.getDataType());
+		dto.setDescription(entity.getDescription());
+		dto.setId(entity.getId());
+		dto.setLangCode(entity.getLangCode());
+		dto.setName(entity.getName());
+		dto.setCreatedBy(entity.getCreatedBy());
+		dto.setCreatedDateTime(entity.getCreatedDateTime());
+		dto.setUpdatedBy(entity.getUpdatedBy());
+		dto.setUpdatedDateTime(entity.getUpdatedDateTime());
+		dto.setFieldVal(entity.getValueJson());
+		return dto;
+	}
 	private DynamicFieldExtnDto getDynamicFieldDto(List<DynamicField> dynamicFields) {
 		dynamicFields = dynamicFields
 				.stream()
