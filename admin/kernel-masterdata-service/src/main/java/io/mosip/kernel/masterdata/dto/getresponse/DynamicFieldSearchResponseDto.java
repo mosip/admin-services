@@ -12,7 +12,7 @@ public class DynamicFieldSearchResponseDto {
     private String langCode;
     private String dataType;
     private String description;
-	private String valueJson;
+	private String fieldVal;
     private Boolean isActive;
     private String createdBy;
     private String updatedBy;
