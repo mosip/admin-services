@@ -63,10 +63,8 @@ import io.mosip.kernel.syncdata.entity.DeviceTypeDPM;
 import io.mosip.kernel.syncdata.entity.DocumentCategory;
 import io.mosip.kernel.syncdata.entity.DocumentType;
 import io.mosip.kernel.syncdata.entity.FoundationalTrustProvider;
-import io.mosip.kernel.syncdata.entity.Gender;
 import io.mosip.kernel.syncdata.entity.Holiday;
 import io.mosip.kernel.syncdata.entity.IdType;
-import io.mosip.kernel.syncdata.entity.IndividualType;
 import io.mosip.kernel.syncdata.entity.Language;
 import io.mosip.kernel.syncdata.entity.Location;
 import io.mosip.kernel.syncdata.entity.Machine;
@@ -93,13 +91,6 @@ import io.mosip.kernel.syncdata.entity.ValidDocument;
 import io.mosip.kernel.syncdata.entity.id.ApplicantValidDocumentID;
 import io.mosip.kernel.syncdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
-import io.mosip.kernel.syncdata.entity.id.RegistrationCenterDeviceID;
-import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineDeviceHistoryID;
-import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineDeviceID;
-import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineHistoryID;
-import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineID;
-import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineUserID;
-import io.mosip.kernel.syncdata.entity.id.RegistrationCenterUserID;
 import io.mosip.kernel.syncdata.repository.AppAuthenticationMethodRepository;
 import io.mosip.kernel.syncdata.repository.AppDetailRepository;
 import io.mosip.kernel.syncdata.repository.AppRolePriorityRepository;
@@ -119,10 +110,8 @@ import io.mosip.kernel.syncdata.repository.DeviceTypeRepository;
 import io.mosip.kernel.syncdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.syncdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.syncdata.repository.FoundationalTrustProviderRepository;
-import io.mosip.kernel.syncdata.repository.GenderRepository;
 import io.mosip.kernel.syncdata.repository.HolidayRepository;
 import io.mosip.kernel.syncdata.repository.IdTypeRepository;
-import io.mosip.kernel.syncdata.repository.IndividualTypeRepository;
 import io.mosip.kernel.syncdata.repository.LanguageRepository;
 import io.mosip.kernel.syncdata.repository.LocationRepository;
 import io.mosip.kernel.syncdata.repository.MachineHistoryRepository;
@@ -179,7 +168,6 @@ public class SyncClientSettingsIntegrationTest {
 	private List<Holiday> holidays;
 	private List<BlacklistedWords> blackListedWords;
 	private List<Title> titles;
-	private List<Gender> genders;
 	private List<Language> languages;
 	private List<Template> templates;
 	private List<TemplateFileFormat> templateFileFormats;
@@ -195,7 +183,6 @@ public class SyncClientSettingsIntegrationTest {
 	private List<Location> locations;
 	
 	private List<ApplicantValidDocument> applicantValidDocumentList;
-	private List<IndividualType> individualTypeList;
 	private List<Object[]> objectArrayList;
 	private List<AppAuthenticationMethod> appAuthenticationMethods = null;
 	private List<AppDetail> appDetails = null;
@@ -245,8 +232,6 @@ public class SyncClientSettingsIntegrationTest {
 	private TitleRepository titleRepository;
 	@MockBean
 	private LanguageRepository languageRepository;
-	@MockBean
-	private GenderRepository genderTypeRepository;
 	@MockBean
 	private DeviceRepository deviceRepository;
 	@MockBean
@@ -303,9 +288,7 @@ public class SyncClientSettingsIntegrationTest {
 	
 	@MockBean
 	private ApplicantValidDocumentRespository applicantValidDocumentRespository;
-	@MockBean
-	private IndividualTypeRepository individualTypeRepository;	
-	
+
 	private String encodedTPMPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn4A-U6V4SpSeJmjl0xtBDgyFaHn1CvglvnpbczxiDakH6ks8tPvIYT4jDOU-9XaUYKuMFhLxS7G8qwJhv7GKpDQXphSXjgwv_l8A--KV6C1UVaHoAs4XuJPFdXneSd9uMH94GO6lWucyOyfaZLrf5F_--2Rr4ba4rBWw20OrAl1c7FrzjIQjzYXgnBMrvETXptxKKrMELwOOsuyc1Ju4wzPJHYjI0Em4q2BOcQLXqYjhsZhcYeTqBFxXjCOM3WQKLCIsh9RN8Hz-s8yJbQId6MKIS7HQNCTbhbjl1jdfwqRwmBaZz0Gt73I4_8SVCcCQzJWVsakLC1oJAFcmi3l_mQIDAQAB";
 	private byte[] tpmPublicKey = CryptoUtil.decodeBase64(encodedTPMPublicKey);
 	private String keyIndex = CryptoUtil.computeFingerPrint(tpmPublicKey, null);
@@ -423,8 +406,7 @@ public class SyncClientSettingsIntegrationTest {
 		blackListedWords.add(new BlacklistedWords("ABC", "ENG", "description"));
 		titles = new ArrayList<>();
 		titles.add(new Title(new CodeAndLanguageCodeID("1011", "ENG"), "title", "titleDescription"));
-		genders = new ArrayList<>();
-		genders.add(new Gender("G1011", "MALE", "description"));
+
 		languages = new ArrayList<>();
 		languages.add(new Language("ENG", "english", "family", "native name"));
 		idTypes = new ArrayList<>();
@@ -517,15 +499,6 @@ public class SyncClientSettingsIntegrationTest {
 		registrationCenterUserHistory
 				.add(userDetailsHistory);
 
-		
-		IndividualType individualType = new IndividualType();
-		CodeAndLanguageCodeID codeLangCode = new CodeAndLanguageCodeID();
-		codeLangCode.setCode("FR");
-		codeLangCode.setLangCode("ENG");
-		individualType.setName("Foreigner");
-		individualType.setCodeAndLanguageCodeId(codeLangCode);
-		individualTypeList = new ArrayList<>();
-		individualTypeList.add(individualType);
 		ApplicantValidDocument applicantValidDoc = new ApplicantValidDocument();
 		ApplicantValidDocumentID appId = new ApplicantValidDocumentID();
 		appId.setAppTypeCode("001");
@@ -664,8 +637,6 @@ public class SyncClientSettingsIntegrationTest {
 				.thenReturn(registrationCenterType);
 		when(registrationCenterTypeRepository.findLatestRegistrationCenterTypeByMachineId(Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenReturn(registrationCenterType);
-		when(genderTypeRepository.findAll()).thenReturn(genders);
-		when(genderTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any())).thenReturn(genders);
 		when(idTypeRepository.findAll()).thenReturn(idTypes);
 		when(idTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any())).thenReturn(idTypes);
 		when(deviceRepository.findDeviceByMachineId(Mockito.anyString())).thenReturn(devices);
@@ -727,8 +698,6 @@ public class SyncClientSettingsIntegrationTest {
 		
 		when(applicantValidDocumentRespository.findAllByTimeStamp(Mockito.any(), Mockito.any()))
 				.thenReturn(applicantValidDocumentList);
-		when(individualTypeRepository.findAllIndvidualTypeByTimeStamp(Mockito.any(), Mockito.any()))
-				.thenReturn(individualTypeList);
 		when(appAuthenticationMethodRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenReturn(appAuthenticationMethods);
 		when(appDetailRepository.findByLastUpdatedTimeAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
@@ -1106,19 +1075,7 @@ public class SyncClientSettingsIntegrationTest {
 			Assert.fail("Not expected response!");}
 	}
 
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataGenderFetchException() throws Exception {
-		mockSuccess();
-		when(genderTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-	}
+
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
@@ -1524,21 +1481,7 @@ public class SyncClientSettingsIntegrationTest {
 			Assert.fail("Not expected response!");}
 	}
 
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void individualTypeExceptionTest() throws Exception {
 
-		mockSuccess();
-		when(individualTypeRepository.findAllIndvidualTypeByTimeStamp(Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-
-	}
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
@@ -1727,7 +1670,7 @@ public class SyncClientSettingsIntegrationTest {
 		MvcResult result = mockMvc.perform(get(syncDataUrlWithKeyIndexAndRegCenterId)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			System.out.println("Response >>>> " + jsonObject);
+			//System.out.println("Response >>>> " + jsonObject);
 			JSONArray errors =  jsonObject.getJSONArray("errors");
 			assertNotNull(errors);
 			assertEquals(MasterDataErrorCode.REG_CENTER_UPDATED.getErrorCode(), errors.getJSONObject(0).getString("errorCode"));

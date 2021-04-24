@@ -2,7 +2,6 @@ package io.mosip.kernel.syncdata.utils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,16 +20,15 @@ import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.dto.*;
+import io.mosip.kernel.syncdata.entity.*;
 import io.mosip.kernel.syncdata.exception.RequestException;
 import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
+import io.mosip.kernel.syncdata.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
@@ -43,93 +41,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.response.SyncDataBaseDto;
-import io.mosip.kernel.syncdata.entity.AppAuthenticationMethod;
-import io.mosip.kernel.syncdata.entity.AppDetail;
-import io.mosip.kernel.syncdata.entity.AppRolePriority;
-import io.mosip.kernel.syncdata.entity.ApplicantValidDocument;
-import io.mosip.kernel.syncdata.entity.Application;
-import io.mosip.kernel.syncdata.entity.BiometricAttribute;
-import io.mosip.kernel.syncdata.entity.BiometricType;
-import io.mosip.kernel.syncdata.entity.BlacklistedWords;
-import io.mosip.kernel.syncdata.entity.Device;
-import io.mosip.kernel.syncdata.entity.DeviceHistory;
-import io.mosip.kernel.syncdata.entity.DeviceSpecification;
-import io.mosip.kernel.syncdata.entity.DeviceSubTypeDPM;
-import io.mosip.kernel.syncdata.entity.DeviceType;
-import io.mosip.kernel.syncdata.entity.DeviceTypeDPM;
-import io.mosip.kernel.syncdata.entity.DocumentCategory;
-import io.mosip.kernel.syncdata.entity.DocumentType;
-import io.mosip.kernel.syncdata.entity.FoundationalTrustProvider;
-import io.mosip.kernel.syncdata.entity.Gender;
-import io.mosip.kernel.syncdata.entity.Holiday;
-import io.mosip.kernel.syncdata.entity.IdType;
-import io.mosip.kernel.syncdata.entity.IndividualType;
-import io.mosip.kernel.syncdata.entity.Language;
-import io.mosip.kernel.syncdata.entity.Location;
-import io.mosip.kernel.syncdata.entity.Machine;
-import io.mosip.kernel.syncdata.entity.MachineHistory;
-import io.mosip.kernel.syncdata.entity.MachineSpecification;
-import io.mosip.kernel.syncdata.entity.MachineType;
-import io.mosip.kernel.syncdata.entity.ProcessList;
-import io.mosip.kernel.syncdata.entity.ReasonCategory;
-import io.mosip.kernel.syncdata.entity.ReasonList;
-import io.mosip.kernel.syncdata.entity.RegistrationCenter;
-import io.mosip.kernel.syncdata.entity.RegistrationCenterType;
-import io.mosip.kernel.syncdata.entity.ScreenAuthorization;
-import io.mosip.kernel.syncdata.entity.ScreenDetail;
-import io.mosip.kernel.syncdata.entity.Template;
-import io.mosip.kernel.syncdata.entity.TemplateFileFormat;
-import io.mosip.kernel.syncdata.entity.TemplateType;
-import io.mosip.kernel.syncdata.entity.Title;
-import io.mosip.kernel.syncdata.entity.UserDetails;
-import io.mosip.kernel.syncdata.entity.UserDetailsHistory;
-import io.mosip.kernel.syncdata.entity.ValidDocument;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.exception.SyncServiceException;
-import io.mosip.kernel.syncdata.repository.AppAuthenticationMethodRepository;
-import io.mosip.kernel.syncdata.repository.AppDetailRepository;
-import io.mosip.kernel.syncdata.repository.AppRolePriorityRepository;
-import io.mosip.kernel.syncdata.repository.ApplicantValidDocumentRespository;
-import io.mosip.kernel.syncdata.repository.ApplicationRepository;
-import io.mosip.kernel.syncdata.repository.BiometricAttributeRepository;
-import io.mosip.kernel.syncdata.repository.BiometricTypeRepository;
-import io.mosip.kernel.syncdata.repository.BlacklistedWordsRepository;
-import io.mosip.kernel.syncdata.repository.DeviceHistoryRepository;
-import io.mosip.kernel.syncdata.repository.DeviceProviderRepository;
-import io.mosip.kernel.syncdata.repository.DeviceRepository;
-import io.mosip.kernel.syncdata.repository.DeviceServiceRepository;
-import io.mosip.kernel.syncdata.repository.DeviceSpecificationRepository;
-import io.mosip.kernel.syncdata.repository.DeviceSubTypeDPMRepository;
-import io.mosip.kernel.syncdata.repository.DeviceTypeDPMRepository;
-import io.mosip.kernel.syncdata.repository.DeviceTypeRepository;
-import io.mosip.kernel.syncdata.repository.DocumentCategoryRepository;
-import io.mosip.kernel.syncdata.repository.DocumentTypeRepository;
-import io.mosip.kernel.syncdata.repository.FoundationalTrustProviderRepository;
-import io.mosip.kernel.syncdata.repository.GenderRepository;
-import io.mosip.kernel.syncdata.repository.HolidayRepository;
-import io.mosip.kernel.syncdata.repository.IdTypeRepository;
-import io.mosip.kernel.syncdata.repository.IndividualTypeRepository;
-import io.mosip.kernel.syncdata.repository.LanguageRepository;
-import io.mosip.kernel.syncdata.repository.LocationRepository;
-import io.mosip.kernel.syncdata.repository.MachineHistoryRepository;
-import io.mosip.kernel.syncdata.repository.MachineRepository;
-import io.mosip.kernel.syncdata.repository.MachineSpecificationRepository;
-import io.mosip.kernel.syncdata.repository.MachineTypeRepository;
-import io.mosip.kernel.syncdata.repository.ProcessListRepository;
-import io.mosip.kernel.syncdata.repository.ReasonCategoryRepository;
-import io.mosip.kernel.syncdata.repository.ReasonListRepository;
-import io.mosip.kernel.syncdata.repository.RegisteredDeviceRepository;
-import io.mosip.kernel.syncdata.repository.RegistrationCenterRepository;
-import io.mosip.kernel.syncdata.repository.RegistrationCenterTypeRepository;
-import io.mosip.kernel.syncdata.repository.ScreenAuthorizationRepository;
-import io.mosip.kernel.syncdata.repository.ScreenDetailRepository;
-import io.mosip.kernel.syncdata.repository.TemplateFileFormatRepository;
-import io.mosip.kernel.syncdata.repository.TemplateRepository;
-import io.mosip.kernel.syncdata.repository.TemplateTypeRepository;
-import io.mosip.kernel.syncdata.repository.TitleRepository;
-import io.mosip.kernel.syncdata.repository.UserDetailsHistoryRepository;
-import io.mosip.kernel.syncdata.repository.UserDetailsRepository;
-import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
 import io.mosip.kernel.syncdata.service.SyncJobDefService;
 
 /**
@@ -175,8 +88,6 @@ public class SyncMasterDataServiceHelper {
 	@Autowired
 	private LanguageRepository languageRepository;
 	@Autowired
-	private GenderRepository genderTypeRepository;
-	@Autowired
 	private DeviceRepository deviceRepository;
 	@Autowired
 	private DocumentCategoryRepository documentCategoryRepository;
@@ -202,8 +113,6 @@ public class SyncMasterDataServiceHelper {
 	private UserDetailsRepository userDetailsRepository;
 	@Autowired
 	private ApplicantValidDocumentRespository applicantValidDocumentRepository;
-	@Autowired
-	private IndividualTypeRepository individualTypeRepository;
 	@Autowired
 	private AppAuthenticationMethodRepository appAuthenticationMethodRepository;
 	@Autowired
@@ -236,6 +145,8 @@ public class SyncMasterDataServiceHelper {
 	private MachineHistoryRepository machineHistoryRepository;
 	@Autowired
 	private DeviceHistoryRepository deviceHistoryRepository;
+	@Autowired
+	private PermittedLocalConfigRepository permittedLocalConfigRepository;
 
 	@Autowired
 	private ClientCryptoManagerService clientCryptoManagerService;
@@ -277,6 +188,7 @@ public class SyncMasterDataServiceHelper {
 					currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -336,6 +248,7 @@ public class SyncMasterDataServiceHelper {
 						LocationHierarchyLevelResponseDto.class);
 				locationHierarchyLevelDtos = locationHierarchyResponseDto.getLocationHierarchyLevels();
 			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
 				throw new SyncDataServiceException(
 						MasterDataErrorCode.LOCATION_HIERARCHY_DESERIALIZATION_FAILED.getErrorCode(),
 						MasterDataErrorCode.LOCATION_HIERARCHY_DESERIALIZATION_FAILED.getErrorMessage());
@@ -363,9 +276,8 @@ public class SyncMasterDataServiceHelper {
 			}
 			machineTypes = machineTypeRepository.findLatestByRegCenterId(regCenterId, lastUpdated, currentTimeStamp);
 
-		} catch (
-
-		DataAccessException e) {
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.MACHINE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -401,6 +313,7 @@ public class SyncMasterDataServiceHelper {
 
 			}
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -433,6 +346,7 @@ public class SyncMasterDataServiceHelper {
 					currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -464,6 +378,7 @@ public class SyncMasterDataServiceHelper {
 					.findLatestRegistrationCenterTypeByMachineId(machineId, lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -493,6 +408,7 @@ public class SyncMasterDataServiceHelper {
 			applicationList = applicationRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -523,6 +439,7 @@ public class SyncMasterDataServiceHelper {
 					moduleId);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -552,6 +469,7 @@ public class SyncMasterDataServiceHelper {
 					currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.TEMPLATE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -578,6 +496,7 @@ public class SyncMasterDataServiceHelper {
 			reasons = reasonCategoryRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.REASON_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -606,6 +525,7 @@ public class SyncMasterDataServiceHelper {
 			reasons = reasonListRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.REASON_LIST_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -637,6 +557,7 @@ public class SyncMasterDataServiceHelper {
 					currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -667,6 +588,7 @@ public class SyncMasterDataServiceHelper {
 			words = blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -697,6 +619,7 @@ public class SyncMasterDataServiceHelper {
 					currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -727,6 +650,7 @@ public class SyncMasterDataServiceHelper {
 					currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.BIOMETRIC_ATTR_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -754,6 +678,7 @@ public class SyncMasterDataServiceHelper {
 			titles = titleRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(), e.getMessage(),
 					e);
 		}
@@ -784,6 +709,7 @@ public class SyncMasterDataServiceHelper {
 			languages = languageRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -793,33 +719,6 @@ public class SyncMasterDataServiceHelper {
 		return CompletableFuture.completedFuture(languageList);
 	}
 
-	/**
-	 * Method to fetch genders
-	 * 
-	 * @param lastUpdated      lastUpdated
-	 * @param currentTimeStamp - current time stamp
-	 * @return list of {@link GenderDto}
-	 */
-	@Async
-	public CompletableFuture<List<GenderDto>> getGenders(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) {
-		List<GenderDto> genderDto = null;
-		List<Gender> genderType = null;
-
-		try {
-			if (lastUpdated == null) {
-				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
-			}
-			genderType = genderTypeRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
-
-		} catch (DataAccessException e) {
-			throw new SyncDataServiceException(MasterDataErrorCode.GENDER_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage(), e);
-		}
-		if (!(genderType.isEmpty())) {
-			genderDto = MapperUtils.mapAll(genderType, GenderDto.class);
-		}
-		return CompletableFuture.completedFuture(genderDto);
-	}
 
 	/**
 	 * Method to fetch devices
@@ -841,6 +740,7 @@ public class SyncMasterDataServiceHelper {
 			devices = deviceRepository.findLatestDevicesByRegCenterId(regCenterId, lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.DEVICES_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -870,6 +770,7 @@ public class SyncMasterDataServiceHelper {
 					currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -899,6 +800,7 @@ public class SyncMasterDataServiceHelper {
 			documentTypes = documentTypeRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.DOCUMENT_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -927,6 +829,7 @@ public class SyncMasterDataServiceHelper {
 			idTypes = idTypeRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.ID_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -955,6 +858,7 @@ public class SyncMasterDataServiceHelper {
 			deviceSpecificationList = deviceSpecificationRepository.findLatestDeviceTypeByRegCenterId(regCenterId,
 					lastUpdated, currentTimeStamp);
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_SPECIFICATION_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -984,6 +888,7 @@ public class SyncMasterDataServiceHelper {
 			locations = locationRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -1012,6 +917,7 @@ public class SyncMasterDataServiceHelper {
 			templateTypes = templateTypeRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.TEMPLATE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -1043,6 +949,7 @@ public class SyncMasterDataServiceHelper {
 					currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -1072,6 +979,7 @@ public class SyncMasterDataServiceHelper {
 			validDocuments = validDocumentRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -1101,6 +1009,7 @@ public class SyncMasterDataServiceHelper {
 			machines = machineRepository.findAllLatestCreatedUpdatedDeleted(regCenterId, lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -1141,6 +1050,7 @@ public class SyncMasterDataServiceHelper {
 					currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_DEVICE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -1184,6 +1094,7 @@ public class SyncMasterDataServiceHelper {
 					currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(
 					MasterDataErrorCode.REG_CENTER_MACHINE_DEVICE_FETCH_EXCEPTION.getErrorCode(), e.getMessage(), e);
 		}
@@ -1245,6 +1156,7 @@ public class SyncMasterDataServiceHelper {
 					currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(
 					MasterDataErrorCode.REG_CENTER_USER_MACHINE_DEVICE_FETCH_EXCEPTION.getErrorCode(), e.getMessage(),
 					e);
@@ -1304,6 +1216,7 @@ public class SyncMasterDataServiceHelper {
 					currentTimeStamp);
 
 		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_USER_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
@@ -1345,7 +1258,7 @@ public class SyncMasterDataServiceHelper {
 					currentTimeStamp);
 
 		} catch (DataAccessException e) {
-
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(
 					MasterDataErrorCode.REG_CENTER_USER_HISTORY_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.REG_CENTER_USER_HISTORY_FETCH_EXCEPTION.getErrorMessage() + " "
@@ -1394,7 +1307,7 @@ public class SyncMasterDataServiceHelper {
 					currentTimeStamp);
 
 		} catch (DataAccessException e) {
-
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(
 					MasterDataErrorCode.REG_CENTER_MACHINE_USER_HISTORY_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.REG_CENTER_MACHINE_USER_HISTORY_FETCH_EXCEPTION.getErrorCode() + " "
@@ -1448,7 +1361,7 @@ public class SyncMasterDataServiceHelper {
 			deviceHistoryList = deviceHistoryRepository.findLatestRegistrationCenterDeviceHistory(regId, lastUpdated,
 					currentTimeStamp);
 		} catch (DataAccessException e) {
-
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(
 					MasterDataErrorCode.REG_CENTER_MACHINE_DEVICE_HISTORY_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.REG_CENTER_MACHINE_DEVICE_HISTORY_FETCH_EXCEPTION.getErrorMessage() + " "
@@ -1520,7 +1433,7 @@ public class SyncMasterDataServiceHelper {
 					currentTimeStamp);
 
 		} catch (DataAccessException e) {
-
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(
 					MasterDataErrorCode.REG_CENTER_DEVICE_HISTORY_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.REG_CENTER_DEVICE_HISTORY_FETCH_EXCEPTION.getErrorMessage() + " "
@@ -1566,7 +1479,7 @@ public class SyncMasterDataServiceHelper {
 					currentTimeStamp);
 
 		} catch (DataAccessException e) {
-
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(
 					MasterDataErrorCode.REG_CENTER_MACHINE_HISTORY_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.REG_CENTER_MACHINE_HISTORY_FETCH_EXCEPTION.getErrorMessage() + " "
@@ -1608,7 +1521,8 @@ public class SyncMasterDataServiceHelper {
 			}
 			applicantValidDocuments = applicantValidDocumentRepository.findAllByTimeStamp(lastUpdatedTime,
 					currentTimeStamp);
-		} catch (DataAccessException ex) {
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(
 					MasterDataErrorCode.APPLICANT_VALID_DOCUMENT_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.APPLICANT_VALID_DOCUMENT_FETCH_EXCEPTION.getErrorMessage());
@@ -1619,33 +1533,6 @@ public class SyncMasterDataServiceHelper {
 		return CompletableFuture.completedFuture(applicantValidDocumentDtos);
 	}
 
-	/**
-	 * 
-	 * @param lastUpdatedTime  - last updated time stamp
-	 * @param currentTimeStamp - current time stamp
-	 * @return list of {@link IndividualTypeDto}
-	 */
-	@Async
-	public CompletableFuture<List<IndividualTypeDto>> getIndividualType(LocalDateTime lastUpdatedTime,
-			LocalDateTime currentTimeStamp) {
-		List<IndividualType> individualTypes = null;
-		List<IndividualTypeDto> individualTypeDtos = null;
-		try {
-			if (lastUpdatedTime == null) {
-				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
-			}
-			individualTypes = individualTypeRepository.findAllIndvidualTypeByTimeStamp(lastUpdatedTime,
-					currentTimeStamp);
-		} catch (DataAccessException ex) {
-			throw new SyncDataServiceException(MasterDataErrorCode.INDIVIDUAL_TYPE_FETCH_EXCEPTION.getErrorCode(),
-					MasterDataErrorCode.INDIVIDUAL_TYPE_FETCH_EXCEPTION.getErrorMessage());
-		}
-		if (individualTypes != null && !individualTypes.isEmpty()) {
-			individualTypeDtos = MapperUtils.mapAll(individualTypes, IndividualTypeDto.class);
-		}
-		return CompletableFuture.completedFuture(individualTypeDtos);
-
-	}
 
 	@Async
 	public CompletableFuture<List<AppAuthenticationMethodDto>> getAppAuthenticationMethodDetails(
@@ -1658,7 +1545,8 @@ public class SyncMasterDataServiceHelper {
 			}
 			appAuthenticationMethods = appAuthenticationMethodRepository
 					.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime, currentTimeStamp);
-		} catch (DataAccessException ex) {
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(
 					MasterDataErrorCode.APP_AUTHORIZATION_METHOD_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.APP_AUTHORIZATION_METHOD_FETCH_EXCEPTION.getErrorMessage());
@@ -1682,7 +1570,8 @@ public class SyncMasterDataServiceHelper {
 			}
 			appDetails = appDetailRepository.findByLastUpdatedTimeAndCurrentTimeStamp(lastUpdatedTime,
 					currentTimeStamp);
-		} catch (DataAccessException ex) {
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.APP_DETAIL_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.APP_DETAIL_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -1724,7 +1613,8 @@ public class SyncMasterDataServiceHelper {
 			}
 			screenAuthorizationList = screenAuthorizationRepository
 					.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime, currentTimeStamp);
-		} catch (DataAccessException ex) {
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.SCREEN_AUTHORIZATION_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.SCREEN_AUTHORIZATION_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -1745,7 +1635,8 @@ public class SyncMasterDataServiceHelper {
 			}
 			processList = processListRepository.findByLastUpdatedTimeAndCurrentTimeStamp(lastUpdatedTime,
 					currentTimeStamp);
-		} catch (DataAccessException ex) {
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.PROCESS_LIST_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.PROCESS_LIST_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -1778,7 +1669,8 @@ public class SyncMasterDataServiceHelper {
 			screenDetails = screenDetailRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime,
 					currentTimeStamp);
 
-		} catch (DataAccessException ex) {
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -1799,7 +1691,8 @@ public class SyncMasterDataServiceHelper {
 			}
 			foundationalTrustProviders = foundationalTrustProviderRepository
 					.findAllLatestCreatedUpdateDeleted(lastUpdatedTime, currentTimeStamp);
-		} catch (DataAccessException ex) {
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -1821,7 +1714,8 @@ public class SyncMasterDataServiceHelper {
 			}
 			deviceTypeDPMs = deviceTypeDPMRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime,
 					currentTimeStamp);
-		} catch (DataAccessException ex) {
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -1842,7 +1736,8 @@ public class SyncMasterDataServiceHelper {
 			}
 			deviceSubTypeDPMs = deviceSubTypeDPMRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime,
 					currentTimeStamp);
-		} catch (DataAccessException ex) {
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
 			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_SUB_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.DEVICE_SUB_TYPE_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -1886,6 +1781,29 @@ public class SyncMasterDataServiceHelper {
 		}
 	}
 
+	@Async
+	public CompletableFuture<List<PermittedConfigDto>> getPermittedConfig(LocalDateTime lastUpdated,
+															 LocalDateTime currentTimeStamp) {
+		List<PermittedConfigDto> dtoList = null;
+		List<PermittedLocalConfig> list = null;
+		try {
+
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			list = permittedLocalConfigRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
+			throw new SyncDataServiceException(MasterDataErrorCode.PERMITTED_CONFIG_FETCH_FAILED.getErrorCode(),
+					e.getMessage(), e);
+		}
+		if (list != null && !list.isEmpty()) {
+			dtoList = MapperUtils.mapAll(list, PermittedConfigDto.class);
+		}
+		return CompletableFuture.completedFuture(dtoList);
+	}
+
 	public void getSyncDataBaseDto(Class entityClass, String entityType, List entities, String publicKey, List result) {
 		getSyncDataBaseDto(entityClass.getSimpleName(), entityType, entities, publicKey, result);
 	}
@@ -1911,7 +1829,6 @@ public class SyncMasterDataServiceHelper {
 					tpmCryptoRequestDto
 							.setValue(CryptoUtil.encodeBase64(mapper.getObjectAsJsonString(list).getBytes()));
 					tpmCryptoRequestDto.setPublicKey(publicKey);
-					tpmCryptoRequestDto.setTpm(this.isTPMRequired);
 					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService
 							.csEncrypt(tpmCryptoRequestDto);
 					result.add(new SyncDataBaseDto(entityName, entityType, tpmCryptoResponseDto.getValue()));

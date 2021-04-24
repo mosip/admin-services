@@ -21,8 +21,10 @@ import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.*;
 import io.mosip.kernel.syncdata.entity.AppDetail;
 import io.mosip.kernel.syncdata.entity.LocationHierarchy;
+import io.mosip.kernel.syncdata.entity.ModuleDetail;
 import io.mosip.kernel.syncdata.exception.*;
 import io.mosip.kernel.syncdata.repository.AppDetailRepository;
+import io.mosip.kernel.syncdata.repository.ModuleDetailRepository;
 import io.mosip.kernel.syncdata.service.helper.KeymanagerHelper;
 import io.mosip.kernel.syncdata.service.helper.LocationHierarchyHelper;
 
@@ -98,7 +100,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	private CACertificateStoreRepository caCertificateStoreRepository;
 
 	@Autowired
-	private AppDetailRepository appDetailRepository;
+	private ModuleDetailRepository moduleDetailRepository;
 
 
 	@Override
@@ -122,10 +124,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		
 		MachineDataHelper machineDataHelper = new MachineDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		machineDataHelper.retrieveData(serviceHelper, futures);
-		
-		//DeviceDataHelper deviceDataHelper = new DeviceDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		//deviceDataHelper.retrieveData(serviceHelper, futures);
-		
+
 		IndividualDataHelper individualDataHelper = new IndividualDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		individualDataHelper.retrieveData(serviceHelper, futures);
 		
@@ -133,17 +132,14 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 				lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		RegistrationCenterDataHelper.retrieveData(serviceHelper, futures);
 
-		AppDetail appDetail = appDetailRepository.findByNameAndLangCode("Registration Client", "eng");
+		ModuleDetail moduleDetail = moduleDetailRepository.findByNameAndLangCode("Registration Client", "eng");
 		TemplateDataHelper templateDataHelper = new TemplateDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey(),
-				appDetail != null ? appDetail.getId() : "10003");
+				moduleDetail != null ? moduleDetail.getId() : "10003");
 		templateDataHelper.retrieveData(serviceHelper, futures);
 		
 		DocumentDataHelper documentDataHelper = new DocumentDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		documentDataHelper.retrieveData(serviceHelper, futures);
 		
-		//HistoryDataHelper historyDataHelper = new HistoryDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		//historyDataHelper.retrieveData(serviceHelper, futures);
-
 		LocationHierarchyHelper locationHierarchyHelper = new LocationHierarchyHelper(lastUpdated, regCenterMachineDto.getPublicKey());
 		locationHierarchyHelper.retrieveData(serviceHelper, futures);
 		
@@ -167,12 +163,10 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		applicationDataHelper.fillRetrievedData(serviceHelper, list);
 		machineDataHelper.fillRetrievedData(serviceHelper, list);
 		locationHierarchyHelper.fillRetrievedData(serviceHelper, list);
-		//deviceDataHelper.fillRetrievedData(serviceHelper, list);
 		individualDataHelper.fillRetrievedData(serviceHelper, list);
 		RegistrationCenterDataHelper.fillRetrievedData(serviceHelper, list);
 		templateDataHelper.fillRetrievedData(serviceHelper, list);
 		documentDataHelper.fillRetrievedData(serviceHelper, list);
-		//historyDataHelper.fillRetrievedData(serviceHelper, list);
 		miscellaneousDataHelper.fillRetrievedData(serviceHelper, list);
 		
 		response.setDataToSync(list);

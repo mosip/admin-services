@@ -84,7 +84,8 @@ public enum MasterDataErrorCode {
 
 	SCHEMA_FETCH_FAILED("KER-SNC-166", "Identity schema fetch failed"),
 	DYNAMIC_FIELD_FETCH_FAILED("KER-SNC-167", "Dynamic fields fetch failed"),
-	LOCATION_HIERARCHY_DESERIALIZATION_FAILED("KER-SNC-168", "Location hierarchy deserialization failed");
+	LOCATION_HIERARCHY_DESERIALIZATION_FAILED("KER-SNC-168", "Location hierarchy deserialization failed"),
+	PERMITTED_CONFIG_FETCH_FAILED("KER-SNC-169", "Failed to fetch permitted local config");
 
 	private final String errorCode;
 	private final String errorMessage;

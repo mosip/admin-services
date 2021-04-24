@@ -56,7 +56,7 @@ public class AppAuthenticationMethod extends BaseEntity implements Serializable 
 	private Integer methodSequence;
 
 	/** The lang code. */
-	@Column(name = "lang_code", length = 3, nullable = false)
+	@Column(name = "lang_code", length = 3, nullable = true)
 	private String langCode;
 
 }

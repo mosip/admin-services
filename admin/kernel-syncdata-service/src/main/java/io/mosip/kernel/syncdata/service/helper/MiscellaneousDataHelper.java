@@ -5,21 +5,9 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import io.mosip.kernel.syncdata.dto.BlacklistedWordsDto;
-import io.mosip.kernel.syncdata.dto.FoundationalTrustProviderDto;
-import io.mosip.kernel.syncdata.dto.HolidayDto;
-import io.mosip.kernel.syncdata.dto.ProcessListDto;
-import io.mosip.kernel.syncdata.dto.ScreenAuthorizationDto;
-import io.mosip.kernel.syncdata.dto.ScreenDetailDto;
-import io.mosip.kernel.syncdata.dto.SyncJobDefDto;
+import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.SyncDataBaseDto;
-import io.mosip.kernel.syncdata.entity.BlacklistedWords;
-import io.mosip.kernel.syncdata.entity.FoundationalTrustProvider;
-import io.mosip.kernel.syncdata.entity.Holiday;
-import io.mosip.kernel.syncdata.entity.ProcessList;
-import io.mosip.kernel.syncdata.entity.ScreenAuthorization;
-import io.mosip.kernel.syncdata.entity.ScreenDetail;
-import io.mosip.kernel.syncdata.entity.SyncJobDef;
+import io.mosip.kernel.syncdata.entity.*;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 
 public class MiscellaneousDataHelper {
@@ -34,6 +22,7 @@ public class MiscellaneousDataHelper {
 	CompletableFuture<List<ScreenDetailDto>> screenDetails = null;
 	CompletableFuture<List<ProcessListDto>> processList = null;
 	CompletableFuture<List<SyncJobDefDto>> syncJobDefDtos = null;
+	CompletableFuture<List<PermittedConfigDto>> permittedConfigDtos = null;
 
 	private String publicKey;
 	
@@ -54,6 +43,8 @@ public class MiscellaneousDataHelper {
 		this.processList = serviceHelper.getProcessList(this.lastUpdated, this.currentTimestamp);		
 
 		this.syncJobDefDtos = serviceHelper.getSyncJobDefDetails(this.lastUpdated, this.currentTimestamp);
+
+		this.permittedConfigDtos = serviceHelper.getPermittedConfig(this.lastUpdated, this.currentTimestamp);
 		
 		futures.add(this.holidays);
 		futures.add(this.blacklistedWords);
@@ -64,6 +55,8 @@ public class MiscellaneousDataHelper {
 		futures.add(this.processList);
 
 		futures.add(this.syncJobDefDtos);
+
+		futures.add(this.permittedConfigDtos);
 	}
 	
 	public void fillRetrievedData(final SyncMasterDataServiceHelper serviceHelper, final List<SyncDataBaseDto> list) 
@@ -74,5 +67,6 @@ public class MiscellaneousDataHelper {
 		serviceHelper.getSyncDataBaseDto(ScreenDetail.class, "structured", this.screenDetails.get(), this.publicKey,list);
 		serviceHelper.getSyncDataBaseDto(ProcessList.class, "structured", this.processList.get(), this.publicKey, list);
 		serviceHelper.getSyncDataBaseDto(SyncJobDef.class, "structured", this.syncJobDefDtos.get(), this.publicKey, list);
+		serviceHelper.getSyncDataBaseDto(PermittedLocalConfig.class, "structured", this.permittedConfigDtos.get(), this.publicKey, list);
 	}
 }

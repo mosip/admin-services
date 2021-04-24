@@ -24,6 +24,4 @@ public class IdAndEffectDateTimeID implements Serializable {
 	@Column(name = "eff_dtimes", nullable = false)
 	private LocalDateTime effectDateTime;
 
-	@Column(name = "lang_code", nullable = false, length = 3)
-	private String langCode;
 }

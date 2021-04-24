@@ -9,8 +9,15 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.signature.dto.JWTSignatureRequestDto;
+import io.mosip.kernel.signature.dto.JWTSignatureResponseDto;
+import io.mosip.kernel.syncdata.config.SyncResponseBodyAdviceConfig;
 import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
+import net.minidev.json.JSONObject;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -18,6 +25,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.MethodParameter;
+import org.springframework.http.*;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -46,10 +58,12 @@ public class UserConfigIntegrationTest {
 	@Autowired
 	private SyncConfigDetailsService syncConfigDetailsService;
 
-	private SignatureResponse signResponse;
-
 	@MockBean
 	private MachineRepository machineRepository;
+
+	@MockBean
+	private SyncResponseBodyAdviceConfig syncResponseBodyAdviceConfig;
+
 
 	// ###########################CONFIG START#########################
 	private static final String JSON_CONFIG_RESPONSE = "{\r\n" + "\"registrationConfiguration\":\r\n"
@@ -65,10 +79,6 @@ public class UserConfigIntegrationTest {
 	@WithUserDetails(value = "reg-officer")
 	@Test
 	public void testGetConfig() throws Exception {
-		signResponse = new SignatureResponse();
-		signResponse.setData("asdasdsadf4e");
-		signResponse.setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
-		when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
 		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
 				"mosip.kernel.syncdata.global-config-file");
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
@@ -80,10 +90,6 @@ public class UserConfigIntegrationTest {
 	@WithUserDetails(value = "reg-officer")
 	@Test
 	public void testGetConfigWithMachineName() throws Exception {
-		signResponse = new SignatureResponse();
-		signResponse.setData("asdasdsadf4e");
-		signResponse.setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
-
 		List<Machine> machines = new ArrayList<>();
 		Machine machine = new Machine();
 		machine.setId("10001");
@@ -92,7 +98,6 @@ public class UserConfigIntegrationTest {
 		machines.add(machine);
 		when(machineRepository.findByMachineNameAndIsActive(Mockito.anyString())).thenReturn(machines);
 
-		when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
 		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
 				"mosip.kernel.syncdata.global-config-file");
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
@@ -106,10 +111,7 @@ public class UserConfigIntegrationTest {
 	public void testGlobalConfig() throws Exception {
 		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
 				"mosip.kernel.syncdata.global-config-file");
-		signResponse = new SignatureResponse();
-		signResponse.setData("asdasdsadf4e");
-		signResponse.setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
-		when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
+
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
 				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
@@ -139,14 +141,15 @@ public class UserConfigIntegrationTest {
 	@WithUserDetails(value = "reg-officer")
 	@Test
 	public void testRegistrationConfig() throws Exception {
-		signResponse = new SignatureResponse();
-		signResponse.setData("asdasdsadf4e");
-		signResponse.setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
-		when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
+		/*ResponseWrapper responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(new JSONObject());*/
+
+		when(syncResponseBodyAdviceConfig.beforeBodyWrite(Mockito.any(), Mockito.any(),
+				Mockito.any(), Mockito.any(),Mockito.any(), Mockito.any())).thenReturn(new ResponseWrapper<>());
+
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
 				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
-				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
 		mockMvc.perform(get("/registrationcenterconfig/1")).andExpect(status().isOk());
 	}
 }

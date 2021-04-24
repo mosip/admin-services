@@ -337,8 +337,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		List<JsonNode> jsonArray = new ArrayList<>();
 		dynamicFields.forEach(dynamicField -> {
 			try {
-				if(dynamicField.getValueJson() != null &&
-						dynamicField.getIsActive() && (dynamicField.getIsDeleted() != null && !dynamicField.getIsDeleted() )) {
+				if(dynamicField.getValueJson() != null && dynamicField.getIsActive()) {
 					jsonArray.add(objectMapper.readTree(dynamicField.getValueJson()));
 				}
 			} catch (IOException e) { }

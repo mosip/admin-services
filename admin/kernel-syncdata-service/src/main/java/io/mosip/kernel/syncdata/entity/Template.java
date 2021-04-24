@@ -75,15 +75,11 @@ public class Template extends BaseEntity implements Serializable {
 	private ModuleDetail moduleDetail;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumns({
-			@JoinColumn(name = "file_format_code", referencedColumnName = "code", insertable = false, updatable = false),
-			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	@JoinColumn(name = "file_format_code", referencedColumnName = "code", insertable = false, updatable = false)
 	private TemplateFileFormat templateFileFormat;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumns({
-			@JoinColumn(name = "template_typ_code", referencedColumnName = "code", insertable = false, updatable = false),
-			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	@JoinColumn(name = "template_typ_code", referencedColumnName = "code", insertable = false, updatable = false)
 	private TemplateType templateType;
 
 }

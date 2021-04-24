@@ -35,7 +35,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "device_spec", schema = "master")
-@IdClass(IdAndLanguageCodeID.class)
 public class DeviceSpecification extends BaseEntity implements Serializable {
 	/**
 	* 
@@ -43,9 +42,10 @@ public class DeviceSpecification extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
-			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
+	@Column(name = "id", nullable = false, length = 36)
 	private String id;
+
+	@Column(name = "lang_code", length = 3)
 	private String langCode;
 
 	@Column(name = "name", nullable = false, length = 64)
@@ -67,9 +67,7 @@ public class DeviceSpecification extends BaseEntity implements Serializable {
 	private String description;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumns({
-			@JoinColumn(name = "dtyp_code", referencedColumnName = "code", insertable = false, updatable = false),
-			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	@JoinColumn(name = "dtyp_code", referencedColumnName = "code", insertable = false, updatable = false)
 	private DeviceType deviceType;
 
 }
