@@ -45,7 +45,7 @@ public class DeviceSpecification extends BaseEntity implements Serializable {
 	@Column(name = "id", nullable = false, length = 36)
 	private String id;
 
-	@Column(name = "lang_code", nullable = true, length = 3)
+	@Column(name = "lang_code", length = 3)
 	private String langCode;
 
 	@Column(name = "name", nullable = false, length = 64)

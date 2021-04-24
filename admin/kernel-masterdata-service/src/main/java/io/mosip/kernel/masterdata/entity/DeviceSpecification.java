@@ -41,7 +41,7 @@ public class DeviceSpecification extends BaseEntity implements Serializable {
 	@AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36))
 	private String id;
 
-	@Column(name = "lang_code", nullable = false, length = 3)
+	@Column(name = "lang_code", length = 3)
 	private String langCode;
 
 	@Column(name = "name", nullable = false, length = 64)

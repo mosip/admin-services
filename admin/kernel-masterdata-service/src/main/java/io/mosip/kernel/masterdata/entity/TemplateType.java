@@ -32,7 +32,7 @@ public class TemplateType extends BaseEntity implements Serializable {
 	@AttributeOverride(name = "code", column = @Column(name = "code", nullable = false, length = 36))
 	private String code;
 
-	@Column(name = "lang_code", nullable = false, length = 3)
+	@Column(name = "lang_code", length = 3)
 	private String langCode;
 
 	@Column(name = "descr", length = 256)
