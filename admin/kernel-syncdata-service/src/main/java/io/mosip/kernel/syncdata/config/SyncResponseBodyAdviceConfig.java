@@ -141,13 +141,12 @@ public class SyncResponseBodyAdviceConfig implements ResponseBodyAdvice<Response
 					new TypeReference<ResponseWrapper<JWTSignatureResponseDto>>() {});
 
 			if(resp.getErrors() != null && !resp.getErrors().isEmpty()) {
-				logger.info("", "", "", resp.getErrors().get(0).getErrorCode());
-				logger.info("", "", "", resp.getErrors().get(0).getMessage());
 				throw new SyncInvalidArgumentException(resp.getErrors());
 			}
 
 			return resp.getResponse().getJwtSignedData();
 		} catch (Exception e) {
+			logger.error("", "", "", ExceptionUtils.parseException(e));
 			throw e;
 		}
 	}

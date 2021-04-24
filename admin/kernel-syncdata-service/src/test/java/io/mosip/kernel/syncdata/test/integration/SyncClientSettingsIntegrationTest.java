@@ -1670,7 +1670,7 @@ public class SyncClientSettingsIntegrationTest {
 		MvcResult result = mockMvc.perform(get(syncDataUrlWithKeyIndexAndRegCenterId)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			System.out.println("Response >>>> " + jsonObject);
+			//System.out.println("Response >>>> " + jsonObject);
 			JSONArray errors =  jsonObject.getJSONArray("errors");
 			assertNotNull(errors);
 			assertEquals(MasterDataErrorCode.REG_CENTER_UPDATED.getErrorCode(), errors.getJSONObject(0).getString("errorCode"));
