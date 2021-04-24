@@ -12,6 +12,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.kernel.syncdata.config.SyncResponseBodyAdviceConfig;
 import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.ClientPublicKeyResponseDto;
 import io.mosip.kernel.syncdata.entity.Machine;
@@ -79,11 +80,6 @@ public class SyncDataControllerTest {
 	@MockBean
 	private UserDetailsRepository userRepository;
 
-	private SignatureResponse signResponse;
-
-	@MockBean
-	private SignatureUtil signingUtil;
-
 	JSONObject globalConfigMap = null;
 	JSONObject regCentreConfigMap = null;
 	
@@ -101,31 +97,17 @@ public class SyncDataControllerTest {
 	@Value("${mosip.kernel.syncdata-service-machine-url}")
 	private String machineUrl;
 
+	@MockBean
+	private SyncResponseBodyAdviceConfig syncResponseBodyAdviceConfig;
+
 	@Before
 	public void setup() {
 
 		configDetialsSyncSetup();
 		syncMasterDataSetup();
 		getUsersBasedOnRegCenterSetUp();
-		signResponse = new SignatureResponse();
-		signResponse.setData("asdasdsadf4e");
-		signResponse.setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
-		
-		mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(idSchemaUrl);
-		mockRestServer.expect(MockRestRequestMatchers.requestTo(builder.build().toString()))
-		.andRespond(withSuccess().body(
-				"{ \"id\": null, \"version\": null, \"responsetime\": \"2019-04-24T09:07:42.017Z\", \"metadata\": null, "
-				+ "\"response\": { \"lastSyncTime\": \"2019-04-24T09:07:41.771Z\", "
-				+ "\"idVersion\": 1.0, \"schema\": [{\"id\":\"IDSchemaVersion\",\"inputRequired\":false,\"type\":\"number\",\"minimum\":0,"
-				+ "\"maximum\":0,\"description\":\"\",\"label\":[{\"value\":\"IDSchemaVersion\",\"language\":\"eng\"}],\"controlType\":\"none\",\"fieldType\":\"default\","
-				+ "\"format\":\"none\",\"validators\":[],\"fieldCategory\":\"Pvt\",\"required\":false},{\"id\":\"UIN\",\"inputRequired\":false,"
-				+ "\"type\":\"integer\",\"minimum\":0,\"maximum\":0,\"description\":\"\",\"label\":[{\"value\":\"UIN\",\"language\":\"eng\"}],\"controlType\":\"none\","
-				+ "\"fieldType\":\"default\",\"format\":\"none\",\"validators\":[],\"fieldCategory\":\"Pvt\",\"required\":false},{\"id\":\"fullName\","
-				+ "\"inputRequired\":true,\"type\":\"simpleType\",\"minimum\":0,\"maximum\":0,\"description\":\"\",\"label\":[{\"value\":\"Full Name\",\"language\":\"eng\"}],"
-				+ "\"controlType\":\"textbox\",\"fieldType\":\"default\",\"format\":\"none\",\"validators\":[],\"fieldCategory\":\"Pvt\",\"required\":true}], "
-				+ "\"schemaJson\": \"{}\", \"effectiveFrom\" : \"2019-04-24T09:07:42.017Z\"}, \"errors\": null }"));
 
+		mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
 	}
 
 	SyncUserDetailDto syncUserDetailDto;
@@ -192,7 +174,7 @@ public class SyncDataControllerTest {
 	@WithUserDetails(value = "reg-officer")
 	public void syncGlobalConfigDetailsSuccess() throws Exception {
 
-		when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
+		//when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
 		when(syncConfigDetailsService.getGlobalConfigDetails()).thenReturn(globalConfigMap);
 		mockMvc.perform(get("/globalconfigs")).andExpect(status().isOk());
 	}
@@ -200,7 +182,7 @@ public class SyncDataControllerTest {
 	@Test
 	@WithUserDetails(value = "reg-officer")
 	public void syncRegistrationConfigDetailsSuccess() throws Exception {
-		when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
+		//when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
 		when(syncConfigDetailsService.getRegistrationCenterConfigDetails(Mockito.anyString()))
 				.thenReturn(globalConfigMap);
 		mockMvc.perform(get("/registrationcenterconfig/1")).andExpect(status().isOk());
@@ -218,7 +200,6 @@ public class SyncDataControllerTest {
 	@WithUserDetails(value = "reg-officer")
 	public void getUsersBasedOnRegCenter() throws Exception {
 		String regId = "110044";
-		when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
 		when(syncUserDetailsService.getAllUserDetail(regId)).thenReturn(syncUserDetailDto);
 		mockMvc.perform(get("/userdetails/{regid}", "110044")).andExpect(status().isOk());
 
@@ -241,7 +222,7 @@ public class SyncDataControllerTest {
 	public void getPublicKey() throws Exception {
 		PublicKeyResponse<String> publicKeyResponse = new PublicKeyResponse<>();
 		publicKeyResponse.setPublicKey("aasfdsfsadfdsaf");
-		when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
+		//when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
 		Mockito.when(syncConfigDetailsService.getPublicKey(Mockito.anyString(), Mockito.anyString(), Mockito.any()))
 				.thenReturn(publicKeyResponse);
 		mockMvc.perform(get("/publickey/REGISTRATION").param("timeStamp", "2019-09-09T09%3A00%3A00.000Z"))
@@ -253,7 +234,7 @@ public class SyncDataControllerTest {
 	@WithUserDetails(value = "reg-officer")
 	@Test
 	public void getAllRoles() throws Exception {
-		when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
+		//when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
 		RolesResponseDto rolesResponseDto = new RolesResponseDto();
 		rolesResponseDto.setLastSyncTime("2019-09-09T09:09:09.000Z");
 		Mockito.when(syncRolesService.getAllRoles()).thenReturn(rolesResponseDto);
@@ -295,7 +276,7 @@ public class SyncDataControllerTest {
 	@WithUserDetails(value = "reg-officer")
 	@Test
 	public void validateLatestSchemaSync() throws Exception {
-		when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
+		//when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
 		mockMvc.perform(get("/latestidschema").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
 
@@ -332,7 +313,7 @@ public class SyncDataControllerTest {
 	@Test
 	@WithUserDetails(value = "reg-officer")
 	public void syncClientConfigDetailsSuccess() throws Exception {
-		when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
+		//when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
 		JSONObject config = new JSONObject();
 		config.put("globalConfiguration", "tttttttttttttttttttttt");
 		config.put("registrationConfiguration", "tttttttttttttttttttttt");
