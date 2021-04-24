@@ -29,7 +29,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "machine_type", schema = "master")
-@IdClass(CodeAndLanguageCodeID.class)
 public class MachineType extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = -8541947587557590379L;
@@ -38,10 +37,10 @@ public class MachineType extends BaseEntity implements Serializable {
 	 * Field for composite primary key code and Language code
 	 */
 	@Id
-	@AttributeOverrides({
-			@AttributeOverride(name = "code", column = @Column(name = "code", nullable = false, length = 36)),
-			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
+	@Column(name = "code")
 	private String code;
+
+	@Column(name = "lang_code")
 	private String langCode;
 
 	/**

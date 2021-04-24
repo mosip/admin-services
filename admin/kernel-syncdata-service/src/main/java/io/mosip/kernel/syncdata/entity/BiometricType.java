@@ -27,7 +27,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "biometric_type", schema = "master")
-@IdClass(CodeAndLanguageCodeID.class)
 public class BiometricType extends BaseEntity implements Serializable {
 
 	/**
@@ -36,9 +35,10 @@ public class BiometricType extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 4605128758645778470L;
 
 	@Id
-	@AttributeOverrides({ @AttributeOverride(name = "code", column = @Column(name = "code", nullable = false)),
-			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
+	@AttributeOverride(name = "code", column = @Column(name = "code", nullable = false))
 	private String code;
+
+	@Column(name = "lang_code", nullable = true, length = 3)
 	private String langCode;
 
 	@Column(name = "name", nullable = false)
