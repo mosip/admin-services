@@ -94,7 +94,7 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 	 * @param updatedBy
 	 * @return
 	 */
-	
+	@Modifying
 	@Query("UPDATE DynamicField SET isActive=?2 , updatedDateTime=?3, updatedBy=?4"
 			+ " WHERE (isDeleted is null OR isDeleted = false) and name=?1")
 	int updateAllDynamicFieldIsActive(String name, boolean isActive, LocalDateTime updatedDateTime, String updatedBy);
