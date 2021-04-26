@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import io.mosip.kernel.syncdata.dto.IdSchemaDto;
 import io.mosip.kernel.syncdata.dto.UploadPublicKeyRequestDto;
 import io.mosip.kernel.syncdata.dto.UploadPublicKeyResponseDto;
@@ -46,7 +48,7 @@ public interface SyncMasterDataService {
 	 * @param lastUpdated
 	 * @return
 	 */
-	IdSchemaDto getLatestPublishedIdSchema(LocalDateTime lastUpdated, double schemaVersion, String domain, String type);
+	JsonNode getLatestPublishedIdSchema(LocalDateTime lastUpdated, double schemaVersion, String domain, String type);
 
 	/**
 	 * Fetches certifcates from kernel-keymanager service based on the provided appId and refId

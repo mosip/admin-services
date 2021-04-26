@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -300,7 +302,7 @@ public class SyncDataController {
 	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','RESIDENT','INDIVIDUAL','Default')")
 	@ResponseFilter
 	@GetMapping(value = "/latestidschema", produces = "application/json")
-	public ResponseWrapper<IdSchemaDto> getLatestPublishedIdSchema(
+	public ResponseWrapper<JsonNode> getLatestPublishedIdSchema(
 			@RequestParam(value = "lastupdated", required = false) String lastUpdated,
 			@RequestParam(value = "schemaVersion", defaultValue = "0", required = false) double schemaVersion,
 			@RequestParam(name = "domain", required = false) String domain,
@@ -308,7 +310,7 @@ public class SyncDataController {
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		
-		ResponseWrapper<IdSchemaDto> response = new ResponseWrapper<>();
+		ResponseWrapper<JsonNode> response = new ResponseWrapper<>();
 		response.setResponse(masterDataService.getLatestPublishedIdSchema(timestamp, schemaVersion, domain, type));
 		return response;
 	}

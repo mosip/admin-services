@@ -1,6 +1,5 @@
 package io.mosip.kernel.syncdata.service.helper;
 
-
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -35,27 +35,21 @@ import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 
-
-
 @Component
 public class IdentitySchemaHelper {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(IdentitySchemaHelper.class);
-	
+
 	@Autowired
 	private RestTemplate restTemplate;
 
 	@Autowired
 	private ObjectMapper objectMapper;
-	
+
 	@Value("${mosip.kernel.syncdata-service-idschema-url}")
 	private String idSchemaUrl;
-	
-	@Autowired
-	private SyncMasterDataServiceHelper serviceHelper;
 
-	
-	public IdSchemaDto getLatestIdentitySchema(LocalDateTime lastUpdated, double schemaVersion, String domain,
+	public JsonNode getLatestIdentitySchema(LocalDateTime lastUpdated, double schemaVersion, String domain,
 			String type) {
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(idSchemaUrl);
@@ -67,21 +61,20 @@ public class IdentitySchemaHelper {
 				builder.queryParam("type", type);
 			}
 			ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().toUri(), String.class);
-			
+
 			objectMapper.registerModule(new JavaTimeModule());
-			ResponseWrapper<IdSchemaDto> resp = objectMapper.readValue(responseEntity.getBody(), 
-					new TypeReference<ResponseWrapper<IdSchemaDto>>() {});
-			
-			if(resp.getErrors() != null && !resp.getErrors().isEmpty())
-				throw new SyncInvalidArgumentException(resp.getErrors());			
-			
-			return resp.getResponse();
+			ResponseWrapper<IdSchemaDto> resp = objectMapper.readValue(responseEntity.getBody(),
+					new TypeReference<ResponseWrapper<IdSchemaDto>>() {
+					});
+
+			if (resp.getErrors() != null && !resp.getErrors().isEmpty())
+				throw new SyncInvalidArgumentException(resp.getErrors());
+			return objectMapper.readTree(responseEntity.getBody());
 		} catch (Exception e) {
 			LOGGER.error("Failed to fetch latest schema", e);
-			throw new SyncDataServiceException(MasterDataErrorCode.SCHEMA_FETCH_FAILED.getErrorCode(), 
-					MasterDataErrorCode.SCHEMA_FETCH_FAILED.getErrorMessage() + " : " + 
-							ExceptionUtils.buildMessage(e.getMessage(), e.getCause()));
-		}		
+			throw new SyncDataServiceException(MasterDataErrorCode.SCHEMA_FETCH_FAILED.getErrorCode(),
+					MasterDataErrorCode.SCHEMA_FETCH_FAILED.getErrorMessage() + " : "
+							+ ExceptionUtils.buildMessage(e.getMessage(), e.getCause()));
+		}
 	}
-
 }

@@ -11,6 +11,7 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -195,7 +196,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	}
 	
 	@Override
-	public IdSchemaDto getLatestPublishedIdSchema(LocalDateTime lastUpdated, double schemaVersion, String domain,
+	public JsonNode getLatestPublishedIdSchema(LocalDateTime lastUpdated, double schemaVersion, String domain,
 			String type) {
 		return identitySchemaHelper.getLatestIdentitySchema(lastUpdated, schemaVersion, domain, type);		
 	}
