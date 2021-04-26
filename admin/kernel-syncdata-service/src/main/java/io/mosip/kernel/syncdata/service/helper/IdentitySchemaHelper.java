@@ -63,13 +63,13 @@ public class IdentitySchemaHelper {
 			ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().toUri(), String.class);
 
 			objectMapper.registerModule(new JavaTimeModule());
-			ResponseWrapper<IdSchemaDto> resp = objectMapper.readValue(responseEntity.getBody(),
-					new TypeReference<ResponseWrapper<IdSchemaDto>>() {
+			ResponseWrapper<JsonNode> resp = objectMapper.readValue(responseEntity.getBody(),
+					new TypeReference<ResponseWrapper<JsonNode>>() {
 					});
 
 			if (resp.getErrors() != null && !resp.getErrors().isEmpty())
 				throw new SyncInvalidArgumentException(resp.getErrors());
-			return objectMapper.readTree(responseEntity.getBody());
+			return resp.getResponse();
 		} catch (Exception e) {
 			LOGGER.error("Failed to fetch latest schema", e);
 			throw new SyncDataServiceException(MasterDataErrorCode.SCHEMA_FETCH_FAILED.getErrorCode(),
