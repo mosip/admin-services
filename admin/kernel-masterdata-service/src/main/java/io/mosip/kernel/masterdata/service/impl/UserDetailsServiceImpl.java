@@ -43,6 +43,7 @@ import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.UserDetailsErrorCode;
 import io.mosip.kernel.masterdata.dto.PageDto;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.UserDetailsDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsGetExtnDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsPutDto;
@@ -50,7 +51,6 @@ import io.mosip.kernel.masterdata.dto.UsersDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.UserDetails;
@@ -505,10 +505,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 
 	@Override
-	public PageResponseDto<UserDetailsExtnDto> searchUserDetails(SearchDto searchDto) {
+	public PageResponseDto<UserDetailsExtnDto> searchUserDetails(SearchDtoWithoutLangCode searchDto) {
 		PageResponseDto<UserDetailsExtnDto> pageDto = new PageResponseDto<>();
 		List<UserDetailsExtnDto> userDetails = null;
-		Page<UserDetails> page = masterDataSearchHelper.searchMasterdata(UserDetails.class, searchDto, null);
+		Page<UserDetails> page = masterDataSearchHelper.searchMasterdataWithoutLangCode(UserDetails.class, searchDto,
+				null);
 		if (page.getContent() != null && !page.getContent().isEmpty()) {
 			userDetails = MapperUtils.mapAll(page.getContent(), UserDetailsExtnDto.class);
 			pageDto = PageUtils.pageResponse(page);

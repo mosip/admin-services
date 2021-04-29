@@ -244,6 +244,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		if (page.getContent() != null && !page.getContent().isEmpty()) {
 			for (DynamicField dynamicDto : page.getContent()) {
 				DynamicFieldSearchResponseDto dynamicFieldDto = getDynamicFieldSearchResponseDto(dynamicDto);
+
 				dynamicFieldExtnDtos.add(dynamicFieldDto);
 			}
 			pageDto = PageUtils.pageResponse(page);
@@ -325,7 +326,10 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		dto.setCreatedDateTime(entity.getCreatedDateTime());
 		dto.setUpdatedBy(entity.getUpdatedBy());
 		dto.setUpdatedDateTime(entity.getUpdatedDateTime());
-		dto.setFieldVal(entity.getValueJson());
+		try {
+			dto.setFieldVal(objectMapper.readTree(entity.getValueJson()));
+		} catch (IOException e) {
+		}
 		return dto;
 	}
 	private DynamicFieldExtnDto getDynamicFieldDto(List<DynamicField> dynamicFields) {
