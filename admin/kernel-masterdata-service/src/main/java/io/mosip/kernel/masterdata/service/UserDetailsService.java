@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import io.mosip.kernel.masterdata.dto.PageDto;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.UserDetailsDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsGetExtnDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsPutDto;
@@ -12,7 +13,6 @@ import io.mosip.kernel.masterdata.dto.UsersDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterUserID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -116,10 +116,10 @@ public interface UserDetailsService {
 	
 	/**
 	 * 
-	 * @param searchDto
+	 * @param searchDtoWithoutLangCode
 	 * @return
 	 */
-	public PageResponseDto<UserDetailsExtnDto> searchUserDetails(SearchDto searchDto);
+	public PageResponseDto<UserDetailsExtnDto> searchUserDetails(SearchDtoWithoutLangCode searchDtoWithoutLangCode);
 
 	public StatusResponseDto updateUserStatus(String id, @Valid boolean isActive);
 

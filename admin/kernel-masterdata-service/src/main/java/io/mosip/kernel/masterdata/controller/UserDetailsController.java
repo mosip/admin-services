@@ -20,6 +20,7 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.PageDto;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.UserDetailsDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsGetExtnDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsPutDto;
@@ -202,7 +203,8 @@ public class UserDetailsController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping(value = "/users/search")
-	public ResponseWrapper<PageResponseDto<UserDetailsExtnDto>> serachUsersDetails(@RequestBody @Valid RequestWrapper<SearchDto> dto) {
+	public ResponseWrapper<PageResponseDto<UserDetailsExtnDto>> serachUsersDetails(
+			@RequestBody @Valid RequestWrapper<SearchDtoWithoutLangCode> dto) {
 		ResponseWrapper<PageResponseDto<UserDetailsExtnDto>> responseWrapper = new ResponseWrapper<>();
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_USER_DETAILS_API_IS_CALLED + SearchDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
