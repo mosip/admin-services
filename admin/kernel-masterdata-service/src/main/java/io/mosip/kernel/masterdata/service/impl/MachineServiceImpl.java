@@ -53,7 +53,6 @@ import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
 import io.mosip.kernel.masterdata.entity.MachineType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
-import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -62,11 +61,9 @@ import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.repository.MachineSpecificationRepository;
 import io.mosip.kernel.masterdata.repository.MachineTypeRepository;
-import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.service.MachineService;
-import io.mosip.kernel.masterdata.service.ZoneService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MachineUtil;
@@ -136,9 +133,6 @@ public class MachineServiceImpl implements MachineService {
 	private PageUtils pageUtils;
 
 	@Autowired
-	private ZoneService zoneService;
-
-	@Autowired
 	private MachineHistoryRepository machineHistoryRepository;
 
 	@Autowired
@@ -146,12 +140,6 @@ public class MachineServiceImpl implements MachineService {
 
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
-
-	@Autowired
-	private RegistrationCenterRepository registrationCenterRepository;
-
-	@Autowired
-	private RegistrationCenterHistoryRepository registrationCenterHistoryRepository;
 
 	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
 	private String supportedLang;
@@ -854,8 +842,7 @@ public class MachineServiceImpl implements MachineService {
 		List<Zone> userZones = zoneUtils.getUserZones();
 		boolean isRegCenterMappedToUserZone = false;
 		boolean isInSameHierarchy = false;
-		Zone registrationCenterZone = null;
-		List<String> zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
+		Zone registrationCenterZone = null;		
 		List<RegistrationCenter> centers = regCenterRepository.findByRegId(regCenterId);
 		for (Zone zone : userZones) {
 
@@ -984,7 +971,6 @@ public class MachineServiceImpl implements MachineService {
 					.findMachineById(id);
 			if (machines != null) {
 				masterdataCreationUtil.updateMasterDataStatus(Machine.class, id, isActive, "id");
-				updateNumKiosksRegCenter(isActive, machines.get(0));
 			} else {
 				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, Machine.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
@@ -1015,61 +1001,6 @@ public class MachineServiceImpl implements MachineService {
 				"ADM-544");
 		return statusResponseDto;
 
-	}
-
-	// method to update the NumKiosis for the regCenter id which has got mapped with
-	// machine id
-	private void updateNumKiosksRegCenter(boolean isActive, Machine renMachine) {
-		
-
-		// given machine id is attached to regCenter center or not
-		if (StringUtils.isNotEmpty(renMachine.getRegCenterId())) {
-			String regCenterId = renMachine.getRegCenterId();
-			List<RegistrationCenter> renRegistrationCenters = registrationCenterRepository
-					.findByRegIdAndIsDeletedFalseOrNull(regCenterId);
-
-			// requested machine is true and in DB machine false state
-			if (isActive && !renMachine.getIsActive()) {
-
-				// update the NumberOfKiosks by 1(increase)
-				for (RegistrationCenter registrationCenter : renRegistrationCenters) {
-					short kiosis = (short) (registrationCenter.getNumberOfKiosks() + 1);
-					registrationCenter.setNumberOfKiosks(kiosis);
-					registrationCenter.setUpdatedBy(MetaDataUtils.getContextUser());
-					registrationCenter.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-					RegistrationCenter updRegistrationCenter = registrationCenterRepository.update(registrationCenter);
-
-					// call method to update RegCenter history table
-					updateRegCenterHistory(updRegistrationCenter);
-				}
-
-				// requested machine is false and in DB machine true state
-			} else if (!isActive && renMachine.getIsActive()) {
-
-				// update the NumberOfKiosks by 1(Decrease)
-				for (RegistrationCenter registrationCenter : renRegistrationCenters) {
-					short kiosis = (short) (registrationCenter.getNumberOfKiosks() - 1);
-					registrationCenter.setNumberOfKiosks(kiosis);
-					registrationCenter.setUpdatedBy(MetaDataUtils.getContextUser());
-					registrationCenter.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-					RegistrationCenter updRegistrationCenter = registrationCenterRepository.update(registrationCenter);
-
-					// call method to update RegCenter history table
-					updateRegCenterHistory(updRegistrationCenter);
-				}
-			}
-		}
-	}
-
-	// method to added new row in RegCenter History for updating NumKiosis value in
-	// RegCenter Table
-	private void updateRegCenterHistory(RegistrationCenter updRegistrationCenter) {
-		RegistrationCenterHistory registrationCenterHistoryEntity;
-		registrationCenterHistoryEntity = MetaDataUtils.setCreateMetaData(updRegistrationCenter,
-				RegistrationCenterHistory.class);
-		registrationCenterHistoryEntity.setEffectivetimes(updRegistrationCenter.getUpdatedDateTime());
-		registrationCenterHistoryEntity.setCreatedDateTime(updRegistrationCenter.getUpdatedDateTime());
-		registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
 	}
 
 	private void updatePublicKey(String publicKey, String signPublicKey, Machine machineEntity) {
