@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.test.integration;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -672,7 +674,8 @@ public class MasterDataPaginationIntegrationTest {
 	public void getAllBlackListedWordsDataAccessExceptionTest() throws Exception {
 		when(wordsRepository.findAll(PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "createdDateTime"))))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/blacklistedwords/all")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/blacklistedwords/all"))
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
@@ -688,7 +691,8 @@ public class MasterDataPaginationIntegrationTest {
 	public void getAllTitlesDataAccessExceptionTest() throws Exception {
 		when(titleRepository.findAll(PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "createdDateTime"))))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/title/all")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/title/all"))
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
@@ -705,7 +709,8 @@ public class MasterDataPaginationIntegrationTest {
 		when(documentCategoryRepository
 				.findAll(PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "createdDateTime"))))
 						.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/documentcategories/all")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/documentcategories/all"))
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
@@ -723,7 +728,7 @@ public class MasterDataPaginationIntegrationTest {
 		when(documentTypeRepository
 				.findAll(PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "createdDateTime"))))
 						.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/documenttypes/all")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/documenttypes/all")).andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
@@ -741,7 +746,7 @@ public class MasterDataPaginationIntegrationTest {
 		when(validDocumentRepository
 				.findAll(PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "createdDateTime"))))
 						.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/validdocuments/all")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/validdocuments/all")).andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
@@ -759,7 +764,7 @@ public class MasterDataPaginationIntegrationTest {
 		when(individualTypeRepository
 				.findAll(PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "createdDateTime"))))
 						.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/individualtypes/all")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/individualtypes/all")).andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
@@ -777,7 +782,7 @@ public class MasterDataPaginationIntegrationTest {
 		when(locationRepository
 				.findAll(PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "createdDateTime"))))
 						.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/locations/all")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/locations/all")).andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
@@ -795,7 +800,7 @@ public class MasterDataPaginationIntegrationTest {
 		when(templateRepository
 				.findAll(PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "createdDateTime"))))
 						.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/templates/all")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/templates/all")).andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
@@ -812,7 +817,7 @@ public class MasterDataPaginationIntegrationTest {
 	public void getAllHolidaysDataAccessExceptionTest() throws Exception {
 		when(holidayRepository.findAll(PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "createdDateTime"))))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/holidays/all")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/holidays/all")).andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
@@ -829,7 +834,7 @@ public class MasterDataPaginationIntegrationTest {
 		when(registrationCenterTypeRepository
 				.findAllByIsActive(true,PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "createdDateTime"))))
 						.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/registrationcentertypes/all")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/registrationcentertypes/all")).andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
@@ -847,7 +852,7 @@ public class MasterDataPaginationIntegrationTest {
 		when(genderTypeRepository
 				.findAll(PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "createdDateTime"))))
 						.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/gendertypes/all")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/gendertypes/all")).andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
@@ -865,7 +870,7 @@ public class MasterDataPaginationIntegrationTest {
 		when(machineTypeRepository
 				.findAll(PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "createdDateTime"))))
 						.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/machinetypes/all")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/machinetypes/all")).andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
@@ -883,7 +888,7 @@ public class MasterDataPaginationIntegrationTest {
 		when(machineSpecificationRepository
 				.findAll(PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "createdDateTime"))))
 						.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/machinespecifications/all")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/machinespecifications/all")).andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
@@ -901,7 +906,8 @@ public class MasterDataPaginationIntegrationTest {
 		when(deviceTypeRepository
 				.findAll(PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "createdDateTime"))))
 						.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/devicetypes/all")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/devicetypes/all"))
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
@@ -919,7 +925,8 @@ public class MasterDataPaginationIntegrationTest {
 		when(deviceSpecificationRepository
 				.findAll(PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "createdDateTime"))))
 						.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/devicespecifications/all")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/devicespecifications/all"))
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test

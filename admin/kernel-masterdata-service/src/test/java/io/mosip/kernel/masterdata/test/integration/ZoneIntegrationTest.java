@@ -3,12 +3,14 @@ package io.mosip.kernel.masterdata.test.integration;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -120,7 +122,8 @@ public class ZoneIntegrationTest {
 
 		when(registrationCenterRepo.findByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/zones/authorize?rid=12234234234234234")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/zones/authorize?rid=12234234234234234"))
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 	
 	@Test
@@ -137,7 +140,8 @@ public class ZoneIntegrationTest {
 	public void authorizeZoneZoneExceptionTest() throws Exception {
 		when(registrationCenterRepo.findByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/zones/authorize?rid=12234234234234234")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/zones/authorize?rid=12234234234234234"))
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 }

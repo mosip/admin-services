@@ -5,12 +5,14 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -364,7 +366,7 @@ public class LocationSearchFilterIntegrationTest {
 		String json = objectMapper.writeValueAsString(requestDto);
 		when(locationRepository.findLocationAllHierarchyNames()).thenThrow(DataAccessLayerException.class);
 		mockMvc.perform(post("/locations/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().is5xxServerError());
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
