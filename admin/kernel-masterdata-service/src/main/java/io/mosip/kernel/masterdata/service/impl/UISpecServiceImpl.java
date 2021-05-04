@@ -134,7 +134,7 @@ public class UISpecServiceImpl implements UISpecService {
 	@Override
 	public UISpecResponseDto defineUISpec(UISpecDto dto) {		
 		IdentitySchema identitySchema = validateIdentityShema(dto.getIdentitySchemaId());
-		isJSONValid(dto.getJsonspec() == null ? "[]" : dto.getJsonspec().asText());
+		isJSONValid(dto.getJsonspec() == null ? "[]" : dto.getJsonspec().toString());
 		UISpec uiSpecEntity = MetaDataUtils.setCreateMetaData(dto, UISpec.class);
 
 		uiSpecEntity.setIsActive(false);
@@ -142,7 +142,7 @@ public class UISpecServiceImpl implements UISpecService {
 		uiSpecEntity.setIdSchemaVersion(identitySchema.getIdVersion());
 		uiSpecEntity.setStatus(STATUS_DRAFT);
 		uiSpecEntity.setVersion(0);
-		uiSpecEntity.setJsonSpec(dto.getJsonspec() == null ? "[]" : dto.getJsonspec().asText());
+		uiSpecEntity.setJsonSpec(dto.getJsonspec() == null ? "[]" : dto.getJsonspec().toString());
 		uiSpecEntity.setId(UUID.randomUUID().toString());
 		uiSpecEntity.setIsDeleted(false);
 		uiSpecEntity.setEffectiveFrom(LocalDateTime.now(ZoneId.of(ZoneOffset.UTC.getId())));
@@ -216,7 +216,7 @@ public class UISpecServiceImpl implements UISpecService {
 	@Override
 	public UISpecResponseDto updateUISpec(String id, UISpecDto dto) {
 		IdentitySchema identitySchema = validateIdentityShema(dto.getIdentitySchemaId());
-		isJSONValid(dto.getJsonspec().asText());
+		isJSONValid(dto.getJsonspec() == null ? "[]" : dto.getJsonspec().toString());
 		UISpec uiSpecObjectFromDb = getUISpecById(id);
 		if (STATUS_PUBLISHED.equalsIgnoreCase(uiSpecObjectFromDb.getStatus())) {
 			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_ALREADY_PUBLISHED.getErrorCode(),
@@ -227,7 +227,7 @@ public class UISpecServiceImpl implements UISpecService {
 		uiSpecObjectFromDb.setDescription(dto.getDescription());
 		uiSpecObjectFromDb.setIdentitySchemaId(dto.getIdentitySchemaId());
 		uiSpecObjectFromDb.setIdSchemaVersion(identitySchema.getIdVersion());
-		uiSpecObjectFromDb.setJsonSpec(dto.getJsonspec().asText());
+		uiSpecObjectFromDb.setJsonSpec(dto.getJsonspec().toString());
 		uiSpecObjectFromDb.setUpdatedBy(MetaDataUtils.getContextUser());
 		uiSpecObjectFromDb.setUpdatedDateTime(MetaDataUtils.getCurrentDateTime());
 		uiSpecObjectFromDb.setType(dto.getType());

@@ -60,7 +60,7 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(MasterDataServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataServiceException(
 			final HttpServletRequest httpServletRequest, final MasterDataServiceException e) throws IOException {
-		return getErrorResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR, httpServletRequest);
+		return getErrorResponseEntity(e, HttpStatus.OK, httpServletRequest);
 	}
 
 	@ExceptionHandler(DataNotFoundException.class)
