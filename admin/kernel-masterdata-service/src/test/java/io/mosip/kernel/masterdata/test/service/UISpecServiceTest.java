@@ -2,12 +2,16 @@ package io.mosip.kernel.masterdata.test.service;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,6 +53,8 @@ import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 public class UISpecServiceTest {
+
+	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@MockBean
 	private IdentitySchemaRepository identitySchemaRepository;
@@ -110,7 +116,7 @@ public class UISpecServiceTest {
 		request.setDomain("regclient");
 		request.setIdentitySchemaId("12");
 		request.setIdentitySchemaId("12");
-		request.setJsonspec("[]");
+		request.setJsonspec(getValidJson("[]"));
 		request.setTitle("UISPEC_REG_CLIENT");
 		UISpecResponseDto response = uiSpecService.defineUISpec(request);
 		assertEquals("DRAFT", response.getStatus());
@@ -124,7 +130,7 @@ public class UISpecServiceTest {
 		request.setDescription("UI Spec Description");
 		request.setDomain("regclient");
 		request.setIdentitySchemaId("12");
-		request.setJsonspec("ABC");
+		request.setJsonspec(getValidJson(""));
 		request.setTitle("UISPEC_REG_CLIENT");
 		try {
 			uiSpecService.defineUISpec(request);
@@ -141,7 +147,7 @@ public class UISpecServiceTest {
 		request.setDescription("UI Spec Description");
 		request.setDomain("regclient");
 		request.setIdentitySchemaId("12");
-		request.setJsonspec("[]");
+		request.setJsonspec(getValidJson("[]"));
 		request.setTitle("UISPEC_REG_CLIENT");
 		UISpecResponseDto response = uiSpecService.defineUISpec(request);
 		assertEquals("DRAFT", response.getStatus());
@@ -155,7 +161,7 @@ public class UISpecServiceTest {
 		request.setDescription("UI Spec Description");
 		request.setDomain("regclient");
 		request.setIdentitySchemaId("12");
-		request.setJsonspec("[]");
+		request.setJsonspec(getValidJson("[]"));
 		request.setTitle("UISPEC_REG_CLIENT");
 		UISpecResponseDto response = uiSpecService.defineUISpec(request);
 		assertEquals("DRAFT", response.getStatus());
@@ -171,7 +177,7 @@ public class UISpecServiceTest {
 		request.setDescription("UI Spec Description");
 		request.setDomain("regclient");
 		request.setIdentitySchemaId("12");
-		request.setJsonspec("[]");
+		request.setJsonspec(getValidJson("[]"));
 		request.setTitle("UISPEC_REG_CLIENT_UPDATE");
 		UISpecResponseDto response = uiSpecService.updateUISpec(Mockito.anyString(), request);
 		assertEquals("UISPEC_REG_CLIENT_UPDATE", response.getTitle());
@@ -187,7 +193,7 @@ public class UISpecServiceTest {
 		request.setDescription("UI Spec Description");
 		request.setDomain("regclient");
 		request.setIdentitySchemaId("12");
-		request.setJsonspec("[]");
+		request.setJsonspec(getValidJson("[]"));
 		request.setTitle("UISPEC_REG_CLIENT_UPDATE");
 		try {
 			uiSpecService.updateUISpec(Mockito.anyString(), request);
@@ -206,7 +212,7 @@ public class UISpecServiceTest {
 		request.setDescription("UI Spec Description");
 		request.setDomain("regclient");
 		request.setIdentitySchemaId("12");
-		request.setJsonspec("[]");
+		request.setJsonspec(getValidJson("[]"));
 		request.setTitle("UISPEC_REG_CLIENT_UPDATE");
 		UISpecResponseDto response = uiSpecService.updateUISpec(Mockito.anyString(), request);
 		assertEquals("UISPEC_REG_CLIENT_UPDATE", response.getTitle());
@@ -221,7 +227,7 @@ public class UISpecServiceTest {
 		request.setDescription("UI Spec Description");
 		request.setDomain("regclient");
 		request.setIdentitySchemaId("13");
-		request.setJsonspec("[]");
+		request.setJsonspec(getValidJson("[]"));
 		request.setTitle("UISPEC_REG_CLIENT_UPDATE");
 		UISpecResponseDto response = uiSpecService.updateUISpec(Mockito.anyString(), request);
 		assertEquals("UISPEC_REG_CLIENT_UPDATE", response.getTitle());
@@ -396,6 +402,15 @@ public class UISpecServiceTest {
 			uiSpecService.getAllUISpecs(0, 10, "cr_dtimes", "desc");
 		} catch (MasterDataServiceException e) {
 			assertEquals(UISpecErrorCode.UI_SPEC_FETCH_EXCEPTION.getErrorCode(), e.getErrorCode());
+		}
+	}
+
+	private JsonNode getValidJson(String jsonInString) {
+		try {
+			return objectMapper.readTree(jsonInString);
+		} catch (IOException e) {
+			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_VALUE_PARSE_ERROR.getErrorCode(),
+					UISpecErrorCode.UI_SPEC_VALUE_PARSE_ERROR.getErrorMessage());
 		}
 	}
 
