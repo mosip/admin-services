@@ -1,13 +1,17 @@
 package io.mosip.kernel.masterdata.test.integration;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +39,7 @@ import io.mosip.kernel.masterdata.entity.DeviceRegister;
 import io.mosip.kernel.masterdata.repository.DeviceRegisterHistoryRepository;
 import io.mosip.kernel.masterdata.repository.DeviceRegisterRepository;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
+import org.springframework.test.web.servlet.MvcResult;
 
 @SpringBootTest(classes = TestBootApplication.class)
 @RunWith(SpringRunner.class)
@@ -127,7 +132,8 @@ public class DeviceRegisterIntergrationTest {
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(put("/device/update/status").param("devicecode", "10001").param("statuscode", "Registered")
 				.content(objectMapper.writeValueAsString(deRegisterDeviceRequestDto))
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isInternalServerError());
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
@@ -147,7 +153,8 @@ public class DeviceRegisterIntergrationTest {
 		when(deviceRegisterRepository.update(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(put("/device/update/status").param("devicecode", "10001").param("statuscode", "Registered")
 				.content(objectMapper.writeValueAsString(deRegisterDeviceRequestDto))
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isInternalServerError());
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
@@ -157,7 +164,8 @@ public class DeviceRegisterIntergrationTest {
 		when(deviceRegisterHistoryRepository.create(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(put("/device/update/status").param("devicecode", "10001").param("statuscode", "Registered")
 				.content(objectMapper.writeValueAsString(deRegisterDeviceRequestDto))
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isInternalServerError());
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 }

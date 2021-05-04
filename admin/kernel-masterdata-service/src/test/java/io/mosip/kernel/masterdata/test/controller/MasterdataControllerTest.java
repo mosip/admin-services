@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -732,7 +733,7 @@ public class MasterdataControllerTest {
 		Mockito.when(biometricAttributeService.getBiometricAttribute(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new MasterDataServiceException("KER-DOC-00000", "exception duringfatching data from db"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/getbiometricattributesbyauthtype/eng/iric"))
-				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	// -------------------------------DocumentCategoryControllerTest--------------------------
@@ -827,7 +828,7 @@ public class MasterdataControllerTest {
 		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new MasterDataServiceException("KER-DOC-10000", "exception during fatching data from db"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/documenttypes/poc/eng"))
-				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 	// -------------------------------IdTypesControllerTest--------------------------
 
@@ -867,7 +868,7 @@ public class MasterdataControllerTest {
 		Mockito.when(languageService.getAllLaguages())
 				.thenThrow(new MasterDataServiceException("KER-MAS-0988", "Error occured while fetching language"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/languages"))
-				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	private void loadSuccessData() {
@@ -916,7 +917,7 @@ public class MasterdataControllerTest {
 		Mockito.when(locationService.getLocationDetails(Mockito.anyString()))
 				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations/eng"))
-				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
@@ -933,7 +934,7 @@ public class MasterdataControllerTest {
 		Mockito.when(locationService.getLocationHierarchyByLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations/KAR/eng"))
-				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
@@ -978,7 +979,7 @@ public class MasterdataControllerTest {
 				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
 		mockMvc.perform(MockMvcRequestBuilders.put("/locations").contentType(MediaType.APPLICATION_JSON)
 				.content(LOCATION_JSON_EXPECTED_POST))
-				.andExpect(MockMvcResultMatchers.status().is5xxServerError());
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
@@ -997,7 +998,7 @@ public class MasterdataControllerTest {
 		Mockito.when(locationService.getImmediateChildrenByLocCodeAndLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations/immediatechildren/eng/KAR"))
-				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 
 	}
 
@@ -1051,7 +1052,7 @@ public class MasterdataControllerTest {
 				.thenThrow(new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
 						LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage()));
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations/locationhierarchy/123"))
-				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 
 	}
 
@@ -1354,7 +1355,7 @@ public class MasterdataControllerTest {
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/blacklistedwords/words")
 				.characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper));
-		mockMvc.perform(requestBuilder).andExpect(status().isInternalServerError());
+		mockMvc.perform(requestBuilder).andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	// --------------------------Registration
@@ -1382,7 +1383,7 @@ public class MasterdataControllerTest {
 				.thenThrow(new MasterDataServiceException("11111", "Database exception"));
 
 		mockMvc.perform(get("/registrationcenters/validate/1/eng/2017-12-12T17:59:59.999Z"))
-				.andExpect(status().isInternalServerError());
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 
 	}
 

@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -241,7 +243,7 @@ public class LocationControllerIntegrationTest {
 		
 		when(repo.findLocationHierarchyByParentLocCodeAndLanguageCode(Mockito.any(), Mockito.any())).thenReturn(Arrays.asList(location1));
 		mockMvc.perform(put("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
-				.andExpect(status().is5xxServerError());
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 	
 	@Test
@@ -448,7 +450,7 @@ public class LocationControllerIntegrationTest {
 	public void getLocationDetailsDataAccessException() throws Exception {
 		when(repo.findDistinctLocationHierarchyByIsDeletedFalse(Mockito.any())).thenThrow(new DataAccessLayerException("","",null));
 		mockMvc.perform(get("/locations/eng").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().is5xxServerError());
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 	
 	@Test
@@ -483,7 +485,7 @@ public class LocationControllerIntegrationTest {
 	public void getLocationDataByHierarchyNameDataAccessLayerException() throws Exception {
 		when(repo.findAllByHierarchyNameIgnoreCase(Mockito.any())).thenThrow(new DataAccessLayerException("","",null));
 		mockMvc.perform(get("/locations/locationhierarchy/City").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().is5xxServerError());
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 	
 	@Test
@@ -521,7 +523,7 @@ public class LocationControllerIntegrationTest {
 		when(repo.findByCode(Mockito.any())).thenThrow(new DataAccessLayerException("","",null));
 		
 		mockMvc.perform(delete("/locations/MDDR").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().is5xxServerError());
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 	
 	@Test
@@ -540,7 +542,7 @@ public class LocationControllerIntegrationTest {
 		when(repo.findLocationHierarchyByParentLocCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenThrow(DataAccessLayerException.class);
 		
 		mockMvc.perform(get("/locations/immediatechildren/MDDR/eng").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().is5xxServerError());
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 	
 	@Test
@@ -576,7 +578,7 @@ public class LocationControllerIntegrationTest {
 		when(repo.findLocationByCodeAndLanguageCodeAndIsActiveTrue(Mockito.any(),Mockito.any())).thenThrow(DataAccessLayerException.class);
 		
 		mockMvc.perform(get("/locations/info/MDDR/eng").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().is5xxServerError());
+				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 	
 }

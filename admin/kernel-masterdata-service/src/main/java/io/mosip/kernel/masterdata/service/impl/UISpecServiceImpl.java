@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,7 +134,7 @@ public class UISpecServiceImpl implements UISpecService {
 	@Override
 	public UISpecResponseDto defineUISpec(UISpecDto dto) {		
 		IdentitySchema identitySchema = validateIdentityShema(dto.getIdentitySchemaId());
-		isJSONValid(dto.getJsonspec());
+		isJSONValid(dto.getJsonspec() == null ? "[]" : dto.getJsonspec().toString());
 		UISpec uiSpecEntity = MetaDataUtils.setCreateMetaData(dto, UISpec.class);
 
 		uiSpecEntity.setIsActive(false);
@@ -141,7 +142,7 @@ public class UISpecServiceImpl implements UISpecService {
 		uiSpecEntity.setIdSchemaVersion(identitySchema.getIdVersion());
 		uiSpecEntity.setStatus(STATUS_DRAFT);
 		uiSpecEntity.setVersion(0);
-		uiSpecEntity.setJsonSpec(dto.getJsonspec());
+		uiSpecEntity.setJsonSpec(dto.getJsonspec() == null ? "[]" : dto.getJsonspec().toString());
 		uiSpecEntity.setId(UUID.randomUUID().toString());
 		uiSpecEntity.setIsDeleted(false);
 		uiSpecEntity.setEffectiveFrom(LocalDateTime.now(ZoneId.of(ZoneOffset.UTC.getId())));
@@ -204,7 +205,7 @@ public class UISpecServiceImpl implements UISpecService {
 		response.setUpdatedOn(entity.getUpdatedDateTime());
 		response.setEffectiveFrom(entity.getEffectiveFrom());
 		response.setIdSchemaVersion(entity.getIdSchemaVersion());
-		spec.add(new UISpecKeyValuePair(entity.getType(), entity.getJsonSpec()));
+		spec.add(new UISpecKeyValuePair(entity.getType(), getValidJson(entity.getJsonSpec())));
 		response.setJsonSpec(spec);
 		return response;
 	}
@@ -215,7 +216,7 @@ public class UISpecServiceImpl implements UISpecService {
 	@Override
 	public UISpecResponseDto updateUISpec(String id, UISpecDto dto) {
 		IdentitySchema identitySchema = validateIdentityShema(dto.getIdentitySchemaId());
-		isJSONValid(dto.getJsonspec());
+		isJSONValid(dto.getJsonspec() == null ? "[]" : dto.getJsonspec().toString());
 		UISpec uiSpecObjectFromDb = getUISpecById(id);
 		if (STATUS_PUBLISHED.equalsIgnoreCase(uiSpecObjectFromDb.getStatus())) {
 			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_ALREADY_PUBLISHED.getErrorCode(),
@@ -226,7 +227,7 @@ public class UISpecServiceImpl implements UISpecService {
 		uiSpecObjectFromDb.setDescription(dto.getDescription());
 		uiSpecObjectFromDb.setIdentitySchemaId(dto.getIdentitySchemaId());
 		uiSpecObjectFromDb.setIdSchemaVersion(identitySchema.getIdVersion());
-		uiSpecObjectFromDb.setJsonSpec(dto.getJsonspec());
+		uiSpecObjectFromDb.setJsonSpec(dto.getJsonspec().toString());
 		uiSpecObjectFromDb.setUpdatedBy(MetaDataUtils.getContextUser());
 		uiSpecObjectFromDb.setUpdatedDateTime(MetaDataUtils.getCurrentDateTime());
 		uiSpecObjectFromDb.setType(dto.getType());
@@ -396,5 +397,19 @@ public class UISpecServiceImpl implements UISpecService {
 					.collect(Collectors.toList());
 		}
 		return response;
+	}
+
+	/**
+	 *  Validates string is valid json or not and returns the JsonNode
+	 * @param jsonInString
+	 */
+	private JsonNode getValidJson(String jsonInString) {
+		try {
+			return objectMapper.readTree(jsonInString);
+		} catch (IOException e) {
+			LOGGER.error("Given jsonSpec is not a valid json object ", e);
+			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_VALUE_PARSE_ERROR.getErrorCode(),
+					UISpecErrorCode.UI_SPEC_VALUE_PARSE_ERROR.getErrorMessage());
+		}
 	}
 }
