@@ -168,11 +168,7 @@
 			<artifactId>kernel-logger-logback</artifactId>
 			<version>${kernel.logger.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-crypto-signature</artifactId>
-			<version>${kernel.crypto.version}</version>
-		</dependency>
+
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>

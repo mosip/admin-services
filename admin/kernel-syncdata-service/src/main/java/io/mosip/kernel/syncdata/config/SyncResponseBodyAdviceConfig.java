@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import io.mosip.kernel.clientcrypto.constant.ClientCryptoErrorConstants;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.signature.dto.JWTSignatureRequestDto;
@@ -39,7 +40,6 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
-import io.mosip.kernel.cryptosignature.constant.SigningDataErrorCode;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
@@ -107,12 +107,8 @@ public class SyncResponseBodyAdviceConfig implements ResponseBodyAdvice<Response
 				String timestamp = DateUtils.getUTCCurrentDateTimeString();
 				body.setResponsetime(DateUtils.convertUTCToLocalDateTime(timestamp));
 				response.getHeaders().add("response-signature", getResponseSignature(objectMapper.writeValueAsString(body)));
-			} catch (JsonProcessingException e) {
-				throw new ParseResponseException(SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorCode(),
-						SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorCode());
 			} catch (IOException e) {
-				throw new SyncDataServiceException(SigningDataErrorCode.REST_CRYPTO_CLIENT_EXCEPTION.getErrorCode(),
-						SigningDataErrorCode.REST_CRYPTO_CLIENT_EXCEPTION.getErrorCode());
+				throw new SyncDataServiceException("KER-SIG-ERR", e.getMessage(), e);
 			}
 		}
 
