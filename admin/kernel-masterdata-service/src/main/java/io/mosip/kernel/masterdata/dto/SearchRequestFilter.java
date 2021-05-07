@@ -3,7 +3,7 @@ package io.mosip.kernel.masterdata.dto;
 import lombok.Data;
 
 @Data
-public class SearchFilterForRegProc {
+public class SearchRequestFilter {
 
 	private String columnName;
 

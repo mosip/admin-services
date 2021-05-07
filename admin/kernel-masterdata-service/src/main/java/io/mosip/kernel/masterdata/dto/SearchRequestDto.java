@@ -18,12 +18,11 @@ public class SearchRequestDto {
 
 	@NotNull
 	@Valid
-	private List<SearchFilterForRegProc> filters;
+	private List<SearchRequestFilter> filters;
 
 	@NotNull
 	private SearchSort sort;
 
-	// @NotNull
 	private Pagination pagination;
 
 }
