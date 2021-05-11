@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -118,6 +119,7 @@ public class TitleServiceImpl implements TitleService {
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.TitleService#getAllTitles()
 	 */
+	@Cacheable(value = "titles", key = "title")
 	@Override
 	public TitleResponseDto getAllTitles() {
 		TitleResponseDto titleResponseDto = null;
@@ -148,6 +150,7 @@ public class TitleServiceImpl implements TitleService {
 	 * io.mosip.kernel.masterdata.service.TitleService#getByLanguageCode(java.lang.
 	 * String)
 	 */
+	@Cacheable(value = "titles", key = "'title'.concat('-').concat(#languageCode.toString)")
 	@Override
 	public TitleResponseDto getByLanguageCode(String languageCode) {
 		TitleResponseDto titleResponseDto = null;

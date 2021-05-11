@@ -9,6 +9,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -110,6 +111,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
 	 * getAllDocumentCategory()
 	 */
+	@Cacheable(value = "document-category", key = "documentCategory")
 	@Override
 	public DocumentCategoryResponseDto getAllDocumentCategory() {
 		List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
@@ -143,6 +145,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
 	 * getAllDocumentCategoryByLaguageCode(java.lang.String)
 	 */
+	@Cacheable(value = "document-category", key = "'documentCategory'.concat('-').concat(#langCode.toString)")
 	@Override
 	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(String langCode) {
 		List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
@@ -353,6 +356,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
 	 * getAllDocCategories(int, int, java.lang.String, java.lang.String)
 	 */
+	@Cacheable(value = "document-category", key = "'documentCategory'.concat('-').concat(#pageNumber).concat('-').caoncat(#pageSize).concat('-').caoncat(#sortBy.toString).concat('-').caoncat(#orderBy.toString)")
 	@Override
 	public PageDto<DocumentCategoryExtnDto> getAllDocCategories(int pageNumber, int pageSize, String sortBy,
 			String orderBy) {

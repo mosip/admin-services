@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +38,7 @@ public class ExceptionalHolidaysServiceImpl implements ExceptionalHolidayService
 	private String supportedLang;
 
 
+	@Cacheable(value = "exceptional-holiday", key = "'exceptionalHoliday'.concat('-').concat(#regCenterId.toString).concat('-').concat(#langCode.toString)")
 	@Override
 	public ExceptionalHolidayResponseDto getAllExceptionalHolidays(String regCenterId, String langCode) {
 		ExceptionalHolidayResponseDto excepHolidayResponseDto = null;
