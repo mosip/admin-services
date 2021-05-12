@@ -89,7 +89,7 @@ public class TitleServiceImpl implements TitleService {
 	private MasterdataCreationUtil masterdataCreationUtil;
 	
 
-	@Value("${mosip.kernel.masterdata.title_event:masterdata/idauthentication_templates}")
+	@Value("${mosip.kernel.masterdata.title_event:masterdata/titles}")
 	private String topic;
 	
 	@Value("${websub.publish.url}")
