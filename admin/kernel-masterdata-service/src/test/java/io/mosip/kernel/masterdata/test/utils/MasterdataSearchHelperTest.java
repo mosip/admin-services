@@ -7,14 +7,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.exception.RequestException;
+import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.OptionalFilter;
 
@@ -24,6 +30,15 @@ public class MasterdataSearchHelperTest {
 
 	@Autowired
 	private MasterdataSearchHelper searchHelper;
+	
+	@MockBean
+	private PublisherClient<String,TitleDto,HttpHeaders> titlePublisherClient;
+	
+	@MockBean
+	private PublisherClient<String,TemplateDto,HttpHeaders> templatePublisherClient;
+	
+	@MockBean
+	private TemplateService templateService;
 
 	private SearchFilter noColumnFilter;
 	private SearchFilter noBetweenValueFilter;

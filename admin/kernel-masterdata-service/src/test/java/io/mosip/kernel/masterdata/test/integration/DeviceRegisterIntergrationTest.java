@@ -22,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -30,11 +31,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.dto.DeRegisterDeviceRequestDto;
 import io.mosip.kernel.masterdata.dto.DeviceDataDto;
 import io.mosip.kernel.masterdata.dto.DeviceDeRegDto;
 import io.mosip.kernel.masterdata.dto.DeviceInfoDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegisterDto;
+import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.entity.DeviceRegister;
 import io.mosip.kernel.masterdata.repository.DeviceRegisterHistoryRepository;
 import io.mosip.kernel.masterdata.repository.DeviceRegisterRepository;
@@ -48,6 +52,12 @@ public class DeviceRegisterIntergrationTest {
 
 	@Autowired
 	private MockMvc mockMvc;
+	
+	@MockBean
+	private PublisherClient<String,TitleDto,HttpHeaders> titlePublisherClient;
+	
+	@MockBean
+	private PublisherClient<String,TemplateDto,HttpHeaders> templatePublisherClient;
 
 	/**
 	 * Reference to {@link DeviceRegisterRepository}.

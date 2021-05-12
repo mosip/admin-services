@@ -26,10 +26,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
@@ -104,6 +108,12 @@ public class MasterDataPaginationIntegrationTest {
 	List<MachineSpecification> machineSpecificationlist;
 	List<DeviceType> deviceTypelist;
 	List<DeviceSpecification> deviceSpecificationlist;
+	
+	@MockBean
+	private PublisherClient<String,TitleDto,HttpHeaders> titlePublisherClient;
+	
+	@MockBean
+	private PublisherClient<String,TemplateDto,HttpHeaders> templatePublisherClient;
 
 	@MockBean
 	BlacklistedWordsRepository wordsRepository;

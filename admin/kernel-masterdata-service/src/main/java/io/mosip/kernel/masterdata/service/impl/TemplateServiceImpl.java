@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -15,14 +16,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.TemplateErrorCode;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.TemplatePutDto;
+import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
@@ -78,6 +83,15 @@ public class TemplateServiceImpl implements TemplateService {
 
 	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
 	private String supportedLang;
+	
+	@Value("${mosip.kernel.masterdata.template_idauthentication_event:masterdata/idauthentication_templates}")
+	private String topic;
+	
+	@Value("${websub.publish.url}")
+	private String hubURL;
+	
+	@Value("${mosip.kernel.masterdata.template_idauthentication_event_module_name:ID Authentication}")
+	private String idAuthModuleName;
 
 	@Autowired
 	private FilterColumnValidator filterColumnValidator;
@@ -96,6 +110,18 @@ public class TemplateServiceImpl implements TemplateService {
 
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
+	
+	@Autowired
+	private PublisherClient<String,TemplateDto,HttpHeaders> templatePublisherClient;
+	
+	
+	@PostConstruct
+	private void init() {
+		templatePublisherClient.registerTopic(topic, hubURL);
+	}
+
+	
+	
 
 
 	/*
@@ -247,6 +273,10 @@ public class TemplateServiceImpl implements TemplateService {
 				template = masterdataCreationUtil.updateMasterData(Template.class, template);
 				MetaDataUtils.setUpdateMetaData(template, entity, false);
 				templateRepository.update(entity);
+				if(template.getModuleName().equalsIgnoreCase(idAuthModuleName)) {
+					TemplateDto templateDto= MapperUtils.map(template, TemplateDto.class);
+					templatePublisherClient.publishUpdate(topic, templateDto, MediaType.APPLICATION_JSON_UTF8_VALUE, null, hubURL);
+				}
 				idAndLanguageCodeID.setId(entity.getId());
 				idAndLanguageCodeID.setLangCode(entity.getLangCode());
 			} else {
