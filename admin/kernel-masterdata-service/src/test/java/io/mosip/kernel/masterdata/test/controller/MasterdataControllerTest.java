@@ -21,9 +21,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -38,6 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.constant.BlacklistedWordsErrorCode;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
@@ -54,6 +57,7 @@ import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyLevelDto;
 import io.mosip.kernel.masterdata.dto.LocationHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.WeekDaysResponseDto;
 import io.mosip.kernel.masterdata.dto.WorkingDaysResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
@@ -133,10 +137,17 @@ public class MasterdataControllerTest {
 
 	@Autowired
 	public MockMvc mockMvc;
+	
+	@MockBean
+	private PublisherClient<String,TitleDto,HttpHeaders> titlePublisherClient;
+	
+	@MockBean
+	private PublisherClient<String,TemplateDto,HttpHeaders> templatePublisherClient;
 
 	@MockBean
 	AuditUtil aditUtil;
 
+	@Qualifier("restTemplateConfig")
 	@MockBean
 	private RestTemplate restTemplate;
 

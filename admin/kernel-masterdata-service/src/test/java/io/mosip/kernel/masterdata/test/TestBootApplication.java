@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.test;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * Main class of Sync handler Application.
@@ -10,6 +11,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 1.0.0
  */
 @SpringBootApplication(scanBasePackages = "io.mosip.kernel.masterdata.*")
+
+
 //@Profile("test")
 //@Import(TestSecurityConfig.class)
 public class TestBootApplication {

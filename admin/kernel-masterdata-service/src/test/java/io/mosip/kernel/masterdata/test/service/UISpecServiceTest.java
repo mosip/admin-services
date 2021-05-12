@@ -25,11 +25,15 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.constant.UISpecErrorCode;
+import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.entity.IdentitySchema;
 import io.mosip.kernel.masterdata.entity.UISpec;
@@ -38,6 +42,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.IdentitySchemaRepository;
 import io.mosip.kernel.masterdata.repository.UISpecRepository;
 import io.mosip.kernel.masterdata.service.IdentitySchemaService;
+import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.service.UISpecService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecDto;
@@ -53,6 +58,15 @@ import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 public class UISpecServiceTest {
+	
+	@MockBean
+	private PublisherClient<String,TitleDto,HttpHeaders> titlePublisherClient;
+	
+	@MockBean
+	private PublisherClient<String,TemplateDto,HttpHeaders> templatePublisherClient;
+	
+	@MockBean
+	private TemplateService templateService;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 

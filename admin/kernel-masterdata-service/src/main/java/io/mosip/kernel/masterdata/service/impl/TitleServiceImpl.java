@@ -4,20 +4,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.TitleErrorCode;
-import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
 import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
@@ -83,6 +87,23 @@ public class TitleServiceImpl implements TitleService {
 	
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
+	
+
+	@Value("${mosip.kernel.masterdata.title_event:masterdata/titles}")
+	private String topic;
+	
+	@Value("${websub.publish.url}")
+	private String hubURL;
+
+	
+	@Autowired
+	private PublisherClient<String,TitleDto,HttpHeaders> titlePublisherClient;
+	
+	
+	@PostConstruct
+	private void init() {
+		titlePublisherClient.registerTopic(topic, hubURL);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -202,6 +223,7 @@ public class TitleServiceImpl implements TitleService {
 				if(!titles.getIsActive()) {
 					masterdataCreationUtil.updateMasterDataDeactivate(Title.class, titles.getCode());
 				}
+				titlePublisherClient.publishUpdate(topic, titles, MediaType.APPLICATION_JSON_UTF8_VALUE, null, hubURL);
 			} else {
 				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, TitleDto.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
