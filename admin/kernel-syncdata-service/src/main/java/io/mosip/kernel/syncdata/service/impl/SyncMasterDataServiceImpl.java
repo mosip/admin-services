@@ -231,7 +231,27 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		if(certs == null)
 			return caCertificates;
 
-		caCertificates.getCertificateDTOList().addAll(MapperUtils.mapAll(certs, CACertificateDTO.class));
+		certs.forEach(cert -> {
+				CACertificateDTO caCertDto = new CACertificateDTO();
+				caCertDto.setCertId(cert.getCertId());
+				caCertDto.setCertIssuer(cert.getCertIssuer());
+				caCertDto.setCertSubject(cert.getCertSubject());
+				caCertDto.setCertSerialNo(cert.getCertSerialNo());
+				caCertDto.setCertNotAfter(cert.getCertNotAfter());
+				caCertDto.setCertNotBefore(cert.getCertNotBefore());
+				caCertDto.setCertThumbprint(cert.getCertThumbprint());
+				caCertDto.setCertData(cert.getCertData());
+				caCertDto.setIssuerId(cert.getIssuerId());
+				caCertDto.setCreatedtimes(cert.getCreatedtimes());
+				caCertDto.setPartnerDomain(cert.getPartnerDomain());
+				caCertDto.setCrlUri(cert.getCrlUri());
+				caCertDto.setCreatedBy(cert.getCreatedBy());
+				caCertDto.setUpdatedBy(cert.getUpdatedBy());
+				caCertDto.setUpdatedtimes(cert.getUpdatedtimes());
+				caCertDto.setIsDeleted(cert.getIsDeleted());
+				caCertDto.setDeletedtimes(cert.getDeletedtimes());
+				caCertificates.getCertificateDTOList().add(caCertDto);
+		});
 		return caCertificates;
 	}
 
