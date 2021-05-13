@@ -3,13 +3,15 @@ package io.mosip.kernel.masterdata.test.utils;
 import static io.mosip.kernel.masterdata.utils.MapperUtils.map;
 import static io.mosip.kernel.masterdata.utils.MetaDataUtils.setCreateMetaData;
 import static io.mosip.kernel.masterdata.utils.MetaDataUtils.setUpdateMetaData;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
