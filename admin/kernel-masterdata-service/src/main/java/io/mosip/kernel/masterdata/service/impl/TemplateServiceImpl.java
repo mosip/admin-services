@@ -9,6 +9,8 @@ import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -27,7 +29,6 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.TemplateErrorCode;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.TemplatePutDto;
-import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
@@ -58,6 +59,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
+import io.mosip.kernel.websub.api.exception.WebSubClientException;
 
 /**
  * 
@@ -68,6 +70,8 @@ import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
  */
 @Service
 public class TemplateServiceImpl implements TemplateService {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(TemplateServiceImpl.class);
 
 	@Autowired
 	private TemplateRepository templateRepository;
@@ -83,13 +87,13 @@ public class TemplateServiceImpl implements TemplateService {
 
 	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
 	private String supportedLang;
-	
+
 	@Value("${mosip.kernel.masterdata.template_idauthentication_event:masterdata/idauthentication_templates}")
 	private String topic;
-	
+
 	@Value("${websub.publish.url}")
 	private String hubURL;
-	
+
 	@Value("${mosip.kernel.masterdata.template_idauthentication_event_module_name:ID Authentication}")
 	private String idAuthModuleName;
 
@@ -104,25 +108,24 @@ public class TemplateServiceImpl implements TemplateService {
 
 	@Autowired
 	private AuditUtil auditUtil;
-	
+
 	@Autowired
 	private PageUtils pageUtils;
 
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
-	
+
 	@Autowired
-	private PublisherClient<String,TemplateDto,HttpHeaders> templatePublisherClient;
-	
-	
+	private PublisherClient<String, TemplateDto, HttpHeaders> templatePublisherClient;
+
 	@PostConstruct
 	private void init() {
-		templatePublisherClient.registerTopic(topic, hubURL);
+		try {
+			templatePublisherClient.registerTopic(topic, hubURL);
+		} catch (WebSubClientException exception) {
+			LOGGER.warn(exception.getErrorCode() + " ------> " + exception.getMessage());
+		}
 	}
-
-	
-	
-
 
 	/*
 	 * (non-Javadoc)
@@ -213,7 +216,7 @@ public class TemplateServiceImpl implements TemplateService {
 	public IdAndLanguageCodeID createTemplate(TemplateDto template) {
 
 		Template templateEntity;
-		
+
 		try {
 			if (StringUtils.isNotEmpty(supportedLang) && supportedLang.contains(template.getLangCode())) {
 				String uniqueId = generateId();
@@ -225,8 +228,7 @@ public class TemplateServiceImpl implements TemplateService {
 
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException e) {
-			auditUtil.auditRequest(
-					String.format(MasterDataConstant.CREATE_ERROR_AUDIT, Template.class.getSimpleName()),
+			auditUtil.auditRequest(String.format(MasterDataConstant.CREATE_ERROR_AUDIT, Template.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorCode(),
@@ -245,14 +247,13 @@ public class TemplateServiceImpl implements TemplateService {
 				"ADM-813");
 		return idAndLanguageCodeID;
 	}
-	
-	private String generateId() throws DataAccessLayerException , DataAccessException{
+
+	private String generateId() throws DataAccessLayerException, DataAccessException {
 		UUID uuid = UUID.randomUUID();
 		String uniqueId = uuid.toString();
-		
-		List<Template> template = templateRepository
-				.findAllByCodeAndIsDeletedFalseOrIsDeletedIsNull(uniqueId);
-			
+
+		List<Template> template = templateRepository.findAllByCodeAndIsDeletedFalseOrIsDeletedIsNull(uniqueId);
+
 		return template.isEmpty() ? uniqueId : generateId();
 	}
 
@@ -273,15 +274,16 @@ public class TemplateServiceImpl implements TemplateService {
 				template = masterdataCreationUtil.updateMasterData(Template.class, template);
 				MetaDataUtils.setUpdateMetaData(template, entity, false);
 				templateRepository.update(entity);
-				if(template.getModuleName().equalsIgnoreCase(idAuthModuleName)) {
-					TemplateDto templateDto= MapperUtils.map(template, TemplateDto.class);
-					templatePublisherClient.publishUpdate(topic, templateDto, MediaType.APPLICATION_JSON_UTF8_VALUE, null, hubURL);
+				if (template.getModuleName().equalsIgnoreCase(idAuthModuleName)) {
+					TemplateDto templateDto = MapperUtils.map(template, TemplateDto.class);
+
+					templatePublisherClient.publishUpdate(topic, templateDto, MediaType.APPLICATION_JSON_UTF8_VALUE,
+							null, hubURL);
 				}
 				idAndLanguageCodeID.setId(entity.getId());
 				idAndLanguageCodeID.setLangCode(entity.getLangCode());
 			} else {
-				auditUtil.auditRequest(
-						String.format(MasterDataConstant.FAILURE_UPDATE, Template.class.getSimpleName()),
+				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, Template.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
 						String.format(MasterDataConstant.FAILURE_DESC,
 								TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
@@ -290,7 +292,9 @@ public class TemplateServiceImpl implements TemplateService {
 				throw new RequestException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 						TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 			}
-		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
+		} catch (WebSubClientException exception) {
+			LOGGER.warn(exception.getErrorCode() + " ------> " + exception.getMessage());
+		}catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException e) {
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, Template.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,

@@ -7,6 +7,8 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -52,6 +54,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
+import io.mosip.kernel.websub.api.exception.WebSubClientException;
 
 /**
  * Implementing service class for fetching titles from master db
@@ -63,6 +66,8 @@ import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
  */
 @Service
 public class TitleServiceImpl implements TitleService {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(TitleServiceImpl.class);
 
 	@Autowired
 	private TitleRepository titleRepository;
@@ -102,7 +107,11 @@ public class TitleServiceImpl implements TitleService {
 	
 	@PostConstruct
 	private void init() {
+		try {
 		titlePublisherClient.registerTopic(topic, hubURL);
+		}catch (WebSubClientException exception) {
+			LOGGER.warn(exception.getErrorCode()+" ------> "+exception.getMessage());
+		}
 	}
 
 	/*
@@ -234,7 +243,9 @@ public class TitleServiceImpl implements TitleService {
 						TitleErrorCode.TITLE_NOT_FOUND.getErrorMessage());
 			}
 
-		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
+		}catch (WebSubClientException exception) {
+			LOGGER.warn(exception.getErrorCode()+" ------> "+exception.getMessage());
+		}catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException e) {
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, TitleDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
