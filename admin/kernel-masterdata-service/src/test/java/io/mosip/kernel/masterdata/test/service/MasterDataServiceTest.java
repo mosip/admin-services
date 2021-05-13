@@ -33,6 +33,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
@@ -51,10 +52,8 @@ import io.mosip.kernel.masterdata.dto.LocationPutDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceHistoryDto;
-import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatPutDto;
-import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.WorkingDaysResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
@@ -183,11 +182,8 @@ public class MasterDataServiceTest {
 
 	private RegistrationCenterMachineDeviceHistoryDto registrationCenterMachimeDeviceHistoryDto;
 	
-	@MockBean
-	private PublisherClient<String,TitleDto,HttpHeaders> titlePublisherClient;
-	
-	@MockBean
-	private PublisherClient<String,TemplateDto,HttpHeaders> templatePublisherClient;
+		@MockBean
+	private PublisherClient<String,EventModel,HttpHeaders> publisher;
 
 	@MockBean
 	BiometricAttributeRepository biometricAttributeRepository;

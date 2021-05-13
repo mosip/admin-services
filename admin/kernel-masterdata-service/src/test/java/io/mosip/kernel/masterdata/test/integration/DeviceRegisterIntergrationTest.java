@@ -1,10 +1,6 @@
 package io.mosip.kernel.masterdata.test.integration;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,19 +27,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.dto.DeRegisterDeviceRequestDto;
 import io.mosip.kernel.masterdata.dto.DeviceDataDto;
 import io.mosip.kernel.masterdata.dto.DeviceDeRegDto;
 import io.mosip.kernel.masterdata.dto.DeviceInfoDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegisterDto;
-import io.mosip.kernel.masterdata.dto.TemplateDto;
-import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.entity.DeviceRegister;
 import io.mosip.kernel.masterdata.repository.DeviceRegisterHistoryRepository;
 import io.mosip.kernel.masterdata.repository.DeviceRegisterRepository;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
-import org.springframework.test.web.servlet.MvcResult;
 
 @SpringBootTest(classes = TestBootApplication.class)
 @RunWith(SpringRunner.class)
@@ -53,11 +47,8 @@ public class DeviceRegisterIntergrationTest {
 	@Autowired
 	private MockMvc mockMvc;
 	
-	@MockBean
-	private PublisherClient<String,TitleDto,HttpHeaders> titlePublisherClient;
-	
-	@MockBean
-	private PublisherClient<String,TemplateDto,HttpHeaders> templatePublisherClient;
+		@MockBean
+	private PublisherClient<String,EventModel,HttpHeaders> publisher;
 
 	/**
 	 * Reference to {@link DeviceRegisterRepository}.

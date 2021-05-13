@@ -21,15 +21,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.dto.TemplateDto;
-import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 
 @SpringBootTest(classes = TestBootApplication.class)
@@ -37,11 +35,8 @@ import io.mosip.kernel.masterdata.test.TestBootApplication;
 @AutoConfigureMockMvc
 public class ApplicationConfigIntegrationTests {
 	
-	@MockBean
-	private PublisherClient<String,TitleDto,HttpHeaders> titlePublisherClient;
-	
-	@MockBean
-	private PublisherClient<String,TemplateDto,HttpHeaders> templatePublisherClient;
+		@MockBean
+	private PublisherClient<String,EventModel,HttpHeaders> publisher;
 	
 	@Autowired
 	private MockMvc mockMvc;

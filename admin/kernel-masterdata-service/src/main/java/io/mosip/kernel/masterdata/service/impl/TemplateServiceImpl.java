@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
+import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.TemplateErrorCode;
@@ -50,6 +51,7 @@ import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.mosip.kernel.masterdata.utils.EventPublisherUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
@@ -116,14 +118,14 @@ public class TemplateServiceImpl implements TemplateService {
 	private MasterdataCreationUtil masterdataCreationUtil;
 
 	@Autowired
-	private PublisherClient<String, TemplateDto, HttpHeaders> templatePublisherClient;
+	private PublisherClient<String, EventModel, HttpHeaders> publisher;
 
 	@PostConstruct
 	private void init() {
 		try {
-			templatePublisherClient.registerTopic(topic, hubURL);
+			publisher.registerTopic(topic, hubURL);
 		} catch (WebSubClientException exception) {
-			LOGGER.warn(exception.getErrorCode() + " ------> " + exception.getMessage());
+			LOGGER.warn(exception.getMessage());
 		}
 	}
 
@@ -276,8 +278,8 @@ public class TemplateServiceImpl implements TemplateService {
 				templateRepository.update(entity);
 				if (template.getModuleName().equalsIgnoreCase(idAuthModuleName)) {
 					TemplateDto templateDto = MapperUtils.map(template, TemplateDto.class);
-
-					templatePublisherClient.publishUpdate(topic, templateDto, MediaType.APPLICATION_JSON_UTF8_VALUE,
+                    EventModel eventModel  =EventPublisherUtil.populateEventModel(templateDto, MasterDataConstant.PUBLISHER_ID, topic , "templates");
+					publisher.publishUpdate(topic, eventModel, MediaType.APPLICATION_JSON_UTF8_VALUE,
 							null, hubURL);
 				}
 				idAndLanguageCodeID.setId(entity.getId());
@@ -293,7 +295,7 @@ public class TemplateServiceImpl implements TemplateService {
 						TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 			}
 		} catch (WebSubClientException exception) {
-			LOGGER.warn(exception.getErrorCode() + " ------> " + exception.getMessage());
+			LOGGER.warn(exception.getMessage());
 		}catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException e) {
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, Template.class.getSimpleName()),

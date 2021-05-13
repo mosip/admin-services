@@ -1,12 +1,15 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.websub.model.Event;
+import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.TitleErrorCode;
@@ -45,7 +51,9 @@ import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.TitleRepository;
 import io.mosip.kernel.masterdata.service.TitleService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.mosip.kernel.masterdata.utils.EventPublisherUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.LocalDateTimeUtil;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
@@ -66,7 +74,7 @@ import io.mosip.kernel.websub.api.exception.WebSubClientException;
  */
 @Service
 public class TitleServiceImpl implements TitleService {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(TitleServiceImpl.class);
 
 	@Autowired
@@ -89,28 +97,25 @@ public class TitleServiceImpl implements TitleService {
 
 	@Autowired
 	private AuditUtil auditUtil;
-	
+
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
-	
 
 	@Value("${mosip.kernel.masterdata.title_event:masterdata/titles}")
 	private String topic;
-	
+
 	@Value("${websub.publish.url}")
 	private String hubURL;
 
-	
 	@Autowired
-	private PublisherClient<String,TitleDto,HttpHeaders> titlePublisherClient;
-	
-	
+	private PublisherClient<String, EventModel, HttpHeaders> publisher;
+
 	@PostConstruct
 	private void init() {
 		try {
-		titlePublisherClient.registerTopic(topic, hubURL);
-		}catch (WebSubClientException exception) {
-			LOGGER.warn(exception.getErrorCode()+" ------> "+exception.getMessage());
+			publisher.registerTopic(topic, hubURL);
+		} catch (WebSubClientException exception) {
+			LOGGER.warn(exception.getMessage());
 		}
 	}
 
@@ -229,10 +234,11 @@ public class TitleServiceImpl implements TitleService {
 				titles = masterdataCreationUtil.updateMasterData(Title.class, titles);
 				MetaDataUtils.setUpdateMetaData(titleDto, title, false);
 				titleRepository.update(title);
-				if(!titles.getIsActive()) {
+				if (!titles.getIsActive()) {
 					masterdataCreationUtil.updateMasterDataDeactivate(Title.class, titles.getCode());
 				}
-				titlePublisherClient.publishUpdate(topic, titles, MediaType.APPLICATION_JSON_UTF8_VALUE, null, hubURL);
+				EventModel eventModel = EventPublisherUtil.populateEventModel(titles, MasterDataConstant.PUBLISHER_ID, topic,"titles");
+				publisher.publishUpdate(topic, eventModel, MediaType.APPLICATION_JSON_UTF8_VALUE, null, hubURL);
 			} else {
 				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, TitleDto.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
@@ -243,9 +249,9 @@ public class TitleServiceImpl implements TitleService {
 						TitleErrorCode.TITLE_NOT_FOUND.getErrorMessage());
 			}
 
-		}catch (WebSubClientException exception) {
-			LOGGER.warn(exception.getErrorCode()+" ------> "+exception.getMessage());
-		}catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
+		} catch (WebSubClientException exception) {
+			LOGGER.warn(exception.getMessage());
+		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException e) {
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, TitleDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,

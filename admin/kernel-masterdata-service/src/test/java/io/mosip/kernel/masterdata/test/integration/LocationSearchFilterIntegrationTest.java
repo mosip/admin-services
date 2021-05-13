@@ -36,9 +36,8 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.masterdata.util.model.Node;
 import io.mosip.kernel.core.masterdata.util.spi.UBtree;
+import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.dto.TemplateDto;
-import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
@@ -67,11 +66,8 @@ public class LocationSearchFilterIntegrationTest {
 	@Autowired
 	private MockMvc mockMvc;
 	
-	@MockBean
-	private PublisherClient<String,TitleDto,HttpHeaders> titlePublisherClient;
-	
-	@MockBean
-	private PublisherClient<String,TemplateDto,HttpHeaders> templatePublisherClient;
+		@MockBean
+	private PublisherClient<String,EventModel,HttpHeaders> publisher;
 
 	@MockBean
 	private LocationRepository locationRepository;

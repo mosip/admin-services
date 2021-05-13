@@ -27,9 +27,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.client.RestTemplate;
 
+import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.dto.TemplateDto;
-import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.entity.DynamicField;
 import io.mosip.kernel.masterdata.entity.IdentitySchema;
 import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
@@ -52,11 +51,8 @@ public class IdentitySchemaControllerTest {
 	@Autowired
 	public MockMvc mockMvc;
 	
-	@MockBean
-	private PublisherClient<String,TitleDto,HttpHeaders> titlePublisherClient;
-	
-	@MockBean
-	private PublisherClient<String,TemplateDto,HttpHeaders> templatePublisherClient;
+		@MockBean
+	private PublisherClient<String,EventModel,HttpHeaders> publisher;
 	
 	@Qualifier("restTemplateConfig")
 	@MockBean
