@@ -10,12 +10,17 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.kernel.keymanagerservice.entity.CACertificateStore;
+import io.mosip.kernel.keymanagerservice.repository.CACertificateStoreRepository;
+import io.mosip.kernel.syncdata.dto.response.CACertificates;
 import io.mosip.kernel.syncdata.dto.response.ClientPublicKeyResponseDto;
+import io.mosip.kernel.syncdata.utils.LocalDateTimeUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -136,6 +141,12 @@ public class SyncDataServiceTest {
 	
 	@Autowired
 	private SyncMasterDataService masterDataService;
+
+	@MockBean
+	private CACertificateStoreRepository caCertificateStoreRepository;
+
+	@Autowired
+	LocalDateTimeUtil localDateTimeUtil;
 
 	@Value("${mosip.kernel.syncdata-service-machine-url}")
 	private String machineUrl;
@@ -516,4 +527,21 @@ public class SyncDataServiceTest {
 		Assert.assertNotNull(clientPublicKeyResponseDto.getSigningPublicKey());
 		Assert.assertNotNull(clientPublicKeyResponseDto.getEncryptionPublicKey());
 	 }
+
+	@Test
+	public void getPartnerCACertificatesSuccess() {
+		List<CACertificateStore> cacerts = new ArrayList<CACertificateStore>();
+		CACertificateStore caCertificateStore = new CACertificateStore();
+		caCertificateStore.setCertId("test");
+		caCertificateStore.setCertData("--- BEGIN--- sdsfsdf ---END---");
+		cacerts.add(caCertificateStore);
+		when(caCertificateStoreRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any())).thenReturn(cacerts);
+
+		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
+		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, null);
+		CACertificates caCertificates = masterDataService.getPartnerCACertificates(timestamp, currentTimeStamp);
+
+		Assert.assertNotNull(caCertificates.getCertificateDTOList());
+		Assert.assertFalse(caCertificates.getCertificateDTOList().isEmpty());
+	}
 }
