@@ -534,6 +534,7 @@ public class SyncDataServiceTest {
 		CACertificateStore caCertificateStore = new CACertificateStore();
 		caCertificateStore.setCertId("test");
 		caCertificateStore.setCertData("--- BEGIN--- sdsfsdf ---END---");
+		caCertificateStore.setCreatedtimes(LocalDateTime.now());
 		cacerts.add(caCertificateStore);
 		when(caCertificateStoreRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any())).thenReturn(cacerts);
 
@@ -543,5 +544,6 @@ public class SyncDataServiceTest {
 
 		Assert.assertNotNull(caCertificates.getCertificateDTOList());
 		Assert.assertFalse(caCertificates.getCertificateDTOList().isEmpty());
+		Assert.assertNotNull(caCertificates.getCertificateDTOList().get(0).getCreatedtimes());
 	}
 }
