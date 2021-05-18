@@ -176,7 +176,7 @@ public class SyncDataController {
 	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@ResponseFilter
 	@GetMapping("/clientsettings/{regcenterid}")
-	@Deprecated(forRemoval = true, since = "1.1.5")
+	@Deprecated(forRemoval = true, since = "1.1.5.2")
 	public ResponseWrapper<SyncDataResponseDto> syncClientSettingsWithRegCenterId(
 			@PathVariable("regcenterid") String regCenterId,
 			@RequestParam(value = "lastupdated", required = false) String lastUpdated,
