@@ -42,7 +42,7 @@ public class MachineHistory extends BaseEntity implements Serializable {
 	private String id;
 	private LocalDateTime effectDateTime;
 	
-	@Column(name = "lang_code", nullable = true, length = 3)
+	@Column(name = "lang_code",  length = 3)
 	private String langCode;
 	
 

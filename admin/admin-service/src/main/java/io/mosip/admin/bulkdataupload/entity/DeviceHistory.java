@@ -30,13 +30,13 @@ public class DeviceHistory extends BaseEntity implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -5585825705521742941L;
-
 	@Id
 	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
-			@AttributeOverride(name = "effectDateTime", column = @Column(name = "eff_dtimes", nullable = false)),
-			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
+			@AttributeOverride(name = "effectDateTime", column = @Column(name = "eff_dtimes", nullable = false))})
 	private String id;
 	private LocalDateTime effectDateTime;
+
+	@Column(name = "lang_code",  length = 3)
 	private String langCode;
 
 	/**

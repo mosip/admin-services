@@ -46,9 +46,10 @@ public class Machine extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = -5585825705521742941L;
 
 	@Id
-	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 10)),
-			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
+	@Column(name = "id", nullable = false, length = 10)
 	private String id;
+
+	@Column(name = "lang_code",  length = 3)
 	private String langCode;
 
 	/**
@@ -60,7 +61,7 @@ public class Machine extends BaseEntity implements Serializable {
 	/**
 	 * Field for machine serial number
 	 */
-	@Column(name = "serial_num", nullable = true, length = 64)
+	@Column(name = "serial_num",  length = 64)
 	private String serialNum;
 
 	/**

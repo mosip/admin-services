@@ -49,9 +49,10 @@ public class Device extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = -5585825705521742941L;
 
 	@Id
-	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
-			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
+	@Column(name = "id", nullable = false, length = 36)
 	private String id;
+
+	@Column(name = "lang_code",  length = 3)
 	private String langCode;
 
 	/**

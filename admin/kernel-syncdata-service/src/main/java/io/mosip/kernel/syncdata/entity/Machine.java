@@ -48,7 +48,7 @@ public class Machine extends BaseEntity implements Serializable {
 	@Column(name = "id", nullable = false, length = 10)
 	private String id;
 
-	@Column(name = "lang_code", nullable = true, length = 3)
+	@Column(name = "lang_code",  length = 3)
 	private String langCode;
 
 	/**
