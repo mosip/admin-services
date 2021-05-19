@@ -71,7 +71,7 @@ public class ZoneController {
 	 * @param langCode input language code
 	 * @return {@link List} of {@link ZoneExtnDto}
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN','PRE_REGISTRATION','RESIDENT')")
+//	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN','PRE_REGISTRATION','RESIDENT')")
 	@GetMapping("/leafs/{langCode}")
 	public ResponseWrapper<List<ZoneExtnDto>> getLeafZones(
 			@PathVariable("langCode") @ValidLangCode(message = "Language Code is Invalid") String langCode) {
