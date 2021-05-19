@@ -150,7 +150,7 @@ public class TitleServiceImpl implements TitleService {
 	 * io.mosip.kernel.masterdata.service.TitleService#getByLanguageCode(java.lang.
 	 * String)
 	 */
-	@Cacheable(value = "titles", key = "'title'.concat('-').concat(#languageCode.toString)")
+	@Cacheable(value = "titles", key = "'title'.concat('-').concat(#languageCode)")
 	@Override
 	public TitleResponseDto getByLanguageCode(String languageCode) {
 		TitleResponseDto titleResponseDto = null;

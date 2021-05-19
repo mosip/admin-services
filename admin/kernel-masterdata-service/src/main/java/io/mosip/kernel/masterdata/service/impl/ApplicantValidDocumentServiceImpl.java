@@ -28,7 +28,7 @@ public class ApplicantValidDocumentServiceImpl implements ApplicantValidDocument
 	@Autowired
 	private ApplicantValidDocumentRepository applicantValidDocumentRepository;
 
-	@Cacheable(value = "applicant-valid-document", key = "'applicantValidDocument'.concat('-').concat(#applicantTypeCode.toString).concat('-').concat(#languages.get(0))")
+	@Cacheable(value = "applicant-valid-document", key = "'applicantValidDocument'.concat('-').concat(#applicantTypeCode).concat('-').concat(#languages.get(0))")
 	@Override
 	public ApplicantValidDocumentDto getDocumentCategoryAndTypes(String applicantTypeCode, List<String> languages) {
 

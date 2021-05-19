@@ -38,7 +38,7 @@ public class ExceptionalHolidaysServiceImpl implements ExceptionalHolidayService
 	private String supportedLang;
 
 
-	@Cacheable(value = "exceptional-holiday", key = "'exceptionalHoliday'.concat('-').concat(#regCenterId.toString).concat('-').concat(#langCode.toString)")
+	@Cacheable(value = "exceptional-holiday", key = "'exceptionalHoliday'.concat('-').concat(#regCenterId).concat('-').concat(#langCode)")
 	@Override
 	public ExceptionalHolidayResponseDto getAllExceptionalHolidays(String regCenterId, String langCode) {
 		ExceptionalHolidayResponseDto excepHolidayResponseDto = null;

@@ -44,7 +44,7 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 	@Autowired
 	private RegistrationCenterRepository registrationCenterRepository;
 
-	@Cacheable(value = "week-days", key = "'weekday'.concat('-').concat(#regCenterId.toString).concat('-').concat(#langCode.toString)")
+	@Cacheable(value = "week-days", key = "'weekday'.concat('-').concat(#regCenterId).concat('-').concat(#langCode)")
 	@Override
 	public WeekDaysResponseDto getWeekDaysList(String regCenterId, String langCode) {
 
@@ -98,7 +98,7 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 		return weekdays;
 	}
 
-	@Cacheable(value = "working-days", key = "'workingday'.concat('-').concat(#regCenterId.toString).concat('-').concat(#langCode.toString)")
+	@Cacheable(value = "working-days", key = "'workingday'.concat('-').concat(#regCenterId).concat('-').concat(#langCode)")
 	@Override
 	public WorkingDaysResponseDto getWorkingDays(String regCenterId, String langCode) {
 
@@ -161,7 +161,7 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 		return responseDto;
 	}
 
-	@Cacheable(value = "working-days", key = "'workingday'.concat('-').concat(#langCode.toString)")
+	@Cacheable(value = "working-days", key = "'workingday'.concat('-').concat(#langCode)")
 	@Override
 	public WorkingDaysResponseDto getWorkingDays(String langCode) {
 		// TODO Auto-generated method stub

@@ -161,7 +161,7 @@ public class TemplateServiceImpl implements TemplateService {
 	 * @see io.mosip.kernel.masterdata.service.TemplateService#
 	 * getAllTemplateByLanguageCode(java.lang.String)
 	 */
-	@Cacheable(value = "templates", key = "'template'.concat('-').concat(#languageCode.toString)")
+	@Cacheable(value = "templates", key = "'template'.concat('-').concat(#languageCode)")
 	@Override
 	public TemplateResponseDto getAllTemplateByLanguageCode(String languageCode) {
 		try {
@@ -188,7 +188,7 @@ public class TemplateServiceImpl implements TemplateService {
 	 * getAllTemplateByLanguageCodeAndTemplateTypeCode(java.lang.String,
 	 * java.lang.String)
 	 */
-	@Cacheable(value = "templates", key = "'template'.concat('-').concat(#languageCode.toString).concat('-').concat(#templateTypeCode.toString)")
+	@Cacheable(value = "templates", key = "'template'.concat('-').concat(#languageCode).concat('-').concat(#templateTypeCode)")
 	@Override
 	public TemplateResponseDto getAllTemplateByLanguageCodeAndTemplateTypeCode(String languageCode,
 			String templateTypeCode) {
