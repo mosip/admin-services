@@ -217,12 +217,11 @@ public class TemplateServiceImpl implements TemplateService {
 	public IdAndLanguageCodeID createTemplate(TemplateDto template) {
 
 		Template templateEntity;
-		String uniqueId = null;
 		try {
-			if (template.getId().isBlank()) {
-				uniqueId = generateId();
-				template.setId(uniqueId);
+			if (template.getId() == null || template.getId().trim().isBlank()) {
+				template.setId(generateId());
 			}
+
 			template = masterdataCreationUtil.createMasterData(Template.class, template);
 			Template entity = MetaDataUtils.setCreateMetaData(template, Template.class);
 			templateEntity = templateRepository.create(entity);
@@ -253,8 +252,7 @@ public class TemplateServiceImpl implements TemplateService {
 		UUID uuid = UUID.randomUUID();
 		String uniqueId = uuid.toString();
 
-		List<Template> template = templateRepository.findAllByCodeAndIsDeletedFalseOrIsDeletedIsNull(uniqueId);
-
+		List<Template> template = templateRepository.findAllByIdAndIsDeletedFalseOrIsDeletedIsNull(uniqueId);
 		return template.isEmpty() ? uniqueId : generateId();
 	}
 
