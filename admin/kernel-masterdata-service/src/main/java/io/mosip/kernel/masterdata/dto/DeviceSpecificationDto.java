@@ -12,9 +12,6 @@ import lombok.Data;
 //@ApiModel(value = "DeviceSpeicification", description = "DeviceSpecification Detail resource")
 public class DeviceSpecificationDto {
 
-
-	@NotNull
-	@StringFormatter(min = 1, max = 36)
 	@ApiModelProperty(value = "id", required = true, dataType = "java.lang.String")
 	private String id;
 

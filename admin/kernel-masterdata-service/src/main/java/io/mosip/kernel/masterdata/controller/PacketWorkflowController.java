@@ -17,8 +17,10 @@ import io.mosip.kernel.masterdata.dto.SearchRequestDto;
 import io.mosip.kernel.masterdata.dto.SearchResponseDto;
 import io.mosip.kernel.masterdata.service.PacketWorkflowActionService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.swagger.annotations.Api;
 
 @RestController
+@Api(tags = { "PacketWorkflow" })
 @RequestMapping("/packet")
 public class PacketWorkflowController {
 
