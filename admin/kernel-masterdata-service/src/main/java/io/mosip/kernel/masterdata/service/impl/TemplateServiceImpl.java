@@ -8,7 +8,6 @@ import java.util.UUID;
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -218,10 +217,10 @@ public class TemplateServiceImpl implements TemplateService {
 	public IdAndLanguageCodeID createTemplate(TemplateDto template) {
 
 		Template templateEntity;
-
+		String uniqueId = null;
 		try {
-			if (StringUtils.isNotEmpty(supportedLang) && supportedLang.contains(template.getLangCode())) {
-				String uniqueId = generateId();
+			if (template.getId().isBlank()) {
+				uniqueId = generateId();
 				template.setId(uniqueId);
 			}
 			template = masterdataCreationUtil.createMasterData(Template.class, template);

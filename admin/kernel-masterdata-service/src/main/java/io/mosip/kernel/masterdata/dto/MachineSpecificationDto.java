@@ -16,8 +16,7 @@ import lombok.Data;
  */
 @Data
 public class MachineSpecificationDto {
-	@NotNull
-	@StringFormatter(min = 1, max = 36)
+
 	@ApiModelProperty(value = "id", required = true, dataType = "java.lang.String")
 	private String id;
 
