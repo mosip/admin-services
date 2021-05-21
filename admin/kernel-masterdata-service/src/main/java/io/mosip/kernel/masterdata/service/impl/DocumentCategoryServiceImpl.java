@@ -9,6 +9,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -111,6 +112,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * getAllDocumentCategory()
 	 */
 	@Override
+	@Cacheable(value = "document-category", key = "documentcategory")
 	public DocumentCategoryResponseDto getAllDocumentCategory() {
 		List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
 		try {
@@ -144,6 +146,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * getAllDocumentCategoryByLaguageCode(java.lang.String)
 	 */
 	@Override
+	@Cacheable(value = "document-category", key = "'documentcategory'.concat('-').concat(#langCode)")
 	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(String langCode) {
 		List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
 		try {

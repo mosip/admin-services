@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -138,6 +139,7 @@ public class LocationServiceImpl implements LocationService {
 	 * @see io.mosip.kernel.masterdata.service.LocationService#getLocationDetails(
 	 * java. lang.String)
 	 */
+	@Cacheable(value = "locations", key = "'location'.concat('-').concat(#locCode).concat('-').concat(#langCode)")
 	@Override
 	public LocationHierarchyResponseDto getLocationDetails(String langCode) {
 		List<LocationHierarchyDto> responseList = null;
@@ -177,6 +179,7 @@ public class LocationServiceImpl implements LocationService {
 	 * getLocationHierarchyByLangCode(java.lang.String, java.lang.String)
 	 */
 	@Override
+	@Cacheable(value = "locations", key = "'location'.concat('-').concat('ext').concat('-').concat(#locationCode).concat('-').concat(#langCode)")
 	public LocationResponseDto getLocationHierarchyByLangCode(String locCode, String langCode) {
 		List<Location> childList = null;
 		List<Location> parentList = null;
@@ -449,6 +452,7 @@ public class LocationServiceImpl implements LocationService {
 	 * getLocationDataByHierarchyName(java.lang.String)
 	 */
 	@Override
+	@Cacheable(value = "locations", key = "'location'.concat('-').concat('hierarchy').concat('-').concat(#hierarchyName)")
 	public LocationResponseDto getLocationDataByHierarchyName(String hierarchyName) {
 		List<Location> locationlist = null;
 		LocationResponseDto locationHierarchyResponseDto = new LocationResponseDto();
@@ -480,6 +484,7 @@ public class LocationServiceImpl implements LocationService {
 	 * getImmediateChildrenByLocCodeAndLangCode(java.lang.String, java.lang.String)
 	 */
 	@Override
+	@Cacheable(value = "locations", key = "'location'.concat('-').concat('immediate').concat('-').concat(#locCode).concat('-').concat(#langCode)")
 	public LocationResponseDto getImmediateChildrenByLocCodeAndLangCode(String locCode, String langCode) {
 		List<Location> locationlist = null;
 		LocationResponseDto locationHierarchyResponseDto = new LocationResponseDto();
@@ -597,6 +602,7 @@ public class LocationServiceImpl implements LocationService {
 	 * java. lang.String)
 	 */
 	@Override
+	@Cacheable(value = "locations", key = "'location'.concat('-').concat(#locationName)")
 	public StatusResponseDto validateLocationName(String locationName) {
 		StatusResponseDto statusResponseDto = null;
 		boolean isPresent = false;
@@ -1141,6 +1147,7 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	@Override
+	@Cacheable(value = "locations", key = "'location'.concat('-').concat('info').concat('-').concat(#locCode).concat('-').concat(#langCode)")
 	public LocationExtnDto getLocationDetailsByLangCode(String locationCode, String langCode) {
 		LocationExtnDto location = null;
 		

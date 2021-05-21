@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -163,6 +164,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	}
 
 	@Override
+	@Cacheable(value = "valid-document", key = "'validdocument'.concat('-').concat(#langCode)")
 	public ValidDocCategoryAndDocTypeResponseDto getValidDocumentByLangCode(String langCode) {
 
 		ValidDocCategoryAndDocTypeResponseDto validDocCategoryAndDocTypeResponseDto = new ValidDocCategoryAndDocTypeResponseDto();
@@ -194,6 +196,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	}
 	
 	@Override
+	@Cacheable(value = "valid-document", key = "'validdocument'.concat('-').concat(#docCatCode).concat('-').concat(#langCode)")
 	public List<ValidDocumentMapDto> getValidDocumentByDocCategoryCode(String docCatCode, String langCode) {
 		
 		List<ValidDocumentMapDto> validDocumentDtos = new ArrayList<ValidDocumentMapDto>();

@@ -10,6 +10,7 @@ import java.util.Objects;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -114,6 +115,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 * @see io.mosip.kernel.masterdata.service.DocumentTypeService#
 	 * getAllValidDocumentType(java.lang.String, java.lang.String)
 	 */
+	@Cacheable(value = "document-type", key = "'documenttype'.concat('-').concat(#code).concat('-').concat(#langCode)")
 	@Override
 	public List<DocumentTypeDto> getAllValidDocumentType(String code, String langCode) {
 		List<DocumentTypeDto> listOfDocumentTypeDto = null;
@@ -386,7 +388,9 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		return pageDto;
 	}
 
+	
 	@Override
+	@Cacheable(value = "document-type", key = "'documenttype'.concat('-').concat(#langCode)")
 	public DocumentTypeResponseDto getAllDocumentTypeByLaguageCode(String langCode) {
 		DocumentTypeResponseDto documentTypeResponseDto = new DocumentTypeResponseDto();
 		List<DocumentTypeDto> documentTypeDtoList = new ArrayList<>();
