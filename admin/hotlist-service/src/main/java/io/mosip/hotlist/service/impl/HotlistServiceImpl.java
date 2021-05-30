@@ -127,12 +127,13 @@ public class HotlistServiceImpl implements HotlistService {
 			if (hotlistedOptionalData.isPresent()) {
 				Hotlist hotlistedData = hotlistedOptionalData.get();
 				return buildResponse(hotlistedData.getIdValue(), hotlistedData.getIdType(),
-						hotlistedData.getExpiryTimestamp().isAfter(DateUtils.getUTCCurrentDateTime())
-								? HotlistStatus.BLOCKED
-								: HotlistStatus.UNBLOCKED,
+						Objects.isNull(hotlistedData.getExpiryTimestamp()) ? HotlistStatus.BLOCKED
+								: hotlistedData.getExpiryTimestamp().isAfter(DateUtils.getUTCCurrentDateTime())
+										? HotlistStatus.BLOCKED
+										: HotlistStatus.UNBLOCKED,
 						hotlistedData.getExpiryTimestamp());
 			} else {
-				return buildResponse(id, idType, HotlistStatus.UNBLOCKED, LocalDateTime.MAX.withYear(9999));
+				return buildResponse(id, idType, HotlistStatus.UNBLOCKED, null);
 			}
 		} catch (DataAccessException | TransactionException e) {
 			mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE_IMPL, RETRIEVE_HOTLIST, e.getMessage());
@@ -173,8 +174,8 @@ public class HotlistServiceImpl implements HotlistService {
 	 * @param hotlistedOptionalData the hotlisted optional data
 	 * @return the hotlist request response DTO
 	 */
-	private HotlistRequestResponseDTO updateHotlist(HotlistRequestResponseDTO updateRequest, String idHash,
-			String status, Optional<Hotlist> hotlistedOptionalData) {
+	private HotlistRequestResponseDTO updateHotlist(HotlistRequestResponseDTO updateRequest, String idHash, String status,
+			Optional<Hotlist> hotlistedOptionalData) {
 		Hotlist hotlist = hotlistedOptionalData.get();
 		buildHotlistEntity(updateRequest, idHash, status, hotlist);
 		hotlist.setUpdatedBy(HotlistSecurityManager.getUser());
@@ -199,8 +200,7 @@ public class HotlistServiceImpl implements HotlistService {
 		hotlist.setIdType(request.getIdType());
 		hotlist.setStatus(status);
 		hotlist.setStartTimestamp(DateUtils.getUTCCurrentDateTime());
-		hotlist.setExpiryTimestamp(Objects.nonNull(request.getExpiryTimestamp()) ? request.getExpiryTimestamp()
-				: LocalDateTime.MAX.withYear(9999));
+		hotlist.setExpiryTimestamp(Objects.nonNull(request.getExpiryTimestamp()) ? request.getExpiryTimestamp() : null);
 	}
 
 	/**
@@ -212,8 +212,7 @@ public class HotlistServiceImpl implements HotlistService {
 	 */
 	private String getStatus(String status, LocalDateTime expiryTimestamp) {
 		return Objects.isNull(expiryTimestamp) ? status
-				: expiryTimestamp.isAfter(DateUtils.getUTCCurrentDateTime()) ? HotlistStatus.BLOCKED
-						: HotlistStatus.UNBLOCKED;
+				: expiryTimestamp.isAfter(DateUtils.getUTCCurrentDateTime()) ? HotlistStatus.BLOCKED : HotlistStatus.UNBLOCKED;
 	}
 
 	/**
@@ -225,8 +224,7 @@ public class HotlistServiceImpl implements HotlistService {
 	 * @param expiryTimestamp the expiry timestamp
 	 * @return the hotlist request response DTO
 	 */
-	private HotlistRequestResponseDTO buildResponse(String id, String idType, String status,
-			LocalDateTime expiryTimestamp) {
+	private HotlistRequestResponseDTO buildResponse(String id, String idType, String status, LocalDateTime expiryTimestamp) {
 		HotlistRequestResponseDTO response = new HotlistRequestResponseDTO();
 		response.setId(id);
 		response.setIdType(idType);
