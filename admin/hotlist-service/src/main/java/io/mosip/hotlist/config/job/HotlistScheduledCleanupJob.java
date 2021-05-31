@@ -4,11 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import io.mosip.hotlist.constant.HotlistStatus;
 import io.mosip.hotlist.logger.HotlistLogger;
 import io.mosip.hotlist.repository.HotlistRepository;
 import io.mosip.hotlist.security.HotlistSecurityManager;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
