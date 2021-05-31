@@ -1,4 +1,4 @@
-package io.mosip.admin.login.constant;
+package io.mosip.admin.constant;
 /**
  * 
  * @author Sasikumar Ganesan

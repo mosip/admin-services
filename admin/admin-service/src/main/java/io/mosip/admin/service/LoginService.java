@@ -1,6 +1,6 @@
-package io.mosip.admin.login.service;
+package io.mosip.admin.service;
 
-import io.mosip.admin.login.dto.AccessTokenResponseDTO;
+import io.mosip.admin.dto.AccessTokenResponseDTO;
 
 /**
  * The Interface LoginService.

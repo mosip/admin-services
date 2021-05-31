@@ -1,4 +1,4 @@
-package io.mosip.admin.login.dto;
+package io.mosip.admin.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
