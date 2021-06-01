@@ -125,6 +125,7 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 				nameSeqList.sort((d1, d2) -> d1.getDaySeq() - d2.getDaySeq());
 				workingDayList = nameSeqList.stream().map(nameSeq -> {
 					WorkingDaysDto dto = new WorkingDaysDto();
+					dto.setCode(nameSeq.getCode());
 					dto.setLanguageCode(langCode);
 					dto.setName(nameSeq.getName());
 					dto.setOrder(nameSeq.getDaySeq());
@@ -139,6 +140,7 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 					workingDayList = globalDaysList.stream().map(day -> {
 						WorkingDaysDto dto = new WorkingDaysDto();
 						dto.setLanguageCode(langCode);
+						dto.setCode(day.getCode());
 						dto.setName(day.getName());
 						dto.setOrder(day.getDaySeq());
 						return dto;
@@ -182,6 +184,7 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 				dto.setLanguageCode(langCode);
 				dto.setName(day.getName());
 				dto.setOrder(day.getDaySeq());
+				dto.setCode(day.getCode());
 				return dto;
 			}).collect(Collectors.toList());
 

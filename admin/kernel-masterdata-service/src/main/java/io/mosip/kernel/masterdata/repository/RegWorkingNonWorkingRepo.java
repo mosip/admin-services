@@ -15,7 +15,7 @@ import io.mosip.kernel.masterdata.entity.id.RegWorkingNonWorkingId;
 @Repository("workingDaysRepo")
 public interface RegWorkingNonWorkingRepo extends BaseRepository<RegWorkingNonWorking, RegWorkingNonWorkingId> {
 
-	@Query("SELECT new io.mosip.kernel.masterdata.dto.DayNameAndSeqListDto(d.name,d.daySeq) FROM DaysOfWeek d where d.code in"
+	@Query("SELECT new io.mosip.kernel.masterdata.dto.DayNameAndSeqListDto(d.code,d.name,d.daySeq) FROM DaysOfWeek d where d.code in"
 			+ "(SELECT w.dayCode from RegWorkingNonWorking w where w.registrationCenterId=?1  and w.isWorking=true and"
 			+ " (w.isDeleted is null or w.isDeleted = false) and w.isActive = true) and d.langCode=?2 and "
 			+ "d.isActive = true and (d.isDeleted is null or d.isDeleted = false)")
