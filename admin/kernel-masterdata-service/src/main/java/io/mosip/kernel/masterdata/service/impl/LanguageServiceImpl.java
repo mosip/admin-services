@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +47,7 @@ public class LanguageServiceImpl implements LanguageService {
 	 * 
 	 * @see LanguageService#getAllLaguages()
 	 */
+	@Cacheable(value = "languages", key = "language")
 	@Override
 	public LanguageResponseDto getAllLaguages() {
 		LanguageResponseDto languageResponseDto = new LanguageResponseDto();

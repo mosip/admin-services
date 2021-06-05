@@ -59,7 +59,6 @@ public class TitleController {
 	 * 
 	 * @return list of all titles present in master DB
 	 */
-	@PreAuthorize("hasAnyRole('ID_AUTHENTICATION','ZONAL_ADMIN','GLOBAL_ADMIN','PRE_REGISTRATION','INDIVIDUAL','RESIDENT','REGISTRATION_PROCESSOR','REGISTRATION_CLIENT','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
 	@GetMapping(value = "/title")
 	public ResponseWrapper<TitleResponseDto> getAllTitles() {

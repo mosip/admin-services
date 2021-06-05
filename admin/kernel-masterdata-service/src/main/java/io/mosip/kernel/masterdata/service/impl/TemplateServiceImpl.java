@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -134,6 +135,7 @@ public class TemplateServiceImpl implements TemplateService {
 	 * @see io.mosip.kernel.masterdata.service.TemplateService#getAllTemplate()
 	 */
 	@Override
+	@Cacheable(value = "templates", key = "template")
 	public TemplateResponseDto getAllTemplate() {
 		try {
 			templateList = templateRepository.findAllByIsDeletedFalseOrIsDeletedIsNull(Template.class);
@@ -159,6 +161,7 @@ public class TemplateServiceImpl implements TemplateService {
 	 * getAllTemplateByLanguageCode(java.lang.String)
 	 */
 	@Override
+	@Cacheable(value = "templates", key = "'template'.concat('-').concat(#languageCode)")
 	public TemplateResponseDto getAllTemplateByLanguageCode(String languageCode) {
 		try {
 			templateList = templateRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode);
@@ -185,6 +188,7 @@ public class TemplateServiceImpl implements TemplateService {
 	 * java.lang.String)
 	 */
 	@Override
+	@Cacheable(value = "templates", key = "'template'.concat('-').concat(#languageCode).concat('-').concat(#templateTypeCode)")
 	public TemplateResponseDto getAllTemplateByLanguageCodeAndTemplateTypeCode(String languageCode,
 			String templateTypeCode) {
 		try {

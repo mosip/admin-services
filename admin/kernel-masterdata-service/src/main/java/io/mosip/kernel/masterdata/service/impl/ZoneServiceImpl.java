@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -96,6 +97,7 @@ public class ZoneServiceImpl implements ZoneService {
 	 * String)
 	 */
 	@Override
+	@Cacheable(value = "zones", key = "'zone'.concat('-').concat(#langCode)")
 	public List<ZoneExtnDto> getUserLeafZone(String langCode) {
 		List<Zone> zones = zoneUtils.getUserLeafZones(langCode);
 		if (zones != null && !zones.isEmpty()) {

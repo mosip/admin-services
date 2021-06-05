@@ -7,6 +7,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -90,6 +91,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.GenderTypeService#getAllGenderTypes()
 	 */
+	@Cacheable(value = "gender-type", key = "gendertype")
 	@Override
 	public GenderTypeResponseDto getAllGenderTypes() {
 		GenderTypeResponseDto genderResponseDto = null;
@@ -122,6 +124,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	 * java.lang.String)
 	 */
 	@Override
+	@Cacheable(value = "gender-type", key = "'gendertype'.concat('-').concat(#langCode)")
 	public GenderTypeResponseDto getGenderTypeByLangCode(String langCode) {
 		GenderTypeResponseDto genderResponseDto = null;
 		List<GenderTypeDto> genderListDto = null;
@@ -268,6 +271,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	 * .String)
 	 */
 	@Override
+	@Cacheable(value = "gender-type", key = "'gendertype'.concat('-').concat(#genderName)")
 	public StatusResponseDto validateGender(String genderName) {
 		StatusResponseDto statusResponseDto = null;
 		boolean isPresent = false;
