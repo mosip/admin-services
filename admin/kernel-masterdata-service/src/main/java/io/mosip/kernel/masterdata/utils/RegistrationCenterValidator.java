@@ -367,10 +367,13 @@ public class RegistrationCenterValidator {
 					e.printStackTrace();
 				}
 			}
-			if (workMap.size() < 7) {
-				errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NONWORKING_EXCEPTION.getErrorCode(),
-						RegistrationCenterErrorCode.WORKING_NONWORKING_EXCEPTION.getErrorMessage()));
-			}
+			/*
+			 * if (workMap.size() < 7) { errors.add(new
+			 * ServiceError(RegistrationCenterErrorCode.WORKING_NONWORKING_EXCEPTION.
+			 * getErrorCode(),
+			 * RegistrationCenterErrorCode.WORKING_NONWORKING_EXCEPTION.getErrorMessage()));
+			 * }
+			 */
 
 		}
 
@@ -815,10 +818,13 @@ public class RegistrationCenterValidator {
 					e.printStackTrace();
 				}
 			}
-			if (workMap.size() < 7) {
-				errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NONWORKING_EXCEPTION.getErrorCode(),
-						RegistrationCenterErrorCode.WORKING_NONWORKING_EXCEPTION.getErrorMessage()));
-			}
+			/*
+			 * if (workMap.size() < 7) { errors.add(new
+			 * ServiceError(RegistrationCenterErrorCode.WORKING_NONWORKING_EXCEPTION.
+			 * getErrorCode(),
+			 * RegistrationCenterErrorCode.WORKING_NONWORKING_EXCEPTION.getErrorMessage()));
+			 * }
+			 */
 
 		}
 

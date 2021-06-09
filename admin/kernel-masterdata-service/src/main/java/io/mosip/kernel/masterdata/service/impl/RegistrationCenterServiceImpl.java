@@ -1198,10 +1198,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		// WorkingNonWorkingDaysDto workingNonWorkingDays =
 		// regCenterPostReqDto.getWorkingNonWorkingDays();
 		if (workingNonWorkingDays != null) {
-			Boolean[] working = { workingNonWorkingDays.getSun(), workingNonWorkingDays.getMon(),
-					workingNonWorkingDays.getTue(), workingNonWorkingDays.getWed(), workingNonWorkingDays.getThu(),
-					workingNonWorkingDays.getFri(), workingNonWorkingDays.getSat() };
-
+			Boolean[] working = { workingNonWorkingDays.isSun(), workingNonWorkingDays.isMon(),
+					workingNonWorkingDays.isTue(), workingNonWorkingDays.isWed(), workingNonWorkingDays.isThu(),
+					workingNonWorkingDays.isFri(), workingNonWorkingDays.isSat() };
 			List<RegWorkingNonWorking> regWorkingNonWorkingEntityList = new ArrayList<>();
 			int i = 0;
 			for (String dayCode : dayCodes) {
@@ -1466,9 +1465,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	private void updateRegWorkingNonWorking(WorkingNonWorkingDaysDto workingNonWorkingDays,
 			RegistrationCenter updRegistrationCenter, List<RegWorkingNonWorking> dbRegWorkingNonWorkings) {
 
-		Boolean[] working = { workingNonWorkingDays.getSun(), workingNonWorkingDays.getMon(),
-				workingNonWorkingDays.getTue(), workingNonWorkingDays.getWed(), workingNonWorkingDays.getThu(),
-				workingNonWorkingDays.getFri(), workingNonWorkingDays.getSat() };
+		Boolean[] working = { workingNonWorkingDays.isSun(), workingNonWorkingDays.isMon(),
+				workingNonWorkingDays.isTue(), workingNonWorkingDays.isWed(), workingNonWorkingDays.isThu(),
+				workingNonWorkingDays.isFri(), workingNonWorkingDays.isSat() };
 
 		int i = 0;
 		for (RegWorkingNonWorking regWorkingNonWorking : dbRegWorkingNonWorkings) {

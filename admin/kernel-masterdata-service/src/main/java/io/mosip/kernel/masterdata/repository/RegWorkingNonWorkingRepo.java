@@ -27,7 +27,7 @@ public interface RegWorkingNonWorkingRepo extends BaseRepository<RegWorkingNonWo
 			+ "where w.registrationCenterId=?1 and d.langCode=?2 and w.isActive = true")
 	List<WeekDaysDto> findByregistrationCenterIdAndlangCodeForWeekDays(String regCenterId, String langCode);
 
-	@Query("From RegWorkingNonWorking where registrationCenterId=?1 and languagecode=?2 and (isDeleted is null or isDeleted = false) and isActive = true")
+	@Query("From RegWorkingNonWorking where registrationCenterId=?1 and languagecode=?2 and (isDeleted is null or isDeleted = false) and isActive = true order by dayCode asc")
 	List<RegWorkingNonWorking> findByRegCenterIdAndlanguagecode(String registrationCenterId, String languagecode);
 
 	@Query("From RegWorkingNonWorking where registrationCenterId=?1 and (isDeleted is null or isDeleted = false) and isActive = true")
