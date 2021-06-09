@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -119,8 +120,9 @@ public class TemplateServiceImpl implements TemplateService {
 	@Autowired
 	private PublisherClient<String, EventModel, HttpHeaders> publisher;
 
-	@PostConstruct
-	private void init() {
+	@Scheduled(fixedDelayString = "${masterdata.websub.resubscription.delay.millis}",
+			initialDelayString = "${masterdata.subscriptions-delay-on-startup}")
+	public void subscribeTopics() {
 		try {
 			publisher.registerTopic(topic, hubURL);
 		} catch (WebSubClientException exception) {

@@ -101,7 +101,7 @@ public class PartnerCACertEventSubscriber /*implements ApplicationListener<Appli
     }
 
 
-    @Scheduled(fixedDelayString = "${syncdata.websub.resubscription.delay.secs}",
+    @Scheduled(fixedDelayString = "${syncdata.websub.resubscription.delay.millis}",
             initialDelayString = "${subscriptions-delay-on-startup}")
     public void subscribeTopics() {
         initSubsriptions();
