@@ -26,8 +26,10 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -134,7 +136,6 @@ import io.mosip.kernel.masterdata.dto.TemplateTypeDto;
 import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
-import io.mosip.kernel.masterdata.dto.WorkingNonWorkingDaysDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IndividualTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterUserMachineMappingHistoryResponseDto;
@@ -7467,14 +7468,15 @@ public class MasterdataIntegrationTest {
 		registrationCenterPutReqAdmDto1.setTimeZone("UTC");
 		registrationCenterPutReqAdmDto1.setWorkingHours("9");
 		registrationCenterPutReqAdmDto1.setZoneCode("JRD");
-		WorkingNonWorkingDaysDto workingNonWorkingDaysDto=new WorkingNonWorkingDaysDto();
-		workingNonWorkingDaysDto.setMon(true);
-		workingNonWorkingDaysDto.setTue(true);
-		workingNonWorkingDaysDto.setWed(true);
-		workingNonWorkingDaysDto.setThu(true);
-		workingNonWorkingDaysDto.setFri(true);
-		workingNonWorkingDaysDto.setSat(false);
-		workingNonWorkingDaysDto.setSun(false);
+		/*
+		 * WorkingNonWorkingDaysDto workingNonWorkingDaysDto=new
+		 * WorkingNonWorkingDaysDto(); workingNonWorkingDaysDto.setMon(true);
+		 * workingNonWorkingDaysDto.setTue(true); workingNonWorkingDaysDto.setWed(true);
+		 * workingNonWorkingDaysDto.setThu(true); workingNonWorkingDaysDto.setFri(true);
+		 * workingNonWorkingDaysDto.setSat(false);
+		 * workingNonWorkingDaysDto.setSun(false);
+		 */
+		Map<String, Boolean> workingNonWorkingDaysDto = new HashMap<String, Boolean>();
 		registrationCenterPutReqAdmDto1.setWorkingNonWorkingDays(workingNonWorkingDaysDto);
 		ExceptionalHolidayPutPostDto hol=new ExceptionalHolidayPutPostDto();
 		hol.setExceptionHolidayDate(LocalDate.of(2020, 3, 1).toString());
