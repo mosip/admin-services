@@ -204,7 +204,7 @@ public class RegistrationCenterServiceHelper {
 
 	private void setWorking(RegistrationCenterSearchDto registrationCenterSearchDto,
 			List<RegWorkingNonWorking> workingNonWorkingDays) {
-		Map<String, Boolean> workingNonWorkingDay = new HashMap<String, Boolean>();
+		Map<String, Boolean> workingNonWorkingDay = new HashMap<>();
 		if (!workingNonWorkingDays.isEmpty()) {
 			for (RegWorkingNonWorking working : workingNonWorkingDays)
 				if (working.getRegistrationCenterId().equals(registrationCenterSearchDto.getId())) {

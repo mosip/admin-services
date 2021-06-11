@@ -1118,7 +1118,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	private Map<String, Boolean> setResponseDtoWorkingNonWorking(RegistrationCenter registrationCenter) {
 		List<RegWorkingNonWorking> workingNonWorkingDays = regWorkingNonWorkingRepo
 				.findByRegCenterId(registrationCenter.getId());
-		Map<String, Boolean> workingNonWorkingDay = new HashedMap<String, Boolean>();
+		Map<String, Boolean> workingNonWorkingDay = new HashedMap<>();
 		if (!workingNonWorkingDays.isEmpty()) {
 			for (RegWorkingNonWorking working : workingNonWorkingDays) {
 				workingNonWorkingDay.put(working.getDayCode(), working.isWorking());
@@ -1188,7 +1188,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				regWorkingNonWorkingEntity.setCreatedDateTime(registrationCenterEntity.getCreatedDateTime());
 				regWorkingNonWorkingEntityList.add(regWorkingNonWorkingEntity);
 			}
-			System.out.println(">>>>>>>>" + regWorkingNonWorkingEntityList);
 			regWorkingNonWorkingRepo.saveAll(regWorkingNonWorkingEntityList);
 		}
 
