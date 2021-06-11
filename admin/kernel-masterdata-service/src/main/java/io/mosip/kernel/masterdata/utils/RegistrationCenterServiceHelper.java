@@ -3,7 +3,9 @@ package io.mosip.kernel.masterdata.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,7 +22,6 @@ import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.ExceptionalHolidayPutPostDto;
-import io.mosip.kernel.masterdata.dto.WorkingNonWorkingDaysDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
@@ -41,7 +42,6 @@ import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.repository.RegExceptionalHolidayRepository;
 import io.mosip.kernel.masterdata.repository.RegWorkingNonWorkingRepo;
-
 import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
 import io.mosip.kernel.masterdata.repository.UserDetailsRepository;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
@@ -204,40 +204,14 @@ public class RegistrationCenterServiceHelper {
 
 	private void setWorking(RegistrationCenterSearchDto registrationCenterSearchDto,
 			List<RegWorkingNonWorking> workingNonWorkingDays) {
-
-		WorkingNonWorkingDaysDto workDays = new WorkingNonWorkingDaysDto();
+		Map<String, Boolean> workingNonWorkingDay = new HashMap<String, Boolean>();
 		if (!workingNonWorkingDays.isEmpty()) {
 			for (RegWorkingNonWorking working : workingNonWorkingDays)
 				if (working.getRegistrationCenterId().equals(registrationCenterSearchDto.getId())) {
-					switch (working.getDayCode()) {
-					case "101":
-						workDays.setSun(working.isWorking());
-						break;
-					case "102":
-						workDays.setMon(working.isWorking());
-						break;
-					case "103":
-						workDays.setTue(working.isWorking());
-						break;
-					case "104":
-						workDays.setWed(working.isWorking());
-						break;
-					case "105":
-						workDays.setThu(working.isWorking());
-						break;
-					case "106":
-						workDays.setFri(working.isWorking());
-						break;
-					case "107":
-						workDays.setSat(working.isWorking());
-						break;
-					default:
-
-						break;
-					}
+					workingNonWorkingDay.put(working.getDayCode(), working.isWorking());
 				}
 		}
-		registrationCenterSearchDto.setWorkingNonWorkingDays(workDays);
+		registrationCenterSearchDto.setWorkingNonWorkingDays(workingNonWorkingDay);
 	}
 
 	/**
