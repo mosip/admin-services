@@ -13,6 +13,7 @@ import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -98,7 +99,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 
 	@Autowired
 	private AuditUtil auditUtil;
-
+	
 	/**
 	 * Autowired reference for {@link DataMapper}
 	 */
@@ -176,6 +177,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	 * io.mosip.kernel.masterdata.service.BlacklistedWordsService#addBlackListedWord
 	 * (io.mosip.kernel.masterdata.dto.BlackListedWordsRequestDto)
 	 */
+	@CacheEvict(value = "blacklisted-words", allEntries = true)
 	@Override
 	public WordAndLanguageCodeID createBlackListedWord(BlacklistedWordsDto blackListedWordsRequestDto) {
 		BlacklistedWords entity = MetaDataUtils.setCreateMetaData(blackListedWordsRequestDto, BlacklistedWords.class);
@@ -215,6 +217,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	 * updateBlackListedWord(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
+	@CacheEvict(value = "blacklisted-words", allEntries = true)
 	@Transactional
 	public WordAndLanguageCodeID updateBlackListedWord(BlackListedWordsUpdateDto wordDto) {
 		WordAndLanguageCodeID wordAndLanguageCodeID = null;
@@ -228,9 +231,9 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 				noOfRowAffected = blacklistedWordsRepository.createQueryUpdateOrDelete(
 						UpdateQueryConstants.BLACKLISTED_WORD_UPDATE_QUERY_WITHOUT_DESCRIPTION.getQuery(), params);
 			}
-			if (noOfRowAffected != 0)
+			if (noOfRowAffected != 0) {
 				wordAndLanguageCodeID = mapToWordAndLanguageCodeID(wordDto);
-			else {
+			} else {
 				auditUtil.auditRequest(
 						String.format(
 								MasterDataConstant.FAILURE_UPDATE, BlackListedWordsUpdateDto.class.getSimpleName()),
@@ -268,6 +271,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	 * @see io.mosip.kernel.masterdata.service.BlacklistedWordsService#
 	 * deleteBlackListedWord(java.lang.String)
 	 */
+	@CacheEvict(value = "blacklisted-words", allEntries = true)
 	@Override
 	public String deleteBlackListedWord(String blackListedWord) {
 		int noOfRowAffected = 0;
@@ -343,6 +347,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		return params;
 	}
 
+	@CacheEvict(value = "blacklisted-words", allEntries = true)
 	@Override
 	public WordAndLanguageCodeID updateBlackListedWordExceptWord(BlacklistedWordsDto blacklistedWordsDto) {
 		WordAndLanguageCodeID id = null;
@@ -441,6 +446,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		return filterResponseDto;
 	}
 
+	@CacheEvict(value = "blacklisted-words", allEntries = true)
 	@Override
 	public StatusResponseDto updateBlackListedWordStatus(String word, boolean isActive) {
 		// TODO Auto-generated method stub

@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,8 +40,10 @@ import io.mosip.kernel.masterdata.entity.DynamicField;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
+import io.mosip.kernel.masterdata.service.CacheManagementService;
 import io.mosip.kernel.masterdata.service.DynamicFieldService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.mosip.kernel.masterdata.utils.CacheName;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
@@ -73,7 +76,6 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 
 	@Autowired
 	AuditUtil auditUtil;
-	
 	
 	/*
 	 * (non-Javadoc)
@@ -147,6 +149,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	 * @see
 	 * io.mosip.kernel.masterdata.service.DynamicFieldService#createDynamicField()
 	 */
+	@CacheEvict(value = "dynamic-field", allEntries = true)
 	@Override
 	@Transactional
 	public DynamicFieldResponseDto createDynamicField(DynamicFieldDto dto) {
@@ -171,6 +174,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	 * @see
 	 * io.mosip.kernel.masterdata.service.DynamicFieldService#updateDynamicField()
 	 */
+	@CacheEvict(value = "dynamic-field", allEntries = true)
 	@Override
 	@Transactional
 	public DynamicFieldResponseDto updateDynamicField(String id, DynamicFieldPutDto dto) {
@@ -193,6 +197,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		return getDynamicFieldDto(entity);
 	}
 
+	@CacheEvict(value = "dynamic-field", allEntries = true)
 	@Override
 	@Transactional
 	public StatusResponseDto deleteDynamicFieldValue(String id) {
@@ -213,7 +218,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		return statusResponseDto;
 	}
 
-
+	@CacheEvict(value = "dynamic-field", allEntries = true)
 	@Override
 	@Transactional
 	public StatusResponseDto deleteDynamicField(String fieldName) {
@@ -253,6 +258,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		return pageDto;
 	}
 
+	@CacheEvict(value = "dynamic-field", allEntries = true)
 	@Override
 	@Transactional
 	public StatusResponseDto updateDynamicFieldStatus(String fieldName, boolean isActive) {
@@ -273,6 +279,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		return response;
 	}
 
+	@CacheEvict(value = "dynamic-field", allEntries = true)
 	@Override
 	@Transactional
 	public StatusResponseDto updateDynamicFieldValueStatus(String id, boolean isActive) {

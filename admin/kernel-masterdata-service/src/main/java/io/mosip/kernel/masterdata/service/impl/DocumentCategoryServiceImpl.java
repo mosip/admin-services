@@ -9,6 +9,8 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -102,14 +104,14 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
-
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
 	 * getAllDocumentCategory()
 	 */
+	@Cacheable(value = "document-category", key = "'documentcategory'")
 	@Override
 	public DocumentCategoryResponseDto getAllDocumentCategory() {
 		List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
@@ -143,6 +145,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
 	 * getAllDocumentCategoryByLaguageCode(java.lang.String)
 	 */
+	@CacheEvict(value = "document-category", allEntries = true)
 	@Override
 	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(String langCode) {
 		List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
@@ -208,6 +211,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
 	 * createDocumentCategory(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
+	@CacheEvict(value = "document-category", allEntries = true)
 	@Override
 	public CodeAndLanguageCodeID createDocumentCategory(DocumentCategoryDto category) {
 
@@ -216,7 +220,6 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 			category = masterdataCreationUtil.createMasterData(DocumentCategory.class, category);
 			DocumentCategory entity = MetaDataUtils.setCreateMetaData(category, DocumentCategory.class);
 			documentCategory = documentCategoryRepository.create(entity);
-
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException e) {
 			auditUtil.auditRequest(
@@ -246,6 +249,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
 	 * updateDocumentCategory(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
+	@CacheEvict(value = "document-category", allEntries = true)
 	@Override
 	public CodeAndLanguageCodeID updateDocumentCategory(DocumentCategoryPutDto categoryDto) {
 
@@ -271,7 +275,6 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 				categoryDto = masterdataCreationUtil.updateMasterData(DocumentCategory.class, categoryDto);
 				MetaDataUtils.setUpdateMetaData(categoryDto, documentCategory, false);
 				documentCategoryRepository.update(documentCategory);
-
 			} else {
 				auditUtil.auditRequest(
 						String.format(MasterDataConstant.FAILURE_UPDATE, DocumentCategory.class.getCanonicalName()),
@@ -314,6 +317,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
 	 * deleteDocumentCategory(java.lang.String)
 	 */
+	@CacheEvict(value = "document-category", allEntries = true)
 	@Override
 	public CodeResponseDto deleteDocumentCategory(String code) {
 
@@ -434,6 +438,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		return filterResponseDto;
 	}
 
+	@CacheEvict(value = "document-category", allEntries = true)
 	@Override
 	public StatusResponseDto updateDocumentCategory(String code, boolean isActive) {
 		// TODO Auto-generated method stub

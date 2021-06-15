@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -72,6 +73,7 @@ public class IdTypeServiceImpl implements IdTypeService {
 	 * io.mosip.kernel.masterdata.service.IdTypeService#addIdType(io.mosip.kernel.
 	 * masterdata.dto.IdTypeRequestDto)
 	 */
+	@CacheEvict(value = "id-type", allEntries = true)
 	@Override
 	public CodeAndLanguageCodeID createIdType(IdTypeDto idTypeRequestDto) {
 		IdType entity = MetaDataUtils.setCreateMetaData(idTypeRequestDto, IdType.class);
