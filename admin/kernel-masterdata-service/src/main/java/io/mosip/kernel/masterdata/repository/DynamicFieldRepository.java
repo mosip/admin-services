@@ -183,4 +183,7 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 			countQuery="SELECT SUM(count) as count FROM (SELECT count(id) FROM master.dynamic_field WHERE ((cr_dtimes BETWEEN ?1 AND ?2) or (upd_dtimes BETWEEN ?1 AND ?2) or (del_dtimes BETWEEN ?1 AND ?2)) GROUP BY name, lang_code) dual",
 			nativeQuery= true)
 	Page<Object[]> findAllLatestDynamicFieldNames(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp, Pageable pageable);
+
+	@Query("FROM DynamicField WHERE lower(name)=lower(?1) and langCode=?2 and isActive=true and (isDeleted is null OR isDeleted = false)")
+	List<DynamicField> findAllActiveDynamicFieldByNameAndLangCode(String fieldName, String langCode);
 }
