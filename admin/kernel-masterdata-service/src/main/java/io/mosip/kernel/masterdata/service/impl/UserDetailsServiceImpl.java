@@ -347,6 +347,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			UserDetailsHistory udh = new UserDetailsHistory();
 			MapperUtils.map(ud, udh);
 			MapperUtils.setBaseFieldValue(ud, udh);
+			udh.setIsActive(ud.getIsActive());
 			udh.setCreatedBy(MetaDataUtils.getContextUser());
 			udh.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
 			userDetailsHistoryService.createUserDetailsHistory(udh);
