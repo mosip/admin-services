@@ -18,7 +18,7 @@ import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.entity.BlacklistedWords;
+import io.mosip.kernel.masterdata.entity.BlocklistedWords;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 
@@ -45,7 +45,7 @@ public class MasterDataFilterHelperTest {
 		FilterValueDto valueDto = new FilterValueDto();
 		valueDto.setFilters(filterDtoList);
 		valueDto.setLanguageCode("eng");
-		List<?> list = masterDataFilterHelper.filterValues(BlacklistedWords.class, filterDto, valueDto);
+		List<?> list = masterDataFilterHelper.filterValues(BlocklistedWords.class, filterDto, valueDto);
 		assertThat(list.isEmpty(), is(true));
 	}
 }

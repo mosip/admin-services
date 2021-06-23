@@ -23,7 +23,7 @@ import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.BlacklistedWordsExtnDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.BlocklistedWordsExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.GenderExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -205,9 +205,9 @@ public class GenderTypeController {
 				MasterDataConstant.SEARCH_API_IS_CALLED + GenderExtnDto.class.getSimpleName(), "ADM-560");
 		ResponseWrapper<PageResponseDto<GenderExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(genderTypeService.searchGenderTypes(request.getRequest()));
-		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_SEARCH + BlacklistedWordsExtnDto.class.getCanonicalName(),
+		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_SEARCH + BlocklistedWordsExtnDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SUCCESSFUL_SEARCH_DESC + BlacklistedWordsExtnDto.class.getCanonicalName(),
+				MasterDataConstant.SUCCESSFUL_SEARCH_DESC + BlocklistedWordsExtnDto.class.getCanonicalName(),
 				"ADM-561");
 		return responseWrapper;
 	}
