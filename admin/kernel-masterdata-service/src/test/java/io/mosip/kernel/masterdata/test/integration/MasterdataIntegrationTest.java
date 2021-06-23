@@ -84,7 +84,7 @@ import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.constant.MachinePutReqDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
-import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
+import io.mosip.kernel.masterdata.dto.BlocklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceProviderDto;
 import io.mosip.kernel.masterdata.dto.DeviceProviderPutDto;
@@ -144,7 +144,7 @@ import io.mosip.kernel.masterdata.dto.registerdevice.DigitalId;
 import io.mosip.kernel.masterdata.dto.registerdevice.RegisteredDevicePostDto;
 import io.mosip.kernel.masterdata.dto.registerdevice.SignResponseDto;
 import io.mosip.kernel.masterdata.entity.BiometricAttribute;
-import io.mosip.kernel.masterdata.entity.BlacklistedWords;
+import io.mosip.kernel.masterdata.entity.BlocklistedWords;
 import io.mosip.kernel.masterdata.entity.DaysOfWeek;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceHistory;
@@ -201,7 +201,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.ApplicantValidDocumentRepository;
 import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
-import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
+import io.mosip.kernel.masterdata.repository.BlocklistedWordsRepository;
 import io.mosip.kernel.masterdata.repository.DaysOfWeekListRepo;
 import io.mosip.kernel.masterdata.repository.DeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.DeviceProviderHistoryRepository;
@@ -306,7 +306,7 @@ public class MasterdataIntegrationTest {
 	@MockBean
 	private RestTemplate restTemplate;
 	@MockBean
-	private BlacklistedWordsRepository wordsRepository;
+	private BlocklistedWordsRepository wordsRepository;
 	@MockBean
 	private LocationRepository locationRepository;
 	List<Location> locationHierarchies;
@@ -390,7 +390,7 @@ public class MasterdataIntegrationTest {
 
 	DocumentCategory category;
 
-	List<BlacklistedWords> words;
+	List<BlocklistedWords> words;
 
 	@MockBean
 	private GenderTypeRepository genderTypeRepository;
@@ -551,7 +551,7 @@ public class MasterdataIntegrationTest {
 		mapper = new ObjectMapper();
 
 		localDateTimeUTCFormat = localDateTimeUTCFormat.parse(UTC_DATE_TIME_FORMAT_DATE_STRING, UTC_DATE_TIME_FORMAT);
-		blacklistedSetup();
+		blocklistedSetup();
 
 		JavaTimeModule timeModule = new JavaTimeModule();
 		timeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ofPattern("HH:mm:ss")));
@@ -1554,18 +1554,18 @@ public class MasterdataIntegrationTest {
 		genderTypes.add(genderType);
 	}
 
-	private void blacklistedSetup() {
+	private void blocklistedSetup() {
 		words = new ArrayList<>();
 
-		BlacklistedWords blacklistedWords = new BlacklistedWords();
-		blacklistedWords.setWord("abc");
-		blacklistedWords.setLangCode("e");
-		blacklistedWords.setDescription("no description available");
+		BlocklistedWords blocklistedWords = new BlocklistedWords();
+		blocklistedWords.setWord("abc");
+		blocklistedWords.setLangCode("e");
+		blocklistedWords.setDescription("no description available");
 
-		words.add(blacklistedWords);
-		blacklistedWords.setLangCode("TST");
-		blacklistedWords.setIsActive(true);
-		blacklistedWords.setWord("testword");
+		words.add(blocklistedWords);
+		blocklistedWords.setLangCode("TST");
+		blocklistedWords.setIsActive(true);
+		blocklistedWords.setWord("testword");
 	}
 
 	@Before
@@ -1764,7 +1764,7 @@ public class MasterdataIntegrationTest {
 
 	}
 
-	// -----------------------------BlacklistedWordsTest----------------------------------
+	// -----------------------------BlocklistedWordsTest----------------------------------
 	@Test
 	@WithUserDetails("individual")
 	public void getAllWordsBylangCodeSuccessTest() throws Exception {
@@ -3948,36 +3948,36 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void addBlackListedWordTest() throws Exception {
-		RequestWrapper<BlacklistedWordsDto> requestDto = new RequestWrapper<>();
+	public void addBlockListedWordTest() throws Exception {
+		RequestWrapper<BlocklistedWordsDto> requestDto = new RequestWrapper<>();
 		requestDto.setId("mosip.idtype.create");
 		requestDto.setVersion("1.0");
-		BlacklistedWordsDto blacklistedWordsDto = new BlacklistedWordsDto();
-		blacklistedWordsDto.setWord("test  word");
-		blacklistedWordsDto.setLangCode("eng");
-		blacklistedWordsDto.setDescription("test description");
-		blacklistedWordsDto.setIsActive(true);
-		requestDto.setRequest(blacklistedWordsDto);
+		BlocklistedWordsDto blocklistedWordsDto = new BlocklistedWordsDto();
+		blocklistedWordsDto.setWord("test  word");
+		blocklistedWordsDto.setLangCode("eng");
+		blocklistedWordsDto.setDescription("test description");
+		blocklistedWordsDto.setIsActive(true);
+		requestDto.setRequest(blocklistedWordsDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
-		BlacklistedWords blacklistedWords = new BlacklistedWords();
-		blacklistedWords.setLangCode("TST");
-		Mockito.when(wordsRepository.create(Mockito.any())).thenReturn(blacklistedWords);
+		BlocklistedWords blocklistedWords = new BlocklistedWords();
+		blocklistedWords.setLangCode("TST");
+		Mockito.when(wordsRepository.create(Mockito.any())).thenReturn(blocklistedWords);
 		mockMvc.perform(post("/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	@WithUserDetails("zonal-admin")
-	public void createBlacklistedWordsLangValidationExceptionTest() throws Exception {
-		RequestWrapper<BlacklistedWordsDto> requestDto = new RequestWrapper<BlacklistedWordsDto>();
+	public void createBlocklistedWordsLangValidationExceptionTest() throws Exception {
+		RequestWrapper<BlocklistedWordsDto> requestDto = new RequestWrapper<BlocklistedWordsDto>();
 		requestDto.setId("mosip.language.create");
 		requestDto.setVersion("1.0.0");
-		BlacklistedWordsDto blacklistedWordsDto = new BlacklistedWordsDto();
-		blacklistedWordsDto.setWord("test  word");
-		blacklistedWordsDto.setLangCode("akk");
-		blacklistedWordsDto.setDescription("test description");
-		blacklistedWordsDto.setIsActive(true);
-		requestDto.setRequest(blacklistedWordsDto);
+		BlocklistedWordsDto blocklistedWordsDto = new BlocklistedWordsDto();
+		blocklistedWordsDto.setWord("test  word");
+		blocklistedWordsDto.setLangCode("akk");
+		blocklistedWordsDto.setDescription("test description");
+		blocklistedWordsDto.setIsActive(true);
+		requestDto.setRequest(blocklistedWordsDto);
 		String content = mapper.writeValueAsString(requestDto);
 		mockMvc.perform(post("/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isOk());
@@ -3985,16 +3985,16 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	@WithUserDetails("zonal-admin")
-	public void addBlackListedWordExceptionTest() throws Exception {
-		RequestWrapper<BlacklistedWordsDto> requestDto = new RequestWrapper<>();
+	public void addBlockListedWordExceptionTest() throws Exception {
+		RequestWrapper<BlocklistedWordsDto> requestDto = new RequestWrapper<>();
 		requestDto.setId("mosip.idtype.create");
 		requestDto.setVersion("1.0");
-		BlacklistedWordsDto blacklistedWordsDto = new BlacklistedWordsDto();
-		blacklistedWordsDto.setWord("test  word");
-		blacklistedWordsDto.setLangCode("eng");
-		blacklistedWordsDto.setDescription("test description");
-		blacklistedWordsDto.setIsActive(true);
-		requestDto.setRequest(blacklistedWordsDto);
+		BlocklistedWordsDto blocklistedWordsDto = new BlocklistedWordsDto();
+		blocklistedWordsDto.setWord("test  word");
+		blocklistedWordsDto.setLangCode("eng");
+		blocklistedWordsDto.setDescription("test description");
+		blocklistedWordsDto.setIsActive(true);
+		requestDto.setRequest(blocklistedWordsDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
 		when(wordsRepository.create(Mockito.any())).thenThrow(new DataAccessLayerException("", "cannot insert", null));
 		mockMvc.perform(post("/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(contentJson))
@@ -5098,27 +5098,27 @@ public class MasterdataIntegrationTest {
 				.andExpect(status().isOk());
 	}
 
-	/*------------------------------------Blacklisted Word Update/delete -------------------------------------*/
+	/*------------------------------------Blocklisted Word Update/delete -------------------------------------*/
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void deleteBlacklistedWordSuccess() throws Exception {
-		when(wordsRepository.deleteBlackListedWord(anyString(), any())).thenReturn(1);
+	public void deleteBlocklistedWordSuccess() throws Exception {
+		when(wordsRepository.deleteBlockListedWord(anyString(), any())).thenReturn(1);
 		mockMvc.perform(delete("/blacklistedwords/{word}", "abc")).andExpect(status().isOk());
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void deleteBlacklistedWordNoWordDeleted() throws Exception {
-		when(wordsRepository.deleteBlackListedWord(anyString(), any())).thenReturn(0);
+	public void deleteBlocklistedWordNoWordDeleted() throws Exception {
+		when(wordsRepository.deleteBlockListedWord(anyString(), any())).thenReturn(0);
 		mockMvc.perform(delete("/blacklistedwords/{word}", "abc")).andExpect(status().isOk());
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	@WithUserDetails("global-admin")
-	public void deleteBlacklistedWordFailure() throws Exception {
-		when(wordsRepository.deleteBlackListedWord(anyString(), any())).thenThrow(DataRetrievalFailureException.class,
+	public void deleteBlocklistedWordFailure() throws Exception {
+		when(wordsRepository.deleteBlockListedWord(anyString(), any())).thenThrow(DataRetrievalFailureException.class,
 				DataAccessLayerException.class);
 		mockMvc.perform(delete("/blacklistedwords/{word}", "abc")).andExpect(status().isInternalServerError());
 	}
@@ -5138,16 +5138,16 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void updateBlacklistedWordsLangValidationExceptionTest() throws Exception {
-		RequestWrapper<BlacklistedWordsDto> requestDto = new RequestWrapper<BlacklistedWordsDto>();
+	public void updateBlocklistedWordsLangValidationExceptionTest() throws Exception {
+		RequestWrapper<BlocklistedWordsDto> requestDto = new RequestWrapper<BlocklistedWordsDto>();
 		requestDto.setId("mosip.language.create");
 		requestDto.setVersion("1.0.0");
-		BlacklistedWordsDto blacklistedWordsDto = new BlacklistedWordsDto();
-		blacklistedWordsDto.setWord("test  word");
-		blacklistedWordsDto.setLangCode("akk");
-		blacklistedWordsDto.setDescription("test description");
-		blacklistedWordsDto.setIsActive(true);
-		requestDto.setRequest(blacklistedWordsDto);
+		BlocklistedWordsDto blocklistedWordsDto = new BlocklistedWordsDto();
+		blocklistedWordsDto.setWord("test  word");
+		blocklistedWordsDto.setLangCode("akk");
+		blocklistedWordsDto.setDescription("test description");
+		blocklistedWordsDto.setIsActive(true);
+		requestDto.setRequest(blocklistedWordsDto);
 		String content = mapper.writeValueAsString(requestDto);
 		mockMvc.perform(put("/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isOk());

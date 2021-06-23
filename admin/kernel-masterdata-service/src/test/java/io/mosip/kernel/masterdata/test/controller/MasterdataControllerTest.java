@@ -41,14 +41,14 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.constant.BlacklistedWordsErrorCode;
+import io.mosip.kernel.masterdata.constant.BlocklistedWordsErrorCode;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
-import io.mosip.kernel.masterdata.dto.BlackListedWordsRequest;
-import io.mosip.kernel.masterdata.dto.BlacklistedWordListRequestDto;
-import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
+import io.mosip.kernel.masterdata.dto.BlockListedWordsRequest;
+import io.mosip.kernel.masterdata.dto.BlocklistedWordListRequestDto;
+import io.mosip.kernel.masterdata.dto.BlocklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.ExceptionalHolidayDto;
@@ -62,7 +62,7 @@ import io.mosip.kernel.masterdata.dto.WorkingDaysResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricAttributeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.BlackListedWordsResponse;
+import io.mosip.kernel.masterdata.dto.getresponse.BlockListedWordsResponse;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ExceptionalHolidayResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
@@ -96,7 +96,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.ApplicationService;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
-import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
+import io.mosip.kernel.masterdata.service.BlocklistedWordsService;
 import io.mosip.kernel.masterdata.service.DeviceService;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 import io.mosip.kernel.masterdata.service.DeviceTypeService;
@@ -218,10 +218,10 @@ public class MasterdataControllerTest {
 	private IdTypeRepository repository;
 
 	private IdType idType;
-	private BlacklistedWordsDto blacklistedWordsDto;
-	private BlackListedWordsRequest blackListedWordsRequest;
+	private BlocklistedWordsDto blocklistedWordsDto;
+	private BlockListedWordsRequest blockListedWordsRequest;
 
-	private BlackListedWordsResponse blackListedWordsResponse;
+	private BlockListedWordsResponse blockListedWordsResponse;
 
 	@MockBean
 	private LanguageService languageService;
@@ -284,7 +284,7 @@ public class MasterdataControllerTest {
 	private CodeAndLanguageCodeID codeAndLanguageCodeId;
 
 	@MockBean
-	private BlacklistedWordsService blacklistedWordsService;
+	private BlocklistedWordsService blocklistedWordsService;
 
 	private List<TemplateDto> templateDtoList = new ArrayList<>();
 
@@ -328,7 +328,7 @@ public class MasterdataControllerTest {
 		locationHierarchyLevelSetup();
 
 		registrationCenterController();
-		blackListedWordSetUp();
+		blockListedWordSetUp();
 		templateSetup();
 
 		templateFileFormatSetup();
@@ -590,17 +590,17 @@ public class MasterdataControllerTest {
 		codeAndLanguageCodeId.setLangCode("DNA MATCHING");
 	}
 
-	private void blackListedWordSetUp() {
-		blacklistedWordsDto = new BlacklistedWordsDto();
-		blacklistedWordsDto.setLangCode("TST");
-		blacklistedWordsDto.setIsActive(true);
-		blacklistedWordsDto.setDescription("Test");
-		blacklistedWordsDto.setWord("testword");
-		blackListedWordsRequest = new BlackListedWordsRequest();
-		blackListedWordsRequest.setBlacklistedword(blacklistedWordsDto);
-		blackListedWordsResponse = new BlackListedWordsResponse();
-		blackListedWordsResponse.setLangCode("TST");
-		blackListedWordsResponse.setWord("testword");
+	private void blockListedWordSetUp() {
+		blocklistedWordsDto = new BlocklistedWordsDto();
+		blocklistedWordsDto.setLangCode("TST");
+		blocklistedWordsDto.setIsActive(true);
+		blocklistedWordsDto.setDescription("Test");
+		blocklistedWordsDto.setWord("testword");
+		blockListedWordsRequest = new BlockListedWordsRequest();
+		blockListedWordsRequest.setBlocklistedword(blocklistedWordsDto);
+		blockListedWordsResponse = new BlockListedWordsResponse();
+		blockListedWordsResponse.setLangCode("TST");
+		blockListedWordsResponse.setWord("testword");
 
 	}
 
@@ -1222,12 +1222,12 @@ public class MasterdataControllerTest {
 		List<String> words = new ArrayList<>();
 		words.add("test");
 
-		BlacklistedWordListRequestDto blacklistedWordListRequestDto = new BlacklistedWordListRequestDto();
-		blacklistedWordListRequestDto.setBlacklistedwords(words);
-		RequestWrapper<BlacklistedWordListRequestDto> requestWrapper = new RequestWrapper<>();
-		requestWrapper.setRequest(blacklistedWordListRequestDto);
+		BlocklistedWordListRequestDto blocklistedWordListRequestDto = new BlocklistedWordListRequestDto();
+		blocklistedWordListRequestDto.setBlocklistedwords(words);
+		RequestWrapper<BlocklistedWordListRequestDto> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(blocklistedWordListRequestDto);
 
-		Mockito.when(blacklistedWordsService.validateWord(words)).thenReturn(true);
+		Mockito.when(blocklistedWordsService.validateWord(words)).thenReturn(true);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/blacklistedwords/words")
 				.characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
@@ -1242,12 +1242,12 @@ public class MasterdataControllerTest {
 		List<String> words = new ArrayList<>();
 		words.add("test");
 
-		BlacklistedWordListRequestDto blacklistedWordListRequestDto = new BlacklistedWordListRequestDto();
-		blacklistedWordListRequestDto.setBlacklistedwords(words);
-		RequestWrapper<BlacklistedWordListRequestDto> requestWrapper = new RequestWrapper<>();
-		requestWrapper.setRequest(blacklistedWordListRequestDto);
+		BlocklistedWordListRequestDto blocklistedWordListRequestDto = new BlocklistedWordListRequestDto();
+		blocklistedWordListRequestDto.setBlocklistedwords(words);
+		RequestWrapper<BlocklistedWordListRequestDto> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(blocklistedWordListRequestDto);
 
-		Mockito.when(blacklistedWordsService.validateWord(words)).thenReturn(false);
+		Mockito.when(blocklistedWordsService.validateWord(words)).thenReturn(false);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/blacklistedwords/words")
 				.characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
@@ -1258,11 +1258,11 @@ public class MasterdataControllerTest {
 	
 	@Test
 	@WithUserDetails("test")
-	public void updateBlackListedWordStatusTest() throws Exception {
+	public void updateBlockListedWordStatusTest() throws Exception {
 
 		StatusResponseDto dto = new StatusResponseDto();
-		dto.setStatus("Status updated successfully for BlacklistedWords");
-		Mockito.when(blacklistedWordsService.updateBlackListedWordStatus(Mockito.anyString(), Mockito.anyBoolean()))
+		dto.setStatus("Status updated successfully for BlocklistedWords");
+		Mockito.when(blocklistedWordsService.updateBlockListedWordStatus(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(dto);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/blacklistedwords").characterEncoding("UTF-8")
@@ -1350,17 +1350,17 @@ public class MasterdataControllerTest {
 		List<String> words = new ArrayList<>();
 		words.add("test");
 
-		BlacklistedWordListRequestDto blacklistedWordListRequestDto = new BlacklistedWordListRequestDto();
-		blacklistedWordListRequestDto.setBlacklistedwords(words);
-		RequestWrapper<BlacklistedWordListRequestDto> requestWrapper = new RequestWrapper<>();
-		requestWrapper.setRequest(blacklistedWordListRequestDto);
+		BlocklistedWordListRequestDto blocklistedWordListRequestDto = new BlocklistedWordListRequestDto();
+		blocklistedWordListRequestDto.setBlocklistedwords(words);
+		RequestWrapper<BlocklistedWordListRequestDto> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(blocklistedWordListRequestDto);
 
-		Mockito.when(blacklistedWordsService.validateWord(Mockito.any()))
+		Mockito.when(blocklistedWordsService.validateWord(Mockito.any()))
 				.thenThrow(new MasterDataServiceException(
-						BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
-						BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage()));
+						BlocklistedWordsErrorCode.BLOCKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
+						BlocklistedWordsErrorCode.BLOCKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage()));
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/blacklistedwords/words")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/blocklistedwords/words")
 				.characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper));
 		mockMvc.perform(requestBuilder).andExpect(jsonPath("$.errors", Matchers.hasSize(1)));

@@ -2,7 +2,7 @@ package io.mosip.kernel.masterdata.dto.getresponse;
 
 import java.util.List;
 
-import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
+import io.mosip.kernel.masterdata.dto.BlocklistedWordsDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -15,6 +15,6 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class BlacklistedWordsResponseDto {
-	private List<BlacklistedWordsDto> blacklistedwords;
+public class BlocklistedWordsResponseDto {
+	private List<BlocklistedWordsDto> blocklistedwords;
 }

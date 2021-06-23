@@ -7,9 +7,9 @@ package io.mosip.kernel.masterdata.constant;
  *
  */
 public enum UpdateQueryConstants {
-	BLACKLISTED_WORD_UPDATE_QUERY_WITHOUT_DESCRIPTION(
+	BLOCKLISTED_WORD_UPDATE_QUERY_WITHOUT_DESCRIPTION(
 			"UPDATE BlacklistedWords bw SET bw.updatedBy = :updatedBy , bw.updatedDateTime = :updatedDateTime, bw.word = :word WHERE bw.word = :oldWord and  bw.langCode = :langCode and  (bw.isDeleted is null or bw.isDeleted = false)"),
-	BLACKLISTED_WORD_UPDATE_QUERY_WITH_DESCRIPTION(
+	BLOCKLISTED_WORD_UPDATE_QUERY_WITH_DESCRIPTION(
 			"UPDATE BlacklistedWords bw SET bw.description = :description ,bw.updatedBy = :updatedBy , bw.updatedDateTime = :updatedDateTime, bw.word = :word  WHERE bw.word = :oldWord and  bw.langCode = :langCode and (bw.isDeleted is null or bw.isDeleted = false)");
 
 	/**

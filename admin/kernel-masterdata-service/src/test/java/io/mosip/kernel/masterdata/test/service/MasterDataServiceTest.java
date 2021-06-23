@@ -57,7 +57,7 @@ import io.mosip.kernel.masterdata.dto.TemplateFileFormatPutDto;
 import io.mosip.kernel.masterdata.dto.WorkingDaysResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.BlocklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationCodeResponseDto;
@@ -77,7 +77,7 @@ import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.entity.Application;
 import io.mosip.kernel.masterdata.entity.BiometricAttribute;
 import io.mosip.kernel.masterdata.entity.BiometricType;
-import io.mosip.kernel.masterdata.entity.BlacklistedWords;
+import io.mosip.kernel.masterdata.entity.BlocklistedWords;
 import io.mosip.kernel.masterdata.entity.DaysOfWeek;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
@@ -100,7 +100,7 @@ import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.ApplicationRepository;
 import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.masterdata.repository.BiometricTypeRepository;
-import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
+import io.mosip.kernel.masterdata.repository.BlocklistedWordsRepository;
 import io.mosip.kernel.masterdata.repository.DaysOfWeekListRepo;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
@@ -120,7 +120,7 @@ import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.service.ApplicationService;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
-import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
+import io.mosip.kernel.masterdata.service.BlocklistedWordsService;
 import io.mosip.kernel.masterdata.service.DeviceHistoryService;
 import io.mosip.kernel.masterdata.service.DeviceService;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
@@ -207,7 +207,7 @@ public class MasterDataServiceTest {
 	private LocationHierarchyRepository locationHierarchyRepository1;
 
 	@Autowired
-	private BlacklistedWordsService blacklistedWordsService;
+	private BlocklistedWordsService blocklistedWordsService;
 	
 	@Autowired
 	private DeviceService deviceService;
@@ -230,9 +230,9 @@ public class MasterDataServiceTest {
 	private RegistrationCenterTypeRepository registrationCenterTypeRepository;
 
 	@MockBean
-	private BlacklistedWordsRepository wordsRepository;
+	private BlocklistedWordsRepository wordsRepository;
 
-	List<BlacklistedWords> words;
+	List<BlocklistedWords> words;
 
 	@MockBean
 	DeviceSpecificationRepository deviceSpecificationRepository;
@@ -402,7 +402,7 @@ public class MasterDataServiceTest {
 
 		biometricTypeSetup();
 
-		blackListedSetup();
+		blockListedSetup();
 
 		deviceSpecSetup();
 
@@ -725,15 +725,15 @@ public class MasterDataServiceTest {
 		idResponseDto.setId("1111");
 	}
 
-	private void blackListedSetup() {
+	private void blockListedSetup() {
 		words = new ArrayList<>();
 
-		BlacklistedWords blacklistedWords = new BlacklistedWords();
-		blacklistedWords.setWord("abc");
-		blacklistedWords.setLangCode("ENG");
-		blacklistedWords.setDescription("no description available");
+		BlocklistedWords blocklistedWords = new BlocklistedWords();
+		blocklistedWords.setWord("abc");
+		blocklistedWords.setLangCode("ENG");
+		blocklistedWords.setDescription("no description available");
 
-		words.add(blacklistedWords);
+		words.add(blocklistedWords);
 	}
 
 	private void biometricTypeSetup() {
@@ -1600,85 +1600,85 @@ public class MasterDataServiceTest {
 		assertEquals(biometricType1.getName(), biometricTypeResponseDto.getBiometrictypes().get(0).getName());
 	}
 
-	// ------------------ BlacklistedServiceTest -----------------//
+	// ------------------ BlocklistedServiceTest -----------------//
 
 	@Test(expected = DataNotFoundException.class)
-	public void testGetAllBlacklistedWordsNullvalue() {
-		blacklistedWordsService.getAllBlacklistedWordsBylangCode(null);
+	public void testGetAllBlocklistedWordsNullvalue() {
+		blocklistedWordsService.getAllBlocklistedWordsBylangCode(null);
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void testGetAllBlacklistedWordsEmptyvalue() {
-		blacklistedWordsService.getAllBlacklistedWordsBylangCode("");
+	public void testGetAllBlocklistedWordsEmptyvalue() {
+		blocklistedWordsService.getAllBlocklistedWordsBylangCode("");
 	}
 
 	@Test
-	public void testGetAllBlackListedWordsSuccess() {
+	public void testGetAllBlockListedWordsSuccess() {
 		int expected = 1;
 		when(wordsRepository.findAllByLangCode(Mockito.anyString())).thenReturn(words);
-		BlacklistedWordsResponseDto actual = blacklistedWordsService.getAllBlacklistedWordsBylangCode("ENG");
-		assertEquals(actual.getBlacklistedwords().size(), expected);
+		BlocklistedWordsResponseDto actual = blocklistedWordsService.getAllBlocklistedWordsBylangCode("ENG");
+		assertEquals(actual.getBlocklistedwords().size(), expected);
 	}
 	
 	@Test(expected = MasterDataServiceException.class)
-	public void testGetAllBlackListedWordsFetchException() {
+	public void testGetAllBlockListedWordsFetchException() {
 		when(wordsRepository.findAllByLangCode(Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
-		blacklistedWordsService.getAllBlacklistedWordsBylangCode("ENG");
+		blocklistedWordsService.getAllBlocklistedWordsBylangCode("ENG");
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void testGetAllBlackListedWordsNoDataFound() {
+	public void testGetAllBlockListedWordsNoDataFound() {
 		when(wordsRepository.findAllByLangCode(Mockito.anyString())).thenReturn(null);
-		blacklistedWordsService.getAllBlacklistedWordsBylangCode("ENG");
+		blocklistedWordsService.getAllBlocklistedWordsBylangCode("ENG");
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void testGetAllBlackListedWordsEmptyData() {
+	public void testGetAllBlockListedWordsEmptyData() {
 		when(wordsRepository.findAllByLangCode(Mockito.anyString())).thenReturn(new ArrayList<>());
-		blacklistedWordsService.getAllBlacklistedWordsBylangCode("ENG");
+		blocklistedWordsService.getAllBlocklistedWordsBylangCode("ENG");
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void testGetAllBlackListedWordsDataNotFoundException() {
+	public void testGetAllBlockListedWordsDataNotFoundException() {
 		when(wordsRepository.findAllByLangCode(Mockito.anyString())).thenReturn(null);
-		blacklistedWordsService.getAllBlacklistedWordsBylangCode("ENG");
+		blocklistedWordsService.getAllBlocklistedWordsBylangCode("ENG");
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void testGetAllBlackListedWordsEmptyDataException() {
+	public void testGetAllBlockListedWordsEmptyDataException() {
 		when(wordsRepository.findAllByLangCode(Mockito.anyString())).thenReturn(new ArrayList<>());
-		blacklistedWordsService.getAllBlacklistedWordsBylangCode("ENG");
+		blocklistedWordsService.getAllBlocklistedWordsBylangCode("ENG");
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void testGetAllBlackListedWordsServiceException() {
+	public void testGetAllBlockListedWordsServiceException() {
 		when(wordsRepository.findAllByLangCode(Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
-		blacklistedWordsService.getAllBlacklistedWordsBylangCode("ENG");
+		blocklistedWordsService.getAllBlocklistedWordsBylangCode("ENG");
 	}
 	
 	@Test
-	public void updateBlackListedWordStatusSuccessTest() {
+	public void updateBlockListedWordStatusSuccessTest() {
 		StatusResponseDto dto = new StatusResponseDto();
-		dto.setStatus("Status updated successfully for BlacklistedWords");
+		dto.setStatus("Status updated successfully for BlocklistedWords");
 
-		when(wordsRepository.findtoUpdateBlacklistedWordByWord(Mockito.anyString())).thenReturn(words);
-		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(BlacklistedWords.class), Mockito.anyString(),
+		when(wordsRepository.findtoUpdateBlocklistedWordByWord(Mockito.anyString())).thenReturn(words);
+		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(BlocklistedWords.class), Mockito.anyString(),
 				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
-		StatusResponseDto actual = blacklistedWordsService.updateBlackListedWordStatus("abc", false);
+		StatusResponseDto actual = blocklistedWordsService.updateBlockListedWordStatus("abc", false);
 		Assert.assertEquals(dto, actual);
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void updateBlackListedWordStatusFailureTest() {
-		when(wordsRepository.findtoUpdateBlacklistedWordByWord(Mockito.anyString()))
+	public void updateBlockListedWordStatusFailureTest() {
+		when(wordsRepository.findtoUpdateBlocklistedWordByWord(Mockito.anyString()))
 				.thenThrow(MasterDataServiceException.class);
-		blacklistedWordsService.updateBlackListedWordStatus("abc", false);
+		blocklistedWordsService.updateBlockListedWordStatus("abc", false);
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void updateBlackListedWordStatusFailureDataNotFoundTest() {
-		when(wordsRepository.findtoUpdateBlacklistedWordByWord(Mockito.anyString())).thenReturn(null);
-		blacklistedWordsService.updateBlackListedWordStatus("abc", false);
+	public void updateBlockListedWordStatusFailureDataNotFoundTest() {
+		when(wordsRepository.findtoUpdateBlocklistedWordByWord(Mockito.anyString())).thenReturn(null);
+		blocklistedWordsService.updateBlockListedWordStatus("abc", false);
 	}
 
 	// ------------------ DeviceSpecificationServiceTest -----------------//
@@ -2461,31 +2461,31 @@ public class MasterDataServiceTest {
 		documentTypeService.updateDocumentType("abc", false);
 	}
 
-	/*---------------------- Blacklisted word validator----------------------*/
+	/*---------------------- Blocklisted word validator----------------------*/
 
 	@Test
 	public void validateWordNegativeTest() {
-		List<BlacklistedWords> badWords = new ArrayList<>();
-		BlacklistedWords word = new BlacklistedWords();
+		List<BlocklistedWords> badWords = new ArrayList<>();
+		BlocklistedWords word = new BlocklistedWords();
 		word.setWord("not-allowed");
 		badWords.add(word);
 		doReturn(badWords).when(wordsRepository).findAllByIsDeletedFalseOrIsDeletedNull();
 		List<String> wordsList = new ArrayList<>();
 		wordsList.add("not-allowed");
-		boolean isValid = blacklistedWordsService.validateWord(wordsList);
+		boolean isValid = blocklistedWordsService.validateWord(wordsList);
 		assertEquals("Invalid word", false, isValid);
 	}
 
 	@Test
 	public void validateWordPositiveTest() {
-		List<BlacklistedWords> badWords = new ArrayList<>();
-		BlacklistedWords word = new BlacklistedWords();
+		List<BlocklistedWords> badWords = new ArrayList<>();
+		BlocklistedWords word = new BlocklistedWords();
 		word.setWord("nun");
 		badWords.add(word);
 		doReturn(badWords).when(wordsRepository).findAllByIsDeletedFalseOrIsDeletedNull();
 		List<String> wordsList = new ArrayList<>();
 		wordsList.add("allowed");
-		boolean isValid = blacklistedWordsService.validateWord(wordsList);
+		boolean isValid = blocklistedWordsService.validateWord(wordsList);
 		assertEquals("Valid word", true, isValid);
 	}
 
@@ -2494,7 +2494,7 @@ public class MasterDataServiceTest {
 		doThrow(DataRetrievalFailureException.class).when(wordsRepository).findAllByIsDeletedFalseOrIsDeletedNull();
 		List<String> wordsList = new ArrayList<>();
 		wordsList.add("allowed");
-		blacklistedWordsService.validateWord(wordsList);
+		blocklistedWordsService.validateWord(wordsList);
 	}
 
 	// -------------------------------------MachineHistroyTest----------------------------
