@@ -2,6 +2,8 @@ package io.mosip.kernel.masterdata.config;
 
 import java.time.LocalDateTime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,8 @@ import io.mosip.kernel.masterdata.service.CacheManagementService;
 @EnableCaching
 @EnableScheduling
 public class CacheConfig {
+	
+	private static final Logger log = LoggerFactory.getLogger(CacheConfig.class);
 
 	@Autowired
 	private CacheManagementService cacheManagementService;
@@ -23,8 +27,7 @@ public class CacheConfig {
 	 */
 	@Scheduled(cron = "${scheduling.job.cron}")
 	public void clearCacheSchedule() {
-		System.out.println("Time now: " + LocalDateTime.now());
-		System.out.println("Calling scheduller");
+		log.info("Cache evict scheduler started");
 		cacheManagementService.clearCache();
 	}
 	
