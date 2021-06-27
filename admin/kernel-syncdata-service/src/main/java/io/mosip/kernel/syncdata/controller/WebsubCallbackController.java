@@ -9,6 +9,7 @@ import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyInte
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,6 +38,7 @@ public class WebsubCallbackController {
     private List<String> partnerAllowedDomains;
 
     @Autowired
+    @Qualifier("selfTokenRestTemplate")
     private RestTemplate restTemplate;
 
     @PostMapping(value = "/cacert",consumes = "application/json")
@@ -61,7 +63,8 @@ public class WebsubCallbackController {
                     logger.error("Failed to insert CA cert {}", ex.getErrorText());
                     return;
                 }
-                logger.error("Failed to insert CA cert {}", ex);
+                logger.info("Received certificate data {}", certificateData);
+                logger.error("Failed to insert CA cert", ex);
                 throw ex;
             }
         }
