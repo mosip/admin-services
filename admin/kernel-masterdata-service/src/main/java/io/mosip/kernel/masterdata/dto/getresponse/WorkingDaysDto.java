@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class WorkingDaysDto {
 
+	private String code;
+
 	private String name;
 
 	private short order;

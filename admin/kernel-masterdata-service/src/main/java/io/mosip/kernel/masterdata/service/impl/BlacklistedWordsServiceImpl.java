@@ -226,7 +226,6 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 			if (wordDto.getDescription() != null && !wordDto.getDescription().isEmpty()) {
 				noOfRowAffected = blacklistedWordsRepository.createQueryUpdateOrDelete(
 						UpdateQueryConstants.BLACKLISTED_WORD_UPDATE_QUERY_WITH_DESCRIPTION.getQuery(), params);
-
 			} else {
 				noOfRowAffected = blacklistedWordsRepository.createQueryUpdateOrDelete(
 						UpdateQueryConstants.BLACKLISTED_WORD_UPDATE_QUERY_WITHOUT_DESCRIPTION.getQuery(), params);

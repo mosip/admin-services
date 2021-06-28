@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -77,7 +78,7 @@ public class RegCenterNonLanguageSpecificPutDto {
 	@StringFormatter(min = 1, max = 36)
 	private String zoneCode;
 
-	private WorkingNonWorkingDaysDto workingNonWorkingDays;
+	private Map<String, Boolean> workingNonWorkingDays;
 
 	private @Valid List<ExceptionalHolidayPutPostDto> exceptionalHolidayPutPostDto;
 

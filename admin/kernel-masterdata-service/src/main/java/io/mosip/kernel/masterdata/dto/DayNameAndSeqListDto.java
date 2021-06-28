@@ -9,7 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DayNameAndSeqListDto {
 
+	private String code;
+
 	private String name;
 
 	private short daySeq;
+
 }

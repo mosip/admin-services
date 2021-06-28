@@ -1,6 +1,8 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,10 +15,15 @@ import io.mosip.kernel.masterdata.constant.ApiName;
 import io.mosip.kernel.masterdata.constant.PacketWorkflowErrorCode;
 import io.mosip.kernel.masterdata.dto.PacketWorkflowActionRequestDTO;
 import io.mosip.kernel.masterdata.dto.PacketWorkflowActionResponseDTO;
+import io.mosip.kernel.masterdata.dto.PacketWorkflowResumeRequestDto;
 import io.mosip.kernel.masterdata.dto.RegProcRequestWrapper;
 import io.mosip.kernel.masterdata.dto.RegProcResponseWrapper;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.SearchRequestDto;
+import io.mosip.kernel.masterdata.dto.SearchRequestFilter;
 import io.mosip.kernel.masterdata.dto.SearchResponseDto;
+import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.service.PacketWorkflowActionService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
@@ -46,14 +53,13 @@ public class PacketWorkflowActionServiceImpl implements PacketWorkflowActionServ
 	@SuppressWarnings("unchecked")
 	@Override
 	public RegProcResponseWrapper<PacketWorkflowActionResponseDTO> resumePacket(
-			PacketWorkflowActionRequestDTO request) {
+			PacketWorkflowResumeRequestDto request) {
 		RegProcRequestWrapper<PacketWorkflowActionRequestDTO> procRequestWrapper = new RegProcRequestWrapper<>();
 		RegProcResponseWrapper<PacketWorkflowActionResponseDTO> procResponseWrapper = null;
 		procRequestWrapper.setId(requestId);
 		procRequestWrapper.setVersion(reqVersion);
-		procRequestWrapper.setRequest(request);
+		procRequestWrapper.setRequest(packetResumeRequestMapper(request));
 		procRequestWrapper.setRequesttime(LocalDateTime.now().toString());
-		
 		try {
 			String response = restClient.postApi(ApiName.PACKET_RESUME_API, null, "", "", MediaType.APPLICATION_JSON,
 					procRequestWrapper, String.class);
@@ -69,17 +75,16 @@ public class PacketWorkflowActionServiceImpl implements PacketWorkflowActionServ
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public RegProcResponseWrapper<SearchResponseDto> searchPacket(SearchRequestDto request) {
-		RegProcRequestWrapper<SearchRequestDto> searchDtoResponseWrapp = new RegProcRequestWrapper<>();
+	public RegProcResponseWrapper<SearchResponseDto> searchPacket(SearchDtoWithoutLangCode request) {
+		RegProcRequestWrapper<SearchRequestDto> searchDtoRequestWrapp = new RegProcRequestWrapper<>();
 		RegProcResponseWrapper<SearchResponseDto> procResponseWrapper = null;
-		searchDtoResponseWrapp.setId(searchRequestId);
-		searchDtoResponseWrapp.setVersion(searchReqVersion);
-		searchDtoResponseWrapp.setRequest(request);
-		searchDtoResponseWrapp.setRequesttime(LocalDateTime.now().toString());
-
+		searchDtoRequestWrapp.setId(searchRequestId);
+		searchDtoRequestWrapp.setVersion(searchReqVersion);
+		searchDtoRequestWrapp.setRequest(packetPauseRequestMapper(request));
+		searchDtoRequestWrapp.setRequesttime(LocalDateTime.now().toString());
 		try {
 			String response = restClient.postApi(ApiName.PACKET_PAUSE_API, null, "", "", MediaType.APPLICATION_JSON,
-					searchDtoResponseWrapp, String.class);
+					searchDtoRequestWrapp, String.class);
 			procResponseWrapper = objectMapper.readValue(response, RegProcResponseWrapper.class);
 		} catch (Exception e) {
 			throw new MasterDataServiceException(PacketWorkflowErrorCode.ERROR_OCCURED_WHILE_SEARCHING.getErrorCode(),
@@ -87,6 +92,35 @@ public class PacketWorkflowActionServiceImpl implements PacketWorkflowActionServ
 							+ ExceptionUtils.parseException(e));
 		}
 		return procResponseWrapper;
+	}
+
+	private SearchRequestDto packetPauseRequestMapper(SearchDtoWithoutLangCode searchDto) {
+		SearchRequestDto searchRequestDto=new SearchRequestDto();
+		List<SearchRequestFilter> searchRequestFilters = new ArrayList<SearchRequestFilter>();
+		SearchSort searchSort = new SearchSort();
+		if (!searchDto.getFilters().isEmpty()) {
+			for (SearchFilter sf : searchDto.getFilters()) {
+				SearchRequestFilter searchRequestFilter = new SearchRequestFilter();
+				searchRequestFilter.setColumnName(sf.getColumnName());
+				searchRequestFilter.setValue(sf.getValue());
+				searchRequestFilters.add(searchRequestFilter);
+			}
+		}
+		if (!searchDto.getSort().isEmpty()) {
+			searchRequestDto.setSort(searchDto.getSort().get(0));
+		}
+		searchRequestDto.setFilters(searchRequestFilters);
+		searchRequestDto.setPagination(searchDto.getPagination());
+		return searchRequestDto;
+	}
+
+	private PacketWorkflowActionRequestDTO packetResumeRequestMapper(PacketWorkflowResumeRequestDto dto) {
+		List<String> workflowIds = new ArrayList<String>();
+		PacketWorkflowActionRequestDTO packetWorkflowActionRequestDTO = new PacketWorkflowActionRequestDTO();
+		workflowIds.add(dto.getWorkflowId());
+		packetWorkflowActionRequestDTO.setWorkflowAction(dto.getWorkflowAction());
+		packetWorkflowActionRequestDTO.setWorkflowIds(workflowIds);
+		return packetWorkflowActionRequestDTO;
 	}
 
 }

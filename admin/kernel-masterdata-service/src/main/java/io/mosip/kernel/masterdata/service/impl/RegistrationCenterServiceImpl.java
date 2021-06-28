@@ -19,6 +19,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -46,7 +47,6 @@ import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
-import io.mosip.kernel.masterdata.dto.WorkingNonWorkingDaysDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
@@ -1115,40 +1115,16 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * @return
 	 */
 	@Transactional
-	private WorkingNonWorkingDaysDto setResponseDtoWorkingNonWorking(RegistrationCenter registrationCenter) {
+	private Map<String, Boolean> setResponseDtoWorkingNonWorking(RegistrationCenter registrationCenter) {
 		List<RegWorkingNonWorking> workingNonWorkingDays = regWorkingNonWorkingRepo
-				.findByRegCenterId(registrationCenter.getId());		
-		WorkingNonWorkingDaysDto workDays = new WorkingNonWorkingDaysDto();
+				.findByRegCenterId(registrationCenter.getId());
+		Map<String, Boolean> workingNonWorkingDay = new HashedMap<>();
 		if (!workingNonWorkingDays.isEmpty()) {
-			for (RegWorkingNonWorking working : workingNonWorkingDays)
-				switch (working.getDayCode()) {
-				case "101":
-					workDays.setSun(working.isWorking());
-					break;
-				case "102":
-					workDays.setMon(working.isWorking());
-					break;
-				case "103":
-					workDays.setTue(working.isWorking());
-					break;
-				case "104":
-					workDays.setWed(working.isWorking());
-					break;
-				case "105":
-					workDays.setThu(working.isWorking());
-					break;
-				case "106":
-					workDays.setFri(working.isWorking());
-					break;
-				case "107":
-					workDays.setSat(working.isWorking());
-					break;
-				default:
-
-					break;
-				}
+			for (RegWorkingNonWorking working : workingNonWorkingDays) {
+				workingNonWorkingDay.put(working.getDayCode(), working.isWorking());
+			}
 		}
-		return workDays;
+		return workingNonWorkingDay;
 	}
 
 	@Transactional
@@ -1189,34 +1165,29 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	}
 
 	@Transactional
-	private void createRegWorkingNonWorking(WorkingNonWorkingDaysDto workingNonWorkingDays,
+	private void createRegWorkingNonWorking(Map<String, Boolean> workingNonWorkingDays,
 			RegistrationCenter registrationCenterEntity) {
 		List<String> dayCodes;
 		List<DaysOfWeek> daysOfWeek = daysOfWeekListRepo.findBylangCode(registrationCenterEntity.getLangCode());
 		dayCodes = daysOfWeek.parallelStream().map(DaysOfWeek::getCode).collect(Collectors.toList());
-
+		boolean isWorking;
 		// WorkingNonWorkingDaysDto workingNonWorkingDays =
 		// regCenterPostReqDto.getWorkingNonWorkingDays();
 		if (workingNonWorkingDays != null) {
-			Boolean[] working = { workingNonWorkingDays.getSun(), workingNonWorkingDays.getMon(),
-					workingNonWorkingDays.getTue(), workingNonWorkingDays.getWed(), workingNonWorkingDays.getThu(),
-					workingNonWorkingDays.getFri(), workingNonWorkingDays.getSat() };
-
 			List<RegWorkingNonWorking> regWorkingNonWorkingEntityList = new ArrayList<>();
 			int i = 0;
 			for (String dayCode : dayCodes) {
 				RegWorkingNonWorking regWorkingNonWorkingEntity = new RegWorkingNonWorking();
+				isWorking = workingNonWorkingDays.get(dayCode) == null ? false : workingNonWorkingDays.get(dayCode);
 				regWorkingNonWorkingEntity.setRegistrationCenterId(registrationCenterEntity.getId());
 				regWorkingNonWorkingEntity.setDayCode(dayCode);
-				regWorkingNonWorkingEntity.setWorking(working[i]);
-				i++;
+				regWorkingNonWorkingEntity.setWorking(isWorking);
 				regWorkingNonWorkingEntity.setLanguagecode(registrationCenterEntity.getLangCode());
 				regWorkingNonWorkingEntity.setIsActive(true);
 				regWorkingNonWorkingEntity.setCreatedBy(registrationCenterEntity.getCreatedBy());
 				regWorkingNonWorkingEntity.setCreatedDateTime(registrationCenterEntity.getCreatedDateTime());
 				regWorkingNonWorkingEntityList.add(regWorkingNonWorkingEntity);
 			}
-
 			regWorkingNonWorkingRepo.saveAll(regWorkingNonWorkingEntityList);
 		}
 
@@ -1434,7 +1405,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	// create and update Working_Non_Working
 	@Transactional
 	private void updateWorkingNonWorking(RegistrationCenter updRegistrationCenter,
-			WorkingNonWorkingDaysDto workingNonWorkingDaysDto, List<ServiceError> errors) {
+			Map<String, Boolean> workingNonWorkingDaysDto, List<ServiceError> errors) {
 		try {
 			// check WorkingNonWorking is present in request or not
 			if (workingNonWorkingDaysDto != null) {
@@ -1463,18 +1434,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	// update the WorkingNonWorking table
 	@Transactional
-	private void updateRegWorkingNonWorking(WorkingNonWorkingDaysDto workingNonWorkingDays,
+	private void updateRegWorkingNonWorking(Map<String, Boolean> workingNonWorkingDays,
 			RegistrationCenter updRegistrationCenter, List<RegWorkingNonWorking> dbRegWorkingNonWorkings) {
-
-		Boolean[] working = { workingNonWorkingDays.getSun(), workingNonWorkingDays.getMon(),
-				workingNonWorkingDays.getTue(), workingNonWorkingDays.getWed(), workingNonWorkingDays.getThu(),
-				workingNonWorkingDays.getFri(), workingNonWorkingDays.getSat() };
-
-		int i = 0;
+		boolean isWorking;
 		for (RegWorkingNonWorking regWorkingNonWorking : dbRegWorkingNonWorkings) {
+			isWorking = workingNonWorkingDays.get(regWorkingNonWorking.getDayCode()) == null ? false
+					: workingNonWorkingDays.get(regWorkingNonWorking.getDayCode());
 			regWorkingNonWorking.setRegistrationCenterId(updRegistrationCenter.getId());
-			regWorkingNonWorking.setWorking(working[i]);
-			i++;
+			regWorkingNonWorking.setWorking(isWorking);
 			regWorkingNonWorking.setLanguagecode(updRegistrationCenter.getLangCode());
 			regWorkingNonWorking.setIsActive(true);
 			regWorkingNonWorking.setUpdatedBy(updRegistrationCenter.getUpdatedBy());

@@ -312,10 +312,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
 	public UserDetailsPutDto updateUser(UserDetailsPutDto userDetailsDto) {
-		UserDetails ud;
+		UserDetails ud = null;
 		try {
-			Optional<UserDetails> result = userDetailsRepository.findById(userDetailsDto.getId());
-			if(!result.isPresent())
+			UserDetails userDetails = userDetailsRepository
+					.findByIdAndIsDeletedFalseorIsDeletedIsNull(userDetailsDto.getId());
+			if (userDetails == null)
 				throw new MasterDataServiceException(UserDetailsErrorCode.USER_NOT_FOUND.getErrorCode(),
 						UserDetailsErrorCode.USER_NOT_FOUND.getErrorMessage());
 
@@ -340,13 +341,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			}*/
 
 			userDetailsDto = masterdataCreationUtil.updateMasterData(UserDetails.class, userDetailsDto);
-			ud = MetaDataUtils.setCreateMetaData(userDetailsDto, UserDetails.class);
-			// ud.setIsActive(userDetailsDto.getIsActive());
-
+			ud = MetaDataUtils.setUpdateMetaData(userDetailsDto, userDetails, false);
 			userDetailsRepository.update(ud);
 			UserDetailsHistory udh = new UserDetailsHistory();
 			MapperUtils.map(ud, udh);
 			MapperUtils.setBaseFieldValue(ud, udh);
+			udh.setIsActive(ud.getIsActive());
 			udh.setCreatedBy(MetaDataUtils.getContextUser());
 			udh.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
 			userDetailsHistoryService.createUserDetailsHistory(udh);
@@ -393,6 +393,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			Optional<UserDetails> result = userDetailsRepository.findById(id);
 			if (result != null && !result.isEmpty()) {
 				masterdataCreationUtil.updateMasterDataStatus(UserDetails.class, id, isActive, "id");
+				masterdataCreationUtil.updateMasterDataStatus(UserDetailsHistory.class, id, isActive, "id");
 			} else {
 				throw new MasterDataServiceException(UserDetailsErrorCode.USER_NOT_FOUND.getErrorCode(),
 						UserDetailsErrorCode.USER_NOT_FOUND.getErrorMessage());

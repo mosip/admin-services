@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,7 @@ import java.util.Map;
 public class WebsubCallbackController {
 
     private static final Logger logger = LoggerFactory.getLogger(WebsubCallbackController.class);
-    private static final String CERTIFICATE_DATA = "certificateData";
+    private static final String CERTIFICATE_DATA_SHARE_URL = "certChainDatashareUrl";
     private static final String PARTNER_DOMAIN = "partnerDomain";
 
     @Autowired
@@ -35,32 +36,36 @@ public class WebsubCallbackController {
     @Value("#{'${mosip.syncdata.partner.allowed.domains:FTM,DEVICE}'.split(',')}")
     private List<String> partnerAllowedDomains;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     @PostMapping(value = "/cacert",consumes = "application/json")
     @PreAuthenticateContentAndVerifyIntent(secret = "${syncdata.websub.callback.secret.ca-cert}",
             callback = "/v1/syncdata/websub/callback/cacert",topic = "${syncdata.websub.topic.ca-cert}")
     public void handleCACertificate(@RequestBody EventModel eventModel) {
         logger.debug("ca_certificate EVENT RECEIVED");
         Map<String, Object> data = eventModel.getEvent().getData();
-        CACertificateRequestDto caCertRequestDto = new CACertificateRequestDto();
-        if (data.containsKey(CERTIFICATE_DATA) && data.get(CERTIFICATE_DATA) instanceof String) {
-            caCertRequestDto.setCertificateData((String) data.get(CERTIFICATE_DATA));
-        }
-        if (data.containsKey(PARTNER_DOMAIN) && data.get(PARTNER_DOMAIN) instanceof String &&
-                partnerAllowedDomains.contains((String) data.get(PARTNER_DOMAIN))) {
+
+        if (data.containsKey(PARTNER_DOMAIN) && partnerAllowedDomains.contains((String) data.get(PARTNER_DOMAIN)) &&
+                data.containsKey(CERTIFICATE_DATA_SHARE_URL)) {
+            CACertificateRequestDto caCertRequestDto = new CACertificateRequestDto();
             caCertRequestDto.setPartnerDomain((String) data.get(PARTNER_DOMAIN));
-        }
-        try {
-            partnerCertificateManagerService.uploadCACertificate(caCertRequestDto);
-            logger.info("CA certs sync completed for {}", caCertRequestDto.getPartnerDomain());
-        } catch (PartnerCertManagerException ex) {
-            if(PartnerCertManagerErrorConstants.INVALID_PARTNER_DOMAIN.getErrorCode().equals(ex.getErrorCode()) ||
-                    PartnerCertManagerErrorConstants.CERTIFICATE_EXIST_ERROR.getErrorCode().equals(ex.getErrorCode())) {
-                logger.error("Failed to insert CA cert {}", ex.getErrorText());
-                return;
+            String certificateData = restTemplate.getForObject((String) data.get(CERTIFICATE_DATA_SHARE_URL), String.class);
+            caCertRequestDto.setCertificateData(certificateData);
+            try {
+                partnerCertificateManagerService.uploadCACertificate(caCertRequestDto);
+                logger.info("CA certs sync completed for {}", caCertRequestDto.getPartnerDomain());
+            } catch (PartnerCertManagerException ex) {
+                if(PartnerCertManagerErrorConstants.INVALID_PARTNER_DOMAIN.getErrorCode().equals(ex.getErrorCode()) ||
+                        PartnerCertManagerErrorConstants.CERTIFICATE_EXIST_ERROR.getErrorCode().equals(ex.getErrorCode())) {
+                    logger.error("Failed to insert CA cert {}", ex.getErrorText());
+                    return;
+                }
+                logger.error("Failed to insert CA cert {}", ex);
+                throw ex;
             }
-            logger.error("Failed to insert CA cert {}", ex);
-            throw ex;
         }
+
     }
 
 }
