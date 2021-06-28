@@ -33,7 +33,6 @@ import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.RegcenterBaseDto;
-import io.mosip.kernel.masterdata.dto.WorkingNonWorkingDaysDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
@@ -343,7 +342,7 @@ public class RegistrationCenterValidator {
 		zoneStartEndTimeGtrValidation(registrationCenterDto, errors);
 		lunchStartEndTimeGrtValidation(registrationCenterDto, errors);
 		formatValidationLongitudeLatitude(errors, latitude, longitude);
-		checkWorkingNonworking(errors, registrationCenterDto);
+		// checkWorkingNonworking(errors, registrationCenterDto);
 		// holidayVlidation(registrationCenterDto, errors);
 
 	}
@@ -367,10 +366,13 @@ public class RegistrationCenterValidator {
 					e.printStackTrace();
 				}
 			}
-			if (workMap.size() < 7) {
-				errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NONWORKING_EXCEPTION.getErrorCode(),
-						RegistrationCenterErrorCode.WORKING_NONWORKING_EXCEPTION.getErrorMessage()));
-			}
+			/*
+			 * if (workMap.size() < 7) { errors.add(new
+			 * ServiceError(RegistrationCenterErrorCode.WORKING_NONWORKING_EXCEPTION.
+			 * getErrorCode(),
+			 * RegistrationCenterErrorCode.WORKING_NONWORKING_EXCEPTION.getErrorMessage()));
+			 * }
+			 */
 
 		}
 
@@ -786,43 +788,41 @@ public class RegistrationCenterValidator {
 	}
 
 	public void validateRegCenterUpdate(String zoneCode,LocalTime centerStartTime, LocalTime centerEndTime,
-			LocalTime lunchStartingTime,LocalTime lunchEndingTime,String latitude,String longitude,WorkingNonWorkingDaysDto workingNonWorkingDaysDto,List<ServiceError> errors) {
+			LocalTime lunchStartingTime, LocalTime lunchEndingTime, String latitude, String longitude,
+			Map<String, Boolean> workingNonWorkingDaysDto, List<ServiceError> errors) {
 		zoneUserMapValidation(zoneCode, errors, getZoneIdsForUser());
 		zoneStartEndTimeGtrValidation(centerStartTime,centerEndTime, errors);
 		lunchStartEndTimeGrtValidation(lunchStartingTime, lunchEndingTime, centerStartTime, centerEndTime, errors);
 		formatValidationLongitudeLatitude(errors, latitude, longitude);
-		checkWorkingNonworking(errors, workingNonWorkingDaysDto);
+		//checkWorkingNonworking(errors, workingNonWorkingDaysDto);
 		// holidayVlidation(registrationCenterDto, errors);
 
 	}
 
-	private void checkWorkingNonworking(List<ServiceError> errors, WorkingNonWorkingDaysDto workingNonWorkingDaysDto) {
-		if (workingNonWorkingDaysDto != null) {
-			String fieldName = null;
-			Boolean value = null;
-			Map<String, Boolean> workMap = new HashMap<>();
-			Field[] fieldList = workingNonWorkingDaysDto.getClass().getDeclaredFields();
-			for (Field field : fieldList) {
-				try {
-					field.setAccessible(true);
-					value = (Boolean) field.get(workingNonWorkingDaysDto);
-					fieldName = field.getName();
-					if (value != null) {
-						workMap.put(fieldName, value);
-					}
-
-				} catch (IllegalArgumentException | IllegalAccessException e) {
-					e.printStackTrace();
-				}
-			}
-			if (workMap.size() < 7) {
-				errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NONWORKING_EXCEPTION.getErrorCode(),
-						RegistrationCenterErrorCode.WORKING_NONWORKING_EXCEPTION.getErrorMessage()));
-			}
-
-		}
-
-	}
+	/*
+	 * private void checkWorkingNonworking(List<ServiceError> errors,
+	 * WorkingNonWorkingDaysDto workingNonWorkingDaysDto) { if
+	 * (workingNonWorkingDaysDto != null) { String fieldName = null; Boolean value =
+	 * null; Map<String, Boolean> workMap = new HashMap<>(); Field[] fieldList =
+	 * workingNonWorkingDaysDto.getClass().getDeclaredFields(); for (Field field :
+	 * fieldList) { try { field.setAccessible(true); value = (Boolean)
+	 * field.get(workingNonWorkingDaysDto); fieldName = field.getName(); if (value
+	 * != null) { workMap.put(fieldName, value); }
+	 * 
+	 * } catch (IllegalArgumentException | IllegalAccessException e) {
+	 * e.printStackTrace(); } }
+	 * 
+	 * if (workMap.size() < 7) { errors.add(new
+	 * ServiceError(RegistrationCenterErrorCode.WORKING_NONWORKING_EXCEPTION.
+	 * getErrorCode(),
+	 * RegistrationCenterErrorCode.WORKING_NONWORKING_EXCEPTION.getErrorMessage()));
+	 * }
+	 * 
+	 * 
+	 * }
+	 * 
+	 * }
+	 */
 
 	// validate Holiday against DB
 	private void holidayVlidation(RegCenterPutReqDto registrationCenterDto, List<ServiceError> errors) {

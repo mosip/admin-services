@@ -15,7 +15,7 @@ import io.mosip.kernel.masterdata.entity.id.RegWorkingNonWorkingId;
 @Repository("workingDaysRepo")
 public interface RegWorkingNonWorkingRepo extends BaseRepository<RegWorkingNonWorking, RegWorkingNonWorkingId> {
 
-	@Query("SELECT new io.mosip.kernel.masterdata.dto.DayNameAndSeqListDto(d.name,d.daySeq) FROM DaysOfWeek d where d.code in"
+	@Query("SELECT new io.mosip.kernel.masterdata.dto.DayNameAndSeqListDto(d.code,d.name,d.daySeq) FROM DaysOfWeek d where d.code in"
 			+ "(SELECT w.dayCode from RegWorkingNonWorking w where w.registrationCenterId=?1  and w.isWorking=true and"
 			+ " (w.isDeleted is null or w.isDeleted = false) and w.isActive = true) and d.langCode=?2 and "
 			+ "d.isActive = true and (d.isDeleted is null or d.isDeleted = false)")
@@ -27,7 +27,7 @@ public interface RegWorkingNonWorkingRepo extends BaseRepository<RegWorkingNonWo
 			+ "where w.registrationCenterId=?1 and d.langCode=?2 and w.isActive = true")
 	List<WeekDaysDto> findByregistrationCenterIdAndlangCodeForWeekDays(String regCenterId, String langCode);
 
-	@Query("From RegWorkingNonWorking where registrationCenterId=?1 and languagecode=?2 and (isDeleted is null or isDeleted = false) and isActive = true")
+	@Query("From RegWorkingNonWorking where registrationCenterId=?1 and languagecode=?2 and (isDeleted is null or isDeleted = false) and isActive = true order by dayCode asc")
 	List<RegWorkingNonWorking> findByRegCenterIdAndlanguagecode(String registrationCenterId, String languagecode);
 
 	@Query("From RegWorkingNonWorking where registrationCenterId=?1 and (isDeleted is null or isDeleted = false) and isActive = true")

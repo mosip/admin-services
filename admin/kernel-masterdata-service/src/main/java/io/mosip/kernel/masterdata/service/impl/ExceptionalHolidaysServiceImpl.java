@@ -37,7 +37,6 @@ public class ExceptionalHolidaysServiceImpl implements ExceptionalHolidayService
 	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
 	private String supportedLang;
 
-
 	@Cacheable(value = "exceptional-holiday", key = "'exceptionalholiday'.concat('-').concat(#regCenterId).concat('-').concat(#langCode)")
 	@Override
 	public ExceptionalHolidayResponseDto getAllExceptionalHolidays(String regCenterId, String langCode) {

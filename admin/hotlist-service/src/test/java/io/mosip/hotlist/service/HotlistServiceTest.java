@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -21,7 +22,6 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.hotlist.constant.HotlistErrorConstants;
-import io.mosip.hotlist.constant.HotlistStatus;
 import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
 import io.mosip.hotlist.entity.Hotlist;
 import io.mosip.hotlist.event.HotlistEventHandler;
@@ -29,6 +29,7 @@ import io.mosip.hotlist.exception.HotlistAppException;
 import io.mosip.hotlist.repository.HotlistHistoryRepository;
 import io.mosip.hotlist.repository.HotlistRepository;
 import io.mosip.hotlist.service.impl.HotlistServiceImpl;
+import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
@@ -105,14 +106,14 @@ public class HotlistServiceTest {
 		entity.setIdValue("id");
 		entity.setIdType("idType");
 		entity.setStatus(HotlistStatus.BLOCKED);
-		entity.setExpiryTimestamp(LocalDateTime.MAX.withYear(9999));
+		entity.setExpiryTimestamp(null);
 		when(hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(Optional.of(entity));
 		HotlistRequestResponseDTO response = service.retrieveHotlist("id", "idType");
 		assertTrue(response.getId().contentEquals("id"));
 		assertTrue(response.getIdType().contentEquals("idType"));
 		assertTrue(response.getStatus().contentEquals(HotlistStatus.BLOCKED));
-		assertTrue(response.getExpiryTimestamp().equals(LocalDateTime.MAX.withYear(9999)));
+		assertTrue(Objects.isNull(response.getExpiryTimestamp()));
 	}
 
 	@SuppressWarnings("static-access")
@@ -139,14 +140,14 @@ public class HotlistServiceTest {
 		entity.setIdValue("id");
 		entity.setIdType("idType");
 		entity.setStatus(HotlistStatus.BLOCKED);
-		entity.setExpiryTimestamp(LocalDateTime.MAX.withYear(9999));
+		entity.setExpiryTimestamp(null);
 		when(hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(Optional.empty());
 		HotlistRequestResponseDTO response = service.retrieveHotlist("id", "idType");
 		assertTrue(response.getId().contentEquals("id"));
 		assertTrue(response.getIdType().contentEquals("idType"));
 		assertTrue(response.getStatus().contentEquals(HotlistStatus.UNBLOCKED));
-		assertTrue(response.getExpiryTimestamp().equals(LocalDateTime.MAX.withYear(9999)));
+		assertTrue(Objects.isNull(response.getExpiryTimestamp()));
 	}
 
 	@SuppressWarnings("serial")

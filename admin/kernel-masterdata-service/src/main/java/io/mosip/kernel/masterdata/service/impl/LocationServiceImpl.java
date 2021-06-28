@@ -178,6 +178,7 @@ public class LocationServiceImpl implements LocationService {
 	 * @see io.mosip.kernel.masterdata.service.LocationService#
 	 * getLocationHierarchyByLangCode(java.lang.String, java.lang.String)
 	 */
+
 	@Cacheable(value = "locations", key = "'location'.concat('-').concat(#locCode).concat('-').concat(#langCode)")
 	@Override
 	public LocationResponseDto getLocationHierarchyByLangCode(String locCode, String langCode) {
@@ -601,6 +602,7 @@ public class LocationServiceImpl implements LocationService {
 	 * @see io.mosip.kernel.masterdata.service.LocationService#validateLocationName(
 	 * java. lang.String)
 	 */
+
 	@Cacheable(value = "locations", key = "'location'.concat('-').concat(#locationName)")
 	@Override
 	public StatusResponseDto validateLocationName(String locationName) {

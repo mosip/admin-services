@@ -44,6 +44,7 @@ public class IdTypeServiceImpl implements IdTypeService {
 	 * io.mosip.kernel.masterdata.service.IdTypeService#getIdTypeByLanguageCode(java
 	 * .lang.String)
 	 */
+
 	@Cacheable(value = "id-type", key = "'idtype'.concat('-').concat(#languageCode)")
 	@Override
 	public IdTypeResponseDto getIdTypesByLanguageCode(String languageCode) {

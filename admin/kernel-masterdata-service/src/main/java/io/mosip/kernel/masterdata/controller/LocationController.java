@@ -137,7 +137,6 @@ public class LocationController {
 	 * @return list of location hierarchies
 	 */
 	@ResponseFilter
-//	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN','GLOBAL_ADMIN','RESIDENT')")
 	@GetMapping(value = "/info/{locationcode}/{langcode}")
 	public ResponseWrapper<LocationExtnDto> getLocationDetailsByLangCode(
 			@PathVariable("locationcode") String locationCode, @PathVariable("langcode") String langCode) {

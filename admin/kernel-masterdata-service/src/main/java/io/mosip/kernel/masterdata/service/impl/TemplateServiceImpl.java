@@ -8,7 +8,6 @@ import java.util.UUID;
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -121,8 +121,9 @@ public class TemplateServiceImpl implements TemplateService {
 	@Autowired
 	private PublisherClient<String, EventModel, HttpHeaders> publisher;
 
-	@PostConstruct
-	private void init() {
+	@Scheduled(fixedDelayString = "${masterdata.websub.resubscription.delay.millis}",
+			initialDelayString = "${masterdata.subscriptions-delay-on-startup}")
+	public void subscribeTopics() {
 		try {
 			publisher.registerTopic(topic, hubURL);
 		} catch (WebSubClientException exception) {
@@ -222,12 +223,11 @@ public class TemplateServiceImpl implements TemplateService {
 	public IdAndLanguageCodeID createTemplate(TemplateDto template) {
 
 		Template templateEntity;
-
 		try {
-			if (StringUtils.isNotEmpty(supportedLang) && supportedLang.contains(template.getLangCode())) {
-				String uniqueId = generateId();
-				template.setId(uniqueId);
+			if (template.getId() == null || template.getId().trim().isBlank()) {
+				template.setId(generateId());
 			}
+
 			template = masterdataCreationUtil.createMasterData(Template.class, template);
 			Template entity = MetaDataUtils.setCreateMetaData(template, Template.class);
 			templateEntity = templateRepository.create(entity);
@@ -258,8 +258,7 @@ public class TemplateServiceImpl implements TemplateService {
 		UUID uuid = UUID.randomUUID();
 		String uniqueId = uuid.toString();
 
-		List<Template> template = templateRepository.findAllByCodeAndIsDeletedFalseOrIsDeletedIsNull(uniqueId);
-
+		List<Template> template = templateRepository.findAllByIdAndIsDeletedFalseOrIsDeletedIsNull(uniqueId);
 		return template.isEmpty() ? uniqueId : generateId();
 	}
 
@@ -352,6 +351,7 @@ public class TemplateServiceImpl implements TemplateService {
 	 * @see io.mosip.kernel.masterdata.service.TemplateService#
 	 * getAllTemplateByTemplateTypeCode(java.lang.String)
 	 */
+	@Cacheable(value = "templates", key = "'templateByTemplateCode'.concat('-').concat(#templateTypeCode.toString)")
 	@Override
 	public TemplateResponseDto getAllTemplateByTemplateTypeCode(String templateTypeCode) {
 		List<Template> templates;
