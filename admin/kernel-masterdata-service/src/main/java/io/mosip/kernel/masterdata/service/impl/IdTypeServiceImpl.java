@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,7 @@ public class IdTypeServiceImpl implements IdTypeService {
 	 * io.mosip.kernel.masterdata.service.IdTypeService#getIdTypeByLanguageCode(java
 	 * .lang.String)
 	 */
+	@Cacheable(value = "id-type", key = "'idType'.concat('-').concat(#languageCode)")
 	@Override
 	public IdTypeResponseDto getIdTypesByLanguageCode(String languageCode) {
 		IdTypeResponseDto idTypeResponseDto = new IdTypeResponseDto();

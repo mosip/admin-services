@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -81,6 +82,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	 * @see
 	 * io.mosip.kernel.masterdata.service.DynamicFieldService#getAllDynamicField()
 	 */
+	@Cacheable(value = "dynamic-field", key = "'dynamicField'.concat('-').concat(#pageNumber).concat('-').concat(#pageSize).concat('-').concat(#sortBy).concat('-').concat(#orderBy).concat('-').concat(#langCode)")
 	@Override
 	public PageDto<DynamicFieldExtnDto> getAllDynamicField(int pageNumber, int pageSize, String sortBy, String orderBy, String langCode,
 															   LocalDateTime lastUpdated, LocalDateTime currentTimestamp) {
@@ -128,6 +130,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		return pagedFields;
 	}
 
+	@Cacheable(value = "dynamic-field", key = "dynamicField")
 	@Override
 	public List<String> getDistinctDynamicFields() {
 		List<String> distinctDynamicField = new ArrayList<String>();

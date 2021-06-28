@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -84,6 +85,7 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 	 * @see io.mosip.kernel.masterdata.service.TemplateTypeService#
 	 * getTemplateTypeCodeandLangCode(java.lang.String, java.lang.String)
 	 */
+	@Cacheable(value = "template-type", key = "'templateType'.concat('-').concat(#templateTypeCode).concat('-').concat(#langCode)")
 	@Override
 	public TemplateTypeResponseDto getTemplateTypeCodeandLangCode(String templateTypeCode, String langCode) {
 		List<TemplateType> templateTypeList = null;
@@ -115,6 +117,7 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 	 * @see io.mosip.kernel.masterdata.service.TemplateTypeService#
 	 * getTemplateTypeLangCode(java.lang.String)
 	 */
+	@Cacheable(value = "template-type", key = "'templateType'.concat('-').concat(#langCode)")
 	@Override
 	public TemplateTypeResponseDto getTemplateTypeLangCode(String langCode) {
 		TemplateTypeResponseDto templateTypeResponseDto = new TemplateTypeResponseDto();
