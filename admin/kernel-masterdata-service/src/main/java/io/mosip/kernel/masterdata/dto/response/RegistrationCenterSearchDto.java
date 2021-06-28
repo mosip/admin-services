@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.dto.response;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -9,12 +10,10 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.mosip.kernel.masterdata.dto.ExceptionalHolidayPutPostDto;
-import io.mosip.kernel.masterdata.dto.WorkingNonWorkingDaysDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.BaseDto;
 import io.mosip.kernel.masterdata.validator.FilterType;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
-import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -128,7 +127,9 @@ public class RegistrationCenterSearchDto extends BaseDto {
 
 	private String zone;
 
-	private WorkingNonWorkingDaysDto workingNonWorkingDays;
+	// private WorkingNonWorkingDaysDto workingNonWorkingDays;
+
+	private Map<String, Boolean> workingNonWorkingDays;
 
 	private List<ExceptionalHolidayPutPostDto> exceptionalHolidayPutPostDto;
 

@@ -2,6 +2,8 @@ package io.mosip.kernel.masterdata;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * Main class of Master-Data-Service Application. This will have CRUD operations
@@ -13,6 +15,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication(scanBasePackages = { "io.mosip.kernel.masterdata.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config"})
+@EnableCaching
+@EnableScheduling
 public class MasterDataBootApplication {
 
 	/**

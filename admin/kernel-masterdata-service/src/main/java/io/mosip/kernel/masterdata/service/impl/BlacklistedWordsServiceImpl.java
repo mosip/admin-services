@@ -14,6 +14,7 @@ import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -114,6 +115,8 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	 * @see io.mosip.kernel.masterdata.service.BlacklistedWordsService#
 	 * getAllBlacklistedWordsBylangCode(java.lang.String)
 	 */
+
+	@Cacheable(value = "blacklisted-words", key = "'blacklistedword'.concat('-').concat(#langCode)")
 	@Override
 	public BlacklistedWordsResponseDto getAllBlacklistedWordsBylangCode(String langCode) {
 		List<BlacklistedWordsDto> wordsDto = null;

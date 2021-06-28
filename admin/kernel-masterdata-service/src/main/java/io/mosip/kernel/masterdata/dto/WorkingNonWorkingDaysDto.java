@@ -9,18 +9,18 @@ import lombok.Data;
 public class WorkingNonWorkingDaysDto {
 
 	// @NotNull
-	Boolean sun;
+	boolean sun;
 	// @NotNull
-	Boolean mon;
+	boolean mon;
 	// @NotNull
-	Boolean tue;
+	boolean tue;
 	// @NotNull
-	Boolean wed;
+	boolean wed;
 	// @NotNull
-	Boolean thu;
+	boolean thu;
 	// @NotNull
-	Boolean fri;
+	boolean fri;
 	// @NotNull
-	Boolean sat;
+	boolean sat;
 
 }

@@ -111,6 +111,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
 	 * getAllDocumentCategory()
 	 */
+
 	@Cacheable(value = "document-category", key = "'documentcategory'")
 	@Override
 	public DocumentCategoryResponseDto getAllDocumentCategory() {
@@ -357,6 +358,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
 	 * getAllDocCategories(int, int, java.lang.String, java.lang.String)
 	 */
+	@Cacheable(value = "document-category", key = "'documentCategory'.concat('-').concat(#pageNumber).concat('-').caoncat(#pageSize).concat('-').caoncat(#sortBy.toString).concat('-').caoncat(#orderBy.toString)")
 	@Override
 	public PageDto<DocumentCategoryExtnDto> getAllDocCategories(int pageNumber, int pageSize, String sortBy,
 			String orderBy) {

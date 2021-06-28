@@ -33,7 +33,6 @@ import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
@@ -391,8 +390,10 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 				filter.setColumnName("name");
 				if (filterValidator.validate(DeviceTypeDto.class, Arrays.asList(filter))) {
 					pageUtils.validateSortField(DeviceSpecification.class, dto.getSort());
-					Page<DeviceType> deviceTypes = masterDataSearchHelper.searchMasterdata(DeviceType.class,
-							new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null),
+					Page<DeviceType> deviceTypes = masterDataSearchHelper.searchMasterdataWithoutLangCode(
+							DeviceType.class,
+							new SearchDtoWithoutLangCode(Arrays.asList(filter), Collections.emptyList(),
+									new Pagination(), null),
 							null);
 					removeList.add(filter);
 					deviceCodeFilter = buildDeviceTypeSearchFilter(deviceTypes.getContent());
@@ -434,8 +435,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		List<DeviceType> deviceTypes = deviceUtil.getDeviceTypes();
 		devicesSpecifications.forEach(deviceSpec -> {
 			deviceTypes.forEach(mt -> {
-				if (deviceSpec.getDeviceTypeCode().equals(mt.getCode())
-						&& deviceSpec.getLangCode().equals(mt.getLangCode())) {
+				if (deviceSpec.getDeviceTypeCode().equals(mt.getCode())) {
 					deviceSpec.setDeviceTypeName(mt.getName());
 				}
 			});

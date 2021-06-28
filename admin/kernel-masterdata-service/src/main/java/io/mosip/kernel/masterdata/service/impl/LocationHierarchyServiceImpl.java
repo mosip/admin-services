@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,7 @@ public class LocationHierarchyServiceImpl implements LocationHierarchyService {
 	@Autowired
 	private LocationHierarchyRepository locationHierarchyRepository;
 
+	@Cacheable(value = "location-hierarchy", key = "'locationhierarchy'.concat('-').concat(#level).concat('-').concat(#langCode)")
 	@Override
 	public LocationHierarchyLevelResponseDto getLocationHierarchyLevelAndLangCode(short level, String langCode) {
 		LocationHierarchyLevelResponseDto locationHierarchyLevelResponseDto = new LocationHierarchyLevelResponseDto();
@@ -70,6 +72,7 @@ public class LocationHierarchyServiceImpl implements LocationHierarchyService {
 	 * io.mosip.kernel.masterdata.service.ModuleService#getModuleLangCode(java.lang.
 	 * String)
 	 */
+	@Cacheable(value = "location-hierarchy", key = "'locationhierarchy'.concat('-').concat(#langCode)")
 	@Override
 	public LocationHierarchyLevelResponseDto getLocationHierarchyLangCode(String langCode) {
 		LocationHierarchyLevelResponseDto locationHierarchyLevelResponseDto = new LocationHierarchyLevelResponseDto();

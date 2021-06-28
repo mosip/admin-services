@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -368,6 +369,8 @@ public class UISpecServiceImpl implements UISpecService {
 	/**
 	 * Gets latest published ui spec
 	 */
+
+	@Cacheable(value = "ui-spec", key = "'uispec'.concat('-').concat(#domain).concat('-').concat(#version).concat('-').concat(#type).concat('-').concat(#identitySchemaVersion)")
 	@Override
 	public List<UISpecResponseDto> getLatestPublishedUISpec(String domain, double version, String type,
 			double identitySchemaVersion) {		
