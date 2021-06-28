@@ -77,7 +77,7 @@ public class PossibleValuesControllerTest {
                 Mockito.anyString())).thenReturn(1);
         Mockito.when(locationRepository.getAllLocationsByLangCodeAndLevel(Mockito.anyString(), Mockito.anyShort()))
                 .thenReturn(locations);
-        mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/default/Country?langCode=eng")).andExpect(MockMvcResultMatchers.status().isOk());
+        mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/Country?langCode=eng")).andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
@@ -85,7 +85,7 @@ public class PossibleValuesControllerTest {
     public void testDynamicField() throws Exception {
         Mockito.when(dynamicFieldRepository.findAllActiveDynamicFieldByNameAndLangCode(Mockito.anyString(),
                 Mockito.anyString())).thenReturn(dynamicFields);
-        mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/dynamic/bloodType?langCode=eng"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/bloodType?langCode=eng"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
@@ -96,7 +96,7 @@ public class PossibleValuesControllerTest {
                 Mockito.anyString())).thenReturn(null);
         Mockito.when(locationRepository.getAllLocationsByLangCodeAndLevel(Mockito.anyString(), Mockito.anyShort()))
                 .thenReturn(null);
-        mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/default/Country?langCode=eng")).andExpect(MockMvcResultMatchers.status().isOk());
+        mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/Country?langCode=eng")).andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
@@ -104,7 +104,7 @@ public class PossibleValuesControllerTest {
     public void testDynamicFieldWithNull() throws Exception {
         Mockito.when(dynamicFieldRepository.findAllActiveDynamicFieldByNameAndLangCode(Mockito.anyString(),
                 Mockito.anyString())).thenReturn(null);
-        mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/dynamic/bloodType?langCode=eng"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/bloodType?langCode=eng"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
@@ -115,7 +115,7 @@ public class PossibleValuesControllerTest {
                 Mockito.anyString())).thenReturn(0);
         Mockito.when(locationRepository.getAllLocationsByLangCodeAndLevel(Mockito.anyString(), Mockito.anyShort()))
                 .thenReturn(new ArrayList<>());
-        mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/default/Country?langCode=eng")).andExpect(MockMvcResultMatchers.status().isOk());
+        mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/Country?langCode=eng")).andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
@@ -123,7 +123,7 @@ public class PossibleValuesControllerTest {
     public void testDynamicFieldWithEmpty() throws Exception {
         Mockito.when(dynamicFieldRepository.findAllActiveDynamicFieldByNameAndLangCode(Mockito.anyString(),
                 Mockito.anyString())).thenReturn(new ArrayList<>());
-        mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/dynamic/bloodType?langCode=eng"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/bloodType?langCode=eng"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 }

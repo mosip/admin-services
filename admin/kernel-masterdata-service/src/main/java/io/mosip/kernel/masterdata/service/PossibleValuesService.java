@@ -7,7 +7,5 @@ import java.util.Map;
 
 public interface PossibleValuesService {
 
-    Map<String, List<PossibleValueDto>> getAllValuesOfDefaultField(String fieldName, String langCode);
-
-    Map<String, List<PossibleValueDto>> getAllValuesOfDynamicField(String fieldName, String langCode);
+    Map<String, List<PossibleValueDto>> getAllValuesOfField(String fieldName, String langCode, String parentLangCode);
 }
