@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -195,6 +196,7 @@ public class IndividualTypeServiceImpl implements IndividualTypeService {
 		return filterResponseDto;
 	}
 
+	@CacheEvict(value = "individual-type", allEntries = true)
 	@Override
 	public IndividualTypeExtnDto createIndividualsTypes(IndividualTypeDto individualTypeDto) {
 		IndividualType entity = null;
@@ -227,6 +229,7 @@ public class IndividualTypeServiceImpl implements IndividualTypeService {
 		return individualTypeExtnDto;
 	}
 
+	@CacheEvict(value = "individual-type", allEntries = true)
 	@Override
 	public IndividualTypeExtnDto updateIndividualsTypes(IndividualTypeDto individualTypeDto) {
 		IndividualTypeExtnDto individualTypeExtnDto = new IndividualTypeExtnDto();

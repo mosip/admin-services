@@ -7,6 +7,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -85,7 +86,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -157,6 +158,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	 * io.mosip.kernel.masterdata.service.GenderTypeService#createGenderType(io.
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
+	@CacheEvict(value = "gender-type", allEntries = true)
 	@Override
 	public CodeAndLanguageCodeID saveGenderType(GenderTypeDto genderRequestDto) {
 
@@ -196,6 +198,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	 * io.mosip.kernel.masterdata.service.GenderTypeService#updateGenderType(io.
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
+	@CacheEvict(value = "gender-type", allEntries = true)
 	@Transactional
 	@Override
 	public CodeAndLanguageCodeID updateGenderType(GenderTypeDto genderTypeDto) {
@@ -214,7 +217,6 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 			if(!genderTypeDto.getIsActive()) {
 				masterdataCreationUtil.updateMasterDataDeactivate(Gender.class, genderTypeDto.getCode());
 			}
-
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException e) {
 			auditUtil.auditRequest(
@@ -244,6 +246,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	 * io.mosip.kernel.masterdata.service.GenderTypeService#deleteGenderType(java.
 	 * lang.String, java.lang.String)
 	 */
+	@CacheEvict(value = "gender-type", allEntries = true)
 	@Transactional
 	@Override
 	public CodeResponseDto deleteGenderType(String code) {

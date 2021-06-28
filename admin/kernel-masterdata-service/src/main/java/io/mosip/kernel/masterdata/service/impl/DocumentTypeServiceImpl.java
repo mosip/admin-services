@@ -10,6 +10,7 @@ import java.util.Objects;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -108,7 +109,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
 	@Autowired
 	private AuditUtil auditUtil;
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -145,6 +146,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 * io.mosip.kernel.masterdata.service.DocumentTypeService#addDocumentTypes(io.
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
+	@CacheEvict(value = "document-type", allEntries = true)
 	@Override
 	public DocumentTypePostResponseDto createDocumentType(DocumentTypeDto documentTypeDto) {
 
@@ -156,7 +158,6 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 			documentType = documentTypeRepository.create(entity);
 			Objects.requireNonNull(documentType);
 			MapperUtils.map(documentType, documentTypePostResponseDto);
-
 		} catch (DataAccessLayerException | DataAccessException | NullPointerException e) {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_CREATE, DeviceType.class.getCanonicalName()),
@@ -193,6 +194,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 * io.mosip.kernel.masterdata.service.DocumentTypeService#updateDocumentType(io.
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
+	@CacheEvict(value = "document-type", allEntries = true)
 	@Override
 	public DocumentTypePutResponseDto updateDocumentType(DocumentTypePutReqDto documentTypeDto) {
 		try {
@@ -225,7 +227,6 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 				documentTypeDto = masterdataCreationUtil.updateMasterData(DocumentType.class, documentTypeDto);
 				MetaDataUtils.setUpdateMetaData(documentTypeDto, documentType, true);
 				documentTypeRepository.update(documentType);
-
 			} else {
 				auditUtil.auditRequest(
 						String.format(
@@ -271,6 +272,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 * io.mosip.kernel.masterdata.service.DocumentTypeService#deleteDocumentType(
 	 * java.lang.String)
 	 */
+	@CacheEvict(value = "document-type", allEntries = true)
 	@Override
 	public CodeResponseDto deleteDocumentType(String code) {
 
@@ -417,6 +419,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		return documentTypeResponseDto;
 	}
 
+	@CacheEvict(value = "document-type", allEntries = true)
 	@Override
 	public StatusResponseDto updateDocumentType(String code, boolean isActive) {
 		// TODO Auto-generated method stub

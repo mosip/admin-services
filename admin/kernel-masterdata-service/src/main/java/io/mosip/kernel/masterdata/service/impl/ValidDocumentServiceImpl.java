@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -117,6 +118,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	 * insertDocumentCategory(io.mosip.kernel.masterdata.dto.
 	 * ValidDocumentRequestDto)
 	 */
+	@CacheEvict(value = "valid-document", allEntries = true)
 	@Override
 	public ValidDocumentID createValidDocument(ValidDocumentDto document) {
 
@@ -141,6 +143,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	 * io.mosip.kernel.masterdata.service.ValidDocumentService#deleteValidDocuemnt(
 	 * java.lang.String, java.lang.String)
 	 */
+	@CacheEvict(value = "valid-document", allEntries = true)
 	@Override
 	public DocCategoryAndTypeResponseDto deleteValidDocuemnt(String docCatCode, String docTypeCode) {
 		try {
@@ -152,7 +155,6 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 				throw new RequestException(ValidDocumentErrorCode.VALID_DOCUMENT_NOT_FOUND_EXCEPTION.getErrorCode(),
 						ValidDocumentErrorCode.VALID_DOCUMENT_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
-
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(ValidDocumentErrorCode.VALID_DOCUMENT_DELETE_EXCEPTION.getErrorCode(),
 					ValidDocumentErrorCode.VALID_DOCUMENT_DELETE_EXCEPTION.getErrorMessage());
@@ -426,6 +428,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	 * @see io.mosip.kernel.masterdata.service.ValidDocumentService#
 	 * mapDocCategoryAndDocType(java.lang.String, java.lang.String)
 	 */
+	@CacheEvict(value = "valid-document", allEntries = true)
 	@Override
 	public DocCategoryAndTypeMappingResponseDto mapDocCategoryAndDocType(String docCatCode, String docTypeCode) {
 		DocCategoryAndTypeMappingResponseDto responseDto = new DocCategoryAndTypeMappingResponseDto();
@@ -480,6 +483,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	 * @see io.mosip.kernel.masterdata.service.ValidDocumentService#
 	 * unmapDocCategoryAndDocType(java.lang.String, java.lang.String)
 	 */
+	@CacheEvict(value = "valid-document", allEntries = true)
 	@Override
 	public DocCategoryAndTypeMappingResponseDto unmapDocCategoryAndDocType(String docCatCode, String docTypeCode) {
 		DocCategoryAndTypeMappingResponseDto responseDto = new DocCategoryAndTypeMappingResponseDto();

@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -218,6 +219,7 @@ public class LocationServiceImpl implements LocationService {
 		return locationHierarchyResponseDto;
 	}
 
+	@CacheEvict(value = "locations", allEntries = true)
 	@Override
 	@Transactional
 	public LocationPostResponseDto createLocation(LocationCreateDto dto) {
@@ -304,6 +306,7 @@ public class LocationServiceImpl implements LocationService {
 	 * io.mosip.kernel.masterdata.service.LocationService#updateLocationDetails( io.
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
+	@CacheEvict(value = "locations", allEntries = true)
 	@Override
 	@Transactional
 	public LocationPutResponseDto updateLocationDetails(LocationPutDto locationDto) {
@@ -378,6 +381,7 @@ public class LocationServiceImpl implements LocationService {
 		return postLocationCodeResponseDto;
 	}
 
+	@CacheEvict(value = "locations", allEntries = true)
 	@Override
 	@Transactional
 	public StatusResponseDto updateLocationStatus(String code, boolean isActive) {
@@ -417,6 +421,7 @@ public class LocationServiceImpl implements LocationService {
 	 * io.mosip.kernel.masterdata.service.LocationService#deleteLocationDetials(
 	 * java .lang.String)
 	 */
+	@CacheEvict(value = "locations", allEntries = true)
 	@Override
 	@Transactional
 	public CodeResponseDto deleteLocationDetials(String locationCode) {

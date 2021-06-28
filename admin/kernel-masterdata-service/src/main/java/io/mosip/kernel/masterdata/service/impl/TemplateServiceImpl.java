@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -120,6 +121,9 @@ public class TemplateServiceImpl implements TemplateService {
 
 	@Autowired
 	private PublisherClient<String, EventModel, HttpHeaders> publisher;
+	
+	@PostConstruct
+	private void init() {
 
 	@Scheduled(fixedDelayString = "${masterdata.websub.resubscription.delay.millis}",
 			initialDelayString = "${masterdata.subscriptions-delay-on-startup}")
@@ -219,6 +223,7 @@ public class TemplateServiceImpl implements TemplateService {
 	 * io.mosip.kernel.masterdata.service.TemplateService#createTemplate(io.mosip.
 	 * kernel.masterdata.dto.TemplateDto)
 	 */
+	@CacheEvict(value = "templates", allEntries = true)
 	@Override
 	public IdAndLanguageCodeID createTemplate(TemplateDto template) {
 
@@ -231,7 +236,6 @@ public class TemplateServiceImpl implements TemplateService {
 			template = masterdataCreationUtil.createMasterData(Template.class, template);
 			Template entity = MetaDataUtils.setCreateMetaData(template, Template.class);
 			templateEntity = templateRepository.create(entity);
-
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException e) {
 			auditUtil.auditRequest(String.format(MasterDataConstant.CREATE_ERROR_AUDIT, Template.class.getSimpleName()),
@@ -269,6 +273,7 @@ public class TemplateServiceImpl implements TemplateService {
 	 * io.mosip.kernel.masterdata.service.TemplateService#updateTemplates(io.mosip.
 	 * kernel.masterdata.dto.TemplateDto)
 	 */
+	@CacheEvict(value = "templates", allEntries = true)
 	@Override
 	public IdAndLanguageCodeID updateTemplates(TemplatePutDto template) {
 		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
@@ -325,6 +330,7 @@ public class TemplateServiceImpl implements TemplateService {
 	 * io.mosip.kernel.masterdata.service.TemplateService#deleteTemplates(java.lang.
 	 * String)
 	 */
+	@CacheEvict(value = "templates", allEntries = true)
 	@Transactional
 	@Override
 	public IdResponseDto deleteTemplates(String id) {
@@ -335,7 +341,6 @@ public class TemplateServiceImpl implements TemplateService {
 				throw new RequestException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 						TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 			}
-
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_DELETE_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_DELETE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
@@ -461,6 +466,7 @@ public class TemplateServiceImpl implements TemplateService {
 		return filterResponseDto;
 	}
 
+	@CacheEvict(value = "templates", allEntries = true)
 	@Override
 	public StatusResponseDto updateTemplates(String id, boolean isActive) {
 		// TODO Auto-generated method stub
