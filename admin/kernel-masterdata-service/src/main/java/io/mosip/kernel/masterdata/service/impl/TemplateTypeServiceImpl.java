@@ -85,7 +85,8 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 	 * @see io.mosip.kernel.masterdata.service.TemplateTypeService#
 	 * getTemplateTypeCodeandLangCode(java.lang.String, java.lang.String)
 	 */
-	@Cacheable(value = "template-type", key = "'templateType'.concat('-').concat(#templateTypeCode).concat('-').concat(#langCode)")
+
+	@Cacheable(value = "template-type", key = "'templatetype'.concat('-').concat(#templateTypeCode).concat('-').concat(#langCode)")
 	@Override
 	public TemplateTypeResponseDto getTemplateTypeCodeandLangCode(String templateTypeCode, String langCode) {
 		List<TemplateType> templateTypeList = null;
@@ -117,7 +118,7 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 	 * @see io.mosip.kernel.masterdata.service.TemplateTypeService#
 	 * getTemplateTypeLangCode(java.lang.String)
 	 */
-	@Cacheable(value = "template-type", key = "'templateType'.concat('-').concat(#langCode)")
+	@Cacheable(value = "template-type", key = "'templatetype'.concat('-').concat(#langCode)")
 	@Override
 	public TemplateTypeResponseDto getTemplateTypeLangCode(String langCode) {
 		TemplateTypeResponseDto templateTypeResponseDto = new TemplateTypeResponseDto();

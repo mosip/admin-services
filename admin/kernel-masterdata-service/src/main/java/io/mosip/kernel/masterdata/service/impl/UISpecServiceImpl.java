@@ -364,7 +364,8 @@ public class UISpecServiceImpl implements UISpecService {
 	/**
 	 * Gets latest published ui spec
 	 */
-	@Cacheable(value = "ui-spec", key = "'uispec'.concat('-').concat(#domain).concat('-').concat(#version).concat('-').concat(#type).concat('-').concat(#identitySchemaVersion")
+
+	@Cacheable(value = "ui-spec", key = "'uispec'.concat('-').concat(#domain).concat('-').concat(#version).concat('-').concat(#type).concat('-').concat(#identitySchemaVersion)")
 	@Override
 	public List<UISpecResponseDto> getLatestPublishedUISpec(String domain, double version, String type,
 			double identitySchemaVersion) {		

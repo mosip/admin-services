@@ -115,7 +115,8 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 * @see io.mosip.kernel.masterdata.service.DocumentTypeService#
 	 * getAllValidDocumentType(java.lang.String, java.lang.String)
 	 */
-	@Cacheable(value = "document-type", key = "'documentType'.concat('-').concat(#code).concat('-').concat(#langCode)")
+
+	@Cacheable(value = "document-type", key = "'documenttype'.concat('-').concat(#code).concat('-').concat(#langCode)")
 	@Override
 	public List<DocumentTypeDto> getAllValidDocumentType(String code, String langCode) {
 		List<DocumentTypeDto> listOfDocumentTypeDto = null;
@@ -388,7 +389,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		return pageDto;
 	}
 
-	@Cacheable(value = "document-type", key = "'documentType'.concat('-').concat(#langCode)")
+	@Cacheable(value = "document-type", key = "'documenttype'.concat('-').concat(#langCode)")
 	@Override
 	public DocumentTypeResponseDto getAllDocumentTypeByLaguageCode(String langCode) {
 		DocumentTypeResponseDto documentTypeResponseDto = new DocumentTypeResponseDto();

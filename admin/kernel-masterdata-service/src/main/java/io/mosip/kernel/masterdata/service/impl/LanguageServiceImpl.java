@@ -47,7 +47,8 @@ public class LanguageServiceImpl implements LanguageService {
 	 * 
 	 * @see LanguageService#getAllLaguages()
 	 */
-	@Cacheable(value = "language", key = "languages")
+
+	@Cacheable(value = "languages", key = "language")
 	@Override
 	public LanguageResponseDto getAllLaguages() {
 		LanguageResponseDto languageResponseDto = new LanguageResponseDto();

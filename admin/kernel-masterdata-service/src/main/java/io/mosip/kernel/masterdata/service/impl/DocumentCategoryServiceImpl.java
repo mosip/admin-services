@@ -111,7 +111,8 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
 	 * getAllDocumentCategory()
 	 */
-	@Cacheable(value = "document-category", key = "documentCategory")
+
+	@Cacheable(value = "document-category", key = "documentcategory")
 	@Override
 	public DocumentCategoryResponseDto getAllDocumentCategory() {
 		List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
@@ -145,7 +146,8 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
 	 * getAllDocumentCategoryByLaguageCode(java.lang.String)
 	 */
-	@Cacheable(value = "document-category", key = "'documentCategory'.concat('-').concat(#langCode)")
+
+	@Cacheable(value = "document-category", key = "'documentcategory'.concat('-').concat(#langCode)")
 	@Override
 	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(String langCode) {
 		List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();

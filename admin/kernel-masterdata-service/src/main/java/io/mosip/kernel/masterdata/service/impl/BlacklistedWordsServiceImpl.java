@@ -114,7 +114,8 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	 * @see io.mosip.kernel.masterdata.service.BlacklistedWordsService#
 	 * getAllBlacklistedWordsBylangCode(java.lang.String)
 	 */
-	@Cacheable(value = "blacklisted-words", key = "'blacklistedWords'.concat('-').concat(#langCode)")
+
+	@Cacheable(value = "blacklisted-words", key = "'blacklistedword'.concat('-').concat(#langCode)")
 	@Override
 	public BlacklistedWordsResponseDto getAllBlacklistedWordsBylangCode(String langCode) {
 		List<BlacklistedWordsDto> wordsDto = null;

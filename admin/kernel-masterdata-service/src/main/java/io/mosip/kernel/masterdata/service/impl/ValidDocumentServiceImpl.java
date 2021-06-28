@@ -163,7 +163,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 		return responseDto;
 	}
 
-	@Cacheable(value = "valid-documents", key = "'validdocument'.concat('-').concat(#langCode)")
+	@Cacheable(value = "valid-document", key = "'validdocument'.concat('-').concat(#langCode)")
 	@Override
 	public ValidDocCategoryAndDocTypeResponseDto getValidDocumentByLangCode(String langCode) {
 
@@ -195,7 +195,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 		return validDocCategoryAndDocTypeResponseDto;
 	}
 	
-	@Cacheable(value = "valid-documents", key = "'validdocument'.concat('-').concat(#docCatCode).concat('-').concat(#langCode)")
+	@Cacheable(value = "valid-document", key = "'validdocument'.concat('-').concat(#docCatCode).concat('-').concat(#langCode)")
 	@Override
 	public List<ValidDocumentMapDto> getValidDocumentByDocCategoryCode(String docCatCode, String langCode) {
 		
