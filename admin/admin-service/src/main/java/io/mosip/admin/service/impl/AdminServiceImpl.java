@@ -1,5 +1,7 @@
 package io.mosip.admin.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -11,6 +13,7 @@ import io.mosip.admin.constant.LostRidErrorCode;
 import io.mosip.admin.dto.LostRidResponseDto;
 import io.mosip.admin.dto.RegProcRequestWrapper;
 import io.mosip.admin.dto.SearchInfo;
+import io.mosip.admin.dto.SortInfo;
 import io.mosip.admin.packetstatusupdater.constant.ApiName;
 import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import io.mosip.admin.packetstatusupdater.util.RestClient;
@@ -38,6 +41,7 @@ public class AdminServiceImpl implements AdminService {
 	public LostRidResponseDto lostRid(SearchInfo searchInfo) {
 		LostRidResponseDto lostRidResponseDto = new LostRidResponseDto();
 		RegProcRequestWrapper<SearchInfo> procRequestWrapper = new RegProcRequestWrapper<>();
+		createLostRidRequest(searchInfo);
 		procRequestWrapper.setId(lostRidRequestId);
 		procRequestWrapper.setVersion(lostRidReqVersion);
 		procRequestWrapper.setRequest(searchInfo);
@@ -52,8 +56,19 @@ public class AdminServiceImpl implements AdminService {
 					LostRidErrorCode.UNABLE_TO_RETRIEVE_LOSTRID.getErrorMessage()
 							+ e);
 		}
-
 		return lostRidResponseDto;
+	}
+
+	private void createLostRidRequest(SearchInfo searchInfoRequest) {
+		if (searchInfoRequest.getSort().isEmpty()) {
+			List<SortInfo> sortInfos = searchInfoRequest.getSort();
+			SortInfo sortInfo = new SortInfo();
+			sortInfo.setSortField("registrationDate");
+			sortInfo.setSortType("desc");
+			sortInfos.add(sortInfo);
+			searchInfoRequest.setSort(sortInfos);
+		}
+
 	}
 
 

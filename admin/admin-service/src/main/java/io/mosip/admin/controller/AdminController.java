@@ -44,7 +44,7 @@ public class AdminController {
 			for (ErrorDTO ed : lostRidResponseDto.getErrors()) {
 				ServiceError se = new ServiceError();
 				se.setErrorCode(ed.getErrorCode());
-				se.setMessage(ed.getMessage());
+				se.setMessage(ed.getErrorMessage());
 				sr.add(se);
 			}
 		}
