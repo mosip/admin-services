@@ -124,6 +124,12 @@ public class TemplateServiceImpl implements TemplateService {
 	
 	@PostConstruct
 	private void init() {
+		try {
+			publisher.registerTopic(topic, hubURL);
+		} catch (WebSubClientException exception) {
+			LOGGER.warn(exception.getMessage());
+		}
+	}
 
 	@Scheduled(fixedDelayString = "${masterdata.websub.resubscription.delay.millis}",
 			initialDelayString = "${masterdata.subscriptions-delay-on-startup}")
