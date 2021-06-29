@@ -170,8 +170,8 @@ jobs:
       - name: Unzip and extract the admin-service
         run: unzip -uj "release.zip" "${{ env.SERVICE_LOCATION }}/target/*" -d "./${{ env.SERVICE_LOCATION }}/target"
       - name: Get current date
-           id: date
-           run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
 
       - name: Build image
         run: |
@@ -232,8 +232,8 @@ jobs:
       - name: Unzip and extract the id-repository-vid-service
         run: unzip -uj "release.zip" "${{ env.SERVICE_LOCATION }}/target/*" -d "./${{ env.SERVICE_LOCATION }}/target"
       - name: Get current date
-           id: date
-           run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
 
       - name: Build image
         run: |
@@ -295,8 +295,8 @@ jobs:
       - name: Unzip and extract the id-repository-vid-service
         run: unzip -uj "release.zip" "${{ env.SERVICE_LOCATION }}/target/*" -d "./${{ env.SERVICE_LOCATION }}/target"
       - name: Get current date
-           id: date
-           run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
 
       - name: Build image
         run: |
@@ -358,8 +358,8 @@ jobs:
       - name: Unzip and extract the hotlist-service
         run: unzip -uj "release.zip" "${{ env.SERVICE_LOCATION }}/target/*" -d "./${{ env.SERVICE_LOCATION }}/target"
       - name: Get current date
-           id: date
-           run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
 
       - name: Build image
         run: |
