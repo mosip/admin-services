@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
@@ -122,14 +121,6 @@ public class TemplateServiceImpl implements TemplateService {
 	@Autowired
 	private PublisherClient<String, EventModel, HttpHeaders> publisher;
 	
-	@PostConstruct
-	private void init() {
-		try {
-			publisher.registerTopic(topic, hubURL);
-		} catch (WebSubClientException exception) {
-			LOGGER.warn(exception.getMessage());
-		}
-	}
 
 	@Scheduled(fixedDelayString = "${masterdata.websub.resubscription.delay.millis}",
 			initialDelayString = "${masterdata.subscriptions-delay-on-startup}")
