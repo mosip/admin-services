@@ -88,7 +88,7 @@ public class IndividualTypeServiceImpl implements IndividualTypeService {
 	 * @see io.mosip.kernel.masterdata.service.IndividualTypeService#
 	 * getAllIndividualTypes()
 	 */
-	@Cacheable(value = "individual-type", key = "individualType")
+	@Cacheable(value = "individual-type", key = "'individualType'")
 	@Override
 	public IndividualTypeResponseDto getAllIndividualTypes() {
 		IndividualTypeResponseDto responseDto = new IndividualTypeResponseDto();

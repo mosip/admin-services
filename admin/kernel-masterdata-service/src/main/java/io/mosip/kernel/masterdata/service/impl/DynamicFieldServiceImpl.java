@@ -85,7 +85,8 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	 * io.mosip.kernel.masterdata.service.DynamicFieldService#getAllDynamicField()
 	 */
 
-	@Cacheable(value = "dynamic-field", key = "'dynamicfield'.concat('-').concat(#pageNumber).concat('-').concat(#pageSize).concat('-').concat(#sortBy).concat('-').concat(#orderBy).concat('-').concat(#langCode)")
+	@Cacheable(value = "dynamic-field", key = "'dynamicfield'.concat('-').concat(#pageNumber).concat('-').concat(#pageSize).concat('-').concat(#sortBy).concat('-').concat(#orderBy).concat('-').concat(#langCode)",
+			condition="#langCode != null")
 	@Override
 	public PageDto<DynamicFieldExtnDto> getAllDynamicField(int pageNumber, int pageSize, String sortBy, String orderBy, String langCode,
 															   LocalDateTime lastUpdated, LocalDateTime currentTimestamp) {
@@ -133,7 +134,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		return pagedFields;
 	}
 
-	@Cacheable(value = "dynamic-field", key = "dynamicfield")
+	@Cacheable(value = "dynamic-field", key = "'dynamicfield'")
 	@Override
 	public List<String> getDistinctDynamicFields() {
 		List<String> distinctDynamicField = new ArrayList<String>();

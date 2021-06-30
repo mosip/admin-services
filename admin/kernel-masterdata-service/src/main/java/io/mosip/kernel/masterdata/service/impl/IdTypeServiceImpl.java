@@ -46,7 +46,7 @@ public class IdTypeServiceImpl implements IdTypeService {
 	 * .lang.String)
 	 */
 
-	@Cacheable(value = "id-type", key = "'idtype'.concat('-').concat(#languageCode)")
+	@Cacheable(value = "id-type", key = "'idtype'.concat('-').concat(#languageCode)", condition = "#languageCode != null")
 	@Override
 	public IdTypeResponseDto getIdTypesByLanguageCode(String languageCode) {
 		IdTypeResponseDto idTypeResponseDto = new IdTypeResponseDto();

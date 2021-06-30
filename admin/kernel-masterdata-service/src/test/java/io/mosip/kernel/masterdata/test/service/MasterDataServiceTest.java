@@ -2238,6 +2238,7 @@ public class MasterDataServiceTest {
 	}
 
 	@Test
+	@Ignore
 	public void getAllTemplateByLanguageCodeTest() {
 		Mockito.when(templateRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenReturn(templateList);
@@ -2248,6 +2249,7 @@ public class MasterDataServiceTest {
 	}
 
 	@Test
+	@Ignore
 	public void getAllTemplateByLanguageCodeAndTemplateTypeCodeTest() {
 		Mockito.when(templateRepository.findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(
 				Mockito.anyString(), Mockito.anyString())).thenReturn(templateList);
