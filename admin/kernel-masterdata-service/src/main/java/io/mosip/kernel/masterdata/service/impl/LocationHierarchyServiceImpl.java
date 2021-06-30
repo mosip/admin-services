@@ -37,7 +37,8 @@ public class LocationHierarchyServiceImpl implements LocationHierarchyService {
 	@Autowired
 	private LocationHierarchyRepository locationHierarchyRepository;
 
-	@Cacheable(value = "location-hierarchy", key = "'locationhierarchy'.concat('-').concat(#level).concat('-').concat(#langCode)")
+	@Cacheable(value = "location-hierarchy", key = "'locationhierarchy'.concat('-').concat(#level).concat('-').concat(#langCode)",
+			condition = "#langCode != null")
 	@Override
 	public LocationHierarchyLevelResponseDto getLocationHierarchyLevelAndLangCode(short level, String langCode) {
 		LocationHierarchyLevelResponseDto locationHierarchyLevelResponseDto = new LocationHierarchyLevelResponseDto();
@@ -72,7 +73,8 @@ public class LocationHierarchyServiceImpl implements LocationHierarchyService {
 	 * io.mosip.kernel.masterdata.service.ModuleService#getModuleLangCode(java.lang.
 	 * String)
 	 */
-	@Cacheable(value = "location-hierarchy", key = "'locationhierarchy'.concat('-').concat(#langCode)")
+	@Cacheable(value = "location-hierarchy", key = "'locationhierarchy'.concat('-').concat(#langCode)",
+			condition = "#langCode != null")
 	@Override
 	public LocationHierarchyLevelResponseDto getLocationHierarchyLangCode(String langCode) {
 		LocationHierarchyLevelResponseDto locationHierarchyLevelResponseDto = new LocationHierarchyLevelResponseDto();
