@@ -140,7 +140,7 @@ public class LocationServiceImpl implements LocationService {
 	 * @see io.mosip.kernel.masterdata.service.LocationService#getLocationDetails(
 	 * java. lang.String)
 	 */
-	@Cacheable(value = "locations", key = "'location'.concat('-').concat(#langCode)")
+	@Cacheable(value = "locations", key = "'location'.concat('-').concat(#langCode)", condition = "#langCode != null")
 	@Override
 	public LocationHierarchyResponseDto getLocationDetails(String langCode) {
 		List<LocationHierarchyDto> responseList = null;
@@ -180,7 +180,8 @@ public class LocationServiceImpl implements LocationService {
 	 * getLocationHierarchyByLangCode(java.lang.String, java.lang.String)
 	 */
 
-	@Cacheable(value = "locations", key = "'location'.concat('-').concat(#locCode).concat('-').concat(#langCode)")
+	@Cacheable(value = "locations", key = "'location'.concat('-').concat('ext').concat('-').concat(#locCode).concat('-').concat(#langCode)", 
+			condition = "#locCode != null && #langCode != null")
 	@Override
 	public LocationResponseDto getLocationHierarchyByLangCode(String locCode, String langCode) {
 		List<Location> childList = null;
@@ -457,7 +458,7 @@ public class LocationServiceImpl implements LocationService {
 	 * @see io.mosip.kernel.masterdata.service.LocationService#
 	 * getLocationDataByHierarchyName(java.lang.String)
 	 */
-	@Cacheable(value = "locations", key = "'location'.concat('-').concat(#hierarchyName)")
+	@Cacheable(value = "locations", key = "'location'.concat('-').concat('hierarchy').concat('-').concat(#hierarchyName)", condition = "#hierarchyName != null")
 	@Override
 	public LocationResponseDto getLocationDataByHierarchyName(String hierarchyName) {
 		List<Location> locationlist = null;
@@ -489,7 +490,8 @@ public class LocationServiceImpl implements LocationService {
 	 * @see io.mosip.kernel.masterdata.service.LocationService#
 	 * getImmediateChildrenByLocCodeAndLangCode(java.lang.String, java.lang.String)
 	 */
-	@Cacheable(value = "locations", key = "'location'.concat('-').concat(#locCode).concat('-').concat(#langCode)")
+	@Cacheable(value = "locations", key = "'location'.concat('-').concat('immediate').concat('-').concat(#locCode).concat('-').concat(#langCode)",
+			condition = "#locCode != null && #langCode != null")
 	@Override
 	public LocationResponseDto getImmediateChildrenByLocCodeAndLangCode(String locCode, String langCode) {
 		List<Location> locationlist = null;
@@ -608,7 +610,7 @@ public class LocationServiceImpl implements LocationService {
 	 * java. lang.String)
 	 */
 
-	@Cacheable(value = "locations", key = "'location'.concat('-').concat(#locationName)")
+	@Cacheable(value = "locations", key = "'location'.concat('-').concat(#locationName)", condition = "#locationName != null")
 	@Override
 	public StatusResponseDto validateLocationName(String locationName) {
 		StatusResponseDto statusResponseDto = null;
@@ -1153,7 +1155,8 @@ public class LocationServiceImpl implements LocationService {
 		return locationLevelResponseDto;
 	}
 
-	@Cacheable(value = "locations", key = "'location'.concat('-').concat(#locationCode).concat('-').concat(#langCode)")
+	@Cacheable(value = "locations", key = "'location'.concat('-').concat('info').concat('-').concat(#locationCode).concat('-').concat(#langCode)",
+			condition = "#locationCode != null && #langCode != null")
 	@Override
 	public LocationExtnDto getLocationDetailsByLangCode(String locationCode, String langCode) {
 		LocationExtnDto location = null;

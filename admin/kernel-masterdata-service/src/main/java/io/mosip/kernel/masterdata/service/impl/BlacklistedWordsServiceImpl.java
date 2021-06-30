@@ -116,10 +116,9 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	 * getAllBlacklistedWordsBylangCode(java.lang.String)
 	 */
 
-	@Cacheable(value = "blacklisted-words", key = "'blacklistedword'.concat('-').concat(#langCode)")
+	@Cacheable(value = "blacklisted-words", key = "'blacklistedword'.concat('-').concat(#langCode)", condition="#langCode != null")
 	@Override
 	public BlacklistedWordsResponseDto getAllBlacklistedWordsBylangCode(String langCode) {
-		List<BlacklistedWordsDto> wordsDto = null;
 		List<BlacklistedWords> words = null;
 		try {
 			words = blacklistedWordsRepository.findAllByLangCode(langCode);
@@ -130,13 +129,10 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 							+ ExceptionUtils.parseException(accessException));
 		}
 		if (words != null && !words.isEmpty()) {
-			wordsDto = MapperUtils.mapAll(words, BlacklistedWordsDto.class);
-		} else {
-			throw new DataNotFoundException(BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorCode(),
-					BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorMessage());
+			return new BlacklistedWordsResponseDto(MapperUtils.mapAll(words, BlacklistedWordsDto.class));
 		}
-
-		return new BlacklistedWordsResponseDto(wordsDto);
+		throw new DataNotFoundException(BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorCode(),
+					BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorMessage());
 	}
 
 	/*

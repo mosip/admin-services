@@ -96,7 +96,7 @@ public class ZoneServiceImpl implements ZoneService {
 	 * io.mosip.kernel.masterdata.service.ZoneService#getUserLeafZone(java.lang.
 	 * String)
 	 */
-	@Cacheable(value = "zones", key = "'zone'.concat('-').concat(#langCode)")
+	@Cacheable(value = "zones", key = "'zone'.concat('-').concat(#langCode)", condition = "#langCode != null")
 	@Override
 	public List<ZoneExtnDto> getUserLeafZone(String langCode) {
 		List<Zone> zones = zoneUtils.getUserLeafZones(langCode);

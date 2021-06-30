@@ -93,7 +93,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	 * @see io.mosip.kernel.masterdata.service.GenderTypeService#getAllGenderTypes()
 	 */
 
-	@Cacheable(value = "gender-type", key = "gendertype")
+	@Cacheable(value = "gender-type", key = "'gendertype'")
 	@Override
 	public GenderTypeResponseDto getAllGenderTypes() {
 		GenderTypeResponseDto genderResponseDto = null;
@@ -125,7 +125,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	 * io.mosip.kernel.masterdata.service.GenderTypeService#getGenderTypeByLangCode(
 	 * java.lang.String)
 	 */
-	@Cacheable(value = "gender-type", key = "'gendertype'.concat('-').concat(#langCode)")
+	@Cacheable(value = "gender-type", key = "'gendertype'.concat('-').concat(#langCode)", condition = "#langCode != null")
 	@Override
 	public GenderTypeResponseDto getGenderTypeByLangCode(String langCode) {
 		GenderTypeResponseDto genderResponseDto = null;
@@ -275,7 +275,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	 * .String)
 	 */
 
-	@Cacheable(value = "gender-type", key = "'gendertype'.concat('-').concat(#genderName)")
+	@Cacheable(value = "gender-type", key = "'gendertype'.concat('-').concat(#genderName)", condition = "#genderName != null")
 	@Override
 	public StatusResponseDto validateGender(String genderName) {
 		StatusResponseDto statusResponseDto = null;

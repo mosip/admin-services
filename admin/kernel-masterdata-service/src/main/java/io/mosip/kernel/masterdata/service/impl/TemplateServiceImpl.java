@@ -79,11 +79,11 @@ public class TemplateServiceImpl implements TemplateService {
 	@Autowired
 	private TemplateRepository templateRepository;
 
-	private List<Template> templateList;
+//	private List<Template> templateList;
 
-	private List<TemplateDto> templateDtoList;
+//	private List<TemplateDto> templateDtoList;
 
-	private TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+//	private TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 
 	@Autowired
 	private FilterTypeValidator filterTypeValidator;
@@ -137,9 +137,11 @@ public class TemplateServiceImpl implements TemplateService {
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.TemplateService#getAllTemplate()
 	 */
-	@Cacheable(value = "templates", key = "template")
+	@Cacheable(value = "templates", key = "'template'")
 	@Override
 	public TemplateResponseDto getAllTemplate() {
+		List<Template> templateList = null;
+		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 		try {
 			templateList = templateRepository.findAllByIsDeletedFalseOrIsDeletedIsNull(Template.class);
 		} catch (DataAccessException | DataAccessLayerException exception) {
@@ -148,13 +150,11 @@ public class TemplateServiceImpl implements TemplateService {
 							+ ExceptionUtils.parseException(exception));
 		}
 		if (templateList != null && !templateList.isEmpty()) {
-			templateDtoList = MapperUtils.mapAll(templateList, TemplateDto.class);
-		} else {
-			throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
-					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
+			templateResponseDto.setTemplates(MapperUtils.mapAll(templateList, TemplateDto.class));
+			return templateResponseDto;
 		}
-		templateResponseDto.setTemplates(templateDtoList);
-		return templateResponseDto;
+		throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
+					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 	}
 
 	/*
@@ -163,9 +163,11 @@ public class TemplateServiceImpl implements TemplateService {
 	 * @see io.mosip.kernel.masterdata.service.TemplateService#
 	 * getAllTemplateByLanguageCode(java.lang.String)
 	 */
-	@Cacheable(value = "templates", key = "'template'.concat('-').concat(#languageCode)")
+	@Cacheable(value = "templates", key = "'template'.concat('-').concat(#languageCode)", condition="#languageCode != null")
 	@Override
 	public TemplateResponseDto getAllTemplateByLanguageCode(String languageCode) {
+		List<Template> templateList = null;
+		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 		try {
 			templateList = templateRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode);
 		} catch (DataAccessException | DataAccessLayerException exception) {
@@ -174,13 +176,10 @@ public class TemplateServiceImpl implements TemplateService {
 							+ ExceptionUtils.parseException(exception));
 		}
 		if (templateList != null && !templateList.isEmpty()) {
-			templateDtoList = MapperUtils.mapAll(templateList, TemplateDto.class);
-		} else {
-			throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
-					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
+			templateResponseDto.setTemplates(MapperUtils.mapAll(templateList, TemplateDto.class));
 		}
-		templateResponseDto.setTemplates(templateDtoList);
-		return templateResponseDto;
+		throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
+					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 	}
 
 	/*
@@ -190,10 +189,12 @@ public class TemplateServiceImpl implements TemplateService {
 	 * getAllTemplateByLanguageCodeAndTemplateTypeCode(java.lang.String,
 	 * java.lang.String)
 	 */
-	@Cacheable(value = "templates", key = "'template'.concat('-').concat(#languageCode).concat('-').concat(#templateTypeCode)")
+	@Cacheable(value = "templates", key = "'template'.concat('-').concat(#languageCode).concat('-').concat(#templateTypeCode)", condition = "#languageCode != null && #templateTypeCode != null")
 	@Override
 	public TemplateResponseDto getAllTemplateByLanguageCodeAndTemplateTypeCode(String languageCode,
 			String templateTypeCode) {
+		List<Template> templateList = null;
+		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 		try {
 			templateList = templateRepository.findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(
 					languageCode, templateTypeCode);
@@ -203,13 +204,10 @@ public class TemplateServiceImpl implements TemplateService {
 							+ ExceptionUtils.parseException(exception));
 		}
 		if (templateList != null && !templateList.isEmpty()) {
-			templateDtoList = MapperUtils.mapAll(templateList, TemplateDto.class);
-		} else {
-			throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
-					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
+			templateResponseDto.setTemplates(MapperUtils.mapAll(templateList, TemplateDto.class));
 		}
-		templateResponseDto.setTemplates(templateDtoList);
-		return templateResponseDto;
+		throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
+					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 
 	}
 
@@ -353,7 +351,7 @@ public class TemplateServiceImpl implements TemplateService {
 	 * @see io.mosip.kernel.masterdata.service.TemplateService#
 	 * getAllTemplateByTemplateTypeCode(java.lang.String)
 	 */
-	@Cacheable(value = "templates", key = "'templateByTemplateCode'.concat('-').concat(#templateTypeCode.toString)")
+	@Cacheable(value = "templates", key = "'templateByTemplateCode'.concat('-').concat(#templateTypeCode)", condition = "#templateTypeCode != null")
 	@Override
 	public TemplateResponseDto getAllTemplateByTemplateTypeCode(String templateTypeCode) {
 		List<Template> templates;
