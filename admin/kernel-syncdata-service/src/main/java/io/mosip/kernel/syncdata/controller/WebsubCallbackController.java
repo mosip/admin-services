@@ -1,10 +1,17 @@
 package io.mosip.kernel.syncdata.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.partnercertservice.constant.PartnerCertManagerErrorConstants;
 import io.mosip.kernel.partnercertservice.dto.CACertificateRequestDto;
 import io.mosip.kernel.partnercertservice.exception.PartnerCertManagerException;
 import io.mosip.kernel.partnercertservice.service.spi.PartnerCertificateManagerService;
 import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyIntent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +48,9 @@ public class WebsubCallbackController {
     @Qualifier("selfTokenRestTemplate")
     private RestTemplate restTemplate;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @PostMapping(value = "/cacert",consumes = "application/json")
     @PreAuthenticateContentAndVerifyIntent(secret = "${syncdata.websub.callback.secret.ca-cert}",
             callback = "/v1/syncdata/websub/callback/cacert",topic = "${syncdata.websub.topic.ca-cert}")
@@ -53,6 +63,7 @@ public class WebsubCallbackController {
             CACertificateRequestDto caCertRequestDto = new CACertificateRequestDto();
             caCertRequestDto.setPartnerDomain((String) data.get(PARTNER_DOMAIN));
             String certificateData = restTemplate.getForObject((String) data.get(CERTIFICATE_DATA_SHARE_URL), String.class);
+            logger.debug("ca_certificate certificateData RECEIVED : {}", certificateData);
             caCertRequestDto.setCertificateData(certificateData);
             try {
                 partnerCertificateManagerService.uploadCACertificate(caCertRequestDto);
@@ -63,12 +74,30 @@ public class WebsubCallbackController {
                     logger.error("Failed to insert CA cert {}", ex.getErrorText());
                     return;
                 }
-                logger.info("Received certificate data {}", certificateData);
+
+                ServiceError serviceError = parseDataShareResponse(certificateData);
+                if(serviceError != null)
+                    throw new SyncDataServiceException(serviceError.getErrorCode(), serviceError.getMessage());
+
                 logger.error("Failed to insert CA cert", ex);
                 throw ex;
             }
         }
 
+    }
+
+    private ServiceError parseDataShareResponse(String response) {
+        try {
+            objectMapper.registerModule(new JavaTimeModule());
+            ResponseWrapper<JsonNode> resp = objectMapper.readValue(response,
+                    new TypeReference<ResponseWrapper<JsonNode>>() {});
+            if(resp.getErrors() != null && !resp.getErrors().isEmpty())
+                return resp.getErrors().get(0);
+        } catch (Exception e) {
+            logger.error("Failed to parse data-share response", e);
+        }
+        logger.info("Received certificate data {} but failed to parse", response);
+        return null;
     }
 
 }
