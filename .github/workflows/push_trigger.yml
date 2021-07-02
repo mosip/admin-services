@@ -55,7 +55,7 @@ jobs:
     - name: Build with Maven
       run: |
         cd admin
-        mvn -B -U -DskipTests package -s $GITHUB_WORKSPACE/settings.xml --file pom.xml
+        mvn -B -U package -s $GITHUB_WORKSPACE/settings.xml --file pom.xml
     - name: Ready the springboot artifacts
       run: find -name '*.jar' -executable -type f  -exec zip release.zip {} +
 
