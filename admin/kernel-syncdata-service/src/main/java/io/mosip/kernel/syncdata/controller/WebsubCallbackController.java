@@ -63,6 +63,7 @@ public class WebsubCallbackController {
             CACertificateRequestDto caCertRequestDto = new CACertificateRequestDto();
             caCertRequestDto.setPartnerDomain((String) data.get(PARTNER_DOMAIN));
             String certificateData = restTemplate.getForObject((String) data.get(CERTIFICATE_DATA_SHARE_URL), String.class);
+            logger.debug("ca_certificate certificateData RECEIVED : {}", certificateData);
             caCertRequestDto.setCertificateData(certificateData);
             try {
                 partnerCertificateManagerService.uploadCACertificate(caCertRequestDto);
