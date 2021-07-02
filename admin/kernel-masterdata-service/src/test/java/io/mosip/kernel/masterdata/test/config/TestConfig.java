@@ -21,7 +21,7 @@ public class TestConfig {
 
 	
 	@Bean
-	public RestTemplate restTemplateConfig()
+	public RestTemplate restTemplate()
 			throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
 
 		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
