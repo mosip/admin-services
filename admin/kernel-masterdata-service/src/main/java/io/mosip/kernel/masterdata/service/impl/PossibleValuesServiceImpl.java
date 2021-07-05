@@ -47,7 +47,7 @@ public class PossibleValuesServiceImpl implements PossibleValuesService {
 
         for(String lang : langCodes) {
             LOGGER.debug("Identified field name as default field", fieldName);
-            List<Location> locations = locationRepository.getAllLocationsByLangCodeAndLevel(lang, level.shortValue());
+            List<Location> locations = locationRepository.getAllLocationsByLangCodeWithHierarchyLevel(lang, level.shortValue());
             if(locations == null || locations.isEmpty())
                 continue;
 
