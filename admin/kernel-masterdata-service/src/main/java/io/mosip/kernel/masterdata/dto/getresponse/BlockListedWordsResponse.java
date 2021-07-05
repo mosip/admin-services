@@ -3,15 +3,15 @@ package io.mosip.kernel.masterdata.dto.getresponse;
 import lombok.Data;
 
 /**
- * DTO class for blacklisted words response.
+ * DTO class for blocklisted words response.
  * 
  * @author Sagar Mahapatra
  * @since 1.0.0
  */
 @Data
-public class BlackListedWordsResponse {
+public class BlockListedWordsResponse {
 	/**
-	 * The blacklisted word added.
+	 * The blocklisted word added.
 	 */
 	private String word;
 	/**

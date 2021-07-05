@@ -2,7 +2,7 @@ package io.mosip.kernel.masterdata.utils;
 
 public enum CacheName {
 
-	BLACK_LISTED_WORDS("blacklisted-words"),
+	BLOCK_LISTED_WORDS("blocklisted-words"),
 	DOCUMENT_CATEGORY("document-category"),
 	DOCUMENT_TYPE("document-type"),
 	DYNAMIC_FIELD("dynamic-field"),

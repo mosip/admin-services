@@ -177,6 +177,7 @@ public class TemplateServiceImpl implements TemplateService {
 		}
 		if (templateList != null && !templateList.isEmpty()) {
 			templateResponseDto.setTemplates(MapperUtils.mapAll(templateList, TemplateDto.class));
+			return templateResponseDto;
 		}
 		throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
@@ -205,6 +206,7 @@ public class TemplateServiceImpl implements TemplateService {
 		}
 		if (templateList != null && !templateList.isEmpty()) {
 			templateResponseDto.setTemplates(MapperUtils.mapAll(templateList, TemplateDto.class));
+			return templateResponseDto;
 		}
 		throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
