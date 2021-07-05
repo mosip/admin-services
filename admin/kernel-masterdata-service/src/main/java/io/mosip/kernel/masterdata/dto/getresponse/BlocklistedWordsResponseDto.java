@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Blacklisted words response Dto
+ * Blocklisted words response Dto
  * 
  * @author Abhishek Kumar
  * @version 1.0.0

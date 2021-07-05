@@ -81,13 +81,13 @@ public class BlocklistedWordsController {
 	 * blocklisted words.
 	 * 
 	 * @param blocklistedwords list of blocklisted words
-	 * @return Valid if word does not belongs to black listed word and Invalid if
-	 *         word belongs to black listed word
+	 * @return Valid if word does not belongs to block listed word and Invalid if
+	 *         word belongs to block listed word
 	 */
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping(path = "/words")
-	@ApiOperation(value = "Black listed word validation")
+	@ApiOperation(value = "Block listed word validation")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Valid Word"),
 			@ApiResponse(code = 200, message = "Invalid Word") })
 	public ResponseWrapper<CodeResponseDto> validateWords(
