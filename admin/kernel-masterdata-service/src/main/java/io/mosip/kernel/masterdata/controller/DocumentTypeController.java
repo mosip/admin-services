@@ -70,7 +70,6 @@ public class DocumentTypeController {
 	 * @param documentCategoryCode input from user
 	 * @return {@link ValidDocumentTypeResponseDto}}
 	 */
-//	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN','PRE_REGISTRATION','RESIDENT','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
 	@ApiOperation(value = "Fetch all the  valid doucment type avialbale for specific document category code ")
 	@GetMapping("/documenttypes/{documentcategorycode}/{langcode}")
@@ -239,7 +238,6 @@ public class DocumentTypeController {
 	 */
 	@ResponseFilter
 	@GetMapping("/documenttypes/{langcode}")
-//	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN','PRE_REGISTRATION','RESIDENT','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	public ResponseWrapper<DocumentTypeResponseDto> getAllDocumentTypeByLaguageCode(
 			@PathVariable("langcode") String langCode) {
 		ResponseWrapper<DocumentTypeResponseDto> responseWrapper = new ResponseWrapper<>();

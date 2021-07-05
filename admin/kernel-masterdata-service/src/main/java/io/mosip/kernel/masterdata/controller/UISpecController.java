@@ -102,7 +102,6 @@ public class UISpecController {
 
 	@ResponseFilter
 	@GetMapping("/{domain}/latest")
-//	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_CLIENT','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','RESIDENT','PRE_REGISTRATION_ADMIN')")
 	@ApiOperation(value = "Service to fetch latest published ui specification of a domain")
 	public ResponseWrapper<List<UISpecResponseDto>> getLatestPublishedSchema(@PathVariable String domain,
 			@RequestParam(name = "version", defaultValue = "0", required = false) @ApiParam(value = "version", defaultValue = "0") double version,

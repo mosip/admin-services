@@ -1,7 +1,5 @@
 package io.mosip.kernel.masterdata.config;
 
-import java.time.LocalDateTime;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
