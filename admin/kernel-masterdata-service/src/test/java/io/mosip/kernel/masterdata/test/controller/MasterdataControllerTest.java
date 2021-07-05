@@ -1229,7 +1229,7 @@ public class MasterdataControllerTest {
 
 		Mockito.when(blocklistedWordsService.validateWord(words)).thenReturn(true);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/blacklistedwords/words")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/blocklistedwords/words")
 				.characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper));
 
@@ -1249,7 +1249,7 @@ public class MasterdataControllerTest {
 
 		Mockito.when(blocklistedWordsService.validateWord(words)).thenReturn(false);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/blacklistedwords/words")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/blocklistedwords/words")
 				.characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper));
 		mockMvc.perform(requestBuilder).andExpect(status().isOk())
@@ -1265,7 +1265,7 @@ public class MasterdataControllerTest {
 		Mockito.when(blocklistedWordsService.updateBlockListedWordStatus(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(dto);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/blacklistedwords").characterEncoding("UTF-8")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/blocklistedwords").characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("word", "ABC")
 				.param("isActive", "true");
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
