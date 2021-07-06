@@ -36,12 +36,10 @@ public class PossibleValuesServiceImpl implements PossibleValuesService {
     @Autowired
     private LocationRepository locationRepository;
 
-    private Map<String, List<PossibleValueDto>> getAllValuesOfDefaultField(@NonNull String fieldName, String[] langCodes,
-                                                                           String parentLangCode) {
+    private Map<String, List<PossibleValueDto>> getAllValuesOfDefaultField(@NonNull String fieldName, String[] langCodes) {
         Map<String, List<PossibleValueDto>> result = new HashMap<>();
 
-        Integer level = locationHierarchyRepository.findByheirarchyLevalNameAndLangCode(fieldName, parentLangCode == null ?
-                langCodes[0] : parentLangCode);
+        Integer level = locationHierarchyRepository.findByheirarchyLevalName(fieldName);
         if(level == null)
             return result;
 
@@ -67,7 +65,7 @@ public class PossibleValuesServiceImpl implements PossibleValuesService {
     private Map<String, List<PossibleValueDto>> getAllValuesOfDynamicField(@NonNull String fieldName, String[] langCodes) {
         Map<String, List<PossibleValueDto>> result = new HashMap<>();
         for(String lang : langCodes) {
-            List<DynamicField> list = dynamicFieldRepository.findAllActiveDynamicFieldByNameAndLangCode(fieldName, lang);
+            List<DynamicField> list = dynamicFieldRepository.findAllDynamicFieldValuesByNameAndLangCode(fieldName, lang);
 
             if(list == null || list.isEmpty())
                 continue;
@@ -81,7 +79,7 @@ public class PossibleValuesServiceImpl implements PossibleValuesService {
                         if (jsonObject.has(CODE))
                             possibleValueDto.setCode(jsonObject.getString(CODE));
                         if (jsonObject.has(VALUE))
-                            possibleValueDto.setCode(jsonObject.getString(VALUE));
+                            possibleValueDto.setValue(jsonObject.getString(VALUE));
                     } catch (JSONException jsonException) {
                         LOGGER.error("Failed to parse valueJson", jsonException);
                     }
@@ -94,14 +92,13 @@ public class PossibleValuesServiceImpl implements PossibleValuesService {
     }
 
     @Override
-    public Map<String, List<PossibleValueDto>> getAllValuesOfField(@NonNull String fieldName, @NonNull String langCode,
-                                                                   String parentLangCode) {
+    public Map<String, List<PossibleValueDto>> getAllValuesOfField(@NonNull String fieldName, @NonNull String langCode) {
         String[] langCodes = langCode.split(",");
 
         if(langCodes.length == 0)
             return null;
 
-        Map<String, List<PossibleValueDto>> result = getAllValuesOfDefaultField(fieldName, langCodes, parentLangCode);
+        Map<String, List<PossibleValueDto>> result = getAllValuesOfDefaultField(fieldName, langCodes);
 
         if(!result.isEmpty())
             return result;

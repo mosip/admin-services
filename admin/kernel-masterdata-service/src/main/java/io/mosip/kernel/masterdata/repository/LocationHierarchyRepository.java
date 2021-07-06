@@ -55,4 +55,7 @@ public interface LocationHierarchyRepository extends BaseRepository<LocationHier
 
 	@Query(value = "select hierarchy_level FROM master.loc_hierarchy_list where UPPER(hierarchy_level_name) = UPPER(:heirarchyLevelName) and lang_code=:languageCode and (is_deleted is null or is_deleted = false) and is_active = true", nativeQuery = true)
 	Integer findByheirarchyLevalNameAndLangCode(@Param("heirarchyLevelName") String heirarchyLevelName,@Param("languageCode") String languageCode);
+
+	@Query(value = "select hierarchy_level FROM master.loc_hierarchy_list where UPPER(hierarchy_level_name) = UPPER(:heirarchyLevelName)", nativeQuery = true)
+	Integer findByheirarchyLevalName(@Param("heirarchyLevelName") String heirarchyLevelName);
 }
