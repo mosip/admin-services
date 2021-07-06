@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
@@ -9,6 +11,8 @@ import io.mosip.kernel.masterdata.utils.CacheName;
 
 @Service
 public class CacheManagementServiceImpl implements CacheManagementService {
+	
+	private static final Logger log = LoggerFactory.getLogger(CacheManagementServiceImpl.class);
 	
 	@Autowired
 	private CacheManager cacheManager;
@@ -21,7 +25,7 @@ public class CacheManagementServiceImpl implements CacheManagementService {
 				cacheManager.getCache(name).clear();
 			}
 		}
-		System.out.println(cacheName.name + " got cleared!");
+		log.info("{} got cleared!", cacheName.name);
 	}
 
 	@Override

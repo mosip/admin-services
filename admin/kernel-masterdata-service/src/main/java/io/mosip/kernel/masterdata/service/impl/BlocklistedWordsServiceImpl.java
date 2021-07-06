@@ -180,14 +180,13 @@ public class BlocklistedWordsServiceImpl implements BlocklistedWordsService {
 	@Override
 	public WordAndLanguageCodeID createBlockListedWord(BlocklistedWordsDto blockListedWordsRequestDto) {
 		BlocklistedWords entity = MetaDataUtils.setCreateMetaData(blockListedWordsRequestDto, BlocklistedWords.class);
-		BlocklistedWords blocklistedWords;
 		entity.setWord(entity.getWord().toLowerCase());
 		try {
 			if(blocklistedWordsRepository.findByOnlyWordAndLangCode(blockListedWordsRequestDto.getWord(), blockListedWordsRequestDto.getLangCode()) !=null) {
 				throw new RequestException(BlocklistedWordsErrorCode.DUPLICATE_BLOCKLISTED_WORDS_FOUND.getErrorCode(),
 						BlocklistedWordsErrorCode.DUPLICATE_BLOCKLISTED_WORDS_FOUND.getErrorMessage());
 			}
-			blocklistedWords = blocklistedWordsRepository.create(entity);
+			blocklistedWordsRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_CREATE, BlocklistedWordsDto.class.getSimpleName()),
