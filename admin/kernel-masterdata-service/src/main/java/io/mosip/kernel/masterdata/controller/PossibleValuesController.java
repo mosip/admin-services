@@ -26,10 +26,9 @@ public class PossibleValuesController {
     @ApiOperation(value = "Service to fetch all possible values of any default / dynamic field")
     public ResponseWrapper<Map<String, List<PossibleValueDto>>> getAllValuesOfField(
             @PathVariable("fieldName") String fieldName,
-            @RequestParam(name = "langCode", required = true) @ApiParam(value = "Lang Code", required = true) String langCode,
-            @RequestParam(name = "parentLangCode", required = false) @ApiParam(value = "Parent Lang Code", required = true) String parentLangCode) {
+            @RequestParam(name = "langCode", required = true) @ApiParam(value = "Lang Code", required = true) String langCode) {
         ResponseWrapper<Map<String, List<PossibleValueDto>>> responseWrapper = new ResponseWrapper<>();
-        responseWrapper.setResponse(possibleValuesService.getAllValuesOfField(fieldName, langCode, parentLangCode));
+        responseWrapper.setResponse(possibleValuesService.getAllValuesOfField(fieldName, langCode));
         return responseWrapper;
     }
 }

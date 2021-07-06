@@ -83,7 +83,7 @@ public class PossibleValuesControllerTest {
     @Test
     @WithUserDetails("global-admin")
     public void testDynamicField() throws Exception {
-        Mockito.when(dynamicFieldRepository.findAllActiveDynamicFieldByNameAndLangCode(Mockito.anyString(),
+        Mockito.when(dynamicFieldRepository.findAllDynamicFieldValuesByNameAndLangCode(Mockito.anyString(),
                 Mockito.anyString())).thenReturn(dynamicFields);
         mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/bloodType?langCode=eng"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -102,7 +102,7 @@ public class PossibleValuesControllerTest {
     @Test
     @WithUserDetails("global-admin")
     public void testDynamicFieldWithNull() throws Exception {
-        Mockito.when(dynamicFieldRepository.findAllActiveDynamicFieldByNameAndLangCode(Mockito.anyString(),
+        Mockito.when(dynamicFieldRepository.findAllDynamicFieldValuesByNameAndLangCode(Mockito.anyString(),
                 Mockito.anyString())).thenReturn(null);
         mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/bloodType?langCode=eng"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -121,7 +121,7 @@ public class PossibleValuesControllerTest {
     @Test
     @WithUserDetails("global-admin")
     public void testDynamicFieldWithEmpty() throws Exception {
-        Mockito.when(dynamicFieldRepository.findAllActiveDynamicFieldByNameAndLangCode(Mockito.anyString(),
+        Mockito.when(dynamicFieldRepository.findAllDynamicFieldValuesByNameAndLangCode(Mockito.anyString(),
                 Mockito.anyString())).thenReturn(new ArrayList<>());
         mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/bloodType?langCode=eng"))
                 .andExpect(MockMvcResultMatchers.status().isOk());

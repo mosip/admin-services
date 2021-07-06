@@ -147,7 +147,7 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 	/**
 	 * give list of the immediate Locations for the given parent location code
 	 * 
-	 * @param locationCode   location code
+	 * @param langCode   location code
 	 * @param hierarchyLevel hierarchy level
 	 * @return Set<Location>
 	 */
@@ -157,7 +157,7 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 	@Query(value = "FROM Location l where l.code=?1 and l.langCode=?2 and (l.isDeleted is null or l.isDeleted=false) and isActive=true")
 	Location findLocationByCodeAndLanguageCodeAndIsActiveTrue(String locCode, String languagecode);
 
-	@Query(value = "FROM Location l where l.langCode=?1 and l.hierarchyLevel=?2 and (l.isDeleted is null or l.isDeleted=false) and l.isActive = true")
+	@Query(value = "FROM Location l where l.langCode=?1 and l.hierarchyLevel=?2")
 	List<Location> getAllLocationsByLangCodeWithHierarchyLevel(String langCode, Short level);
 
 }
