@@ -18,6 +18,7 @@ public class EventPublisherUtil {
 	Event event = new Event();
 	String timestamp = DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
 	event.setTimestamp(timestamp);
+	//Send UUID as event id
 	String eventId = UUID.randomUUID().toString();
 	event.setId(eventId);
 	Map<String, Object> map = new HashedMap<>();
