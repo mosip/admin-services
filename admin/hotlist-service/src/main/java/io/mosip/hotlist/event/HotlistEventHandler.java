@@ -67,7 +67,7 @@ public class HotlistEventHandler {
 			EventModel payload = new EventModel();
 			payload.setPublisher(appId);
 			payload.setTopic(topic);
-			String publishedOn = DateUtils.getCurrentDateTimeString();
+			String publishedOn = DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());;
 			payload.setPublishedOn(publishedOn);
 			Event event = new Event();
 			event.setId(UUID.randomUUID().toString());
