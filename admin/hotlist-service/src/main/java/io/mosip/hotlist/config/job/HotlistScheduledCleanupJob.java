@@ -30,7 +30,7 @@ public class HotlistScheduledCleanupJob {
 	/**
 	 * Cleanup unblocked ids.
 	 */
-	@Scheduled(initialDelayString = "#{60 * 60 * 1000 * ${mosip.hotlist.cleanup-schedule.init-delay}}", fixedRateString = "#{60 * 60 * 1000 * ${mosip.hotlist.cleanup-schedule.fixed-rate}}")
+	@Scheduled(fixedDelayString = "#{60 * 60 * 1000 * ${mosip.hotlist.cleanup-schedule.fixed-delay-in-hours}}")
 	public void cleanupUnblockedIds() {
 		try {
 			mosipLogger.info(HotlistSecurityManager.getUser(), "HotlistScheduledCleanupJob", "cleanupUnblockedIds",
@@ -46,7 +46,7 @@ public class HotlistScheduledCleanupJob {
 	/**
 	 * Cleanup expired ids.
 	 */
-	@Scheduled(initialDelayString = "#{60 * 60 * 1000 * ${mosip.hotlist.cleanup-schedule.init-delay}}", fixedRateString = "#{60 * 60 * 1000 * ${mosip.hotlist.cleanup-schedule.fixed-rate}}")
+	@Scheduled(fixedDelayString = "#{60 * 60 * 1000 * ${mosip.hotlist.cleanup-schedule.fixed-delay-in-hours}}")
 	public void cleanupExpiredIds() {
 		try {
 			mosipLogger.info(HotlistSecurityManager.getUser(), "HotlistScheduledCleanupJob", "cleanupExpiredIds",
@@ -62,7 +62,7 @@ public class HotlistScheduledCleanupJob {
 	/**
 	 * Cleanup deleted ids.
 	 */
-	@Scheduled(initialDelayString = "#{60 * 60 * 1000 * ${mosip.hotlist.cleanup-schedule.init-delay}}", fixedRateString = "#{60 * 60 * 1000 * ${mosip.hotlist.cleanup-schedule.fixed-rate}}")
+	@Scheduled(fixedDelayString = "#{60 * 60 * 1000 * ${mosip.hotlist.cleanup-schedule.fixed-delay-in-hours}}")
 	public void cleanupDeletedIds() {
 		try {
 			mosipLogger.info(HotlistSecurityManager.getUser(), "HotlistScheduledCleanupJob", "cleanupDeletedIds",
