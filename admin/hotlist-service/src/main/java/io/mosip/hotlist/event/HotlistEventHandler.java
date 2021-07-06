@@ -3,6 +3,7 @@ package io.mosip.hotlist.event;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,8 +67,11 @@ public class HotlistEventHandler {
 			EventModel payload = new EventModel();
 			payload.setPublisher(appId);
 			payload.setTopic(topic);
-			payload.setPublishedOn(DateUtils.getCurrentDateTimeString());
+			String publishedOn = DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
+			payload.setPublishedOn(publishedOn);
 			Event event = new Event();
+			event.setId(UUID.randomUUID().toString());
+			event.setTimestamp(publishedOn);
 			Map<String, Object> data = new HashMap<>();
 			data.put("id", id);
 			data.put("idType", idType);
