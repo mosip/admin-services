@@ -85,7 +85,6 @@ public class HotlistEventHandler {
 					"PUBLISHING EVENT - " + payload.toString());
 			publisher.publishUpdate(topic, payload, MediaType.APPLICATION_JSON_VALUE, null, webSubHubUrl);
 		} catch (Exception e) {
-			e.printStackTrace();
 			mosipLogger.error(HotlistSecurityManager.getUser(), "HotlistServiceImpl", "publishEvent",
 					"FAILED TO PUBLISH EVENT WITH ERROR - " + e.getMessage());
 			throw new HotlistRetryException(HotlistErrorConstants.UNKNOWN_ERROR, e);
