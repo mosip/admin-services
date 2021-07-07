@@ -58,7 +58,7 @@ import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
 import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
-import io.mosip.kernel.masterdata.entity.BlacklistedWords;
+import io.mosip.kernel.masterdata.entity.BlocklistedWords;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
@@ -1267,7 +1267,7 @@ public class MasterdataSearchIntegrationTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void searchBlackListedWordsTest() throws Exception {
+	public void searchBlockListedWordsTest() throws Exception {
 		SearchFilter searchFilter = new SearchFilter();
 		searchFilter.setColumnName("word");
 		searchFilter.setType("equals");
@@ -1282,12 +1282,12 @@ public class MasterdataSearchIntegrationTest {
 		searchDto.setSort(Arrays.asList());
 		request.setRequest(searchDto);
 		String json = objectMapper.writeValueAsString(request);
-		BlacklistedWords blacklistedWords = new BlacklistedWords();
-		blacklistedWords.setWord("BlackListedWord");
-		Page<BlacklistedWords> pageContentData = new PageImpl<>(Arrays.asList(blacklistedWords));
-		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(BlacklistedWords.class), Mockito.any(), Mockito.any()))
+		BlocklistedWords blocklistedWords = new BlocklistedWords();
+		blocklistedWords.setWord("BlockListedWord");
+		Page<BlocklistedWords> pageContentData = new PageImpl<>(Arrays.asList(blocklistedWords));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(BlocklistedWords.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
-		mockMvc.perform(post("/blacklistedwords/search").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/blocklistedwords/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 
@@ -1318,7 +1318,7 @@ public class MasterdataSearchIntegrationTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void filterBlackListedWordsTest() throws Exception {
+	public void filterBlockListedWordsTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("word");
 		filterDto.setType("all");
@@ -1331,15 +1331,15 @@ public class MasterdataSearchIntegrationTest {
 		String json = objectMapper.writeValueAsString(requestDto);
 		when(filterColumnValidator.validate(Mockito.eq(FilterDto.class), Mockito.any(), Mockito.any()))
 				.thenReturn(true);
-		when(masterDataFilterHelper.filterValues(Mockito.eq(BlacklistedWords.class), Mockito.any(), Mockito.any()))
+		when(masterDataFilterHelper.filterValues(Mockito.eq(BlocklistedWords.class), Mockito.any(), Mockito.any()))
 				.thenReturn(Arrays.asList("damn", "dammit"));
-		mockMvc.perform(post("/blacklistedwords/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/blocklistedwords/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void filterBlackListedWordsTestForArabicLanguage() throws Exception {
+	public void filterBlockListedWordsTestForArabicLanguage() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("ÙƒÙ„Ù…Ø© ÙÙŠ Ø§Ù„Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„Ø³ÙˆØ¯Ø§Ø¡");
 		filterDto.setType("all");
@@ -1350,15 +1350,15 @@ public class MasterdataSearchIntegrationTest {
 		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
 		requestDto.setRequest(filterValueDto);
 		String json = objectMapper.writeValueAsString(requestDto);
-		when(masterDataFilterHelper.filterValues(Mockito.eq(BlacklistedWords.class), Mockito.any(), Mockito.any()))
+		when(masterDataFilterHelper.filterValues(Mockito.eq(BlocklistedWords.class), Mockito.any(), Mockito.any()))
 				.thenReturn(Arrays.asList("damn", "dammit"));
-		mockMvc.perform(post("/blacklistedwords/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/blocklistedwords/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	@WithUserDetails("zonal-admin")
-	public void filterBlackListedWordsTestForInvalidLanguageCode() throws Exception {
+	public void filterBlockListedWordsTestForInvalidLanguageCode() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("invalid");
 		filterDto.setType("all");
@@ -1369,9 +1369,9 @@ public class MasterdataSearchIntegrationTest {
 		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
 		requestDto.setRequest(filterValueDto);
 		String json = objectMapper.writeValueAsString(requestDto);
-		when(masterDataFilterHelper.filterValues(Mockito.eq(BlacklistedWords.class), Mockito.any(), Mockito.any()))
+		when(masterDataFilterHelper.filterValues(Mockito.eq(BlocklistedWords.class), Mockito.any(), Mockito.any()))
 				.thenReturn(Arrays.asList("damn", "dammit"));
-		mockMvc.perform(post("/blacklistedwords/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/blocklistedwords/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 
@@ -2122,10 +2122,8 @@ public class MasterdataSearchIntegrationTest {
 		searchDto.setSort(Arrays.asList());
 		request.setRequest(searchDto);
 		String json = objectMapper.writeValueAsString(request);
-		// BlacklistedWords blacklistedWords = new BlacklistedWords();
 		IndividualType individual = new IndividualType();
 		individual.setCode("code");
-		// blacklistedWords.setWord("BlackListedWord");
 		Page<IndividualType> pageContentData = new PageImpl<>(Arrays.asList(individual));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(IndividualType.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);

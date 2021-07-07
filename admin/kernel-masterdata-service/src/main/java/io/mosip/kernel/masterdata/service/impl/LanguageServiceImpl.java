@@ -3,6 +3,8 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +48,8 @@ public class LanguageServiceImpl implements LanguageService {
 	 * 
 	 * @see LanguageService#getAllLaguages()
 	 */
+
+	@Cacheable(value = "languages", key = "'language'")
 	@Override
 	public LanguageResponseDto getAllLaguages() {
 		LanguageResponseDto languageResponseDto = new LanguageResponseDto();
@@ -79,6 +83,7 @@ public class LanguageServiceImpl implements LanguageService {
 	 * io.mosip.kernel.masterdata.service.LanguageService#saveLanguage(io.mosip.
 	 * kernel.masterdata.dto.LanguageDto)
 	 */
+	@CacheEvict(value = "languages", allEntries = true)
 	public CodeResponseDto saveLanguage(LanguageDto requestDto) {
 
 		try {
@@ -98,6 +103,7 @@ public class LanguageServiceImpl implements LanguageService {
 	 * io.mosip.kernel.masterdata.service.LanguageService#updateLanguage(io.mosip.
 	 * kernel.masterdata.dto.RequestDto)
 	 */
+	@CacheEvict(value = "languages", allEntries = true)
 	@Override
 	public CodeResponseDto updateLanguage(LanguagePutDto languageDto) {
 		CodeResponseDto code = new CodeResponseDto();
@@ -125,6 +131,7 @@ public class LanguageServiceImpl implements LanguageService {
 	 * io.mosip.kernel.masterdata.service.LanguageService#updateLanguageStatus(io.
 	 * mosip. kernel.masterdata.dto.RequestDto)
 	 */
+	@CacheEvict(value = "languages", allEntries = true)
 	@Override
 	public StatusResponseDto updateLanguageStatus(String code, boolean isActive) {
 		StatusResponseDto statusResponseDto=new StatusResponseDto();
@@ -152,6 +159,7 @@ public class LanguageServiceImpl implements LanguageService {
 	 * io.mosip.kernel.masterdata.service.LanguageService#deleteLanguage(java.lang.
 	 * String)
 	 */
+	@CacheEvict(value = "languages", allEntries = true)
 	@Override
 	public CodeResponseDto deleteLanguage(String code) {
 		CodeResponseDto response = new CodeResponseDto();

@@ -15,6 +15,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -131,6 +133,7 @@ public class UISpecServiceImpl implements UISpecService {
 	/**
 	 * Creates ui spec
 	 */
+	@CacheEvict(value = "ui-spec", allEntries = true)
 	@Override
 	public UISpecResponseDto defineUISpec(UISpecDto dto) {		
 		IdentitySchema identitySchema = validateIdentityShema(dto.getIdentitySchemaId());
@@ -213,6 +216,7 @@ public class UISpecServiceImpl implements UISpecService {
 	/**
 	 * 
 	 */
+	@CacheEvict(value = "ui-spec", allEntries = true)
 	@Override
 	public UISpecResponseDto updateUISpec(String id, UISpecDto dto) {
 		IdentitySchema identitySchema = validateIdentityShema(dto.getIdentitySchemaId());
@@ -238,6 +242,7 @@ public class UISpecServiceImpl implements UISpecService {
 	/**
 	 * 
 	 */
+	@CacheEvict(value = "ui-spec", allEntries = true)
 	@Override
 	public String publishUISpec(UISpecPublishDto dto) {
 		if (dto.getEffectiveFrom().isBefore(LocalDateTime.now(ZoneId.of(ZoneOffset.UTC.getId())))) {
@@ -280,6 +285,7 @@ public class UISpecServiceImpl implements UISpecService {
 	/**
 	 * 
 	 */
+	@CacheEvict(value = "ui-spec", allEntries = true)
 	@Override
 	public String deleteUISpec(String id) {
 		try {
@@ -363,6 +369,9 @@ public class UISpecServiceImpl implements UISpecService {
 	/**
 	 * Gets latest published ui spec
 	 */
+
+	@Cacheable(value = "ui-spec", key = "'uispec'.concat('-').concat(#domain).concat('-').concat(#version).concat('-').concat(#type).concat('-').concat(#identitySchemaVersion)",
+			condition = "#domain != null && #type != null")
 	@Override
 	public List<UISpecResponseDto> getLatestPublishedUISpec(String domain, double version, String type,
 			double identitySchemaVersion) {		

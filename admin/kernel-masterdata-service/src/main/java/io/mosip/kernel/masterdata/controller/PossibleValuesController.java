@@ -21,26 +21,14 @@ public class PossibleValuesController {
     private PossibleValuesService possibleValuesService;
 
     @ResponseFilter
-    @GetMapping("/dynamic/{fieldName}")
-    @PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
-    @ApiOperation(value = "Service to fetch all values of any dynamic field")
-    public ResponseWrapper<Map<String, List<PossibleValueDto>>> getAllValuesOfDynamicField(
+    @GetMapping("/{fieldName}")
+    @PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_PROCESSOR')")
+    @ApiOperation(value = "Service to fetch all possible values of any default / dynamic field")
+    public ResponseWrapper<Map<String, List<PossibleValueDto>>> getAllValuesOfField(
             @PathVariable("fieldName") String fieldName,
             @RequestParam(name = "langCode", required = true) @ApiParam(value = "Lang Code", required = true) String langCode) {
         ResponseWrapper<Map<String, List<PossibleValueDto>>> responseWrapper = new ResponseWrapper<>();
-        responseWrapper.setResponse(possibleValuesService.getAllValuesOfDynamicField(fieldName, langCode));
-        return responseWrapper;
-    }
-
-    @ResponseFilter
-    @GetMapping("/default/{fieldName}")
-    @PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
-    @ApiOperation(value = "Service to fetch all values of any dynamic field")
-    public ResponseWrapper<Map<String, List<PossibleValueDto>>> getAllValuesOfDefaultField(
-            @PathVariable("fieldName") String fieldName,
-            @RequestParam(name = "langCode", required = true) @ApiParam(value = "Lang Code", required = true) String langCode) {
-        ResponseWrapper<Map<String, List<PossibleValueDto>>> responseWrapper = new ResponseWrapper<>();
-        responseWrapper.setResponse(possibleValuesService.getAllValuesOfDefaultField(fieldName, langCode));
+        responseWrapper.setResponse(possibleValuesService.getAllValuesOfField(fieldName, langCode));
         return responseWrapper;
     }
 }

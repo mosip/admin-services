@@ -20,7 +20,6 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
-import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ZoneNameResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.ZoneExtnDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -71,7 +70,6 @@ public class ZoneController {
 	 * @param langCode input language code
 	 * @return {@link List} of {@link ZoneExtnDto}
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN','PRE_REGISTRATION','RESIDENT')")
 	@GetMapping("/leafs/{langCode}")
 	public ResponseWrapper<List<ZoneExtnDto>> getLeafZones(
 			@PathVariable("langCode") @ValidLangCode(message = "Language Code is Invalid") String langCode) {

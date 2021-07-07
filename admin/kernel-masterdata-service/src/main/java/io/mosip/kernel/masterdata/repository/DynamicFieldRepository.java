@@ -184,6 +184,6 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 			nativeQuery= true)
 	Page<Object[]> findAllLatestDynamicFieldNames(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp, Pageable pageable);
 
-	@Query("FROM DynamicField WHERE lower(name)=lower(?1) and langCode=?2 and isActive=true and (isDeleted is null OR isDeleted = false)")
-	List<DynamicField> findAllActiveDynamicFieldByNameAndLangCode(String fieldName, String langCode);
+	@Query("FROM DynamicField WHERE lower(name)=lower(?1) and langCode=?2")
+	List<DynamicField> findAllDynamicFieldValuesByNameAndLangCode(String fieldName, String langCode);
 }
