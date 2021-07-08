@@ -42,8 +42,9 @@ public class DeviceProviderController {
 	@Autowired
 	private DeviceProviderService<ResponseDto, ValidateDeviceDto, DeviceProviderDto, DeviceProviderExtnDto, DeviceProviderPutDto> deviceProviderSerice;
 
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@PostMapping
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdeviceprovider())")
 	@ApiOperation(value = "Service to save Device Provide", notes = "Saves Device Provider Detail and return Device Provider")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Device Provider successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
@@ -64,7 +65,8 @@ public class DeviceProviderController {
 		return response;
 	}
 
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutdeviceprovider())")
 	@PutMapping
 	@ApiOperation(value = "Service to save Device Provide", notes = "Saves Device Provider Detail and return Device Provider")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Device Provider successfully created"),

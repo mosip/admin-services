@@ -66,6 +66,7 @@ public class BlocklistedWordsController {
 	 * @return {@link BlocklistedWordsResponseDto}
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetblocklistedwordslangcode())")
 	@GetMapping("/{langcode}")
 	public ResponseWrapper<BlocklistedWordsResponseDto> getAllBlockListedWordByLangCode(
 			@PathVariable("langcode") String langCode) {
@@ -83,7 +84,8 @@ public class BlocklistedWordsController {
 	 * @return Valid if word does not belongs to block listed word and Invalid if
 	 *         word belongs to block listed word
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostblocklistedwordswords())")
 	@ResponseFilter
 	@PostMapping(path = "/words")
 	@ApiOperation(value = "Block listed word validation")
@@ -112,8 +114,9 @@ public class BlocklistedWordsController {
 	 * @return the response entity i.e. the word and language code of the word
 	 *         added.
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostblocklistedwords())")
 	@PostMapping
 	public ResponseWrapper<WordAndLanguageCodeID> createBlockListedWord(
 			@RequestBody @Valid RequestWrapper<BlocklistedWordsDto> blockListedWordsRequestDto) {
@@ -136,8 +139,9 @@ public class BlocklistedWordsController {
 	 * @return the response entity i.e. the word and language code of the word
 	 *         updated.
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutblocklistedwords())")
 	@PutMapping
 	@ApiOperation(value = "update the blocklisted word")
 	public ResponseWrapper<WordAndLanguageCodeID> updateBlockListedWord(
@@ -153,8 +157,9 @@ public class BlocklistedWordsController {
 		return responseWrapper;
 	}
 
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutblocklistedwordsdetails())")
 	@PutMapping(path = "/details")
 	@ApiOperation(value = "update the blocklisted word details except word")
 	public ResponseWrapper<WordAndLanguageCodeID> updateBlockListedWordExceptWord(
@@ -176,8 +181,9 @@ public class BlocklistedWordsController {
 	 * @param word input blocklisted word to be deleted.
 	 * @return deleted word.
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeleteblocklistedwordsword())")
 	@DeleteMapping("/{word}")
 	@ApiOperation(value = "delete the blocklisted word")
 	public ResponseWrapper<CodeResponseDto> deleteBlockListedWord(@PathVariable("word") String word) {
@@ -194,8 +200,9 @@ public class BlocklistedWordsController {
 	 * 
 	 * @return list of {@link BlocklistedWordsDto}
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetblocklistedwordsall())")
 	@GetMapping("/all")
 	@ApiOperation(value = "Retrieve all the blocklisted words with additional metadata", notes = "Retrieve all the blocklisted words with metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of blocklistedwords"),
@@ -220,8 +227,9 @@ public class BlocklistedWordsController {
 	 *         required.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostblocklistedwordssearch())")
 	@PostMapping("/search")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<BlocklistedWordsExtnDto>> searchBlockListedWords(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(
@@ -247,8 +255,9 @@ public class BlocklistedWordsController {
 	 *         name and type.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostblocklistedwordsfiltervalues())")
 	@PostMapping("/filtervalues")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> blockListedWordsFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> requestWrapper) {
 		auditUtil.auditRequest(
@@ -264,8 +273,9 @@ public class BlocklistedWordsController {
 		return responseWrapper;
 	}
 
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPatchblocklistedwords())")
 	@PatchMapping
 	@ApiOperation(value = "update the blocklisted word")
 	public ResponseWrapper<StatusResponseDto> updateBlockListedWordStatus(@RequestParam boolean isActive,

@@ -43,7 +43,8 @@ public class ZoneUserController {
 	ZoneUserService zoneUserService;
 	
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutzoneuser))")
 	@PutMapping(value="/zoneuser")
 	@ApiOperation(value = "Service to map Users with regcenter", notes = "Maps zone and User  and returns ZoneUserDto")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When User and zone successfully mapped"),
@@ -61,7 +62,8 @@ public class ZoneUserController {
 	}
 	
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostzoneuser))")
 	@PostMapping(value="/zoneuser")
 	@ApiOperation(value = "Service to map Users with regcenter", notes = "Maps zone and User  and returns ZoneUserDto")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When User and Registration center successfully mapped"),
@@ -79,7 +81,8 @@ public class ZoneUserController {
 	}
 	
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeletezoneuseruseridzonecode))")
 	@DeleteMapping("/zoneuser/{userid}/{zonecode}")
 	@ApiOperation(value = "Service to map Users with regcenter", notes = "deletes zone and user mapping")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When successfully deletes zone and user mapping"),
@@ -99,8 +102,9 @@ public class ZoneUserController {
 	
 
 
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN','PRE_REGISTRATION','RESIDENT')")
+	//@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN','PRE_REGISTRATION','RESIDENT')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetzoneuserhistoryuserid))")
 	@GetMapping(value = "/zoneuser/history/{userid}/{eff_dtimes}")
 	public ResponseWrapper<ZoneUserHistoryResponseDto> getHistoryByUserIdAndTimestamp(@Valid @NotEmpty @StringFormatter(min = 1, max = 256)@PathVariable("userid") String userId,
 			@PathVariable("eff_dtimes") String effDtimes) {
@@ -110,7 +114,8 @@ public class ZoneUserController {
 	}
 	
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPatchzoneuser))")
 	@PatchMapping(value = "/zoneuser")
 	public ResponseWrapper<StatusResponseDto> updateapUserZoneStatus(@Valid @RequestParam boolean isActive,
 			@RequestParam String code) {

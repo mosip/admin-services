@@ -56,6 +56,7 @@ public class IndividualTypeController {
 	 * @return the all active individual type.
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetindividualtypes())")
 	@GetMapping
 	@ApiOperation(value = "get value from Caretory for the given id", notes = "get value from Category for the given id")
 	public ResponseWrapper<IndividualTypeResponseDto> getAllIndividualTypes() {
@@ -74,8 +75,9 @@ public class IndividualTypeController {
 	 * 
 	 * @return the response i.e. pages containing the individual types.
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','CENTRAL_ADMIN','REGISTRATION_PROCESSOR')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','CENTRAL_ADMIN','REGISTRATION_PROCESSOR')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetindividualtypesall())")
 	@GetMapping("/all")
 	@ApiOperation(value = "Retrieve all the individual types with additional metadata", notes = "Retrieve all the individual types with the additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of individual types"),
@@ -99,8 +101,9 @@ public class IndividualTypeController {
 	 * @return the response i.e. multiple entities based on the search values
 	 *         required.
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostindividualtypessearch())")
 	@PostMapping("/search")
 	public ResponseWrapper<PageResponseDto<IndividualTypeExtnDto>> searchIndividuals(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
@@ -127,8 +130,9 @@ public class IndividualTypeController {
 	 * @return the response i.e. the list of values for the specific filter column
 	 *         name and type.
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostindividualtypesfiltervalues())")
 	@PostMapping("/filtervalues")
 	public ResponseWrapper<FilterResponseDto> individualsFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> requestWrapper) {
@@ -154,8 +158,9 @@ public class IndividualTypeController {
 	 * @param individualType
 	 * @return
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostindividualtypes())")
 	@PostMapping
 	@ApiOperation(value = "Service to create Individual Type", notes = "create Individual Type  and return  code and LangCode")
 	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created"),
@@ -175,8 +180,9 @@ public class IndividualTypeController {
 	 * @param individualTypeDto the request DTO for updating machine.
 	 * @return the response i.e. the updated machine.
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutindividualtypes())")
 	@PutMapping()
 	@ApiOperation(value = "Service to upadte IndividualType", notes = "Update IndividualType Detail and return updated IndividualType")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When IndividualType successfully updated"),

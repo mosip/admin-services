@@ -49,6 +49,7 @@ public class LocationHierarchyController {
 	 */
 
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlocationhierarchylevelslevellangcode())")
 	@GetMapping(value = "/locationHierarchyLevels/{level}/{langcode}")
 	@ApiOperation(value = "Retrieve all Module Details for given Languge Code", notes = "Retrieve all Location Hierarchy Level name for given Languge Code and level")
 	@ApiResponses({
@@ -70,8 +71,9 @@ public class LocationHierarchyController {
 	 * @return LocationHierarchyLevelResponseDto Location Hierarchy Levels from DB
 	 *         {@link LocationHierarchyLevelResponseDto}
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','INDIVIDUAL','PRE_REGISTRATION','REGISTRATION_PROCESSOR','Default','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_OPERATOR','REGISTRATION_SUPERVISOR')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','INDIVIDUAL','PRE_REGISTRATION','REGISTRATION_PROCESSOR','Default','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_OPERATOR','REGISTRATION_SUPERVISOR')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlocationhierarchylevels())")
 	@GetMapping(value = "/locationHierarchyLevels")
 	@ApiOperation(value = "Retrieve all location Hierarchy Level details", notes = "Retrieve all location Hierarchy Levels ")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When location Hierarchy Levels details retrieved"),
@@ -97,6 +99,7 @@ public class LocationHierarchyController {
 	 *         {@link LocationHierarchyLevelResponseDto}
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlocationhierarchylevelslangcode())")
 	@GetMapping(value = "/locationHierarchyLevels/{langcode}")
 	@ApiOperation(value = "Retrieve all location Hierarchy Level details based on lanuage code ", notes = "Retrieve all location Hierarchy Levels ")
 	@ApiResponses({

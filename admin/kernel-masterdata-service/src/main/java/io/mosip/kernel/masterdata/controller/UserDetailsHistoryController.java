@@ -26,8 +26,9 @@ public class UserDetailsHistoryController {
 	@Autowired
 	UserDetailsHistoryService userDetailsHistoryService;
 
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN','PRE_REGISTRATION','RESIDENT')")
+	//@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN','PRE_REGISTRATION','RESIDENT')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetusersideffdtimes())")
 	@GetMapping(value = "/users/{id}/{eff_dtimes}")
 	public ResponseWrapper<UserDetailsHistoryResponseDto> getTitlesBylangCode(@PathVariable("id") String userId,
 			@PathVariable("eff_dtimes") String date) {

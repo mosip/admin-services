@@ -77,8 +77,9 @@ public class RegistrationCenterTypeController {
 	 * @return the response dto.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostregistrationcentertypes())")
 	@PostMapping("/registrationcentertypes")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<CodeAndLanguageCodeID> createRegistrationCenterType(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeDto) {
 		auditUtil.auditRequest(
@@ -100,8 +101,9 @@ public class RegistrationCenterTypeController {
 	 * @return the response dto.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutregistrationcentertypes())")
 	@PutMapping("/registrationcentertypes")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<CodeAndLanguageCodeID> updateRegistrationCenterType(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterTypePutDto> registrationCenterTypeDto) {
 		auditUtil.auditRequest(
@@ -123,7 +125,8 @@ public class RegistrationCenterTypeController {
 	 * @return the response.
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeleteregistrationcentertypes())")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@DeleteMapping("/registrationcentertypes/{code}")
 	public ResponseWrapper<CodeResponseDto> deleteRegistrationCenterType(@PathVariable("code") String code) {
 
@@ -139,7 +142,8 @@ public class RegistrationCenterTypeController {
 	 */
 	@GetMapping("/registrationcentertypes/all")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','INDIVIDUAL','PRE_REGISTRATION','REGISTRATION_PROCESSOR','REGISTRATION_CLIENT')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetregistrationcentertypesall())")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','INDIVIDUAL','PRE_REGISTRATION','REGISTRATION_PROCESSOR','REGISTRATION_CLIENT')")
 	@ApiOperation(value = "Retrieve all the registration center types with additional metadata", notes = "Retrieve all the registration center types with the additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of registration center types"),
 			@ApiResponse(code = 500, message = "Error occured while retrieving registration center types") })
@@ -163,8 +167,9 @@ public class RegistrationCenterTypeController {
 	 *         name and type.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostregistrationcentertypesfiltervalues())")
 	@PostMapping("/registrationcentertypes/filtervalues")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseCodeDto> registrationCenterTypeFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		auditUtil.auditRequest(
@@ -187,8 +192,9 @@ public class RegistrationCenterTypeController {
 	 * @return {@link RegistrationCenterTypeExtnDto} DocumentTypeResponseDto
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostregistrationcentertypessearch())")
 	@PostMapping("/registrationcentertypes/search")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<RegistrationCenterTypeExtnDto>> searchRegistrationCenterType(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(
@@ -209,8 +215,9 @@ public class RegistrationCenterTypeController {
 	}
 	
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPatchregistrationcentertypes())")
 	@PatchMapping("/registrationcentertypes")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<StatusResponseDto> updateRegistrationCenterTypeStatus(@Valid @RequestParam boolean isActive,
 			@RequestParam String code) {
 		auditUtil.auditRequest(
@@ -234,8 +241,9 @@ public class RegistrationCenterTypeController {
 	 * @return List<String> list of missing ids/ codes
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetregistrationcentertypesmissingidslangcode())")
 	@GetMapping("/registrationcentertypes/missingids/{langcode}")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<List<MissingDataDto>> getMissingRegistrationCentersTypesDetails(
 			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
 		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();

@@ -46,6 +46,7 @@ public class IdTypeController {
 	 * @return the list of id types.
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetidtypeslangcode())")
 	@GetMapping("/idtypes/{langcode}")
 	@ApiOperation(value = "Service to fetch id types based on language code.", notes = "Fetch IdTypes based on Language Code.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When idtypes successfully fetched."),
@@ -65,7 +66,8 @@ public class IdTypeController {
 	 * @param idTypeRequestDto the request of idtype to be added.
 	 * @return the response.
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostidtypes())")
 	@ResponseFilter
 	@PostMapping("/idtypes")
 	@ApiOperation(value = "Service to create id type.", notes = "Create Id Type.")

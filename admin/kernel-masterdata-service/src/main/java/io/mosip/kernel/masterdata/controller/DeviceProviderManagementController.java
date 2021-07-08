@@ -39,7 +39,8 @@ public class DeviceProviderManagementController {
 	@Autowired
 	private DeviceProviderService<ResponseDto, ValidateDeviceDto, DeviceProviderDto, DeviceProviderExtnDto, DeviceProviderPutDto> deviceProviderService;
 
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdeviceprovidermanagementvalidate())")
 	@PostMapping("/validate")
 	@ResponseFilter
 	public ResponseWrapper<ResponseDto> validateDeviceProvider(

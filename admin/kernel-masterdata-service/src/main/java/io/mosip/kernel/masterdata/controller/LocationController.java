@@ -84,6 +84,7 @@ public class LocationController {
 	 * @return list of location hierarchies
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlocationslangcode())")
 	@GetMapping(value = "/{langcode}")
 	public ResponseWrapper<LocationHierarchyResponseDto> getLocationHierarchyDetails(@PathVariable String langcode) {
 		ResponseWrapper<LocationHierarchyResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -98,8 +99,9 @@ public class LocationController {
 	 * @return ResponseWrapper<LocationPostResponseDto>
 	 */
 
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlocations())")
 	@PostMapping
 	public ResponseWrapper<LocationPostResponseDto> createLocationHierarchyDetails(
 			@RequestBody @Valid RequestWrapper<LocationCreateDto> locationRequestDto) {
@@ -118,6 +120,8 @@ public class LocationController {
 	 * @return list of location hierarchies
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlocationslocationcodelangcode())")
+
 	@GetMapping(value = "/{locationcode}/{langcode}")
 	public ResponseWrapper<LocationResponseDto> getLocationHierarchyByLangCode(
 			@PathVariable("locationcode") String locationCode, @PathVariable("langcode") String langCode) {
@@ -135,6 +139,7 @@ public class LocationController {
 	 * @return list of location hierarchies
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlocationsinfolocationcode())")
 	@GetMapping(value = "/info/{locationcode}/{langcode}")
 	public ResponseWrapper<LocationExtnDto> getLocationDetailsByLangCode(
 			@PathVariable("locationcode") String locationCode, @PathVariable("langcode") String langCode) {
@@ -149,6 +154,7 @@ public class LocationController {
 	 * @return list of location hierarchies
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlocationslocationhierarchy())")
 	@GetMapping(value = "/locationhierarchy/{hierarchyname}")
 	public ResponseWrapper<LocationResponseDto> getLocationDataByHierarchyName(
 			@PathVariable(value = "hierarchyname") String hierarchyName) {
@@ -166,8 +172,9 @@ public class LocationController {
 	 * @return ResponseWrapper<LocationPutResponseDto>
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutlocations())")
 	@PutMapping
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	public ResponseWrapper<LocationPutResponseDto> updateLocationHierarchyDetails(
 			@Valid @RequestBody RequestWrapper<LocationPutDto> locationRequestDto) {
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + LocationDto.class.getSimpleName(),
@@ -180,7 +187,8 @@ public class LocationController {
 
 	@ResponseFilter
 	@PatchMapping
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPatchlocations())")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	public ResponseWrapper<StatusResponseDto> updateLocationStatus(@RequestParam String code,
 			@RequestParam boolean isActive) {
 		auditUtil.auditRequest(MasterDataConstant.STATUS_API_IS_CALLED + LocationDto.class.getSimpleName(),
@@ -197,8 +205,9 @@ public class LocationController {
 	 * @param locationCode -location code
 	 * @return CodeResponseDto
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeletelocationslocationcode())")
 	@DeleteMapping(value = "/{locationcode}")
 	public ResponseWrapper<CodeResponseDto> deleteLocationHierarchyDetails(
 			@PathVariable(value = "locationcode") String locationCode) {
@@ -214,6 +223,7 @@ public class LocationController {
 	 * @return list of location hierarchies
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlocationsimmediatechildrenlocationcodelangcode())")
 	@GetMapping(value = "/immediatechildren/{locationcode}/{langcode}")
 	public ResponseWrapper<LocationResponseDto> getImmediateChildrenByLocCodeAndLangCode(
 			@PathVariable("locationcode") String locationCode, @PathVariable("langcode") String langCode) {
@@ -231,6 +241,7 @@ public class LocationController {
 	 * @return StatusResponseCode
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlocationsvalidatelocationname())")
 	@GetMapping(value = "/validate/{locationname}")
 	public ResponseWrapper<StatusResponseDto> validateLocationName(@PathVariable("locationname") String locationName) {
 		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -249,8 +260,9 @@ public class LocationController {
 	 * 
 	 * @return the response i.e. pages containing the locations.
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlocationsall())")
 	@GetMapping("/all")
 	@ApiOperation(value = "Retrieve all the location with additional metadata", notes = "Retrieve all the location with the additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of location"),
@@ -272,8 +284,9 @@ public class LocationController {
 	 * @param request input from user
 	 * @return location values
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostlocationssearch())")
 	@PostMapping("/search")
 	public ResponseWrapper<PageResponseDto<LocationSearchDto>> searchLocation(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
@@ -296,8 +309,9 @@ public class LocationController {
 	 * @param request input from user
 	 * @return column values corresponding to entered dto
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostlocationsfiltervalues())")
 	@PostMapping("/filtervalues")
 	public ResponseWrapper<FilterResponseCodeDto> locationFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
@@ -320,8 +334,9 @@ public class LocationController {
 	 * @return {@link LocationLevelResponseDto}
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlocationslevellangcode())")
 	@GetMapping("level/{langcode}")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	public ResponseWrapper<LocationLevelResponseDto> getLocationCodeByLangCode(
 			@PathVariable("langcode") String langCode) {
 		ResponseWrapper<LocationLevelResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -335,8 +350,9 @@ public class LocationController {
 	 * @return List<String> list of missing ids/ codes
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlocationsmissingidslangcode())")
 	@GetMapping("/missingids/{langcode}")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<List<MissingDataDto>> getMissingLocationDetails(
 			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
 		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();

@@ -63,6 +63,7 @@ public class GenderTypeController {
 	 * @return list of all gender types
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetgendertypes())")
 	@GetMapping("/gendertypes")
 	public ResponseWrapper<GenderTypeResponseDto> getAllGenderType() {
 		ResponseWrapper<GenderTypeResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -77,6 +78,7 @@ public class GenderTypeController {
 	 * @return list of all gender types for the given language code
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetgendertypeslangcode())")
 	@GetMapping(value = "/gendertypes/{langcode}")
 	public ResponseWrapper<GenderTypeResponseDto> getGenderBylangCode(@PathVariable("langcode") String langCode) {
 
@@ -92,7 +94,8 @@ public class GenderTypeController {
 	 * @return primary key of entered row of gender
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostgendertypes())")
 	@PostMapping("/gendertypes")
 	public ResponseWrapper<CodeAndLanguageCodeID> saveGenderType(
 			@Valid @RequestBody RequestWrapper<GenderTypeDto> gender) {
@@ -113,8 +116,9 @@ public class GenderTypeController {
 	 * @return key of updated row
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Update Gender Type")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutgendertypes())")
 	@PutMapping("/gendertypes")
 	public ResponseWrapper<CodeAndLanguageCodeID> updateGenderType(
 			@ApiParam("Data to update with metadata") @Valid @RequestBody RequestWrapper<GenderTypeDto> gender) {
@@ -133,8 +137,9 @@ public class GenderTypeController {
 	 * @return code of deleted rows
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Delete Gender Type")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeletegendertypescode())")
 	@DeleteMapping("/gendertypes/{code}")
 	public ResponseWrapper<CodeResponseDto> deleteGenderType(
 			@ApiParam("Gender type Code of gender to be deleted") @PathVariable("code") String code) {
@@ -151,6 +156,7 @@ public class GenderTypeController {
 	 */
 	@ResponseFilter
 	@ApiOperation(value = "validate gender name")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetgendertypesvalidategendername())")
 	@GetMapping("/gendertypes/validate/{gendername}")
 	public ResponseWrapper<StatusResponseDto> valdiateGenderName(@PathVariable("gendername") String genderName) {
 		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -168,8 +174,9 @@ public class GenderTypeController {
 	 * 
 	 * @return the response i.e. pages containing the data
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetgendertypesall())")
 	@GetMapping("/gendertypes/all")
 	@ApiOperation(value = "Retrieve all the genders with additional metadata", notes = "Retrieve all the genders with the additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of gender types"),
@@ -192,8 +199,9 @@ public class GenderTypeController {
 	 * @return the response i.e. multiple entities based on the search values
 	 *         required.
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostgendertypessearch())")
 	@PostMapping("/gendertypes/search")
 	public ResponseWrapper<PageResponseDto<GenderExtnDto>> searchGenderTypes(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
@@ -218,7 +226,8 @@ public class GenderTypeController {
 	 *         name and type.
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostgendertypesfiltervalues())")
 	@PostMapping("/gendertypes/filtervalues")
 	public ResponseWrapper<FilterResponseDto> genderFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> requestWrapper) {

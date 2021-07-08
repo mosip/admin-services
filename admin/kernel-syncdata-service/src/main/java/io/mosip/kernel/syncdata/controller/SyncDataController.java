@@ -76,8 +76,9 @@ public class SyncDataController {
 	 * 
 	 * @return JSONObject - global config response
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetconfigs())")
 	@ApiOperation(value = "API to sync global config details")
 	@GetMapping(value = "/configs")
 	public ResponseWrapper<ConfigDto> getConfigDetails() {
@@ -94,10 +95,11 @@ public class SyncDataController {
 	 * 
 	 * @return JSONObject - global config response
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@ApiIgnore
 	@ApiOperation(value = "API to sync global config details")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetglobalconfigs())")
 	@GetMapping(value = "/globalconfigs")
 	public ResponseWrapper<JSONObject> getGlobalConfigDetails() {
 		ResponseWrapper<JSONObject> response = new ResponseWrapper<>();
@@ -112,10 +114,11 @@ public class SyncDataController {
 	 * @param regId registration Id
 	 * @return JSONObject
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@ResponseFilter
 	@ApiIgnore
 	@ApiOperation(value = "Api to get registration center configuration")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetregistrationcenterconfigregistrationcenterid())")
 	@GetMapping(value = "/registrationcenterconfig/{registrationcenterid}")
 	public ResponseWrapper<JSONObject> getRegistrationCentreConfig(
 			@PathVariable(value = "registrationcenterid") String regId) {
@@ -124,9 +127,10 @@ public class SyncDataController {
 		return response;
 	}
 
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@ResponseFilter
 	@ApiIgnore
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetconfigurationregistrationcenterid())")
 	@GetMapping("/configuration/{registrationCenterId}")
 	public ResponseWrapper<ConfigDto> getConfiguration(
 			@PathVariable("registrationCenterId") String registrationCenterId) {
@@ -144,8 +148,9 @@ public class SyncDataController {
 	 * @throws InterruptedException - this method will throw interrupted Exception
 	 * @throws ExecutionException   - this method will throw exeution exception
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetclientsettings())")
 	@GetMapping("/clientsettings")
 	public ResponseWrapper<SyncDataResponseDto> syncClientSettings(
 			@RequestParam(value = "keyindex", required = true) String keyIndex,
@@ -175,8 +180,9 @@ public class SyncDataController {
 	 * @throws InterruptedException - this method will throw interrupted Exception
 	 * @throws ExecutionException   - this method will throw exeution exception
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetclientsettingsregcenterid())")
 	@GetMapping("/clientsettings/{regcenterid}")
 	@Deprecated(forRemoval = true, since = "1.1.5")
 	public ResponseWrapper<SyncDataResponseDto> syncClientSettingsWithRegCenterId(
@@ -204,8 +210,9 @@ public class SyncDataController {
 	 * 
 	 * @return RolesResponseDto
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetroles())")
 	@GetMapping("/roles")
 	public ResponseWrapper<RolesResponseDto> getAllRoles() {
 		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
@@ -223,8 +230,9 @@ public class SyncDataController {
 	 * 
 	 * @return UserDetailResponseDto - user detail response
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetuserdetailsregcenterid())")
 	@GetMapping("/userdetails/{regcenterid}")
 	public ResponseWrapper<SyncUserDetailDto> getUserDetails(@PathVariable("regcenterid") String regId) {
 		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
@@ -242,8 +250,9 @@ public class SyncDataController {
 	 * 
 	 * @return UserDetailResponseDto - user detail response
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetusersaltregid())")
 	@GetMapping("/usersalt/{regid}")
 	@Deprecated
 	public ResponseWrapper<SyncUserSaltDto> getUserSalts(@PathVariable("regid") String regId) {
@@ -263,8 +272,9 @@ public class SyncDataController {
 	 * @param referenceId   Reference id of the application requesting publicKey
 	 * @return {@link PublicKeyResponse} instance
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetpublickeyapplicationid())")
 	@GetMapping(value = "/publickey/{applicationId}")
 	public ResponseWrapper<PublicKeyResponse<String>> getPublicKey(
 			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
@@ -289,8 +299,9 @@ public class SyncDataController {
 	 * @param uploadPublicKeyRequestDto
 	 * @return
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettpmpublickeyverify())")
 	@PostMapping(value = "/tpm/publickey/verify", produces = "application/json")
 	public ResponseWrapper<UploadPublicKeyResponseDto> validateKeyMachineMapping(
 			@ApiParam("public key in BASE64 encoded") @RequestBody @Valid RequestWrapper<UploadPublicKeyRequestDto> uploadPublicKeyRequestDto) {
@@ -299,8 +310,9 @@ public class SyncDataController {
 		return response;
 	}
 	
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','RESIDENT','INDIVIDUAL','Default')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','RESIDENT','INDIVIDUAL','Default')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlatestidschema())")
 	@GetMapping(value = "/latestidschema", produces = "application/json")
 	public ResponseWrapper<JsonNode> getLatestPublishedIdSchema(
 			@RequestParam(value = "lastupdated", required = false) String lastUpdated,
@@ -315,8 +327,9 @@ public class SyncDataController {
 		return response;
 	}
 
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetgetcertificate())")
 	@GetMapping(value = "/getCertificate")
 	public ResponseWrapper<KeyPairGenerateResponseDto> getCertificate(
 			@ApiParam("Id of application") @RequestParam("applicationId") String applicationId,
@@ -327,8 +340,9 @@ public class SyncDataController {
 		return response;
 	}
 
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','REGISTRATION_PROCESSOR')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','REGISTRATION_PROCESSOR')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettpmpublickeymachineid())")
 	@GetMapping(value = "/tpm/publickey/{machineId}", produces = "application/json")
 	public ResponseWrapper<ClientPublicKeyResponseDto> getClientPublicKey(
 			@ApiParam("Machine id") @PathVariable("machineId") String machineId) {
@@ -342,8 +356,9 @@ public class SyncDataController {
 	 *
 	 * @return JSONObject - global config response
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetconfigsmachinename())")
 	@ApiOperation(value = "API to sync global config details")
 	@GetMapping(value = "/configs/{machineName}")
 	public ResponseWrapper<ConfigDto> getMachineConfigDetails(@PathVariable(value = "machineName") String machineName) {
@@ -360,8 +375,9 @@ public class SyncDataController {
 	 * @param keyIndex
 	 * @return
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetuserdetails())")
 	@GetMapping("/userdetails")
 	public ResponseWrapper<SyncUserDto> getUserDetailsBasedOnKeyIndex(
 			@RequestParam(value = "keyindex", required = true) String keyIndex) {
@@ -378,8 +394,9 @@ public class SyncDataController {
 	 * @param lastUpdated
 	 * @return
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetgetcacertificates())")
 	@GetMapping("/getcacertificates")
 	public ResponseWrapper<CACertificates> getCACertificates(@RequestParam(value = "lastupdated",
 			required = false) String lastUpdated) {

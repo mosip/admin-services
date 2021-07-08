@@ -67,8 +67,9 @@ public class ValidDocumentController {
 	 * @param document the DTO for valid document.
 	 * @return ValidDocumentID.
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostvaliddocuments())")
 	@PostMapping("/validdocuments")
 	@ApiOperation(value = "Service to create valid document", notes = "Create valid document and return composite id")
 	public ResponseWrapper<ValidDocumentID> createValidDocument(
@@ -86,8 +87,9 @@ public class ValidDocumentController {
 	 * @param docTypeCode the document type code.
 	 * @return the PostValidDocumentResponseDto.
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeletevaliddocumentsdoccategorycode())")
 	@DeleteMapping("/validdocuments/{doccategorycode}/{doctypecode}")
 	@ApiOperation(value = "Service to delete valid document", notes = "Delete valid document and return composite id")
 	public ResponseWrapper<DocCategoryAndTypeResponseDto> deleteValidDocuemnt(
@@ -107,6 +109,7 @@ public class ValidDocumentController {
 	 * @return the valid documents
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetvaliddocumentslanguagecode())")
 	@GetMapping("/validdocuments/{languagecode}")
 	@ApiOperation(value = "Service to fetch all valid document categories and associated document types for a languagecode")
 	public ResponseWrapper<ValidDocCategoryAndDocTypeResponseDto> getValidDocumentByLangCode(
@@ -126,8 +129,9 @@ public class ValidDocumentController {
 	 * 
 	 * @return the response i.e. pages containing the valid documents.
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetvaliddocumentsall())")
 	@GetMapping("/validdocuments/all")
 	@ApiOperation(value = "Retrieve all the document categories and associated document types with additional metadata", notes = "Retrieve all the document categories and associated document types with the additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of document categories and associated document types"),
@@ -149,8 +153,9 @@ public class ValidDocumentController {
 	 * @return dto containing mapped doc type-cat values
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostvaliddocumentssearch())")
 	@PostMapping("/validdocuments/search")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<DocumentCategoryTypeMappingExtnDto>> searchValidDocument(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		ResponseWrapper<PageResponseDto<DocumentCategoryTypeMappingExtnDto>> responseWrapper = new ResponseWrapper<>();
@@ -164,8 +169,9 @@ public class ValidDocumentController {
 	 * @param request input from user
 	 * @return column values of input request
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostvaliddocumentsfiltervalues())")
 	@PostMapping("/validdocuments/filtervalues")
 	public ResponseWrapper<FilterResponseDto> categoryTypeFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
@@ -181,8 +187,9 @@ public class ValidDocumentController {
 	 * @param docTypeCode the document type code.
 	 * @return the DocCategoryAndTypeMappingResponseDto.
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutvaliddocumentsmapdoccategorycode())")
 	@PutMapping("/validdocuments/map/{doccategorycode}/{doctypecode}")
 	public ResponseWrapper<DocCategoryAndTypeMappingResponseDto> mapDocCategoryAndDocType(
 			@PathVariable("doccategorycode") @NotBlank @Size(min = 1, max = 36) String docCatCode,
@@ -200,8 +207,9 @@ public class ValidDocumentController {
 	 * @param docTypeCode the document type code.
 	 * @return the DocCategoryAndTypeMappingResponseDto.
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutvaliddocumentsunmapdoccategorycode())")
 	@PutMapping("/validdocuments/unmap/{doccategorycode}/{doctypecode}")
 	public ResponseWrapper<DocCategoryAndTypeMappingResponseDto> unmapDocCategoryAndDocType(
 			@PathVariable("doccategorycode") @NotBlank @Size(min = 1, max = 36) String docCatCode,
@@ -220,6 +228,7 @@ public class ValidDocumentController {
 	 * @return the valid documents
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetvaliddocumentsdoccategorycode())")
 	@GetMapping("/validdocuments/{docCategoryCode}/{languagecode}")
 	@ApiOperation(value = "Service to fetch all valid document categories and associated document types for a docCategoryCode")
 	public ResponseWrapper<List<ValidDocumentMapDto>> getValidDocumentByDocCategoryCode(

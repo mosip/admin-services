@@ -21,8 +21,9 @@ public class ApplicationConfigController {
 	private ApplicationConfigService applicationService;
 	
 	@Deprecated
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetapplicationconfigs())")
 	@GetMapping("/applicationconfigs")
 	public ResponseWrapper<ApplicationConfigResponseDto> getAllApplication() {
 		ResponseWrapper<ApplicationConfigResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -30,8 +31,9 @@ public class ApplicationConfigController {
 		return responseWrapper;
 	}
 	
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetconfigs())")
 	@GetMapping("/configs")
 	public ResponseWrapper<Map<String,String>> getConfigValues() {
 		ResponseWrapper<Map<String,String>> responseWrapper = new ResponseWrapper<>();

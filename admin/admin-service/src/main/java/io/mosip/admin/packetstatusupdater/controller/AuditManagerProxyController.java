@@ -37,8 +37,9 @@ public class AuditManagerProxyController {
 	 *            {@link AuditRequestDto} having required fields for auditing
 	 * @return The {@link AuditResponseDto} having the status of audit
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostauditmanagerlog())")
 	@PostMapping
 	public ResponseWrapper<AuditManagerResponseDto> addAudit(@RequestBody @Valid RequestWrapper<AuditManagerRequestDto> requestDto) {
 		ResponseWrapper<AuditManagerResponseDto> response = new ResponseWrapper<>();

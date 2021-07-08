@@ -43,7 +43,8 @@ public class DeviceRegisterController {
 	 * @param request the request DTO.
 	 * @return the {@link DeviceRegisterResponseDto}.
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeletedevicederegisterdevicecode())")
 	@ApiOperation(value = "DeRegister Device")
 	@DeleteMapping("/deregister/{deviceCode}")
 	public ResponseEntity<DeviceRegisterResponseDto> deRegisterDevice(@Valid @PathVariable String deviceCode) {

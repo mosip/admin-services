@@ -37,8 +37,9 @@ public class PacketUpdateStatusController {
 	 * @param rId the r id
 	 * @return the response wrapper
 	 */
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetpacketstatusupdate())")
 	@GetMapping
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
 	public ResponseWrapper<PacketStatusUpdateResponseDto> validatePacket(@RequestParam(value = "rid") String rId) {
 

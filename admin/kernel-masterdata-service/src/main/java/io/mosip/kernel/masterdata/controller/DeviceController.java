@@ -76,8 +76,9 @@ public class DeviceController {
 	 * @return DeviceResponseDto all device details based on given language code
 	 *         {@link DeviceResponseDto}
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_PROCESSOR','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_PROCESSOR','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdeviceslanguagecode())")
 	@GetMapping(value = "/{languagecode}")
 	@ApiOperation(value = "Retrieve all Device for the given Languge Code", notes = "Retrieve all Device for the given Languge Code")
 	@ApiResponses({
@@ -101,8 +102,9 @@ public class DeviceController {
 	 * @return DeviceLangCodeResponseDto all device details based on given device
 	 *         type and language code {@link DeviceLangCodeResponseDto}
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_PROCESSOR','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_PROCESSOR','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdeviceslanguagecodedevicetype())")
 	@GetMapping(value = "/{languagecode}/{deviceType}")
 	@ApiOperation(value = "Retrieve all Device for the given Languge Code and Device Type", notes = "Retrieve all Device for the given Languge Code and Device Type")
 	@ApiResponses({
@@ -125,8 +127,9 @@ public class DeviceController {
 	 * 
 	 * @return ResponseWrapper<DeviceExtnDto>
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdevices())")
 	@PostMapping
 	@ApiOperation(value = "Service to save Device", notes = "Saves Device and return Device id")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Device successfully created"),
@@ -149,9 +152,10 @@ public class DeviceController {
 	 * 
 	 * @return responseWrapper
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutdevices())")
 	@ApiOperation(value = "Service to update Device", notes = "Update Device and return updated Device")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When Device updated successfully"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
@@ -200,7 +204,8 @@ public class DeviceController {
 	 *         {@link DeviceRegistrationCenterDto}
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_PROCESSOR','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdevicesmappeddevicesregcenterid())")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_PROCESSOR','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER')")
 	@GetMapping(value = "/mappeddevices/{regCenterId}")
 	@ApiOperation(value = "Retrieve all Devices which are mapped to given Registration Center Id", notes = "Retrieve all Devices which are mapped to given Registration Center Id")
 	@ApiResponses({
@@ -227,8 +232,9 @@ public class DeviceController {
 	 * @return the pages of {@link DeviceSearchDto}.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdevicessearch())")
 	@PostMapping(value = "/search")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Retrieve all Devices for the given Filter parameters", notes = "Retrieve all Devices for the given Filter parameters")
 	public ResponseWrapper<PageResponseDto<DeviceSearchDto>> searchDevice(
 			@Valid @RequestBody RequestWrapper<SearchDtoWithoutLangCode> request) {
@@ -251,8 +257,9 @@ public class DeviceController {
 	 * @return the {@link FilterResponseDto}.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdevicesfiltervalues())")
 	@PostMapping("/filtervalues")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseCodeDto> deviceFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + DeviceDto.class.getCanonicalName(),
@@ -275,8 +282,9 @@ public class DeviceController {
 	 */
 	@ResponseFilter
 	@ApiOperation(value = "Decommission Device")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutdevicesdecommissiondeviceid())")
 	@PutMapping("/decommission/{deviceId}")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<IdResponseDto> decommissionDevice(@PathVariable("deviceId") String deviceId) {
 		auditUtil.auditRequest(MasterDataConstant.DECOMMISION_API_CALLED + DeviceDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
@@ -289,8 +297,9 @@ public class DeviceController {
 		return responseWrapper;
 	}
 
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPatchdevices())")
 	@PatchMapping
 	@ApiOperation(value = "Service to update Device", notes = "Update Device and return updated Device")
 	public ResponseWrapper<StatusResponseDto> updateDeviceStatus(@RequestParam boolean isActive,

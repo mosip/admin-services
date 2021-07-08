@@ -60,6 +60,7 @@ public class TitleController {
 	 * @return list of all titles present in master DB
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGettitle())")
 	@GetMapping(value = "/title")
 	public ResponseWrapper<TitleResponseDto> getAllTitles() {
 		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL, TitleDto.class.getSimpleName()),
@@ -81,6 +82,7 @@ public class TitleController {
 	 * @return list of all titles for the particular language code
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGettitlelangcode())")
 	@GetMapping(value = "/title/{langcode}")
 	public ResponseWrapper<TitleResponseDto> getTitlesBylangCode(@PathVariable("langcode") String langCode) {
 
@@ -96,8 +98,9 @@ public class TitleController {
 	 * @return primary key of entered row
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPosttitle())")
 	@PostMapping("/title")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	public ResponseWrapper<CodeAndLanguageCodeID> saveTitle(@Valid @RequestBody RequestWrapper<TitleDto> title) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + TitleDto.class.getSimpleName(),
 				MasterDataConstant.AUDIT_SYSTEM,
@@ -114,8 +117,9 @@ public class TitleController {
 	 * @return composite primary key of updated row
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPuttitle())")
 	@PutMapping("/title")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "Service to update title", notes = "Update title and return composite id")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When title successfully updated"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
@@ -138,8 +142,9 @@ public class TitleController {
 	 * @return composite key of deleted row of data
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPuttitlecode())")
 	@DeleteMapping("/title/{code}")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "Service to delete title", notes = "Delete title and return composite id")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When title successfully deleted"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
@@ -162,8 +167,9 @@ public class TitleController {
 	 * 
 	 * @return the response i.e. pages containing the titles.
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettitleall())")
 	@GetMapping("/title/all")
 	@ApiOperation(value = "Retrieve all the title with additional metadata", notes = "Retrieve all the title with the additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of title"),
@@ -189,7 +195,8 @@ public class TitleController {
 
 	@ResponseFilter
 	@PostMapping("title/search")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPosttitlesearch())")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "Search title details")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of titles"),
 			@ApiResponse(code = 500, message = "Error occured while searching title") })
@@ -214,7 +221,8 @@ public class TitleController {
 	 */
 	@ResponseFilter
 	@PostMapping("title/filtervalues")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPosttitlefiltervalues())")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "filter title details")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of title"),
 			@ApiResponse(code = 500, message = "Error occured while retrieving templates") })

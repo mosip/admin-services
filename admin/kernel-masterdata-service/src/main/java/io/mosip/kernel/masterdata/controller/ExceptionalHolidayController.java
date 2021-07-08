@@ -36,6 +36,7 @@ public class ExceptionalHolidayController {
 	 *         {@link ExceptionalHolidayResponseDto}
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetexceptionalholidaysregistrationcenterid())")
 	@GetMapping(value = "/exceptionalholidays/{registrationCenterId}/{languagecode}")
 	@ApiOperation(value = "Retrieve all Exceptional Holidays for given Registration center ID and Languge Code", notes = "Retrieve all Week Days for given Registration center ID and Languge Code")
 	@ApiResponses({
