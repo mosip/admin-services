@@ -3,6 +3,7 @@ package io.mosip.hotlist.event;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +77,8 @@ public class HotlistEventHandler {
 			data.put("id", id);
 			data.put("idType", idType);
 			data.put("status", status);
-			data.put("expiryTimestamp", DateUtils.formatToISOString(expiryTimestamp));
+			data.put("expiryTimestamp",
+					Objects.nonNull(expiryTimestamp) ? DateUtils.formatToISOString(expiryTimestamp) : expiryTimestamp);
 			event.setData(data);
 			payload.setEvent(event);
 			mosipLogger.debug(HotlistSecurityManager.getUser(), "HotlistServiceImpl", PUBLISH_EVENT,
