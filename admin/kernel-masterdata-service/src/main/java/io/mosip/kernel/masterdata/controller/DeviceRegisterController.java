@@ -51,7 +51,8 @@ public class DeviceRegisterController {
 		return new ResponseEntity<>(deviceRegisterService.deRegisterDevice(deviceCode), HttpStatus.OK);
 	}
 
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutdeviceupdatestatus())")
 	@ApiOperation(value = "Update status of the devive")
 	@PutMapping("/update/status")
 	public ResponseEntity<ResponseDto> deRegisterDevice(
