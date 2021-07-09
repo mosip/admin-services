@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -121,6 +123,7 @@ public class TitleServiceImpl implements TitleService {
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.TitleService#getAllTitles()
 	 */
+	@Cacheable(value = "titles", key = "'title'")
 	@Override
 	public TitleResponseDto getAllTitles() {
 		TitleResponseDto titleResponseDto = null;
@@ -151,6 +154,7 @@ public class TitleServiceImpl implements TitleService {
 	 * io.mosip.kernel.masterdata.service.TitleService#getByLanguageCode(java.lang.
 	 * String)
 	 */
+	@Cacheable(value = "titles", key = "'title'.concat('-').concat(#languageCode)", condition = "#languageCode != null")
 	@Override
 	public TitleResponseDto getByLanguageCode(String languageCode) {
 		TitleResponseDto titleResponseDto = null;
@@ -182,6 +186,7 @@ public class TitleServiceImpl implements TitleService {
 	 * io.mosip.kernel.masterdata.service.TitleService#saveTitle(io.mosip.kernel.
 	 * masterdata.dto.RequestDto)
 	 */
+	@CacheEvict(value = "titles", allEntries = true)
 	@Override
 	public CodeAndLanguageCodeID saveTitle(TitleDto titleRequestDto) {
 
@@ -215,6 +220,7 @@ public class TitleServiceImpl implements TitleService {
 	 * io.mosip.kernel.masterdata.service.TitleService#updateTitle(io.mosip.kernel.
 	 * masterdata.dto.RequestDto)
 	 */
+	@CacheEvict(value = "titles", allEntries = true)
 	@Override
 	public CodeAndLanguageCodeID updateTitle(TitleDto titles) {
 
@@ -272,6 +278,7 @@ public class TitleServiceImpl implements TitleService {
 	 * io.mosip.kernel.masterdata.service.TitleService#deleteTitle(java.lang.String,
 	 * java.lang.String)
 	 */
+	@CacheEvict(value = "titles", allEntries = true)
 	@Override
 	@Transactional
 	public CodeResponseDto deleteTitle(String code) {
@@ -281,7 +288,6 @@ public class TitleServiceImpl implements TitleService {
 
 			if (!titleList.isEmpty()) {
 				titleList.stream().map(MetaDataUtils::setDeleteMetaData).forEach(titleRepository::update);
-
 			} else {
 				throw new RequestException(TitleErrorCode.TITLE_NOT_FOUND.getErrorCode(),
 						TitleErrorCode.TITLE_NOT_FOUND.getErrorMessage());

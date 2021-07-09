@@ -67,7 +67,15 @@ public enum EventEnum {
 	QUALITY_CHECK("ADM-PKT-120",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s has quality check done","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 	BIOMETRIC_AUTHENTICATION("ADM-PKT-121",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s has Biometric Authentication done","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 	SECUREZONE_NOTIFICATION("ADM-PKT-122",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s has notification received to securezone","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
-	PRINT("ADM-PKT-123",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s is at print","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME);
+	PRINT("ADM-PKT-123", AuditConstant.AUDIT_SYSTEM, "Request for get packet status",
+			"Packet with registration id %s is at print", "ADM-PKT", "Packet service", "%s", "RID",
+			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME),
+	LOST_RID_API_CALLED("ADM-BLK-201", AuditConstant.AUDIT_SYSTEM, "Request for Lost rid API",
+			"API called for lost rid request", "ADM-LRID", "Admin service", "NO_ID", "NO_ID_TYPE",
+			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME),
+	LOST_RID_SUCCESS("ADM-BLK-202", AuditConstant.AUDIT_SYSTEM, "Request for Lost rid API",
+			"successfully return the lost rid", "ADM-LRID", "admin service", "NO_ID", "NO_ID_TYPE",
+			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME);
 	
 	
 	private final String eventId;

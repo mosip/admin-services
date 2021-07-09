@@ -8,15 +8,15 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * Blacklisted word DTO.
+ * Blocklisted word DTO.
  * 
  * @author Abhishek Kumar
  * @since 1.0.0
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-//@ApiModel(value = "Blacklisted word", description = "blacklisted words details")
-public class BlacklistedWordsExtnDto extends BaseDto {
+//@ApiModel(value = "Blocklisted word", description = "blocklisted words details")
+public class BlocklistedWordsExtnDto extends BaseDto {
 
 	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })
 	@ApiModelProperty(value = "word", required = true, dataType = "java.lang.String")

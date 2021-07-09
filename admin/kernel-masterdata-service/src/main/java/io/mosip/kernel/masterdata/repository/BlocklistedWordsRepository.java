@@ -1,0 +1,68 @@
+package io.mosip.kernel.masterdata.repository;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
+
+import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import io.mosip.kernel.masterdata.entity.BlocklistedWords;
+
+/**
+ * Repository for Blocklisted words.
+ * 
+ * @author Abhishek Kumar
+ * @author Sagar Mahapatra
+ * @since 1.0.0
+ */
+public interface BlocklistedWordsRepository extends BaseRepository<BlocklistedWords, String> {
+	/**
+	 * Method to fetch list of blocklisted words by language code
+	 * 
+	 * @param langCode language code
+	 * @return {@link List of BlocklistedWords }
+	 */
+
+	@Query("FROM BlocklistedWords blw WHERE blw.langCode = ?1 AND (blw.isDeleted IS NULL OR blw.isDeleted = false) AND blw.isActive = true")
+	List<BlocklistedWords> findAllByLangCode(String langCode);
+
+	/**
+	 * Method to fetch all the blocklisted words
+	 * 
+	 * @return {@link List of BlocklistedWords }
+	 */
+	@Query("FROM BlocklistedWords where (isDeleted is null OR isDeleted = false) AND isActive = true")
+	List<BlocklistedWords> findAllByIsDeletedFalseOrIsDeletedNull();
+
+	/**
+	 * Method to fetch word by word and langCode
+	 * 
+	 * @param word     word to fetch
+	 * @param langCode language code of the word
+	 * @return word detail
+	 */
+
+	@Query("FROM BlocklistedWords blw WHERE lower(blw.word) = lower(?1) AND blw.langCode = ?2 AND (blw.isDeleted IS NULL OR blw.isDeleted = false)")
+	BlocklistedWords findByWordAndLangCode(String word, String langCode);
+	
+	
+	@Query("FROM BlocklistedWords blw WHERE lower(blw.word) = lower(?1) AND blw.langCode = ?2 ")
+	BlocklistedWords findByOnlyWordAndLangCode(String word, String langCode);
+
+	@Query("FROM BlocklistedWords blw WHERE lower(blw.word) = ?1 AND (blw.isDeleted IS NULL OR blw.isDeleted = false)")
+	List<BlocklistedWords> findtoUpdateBlocklistedWordByWord(String word);
+
+	/**
+	 * Method to delete the blocklisted word
+	 * 
+	 * @param word            input word to be deleted
+	 * @param deletedDateTime input deleted timeStamp
+	 * @return no of rows deleted
+	 */
+	@Modifying
+	@Transactional
+	@Query("UPDATE BlocklistedWords bw SET bw.isDeleted = true , bw.deletedDateTime = ?2 WHERE lower(bw.word) = lower(?1) AND (bw.isDeleted IS NULL OR bw.isDeleted = false)")
+	int deleteBlockListedWord(String word, LocalDateTime deletedDateTime);
+}

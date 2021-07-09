@@ -36,17 +36,16 @@ public class PossibleValuesServiceImpl implements PossibleValuesService {
     @Autowired
     private LocationRepository locationRepository;
 
-    @Override
-    public Map<String, List<PossibleValueDto>> getAllValuesOfDefaultField(@NonNull String fieldName, @NonNull String langCode) {
+    private Map<String, List<PossibleValueDto>> getAllValuesOfDefaultField(@NonNull String fieldName, String[] langCodes) {
         Map<String, List<PossibleValueDto>> result = new HashMap<>();
-        String[] langCodes = langCode.split(",");
-        for(String lang : langCodes) {
-            //assuming only location hierarchy is part of default fields
-            Integer level = locationHierarchyRepository.findByheirarchyLevalNameAndLangCode(fieldName, lang);
-            if(level == null)
-                continue;
 
-            List<Location> locations = locationRepository.getAllLocationsByLangCodeAndLevel(lang, level.shortValue());
+        Integer level = locationHierarchyRepository.findByheirarchyLevalName(fieldName);
+        if(level == null)
+            return result;
+
+        for(String lang : langCodes) {
+            LOGGER.debug("Identified field name as default field", fieldName);
+            List<Location> locations = locationRepository.getAllLocationsByLangCodeWithHierarchyLevel(lang, level.shortValue());
             if(locations == null || locations.isEmpty())
                 continue;
 
@@ -63,17 +62,16 @@ public class PossibleValuesServiceImpl implements PossibleValuesService {
         return result;
     }
 
-    @Override
-    public Map<String, List<PossibleValueDto>> getAllValuesOfDynamicField(@NonNull String fieldName, @NonNull String langCode) {
+    private Map<String, List<PossibleValueDto>> getAllValuesOfDynamicField(@NonNull String fieldName, String[] langCodes) {
         Map<String, List<PossibleValueDto>> result = new HashMap<>();
-        String[] langCodes = langCode.split(",");
         for(String lang : langCodes) {
-            List<PossibleValueDto> valueDtos = new ArrayList<>();
-            List<DynamicField> list = dynamicFieldRepository.findAllActiveDynamicFieldByNameAndLangCode(fieldName, langCode);
+            List<DynamicField> list = dynamicFieldRepository.findAllDynamicFieldValuesByNameAndLangCode(fieldName, lang);
 
             if(list == null || list.isEmpty())
                 continue;
 
+            List<PossibleValueDto> valueDtos = new ArrayList<>();
+            LOGGER.debug("Identified field name as dynamic field", fieldName);
             list.forEach(e -> {
                     PossibleValueDto possibleValueDto = new PossibleValueDto();
                     try {
@@ -81,7 +79,7 @@ public class PossibleValuesServiceImpl implements PossibleValuesService {
                         if (jsonObject.has(CODE))
                             possibleValueDto.setCode(jsonObject.getString(CODE));
                         if (jsonObject.has(VALUE))
-                            possibleValueDto.setCode(jsonObject.getString(VALUE));
+                            possibleValueDto.setValue(jsonObject.getString(VALUE));
                     } catch (JSONException jsonException) {
                         LOGGER.error("Failed to parse valueJson", jsonException);
                     }
@@ -91,5 +89,20 @@ public class PossibleValuesServiceImpl implements PossibleValuesService {
             result.put(lang, valueDtos);
         }
         return result;
+    }
+
+    @Override
+    public Map<String, List<PossibleValueDto>> getAllValuesOfField(@NonNull String fieldName, @NonNull String langCode) {
+        String[] langCodes = langCode.split(",");
+
+        if(langCodes.length == 0)
+            return null;
+
+        Map<String, List<PossibleValueDto>> result = getAllValuesOfDefaultField(fieldName, langCodes);
+
+        if(!result.isEmpty())
+            return result;
+
+        return getAllValuesOfDynamicField(fieldName, langCodes);
     }
 }
