@@ -81,11 +81,10 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
 	 * io.mosip.kernel.masterdata.entity.DeviceHistory)
 	 */
 	@Override
-	@Transactional(propagation = Propagation.MANDATORY)
+	@Transactional(propagation = Propagation.REQUIRED)
 	public IdResponseDto createDeviceHistory(DeviceHistory entityHistory) {
 		DeviceHistory createdHistory;
 		createdHistory = deviceHistoryRepository.create(entityHistory);
-
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(createdHistory, idResponseDto);
 		return idResponseDto;
