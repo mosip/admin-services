@@ -361,7 +361,8 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		List<ColumnCodeValue> columnValueList = new ArrayList<>();
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), DeviceSpecification.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				List<FilterData> filterValues = masterDataFilterHelper.filterValuesWithCode(DeviceSpecification.class, filterDto,
+				List<FilterData> filterValues = masterDataFilterHelper.filterValuesWithCodeWithoutLangCode(
+						DeviceSpecification.class, filterDto,
 						filterValueDto,"id");
 				filterValues.forEach(filterValue -> {
 					ColumnCodeValue columnValue = new ColumnCodeValue();

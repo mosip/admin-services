@@ -301,7 +301,8 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 		List<ColumnCodeValue> columnValueList = new ArrayList<>();
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Machine.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				List<FilterData> filterValues = masterDataFilterHelper.filterValuesWithCode(MachineType.class, filterDto,
+				List<FilterData> filterValues = masterDataFilterHelper
+						.filterValuesWithCodeWithoutLangCode(MachineType.class, filterDto,
 						filterValueDto,"code");
 				filterValues.forEach(filterValue -> {
 					ColumnCodeValue columnValue = new ColumnCodeValue();

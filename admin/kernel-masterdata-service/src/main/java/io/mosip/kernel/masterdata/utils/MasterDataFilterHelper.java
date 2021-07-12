@@ -132,6 +132,55 @@ public class MasterDataFilterHelper {
 
 	}
 
+	@SuppressWarnings("unchecked")
+	public <E, T> List<T> filterValuesWithoutLangCode(Class<E> entity, FilterDto filterDto,
+			FilterValueDto filterValueDto) {
+		String columnName = filterDto.getColumnName();
+		String columnType = filterDto.getType();
+		List<Predicate> predicates = new ArrayList<>();
+		Predicate caseSensitivePredicate = null;
+		if (checkColNameAndType(columnName, columnType)) {
+			return (List<T>) valuesForMapStatusColumn();
+		}
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<String> criteriaQueryByString = criteriaBuilder.createQuery(String.class);
+		Root<E> root = criteriaQueryByString.from(entity);
+		Path<Object> path = root.get(filterDto.getColumnName());
+		List<T> results;
+
+		CriteriaQuery<T> criteriaQueryByType = criteriaBuilder.createQuery((Class<T>) path.getJavaType());
+		Root<E> rootType = criteriaQueryByType.from(entity);
+
+		caseSensitivePredicate = criteriaBuilder.and(criteriaBuilder
+				.like(criteriaBuilder.lower(rootType.get(filterDto.getColumnName())), criteriaBuilder.lower(
+						criteriaBuilder.literal(WILD_CARD_CHARACTER + filterDto.getText() + WILD_CARD_CHARACTER))));
+		if (!(rootType.get(columnName).getJavaType().equals(Boolean.class))) {
+			predicates.add(caseSensitivePredicate);
+		}
+		criteriaQueryByType.select(rootType.get(columnName));
+		buildOptionalFilter(criteriaBuilder, rootType, filterValueDto.getOptionalFilters(), predicates);
+		columnTypeValidator(rootType, columnName);
+
+		Predicate filterPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+		criteriaQueryByType.where(filterPredicate);
+		criteriaQueryByType.orderBy(criteriaBuilder.asc(rootType.get(columnName)));
+
+		// check if column type is boolean then return true/false
+		if (checkColNameTypeAndRootType(columnName, columnType, rootType)) {
+			return (List<T>) valuesForStatusColumn();
+		}
+
+		if (columnType.equals(FILTER_VALUE_UNIQUE) || columnType.equals(FILTER_VALUE_EMPTY)) {
+			criteriaQueryByType.distinct(true);
+		} else if (columnType.equals(FILTER_VALUE_ALL)) {
+			criteriaQueryByType.distinct(false);
+		}
+		TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQueryByType);
+		results = typedQuery.setMaxResults(filterValueMaxColumns).getResultList();
+		return results;
+
+	}
+
 	private boolean checkColNameAndType(String columnName, String columnType) {
 		return columnName.equals(MAP_STATUS_COLUMN_NAME)
 				&& (columnType.equals(FILTER_VALUE_UNIQUE) || columnType.equals(FILTER_VALUE_ALL));
@@ -170,6 +219,52 @@ public class MasterDataFilterHelper {
 		} else if (!(rootType.get(columnName).getJavaType().equals(Boolean.class))) {
 			predicates.add(caseSensitivePredicate);
 			predicates.add(langCodePredicate);
+		}
+		buildOptionalFilter(criteriaBuilder, rootType, filterValueDto.getOptionalFilters(), predicates);
+		Predicate filterPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+		criteriaQueryByType.where(filterPredicate);
+		criteriaQueryByType.orderBy(criteriaBuilder.asc(rootType.get(columnName)));
+
+		// if column type is Boolean then add value as true or false
+		if (rootType.get(columnName).getJavaType().equals(Boolean.class) && (columnType.equals(FILTER_VALUE_UNIQUE)
+				|| columnType.equals(FILTER_VALUE_ALL) || columnType.equals(FILTER_VALUE_EMPTY))) {
+			return valuesForStatusColumnCode();
+		}
+
+		// if column type is other than Boolean
+		if (columnType.equals(FILTER_VALUE_UNIQUE) || columnType.equals(FILTER_VALUE_EMPTY)) {
+			criteriaQueryByType.distinct(true);
+		} else if (columnType.equals(FILTER_VALUE_ALL)) {
+			criteriaQueryByType.distinct(false);
+		}
+		TypedQuery<FilterData> typedQuery = entityManager.createQuery(criteriaQueryByType);
+		results = typedQuery.setMaxResults(filterValueMaxColumns).getResultList();
+		return results;
+
+	}
+
+	public <E> List<FilterData> filterValuesWithCodeWithoutLangCode(Class<E> entity, FilterDto filterDto,
+			FilterValueDto filterValueDto, String fieldCodeColumnName) {
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		String columnName = filterDto.getColumnName();
+		String columnType = filterDto.getType();
+		Predicate caseSensitivePredicate = null;
+		List<FilterData> results;
+		List<Predicate> predicates = new ArrayList<>();
+		CriteriaQuery<FilterData> criteriaQueryByType = criteriaBuilder.createQuery(FilterData.class);
+		Root<E> rootType = criteriaQueryByType.from(entity);
+
+		caseSensitivePredicate = criteriaBuilder.and(criteriaBuilder
+				.like(criteriaBuilder.lower(rootType.get(filterDto.getColumnName())), criteriaBuilder.lower(
+						criteriaBuilder.literal(WILD_CARD_CHARACTER + filterDto.getText() + WILD_CARD_CHARACTER))));
+
+		criteriaQueryByType.multiselect(rootType.get(fieldCodeColumnName), rootType.get(columnName));
+
+		columnTypeValidator(rootType, columnName);
+
+		if (!(rootType.get(columnName).getJavaType().equals(Boolean.class))) {
+			predicates.add(caseSensitivePredicate);
 		}
 		buildOptionalFilter(criteriaBuilder, rootType, filterValueDto.getOptionalFilters(), predicates);
 		Predicate filterPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
