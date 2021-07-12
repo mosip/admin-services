@@ -156,7 +156,7 @@ public class GenderTypeController {
 	 */
 	@ResponseFilter
 	@ApiOperation(value = "validate gender name")
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetgendertypesvalidategendername())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetgendertypesvalidategendername())")
 	@GetMapping("/gendertypes/validate/{gendername}")
 	public ResponseWrapper<StatusResponseDto> valdiateGenderName(@PathVariable("gendername") String genderName) {
 		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
