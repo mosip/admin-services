@@ -257,7 +257,8 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 		List<ColumnCodeValue> columnValueList = new ArrayList<>();
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), DeviceType.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				masterDataFilterHelper.filterValuesWithCode(DeviceType.class, filterDto, filterValueDto,"code")
+				masterDataFilterHelper
+						.filterValuesWithCodeWithoutLangCode(DeviceType.class, filterDto, filterValueDto, "code")
 						.forEach(filterValue -> {
 							if (filterValue != null) {
 								ColumnCodeValue columnValue = new ColumnCodeValue();

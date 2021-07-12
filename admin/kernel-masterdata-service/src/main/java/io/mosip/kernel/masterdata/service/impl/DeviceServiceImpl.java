@@ -694,7 +694,8 @@ public class DeviceServiceImpl implements DeviceService {
 
 		{
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				masterDataFilterHelper.filterValuesWithCode(Device.class, filterDto, filterValueDto,"id")
+				masterDataFilterHelper
+						.filterValuesWithCodeWithoutLangCode(Device.class, filterDto, filterValueDto, "id")
 						.forEach(filterValue -> {
 							if (filterValue != null) {
 								ColumnCodeValue columnValue = new ColumnCodeValue();
