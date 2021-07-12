@@ -967,11 +967,19 @@ public class MachineServiceImpl implements MachineService {
 	public StatusResponseDto updateMachineStatus(String id, boolean isActive) {
 
 		StatusResponseDto statusResponseDto = new StatusResponseDto();
+		MachineHistory machineHistory = new MachineHistory();
+
 		try {
 			List<Machine> machines = machineRepository
 					.findMachineById(id);
 			if (machines != null) {
 				masterdataCreationUtil.updateMasterDataStatus(Machine.class, id, isActive, "id");
+				MapperUtils.map(machines.get(0), machineHistory);
+				MapperUtils.setBaseFieldValue(machines.get(0), machineHistory);
+				machineHistory.setEffectDateTime(LocalDateTime.now());
+				machineHistory.setUpdatedDateTime(LocalDateTime.now());
+				machineHistory.setIsActive(isActive);
+				machineHistoryService.createMachineHistory(machineHistory);
 			} else {
 				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, Machine.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
