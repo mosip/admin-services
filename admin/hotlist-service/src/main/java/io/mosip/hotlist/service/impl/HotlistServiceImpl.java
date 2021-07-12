@@ -89,12 +89,15 @@ public class HotlistServiceImpl implements HotlistService {
 	public HotlistRequestResponseDTO block(HotlistRequestResponseDTO blockRequest) throws HotlistAppException {
 		try {
 			String idHash = HotlistSecurityManager.hash(blockRequest.getId().getBytes());
-			String status = getStatus(HotlistStatus.BLOCKED, blockRequest.getExpiryTimestamp());
 			Optional<Hotlist> hotlistedOptionalData = hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(idHash,
 					blockRequest.getIdType(), false);
+			String dbStatus = HotlistStatus.UNBLOCKED;
+			String requestedStatus = HotlistStatus.BLOCKED;
+			LocalDateTime expiryTimestamp = blockRequest.getExpiryTimestamp();
 			if (hotlistedOptionalData.isPresent()) {
-				this.updateHotlist(blockRequest, idHash, status, hotlistedOptionalData);
+				updateStatus(blockRequest, idHash, hotlistedOptionalData, dbStatus, requestedStatus);
 			} else {
+				String status = Objects.nonNull(expiryTimestamp) ? dbStatus : requestedStatus;
 				Hotlist hotlist = new Hotlist();
 				buildHotlistEntity(blockRequest, idHash, status, hotlist);
 				hotlist.setCreatedBy(HotlistSecurityManager.getUser());
@@ -104,7 +107,7 @@ public class HotlistServiceImpl implements HotlistService {
 				hotlistRepo.save(hotlist);
 				eventHandler.publishEvent(idHash, blockRequest.getIdType(), status, hotlist.getExpiryTimestamp());
 			}
-			return buildResponse(blockRequest.getId(), null, HotlistStatus.BLOCKED, null);
+			return buildResponse(blockRequest.getId(), null, requestedStatus, isExpired(expiryTimestamp));
 		} catch (DataAccessException | TransactionException e) {
 			mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE_IMPL, BLOCK, e.getMessage());
 			throw new HotlistAppException(HotlistErrorConstants.DATABASE_ACCESS_ERROR, e);
@@ -126,12 +129,19 @@ public class HotlistServiceImpl implements HotlistService {
 					.findByIdHashAndIdTypeAndIsDeleted(HotlistSecurityManager.hash(id.getBytes()), idType, false);
 			if (hotlistedOptionalData.isPresent()) {
 				Hotlist hotlistedData = hotlistedOptionalData.get();
-				return buildResponse(hotlistedData.getIdValue(), hotlistedData.getIdType(),
-						Objects.isNull(hotlistedData.getExpiryTimestamp()) ? HotlistStatus.BLOCKED
-								: hotlistedData.getExpiryTimestamp().isAfter(DateUtils.getUTCCurrentDateTime())
-										? HotlistStatus.BLOCKED
-										: HotlistStatus.UNBLOCKED,
-						hotlistedData.getExpiryTimestamp());
+				String status = hotlistedData.getStatus();
+				if (Objects.nonNull(isExpired(hotlistedData.getExpiryTimestamp()))) {
+					switch (status) {
+					case HotlistStatus.BLOCKED:
+						status = HotlistStatus.UNBLOCKED;
+						break;
+					case HotlistStatus.UNBLOCKED:
+						status = HotlistStatus.BLOCKED;
+						break;
+					}
+					return buildResponse(id, idType, status, hotlistedData.getExpiryTimestamp());
+				}
+				return buildResponse(id, idType, status, null);
 			} else {
 				return buildResponse(id, idType, HotlistStatus.UNBLOCKED, null);
 			}
@@ -154,14 +164,26 @@ public class HotlistServiceImpl implements HotlistService {
 			String idHash = HotlistSecurityManager.hash(unblockRequest.getId().getBytes());
 			Optional<Hotlist> hotlistedOptionalData = hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(idHash,
 					unblockRequest.getIdType(), false);
+			String dbStatus = HotlistStatus.BLOCKED;
+			String requestedStatus = HotlistStatus.UNBLOCKED;
 			if (hotlistedOptionalData.isPresent()) {
-				unblockRequest.setExpiryTimestamp(DateUtils.getUTCCurrentDateTime());
-				updateHotlist(unblockRequest, idHash, HotlistStatus.UNBLOCKED, hotlistedOptionalData);
+				updateStatus(unblockRequest, idHash, hotlistedOptionalData, dbStatus, requestedStatus);
 			}
-			return buildResponse(unblockRequest.getId(), null, HotlistStatus.UNBLOCKED, null);
+			return buildResponse(unblockRequest.getId(), null, requestedStatus, isExpired(unblockRequest.getExpiryTimestamp()));
 		} catch (DataAccessException | TransactionException e) {
 			mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE_IMPL, "unblock", e.getMessage());
 			throw new HotlistAppException(HotlistErrorConstants.DATABASE_ACCESS_ERROR, e);
+		}
+	}
+
+	private void updateStatus(HotlistRequestResponseDTO request, String idHash, Optional<Hotlist> hotlistedOptionalData,
+			String dbStatus, String requestedStatus) {
+		if (hotlistedOptionalData.get().getStatus().contentEquals(dbStatus)) {
+			updateHotlist(request, idHash, Objects.nonNull(request.getExpiryTimestamp()) ? dbStatus : requestedStatus,
+					hotlistedOptionalData);
+		} else {
+			request.setExpiryTimestamp(null);
+			updateHotlist(request, idHash, requestedStatus, hotlistedOptionalData);
 		}
 	}
 
@@ -203,16 +225,9 @@ public class HotlistServiceImpl implements HotlistService {
 		hotlist.setExpiryTimestamp(Objects.nonNull(request.getExpiryTimestamp()) ? request.getExpiryTimestamp() : null);
 	}
 
-	/**
-	 * Gets the status.
-	 *
-	 * @param status          the status
-	 * @param expiryTimestamp the expiry timestamp
-	 * @return the status
-	 */
-	private String getStatus(String status, LocalDateTime expiryTimestamp) {
-		return Objects.isNull(expiryTimestamp) ? status
-				: expiryTimestamp.isAfter(DateUtils.getUTCCurrentDateTime()) ? HotlistStatus.BLOCKED : HotlistStatus.UNBLOCKED;
+	private LocalDateTime isExpired(LocalDateTime expiryTimestamp) {
+		return Objects.nonNull(expiryTimestamp) && expiryTimestamp.isAfter(DateUtils.getUTCCurrentDateTime()) ? expiryTimestamp
+				: null;
 	}
 
 	/**

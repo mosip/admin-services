@@ -61,6 +61,7 @@ public class HotlistServiceTest {
 	@Test
 	public void testBlockIdAlreadyHotlisted() throws HotlistAppException {
 		Hotlist entity = new Hotlist();
+		entity.setStatus(HotlistStatus.BLOCKED);
 		when(hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(Optional.of(entity));
 		HotlistRequestResponseDTO blockRequest = new HotlistRequestResponseDTO();
@@ -123,7 +124,7 @@ public class HotlistServiceTest {
 		entity.setIdValue("id");
 		entity.setIdType("idType");
 		entity.setStatus(HotlistStatus.BLOCKED);
-		LocalDateTime expiryTimestamp = DateUtils.getUTCCurrentDateTime().now().withYear(2000);
+		LocalDateTime expiryTimestamp = DateUtils.getUTCCurrentDateTime().now().withYear(9999);
 		entity.setExpiryTimestamp(expiryTimestamp);
 		when(hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(Optional.of(entity));
@@ -167,6 +168,7 @@ public class HotlistServiceTest {
 	@Test
 	public void testUnblockIdAlreadyHotlisted() throws HotlistAppException {
 		Hotlist entity = new Hotlist();
+		entity.setStatus(HotlistStatus.BLOCKED);
 		when(hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(Optional.of(entity));
 		HotlistRequestResponseDTO unblockRequest = new HotlistRequestResponseDTO();
