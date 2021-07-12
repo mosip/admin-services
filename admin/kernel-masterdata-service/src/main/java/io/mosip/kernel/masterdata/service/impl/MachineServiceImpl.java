@@ -643,7 +643,8 @@ public class MachineServiceImpl implements MachineService {
 		}
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Machine.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				List<FilterData> filterValues = masterDataFilterHelper.filterValuesWithCode(Machine.class, filterDto,
+				List<FilterData> filterValues = masterDataFilterHelper
+						.filterValuesWithCodeWithoutLangCode(Machine.class, filterDto,
 						filterValueDto,"id");
 				filterValues.forEach(filterValue -> {
 					ColumnCodeValue columnValue = new ColumnCodeValue();
