@@ -51,13 +51,13 @@ public class HotlistScheduledCleanupJob {
 		try {
 			mosipLogger.info(HotlistSecurityManager.getUser(), "HotlistScheduledCleanupJob", "cleanupExpiredIds",
 					"INITIATED CLEANUP OF EXPIRED IDs");
-			hotlistRepo.findByExpiryTimestampLessThanAndIsDeleted(DateUtils.getUTCCurrentDateTime(), false).forEach(hotlistRepo::delete);
+			hotlistRepo.findByExpiryTimestampLessThanAndStatusAndIsDeleted(DateUtils.getUTCCurrentDateTime(),
+					HotlistStatus.UNBLOCKED, false).forEach(hotlistRepo::delete);
 		} catch (Exception e) {
 			mosipLogger.warn(HotlistSecurityManager.getUser(), "HotlistScheduledCleanupJob", "cleanupUnblockedIds",
 					"HOTLIST STATUS CLEANUP FAILED WITH EXCEPTION - " + ExceptionUtils.getStackTrace(e));
 		}
 	}
-
 
 	/**
 	 * Cleanup deleted ids.
