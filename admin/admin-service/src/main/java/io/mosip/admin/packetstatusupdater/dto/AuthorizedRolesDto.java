@@ -1,4 +1,4 @@
-package io.mosip.admin.dto;
+package io.mosip.admin.packetstatusupdater.dto;
 
 import java.util.List;
 
@@ -10,18 +10,11 @@ import lombok.Setter;
 
 
 @Component("authorizedRoles")
-@ConfigurationProperties(prefix = "mosip.role.admin")
+@ConfigurationProperties(prefix = "mosip.role.admin.packetstatusupdater")
 @Getter
 @Setter
 public class AuthorizedRolesDto {
 
-	//Bulk data upload controller
-	private List<String> postbulkupload;
-	
-	private List<String> getbulkuploadtranscationtranscationid;
-	
-	private List<String> getbulkuploadgetalltransactions;
-	
 	//Audit manager proxy controller
 	private List<String> postauditmanagerlog;
 	//packet status update controller
@@ -29,9 +22,9 @@ public class AuthorizedRolesDto {
 	private List<String> getpacketstatusupdate;
 	
 	//Sync Auth Token Controller
-	
+
 	//private List<String> postauthenticateuseridpwd;
-	
+
 	//private List<String> postauthenticatesendotp;
 
 	

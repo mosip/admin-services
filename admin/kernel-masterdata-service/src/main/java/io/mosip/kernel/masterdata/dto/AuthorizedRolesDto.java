@@ -10,7 +10,7 @@ import lombok.Setter;
 
 
 @Component("authorizedRoles")
-@ConfigurationProperties(prefix = "mosip.role.masterdata")
+@ConfigurationProperties(prefix = "mosip.role.admin.masterdata")
 @Getter
 @Setter
 public class AuthorizedRolesDto {
