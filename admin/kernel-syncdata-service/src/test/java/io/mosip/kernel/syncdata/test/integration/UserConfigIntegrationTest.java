@@ -15,6 +15,7 @@ import io.mosip.kernel.signature.dto.JWTSignatureResponseDto;
 import io.mosip.kernel.syncdata.config.SyncResponseBodyAdviceConfig;
 import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
+import io.mosip.kernel.syncdata.test.TestBootApplication;
 import net.minidev.json.JSONObject;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -22,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -41,13 +43,14 @@ import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 
-@SpringBootTest
+@SpringBootTest(classes = TestBootApplication.class)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 public class UserConfigIntegrationTest {
 
+	@Qualifier("restTemplate")
 	@MockBean
-	RestTemplate restTemplate;
+	private RestTemplate restTemplate;
 
 	@Autowired
 	private MockMvc mockMvc;
