@@ -34,6 +34,7 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping(value = "/deviceprovider")
 @Api(tags = { "DeviceProvider" })
+@Deprecated
 public class DeviceProviderController {
 
 	@Autowired

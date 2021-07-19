@@ -29,6 +29,7 @@ import io.swagger.annotations.Api;
  *
  */
 @RestController
+@Deprecated
 @RequestMapping(value = "/deviceprovidermanagement")
 @Api(tags = { "DeviceProvider Management" })
 public class DeviceProviderManagementController {
