@@ -68,9 +68,9 @@
 		<spring.security.test.version>5.0.5.RELEASE</spring.security.test.version>
 		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
 
-		<swagger.core.version>2.0.7</swagger.core.version>
-		<swagger.annotations.version>1.5.20</swagger.annotations.version>
-		<springfox.version>2.9.2</springfox.version>
+		<swagger.core.version>2.1.10</swagger.core.version>
+		<swagger.annotations.version>2.1.10</swagger.annotations.version>
+		<springfox.version>3.0.0</springfox.version>
 
 		<vertx.version>3.6.2</vertx.version>
 		<vertx.health.check.version>3.7.0</vertx.health.check.version>
@@ -378,4 +378,5 @@
 			</plugin> 
 		</plugins>
 	</build>
+
 </project>
