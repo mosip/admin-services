@@ -721,8 +721,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	    	if(!ext.equalsIgnoreCase("csv")) {
 	    		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_EXT_VALIDATOR_ISSUE, csvFileName));
 
-				throw new RequestException(BulkUploadErrorCode.INVALID_FILE_FORMATE.getErrorCode(),
-						BulkUploadErrorCode.INVALID_FILE_FORMATE.getErrorMessage());
+				throw new RequestException(BulkUploadErrorCode.INVALID_FILE_FORMAT.getErrorCode(),
+						BulkUploadErrorCode.INVALID_FILE_FORMAT.getErrorMessage());
 
 	    	}
 	    	int count=0;
