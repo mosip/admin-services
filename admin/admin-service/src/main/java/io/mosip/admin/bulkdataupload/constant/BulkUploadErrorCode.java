@@ -11,7 +11,9 @@ public enum BulkUploadErrorCode {
 			"Any error occured during the bulk operation. If the category is masterdata, list operations are listed. If the category is packet, list of failed packet informations are listed"),
 	BULK_UPDATE_OPERATION_ERROR("ADM-BLK-001", "Data is not exist in db"),
 	INVALID_ARGUMENT("ADM-BLK-002", "plz enter valid input"),
-	DUPLICATE_RECORD("ADM-BLK-003", "Duplicate Record");
+	DUPLICATE_RECORD("ADM-BLK-003", "Duplicate Record"),
+	INVALID_FILE_FORMATE("ADM-BLK-004", "Supported format are only csv file");
+
 	private final String errorCode;
 	private final String errorMessage;
 

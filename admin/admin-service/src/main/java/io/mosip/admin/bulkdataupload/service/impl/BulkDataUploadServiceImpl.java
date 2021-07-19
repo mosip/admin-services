@@ -26,7 +26,6 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
-import javax.validation.ValidationException;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -722,7 +721,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	    	if(!ext.equalsIgnoreCase("csv")) {
 	    		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_EXT_VALIDATOR_ISSUE, csvFileName));
 
-	    		throw new ValidationException("Supported format are only csv file");
+				throw new RequestException(BulkUploadErrorCode.INVALID_FILE_FORMATE.getErrorCode(),
+						BulkUploadErrorCode.INVALID_FILE_FORMATE.getErrorMessage());
 
 	    	}
 	    	int count=0;

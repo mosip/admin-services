@@ -622,7 +622,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		for (Entry<Short, List<Location>> data : levelToListOfLocationMap.entrySet()) {
 			if (!isParent) {
 				for (Location location : data.getValue()) {
-					if (text.trim().equalsIgnoreCase(location.getName().trim())) {
+					if (location.getName().trim().contains(text.trim())) {
 						uniqueLocCode.add(location.getCode());
 						isParent = true;
 						break;// parent code set
@@ -677,7 +677,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<Location> rootLocation = levelToListOfLocationMap.get(hierarchyLevel);
 		boolean isRootLocation = false;
 		for (Location location : rootLocation) {
-			if (location.getName().trim().equalsIgnoreCase(text)) {
+			if (location.getName().trim().contains(text.trim())) {
 				isRootLocation = true;
 			}
 		}
