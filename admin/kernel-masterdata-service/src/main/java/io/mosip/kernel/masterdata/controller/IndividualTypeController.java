@@ -44,6 +44,7 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping(value = "/individualtypes")
 @Api(tags = { "IndividualType" })
+@Deprecated
 public class IndividualTypeController {
 
 	@Autowired

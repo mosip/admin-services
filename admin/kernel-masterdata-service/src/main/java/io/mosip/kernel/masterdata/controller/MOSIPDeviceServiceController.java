@@ -37,6 +37,7 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping(value = "/mosipdeviceservice")
 @Api(tags = { "MOSIPDeviceService" })
+@Deprecated
 public class MOSIPDeviceServiceController {
 
 	@Autowired
