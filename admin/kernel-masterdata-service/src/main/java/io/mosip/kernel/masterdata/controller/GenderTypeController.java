@@ -50,6 +50,7 @@ import io.swagger.annotations.ApiResponses;
 @CrossOrigin
 @RestController
 @Api(value = "Operation related to Gender Type", tags = { "GenderType" })
+@Deprecated
 public class GenderTypeController {
 	@Autowired
 	private GenderTypeService genderTypeService;

@@ -36,6 +36,7 @@ import io.swagger.annotations.Api;
 @RestController
 @Api(tags = { "FoundationalTrustProvider" })
 @RequestMapping(value = "/foundationaltrustprovider")
+@Deprecated
 public class FoundationalTrustProviderController {
 
 	@Autowired

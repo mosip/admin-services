@@ -37,6 +37,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping(value = "/registereddevices")
 @Api(tags = { "Registered Device" })
 @Validated
+@Deprecated
 public class RegisteredDeviceController {
 
 	@Autowired
