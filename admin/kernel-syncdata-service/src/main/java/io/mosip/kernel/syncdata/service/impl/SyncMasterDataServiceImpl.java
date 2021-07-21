@@ -255,6 +255,12 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		return caCertificates;
 	}
 
+	@Override
+	public SyncDataResponseDtoV2 syncClientSettingsV2(String regCenterId, String keyIndex, LocalDateTime lastUpdated, LocalDateTime currentTimestamp)
+			throws InterruptedException, ExecutionException {
+		return null;
+	}
+
 	private MachineResponseDto getMachineById(String machineId) {
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(String.format(machineUrl, machineId));

@@ -71,4 +71,18 @@ public interface SyncMasterDataService {
 	 * @param currentTimestamp
 	 */
 	CACertificates getPartnerCACertificates(LocalDateTime lastUpdated, LocalDateTime currentTimestamp);
+
+	/**
+	 * Returns encrypted data rows or url to download data
+	 * @param regCenterId      - registration center id
+	 * @param keyIndex         - registration client TPM EK public key SHA256
+	 * @param lastUpdated      - last updated time stamp
+	 * @param currentTimestamp - current time stamp
+	 * @return {@link SyncDataResponseDtoV2}
+	 * @throws InterruptedException - this method will throw execution exception
+	 * @throws ExecutionException   -this method will throw interrupted exception
+	 */
+	SyncDataResponseDtoV2 syncClientSettingsV2(String regCenterId, String keyIndex,
+										   LocalDateTime lastUpdated, LocalDateTime currentTimestamp)
+			throws InterruptedException, ExecutionException;
 }

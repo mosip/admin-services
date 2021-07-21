@@ -48,7 +48,7 @@ public class PartnerCACertEventSubscriber /*implements ApplicationListener<Appli
 
     /** The publisher. */
     @Autowired
-    protected PublisherClient<String, EventModel, HttpHeaders> publisher;
+    protected PublisherClient<String, EventModel, HttpHeaders> publisherClient;
 
     /** The subscribe. */
     @Autowired
@@ -63,7 +63,7 @@ public class PartnerCACertEventSubscriber /*implements ApplicationListener<Appli
     private void tryRegisterTopicPartnerCertEvents() {
         try {
             logger.info("Trying to register topic: {}", topicName);
-            publisher.registerTopic(topicName, publisherUrl);
+            publisherClient.registerTopic(topicName, publisherUrl);
             logger.info("Registered topic: {}", topicName);
         } catch (Exception e) {
             logger.error("Error registering topic: {}", topicName, e);

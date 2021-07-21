@@ -7,10 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SyncDataBaseDto {
-	
-	private String entityName;
-	private String entityType;
-	private String data;
+public class SyncDataBaseDtoV2 extends SyncDataBaseDto {
+
+	private String url;
 
 }

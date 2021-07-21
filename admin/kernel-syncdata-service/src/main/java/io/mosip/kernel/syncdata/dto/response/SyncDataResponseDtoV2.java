@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SyncDataBaseDto {
+public class SyncDataResponseDtoV2 {
 	
-	private String entityName;
-	private String entityType;
-	private String data;
-
+	private String lastSyncTime;
+	private List<SyncDataBaseDtoV2> dataToSync;
 }
