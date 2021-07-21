@@ -9,9 +9,7 @@ import io.mosip.kernel.clientcrypto.dto.TpmCryptoRequestDto;
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
 import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.*;
-import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.exception.*;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
@@ -94,7 +92,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 	private String syncDataVersionId;
 
 	@Autowired
-	UserDetailsRepository userDetailsRepository;
+	private UserDetailsRepository userDetailsRepository;
 
 	@Autowired
 	private SyncMasterDataServiceHelper serviceHelper;
@@ -116,7 +114,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 	 * io.mosip.kernel.syncdata.service.SyncUserDetailsService#getAllUserDetail(java
 	 * .lang.String)
 	 */
-	@Override
+	/*@Override
 	public SyncUserDetailDto getAllUserDetail(String regId) {
 		StringBuilder userDetailsUri = new StringBuilder();
 		userDetailsUri.append(authUserDetailsBaseUri).append(authUserDetailsUri);
@@ -163,7 +161,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 		}
 		return syncUserDetailDto;
 
-	}
+	}*/
 
 	/**
 	 * Gets the http request.
@@ -213,7 +211,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 		return userDetailResponseDto;
 	}
 
-	private SyncUserSaltDto getUserSaltsFromResponse(String responseBody) {
+	/*private SyncUserSaltDto getUserSaltsFromResponse(String responseBody) {
 		List<ServiceError> validationErrorsList = null;
 		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
 		SyncUserSaltDto syncUserSaltDto = null;
@@ -234,7 +232,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 		}
 
 		return syncUserSaltDto;
-	}
+	}*/
 
 	public RegistrationCenterUserResponseDto getUsersBasedOnRegistrationCenterId(String regCenterId) {
 		List<UserDetails> users = null;
@@ -267,7 +265,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 		return registrationCenterUserResponseDto;
 	}
 
-	@Override
+	/*@Override
 	public SyncUserSaltDto getUserSalts(String regId) {
 		StringBuilder userDetailsUri = new StringBuilder();
 		userDetailsUri.append(authUserDetailsBaseUri).append(authUserSaltUri);
@@ -307,7 +305,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 		String responseBody = response.getBody();
 		syncUserSaltDto = getUserSaltsFromResponse(responseBody);
 		return syncUserSaltDto;
-	}
+	}*/
 
 	@Override
 	public SyncUserDto getAllUserDetailsBasedOnKeyIndex(String keyIndex) {

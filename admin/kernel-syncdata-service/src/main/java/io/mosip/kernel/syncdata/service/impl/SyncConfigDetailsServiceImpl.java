@@ -2,11 +2,8 @@ package io.mosip.kernel.syncdata.service.impl;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoRequestDto;
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
@@ -46,6 +43,8 @@ import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import net.minidev.json.JSONObject;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Implementation class
  * 
@@ -57,6 +56,7 @@ import net.minidev.json.JSONObject;
 public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SyncConfigDetailsServiceImpl.class);
+	private static final String SLASH = "/";
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -91,14 +91,14 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	@Autowired
 	private ClientCryptoManagerService clientCryptoManagerService;
 
-	@Value("${mosip.syncdata.tpm.required:false}")
-	private boolean isTPMRequired;
-
 	@Autowired
 	private MapperUtils mapper;
 
 	@Autowired
 	private MachineRepository machineRepo;
+
+	@Value("#{'${mosip.registration.sync.scripts:applicanttype.mvel}'.split(',')}")
+	private Set<String> scriptNames;
 
 	/*
 	 * (non-Javadoc)
@@ -106,7 +106,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	 * @see
 	 * io.mosip.kernel.syncdata.service.SyncConfigDetailsService#getConfigDetails()
 	 */
-	@Override
+	/*@Override
 	public ConfigDto getConfigDetails() {
 		LOGGER.info("getConfigDetails() started");
 		JSONObject config = new JSONObject();
@@ -118,7 +118,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 		configDto.setConfigDetail(config);
 		LOGGER.info("getConfigDetails() completed");
 		return configDto;
-	}
+	}*/
 
 	/*
 	 * (non-Javadoc)
@@ -126,12 +126,12 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	 * @see io.mosip.kernel.syncdata.service.SyncConfigDetailsService#
 	 * getGlobalConfigDetails()
 	 */
-	@Override
+	/*@Override
 	public JSONObject getGlobalConfigDetails() {
 
 		return getConfigDetailsResponse(globalConfigFileName);
 
-	}
+	}*/
 
 	/*
 	 * (non-Javadoc)
@@ -139,66 +139,56 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	 * @see io.mosip.kernel.syncdata.service.SyncConfigDetailsService#
 	 * getRegistrationCenterConfigDetails(java.lang.String)
 	 */
-	@Override
+	/*@Override
 	public JSONObject getRegistrationCenterConfigDetails(String regId) {
 
 		return getConfigDetailsResponse(regCenterfileName);
 
-	}
+	}*/
 
-	public ConfigDto getConfiguration(String registrationCenterId) {
+	/*public ConfigDto getConfiguration(String registrationCenterId) {
 		ConfigDto configDto = null;
 		configDto = new ConfigDto();
 		configDto.setGlobalConfig(getGlobalConfigDetails());
 		configDto.setRegistrationCenterConfiguration(getRegistrationCenterConfigDetails(registrationCenterId));
 		return configDto;
-	}
+	}*/
 
 	/**
 	 * This method will consume a REST API based on the filename passed.
 	 * 
 	 * @param fileName - name of the file
-	 * @return JSONObject
+	 * @return String
 	 */
-	private JSONObject getConfigDetailsResponse(String fileName) {
-		String configServerUri = env.getProperty("spring.cloud.config.uri");
-		String configLabel = env.getProperty("spring.cloud.config.label");
-		String configProfile = env.getProperty("spring.profiles.active");
-		String configAppName = env.getProperty("spring.application.name");
-		JSONObject result = null;
-		StringBuilder uriBuilder = null;
-		if (fileName != null) {
-			uriBuilder = new StringBuilder();
-			uriBuilder.append(configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
-					.append(configLabel + "/").append(fileName);
-		} else {
-			throw new SyncDataServiceException(
-					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_INPUT_PARAMETER_EXCEPTION.getErrorCode(),
-					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_INPUT_PARAMETER_EXCEPTION.getErrorMessage());
-		}
+	private String getConfigDetailsResponse(@NotNull String fileName) {
+		StringBuilder uriBuilder = new StringBuilder();
+		uriBuilder.append(env.getProperty("spring.cloud.config.uri")).append(SLASH)
+				.append(env.getProperty("spring.application.name")).append(SLASH)
+				.append(env.getProperty("spring.profiles.active")).append(SLASH)
+				.append(env.getProperty("spring.cloud.config.label")).append(SLASH)
+				.append(fileName);
 		try {
-			String str = restTemplate.getForObject(uriBuilder.toString(), String.class);
-			Properties prop = parsePropertiesString(str);
-			result = new JSONObject();
-			for (Entry<Object, Object> e : prop.entrySet()) {
-				result.put(String.valueOf(e.getKey()), e.getValue());
-			}
-		} catch (RestClientException | IOException e) {
+			return restTemplate.getForObject(uriBuilder.toString(), String.class);
+		} catch (RestClientException e) {
 			throw new SyncDataServiceException(
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorCode(),
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.buildMessage(e.getMessage(), e.getCause()));
-
 		}
-
-		return result;
-
 	}
 
-	public Properties parsePropertiesString(String s) throws IOException {
-		final Properties p = new Properties();
-		p.load(new StringReader(s));
-		return p;
+	public JSONObject parsePropertiesString(String s) {
+		JSONObject result = new JSONObject();
+		try {
+			final Properties p = new Properties();
+			p.load(new StringReader(s));
+			for (Entry<Object, Object> e : p.entrySet()) {
+				result.put(String.valueOf(e.getKey()), e.getValue());
+			}
+		} catch (Exception ex) {
+			LOGGER.error("Failed to parse config properties", ex);
+		}
+		return result;
 	}
 
 	/*
@@ -224,20 +214,17 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
 			publicKeyResponseEntity = restTemplate.getForEntity(builder.buildAndExpand(uriParams).toUri(),
 					String.class);
-			List<ServiceError> validationErrorsList = null;
-			validationErrorsList = ExceptionUtils.getServiceErrorList(publicKeyResponseEntity.getBody());
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(publicKeyResponseEntity.getBody());
 
 			if (!validationErrorsList.isEmpty()) {
 				throw new SyncInvalidArgumentException(validationErrorsList);
 			}
 
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
-
 			throw new SyncDataServiceException(
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorCode(),
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.buildMessage(ex.getMessage(), ex.getCause()));
-
 		}
 
 		try {
@@ -257,24 +244,42 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	}
 
 	@Override
-	public ConfigDto getConfigDetails(String machineName) {
-		LOGGER.debug("getConfigDetails() started for machine id >>> {}", machineName);
+	public ConfigDto getConfigDetails(String keyIndex) {
+		LOGGER.debug("getConfigDetails() started for machine keyIndex >>> {}", keyIndex);
+		List<Machine> machines = machineRepo.findByMachineKeyIndex(keyIndex);
+		if(machines == null || machines.isEmpty())
+			machines = machineRepo.findByMachineName(keyIndex); //This is just for backward compatibility, since LTS
 
-		//TODO - need to invoke masterdata API ?
-		List<Machine> machines = machineRepo.findByMachineName(machineName);
 		if(machines == null || machines.isEmpty())
 			throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
 					MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
 
-		LOGGER.info("getConfigDetails() started for machine : {} with status {}", machineName,  machines.get(0).getIsActive());
+		LOGGER.info("getConfigDetails() started for machine : {} with status {}", keyIndex,  machines.get(0).getIsActive());
 		JSONObject config = new JSONObject();
-		JSONObject globalConfig = getConfigDetailsResponse(globalConfigFileName);
-		JSONObject regConfig = getConfigDetailsResponse(regCenterfileName);
+		JSONObject globalConfig = parsePropertiesString(getConfigDetailsResponse(globalConfigFileName));
+		JSONObject regConfig = parsePropertiesString(getConfigDetailsResponse(regCenterfileName));
 		config.put("globalConfiguration", getEncryptedData(globalConfig, machines.get(0).getPublicKey()));
 		config.put("registrationConfiguration", getEncryptedData(regConfig, machines.get(0).getPublicKey()));
 		ConfigDto configDto = new ConfigDto();
 		configDto.setConfigDetail(config);
-		LOGGER.info("getConfigDetails() {} completed", machineName);
+		LOGGER.info("Get ConfigDetails() {} completed", keyIndex);
+		return configDto;
+	}
+
+	@Override
+	public ConfigDto getScripts(String keyIndex) {
+		LOGGER.info("getScripts() started for machine : {}", keyIndex);
+		List<Machine> machines = machineRepo.findByMachineKeyIndex(keyIndex);
+		if(machines != null && !machines.isEmpty())
+			throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
+					MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
+
+		JSONObject scripts = new JSONObject();
+		scriptNames.forEach(fileName -> {
+			scripts.put(fileName, getEncryptedData(getConfigDetailsResponse(fileName), machines.get(0).getPublicKey()));
+		});
+		ConfigDto configDto = new ConfigDto();
+		configDto.setConfigDetail(scripts);
 		return configDto;
 	}
 
@@ -282,10 +287,19 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	private String getEncryptedData(JSONObject config, String publicKey) {
 		try {
 			String json = mapper.getObjectAsJsonString(config);
+			return getEncryptedData(json, publicKey);
+		} catch (Exception e) {
+			LOGGER.error("Failed to convert json to string", e);
+		}
+		throw new SyncDataServiceException(SyncConfigDetailsErrorCode.SYNC_SERIALIZATION_ERROR.getErrorCode(),
+				SyncConfigDetailsErrorCode.SYNC_SERIALIZATION_ERROR.getErrorMessage());
+	}
+
+	private String getEncryptedData(String data, String publicKey) {
+		try {
 			TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
-			tpmCryptoRequestDto.setValue(CryptoUtil.encodeBase64(json.getBytes()));
+			tpmCryptoRequestDto.setValue(CryptoUtil.encodeBase64(data.getBytes()));
 			tpmCryptoRequestDto.setPublicKey(publicKey);
-			tpmCryptoRequestDto.setTpm(this.isTPMRequired);
 			TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
 			return tpmCryptoResponseDto.getValue();
 		} catch (Exception e) {

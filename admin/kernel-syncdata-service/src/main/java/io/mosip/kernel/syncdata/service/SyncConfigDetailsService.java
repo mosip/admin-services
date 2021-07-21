@@ -18,7 +18,7 @@ public interface SyncConfigDetailsService {
 	 * 
 	 * @return JSONObject - config synced data
 	 */
-	public ConfigDto getConfigDetails();
+	//public ConfigDto getConfigDetails();
 
 	/**
 	 * This service will fetch all Global Configaration details available from
@@ -26,7 +26,7 @@ public interface SyncConfigDetailsService {
 	 * 
 	 * @return JSONObject - global config synced data
 	 */
-	public JSONObject getGlobalConfigDetails();
+	//public JSONObject getGlobalConfigDetails();
 
 	/**
 	 * This service will fetch all Registration center specific config details from
@@ -35,9 +35,9 @@ public interface SyncConfigDetailsService {
 	 * @param regId - registration Id
 	 * @return JSONObject - registration center config synced data
 	 */
-	public JSONObject getRegistrationCenterConfigDetails(String regId);
+	//public JSONObject getRegistrationCenterConfigDetails(String regId);
 
-	ConfigDto getConfiguration(String registrationCenterId);
+	//ConfigDto getConfiguration(String registrationCenterId);
 
 	/**
 	 * Function to get public key along with server active profile
@@ -55,5 +55,12 @@ public interface SyncConfigDetailsService {
 	 *
 	 * @return JSONObject - config synced data
 	 */
-	public ConfigDto getConfigDetails(String machineName);
+	public ConfigDto getConfigDetails(String keyIndex);
+
+
+	/**
+	 * method to get scripts from config-repo
+	 * @return
+	 */
+	public ConfigDto getScripts(String keyIndex);
 }
