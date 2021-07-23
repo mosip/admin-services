@@ -50,6 +50,7 @@ public class DeviceProviderController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Device Provider found"),
 			@ApiResponse(code = 500, message = "While creating Device Provider any error occured") })
+	@Deprecated
 	public ResponseWrapper<DeviceProviderExtnDto> createDeviceProvider(
 			@Valid @RequestBody RequestWrapper<DeviceProviderDto> deviceProviderDto) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + DeviceProviderDto.class.getCanonicalName(),
@@ -72,6 +73,7 @@ public class DeviceProviderController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Device Provider found"),
 			@ApiResponse(code = 500, message = "While creating Device Provider any error occured") })
+	@Deprecated
 	public ResponseWrapper<DeviceProviderExtnDto> updateDeviceProvider(
 			@Valid @RequestBody RequestWrapper<DeviceProviderPutDto> deviceProviderDto) {
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + DeviceProviderDto.class.getCanonicalName(),

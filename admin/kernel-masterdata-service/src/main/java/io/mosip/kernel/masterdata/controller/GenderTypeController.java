@@ -65,6 +65,7 @@ public class GenderTypeController {
 	 */
 	@ResponseFilter
 	@GetMapping("/gendertypes")
+	@Deprecated
 	public ResponseWrapper<GenderTypeResponseDto> getAllGenderType() {
 		ResponseWrapper<GenderTypeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(genderTypeService.getAllGenderTypes());
@@ -79,6 +80,7 @@ public class GenderTypeController {
 	 */
 	@ResponseFilter
 	@GetMapping(value = "/gendertypes/{langcode}")
+	@Deprecated
 	public ResponseWrapper<GenderTypeResponseDto> getGenderBylangCode(@PathVariable("langcode") String langCode) {
 
 		ResponseWrapper<GenderTypeResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -95,6 +97,7 @@ public class GenderTypeController {
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@PostMapping("/gendertypes")
+	@Deprecated
 	public ResponseWrapper<CodeAndLanguageCodeID> saveGenderType(
 			@Valid @RequestBody RequestWrapper<GenderTypeDto> gender) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + GenderTypeDto.class.getCanonicalName(),
@@ -116,6 +119,7 @@ public class GenderTypeController {
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Update Gender Type")
+	@Deprecated
 	@PutMapping("/gendertypes")
 	public ResponseWrapper<CodeAndLanguageCodeID> updateGenderType(
 			@ApiParam("Data to update with metadata") @Valid @RequestBody RequestWrapper<GenderTypeDto> gender) {
@@ -136,6 +140,7 @@ public class GenderTypeController {
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Delete Gender Type")
+	@Deprecated
 	@DeleteMapping("/gendertypes/{code}")
 	public ResponseWrapper<CodeResponseDto> deleteGenderType(
 			@ApiParam("Gender type Code of gender to be deleted") @PathVariable("code") String code) {
@@ -152,6 +157,7 @@ public class GenderTypeController {
 	 */
 	@ResponseFilter
 	@ApiOperation(value = "validate gender name")
+	@Deprecated
 	@GetMapping("/gendertypes/validate/{gendername}")
 	public ResponseWrapper<StatusResponseDto> valdiateGenderName(@PathVariable("gendername") String genderName) {
 		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -171,6 +177,7 @@ public class GenderTypeController {
 	 */
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
+	@Deprecated
 	@GetMapping("/gendertypes/all")
 	@ApiOperation(value = "Retrieve all the genders with additional metadata", notes = "Retrieve all the genders with the additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of gender types"),
@@ -196,6 +203,7 @@ public class GenderTypeController {
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/gendertypes/search")
+	@Deprecated
 	public ResponseWrapper<PageResponseDto<GenderExtnDto>> searchGenderTypes(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + GenderExtnDto.class.getSimpleName(),
@@ -221,6 +229,7 @@ public class GenderTypeController {
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@PostMapping("/gendertypes/filtervalues")
+	@Deprecated
 	public ResponseWrapper<FilterResponseDto> genderFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> requestWrapper) {
 		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + GenderTypeDto.class.getSimpleName(),
