@@ -47,6 +47,7 @@ public class DeviceRegisterController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "DeRegister Device")
 	@DeleteMapping("/deregister/{deviceCode}")
+	@Deprecated
 	public ResponseEntity<DeviceRegisterResponseDto> deRegisterDevice(@Valid @PathVariable String deviceCode) {
 		return new ResponseEntity<>(deviceRegisterService.deRegisterDevice(deviceCode), HttpStatus.OK);
 	}
@@ -54,6 +55,7 @@ public class DeviceRegisterController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "Update status of the devive")
 	@PutMapping("/update/status")
+	@Deprecated
 	public ResponseEntity<ResponseDto> deRegisterDevice(
 			@NotBlank @RequestParam(value = "devicecode", required = true) String deviceCode,
 			@NotBlank @RequestParam(value = "statuscode", required = true) String statusCode) {

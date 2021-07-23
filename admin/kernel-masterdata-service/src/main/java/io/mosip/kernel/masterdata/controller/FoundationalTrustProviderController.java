@@ -48,6 +48,7 @@ public class FoundationalTrustProviderController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
 	@PostMapping
+	@Deprecated
 	public ResponseWrapper<FoundationalTrustProviderResDto> registerFoundationalTrustProvider(
 			@RequestBody @Valid RequestWrapper<FoundationalTrustProviderDto> foundationalTrustProviderDto) {
 		auditUtil.auditRequest(
@@ -64,6 +65,7 @@ public class FoundationalTrustProviderController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
 	@PutMapping
+	@Deprecated
 	public ResponseWrapper<FoundationalTrustProviderResDto> updateFoundationalTrustProvider(
 			@RequestBody @Valid RequestWrapper<FoundationalTrustProviderPutDto> foundationalTrustProviderDto) {
 		auditUtil.auditRequest(
