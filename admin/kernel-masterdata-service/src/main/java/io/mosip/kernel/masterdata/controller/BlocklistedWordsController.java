@@ -20,13 +20,13 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
-import io.mosip.kernel.masterdata.dto.BlackListedWordsUpdateDto;
-import io.mosip.kernel.masterdata.dto.BlacklistedWordListRequestDto;
-import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
-import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
+import io.mosip.kernel.masterdata.dto.BlockListedWordsUpdateDto;
+import io.mosip.kernel.masterdata.dto.BlocklistedWordListRequestDto;
+import io.mosip.kernel.masterdata.dto.BlocklistedWordsDto;
+import io.mosip.kernel.masterdata.dto.getresponse.BlocklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.BlacklistedWordsExtnDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.BlocklistedWordsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
@@ -34,7 +34,7 @@ import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
-import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
+import io.mosip.kernel.masterdata.service.BlocklistedWordsService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -43,58 +43,57 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * Controller that provides with methods for operations on blacklisted words.
+ * Controller that provides with methods for operations on blocklisted words.
  * 
  * @author Abhishek Kumar
  * @author Sagar Mahapatra
  * @since 1.0.0
  */
 @RestController
-@Api(tags = { "BlacklistedWords" })
-@RequestMapping("/blacklistedwords")
-public class BlacklistedWordsController {
+@Api(tags = { "BlocklistedWords" })
+@RequestMapping("/blocklistedwords")
+public class BlocklistedWordsController {
 	@Autowired
-	private BlacklistedWordsService blacklistedWordsService;
+	private BlocklistedWordsService blocklistedWordsService;
 
 	@Autowired
 	private AuditUtil auditUtil;
 
 	/**
-	 * Fetch the list of blacklisted words based on language code.
+	 * Fetch the list of blocklisted words based on language code.
 	 * 
 	 * @param langCode language code
-	 * @return {@link BlacklistedWordsResponseDto}
+	 * @return {@link BlocklistedWordsResponseDto}
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_SUPERVISOR','PRE_REGISTRATION', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','ZONAL_ADMIN','RESIDENT','GLOBAL_ADMIN','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
 	@GetMapping("/{langcode}")
-	public ResponseWrapper<BlacklistedWordsResponseDto> getAllBlackListedWordByLangCode(
+	public ResponseWrapper<BlocklistedWordsResponseDto> getAllBlockListedWordByLangCode(
 			@PathVariable("langcode") String langCode) {
 
-		ResponseWrapper<BlacklistedWordsResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(blacklistedWordsService.getAllBlacklistedWordsBylangCode(langCode));
+		ResponseWrapper<BlocklistedWordsResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(blocklistedWordsService.getAllBlocklistedWordsBylangCode(langCode));
 		return responseWrapper;
 	}
 
 	/**
 	 * Takes the list of string as an argument and checks if the list contains any
-	 * blacklisted words.
+	 * blocklisted words.
 	 * 
-	 * @param blacklistedwords list of blacklisted words
-	 * @return Valid if word does not belongs to black listed word and Invalid if
-	 *         word belongs to black listed word
+	 * @param blocklistedwords list of blocklisted words
+	 * @return Valid if word does not belongs to block listed word and Invalid if
+	 *         word belongs to block listed word
 	 */
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping(path = "/words")
-	@ApiOperation(value = "Black listed word validation")
+	@ApiOperation(value = "Block listed word validation")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Valid Word"),
 			@ApiResponse(code = 200, message = "Invalid Word") })
 	public ResponseWrapper<CodeResponseDto> validateWords(
-			@RequestBody RequestWrapper<BlacklistedWordListRequestDto> blacklistedwords) {
+			@RequestBody RequestWrapper<BlocklistedWordListRequestDto> blocklistedwords) {
 
 		String isValid = "Valid";
-		if (!blacklistedWordsService.validateWord(blacklistedwords.getRequest().getBlacklistedwords())) {
+		if (!blocklistedWordsService.validateWord(blocklistedwords.getRequest().getBlocklistedwords())) {
 			isValid = "Invalid";
 		}
 		CodeResponseDto dto = new CodeResponseDto();
@@ -106,9 +105,9 @@ public class BlacklistedWordsController {
 	}
 
 	/**
-	 * Method to add blacklisted word.
+	 * Method to add blocklisted word.
 	 * 
-	 * @param blackListedWordsRequestDto the request dto that holds the blacklisted
+	 * @param blockListedWordsRequestDto the request dto that holds the blocklisted
 	 *                                   word to be added.
 	 * @return the response entity i.e. the word and language code of the word
 	 *         added.
@@ -116,23 +115,23 @@ public class BlacklistedWordsController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping
-	public ResponseWrapper<WordAndLanguageCodeID> createBlackListedWord(
-			@RequestBody @Valid RequestWrapper<BlacklistedWordsDto> blackListedWordsRequestDto) {
+	public ResponseWrapper<WordAndLanguageCodeID> createBlockListedWord(
+			@RequestBody @Valid RequestWrapper<BlocklistedWordsDto> blockListedWordsRequestDto) {
 		auditUtil.auditRequest(
-				MasterDataConstant.CREATE_API_IS_CALLED + BlacklistedWordListRequestDto.class.getCanonicalName(),
+				MasterDataConstant.CREATE_API_IS_CALLED + BlocklistedWordListRequestDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.CREATE_API_IS_CALLED + BlacklistedWordListRequestDto.class.getCanonicalName(),
+				MasterDataConstant.CREATE_API_IS_CALLED + BlocklistedWordListRequestDto.class.getCanonicalName(),
 				"ADM-545");
 		ResponseWrapper<WordAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
-				.setResponse(blacklistedWordsService.createBlackListedWord(blackListedWordsRequestDto.getRequest()));
+				.setResponse(blocklistedWordsService.createBlockListedWord(blockListedWordsRequestDto.getRequest()));
 		return responseWrapper;
 	}
 
 	/**
-	 * Method to update the blacklisted word
+	 * Method to update the blocklisted word
 	 * 
-	 * @param blackListedWordsRequestDto the request dto that holds the blacklisted
+	 * @param blockListedWordsRequestDto the request dto that holds the blocklisted
 	 *                                   word to be updated .
 	 * @return the response entity i.e. the word and language code of the word
 	 *         updated.
@@ -140,50 +139,50 @@ public class BlacklistedWordsController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping
-	@ApiOperation(value = "update the blacklisted word")
-	public ResponseWrapper<WordAndLanguageCodeID> updateBlackListedWord(
-			@Valid @RequestBody RequestWrapper<BlackListedWordsUpdateDto> blackListedWordsRequestDto) {
+	@ApiOperation(value = "update the blocklisted word")
+	public ResponseWrapper<WordAndLanguageCodeID> updateBlockListedWord(
+			@Valid @RequestBody RequestWrapper<BlockListedWordsUpdateDto> blockListedWordsRequestDto) {
 		auditUtil.auditRequest(
-				MasterDataConstant.UPDATE_API_IS_CALLED + BlackListedWordsUpdateDto.class.getCanonicalName(),
+				MasterDataConstant.UPDATE_API_IS_CALLED + BlockListedWordsUpdateDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.UPDATE_API_IS_CALLED + BlackListedWordsUpdateDto.class.getCanonicalName(),
+				MasterDataConstant.UPDATE_API_IS_CALLED + BlockListedWordsUpdateDto.class.getCanonicalName(),
 				"ADM-546");
 		ResponseWrapper<WordAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
-				.setResponse(blacklistedWordsService.updateBlackListedWord(blackListedWordsRequestDto.getRequest()));
+				.setResponse(blocklistedWordsService.updateBlockListedWord(blockListedWordsRequestDto.getRequest()));
 		return responseWrapper;
 	}
 
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping(path = "/details")
-	@ApiOperation(value = "update the blacklisted word details except word")
-	public ResponseWrapper<WordAndLanguageCodeID> updateBlackListedWordExceptWord(
-			@Valid @RequestBody RequestWrapper<BlacklistedWordsDto> blackListedWordsRequestDto) {
+	@ApiOperation(value = "update the blocklisted word details except word")
+	public ResponseWrapper<WordAndLanguageCodeID> updateBlockListedWordExceptWord(
+			@Valid @RequestBody RequestWrapper<BlocklistedWordsDto> blockListedWordsRequestDto) {
 		auditUtil.auditRequest(
-				MasterDataConstant.UPDATE_API_IS_CALLED + BlackListedWordsUpdateDto.class.getCanonicalName(),
+				MasterDataConstant.UPDATE_API_IS_CALLED + BlockListedWordsUpdateDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.UPDATE_API_IS_CALLED + BlackListedWordsUpdateDto.class.getCanonicalName(),
+				MasterDataConstant.UPDATE_API_IS_CALLED + BlockListedWordsUpdateDto.class.getCanonicalName(),
 				"ADM-547");
 		ResponseWrapper<WordAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(
-				blacklistedWordsService.updateBlackListedWordExceptWord(blackListedWordsRequestDto.getRequest()));
+				blocklistedWordsService.updateBlockListedWordExceptWord(blockListedWordsRequestDto.getRequest()));
 		return responseWrapper;
 	}
 
 	/**
-	 * Method to deleted blacklisted word.
+	 * Method to deleted blocklisted word.
 	 * 
-	 * @param word input blacklisted word to be deleted.
+	 * @param word input blocklisted word to be deleted.
 	 * @return deleted word.
 	 */
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
 	@DeleteMapping("/{word}")
-	@ApiOperation(value = "delete the blacklisted word")
-	public ResponseWrapper<CodeResponseDto> deleteBlackListedWord(@PathVariable("word") String word) {
+	@ApiOperation(value = "delete the blocklisted word")
+	public ResponseWrapper<CodeResponseDto> deleteBlockListedWord(@PathVariable("word") String word) {
 		CodeResponseDto dto = new CodeResponseDto();//
-		dto.setCode(blacklistedWordsService.deleteBlackListedWord(word));
+		dto.setCode(blocklistedWordsService.deleteBlockListedWord(word));
 
 		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(dto);
@@ -191,29 +190,29 @@ public class BlacklistedWordsController {
 	}
 
 	/**
-	 * Api to get all the blacklisted words
+	 * Api to get all the blocklisted words
 	 * 
-	 * @return list of {@link BlacklistedWordsDto}
+	 * @return list of {@link BlocklistedWordsDto}
 	 */
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/all")
-	@ApiOperation(value = "Retrieve all the blacklisted words with additional metadata", notes = "Retrieve all the blacklisted words with metadata")
-	@ApiResponses({ @ApiResponse(code = 200, message = "list of blacklistedwords"),
-			@ApiResponse(code = 500, message = "Error occured while retrieving blacklisted words") })
-	public ResponseWrapper<PageDto<BlacklistedWordsExtnDto>> getAllBlacklistedWords(
+	@ApiOperation(value = "Retrieve all the blocklisted words with additional metadata", notes = "Retrieve all the blocklisted words with metadata")
+	@ApiResponses({ @ApiResponse(code = 200, message = "list of blocklistedwords"),
+			@ApiResponse(code = 500, message = "Error occured while retrieving blocklisted words") })
+	public ResponseWrapper<PageDto<BlocklistedWordsExtnDto>> getAllBlocklistedWords(
 			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page no for the requested data", defaultValue = "0") int pageNumber,
 			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size for the requested data", defaultValue = "10") int pageSize,
 			@RequestParam(name = "sortBy", defaultValue = "createdDateTime") @ApiParam(value = "sort the requested data based on param value", defaultValue = "createdDateTime") String sortBy,
 			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "order the requested data based on param", defaultValue = "desc") OrderEnum orderBy) {
-		ResponseWrapper<PageDto<BlacklistedWordsExtnDto>> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<PageDto<BlocklistedWordsExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
-				.setResponse(blacklistedWordsService.getBlackListedWords(pageNumber, pageSize, sortBy, orderBy.name()));
+				.setResponse(blocklistedWordsService.getBlockListedWords(pageNumber, pageSize, sortBy, orderBy.name()));
 		return responseWrapper;
 	}
 
 	/**
-	 * API to search BlackListedWords.
+	 * API to search BlockListedWords.
 	 * 
 	 * @param request the request DTO {@link SearchDto} wrapped in
 	 *                {@link RequestWrapper}.
@@ -223,16 +222,16 @@ public class BlacklistedWordsController {
 	@ResponseFilter
 	@PostMapping("/search")
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
-	public ResponseWrapper<PageResponseDto<BlacklistedWordsExtnDto>> searchBlackListedWords(
+	public ResponseWrapper<PageResponseDto<BlocklistedWordsExtnDto>> searchBlockListedWords(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(
-				MasterDataConstant.SEARCH_API_IS_CALLED + BlacklistedWordsExtnDto.class.getCanonicalName(),
+				MasterDataConstant.SEARCH_API_IS_CALLED + BlocklistedWordsExtnDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SEARCH_API_IS_CALLED + BlacklistedWordsExtnDto.class.getCanonicalName(), "ADM-548");
-		ResponseWrapper<PageResponseDto<BlacklistedWordsExtnDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(blacklistedWordsService.searchBlackListedWords(request.getRequest()));
+				MasterDataConstant.SEARCH_API_IS_CALLED + BlocklistedWordsExtnDto.class.getCanonicalName(), "ADM-548");
+		ResponseWrapper<PageResponseDto<BlocklistedWordsExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(blocklistedWordsService.searchBlockListedWords(request.getRequest()));
 		auditUtil.auditRequest(
-				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, BlacklistedWordsExtnDto.class.getCanonicalName()),
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, BlocklistedWordsExtnDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
 				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, MachineSearchDto.class.getCanonicalName()),
 				"ADM-549");
@@ -250,17 +249,17 @@ public class BlacklistedWordsController {
 	@ResponseFilter
 	@PostMapping("/filtervalues")
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
-	public ResponseWrapper<FilterResponseDto> blackListedWordsFilterValues(
+	public ResponseWrapper<FilterResponseDto> blockListedWordsFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> requestWrapper) {
 		auditUtil.auditRequest(
-				MasterDataConstant.FILTER_API_IS_CALLED + BlacklistedWordsExtnDto.class.getCanonicalName(),
+				MasterDataConstant.FILTER_API_IS_CALLED + BlocklistedWordsExtnDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.FILTER_API_IS_CALLED + BlacklistedWordsExtnDto.class.getCanonicalName(), "ADM-550");
+				MasterDataConstant.FILTER_API_IS_CALLED + BlocklistedWordsExtnDto.class.getCanonicalName(), "ADM-550");
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(blacklistedWordsService.blackListedWordsFilterValues(requestWrapper.getRequest()));
-		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_FILTER + BlacklistedWordsExtnDto.class.getCanonicalName(),
+		responseWrapper.setResponse(blocklistedWordsService.blockListedWordsFilterValues(requestWrapper.getRequest()));
+		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_FILTER + BlocklistedWordsExtnDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SUCCESSFUL_FILTER_DESC + BlacklistedWordsExtnDto.class.getCanonicalName(),
+				MasterDataConstant.SUCCESSFUL_FILTER_DESC + BlocklistedWordsExtnDto.class.getCanonicalName(),
 				"ADM-551");
 		return responseWrapper;
 	}
@@ -268,20 +267,20 @@ public class BlacklistedWordsController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@PatchMapping
-	@ApiOperation(value = "update the blacklisted word")
-	public ResponseWrapper<StatusResponseDto> updateBlackListedWordStatus(@RequestParam boolean isActive,
+	@ApiOperation(value = "update the blocklisted word")
+	public ResponseWrapper<StatusResponseDto> updateBlockListedWordStatus(@RequestParam boolean isActive,
 			@RequestParam String word) {
 		auditUtil.auditRequest(
-				MasterDataConstant.STATUS_API_IS_CALLED + BlackListedWordsUpdateDto.class.getCanonicalName(),
+				MasterDataConstant.STATUS_API_IS_CALLED + BlockListedWordsUpdateDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.STATUS_API_IS_CALLED + BlackListedWordsUpdateDto.class.getCanonicalName(),
+				MasterDataConstant.STATUS_API_IS_CALLED + BlockListedWordsUpdateDto.class.getCanonicalName(),
 				"ADM-552");
 		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(blacklistedWordsService.updateBlackListedWordStatus(word, isActive));
+		responseWrapper.setResponse(blocklistedWordsService.updateBlockListedWordStatus(word, isActive));
 		auditUtil.auditRequest(
-				MasterDataConstant.STATUS_UPDATED_SUCCESS + BlackListedWordsUpdateDto.class.getCanonicalName(),
+				MasterDataConstant.STATUS_UPDATED_SUCCESS + BlockListedWordsUpdateDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.STATUS_UPDATED_SUCCESS + BlackListedWordsUpdateDto.class.getCanonicalName(),
+				MasterDataConstant.STATUS_UPDATED_SUCCESS + BlockListedWordsUpdateDto.class.getCanonicalName(),
 				"ADM-553");
 		return responseWrapper;
 	}

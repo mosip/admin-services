@@ -17,6 +17,7 @@ import io.mosip.hotlist.dto.CryptomanagerRequestDto;
 import io.mosip.hotlist.dto.RestRequestDTO;
 import io.mosip.hotlist.exception.HotlistAppException;
 import io.mosip.hotlist.exception.HotlistAppUncheckedException;
+import io.mosip.hotlist.exception.HotlistRetryException;
 import io.mosip.hotlist.exception.RestServiceException;
 import io.mosip.hotlist.helper.RestHelper;
 import io.mosip.hotlist.logger.HotlistLogger;
@@ -145,9 +146,9 @@ public class HotlistSecurityManager {
 						"No data block found in response");
 				throw new HotlistAppException(HotlistErrorConstants.ENCRYPTION_DECRYPTION_FAILED);
 			}
-		} catch (RestServiceException e) {
+		} catch (HotlistRetryException | RestServiceException e) {
 			mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA,
-					e.getErrorText());
+					e.getMessage());
 			throw new HotlistAppException(HotlistErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 	}

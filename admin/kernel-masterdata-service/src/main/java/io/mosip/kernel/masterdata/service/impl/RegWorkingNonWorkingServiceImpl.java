@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,8 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 	@Autowired
 	private RegistrationCenterRepository registrationCenterRepository;
 
+	@Cacheable(value = "working-day", key = "'weekday'.concat('-').concat(#regCenterId).concat('-').concat(#langCode)",
+			condition = "#regCenterId != null && #langCode != null")
 	@Override
 	public WeekDaysResponseDto getWeekDaysList(String regCenterId, String langCode) {
 
@@ -96,6 +99,8 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 		return weekdays;
 	}
 
+	@Cacheable(value = "working-day", key = "'workingday'.concat('-').concat(#regCenterId).concat('-').concat(#langCode)",
+			condition = "#regCenterId != null && #langCode != null")
 	@Override
 	public WorkingDaysResponseDto getWorkingDays(String regCenterId, String langCode) {
 
@@ -160,6 +165,7 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 		return responseDto;
 	}
 
+	@Cacheable(value = "working-day", key = "'workingday'.concat('-').concat(#langCode)", condition = "#langCode != null")
 	@Override
 	public WorkingDaysResponseDto getWorkingDays(String langCode) {
 		// TODO Auto-generated method stub

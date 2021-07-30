@@ -694,7 +694,8 @@ public class DeviceServiceImpl implements DeviceService {
 
 		{
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				masterDataFilterHelper.filterValuesWithCode(Device.class, filterDto, filterValueDto,"id")
+				masterDataFilterHelper
+						.filterValuesWithCodeWithoutLangCode(Device.class, filterDto, filterValueDto, "id")
 						.forEach(filterValue -> {
 							if (filterValue != null) {
 								ColumnCodeValue columnValue = new ColumnCodeValue();
@@ -941,7 +942,7 @@ public class DeviceServiceImpl implements DeviceService {
 	public StatusResponseDto updateDeviceStatus(String id, boolean isActive) {
 		// TODO Auto-generated method stub
 		StatusResponseDto response = new StatusResponseDto();
-
+		DeviceHistory deviceHistory = new DeviceHistory();
 		List<Device> devices = null;
 		try {
 			devices = deviceRepository.findtoUpdateDeviceById(id);
@@ -958,6 +959,12 @@ public class DeviceServiceImpl implements DeviceService {
 		}
 		if (devices != null) {
 			masterdataCreationUtil.updateMasterDataStatus(Device.class, id, isActive, "id");
+			MapperUtils.map(devices.get(0), deviceHistory);
+			MapperUtils.setBaseFieldValue(devices.get(0), deviceHistory);
+			deviceHistory.setEffectDateTime(LocalDateTime.now());
+			deviceHistory.setUpdatedDateTime(LocalDateTime.now());
+			deviceHistory.setIsActive(isActive);
+			deviceHistoryService.createDeviceHistory(deviceHistory);
 		} else {
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, DeviceDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,

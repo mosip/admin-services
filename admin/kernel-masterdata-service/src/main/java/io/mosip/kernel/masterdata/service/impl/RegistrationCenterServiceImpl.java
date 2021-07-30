@@ -622,7 +622,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		for (Entry<Short, List<Location>> data : levelToListOfLocationMap.entrySet()) {
 			if (!isParent) {
 				for (Location location : data.getValue()) {
-					if (text.trim().equalsIgnoreCase(location.getName().trim())) {
+					if (location.getName().trim().toLowerCase().contains(text.trim().toLowerCase())) {
 						uniqueLocCode.add(location.getCode());
 						isParent = true;
 						break;// parent code set
@@ -677,7 +677,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<Location> rootLocation = levelToListOfLocationMap.get(hierarchyLevel);
 		boolean isRootLocation = false;
 		for (Location location : rootLocation) {
-			if (location.getName().trim().equalsIgnoreCase(text)) {
+			if (location.getName().trim().toLowerCase().contains(text.trim().toLowerCase())) {
 				isRootLocation = true;
 			}
 		}
@@ -1520,7 +1520,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 						langCode, PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
 				if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
 					registrationCenters = MapperUtils.mapAll(pageData.getContent(), RegistrationCenterExtnDto.class);
-					registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), 0, null,
+					registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageNumber, pageSize, null,
 							  pageData.getTotalElements(), pageData.getTotalPages(),registrationCenters);
 				} else {
 					throw new DataNotFoundException(

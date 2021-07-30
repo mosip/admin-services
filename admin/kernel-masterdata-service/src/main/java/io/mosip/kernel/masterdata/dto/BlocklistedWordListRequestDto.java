@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BlacklistedWordListRequestDto {
+public class BlocklistedWordListRequestDto {
 
-	private List<String> blacklistedwords;
+	private List<String> blocklistedwords;
 
 }

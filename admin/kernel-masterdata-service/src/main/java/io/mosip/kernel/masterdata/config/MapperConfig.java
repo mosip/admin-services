@@ -9,7 +9,7 @@ import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.entity.Application;
 import io.mosip.kernel.masterdata.entity.BiometricType;
-import io.mosip.kernel.masterdata.entity.BlacklistedWords;
+import io.mosip.kernel.masterdata.entity.BlocklistedWords;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
 
@@ -31,9 +31,9 @@ public class MapperConfig {
 		return new DataMapperBuilderImpl<>(BiometricType.class, CodeAndLanguageCodeID.class).build();
 	}
 
-	@Bean(name = "blacklistedWordsToWordAndLanguageCodeIDDefaultMapper")
-	public DataMapper<BlacklistedWords, WordAndLanguageCodeID> blacklistedWordsToWordAndLanguageCodeIDDefaultMapper() {
-		return new DataMapperBuilderImpl<>(BlacklistedWords.class, WordAndLanguageCodeID.class).build();
+	@Bean(name = "blocklistedWordsToWordAndLanguageCodeIDDefaultMapper")
+	public DataMapper<BlocklistedWords, WordAndLanguageCodeID> blocklistedWordsToWordAndLanguageCodeIDDefaultMapper() {
+		return new DataMapperBuilderImpl<>(BlocklistedWords.class, WordAndLanguageCodeID.class).build();
 	}
 
 	@Bean(name = "applicationDtoToApplicationDefaultMapper")

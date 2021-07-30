@@ -44,6 +44,7 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping(value = "/individualtypes")
 @Api(tags = { "IndividualType" })
+@Deprecated
 public class IndividualTypeController {
 
 	@Autowired
@@ -55,10 +56,10 @@ public class IndividualTypeController {
 	/**
 	 * @return the all active individual type.
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_PROCESSOR','PRE_REGISTRATION','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
 	@GetMapping
 	@ApiOperation(value = "get value from Caretory for the given id", notes = "get value from Category for the given id")
+	@Deprecated
 	public ResponseWrapper<IndividualTypeResponseDto> getAllIndividualTypes() {
 		ResponseWrapper<IndividualTypeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(individualTypeService.getAllIndividualTypes());
@@ -81,6 +82,7 @@ public class IndividualTypeController {
 	@ApiOperation(value = "Retrieve all the individual types with additional metadata", notes = "Retrieve all the individual types with the additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of individual types"),
 			@ApiResponse(code = 500, message = "Error occured while retrieving individual types") })
+	@Deprecated
 	public ResponseWrapper<PageDto<IndividualTypeExtnDto>> getIndividualTypes(
 			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page no for the requested data", defaultValue = "0") int pageNumber,
 			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size for the requested data", defaultValue = "10") int pageSize,
@@ -103,6 +105,7 @@ public class IndividualTypeController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/search")
+	@Deprecated
 	public ResponseWrapper<PageResponseDto<IndividualTypeExtnDto>> searchIndividuals(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(
@@ -131,6 +134,7 @@ public class IndividualTypeController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/filtervalues")
+	@Deprecated
 	public ResponseWrapper<FilterResponseDto> individualsFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> requestWrapper) {
 		auditUtil.auditRequest(
@@ -162,6 +166,7 @@ public class IndividualTypeController {
 	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created"),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
+	@Deprecated
 	public ResponseWrapper<IndividualTypeExtnDto> createIndividualType(
 			@Valid @RequestBody RequestWrapper<IndividualTypeDto> individualType) {
 
@@ -184,6 +189,7 @@ public class IndividualTypeController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No IndividualType found"),
 			@ApiResponse(code = 500, message = "While updating IndividualType any error occured") })
+	@Deprecated
 	public ResponseWrapper<IndividualTypeExtnDto> updateIndividualType(
 			@RequestBody @Valid RequestWrapper<IndividualTypeDto> individualTypeDto) {
 		ResponseWrapper<IndividualTypeExtnDto> responseWrapper = new ResponseWrapper<>();

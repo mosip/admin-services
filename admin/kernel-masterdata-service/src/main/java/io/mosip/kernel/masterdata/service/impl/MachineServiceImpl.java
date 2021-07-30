@@ -643,7 +643,8 @@ public class MachineServiceImpl implements MachineService {
 		}
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Machine.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				List<FilterData> filterValues = masterDataFilterHelper.filterValuesWithCode(Machine.class, filterDto,
+				List<FilterData> filterValues = masterDataFilterHelper
+						.filterValuesWithCodeWithoutLangCode(Machine.class, filterDto,
 						filterValueDto,"id");
 				filterValues.forEach(filterValue -> {
 					ColumnCodeValue columnValue = new ColumnCodeValue();
@@ -966,11 +967,19 @@ public class MachineServiceImpl implements MachineService {
 	public StatusResponseDto updateMachineStatus(String id, boolean isActive) {
 
 		StatusResponseDto statusResponseDto = new StatusResponseDto();
+		MachineHistory machineHistory = new MachineHistory();
+
 		try {
 			List<Machine> machines = machineRepository
 					.findMachineById(id);
 			if (machines != null) {
 				masterdataCreationUtil.updateMasterDataStatus(Machine.class, id, isActive, "id");
+				MapperUtils.map(machines.get(0), machineHistory);
+				MapperUtils.setBaseFieldValue(machines.get(0), machineHistory);
+				machineHistory.setEffectDateTime(LocalDateTime.now());
+				machineHistory.setUpdatedDateTime(LocalDateTime.now());
+				machineHistory.setIsActive(isActive);
+				machineHistoryService.createMachineHistory(machineHistory);
 			} else {
 				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, Machine.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,

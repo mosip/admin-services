@@ -33,7 +33,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.entity.BlacklistedWords;
+import io.mosip.kernel.masterdata.entity.BlocklistedWords;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
@@ -50,7 +50,7 @@ import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.Title;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
-import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
+import io.mosip.kernel.masterdata.repository.BlocklistedWordsRepository;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.repository.DeviceTypeRepository;
 import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
@@ -76,7 +76,7 @@ public class MasterDataPaginationIntegrationTest {
 	CodeAndLanguageCodeID codeAndLanguageCodeID;
 	CodeAndLanguageCodeID codeAndLanguageCodeIdIndType;
 
-	BlacklistedWords blacklistedWords;
+	BlocklistedWords blocklistedWords;
 	Title title;
 	DocumentCategory documentCategory;
 	DocumentType documentType;
@@ -92,7 +92,7 @@ public class MasterDataPaginationIntegrationTest {
 	DeviceType deviceType;
 	DeviceSpecification deviceSpecification;
 
-	List<BlacklistedWords> blackListedWordsList;
+	List<BlocklistedWords> blockListedWordsList;
 	List<Title> titleList;
 	List<DocumentCategory> documentCategorylist;
 	List<DocumentType> documentTypelist;
@@ -112,7 +112,7 @@ public class MasterDataPaginationIntegrationTest {
 	private PublisherClient<String,EventModel,HttpHeaders> publisher;
 
 	@MockBean
-	BlacklistedWordsRepository wordsRepository;
+	BlocklistedWordsRepository wordsRepository;
 
 	@MockBean
 	TitleRepository titleRepository;
@@ -164,7 +164,7 @@ public class MasterDataPaginationIntegrationTest {
 
 	@Before
 	public void setUp() {
-		blackListedWordSetUp();
+		blockListedWordSetUp();
 		titleSetUp();
 		documentCategorySetUp();
 		documentTypeSetUp();
@@ -182,23 +182,23 @@ public class MasterDataPaginationIntegrationTest {
 		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 	}
 
-	private void blackListedWordSetUp() {
-		blacklistedWords = new BlacklistedWords();
+	private void blockListedWordSetUp() {
+		blocklistedWords = new BlocklistedWords();
 
-		blacklistedWords.setCreatedBy("TEST_CREATOR");
-		blacklistedWords.setCreatedDateTime(LocalDateTime.of(2019, 01, 2, 14, 5));
-		blacklistedWords.setDeletedDateTime(null);
-		blacklistedWords.setDescription("TEST_BLACK_WORD_DESC");
-		blacklistedWords.setIsActive(true);
-		blacklistedWords.setIsDeleted(false);
-		blacklistedWords.setLangCode("eng");
-		blacklistedWords.setUpdatedBy(null);
-		blacklistedWords.setWord("TEST_BLACK_WORD");
-		blacklistedWords.setUpdatedDateTime(null);
+		blocklistedWords.setCreatedBy("TEST_CREATOR");
+		blocklistedWords.setCreatedDateTime(LocalDateTime.of(2019, 01, 2, 14, 5));
+		blocklistedWords.setDeletedDateTime(null);
+		blocklistedWords.setDescription("TEST_BLACK_WORD_DESC");
+		blocklistedWords.setIsActive(true);
+		blocklistedWords.setIsDeleted(false);
+		blocklistedWords.setLangCode("eng");
+		blocklistedWords.setUpdatedBy(null);
+		blocklistedWords.setWord("TEST_BLACK_WORD");
+		blocklistedWords.setUpdatedDateTime(null);
 
-		blackListedWordsList = new ArrayList<>();
+		blockListedWordsList = new ArrayList<>();
 
-		blackListedWordsList.add(blacklistedWords);
+		blockListedWordsList.add(blocklistedWords);
 
 	}
 
@@ -530,11 +530,11 @@ public class MasterDataPaginationIntegrationTest {
 
 	@Test
 	@WithUserDetails("zonal-admin")
-	public void getAllBlackListedWordsTest() throws Exception {
-		Page<BlacklistedWords> page = new PageImpl<>(blackListedWordsList);
+	public void getAllBlockListedWordsTest() throws Exception {
+		Page<BlocklistedWords> page = new PageImpl<>(blockListedWordsList);
 		when(wordsRepository.findAll(PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "createdDateTime"))))
 				.thenReturn(page);
-		mockMvc.perform(get("/blacklistedwords/all")).andExpect(status().isOk());
+		mockMvc.perform(get("/blocklistedwords/all")).andExpect(status().isOk());
 	}
 
 	@Test
@@ -677,19 +677,19 @@ public class MasterDataPaginationIntegrationTest {
 
 	@Test()
 	@WithUserDetails("zonal-admin")
-	public void getAllBlackListedWordsDataAccessExceptionTest() throws Exception {
+	public void getAllBlockListedWordsDataAccessExceptionTest() throws Exception {
 		when(wordsRepository.findAll(PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "createdDateTime"))))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/blacklistedwords/all"))
+		mockMvc.perform(get("/blocklistedwords/all"))
 				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
 	}
 
 	@Test
 	@WithUserDetails("zonal-admin")
-	public void getAllBlackListedWordsNotFoundExceptionTest() throws Exception {
+	public void getAllBlockListedWordsNotFoundExceptionTest() throws Exception {
 		when(wordsRepository.findAll(PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "createdDateTime"))))
 				.thenReturn(null);
-		mockMvc.perform(get("/blacklistedwords/all")).andExpect(status().isOk());
+		mockMvc.perform(get("/blocklistedwords/all")).andExpect(status().isOk());
 	}
 
 	@Test()

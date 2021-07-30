@@ -37,6 +37,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping(value = "/registereddevices")
 @Api(tags = { "Registered Device" })
 @Validated
+@Deprecated
 public class RegisteredDeviceController {
 
 	@Autowired
@@ -54,6 +55,7 @@ public class RegisteredDeviceController {
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@PostMapping
+	@Deprecated
 	public ResponseWrapper<String> signedRegisteredDevice(
 			@Valid @RequestBody RequestWrapper<RegisteredDevicePostDto> registeredDevicePostDto) throws Exception {
 		ResponseWrapper<String> response = new ResponseWrapper<>();
@@ -72,6 +74,7 @@ public class RegisteredDeviceController {
 	@ApiOperation(value = "DeRegister Device")
 	@PostMapping("/deregister")
 	@ResponseFilter
+	@Deprecated
 	public ResponseWrapper<String> deRegisterDevice(@Valid @RequestBody RequestWrapper<DeRegisterDevicePostDto>
 							deRegisterDevicePostDto) {
 		ResponseWrapper<String> response = new ResponseWrapper<>();
@@ -82,6 +85,7 @@ public class RegisteredDeviceController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "Update status of the devive")
 	@PutMapping("/update/status")
+	@Deprecated
 	public ResponseEntity<ResponseDto> deRegisterDevice(
 			@NotBlank @RequestParam(name = "deviceCode") String deviceCode,
 			@NotBlank @RequestParam(name = "statusCode") String statusCode) {
