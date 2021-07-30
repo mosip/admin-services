@@ -685,7 +685,7 @@ public class DeviceServiceImpl implements DeviceService {
 		List<SearchFilter> zoneFilter = new ArrayList<>();
 		if (zones != null && !zones.isEmpty()) {
 			zoneFilter.addAll(buildZoneFilter(zones));
-			zoneFilter.addAll(filterValueDto.getOptionalFilters());
+			zoneFilter.addAll(null==filterValueDto.getOptionalFilters()?Collections.emptyList():filterValueDto.getOptionalFilters());
 			filterValueDto.setOptionalFilters(zoneFilter);
 		} else {
 			return filterResponseDto;
