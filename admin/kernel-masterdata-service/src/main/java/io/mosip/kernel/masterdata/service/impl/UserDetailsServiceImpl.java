@@ -509,6 +509,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	public PageResponseDto<UserDetailsExtnDto> searchUserDetails(SearchDtoWithoutLangCode searchDto) {
 		PageResponseDto<UserDetailsExtnDto> pageDto = new PageResponseDto<>();
 		List<UserDetailsExtnDto> userDetails = null;
+		
+		searchDto.getFilters().stream().forEach(fil->{
+			if(fil.getColumnName().equalsIgnoreCase("name"))
+			{
+				fil.setValue("*"+fil.getValue()+"*");
+				fil.setType("contains");
+			}
+		});
 		Page<UserDetails> page = masterDataSearchHelper.searchMasterdataWithoutLangCode(UserDetails.class, searchDto,
 				null);
 		if (page.getContent() != null && !page.getContent().isEmpty()) {

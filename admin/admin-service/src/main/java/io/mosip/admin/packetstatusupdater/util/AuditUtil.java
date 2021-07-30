@@ -206,6 +206,8 @@ public class AuditUtil {
 
 	}
 	public  void setAuditRequestDto(EventEnum eventEnum) {
+		if(null==eventEnum)
+			return ;
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 
 		auditRequestDto.setHostIp(hostIpAddress);
