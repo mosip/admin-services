@@ -171,7 +171,8 @@ public enum EventEnum {
 
 	public static EventEnum getEventEnumBasedOnPAcketStatus(PacketStatusUpdateDto ps)
 	{
-		
+		if (null == ps.getTransactionTypeCode())
+			return null;
 		if(ps.getTransactionTypeCode().equalsIgnoreCase("PACKET_RECEIVER"))
 		{
 			if(null==ps.getParentTransactionId() || ps.getParentTransactionId().isBlank())
@@ -212,7 +213,8 @@ public enum EventEnum {
 			return getEventEnumWithValue(SECUREZONE_NOTIFICATION,ps.getRegistrationId());
 		if(ps.getTransactionTypeCode().equalsIgnoreCase("PRINT")) 
 			return getEventEnumWithValue(PRINT,ps.getRegistrationId());
-		return null;
+	
+	return null;
 		
 	}
 	
