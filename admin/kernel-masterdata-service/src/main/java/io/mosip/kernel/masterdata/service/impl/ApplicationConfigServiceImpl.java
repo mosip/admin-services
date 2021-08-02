@@ -56,6 +56,7 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 				response.put(key.split(":")[0], key.split(":")[1]);
 			}
 			response.put(key.split(":")[0], null);
+
 		}
 		return response;
 	}
