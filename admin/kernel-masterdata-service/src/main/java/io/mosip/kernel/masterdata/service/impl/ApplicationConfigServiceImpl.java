@@ -52,11 +52,10 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 		Map<String, String> response = new HashMap<String, String>();
 		String[] arrayOfKeys = uiConfigs.split(";");
 		for (String key : arrayOfKeys) {
+			response.put(key.split(":")[0], null);
 			if (key.split(":").length > 1) {
 				response.put(key.split(":")[0], key.split(":")[1]);
 			}
-			response.put(key.split(":")[0], null);
-
 		}
 		return response;
 	}
