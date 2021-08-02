@@ -54,9 +54,8 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 		for (String key : arrayOfKeys) {
 			if (key.split(":").length > 1) {
 				response.put(key.split(":")[0], key.split(":")[1]);
-			} else {
-				response.put(key.split(":")[0], null);
 			}
+			response.put(key.split(":")[0], null);
 		}
 		return response;
 	}
