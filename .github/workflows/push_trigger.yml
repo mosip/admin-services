@@ -21,8 +21,7 @@ jobs:
         java-version: 11
         server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
-    
-    
+        
     - name: Setup branch and env 
       run: |
         # Strip git ref prefix from version
@@ -137,7 +136,6 @@ jobs:
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
       if: failure() # Pick up events even if the job fails or is canceled.
-
 
   docker-admin-service:
     needs: build
