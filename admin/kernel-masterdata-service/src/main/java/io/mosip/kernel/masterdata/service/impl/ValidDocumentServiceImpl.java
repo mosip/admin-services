@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -110,6 +110,9 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 
 	@Autowired
 	private FilterTypeValidator filterTypeValidator;
+	
+	@Value("${mosip.supported-languages}")
+	private String supportedLang;
 
 	/*
 	 * (non-Javadoc)
@@ -123,6 +126,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	public ValidDocumentID createValidDocument(ValidDocumentDto document) {
 
 		ValidDocument validDocument = MetaDataUtils.setCreateMetaData(document, ValidDocument.class);
+		validDocument.setIsActive(true);
 		try {
 			validDocument = documentRepository.create(validDocument);
 		} catch (DataAccessLayerException | DataAccessException e) {
@@ -463,7 +467,9 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 				validDocumentDto.setDocCategoryCode(docCatCode);
 				validDocumentDto.setDocTypeCode(docTypeCode);
 				validDocumentDto.setIsActive(true);
-				validDocumentDto.setLangCode(validDocument.getLangCode());
+				String langs[]=supportedLang.split(",");
+				validDocumentDto.setLangCode(langs[0]);
+				//validDocumentDto.setLangCode(validDocument.getLangCode());
 				ValidDocumentID validDocumentID = createValidDocument(validDocumentDto);
 				responseDto.setStatus(MasterDataConstant.MAPPED_SUCCESSFULLY);
 				responseDto
