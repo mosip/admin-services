@@ -231,8 +231,8 @@ public class MasterdataSearchIntegrationTest {
 	private List<Object[]> missingIdDataDtoList = new ArrayList<>();
 	private List<Object[]> missingCodeDataDtoList = new ArrayList<>();
 
-	@Value("${mosip.primary-language}")
-	private String primaryLangCode;
+	@Value("${mosip.mandatory-languages}")
+	private String mandatoryLangCode;
 
 	
 
