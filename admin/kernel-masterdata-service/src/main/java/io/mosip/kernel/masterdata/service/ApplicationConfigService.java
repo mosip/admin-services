@@ -8,7 +8,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.ApplicationConfigResponseDto;
 @Service
 public interface ApplicationConfigService {
 
-	public ApplicationConfigResponseDto getLanguageConfigDetails(); 
+	public ApplicationConfigResponseDto getLanguageConfigDetails();
 	
 	public Map<String,String> getConfigValues();
 
