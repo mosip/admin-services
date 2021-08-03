@@ -81,8 +81,8 @@ public class RegistrationCenterServiceHelper {
 	@Autowired
 	private LocationRepository locationRepository;
 
-	@Value("${mosip.primary-language}")
-	private String primaryLangugage;
+	@Value("${mosip.mandatory-languages}")
+	private String mandatoryLang;
 
 	@Autowired
 	private PageUtils pageUtils;
@@ -225,7 +225,7 @@ public class RegistrationCenterServiceHelper {
 			if (!langCode.equals("all")) {
 				locations = locationRepository.findAllByLangCodeNonDeleted(langCode);
 			} else {
-				locations = locationRepository.findAllByLangCodeNonDeleted(primaryLangugage);
+				locations = locationRepository.findAllByLangCodeNonDeleted(mandatoryLang);
 			}
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),

@@ -500,8 +500,8 @@ public class MasterdataIntegrationTest {
 	private RegWorkingNonWorkingRepo regWorkingNonWorkingRepo;
 	private ObjectMapper mapper;
 
-	@Value("${mosip.primary-language}")
-	private String primaryLang;
+	@Value("${mosip.mandatory-languages}")
+	private String mandatoryLang;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -6295,31 +6295,31 @@ public class MasterdataIntegrationTest {
 	private List<Zone> getZones() {
 		Zone zone = new Zone();
 		zone.setCode("JRD");
-		zone.setLangCode(primaryLang);
+		zone.setLangCode(mandatoryLang);
 		zone.setHierarchyPath("MOR/NTH/ORT/JRD");
 		Zone zone1 = new Zone();
 		zone1.setCode("TZT");
-		zone1.setLangCode(primaryLang);
+		zone1.setLangCode(mandatoryLang);
 		zone1.setHierarchyPath("MOR/STH/SOS/TZT");
 		Zone zone2 = new Zone();
 		zone2.setCode("TTA");
-		zone2.setLangCode(primaryLang);
+		zone2.setLangCode(mandatoryLang);
 		zone2.setHierarchyPath("MOR/STH/SOS/TTA");
 		Zone zone3 = new Zone();
 		zone3.setCode("BRT");
-		zone3.setLangCode(primaryLang);
+		zone3.setLangCode(mandatoryLang);
 		zone3.setHierarchyPath("MOR/NTH/ORT/BRK");
 		Zone zone4 = new Zone();
 		zone4.setCode("CST");
-		zone4.setLangCode(primaryLang);
+		zone4.setLangCode(mandatoryLang);
 		zone4.setHierarchyPath("MOR/NTH/ORT/CST");
 		Zone zone6 = new Zone();
 		zone6.setCode("NTH");
-		zone6.setLangCode(primaryLang);
+		zone6.setLangCode(mandatoryLang);
 		zone6.setHierarchyPath("MOR/NTH");
 		Zone zone5 = new Zone();
 		zone5.setCode("NTH");
-		zone5.setLangCode(primaryLang);
+		zone5.setLangCode(mandatoryLang);
 		zone5.setHierarchyPath("MOR/STH");
 
 		return Arrays.asList(zone, zone1, zone2, zone3, zone4, zone5, zone6);
@@ -7723,7 +7723,7 @@ public class MasterdataIntegrationTest {
 		zone.setCode("JRD");
 		List<Zone> zones = new ArrayList<>();
 		zones.add(zone);
-		registrationCenter1.setLangCode("${mosip.primary-language}");
+		registrationCenter1.setLangCode("${mosip.mandatory-languages}");
 		when(registrationCenterTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(),
 				Mockito.any())).thenReturn(regCenterType);
 		when(locationRepository.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(), Mockito.any()))
@@ -7748,7 +7748,7 @@ public class MasterdataIntegrationTest {
 		zone.setCode("JRD");
 		List<Zone> zones = new ArrayList<>();
 		zones.add(zone);
-		registrationCenter1.setLangCode("${mosip.secondary-language}");
+		registrationCenter1.setLangCode("${mosip.optional-languages}");
 		when(registrationCenterTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(),
 				Mockito.any())).thenReturn(regCenterType);
 		when(locationRepository.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(), Mockito.any()))

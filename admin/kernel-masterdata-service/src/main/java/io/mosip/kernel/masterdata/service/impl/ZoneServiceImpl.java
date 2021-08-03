@@ -56,6 +56,9 @@ public class ZoneServiceImpl implements ZoneService {
 	@Autowired
 	ZoneRepository zoneRepository;
 
+	@Value("${mosip.mandatory-languages}")
+	private String mandatoryLang;
+
 	@Autowired
 	private RegistrationCenterRepository registrationCenterRepo;
 	
@@ -67,9 +70,6 @@ public class ZoneServiceImpl implements ZoneService {
 
 	@Value("${mosip.kernel.registrationcenterid.length}")
 	private int centerIdLength;
-
-	@Value("${mosip.primary-language}")
-	private String primaryLangCode;
 
 	/*
 	 * (non-Javadoc)
@@ -153,8 +153,8 @@ public class ZoneServiceImpl implements ZoneService {
 	@Override
 	public boolean authorizeZone(String rId) {
 		String centerId = rId.substring(0, centerIdLength);
-		String zoneCode = getZoneBasedOnTheRId(centerId, primaryLangCode);
-		return isPresentInTheHierarchy(zoneCode, primaryLangCode);
+		String zoneCode = getZoneBasedOnTheRId(centerId, mandatoryLang);
+		return isPresentInTheHierarchy(zoneCode, mandatoryLang);
 	}
 
 	private String getZoneBasedOnTheRId(String centerId, String primaryLangCode) {
