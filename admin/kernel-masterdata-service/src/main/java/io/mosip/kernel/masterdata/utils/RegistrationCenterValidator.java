@@ -63,22 +63,16 @@ public class RegistrationCenterValidator {
 	private int minDegits;
 
 	/**
-	 * get list of secondary languages supported by MOSIP from configuration file
+	 * get list of mandatory languages supported by MOSIP from configuration file
 	 */
-	@Value("#{'${mosip.secondary-language}'.split(',')}")
-	private Set<String> secondaryLangList;
+	@Value("${mosip.mandatory-languages}")
+	private String mandatoryLang;
 
 	/**
-	 * get list of secondary languages supported by MOSIP from configuration file
+	 * get list of optional languages supported by MOSIP from configuration file
 	 */
-	@Value("${mosip.primary-language}")
-	private String primaryLang;
-
-	/**
-	 * get list of secondary languages supported by MOSIP from configuration file
-	 */
-	@Value("${mosip.secondary-language}")
-	private String secondaryLang;
+	@Value("${mosip.optional-languages}")
+	private String optionalLang;
 
 	private Set<String> supportedLanguages;
 
@@ -88,8 +82,8 @@ public class RegistrationCenterValidator {
 
 	@PostConstruct
 	public void constructRegEx() {
-		supportedLanguages = new HashSet<>(Arrays.asList(secondaryLang.split(",")));
-		supportedLanguages.add(primaryLang);
+		supportedLanguages = new HashSet<>(Arrays.asList(optionalLang.split(",")));
+		supportedLanguages.add(mandatoryLang);
 		negRegex = "^(\\-\\d{1,2}\\.\\d{" + minDegits + ",})$";
 		posRegex = "^(\\d{1,2}\\.\\d{" + minDegits + ",})$";
 	}
@@ -392,7 +386,7 @@ public class RegistrationCenterValidator {
 	// list zone Id mapped with the called user
 	private List<String> getZoneIdsForUser() {
 		List<String> zoneIds;
-		List<Zone> zones = zoneUtils.getUserLeafZones(primaryLang);
+		List<Zone> zones = zoneUtils.getUserLeafZones(mandatoryLang);
 		zoneIds = zones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 		return zoneIds;
 	}
@@ -485,7 +479,7 @@ public class RegistrationCenterValidator {
 		RegCenterPostReqDto firstObject = null;
 
 		Optional<RegCenterPostReqDto> defualtLangVal = reqRegistrationCenterDto.stream()
-				.filter(i -> i.getLangCode().equals(primaryLang)).findAny();
+				.filter(i -> i.getLangCode().equals(mandatoryLang)).findAny();
 
 		if (!defualtLangVal.isPresent()) {
 			throw new RequestException(RegistrationCenterErrorCode.DEFAULT_LANGUAGE.getErrorCode(),
@@ -494,10 +488,10 @@ public class RegistrationCenterValidator {
 
 		for (RegCenterPostReqDto registrationCenterDto : reqRegistrationCenterDto) {
 			if (registrationCenterDto.getLangCode() != null
-					&& registrationCenterDto.getLangCode().equals(primaryLang)) {
+					&& registrationCenterDto.getLangCode().equals(mandatoryLang)) {
 				firstObject = registrationCenterDto;
 			} else if ((registrationCenterDto.getLangCode() != null)
-					&& (secondaryLangList.contains(registrationCenterDto.getLangCode()))) {
+					&& (optionalLang.contains(registrationCenterDto.getLangCode()))) {
 				firstObject = reqRegistrationCenterDto.get(0);
 			}
 		}
@@ -519,7 +513,7 @@ public class RegistrationCenterValidator {
 			Validator validator = factory.getValidator();
 
 			if ((registrationCenterDto.getLangCode() != null)
-					&& (registrationCenterDto.getLangCode().equalsIgnoreCase(primaryLang))) {
+					&& (registrationCenterDto.getLangCode().equalsIgnoreCase(mandatoryLang))) {
 
 				Set<ConstraintViolation<RegCenterPostReqDto>> constraintViolations = validator
 						.validate(registrationCenterDto);
@@ -528,7 +522,7 @@ public class RegistrationCenterValidator {
 						constraintViolations);
 
 			} else if ((registrationCenterDto.getLangCode() != null)
-					&& (secondaryLangList.contains(registrationCenterDto.getLangCode()))) {
+					&& (optionalLang.contains(registrationCenterDto.getLangCode()))) {
 
 				secondaryLangValidation(registrationCenterPostResponseDto, validateRegistrationCenterDtos,
 						constraintViolationedSecList, secErrors, registrationCenterDto, validator, firstObject);

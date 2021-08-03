@@ -46,7 +46,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
-import io.mosip.admin.packetstatusupdater.constant.AuditConstant;
 import io.mosip.admin.packetstatusupdater.constant.PacketStatusUpdateErrorCode;
 import io.mosip.admin.packetstatusupdater.dto.Metadata;
 import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateDto;
@@ -57,6 +56,7 @@ import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
 import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import io.mosip.admin.packetstatusupdater.service.PacketStatusUpdateService;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
+import io.mosip.admin.packetstatusupdater.util.EventEnum;
 import io.mosip.kernel.core.authmanager.exception.AuthNException;
 import io.mosip.kernel.core.authmanager.exception.AuthZException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -67,7 +67,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.logger.logback.factory.Logfactory;
-import io.mosip.admin.packetstatusupdater.util.EventEnum;
 
 /**
  * Packet Status Update service.
@@ -89,8 +88,8 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	@Value("${mosip.kernel.zone-validation-url}")
 	private String zoneValidationUrl;
 
-	@Value("${mosip.primary-language:eng}")
-	private String primaryLang;
+	@Value("${mosip.mandatory-languages}")
+	private String mandatoryLang;
 
 	/** The rest template. */
 	@Autowired
@@ -146,7 +145,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 			HttpHeaders packetHeaders = new HttpHeaders();
 			packetHeaders.setContentType(MediaType.APPLICATION_JSON);
 			StringBuilder urlBuilder = new StringBuilder();
-			urlBuilder.append(packetUpdateStatusUrl).append(SLASH).append(primaryLang).append(SLASH).append(rId);
+			urlBuilder.append(packetUpdateStatusUrl).append(SLASH).append(mandatoryLang).append(SLASH).append(rId);
 			RestTemplate restTemplate1=new RestTemplate();
 			ResponseEntity<String> response = restTemplate1.exchange(urlBuilder.toString(), HttpMethod.GET, setRequestHeader(),
 					String.class);

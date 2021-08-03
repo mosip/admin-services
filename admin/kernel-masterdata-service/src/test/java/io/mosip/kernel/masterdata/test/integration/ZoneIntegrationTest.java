@@ -58,8 +58,8 @@ public class ZoneIntegrationTest {
 	@Value("${mosip.kernel.registrationcenterid.length}")
 	private int centerIdLength;
 
-	@Value("${mosip.primary-language}")
-	private String primaryLangCode;
+	@Value("${mosip.mandatory-languages}")
+	private String mandatoryLangCode;
 
 	private RegistrationCenter registrationCenter;
 
