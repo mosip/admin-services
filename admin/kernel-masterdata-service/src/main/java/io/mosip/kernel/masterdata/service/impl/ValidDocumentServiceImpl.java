@@ -111,7 +111,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	@Autowired
 	private FilterTypeValidator filterTypeValidator;
 	
-	@Value("${mosip.supported-languages}")
+	@Value("${mosip.mandatory-languages}")
 	private String supportedLang;
 
 	/*
@@ -467,9 +467,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 				validDocumentDto.setDocCategoryCode(docCatCode);
 				validDocumentDto.setDocTypeCode(docTypeCode);
 				validDocumentDto.setIsActive(true);
-				String langs[]=supportedLang.split(",");
-				validDocumentDto.setLangCode(langs[0]);
-				//validDocumentDto.setLangCode(validDocument.getLangCode());
+				validDocumentDto.setLangCode(supportedLang);
 				ValidDocumentID validDocumentID = createValidDocument(validDocumentDto);
 				responseDto.setStatus(MasterDataConstant.MAPPED_SUCCESSFULLY);
 				responseDto
