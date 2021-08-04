@@ -111,7 +111,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	@Autowired
 	private FilterTypeValidator filterTypeValidator;
 	
-	/*
+  /*
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.ValidDocumentService#
