@@ -15,23 +15,29 @@ import lombok.Data;
 @Component
 public class LanguageUtils {
 
-	private String mandatoryLang;
+	private List<String> mandatoryLang;
 	private List<String> optionalLang;
 	private List<String> configuredLanguages;
 	private List<String> supportedLangugaes;
 
 
 	@Autowired
-	public LanguageUtils(@Value("${mosip.mandatory-languages}") String mandatory,
+	public LanguageUtils(@Value("${mosip.mandatory-languages:NOTSET}") String mandatory,
 			@Value("${mosip.optional-languages:NOTSET}") String optional,
 			@Value("${mosip.supported-languages:NOTSET}") String supported) {
 
-		this.mandatoryLang = mandatory;
 		if ("NOTSET".equals(optional)) {
 			this.optionalLang = Collections.emptyList();
 		} else {
 			this.optionalLang = Arrays.asList(optional.split(","));
 		}
+
+		if ("NOTSET".equals(optional)) {
+			this.mandatoryLang = Collections.emptyList();
+		} else {
+			this.mandatoryLang = Arrays.asList(mandatory.split(","));
+		}
+
 
 		if ("NOTSET".equals(supported)) {
 			this.supportedLangugaes = Collections.emptyList();
@@ -39,7 +45,7 @@ public class LanguageUtils {
 			this.supportedLangugaes = Arrays.asList(supported.split(","));
 		}
 		configuredLanguages = new ArrayList<>();
-		configuredLanguages.add(mandatoryLang);
+		configuredLanguages.addAll(mandatoryLang);
 		configuredLanguages.addAll(optionalLang);
 	}
 

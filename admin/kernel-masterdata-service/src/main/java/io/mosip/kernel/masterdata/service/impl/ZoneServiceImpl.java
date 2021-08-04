@@ -56,9 +56,6 @@ public class ZoneServiceImpl implements ZoneService {
 	@Autowired
 	ZoneRepository zoneRepository;
 
-	@Value("${mosip.mandatory-languages}")
-	private String mandatoryLang;
-
 	@Autowired
 	private RegistrationCenterRepository registrationCenterRepo;
 	
@@ -153,27 +150,27 @@ public class ZoneServiceImpl implements ZoneService {
 	@Override
 	public boolean authorizeZone(String rId) {
 		String centerId = rId.substring(0, centerIdLength);
-		String zoneCode = getZoneBasedOnTheRId(centerId, mandatoryLang);
-		return isPresentInTheHierarchy(zoneCode, mandatoryLang);
+		RegistrationCenter registrationCenter = getZoneBasedOnTheRId(centerId);
+		return isPresentInTheHierarchy(registrationCenter);
 	}
 
-	private String getZoneBasedOnTheRId(String centerId, String primaryLangCode) {
-		RegistrationCenter registrationCenter = null;
+	private RegistrationCenter getZoneBasedOnTheRId(String centerId) {
+		List<RegistrationCenter> registrationCenter = null;
 		try {
-			registrationCenter = registrationCenterRepo.findByIdAndLangCode(centerId, primaryLangCode);
+			registrationCenter = registrationCenterRepo.findByIdAndIsDeletedFalseOrNull(centerId);
 		} catch (DataAccessException | DataAccessLayerException ex) {
 			throw new MasterDataServiceException("ADM-PKT-500", "Error occured while fetching packet");
 		}
-		if(registrationCenter==null) {
+		if (registrationCenter.isEmpty()) {
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(), RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
-		
-		return registrationCenter.getZoneCode();
+
+		return registrationCenter.get(0);
 	}
 
-	private boolean isPresentInTheHierarchy(String zoneCode, String primaryLangCode) {
-		List<Zone> zones = zoneUtils.getUserLeafZones(primaryLangCode);
-		boolean isAuthorized = zones.stream().anyMatch(zone -> zone.getCode().equals(zoneCode));
+	private boolean isPresentInTheHierarchy(RegistrationCenter registrationCenter) {
+		List<Zone> zones = zoneUtils.getUserLeafZones(registrationCenter.getLangCode());
+		boolean isAuthorized = zones.stream().anyMatch(zone -> zone.getCode().equals(registrationCenter.getZoneCode()));
 		if (!isAuthorized) {
 			throw new RequestException(ZoneErrorCode.ADMIN_UNAUTHORIZED.getErrorCode(),
 					ZoneErrorCode.ADMIN_UNAUTHORIZED.getErrorMessage());

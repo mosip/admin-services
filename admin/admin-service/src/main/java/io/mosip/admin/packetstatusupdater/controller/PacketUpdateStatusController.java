@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.admin.packetstatusupdater.constant.AuditConstant;
 import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateResponseDto;
 import io.mosip.admin.packetstatusupdater.service.PacketStatusUpdateService;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
@@ -40,11 +39,12 @@ public class PacketUpdateStatusController {
 	@GetMapping
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
-	public ResponseWrapper<PacketStatusUpdateResponseDto> validatePacket(@RequestParam(value = "rid") String rId) {
+	public ResponseWrapper<PacketStatusUpdateResponseDto> validatePacket(@RequestParam(value = "rid") String rId,
+			@RequestParam(value = "langCode", required = false) String langCode) {
 
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.PKT_STATUS_UPD_API_CALLED, rId));
 		ResponseWrapper<PacketStatusUpdateResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(packetUpdateStatusService.getStatus(rId));
+		responseWrapper.setResponse(packetUpdateStatusService.getStatus(rId, langCode));
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.PKT_STATUS_UPD_SUCCESS, rId));
 		return responseWrapper;
 	}
