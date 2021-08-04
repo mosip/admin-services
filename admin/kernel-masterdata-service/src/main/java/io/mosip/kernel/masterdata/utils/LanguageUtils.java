@@ -26,6 +26,7 @@ public class LanguageUtils {
 			@Value("${mosip.optional-languages:NOTSET}") String optional,
 			@Value("${mosip.supported-languages:NOTSET}") String supported) {
 
+
 		if ("NOTSET".equals(optional)) {
 			this.optionalLang = Collections.emptyList();
 		} else {
