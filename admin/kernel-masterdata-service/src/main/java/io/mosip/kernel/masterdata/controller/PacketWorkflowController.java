@@ -30,7 +30,7 @@ public class PacketWorkflowController {
 	@Autowired
 	PacketWorkflowActionService packetWorkflowActionService;
 
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_ADMIN')")
 	@PostMapping("/resume")
 	public RegProcResponseWrapper<PacketWorkflowActionResponseDTO> resumePacket(
 			@Valid @RequestBody RequestWrapper<PacketWorkflowResumeRequestDto> requestDto) {
@@ -39,7 +39,7 @@ public class PacketWorkflowController {
 		return responseWrapper;
 	}
 
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_ADMIN')")
 	@PostMapping("/search")
 	public RegProcResponseWrapper<SearchResponseDto> searchPacket(
 			@Valid @RequestBody RequestWrapper<SearchDtoWithoutLangCode> requestDto) {

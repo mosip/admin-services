@@ -56,6 +56,9 @@ public class ZoneServiceImpl implements ZoneService {
 	@Autowired
 	ZoneRepository zoneRepository;
 
+	@Value("${mosip.mandatory-languages}")
+	private String mandatoryLang;
+
 	@Autowired
 	private RegistrationCenterRepository registrationCenterRepo;
 	
@@ -152,6 +155,7 @@ public class ZoneServiceImpl implements ZoneService {
 		String centerId = rId.substring(0, centerIdLength);
 		RegistrationCenter registrationCenter = getZoneBasedOnTheRId(centerId);
 		return isPresentInTheHierarchy(registrationCenter);
+
 	}
 
 	private RegistrationCenter getZoneBasedOnTheRId(String centerId) {

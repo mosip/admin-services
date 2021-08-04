@@ -561,6 +561,7 @@ public class RegistrationCenterValidator {
 	 * 
 	 * } }
 	 */
+
 	// List constraint violation iterator
 	/*
 	 * private void constraintViolationIterator(List<ServiceError> errors,

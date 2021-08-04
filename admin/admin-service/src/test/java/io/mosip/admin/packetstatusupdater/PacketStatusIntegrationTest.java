@@ -100,6 +100,7 @@ public class PacketStatusIntegrationTest {
 		mockRestServiceServer
 				.expect(requestTo(packetUpdateStatusUrl.toString() + "/" + mandatoryLang.split(",")[0]
 						+ "/1000012232223243224234"))
+
 		.andRespond(withSuccess().body(POSITIVE_RESPONSE_REG_PROC));
 		
 		mockMvc.perform(
@@ -165,6 +166,7 @@ public class PacketStatusIntegrationTest {
 		mockRestServiceServer
 				.expect(requestTo(packetUpdateStatusUrl.toString() + "/" + mandatoryLang.split(",")[0]
 						+ "/1000012232223243224234"))
+
 		.andRespond(withStatus(HttpStatus.FORBIDDEN).body(objectMapper.writeValueAsString(validatationResponse)));
 		
 		
@@ -185,6 +187,7 @@ public class PacketStatusIntegrationTest {
 		mockRestServiceServer
 				.expect(requestTo(packetUpdateStatusUrl.toString() + "/" + mandatoryLang.split(",")[0]
 						+ "/1000012232223243224234"))
+
 		.andRespond(withBadRequest());
 		
 		
@@ -205,6 +208,7 @@ public class PacketStatusIntegrationTest {
 		mockRestServiceServer
 				.expect(requestTo(packetUpdateStatusUrl.toString() + "/" + mandatoryLang.split(",")[0]
 						+ "/1000012232223243224234"))
+
 		.andRespond(withStatus(HttpStatus.FORBIDDEN).body(objectMapper.writeValueAsString(validatationResponse)));
 		
 		mockMvc.perform(
@@ -226,6 +230,7 @@ public class PacketStatusIntegrationTest {
 		mockRestServiceServer
 				.expect(requestTo(packetUpdateStatusUrl.toString() + "/" + mandatoryLang.split(",")[0]
 						+ "/1000012232223243224234"))
+
 		.andRespond(withSuccess().body(objectMapper.writeValueAsString(validatationResponse)));
 		
 		mockMvc.perform(
