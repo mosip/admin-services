@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -80,9 +79,6 @@ public class RegistrationCenterServiceHelper {
 
 	@Autowired
 	private LocationRepository locationRepository;
-
-	@Value("${mosip.mandatory-languages}")
-	private String mandatoryLang;
 
 	@Autowired
 	private PageUtils pageUtils;
@@ -223,9 +219,9 @@ public class RegistrationCenterServiceHelper {
 		List<Location> locations = null;
 		try {
 			if (!langCode.equals("all")) {
-				locations = locationRepository.findAllByLangCodeNonDeleted(langCode);
+				locations = locationRepository.findAllNonDeleted();
 			} else {
-				locations = locationRepository.findAllByLangCodeNonDeleted(mandatoryLang);
+				locations = locationRepository.findAllByLangCodeNonDeleted(langCode);
 			}
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
