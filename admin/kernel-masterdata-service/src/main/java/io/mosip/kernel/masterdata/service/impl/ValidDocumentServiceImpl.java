@@ -209,7 +209,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 			
 			List<ValidDocument> validDocuments = documentRepository.findByDocCategoryCode(docCatCode);
 			for (ValidDocument validDocument : validDocuments) {
-				    if(validDocument.getLangCode().equalsIgnoreCase(langCode))
+				    if(validDocument.getDocumentType().getLangCode().equalsIgnoreCase(langCode))
 				    {
 				    	ValidDocumentMapDto validDocumentDto = new ValidDocumentMapDto();
 				    	validDocumentDto.setDocCategoryCode(validDocument.getDocCategoryCode());
