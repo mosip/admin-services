@@ -169,7 +169,7 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 	 * @return
 	 */
 	@Query(value="SELECT DISTINCT name, lang_code FROM master.dynamic_field WHERE lang_code=?1 and ((cr_dtimes BETWEEN ?2 AND ?3) or (upd_dtimes BETWEEN ?2 AND ?3) or (del_dtimes BETWEEN ?2 AND ?3))",
-			countQuery="SELECT SUM(count) as count FROM (SELECT count(id) FROM master.dynamic_field WHERE lang_code=?1 and ((cr_dtimes BETWEEN ?2 AND ?3) or (upd_dtimes BETWEEN ?2 AND ?3) or (del_dtimes BETWEEN ?2 AND ?3)) GROUP BY name, lang_code) dual",
+			countQuery="SELECT count(id) FROM master.dynamic_field WHERE lang_code=?1 and ((cr_dtimes BETWEEN ?2 AND ?3) or (upd_dtimes BETWEEN ?2 AND ?3) or (del_dtimes BETWEEN ?2 AND ?3)) GROUP BY name, lang_code",
 			nativeQuery = true)
 	Page<Object[]> findAllLatestDynamicFieldNamesByLangCode(String langCode, LocalDateTime lastUpdated,
 															LocalDateTime currentTimeStamp, Pageable pageable);
@@ -180,7 +180,7 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 	 * @return
 	 */
 	@Query(value="SELECT DISTINCT name, lang_code FROM master.dynamic_field WHERE ((cr_dtimes BETWEEN ?1 AND ?2) or (upd_dtimes BETWEEN ?1 AND ?2) or (del_dtimes BETWEEN ?1 AND ?2))",
-			countQuery="SELECT SUM(count) as count FROM (SELECT count(id) FROM master.dynamic_field WHERE ((cr_dtimes BETWEEN ?1 AND ?2) or (upd_dtimes BETWEEN ?1 AND ?2) or (del_dtimes BETWEEN ?1 AND ?2)) GROUP BY name, lang_code) dual",
+			countQuery="SELECT count(id) FROM master.dynamic_field WHERE ((cr_dtimes BETWEEN ?1 AND ?2) or (upd_dtimes BETWEEN ?1 AND ?2) or (del_dtimes BETWEEN ?1 AND ?2)) GROUP BY name, lang_code",
 			nativeQuery= true)
 	Page<Object[]> findAllLatestDynamicFieldNames(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp, Pageable pageable);
 
