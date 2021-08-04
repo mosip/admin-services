@@ -3,23 +3,16 @@ package io.mosip.kernel.masterdata.utils;
 import java.lang.reflect.Field;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,19 +22,16 @@ import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idgenerator.spi.MachineIdGenerator;
 import io.mosip.kernel.core.idgenerator.spi.RegistrationCenterIdGenerator;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
-import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.RegcenterBaseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
-import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.exception.RequestException;
-import io.mosip.kernel.masterdata.exception.ValidationException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
@@ -83,11 +73,10 @@ public class RegistrationCenterValidator {
 	@PostConstruct
 	public void constructRegEx() {
 		supportedLanguages = new HashSet<>(Arrays.asList(optionalLang.split(",")));
-		supportedLanguages.add(mandatoryLang);
+		supportedLanguages.addAll(Arrays.asList(mandatoryLang.split(",")));
 		negRegex = "^(\\-\\d{1,2}\\.\\d{" + minDegits + ",})$";
 		posRegex = "^(\\d{1,2}\\.\\d{" + minDegits + ",})$";
 	}
-
 	@Autowired
 	RegistrationCenterIdGenerator<String> registrationCenterIdGenerator;
 
@@ -332,7 +321,7 @@ public class RegistrationCenterValidator {
 		String latitude = registrationCenterDto.getLatitude();
 		String longitude = registrationCenterDto.getLongitude();
 
-		zoneUserMapValidation(registrationCenterDto, errors, getZoneIdsForUser());
+		zoneUserMapValidation(registrationCenterDto, errors, getZoneIdsForUser(registrationCenterDto.getLangCode()));
 		zoneStartEndTimeGtrValidation(registrationCenterDto, errors);
 		lunchStartEndTimeGrtValidation(registrationCenterDto, errors);
 		formatValidationLongitudeLatitude(errors, latitude, longitude);
@@ -384,9 +373,9 @@ public class RegistrationCenterValidator {
 	}
 
 	// list zone Id mapped with the called user
-	private List<String> getZoneIdsForUser() {
+	private List<String> getZoneIdsForUser(String langCode) {
 		List<String> zoneIds;
-		List<Zone> zones = zoneUtils.getUserLeafZones(mandatoryLang);
+		List<Zone> zones = zoneUtils.getUserLeafZones(langCode);
 		zoneIds = zones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 		return zoneIds;
 	}
@@ -471,129 +460,121 @@ public class RegistrationCenterValidator {
 	// method to validate the primary and secondary language input objects
 	// mandatory
 	// fields
-	public void validatePrimarySencodaryLangMandatoryFields(List<RegCenterPostReqDto> reqRegistrationCenterDto,
-			RegistrationCenterPostResponseDto registrationCenterPostResponseDto, List<String> inputLangCodeList,
-			List<RegCenterPostReqDto> validateRegistrationCenterDtos,
-			List<RegCenterPostReqDto> constraintViolationedSecList, List<ServiceError> errors) {
-		List<ServiceError> secErrors = new ArrayList<>();
-		RegCenterPostReqDto firstObject = null;
-
-		Optional<RegCenterPostReqDto> defualtLangVal = reqRegistrationCenterDto.stream()
-				.filter(i -> i.getLangCode().equals(mandatoryLang)).findAny();
-
-		if (!defualtLangVal.isPresent()) {
-			throw new RequestException(RegistrationCenterErrorCode.DEFAULT_LANGUAGE.getErrorCode(),
-					RegistrationCenterErrorCode.DEFAULT_LANGUAGE.getErrorMessage());
-		}
-
-		for (RegCenterPostReqDto registrationCenterDto : reqRegistrationCenterDto) {
-			if (registrationCenterDto.getLangCode() != null
-					&& registrationCenterDto.getLangCode().equals(mandatoryLang)) {
-				firstObject = registrationCenterDto;
-			} else if ((registrationCenterDto.getLangCode() != null)
-					&& (optionalLang.contains(registrationCenterDto.getLangCode()))) {
-				firstObject = reqRegistrationCenterDto.get(0);
-			}
-		}
-
-		constraintViolationPrimSecLangData(reqRegistrationCenterDto, registrationCenterPostResponseDto,
-				inputLangCodeList, validateRegistrationCenterDtos, constraintViolationedSecList, errors, secErrors,
-				firstObject);
-	}
-
+	/*
+	 * public void
+	 * validatePrimarySencodaryLangMandatoryFields(List<RegCenterPostReqDto>
+	 * reqRegistrationCenterDto, RegistrationCenterPostResponseDto
+	 * registrationCenterPostResponseDto, List<String> inputLangCodeList,
+	 * List<RegCenterPostReqDto> validateRegistrationCenterDtos,
+	 * List<RegCenterPostReqDto> constraintViolationedSecList, List<ServiceError>
+	 * errors) { List<ServiceError> secErrors = new ArrayList<>();
+	 * RegCenterPostReqDto firstObject = null;
+	 * 
+	 * Optional<RegCenterPostReqDto> defualtLangVal =
+	 * reqRegistrationCenterDto.stream() .filter(i ->
+	 * i.getLangCode().equals(mandatoryLang.split(",")[0])).findAny();
+	 * 
+	 * if (!defualtLangVal.isPresent()) { throw new
+	 * RequestException(RegistrationCenterErrorCode.DEFAULT_LANGUAGE.getErrorCode(),
+	 * RegistrationCenterErrorCode.DEFAULT_LANGUAGE.getErrorMessage()); }
+	 * 
+	 * for (RegCenterPostReqDto registrationCenterDto : reqRegistrationCenterDto) {
+	 * if (registrationCenterDto.getLangCode() != null &&
+	 * registrationCenterDto.getLangCode().equals(mandatoryLang.split(",")[0])) {
+	 * firstObject = registrationCenterDto; } else if
+	 * ((registrationCenterDto.getLangCode() != null) &&
+	 * (optionalLang.contains(registrationCenterDto.getLangCode()))) { firstObject =
+	 * reqRegistrationCenterDto.get(0); } }
+	 * 
+	 * constraintViolationPrimSecLangData(reqRegistrationCenterDto,
+	 * registrationCenterPostResponseDto, inputLangCodeList,
+	 * validateRegistrationCenterDtos, constraintViolationedSecList, errors,
+	 * secErrors, firstObject); }
+	 */
 	// method to find the
-	private void constraintViolationPrimSecLangData(List<RegCenterPostReqDto> reqRegistrationCenterDto,
-			RegistrationCenterPostResponseDto registrationCenterPostResponseDto, List<String> inputLangCodeList,
-			List<RegCenterPostReqDto> validateRegistrationCenterDtos,
-			List<RegCenterPostReqDto> constraintViolationedSecList, List<ServiceError> errors,
-			List<ServiceError> secErrors, RegCenterPostReqDto firstObject) {
-		for (RegCenterPostReqDto registrationCenterDto : reqRegistrationCenterDto) {
-
-			ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-			Validator validator = factory.getValidator();
-
-			if ((registrationCenterDto.getLangCode() != null)
-					&& (registrationCenterDto.getLangCode().equalsIgnoreCase(mandatoryLang))) {
-
-				Set<ConstraintViolation<RegCenterPostReqDto>> constraintViolations = validator
-						.validate(registrationCenterDto);
-
-				primaryLanguageValidation(validateRegistrationCenterDtos, errors, registrationCenterDto,
-						constraintViolations);
-
-			} else if ((registrationCenterDto.getLangCode() != null)
-					&& (optionalLang.contains(registrationCenterDto.getLangCode()))) {
-
-				secondaryLangValidation(registrationCenterPostResponseDto, validateRegistrationCenterDtos,
-						constraintViolationedSecList, secErrors, registrationCenterDto, validator, firstObject);
-			} else {
-				errors.add(new ServiceError(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
-						String.format(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage(),
-								registrationCenterDto.getLangCode())));
-				registrationCenterPostResponseDto.setConstraintViolationError(errors);
-			}
-			inputLangCodeList.add(registrationCenterDto.getLangCode());
-		}
-	}
-
-	private void primaryLanguageValidation(List<RegCenterPostReqDto> validateRegistrationCenterDtos,
-			List<ServiceError> errors, RegCenterPostReqDto registrationCenterDto,
-			Set<ConstraintViolation<RegCenterPostReqDto>> constraintViolations) {
-		if (!constraintViolations.isEmpty()) {
-			constraintViolationIterator(errors, registrationCenterDto, constraintViolations);
-			if (!errors.isEmpty())
-				throw new ValidationException(errors);
-		} else {
-			// call method to validate Zone-Id, longitude and latitude
-			// validateRegCenterCreateReq(registrationCenterDto, errors);
-			if (!errors.isEmpty()) {
-				throw new ValidationException(errors);
-			}
-			// add primary language Object to list after all validation are true
-			validateRegistrationCenterDtos.add(registrationCenterDto);
-		}
-	}
-
-	// secondary language validation
-	public void secondaryLangValidation(RegistrationCenterPostResponseDto registrationCenterPostResponseDto,
-			List<RegCenterPostReqDto> validateRegistrationCenterDtos,
-			List<RegCenterPostReqDto> constraintViolationedSecList, List<ServiceError> errors,
-			RegCenterPostReqDto registrationCenterDto, Validator validator, RegCenterPostReqDto firstObject) {
-		Set<ConstraintViolation<RegCenterPostReqDto>> constraintViolations = validator.validate(registrationCenterDto);
-		if (!constraintViolations.isEmpty()) {
-			constraintViolationIterator(errors, registrationCenterDto, constraintViolations);
-			if (!errors.isEmpty()) {
-				registrationCenterPostResponseDto.setConstraintViolationError(errors);
-			}
-			constraintViolationedSecList.add(registrationCenterDto);
-
-		} else {
-			// isValid(firstObject, registrationCenterDto, errors);
-			// validateRegCenterCreateReq(registrationCenterDto, errors);
-			if (!errors.isEmpty()) {
-				registrationCenterPostResponseDto.setConstraintViolationError(errors);
-				constraintViolationedSecList.add(registrationCenterDto);
-			} else {
-				validateRegistrationCenterDtos.add(registrationCenterDto);
-			}
-
-		}
-	}
-
+	/*
+	 * private void constraintViolationPrimSecLangData(List<RegCenterPostReqDto>
+	 * reqRegistrationCenterDto, RegistrationCenterPostResponseDto
+	 * registrationCenterPostResponseDto, List<String> inputLangCodeList,
+	 * List<RegCenterPostReqDto> validateRegistrationCenterDtos,
+	 * List<RegCenterPostReqDto> constraintViolationedSecList, List<ServiceError>
+	 * errors, List<ServiceError> secErrors, RegCenterPostReqDto firstObject) { for
+	 * (RegCenterPostReqDto registrationCenterDto : reqRegistrationCenterDto) {
+	 * 
+	 * ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+	 * Validator validator = factory.getValidator();
+	 * 
+	 * if ((registrationCenterDto.getLangCode() != null) &&
+	 * (registrationCenterDto.getLangCode().equalsIgnoreCase(mandatoryLang.split(","
+	 * )[0]))) {
+	 * 
+	 * Set<ConstraintViolation<RegCenterPostReqDto>> constraintViolations =
+	 * validator .validate(registrationCenterDto);
+	 * 
+	 * primaryLanguageValidation(validateRegistrationCenterDtos, errors,
+	 * registrationCenterDto, constraintViolations);
+	 * 
+	 * } else if ((registrationCenterDto.getLangCode() != null) &&
+	 * (optionalLang.contains(registrationCenterDto.getLangCode()))) {
+	 * 
+	 * secondaryLangValidation(registrationCenterPostResponseDto,
+	 * validateRegistrationCenterDtos, constraintViolationedSecList, secErrors,
+	 * registrationCenterDto, validator, firstObject); } else { errors.add(new
+	 * ServiceError(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
+	 * String.format(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage(
+	 * ), registrationCenterDto.getLangCode())));
+	 * registrationCenterPostResponseDto.setConstraintViolationError(errors); }
+	 * inputLangCodeList.add(registrationCenterDto.getLangCode()); } }
+	 */
+	/*
+	 * private void primaryLanguageValidation(List<RegCenterPostReqDto>
+	 * validateRegistrationCenterDtos, List<ServiceError> errors,
+	 * RegCenterPostReqDto registrationCenterDto,
+	 * Set<ConstraintViolation<RegCenterPostReqDto>> constraintViolations) { if
+	 * (!constraintViolations.isEmpty()) { constraintViolationIterator(errors,
+	 * registrationCenterDto, constraintViolations); if (!errors.isEmpty()) throw
+	 * new ValidationException(errors); } else { // call method to validate Zone-Id,
+	 * longitude and latitude // validateRegCenterCreateReq(registrationCenterDto,
+	 * errors); if (!errors.isEmpty()) { throw new ValidationException(errors); } //
+	 * add primary language Object to list after all validation are true
+	 * validateRegistrationCenterDtos.add(registrationCenterDto); } }
+	 * 
+	 * // secondary language validation public void
+	 * secondaryLangValidation(RegistrationCenterPostResponseDto
+	 * registrationCenterPostResponseDto, List<RegCenterPostReqDto>
+	 * validateRegistrationCenterDtos, List<RegCenterPostReqDto>
+	 * constraintViolationedSecList, List<ServiceError> errors, RegCenterPostReqDto
+	 * registrationCenterDto, Validator validator, RegCenterPostReqDto firstObject)
+	 * { Set<ConstraintViolation<RegCenterPostReqDto>> constraintViolations =
+	 * validator.validate(registrationCenterDto); if
+	 * (!constraintViolations.isEmpty()) { constraintViolationIterator(errors,
+	 * registrationCenterDto, constraintViolations); if (!errors.isEmpty()) {
+	 * registrationCenterPostResponseDto.setConstraintViolationError(errors); }
+	 * constraintViolationedSecList.add(registrationCenterDto);
+	 * 
+	 * } else { // isValid(firstObject, registrationCenterDto, errors); //
+	 * validateRegCenterCreateReq(registrationCenterDto, errors); if
+	 * (!errors.isEmpty()) {
+	 * registrationCenterPostResponseDto.setConstraintViolationError(errors);
+	 * constraintViolationedSecList.add(registrationCenterDto); } else {
+	 * validateRegistrationCenterDtos.add(registrationCenterDto); }
+	 * 
+	 * } }
+	 */
 	// List constraint violation iterator
-	private void constraintViolationIterator(List<ServiceError> errors, RegCenterPostReqDto registrationCenterDto,
-			Set<ConstraintViolation<RegCenterPostReqDto>> constraintViolations) {
-
-		Iterator<ConstraintViolation<RegCenterPostReqDto>> iterator = constraintViolations.iterator();
-		while (iterator.hasNext()) {
-			ConstraintViolation<RegCenterPostReqDto> cv = iterator.next();
-			errors.add(new ServiceError(ValidationErrorCode.CONSTRAINT_VIOLATION.getErrorCode(),
-					ValidationErrorCode.CONSTRAINT_VIOLATION.getErrorMessage() + " for the LangCode- "
-							+ registrationCenterDto.getLangCode() + " - " + cv.getPropertyPath() + " "
-							+ cv.getMessage()));
-		}
-	}
-
+	/*
+	 * private void constraintViolationIterator(List<ServiceError> errors,
+	 * RegCenterPostReqDto registrationCenterDto,
+	 * Set<ConstraintViolation<RegCenterPostReqDto>> constraintViolations) {
+	 * 
+	 * Iterator<ConstraintViolation<RegCenterPostReqDto>> iterator =
+	 * constraintViolations.iterator(); while (iterator.hasNext()) {
+	 * ConstraintViolation<RegCenterPostReqDto> cv = iterator.next(); errors.add(new
+	 * ServiceError(ValidationErrorCode.CONSTRAINT_VIOLATION.getErrorCode(),
+	 * ValidationErrorCode.CONSTRAINT_VIOLATION.getErrorMessage() +
+	 * " for the LangCode- " + registrationCenterDto.getLangCode() + " - " +
+	 * cv.getPropertyPath() + " " + cv.getMessage())); } }
+	 */
 	// map DTO to Entity
 	public <T extends RegcenterBaseDto> void mapBaseDtoEntity(RegistrationCenter registrationCenterEntity,
 			T registrationCenterDto) {
@@ -783,8 +764,8 @@ public class RegistrationCenterValidator {
 
 	public void validateRegCenterUpdate(String zoneCode,LocalTime centerStartTime, LocalTime centerEndTime,
 			LocalTime lunchStartingTime, LocalTime lunchEndingTime, String latitude, String longitude,
-			Map<String, Boolean> workingNonWorkingDaysDto, List<ServiceError> errors) {
-		zoneUserMapValidation(zoneCode, errors, getZoneIdsForUser());
+			Map<String, Boolean> workingNonWorkingDaysDto, String langCode, List<ServiceError> errors) {
+		zoneUserMapValidation(zoneCode, errors, getZoneIdsForUser(langCode));
 		zoneStartEndTimeGtrValidation(centerStartTime,centerEndTime, errors);
 		lunchStartEndTimeGrtValidation(lunchStartingTime, lunchEndingTime, centerStartTime, centerEndTime, errors);
 		formatValidationLongitudeLatitude(errors, latitude, longitude);

@@ -1218,7 +1218,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					regCenterPutReqDto.getCenterStartTime(), regCenterPutReqDto.getCenterEndTime(),
 					regCenterPutReqDto.getLunchStartTime(), regCenterPutReqDto.getLunchEndTime(),
 					regCenterPutReqDto.getLatitude(), regCenterPutReqDto.getLongitude(),
-					regCenterPutReqDto.getWorkingNonWorkingDays(), errors);
+					regCenterPutReqDto.getWorkingNonWorkingDays(), regCenterPutReqDto.getLangCode(), errors);
 			if (!errors.isEmpty()) {
 
 				throw new ValidationException(errors);
@@ -1663,7 +1663,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				dto.getCenterStartTime(), dto.getCenterEndTime(),
 				dto.getLunchStartTime(), dto.getLunchEndTime(),
 				dto.getLatitude(), dto.getLongitude(),
-				dto.getWorkingNonWorkingDays(), errors);
+				dto.getWorkingNonWorkingDays(), "all", errors);
 		if (!errors.isEmpty()) {
 			throw new ValidationException(errors);
 		}
