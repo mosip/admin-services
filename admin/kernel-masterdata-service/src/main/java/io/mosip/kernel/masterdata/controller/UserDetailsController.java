@@ -155,8 +155,8 @@ public class UserDetailsController {
 	 */
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
-	@DeleteMapping("/users/{id}/")
-	@ApiOperation(value = "Service to map Users with regcenter", notes = "deletes User Detail and return User id")
+	@DeleteMapping("/users/{id}")
+	@ApiOperation(value = "Service to delete User", notes = "delete the User Detail and return User id")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When User and Registration center successfully mapped"),
 			@ApiResponse(code = 400, message = "When Request is invalid"),
 			@ApiResponse(code = 404, message = "When No Regcenter found"),

@@ -195,19 +195,21 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	public IdResponseDto deleteUser(String id) {
 		IdResponseDto idResponse = new IdResponseDto();
 		try {
-			Optional<UserDetails> ud = userDetailsRepository.findById(id);
-			ud.ifPresent(user -> {
-				userDetailsRepository.delete(user);
-				UserDetailsHistory udh = new UserDetailsHistory();
-				MapperUtils.map(user, udh);
-				MapperUtils.setBaseFieldValue(user, udh);
-				udh.setIsActive(false);
-				udh.setIsDeleted(true);
-				udh.setCreatedBy(MetaDataUtils.getContextUser());
-				udh.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
-				userDetailsHistoryService.createUserDetailsHistory(udh);
-				MapperUtils.map(user, idResponse);
-			} );
+			UserDetails userDetails = userDetailsRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(id);
+			if (userDetails == null)
+				throw new MasterDataServiceException(UserDetailsErrorCode.USER_NOT_FOUND.getErrorCode(),
+						UserDetailsErrorCode.USER_NOT_FOUND.getErrorMessage());
+			userDetailsRepository.delete(userDetails);
+			UserDetailsHistory udh = new UserDetailsHistory();
+			MapperUtils.map(userDetails, udh);
+			MapperUtils.setBaseFieldValue(userDetails, udh);
+			udh.setIsActive(false);
+			udh.setIsDeleted(true);
+			udh.setCreatedBy(MetaDataUtils.getContextUser());
+			udh.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
+			userDetailsHistoryService.createUserDetailsHistory(udh);
+			MapperUtils.map(userDetails, idResponse);
+
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException 
 		 | SecurityException e) {
 			auditUtil.auditRequest(
