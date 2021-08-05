@@ -206,7 +206,6 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 		List<ValidDocumentMapDto> validDocumentDtos = new ArrayList<ValidDocumentMapDto>();
 		DocumentType documentType = null;
 		try {
-
 			List<ValidDocument> validDocuments = documentRepository.findByDocCategoryCode(docCatCode);
 			for (ValidDocument validDocument : validDocuments) {
 				documentType = documentTypeRepository.findByCodeAndLangCode(validDocument.getDocTypeCode(), langCode);
@@ -220,7 +219,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(ValidDocumentErrorCode.VALID_DOCUMENT_FETCH_EXCEPTION.getErrorCode(),
+		throw new MasterDataServiceException(ValidDocumentErrorCode.VALID_DOCUMENT_FETCH_EXCEPTION.getErrorCode(),
 					ValidDocumentErrorCode.VALID_DOCUMENT_FETCH_EXCEPTION.getErrorMessage());
 		}
 		return validDocumentDtos;
