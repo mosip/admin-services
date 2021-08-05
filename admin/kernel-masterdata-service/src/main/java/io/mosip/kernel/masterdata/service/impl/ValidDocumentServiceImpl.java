@@ -204,25 +204,22 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	public List<ValidDocumentMapDto> getValidDocumentByDocCategoryCode(String docCatCode, String langCode) {
 		
 		List<ValidDocumentMapDto> validDocumentDtos = new ArrayList<ValidDocumentMapDto>();
-		DocumentType documentType=null;
+		DocumentType documentType = null;
 		try {
-			
 			List<ValidDocument> validDocuments = documentRepository.findByDocCategoryCode(docCatCode);
 			for (ValidDocument validDocument : validDocuments) {
-				    if(validDocument.getDocumentType().getLangCode().equalsIgnoreCase(langCode))
-				    {
-				    	ValidDocumentMapDto validDocumentDto = new ValidDocumentMapDto();
-				    	validDocumentDto.setDocCategoryCode(validDocument.getDocCategoryCode());
-						validDocumentDto.setDocTypeCode(validDocument.getDocTypeCode());
-						validDocumentDto.setDocTypeName(validDocument.getDocumentType().getName());
-						validDocumentDto.setIsActive(validDocument.getIsActive());
-						validDocumentDto.setLangCode(validDocument.getLangCode());
-						validDocumentDtos.add(validDocumentDto);
-				    }
-				
-				}		
-			} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(ValidDocumentErrorCode.VALID_DOCUMENT_FETCH_EXCEPTION.getErrorCode(),
+				documentType = documentTypeRepository.findByCodeAndLangCode(validDocument.getDocTypeCode(), langCode);
+				ValidDocumentMapDto validDocumentDto = new ValidDocumentMapDto();
+				validDocumentDto.setDocCategoryCode(validDocument.getDocCategoryCode());
+				validDocumentDto.setDocTypeCode(validDocument.getDocTypeCode());
+				validDocumentDto.setDocTypeName(documentType.getName());
+				validDocumentDto.setIsActive(validDocument.getIsActive());
+				validDocumentDto.setLangCode(validDocument.getLangCode());
+				validDocumentDtos.add(validDocumentDto);
+
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+		throw new MasterDataServiceException(ValidDocumentErrorCode.VALID_DOCUMENT_FETCH_EXCEPTION.getErrorCode(),
 					ValidDocumentErrorCode.VALID_DOCUMENT_FETCH_EXCEPTION.getErrorMessage());
 		}
 		return validDocumentDtos;
