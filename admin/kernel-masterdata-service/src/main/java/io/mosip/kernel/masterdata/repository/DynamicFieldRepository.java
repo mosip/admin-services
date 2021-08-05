@@ -179,7 +179,7 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 	 * @param pageable
 	 * @return
 	 */
-	@Query(value="SELECT DISTINCT name, lang_code FROM master.dynamic_field WHERE ((cr_dtimes BETWEEN ?1 AND ?2) or (upd_dtimes BETWEEN ?1 AND ?2) or (del_dtimes BETWEEN ?1 AND ?2))",
+	@Query(value="SELECT DISTINCT name, lang_code FROM master.dynamic_field WHERE ((cr_dtimes BETWEEN ?1 AND ?2) or (upd_dtimes BETWEEN ?1 AND ?2) or (del_dtimes BETWEEN ?1 AND ?2)) ORDER BY name, lang_code",
 			countQuery="SELECT count(id) FROM master.dynamic_field WHERE ((cr_dtimes BETWEEN ?1 AND ?2) or (upd_dtimes BETWEEN ?1 AND ?2) or (del_dtimes BETWEEN ?1 AND ?2)) GROUP BY name, lang_code",
 			nativeQuery= true)
 	Page<Object[]> findAllLatestDynamicFieldNames(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp, Pageable pageable);
