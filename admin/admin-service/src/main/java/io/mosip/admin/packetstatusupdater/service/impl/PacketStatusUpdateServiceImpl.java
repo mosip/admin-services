@@ -88,8 +88,8 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	@Value("${mosip.kernel.zone-validation-url}")
 	private String zoneValidationUrl;
 
-	@Value("${mosip.mandatory-languages}")
-	private String mandatoryLang;
+	@Value("${mosip.supported-languages}")
+	private String supportedLang;
 
 	/** The rest template. */
 	@Autowired
@@ -114,21 +114,24 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	 * getStatus(java.lang.String)
 	 */
 	@Override
-	public PacketStatusUpdateResponseDto getStatus(String rId) {
+	public PacketStatusUpdateResponseDto getStatus(String rId, String langCode) {
 
+		if (langCode == null) {
+			langCode = supportedLang.split(",")[0];
+		}
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE,rId));
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();	
 		for(GrantedAuthority x:authentication.getAuthorities()) {
 			if(x.getAuthority().equals("ROLE_GLOBAL_ADMIN")) {		
 				auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS);
-				return getPacketStatus(rId);
+				return getPacketStatus(rId, langCode);
 			}
 		}	
 		if(!authorizeRidWithZone(rId)) {
 			return null;
 		}
 		auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS);
-		return getPacketStatus(rId);
+		return getPacketStatus(rId, langCode);
 	}
 
 	/**
@@ -139,13 +142,14 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	 * @return the packet status
 	 */
 	@SuppressWarnings({ "unchecked" })
-	private PacketStatusUpdateResponseDto getPacketStatus(String rId) {
+	private PacketStatusUpdateResponseDto getPacketStatus(String rId, String langCode) {
 		try {
 
 			HttpHeaders packetHeaders = new HttpHeaders();
 			packetHeaders.setContentType(MediaType.APPLICATION_JSON);
 			StringBuilder urlBuilder = new StringBuilder();
-			urlBuilder.append(packetUpdateStatusUrl).append(SLASH).append(mandatoryLang).append(SLASH).append(rId);
+			urlBuilder.append(packetUpdateStatusUrl).append(SLASH).append(langCode).append(SLASH)
+					.append(rId);
 			RestTemplate restTemplate1=new RestTemplate();
 			ResponseEntity<String> response = restTemplate1.exchange(urlBuilder.toString(), HttpMethod.GET, setRequestHeader(),
 					String.class);

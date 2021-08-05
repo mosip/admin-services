@@ -6295,31 +6295,31 @@ public class MasterdataIntegrationTest {
 	private List<Zone> getZones() {
 		Zone zone = new Zone();
 		zone.setCode("JRD");
-		zone.setLangCode(mandatoryLang);
+		zone.setLangCode(mandatoryLang.split(",")[0]);
 		zone.setHierarchyPath("MOR/NTH/ORT/JRD");
 		Zone zone1 = new Zone();
 		zone1.setCode("TZT");
-		zone1.setLangCode(mandatoryLang);
+		zone1.setLangCode(mandatoryLang.split(",")[0]);
 		zone1.setHierarchyPath("MOR/STH/SOS/TZT");
 		Zone zone2 = new Zone();
 		zone2.setCode("TTA");
-		zone2.setLangCode(mandatoryLang);
+		zone2.setLangCode(mandatoryLang.split(",")[0]);
 		zone2.setHierarchyPath("MOR/STH/SOS/TTA");
 		Zone zone3 = new Zone();
 		zone3.setCode("BRT");
-		zone3.setLangCode(mandatoryLang);
+		zone3.setLangCode(mandatoryLang.split(",")[0]);
 		zone3.setHierarchyPath("MOR/NTH/ORT/BRK");
 		Zone zone4 = new Zone();
 		zone4.setCode("CST");
-		zone4.setLangCode(mandatoryLang);
+		zone4.setLangCode(mandatoryLang.split(",")[0]);
 		zone4.setHierarchyPath("MOR/NTH/ORT/CST");
 		Zone zone6 = new Zone();
 		zone6.setCode("NTH");
-		zone6.setLangCode(mandatoryLang);
+		zone6.setLangCode(mandatoryLang.split(",")[0]);
 		zone6.setHierarchyPath("MOR/NTH");
 		Zone zone5 = new Zone();
 		zone5.setCode("NTH");
-		zone5.setLangCode(mandatoryLang);
+		zone5.setLangCode(mandatoryLang.split(",")[0]);
 		zone5.setHierarchyPath("MOR/STH");
 
 		return Arrays.asList(zone, zone1, zone2, zone3, zone4, zone5, zone6);
