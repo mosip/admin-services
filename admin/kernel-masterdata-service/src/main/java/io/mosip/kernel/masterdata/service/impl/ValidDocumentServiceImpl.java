@@ -212,7 +212,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 				ValidDocumentMapDto validDocumentDto = new ValidDocumentMapDto();
 				validDocumentDto.setDocCategoryCode(validDocument.getDocCategoryCode());
 				validDocumentDto.setDocTypeCode(validDocument.getDocTypeCode());
-				validDocumentDto.setDocTypeName(documentType.getName());
+				validDocumentDto.setDocTypeName((documentType == null) ? ("") : (documentType.getName()));
 				validDocumentDto.setIsActive(validDocument.getIsActive());
 				validDocumentDto.setLangCode(validDocument.getLangCode());
 				validDocumentDtos.add(validDocumentDto);

@@ -498,19 +498,14 @@ public class MachineServiceImpl implements MachineService {
 	 * @param list the {@link MachineSearchDto}.
 	 */
 	private void setMapStatus(List<MachineSearchDto> list) {
-		List<Machine> machineList = machineRepository.getAllMachines();
 		List<RegistrationCenter> registrationCenterList = machineUtil.getAllRegistrationCenters();
 		list.forEach(machineSearchDto -> {
-			machineList.forEach(machine -> {
-				if (machine.getId().equals(machineSearchDto.getId())) {
-					String regId = machine.getRegCenterId();
-					registrationCenterList.forEach(registrationCenter -> {
-						if (registrationCenter.getId().equals(regId)) {
-							machineSearchDto.setMapStatus(registrationCenter.getName());
-						}
-					});
-				}
-			});
+				String regId = machineSearchDto.getRegCenterId();
+				registrationCenterList.forEach(registrationCenter -> {
+					if (registrationCenter.getId().equals(regId)) {
+						machineSearchDto.setMapStatus(registrationCenter.getName());
+					}
+				});
 		});
 	}
 
