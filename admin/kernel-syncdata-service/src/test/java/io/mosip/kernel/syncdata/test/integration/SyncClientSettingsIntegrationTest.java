@@ -448,16 +448,7 @@ public class SyncClientSettingsIntegrationTest {
 		registrationCenterMachine.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		registrationCenterMachine.setIsDeleted(false);
 		registrationCenterMachines.add(registrationCenterMachine);
-		registrationCenterDevices = new ArrayList<>();
-		Device registrationCenterDevice = new Device();
-		registrationCenterDevice.setRegCenterId("10002");
-		registrationCenterDevice.setId("10001");
-		registrationCenterDevice.setIsActive(true);
-		registrationCenterDevice.setLangCode("eng");
-		registrationCenterDevice.setCreatedBy("admin");
-		registrationCenterDevice.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-		registrationCenterDevice.setIsDeleted(false);
-		registrationCenterDevices.add(registrationCenterDevice);
+
 		
 		registrationCenterUsers = new ArrayList<>();
 		UserDetails user=new UserDetails();
@@ -551,32 +542,6 @@ public class SyncClientSettingsIntegrationTest {
 		screenDetail.setLangCode("eng");
 		screenDetailList = new ArrayList<>();
 		screenDetailList.add(screenDetail);
-
-		deviceService = new DeviceService();
-		deviceService.setId("1111");
-		deviceService.setDProviderId("10001");
-		deviceService.setSwVersion("0.1v");
-
-		deviceProvider = new DeviceProvider();
-		deviceProvider.setId("1111");
-
-		registeredDevice = new RegisteredDevice();
-		registeredDevice.setDeviceId("10001");
-		registeredDevice.setStatusCode("Registered");
-		registeredDevice.setExpiryDate(LocalDateTime.now());
-
-		deviceTypeDPM = new DeviceTypeDPM();
-		deviceTypeDPM.setCode("1111");
-		deviceTypeDPM.setName("devicetype");
-
-		deviceSubTypeDPM = new DeviceSubTypeDPM();
-		deviceSubTypeDPM.setCode("1234");
-		deviceSubTypeDPM.setDtypeCode("1111");
-		deviceSubTypeDPM.setName("deviceSubType");
-
-		foundationalTrustProvider = new FoundationalTrustProvider();
-		foundationalTrustProvider.setId("11111");
-		foundationalTrustProvider.setName("ftps");
 		
 		signResponse = new SignatureResponse();
 		signResponse.setData("asdasdsadf4e");
@@ -737,18 +702,24 @@ public class SyncClientSettingsIntegrationTest {
 	
 		
 	private String syncDataUrl = "/clientsettings?lastUpdated=2018-11-01T12:10:01.021Z&keyindex=abcd";
-		
 	private String syncDataUrlWithoutInput = "/clientsettings";
 	private String syncDataUrlWithOnlyLastUpdated = "/clientsettings?lastUpdated=2018-11-01T12:10:01.021Z";
 	private String syncDataUrlWithOnlyKeyIndex = "/clientsettings?keyindex=abcd";
-	
 	private String syncDataUrlRegCenterId = "/clientsettings/{regcenterId}";
 	private String syncDataUrlRegCenterIdWithKeyIndex = "/clientsettings/{regcenterId}?keyindex=abcd";
 	private String syncDataUrlRegCenterIdWithKeyIndexAndLastUpdated = "/clientsettings/{regcenterId}?keyindex=abcd&lastUpdated=2018-11-01T12:10:01.021Z";
-	
 	private String syncDataUrlWithInvalidTimestamp = "/clientsettings?lastUpdated=2018-15-01T123:101:01.021Z&keyindex=abcd";
 	private String syncDataUrlWithKeyIndexAndRegCenterId = "/clientsettings?keyindex=abcd&regcenterId=1002";
 
+	private String v2syncDataUrl = "/v2/clientsettings?lastUpdated=2018-11-01T12:10:01.021Z&keyindex=abcd";
+	private String v2syncDataUrlWithoutInput = "/v2/clientsettings";
+	private String v2syncDataUrlWithOnlyLastUpdated = "/v2/clientsettings?lastUpdated=2018-11-01T12:10:01.021Z";
+	private String v2syncDataUrlWithOnlyKeyIndex = "/v2/clientsettings?keyindex=abcd";
+	private String v2syncDataUrlRegCenterId = "/v2/clientsettings/{regcenterId}";
+	private String v2syncDataUrlRegCenterIdWithKeyIndex = "/v2/clientsettings/{regcenterId}?keyindex=abcd";
+	private String v2syncDataUrlRegCenterIdWithKeyIndexAndLastUpdated = "/v2/clientsettings/{regcenterId}?keyindex=abcd&lastUpdated=2018-11-01T12:10:01.021Z";
+	private String v2syncDataUrlWithInvalidTimestamp = "/v2/clientsettings?lastUpdated=2018-15-01T123:101:01.021Z&keyindex=abcd";
+	private String v2syncDataUrlWithKeyIndexAndRegCenterId = "/v2/clientsettings?keyindex=abcd&regcenterId=1002";
 	
 
 	
@@ -758,6 +729,19 @@ public class SyncClientSettingsIntegrationTest {
 	public void syncSuccess() throws Exception {
 		mockSuccess();
 		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
+		try {
+			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
+			assertNotNull(jsonObject.get("response"));
+		} catch(Throwable t) {
+			Assert.fail("Not expected response!");
+		}
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void v2syncSuccess() throws Exception {
+		mockSuccess();
+		MvcResult result = mockMvc.perform(get(v2syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertNotNull(jsonObject.get("response"));
@@ -778,23 +762,36 @@ public class SyncClientSettingsIntegrationTest {
 			Assert.fail("Not expected response!");
 		}
 	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void v2syncSuccessWithOnlyKeyIndex() throws Exception {
+		mockSuccess();
+		MvcResult result = mockMvc.perform(get(v2syncDataUrlWithOnlyKeyIndex)).andExpect(status().isOk()).andReturn();
+		try {
+			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
+			assertNotNull(jsonObject.get("response"));
+		} catch(Throwable t) {
+			Assert.fail("Not expected response!");
+		}
+	}
 	
 	
 		
-	@Test
+	/*@Test
 	@WithUserDetails(value = "reg-officer")
 	public void syncSuccessBasedOnRegCenterIdWithKeyIndex() throws Exception {
 		mockSuccess();
 		mockMvc.perform(get(syncDataUrlRegCenterIdWithKeyIndex, "1001")).andExpect(status().isOk());
-	}
+	}*/
 	
-	@Test
+	/*@Test
 	@WithUserDetails(value = "reg-officer")
 	public void syncSuccessBasedOnRegCenterIdWithKeyIndexAndLastUpdated() throws Exception {
 		mockSuccess();
 		mockMvc.perform(get(syncDataUrlRegCenterIdWithKeyIndexAndLastUpdated, "1001")).andExpect(status().isOk());
-	}
-	
+	}*/
+
 	@Test
 	@WithUserDetails(value = "reg-officer")
 	public void syncFailureWithoutAnyInput() throws Exception {
@@ -806,12 +803,25 @@ public class SyncClientSettingsIntegrationTest {
 		} catch(Throwable t) {
 			Assert.fail("Not expected response!");
 		}
-	}	
-	
+	}
+
 	@Test
 	@WithUserDetails(value = "reg-officer")
+	public void v2syncFailureWithoutAnyInput() throws Exception {
+		mockSuccess();
+		MvcResult result = mockMvc.perform(get(v2syncDataUrlWithoutInput)).andExpect(status().isInternalServerError()).andReturn();
+		try {
+			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
+			assertEquals(JSONObject.NULL,jsonObject.get("response"));
+		} catch(Throwable t) {
+			Assert.fail("Not expected response!");
+		}
+	}
+	
+	/*@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncFailureWithOnlyRegCenterId() throws Exception {
-		mockSuccess();		
+		mockSuccess();
 		MvcResult result = mockMvc.perform(get(syncDataUrlRegCenterId, "1001")).andExpect(status().isInternalServerError()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
@@ -819,7 +829,7 @@ public class SyncClientSettingsIntegrationTest {
 		} catch(Throwable t) {
 			Assert.fail("Not expected response!");
 		}
-	}	
+	}*/
 	
 	@Test
 	@WithUserDetails(value = "reg-officer")
@@ -836,9 +846,35 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
+	public void v2syncWithOnlyUpdatedTime() throws Exception {
+		mockSuccess();
+		MvcResult result = mockMvc.perform(get(v2syncDataUrlWithOnlyLastUpdated)).andExpect(status().isInternalServerError()).andReturn();
+		try {
+			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
+			assertEquals(JSONObject.NULL,jsonObject.get("response"));
+		} catch(Throwable t) {
+			Assert.fail("Not expected response!");
+		}
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncFailureWithInvalidTimeStamp() throws Exception {
 		mockSuccess();
 		MvcResult result = mockMvc.perform(get(syncDataUrlWithInvalidTimestamp)).andExpect(status().isOk()).andReturn();
+		try {
+			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
+			assertEquals(JSONObject.NULL,jsonObject.get("response"));
+		} catch(Throwable t) {
+			Assert.fail("Not expected response!");
+		}
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void v2syncFailureWithInvalidTimeStamp() throws Exception {
+		mockSuccess();
+		MvcResult result = mockMvc.perform(get(v2syncDataUrlWithInvalidTimestamp)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -866,11 +902,42 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
+	public void v2syncApplicationFetchException() throws Exception {
+		mockSuccess();
+		when(applicationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+
+		MvcResult result = mockMvc.perform(get(v2syncDataUrl)).andExpect(status().isOk()).andReturn();
+		try {
+			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
+			assertEquals(JSONObject.NULL,jsonObject.get("response"));
+		} catch(Throwable t) {
+			Assert.fail("Not expected response!");
+		}
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataMachineFetchException() throws Exception {
 		mockSuccess();
 		when(machineRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
+		try {
+			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
+			assertEquals(JSONObject.NULL,jsonObject.get("response"));
+		} catch(Throwable t) {
+			Assert.fail("Not expected response!");
+		}
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void v2syncMasterDataMachineFetchException() throws Exception {
+		mockSuccess();
+		when(machineRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		MvcResult result = mockMvc.perform(get(v2syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -895,6 +962,20 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
+	public void v2syncMasterDataMachineSpecFetchException() throws Exception {
+		mockSuccess();
+		when(machineSpecificationRepository.findLatestByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		MvcResult result = mockMvc.perform(get(v2syncDataUrl)).andExpect(status().isOk()).andReturn();
+		try {
+			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
+			assertEquals(JSONObject.NULL,jsonObject.get("response"));
+		} catch(Throwable t) {
+			Assert.fail("Not expected response!");}
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataMachineTypeFetchException() throws Exception {
 		mockSuccess();
 		when(machineTypeRepository.findLatestByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
@@ -909,11 +990,11 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataDeviceFetchException() throws Exception {
+	public void v2syncMasterDataMachineTypeFetchException() throws Exception {
 		mockSuccess();
-		when(deviceRepository.findLatestDevicesByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
+		when(machineTypeRepository.findLatestByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
+		MvcResult result = mockMvc.perform(get(v2syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -921,33 +1002,6 @@ public class SyncClientSettingsIntegrationTest {
 			Assert.fail("Not expected response!");}
 	}
 
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataDeviceSpecFetchException() throws Exception {
-		mockSuccess();
-		when(deviceSpecificationRepository.findLatestDeviceTypeByRegCenterId(Mockito.anyString(), Mockito.any(),
-				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-	}
-
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataDeviceTypeFetchException() throws Exception {
-		mockSuccess();
-		when(deviceTypeRepository.findLatestDeviceTypeByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-	}
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
@@ -956,6 +1010,20 @@ public class SyncClientSettingsIntegrationTest {
 		when(templateRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
+		try {
+			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
+			assertEquals(JSONObject.NULL,jsonObject.get("response"));
+		} catch(Throwable t) {
+			Assert.fail("Not expected response!");}
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void v2syncMasterDataTemplateFetchException() throws Exception {
+		mockSuccess();
+		when(templateRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		MvcResult result = mockMvc.perform(get(v2syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -979,11 +1047,39 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
+	public void v2syncMasterDataTemplateFileFormatFetchException() throws Exception {
+		mockSuccess();
+		when(templateFileFormatRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		MvcResult result = mockMvc.perform(get(v2syncDataUrl)).andExpect(status().isOk()).andReturn();
+		try {
+			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
+			assertEquals(JSONObject.NULL,jsonObject.get("response"));
+		} catch(Throwable t) {
+			Assert.fail("Not expected response!");}
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataTemplateTypeFetchException() throws Exception {
 		mockSuccess();
 		when(templateTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
+		try {
+			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
+			assertEquals(JSONObject.NULL,jsonObject.get("response"));
+		} catch(Throwable t) {
+			Assert.fail("Not expected response!");}
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void v2syncMasterDataTemplateTypeFetchException() throws Exception {
+		mockSuccess();
+		when(templateTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		MvcResult result = mockMvc.perform(get(v2syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 			assertEquals(JSONObject.NULL,jsonObject.get("response"));
@@ -1005,33 +1101,6 @@ public class SyncClientSettingsIntegrationTest {
 			Assert.fail("Not expected response!");}
 	}
 
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataBiometricAttrFetchException() throws Exception {
-		mockSuccess();
-		when(biometricAttributeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-	}
-
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataBiometricTypeFetchException() throws Exception {
-		mockSuccess();
-		when(biometricTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-	}
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
@@ -1060,22 +1129,6 @@ public class SyncClientSettingsIntegrationTest {
 		} catch(Throwable t) {
 			Assert.fail("Not expected response!");}
 	}
-
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataLanguageFetchException() throws Exception {
-		mockSuccess();
-		when(languageRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-	}
-
-
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
@@ -1163,6 +1216,20 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
+	public void v2syncMasterDataBlackListedWordFetchException() throws Exception {
+		mockSuccess();
+		when(blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		MvcResult result = mockMvc.perform(get(v2syncDataUrl)).andExpect(status().isOk()).andReturn();
+		try {
+			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
+			assertEquals(JSONObject.NULL,jsonObject.get("response"));
+		} catch(Throwable t) {
+			Assert.fail("Not expected response!");}
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataReasonCatFetchException() throws Exception {
 		mockSuccess();
 		when(reasonCategoryRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
@@ -1189,19 +1256,6 @@ public class SyncClientSettingsIntegrationTest {
 			Assert.fail("Not expected response!");}
 	}
 
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataTitleFetchException() throws Exception {
-		mockSuccess();
-		when(titleRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-	}
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
@@ -1275,183 +1329,6 @@ public class SyncClientSettingsIntegrationTest {
 			Assert.fail("Not expected response!");}
 	}
 
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataRegistrationCenterUserFetchException() throws Exception {
-		mockSuccess();
-		when(userDetailsHistoryRepository.findLatestRegistrationCenterUserHistory(Mockito.anyString(),
-				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-	}
-
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataRegistrationCenterUserHistoryFetchException() throws Exception {
-		mockSuccess();
-		when(userDetailsHistoryRepository.findLatestRegistrationCenterUserHistory(Mockito.anyString(),
-				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-	}
-
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataRegistrationCenterUserMachineHistoryFetchException() throws Exception {
-		mockSuccess();
-		when(machineHistoryRepository
-				.findLatestRegistrationCenterMachineHistory(Mockito.anyString(), Mockito.any(), Mockito.any()))
-						.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-	}
-
-	@Ignore
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataRegistrationCenterWithDeviceProviderException() throws Exception {
-		mockSuccess();
-		when(deviceProviderRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-	}
-
-	@Ignore
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataRegistrationCenterWithDeviceServiceException() throws Exception {
-		mockSuccess();
-		when(deviceServiceRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-	}
-
-	@Ignore
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataRegistrationCenterWithRegisteredDeviceException() throws Exception {
-		mockSuccess();
-		when(registeredDeviceRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any(),
-				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-	}
-
-	@Ignore
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataRegistrationCenterWithFTPException() throws Exception {
-		mockSuccess();
-		when(foundationalTrustProviderRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-	}
-
-	@Ignore
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataRegistrationCenterWithDeviceTypeException() throws Exception {
-		mockSuccess();
-		when(deviceTypeDPMRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-	}
-
-	@Ignore
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataRegistrationCenterWithDeviceSubTypeException() throws Exception {
-		mockSuccess();
-		when(deviceSubTypeDPMRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-	}
-
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataRegistrationCenterMachineHistoryFetchException() throws Exception {
-		mockSuccess();
-		when(machineHistoryRepository.findLatestRegistrationCenterMachineHistory(Mockito.anyString(),
-				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-	}
-
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataRegistrationCenterDeviceHistoryFetchException() throws Exception {
-		mockSuccess();
-		when(deviceHistoryRepository.findLatestRegistrationCenterDeviceHistory(Mockito.anyString(),
-				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-	}
-
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataRegistrationCenterMachineDeviceHistoryFetchException() throws Exception {
-		mockSuccess();
-		when(machineHistoryRepository
-				.findLatestRegistrationCenterMachineHistory(Mockito.anyString(), Mockito.any(), Mockito.any()))
-						.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-	}
-	
-
 	@Ignore
 	@WithUserDetails(value = "reg-officer")
 	public void IsMachineIdPresentServiceExceptionTest() throws Exception {
@@ -1481,24 +1358,6 @@ public class SyncClientSettingsIntegrationTest {
 			Assert.fail("Not expected response!");}
 	}
 
-
-
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void registrationCetnerDevicesServiceExceptionTest() throws Exception {
-
-		mockSuccess();
-		when(deviceRepository.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(
-				Mockito.anyString(), Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
-		try {
-			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			assertEquals(JSONObject.NULL,jsonObject.get("response"));
-		} catch(Throwable t) {
-			Assert.fail("Not expected response!");}
-
-	}
-	
 	@Test
 	@WithUserDetails(value = "reg-officer")
 	public void appAuthMethodExceptionTest() throws Exception {
@@ -1670,7 +1529,6 @@ public class SyncClientSettingsIntegrationTest {
 		MvcResult result = mockMvc.perform(get(syncDataUrlWithKeyIndexAndRegCenterId)).andExpect(status().isOk()).andReturn();
 		try {
 			JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
-			//System.out.println("Response >>>> " + jsonObject);
 			JSONArray errors =  jsonObject.getJSONArray("errors");
 			assertNotNull(errors);
 			assertEquals(MasterDataErrorCode.REG_CENTER_UPDATED.getErrorCode(), errors.getJSONObject(0).getString("errorCode"));
@@ -1678,5 +1536,4 @@ public class SyncClientSettingsIntegrationTest {
 			Assert.fail("Not expected response!");
 		}
 	}
-
 }

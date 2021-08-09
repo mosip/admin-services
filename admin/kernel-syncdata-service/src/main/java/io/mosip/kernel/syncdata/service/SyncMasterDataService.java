@@ -78,11 +78,11 @@ public interface SyncMasterDataService {
 	 * @param keyIndex         - registration client TPM EK public key SHA256
 	 * @param lastUpdated      - last updated time stamp
 	 * @param currentTimestamp - current time stamp
-	 * @return {@link SyncDataResponseDtoV2}
+	 * @return {@link SyncDataResponseDto}
 	 * @throws InterruptedException - this method will throw execution exception
 	 * @throws ExecutionException   -this method will throw interrupted exception
 	 */
-	SyncDataResponseDtoV2 syncClientSettingsV2(String regCenterId, String keyIndex,
+	SyncDataResponseDto syncClientSettingsV2(String regCenterId, String keyIndex,
 										   LocalDateTime lastUpdated, LocalDateTime currentTimestamp)
 			throws InterruptedException, ExecutionException;
 }

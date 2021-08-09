@@ -104,6 +104,6 @@ public interface MachineRepository extends JpaRepository<Machine, String> {
 	@Query("From Machine m WHERE lower(m.name) = lower(?1)  and (m.isDeleted is null or m.isDeleted =false)")
 	List<Machine> findByMachineName(String machineName);
 
-	@Query("From Machine m WHERE lower(mm.key_index) = lower(?1) and (m.isDeleted is null or m.isDeleted =false)")
+	@Query("From Machine m WHERE lower(m.keyIndex) = lower(?1) and (m.isDeleted is null or m.isDeleted =false)")
 	List<Machine> findByMachineKeyIndex(String keyIndex);
 }
