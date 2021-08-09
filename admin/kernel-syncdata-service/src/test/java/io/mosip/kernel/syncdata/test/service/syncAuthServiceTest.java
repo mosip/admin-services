@@ -302,7 +302,7 @@ public class syncAuthServiceTest {
         String payload = Base64.getUrlEncoder().encodeToString(objectMapper.writeValueAsString(machineOtpDto).getBytes(StandardCharsets.UTF_8));
         String signature = Base64.getUrlEncoder().encodeToString("test-signature".getBytes(StandardCharsets.UTF_8));
 
-        AuthNResponse response = syncAuthTokenService.sendOTP(String.format("%s.%s.%s", header, payload, signature));
+        ResponseWrapper<AuthNResponse> response = syncAuthTokenService.sendOTP(String.format("%s.%s.%s", header, payload, signature));
         assertNotNull(response);
     }
 
