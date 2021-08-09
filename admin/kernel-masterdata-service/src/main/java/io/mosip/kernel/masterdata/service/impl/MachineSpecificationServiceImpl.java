@@ -455,8 +455,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		List<MachineType> machineTypes = machineUtil.getMachineTypes();
 		machinesSpecifications.forEach(machineSpec -> {
 			machineTypes.forEach(mt -> {
-				if (machineSpec.getMachineTypeCode().equals(mt.getCode())
-						&& machineSpec.getLangCode().equals(mt.getLangCode())) {
+				if (machineSpec.getMachineTypeCode().equals(mt.getCode())) {
 					machineSpec.setMachineTypeName(mt.getName());
 				}
 			});
