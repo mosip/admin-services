@@ -1,7 +1,10 @@
 package io.mosip.kernel.syncdata.service.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -9,6 +12,7 @@ import io.mosip.kernel.clientcrypto.dto.TpmCryptoRequestDto;
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
 import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.exception.RequestException;
@@ -20,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -100,6 +106,9 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	@Value("#{'${mosip.registration.sync.scripts:applicanttype.mvel}'.split(',')}")
 	private Set<String> scriptNames;
 
+	@Autowired
+	private Environment environment;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -170,6 +179,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 		try {
 			return restTemplate.getForObject(uriBuilder.toString(), String.class);
 		} catch (RestClientException e) {
+			LOGGER.error("Failed to getConfigDetailsResponse", e);
 			throw new SyncDataServiceException(
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorCode(),
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorMessage() + " "
@@ -267,20 +277,18 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	}
 
 	@Override
-	public ConfigDto getScripts(String keyIndex) {
-		LOGGER.info("getScripts() started for machine : {}", keyIndex);
+	public String getScript(String scriptName, String keyIndex) {
+		LOGGER.info("getScripts({}) started for machine : {}", scriptName, keyIndex);
 		List<Machine> machines = machineRepo.findByMachineKeyIndex(keyIndex);
-		if(machines != null && !machines.isEmpty())
+		if(machines == null || machines.isEmpty())
 			throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
 					MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
 
-		JSONObject scripts = new JSONObject();
-		scriptNames.forEach(fileName -> {
-			scripts.put(fileName, getEncryptedData(getConfigDetailsResponse(fileName), machines.get(0).getPublicKey()));
-		});
-		ConfigDto configDto = new ConfigDto();
-		configDto.setConfigDetail(scripts);
-		return configDto;
+		Boolean isEncrypted = environment.getProperty(String.format("mosip.sync.entity.encrypted.%s",
+				scriptName.toUpperCase()), Boolean.class, false);
+		return isEncrypted ?
+				getEncryptedData(getConfigDetailsResponse(scriptName), machines.get(0).getPublicKey()) :
+				getConfigDetailsResponse(scriptName);
 	}
 
 

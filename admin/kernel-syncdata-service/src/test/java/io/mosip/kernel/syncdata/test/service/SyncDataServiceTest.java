@@ -229,7 +229,7 @@ public class SyncDataServiceTest {
 	 * }
 	 */
 
-	@Ignore
+	/*@Ignore
 	@Test
 	public void globalConfigsyncSuccess() {
 		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
@@ -280,7 +280,7 @@ public class SyncDataServiceTest {
 				.append(configLabel + "/");
 		server.expect(requestTo(uriBuilder.append(regCenterfileName).toString())).andRespond(withSuccess());
 		syncConfigDetailsService.getConfiguration("1");
-	}
+	}*/
 
 	// ------------------------------------------UserDetails--------------------------//
 	/*

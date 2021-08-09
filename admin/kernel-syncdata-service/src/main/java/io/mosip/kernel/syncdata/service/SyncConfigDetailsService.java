@@ -62,5 +62,5 @@ public interface SyncConfigDetailsService {
 	 * method to get scripts from config-repo
 	 * @return
 	 */
-	public ConfigDto getScripts(String keyIndex);
+	public String getScript(String scriptName, String keyIndex);
 }

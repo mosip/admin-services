@@ -2,10 +2,7 @@ package io.mosip.kernel.syncdata.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
@@ -26,8 +23,7 @@ import io.mosip.kernel.syncdata.entity.ModuleDetail;
 import io.mosip.kernel.syncdata.exception.*;
 import io.mosip.kernel.syncdata.repository.AppDetailRepository;
 import io.mosip.kernel.syncdata.repository.ModuleDetailRepository;
-import io.mosip.kernel.syncdata.service.helper.KeymanagerHelper;
-import io.mosip.kernel.syncdata.service.helper.LocationHierarchyHelper;
+import io.mosip.kernel.syncdata.service.helper.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,16 +40,6 @@ import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
-import io.mosip.kernel.syncdata.service.helper.ApplicationDataHelper;
-import io.mosip.kernel.syncdata.service.helper.DeviceDataHelper;
-import io.mosip.kernel.syncdata.service.helper.DocumentDataHelper;
-import io.mosip.kernel.syncdata.service.helper.HistoryDataHelper;
-import io.mosip.kernel.syncdata.service.helper.IdentitySchemaHelper;
-import io.mosip.kernel.syncdata.service.helper.IndividualDataHelper;
-import io.mosip.kernel.syncdata.service.helper.MachineDataHelper;
-import io.mosip.kernel.syncdata.service.helper.MiscellaneousDataHelper;
-import io.mosip.kernel.syncdata.service.helper.RegistrationCenterDataHelper;
-import io.mosip.kernel.syncdata.service.helper.TemplateDataHelper;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import org.springframework.web.client.RestTemplate;
@@ -103,52 +89,25 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	@Autowired
 	private ModuleDetailRepository moduleDetailRepository;
 
+	@Autowired
+	private ClientSettingsHelper clientSettingsHelper;
+
 
 	@Override
 	public SyncDataResponseDto syncClientSettings(String regCenterId, String keyIndex,
 			LocalDateTime lastUpdated, LocalDateTime currentTimestamp) 
 					throws InterruptedException, ExecutionException {
-
 		logger.info("syncClientSettings invoked for timespan from {} to {}", lastUpdated, currentTimestamp);
-				
+		SyncDataResponseDto response = new SyncDataResponseDto();
 		RegistrationCenterMachineDto regCenterMachineDto = serviceHelper.getRegistrationCenterMachine(regCenterId, keyIndex);
-		
 		String machineId = regCenterMachineDto.getMachineId();
 		String registrationCenterId = regCenterMachineDto.getRegCenterId();
 
-		SyncDataResponseDto response = new SyncDataResponseDto();
-		
-		List<CompletableFuture> futures = new ArrayList<CompletableFuture>();
-		
-		ApplicationDataHelper applicationDataHelper = new ApplicationDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		applicationDataHelper.retrieveData(serviceHelper, futures);		
-		
-		MachineDataHelper machineDataHelper = new MachineDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		machineDataHelper.retrieveData(serviceHelper, futures);
+		Map<Class, CompletableFuture> futureMap = clientSettingsHelper.getInitiateDataFetch(machineId, registrationCenterId,
+				lastUpdated, currentTimestamp, false, false);
 
-		IndividualDataHelper individualDataHelper = new IndividualDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		individualDataHelper.retrieveData(serviceHelper, futures);
-		
-		RegistrationCenterDataHelper RegistrationCenterDataHelper = new RegistrationCenterDataHelper(registrationCenterId, machineId, 
-				lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		RegistrationCenterDataHelper.retrieveData(serviceHelper, futures);
-
-		ModuleDetail moduleDetail = moduleDetailRepository.findByNameAndLangCode("Registration Client", "eng");
-		TemplateDataHelper templateDataHelper = new TemplateDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey(),
-				moduleDetail != null ? moduleDetail.getId() : "10003");
-		templateDataHelper.retrieveData(serviceHelper, futures);
-		
-		DocumentDataHelper documentDataHelper = new DocumentDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		documentDataHelper.retrieveData(serviceHelper, futures);
-		
-		LocationHierarchyHelper locationHierarchyHelper = new LocationHierarchyHelper(lastUpdated, regCenterMachineDto.getPublicKey());
-		locationHierarchyHelper.retrieveData(serviceHelper, futures);
-		
-		MiscellaneousDataHelper miscellaneousDataHelper = new MiscellaneousDataHelper(machineId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		miscellaneousDataHelper.retrieveData(serviceHelper, futures);		
-		
-		CompletableFuture array [] = new CompletableFuture[futures.size()];
-		CompletableFuture<Void> future = CompletableFuture.allOf(futures.toArray(array));		
+		CompletableFuture array [] = new CompletableFuture[futureMap.size()];
+		CompletableFuture<Void> future = CompletableFuture.allOf(futureMap.values().toArray(array));
 
 		try {
 			future.join();
@@ -159,18 +118,8 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 				throw (RuntimeException) e.getCause();
 			}
 		}
-		
-		List<SyncDataBaseDto> list = new ArrayList<SyncDataBaseDto>();		
-		applicationDataHelper.fillRetrievedData(serviceHelper, list);
-		machineDataHelper.fillRetrievedData(serviceHelper, list);
-		locationHierarchyHelper.fillRetrievedData(serviceHelper, list);
-		individualDataHelper.fillRetrievedData(serviceHelper, list);
-		RegistrationCenterDataHelper.fillRetrievedData(serviceHelper, list);
-		templateDataHelper.fillRetrievedData(serviceHelper, list);
-		documentDataHelper.fillRetrievedData(serviceHelper, list);
-		miscellaneousDataHelper.fillRetrievedData(serviceHelper, list);
-		
-		response.setDataToSync(list);
+
+		response.setDataToSync(clientSettingsHelper.retrieveData(futureMap, regCenterMachineDto.getPublicKey()));
 		return response;
 	}
 	
@@ -256,9 +205,34 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	}
 
 	@Override
-	public SyncDataResponseDtoV2 syncClientSettingsV2(String regCenterId, String keyIndex, LocalDateTime lastUpdated, LocalDateTime currentTimestamp)
+	public SyncDataResponseDto syncClientSettingsV2(String regCenterId, String keyIndex, LocalDateTime lastUpdated, LocalDateTime currentTimestamp)
 			throws InterruptedException, ExecutionException {
-		return null;
+		logger.info("syncClientSettingsV2 invoked for timespan from {} to {}", lastUpdated, currentTimestamp);
+		SyncDataResponseDto response = new SyncDataResponseDto();
+		RegistrationCenterMachineDto regCenterMachineDto = serviceHelper.getRegistrationCenterMachine(regCenterId, keyIndex);
+		String machineId = regCenterMachineDto.getMachineId();
+		String registrationCenterId = regCenterMachineDto.getRegCenterId();
+
+		Map<Class, CompletableFuture> futureMap = clientSettingsHelper.getInitiateDataFetch(machineId, registrationCenterId,
+				lastUpdated, currentTimestamp, true, lastUpdated!=null);
+
+		CompletableFuture array [] = new CompletableFuture[futureMap.size()];
+		CompletableFuture<Void> future = CompletableFuture.allOf(futureMap.values().toArray(array));
+
+		try {
+			future.join();
+		} catch (CompletionException e) {
+			if (e.getCause() instanceof SyncDataServiceException) {
+				throw (SyncDataServiceException) e.getCause();
+			} else {
+				throw (RuntimeException) e.getCause();
+			}
+		}
+
+		List<SyncDataBaseDto> list = clientSettingsHelper.retrieveData(futureMap, regCenterMachineDto.getPublicKey());
+		list.addAll(clientSettingsHelper.getConfiguredScriptUrlDetail(regCenterMachineDto.getPublicKey()));
+		response.setDataToSync(list);
+		return response;
 	}
 
 	private MachineResponseDto getMachineById(String machineId) {

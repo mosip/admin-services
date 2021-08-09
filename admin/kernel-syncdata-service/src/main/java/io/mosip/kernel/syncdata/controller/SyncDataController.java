@@ -10,6 +10,8 @@ import javax.validation.Valid;
 import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,13 +28,10 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
-import io.mosip.kernel.syncdata.service.SyncRolesService;
 import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
 import io.mosip.kernel.syncdata.utils.LocalDateTimeUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import net.minidev.json.JSONObject;
-import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * Sync Handler Controller
@@ -59,11 +58,9 @@ public class SyncDataController {
 	@Autowired
 	SyncConfigDetailsService syncConfigDetailsService;
 
-	/**
-	 * Service instnace {@link SyncRolesService}
-	 */
+	/*
 	@Autowired
-	SyncRolesService syncRolesService;
+	SyncRolesService syncRolesService;*/
 
 	@Autowired
 	SyncUserDetailsService syncUserDetailsService;
@@ -393,44 +390,43 @@ public class SyncDataController {
 		return response;
 	}
 
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@ResponseFilter
-	@ApiOperation(value = "API to sync validation scripts")
-	@GetMapping(value = "/scripts/{keyIndex}")
-	public ResponseWrapper<ConfigDto> getValidationScripts(@PathVariable(value = "keyIndex") String keyIndex) {
-		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
-		ConfigDto syncConfigResponse = syncConfigDetailsService.getScripts(keyIndex);
-		syncConfigResponse.setLastSyncTime(currentTimeStamp);
-		ResponseWrapper<ConfigDto> response = new ResponseWrapper<>();
-		response.setResponse(syncConfigResponse);
-		return response;
-	}
 
 	/**
 	 *
 	 * @param keyIndex     - keyIndex mapped to machine
 	 * @param lastUpdated  - last sync updated time stamp
 	 * @param regCenterId  - regcenterId mapped to machine
-	 * @return {@link SyncDataResponseDtoV2}
+	 * @return {@link SyncDataResponseDto}
 	 * @throws InterruptedException - this method will throw interrupted Exception
 	 * @throws ExecutionException   - this method will throw exeution exception
 	 */
 	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@ResponseFilter
 	@GetMapping("/v2/clientsettings")
-	public ResponseWrapper<SyncDataResponseDtoV2> syncClientSettingsV2(
+	public ResponseWrapper<SyncDataResponseDto> syncClientSettingsV2(
 			@RequestParam(value = "keyindex", required = true) String keyIndex,
 			@RequestParam(value = "lastUpdated", required = false) String lastUpdated,
 			@RequestParam(value = "regcenterId", required = false) String regCenterId)
 			throws InterruptedException, ExecutionException {
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
-		SyncDataResponseDtoV2 syncDataResponseDto = masterDataService.syncClientSettingsV2(regCenterId, keyIndex,
+		SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettingsV2(regCenterId, keyIndex,
 				timestamp, currentTimeStamp);
 		syncDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
-		ResponseWrapper<SyncDataResponseDtoV2> response = new ResponseWrapper<>();
+		ResponseWrapper<SyncDataResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(syncDataResponseDto);
 		return response;
+	}
+
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	//@ResponseFilter
+	@ApiOperation(value = "API to download mvel scripts")
+	@GetMapping(value = "/scripts/{scriptName}")
+	public ResponseEntity downloadScript(@PathVariable(value = "scriptName") String scriptName,
+														   @RequestParam(value = "keyindex", required = true) String keyIndex) {
+		return ResponseEntity.ok()
+				.contentType(MediaType.TEXT_PLAIN)
+				.body(syncConfigDetailsService.getScript(scriptName, keyIndex));
 	}
 
 }
