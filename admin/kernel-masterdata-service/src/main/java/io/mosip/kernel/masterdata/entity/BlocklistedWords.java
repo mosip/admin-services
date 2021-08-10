@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "blacklisted_words", schema = "master")
+@Table(name = "blocklisted_words", schema = "master")
 @EqualsAndHashCode(callSuper = true)
 @IdClass(WordAndLanguageCodeID.class)
 public class BlocklistedWords extends BaseEntity implements Serializable {

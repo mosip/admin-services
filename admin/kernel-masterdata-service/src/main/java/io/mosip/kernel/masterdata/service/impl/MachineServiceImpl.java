@@ -500,12 +500,12 @@ public class MachineServiceImpl implements MachineService {
 	private void setMapStatus(List<MachineSearchDto> list) {
 		List<RegistrationCenter> registrationCenterList = machineUtil.getAllRegistrationCenters();
 		list.forEach(machineSearchDto -> {
-				String regId = machineSearchDto.getRegCenterId();
-				registrationCenterList.forEach(registrationCenter -> {
-					if (registrationCenter.getId().equals(regId)) {
-						machineSearchDto.setMapStatus(registrationCenter.getName());
-					}
-				});
+			String regId = machineSearchDto.getRegCenterId();
+			registrationCenterList.forEach(registrationCenter -> {
+				if (registrationCenter.getId().equals(regId)) {
+					machineSearchDto.setMapStatus(registrationCenter.getName());
+				}
+			});
 		});
 	}
 
