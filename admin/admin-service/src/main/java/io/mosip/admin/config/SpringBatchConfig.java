@@ -1,5 +1,6 @@
 package io.mosip.admin.config;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.springframework.batch.core.Job;
@@ -20,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
 
 import io.mosip.admin.bulkdataupload.entity.MachineType;
 /**
@@ -71,7 +72,8 @@ public class SpringBatchConfig {
         lineTokenizer.setStrict(false);
 
         FlatFileItemReader<Object> flatFileItemReader = new FlatFileItemReader<>();
-		flatFileItemReader.setResource(new FileSystemResource("src/main/resources/users.csv"));
+        InputStream istream = this.getClass().getClassLoader().getResourceAsStream("users.csv");
+		flatFileItemReader.setResource(new InputStreamResource(istream));
         flatFileItemReader.setName("CSV-Reader");
         flatFileItemReader.setLinesToSkip(1);
         flatFileItemReader.setSkippedLinesCallback(new LineCallbackHandler() {
