@@ -30,7 +30,7 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 	
 	@Value("${mosip.admin.ui.configs}")
 	private String uiConfigs;
-	
+
 	@Override
 	public ApplicationConfigResponseDto getLanguageConfigDetails() {
 		ApplicationConfigResponseDto dto=new ApplicationConfigResponseDto();
@@ -57,6 +57,7 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 			} else {
 				response.put(key.split(":")[0], null);
 			}
+
 		}
 		return response;
 	}

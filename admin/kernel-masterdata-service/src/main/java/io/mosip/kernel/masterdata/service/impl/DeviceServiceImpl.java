@@ -71,6 +71,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.OptionalFilter;
 import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.utils.ZoneUtils;
+import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
@@ -691,8 +692,20 @@ public class DeviceServiceImpl implements DeviceService {
 		} else {
 			return filterResponseDto;
 		}
+		List<FilterDto> fil = new ArrayList<>();
+		filterValueDto.getFilters().forEach(f -> {
+			if (null == f.getType() || f.getType().isBlank() || f.getType().isEmpty()) {
+				FilterDto fd = new FilterDto();
+				fd.setColumnName(f.getColumnName());
+				fd.setText(f.getText());
+				fd.setType(FilterColumnEnum.ALL.toString());
+				fil.add(fd);
+			} else
+				fil.add(f);
+		});
+		filterValueDto.setFilters(fil);
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Device.class))
-
+        
 		{
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
 				masterDataFilterHelper

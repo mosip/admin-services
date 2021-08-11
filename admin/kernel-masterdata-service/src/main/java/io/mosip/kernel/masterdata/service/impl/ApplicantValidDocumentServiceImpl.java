@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +27,6 @@ public class ApplicantValidDocumentServiceImpl implements ApplicantValidDocument
 	@Autowired
 	private ApplicantValidDocumentRepository applicantValidDocumentRepository;
 
-	@Cacheable(value = "applicant-valid-document", key = "'applicantvaliddocument'.concat('-').concat(#applicantTypeCode).concat('-').concat(#languages.get(0))")
 	@Override
 	public ApplicantValidDocumentDto getDocumentCategoryAndTypes(String applicantTypeCode, List<String> languages) {
 
