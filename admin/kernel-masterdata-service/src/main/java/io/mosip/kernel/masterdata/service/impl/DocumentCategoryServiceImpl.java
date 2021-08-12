@@ -56,6 +56,7 @@ import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
@@ -101,10 +102,10 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	private List<DocumentCategory> documentCategoryList = new ArrayList<>();
 
 	private DocumentCategoryResponseDto documentCategoryResponseDto = new DocumentCategoryResponseDto();
-	
+
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -259,9 +260,8 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		MapperUtils.mapFieldValues(categoryDto, documentCategoryId);
 		try {
 
-			DocumentCategory documentCategory = documentCategoryRepository
-					.findByCodeAndLangCode(categoryDto.getCode(),
-							categoryDto.getLangCode());
+			DocumentCategory documentCategory = documentCategoryRepository.findByCodeAndLangCode(categoryDto.getCode(),
+					categoryDto.getLangCode());
 
 			if (documentCategory != null) {
 				/*
@@ -288,7 +288,6 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
-			
 
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException e) {
@@ -423,6 +422,20 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	public FilterResponseDto docCategoriesFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
+		List<FilterDto> filLst = new ArrayList<>();
+		filterValueDto.getFilters().forEach(fil -> {
+			if (fil.getType().isEmpty() || fil.getType().isBlank()) {
+				FilterDto f = fil;
+				f.setColumnName(fil.getColumnName());
+				f.setText(fil.getText());
+				f.setType(FilterColumnEnum.ALL.toString());
+				filLst.add(f);
+			} else {
+				filLst.add(fil);
+			}
+		});
+		filterValueDto.setFilters(filLst);
+
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), DocumentCategory.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
 				masterDataFilterHelper.filterValues(DocumentCategory.class, filterDto, filterValueDto)
