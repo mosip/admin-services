@@ -25,7 +25,6 @@ import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryPutDto;
-import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
@@ -56,6 +55,7 @@ import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
@@ -422,6 +422,19 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	public FilterResponseDto docCategoriesFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
+		List<FilterDto> filLst = new ArrayList<>();
+		filterValueDto.getFilters().forEach(fil -> {
+			if (fil.getType().isEmpty() || fil.getType().isBlank()) {
+				FilterDto f = fil;
+				f.setColumnName(fil.getColumnName());
+				f.setText(fil.getText());
+				f.setType(FilterColumnEnum.ALL.toString());
+				filLst.add(f);
+			} else {
+				filLst.add(fil);
+			}
+		});
+		filterValueDto.setFilters(filLst);
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), DocumentCategory.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
 				masterDataFilterHelper.filterValues(DocumentCategory.class, filterDto, filterValueDto)
