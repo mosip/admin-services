@@ -7,8 +7,7 @@
 	<version>1.2.0-rc1</version>
 	<name>Hotlist Service</name>
 	<description>Service to block/unblock ids in MOSIP</description>
-     <url>http://maven.apache.org</url>
-	<packaging>jar</packaging>
+     <url>https://github.com/mosip/admin-services</url>
 	<properties>
 
 		<!-- common properties -->
@@ -157,6 +156,26 @@
 			</plugin>
 		</plugins>
 	</build>
+	<scm>
+                <connection>scm:git:git://github.com/mosip/admin-services.git</connection>
+                <developerConnection>scm:git:ssh://github.com:mosip/admin-services.git</developerConnection>
+                <url>https://github.com/mosip/admin-services</url>
+                <tag>HEAD</tag>
+        </scm>
+		<licenses>
+          <license>
+                <name>MPL 2.0</name>
+                <url>https://www.mozilla.org/en-US/MPL/2.0/</url>
+          </license>
+        </licenses>
+		<developers>
+                <developer>
+                  <name>Mosip</name>
+                  <email>mosip.emailnotifier@gmail.com</email>
+                  <organization>io.mosip</organization>
+                  <organizationUrl>https://github.com/mosip/admin-services</organizationUrl>
+                </developer>
+        </developers>
 	<profiles>
 		<profile>
 			<id>sonar</id>
