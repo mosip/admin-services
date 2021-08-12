@@ -7,7 +7,8 @@
 	<version>1.2.0-rc1</version>
 	<name>Hotlist Service</name>
 	<description>Service to block/unblock ids in MOSIP</description>
-
+     <url>http://maven.apache.org</url>
+	<packaging>jar</packaging>
 	<properties>
 
 		<!-- common properties -->
