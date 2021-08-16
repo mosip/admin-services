@@ -146,7 +146,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-applicanttype-api</artifactId>
-			<version>${kernel.applicant-type.version}</version>
+			<version>1.2.0-rc1</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
