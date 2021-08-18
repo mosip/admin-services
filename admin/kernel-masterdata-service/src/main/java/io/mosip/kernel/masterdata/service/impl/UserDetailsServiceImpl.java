@@ -279,8 +279,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 			userDetailsDto = masterdataCreationUtil.createMasterData(UserDetails.class, userDetailsDto);
 			ud = MetaDataUtils.setCreateMetaData(userDetailsDto, UserDetails.class);
-			ud.setIsActive(true);
-
 			userDetailsRepository.create(ud);
 
 			UserDetailsHistory udh = new UserDetailsHistory();
