@@ -1,65 +1,41 @@
 package io.mosip.kernel.masterdata.config;
 
+import java.util.List;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import lombok.Data;
+
 @Configuration
 @ConfigurationProperties(prefix = "openapi")
+@Data
 public class OpenApiProperties {
-
 	private InfoProperty info;
-	public InfoProperty getInfo() {
-		return info;
-	}
-	public void setInfo(InfoProperty info) {
-		this.info = info;
-	}
+	private Masterdata masterdata;
 }
 
+@Data
 class InfoProperty {
 	private String title;
 	private String description;
 	private String version;
 	private LicenseProperty license;
-	public String getTitle() {
-		return title;
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	public String getVersion() {
-		return version;
-	}
-	public void setVersion(String version) {
-		this.version = version;
-	}
-	public LicenseProperty getLicense() {
-		return license;
-	}
-	public void setLicense(LicenseProperty license) {
-		this.license = license;
-	}
 }
 
+@Data
 class LicenseProperty {
 	private String name;
 	private String url;
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getUrl() {
-		return url;
-	}
-	public void setUrl(String url) {
-		this.url = url;
-	}
+}
+
+@Data
+class Masterdata {
+	private List<Server> servers;
+}
+
+@Data
+class Server {
+	private String description;
+	private String url;
 }

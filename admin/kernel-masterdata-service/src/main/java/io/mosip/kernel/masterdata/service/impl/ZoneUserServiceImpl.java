@@ -8,18 +8,21 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.UserDetailsHistoryErrorCode;
 import io.mosip.kernel.masterdata.constant.ZoneUserErrorCode;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.ZoneUserDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserExtnDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserPutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.ZoneUser;
 import io.mosip.kernel.masterdata.entity.ZoneUserHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -34,7 +37,9 @@ import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.PageUtils;
 
 @Component
 public class ZoneUserServiceImpl implements ZoneUserService {
@@ -48,6 +53,9 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 
 	@Autowired
 	MasterdataCreationUtil masterdataCreationUtil;
+
+	@Autowired
+	private MasterdataSearchHelper masterDataSearchHelper;
 
 	@Autowired
 	ZoneUserRepository zoneUserRepo;
@@ -238,13 +246,13 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 	}
 	
 	@Override
-	public StatusResponseDto updateZoneUserMapping(String code, boolean isActive) {
+	public StatusResponseDto updateZoneUserMapping(String userId, boolean isActive) {
 		// TODO Auto-generated method stub
 		StatusResponseDto response = new StatusResponseDto();
 
-		List<ZoneUser> zoneUsers = null;
+		ZoneUser zoneUser = null;
 		try {
-			zoneUsers = zoneUserRepo.findtoUpdateZoneUserByCode(code);
+			zoneUser = zoneUserRepo.findZoneByUserIdNonDeleted(userId);
 		} catch (DataAccessException | DataAccessLayerException accessException) {
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, ZoneUser.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
@@ -257,8 +265,8 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 							+ ExceptionUtils.parseException(accessException));
 		}
 
-		if (zoneUsers != null && !zoneUsers.isEmpty()) {
-			masterdataCreationUtil.updateMasterDataStatus(ZoneUser.class, code, isActive, "zoneCode");
+		if (zoneUser != null) {
+			masterdataCreationUtil.updateMasterDataStatus(ZoneUser.class, userId, isActive, "userId");
 		} else {
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, ZoneUser.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
@@ -272,6 +280,28 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		response.setStatus("Status updated successfully for Zone");
 		return response;
 	}
+
+	@Override
+	public PageResponseDto<ZoneUserExtnDto> searchZoneUserMapping(SearchDtoWithoutLangCode searchDto) {
+		PageResponseDto<ZoneUserExtnDto> pageDto = new PageResponseDto<>();
+		List<ZoneUserExtnDto> zoneUserDetails = null;
+
+		searchDto.getFilters().stream().forEach(fil -> {
+			if (fil.getColumnName().equalsIgnoreCase("name")) {
+				fil.setValue("*" + fil.getValue() + "*");
+				fil.setType("contains");
+			}
+		});
+		Page<ZoneUser> page = masterDataSearchHelper.searchMasterdataWithoutLangCode(ZoneUser.class, searchDto,
+				null);
+		if (page.getContent() != null && !page.getContent().isEmpty()) {
+			zoneUserDetails = MapperUtils.mapAll(page.getContent(), ZoneUserExtnDto.class);
+			pageDto = PageUtils.pageResponse(page);
+			pageDto.setData(zoneUserDetails);
+		}
+		return pageDto;
+	}
+
 	@Override
 	public List<ZoneUser> getZoneUsers(List<String> userIds) {
 		return zoneUserRepo.findByUserIds(userIds);
