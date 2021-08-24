@@ -9,6 +9,7 @@ import io.mosip.kernel.masterdata.dto.ZoneUserDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserExtnDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserPutDto;
+import io.mosip.kernel.masterdata.dto.ZoneUserSearchDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
@@ -31,5 +32,5 @@ public interface ZoneUserService {
 	
 	public List<ZoneUser> getZoneUsers(List<String> userIds);
 
-	public PageResponseDto<ZoneUserExtnDto> searchZoneUserMapping(SearchDtoWithoutLangCode request);
+	public PageResponseDto<ZoneUserSearchDto> searchZoneUserMapping(SearchDtoWithoutLangCode request);
 }
