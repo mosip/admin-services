@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import io.mosip.kernel.masterdata.dto.ZoneUserDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserExtnDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserPutDto;
+import io.mosip.kernel.masterdata.dto.ZoneUserSearchDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
@@ -28,6 +30,7 @@ import io.mosip.kernel.masterdata.entity.ZoneUserHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
+import io.mosip.kernel.masterdata.repository.UserDetailsRepository;
 import io.mosip.kernel.masterdata.repository.ZoneUserHistoryRepository;
 import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
 import io.mosip.kernel.masterdata.service.UserDetailsService;
@@ -59,6 +62,9 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 
 	@Autowired
 	ZoneUserRepository zoneUserRepo;
+	
+	@Autowired
+	UserDetailsRepository userDetailsRepo;
 	
 	@Value("#{'${mosip.mandatory-languages:}'.concat(',').concat('${mosip.optional-languages:}')}")
 	private String supportedLang;
@@ -282,9 +288,10 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 	}
 
 	@Override
-	public PageResponseDto<ZoneUserExtnDto> searchZoneUserMapping(SearchDtoWithoutLangCode searchDto) {
-		PageResponseDto<ZoneUserExtnDto> pageDto = new PageResponseDto<>();
-		List<ZoneUserExtnDto> zoneUserDetails = null;
+	public PageResponseDto<ZoneUserSearchDto> searchZoneUserMapping(SearchDtoWithoutLangCode searchDto) {
+		PageResponseDto<ZoneUserSearchDto> pageDto = new PageResponseDto<>();
+		List<ZoneUserExtnDto> zoneUserSearchDetails = null;
+		List<ZoneUserSearchDto> zoneSearch=new ArrayList<>();
 
 		searchDto.getFilters().stream().forEach(fil -> {
 			if (fil.getColumnName().equalsIgnoreCase("name")) {
@@ -295,9 +302,31 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		Page<ZoneUser> page = masterDataSearchHelper.searchMasterdataWithoutLangCode(ZoneUser.class, searchDto,
 				null);
 		if (page.getContent() != null && !page.getContent().isEmpty()) {
-			zoneUserDetails = MapperUtils.mapAll(page.getContent(), ZoneUserExtnDto.class);
+			zoneUserSearchDetails = MapperUtils.mapAll(page.getContent(), ZoneUserExtnDto.class);
 			pageDto = PageUtils.pageResponse(page);
-			pageDto.setData(zoneUserDetails);
+			zoneUserSearchDetails.forEach(z->{
+				ZoneUserSearchDto dto=new ZoneUserSearchDto();
+				dto.setCreatedBy(z.getCreatedBy());
+				dto.setCreatedDateTime(z.getCreatedDateTime());
+				dto.setDeletedDateTime(z.getDeletedDateTime());
+				dto.setIsActive(z.getIsActive());
+				dto.setIsDeleted(z.getIsDeleted());
+				dto.setLangCode(z.getLangCode());
+				dto.setZoneCode(z.getZoneCode());
+				dto.setUserId(z.getUserId());
+				dto.setUpdatedDateTime(z.getUpdatedDateTime());
+				dto.setUpdatedBy(z.getUpdatedBy());
+				if(null!=z.getUserId())
+					dto.setUserName(userDetailsRepo.findById(z.getUserId()).get().getName());
+				else
+					dto.setUserName(null);
+				if(null!=z.getZoneCode())
+					dto.setZoneName(zoneservice.getZone(z.getZoneCode(),z.getLangCode()).getZoneName());
+				else
+					dto.setZoneName(null);
+				zoneSearch.add(dto);
+			});
+			pageDto.setData(zoneSearch);
 		}
 		return pageDto;
 	}

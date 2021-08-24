@@ -24,6 +24,7 @@ import io.mosip.kernel.masterdata.dto.ZoneUserDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserExtnDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserPutDto;
+import io.mosip.kernel.masterdata.dto.ZoneUserSearchDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
@@ -137,9 +138,9 @@ public class ZoneUserController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping(value = "/zoneuser/search")
-	public ResponseWrapper<PageResponseDto<ZoneUserExtnDto>> searchZoneUserMapping(
+	public ResponseWrapper<PageResponseDto<ZoneUserSearchDto>> searchZoneUserMapping(
 			@RequestBody @Valid RequestWrapper<SearchDtoWithoutLangCode> dto) {
-		ResponseWrapper<PageResponseDto<ZoneUserExtnDto>> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<PageResponseDto<ZoneUserSearchDto>> responseWrapper = new ResponseWrapper<>();
 		auditUtil.auditRequest(
 				MasterDataConstant.SEARCH_USER_DETAILS_API_IS_CALLED + SearchDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
