@@ -27,4 +27,6 @@ public class PacketStatusUpdateDto {
 	private String statusComment;
 	
 	private String createdDateTimes;
+	
+	private String subStatusCode;
 }
