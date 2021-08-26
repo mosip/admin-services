@@ -400,6 +400,11 @@ private HttpEntity<Object> setRequestHeader() throws IOException {
 		return request;
 	}
 	
+	/**
+	 * @param langCode
+	 * @return
+	 * description: It's returning property based on the langCode
+	 */
 	private Properties getPropertiesByLangCode(String langCode) {
 		Properties prop = null;
 		ClassLoader classLoader = getClass().getClassLoader();
@@ -418,9 +423,13 @@ private HttpEntity<Object> setRequestHeader() throws IOException {
 		return prop;
 	}
 	
+	/**
+	 * @param packStautsDtos
+	 * @param langCode
+	 * Description: It's calling the property file and set the comment based on the sub-status-code
+	 */
 	private void setStatusMessage(List<PacketStatusUpdateDto> packStautsDtos, String langCode) {
 		Properties prop = getPropertiesByLangCode(langCode);
-		System.out.println("Prop : " + prop);
 		if (null != prop) {
 			packStautsDtos.stream().forEach(packStautsDto -> {
 				String subStatusCode = packStautsDto.getSubStatusCode();
