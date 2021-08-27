@@ -438,7 +438,6 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 		List<SchemaDto> list = new ArrayList<>();		
 		try {
 			list = objectMapper.readValue(schemaJson == null ? "[]" : schemaJson, new TypeReference<List<SchemaDto>>() {});
-			//list = Arrays.asList(objectMapper.readValue(schemaJson == null ? "[]" : schemaJson, SchemaDto[].class));
 		} catch (IOException e) {
 			throw new MasterDataServiceException(SchemaErrorCode.VALUE_PARSE_ERROR.getErrorCode(),
 					ExceptionUtils.parseException(e));
@@ -458,6 +457,8 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 			dto.setSchema(objectMapper.readTree(entity.getIdAttributeJson()));
 		} catch (IOException e) {
 			LOGGER.error(SchemaErrorCode.SCHEMA_JSON_EXCEPTION.getErrorMessage(), e);
+			throw new MasterDataServiceException(SchemaErrorCode.SCHEMA_JSON_EXCEPTION.getErrorCode(),
+					ExceptionUtils.parseException(e));
 		}
 		dto.setSchemaJson(entity.getSchemaJson());		
 		dto.setStatus(entity.getStatus());
