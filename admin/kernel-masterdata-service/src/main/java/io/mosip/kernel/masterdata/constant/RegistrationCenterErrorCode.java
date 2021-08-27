@@ -72,8 +72,8 @@ public enum RegistrationCenterErrorCode {
 	IS_ACTIVE("KER-MSD-379", "Center against the ID %d Received is already Active"),
 	IS_IN_ACTIVE("KER-MSD-380", "Center against the ID %d Received is already Inactive"),
 	DEFAULT_LANGUAGE("KER-MSD-383", "Recived data dones not contain data for Primary Langauge"),
+	INVALIDE_ZONE("KER-MSD-346", "Received Zone Code is not a leaf Zone "),
 
-	INVALIDE_ZONE("KER-MSD-346", " Received Zone Code is not a leaf Zone"),
 	USER_ZONE_NOT_FOUND("KER-MSD-341", "No zone assigned to the user"),
 	MAPPED_TO_DEVICE("KER-MSD-350",
 			"Cannot Decommission the Registration Center, as some devices are mapped to the Registration Center"),

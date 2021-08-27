@@ -101,10 +101,10 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	private List<DocumentCategory> documentCategoryList = new ArrayList<>();
 
 	private DocumentCategoryResponseDto documentCategoryResponseDto = new DocumentCategoryResponseDto();
-	
+
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -259,9 +259,8 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		MapperUtils.mapFieldValues(categoryDto, documentCategoryId);
 		try {
 
-			DocumentCategory documentCategory = documentCategoryRepository
-					.findByCodeAndLangCode(categoryDto.getCode(),
-							categoryDto.getLangCode());
+			DocumentCategory documentCategory = documentCategoryRepository.findByCodeAndLangCode(categoryDto.getCode(),
+					categoryDto.getLangCode());
 
 			if (documentCategory != null) {
 				/*
@@ -288,7 +287,6 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
-			
 
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException e) {
@@ -435,6 +433,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 			}
 		});
 		filterValueDto.setFilters(filLst);
+
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), DocumentCategory.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
 				masterDataFilterHelper.filterValues(DocumentCategory.class, filterDto, filterValueDto)
