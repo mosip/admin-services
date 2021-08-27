@@ -8,14 +8,14 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
-
+-- 12/08/2021			Manoj SP			Updated id_value to varchar	
 -- ------------------------------------------------------------------------------------------
 
 -- object: hotlist.hotlist | type: TABLE --
 -- DROP TABLE IF EXISTS hotlist.hotlist CASCADE;
 CREATE TABLE hotlist.hotlist (
 	id_hash character varying(128) NOT NULL,
-	id_value character varying(500) NOT NULL,
+	id_value character varying NOT NULL,
 	id_type character varying(128) NOT NULL,
 	status character varying(64),
 	start_timestamp timestamp,

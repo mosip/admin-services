@@ -44,7 +44,7 @@ public interface HotlistRepository extends JpaRepository<Hotlist, String>{
 	 * @param isDeleted the is deleted
 	 * @return the list
 	 */
-	List<Hotlist> findByStatusAndIsDeleted(String status, Boolean isDeleted);
+	List<Hotlist> findByStatusAndExpiryTimestampAndIsDeleted(String status, LocalDateTime expiryDTimes, Boolean isDeleted);
 
 	/**
 	 * Find by expiry timestamp less than current timestamp.
@@ -53,7 +53,7 @@ public interface HotlistRepository extends JpaRepository<Hotlist, String>{
 	 * @param isDeleted the is deleted
 	 * @return the list
 	 */
-	List<Hotlist> findByExpiryTimestampLessThanAndIsDeleted(LocalDateTime currentTimestamp, Boolean isDeleted);
+	List<Hotlist> findByExpiryTimestampLessThanAndStatusAndIsDeleted(LocalDateTime currentTimestamp, String status, Boolean isDeleted);
 	
 	/**
 	 * Find by is deleted.

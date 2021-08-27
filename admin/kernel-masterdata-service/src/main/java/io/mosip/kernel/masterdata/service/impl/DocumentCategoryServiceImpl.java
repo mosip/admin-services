@@ -25,7 +25,6 @@ import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryPutDto;
-import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
@@ -147,7 +146,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
 	 * getAllDocumentCategoryByLaguageCode(java.lang.String)
 	 */
-	@CacheEvict(value = "document-category", allEntries = true)
+	@Cacheable(value = "document-category", key = "'documentcategory'.concat('-').concat(#langCode)", condition="#langCode != null")
 	@Override
 	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(String langCode) {
 		List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
@@ -357,7 +356,6 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
 	 * getAllDocCategories(int, int, java.lang.String, java.lang.String)
 	 */
-	@Cacheable(value = "document-category", key = "'documentcategory'.concat('-').concat(#pageNumber).concat('-').concat(#pageSize).concat('-').concat(#sortBy).concat('-').concat(#orderBy)")
 	@Override
 	public PageDto<DocumentCategoryExtnDto> getAllDocCategories(int pageNumber, int pageSize, String sortBy,
 			String orderBy) {

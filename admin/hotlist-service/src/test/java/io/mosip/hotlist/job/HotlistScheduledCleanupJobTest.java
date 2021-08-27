@@ -35,37 +35,37 @@ public class HotlistScheduledCleanupJobTest {
 
 	@Test
 	public void cleanupUnblockedIdsTest() {
-		when(repo.findByStatusAndIsDeleted(any(), any())).thenReturn(Collections.emptyList());
+		when(repo.findByStatusAndExpiryTimestampAndIsDeleted(any(), any(), any())).thenReturn(Collections.emptyList());
 		job.cleanupUnblockedIds();
 	}
 
 	@Test
 	public void cleanupUnblockedIdsTestException() {
-		when(repo.findByStatusAndIsDeleted(any(), any())).thenThrow(new NullPointerException());
+		when(repo.findByStatusAndExpiryTimestampAndIsDeleted(any(), any(), any())).thenThrow(new NullPointerException());
 		job.cleanupUnblockedIds();
 	}
 
 	@Test
 	public void cleanupExpiredIdsTest() {
-		when(repo.findByStatusAndIsDeleted(any(), any())).thenReturn(Collections.emptyList());
+		when(repo.findByStatusAndExpiryTimestampAndIsDeleted(any(), any(), any())).thenReturn(Collections.emptyList());
 		job.cleanupUnblockedIds();
 	}
 
 	@Test
 	public void cleanupExpiredIdsTestException() {
-		when(repo.findByStatusAndIsDeleted(any(), any())).thenThrow(new NullPointerException());
+		when(repo.findByStatusAndExpiryTimestampAndIsDeleted(any(), any(), any())).thenThrow(new NullPointerException());
 		job.cleanupUnblockedIds();
 	}
 
 	@Test
 	public void cleanupDeletedIdsTest() {
-		when(repo.findByStatusAndIsDeleted(any(), any())).thenReturn(Collections.emptyList());
+		when(repo.findByStatusAndExpiryTimestampAndIsDeleted(any(), any(), any())).thenReturn(Collections.emptyList());
 		job.cleanupUnblockedIds();
 	}
 
 	@Test
 	public void cleanupDeletedIdsException() {
-		when(repo.findByStatusAndIsDeleted(any(), any())).thenThrow(new NullPointerException());
+		when(repo.findByStatusAndExpiryTimestampAndIsDeleted(any(), any(), any())).thenThrow(new NullPointerException());
 		job.cleanupUnblockedIds();
 	}
 

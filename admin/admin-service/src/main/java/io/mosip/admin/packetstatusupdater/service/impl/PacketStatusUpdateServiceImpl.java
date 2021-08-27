@@ -1,12 +1,15 @@
 package io.mosip.admin.packetstatusupdater.service.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -106,6 +109,11 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	private Environment environment;
 
 	private static final String SLASH = "/";
+	
+	@Value("${mosip.admin.globalproperty.prefix}")
+	private String globalPropertyPrefix;
+	@Value("${mosip.admin.globalproperty.suffix}")
+	private String globalPropertySuffix;
 
 	/*
 	 * (non-Javadoc)
@@ -148,8 +156,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 			HttpHeaders packetHeaders = new HttpHeaders();
 			packetHeaders.setContentType(MediaType.APPLICATION_JSON);
 			StringBuilder urlBuilder = new StringBuilder();
-			urlBuilder.append(packetUpdateStatusUrl).append(SLASH).append(langCode).append(SLASH)
-					.append(rId);
+			urlBuilder.append(packetUpdateStatusUrl).append(SLASH).append(rId);
 			RestTemplate restTemplate1=new RestTemplate();
 			ResponseEntity<String> response = restTemplate1.exchange(urlBuilder.toString(), HttpMethod.GET, setRequestHeader(),
 					String.class);
@@ -161,6 +168,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 						new TypeReference<List<PacketStatusUpdateDto>>() {
 						});
 				packStautsDto.sort(createdDateTimesResultComparator);
+				setStatusMessage(packStautsDto, langCode);
 				regProcPacketStatusRequestDto.setPacketStatusUpdateList(packStautsDto);
 				packStautsDto.stream().forEach(pcksts->{
 					auditUtil.setAuditRequestDto(EventEnum.getEventEnumBasedOnPAcketStatus(pcksts));
@@ -390,6 +398,46 @@ private HttpEntity<Object> setRequestHeader() throws IOException {
 		request.setClientId(environment.getProperty("regproc.token.request.clientId"));
 		request.setSecretKey(environment.getProperty("regproc.token.request.secretKey"));
 		return request;
+	}
+	
+	/**
+	 * @param langCode
+	 * @return
+	 * description: It's returning property based on the langCode
+	 */
+	private Properties getPropertiesByLangCode(String langCode) {
+		Properties prop = null;
+		ClassLoader classLoader = getClass().getClassLoader();
+		String messagesPropertiesFileName = globalPropertyPrefix + langCode + globalPropertySuffix;
+		try(
+			InputStream inputStream = classLoader.getResourceAsStream(messagesPropertiesFileName);
+			InputStreamReader streamReader = new InputStreamReader(inputStream, "UTF-8");) {
+			prop = new Properties();
+			prop.load(streamReader);
+		} catch (IOException e) {
+			throw new MasterDataServiceException("RPR-RTS-002",
+					"Unknown Exception Occured" + " -->" + e.getMessage());
+//			throw new MasterDataServiceException(PlatformErrorMessages.RPR_RTS_UNKNOWN_EXCEPTION.getCode(),
+//					PlatformErrorMessages.RPR_RTS_UNKNOWN_EXCEPTION.getMessage() + " -->" + e.getMessage());
+		}
+		return prop;
+	}
+	
+	/**
+	 * @param packStautsDtos
+	 * @param langCode
+	 * Description: It's calling the property file and set the comment based on the sub-status-code
+	 */
+	private void setStatusMessage(List<PacketStatusUpdateDto> packStautsDtos, String langCode) {
+		Properties prop = getPropertiesByLangCode(langCode);
+		if (null != prop) {
+			packStautsDtos.stream().forEach(packStautsDto -> {
+				String subStatusCode = packStautsDto.getSubStatusCode();
+				if (subStatusCode != null && !subStatusCode.isEmpty()) {
+					packStautsDto.setStatusComment(prop.getProperty(subStatusCode));
+				}
+			});
+		}
 	}
 
 }
