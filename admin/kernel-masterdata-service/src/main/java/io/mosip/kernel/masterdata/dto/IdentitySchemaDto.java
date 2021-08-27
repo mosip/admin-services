@@ -1,11 +1,11 @@
 package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -26,9 +26,7 @@ public class IdentitySchemaDto {
 	@NotBlank
 	private String description;
 	
-	@ApiModelProperty(notes = "schema", required = true)
-	@NotEmpty
-	private List<SchemaDto> schema;
+	private JsonNode schema;
 		
 	@NotNull
 	@ApiModelProperty(notes = "schema Effective From", required = false)
