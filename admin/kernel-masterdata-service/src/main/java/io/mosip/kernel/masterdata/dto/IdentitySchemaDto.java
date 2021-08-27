@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -28,7 +27,7 @@ public class IdentitySchemaDto {
 	
 	@ApiModelProperty(notes = "schema", required = true)
 	@NotEmpty
-	private List<SchemaDto> schema;
+	private String schema;
 		
 	@NotNull
 	@ApiModelProperty(notes = "schema Effective From", required = false)

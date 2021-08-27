@@ -1,9 +1,8 @@
 package io.mosip.kernel.masterdata.dto.getresponse;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import com.fasterxml.jackson.databind.JsonNode;
 
-import io.mosip.kernel.masterdata.dto.SchemaDto;
 import lombok.Data;
 
 @Data
@@ -13,7 +12,7 @@ public class IdSchemaResponseDto {
 	private double idVersion;
 	private String title;
 	private String description;
-	private List<SchemaDto> schema;
+	private JsonNode schema;
 	private String schemaJson;
 	private String status;
 	private LocalDateTime effectiveFrom;

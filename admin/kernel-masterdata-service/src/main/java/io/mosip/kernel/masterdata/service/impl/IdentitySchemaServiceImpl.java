@@ -5,13 +5,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,6 +44,7 @@ import io.mosip.kernel.masterdata.repository.IdentitySchemaRepository;
 import io.mosip.kernel.masterdata.service.IdentitySchemaService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.vertx.core.json.JsonArray;
 
 
 @Service
@@ -196,18 +196,18 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 	@Override
 	@Transactional
 	public IdSchemaResponseDto createSchema(IdentitySchemaDto dto) {
-		
-		validateDuplicateFields(dto.getSchema());
-		validateDocumentFields(dto.getSchema());
-		validateBiometricFields(dto.getSchema());
+		isJSONArrayValid(dto.getSchema());
+//		validateDuplicateFields(dto.getSchema());
+//		validateDocumentFields(dto.getSchema());
+//		validateBiometricFields(dto.getSchema());
 		
 		IdentitySchema entity = MetaDataUtils.setCreateMetaData(dto, IdentitySchema.class);
 		
 		entity.setIsActive(true);
 		entity.setStatus(STATUS_DRAFT);
 		entity.setIdVersion(0);
-		entity.setIdAttributeJson(getIdAttributeJsonString(dto));
-		entity.setSchemaJson("{}");
+		entity.setIdAttributeJson(dto.getSchema());
+		entity.setSchemaJson("{}");		
 		entity.setId(UUID.randomUUID().toString());
 		entity.setLangCode("eng");
 		entity.setIsDeleted(false);
@@ -221,6 +221,20 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 					ExceptionUtils.parseException(e));
 		}
 		return getIdentitySchemaDto(entity);
+	}
+
+	/**
+	 * 
+	 * @param jsonInString
+	 */
+	private void isJSONArrayValid(String jsonInString) {
+		try {
+			new JSONArray(jsonInString);
+		} catch (JSONException e) {
+			LOGGER.error("Given jsonSpec is not a valid json object ", e);
+			throw new MasterDataServiceException(SchemaErrorCode.VALUE_PARSE_ERROR.getErrorCode(),
+					SchemaErrorCode.VALUE_PARSE_ERROR.getErrorMessage());
+		}
 	}
 
 	/*
@@ -280,16 +294,16 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 	@Override
 	@Transactional
 	public IdSchemaResponseDto updateSchema(String id, IdentitySchemaDto dto) {	
-		
-		validateDuplicateFields(dto.getSchema());
-		validateDocumentFields(dto.getSchema());
-		validateBiometricFields(dto.getSchema());
+		isJSONArrayValid(dto.getSchema());
+//		validateDuplicateFields(dto.getSchema());
+//		validateDocumentFields(dto.getSchema());
+//		validateBiometricFields(dto.getSchema());
 		
 		IdentitySchema entity = null;
-		String jsonString = getIdAttributeJsonString(dto);
+		
 		
 		try {
-			int updatedRows = identitySchemaRepository.updateIdentitySchema(id, jsonString, true, 
+			int updatedRows = identitySchemaRepository.updateIdentitySchema(id, dto.getSchema(), true, 
 					MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser());
 			
 			entity = identitySchemaRepository.findIdentitySchemaById(id);
@@ -338,9 +352,9 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 	}
 	
 	private String getIdAttributeJsonString(IdentitySchemaDto dto) {
-		List<SchemaDto> list = dto.getSchema() == null ? new ArrayList<SchemaDto>() : dto.getSchema();
+		String schema = dto.getSchema() == null ? "" : dto.getSchema();
 		try {
-			return objectMapper.writeValueAsString(list);
+			return objectMapper.writeValueAsString(schema);
 		} catch (IOException e) {
 			throw new MasterDataServiceException(SchemaErrorCode.VALUE_PARSE_ERROR.getErrorCode(),
 					ExceptionUtils.parseException(e));
@@ -420,10 +434,11 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 		return PRIMTIVE_TYPES.contains(type);
 	}
 	
-	private List<SchemaDto> convertJSONStringToSchemaDTO(String schemaJson) {
-		List<SchemaDto> list = new ArrayList<>();
+	private List<SchemaDto> convertJSONStringToSchemaDTO(String schemaJson) {		
+		List<SchemaDto> list = new ArrayList<>();		
 		try {
 			list = objectMapper.readValue(schemaJson == null ? "[]" : schemaJson, new TypeReference<List<SchemaDto>>() {});
+			//list = Arrays.asList(objectMapper.readValue(schemaJson == null ? "[]" : schemaJson, SchemaDto[].class));
 		} catch (IOException e) {
 			throw new MasterDataServiceException(SchemaErrorCode.VALUE_PARSE_ERROR.getErrorCode(),
 					ExceptionUtils.parseException(e));
@@ -438,7 +453,12 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 		dto.setIdVersion(entity.getIdVersion());
 		dto.setTitle(entity.getTitle());
 		dto.setDescription(entity.getDescription());
-		dto.setSchema(convertJSONStringToSchemaDTO(entity.getIdAttributeJson()));
+		//dto.setSchema(convertJSONStringToSchemaDTO(entity.getIdAttributeJson()));
+		try {
+			dto.setSchema(objectMapper.readTree(entity.getIdAttributeJson()));
+		} catch (IOException e) {
+			LOGGER.error(SchemaErrorCode.SCHEMA_JSON_EXCEPTION.getErrorMessage(), e);
+		}
 		dto.setSchemaJson(entity.getSchemaJson());		
 		dto.setStatus(entity.getStatus());
 		dto.setCreatedBy(entity.getCreatedBy());

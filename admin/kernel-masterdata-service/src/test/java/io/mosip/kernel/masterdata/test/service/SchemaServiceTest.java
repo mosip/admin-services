@@ -231,7 +231,7 @@ public class SchemaServiceTest {
 		Mockito.when(identitySchemaRepository.create(Mockito.any(IdentitySchema.class))).thenReturn(draftSchema);
 		IdentitySchemaDto dto = new IdentitySchemaDto();
 		dto.setTitle("test");
-		dto.setSchema(new ArrayList<SchemaDto>());
+		dto.setSchema("");
 		dto.setDescription("test");
 		
 		IdSchemaResponseDto resp = identitySchemaService.createSchema(dto);		
@@ -248,7 +248,7 @@ public class SchemaServiceTest {
 		
 		IdentitySchemaDto dto = new IdentitySchemaDto();
 		dto.setTitle("test");
-		dto.setSchema(new ArrayList<SchemaDto>());
+		dto.setSchema("");
 		
 		IdSchemaResponseDto resp = identitySchemaService.updateSchema(draftSchema.getId(), dto);
 		assertEquals("DRAFT", resp.getStatus());
