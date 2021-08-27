@@ -194,7 +194,7 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 	@Override
 	@Transactional
 	public IdSchemaResponseDto createSchema(IdentitySchemaDto dto) {
-//		isJSONArrayValid(dto.getSchema());
+
 //		validateDuplicateFields(dto.getSchema());
 //		validateDocumentFields(dto.getSchema());
 //		validateBiometricFields(dto.getSchema());
@@ -219,20 +219,6 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 					ExceptionUtils.parseException(e));
 		}
 		return getIdentitySchemaDto(entity);
-	}
-
-	/**
-	 * 
-	 * @param jsonInString
-	 */
-	private void isJSONArrayValid(String jsonInString) {
-		try {
-			new JSONArray(jsonInString);
-		} catch (JSONException e) {
-			LOGGER.error("Given jsonSpec is not a valid json object ", e);
-			throw new MasterDataServiceException(SchemaErrorCode.VALUE_PARSE_ERROR.getErrorCode(),
-					SchemaErrorCode.VALUE_PARSE_ERROR.getErrorMessage());
-		}
 	}
 
 	/*
@@ -292,7 +278,7 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 	@Override
 	@Transactional
 	public IdSchemaResponseDto updateSchema(String id, IdentitySchemaDto dto) {	
-//		isJSONArrayValid(dto.getSchema());
+
 //		validateDuplicateFields(dto.getSchema());
 //		validateDocumentFields(dto.getSchema());
 //		validateBiometricFields(dto.getSchema());
