@@ -23,6 +23,8 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.SchemaErrorCode;
 import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
@@ -76,6 +78,9 @@ public class SchemaServiceTest {
 	private DynamicField mstatusField;	
 	
 	PageRequest pageRequest = null;
+	
+	@Autowired
+	ObjectMapper objectMapper;
 	
 	@Before
 	public void setup() {
@@ -231,7 +236,8 @@ public class SchemaServiceTest {
 		Mockito.when(identitySchemaRepository.create(Mockito.any(IdentitySchema.class))).thenReturn(draftSchema);
 		IdentitySchemaDto dto = new IdentitySchemaDto();
 		dto.setTitle("test");
-		dto.setSchema("[{\"value\":\"married\",\"code\":\"MS1\",\"active\":true},{\"value\":\"single\",\"code\":\"MS2\",\"active\":true}]");
+		String schema = "[{\"value\":\"married\",\"code\":\"MS1\",\"active\":true},{\"value\":\"single\",\"code\":\"MS2\",\"active\":true}]";
+		dto.setSchema(objectMapper.readTree(schema));
 		dto.setDescription("test");
 		
 		IdSchemaResponseDto resp = identitySchemaService.createSchema(dto);		
@@ -248,7 +254,9 @@ public class SchemaServiceTest {
 		
 		IdentitySchemaDto dto = new IdentitySchemaDto();
 		dto.setTitle("test");
-		dto.setSchema("[{\"value\":\"married\",\"code\":\"MS1\",\"active\":true},{\"value\":\"single\",\"code\":\"MS2\",\"active\":true}]");
+		
+		String schema = "[{\"value\":\"married\",\"code\":\"MS1\",\"active\":true},{\"value\":\"single\",\"code\":\"MS2\",\"active\":true}]";
+		dto.setSchema(objectMapper.readTree(schema));
 		
 		IdSchemaResponseDto resp = identitySchemaService.updateSchema(draftSchema.getId(), dto);
 		assertEquals("DRAFT", resp.getStatus());

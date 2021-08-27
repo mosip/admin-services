@@ -194,7 +194,7 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 	@Override
 	@Transactional
 	public IdSchemaResponseDto createSchema(IdentitySchemaDto dto) {
-		isJSONArrayValid(dto.getSchema());
+//		isJSONArrayValid(dto.getSchema());
 //		validateDuplicateFields(dto.getSchema());
 //		validateDocumentFields(dto.getSchema());
 //		validateBiometricFields(dto.getSchema());
@@ -204,7 +204,7 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 		entity.setIsActive(true);
 		entity.setStatus(STATUS_DRAFT);
 		entity.setIdVersion(0);
-		entity.setIdAttributeJson(dto.getSchema());
+		entity.setIdAttributeJson(dto.getSchema().toString());
 		entity.setSchemaJson("{}");		
 		entity.setId(UUID.randomUUID().toString());
 		entity.setLangCode("eng");
@@ -292,7 +292,7 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 	@Override
 	@Transactional
 	public IdSchemaResponseDto updateSchema(String id, IdentitySchemaDto dto) {	
-		isJSONArrayValid(dto.getSchema());
+//		isJSONArrayValid(dto.getSchema());
 //		validateDuplicateFields(dto.getSchema());
 //		validateDocumentFields(dto.getSchema());
 //		validateBiometricFields(dto.getSchema());
@@ -301,7 +301,7 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 		
 		
 		try {
-			int updatedRows = identitySchemaRepository.updateIdentitySchema(id, dto.getSchema(), true, 
+			int updatedRows = identitySchemaRepository.updateIdentitySchema(id, dto.getSchema().toString(), true, 
 					MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser());
 			
 			entity = identitySchemaRepository.findIdentitySchemaById(id);
@@ -350,7 +350,7 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 	}
 	
 	private String getIdAttributeJsonString(IdentitySchemaDto dto) {
-		String schema = dto.getSchema() == null ? "" : dto.getSchema();
+		String schema = dto.getSchema() == null ? "" : dto.getSchema().toString();
 		try {
 			return objectMapper.writeValueAsString(schema);
 		} catch (IOException e) {
