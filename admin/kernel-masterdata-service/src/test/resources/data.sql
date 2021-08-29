@@ -88,151 +88,33 @@ INSERT INTO MASTER.ZONE(CODE, NAME, HIERARCHY_LEVEL, HIERARCHY_LEVEL_NAME, HIERA
 ('TZT', STRINGDECODE('\u00d8\u00aa\u00d8\u00b2\u00d9\u2020\u00d9\u0160\u00d8\u00aa\u00e2\u20ac\u017d'), 3, STRINGDECODE('\u00d8\u00a7\u00d9\u201e\u00d9\u2026\u00d8\u00ad\u00d8\u00a7\u00d9\ufffd\u00d8\u00b8\u00d8\u00a9'), 'MOR/STH/SOS/TZT', 'SOS', 'ara', TRUE, 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL),
 ('TZT', 'Tiznit', 3, 'Province', 'MOR/STH/SOS/TZT', 'SOS', 'fra', TRUE, 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL); 
 
+CREATE MEMORY TABLE if not exists master.location(
+	code character varying(36) NOT NULL,
+	name character varying(128) NOT NULL,
+	hierarchy_level smallint NOT NULL,
+	hierarchy_level_name character varying(64) NOT NULL,
+	parent_loc_code character varying(36),
+	lang_code character varying(3) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
+	CONSTRAINT pk_loc_code PRIMARY KEY (code,lang_code)
 
+);
+INSERT INTO MASTER.location(code, name, hierarchy_level, hierarchy_level_name, parent_loc_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES
+('MOR','MyCountry',0,'Country',NULL,'eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL),
+('RSK','Rabat Sale Kenitra',1,'Region','MOR','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL),
+('KTA','Kenitra',2,'Province','RSK','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL),
+('KNT','Kenitra',3,'City','KTA','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL),
+('BNMR','Ben Mansour',4,'Zone','KNT','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL),
+('14022','14022',5,'Postal Code','BNMR','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL),
+('MOGR','Mograne',4,'Zone','KNT','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL);
 
-
-CREATE TABLE IF NOT EXISTS MASTER.LOCATION(
-    CODE VARCHAR(255) NOT NULL SELECTIVITY 33,
-    LANG_CODE VARCHAR(3) NOT NULL SELECTIVITY 2,
-    CR_BY VARCHAR(256) NOT NULL SELECTIVITY 1,
-    CR_DTIMES TIMESTAMP NOT NULL SELECTIVITY 1,
-    DEL_DTIMES TIMESTAMP SELECTIVITY 1,
-    IS_ACTIVE BOOLEAN NOT NULL SELECTIVITY 1,
-    IS_DELETED BOOLEAN SELECTIVITY 1,
-    UPD_BY VARCHAR(256) SELECTIVITY 1,
-    UPD_DTIMES TIMESTAMP SELECTIVITY 1,
-    HIERARCHY_LEVEL INTEGER NOT NULL SELECTIVITY 5,
-    HIERARCHY_LEVEL_NAME VARCHAR(64) NOT NULL SELECTIVITY 11,
-    NAME VARCHAR(128) NOT NULL SELECTIVITY 50,
-    PARENT_LOC_CODE VARCHAR(32) NOT NULL SELECTIVITY 18
-);      
-ALTER TABLE MASTER.LOCATION ADD CONSTRAINT IF NOT EXISTS MASTER.CONSTRAINT_9F PRIMARY KEY(CODE, LANG_CODE); 
--- 119 +/- SELECT COUNT(*) FROM MASTER.LOCATION;              
-INSERT INTO MASTER.LOCATION(CODE, LANG_CODE, CR_BY, CR_DTIMES, DEL_DTIMES, IS_ACTIVE, IS_DELETED, UPD_BY, UPD_DTIMES, HIERARCHY_LEVEL, HIERARCHY_LEVEL_NAME, NAME, PARENT_LOC_CODE) VALUES
-('MOR', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 0, 'Country', 'Morocco', '0'),
-('MOR', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 0, 'Pays', 'Maroc', '0'),
-('RSK', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 1, 'Region', 'Rabat Sale Kenitra', 'MOR'),
-('RSK', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 1, STRINGDECODE('\u0645\u0646\u0637\u0642\u0629'), STRINGDECODE('\u062c\u0647\u0629 \u0627\u0644\u0631\u0628\u0627\u0637 \u0633\u0644\u0627 \u0627\u0644\u0642\u0646\u064a\u0637\u0631\u0629'), 'MOR'),
-('RSK', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 1, STRINGDECODE('R\u00e9gion'), STRINGDECODE('Rabat-Sal\u00e9-K\u00e9nitra'), 'MOR'),
-('KTA', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 2, 'Province', 'Kenitra', 'RSK'),
-('KTA', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 2, STRINGDECODE('\u0627\u0644\u0645\u062d\u0627\u0641\u0638\u0629'), STRINGDECODE('\u0627\u0644\u0642\u0646\u064a\u0637\u0631\u0629'), 'RSK'),
-('KTA', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 2, 'Province', STRINGDECODE('K\u00e9nitra'), 'RSK'),
-('KNT', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 3, 'City', 'Kenitra', 'KTA'),
-('KNT', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 3, STRINGDECODE('\u0645\u062f\u064a\u0646\u0629'), STRINGDECODE('\u0627\u0644\u0642\u0646\u064a\u0637\u0631\u0629'), 'KTA'),
-('KNT', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 3, 'Ville', STRINGDECODE('K\u00e9nitra'), 'KTA'),
-('BNMR', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Ben Mansour', 'KNT'),
-('BNMR', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, STRINGDECODE('\u0645\u0646\u0637\u0642\u0629'), STRINGDECODE('\u0628\u0646 \u0645\u0646\u0635\u0648\u0631'), 'KNT'),
-('BNMR', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Ben Mansour', 'KNT'),
-('14022', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'Postal Code', '14022', 'BNMR'),
-('14022', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, STRINGDECODE('\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064a\u062f\u064a'), '14022', 'BNMR'),
-('14022', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'code postal', '14022', 'BNMR'),
-('MNAS', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Mnasra', 'KNT'),
-('MNAS', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, STRINGDECODE('\u0645\u0646\u0637\u0642\u0629'), STRINGDECODE('\u0645\u0646\u064e\u0633\u0631\u064e'), 'KNT'),
-('MNAS', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Mnasra', 'KNT'),
-('14053', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'Postal Code', '14053', 'MNAS'),
-('14053', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, STRINGDECODE('\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064a\u062f\u064a'), '14053', 'MNAS'),
-('14053', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'code postal', '14053', 'MNAS'),
-('MOGR', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Mograne', 'KNT'),
-('MOGR', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, STRINGDECODE('\u0645\u0646\u0637\u0642\u0629'), STRINGDECODE('\u0645\u06ad\u0631\u0646'), 'KNT');        
-INSERT INTO MASTER.LOCATION(CODE, LANG_CODE, CR_BY, CR_DTIMES, DEL_DTIMES, IS_ACTIVE, IS_DELETED, UPD_BY, UPD_DTIMES, HIERARCHY_LEVEL, HIERARCHY_LEVEL_NAME, NAME, PARENT_LOC_CODE) VALUES
-('MOGR', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Mograne', 'KNT'),
-('14023', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'Postal Code', '14023', 'MOGR'),
-('14023', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, STRINGDECODE('\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064a\u062f\u064a'), '14023', 'MOGR'),
-('14023', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'code postal', '14023', 'MOGR'),
-('ASSM', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Assam', 'KNT'),
-('ASSM', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, STRINGDECODE('\u0645\u0646\u0637\u0642\u0629'), STRINGDECODE('\u0627\u0644\u0639\u0635\u0627\u0645'), 'KNT'),
-('ASSM', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Assam', 'KNT'),
-('14000', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'Postal Code', '14000', 'ASSM'),
-('14000', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, STRINGDECODE('\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064a\u062f\u064a'), '14000', 'ASSM'),
-('14000', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'code postal', '14000', 'ASSM'),
-('MEHD', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Mehdia', 'KNT'),
-('MEHD', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, STRINGDECODE('\u0645\u0646\u0637\u0642\u0629'), STRINGDECODE('\u0645\u0647\u062f\u064a\u0629'), 'KNT'),
-('MEHD', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Mehdia', 'KNT'),
-('14110', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'Postal Code', '14110', 'MEHD'),
-('14110', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, STRINGDECODE('\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064a\u062f\u064a'), '14110', 'MEHD'),
-('14110', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'code postal', '14110', 'MEHD'),
-('OLOJ', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Ouled Oujih', 'KNT'),
-('OLOJ', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, STRINGDECODE('\u0645\u0646\u0637\u0642\u0629'), STRINGDECODE('\u0627\u0648\u0644\u0627\u062f \u0627\u0648\u062c\u064a\u0647'), 'KNT'),
-('OLOJ', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Ouled Oujih', 'KNT'),
-('14080', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'Postal Code', '14080', 'OLOJ'),
-('14080', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, STRINGDECODE('\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064a\u062f\u064a'), '14080', 'OLOJ'),
-('14080', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'code postal', '14080', 'OLOJ'),
-('SDTB', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Sidi Taibi', 'KNT'),
-('SDTB', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, STRINGDECODE('\u0645\u0646\u0637\u0642\u0629'), STRINGDECODE('\u0633\u064a\u062f\u064a \u0627\u0644\u0637\u064a\u0628\u064a'), 'KNT'),
-('SDTB', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Sidi Taibi', 'KNT');
-INSERT INTO MASTER.LOCATION(CODE, LANG_CODE, CR_BY, CR_DTIMES, DEL_DTIMES, IS_ACTIVE, IS_DELETED, UPD_BY, UPD_DTIMES, HIERARCHY_LEVEL, HIERARCHY_LEVEL_NAME, NAME, PARENT_LOC_CODE) VALUES
-('14025', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'Postal Code', '14025', 'SDTB'),
-('14025', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, STRINGDECODE('\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064a\u062f\u064a'), '14025', 'SDTB'),
-('14025', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'code postal', '14025', 'SDTB'),
-('SATZ', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Sidi Allal Tazi', 'KNT'),
-('SATZ', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, STRINGDECODE('\u0645\u0646\u0637\u0642\u0629'), STRINGDECODE('\u0639\u0644\u0627\u0644 \u0627\u0644\u062a\u0627\u0632\u064a'), 'KNT'),
-('SATZ', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Sidi Allal Tazi', 'KNT'),
-('14050', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'Postal Code', '14050', 'SATZ'),
-('14050', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, STRINGDECODE('\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064a\u062f\u064a'), '14050', 'SATZ'),
-('14050', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'code postal', '14050', 'SATZ'),
-('RBT', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 2, 'Province', 'Rabat', 'RSK'),
-('RBT', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 2, STRINGDECODE('\u0627\u0644\u0645\u062d\u0627\u0641\u0638\u0629'), STRINGDECODE('\u0627\u0644\u0631\u0628\u0627\u0637'), 'RSK'),
-('RBT', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 2, 'Province', 'Rabat', 'RSK'),
-('RAB', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 3, 'City', 'Rabat', 'RBT'),
-('RAB', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 3, STRINGDECODE('\u0645\u062f\u064a\u0646\u0629'), STRINGDECODE('\u0627\u0644\u0631\u0628\u0627\u0637'), 'RBT'),
-('RAB', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 3, 'Ville', 'Rabat', 'RBT'),
-('AGDL', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Agdal', 'RAB'),
-('AGDL', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, STRINGDECODE('\u0645\u0646\u0637\u0642\u0629'), STRINGDECODE('\u0623\u0643\u062f\u0627\u0644'), 'RAB'),
-('AGDL', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Agdal', 'RAB'),
-('10106', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'Postal Code', '10106', 'AGDL'),
-('10106', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, STRINGDECODE('\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064a\u062f\u064a'), '10106', 'AGDL'),
-('10106', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'code postal', '10106', 'AGDL'),
-('QRHS', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Quartier Hassan', 'RAB'),
-('QRHS', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, STRINGDECODE('\u0645\u0646\u0637\u0642\u0629'), STRINGDECODE('\u062d\u064a \u062d\u0633\u0627\u0646'), 'RAB'),
-('QRHS', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Quartier Hassan', 'RAB'),
-('10000', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'Postal Code', '10000', 'QRHS');              
-INSERT INTO MASTER.LOCATION(CODE, LANG_CODE, CR_BY, CR_DTIMES, DEL_DTIMES, IS_ACTIVE, IS_DELETED, UPD_BY, UPD_DTIMES, HIERARCHY_LEVEL, HIERARCHY_LEVEL_NAME, NAME, PARENT_LOC_CODE) VALUES
-('10000', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, STRINGDECODE('\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064a\u062f\u064a'), '10000', 'QRHS'),
-('10000', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'code postal', '10000', 'QRHS'),
-('SOUS', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Souissi', 'RAB'),
-('SOUS', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, STRINGDECODE('\u0645\u0646\u0637\u0642\u0629'), STRINGDECODE('\u0627\u0644\u0633\u0648\u064a\u0633\u064a'), 'RAB'),
-('SOUS', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Souissi', 'RAB'),
-('10105', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'Postal Code', '10105', 'SOUS'),
-('10105', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, STRINGDECODE('\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064a\u062f\u064a'), '10105', 'SOUS'),
-('10105', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'code postal', '10105', 'SOUS'),
-('MADI', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Madinat Al Irfane', 'RAB'),
-('MADI', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, STRINGDECODE('\u0645\u0646\u0637\u0642\u0629'), STRINGDECODE('\u0645\u062f\u064a\u0646\u0629 \u0627\u0644\u0639\u0631\u0641\u0627\u0646'), 'RAB'),
-('MADI', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Madinat Al Irfane', 'RAB'),
-('10112', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'Postal Code', '10112', 'MADI'),
-('10112', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, STRINGDECODE('\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064a\u062f\u064a'), '10112', 'MADI'),
-('10112', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'code postal', '10112', 'MADI'),
-('HARD', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Hay Riad', 'RAB'),
-('HARD', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, STRINGDECODE('\u0645\u0646\u0637\u0642\u0629'), STRINGDECODE('\u062d\u064a \u0627\u0644\u0631\u064a\u0627\u0636'), 'RAB'),
-('HARD', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Hay Riad', 'RAB'),
-('10104', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'Postal Code', '10104', 'HARD'),
-('10104', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, STRINGDECODE('\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064a\u062f\u064a'), '10104', 'HARD'),
-('10104', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'code postal', '10104', 'HARD'),
-('MDDR', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'Medina de Rabat', 'RAB'),
-('MDDR', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, STRINGDECODE('\u0645\u0646\u0637\u0642\u0629'), STRINGDECODE('\u0645\u062f\u064a\u0646\u0629'), 'RAB'),
-('MDDR', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', STRINGDECODE('M\u00e9dina de Rabat'), 'RAB'),
-('10036', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'Postal Code', '10036', 'MDDR'),
-('10036', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, STRINGDECODE('\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064a\u062f\u064a'), '10036', 'MDDR');      
-INSERT INTO MASTER.LOCATION(CODE, LANG_CODE, CR_BY, CR_DTIMES, DEL_DTIMES, IS_ACTIVE, IS_DELETED, UPD_BY, UPD_DTIMES, HIERARCHY_LEVEL, HIERARCHY_LEVEL_NAME, NAME, PARENT_LOC_CODE) VALUES
-('10036', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'code postal', '10036', 'MDDR'),
-('ELYF', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'EL YOUSSOUFIA', 'RAB'),
-('ELYF', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, STRINGDECODE('\u0645\u0646\u0637\u0642\u0629'), STRINGDECODE('\u0627\u0644\u064a\u0648\u0633\u0641\u064a\u0629'), 'RAB'),
-('ELYF', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 4, 'Zone', 'EL YOUSSOUFIA', 'RAB'),
-('10190', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'Postal Code', '10190', 'ELYF'),
-('10190', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, STRINGDECODE('\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064a\u062f\u064a'), '10190', 'ELYF'),
-('10190', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'code postal', '10190', 'ELYF'),
-('10110', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'Postal Code', '10110', 'BNMR'),
-('10111', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'Postal Code', '10111', 'BNMR'),
-('10113', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'Postal Code', '10113', 'BNMR'),
-('10114', 'eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'Postal Code', '10114', 'BNMR'),
-('10111', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'code postal', '10111', 'BNMR'),
-('10110', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'code postal', '10110', 'BNMR'),
-('10113', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'code postal', '10113', 'BNMR'),
-('10114', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, 'code postal', '10114', 'BNMR'),
-('10111', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, STRINGDECODE('\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064a\u062f\u064a'), '10111', 'BNMR'),
-('10110', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, STRINGDECODE('\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064a\u062f\u064a'), '10110', 'BNMR'),
-('10113', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, STRINGDECODE('\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064a\u062f\u064a'), '10113', 'BNMR'),
-('10114', 'ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 5, STRINGDECODE('\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064a\u062f\u064a'), '10114', 'BNMR');             
-CREATE MEMORY TABLE MASTER.LANGUAGE(
+CREATE MEMORY TABLE if not exists MASTER.LANGUAGE(
     CODE VARCHAR(3) NOT NULL,
     CR_BY VARCHAR(256) NOT NULL,
     CR_DTIMES TIMESTAMP NOT NULL,
@@ -251,7 +133,7 @@ INSERT INTO MASTER.LANGUAGE(CODE, CR_BY, CR_DTIMES, DEL_DTIMES, IS_ACTIVE, IS_DE
 ('eng', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 'Indo-European', 'English', 'English'),
 ('ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 'Afro-Asiatic', 'Arabic', STRINGDECODE('\u0627\u0644\u0639\u064e\u0631\u064e\u0628\u0650\u064a\u064e\u0651\u0629\u200e')),
 ('fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 'Indo-European', 'French', STRINGDECODE('fran\u00e7ais'));
-CREATE TABLE IF NOT EXISTS MASTER.LOC_HIERARCHY_LIST(
+CREATE MEMORY TABLE  IF NOT EXISTS MASTER.LOC_HIERARCHY_LIST(
     hierarchy_level smallint NOT NULL,
     hierarchy_level_name character varying(64) NOT NULL,
     lang_code character varying(3) NOT NULL,
@@ -272,7 +154,7 @@ INSERT INTO master.loc_hierarchy_list(
 ('0','بلد','ara',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL, NULL, NULL),
 ('0','Pays','fra',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL, NULL, NULL),
 ('1','Region','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL, NULL, NULL);
-CREATE MEMORY TABLE MASTER.REG_EXCEPTIONAL_HOLIDAY(
+CREATE MEMORY TABLE if not exists MASTER.REG_EXCEPTIONAL_HOLIDAY(
     REGCNTR_ID CHARACTER VARYING(10) NOT NULL,
     HOL_DATE DATE NOT NULL,
     HOL_NAME CHARACTER VARYING(128),
@@ -313,7 +195,7 @@ INSERT INTO MASTER.BIOMETRIC_TYPE(CODE, LANG_CODE, CR_BY, CR_DTIMES, DEL_DTIMES,
 ('FNR', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 'Empreintes digitales du demandeur', 'Empreintes digitales'),
 ('IRS', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 'Iris du demandeur', 'Iris'),
 ('PHT', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 'Photo du visage du demandeur', 'Photo');
-CREATE MEMORY TABLE MASTER.BIOMETRIC_ATTRIBUTE(
+CREATE MEMORY TABLE if not exists MASTER.BIOMETRIC_ATTRIBUTE(
     CODE VARCHAR(255) NOT NULL,
     LANG_CODE VARCHAR(3) NOT NULL,
     CR_BY VARCHAR(256) NOT NULL,
@@ -345,7 +227,7 @@ INSERT INTO MASTER.BIOMETRIC_ATTRIBUTE(CODE, LANG_CODE, CR_BY, CR_DTIMES, DEL_DT
 ('LH', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 'FNR', 'Impression de la dalle gauche', 'Dalle gauche'),
 ('LI', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 'IRS', 'Gravure de Iris Gauche', 'Iris gauche'),
 ('RI', 'fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 'IRS', 'Empreinte de l''iris droit', 'Iris droit');
-CREATE MEMORY TABLE master.device_master(
+CREATE MEMORY TABLE if not exists master.device_master(
 	id 			character varying(36) NOT NULL,
 	name 		character varying(64) NOT NULL,
 	mac_address character varying(64) NOT NULL,
@@ -403,14 +285,14 @@ CREATE MEMORY TABLE master.device_spec(
 
 );
 ALTER TABLE master.device_spec ADD CONSTRAINT pk_dspec_code PRIMARY KEY (id,lang_code);
--- 15 +/- SELECT COUNT(*) FROM master.device_master;
+-- 15 +/- SELECT COUNT(*) FROM master.device_spec;
 INSERT INTO master.device_spec(id, name, brand, model, dtyp_code, min_driver_ver, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES 
 ('165','Fingerprint Scanner','Safran Morpho','1300 E2','FRS','1.12','To scan fingerprint','fra',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('165','Fingerprint Scanner','Safran Morpho','1300 E2','FRS','1.12','To scan fingerprint','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('327','High Speed Dual Iris Scanner','Cogent','3M','IRS','2.34','To scan iris','fra',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('327','High Speed Dual Iris Scanner','Cogent','3M','IRS','2.34','To scan iris','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
 
-CREATE TABLE master.device_master_h(
+CREATE MEMORY TABLE if not exists master.device_master_h(
 	id 			character varying(36) NOT NULL,
 	name 		character varying(64) NOT NULL,
 	mac_address character varying(64) NOT NULL,
@@ -446,7 +328,7 @@ INSERT INTO master.device_master_h(id, name, mac_address, serial_num, ip_address
 ('3000075','Dummy Web Camera 15','BA-DE-90-AF-C4-6E','R169V3235864050',NULL,NULL,'736','MRS','10013','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL,TIMESTAMP '2018-12-10 11:42:52.994'),
 ('3000076','Dummy Web Camera 16','8D-28-4B-A7-F6-98','M262X1515179346',NULL,NULL,'736','MRS','10013','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL,TIMESTAMP '2018-12-10 11:42:52.994'),
 ('3000077','Dummy Web Camera 17','0F-ED-8F-0F-94-88','H706H5247430756',NULL,NULL,'736','SOS','10014','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL,TIMESTAMP '2018-12-10 11:42:52.994');
-CREATE TABLE master.device_type(
+CREATE MEMORY TABLE if not exists  master.device_type(
 	code character varying(36) NOT NULL,
 	name character varying(64) NOT NULL,
 	descr character varying(128),
@@ -467,7 +349,7 @@ INSERT INTO master.device_type(code, name, descr, lang_code, is_active, cr_by, c
 ('CMR','Camera','For capturing photo','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('PRT','Printer','For printing Documents','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('SCN','Document Scanner','For scanning documents','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
-CREATE TABLE master.doc_category(
+CREATE MEMORY TABLE  if not exists master.doc_category(
 	code character varying(36) NOT NULL,
 	name character varying(64) NOT NULL,
 	descr character varying(128),
@@ -488,7 +370,7 @@ INSERT INTO master.doc_category(code, name, descr, lang_code, is_active, cr_by, 
 ('POI','Proof of Identity','Identity Proof','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('POR','Proof of Relationship','Proof Relationship of the person','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('POE','Proof of Biometric Exception','Proof of Biometric Exception','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
-CREATE TABLE master.doc_type(
+CREATE MEMORY TABLE if not exists  master.doc_type(
 	code character varying(36) NOT NULL,
 	name character varying(64) NOT NULL,
 	descr character varying(128),
@@ -509,7 +391,7 @@ INSERT INTO master.doc_type(code, name, descr, lang_code, is_active, cr_by, cr_d
 ('COE','Certification of Exception','Certificate of Exception','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('DOC002','PAN card','PAN card','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('COR','Certificate of residence','Proof of Resident','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
-CREATE TABLE master.valid_document(
+CREATE MEMORY TABLE if not exists  master.valid_document(
 	doctyp_code character varying(36) NOT NULL,
 	doccat_code character varying(36) NOT NULL,
 	lang_code character varying(3) NOT NULL,
@@ -529,7 +411,7 @@ INSERT INTO master.valid_document(doctyp_code, doccat_code, lang_code, is_active
 ('CIN','POI','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('COR','POA','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('DOC001','POI','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
-CREATE TABLE master.dynamic_field(
+CREATE MEMORY TABLE if not exists master.dynamic_field(
 	id character varying(36) NOT NULL,
 	name character varying(36) NOT NULL,
 	description character varying(256),
@@ -550,3 +432,138 @@ CREATE TABLE master.dynamic_field(
 INSERT INTO master.dynamic_field(id, name, description, data_type,value_json,lang_code,is_active,cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES 
 ('10001','bloodType1','Blood Type11','string',Null,'eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('10002','bloodType2','Blood Type12','string',Null,'eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
+CREATE MEMORY TABLE if not exists master.id_type(
+	code character varying(36) NOT NULL,
+	name character varying(64) NOT NULL,
+	descr character varying(128),
+	lang_code character varying(3) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp
+	
+
+);
+
+ALTER TABLE MASTER.id_type ADD CONSTRAINT pk_idtyp_code PRIMARY KEY (code,lang_code);
+INSERT INTO master.id_type(code, name, descr, lang_code,is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES 
+('UIN','Unique Identification Number','National ID given to the applicant','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('PRID','Pre-registration ID','ID assigned after Pre-registration','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('RID','Registration ID','ID assigned after registration','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('VID','Virtual ID','ID used in replacement of UIN','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
+
+CREATE MEMORY TABLE if not exists master.loc_holiday(
+	id integer NOT NULL,
+	location_code character varying(36) NOT NULL,
+	holiday_date date,
+	holiday_name character varying(64),
+	holiday_desc character varying(128),
+	lang_code character varying(3) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp	
+
+);
+ALTER TABLE master.loc_holiday ADD CONSTRAINT pk_lochol_id PRIMARY KEY (id,location_code,lang_code);
+--CONSTRAINT uk_lochol_name UNIQUE (holiday_name,holiday_date,location_code,lang_code),CONSTRAINT fk_lochol_loc FOREIGN KEY (lang_code, location_code);
+INSERT INTO master.loc_holiday(id, location_code, holiday_date,holiday_name,holiday_desc, lang_code,is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES 
+('2000001','KTA',TO_DATE('10-12-2019','dd-MM-yyyy'),'New Year Day', 'National Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('2000002','KTA',TO_DATE('12-12-2019','dd-MM-yyyy'),'Anniversary of the Independence Manifesto',' National Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('2000004','RBT',TO_DATE('14-12-2019','dd-MM-yyyy'),'Eid al-Fitr','National Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('2000005','RBT',TO_DATE('20-12-2019','dd-MM-yyyy'),'Feast of the Throne',' National Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
+
+CREATE MEMORY TABLE if not exists master.reg_exceptional_holiday(
+	regcntr_id character varying(10) NOT NULL,
+	hol_date date NOT NULL,
+	hol_name character varying(128),
+	hol_reason character varying(256),
+	lang_code character varying(3) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
+	CONSTRAINT pk_exceptional_hol PRIMARY KEY (regcntr_id,hol_date)
+
+);
+INSERT INTO master.reg_exceptional_holiday(regcntr_id, hol_date, hol_name,hol_reason, lang_code,is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES 
+('10001',TO_DATE('01-12-2019','dd-MM-yyyy'),'Emergency Holiday','Emergency Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('10002',TO_DATE('01-12-2019','dd-MM-yyyy'),'Emergency Holiday','Emergency Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
+CREATE TABLE master.registration_center(
+	id character varying(10) NOT NULL,
+	name character varying(128) NOT NULL,
+	cntrtyp_code character varying(36),
+	addr_line1 character varying(256),
+	addr_line2 character varying(256),
+	addr_line3 character varying(256),
+	latitude character varying(32),
+	longitude character varying(32),
+	location_code character varying(36) NOT NULL,
+	contact_phone character varying(16),
+	contact_person character varying(128),
+	number_of_kiosks smallint,
+	working_hours character varying(32),
+	per_kiosk_process_time time,
+	center_start_time time,
+	center_end_time time,
+	lunch_start_time time,
+	lunch_end_time time,
+	time_zone character varying(64),
+	holiday_loc_code character varying(36),
+	zone_code character varying(36) NOT NULL,
+	lang_code character varying(3) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
+	CONSTRAINT pk_regcntr_code PRIMARY KEY (id,lang_code)
+
+);
+INSERT INTO master.registration_center(id,name,cntrtyp_code,addr_line1,addr_line2,addr_line3,latitude,longitude,location_code,contact_phone,contact_person,number_of_kiosks,working_hours,per_kiosk_process_time,center_start_time,center_end_time,lunch_start_time,lunch_end_time,time_zone,holiday_loc_code,zone_code,lang_code,is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES 
+('10001','Center A Ben Mansour','REG','P4238','Ben Mansour','MyCountry','34.52117','-6.453275','14022','779517433','John Doe',3,'8:00:00',Time '0:15:00', Time '9:00:00',Time '17:00:00',Time '13:00:00',Time '14:00:00','(GTM+01:00) CENTRAL EUROPEAN TIME','KTA','RBT','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
+CREATE TABLE master.blacklisted_words(
+	word character varying(128) NOT NULL,
+	descr character varying(256),
+	lang_code character varying(3) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
+	CONSTRAINT pk_blwrd_code PRIMARY KEY (word,lang_code)
+
+);
+INSERT INTO master.blacklisted_words(word, descr, lang_code,is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES
+('shit','Blacklisted Word','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
+CREATE TABLE master.appl_form_type(
+	code character varying(36) NOT NULL,
+	name character varying(64) NOT NULL,
+	descr character varying(128),
+	lang_code character varying(3) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
+	CONSTRAINT pk_applftyp_code PRIMARY KEY (code,lang_code)
+
+);
+INSERT INTO master.appl_form_type(code, name,descr, lang_code,is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES
+('105','form','form desc','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('106','form1','form desc1','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
