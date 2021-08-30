@@ -2,7 +2,7 @@ package io.mosip.kernel.syncdata.service;
 
 import io.mosip.kernel.syncdata.dto.ConfigDto;
 import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
-import net.minidev.json.JSONObject;
+import org.springframework.http.ResponseEntity;
 
 /**
  * Configuration Sync service
@@ -62,5 +62,5 @@ public interface SyncConfigDetailsService {
 	 * method to get scripts from config-repo
 	 * @return
 	 */
-	public String getScript(String scriptName, String keyIndex);
+	public ResponseEntity getScript(String scriptName, String keyIndex);
 }

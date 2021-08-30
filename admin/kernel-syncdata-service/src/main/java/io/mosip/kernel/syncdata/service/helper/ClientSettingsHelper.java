@@ -12,7 +12,6 @@ import io.mosip.kernel.syncdata.service.helper.beans.RegistrationCenterMachine;
 import io.mosip.kernel.syncdata.service.helper.beans.RegistrationCenterUser;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
-import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,43 +73,28 @@ public class ClientSettingsHelper {
         futuresMap.put(AppRolePriority.class, hasURLDetails(AppRolePriority.class, isV2API, deltaSync) ?
                 getURLDetails(AppRolePriority.class) : serviceHelper.getAppRolePriorityDetails(lastUpdated, currentTimestamp));
 
-        futuresMap.put(Machine.class, hasURLDetails(Machine.class, isV2API, deltaSync) ?
-                getURLDetails(Machine.class) : serviceHelper.getMachines(regCenterId, lastUpdated, currentTimestamp));
-        futuresMap.put(RegistrationCenter.class, hasURLDetails(RegistrationCenter.class, isV2API, deltaSync) ?
-                getURLDetails(RegistrationCenter.class) : serviceHelper.getRegistrationCenter(machineId, lastUpdated, currentTimestamp));
-        futuresMap.put(RegistrationCenterMachine.class, hasURLDetails(RegistrationCenterMachine.class, isV2API, deltaSync) ?
-                getURLDetails(RegistrationCenterMachine.class) : serviceHelper.getRegistrationCenterMachines(regCenterId, lastUpdated, currentTimestamp));
-        futuresMap.put(RegistrationCenterUser.class, hasURLDetails(RegistrationCenterUser.class, isV2API, deltaSync) ?
-                getURLDetails(RegistrationCenterUser.class) : serviceHelper.getRegistrationCenterUsers(regCenterId, lastUpdated, currentTimestamp));
+        futuresMap.put(Machine.class, serviceHelper.getMachines(regCenterId, lastUpdated, currentTimestamp, machineId));
+        futuresMap.put(RegistrationCenter.class, serviceHelper.getRegistrationCenter(machineId, lastUpdated, currentTimestamp));
+        futuresMap.put(RegistrationCenterMachine.class, serviceHelper.getRegistrationCenterMachines(regCenterId,
+                lastUpdated, currentTimestamp, machineId));
+        futuresMap.put(RegistrationCenterUser.class, serviceHelper.getRegistrationCenterUsers(regCenterId, lastUpdated, currentTimestamp));
 
         futuresMap.put(Template.class, hasURLDetails(Template.class, isV2API, deltaSync) ?
                 getURLDetails(Template.class) : serviceHelper.getTemplates(regClientModuleId, lastUpdated, currentTimestamp));
-        futuresMap.put(TemplateFileFormat.class, hasURLDetails(TemplateFileFormat.class, isV2API, deltaSync) ?
-                getURLDetails(TemplateFileFormat.class) : serviceHelper.getTemplateFileFormats(lastUpdated, currentTimestamp));
-        futuresMap.put(TemplateType.class, hasURLDetails(TemplateType.class, isV2API, deltaSync) ?
-                getURLDetails(TemplateType.class) : serviceHelper.getTemplateTypes(lastUpdated, currentTimestamp));
 
         futuresMap.put(DocumentType.class, hasURLDetails(DocumentType.class, isV2API, deltaSync) ?
                 getURLDetails(DocumentType.class) : serviceHelper.getDocumentTypes(lastUpdated, currentTimestamp));
-        futuresMap.put(ValidDocument.class, hasURLDetails(ValidDocument.class, isV2API, deltaSync) ?
-                getURLDetails(ValidDocument.class) : serviceHelper.getValidDocuments(lastUpdated, currentTimestamp));
         futuresMap.put(ApplicantValidDocument.class, hasURLDetails(ApplicantValidDocument.class, isV2API, deltaSync) ?
                 getURLDetails(ApplicantValidDocument.class) : serviceHelper.getApplicantValidDocument(lastUpdated, currentTimestamp));
 
         futuresMap.put(Location.class, hasURLDetails(Location.class, isV2API, deltaSync) ?
                 getURLDetails(Location.class) : serviceHelper.getLocationHierarchy(lastUpdated, currentTimestamp));
-        futuresMap.put(LocationHierarchy.class, hasURLDetails(LocationHierarchy.class, isV2API, deltaSync) ?
-                getURLDetails(LocationHierarchy.class) : serviceHelper.getLocationHierarchyList(lastUpdated));
-
-        futuresMap.put(DynamicFieldDto.class, hasURLDetails(DynamicFieldDto.class, isV2API, deltaSync) ?
-                getURLDetails(DynamicFieldDto.class) : serviceHelper.getAllDynamicFields(lastUpdated));
 
         futuresMap.put(ReasonCategory.class, hasURLDetails(ReasonCategory.class, isV2API, deltaSync) ?
                 getURLDetails(ReasonCategory.class) : serviceHelper.getReasonCategory(lastUpdated, currentTimestamp));
         futuresMap.put(ReasonList.class, hasURLDetails(ReasonList.class, isV2API, deltaSync) ?
                 getURLDetails(ReasonList.class) : serviceHelper.getReasonList(lastUpdated, currentTimestamp));
-        futuresMap.put(Holiday.class, hasURLDetails(Holiday.class, isV2API, deltaSync) ?
-                getURLDetails(Holiday.class) : serviceHelper.getHolidays(lastUpdated, machineId, currentTimestamp));
+        futuresMap.put(Holiday.class, serviceHelper.getHolidays(lastUpdated, machineId, currentTimestamp));
         futuresMap.put(BlacklistedWords.class, hasURLDetails(BlacklistedWords.class, isV2API, deltaSync) ?
                 getURLDetails(BlacklistedWords.class) : serviceHelper.getBlackListedWords(lastUpdated, currentTimestamp));
         futuresMap.put(ScreenAuthorization.class, hasURLDetails(ScreenAuthorization.class, isV2API, deltaSync) ?
@@ -123,48 +107,84 @@ public class ClientSettingsHelper {
                 getURLDetails(SyncJobDef.class) : serviceHelper.getSyncJobDefDetails(lastUpdated, currentTimestamp));
         futuresMap.put(PermittedLocalConfig.class, hasURLDetails(PermittedLocalConfig.class, isV2API, deltaSync) ?
                 getURLDetails(PermittedLocalConfig.class) : serviceHelper.getPermittedConfig(lastUpdated, currentTimestamp));
+
+        //to handle backward compatibility
+        if(!isV2API) {
+            //template_file_format & template_type
+            futuresMap.put(TemplateFileFormat.class, hasURLDetails(TemplateFileFormat.class, isV2API, deltaSync) ?
+                    getURLDetails(TemplateFileFormat.class) : serviceHelper.getTemplateFileFormats(lastUpdated, currentTimestamp));
+            futuresMap.put(TemplateType.class, hasURLDetails(TemplateType.class, isV2API, deltaSync) ?
+                    getURLDetails(TemplateType.class) : serviceHelper.getTemplateTypes(lastUpdated, currentTimestamp));
+
+            //valid_document
+            futuresMap.put(ValidDocument.class, hasURLDetails(ValidDocument.class, isV2API, deltaSync) ?
+                    getURLDetails(ValidDocument.class) : serviceHelper.getValidDocuments(lastUpdated, currentTimestamp));
+        }
+
+        //invokes master-data-service
+        futuresMap.put(LocationHierarchy.class, hasURLDetails(LocationHierarchy.class, isV2API, deltaSync) ?
+                getURLDetails(LocationHierarchy.class) : serviceHelper.getLocationHierarchyList(lastUpdated));
+        futuresMap.put(DynamicFieldDto.class, hasURLDetails(DynamicFieldDto.class, isV2API, deltaSync) ?
+                getURLDetails(DynamicFieldDto.class) : serviceHelper.getAllDynamicFields(lastUpdated));
+
         return futuresMap;
     }
 
-    public List<SyncDataBaseDto> retrieveData(Map<Class, CompletableFuture> futures, String publicKey)
-            throws ExecutionException, InterruptedException {
+    public List<SyncDataBaseDto> retrieveData(Map<Class, CompletableFuture> futures, String publicKey, boolean isV2API)
+            throws RuntimeException {
         final List<SyncDataBaseDto> list = new ArrayList<>();
+        futures.entrySet().parallelStream().forEach(entry -> {
+            try {
+                Object result = entry.getValue().get();
+                if (result != null) {
+                    String entityType = (result instanceof Map) ?
+                            (entry.getKey() == DynamicFieldDto.class ? "dynamic-url" : "structured-url") :
+                            (entry.getKey() == DynamicFieldDto.class ? "dynamic" : "structured") ;
 
-        for (Map.Entry<Class, CompletableFuture> entry : futures.entrySet()) {
-            Object result = entry.getValue().get();
-            if (result == null)
-                continue;
-
-            String entityType = entry.getKey() == DynamicFieldDto.class ? "dynamic" : "structured";
-
-            if(result instanceof Map) {
-               list.add(getEncryptedSyncDataBaseDto(entry.getKey(), publicKey, entityType, result));
-               continue;
-            }
-
-            List entities = (List) result;
-            if(entityType.equals("structured")) {
-                serviceHelper.getSyncDataBaseDto(entry.getKey(), entityType, entities, publicKey, list);
-                continue;
-            }
-
-            //Fills dynamic field data
-            Map<String, List<DynamicFieldDto>> data = new HashMap<String, List<DynamicFieldDto>>();
-            entities.forEach(dto -> {
-                if(!data.containsKey(((DynamicFieldDto)dto).getName())) {
-                    List<DynamicFieldDto> langBasedData = new ArrayList<DynamicFieldDto>();
-                    langBasedData.add(((DynamicFieldDto)dto));
-                    data.put(((DynamicFieldDto)dto).getName(), langBasedData);
+                    switch (entityType) {
+                        case "structured-url":
+                        case "dynamic-url":
+                            list.add(getEncryptedSyncDataBaseDto(entry.getKey(), publicKey, entityType, result));
+                            break;
+                        case "dynamic":
+                            handleDynamicData((List) result, list, publicKey, isV2API);
+                            break;
+                        case "structured":
+                            if(isV2API)
+                                serviceHelper.getSyncDataBaseDtoV2(entry.getKey().getSimpleName(), entityType,
+                                    (List) result, publicKey, list);
+                            else
+                                serviceHelper.getSyncDataBaseDto(entry.getKey().getSimpleName(), entityType,
+                                        (List) result, publicKey, list);
+                            break;
+                    }
                 }
-                else
-                    data.get(((DynamicFieldDto)dto).getName()).add(((DynamicFieldDto)dto));
-            });
-
-            for(String key : data.keySet()) {
-                serviceHelper.getSyncDataBaseDto(key, entityType, data.get(key), publicKey, list);
+            } catch (Throwable e) {
+                LOGGER.error("Failed to construct client settings response", e);
+                throw new RuntimeException(e);
             }
-        }
+        });
         return list;
+    }
+
+    private void handleDynamicData(List entities, List<SyncDataBaseDto> list, String publicKey, boolean isV2) {
+        Map<String, List<DynamicFieldDto>> data = new HashMap<String, List<DynamicFieldDto>>();
+        entities.forEach(dto -> {
+            if(!data.containsKey(((DynamicFieldDto)dto).getName())) {
+                List<DynamicFieldDto> langBasedData = new ArrayList<DynamicFieldDto>();
+                langBasedData.add(((DynamicFieldDto)dto));
+                data.put(((DynamicFieldDto)dto).getName(), langBasedData);
+            }
+            else
+                data.get(((DynamicFieldDto)dto).getName()).add(((DynamicFieldDto)dto));
+        });
+
+        for(String key : data.keySet()) {
+            if (isV2)
+                serviceHelper.getSyncDataBaseDtoV2(key, "dynamic", data.get(key), publicKey, list);
+            else
+                serviceHelper.getSyncDataBaseDto(key, "dynamic", data.get(key), publicKey, list);
+        }
     }
 
     private SyncDataBaseDto getEncryptedSyncDataBaseDto(Class clazz, String publicKey, String entityType, Object urlDetails) {

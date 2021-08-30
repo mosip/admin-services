@@ -103,9 +103,9 @@ public class SyncResponseBodyAdviceConfig implements ResponseBodyAdvice<Response
 			logger.error("", "", "", ExceptionUtils.parseException(e));
 		}
 		if (body != null) {
+			String timestamp = DateUtils.getUTCCurrentDateTimeString();
+			body.setResponsetime(DateUtils.convertUTCToLocalDateTime(timestamp));
 			try {
-				String timestamp = DateUtils.getUTCCurrentDateTimeString();
-				body.setResponsetime(DateUtils.convertUTCToLocalDateTime(timestamp));
 				response.getHeaders().add("response-signature", getResponseSignature(objectMapper.writeValueAsString(body)));
 			} catch (IOException e) {
 				throw new SyncDataServiceException("KER-SIG-ERR", e.getMessage(), e);

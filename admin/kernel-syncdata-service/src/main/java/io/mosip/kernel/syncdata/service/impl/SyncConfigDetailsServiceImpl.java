@@ -3,14 +3,17 @@ package io.mosip.kernel.syncdata.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.Map.Entry;
 
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoRequestDto;
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
+import io.mosip.kernel.clientcrypto.dto.TpmSignRequestDto;
+import io.mosip.kernel.clientcrypto.dto.TpmSignResponseDto;
 import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
+import io.mosip.kernel.core.exception.FileNotFoundException;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
@@ -24,7 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -71,12 +75,6 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	private ObjectMapper objectMapper;
 
 	/**
-	 * Environment instance
-	 */
-	@Autowired
-	private Environment env;
-
-	/**
 	 * file name referred from the properties file
 	 */
 	@Value("${mosip.kernel.syncdata.registration-center-config-file}")
@@ -103,11 +101,14 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	@Autowired
 	private MachineRepository machineRepo;
 
+	@Autowired
+	private Environment environment;
+
 	@Value("#{'${mosip.registration.sync.scripts:applicanttype.mvel}'.split(',')}")
 	private Set<String> scriptNames;
 
-	@Autowired
-	private Environment environment;
+	@Value("${mosip.syncdata.clientsettings.data.dir:./clientsettings-dir}")
+	private String clientSettingsDir;
 
 	/*
 	 * (non-Javadoc)
@@ -171,10 +172,10 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	 */
 	private String getConfigDetailsResponse(@NotNull String fileName) {
 		StringBuilder uriBuilder = new StringBuilder();
-		uriBuilder.append(env.getProperty("spring.cloud.config.uri")).append(SLASH)
-				.append(env.getProperty("spring.application.name")).append(SLASH)
-				.append(env.getProperty("spring.profiles.active")).append(SLASH)
-				.append(env.getProperty("spring.cloud.config.label")).append(SLASH)
+		uriBuilder.append(environment.getProperty("spring.cloud.config.uri")).append(SLASH)
+				.append(environment.getProperty("spring.application.name")).append(SLASH)
+				.append(environment.getProperty("spring.profiles.active")).append(SLASH)
+				.append(environment.getProperty("spring.cloud.config.label")).append(SLASH)
 				.append(fileName);
 		try {
 			return restTemplate.getForObject(uriBuilder.toString(), String.class);
@@ -248,7 +249,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 					SyncConfigDetailsErrorCode.SYNC_IO_EXCEPTION.getErrorMessage(), e);
 		}
 
-		publicKeyResponseMapped.getResponse().setProfile(env.getActiveProfiles()[0]);
+		publicKeyResponseMapped.getResponse().setProfile(environment.getActiveProfiles()[0]);
 		return publicKeyResponseMapped.getResponse();
 
 	}
@@ -277,7 +278,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	}
 
 	@Override
-	public String getScript(String scriptName, String keyIndex) {
+	public ResponseEntity getScript(String scriptName, String keyIndex) {
 		LOGGER.info("getScripts({}) started for machine : {}", scriptName, keyIndex);
 		List<Machine> machines = machineRepo.findByMachineKeyIndex(keyIndex);
 		if(machines == null || machines.isEmpty())
@@ -286,9 +287,16 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
 		Boolean isEncrypted = environment.getProperty(String.format("mosip.sync.entity.encrypted.%s",
 				scriptName.toUpperCase()), Boolean.class, false);
-		return isEncrypted ?
-				getEncryptedData(getConfigDetailsResponse(scriptName), machines.get(0).getPublicKey()) :
-				getConfigDetailsResponse(scriptName);
+		String content = getConfigDetailsResponse(scriptName);
+
+		TpmSignRequestDto tpmSignRequestDto = new TpmSignRequestDto();
+		tpmSignRequestDto.setData(CryptoUtil.encodeBase64(content.getBytes(StandardCharsets.UTF_8)));
+		TpmSignResponseDto tpmSignResponseDto = clientCryptoManagerService.csSign(tpmSignRequestDto);
+
+		return ResponseEntity.ok()
+				.contentType(MediaType.TEXT_PLAIN)
+				.header("file-signature", tpmSignResponseDto.getData())
+				.body(isEncrypted ?	getEncryptedData(content, machines.get(0).getPublicKey()) : content);
 	}
 
 

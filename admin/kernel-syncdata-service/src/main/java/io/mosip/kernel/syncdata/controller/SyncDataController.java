@@ -7,9 +7,13 @@ import java.util.concurrent.ExecutionException;
 
 import javax.validation.Valid;
 
+import io.mosip.kernel.core.exception.FileNotFoundException;
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.*;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -148,7 +152,7 @@ public class SyncDataController {
 			@RequestParam(value = "keyindex", required = true) String keyIndex,
 			@RequestParam(value = "lastUpdated", required = false) String lastUpdated,
 			@RequestParam(value = "regcenterId", required = false) String regCenterId)
-			throws InterruptedException, ExecutionException {
+			throws Throwable {
 
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
@@ -406,27 +410,35 @@ public class SyncDataController {
 	public ResponseWrapper<SyncDataResponseDto> syncClientSettingsV2(
 			@RequestParam(value = "keyindex", required = true) String keyIndex,
 			@RequestParam(value = "lastUpdated", required = false) String lastUpdated,
-			@RequestParam(value = "regcenterId", required = false) String regCenterId)
-			throws InterruptedException, ExecutionException {
+			@RequestParam(value = "regcenterId", required = false) String regCenterId,
+			@RequestParam(value = "version", required = false) String clientVersion)
+			throws Throwable {
+		MDC.put("client_version", clientVersion == null ? "NA": clientVersion);
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettingsV2(regCenterId, keyIndex,
-				timestamp, currentTimeStamp);
+				timestamp, currentTimeStamp, clientVersion);
 		syncDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
 		ResponseWrapper<SyncDataResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(syncDataResponseDto);
 		return response;
 	}
 
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	//@ResponseFilter
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','Default')")
 	@ApiOperation(value = "API to download mvel scripts")
 	@GetMapping(value = "/scripts/{scriptName}")
 	public ResponseEntity downloadScript(@PathVariable(value = "scriptName") String scriptName,
 														   @RequestParam(value = "keyindex", required = true) String keyIndex) {
-		return ResponseEntity.ok()
-				.contentType(MediaType.TEXT_PLAIN)
-				.body(syncConfigDetailsService.getScript(scriptName, keyIndex));
+		return syncConfigDetailsService.getScript(scriptName, keyIndex);
+	}
+
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','Default')")
+	@ApiOperation(value = "API to download data json files")
+	@GetMapping(value = "/clientsettings/{entityIdentifier}")
+	public ResponseEntity downloadEntityData(@PathVariable(value = "entityIdentifier") String entityIdentifier,
+										 @RequestParam(value = "keyindex", required = true) String keyIndex)
+			throws IOException {
+		return masterDataService.getClientSettingsJsonFile(entityIdentifier, keyIndex);
 	}
 
 }
