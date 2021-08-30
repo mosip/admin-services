@@ -1,5 +1,8 @@
 package io.mosip.kernel.syncdata.service.impl;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
@@ -11,10 +14,20 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.kernel.clientcrypto.dto.TpmCryptoRequestDto;
+import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
+import io.mosip.kernel.clientcrypto.dto.TpmSignRequestDto;
+import io.mosip.kernel.clientcrypto.dto.TpmSignResponseDto;
+import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.FileNotFoundException;
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.ChecksumUtils;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.keymanagerservice.entity.CACertificateStore;
 import io.mosip.kernel.keymanagerservice.repository.CACertificateStoreRepository;
+import io.mosip.kernel.syncdata.constant.SyncConfigDetailsErrorCode;
 import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.*;
 import io.mosip.kernel.syncdata.entity.AppDetail;
@@ -25,12 +38,17 @@ import io.mosip.kernel.syncdata.repository.AppDetailRepository;
 import io.mosip.kernel.syncdata.repository.ModuleDetailRepository;
 import io.mosip.kernel.syncdata.service.helper.*;
 
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -92,11 +110,20 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	@Autowired
 	private ClientSettingsHelper clientSettingsHelper;
 
+	@Value("${mosip.syncdata.clientsettings.data.dir:./_SNAPSHOTS}")
+	private String clientSettingsDir;
+
+	@Autowired
+	private Environment environment;
+
+	@Autowired
+	private ClientCryptoManagerService clientCryptoManagerService;
+
 
 	@Override
 	public SyncDataResponseDto syncClientSettings(String regCenterId, String keyIndex,
 			LocalDateTime lastUpdated, LocalDateTime currentTimestamp) 
-					throws InterruptedException, ExecutionException {
+					throws Throwable {
 		logger.info("syncClientSettings invoked for timespan from {} to {}", lastUpdated, currentTimestamp);
 		SyncDataResponseDto response = new SyncDataResponseDto();
 		RegistrationCenterMachineDto regCenterMachineDto = serviceHelper.getRegistrationCenterMachine(regCenterId, keyIndex);
@@ -104,7 +131,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		String registrationCenterId = regCenterMachineDto.getRegCenterId();
 
 		Map<Class, CompletableFuture> futureMap = clientSettingsHelper.getInitiateDataFetch(machineId, registrationCenterId,
-				lastUpdated, currentTimestamp, false, false);
+				lastUpdated, currentTimestamp, false, lastUpdated!=null);
 
 		CompletableFuture array [] = new CompletableFuture[futureMap.size()];
 		CompletableFuture<Void> future = CompletableFuture.allOf(futureMap.values().toArray(array));
@@ -112,6 +139,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		try {
 			future.join();
 		} catch (CompletionException e) {
+			logger.error("Failed to fetch data", e);
 			if (e.getCause() instanceof SyncDataServiceException) {
 				throw (SyncDataServiceException) e.getCause();
 			} else {
@@ -119,7 +147,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 			}
 		}
 
-		response.setDataToSync(clientSettingsHelper.retrieveData(futureMap, regCenterMachineDto.getPublicKey()));
+		response.setDataToSync(clientSettingsHelper.retrieveData(futureMap, regCenterMachineDto.getPublicKey(), false));
 		return response;
 	}
 	
@@ -205,8 +233,9 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	}
 
 	@Override
-	public SyncDataResponseDto syncClientSettingsV2(String regCenterId, String keyIndex, LocalDateTime lastUpdated, LocalDateTime currentTimestamp)
-			throws InterruptedException, ExecutionException {
+	public SyncDataResponseDto syncClientSettingsV2(String regCenterId, String keyIndex, LocalDateTime lastUpdated,
+													LocalDateTime currentTimestamp, String clientVersion)
+			throws Throwable {
 		logger.info("syncClientSettingsV2 invoked for timespan from {} to {}", lastUpdated, currentTimestamp);
 		SyncDataResponseDto response = new SyncDataResponseDto();
 		RegistrationCenterMachineDto regCenterMachineDto = serviceHelper.getRegistrationCenterMachine(regCenterId, keyIndex);
@@ -229,10 +258,62 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 			}
 		}
 
-		List<SyncDataBaseDto> list = clientSettingsHelper.retrieveData(futureMap, regCenterMachineDto.getPublicKey());
+		List<SyncDataBaseDto> list = clientSettingsHelper.retrieveData(futureMap, regCenterMachineDto.getPublicKey(), true);
 		list.addAll(clientSettingsHelper.getConfiguredScriptUrlDetail(regCenterMachineDto.getPublicKey()));
 		response.setDataToSync(list);
 		return response;
+	}
+
+
+	@Override
+	public ResponseEntity getClientSettingsJsonFile(String entityIdentifier, String keyIndex)
+			throws IOException {
+		String entityName = entityIdentifier.replaceAll("__DF", "");
+		logger.info("getClientSettingsJsonFile({}) started for machine : {}", entityIdentifier, keyIndex);
+		List<Machine> machines = machineRepo.findByMachineKeyIndex(keyIndex);
+		if(machines == null || machines.isEmpty())
+			throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
+					MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
+
+		Boolean isEncrypted = environment.getProperty(String.format("mosip.sync.entity.encrypted.%s",
+				entityName.toUpperCase()), Boolean.class, false);
+
+		Path path = getEntityResource(entityIdentifier);
+		TpmSignRequestDto tpmSignRequestDto = new TpmSignRequestDto();
+		tpmSignRequestDto.setData(CryptoUtil.encodeBase64(
+				FileUtils.readFileToByteArray(path.toFile())));
+		TpmSignResponseDto tpmSignResponseDto = clientCryptoManagerService.csSign(tpmSignRequestDto);
+
+		return ResponseEntity.ok()
+				.contentType(MediaType.APPLICATION_OCTET_STREAM)
+				.header("file-signature", tpmSignResponseDto.getData())
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + entityName + "\"")
+				.body(isEncrypted ?
+						getEncryptedData(FileUtils.readFileToByteArray(path.toFile()), machines.get(0).getPublicKey()) :
+						FileUtils.readFileToByteArray(path.toFile()));
+	}
+
+	private Path getEntityResource(String entityIdentifier) throws FileNotFoundException {
+		Path path = Path.of(clientSettingsDir, entityIdentifier).toAbsolutePath().normalize();
+		if(path.toFile().exists())
+			return path;
+
+		throw new FileNotFoundException(MasterDataErrorCode.CLIENT_SETTINGS_DATA_FILE_NOT_FOUND.getErrorCode(),
+				MasterDataErrorCode.CLIENT_SETTINGS_DATA_FILE_NOT_FOUND.getErrorMessage());
+	}
+
+	private String getEncryptedData(byte[] bytes, String publicKey) {
+		try {
+			TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
+			tpmCryptoRequestDto.setValue(CryptoUtil.encodeBase64(bytes));
+			tpmCryptoRequestDto.setPublicKey(publicKey);
+			TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
+			return tpmCryptoResponseDto.getValue();
+		} catch (Exception e) {
+			logger.error("Failed to convert json to string", e);
+		}
+		throw new SyncDataServiceException(SyncConfigDetailsErrorCode.SYNC_SERIALIZATION_ERROR.getErrorCode(),
+				SyncConfigDetailsErrorCode.SYNC_SERIALIZATION_ERROR.getErrorMessage());
 	}
 
 	private MachineResponseDto getMachineById(String machineId) {

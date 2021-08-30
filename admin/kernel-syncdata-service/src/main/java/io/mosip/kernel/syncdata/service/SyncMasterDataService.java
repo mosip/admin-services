@@ -6,10 +6,13 @@ import java.util.concurrent.ExecutionException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.mosip.kernel.core.exception.FileNotFoundException;
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.syncdata.dto.IdSchemaDto;
 import io.mosip.kernel.syncdata.dto.UploadPublicKeyRequestDto;
 import io.mosip.kernel.syncdata.dto.UploadPublicKeyResponseDto;
 import io.mosip.kernel.syncdata.dto.response.*;
+import org.springframework.http.ResponseEntity;
 
 /**
  * Masterdata sync handler service
@@ -32,7 +35,7 @@ public interface SyncMasterDataService {
 	 */	
 	SyncDataResponseDto syncClientSettings(String regCenterId, String keyIndex,
 			LocalDateTime lastUpdated, LocalDateTime currentTimestamp)
-			throws InterruptedException, ExecutionException;
+			throws InterruptedException, ExecutionException, Throwable;
 
 
 	
@@ -83,6 +86,16 @@ public interface SyncMasterDataService {
 	 * @throws ExecutionException   -this method will throw interrupted exception
 	 */
 	SyncDataResponseDto syncClientSettingsV2(String regCenterId, String keyIndex,
-										   LocalDateTime lastUpdated, LocalDateTime currentTimestamp)
-			throws InterruptedException, ExecutionException;
+										   LocalDateTime lastUpdated, LocalDateTime currentTimestamp, String clientVersion)
+			throws Throwable;
+
+
+	/**
+	 *
+	 * @param entityIdentifier
+	 * @param keyIndex
+	 * @return
+	 */
+	public ResponseEntity getClientSettingsJsonFile(String entityIdentifier, String keyIndex)
+			throws IOException;
 }

@@ -3,6 +3,7 @@ package io.mosip.kernel.syncdata.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -40,5 +41,9 @@ public interface HolidayRepository extends JpaRepository<Holiday, Integer> {
 	 */
 	@Query(value = "SELECT lh.id, lh.location_code, lh.holiday_date, lh.holiday_name, lh.holiday_desc, lh.lang_code, lh.is_active, lh.cr_by, lh.cr_dtimes, lh.upd_by, lh.upd_dtimes, lh.is_deleted, lh.del_dtimes from  master.registration_center rs ,master.loc_holiday lh, master.machine_master rcmd where rs.holiday_loc_code = lh.location_code and rs.id=rcmd.regcntr_id and rcmd.id= ?1", nativeQuery = true)
 	List<Holiday> findAllByMachineId(String machineId);
+
+	@Cacheable(cacheNames = "delta-sync", key = "'reason_list'")
+	@Query(value = "select max(aam.createdDateTime), max(aam.updatedDateTime) from Holiday aam ")
+	List<Object[]> getMaxCreatedDateTimeMaxUpdatedDateTime();
 
 }
