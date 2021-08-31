@@ -4,22 +4,19 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.Map.Entry;
 
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoRequestDto;
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
-import io.mosip.kernel.clientcrypto.dto.TpmSignRequestDto;
-import io.mosip.kernel.clientcrypto.dto.TpmSignResponseDto;
 import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
-import io.mosip.kernel.core.exception.FileNotFoundException;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.exception.RequestException;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
+import io.mosip.kernel.syncdata.service.helper.KeymanagerHelper;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -110,59 +105,10 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	@Value("${mosip.syncdata.clientsettings.data.dir:./clientsettings-dir}")
 	private String clientSettingsDir;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.kernel.syncdata.service.SyncConfigDetailsService#getConfigDetails()
-	 */
-	/*@Override
-	public ConfigDto getConfigDetails() {
-		LOGGER.info("getConfigDetails() started");
-		JSONObject config = new JSONObject();
-		JSONObject globalConfig = getConfigDetailsResponse(globalConfigFileName);
-		JSONObject regConfig = getConfigDetailsResponse(regCenterfileName);
-		config.put("globalConfiguration", globalConfig);
-		config.put("registrationConfiguration", regConfig);
-		ConfigDto configDto = new ConfigDto();
-		configDto.setConfigDetail(config);
-		LOGGER.info("getConfigDetails() completed");
-		return configDto;
-	}*/
+	@Autowired
+	private KeymanagerHelper keymanagerHelper;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.kernel.syncdata.service.SyncConfigDetailsService#
-	 * getGlobalConfigDetails()
-	 */
-	/*@Override
-	public JSONObject getGlobalConfigDetails() {
 
-		return getConfigDetailsResponse(globalConfigFileName);
-
-	}*/
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.kernel.syncdata.service.SyncConfigDetailsService#
-	 * getRegistrationCenterConfigDetails(java.lang.String)
-	 */
-	/*@Override
-	public JSONObject getRegistrationCenterConfigDetails(String regId) {
-
-		return getConfigDetailsResponse(regCenterfileName);
-
-	}*/
-
-	/*public ConfigDto getConfiguration(String registrationCenterId) {
-		ConfigDto configDto = null;
-		configDto = new ConfigDto();
-		configDto.setGlobalConfig(getGlobalConfigDetails());
-		configDto.setRegistrationCenterConfiguration(getRegistrationCenterConfigDetails(registrationCenterId));
-		return configDto;
-	}*/
 
 	/**
 	 * This method will consume a REST API based on the filename passed.
@@ -278,7 +224,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	}
 
 	@Override
-	public ResponseEntity getScript(String scriptName, String keyIndex) {
+	public ResponseEntity getScript(String scriptName, String keyIndex) throws Exception {
 		LOGGER.info("getScripts({}) started for machine : {}", scriptName, keyIndex);
 		List<Machine> machines = machineRepo.findByMachineKeyIndex(keyIndex);
 		if(machines == null || machines.isEmpty())
@@ -289,13 +235,9 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 				scriptName.toUpperCase()), Boolean.class, false);
 		String content = getConfigDetailsResponse(scriptName);
 
-		TpmSignRequestDto tpmSignRequestDto = new TpmSignRequestDto();
-		tpmSignRequestDto.setData(CryptoUtil.encodeBase64(content.getBytes(StandardCharsets.UTF_8)));
-		TpmSignResponseDto tpmSignResponseDto = clientCryptoManagerService.csSign(tpmSignRequestDto);
-
 		return ResponseEntity.ok()
 				.contentType(MediaType.TEXT_PLAIN)
-				.header("file-signature", tpmSignResponseDto.getData())
+				//.header("file-signature", keymanagerHelper.getSignature(content))
 				.body(isEncrypted ?	getEncryptedData(content, machines.get(0).getPublicKey()) : content);
 	}
 
@@ -324,4 +266,6 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 		throw new SyncDataServiceException(SyncConfigDetailsErrorCode.SYNC_SERIALIZATION_ERROR.getErrorCode(),
 				SyncConfigDetailsErrorCode.SYNC_SERIALIZATION_ERROR.getErrorMessage());
 	}
+
+
 }

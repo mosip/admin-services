@@ -97,5 +97,5 @@ public interface SyncMasterDataService {
 	 * @return
 	 */
 	public ResponseEntity getClientSettingsJsonFile(String entityIdentifier, String keyIndex)
-			throws IOException;
+			throws IOException, java.io.IOException, Exception;
 }

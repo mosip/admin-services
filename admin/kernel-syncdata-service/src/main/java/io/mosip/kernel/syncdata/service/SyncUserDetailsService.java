@@ -13,23 +13,6 @@ import io.mosip.kernel.syncdata.dto.SyncUserSaltDto;
  */
 public interface SyncUserDetailsService {
 
-	/**
-	 * This method would fetch all user details for that registration center id
-	 * 
-	 * @param regId - registration center id
-	 * @return {@link SyncUserDetailDto}
-	 */
-	//@Deprecated
-	//SyncUserDetailDto getAllUserDetail(String regId);
-
-	/**
-	 * Gets the user salts.
-	 *
-	 * @param regId the reg id
-	 * @return the user salts
-	 */
-	//@Deprecated
-	//SyncUserSaltDto getUserSalts(String regId);
 
 	/**
 	 * get all the userDetails belonging to respective registration center based on keyindex provided

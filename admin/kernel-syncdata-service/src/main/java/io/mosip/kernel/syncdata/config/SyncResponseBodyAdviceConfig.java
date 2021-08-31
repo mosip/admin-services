@@ -13,6 +13,7 @@ import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
 import io.mosip.kernel.syncdata.exception.SyncServiceException;
+import io.mosip.kernel.syncdata.service.helper.KeymanagerHelper;
 import io.mosip.kernel.syncdata.utils.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,16 +55,7 @@ public class SyncResponseBodyAdviceConfig implements ResponseBodyAdvice<Response
 	private ObjectMapper objectMapper;
 
 	@Autowired
-	private RestTemplate restTemplate;
-
-	@Value("${mosip.kernel.keymanager-service-sign-url}")
-	private String signUrl;
-
-	@Value("${mosip.sign.applicationid:KERNEL}")
-	private String signApplicationid;
-
-	@Value("${mosip.sign.refid:SIGN}")
-	private String signRefid;
+	private KeymanagerHelper keymanagerHelper;
 
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
@@ -106,7 +98,7 @@ public class SyncResponseBodyAdviceConfig implements ResponseBodyAdvice<Response
 			String timestamp = DateUtils.getUTCCurrentDateTimeString();
 			body.setResponsetime(DateUtils.convertUTCToLocalDateTime(timestamp));
 			try {
-				response.getHeaders().add("response-signature", getResponseSignature(objectMapper.writeValueAsString(body)));
+				response.getHeaders().add("response-signature", keymanagerHelper.getSignature(objectMapper.writeValueAsString(body)));
 			} catch (IOException e) {
 				throw new SyncDataServiceException("KER-SIG-ERR", e.getMessage(), e);
 			}
@@ -115,36 +107,5 @@ public class SyncResponseBodyAdviceConfig implements ResponseBodyAdvice<Response
 		return body;
 	}
 
-
-	private String getResponseSignature(String responseBody) throws IOException {
-		try {
-			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(signUrl);
-			RequestWrapper<JWTSignatureRequestDto> requestWrapper = new RequestWrapper<>();
-			JWTSignatureRequestDto jwtSignatureRequestDto = new JWTSignatureRequestDto();
-			jwtSignatureRequestDto.setApplicationId(signApplicationid);
-			jwtSignatureRequestDto.setReferenceId(signRefid);
-			jwtSignatureRequestDto.setDataToSign(CryptoUtil.encodeBase64(responseBody.getBytes(StandardCharsets.UTF_8)));
-			requestWrapper.setRequest(jwtSignatureRequestDto);
-
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			HttpEntity<RequestWrapper<?>> requestEntity = new HttpEntity<>(requestWrapper, headers);
-			ResponseEntity<String> responseEntity = restTemplate.postForEntity(builder.build().toUri(),
-					requestEntity,String.class);
-
-			objectMapper.registerModule(new JavaTimeModule());
-			ResponseWrapper<JWTSignatureResponseDto> resp = objectMapper.readValue(responseEntity.getBody(),
-					new TypeReference<ResponseWrapper<JWTSignatureResponseDto>>() {});
-
-			if(resp.getErrors() != null && !resp.getErrors().isEmpty()) {
-				throw new SyncInvalidArgumentException(resp.getErrors());
-			}
-
-			return resp.getResponse().getJwtSignedData();
-		} catch (Exception e) {
-			logger.error("", "", "", ExceptionUtils.parseException(e));
-			throw e;
-		}
-	}
 
 }
