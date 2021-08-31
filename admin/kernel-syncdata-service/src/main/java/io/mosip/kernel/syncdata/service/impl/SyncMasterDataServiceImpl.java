@@ -1,6 +1,5 @@
 package io.mosip.kernel.syncdata.service.impl;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -8,7 +7,6 @@ import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.ExecutionException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,43 +14,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoRequestDto;
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
-import io.mosip.kernel.clientcrypto.dto.TpmSignRequestDto;
-import io.mosip.kernel.clientcrypto.dto.TpmSignResponseDto;
 import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.FileNotFoundException;
-import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.keymanagerservice.entity.CACertificateStore;
 import io.mosip.kernel.keymanagerservice.repository.CACertificateStoreRepository;
 import io.mosip.kernel.syncdata.constant.SyncConfigDetailsErrorCode;
 import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.*;
-import io.mosip.kernel.syncdata.entity.AppDetail;
-import io.mosip.kernel.syncdata.entity.LocationHierarchy;
-import io.mosip.kernel.syncdata.entity.ModuleDetail;
 import io.mosip.kernel.syncdata.exception.*;
-import io.mosip.kernel.syncdata.repository.AppDetailRepository;
 import io.mosip.kernel.syncdata.repository.ModuleDetailRepository;
 import io.mosip.kernel.syncdata.service.helper.*;
-
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.entity.Machine;
@@ -267,8 +251,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 
 	@Override
 	public ResponseEntity getClientSettingsJsonFile(String entityIdentifier, String keyIndex)
-			throws IOException {
-		String entityName = entityIdentifier.replaceAll("__DF", "");
+			throws Exception {
 		logger.info("getClientSettingsJsonFile({}) started for machine : {}", entityIdentifier, keyIndex);
 		List<Machine> machines = machineRepo.findByMachineKeyIndex(keyIndex);
 		if(machines == null || machines.isEmpty())
@@ -276,21 +259,18 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 					MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
 
 		Boolean isEncrypted = environment.getProperty(String.format("mosip.sync.entity.encrypted.%s",
-				entityName.toUpperCase()), Boolean.class, false);
+				entityIdentifier.toUpperCase()), Boolean.class, false);
 
 		Path path = getEntityResource(entityIdentifier);
-		TpmSignRequestDto tpmSignRequestDto = new TpmSignRequestDto();
-		tpmSignRequestDto.setData(CryptoUtil.encodeBase64(
-				FileUtils.readFileToByteArray(path.toFile())));
-		TpmSignResponseDto tpmSignResponseDto = clientCryptoManagerService.csSign(tpmSignRequestDto);
+		String content = FileUtils.readFileToString(path.toFile(),	StandardCharsets.UTF_8);
 
 		return ResponseEntity.ok()
 				.contentType(MediaType.APPLICATION_OCTET_STREAM)
-				.header("file-signature", tpmSignResponseDto.getData())
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + entityName + "\"")
+				.header("file-signature", keymanagerHelper.getSignature(content))
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + entityIdentifier + "\"")
 				.body(isEncrypted ?
-						getEncryptedData(FileUtils.readFileToByteArray(path.toFile()), machines.get(0).getPublicKey()) :
-						FileUtils.readFileToByteArray(path.toFile()));
+						getEncryptedData(content.getBytes(StandardCharsets.UTF_8), machines.get(0).getPublicKey()) :
+						content.getBytes(StandardCharsets.UTF_8));
 	}
 
 	private Path getEntityResource(String entityIdentifier) throws FileNotFoundException {
