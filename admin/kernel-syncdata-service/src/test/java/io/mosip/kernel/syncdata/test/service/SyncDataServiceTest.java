@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
@@ -57,7 +56,6 @@ import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
-import io.mosip.kernel.syncdata.service.SyncJobDefService;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
@@ -73,8 +71,8 @@ public class SyncDataServiceTest {
 	@Autowired
 	RestTemplate restTemplate;
 
-	@MockBean
-	private SyncJobDefService registrationCenterUserService;
+	//@MockBean
+	//private SyncJobDefService registrationCenterUserService;
 
 	@MockBean
 	MachineRepository machineRespository;
@@ -229,7 +227,7 @@ public class SyncDataServiceTest {
 	 * }
 	 */
 
-	@Ignore
+	/*@Ignore
 	@Test
 	public void globalConfigsyncSuccess() {
 		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
@@ -280,7 +278,7 @@ public class SyncDataServiceTest {
 				.append(configLabel + "/");
 		server.expect(requestTo(uriBuilder.append(regCenterfileName).toString())).andRespond(withSuccess());
 		syncConfigDetailsService.getConfiguration("1");
-	}
+	}*/
 
 	// ------------------------------------------UserDetails--------------------------//
 	/*

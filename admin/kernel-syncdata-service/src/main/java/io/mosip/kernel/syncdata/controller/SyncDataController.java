@@ -7,9 +7,12 @@ import java.util.concurrent.ExecutionException;
 
 import javax.validation.Valid;
 
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.*;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,13 +29,10 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
-import io.mosip.kernel.syncdata.service.SyncRolesService;
 import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
 import io.mosip.kernel.syncdata.utils.LocalDateTimeUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import net.minidev.json.JSONObject;
-import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * Sync Handler Controller
@@ -59,81 +59,13 @@ public class SyncDataController {
 	@Autowired
 	SyncConfigDetailsService syncConfigDetailsService;
 
-	/**
-	 * Service instnace {@link SyncRolesService}
-	 */
-	@Autowired
-	SyncRolesService syncRolesService;
-
 	@Autowired
 	SyncUserDetailsService syncUserDetailsService;
 
 	@Autowired
 	LocalDateTimeUtil localDateTimeUtil;
 
-	/**
-	 * This API method would fetch all synced global config details from server
-	 * 
-	 * @return JSONObject - global config response
-	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@ResponseFilter
-	@ApiOperation(value = "API to sync global config details")
-	@GetMapping(value = "/configs")
-	public ResponseWrapper<ConfigDto> getConfigDetails() {
-		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
-		ConfigDto syncConfigResponse = syncConfigDetailsService.getConfigDetails();
-		syncConfigResponse.setLastSyncTime(currentTimeStamp);
-		ResponseWrapper<ConfigDto> response = new ResponseWrapper<>();
-		response.setResponse(syncConfigResponse);
-		return response;
-	}
 
-	/**
-	 * This API method would fetch all synced global config details from server
-	 * 
-	 * @return JSONObject - global config response
-	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
-	@ResponseFilter
-	@ApiIgnore
-	@ApiOperation(value = "API to sync global config details")
-	@GetMapping(value = "/globalconfigs")
-	public ResponseWrapper<JSONObject> getGlobalConfigDetails() {
-		ResponseWrapper<JSONObject> response = new ResponseWrapper<>();
-		response.setResponse(syncConfigDetailsService.getGlobalConfigDetails());
-		return response;
-	}
-
-	/**
-	 * * This API method would fetch all synced registration center config details
-	 * from server
-	 * 
-	 * @param regId registration Id
-	 * @return JSONObject
-	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@ResponseFilter
-	@ApiIgnore
-	@ApiOperation(value = "Api to get registration center configuration")
-	@GetMapping(value = "/registrationcenterconfig/{registrationcenterid}")
-	public ResponseWrapper<JSONObject> getRegistrationCentreConfig(
-			@PathVariable(value = "registrationcenterid") String regId) {
-		ResponseWrapper<JSONObject> response = new ResponseWrapper<>();
-		response.setResponse(syncConfigDetailsService.getRegistrationCenterConfigDetails(regId));
-		return response;
-	}
-
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@ResponseFilter
-	@ApiIgnore
-	@GetMapping("/configuration/{registrationCenterId}")
-	public ResponseWrapper<ConfigDto> getConfiguration(
-			@PathVariable("registrationCenterId") String registrationCenterId) {
-		ResponseWrapper<ConfigDto> response = new ResponseWrapper<>();
-		response.setResponse(syncConfigDetailsService.getConfiguration(registrationCenterId));
-		return response;
-	}
 	
 	/**
 	 * 
@@ -151,7 +83,7 @@ public class SyncDataController {
 			@RequestParam(value = "keyindex", required = true) String keyIndex,
 			@RequestParam(value = "lastUpdated", required = false) String lastUpdated,
 			@RequestParam(value = "regcenterId", required = false) String regCenterId)
-			throws InterruptedException, ExecutionException {
+			throws Throwable {
 
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
@@ -166,94 +98,6 @@ public class SyncDataController {
 		return response;
 	}
 	
-	/**
-	 * 
-	 * @param keyIndex     - keyIndex mapped to machine
-	 * @param regCenterId  - reg Center Id
-	 * @param lastUpdated  - last sync updated time stamp
-	 * @return {@link SyncDataResponseDto}
-	 * @throws InterruptedException - this method will throw interrupted Exception
-	 * @throws ExecutionException   - this method will throw exeution exception
-	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@ResponseFilter
-	@GetMapping("/clientsettings/{regcenterid}")
-	@Deprecated(forRemoval = true, since = "1.1.5")
-	public ResponseWrapper<SyncDataResponseDto> syncClientSettingsWithRegCenterId(
-			@PathVariable("regcenterid") String regCenterId,
-			@RequestParam(value = "lastupdated", required = false) String lastUpdated,
-			@RequestParam(value = "keyindex", required = true) String keyIndex)
-			throws InterruptedException, ExecutionException {
-
-		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
-		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
-		
-		SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettings(regCenterId, keyIndex,
-				timestamp, currentTimeStamp);
-
-		syncDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
-
-		ResponseWrapper<SyncDataResponseDto> response = new ResponseWrapper<>();
-		response.setResponse(syncDataResponseDto);
-		return response;
-	}
-	
-
-	/**
-	 * API will fetch all roles from Auth server
-	 * 
-	 * @return RolesResponseDto
-	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@ResponseFilter
-	@GetMapping("/roles")
-	public ResponseWrapper<RolesResponseDto> getAllRoles() {
-		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
-		RolesResponseDto rolesResponseDto = syncRolesService.getAllRoles();
-		rolesResponseDto.setLastSyncTime(currentTimeStamp);
-		ResponseWrapper<RolesResponseDto> response = new ResponseWrapper<>();
-		response.setResponse(rolesResponseDto);
-		return response;
-	}
-
-	/**
-	 * API will all the userDetails from LDAP server
-	 * 
-	 * @param regId - registration center Id
-	 * 
-	 * @return UserDetailResponseDto - user detail response
-	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@ResponseFilter
-	@GetMapping("/userdetails/{regcenterid}")
-	public ResponseWrapper<SyncUserDetailDto> getUserDetails(@PathVariable("regcenterid") String regId) {
-		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
-		SyncUserDetailDto syncUserDetailDto = syncUserDetailsService.getAllUserDetail(regId);
-		syncUserDetailDto.setLastSyncTime(currentTimeStamp);
-		ResponseWrapper<SyncUserDetailDto> response = new ResponseWrapper<>();
-		response.setResponse(syncUserDetailDto);
-		return response;
-	}
-
-	/**
-	 * API will all the userDetails from LDAP server
-	 * 
-	 * @param regId - registration center Id
-	 * 
-	 * @return UserDetailResponseDto - user detail response
-	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@ResponseFilter
-	@GetMapping("/usersalt/{regid}")
-	@Deprecated
-	public ResponseWrapper<SyncUserSaltDto> getUserSalts(@PathVariable("regid") String regId) {
-		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
-		SyncUserSaltDto syncUserDetailDto = syncUserDetailsService.getUserSalts(regId);
-		syncUserDetailDto.setLastSyncTime(currentTimeStamp);
-		ResponseWrapper<SyncUserSaltDto> response = new ResponseWrapper<>();
-		response.setResponse(syncUserDetailDto);
-		return response;
-	}
 
 	/**
 	 * Request mapping to get Public Key
@@ -327,6 +171,7 @@ public class SyncDataController {
 		return response;
 	}
 
+
 	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@GetMapping(value = "/tpm/publickey/{machineId}", produces = "application/json")
@@ -345,10 +190,10 @@ public class SyncDataController {
 	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@ResponseFilter
 	@ApiOperation(value = "API to sync global config details")
-	@GetMapping(value = "/configs/{machineName}")
-	public ResponseWrapper<ConfigDto> getMachineConfigDetails(@PathVariable(value = "machineName") String machineName) {
+	@GetMapping(value = "/configs/{keyIndex}")
+	public ResponseWrapper<ConfigDto> getMachineConfigDetails(@PathVariable(value = "keyIndex") String keyIndex) {
 		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
-		ConfigDto syncConfigResponse = syncConfigDetailsService.getConfigDetails(machineName);
+		ConfigDto syncConfigResponse = syncConfigDetailsService.getConfigDetails(keyIndex);
 		syncConfigResponse.setLastSyncTime(currentTimeStamp);
 		ResponseWrapper<ConfigDto> response = new ResponseWrapper<>();
 		response.setResponse(syncConfigResponse);
@@ -390,6 +235,54 @@ public class SyncDataController {
 		caCertificates.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
 		response.setResponse(caCertificates);
 		return response;
+	}
+
+
+	/**
+	 *
+	 * @param keyIndex     - keyIndex mapped to machine
+	 * @param lastUpdated  - last sync updated time stamp
+	 * @param regCenterId  - regcenterId mapped to machine
+	 * @return {@link SyncDataResponseDto}
+	 * @throws InterruptedException - this method will throw interrupted Exception
+	 * @throws ExecutionException   - this method will throw exeution exception
+	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	@ResponseFilter
+	@GetMapping("/v2/clientsettings")
+	public ResponseWrapper<SyncDataResponseDto> syncClientSettingsV2(
+			@RequestParam(value = "keyindex", required = true) String keyIndex,
+			@RequestParam(value = "lastUpdated", required = false) String lastUpdated,
+			@RequestParam(value = "regcenterId", required = false) String regCenterId,
+			@RequestParam(value = "version", required = false) String clientVersion)
+			throws Throwable {
+		MDC.put("client_version", clientVersion == null ? "NA": clientVersion);
+		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
+		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
+		SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettingsV2(regCenterId, keyIndex,
+				timestamp, currentTimeStamp, clientVersion);
+		syncDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
+		ResponseWrapper<SyncDataResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(syncDataResponseDto);
+		return response;
+	}
+
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','Default')")
+	@ApiOperation(value = "API to download mvel scripts")
+	@GetMapping(value = "/scripts/{scriptName}")
+	public ResponseEntity downloadScript(@PathVariable(value = "scriptName") String scriptName,
+														   @RequestParam(value = "keyindex", required = true) String keyIndex)
+									throws Exception{
+		return syncConfigDetailsService.getScript(scriptName, keyIndex);
+	}
+
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','Default')")
+	@ApiOperation(value = "API to download data json files")
+	@GetMapping(value = "/clientsettings/{entityIdentifier}")
+	public ResponseEntity downloadEntityData(@PathVariable(value = "entityIdentifier") String entityIdentifier,
+										 @RequestParam(value = "keyindex", required = true) String keyIndex)
+			throws Exception {
+		return masterDataService.getClientSettingsJsonFile(entityIdentifier, keyIndex);
 	}
 
 }

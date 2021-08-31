@@ -3,6 +3,7 @@ package io.mosip.kernel.syncdata.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -47,4 +48,8 @@ public interface RegistrationCenterRepository extends JpaRepository<Registration
 	 * @return list of {@link RegistrationCenter} - list of registration center
 	 */
 	List<RegistrationCenter> findRegistrationCenterByIdAndIsActiveIsTrue(String regCenterId);
+
+	@Cacheable(cacheNames = "delta-sync", key = "'registration_center'")
+	@Query(value = "select max(aam.createdDateTime), max(aam.updatedDateTime) from RegistrationCenter aam ")
+	List<Object[]> getMaxCreatedDateTimeMaxUpdatedDateTime();
 }

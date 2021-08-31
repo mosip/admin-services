@@ -98,10 +98,12 @@ public class SyncAuthTokenControllerTest {
 
     @Test
     public void sendOTPSuccess() throws Exception {
+        ResponseWrapper<AuthNResponse> resp = new ResponseWrapper<>();
         AuthNResponse authNResponse = new AuthNResponse();
         authNResponse.setStatus("Success");
         authNResponse.setMessage("Otp sent successfully");
-        when(syncAuthTokenService.sendOTP(Mockito.anyString())).thenReturn(authNResponse);
+        resp.setResponse(authNResponse);
+        when(syncAuthTokenService.sendOTP(Mockito.anyString())).thenReturn(resp);
         mockMvc.perform(post("/authenticate/sendotp").contentType(MediaType.APPLICATION_JSON).
                 content(objectMapper.writeValueAsString(requestWrapper))).andExpect(status().isOk());
     }
