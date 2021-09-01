@@ -355,7 +355,7 @@ public class MapperUtils {
 
 		for (UserDetailDto userDetail : userDetails) {
 			Optional<RegistrationCenterUserDto> userDto = usersFromDB.stream()
-					.filter(user -> userDetail.getUserId().equals(user.getUserId())).findFirst();
+					.filter(user -> userDetail.getUserId().equalsIgnoreCase(user.getUserId())).findFirst();
 
 			if(userDto.isPresent()) {
 				UserDetailMapDto userDetailMapDto = new UserDetailMapDto();
