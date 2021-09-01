@@ -1,7 +1,6 @@
 package io.mosip.kernel.syncdata.test.integration;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -50,7 +49,7 @@ import io.mosip.kernel.syncdata.entity.ApplicantValidDocument;
 import io.mosip.kernel.syncdata.entity.Application;
 import io.mosip.kernel.syncdata.entity.BiometricAttribute;
 import io.mosip.kernel.syncdata.entity.BiometricType;
-import io.mosip.kernel.syncdata.entity.BlacklistedWords;
+import io.mosip.kernel.syncdata.entity.BlocklistedWords;
 import io.mosip.kernel.syncdata.entity.Device;
 import io.mosip.kernel.syncdata.entity.DeviceHistory;
 import io.mosip.kernel.syncdata.entity.DeviceProvider;
@@ -95,7 +94,7 @@ import io.mosip.kernel.syncdata.repository.ApplicantValidDocumentRespository;
 import io.mosip.kernel.syncdata.repository.ApplicationRepository;
 import io.mosip.kernel.syncdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.syncdata.repository.BiometricTypeRepository;
-import io.mosip.kernel.syncdata.repository.BlacklistedWordsRepository;
+import io.mosip.kernel.syncdata.repository.BlocklistedWordsRepository;
 import io.mosip.kernel.syncdata.repository.DeviceHistoryRepository;
 import io.mosip.kernel.syncdata.repository.DeviceRepository;
 import io.mosip.kernel.syncdata.repository.DeviceSpecificationRepository;
@@ -152,7 +151,7 @@ public class SyncDataIntegrationTest {
 	private List<DeviceSpecification> deviceSpecification;
 	private List<DeviceType> deviceType;
 	private List<Holiday> holidays;
-	private List<BlacklistedWords> blackListedWords;
+	private List<BlocklistedWords> blackListedWords;
 	private List<Title> titles;
 	private List<Language> languages;
 	private List<Template> templates;
@@ -206,7 +205,7 @@ public class SyncDataIntegrationTest {
 	@MockBean
 	private HolidayRepository holidayRepository;
 	@MockBean
-	private BlacklistedWordsRepository blacklistedWordsRepository;
+	private BlocklistedWordsRepository blocklistedWordsRepository;
 	@MockBean
 	private BiometricTypeRepository biometricTypeRepository;
 	@MockBean
@@ -400,7 +399,7 @@ public class SyncDataIntegrationTest {
 		holidays.add(holiday);
 		holidays.add(holiday2);
 		blackListedWords = new ArrayList<>();
-		blackListedWords.add(new BlacklistedWords("ABC", "ENG", "description"));
+		blackListedWords.add(new BlocklistedWords("ABC", "ENG", "description"));
 		titles = new ArrayList<>();
 		titles.add(new Title(new CodeAndLanguageCodeID("1011", "ENG"), "title", "titleDescription"));
 		languages = new ArrayList<>();
@@ -638,8 +637,8 @@ public class SyncDataIntegrationTest {
 		when(holidayRepository.findAllByMachineId(Mockito.anyString())).thenReturn(holidays);
 		when(holidayRepository.findAllLatestCreatedUpdateDeletedByMachineId(Mockito.anyString(), Mockito.any(),
 				Mockito.any())).thenReturn(holidays);
-		when(blacklistedWordsRepository.findAll()).thenReturn(blackListedWords);
-		when(blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+		when(blocklistedWordsRepository.findAll()).thenReturn(blackListedWords);
+		when(blocklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenReturn(blackListedWords);
 		when(registrationCenterRepository.findRegistrationCenterByMachineId(Mockito.anyString()))
 				.thenReturn(registrationCenters);

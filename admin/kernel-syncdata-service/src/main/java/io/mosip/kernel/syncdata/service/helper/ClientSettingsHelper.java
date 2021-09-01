@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @Component
 public class ClientSettingsHelper {
@@ -95,8 +94,8 @@ public class ClientSettingsHelper {
         futuresMap.put(ReasonList.class, hasURLDetails(ReasonList.class, isV2API, deltaSync) ?
                 getURLDetails(ReasonList.class) : serviceHelper.getReasonList(lastUpdated, currentTimestamp));
         futuresMap.put(Holiday.class, serviceHelper.getHolidays(lastUpdated, machineId, currentTimestamp));
-        futuresMap.put(BlacklistedWords.class, hasURLDetails(BlacklistedWords.class, isV2API, deltaSync) ?
-                getURLDetails(BlacklistedWords.class) : serviceHelper.getBlackListedWords(lastUpdated, currentTimestamp));
+        futuresMap.put(BlocklistedWords.class, hasURLDetails(BlocklistedWords.class, isV2API, deltaSync) ?
+                getURLDetails(BlocklistedWords.class) : serviceHelper.getBlackListedWords(lastUpdated, currentTimestamp));
         futuresMap.put(ScreenAuthorization.class, hasURLDetails(ScreenAuthorization.class, isV2API, deltaSync) ?
                 getURLDetails(ScreenAuthorization.class) : serviceHelper.getScreenAuthorizationDetails(lastUpdated, currentTimestamp));
         futuresMap.put(ScreenDetail.class, hasURLDetails(ScreenDetail.class, isV2API, deltaSync) ?
