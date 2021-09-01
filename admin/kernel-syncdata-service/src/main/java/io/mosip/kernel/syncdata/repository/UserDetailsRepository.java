@@ -2,6 +2,7 @@ package io.mosip.kernel.syncdata.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,5 +26,8 @@ public interface UserDetailsRepository extends JpaRepository<UserDetails, String
 	@Cacheable(cacheNames = "delta-sync", key = "'user_detail'")
 	@Query(value = "select max(aam.createdDateTime), max(aam.updatedDateTime) from UserDetails aam ")
 	List<Object[]> getMaxCreatedDateTimeMaxUpdatedDateTime();
+
+	@Query("FROM UserDetails mm WHERE lower(mm.id)=lower(?1) and mm.isActive=true and (mm.isDeleted=false or mm.isDeleted is null) ")
+	Optional<UserDetails> findActiveUserById(String userId);
 
 }
