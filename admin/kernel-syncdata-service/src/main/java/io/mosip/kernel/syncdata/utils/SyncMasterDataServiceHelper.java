@@ -1039,9 +1039,6 @@ public class SyncMasterDataServiceHelper {
 		return CompletableFuture.completedFuture(dtoList);
 	}
 
-	/*public void getSyncDataBaseDto(Class entityClass, String entityType, List entities, String publicKey, List result) {
-		getSyncDataBaseDto(entityClass.getSimpleName(), entityType, entities, publicKey, result);
-	}*/
 
 	@SuppressWarnings("unchecked")
 	public void getSyncDataBaseDto(String entityName, String entityType, List entities, String publicKey, List result) {
