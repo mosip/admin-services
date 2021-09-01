@@ -206,17 +206,19 @@ public class ClientSettingsHelper {
     public List<SyncDataBaseDto> getConfiguredScriptUrlDetail(String publicKey) {
         List<SyncDataBaseDto> list = new ArrayList<>();
         scriptNames.forEach(fileName -> {
-            Map<String, Object> urlDetail = buildUrlDetailMap(fileName);
-            try {
-                TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
-                tpmCryptoRequestDto
-                        .setValue(CryptoUtil.encodeBase64(mapper.getObjectAsJsonString(urlDetail).getBytes()));
-                tpmCryptoRequestDto.setPublicKey(publicKey);
-                TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService
-                        .csEncrypt(tpmCryptoRequestDto);
-                list.add(new SyncDataBaseDto(fileName,"script", tpmCryptoResponseDto.getValue()));
-            } catch (Exception e) {
-                LOGGER.error("Failed to create script url detail {} data to json", fileName, e);
+            if(environment.containsProperty(String.format("mosip.sync.entity.url.%s", fileName.toUpperCase()))) {
+                Map<String, Object> urlDetail = buildUrlDetailMap(fileName);
+                try {
+                    TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
+                    tpmCryptoRequestDto
+                            .setValue(CryptoUtil.encodeBase64(mapper.getObjectAsJsonString(urlDetail).getBytes()));
+                    tpmCryptoRequestDto.setPublicKey(publicKey);
+                    TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService
+                            .csEncrypt(tpmCryptoRequestDto);
+                    list.add(new SyncDataBaseDto(fileName, "script", tpmCryptoResponseDto.getValue()));
+                } catch (Exception e) {
+                    LOGGER.error("Failed to create script url detail {} data to json", fileName, e);
+                }
             }
         });
         return list;
