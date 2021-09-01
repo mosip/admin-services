@@ -3,6 +3,7 @@ package io.mosip.kernel.syncdata.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -26,7 +27,12 @@ public interface ScreenAuthorizationRepository extends JpaRepository<ScreenAutho
 	 * @param currentTimeStamp    the current time stamp
 	 * @return {@link ScreenAuthorization} list of ScreenAuthorization
 	 */
+	@Cacheable(cacheNames = "initial-sync", key = "'screen_authorization'", condition = "#a0.getYear() <= 1970")
 	@Query("FROM ScreenAuthorization WHERE (createdDateTime BETWEEN ?1 AND ?2) OR (updatedDateTime BETWEEN ?1 AND ?2)  OR (deletedDateTime BETWEEN ?1 AND ?2) ")
 	List<ScreenAuthorization> findByLastUpdatedAndCurrentTimeStamp(LocalDateTime lastUpdateTimeStamp,
 			LocalDateTime currentTimeStamp);
+
+	@Cacheable(cacheNames = "delta-sync", key = "'screen_authorization'")
+	@Query(value = "select max(aam.createdDateTime), max(aam.updatedDateTime) from ScreenAuthorization aam ")
+	List<Object[]> getMaxCreatedDateTimeMaxUpdatedDateTime();
 }

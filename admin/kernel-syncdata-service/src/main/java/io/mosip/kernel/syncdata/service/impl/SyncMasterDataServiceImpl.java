@@ -1,59 +1,47 @@
 package io.mosip.kernel.syncdata.service.impl;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.ExecutionException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.kernel.clientcrypto.dto.TpmCryptoRequestDto;
+import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
+import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.FileNotFoundException;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.keymanagerservice.entity.CACertificateStore;
 import io.mosip.kernel.keymanagerservice.repository.CACertificateStoreRepository;
+import io.mosip.kernel.syncdata.constant.SyncConfigDetailsErrorCode;
 import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.*;
-import io.mosip.kernel.syncdata.entity.AppDetail;
-import io.mosip.kernel.syncdata.entity.LocationHierarchy;
-import io.mosip.kernel.syncdata.entity.ModuleDetail;
 import io.mosip.kernel.syncdata.exception.*;
-import io.mosip.kernel.syncdata.repository.AppDetailRepository;
 import io.mosip.kernel.syncdata.repository.ModuleDetailRepository;
-import io.mosip.kernel.syncdata.service.helper.KeymanagerHelper;
-import io.mosip.kernel.syncdata.service.helper.LocationHierarchyHelper;
-
+import io.mosip.kernel.syncdata.service.helper.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataAccessException;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
-import io.mosip.kernel.syncdata.service.helper.ApplicationDataHelper;
-import io.mosip.kernel.syncdata.service.helper.DeviceDataHelper;
-import io.mosip.kernel.syncdata.service.helper.DocumentDataHelper;
-import io.mosip.kernel.syncdata.service.helper.HistoryDataHelper;
-import io.mosip.kernel.syncdata.service.helper.IdentitySchemaHelper;
-import io.mosip.kernel.syncdata.service.helper.IndividualDataHelper;
-import io.mosip.kernel.syncdata.service.helper.MachineDataHelper;
-import io.mosip.kernel.syncdata.service.helper.MiscellaneousDataHelper;
-import io.mosip.kernel.syncdata.service.helper.RegistrationCenterDataHelper;
-import io.mosip.kernel.syncdata.service.helper.TemplateDataHelper;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import org.springframework.web.client.RestTemplate;
@@ -103,74 +91,47 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	@Autowired
 	private ModuleDetailRepository moduleDetailRepository;
 
+	@Autowired
+	private ClientSettingsHelper clientSettingsHelper;
+
+	@Value("${mosip.syncdata.clientsettings.data.dir:./_SNAPSHOTS}")
+	private String clientSettingsDir;
+
+	@Autowired
+	private Environment environment;
+
+	@Autowired
+	private ClientCryptoManagerService clientCryptoManagerService;
+
 
 	@Override
 	public SyncDataResponseDto syncClientSettings(String regCenterId, String keyIndex,
 			LocalDateTime lastUpdated, LocalDateTime currentTimestamp) 
-					throws InterruptedException, ExecutionException {
-
+					throws Throwable {
 		logger.info("syncClientSettings invoked for timespan from {} to {}", lastUpdated, currentTimestamp);
-				
+		SyncDataResponseDto response = new SyncDataResponseDto();
 		RegistrationCenterMachineDto regCenterMachineDto = serviceHelper.getRegistrationCenterMachine(regCenterId, keyIndex);
-		
 		String machineId = regCenterMachineDto.getMachineId();
 		String registrationCenterId = regCenterMachineDto.getRegCenterId();
 
-		SyncDataResponseDto response = new SyncDataResponseDto();
-		
-		List<CompletableFuture> futures = new ArrayList<CompletableFuture>();
-		
-		ApplicationDataHelper applicationDataHelper = new ApplicationDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		applicationDataHelper.retrieveData(serviceHelper, futures);		
-		
-		MachineDataHelper machineDataHelper = new MachineDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		machineDataHelper.retrieveData(serviceHelper, futures);
+		Map<Class, CompletableFuture> futureMap = clientSettingsHelper.getInitiateDataFetch(machineId, registrationCenterId,
+				lastUpdated, currentTimestamp, false, lastUpdated!=null);
 
-		IndividualDataHelper individualDataHelper = new IndividualDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		individualDataHelper.retrieveData(serviceHelper, futures);
-		
-		RegistrationCenterDataHelper RegistrationCenterDataHelper = new RegistrationCenterDataHelper(registrationCenterId, machineId, 
-				lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		RegistrationCenterDataHelper.retrieveData(serviceHelper, futures);
-
-		ModuleDetail moduleDetail = moduleDetailRepository.findByNameAndLangCode("Registration Client", "eng");
-		TemplateDataHelper templateDataHelper = new TemplateDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey(),
-				moduleDetail != null ? moduleDetail.getId() : "10003");
-		templateDataHelper.retrieveData(serviceHelper, futures);
-		
-		DocumentDataHelper documentDataHelper = new DocumentDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		documentDataHelper.retrieveData(serviceHelper, futures);
-		
-		LocationHierarchyHelper locationHierarchyHelper = new LocationHierarchyHelper(lastUpdated, regCenterMachineDto.getPublicKey());
-		locationHierarchyHelper.retrieveData(serviceHelper, futures);
-		
-		MiscellaneousDataHelper miscellaneousDataHelper = new MiscellaneousDataHelper(machineId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		miscellaneousDataHelper.retrieveData(serviceHelper, futures);		
-		
-		CompletableFuture array [] = new CompletableFuture[futures.size()];
-		CompletableFuture<Void> future = CompletableFuture.allOf(futures.toArray(array));		
+		CompletableFuture array [] = new CompletableFuture[futureMap.size()];
+		CompletableFuture<Void> future = CompletableFuture.allOf(futureMap.values().toArray(array));
 
 		try {
 			future.join();
 		} catch (CompletionException e) {
+			logger.error("Failed to fetch data", e);
 			if (e.getCause() instanceof SyncDataServiceException) {
 				throw (SyncDataServiceException) e.getCause();
 			} else {
 				throw (RuntimeException) e.getCause();
 			}
 		}
-		
-		List<SyncDataBaseDto> list = new ArrayList<SyncDataBaseDto>();		
-		applicationDataHelper.fillRetrievedData(serviceHelper, list);
-		machineDataHelper.fillRetrievedData(serviceHelper, list);
-		locationHierarchyHelper.fillRetrievedData(serviceHelper, list);
-		individualDataHelper.fillRetrievedData(serviceHelper, list);
-		RegistrationCenterDataHelper.fillRetrievedData(serviceHelper, list);
-		templateDataHelper.fillRetrievedData(serviceHelper, list);
-		documentDataHelper.fillRetrievedData(serviceHelper, list);
-		miscellaneousDataHelper.fillRetrievedData(serviceHelper, list);
-		
-		response.setDataToSync(list);
+
+		response.setDataToSync(clientSettingsHelper.retrieveData(futureMap, regCenterMachineDto.getPublicKey(), false));
 		return response;
 	}
 	
@@ -253,6 +214,86 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 				caCertificates.getCertificateDTOList().add(caCertDto);
 		});
 		return caCertificates;
+	}
+
+	@Override
+	public SyncDataResponseDto syncClientSettingsV2(String regCenterId, String keyIndex, LocalDateTime lastUpdated,
+													LocalDateTime currentTimestamp, String clientVersion)
+			throws Throwable {
+		logger.info("syncClientSettingsV2 invoked for timespan from {} to {}", lastUpdated, currentTimestamp);
+		SyncDataResponseDto response = new SyncDataResponseDto();
+		RegistrationCenterMachineDto regCenterMachineDto = serviceHelper.getRegistrationCenterMachine(regCenterId, keyIndex);
+		String machineId = regCenterMachineDto.getMachineId();
+		String registrationCenterId = regCenterMachineDto.getRegCenterId();
+
+		Map<Class, CompletableFuture> futureMap = clientSettingsHelper.getInitiateDataFetch(machineId, registrationCenterId,
+				lastUpdated, currentTimestamp, true, lastUpdated!=null);
+
+		CompletableFuture array [] = new CompletableFuture[futureMap.size()];
+		CompletableFuture<Void> future = CompletableFuture.allOf(futureMap.values().toArray(array));
+
+		try {
+			future.join();
+		} catch (CompletionException e) {
+			if (e.getCause() instanceof SyncDataServiceException) {
+				throw (SyncDataServiceException) e.getCause();
+			} else {
+				throw (RuntimeException) e.getCause();
+			}
+		}
+
+		List<SyncDataBaseDto> list = clientSettingsHelper.retrieveData(futureMap, regCenterMachineDto.getPublicKey(), true);
+		list.addAll(clientSettingsHelper.getConfiguredScriptUrlDetail(regCenterMachineDto.getPublicKey()));
+		response.setDataToSync(list);
+		return response;
+	}
+
+
+	@Override
+	public ResponseEntity getClientSettingsJsonFile(String entityIdentifier, String keyIndex)
+			throws Exception {
+		logger.info("getClientSettingsJsonFile({}) started for machine : {}", entityIdentifier, keyIndex);
+		List<Machine> machines = machineRepo.findByMachineKeyIndex(keyIndex);
+		if(machines == null || machines.isEmpty())
+			throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
+					MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
+
+		Boolean isEncrypted = environment.getProperty(String.format("mosip.sync.entity.encrypted.%s",
+				entityIdentifier.toUpperCase()), Boolean.class, false);
+
+		Path path = getEntityResource(entityIdentifier);
+		String content = FileUtils.readFileToString(path.toFile(),	StandardCharsets.UTF_8);
+
+		return ResponseEntity.ok()
+				.contentType(MediaType.APPLICATION_OCTET_STREAM)
+				.header("file-signature", keymanagerHelper.getSignature(content))
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + entityIdentifier + "\"")
+				.body(isEncrypted ?
+						getEncryptedData(content.getBytes(StandardCharsets.UTF_8), machines.get(0).getPublicKey()) :
+						content.getBytes(StandardCharsets.UTF_8));
+	}
+
+	private Path getEntityResource(String entityIdentifier) throws FileNotFoundException {
+		Path path = Path.of(clientSettingsDir, entityIdentifier).toAbsolutePath().normalize();
+		if(path.toFile().exists())
+			return path;
+
+		throw new FileNotFoundException(MasterDataErrorCode.CLIENT_SETTINGS_DATA_FILE_NOT_FOUND.getErrorCode(),
+				MasterDataErrorCode.CLIENT_SETTINGS_DATA_FILE_NOT_FOUND.getErrorMessage());
+	}
+
+	private String getEncryptedData(byte[] bytes, String publicKey) {
+		try {
+			TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
+			tpmCryptoRequestDto.setValue(CryptoUtil.encodeBase64(bytes));
+			tpmCryptoRequestDto.setPublicKey(publicKey);
+			TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
+			return tpmCryptoResponseDto.getValue();
+		} catch (Exception e) {
+			logger.error("Failed to convert json to string", e);
+		}
+		throw new SyncDataServiceException(SyncConfigDetailsErrorCode.SYNC_SERIALIZATION_ERROR.getErrorCode(),
+				SyncConfigDetailsErrorCode.SYNC_SERIALIZATION_ERROR.getErrorMessage());
 	}
 
 	private MachineResponseDto getMachineById(String machineId) {

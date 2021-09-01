@@ -136,7 +136,7 @@ public class SyncAuthTokenServiceImpl {
                 SyncAuthErrorCode.INVALID_REQUEST.getErrorMessage());
     }
 
-    public AuthNResponse sendOTP(String requestData) {
+    public ResponseWrapper<AuthNResponse> sendOTP(String requestData) {
         String[] parts = requestData.split("\\.");
         if(parts.length == 3) {
             byte[] header = Base64.getUrlDecoder().decode(parts[0]);
@@ -156,7 +156,8 @@ public class SyncAuthTokenServiceImpl {
                 ResponseEntity<String> responseEntity = restTemplate.postForEntity(builder.build().toUri(),
                         new HttpEntity<>(requestWrapper), String.class);
 
-                return objectMapper.readValue(responseEntity.getBody(), new TypeReference<AuthNResponse>() {});
+                return objectMapper.readValue(responseEntity.getBody(),
+                        new TypeReference<ResponseWrapper<AuthNResponse>>() {});
             } catch (Exception ex) {
                 logger.error("Failed to send otp", ex);
             }
