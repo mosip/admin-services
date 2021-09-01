@@ -141,7 +141,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t001getDeviceLangTest() throws Exception {
-		System.out.println("t2");
+		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devices/eng")).andReturn(),
 				"KER-MSD-010");
 
@@ -160,7 +160,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t002createDeviceFailTest1() throws Exception {
-		System.out.println("t1");
+		
 		deviceDtoReq.getRequest().setZoneCode("JRD");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devices")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(deviceDtoReq))).andReturn(),
@@ -171,7 +171,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t003getDeviceLangTest() throws Exception {
-		System.out.println("t2");
+		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devices/eng")).andReturn(), null);
 
 	}
@@ -179,7 +179,7 @@ public class DeviceControllerTest {
 	@Test
 	////@WithUserDetails("global-admin")
 	public void t003getDeviceLangCodeAndDeviceTypeTest() throws Exception {
-		System.out.println("t3");
+		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devices/eng/327")).andReturn(), null);
 
 	}
@@ -187,7 +187,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t003getDeviceLangCodeAndDeviceTypeFailTest() throws Exception {
-		System.out.println("t3");
+		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devices/eng/IRS")).andReturn(),
 				"KER-MSD-010");
 
@@ -196,7 +196,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t004updateDeviceTest() throws Exception {
-		System.out.println("t4");
+		
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/devices").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(devicePutReqDtoReq))).andReturn(),
@@ -207,7 +207,7 @@ public class DeviceControllerTest {
 	@Test
  	//@WithUserDetails("global-admin")
 	public void t004updateDeviceFailTest() throws Exception {
-		System.out.println("t4");
+		
 		devicePutReqDtoReq.getRequest().setName("updated");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/devices").contentType(MediaType.APPLICATION_JSON)
@@ -219,7 +219,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t004updateDeviceFailTest1() throws Exception {
-		System.out.println("t4");
+		
 		devicePutReqDtoReq.getRequest().setName("updated");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/devices").contentType(MediaType.APPLICATION_JSON)
@@ -231,7 +231,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t005getDevicesByRegistrationCenterTest() throws Exception {
-		System.out.println("t5");
+		
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/devices/mappeddevices/10001")).andReturn(), "KER-MSD-441");
 
@@ -240,7 +240,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t006searchDeviceTest() throws Exception {
-		System.out.println("t6");
+		
 		MasterDataTest
 				.checkResponse(
 						mockMvc.perform(
@@ -254,7 +254,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t007deviceFilterValuesTest() throws Exception {
-		System.out.println("t7");
+		
 		MasterDataTest
 				.checkResponse(mockMvc
 						.perform(MockMvcRequestBuilders.post("/devices/filtervalues")
@@ -266,7 +266,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t008updateDeviceStatusTest() throws Exception {
-		System.out.println("t8");
+		
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.patch("/devices").param("isActive", "true").param("id", "3000038"))
 				.andReturn(), null);
@@ -275,7 +275,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t009updateDeviceStatusFailTest() throws Exception {
-		System.out.println("t9");
+		
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.patch("/devices").param("isActive", "true").param("id", "1"))
 						.andReturn(),
@@ -285,7 +285,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t017decommissionDeviceTest() throws Exception {
-		System.out.println("t17");
+		
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/devices/decommission/1004")).andReturn(), "KER-MSD-042");
 
@@ -294,7 +294,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t018decommissionDeviceFailTest() throws Exception {
-		System.out.println("t18");
+		
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/devices/decommission/1004")).andReturn(), "KER-MSD-042");
 	}
@@ -302,7 +302,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t010deviceFilterValuesTest1() throws Exception {
-		System.out.println("t10");
+		
 		filValDto.getRequest().getFilters().get(0).setType("contains");
 		MasterDataTest
 				.checkResponse(mockMvc
@@ -315,7 +315,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t011createDeviceFailTest() throws Exception {
-		System.out.println("t11");
+		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devices")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(deviceDtoReq))).andReturn(),
 				"KER-MSD-339");
@@ -325,7 +325,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t012updateDeviceFailTest() throws Exception {
-		System.out.println("t12");
+		
 		devicePutReqDtoReq.setId("7");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/devices").contentType(MediaType.APPLICATION_JSON)
@@ -336,7 +336,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t013getDeviceLangCodeAndDeviceTypeFailTest() throws Exception {
-		System.out.println("t13");
+		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devices/eng1/abcd")).andReturn(),
 				"KER-MSD-010");
 
@@ -345,7 +345,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t014getDeviceLangFailTest() throws Exception {
-		System.out.println("t14");
+		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devices/eng1")).andReturn(),
 				"KER-MSD-010");
 
@@ -354,7 +354,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t015searchDeviceFailTest() throws Exception {
-		System.out.println("t15");
+		
 		searchLangCode.getRequest().getFilters().get(0).setType("contains");
 		searchLangCode.getRequest().getFilters().get(0).setValue("abcd");
 		MasterDataTest
@@ -370,7 +370,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t016getDevicesByRegistrationCenterFailTest() throws Exception {
-		System.out.println("t16");
+		
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/devices/mappeddevices/101")).andReturn(), "KER-MSD-441");
 	}
@@ -378,7 +378,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t020deleteDeviceFailTest() throws Exception {
-		System.out.println("t20");
+		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/devices/100100")).andReturn(),
 				"KER-MSD-010");
 	}
@@ -386,7 +386,7 @@ public class DeviceControllerTest {
 	@Test
 	//@WithUserDetails("global-admin")
 	public void t019deleteDeviceTest() throws Exception {
-		System.out.println("t19");
+		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/devices/3000058")).andReturn(), null);
 
 	}
