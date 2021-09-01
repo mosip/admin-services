@@ -51,7 +51,7 @@ import io.mosip.kernel.syncdata.entity.ApplicantValidDocument;
 import io.mosip.kernel.syncdata.entity.Application;
 import io.mosip.kernel.syncdata.entity.BiometricAttribute;
 import io.mosip.kernel.syncdata.entity.BiometricType;
-import io.mosip.kernel.syncdata.entity.BlacklistedWords;
+import io.mosip.kernel.syncdata.entity.BlocklistedWords;
 import io.mosip.kernel.syncdata.entity.Device;
 import io.mosip.kernel.syncdata.entity.DeviceHistory;
 import io.mosip.kernel.syncdata.entity.DeviceProvider;
@@ -98,7 +98,7 @@ import io.mosip.kernel.syncdata.repository.ApplicantValidDocumentRespository;
 import io.mosip.kernel.syncdata.repository.ApplicationRepository;
 import io.mosip.kernel.syncdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.syncdata.repository.BiometricTypeRepository;
-import io.mosip.kernel.syncdata.repository.BlacklistedWordsRepository;
+import io.mosip.kernel.syncdata.repository.BlocklistedWordsRepository;
 import io.mosip.kernel.syncdata.repository.DeviceHistoryRepository;
 import io.mosip.kernel.syncdata.repository.DeviceProviderRepository;
 import io.mosip.kernel.syncdata.repository.DeviceRepository;
@@ -166,7 +166,7 @@ public class SyncClientSettingsIntegrationTest {
 	private List<DeviceSpecification> deviceSpecification;
 	private List<DeviceType> deviceType;
 	private List<Holiday> holidays;
-	private List<BlacklistedWords> blackListedWords;
+	private List<BlocklistedWords> blackListedWords;
 	private List<Title> titles;
 	private List<Language> languages;
 	private List<Template> templates;
@@ -223,7 +223,7 @@ public class SyncClientSettingsIntegrationTest {
 	@MockBean
 	private HolidayRepository holidayRepository;
 	@MockBean
-	private BlacklistedWordsRepository blacklistedWordsRepository;
+	private BlocklistedWordsRepository blocklistedWordsRepository;
 	@MockBean
 	private BiometricTypeRepository biometricTypeRepository;
 	@MockBean
@@ -403,7 +403,7 @@ public class SyncClientSettingsIntegrationTest {
 		holidays.add(holiday);
 		holidays.add(holiday2);
 		blackListedWords = new ArrayList<>();
-		blackListedWords.add(new BlacklistedWords("ABC", "ENG", "description"));
+		blackListedWords.add(new BlocklistedWords("ABC", "ENG", "description"));
 		titles = new ArrayList<>();
 		titles.add(new Title(new CodeAndLanguageCodeID("1011", "ENG"), "title", "titleDescription"));
 
@@ -591,8 +591,8 @@ public class SyncClientSettingsIntegrationTest {
 		when(holidayRepository.findAllByMachineId(Mockito.anyString())).thenReturn(holidays);
 		when(holidayRepository.findAllLatestCreatedUpdateDeletedByMachineId(Mockito.anyString(), Mockito.any(),
 				Mockito.any())).thenReturn(holidays);
-		when(blacklistedWordsRepository.findAll()).thenReturn(blackListedWords);
-		when(blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+		when(blocklistedWordsRepository.findAll()).thenReturn(blackListedWords);
+		when(blocklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenReturn(blackListedWords);
 		when(registrationCenterRepository.findRegistrationCenterByMachineId(Mockito.anyString()))
 				.thenReturn(registrationCenters);
@@ -1204,7 +1204,7 @@ public class SyncClientSettingsIntegrationTest {
 	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataBlackListedWordFetchException() throws Exception {
 		mockSuccess();
-		when(blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+		when(blocklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		MvcResult result = mockMvc.perform(get(syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {
@@ -1218,7 +1218,7 @@ public class SyncClientSettingsIntegrationTest {
 	@WithUserDetails(value = "reg-officer")
 	public void v2syncMasterDataBlackListedWordFetchException() throws Exception {
 		mockSuccess();
-		when(blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+		when(blocklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		MvcResult result = mockMvc.perform(get(v2syncDataUrl)).andExpect(status().isOk()).andReturn();
 		try {

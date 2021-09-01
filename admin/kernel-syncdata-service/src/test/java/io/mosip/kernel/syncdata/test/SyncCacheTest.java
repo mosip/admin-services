@@ -51,7 +51,7 @@ public class SyncCacheTest {
     @Autowired
     ScreenAuthorizationRepository screenAuthorizationRepository;
     @Autowired
-    BlacklistedWordsRepository blacklistedWordsRepository;
+    BlocklistedWordsRepository blocklistedWordsRepository;
     @Autowired
     PermittedLocalConfigRepository permittedLocalConfigRepository;
     @Autowired
@@ -440,42 +440,42 @@ public class SyncCacheTest {
 
     @Test
     public void whenFindAllBW_thenResultShouldBePutInCache() {
-        blacklistedWordsRepository.save(getBlackListedWords("test"));
+        blocklistedWordsRepository.save(getBlackListedWords("test"));
         LocalDateTime lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
-        List<BlacklistedWords> list = blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime, currentTime);
+        List<BlocklistedWords> list = blocklistedWordsRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime, currentTime);
         Assert.assertEquals(list.size(), getCachedValue("initial-sync", "blocklisted_words").size());
     }
 
     @Test
     public void whenFindChangedBW_thenResultShouldNotBePutInCache() {
-        blacklistedWordsRepository.save(getBlackListedWords("test"));
+        blocklistedWordsRepository.save(getBlackListedWords("test"));
         LocalDateTime lastUpdatedTime = LocalDateTime.now(ZoneOffset.UTC).minusDays(10);
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
-        blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime, currentTime);
+        blocklistedWordsRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime, currentTime);
         Assert.assertEquals(0, getCachedValue("initial-sync", "blocklisted_words").size());
     }
 
     @Test
     public void findMaxChangedDate_BW_thenOnlyCreatedUpdatedDateTimeIsCached() {
-        blacklistedWordsRepository.save(getBlackListedWords("test"));
+        blocklistedWordsRepository.save(getBlackListedWords("test"));
         evictAllKeys("delta-sync");
-        List<Object[]> result = blacklistedWordsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        List<Object[]> result = blocklistedWordsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
         Assert.assertEquals(1, getCachedValue("delta-sync", "blocklisted_words").size());
         Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "blocklisted_words").get(0));
     }
 
     @Test
     public void findMaxChangedDate_BW_thenBothCreatedUpdatedDateTimeIsCached() {
-        BlacklistedWords entity = getBlackListedWords("test");
+        BlocklistedWords entity = getBlackListedWords("test");
         entity.setUpdatedBy("test");
         entity.setUpdatedDateTime(LocalDateTime.now(ZoneOffset.UTC));
-        blacklistedWordsRepository.save(entity);
+        blocklistedWordsRepository.save(entity);
 
         evictAllKeys("delta-sync");
-        List<Object[]> result = blacklistedWordsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        List<Object[]> result = blocklistedWordsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
         Assert.assertEquals(1, getCachedValue("delta-sync", "blocklisted_words").size());
         Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "blocklisted_words").get(0));
     }
@@ -1050,8 +1050,8 @@ public class SyncCacheTest {
         return entity;
     }
 
-    private BlacklistedWords getBlackListedWords(String value) {
-        BlacklistedWords entity = new BlacklistedWords();
+    private BlocklistedWords getBlackListedWords(String value) {
+        BlocklistedWords entity = new BlocklistedWords();
         entity.setWord(value);
         entity.setDescription(value);
         entity.setLangCode("eng");
