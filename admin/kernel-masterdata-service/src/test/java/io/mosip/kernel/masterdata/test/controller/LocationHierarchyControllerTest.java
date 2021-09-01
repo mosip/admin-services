@@ -1,8 +1,5 @@
 package io.mosip.kernel.masterdata.test.controller;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -23,8 +20,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.entity.LocationHierarchy;
-import io.mosip.kernel.masterdata.repository.LocationHierarchyRepository;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
 import io.mosip.kernel.masterdata.utils.AuditUtil;

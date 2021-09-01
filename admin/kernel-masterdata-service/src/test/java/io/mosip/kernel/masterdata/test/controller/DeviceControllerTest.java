@@ -1,0 +1,394 @@
+package io.mosip.kernel.masterdata.test.controller;
+
+import static org.mockito.Mockito.doNothing;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import org.junit.Before;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.dto.DeviceDto;
+import io.mosip.kernel.masterdata.dto.DevicePutReqDto;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.Pagination;
+import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
+
+@RunWith(SpringRunner.class)
+
+@SpringBootTest(classes = TestBootApplication.class)
+@AutoConfigureMockMvc
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class DeviceControllerTest {
+	@Autowired
+	public MockMvc mockMvc;
+
+	@Autowired
+	public DataSource dataSource;
+
+	@MockBean
+	private PublisherClient<String, EventModel, HttpHeaders> publisher;
+
+	@MockBean
+	private AuditUtil auditUtil;
+
+	private RequestWrapper<DeviceDto> deviceDtoReq = new RequestWrapper<DeviceDto>();
+	private RequestWrapper<DevicePutReqDto> devicePutReqDtoReq = new RequestWrapper<DevicePutReqDto>();
+	private RequestWrapper<SearchDtoWithoutLangCode> searchLangCode = new RequestWrapper<SearchDtoWithoutLangCode>();
+	private RequestWrapper<FilterValueDto> filValDto = new RequestWrapper<FilterValueDto>();
+
+	private ObjectMapper mapper;
+
+	@Before
+	public void setUp() {
+		mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+
+		DeviceDto d1 = new DeviceDto();
+		d1.setId("1004");
+		d1.setDeviceSpecId("327");
+		d1.setIsActive(true);
+		d1.setLangCode("eng");
+
+		d1.setName("Mock Iris Scanner");
+		d1.setMacAddress("85-BB-97-4B-14-05");
+		d1.setRegCenterId("10001");
+		d1.setSerialNum("3456789012");
+
+		d1.setZoneCode("RBT");
+		deviceDtoReq.setRequest(d1);
+
+		devicePutReqDtoReq = new RequestWrapper<DevicePutReqDto>();
+		DevicePutReqDto devicePutReqDto = new DevicePutReqDto();
+		devicePutReqDto.setId("1004");
+		devicePutReqDto.setDeviceSpecId("327");
+		devicePutReqDto.setIsActive(true);
+		devicePutReqDto.setLangCode("eng");
+
+		devicePutReqDto.setName("Mock Iris Scanner updted");
+		devicePutReqDto.setMacAddress("85-BB-97-4B-14-05");
+		devicePutReqDto.setRegCenterId("10001");
+		devicePutReqDto.setSerialNum("3456789012");
+
+		devicePutReqDto.setZoneCode("RBT");
+		devicePutReqDtoReq.setRequest(devicePutReqDto);
+
+		SearchDtoWithoutLangCode sc = new SearchDtoWithoutLangCode();
+		List<io.mosip.kernel.masterdata.dto.request.SearchFilter> ls = new ArrayList<>();
+		io.mosip.kernel.masterdata.dto.request.SearchFilter sf = new io.mosip.kernel.masterdata.dto.request.SearchFilter();
+		List<SearchSort> ss = new ArrayList<SearchSort>();
+		Pagination pagination = new Pagination(0, 1);
+		SearchSort s = new SearchSort("name", "ASC");
+		ss.add(s);
+		sf.setColumnName("name");
+		sf.setType("equals");
+		sf.setValue("Dummy Web Camera 20");
+		ls.add(sf);
+		sc.setFilters(ls);
+		sc.setLanguageCode("eng");
+		sc.setPagination(pagination);
+		sc.setSort(ss);
+
+		searchLangCode = new RequestWrapper<>();
+		searchLangCode.setRequest(sc);
+
+		FilterValueDto f = new FilterValueDto();
+		FilterDto dto = new FilterDto();
+		dto.setColumnName("name");
+		dto.setText("Dummy Web Camera 20");
+		dto.setType("equals");
+		List<FilterDto> lf = new ArrayList<>();
+		lf.add(dto);
+		f.setLanguageCode("eng");
+		f.setOptionalFilters(null);
+		f.setFilters(lf);
+		filValDto = new RequestWrapper<>();
+		filValDto.setRequest(f);
+
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t001getDeviceLangTest() throws Exception {
+		System.out.println("t2");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devices/eng")).andReturn(),
+				"KER-MSD-010");
+
+	}
+
+	@Test
+	// @WithUserDetails("zonal-admin")
+	public void t002createDeviceTest() throws Exception {
+		deviceDtoReq.getRequest().setZoneCode("RBT");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devices")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(deviceDtoReq))).andReturn(),
+				null);
+
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t002createDeviceFailTest1() throws Exception {
+		System.out.println("t1");
+		deviceDtoReq.getRequest().setZoneCode("JRD");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devices")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(deviceDtoReq))).andReturn(),
+				"KER-MSD-339");
+
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t003getDeviceLangTest() throws Exception {
+		System.out.println("t2");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devices/eng")).andReturn(), null);
+
+	}
+
+	@Test
+	////@WithUserDetails("global-admin")
+	public void t003getDeviceLangCodeAndDeviceTypeTest() throws Exception {
+		System.out.println("t3");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devices/eng/327")).andReturn(), null);
+
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t003getDeviceLangCodeAndDeviceTypeFailTest() throws Exception {
+		System.out.println("t3");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devices/eng/IRS")).andReturn(),
+				"KER-MSD-010");
+
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t004updateDeviceTest() throws Exception {
+		System.out.println("t4");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/devices").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(devicePutReqDtoReq))).andReturn(),
+				null);
+
+	}
+
+	@Test
+ 	//@WithUserDetails("global-admin")
+	public void t004updateDeviceFailTest() throws Exception {
+		System.out.println("t4");
+		devicePutReqDtoReq.getRequest().setName("updated");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/devices").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(devicePutReqDtoReq))).andReturn(),
+				"KER-MSD-339");
+
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t004updateDeviceFailTest1() throws Exception {
+		System.out.println("t4");
+		devicePutReqDtoReq.getRequest().setName("updated");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/devices").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(devicePutReqDtoReq))).andReturn(),
+				"KER-MSD-339");
+
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t005getDevicesByRegistrationCenterTest() throws Exception {
+		System.out.println("t5");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/devices/mappeddevices/10001")).andReturn(), "KER-MSD-441");
+
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t006searchDeviceTest() throws Exception {
+		System.out.println("t6");
+		MasterDataTest
+				.checkResponse(
+						mockMvc.perform(
+								MockMvcRequestBuilders.post("/devices/search").contentType(MediaType.APPLICATION_JSON)
+										.content(mapper.writeValueAsString(searchLangCode)))
+								.andReturn(),
+						"KER-MSD-344");
+
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t007deviceFilterValuesTest() throws Exception {
+		System.out.println("t7");
+		MasterDataTest
+				.checkResponse(mockMvc
+						.perform(MockMvcRequestBuilders.post("/devices/filtervalues")
+								.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
+						.andReturn(), null);
+
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t008updateDeviceStatusTest() throws Exception {
+		System.out.println("t8");
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.patch("/devices").param("isActive", "true").param("id", "3000038"))
+				.andReturn(), null);
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t009updateDeviceStatusFailTest() throws Exception {
+		System.out.println("t9");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.patch("/devices").param("isActive", "true").param("id", "1"))
+						.andReturn(),
+				"KER-MSD-004");
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t017decommissionDeviceTest() throws Exception {
+		System.out.println("t17");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/devices/decommission/1004")).andReturn(), "KER-MSD-042");
+
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t018decommissionDeviceFailTest() throws Exception {
+		System.out.println("t18");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/devices/decommission/1004")).andReturn(), "KER-MSD-042");
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t010deviceFilterValuesTest1() throws Exception {
+		System.out.println("t10");
+		filValDto.getRequest().getFilters().get(0).setType("contains");
+		MasterDataTest
+				.checkResponse(mockMvc
+						.perform(MockMvcRequestBuilders.post("/devices/filtervalues")
+								.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
+						.andReturn(), null);
+
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t011createDeviceFailTest() throws Exception {
+		System.out.println("t11");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devices")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(deviceDtoReq))).andReturn(),
+				"KER-MSD-339");
+
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t012updateDeviceFailTest() throws Exception {
+		System.out.println("t12");
+		devicePutReqDtoReq.setId("7");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/devices").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(devicePutReqDtoReq))).andReturn(),
+				"KER-MSD-339");
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t013getDeviceLangCodeAndDeviceTypeFailTest() throws Exception {
+		System.out.println("t13");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devices/eng1/abcd")).andReturn(),
+				"KER-MSD-010");
+
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t014getDeviceLangFailTest() throws Exception {
+		System.out.println("t14");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devices/eng1")).andReturn(),
+				"KER-MSD-010");
+
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t015searchDeviceFailTest() throws Exception {
+		System.out.println("t15");
+		searchLangCode.getRequest().getFilters().get(0).setType("contains");
+		searchLangCode.getRequest().getFilters().get(0).setValue("abcd");
+		MasterDataTest
+				.checkResponse(
+						mockMvc.perform(
+								MockMvcRequestBuilders.post("/devices/search").contentType(MediaType.APPLICATION_JSON)
+										.content(mapper.writeValueAsString(searchLangCode)))
+								.andReturn(),
+						"KER-MSD-339");
+
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t016getDevicesByRegistrationCenterFailTest() throws Exception {
+		System.out.println("t16");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/devices/mappeddevices/101")).andReturn(), "KER-MSD-441");
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t020deleteDeviceFailTest() throws Exception {
+		System.out.println("t20");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/devices/100100")).andReturn(),
+				"KER-MSD-010");
+	}
+
+	@Test
+	//@WithUserDetails("global-admin")
+	public void t019deleteDeviceTest() throws Exception {
+		System.out.println("t19");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/devices/3000058")).andReturn(), null);
+
+	}
+
+}

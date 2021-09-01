@@ -38,14 +38,14 @@ public class ExceptionalHolidayControllerTest {
 	@WithUserDetails("global-admin")
 	public void t1getExceptionalHolidaysFailTest() throws Exception {
 
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10001/eng"))
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10005/eng"))
 				.andReturn(),"KER-MSD-802");
 	}
 	
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t2getExceptionalHolidaysFailTest() throws Exception {
+	public void t2getExceptionalHolidaysTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10001/eng"))
 				.andReturn(),null);
