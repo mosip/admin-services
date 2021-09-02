@@ -86,7 +86,7 @@ public class SyncJobHelperService {
         futuresMap.put(ReasonList.class, serviceHelper.getReasonList(null, currentTimestamp));
         futuresMap.put(ScreenAuthorization.class, serviceHelper.getScreenAuthorizationDetails(null, currentTimestamp));
         futuresMap.put(ScreenDetail.class, serviceHelper.getScreenDetails(null, currentTimestamp));
-        futuresMap.put(BlacklistedWords.class, serviceHelper.getBlackListedWords(null, currentTimestamp));
+        futuresMap.put(BlocklistedWords.class, serviceHelper.getBlackListedWords(null, currentTimestamp));
         futuresMap.put(ProcessList.class, serviceHelper.getProcessList(null, currentTimestamp));
         futuresMap.put(SyncJobDef.class,  serviceHelper.getSyncJobDefDetails(null, currentTimestamp));
         futuresMap.put(PermittedLocalConfig.class, serviceHelper.getPermittedConfig(null, currentTimestamp));

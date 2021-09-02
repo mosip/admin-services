@@ -12,6 +12,7 @@ import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
 import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.exception.RequestException;
@@ -237,7 +238,8 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
 		return ResponseEntity.ok()
 				.contentType(MediaType.TEXT_PLAIN)
-				//.header("file-signature", keymanagerHelper.getSignature(content))
+				.header("file-signature",
+						keymanagerHelper.getFileSignature(HMACUtils2.digestAsPlainText(content.getBytes(StandardCharsets.UTF_8))))
 				.body(isEncrypted ?	getEncryptedData(content, machines.get(0).getPublicKey()) : content);
 	}
 
