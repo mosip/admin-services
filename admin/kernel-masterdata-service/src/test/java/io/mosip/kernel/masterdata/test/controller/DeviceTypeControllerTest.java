@@ -1,10 +1,7 @@
 package io.mosip.kernel.masterdata.test.controller;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -21,7 +18,6 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -40,7 +36,6 @@ import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
-import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
@@ -73,7 +68,7 @@ public class DeviceTypeControllerTest {
 		mapper.registerModule(new JavaTimeModule());
 
 		DeviceTypeDto deviceType = new DeviceTypeDto();
-		deviceType.setCode("CMR");
+		deviceType.setCode("CMR1");
 		deviceType.setDescription("For capturing photo");
 		deviceType.setIsActive(true);
 		deviceType.setLangCode("eng");
@@ -83,7 +78,7 @@ public class DeviceTypeControllerTest {
 		filDto.setRequest(deviceType);
 
 		DeviceTypePutDto dp = new DeviceTypePutDto();
-		dp.setCode("CMR");
+		dp.setCode("CMR1");
 		dp.setDescription("For capturing photo");
 		dp.setIsActive(true);
 		dp.setLangCode("eng");
@@ -155,6 +150,14 @@ public class DeviceTypeControllerTest {
 	public void t003updateDeviceTypeTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/devicetypes").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(filPutDto))).andReturn(),null);;
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t003updateDeviceTypeFailTest() throws Exception {
+		filPutDto.getRequest().setCode("CMRK");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/devicetypes").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(filPutDto))).andReturn(),"KER-MSD-003");;
 	}
 
 	@Test

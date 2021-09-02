@@ -104,7 +104,7 @@ public class ApplicationControllerTest {
 	@WithUserDetails("global-Admin")
 	public void t5getApplicationByCodeAndLanguageCodeTest() throws Exception {
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/applicationtypes/105/eng")).andReturn(), null);
+				mockMvc.perform(MockMvcRequestBuilders.get("/applicationtypes/101/engk")).andReturn(), "KER-MSD-002");
 	}
 
 	@Test
