@@ -109,8 +109,6 @@ public class KeymanagerHelper {
     }
 
     public String getFileSignature(String fileHash) throws Exception {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("hash", fileHash);
-        return getSignature(jsonObject.toString(0));
+        return getSignature(String.format("{\"hash\":\"%s\"}", fileHash));
     }
 }
