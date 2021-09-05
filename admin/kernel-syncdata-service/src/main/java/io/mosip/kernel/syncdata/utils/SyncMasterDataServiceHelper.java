@@ -76,7 +76,7 @@ public class SyncMasterDataServiceHelper {
 	@Autowired
 	private HolidayRepository holidayRepository;
 	@Autowired
-	private BlacklistedWordsRepository blacklistedWordsRepository;
+	private BlocklistedWordsRepository blocklistedWordsRepository;
 	@Autowired
 	private BiometricTypeRepository biometricTypeRepository;
 	@Autowired
@@ -504,7 +504,7 @@ public class SyncMasterDataServiceHelper {
 	public CompletableFuture<List<BlacklistedWordsDto>> getBlackListedWords(LocalDateTime lastUpdated,
 			LocalDateTime currentTimeStamp) {
 		List<BlacklistedWordsDto> blacklistedWords = null;
-		List<BlacklistedWords> words = null;
+		List<BlocklistedWords> words = null;
 
 		try {
 			if(!isChangesFound("BlacklistedWords", lastUpdated)) {
@@ -514,7 +514,7 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			words = blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+			words = blocklistedWordsRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage(), e);
@@ -1039,9 +1039,6 @@ public class SyncMasterDataServiceHelper {
 		return CompletableFuture.completedFuture(dtoList);
 	}
 
-	public void getSyncDataBaseDto(Class entityClass, String entityType, List entities, String publicKey, List result) {
-		getSyncDataBaseDto(entityClass.getSimpleName(), entityType, entities, publicKey, result);
-	}
 
 	@SuppressWarnings("unchecked")
 	public void getSyncDataBaseDto(String entityName, String entityType, List entities, String publicKey, List result) {
@@ -1054,7 +1051,7 @@ public class SyncMasterDataServiceHelper {
 						list.add(json);
 					}
 				} catch (Exception e) {
-					logger.error("Failed to map " + entityName + " data to json", e);
+					logger.error("Failed to map {} data to json {}", entityName, e);
 				}
 			});
 
@@ -1066,10 +1063,13 @@ public class SyncMasterDataServiceHelper {
 					tpmCryptoRequestDto.setPublicKey(publicKey);
 					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService
 							.csEncrypt(tpmCryptoRequestDto);
-					result.add(new SyncDataBaseDto(entityName, entityType, tpmCryptoResponseDto.getValue()));
+
+					//backward compatibility
+					result.add(new SyncDataBaseDto(entityName.equalsIgnoreCase(BlocklistedWords.class.getSimpleName()) ?
+							"BlacklistedWords" : entityName, entityType, tpmCryptoResponseDto.getValue()));
 				}
 			} catch (Exception e) {
-				logger.error("Failed to encrypt " + entityName + " data to json", e);
+				logger.error("Failed to encrypt {} data to json", entityName, e);
 			}
 		}
 	}
@@ -1182,7 +1182,7 @@ public class SyncMasterDataServiceHelper {
 				result = holidayRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
 				break;
 			case "BlacklistedWords":
-				result = blacklistedWordsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				result = blocklistedWordsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
 				break;
 			case "ScreenAuthorization":
 				result = screenAuthorizationRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();

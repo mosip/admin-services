@@ -19,6 +19,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.FileNotFoundException;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.keymanagerservice.entity.CACertificateStore;
 import io.mosip.kernel.keymanagerservice.repository.CACertificateStoreRepository;
 import io.mosip.kernel.syncdata.constant.SyncConfigDetailsErrorCode;
@@ -266,11 +267,12 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 
 		return ResponseEntity.ok()
 				.contentType(MediaType.APPLICATION_OCTET_STREAM)
-				.header("file-signature", keymanagerHelper.getSignature(content))
+				.header("file-signature",
+						keymanagerHelper.getFileSignature(HMACUtils2.digestAsPlainText(content.getBytes(StandardCharsets.UTF_8))))
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + entityIdentifier + "\"")
 				.body(isEncrypted ?
 						getEncryptedData(content.getBytes(StandardCharsets.UTF_8), machines.get(0).getPublicKey()) :
-						content.getBytes(StandardCharsets.UTF_8));
+						content);
 	}
 
 	private Path getEntityResource(String entityIdentifier) throws FileNotFoundException {

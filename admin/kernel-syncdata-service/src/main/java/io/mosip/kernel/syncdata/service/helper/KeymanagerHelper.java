@@ -10,10 +10,10 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.signature.dto.JWTSignatureRequestDto;
 import io.mosip.kernel.signature.dto.JWTSignatureResponseDto;
 import io.mosip.kernel.syncdata.constant.AdminServiceErrorCode;
-import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.response.KeyPairGenerateResponseDto;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,5 +106,9 @@ public class KeymanagerHelper {
             LOGGER.error("Failed to sign the file content", e);
             throw e;
         }
+    }
+
+    public String getFileSignature(String fileHash) throws Exception {
+        return getSignature(String.format("{\"hash\":\"%s\"}", fileHash));
     }
 }
