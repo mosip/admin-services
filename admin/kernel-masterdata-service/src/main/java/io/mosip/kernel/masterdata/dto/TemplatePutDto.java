@@ -37,7 +37,7 @@ public class TemplatePutDto {
 	@ApiModelProperty(value = "model", required = false, dataType = "java.lang.String")
 	private String model;
 
-	@Size(min = 0, max = 4086)
+	//@Size(min = 0, max = 4086)
 	@ApiModelProperty(value = "file text", required = false, dataType = "java.lang.String")
 	private String fileText;
 
