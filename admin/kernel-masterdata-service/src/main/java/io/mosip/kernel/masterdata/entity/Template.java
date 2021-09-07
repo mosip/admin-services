@@ -59,7 +59,7 @@ public class Template extends BaseEntity implements Serializable {
 	@Column(name = "model", length = 128)
 	private String model;
 
-	//@Column(name = "file_txt", length = 4086)
+	@Column(name = "file_txt")
 	private String fileText;
 
 	@Column(name = "module_id", length = 36)
