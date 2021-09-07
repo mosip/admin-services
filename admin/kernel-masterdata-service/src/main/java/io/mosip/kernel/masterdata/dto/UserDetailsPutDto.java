@@ -41,6 +41,9 @@ public class UserDetailsPutDto {
 	@Deprecated
 	private Boolean isActive;
 
-	@Deprecated
 	private String langCode;
+	
+	private String regCenterName;
+	private String zoneCode;
+	private String zoneName;
 }

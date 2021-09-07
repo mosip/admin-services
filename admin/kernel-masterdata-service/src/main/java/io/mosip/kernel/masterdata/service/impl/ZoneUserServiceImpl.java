@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,8 +24,10 @@ import io.mosip.kernel.masterdata.dto.ZoneUserHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserPutDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserSearchDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ZoneNameResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.UserDetails;
 import io.mosip.kernel.masterdata.entity.ZoneUser;
 import io.mosip.kernel.masterdata.entity.ZoneUserHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -316,13 +319,15 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 				dto.setUserId(z.getUserId());
 				dto.setUpdatedDateTime(z.getUpdatedDateTime());
 				dto.setUpdatedBy(z.getUpdatedBy());
-				if(null!=z.getUserId())
-					dto.setUserName(userDetailsRepo.findById(z.getUserId()).get().getName());
-				else
+				if(null!=z.getUserId()) {
+					Optional<UserDetails> ud=userDetailsRepo.findById(z.getUserId());
+					dto.setUserName(ud.isEmpty()?null:ud.get().getName());
+				}else
 					dto.setUserName(null);
-				if(null!=z.getZoneCode())
-					dto.setZoneName(zoneservice.getZone(z.getZoneCode(),z.getLangCode()).getZoneName());
-				else
+				if(null!=z.getZoneCode()) {
+					ZoneNameResponseDto zn=zoneservice.getZone(z.getZoneCode(),z.getLangCode());
+					dto.setZoneName(null!=zn?zn.getZoneName():null);
+				}else
 					dto.setZoneName(null);
 				zoneSearch.add(dto);
 			});
