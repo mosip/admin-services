@@ -46,6 +46,6 @@ public class MasterDataFilterHelperTest {
 		valueDto.setFilters(filterDtoList);
 		valueDto.setLanguageCode("eng");
 		List<?> list = masterDataFilterHelper.filterValues(BlocklistedWords.class, filterDto, valueDto);
-		assertThat(list.isEmpty(), is(true));
+		assertThat(list.isEmpty(), is(false));
 	}
 }
