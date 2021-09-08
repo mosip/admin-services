@@ -31,4 +31,7 @@ public interface UserDetailsRepository extends BaseRepository<UserDetails, Strin
 
 	@Query("FROM UserDetails m where (m.isDeleted is null or m.isDeleted = false) and m.isActive = true")
 	Page<UserDetails> findAllByIsDeletedFalseorIsDeletedIsNull(Pageable pageable);
+	
+	@Query("FROM UserDetails m where m.id = ?1 and m.langCode = ?2 and (m.isDeleted is null or m.isDeleted = false)")
+	UserDetails findByIdAndIsDeletedFalseorIsDeletedIsNull(String id,String langCode);
 }

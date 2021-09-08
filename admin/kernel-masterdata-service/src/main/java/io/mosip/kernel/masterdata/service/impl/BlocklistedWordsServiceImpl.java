@@ -39,6 +39,7 @@ import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
@@ -59,6 +60,7 @@ import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
@@ -408,6 +410,15 @@ public class BlocklistedWordsServiceImpl implements BlocklistedWordsService {
 			pageUtils.validateSortField(BlocklistedWordsExtnDto.class, BlocklistedWords.class, sort);
 			dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
 			dto.setSort(Collections.emptyList());
+			List<SearchFilter> lst=new ArrayList<>();
+			dto.getFilters().stream().forEach(f->{
+				if(f.getType().equalsIgnoreCase(FilterTypeEnum.EQUALS.toString())) {
+					f.setValue("*"+f.getValue()+"*");
+					f.setType(FilterTypeEnum.CONTAINS.toString());
+				}
+				lst.add(f);
+			});
+			dto.setFilters(lst);
 			Page<BlocklistedWords> page = masterDataSearchHelper.searchMasterdata(BlocklistedWords.class, dto, null);
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				blockListedWords = MapperUtils.mapAll(page.getContent(), BlocklistedWordsExtnDto.class);
