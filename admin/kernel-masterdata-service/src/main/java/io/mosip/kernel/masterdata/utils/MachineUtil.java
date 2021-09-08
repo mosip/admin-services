@@ -89,7 +89,7 @@ public class MachineUtil {
 				return CryptoUtil.encodeBase64(publicKey.getEncoded());
 			}
 		} catch (Exception e) {
-			logger.error("Invalid public key provided", e);
+			logger.error("Invalid sign public key provided", e);
 		}
 		throw new RequestException(MachineErrorCode.INVALID_PUBLIC_KEY.getErrorCode(), 
 				MachineErrorCode.INVALID_PUBLIC_KEY.getErrorMessage());
