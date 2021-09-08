@@ -151,7 +151,9 @@ INSERT INTO master.reg_exceptional_holiday(regcntr_id, hol_date, hol_name,hol_re
 
 DELETE FROM MASTER.blacklisted_words;
 INSERT INTO master.blacklisted_words(word, descr, lang_code,is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_DELETEd, del_dtimes) VALUES
-('shit','Blacklisted Word','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
+('shit','Blacklisted Word','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('damm','Blacklisted Word','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('damit','Blacklisted Word','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
 
 
 
