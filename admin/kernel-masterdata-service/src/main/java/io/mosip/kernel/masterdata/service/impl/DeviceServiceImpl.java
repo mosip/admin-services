@@ -503,18 +503,12 @@ public class DeviceServiceImpl implements DeviceService {
 	 * @param list the {@link DeviceSearchDto}.
 	 */
 	private void setMapStatus(List<DeviceSearchDto> list) {
-
-		List<Device> deviceList = deviceRepository.getAllDevicesList();
 		List<RegistrationCenter> registrationCenterList = deviceUtil.getAllRegistrationCenters();
 		list.forEach(deviceSearchDto -> {
-			deviceList.forEach(device -> {
-				if (device.getId().equals(deviceSearchDto.getId())) {
-					String regId = device.getRegCenterId();
-					registrationCenterList.forEach(registrationCenter -> {
-						if (registrationCenter.getId().equals(regId)) {
-							deviceSearchDto.setMapStatus(registrationCenter.getName());
-						}
-					});
+			String regId = deviceSearchDto.getRegCenterId();
+			registrationCenterList.forEach(registrationCenter -> {
+				if (registrationCenter.getId().equals(regId)) {
+					deviceSearchDto.setMapStatus(registrationCenter.getName());
 				}
 			});
 		});
