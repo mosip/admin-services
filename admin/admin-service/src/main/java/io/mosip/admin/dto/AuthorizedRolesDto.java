@@ -1,12 +1,11 @@
-package io.mosip.admin.bulkdataupload.dto;
-
-import java.util.List;
-
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+package io.mosip.admin.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 
 @Component("authorizedRoles")
@@ -22,11 +21,11 @@ public class AuthorizedRolesDto {
 	
 	private List<String> getbulkuploadgetalltransactions;
 
-	//Sync Auth Token Controller
+	//Audit manager proxy controller
+	private List<String> postauditmanagerlog;
 
-	//private List<String> postauthenticateuseridpwd;
-
-	//private List<String> postauthenticatesendotp;
+	//packet status update controller
+	private List<String> getpacketstatusupdate;
 
 	
 }
