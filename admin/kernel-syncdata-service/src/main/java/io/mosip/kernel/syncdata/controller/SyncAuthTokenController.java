@@ -39,9 +39,7 @@ public class SyncAuthTokenController {
     @ApiOperation(value = "API to send otp")
     @PostMapping(value = "/authenticate/sendotp")
     public ResponseWrapper<AuthNResponse> sendOTP(@RequestBody @Valid RequestWrapper<String> requestWrapper) {
-        ResponseWrapper<AuthNResponse> responseWrapper = new ResponseWrapper<>();
-        responseWrapper.setResponse(syncAuthTokenService.sendOTP(requestWrapper.getRequest()));
-        return responseWrapper;
+        return syncAuthTokenService.sendOTP(requestWrapper.getRequest());
     }
 
 }

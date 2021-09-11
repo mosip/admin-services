@@ -6,6 +6,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -39,6 +41,7 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.GenericService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterTypeService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.mosip.kernel.masterdata.validator.CenterTypeCode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -55,6 +58,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @Api(tags = { "RegistrationCenterType" })
+@Validated
 public class RegistrationCenterTypeController {
 
 	/**
@@ -128,8 +132,7 @@ public class RegistrationCenterTypeController {
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeleteregistrationcentertypes())")
 	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@DeleteMapping("/registrationcentertypes/{code}")
-	public ResponseWrapper<CodeResponseDto> deleteRegistrationCenterType(@PathVariable("code") String code) {
-
+	public ResponseWrapper<CodeResponseDto> deleteRegistrationCenterType(@CenterTypeCode(min =2, max = 36) @PathVariable("code") String code) {
 		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterTypeService.deleteRegistrationCenterType(code));
 		return responseWrapper;
@@ -219,7 +222,7 @@ public class RegistrationCenterTypeController {
 	@PatchMapping("/registrationcentertypes")
 	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<StatusResponseDto> updateRegistrationCenterTypeStatus(@Valid @RequestParam boolean isActive,
-			@RequestParam String code) {
+			@CenterTypeCode(min =2, max = 36) @RequestParam String code) {
 		auditUtil.auditRequest(
 				MasterDataConstant.STATUS_API_IS_CALLED + RegistrationCenterTypeDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,

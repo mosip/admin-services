@@ -100,7 +100,7 @@ public class HolidayServiceImpl implements HolidayService {
 	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
 	private String supportedLang;
 
-	private static final String UPDATE_HOLIDAY_QUERY = "UPDATE Holiday h SET h.isActive = :isActive ,h.updatedBy = :updatedBy , h.updatedDateTime = :updatedDateTime, h.holidayDesc = :holidayDesc,h.holidayId.holidayDate=:holidayDate,h.holidayId.holidayName = :holidayName   WHERE h.holidayId.locationCode = :locationCode  and h.holidayId.holidayId = :holidayId and h.holidayId.langCode = :langCode and (h.isDeleted is null or h.isDeleted = false)";
+	private static final String UPDATE_HOLIDAY_QUERY = "UPDATE Holiday h SET h.updatedBy = :updatedBy , h.updatedDateTime = :updatedDateTime, h.holidayDesc = :holidayDesc,h.holidayId.holidayDate=:holidayDate,h.holidayId.holidayName = :holidayName   WHERE h.holidayId.locationCode = :locationCode  and h.holidayId.holidayId = :holidayId and h.holidayId.langCode = :langCode and (h.isDeleted is null or h.isDeleted = false)";
 	private static final int DEFAULT_HOLIDAY_ID = 2000001;
 
 	/*
@@ -320,7 +320,6 @@ public class HolidayServiceImpl implements HolidayService {
 						HolidayErrorCode.UPDATE_HOLIDAY_LOCATION_INVALID.getErrorMessage());
 			}
 			Map<String, Object> params = bindDtoToMap(holidayDto);
-			params.put("isActive", locations.get(0).getIsActive());
 			int noOfRowAffected = holidayRepository.createQueryUpdateOrDelete(UPDATE_HOLIDAY_QUERY, params);			
 			if (noOfRowAffected != 0) {
 				idDto = mapToHolidayIdDto(holidayDto);
@@ -441,14 +440,9 @@ public class HolidayServiceImpl implements HolidayService {
 	private HolidayIDDto mapToHolidayIdDto(HolidayUpdateDto dto) {
 		HolidayIDDto idDto;
 		idDto = new HolidayIDDto();
-		if (dto.getHolidayName() != null)
-			idDto.setHolidayName(dto.getHolidayName());
-		else
-			idDto.setHolidayName(dto.getHolidayName());
-		if (dto.getHolidayDate() != null)
-			idDto.setHolidayDate(dto.getHolidayDate());
-		else
-			idDto.setHolidayDate(dto.getHolidayDate());
+		idDto.setHolidayId(dto.getHolidayId());
+		idDto.setHolidayName(dto.getHolidayName());
+		idDto.setHolidayDate(dto.getHolidayDate());
 		idDto.setLocationCode(dto.getLocationCode());
 		idDto.setLangCode(dto.getLangCode());
 		return idDto;

@@ -24,8 +24,10 @@ import io.mosip.kernel.syncdata.dto.MachineAuthDto;
 import io.mosip.kernel.syncdata.dto.MachineOtpDto;
 import io.mosip.kernel.syncdata.dto.response.TokenResponseDto;
 import io.mosip.kernel.syncdata.entity.Machine;
+import io.mosip.kernel.syncdata.entity.UserDetails;
 import io.mosip.kernel.syncdata.exception.RequestException;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
+import io.mosip.kernel.syncdata.repository.UserDetailsRepository;
 import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,10 +47,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
@@ -101,6 +100,9 @@ public class SyncAuthTokenServiceImpl {
     private MachineRepository machineRepository;
 
     @Autowired
+    private UserDetailsRepository userDetailsRepository;
+
+    @Autowired
     private RestTemplate restTemplate;
 
     private static ObjectMapper objectMapper = new ObjectMapper();
@@ -136,7 +138,7 @@ public class SyncAuthTokenServiceImpl {
                 SyncAuthErrorCode.INVALID_REQUEST.getErrorMessage());
     }
 
-    public AuthNResponse sendOTP(String requestData) {
+    public ResponseWrapper<AuthNResponse> sendOTP(String requestData) {
         String[] parts = requestData.split("\\.");
         if(parts.length == 3) {
             byte[] header = Base64.getUrlDecoder().decode(parts[0]);
@@ -156,7 +158,8 @@ public class SyncAuthTokenServiceImpl {
                 ResponseEntity<String> responseEntity = restTemplate.postForEntity(builder.build().toUri(),
                         new HttpEntity<>(requestWrapper), String.class);
 
-                return objectMapper.readValue(responseEntity.getBody(), new TypeReference<AuthNResponse>() {});
+                return objectMapper.readValue(responseEntity.getBody(),
+                        new TypeReference<ResponseWrapper<AuthNResponse>>() {});
             } catch (Exception ex) {
                 logger.error("Failed to send otp", ex);
             }
@@ -167,7 +170,13 @@ public class SyncAuthTokenServiceImpl {
 
     private OtpUser getOtpUser(MachineOtpDto machineOtpDto) {
         OtpUser otpUser = new OtpUser();
-        otpUser.setUserId(machineOtpDto.getUserId());
+
+        Optional<UserDetails> result = userDetailsRepository.findActiveUserById(machineOtpDto.getUserId());
+        if(result.isPresent())
+            otpUser.setUserId(result.get().getEmail() == null ? result.get().getMobile() : result.get().getEmail());
+        else
+            otpUser.setUserId(machineOtpDto.getUserId());
+
         otpUser.setOtpChannel(machineOtpDto.getOtpChannel());
         otpUser.setAppId(machineOtpDto.getAppId());
         otpUser.setUseridtype(machineOtpDto.getUseridtype());

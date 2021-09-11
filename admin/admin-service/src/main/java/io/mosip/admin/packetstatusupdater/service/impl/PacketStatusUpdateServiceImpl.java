@@ -1,12 +1,15 @@
 package io.mosip.admin.packetstatusupdater.service.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -46,7 +49,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
-import io.mosip.admin.packetstatusupdater.constant.AuditConstant;
 import io.mosip.admin.packetstatusupdater.constant.PacketStatusUpdateErrorCode;
 import io.mosip.admin.packetstatusupdater.dto.Metadata;
 import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateDto;
@@ -57,6 +59,7 @@ import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
 import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import io.mosip.admin.packetstatusupdater.service.PacketStatusUpdateService;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
+import io.mosip.admin.packetstatusupdater.util.EventEnum;
 import io.mosip.kernel.core.authmanager.exception.AuthNException;
 import io.mosip.kernel.core.authmanager.exception.AuthZException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -67,7 +70,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.logger.logback.factory.Logfactory;
-import io.mosip.admin.packetstatusupdater.util.EventEnum;
 
 /**
  * Packet Status Update service.
@@ -89,8 +91,8 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	@Value("${mosip.kernel.zone-validation-url}")
 	private String zoneValidationUrl;
 
-	@Value("${mosip.primary-language:eng}")
-	private String primaryLang;
+	@Value("${mosip.supported-languages}")
+	private String supportedLang;
 
 	/** The rest template. */
 	@Autowired
@@ -107,6 +109,11 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	private Environment environment;
 
 	private static final String SLASH = "/";
+	
+	@Value("${mosip.admin.globalproperty.prefix}")
+	private String globalPropertyPrefix;
+	@Value("${mosip.admin.globalproperty.suffix}")
+	private String globalPropertySuffix;
 
 	/*
 	 * (non-Javadoc)
@@ -115,21 +122,24 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	 * getStatus(java.lang.String)
 	 */
 	@Override
-	public PacketStatusUpdateResponseDto getStatus(String rId) {
+	public PacketStatusUpdateResponseDto getStatus(String rId, String langCode) {
 
+		if (langCode == null) {
+			langCode = supportedLang.split(",")[0];
+		}
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE,rId));
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();	
 		for(GrantedAuthority x:authentication.getAuthorities()) {
 			if(x.getAuthority().equals("ROLE_GLOBAL_ADMIN")) {		
 				auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS);
-				return getPacketStatus(rId);
+				return getPacketStatus(rId, langCode);
 			}
 		}	
 		if(!authorizeRidWithZone(rId)) {
 			return null;
 		}
 		auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS);
-		return getPacketStatus(rId);
+		return getPacketStatus(rId, langCode);
 	}
 
 	/**
@@ -140,13 +150,13 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	 * @return the packet status
 	 */
 	@SuppressWarnings({ "unchecked" })
-	private PacketStatusUpdateResponseDto getPacketStatus(String rId) {
+	private PacketStatusUpdateResponseDto getPacketStatus(String rId, String langCode) {
 		try {
 
 			HttpHeaders packetHeaders = new HttpHeaders();
 			packetHeaders.setContentType(MediaType.APPLICATION_JSON);
 			StringBuilder urlBuilder = new StringBuilder();
-			urlBuilder.append(packetUpdateStatusUrl).append(SLASH).append(primaryLang).append(SLASH).append(rId);
+			urlBuilder.append(packetUpdateStatusUrl).append(SLASH).append(rId);
 			RestTemplate restTemplate1=new RestTemplate();
 			ResponseEntity<String> response = restTemplate1.exchange(urlBuilder.toString(), HttpMethod.GET, setRequestHeader(),
 					String.class);
@@ -158,6 +168,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 						new TypeReference<List<PacketStatusUpdateDto>>() {
 						});
 				packStautsDto.sort(createdDateTimesResultComparator);
+				setStatusMessage(packStautsDto, langCode);
 				regProcPacketStatusRequestDto.setPacketStatusUpdateList(packStautsDto);
 				packStautsDto.stream().forEach(pcksts->{
 					auditUtil.setAuditRequestDto(EventEnum.getEventEnumBasedOnPAcketStatus(pcksts));
@@ -387,6 +398,46 @@ private HttpEntity<Object> setRequestHeader() throws IOException {
 		request.setClientId(environment.getProperty("regproc.token.request.clientId"));
 		request.setSecretKey(environment.getProperty("regproc.token.request.secretKey"));
 		return request;
+	}
+	
+	/**
+	 * @param langCode
+	 * @return
+	 * description: It's returning property based on the langCode
+	 */
+	private Properties getPropertiesByLangCode(String langCode) {
+		Properties prop = null;
+		ClassLoader classLoader = getClass().getClassLoader();
+		String messagesPropertiesFileName = globalPropertyPrefix + langCode + globalPropertySuffix;
+		try(
+			InputStream inputStream = classLoader.getResourceAsStream(messagesPropertiesFileName);
+			InputStreamReader streamReader = new InputStreamReader(inputStream, "UTF-8");) {
+			prop = new Properties();
+			prop.load(streamReader);
+		} catch (IOException e) {
+			throw new MasterDataServiceException("RPR-RTS-002",
+					"Unknown Exception Occured" + " -->" + e.getMessage());
+//			throw new MasterDataServiceException(PlatformErrorMessages.RPR_RTS_UNKNOWN_EXCEPTION.getCode(),
+//					PlatformErrorMessages.RPR_RTS_UNKNOWN_EXCEPTION.getMessage() + " -->" + e.getMessage());
+		}
+		return prop;
+	}
+	
+	/**
+	 * @param packStautsDtos
+	 * @param langCode
+	 * Description: It's calling the property file and set the comment based on the sub-status-code
+	 */
+	private void setStatusMessage(List<PacketStatusUpdateDto> packStautsDtos, String langCode) {
+		Properties prop = getPropertiesByLangCode(langCode);
+		if (null != prop) {
+			packStautsDtos.stream().forEach(packStautsDto -> {
+				String subStatusCode = packStautsDto.getSubStatusCode();
+				if (subStatusCode != null && !subStatusCode.isEmpty()) {
+					packStautsDto.setStatusComment(prop.getProperty(subStatusCode));
+				}
+			});
+		}
 	}
 
 }

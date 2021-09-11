@@ -19,12 +19,16 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.ZoneUserDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserExtnDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserHistoryResponseDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserPutDto;
+import io.mosip.kernel.masterdata.dto.ZoneUserSearchDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.service.ZoneUserService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.validator.StringFormatter;
@@ -118,15 +122,35 @@ public class ZoneUserController {
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPatchzoneuser))")
 	@PatchMapping(value = "/zoneuser")
 	public ResponseWrapper<StatusResponseDto> updateapUserZoneStatus(@Valid @RequestParam boolean isActive,
-			@RequestParam String code) {
+			@RequestParam String userId) {
 		auditUtil.auditRequest(MasterDataConstant.STATUS_API_IS_CALLED + ZoneUserController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.STATUS_API_IS_CALLED + ZoneUserController.class.getCanonicalName());
 		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(zoneUserService.updateZoneUserMapping(code, isActive));
+		responseWrapper.setResponse(zoneUserService.updateZoneUserMapping(userId, isActive));
 		auditUtil.auditRequest(MasterDataConstant.STATUS_UPDATED_SUCCESS + ZoneUserController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.STATUS_UPDATED_SUCCESS + ZoneUserController.class.getCanonicalName());
+		return responseWrapper;
+	}
+
+	/**
+	 * This api is for searching the zoneUser mapping.
+	 * 
+	 * @param roleName
+	 * @return
+	 */
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@ResponseFilter
+	@PostMapping(value = "/zoneuser/search")
+	public ResponseWrapper<PageResponseDto<ZoneUserSearchDto>> searchZoneUserMapping(
+			@RequestBody @Valid RequestWrapper<SearchDtoWithoutLangCode> dto) {
+		ResponseWrapper<PageResponseDto<ZoneUserSearchDto>> responseWrapper = new ResponseWrapper<>();
+		auditUtil.auditRequest(
+				MasterDataConstant.SEARCH_USER_DETAILS_API_IS_CALLED + SearchDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.SEARCH_USER_DETAILS_API_IS_CALLED + SearchDto.class.getCanonicalName());
+		responseWrapper.setResponse(zoneUserService.searchZoneUserMapping(dto.getRequest()));
 		return responseWrapper;
 	}
 

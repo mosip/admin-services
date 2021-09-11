@@ -7,9 +7,12 @@ import java.util.concurrent.ExecutionException;
 
 import javax.validation.Valid;
 
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.*;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,13 +29,10 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
-import io.mosip.kernel.syncdata.service.SyncRolesService;
 import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
 import io.mosip.kernel.syncdata.utils.LocalDateTimeUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import net.minidev.json.JSONObject;
-import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * Sync Handler Controller
@@ -59,85 +59,13 @@ public class SyncDataController {
 	@Autowired
 	SyncConfigDetailsService syncConfigDetailsService;
 
-	/**
-	 * Service instnace {@link SyncRolesService}
-	 */
-	@Autowired
-	SyncRolesService syncRolesService;
-
 	@Autowired
 	SyncUserDetailsService syncUserDetailsService;
 
 	@Autowired
 	LocalDateTimeUtil localDateTimeUtil;
 
-	/**
-	 * This API method would fetch all synced global config details from server
-	 * 
-	 * @return JSONObject - global config response
-	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetconfigs())")
-	@ApiOperation(value = "API to sync global config details")
-	@GetMapping(value = "/configs")
-	public ResponseWrapper<ConfigDto> getConfigDetails() {
-		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
-		ConfigDto syncConfigResponse = syncConfigDetailsService.getConfigDetails();
-		syncConfigResponse.setLastSyncTime(currentTimeStamp);
-		ResponseWrapper<ConfigDto> response = new ResponseWrapper<>();
-		response.setResponse(syncConfigResponse);
-		return response;
-	}
 
-	/**
-	 * This API method would fetch all synced global config details from server
-	 * 
-	 * @return JSONObject - global config response
-	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
-	@ResponseFilter
-	@ApiIgnore
-	@ApiOperation(value = "API to sync global config details")
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetglobalconfigs())")
-	@GetMapping(value = "/globalconfigs")
-	public ResponseWrapper<JSONObject> getGlobalConfigDetails() {
-		ResponseWrapper<JSONObject> response = new ResponseWrapper<>();
-		response.setResponse(syncConfigDetailsService.getGlobalConfigDetails());
-		return response;
-	}
-
-	/**
-	 * * This API method would fetch all synced registration center config details
-	 * from server
-	 * 
-	 * @param regId registration Id
-	 * @return JSONObject
-	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@ResponseFilter
-	@ApiIgnore
-	@ApiOperation(value = "Api to get registration center configuration")
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetregistrationcenterconfigregistrationcenterid())")
-	@GetMapping(value = "/registrationcenterconfig/{registrationcenterid}")
-	public ResponseWrapper<JSONObject> getRegistrationCentreConfig(
-			@PathVariable(value = "registrationcenterid") String regId) {
-		ResponseWrapper<JSONObject> response = new ResponseWrapper<>();
-		response.setResponse(syncConfigDetailsService.getRegistrationCenterConfigDetails(regId));
-		return response;
-	}
-
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@ResponseFilter
-	@ApiIgnore
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetconfigurationregistrationcenterid())")
-	@GetMapping("/configuration/{registrationCenterId}")
-	public ResponseWrapper<ConfigDto> getConfiguration(
-			@PathVariable("registrationCenterId") String registrationCenterId) {
-		ResponseWrapper<ConfigDto> response = new ResponseWrapper<>();
-		response.setResponse(syncConfigDetailsService.getConfiguration(registrationCenterId));
-		return response;
-	}
 	
 	/**
 	 * 
@@ -149,14 +77,14 @@ public class SyncDataController {
 	 * @throws ExecutionException   - this method will throw exeution exception
 	 */
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetclientsettings))")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetclientsettings())")
 	@GetMapping("/clientsettings")
 	public ResponseWrapper<SyncDataResponseDto> syncClientSettings(
 			@RequestParam(value = "keyindex", required = true) String keyIndex,
 			@RequestParam(value = "lastUpdated", required = false) String lastUpdated,
 			@RequestParam(value = "regcenterId", required = false) String regCenterId)
-			throws InterruptedException, ExecutionException {
+			throws Throwable {
 
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
@@ -171,98 +99,6 @@ public class SyncDataController {
 		return response;
 	}
 	
-	/**
-	 * 
-	 * @param keyIndex     - keyIndex mapped to machine
-	 * @param regCenterId  - reg Center Id
-	 * @param lastUpdated  - last sync updated time stamp
-	 * @return {@link SyncDataResponseDto}
-	 * @throws InterruptedException - this method will throw interrupted Exception
-	 * @throws ExecutionException   - this method will throw exeution exception
-	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetclientsettingsregcenterid())")
-	@GetMapping("/clientsettings/{regcenterid}")
-	@Deprecated(forRemoval = true, since = "1.1.5")
-	public ResponseWrapper<SyncDataResponseDto> syncClientSettingsWithRegCenterId(
-			@PathVariable("regcenterid") String regCenterId,
-			@RequestParam(value = "lastupdated", required = false) String lastUpdated,
-			@RequestParam(value = "keyindex", required = true) String keyIndex)
-			throws InterruptedException, ExecutionException {
-
-		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
-		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
-		
-		SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettings(regCenterId, keyIndex,
-				timestamp, currentTimeStamp);
-
-		syncDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
-
-		ResponseWrapper<SyncDataResponseDto> response = new ResponseWrapper<>();
-		response.setResponse(syncDataResponseDto);
-		return response;
-	}
-	
-
-	/**
-	 * API will fetch all roles from Auth server
-	 * 
-	 * @return RolesResponseDto
-	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetroles())")
-	@GetMapping("/roles")
-	public ResponseWrapper<RolesResponseDto> getAllRoles() {
-		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
-		RolesResponseDto rolesResponseDto = syncRolesService.getAllRoles();
-		rolesResponseDto.setLastSyncTime(currentTimeStamp);
-		ResponseWrapper<RolesResponseDto> response = new ResponseWrapper<>();
-		response.setResponse(rolesResponseDto);
-		return response;
-	}
-
-	/**
-	 * API will all the userDetails from LDAP server
-	 * 
-	 * @param regId - registration center Id
-	 * 
-	 * @return UserDetailResponseDto - user detail response
-	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetuserdetailsregcenterid())")
-	@GetMapping("/userdetails/{regcenterid}")
-	public ResponseWrapper<SyncUserDetailDto> getUserDetails(@PathVariable("regcenterid") String regId) {
-		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
-		SyncUserDetailDto syncUserDetailDto = syncUserDetailsService.getAllUserDetail(regId);
-		syncUserDetailDto.setLastSyncTime(currentTimeStamp);
-		ResponseWrapper<SyncUserDetailDto> response = new ResponseWrapper<>();
-		response.setResponse(syncUserDetailDto);
-		return response;
-	}
-
-	/**
-	 * API will all the userDetails from LDAP server
-	 * 
-	 * @param regId - registration center Id
-	 * 
-	 * @return UserDetailResponseDto - user detail response
-	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetusersaltregid())")
-	@GetMapping("/usersalt/{regid}")
-	@Deprecated
-	public ResponseWrapper<SyncUserSaltDto> getUserSalts(@PathVariable("regid") String regId) {
-		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
-		SyncUserSaltDto syncUserDetailDto = syncUserDetailsService.getUserSalts(regId);
-		syncUserDetailDto.setLastSyncTime(currentTimeStamp);
-		ResponseWrapper<SyncUserSaltDto> response = new ResponseWrapper<>();
-		response.setResponse(syncUserDetailDto);
-		return response;
-	}
 
 	/**
 	 * Request mapping to get Public Key
@@ -273,8 +109,8 @@ public class SyncDataController {
 	 * @return {@link PublicKeyResponse} instance
 	 */
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetpublickeyapplicationid))")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetpublickeyapplicationid())")
 	@GetMapping(value = "/publickey/{applicationId}")
 	public ResponseWrapper<PublicKeyResponse<String>> getPublicKey(
 			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
@@ -300,8 +136,8 @@ public class SyncDataController {
 	 * @return
 	 */
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettpmpublickeyverify))")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettpmpublickeyverify())")
 	@PostMapping(value = "/tpm/publickey/verify", produces = "application/json")
 	public ResponseWrapper<UploadPublicKeyResponseDto> validateKeyMachineMapping(
 			@ApiParam("public key in BASE64 encoded") @RequestBody @Valid RequestWrapper<UploadPublicKeyRequestDto> uploadPublicKeyRequestDto) {
@@ -311,8 +147,8 @@ public class SyncDataController {
 	}
 	
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','RESIDENT','INDIVIDUAL','Default')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlatestidschema))")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlatestidschema())")
 	@GetMapping(value = "/latestidschema", produces = "application/json")
 	public ResponseWrapper<JsonNode> getLatestPublishedIdSchema(
 			@RequestParam(value = "lastupdated", required = false) String lastUpdated,
@@ -328,8 +164,8 @@ public class SyncDataController {
 	}
 
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetgetcertificate))")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetgetcertificate())")
 	@GetMapping(value = "/getCertificate")
 	public ResponseWrapper<KeyPairGenerateResponseDto> getCertificate(
 			@ApiParam("Id of application") @RequestParam("applicationId") String applicationId,
@@ -340,9 +176,10 @@ public class SyncDataController {
 		return response;
 	}
 
+
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','REGISTRATION_PROCESSOR')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettpmpublickeymachineid))")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettpmpublickeymachineid())")
 	@GetMapping(value = "/tpm/publickey/{machineId}", produces = "application/json")
 	public ResponseWrapper<ClientPublicKeyResponseDto> getClientPublicKey(
 			@ApiParam("Machine id") @PathVariable("machineId") String machineId) {
@@ -357,13 +194,13 @@ public class SyncDataController {
 	 * @return JSONObject - global config response
 	 */
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetconfigskeyIndex))")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetconfigsmachinename())")
 	@ApiOperation(value = "API to sync global config details")
-	@GetMapping(value = "/configs/{machineName}")
-	public ResponseWrapper<ConfigDto> getMachineConfigDetails(@PathVariable(value = "machineName") String machineName) {
+	@GetMapping(value = "/configs/{keyIndex}")
+	public ResponseWrapper<ConfigDto> getMachineConfigDetails(@PathVariable(value = "keyIndex") String keyIndex) {
 		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
-		ConfigDto syncConfigResponse = syncConfigDetailsService.getConfigDetails(machineName);
+		ConfigDto syncConfigResponse = syncConfigDetailsService.getConfigDetails(keyIndex);
 		syncConfigResponse.setLastSyncTime(currentTimeStamp);
 		ResponseWrapper<ConfigDto> response = new ResponseWrapper<>();
 		response.setResponse(syncConfigResponse);
@@ -376,8 +213,8 @@ public class SyncDataController {
 	 * @return
 	 */
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetuserdetails))")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetuserdetails())")
 	@GetMapping("/userdetails")
 	public ResponseWrapper<SyncUserDto> getUserDetailsBasedOnKeyIndex(
 			@RequestParam(value = "keyindex", required = true) String keyIndex) {
@@ -395,8 +232,8 @@ public class SyncDataController {
 	 * @return
 	 */
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetgetcacertificates))")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetgetcacertificates())")
 	@GetMapping("/getcacertificates")
 	public ResponseWrapper<CACertificates> getCACertificates(@RequestParam(value = "lastupdated",
 			required = false) String lastUpdated) {
@@ -407,6 +244,57 @@ public class SyncDataController {
 		caCertificates.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
 		response.setResponse(caCertificates);
 		return response;
+	}
+
+
+	/**
+	 *
+	 * @param keyIndex     - keyIndex mapped to machine
+	 * @param lastUpdated  - last sync updated time stamp
+	 * @param regCenterId  - regcenterId mapped to machine
+	 * @return {@link SyncDataResponseDto}
+	 * @throws InterruptedException - this method will throw interrupted Exception
+	 * @throws ExecutionException   - this method will throw exeution exception
+	 */
+	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetv2clientsettings))")
+	@ResponseFilter
+	@GetMapping("/v2/clientsettings")
+	public ResponseWrapper<SyncDataResponseDto> syncClientSettingsV2(
+			@RequestParam(value = "keyindex", required = true) String keyIndex,
+			@RequestParam(value = "lastUpdated", required = false) String lastUpdated,
+			@RequestParam(value = "regcenterId", required = false) String regCenterId,
+			@RequestParam(value = "version", required = false) String clientVersion)
+			throws Throwable {
+		MDC.put("client_version", clientVersion == null ? "NA": clientVersion);
+		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
+		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
+		SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettingsV2(regCenterId, keyIndex,
+				timestamp, currentTimeStamp, clientVersion);
+		syncDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
+		ResponseWrapper<SyncDataResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(syncDataResponseDto);
+		return response;
+	}
+
+	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','Default')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetscriptsscriptName))")
+	@ApiOperation(value = "API to download mvel scripts")
+	@GetMapping(value = "/scripts/{scriptName}")
+	public ResponseEntity downloadScript(@PathVariable(value = "scriptName") String scriptName,
+														   @RequestParam(value = "keyindex", required = true) String keyIndex)
+									throws Exception{
+		return syncConfigDetailsService.getScript(scriptName, keyIndex);
+	}
+
+	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','Default')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetclientsettingsentityIdentifier))")
+	@ApiOperation(value = "API to download data json files")
+	@GetMapping(value = "/clientsettings/{entityIdentifier}")
+	public ResponseEntity downloadEntityData(@PathVariable(value = "entityIdentifier") String entityIdentifier,
+										 @RequestParam(value = "keyindex", required = true) String keyIndex)
+			throws Exception {
+		return masterDataService.getClientSettingsJsonFile(entityIdentifier, keyIndex);
 	}
 
 }

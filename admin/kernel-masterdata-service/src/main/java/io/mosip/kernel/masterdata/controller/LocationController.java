@@ -35,7 +35,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationPostResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationPutResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
@@ -313,13 +313,13 @@ public class LocationController {
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostlocationsfiltervalues())")
 	@PostMapping("/filtervalues")
-	public ResponseWrapper<FilterResponseCodeDto> locationFilterValues(
+	public ResponseWrapper<FilterResponseDto> locationFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + LocationDto.class.getSimpleName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.FILTER_API_IS_CALLED + LocationDto.class.getSimpleName(), "ADM-572");
-		ResponseWrapper<FilterResponseCodeDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(locationHierarchyService.locationFilterValues(request.getRequest()));
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(locationHierarchyService.locFilterValues(request.getRequest()));
 		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_FILTER + LocationDto.class.getSimpleName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.SUCCESSFUL_FILTER_DESC + LocationDto.class.getSimpleName(), "ADM-573");

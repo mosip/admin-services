@@ -143,7 +143,7 @@ public class LocationSearchFilterIntegrationTest {
 		when(locationRepository.findLocationByHierarchyLevel(Mockito.anyShort(), Mockito.anyString(),
 				Mockito.anyString(), Mockito.anyBoolean())).thenReturn(location);
 		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+				.andExpect(status().is(500));
 	}
 	
 	@Test
@@ -203,7 +203,7 @@ public class LocationSearchFilterIntegrationTest {
 		when(locationRepository.findLocationByHierarchyLevelContains(Mockito.anyShort(), Mockito.anyString(),
 				Mockito.anyString(), Mockito.anyBoolean())).thenReturn(Arrays.asList(location));
 		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+				.andExpect(status().is(500));
 	}
 
 	@Test
@@ -238,7 +238,7 @@ public class LocationSearchFilterIntegrationTest {
 		when(locationTree.findLeafs(Mockito.any())).thenReturn(tree);
 		when(locationTree.getParentHierarchy(Mockito.any())).thenReturn(locations);
 		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+				.andExpect(status().is(500));
 	}
 
 	@Test

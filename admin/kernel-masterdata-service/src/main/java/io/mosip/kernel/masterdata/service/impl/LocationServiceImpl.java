@@ -2,10 +2,10 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -24,8 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.masterdata.util.model.Node;
-import io.mosip.kernel.core.masterdata.util.spi.UBtree;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
@@ -37,7 +35,6 @@ import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationLevelDto;
 import io.mosip.kernel.masterdata.dto.LocationLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationPutDto;
-import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
@@ -49,10 +46,11 @@ import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
+import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationPostResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationPutResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
@@ -74,7 +72,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
-import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
  * Class will fetch Location details based on various parameters this class is
@@ -106,9 +104,6 @@ public class LocationServiceImpl implements LocationService {
 	MasterDataFilterHelper masterDataFilterHelper;
 
 	@Autowired
-	private UBtree<Location> locationTree;
-
-	@Autowired
 	private MasterdataCreationUtil masterDataCreateUtil;
 
 	@Autowired
@@ -128,6 +123,9 @@ public class LocationServiceImpl implements LocationService {
 
 	@Autowired
 	private AuditUtil auditUtil;
+	
+	@Autowired
+	private FilterTypeValidator filterTypeValidator;
 
 	/**
 	 * This method will all location details from the Database. Refers to
@@ -699,282 +697,6 @@ public class LocationServiceImpl implements LocationService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.kernel.masterdata.service.LocationService#searchLocation(io.
-	 * mosip. kernel.masterdata.dto.request.SearchDto)
-	 */
-	@SuppressWarnings("null")
-	@Override
-	public PageResponseDto<LocationSearchDto> searchLocation(SearchDto dto) {
-		PageResponseDto<LocationSearchDto> pageDto = null;
-		String active = null;
-		boolean isActive = true;
-		List<LocationSearchDto> responseDto = new ArrayList<>();
-
-		if (!CollectionUtils.isEmpty(dto.getFilters())) {
-			Optional<SearchFilter> isActiveFilter = dto.getFilters().stream()
-					.filter(a -> a.getColumnName().equals(MasterDataConstant.IS_ACTIVE)).findFirst();
-			if (isActiveFilter.isPresent()) {
-				active = isActiveFilter.get().getValue();
-				isActive = Boolean.valueOf(active);
-				dto.getFilters().remove(isActiveFilter.get());
-			}
-
-		}
-		List<Location> locationList = locationRepository.findAllByLangCode(dto.getLanguageCode(), isActive);
-		locationList = locationList.stream().filter(location -> location.getHierarchyLevel() != 0)
-				.collect(Collectors.toList());
-		List<Node<Location>> tree = locationTree.createTree(locationList);
-
-		if (dto.getFilters().isEmpty()) {
-			responseDto = emptyFilterLocationSearch(tree);
-		} else {
-			int count = 0;
-			for (SearchFilter filter : dto.getFilters()) {
-				validateFilters(filter);
-				String type = filter.getType();
-				if (type.equalsIgnoreCase(FilterTypeEnum.EQUALS.toString())) {
-					if (count == 0) {
-						responseDto = getEqualsLocationSearch(filter, dto, tree, isActive);
-					} else {
-						responseDto.retainAll(getEqualsLocationSearch(filter, dto, tree, isActive));
-					}
-				} else {
-					if (type.equalsIgnoreCase(FilterTypeEnum.CONTAINS.toString())) {
-						if (count == 0) {
-							responseDto = getContainsLocationSearch(filter, dto, tree, isActive);
-						} else {
-							responseDto.retainAll(getContainsLocationSearch(filter, dto, tree, isActive));
-						}
-					} else {
-						if (type.equalsIgnoreCase(FilterTypeEnum.STARTSWITH.toString())) {
-							if (count == 0) {
-								responseDto = getStartsWithLocationSearch(filter, dto, tree, isActive);
-							} else {
-								responseDto.retainAll(getStartsWithLocationSearch(filter, dto, tree, isActive));
-							}
-						} else {
-							auditUtil.auditRequest(
-									String.format(MasterDataConstant.FAILURE_UPDATE, LocationDto.class.getSimpleName()),
-									MasterDataConstant.AUDIT_SYSTEM,
-									String.format(MasterDataConstant.FAILURE_DESC,
-											ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorCode(),
-											String.format(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorMessage(),
-													filter.getColumnName(), filter.getType())),
-									"ADM-581");
-							throw new RequestException(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorCode(),
-									String.format(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorMessage(),
-											filter.getColumnName(), filter.getType()));
-						}
-
-					}
-
-				}
-				count++;
-			}
-		}
-		Pagination pagination = dto.getPagination();
-		List<SearchSort> sort = dto.getSort();
-		pageUtils.validateSortFieldLocation(LocationSearchDto.class, Location.class, dto.getSort());
-		pageDto = pageUtils.sortPage(responseDto, sort, pagination);
-		return pageDto;
-	}
-
-	private boolean validateFilters(SearchFilter filter) {
-		if (filter != null) {
-			if (filter.getColumnName() != null && !filter.getColumnName().trim().isEmpty()) {
-				if (filter.getType() != null && !filter.getType().trim().isEmpty()) {
-					return true;
-				} else {
-					auditUtil.auditRequest(
-							String.format(MasterDataConstant.FAILURE_UPDATE, LocationDto.class.getSimpleName()),
-							MasterDataConstant.AUDIT_SYSTEM,
-							String.format(MasterDataConstant.FAILURE_DESC,
-									MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorCode(),
-									String.format(MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorMessage(),
-											filter.getColumnName())),
-							"ADM-582");
-					throw new RequestException(MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorCode(),
-							String.format(MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorMessage(),
-									filter.getColumnName()));
-				}
-			} else {
-				auditUtil.auditRequest(
-						String.format(MasterDataConstant.FAILURE_UPDATE, LocationDto.class.getSimpleName()),
-						MasterDataConstant.AUDIT_SYSTEM,
-						String.format(MasterDataConstant.FAILURE_DESC,
-								MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorCode(),
-								MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorMessage()),
-						"ADM-583");
-				throw new RequestException(MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorCode(),
-						MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorMessage());
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Method to search Location with no filter mentioned.
-	 * 
-	 * @param tree the Location Tree.
-	 * @return list of {@link LocationSearchDto}.
-	 */
-	private List<LocationSearchDto> emptyFilterLocationSearch(List<Node<Location>> tree) {
-		List<LocationSearchDto> responseDto = new ArrayList<>();
-		Node<Location> root = locationTree.findRootNode(tree.get(0));
-		List<Node<Location>> leafNodes = locationTree.findLeafs(root);
-
-		leafNodes.forEach(leafNode -> {
-			List<Location> leafParents = locationTree.getParentHierarchy(leafNode);
-
-			LocationSearchDto locationSearchDto = new LocationSearchDto();
-			leafParents.forEach(p -> {
-
-				if (p.getHierarchyLevel() == 1) {
-					locationSearchDto.setRegion(p.getName());
-				}
-				if (p.getHierarchyLevel() == 2) {
-					locationSearchDto.setProvince(p.getName());
-				}
-				if (p.getHierarchyLevel() == 3) {
-					locationSearchDto.setCity(p.getName());
-				}
-				if (p.getHierarchyLevel() == 4) {
-					locationSearchDto.setZone(p.getName());
-				}
-				if (p.getHierarchyLevel() == 5) {
-					locationSearchDto.setPostalCode(p.getName());
-				}
-				locationSearchDto.setCreatedBy(p.getCreatedBy());
-				locationSearchDto.setCreatedDateTime(p.getCreatedDateTime());
-				locationSearchDto.setDeletedDateTime(p.getDeletedDateTime());
-				locationSearchDto.setIsActive(p.getIsActive());
-				locationSearchDto.setLangCode(p.getLangCode());
-				locationSearchDto.setName(p.getName());
-				locationSearchDto.setHierarchyLevel(p.getHierarchyLevel());
-				locationSearchDto.setHierarchyName(p.getHierarchyName());
-				locationSearchDto.setParentLocCode(p.getParentLocCode());
-				locationSearchDto.setIsDeleted(p.getIsDeleted());
-				locationSearchDto.setUpdatedBy(p.getUpdatedBy());
-				locationSearchDto.setUpdatedDateTime(p.getUpdatedDateTime());
-				locationSearchDto.setCode(p.getCode());
-			});
-			responseDto.add(locationSearchDto);
-		});
-
-		return responseDto;
-	}
-
-	/**
-	 * Method to find Location for equal data.
-	 * 
-	 * @param filter   the search filters provided
-	 * @param dto      the search DTO provided.
-	 * @param tree     the unbalanced tree of Location.
-	 * @param isActive
-	 * @return the list of {@link LocationSearchDto}.
-	 */
-	private List<LocationSearchDto> getEqualsLocationSearch(SearchFilter filter, SearchDto dto,
-			List<Node<Location>> tree, boolean isActive) {
-		List<LocationSearchDto> locationSearch = new ArrayList<>();
-		short locLevel = Short.parseShort(getHierarchyLevel(filter.getColumnName(), dto.getLanguageCode()));
-		Location location = locationRepository.findLocationByHierarchyLevel(locLevel, filter.getValue(),
-				dto.getLanguageCode(), isActive);
-		if (location != null) {
-			locationSearch = getListOfLocationNodes(tree, location, locationSearch);
-		}
-		return locationSearch;
-	}
-
-	private List<LocationSearchDto> getListOfLocationNodes(List<Node<Location>> tree, Location location,
-			List<LocationSearchDto> responseDto) {
-		Node<Location> node = locationTree.findNode(tree, location.getCode());
-		List<Node<Location>> leafNodes = locationTree.findLeafs(node);
-		leafNodes.forEach(leafNode -> {
-			List<Location> leafParents = locationTree.getParentHierarchy(leafNode);
-
-			LocationSearchDto locationSearchDto = new LocationSearchDto();
-			leafParents.forEach(p -> {
-				if (p.getHierarchyLevel() == 1) {
-					locationSearchDto.setRegion(p.getName());
-				}
-				if (p.getHierarchyLevel() == 2) {
-					locationSearchDto.setProvince(p.getName());
-				}
-				if (p.getHierarchyLevel() == 3) {
-					locationSearchDto.setCity(p.getName());
-				}
-				if (p.getHierarchyLevel() == 4) {
-					locationSearchDto.setZone(p.getName());
-				}
-				if (p.getHierarchyLevel() == 5) {
-					locationSearchDto.setPostalCode(p.getName());
-				}
-				locationSearchDto.setCreatedBy(p.getCreatedBy());
-				locationSearchDto.setCreatedDateTime(p.getCreatedDateTime());
-				locationSearchDto.setDeletedDateTime(p.getDeletedDateTime());
-				locationSearchDto.setIsActive(p.getIsActive());
-				locationSearchDto.setHierarchyLevel(p.getHierarchyLevel());
-				locationSearchDto.setHierarchyName(p.getHierarchyName());
-				locationSearchDto.setParentLocCode(p.getParentLocCode());
-				locationSearchDto.setIsDeleted(p.getIsDeleted());
-				locationSearchDto.setUpdatedBy(p.getUpdatedBy());
-				locationSearchDto.setUpdatedDateTime(p.getUpdatedDateTime());
-				locationSearchDto.setCode(p.getCode());
-				locationSearchDto.setName(p.getName());
-			});
-			responseDto.add(locationSearchDto);
-		});
-
-		return responseDto;
-	}
-
-	/**
-	 * Method to find Location for contains data mentioned.
-	 * 
-	 * @param filter   the search filters provided
-	 * @param dto      the search DTO provided.
-	 * @param tree     the unbalanced tree of Location.
-	 * @param isActive
-	 * @return the list of {@link LocationSearchDto}.
-	 */
-	private List<LocationSearchDto> getContainsLocationSearch(SearchFilter filter, SearchDto dto,
-			List<Node<Location>> tree, boolean isActive) {
-		List<LocationSearchDto> locationSearch = new ArrayList<>();
-		short locLevel = Short.parseShort(getHierarchyLevel(filter.getColumnName(), dto.getLanguageCode()));
-		List<Location> locationList = locationRepository.findLocationByHierarchyLevelContains(locLevel,
-				"%" + filter.getValue().toLowerCase() + "%", dto.getLanguageCode(), isActive);
-		for (Location loc : locationList) {
-			locationSearch = getListOfLocationNodes(tree, loc, locationSearch);
-		}
-		return locationSearch;
-	}
-
-	/**
-	 * Method to find Location thats starts with provided data.
-	 * 
-	 * @param filter   the search filters provided
-	 * @param dto      the search DTO provided.
-	 * @param tree     the unbalanced tree of Location.
-	 * @param isActive
-	 * @retun the list of {@link LocationSearchDto}.
-	 */
-	private List<LocationSearchDto> getStartsWithLocationSearch(SearchFilter filter, SearchDto dto,
-			List<Node<Location>> tree, boolean isActive) {
-		List<LocationSearchDto> locationSearch = new ArrayList<>();
-		short hierarchyLevel = Short.parseShort(getHierarchyLevel(filter.getColumnName(), dto.getLanguageCode()));
-		List<Location> locationList = locationRepository.findLocationByHierarchyLevelStartsWith(hierarchyLevel,
-				filter.getValue().toLowerCase() + "%", dto.getLanguageCode(), isActive);
-		for (Location loc : locationList) {
-			locationSearch = getListOfLocationNodes(tree, loc, locationSearch);
-
-		}
-
-		return locationSearch;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see io.mosip.kernel.masterdata.service.LocationService#locationFilterValues(
 	 * io. mosip.kernel.masterdata.dto.request.FilterValueDto)
 	 */
@@ -1177,5 +899,50 @@ public class LocationServiceImpl implements LocationService {
 		}
 		return location;
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.LocationService#searchLocation(io.
+	 * mosip. kernel.masterdata.dto.request.SearchDto)
+	 */
+	@Override
+	public PageResponseDto<LocationSearchDto> searchLocation(SearchDto dto) {
+		PageResponseDto<LocationSearchDto> pageDto = new PageResponseDto<>();
+		List<LocationSearchDto> responseDto = null;
+		pageUtils.validateSortField(Location.class, dto.getSort());
+		Boolean isFilter = filterTypeValidator.validate(LocationSearchDto.class, dto.getFilters());
+		if (isFilter) {
+			Pagination pagination = dto.getPagination();
+			List<SearchSort> sort = dto.getSort();
+			pageUtils.validateSortFieldLocation(LocationSearchDto.class, Location.class, dto.getSort());
+			dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
+			dto.setSort(Collections.emptyList());
+			Page<Location> page = masterdataSearchHelper.searchMasterdata(Location.class, dto, null);
+			
+			if (page.getContent() != null && !page.getContent().isEmpty()) {
+				responseDto = MapperUtils.mapAll(page.getContent(), LocationSearchDto.class);
+				pageDto = pageUtils.sortPage(responseDto, sort, pagination);
+			}
+		}
+		return pageDto;
+	}
+	@Override
+	public FilterResponseDto locFilterValues(FilterValueDto filterValueDto) {
+		FilterResponseDto filterResponseDto = new FilterResponseDto();
+		List<ColumnValue> columnValueList = new ArrayList<>();
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Location.class)) {
+			for (FilterDto filterDto : filterValueDto.getFilters()) {
+				List<?> filterValues = masterDataFilterHelper.filterValues(Location.class, filterDto, filterValueDto);
+				filterValues.forEach(filterValue -> {
+					ColumnValue columnValue = new ColumnValue();
+					columnValue.setFieldID(filterDto.getColumnName());
+					columnValue.setFieldValue(filterValue.toString());
+					columnValueList.add(columnValue);
+				});
+			}
+			filterResponseDto.setFilters(columnValueList);
+		}
+		return filterResponseDto;
+	}
 }

@@ -1,2 +1,2 @@
-id,name,description,dataType,value_json,langCode,is_active
-10001,bloodType,Blood Type,string,"{{Test,Test}}",eng,TRUE
+id,name,description,dataType,valueJson,langCode,isActive
+10458,bloodType,BloodType,string,"{"value":"français","code":"fra"}",eng,TRUE

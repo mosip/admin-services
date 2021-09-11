@@ -622,7 +622,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		for (Entry<Short, List<Location>> data : levelToListOfLocationMap.entrySet()) {
 			if (!isParent) {
 				for (Location location : data.getValue()) {
-					if (text.trim().equalsIgnoreCase(location.getName().trim())) {
+					if (location.getName().trim().toLowerCase().contains(text.trim().toLowerCase())) {
 						uniqueLocCode.add(location.getCode());
 						isParent = true;
 						break;// parent code set
@@ -677,7 +677,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<Location> rootLocation = levelToListOfLocationMap.get(hierarchyLevel);
 		boolean isRootLocation = false;
 		for (Location location : rootLocation) {
-			if (location.getName().trim().equalsIgnoreCase(text)) {
+			if (location.getName().trim().toLowerCase().contains(text.trim().toLowerCase())) {
 				isRootLocation = true;
 			}
 		}
@@ -750,7 +750,10 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		pageUtils.validateSortField(RegistrationCenterSearchDto.class, RegistrationCenter.class, dto.getSort());
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
-
+			if (column.equalsIgnoreCase("name")) {
+				filter.setType("contains");
+				filter.setValue("*"+filter.getValue()+"*");
+			}
 			// if registration center type name
 			if (MasterDataConstant.CENTERTYPENAME.equalsIgnoreCase(column)) {
 				serviceHelper.centerTypeSearch(addList, removeList, filter);
@@ -1215,7 +1218,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					regCenterPutReqDto.getCenterStartTime(), regCenterPutReqDto.getCenterEndTime(),
 					regCenterPutReqDto.getLunchStartTime(), regCenterPutReqDto.getLunchEndTime(),
 					regCenterPutReqDto.getLatitude(), regCenterPutReqDto.getLongitude(),
-					regCenterPutReqDto.getWorkingNonWorkingDays(), errors);
+					regCenterPutReqDto.getWorkingNonWorkingDays(), regCenterPutReqDto.getLangCode(), errors);
 			if (!errors.isEmpty()) {
 
 				throw new ValidationException(errors);
@@ -1520,7 +1523,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 						langCode, PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
 				if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
 					registrationCenters = MapperUtils.mapAll(pageData.getContent(), RegistrationCenterExtnDto.class);
-					registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), 0, null,
+					registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageNumber, pageSize, null,
 							  pageData.getTotalElements(), pageData.getTotalPages(),registrationCenters);
 				} else {
 					throw new DataNotFoundException(
@@ -1660,7 +1663,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				dto.getCenterStartTime(), dto.getCenterEndTime(),
 				dto.getLunchStartTime(), dto.getLunchEndTime(),
 				dto.getLatitude(), dto.getLongitude(),
-				dto.getWorkingNonWorkingDays(), errors);
+				dto.getWorkingNonWorkingDays(), "all", errors);
 		if (!errors.isEmpty()) {
 			throw new ValidationException(errors);
 		}

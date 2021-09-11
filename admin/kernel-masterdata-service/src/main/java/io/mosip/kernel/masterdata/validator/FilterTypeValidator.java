@@ -91,13 +91,17 @@ public class FilterTypeValidator {
 	 * @return true if supported else otherwise
 	 */
 	public boolean containsFilter(Field field, String filterType) {
+		boolean containsFilter = false;
 		if (field.isAnnotationPresent(FilterType.class)) {
 			FilterType annotation = field.getAnnotation(FilterType.class);
 			FilterTypeEnum[] types = annotation.types();
-			return Arrays.stream(types).map(FilterTypeEnum::toString).map(String::toLowerCase)
+			containsFilter = Arrays.stream(types).map(FilterTypeEnum::toString).map(String::toLowerCase)
 					.collect(Collectors.toList()).contains(filterType.toLowerCase());
+		} else {
+			containsFilter = Arrays.stream(FilterTypeEnum.values()).map(FilterTypeEnum::toString)
+			.filter(type -> type.equalsIgnoreCase(filterType)).findFirst().isPresent();
 		}
-		return false;
+		return containsFilter;
 	}
 
 	/**

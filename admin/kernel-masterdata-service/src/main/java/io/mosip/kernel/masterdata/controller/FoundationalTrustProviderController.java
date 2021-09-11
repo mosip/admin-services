@@ -36,6 +36,7 @@ import io.swagger.annotations.Api;
 @RestController
 @Api(tags = { "FoundationalTrustProvider" })
 @RequestMapping(value = "/foundationaltrustprovider")
+@Deprecated
 public class FoundationalTrustProviderController {
 
 	@Autowired
@@ -48,6 +49,7 @@ public class FoundationalTrustProviderController {
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostfoundationaltrustprovider())")
 	@PostMapping
+	@Deprecated
 	public ResponseWrapper<FoundationalTrustProviderResDto> registerFoundationalTrustProvider(
 			@RequestBody @Valid RequestWrapper<FoundationalTrustProviderDto> foundationalTrustProviderDto) {
 		auditUtil.auditRequest(
@@ -65,6 +67,7 @@ public class FoundationalTrustProviderController {
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutfoundationaltrustprovider())")
 	@PutMapping
+	@Deprecated
 	public ResponseWrapper<FoundationalTrustProviderResDto> updateFoundationalTrustProvider(
 			@RequestBody @Valid RequestWrapper<FoundationalTrustProviderPutDto> foundationalTrustProviderDto) {
 		auditUtil.auditRequest(

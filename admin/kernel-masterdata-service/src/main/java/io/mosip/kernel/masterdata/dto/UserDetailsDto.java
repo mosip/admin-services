@@ -4,6 +4,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
+import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.validator.StringFormatter;
 import lombok.Data;
 
@@ -12,7 +13,7 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
-public class UserDetailsDto {
+public class UserDetailsDto  {
 
 	@NotNull
 	@StringFormatter(min = 1, max = 36)
@@ -45,7 +46,7 @@ public class UserDetailsDto {
 	@NotNull
 	private Boolean isActive;
 
-	@Deprecated
+	
 	private String langCode;
 
 }

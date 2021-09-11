@@ -30,7 +30,7 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 	
 	@Value("${mosip.admin.ui.configs}")
 	private String uiConfigs;
-	
+
 	@Override
 	public ApplicationConfigResponseDto getLanguageConfigDetails() {
 		ApplicationConfigResponseDto dto=new ApplicationConfigResponseDto();
@@ -52,7 +52,12 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 		Map<String, String> response = new HashMap<String, String>();
 		String[] arrayOfKeys = uiConfigs.split(";");
 		for (String key : arrayOfKeys) {
-			response.put(key.split(":")[0], key.split(":")[1]);
+			if (key.split(":").length > 1) {
+				response.put(key.split(":")[0], key.split(":")[1]);
+			} else {
+				response.put(key.split(":")[0], null);
+			}
+
 		}
 		return response;
 	}

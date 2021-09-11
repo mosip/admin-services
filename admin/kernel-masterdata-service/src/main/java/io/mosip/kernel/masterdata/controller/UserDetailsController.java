@@ -21,9 +21,11 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
+import io.mosip.kernel.masterdata.dto.UserDetailsCenterMapping;
 import io.mosip.kernel.masterdata.dto.UserDetailsDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsGetExtnDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsPutDto;
+import io.mosip.kernel.masterdata.dto.UserDetailsPutReqDto;
 import io.mosip.kernel.masterdata.dto.UsersDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
@@ -99,12 +101,12 @@ public class UserDetailsController {
 			@ApiResponse(code = 400, message = "When Request is invalid"),
 			@ApiResponse(code = 404, message = "When No Regcenter found"),
 			@ApiResponse(code = 500, message = "While mapping user to regcenter any error occured") })
-	public ResponseWrapper<UserDetailsGetExtnDto> mapUserRegCenter(@RequestBody UserDetailsDto userDetailsDto) {
+	public ResponseWrapper<UserDetailsCenterMapping> mapUserRegCenter(@RequestBody RequestWrapper<UserDetailsDto> userDetailsDtoRequest) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + UserDetailsController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.CREATE_API_IS_CALLED + UserDetailsController.class.getCanonicalName());
-		ResponseWrapper<UserDetailsGetExtnDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(userDetailsService.createUser(userDetailsDto));
+		ResponseWrapper<UserDetailsCenterMapping> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(userDetailsService.createUser(userDetailsDtoRequest.getRequest()));
 		return responseWrapper;
 	}
 	
@@ -125,12 +127,12 @@ public class UserDetailsController {
 			@ApiResponse(code = 400, message = "When Request is invalid"),
 			@ApiResponse(code = 404, message = "When No Regcenter found"),
 			@ApiResponse(code = 500, message = "While mapping user to regcenter any error occured") })
-	public ResponseWrapper<UserDetailsPutDto> updateUserRegCenter(@RequestBody UserDetailsPutDto userDetailsDto) {
+	public ResponseWrapper<UserDetailsPutDto> updateUserRegCenter(@RequestBody RequestWrapper<UserDetailsPutReqDto> userDetailsDtoRequest) {
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + UserDetailsController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.UPDATE_API_IS_CALLED + UserDetailsController.class.getCanonicalName());
 		ResponseWrapper<UserDetailsPutDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(userDetailsService.updateUser(userDetailsDto));
+		responseWrapper.setResponse(userDetailsService.updateUser(userDetailsDtoRequest.getRequest()));
 		return responseWrapper;
 	}
 	
@@ -159,10 +161,10 @@ public class UserDetailsController {
 	 *         {@link ResponseEntity}
 	 */
 	@ResponseFilter
-	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeleteusersid())")
-	@DeleteMapping("/users/{id}/")
-	@ApiOperation(value = "Service to map Users with regcenter", notes = "deletes User Detail and return User id")
+    //@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+    @PreAuthorize("hasAnyRole(@authorizedRoles.getDeleteusersid())")
+    @DeleteMapping("/users/{id}")
+	@ApiOperation(value = "Service to delete User", notes = "delete the User Detail and return User id")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When User and Registration center successfully mapped"),
 			@ApiResponse(code = 400, message = "When Request is invalid"),
 			@ApiResponse(code = 404, message = "When No Regcenter found"),

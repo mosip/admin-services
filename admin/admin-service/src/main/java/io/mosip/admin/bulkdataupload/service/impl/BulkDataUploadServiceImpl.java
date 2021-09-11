@@ -26,7 +26,6 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
-import javax.validation.ValidationException;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -722,7 +721,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	    	if(!ext.equalsIgnoreCase("csv")) {
 	    		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_EXT_VALIDATOR_ISSUE, csvFileName));
 
-	    		throw new ValidationException("Supported format are only csv file");
+				throw new RequestException(BulkUploadErrorCode.INVALID_FILE_FORMAT.getErrorCode(),
+						BulkUploadErrorCode.INVALID_FILE_FORMAT.getErrorMessage());
 
 	    	}
 	    	int count=0;
@@ -770,14 +770,19 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 					 String l = line.trim(); // Remove end of line. You can print line here.'  
 			    	 String[] columns = l.split(",");
 			    	 lineCount++;
-			    	 
-						if (count != columns.length) {
-						 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
-
-						 throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"all the rows should have same number of element in csv file.The exception occured at line number "+lineCount); 
-						
-
-						}
+						/*
+						 * if (count != columns.length) {
+						 * auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.
+						 * BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
+						 * 
+						 * throw new
+						 * RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode()
+						 * ,"all the rows should have same number of element in csv file.The exception occured at line number "
+						 * +lineCount);
+						 * 
+						 * 
+						 * }
+						 */
 					 String il="";
 					 for(int i=0;i<columns.length;i++) {
 							if (columns[i].isBlank()) {
@@ -785,11 +790,15 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 							 throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"Field is missing.The exception occured at line number "+lineCount); 
 							}
 						 
-						 if(!validateDataType(fieldMap.get(i),columns[i].trim())) {
-							 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
-							 throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"Invalid data type.The exception occured at line number "+lineCount); 
-						  
-						 }
+							/*
+							 * if(!validateDataType(fieldMap.get(i),columns[i].trim())) {
+							 * auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.
+							 * BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName)); throw new
+							 * RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode()
+							 * ,"Invalid data type.The exception occured at line number "+lineCount);
+							 * 
+							 * }
+							 */
 						 il=il+columns[i].trim();
 					 }
 					 linelist.add(il);

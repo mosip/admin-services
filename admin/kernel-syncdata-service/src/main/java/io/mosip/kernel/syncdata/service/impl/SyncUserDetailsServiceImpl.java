@@ -9,9 +9,7 @@ import io.mosip.kernel.clientcrypto.dto.TpmCryptoRequestDto;
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
 import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.*;
-import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.exception.*;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
@@ -94,7 +92,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 	private String syncDataVersionId;
 
 	@Autowired
-	UserDetailsRepository userDetailsRepository;
+	private UserDetailsRepository userDetailsRepository;
 
 	@Autowired
 	private SyncMasterDataServiceHelper serviceHelper;
@@ -109,61 +107,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 	private MachineRepository machineRepository;
 
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.kernel.syncdata.service.SyncUserDetailsService#getAllUserDetail(java
-	 * .lang.String)
-	 */
-	@Override
-	public SyncUserDetailDto getAllUserDetail(String regId) {
-		StringBuilder userDetailsUri = new StringBuilder();
-		userDetailsUri.append(authUserDetailsBaseUri).append(authUserDetailsUri);
-		SyncUserDetailDto syncUserDetailDto = null;
-		ResponseEntity<String> response = null;
-		RegistrationCenterUserResponseDto registrationCenterResponseDto = getUsersBasedOnRegistrationCenterId(regId);
-		List<RegistrationCenterUserDto> registrationCenterUserDtos = registrationCenterResponseDto
-				.getRegistrationCenterUsers();
-		List<String> userIds = registrationCenterUserDtos.stream().map(RegistrationCenterUserDto::getUserId)
-				.collect(Collectors.toList());
-		HttpEntity<RequestWrapper<?>> userDetailReqEntity = getHttpRequest(userIds);
 
-		try {
-
-			response = restTemplate.postForEntity(userDetailsUri.toString() + "/registrationclient",
-					userDetailReqEntity, String.class);
-		} catch (HttpServerErrorException | HttpClientErrorException ex) {
-			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
-
-			if (ex.getRawStatusCode() == 401) {
-				if (!validationErrorsList.isEmpty()) {
-					throw new AuthNException(validationErrorsList);
-				} else {
-					throw new BadCredentialsException("Authentication failed from AuthManager");
-				}
-			}
-			if (ex.getRawStatusCode() == 403) {
-				if (!validationErrorsList.isEmpty()) {
-					throw new AuthZException(validationErrorsList);
-				} else {
-					throw new AccessDeniedException("Access denied from AuthManager");
-				}
-			}
-			throw new SyncDataServiceException(UserDetailsErrorCode.USER_DETAILS_FETCH_EXCEPTION.getErrorCode(),
-					UserDetailsErrorCode.USER_DETAILS_FETCH_EXCEPTION.getErrorMessage(), ex);
-		}
-		String responseBody = response.getBody();
-		UserDetailResponseDto userDetailResponseDto = getUserDetailFromResponse(responseBody);
-		if (userDetailResponseDto != null && userDetailResponseDto.getMosipUserDtoList() != null) {
-			List<UserDetailMapDto> userDetails = MapperUtils
-					.mapUserDetailsToUserDetailMap(userDetailResponseDto.getMosipUserDtoList(), registrationCenterUserDtos);
-			syncUserDetailDto = new SyncUserDetailDto();
-			syncUserDetailDto.setUserDetails(userDetails);
-		}
-		return syncUserDetailDto;
-
-	}
 
 	/**
 	 * Gets the http request.
@@ -213,28 +157,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 		return userDetailResponseDto;
 	}
 
-	private SyncUserSaltDto getUserSaltsFromResponse(String responseBody) {
-		List<ServiceError> validationErrorsList = null;
-		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-		SyncUserSaltDto syncUserSaltDto = null;
-		if (!validationErrorsList.isEmpty()) {
-			throw new SyncServiceException(validationErrorsList);
-		}
-		ResponseWrapper<SyncUserSaltDto> responseObject = null;
-		try {
 
-			responseObject = objectMapper.readValue(responseBody,
-					new TypeReference<ResponseWrapper<SyncUserSaltDto>>() {
-					});
-			syncUserSaltDto = responseObject.getResponse();
-		} catch (IOException | NullPointerException exception) {
-			throw new ParseResponseException(UserDetailsErrorCode.USER_DETAILS_PARSE_ERROR.getErrorCode(),
-					UserDetailsErrorCode.USER_DETAILS_PARSE_ERROR.getErrorMessage() + exception.getMessage(),
-					exception);
-		}
-
-		return syncUserSaltDto;
-	}
 
 	public RegistrationCenterUserResponseDto getUsersBasedOnRegistrationCenterId(String regCenterId) {
 		List<UserDetails> users = null;
@@ -267,47 +190,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 		return registrationCenterUserResponseDto;
 	}
 
-	@Override
-	public SyncUserSaltDto getUserSalts(String regId) {
-		StringBuilder userDetailsUri = new StringBuilder();
-		userDetailsUri.append(authUserDetailsBaseUri).append(authUserSaltUri);
-		SyncUserSaltDto syncUserSaltDto = null;
-		ResponseEntity<String> response = null;
-		RegistrationCenterUserResponseDto registrationCenterResponseDto = getUsersBasedOnRegistrationCenterId(regId);
-		List<RegistrationCenterUserDto> registrationCenterUserDtos = registrationCenterResponseDto
-				.getRegistrationCenterUsers();
-		List<String> userIds = registrationCenterUserDtos.stream().map(RegistrationCenterUserDto::getUserId)
-				.collect(Collectors.toList());
-		HttpEntity<RequestWrapper<?>> userDetailReqEntity = getHttpRequest(userIds);
 
-		try {
-
-			response = restTemplate.postForEntity(userDetailsUri.toString() + "/registrationclient",
-					userDetailReqEntity, String.class);
-		} catch (HttpServerErrorException | HttpClientErrorException ex) {
-			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
-
-			if (ex.getRawStatusCode() == 401) {
-				if (!validationErrorsList.isEmpty()) {
-					throw new AuthNException(validationErrorsList);
-				} else {
-					throw new BadCredentialsException("Authentication failed from AuthManager");
-				}
-			}
-			if (ex.getRawStatusCode() == 403) {
-				if (!validationErrorsList.isEmpty()) {
-					throw new AuthZException(validationErrorsList);
-				} else {
-					throw new AccessDeniedException("Access denied from AuthManager");
-				}
-			}
-			throw new SyncDataServiceException(UserDetailsErrorCode.USER_SALT_FETCH_EXCEPTION.getErrorCode(),
-					UserDetailsErrorCode.USER_SALT_FETCH_EXCEPTION.getErrorMessage(), ex);
-		}
-		String responseBody = response.getBody();
-		syncUserSaltDto = getUserSaltsFromResponse(responseBody);
-		return syncUserSaltDto;
-	}
 
 	@Override
 	public SyncUserDto getAllUserDetailsBasedOnKeyIndex(String keyIndex) {

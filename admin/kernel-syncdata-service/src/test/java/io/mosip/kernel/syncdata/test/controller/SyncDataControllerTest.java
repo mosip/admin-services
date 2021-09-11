@@ -170,51 +170,6 @@ public class SyncDataControllerTest {
 		masterDataResponseDto.setMachineType(machineTypes);
 	}
 
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncGlobalConfigDetailsSuccess() throws Exception {
-
-		//when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
-		when(syncConfigDetailsService.getGlobalConfigDetails()).thenReturn(globalConfigMap);
-		mockMvc.perform(get("/globalconfigs")).andExpect(status().isOk());
-	}
-
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncRegistrationConfigDetailsSuccess() throws Exception {
-		//when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
-		when(syncConfigDetailsService.getRegistrationCenterConfigDetails(Mockito.anyString()))
-				.thenReturn(globalConfigMap);
-		mockMvc.perform(get("/registrationcenterconfig/1")).andExpect(status().isOk());
-	}
-
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncGlobalConfigDetailsFailure() throws Exception {
-		when(syncConfigDetailsService.getGlobalConfigDetails())
-				.thenThrow(new SyncDataServiceException("KER-SYNC-127", "Error occured in service"));
-		mockMvc.perform(get("/globalconfigs")).andExpect(status().isInternalServerError());
-	}
-
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void getUsersBasedOnRegCenter() throws Exception {
-		String regId = "110044";
-		when(syncUserDetailsService.getAllUserDetail(regId)).thenReturn(syncUserDetailDto);
-		mockMvc.perform(get("/userdetails/{regid}", "110044")).andExpect(status().isOk());
-
-	}
-
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void getUsersBasedOnRegCenterFailure() throws Exception {
-		String regId = "110044";
-		when(syncUserDetailsService.getAllUserDetail(regId))
-				.thenThrow(new SyncDataServiceException("KER-SYNC-301", "Error occured while fetching User Details"));
-		mockMvc.perform(get("/userdetails/{regid}", "110044")).andExpect(status().isInternalServerError());
-
-	}
-
 	// -----------------------public key-------------------------------------//
 
 	@Test
@@ -231,7 +186,7 @@ public class SyncDataControllerTest {
 
 	// -----------------AllRoles-------------------------------//
 
-	@WithUserDetails(value = "reg-officer")
+	/*@WithUserDetails(value = "reg-officer")
 	@Test
 	public void getAllRoles() throws Exception {
 		//when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
@@ -239,7 +194,7 @@ public class SyncDataControllerTest {
 		rolesResponseDto.setLastSyncTime("2019-09-09T09:09:09.000Z");
 		Mockito.when(syncRolesService.getAllRoles()).thenReturn(rolesResponseDto);
 		mockMvc.perform(get("/roles")).andExpect(status().isOk());
-	}
+	}*/
 	
 	
 	// -----------------AllRoles-------------------------------//

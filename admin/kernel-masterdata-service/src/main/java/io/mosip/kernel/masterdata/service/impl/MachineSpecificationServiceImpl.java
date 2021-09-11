@@ -407,6 +407,16 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 
 		List<SearchFilter> addList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
+		List<SearchSort> srchsrt = new ArrayList<>();
+		searchRequestDto.getSort().stream().forEach(s -> {
+			if (s.getSortField().equalsIgnoreCase("machineTypeName")) {
+				SearchSort srt = new SearchSort("name", s.getSortType());
+				srchsrt.add(srt);
+			} else
+				srchsrt.add(s);
+
+		});
+		searchRequestDto.setSort(srchsrt);
 		pageUtils.validateSortField(MachineSpecification.class, searchRequestDto.getSort());
 		for (SearchFilter filter : searchRequestDto.getFilters()) {
 			String column = filter.getColumnName();
@@ -445,8 +455,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		List<MachineType> machineTypes = machineUtil.getMachineTypes();
 		machinesSpecifications.forEach(machineSpec -> {
 			machineTypes.forEach(mt -> {
-				if (machineSpec.getMachineTypeCode().equals(mt.getCode())
-						&& machineSpec.getLangCode().equals(mt.getLangCode())) {
+				if (machineSpec.getMachineTypeCode().equals(mt.getCode())) {
 					machineSpec.setMachineTypeName(mt.getName());
 				}
 			});

@@ -37,6 +37,7 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping(value = "/mosipdeviceservice")
 @Api(tags = { "MOSIPDeviceService" })
+@Deprecated
 public class MOSIPDeviceServiceController {
 
 	@Autowired
@@ -61,6 +62,7 @@ public class MOSIPDeviceServiceController {
 	@ApiResponses({ @ApiResponse(code = 201, message = "When MOSIPDeviceService successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating MOSIPDeviceService any error occured") })
+	@Deprecated
 	public ResponseWrapper<MOSIPDeviceServiceExtDto> createMOSIPDeviceService(
 			@Valid @RequestBody RequestWrapper<MOSIPDeviceServiceDto> mosipDeviceServiceRequestDto) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + MOSIPDeviceServiceDto.class.getCanonicalName(),
@@ -94,6 +96,7 @@ public class MOSIPDeviceServiceController {
 	@ApiResponses({ @ApiResponse(code = 201, message = "When MOSIPDeviceService successfully updated"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While updating MOSIPDeviceService any error occured") })
+	@Deprecated
 	public ResponseWrapper<MOSIPDeviceServiceExtDto> udpateMOSIPDeviceService(
 			@Valid @RequestBody RequestWrapper<MOSIPDeviceServicePUTDto> mosipDeviceServiceRequestDto) {
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + MOSIPDeviceServiceDto.class.getCanonicalName(),

@@ -15,22 +15,29 @@ import lombok.Data;
 @Component
 public class LanguageUtils {
 
-	private String primaryLanguage;
-	private List<String> secondaryLanguages;
+	private List<String> mandatoryLang;
+	private List<String> optionalLang;
 	private List<String> configuredLanguages;
 	private List<String> supportedLangugaes;
 
+
 	@Autowired
-	public LanguageUtils(@Value("${mosip.primary-language}") String primary,
-			@Value("${mosip.secondary-language:NOTSET}") String secondary,
+	public LanguageUtils(@Value("${mosip.mandatory-languages:NOTSET}") String mandatory,
+			@Value("${mosip.optional-languages:NOTSET}") String optional,
 			@Value("${mosip.supported-languages:NOTSET}") String supported) {
 
-		this.primaryLanguage = primary;
-		if ("NOTSET".equals(secondary)) {
-			this.secondaryLanguages = Collections.emptyList();
+		if ("NOTSET".equals(optional)) {
+			this.optionalLang = Collections.emptyList();
 		} else {
-			this.secondaryLanguages = Arrays.asList(secondary.split(","));
+			this.optionalLang = Arrays.asList(optional.split(","));
 		}
+
+		if ("NOTSET".equals(optional)) {
+			this.mandatoryLang = Collections.emptyList();
+		} else {
+			this.mandatoryLang = Arrays.asList(mandatory.split(","));
+		}
+
 
 		if ("NOTSET".equals(supported)) {
 			this.supportedLangugaes = Collections.emptyList();
@@ -38,8 +45,8 @@ public class LanguageUtils {
 			this.supportedLangugaes = Arrays.asList(supported.split(","));
 		}
 		configuredLanguages = new ArrayList<>();
-		configuredLanguages.add(primaryLanguage);
-		configuredLanguages.addAll(secondaryLanguages);
+		configuredLanguages.addAll(mandatoryLang);
+		configuredLanguages.addAll(optionalLang);
 	}
 
 }
