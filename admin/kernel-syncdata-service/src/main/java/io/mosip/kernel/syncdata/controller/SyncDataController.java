@@ -77,7 +77,7 @@ public class SyncDataController {
 	 * @throws ExecutionException   - this method will throw exeution exception
 	 */
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetclientsettings))")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetclientsettings())")
 	@ResponseFilter
 	@GetMapping("/clientsettings")
 	public ResponseWrapper<SyncDataResponseDto> syncClientSettings(
@@ -109,7 +109,7 @@ public class SyncDataController {
 	 * @return {@link PublicKeyResponse} instance
 	 */
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetpublickeyapplicationid))")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetpublickeyapplicationid())")
 	@ResponseFilter
 	@GetMapping(value = "/publickey/{applicationId}")
 	public ResponseWrapper<PublicKeyResponse<String>> getPublicKey(
@@ -136,7 +136,7 @@ public class SyncDataController {
 	 * @return
 	 */
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettpmpublickeyverify))")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettpmpublickeyverify())")
 	@ResponseFilter
 	@PostMapping(value = "/tpm/publickey/verify", produces = "application/json")
 	public ResponseWrapper<UploadPublicKeyResponseDto> validateKeyMachineMapping(
@@ -147,7 +147,7 @@ public class SyncDataController {
 	}
 	
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','RESIDENT','INDIVIDUAL','Default')")
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlatestidschema))")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlatestidschema())")
 	@ResponseFilter
 	@GetMapping(value = "/latestidschema", produces = "application/json")
 	public ResponseWrapper<JsonNode> getLatestPublishedIdSchema(
@@ -164,7 +164,7 @@ public class SyncDataController {
 	}
 
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetgetcertificate))")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetgetcertificate())")
 	@ResponseFilter
 	@GetMapping(value = "/getCertificate")
 	public ResponseWrapper<KeyPairGenerateResponseDto> getCertificate(
@@ -178,7 +178,7 @@ public class SyncDataController {
 
 
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','REGISTRATION_PROCESSOR')")
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettpmpublickeymachineid))")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettpmpublickeymachineid())")
 	@ResponseFilter
 	@GetMapping(value = "/tpm/publickey/{machineId}", produces = "application/json")
 	public ResponseWrapper<ClientPublicKeyResponseDto> getClientPublicKey(
@@ -194,7 +194,7 @@ public class SyncDataController {
 	 * @return JSONObject - global config response
 	 */
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetconfigskeyIndex))")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetconfigskeyIndex())")
 	@ResponseFilter
 	@ApiOperation(value = "API to sync global config details")
 	@GetMapping(value = "/configs/{keyIndex}")
@@ -213,7 +213,7 @@ public class SyncDataController {
 	 * @return
 	 */
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetuserdetails))")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetuserdetails())")
 	@ResponseFilter
 	@GetMapping("/userdetails")
 	public ResponseWrapper<SyncUserDto> getUserDetailsBasedOnKeyIndex(
@@ -232,7 +232,7 @@ public class SyncDataController {
 	 * @return
 	 */
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetgetcacertificates))")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetgetcacertificates())")
 	@ResponseFilter
 	@GetMapping("/getcacertificates")
 	public ResponseWrapper<CACertificates> getCACertificates(@RequestParam(value = "lastupdated",
@@ -257,7 +257,7 @@ public class SyncDataController {
 	 * @throws ExecutionException   - this method will throw exeution exception
 	 */
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetv2clientsettings))")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetv2clientsettings())")
 	@ResponseFilter
 	@GetMapping("/v2/clientsettings")
 	public ResponseWrapper<SyncDataResponseDto> syncClientSettingsV2(
@@ -278,7 +278,7 @@ public class SyncDataController {
 	}
 
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','Default')")
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetscriptsscriptName))")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetscriptsscriptName())")
 	@ApiOperation(value = "API to download mvel scripts")
 	@GetMapping(value = "/scripts/{scriptName}")
 	public ResponseEntity downloadScript(@PathVariable(value = "scriptName") String scriptName,
@@ -288,7 +288,7 @@ public class SyncDataController {
 	}
 
 	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','Default')")
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetclientsettingsentityIdentifier))")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetclientsettingsentityIdentifier())")
 	@ApiOperation(value = "API to download data json files")
 	@GetMapping(value = "/clientsettings/{entityIdentifier}")
 	public ResponseEntity downloadEntityData(@PathVariable(value = "entityIdentifier") String entityIdentifier,
