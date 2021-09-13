@@ -21,8 +21,10 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
+import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypePutReqDto;
+import io.mosip.kernel.masterdata.dto.MissingDataDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
@@ -35,8 +37,10 @@ import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
+import io.mosip.kernel.masterdata.service.GenericService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -63,6 +67,11 @@ public class DocumentTypeController {
 
 	@Autowired
 	AuditUtil auditUtil;
+	
+	
+	@Autowired
+	private GenericService genericService;
+
 
 	/**
 	 * 
@@ -262,6 +271,22 @@ public class DocumentTypeController {
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.STATUS_UPDATED_SUCCESS,
 						DocumentTypePutReqDto.class.getCanonicalName()),
 				"ADM-688");
+		return responseWrapper;
+	}
+	
+	/**
+	 * Function to fetch missing ids/codes in the provided language code
+	 *
+	 * @return List<String> list of missing ids/ codes
+	 */
+	@ResponseFilter
+	@GetMapping("/documenttypes/missingids/{langcode}")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	public ResponseWrapper<List<MissingDataDto>> getMissingDocumentTypeDetails(
+			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
+
+		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(genericService.getMissingData(DocumentType.class, langCode, "name", fieldName));
 		return responseWrapper;
 	}
 
