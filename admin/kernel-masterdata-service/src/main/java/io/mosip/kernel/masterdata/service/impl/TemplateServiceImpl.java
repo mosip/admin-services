@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
@@ -84,6 +85,9 @@ public class TemplateServiceImpl implements TemplateService {
 //	private List<TemplateDto> templateDtoList;
 
 //	private TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+	
+	@Value("#{${mosip.kernel.masterdata.template.languageMap}}")
+	private Map<String, String> languageMap;
 
 	@Autowired
 	private FilterTypeValidator filterTypeValidator;
@@ -168,6 +172,7 @@ public class TemplateServiceImpl implements TemplateService {
 	public TemplateResponseDto getAllTemplateByLanguageCode(String languageCode) {
 		List<Template> templateList = null;
 		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+		languageCode=languageMap.get(languageCode);
 		try {
 			templateList = templateRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode);
 		} catch (DataAccessException | DataAccessLayerException exception) {
