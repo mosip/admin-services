@@ -108,11 +108,11 @@ public class RegistrationCenterController {
 	@GetMapping("/getregistrationcenterholidays/{langcode}/{registrationcenterid}/{year}")
 	public ResponseWrapper<RegistrationCenterHolidayDto> getRegistrationCenterHolidays(
 			@PathVariable("langcode") String langCode,
-			@PathVariable("registrationcenterid") String registrationCenterId, @PathVariable("year") int year) {
+			@PathVariable("registrationcenterid") String registrationCenterId, @PathVariable("year") Integer year) {
 
 		ResponseWrapper<RegistrationCenterHolidayDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(
-				registrationCenterService.getRegistrationCenterHolidays(registrationCenterId, year, langCode));
+				registrationCenterService.getRegistrationCenterHolidays(registrationCenterId,year, langCode));
 		return responseWrapper;
 	}
 
