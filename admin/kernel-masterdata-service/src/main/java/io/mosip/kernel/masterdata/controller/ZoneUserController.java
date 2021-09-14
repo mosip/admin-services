@@ -140,7 +140,8 @@ public class ZoneUserController {
 	 * @param roleName
 	 * @return
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostzoneusersearch())")
 	@ResponseFilter
 	@PostMapping(value = "/zoneuser/search")
 	public ResponseWrapper<PageResponseDto<ZoneUserSearchDto>> searchZoneUserMapping(

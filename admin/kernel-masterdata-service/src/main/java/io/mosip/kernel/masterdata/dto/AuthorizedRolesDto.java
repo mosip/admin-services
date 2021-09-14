@@ -574,4 +574,6 @@ public class AuthorizedRolesDto {
 	
 	private List<String> patchzoneuser;
 
+	private List<String> postzoneusersearch;
+
 }
