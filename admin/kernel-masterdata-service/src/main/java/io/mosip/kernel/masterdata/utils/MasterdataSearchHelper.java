@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.utils;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,7 +10,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
@@ -141,7 +145,6 @@ public class MasterdataSearchHelper {
 
 	}
 
-
 	/**
 	 * Method to search and sort the masterdata.
 	 * 
@@ -244,12 +247,12 @@ public class MasterdataSearchHelper {
 	/**
 	 * Method to add the filters to the criteria query
 	 * 
-	 * @param builder     used to construct criteria queries
-	 * @param root        root type in the from clause,always refers entity
-	 * @param selectQuery criteria select query
-	 * @param countQuery  criteria count query
-	 * @param filters     list of {@link SearchFilter}
-	 * @param optionalFilters    list of {@link SearchFilter}
+	 * @param builder         used to construct criteria queries
+	 * @param root            root type in the from clause,always refers entity
+	 * @param selectQuery     criteria select query
+	 * @param countQuery      criteria count query
+	 * @param filters         list of {@link SearchFilter}
+	 * @param optionalFilters list of {@link SearchFilter}
 	 */
 	private <E> void filterQueryWithoutLang(CriteriaBuilder builder, Root<E> root, CriteriaQuery<E> selectQuery,
 			CriteriaQuery<Long> countQuery, List<SearchFilter> filters, OptionalFilter[] optionalFilters) {
@@ -326,6 +329,19 @@ public class MasterdataSearchHelper {
 		}
 		if (FilterTypeEnum.BETWEEN.name().equalsIgnoreCase(filterType)) {
 			return setBetweenValue(builder, root, filter);
+		}
+		if (FilterTypeEnum.IN.name().equalsIgnoreCase(filterType)) {
+			String[] values = value.split(",");
+			List<String> val=Arrays.asList(values);
+			/*List<String> val = new ArrayList<>();
+			for (int i = 0; i < values.length-1; i++) {
+				val.add(values[0]);
+			}*/
+
+			//return  builder.lower(root.get(columnName).in(val));
+			return  (root.get(columnName).in(val));
+			//Expression<String> l =
+			// return l;
 		}
 		return null;
 	}
@@ -620,9 +636,11 @@ public class MasterdataSearchHelper {
 		});
 		StringBuilder nativeQuery = null;
 		if (isAssigned) {
-			nativeQuery = new StringBuilder().append("SELECT * FROM master.machine_master m where m.regcntr_id is not null  and");
+			nativeQuery = new StringBuilder()
+					.append("SELECT * FROM master.machine_master m where m.regcntr_id is not null  and");
 		} else {
-			nativeQuery = new StringBuilder().append("SELECT * FROM master.machine_master m where m.regcntr_id is null and");
+			nativeQuery = new StringBuilder()
+					.append("SELECT * FROM master.machine_master m where m.regcntr_id is null and");
 
 		}
 		/*
@@ -666,9 +684,11 @@ public class MasterdataSearchHelper {
 		});
 		StringBuilder nativeQuery = null;
 		if (isAssigned) {
-			nativeQuery = new StringBuilder().append("SELECT * FROM master.device_master m where m.regcntr_id is not null  and");
+			nativeQuery = new StringBuilder()
+					.append("SELECT * FROM master.device_master m where m.regcntr_id is not null  and");
 		} else {
-			nativeQuery = new StringBuilder().append("SELECT * FROM master.device_master m where m.regcntr_id is null and");
+			nativeQuery = new StringBuilder()
+					.append("SELECT * FROM master.device_master m where m.regcntr_id is null and");
 
 		}
 
@@ -707,24 +727,24 @@ public class MasterdataSearchHelper {
 	}
 
 	public <E> List<Object[]> fetchMissingValues(@NonNull Class<E> entity, @NonNull String langCode,
-												 @NonNull String idFieldName, String fieldName) {
+			@NonNull String idFieldName, String fieldName) {
 		String tableName = entity.getAnnotation(Table.class).name();
 		String schemaName = entity.getAnnotation(Table.class).schema();
 		String colName = getColumnName(entity, idFieldName);
-		if(colName == null)
+		if (colName == null)
 			throw new MasterDataServiceException(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
 					String.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage(), idFieldName));
 
 		String nativeQuery = MISSING_IDS_QUERY.replaceAll("ID", colName).replaceAll("TABLE",
 				String.format("%s.%s", schemaName, tableName));
 
-		if(fieldName != null)  {
+		if (fieldName != null) {
 			String columnName = getColumnName(entity, fieldName);
-			if(columnName == null)
+			if (columnName == null)
 				throw new MasterDataServiceException(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
 						String.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage(), fieldName));
-			nativeQuery = MISSING_IDS_QUERY_WITH_FIELDNAME.replaceAll("ID", colName).replaceAll("TABLE",
-					String.format("%s.%s", schemaName, tableName)).replaceAll("FIELD", columnName);
+			nativeQuery = MISSING_IDS_QUERY_WITH_FIELDNAME.replaceAll("ID", colName)
+					.replaceAll("TABLE", String.format("%s.%s", schemaName, tableName)).replaceAll("FIELD", columnName);
 		}
 
 		try {
@@ -742,11 +762,11 @@ public class MasterdataSearchHelper {
 		}
 	}
 
-	private String  getColumnName(Class entity, String fieldName) {
+	private String getColumnName(Class entity, String fieldName) {
 		String columnName = null;
 		try {
 			Column column = entity.getDeclaredField(fieldName).getAnnotation(Column.class);
-			if(column != null)
+			if (column != null)
 				return column.name();
 
 		} catch (NoSuchFieldException e) {

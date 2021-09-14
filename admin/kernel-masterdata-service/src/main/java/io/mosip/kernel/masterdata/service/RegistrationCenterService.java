@@ -52,7 +52,7 @@ public interface RegistrationCenterService {
 	 * @param langCode             languageCode of required center.
 	 * @return {@link RegistrationCenterHolidayDto}
 	 */
-	RegistrationCenterHolidayDto getRegistrationCenterHolidays(String registrationCenterId, int year, String langCode);
+	RegistrationCenterHolidayDto getRegistrationCenterHolidays(String registrationCenterId, Integer year, String langCode);
 
 	/**
 	 * Function to fetch nearby registration centers using coordinates.

@@ -134,9 +134,23 @@ public class DocumentCategoryControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002updateDocumentCategoryTest1() throws Exception {
+	public void t002updateDocumentCategoryFailTest1() throws Exception {
 		
 		doPutCatDto.getRequest().setCode("POA");
+		doPutCatDto.getRequest().setDescription("Address Proof updated");
+		doPutCatDto.getRequest().setIsActive(true);
+		doPutCatDto.getRequest().setLangCode("eng");
+		doPutCatDto.getRequest().setName("Proof of Address");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/documentcategories").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(doPutCatDto))).andReturn(),"KER-MSD-089");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t002updateDocumentCategoryTest1() throws Exception {
+		
+		doPutCatDto.getRequest().setCode("POI");
 		doPutCatDto.getRequest().setDescription("Address Proof updated");
 		doPutCatDto.getRequest().setIsActive(true);
 		doPutCatDto.getRequest().setLangCode("eng");
@@ -309,10 +323,28 @@ public class DocumentCategoryControllerTest {
 
 	@Test()
 	@WithUserDetails("global-admin")
-	public void t017deleteDocumentCategoryTest() throws Exception {
+	public void t017deleteDocumentCategoryFailTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/documentcategories/POE"))
-				.andReturn(),null);
+				.andReturn(),"KER-MSD-014");
+
+	}
+
+	@Test()
+	@WithUserDetails("global-admin")
+	public void t017deleteDocumentCategoryTest() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/documentcategories/POI"))
+				.andReturn(),"KER-MSD-123");
+
+	}
+	
+	@Test()
+	@WithUserDetails("global-admin")
+	public void t017deleteDocumentCategoryTest1() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/documentcategories/POA"))
+				.andReturn(),"KER-MSD-123");
 
 	}
 

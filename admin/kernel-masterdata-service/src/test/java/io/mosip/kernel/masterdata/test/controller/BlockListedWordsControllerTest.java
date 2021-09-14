@@ -122,18 +122,30 @@ public class BlockListedWordsControllerTest {
 						.content("{\n" + "  \"id\": \"string\",\n" + "  \"version\": \"string\",\n"
 								+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
 								+ "   \"description\": \"Block listed word updated\",\n" + "    \"isActive\": true,\n"
-								+ "    \"langCode\": \"eng\",\n" + "    \"word\": \"shit\"\n" + "  }\n" + "}"))
-				.andReturn(), null);
-		;
-
+								+ "    \"langCode\": \"eng\",\n" + "    \"word\": \"damm\"\n" + "  }\n" + "}"))
+				.andReturn(), "KER-MSD-008");
+		
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t004getAllBlockListedWordByLangCodeTest() throws Exception {
+	public void t003updateBlockListedWordExceptWordTest1() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.put("/blocklistedwords/details").contentType(MediaType.APPLICATION_JSON)
+						.content("{\n" + "  \"id\": \"string\",\n" + "  \"version\": \"string\",\n"
+								+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
+								+ "   \"description\": \"Block listed word updated\",\n" + "    \"isActive\": true,\n"
+								+ "    \"langCode\": \"eng\",\n" + "    \"word\": \"damit\"\n" + "  }\n" + "}"))
+				.andReturn(), null);
+		
+	}
+	@Test
+	@WithUserDetails("global-admin")
+	public void t020getAllBlockListedWordByLangCodeTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/blocklistedwords/eng")).andReturn(),
-				null);
+				"KER-MSD-008");
 
 	}
 
@@ -218,7 +230,7 @@ public class BlockListedWordsControllerTest {
 	public void t009updateBlockListedWordStatusTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(
-				MockMvcRequestBuilders.patch("/blocklistedwords").param("isActive", "true").param("word", "shit"))
+				MockMvcRequestBuilders.patch("/blocklistedwords").param("isActive", "true").param("word", "damit"))
 				.andReturn(), null);
 		;
 
@@ -228,9 +240,8 @@ public class BlockListedWordsControllerTest {
 	@WithUserDetails("global-admin")
 	public void t011deleteBlockListedWordTest() throws Exception {
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.delete("/blocklistedwords/shit")).andReturn(), null);
-		;
-
+				mockMvc.perform(MockMvcRequestBuilders.delete("/blocklistedwords/damit")).andReturn(), null);
+		
 	}
 
 	@Test
@@ -291,7 +302,7 @@ public class BlockListedWordsControllerTest {
 				.perform(MockMvcRequestBuilders.post("/blocklistedwords/words").contentType(MediaType.APPLICATION_JSON)
 						.content("{\n" + "  \"id\": \"string\",\n" + "  \"version\": \"string\",\n"
 								+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
-								+ "   \"blocklistedwords\": [\"dammmmm\"]\n}"))
+								+ "   \"blocklistedwords\": [\"dammmmm\"]\n}}"))
 				.andReturn(), "KER-MSD-999");
 
 	}

@@ -60,11 +60,11 @@ public class LanguageControllerTest {
 		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 		language = new RequestWrapper<LanguageDto>();
 		LanguageDto dto = new LanguageDto();
-		dto.setCode("eng");
+		dto.setCode("fra");
 		dto.setFamily("indo european");
 		dto.setIsActive(true);
 		dto.setNativeName("english");
-		dto.setName("English");
+		dto.setName("french");
 		language.setRequest(dto);
 		languagePutdto = new RequestWrapper<LanguagePutDto>();
 		LanguagePutDto dto2 = new LanguagePutDto();
@@ -72,7 +72,7 @@ public class LanguageControllerTest {
 		dto2.setFamily("indo european");
 		dto2.setIsActive(true);
 		dto2.setNativeName("english");
-		dto2.setName("English");
+		dto2.setName("english");
 		languagePutdto.setRequest(dto2);
 	}
 
@@ -147,7 +147,7 @@ public class LanguageControllerTest {
 	@WithUserDetails("global-admin")
 	public void t8deleteLanguageTest() throws Exception {
 
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/languages/eng")).andReturn(),
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/languages/ara")).andReturn(),
 				null);
 	}
 

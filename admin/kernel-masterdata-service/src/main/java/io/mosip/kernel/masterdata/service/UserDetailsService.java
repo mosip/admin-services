@@ -6,9 +6,11 @@ import javax.validation.Valid;
 
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
+import io.mosip.kernel.masterdata.dto.UserDetailsCenterMapping;
 import io.mosip.kernel.masterdata.dto.UserDetailsDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsGetExtnDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsPutDto;
+import io.mosip.kernel.masterdata.dto.UserDetailsPutReqDto;
 import io.mosip.kernel.masterdata.dto.UsersDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
@@ -88,7 +90,7 @@ public interface UserDetailsService {
 	 * @return IdAndLanguageCodeID updated user id and language code.
 	 * 
 	 */
-	public UserDetailsGetExtnDto createUser(UserDetailsDto userDetailsDto);
+	public UserDetailsCenterMapping createUser(UserDetailsDto userDetailsDto);
 
 	/**
 	 * Abstract method to update User Details to the database
@@ -100,7 +102,7 @@ public interface UserDetailsService {
 	 * @throws MasterDataServiceException if any error occurred while updating
 	 *                                    User
 	 */
-	public UserDetailsPutDto updateUser(UserDetailsPutDto user);
+	public UserDetailsPutDto updateUser(UserDetailsPutReqDto user);
 
 	/**
 	 * Abstract method to get all users from the IAM.

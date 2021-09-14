@@ -83,7 +83,7 @@ public class BiometricAttributeControllerTest {
 	@WithUserDetails("global-admin")
 	public void t3getBiometricAttributesByBiometricTypeTest() throws Exception {
 
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/getbiometricattributesbyauthtype/eng/IRS"))
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/getbiometricattributesbyauthtype/eng/FNR"))
 				.andReturn(),null);
 	}
 
