@@ -53,7 +53,8 @@ public class RegisteredDeviceController {
 	 * @throws Exception
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostregistereddevices())")
 	@PostMapping
 	@Deprecated
 	public ResponseWrapper<String> signedRegisteredDevice(
@@ -70,7 +71,8 @@ public class RegisteredDeviceController {
 	 *            the request DTO.
 	 * @return the {@link DeviceRegisterResponseDto}.
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostregistereddevicesderegister())")
 	@ApiOperation(value = "DeRegister Device")
 	@PostMapping("/deregister")
 	@ResponseFilter
@@ -82,8 +84,9 @@ public class RegisteredDeviceController {
 		return response;
 	}
 
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "Update status of the devive")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutregistereddevicesupdatestatus())")
 	@PutMapping("/update/status")
 	@Deprecated
 	public ResponseEntity<ResponseDto> deRegisterDevice(

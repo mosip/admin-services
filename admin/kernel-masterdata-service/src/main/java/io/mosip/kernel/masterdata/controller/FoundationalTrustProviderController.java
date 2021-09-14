@@ -45,8 +45,9 @@ public class FoundationalTrustProviderController {
 	@Autowired
 	private FoundationalTrustProviderService foundationalTrustProviderService;
 
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostfoundationaltrustprovider())")
 	@PostMapping
 	@Deprecated
 	public ResponseWrapper<FoundationalTrustProviderResDto> registerFoundationalTrustProvider(
@@ -62,8 +63,9 @@ public class FoundationalTrustProviderController {
 		return response;
 	}
 
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutfoundationaltrustprovider())")
 	@PutMapping
 	@Deprecated
 	public ResponseWrapper<FoundationalTrustProviderResDto> updateFoundationalTrustProvider(

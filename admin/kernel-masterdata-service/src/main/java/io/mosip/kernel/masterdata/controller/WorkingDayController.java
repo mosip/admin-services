@@ -39,6 +39,7 @@ public class WorkingDayController {
 	 *         and Language code {@link WeekDaysResponseDto}
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetweekdaysregistrationcenteridlangcode())")
 	@GetMapping(value = "/weekdays/{registrationCenterId}/{langCode}")
 	@ApiOperation(value = "Retrieve all Week Days for given Registration center ID and Languge Code", notes = "Retrieve all Week Days for given Registration center ID and Languge Code")
 	@ApiResponses({
@@ -63,6 +64,7 @@ public class WorkingDayController {
 	 *         center ID and Day code {@link WorkingDaysResponseDto}
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetworkingdaysregistrationcenteridlangcode())")
 	@GetMapping(value = "/workingdays/{registrationCenterID}/{langCode}")
 	@ApiOperation(value = "Retrieve all working Days for given Registration center ID and Lang Code", notes = "Retrieve all working Days for given Registration center ID and Languge Code")
 	@ApiResponses({
@@ -86,6 +88,7 @@ public class WorkingDayController {
 	 * @return WorkingDaysResponseDto working days based on given lang code {@link WorkingDaysResponseDto}
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetworkingdayslangcode())")
 	@GetMapping(value = "/workingdays/{langCode}")
 	@ApiOperation(value = "Retrieve all working Days for given Lang Code", notes = "Retrieve all working Days for given Languge Code")
 	@ApiResponses({

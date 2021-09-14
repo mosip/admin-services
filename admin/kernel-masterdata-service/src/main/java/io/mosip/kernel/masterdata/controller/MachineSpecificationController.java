@@ -73,8 +73,9 @@ public class MachineSpecificationController {
 	 *         inserted
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostmachinespecifications())")
 	@PostMapping("/machinespecifications")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "Service to save Machine Specification", notes = "Saves Machine Spacification and return Machine Spacification ID ")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Machine Specification successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
@@ -104,8 +105,9 @@ public class MachineSpecificationController {
 	 * @return ResponseEntity Machine Specification ID which is successfully updated
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutmachinespecifications())")
 	@PutMapping("/machinespecifications")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "Service to update Machine Specification", notes = "update Machine Spacification and return Machine Spacification ID ")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When Machine Specification successfully updated"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
@@ -136,8 +138,9 @@ public class MachineSpecificationController {
 	 * @return ResponseEntity Machine Specification ID which is successfully updated
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPatchmachinespecifications())")
 	@PatchMapping("/machinespecifications")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "Service to update Machine Specification status", notes = "update Machine Spacification status and return Machine Spacification status ")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When Machine Specification status successfully updated"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
@@ -167,8 +170,9 @@ public class MachineSpecificationController {
 	 * @param id input Machine specification id
 	 * @return ResponseEntity Machine Specification ID which is successfully deleted
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeletemachinespecificationsid())")
 	@DeleteMapping("/machinespecifications/{id}")
 	@ApiOperation(value = "Service to delete Machine Specification", notes = "Delete Machine Spacification and return Machine Spacification ID ")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When Machine Specification successfully deleted"),
@@ -203,8 +207,9 @@ public class MachineSpecificationController {
 	 * @param orderBy    the order to be used
 	 * @return the response i.e. pages containing the machine specifications.
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_PROCESSOR','REGISTRATION_OFFICER')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_PROCESSOR','REGISTRATION_OFFICER')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetmachinespecificationsall())")
 	@GetMapping("/machinespecifications/all")
 	@ApiOperation(value = "Retrieve all the machine specification with additional metadata", notes = "Retrieve all the machine specification with the additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of machine specification"),
@@ -227,7 +232,8 @@ public class MachineSpecificationController {
 	 * @return the pages of {@link MachineSpecificationExtnDto}.
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostmachinespecificationssearch())")
 	@PostMapping(value = "/machinespecifications/search")
 	@ApiOperation(value = "Retrieve all machine specifications for the given Filter parameters", notes = "Retrieve all machine specifications for the given Filter parameters")
 	public ResponseWrapper<PageResponseDto<MachineSpecificationExtnDto>> searchMachineSpecification(
@@ -253,7 +259,8 @@ public class MachineSpecificationController {
 	 * @return the {@link FilterResponseDto}.
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostmachinespecificationsfiltervalues())")
 	@PostMapping("/machinespecifications/filtervalues")
 	public ResponseWrapper<FilterResponseCodeDto> machineSpecificationFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
