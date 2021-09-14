@@ -283,6 +283,8 @@ public class RegistrationCenterServiceHelper {
 		filter2.setType(FilterTypeEnum.EQUALS.name());
 		filter2.setValue(getHierarchyLevel(filter.getColumnName()));
 		filter.setColumnName(MasterDataConstant.NAME);
+		filter.setValue("*"+filter.getValue()+"*");
+		filter.setType(FilterTypeEnum.CONTAINS.name());
 		if (filterTypeValidator.validate(LocationExtnDto.class, Arrays.asList(filter, filter2))) {
 			Page<Location> locations = masterdataSearchHelper.searchMasterdata(Location.class,
 					new SearchDto(Arrays.asList(filter, filter2), Collections.emptyList(), new Pagination(), null),
