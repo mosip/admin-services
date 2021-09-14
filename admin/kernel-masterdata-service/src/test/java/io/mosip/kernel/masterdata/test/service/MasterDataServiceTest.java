@@ -2163,19 +2163,25 @@ public class MasterDataServiceTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getAllTemplateByLanguageCodeFetchExceptionTest() {
+		hin.setCode("hin");
+		Mockito.when(languageRepository.findLanguageByCodeNameAndNativeName(Mockito.anyString(),Mockito.anyString(),Mockito.anyString()))
+		.thenReturn(hin);
 		Mockito.when(templateRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 
-		templateService.getAllTemplateByLanguageCode("HIN");
+		templateService.getAllTemplateByLanguageCode("hin");
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void getAllTemplateByLanguageCodeNotFoundExceptionTest() {
 		templateList = new ArrayList<>();
+		hin.setCode("hin");
+		Mockito.when(languageRepository.findLanguageByCodeNameAndNativeName(Mockito.anyString(),Mockito.anyString(),Mockito.anyString()))
+		.thenReturn(hin);
 		Mockito.when(templateRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenReturn(templateList);
 
-		templateService.getAllTemplateByLanguageCode("HIN");
+		templateService.getAllTemplateByLanguageCode("hin");
 	}
 
 	@Test(expected = MasterDataServiceException.class)
@@ -2205,9 +2211,12 @@ public class MasterDataServiceTest {
 
 	@Test
 	public void getAllTemplateByLanguageCodeTest() {
+		hin.setCode("hin");
+		Mockito.when(languageRepository.findLanguageByCodeNameAndNativeName(Mockito.anyString(),Mockito.anyString(),Mockito.anyString()))
+		.thenReturn(hin);
 		Mockito.when(templateRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenReturn(templateList);
-		templateResponseDto = templateService.getAllTemplateByLanguageCode(Mockito.anyString());
+		templateResponseDto = templateService.getAllTemplateByLanguageCode("hin");
 
 		assertEquals(templateList.get(0).getId(), templateResponseDto.getTemplates().get(0).getId());
 		assertEquals(templateList.get(0).getName(), templateResponseDto.getTemplates().get(0).getName());
