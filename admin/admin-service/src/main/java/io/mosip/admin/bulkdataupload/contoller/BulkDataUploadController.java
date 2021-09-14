@@ -35,9 +35,9 @@ public class BulkDataUploadController {
 	
 	@Autowired
 	private BulkDataService bulkDataService;
-	
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostbulkupload())")
 	@PostMapping(value = { "/bulkupload" }, consumes = { "multipart/form-data" })
-	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
+	//@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<BulkDataResponseDto> uploadData(@RequestParam("tableName") String tableName,@RequestParam("operation") String operation,@RequestParam("category") String category,
 	         @RequestParam("files") MultipartFile[] files) {
 		auditUtil.setAuditRequestDto(EventEnum.BULKDATA_UPLOAD_API_CALLED);
@@ -47,9 +47,9 @@ public class BulkDataUploadController {
 		return responseWrapper;
 		
 	}
-
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetbulkuploadtranscationtranscationid())")
 	@GetMapping("/bulkupload/transcation/{transcationId}")
-	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
+	//@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<BulkDataGetExtnDto> getTranscationDetail(@PathVariable("transcationId") String transcationId) throws Exception {
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_TRANSACTION,transcationId));
 		ResponseWrapper<BulkDataGetExtnDto> responseWrapper = new ResponseWrapper<>();
@@ -57,8 +57,9 @@ public class BulkDataUploadController {
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_TRANSACTION_SUCCESS,transcationId));
 		return responseWrapper;
 	}
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetbulkuploadgetalltransactions())")
 	@GetMapping("/bulkupload/getAllTransactions")
-	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
+	//@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<PageDto<BulkDataGetExtnDto>> getTranscationDetail(
 			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page no for the requested data", defaultValue = "0") int pageNumber,
 			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size for the requested data", defaultValue = "10") int pageSize,

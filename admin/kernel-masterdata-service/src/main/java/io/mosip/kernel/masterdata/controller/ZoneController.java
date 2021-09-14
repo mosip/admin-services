@@ -55,7 +55,8 @@ public class ZoneController {
 	 * @param langCode input language code
 	 * @return {@link List} of {@link ZoneExtnDto}
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetzoneshierarchylangCode())")
 	@GetMapping("/hierarchy/{langCode}")
 	public ResponseWrapper<List<ZoneExtnDto>> getZoneHierarchy(
 			@PathVariable("langCode") @ValidLangCode(message = "Language Code is Invalid") String langCode) {
@@ -70,6 +71,7 @@ public class ZoneController {
 	 * @param langCode input language code
 	 * @return {@link List} of {@link ZoneExtnDto}
 	 */
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetzonesleafslangCode())")
 	@GetMapping("/leafs/{langCode}")
 	public ResponseWrapper<List<ZoneExtnDto>> getLeafZones(
 			@PathVariable("langCode") @ValidLangCode(message = "Language Code is Invalid") String langCode) {
@@ -78,7 +80,8 @@ public class ZoneController {
 		return response;
 	}
 
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN','PRE_REGISTRATION','RESIDENT')")
+	//@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN','PRE_REGISTRATION','RESIDENT')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetzoneszonename())")
 	@GetMapping("/zonename")
 	public ResponseWrapper<ZoneNameResponseDto> getZoneNameBasedOnUserIDAndLangCode(
 			@RequestParam("userID") String userID,
@@ -88,8 +91,9 @@ public class ZoneController {
 		return responseWrapper;
 	}
 
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetzonesauthorize())")
 	@GetMapping("/authorize")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
 	public ResponseWrapper<Boolean> authorizeZone(@NotBlank @RequestParam("rid") String rId) {
 		ResponseWrapper<Boolean> responseWrapper = new ResponseWrapper<>();
@@ -104,8 +108,9 @@ public class ZoneController {
 	 * @return the {@link FilterResponseDto}.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostzonesfiltervalues())")
 	@PostMapping("/filtervalues")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseCodeDto> zoneFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + Zone.class.getCanonicalName(),

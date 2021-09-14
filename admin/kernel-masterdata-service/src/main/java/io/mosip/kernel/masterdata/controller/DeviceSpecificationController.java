@@ -79,8 +79,9 @@ public class DeviceSpecificationController {
 	 * 
 	 */
 	@Deprecated
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER','GLOBAL_ADMIN','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER','GLOBAL_ADMIN','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdevicespecifications())")
 	@GetMapping(value = {"/devicespecifications", "/devicespecifications/{langcode}"})
 	@ApiOperation(value = "Retrieve all Device Specification, /langCode pathparam will be deprecated soon", notes = "Retrieve all DeviceSpecification")
 	@ApiResponses({
@@ -106,8 +107,9 @@ public class DeviceSpecificationController {
 	 * @return {@link DeviceSpecificationResponseDto}
 	 * 
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER','GLOBAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdevicespecificationsdevicetypecode())")
 	@GetMapping(value = {"/devicespecifications/devicetypecode/{devicetypecode}", "/devicespecifications/{langcode}/{devicetypecode}"})
 	@ApiOperation(value = "Retrieve all Device Specification for DeviceTypeCode, /langCode pathparam will be deprecated soon", notes = "Retrieve all DeviceSpecification for specific DeviceTypeCode")
 	@ApiResponses({
@@ -133,8 +135,9 @@ public class DeviceSpecificationController {
 	 * @return {@link IdResponseDto}
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdevicespecifications())")
 	@PostMapping("/devicespecifications")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "Service to save Device Specification", notes = "Saves Device Specification and return Device Specification ID")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Device Specification successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
@@ -154,8 +157,9 @@ public class DeviceSpecificationController {
 	}
 
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutdevicespecifications())")
 	@PutMapping("/devicespecifications")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "Service to update device specification", notes = "update Device Specification and return Device Specification ID")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When device specification successfully updated"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
@@ -175,8 +179,9 @@ public class DeviceSpecificationController {
 		return responseWrapper;
 	}
 
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeletedevicespecificationsid())")
 	@DeleteMapping("/devicespecifications/{id}")
 	@ApiOperation(value = "Service to delete device specifications", notes = "Delete device specifications and return device specification id")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When device specifications successfully deleted"),
@@ -199,8 +204,9 @@ public class DeviceSpecificationController {
 	 * @param orderBy    the order to be used
 	 * @return the response i.e. pages containing the device specifications.
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdevicespecificationsall())")
 	@GetMapping("/devicespecifications/all")
 	@ApiOperation(value = "Retrieve all the device specifications with additional metadata", notes = "Retrieve all the device specifications with additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of device specifications"),
@@ -217,7 +223,8 @@ public class DeviceSpecificationController {
 	}
 
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdevicespecificationssearch())")
 	@PostMapping("/devicespecifications/search")
 	public ResponseWrapper<PageResponseDto<DeviceSpecificationExtnDto>> deviceSpecificationSearch(
 			@RequestBody @Valid RequestWrapper<SearchDtoWithoutLangCode> requestWrapper) {
@@ -247,7 +254,8 @@ public class DeviceSpecificationController {
 	 *         name and type.
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdevicespecificationsfiltervalues())")
 	@PostMapping("/devicespecifications/filtervalues")
 	public ResponseWrapper<FilterResponseCodeDto> deviceSpecificationFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> requestWrapper) {
@@ -264,8 +272,9 @@ public class DeviceSpecificationController {
 	}
 	
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPatchdevicespecifications())")
 	@PatchMapping("/devicespecifications")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "Service to update device specification", notes = "update Device Specification")
 	public ResponseWrapper<StatusResponseDto> updateDeviceSpecificationStatus(@Valid @RequestParam boolean isActive,
 			@RequestParam String id) {

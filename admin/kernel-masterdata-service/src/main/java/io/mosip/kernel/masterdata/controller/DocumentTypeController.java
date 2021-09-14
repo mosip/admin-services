@@ -81,6 +81,7 @@ public class DocumentTypeController {
 	 */
 	@ResponseFilter
 	@ApiOperation(value = "Fetch all the  valid doucment type avialbale for specific document category code ")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumenttypesdocumentcategorycode())")
 	@GetMapping("/documenttypes/{documentcategorycode}/{langcode}")
 	public ResponseWrapper<ValidDocumentTypeResponseDto> getDoucmentTypesForDocumentCategoryAndLangCode(
 			@PathVariable("langcode") String langCode,
@@ -101,8 +102,9 @@ public class DocumentTypeController {
 	 * 
 	 * @return {@link CodeAndLanguageCodeID }
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdocumenttypes())")
 	@PostMapping("/documenttypes")
 	@ApiOperation(value = "Service to create document type")
 	public ResponseWrapper<DocumentTypePostResponseDto> createDocumentType(
@@ -126,8 +128,9 @@ public class DocumentTypeController {
 	 * @param types the DTO of document type.
 	 * @return {@link CodeAndLanguageCodeID}.
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutdocumenttypes())")
 	@PutMapping("/documenttypes")
 	@ApiOperation(value = "Service to update document type")
 	public ResponseWrapper<DocumentTypePutResponseDto> updateDocumentType(
@@ -153,8 +156,9 @@ public class DocumentTypeController {
 	 * @param code the document type code.
 	 * @return the code.
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeletedocumenttypescode())")
 	@DeleteMapping("/documenttypes/{code}")
 	@ApiOperation(value = "Service to delete document type")
 	public ResponseWrapper<CodeResponseDto> deleteDocumentType(@PathVariable("code") String code) {
@@ -173,8 +177,9 @@ public class DocumentTypeController {
 	 * 
 	 * @return the response i.e. pages containing the document types.
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumenttypesall())")
 	@GetMapping("/documenttypes/all")
 	@ApiOperation(value = "Retrieve all the document types with additional metadata", notes = "Retrieve all the document types with additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of document types"),
@@ -199,8 +204,9 @@ public class DocumentTypeController {
 	 *         name and type.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdocumenttypesfiltervalues())")
 	@PostMapping("/documenttypes/filtervalues")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> documentTypeFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(),
@@ -222,8 +228,9 @@ public class DocumentTypeController {
 	 * @return {@link DocumentTypeExtnDto} DocumentTypeResponseDto
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdocumenttypessearch())")
 	@PostMapping("/documenttypes/search")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<DocumentTypeExtnDto>> searchDocumentType(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(),
@@ -246,6 +253,7 @@ public class DocumentTypeController {
 	 * @return {@link DocumentTypeResponseDto}
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumenttypeslangcode())")
 	@GetMapping("/documenttypes/{langcode}")
 	public ResponseWrapper<DocumentTypeResponseDto> getAllDocumentTypeByLaguageCode(
 			@PathVariable("langcode") String langCode) {
@@ -254,8 +262,9 @@ public class DocumentTypeController {
 		return responseWrapper;
 	}
 	
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPatchdocumenttypes())")
 	@PatchMapping("/documenttypes")
 	@ApiOperation(value = "Service to update document type")
 	public ResponseWrapper<StatusResponseDto> updateDocumentTypeStatus(@RequestParam boolean isActive,
