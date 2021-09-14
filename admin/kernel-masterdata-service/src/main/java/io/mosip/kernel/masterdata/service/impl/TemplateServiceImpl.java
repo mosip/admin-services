@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
@@ -44,11 +45,13 @@ import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
+import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
@@ -84,6 +87,10 @@ public class TemplateServiceImpl implements TemplateService {
 //	private List<TemplateDto> templateDtoList;
 
 //	private TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+	
+	
+	@Autowired
+	private LanguageRepository languageRepository;
 
 	@Autowired
 	private FilterTypeValidator filterTypeValidator;
@@ -167,9 +174,11 @@ public class TemplateServiceImpl implements TemplateService {
 	@Override
 	public TemplateResponseDto getAllTemplateByLanguageCode(String languageCode) {
 		List<Template> templateList = null;
+		Language language=null;
 		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 		try {
-			templateList = templateRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode);
+			language=languageRepository.findLanguageByCodeNameAndNativeName(languageCode,languageCode,languageCode);
+			templateList = templateRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(language.getCode());
 		} catch (DataAccessException | DataAccessLayerException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage()

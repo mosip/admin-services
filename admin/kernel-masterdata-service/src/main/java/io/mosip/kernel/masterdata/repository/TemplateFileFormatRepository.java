@@ -43,7 +43,7 @@ public interface TemplateFileFormatRepository extends BaseRepository<TemplateFil
 	 */
 	@Modifying
 	@Transactional
-	@Query("UPDATE TemplateFileFormat t SET t.updatedBy = ?1, t.isDeleted = true , t.deletedDateTime = ?2 WHERE t.code =?3 and (t.isDeleted is null or t.isDeleted = false)")
+	@Query("UPDATE TemplateFileFormat t SET t.updatedBy = ?1,t.isActive = false, t.isDeleted = true , t.deletedDateTime = ?2 WHERE t.code =?3 and (t.isDeleted is null or t.isDeleted = false)")
 	int deleteTemplateFileFormat(String updatedBy, LocalDateTime deletedDateTime, String code);
 	
 	

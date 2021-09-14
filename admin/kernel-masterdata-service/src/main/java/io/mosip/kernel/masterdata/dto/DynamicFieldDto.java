@@ -6,6 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import io.swagger.annotations.ApiModel;
@@ -25,6 +26,7 @@ import org.json.JSONObject;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(description = "Model representing a dynamic field Request")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DynamicFieldDto {
 	
 	@ApiModelProperty(notes = "Field name", example = "any name", required = true)
