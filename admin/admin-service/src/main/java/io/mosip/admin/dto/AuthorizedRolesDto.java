@@ -9,7 +9,7 @@ import java.util.List;
 
 
 @Component("authorizedRoles")
-@ConfigurationProperties(prefix = "mosip.role.admin.bulkdataupload")
+@ConfigurationProperties(prefix = "mosip.role.admin")
 @Getter
 @Setter
 public class AuthorizedRolesDto {
