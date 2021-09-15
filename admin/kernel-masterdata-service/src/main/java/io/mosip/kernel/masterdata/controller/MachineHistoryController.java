@@ -48,8 +48,9 @@ public class MachineHistoryController {
 	 *         given Machine ID, Language code and effective date time
 	 */
 
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetmachineshistoriesidlangcode())")
 	@GetMapping(value = { "/{id}/{effdatetimes}", "/{id}/{langcode}/{effdatetimes}" })
 	@ApiOperation(value = "Retrieve all Machine History Details for the given ID and Effective date time, /langCode pathparam will be deprecated soon", notes = "Retrieve all Machine Detail for given ID")
 	@ApiResponses({

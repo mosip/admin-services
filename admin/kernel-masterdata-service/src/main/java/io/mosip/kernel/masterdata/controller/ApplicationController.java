@@ -41,8 +41,9 @@ public class ApplicationController {
 	 * 
 	 * @return All Application details
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetapplicationtypes())")
 	@GetMapping
 	public ResponseWrapper<ApplicationResponseDto> getAllApplication() {
 		ResponseWrapper<ApplicationResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -57,8 +58,9 @@ public class ApplicationController {
 	 * 
 	 * @return All Application details
 	 */
-	@PreAuthorize("hasAnyRole('RESIDENT','GLOBAL_ADMIN','ZONAL_ADMIN','INDIVIDUAL','REGISTRATION_PROCESSOR','PRE_REGISTRATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
+	//@PreAuthorize("hasAnyRole('RESIDENT','GLOBAL_ADMIN','ZONAL_ADMIN','INDIVIDUAL','REGISTRATION_PROCESSOR','PRE_REGISTRATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetapplicationtypeslangcode())")
 	@GetMapping("/{langcode}")
 	public ResponseWrapper<ApplicationResponseDto> getAllApplicationByLanguageCode(
 			@PathVariable("langcode") String langCode) {
@@ -76,8 +78,9 @@ public class ApplicationController {
 	 * 
 	 * @return Application detail
 	 */
-	@PreAuthorize("hasAnyRole('RESIDENT','GLOBAL_ADMIN','ZONAL_ADMIN','INDIVIDUAL','REGISTRATION_PROCESSOR','PRE_REGISTRATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
+	//@PreAuthorize("hasAnyRole('RESIDENT','GLOBAL_ADMIN','ZONAL_ADMIN','INDIVIDUAL','REGISTRATION_PROCESSOR','PRE_REGISTRATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetapplicationtypescodelangcode())")
 	@GetMapping("/{code}/{langcode}")
 	public ResponseWrapper<ApplicationResponseDto> getApplicationByCodeAndLanguageCode(
 			@PathVariable("code") String code, @PathVariable("langcode") String langCode) {
@@ -94,7 +97,8 @@ public class ApplicationController {
 	 * @return {@linkplain CodeAndLanguageCodeID}
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostapplicationtypes())")
 	@PostMapping
 	public ResponseWrapper<CodeAndLanguageCodeID> createApplication(
 			@Valid @RequestBody RequestWrapper<ApplicationDto> application) {

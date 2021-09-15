@@ -39,8 +39,9 @@ public class ModuleController {
 	 * @return ModuleResponseDto Module detail based on given module id and Language
 	 *         code {@link ModuleResponseDto}
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetmodulesidlangcode())")
 	@GetMapping(value = "/modules/{id}/{langcode}")
 	@ApiOperation(value = "Retrieve all Module Details for given Languge Code", notes = "Retrieve all Module Detail for given Languge Code and id")
 	@ApiResponses({
@@ -64,8 +65,9 @@ public class ModuleController {
 	 * @return ModuleResponseDto Module detail based on given Language code
 	 *         {@link ModuleResponseDto}
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetmoduleslangcode())")
 	@GetMapping(value = "/modules/{langcode}")
 	@ApiOperation(value = "Retrieve all Module Details for given Languge Code", notes = "Retrieve all Module Detail for given Languge Code")
 	@ApiResponses({

@@ -55,6 +55,7 @@ public class DynamicFieldController {
 	AuditUtil auditUtil;
 	
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdynamicfields())")
 	@GetMapping
 	@ApiOperation(value = "Service to fetch all dynamic fields")
 	public ResponseWrapper<PageDto<DynamicFieldExtnDto>> getAllDynamicFields(
@@ -73,6 +74,7 @@ public class DynamicFieldController {
 	}
 
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdistinct())")
 	@GetMapping("/distinct")
 	@ApiOperation(value = "Service to fetch distinct dynamic fields")
 	public ResponseWrapper<List<String>> getDistinctDynamicFields(){
@@ -84,7 +86,8 @@ public class DynamicFieldController {
 
 	@ResponseFilter
 	@PostMapping
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdynamicfields())")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to create dynamic field")
 	public ResponseWrapper<DynamicFieldResponseDto> createDynamicField (@Valid @RequestBody RequestWrapper<DynamicFieldDto> dynamicFieldDto) {
 		ResponseWrapper<DynamicFieldResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -94,7 +97,8 @@ public class DynamicFieldController {
 	
 	@ResponseFilter
 	@PutMapping
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutdynamicfields())")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to update dynamic field")
 	public ResponseWrapper<DynamicFieldResponseDto> updateDynamicField (
 			@RequestParam(name = "id") @ApiParam(value = "field id") String id,
@@ -106,8 +110,9 @@ public class DynamicFieldController {
 
 	
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPatchdynamicfieldsall())")
 	@PatchMapping("/all")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to update dynamic field")
 	public ResponseWrapper<StatusResponseDto> updateAllDynamicFieldStatus(@RequestParam boolean isActive,
 			@RequestParam String fieldName) {
@@ -125,8 +130,9 @@ public class DynamicFieldController {
 	}
 
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPatchdynamicfields())")
 	@PatchMapping
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to update dynamic field")
 	public ResponseWrapper<StatusResponseDto> updateDynamicFieldStatus(@RequestParam boolean isActive,
 																	   @RequestParam String id) {
@@ -144,8 +150,9 @@ public class DynamicFieldController {
 	}
 
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeletedynamicfields())")
 	@DeleteMapping("/all/{fieldName}")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to delete dynamic field")
 	public ResponseWrapper<StatusResponseDto> deleteAllDynamicField(@PathVariable("fieldName") String fieldName) {
 		auditUtil.auditRequest(MasterDataConstant.DELETE_API_IS_CALLED + DynamicFieldDto.class.getCanonicalName(),
@@ -162,8 +169,9 @@ public class DynamicFieldController {
 	}
 
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeletedynamicfieldsid())")
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to delete dynamic field")
 	public ResponseWrapper<StatusResponseDto> deleteDynamicField(@PathVariable("id") String id)
 	{
@@ -180,8 +188,9 @@ public class DynamicFieldController {
 		return responseWrapper;
 	}
 
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdynamicfieldssearch())")
 	@PostMapping(value = "/search")
 	public ResponseWrapper<PageResponseDto<DynamicFieldSearchResponseDto>> searchDynamicFields(
 			@RequestBody @Valid RequestWrapper<SearchDto> dto) {

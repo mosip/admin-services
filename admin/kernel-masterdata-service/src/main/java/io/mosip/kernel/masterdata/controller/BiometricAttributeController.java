@@ -47,8 +47,9 @@ public class BiometricAttributeController {
 	BiometricAttributeService biometricAttributeService;
 
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_PROCESSOR')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_PROCESSOR')")
 	@ApiOperation(value = "Fetch all the biometric attributes avialbale for specific BiometricType")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetgetbiometricattributesbyauthtype())")
 	@GetMapping("/getbiometricattributesbyauthtype/{langcode}/{biometrictypecode}")
 	public ResponseWrapper<BiometricAttributeResponseDto> getBiometricAttributesByBiometricType(
 			@PathVariable("langcode") String langCode, @PathVariable("biometrictypecode") String biometricTypeCode) {
@@ -66,8 +67,9 @@ public class BiometricAttributeController {
 	 * @param biometricAttribute Input from user Biometric Attribute DTO
 	 * @return {@link BioTypeCodeAndLangCodeAndAttributeCode}
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostbiometricattributes())")
 	@PostMapping("/biometricattributes")
 	@ApiOperation(value = "Service to create Biometric Attributes", notes = "create Biometric Attributes  and return  code and LangCode")
 	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created"),

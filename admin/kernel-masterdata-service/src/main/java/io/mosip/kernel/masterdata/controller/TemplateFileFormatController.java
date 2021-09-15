@@ -60,8 +60,9 @@ public class TemplateFileFormatController {
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPosttemplatefileformats())")
 	@PostMapping
 	public ResponseWrapper<CodeAndLanguageCodeID> createTemplateFileFormat(
 			@Valid @RequestBody RequestWrapper<TemplateFileFormatDto> templateFileFormatRequestDto) {
@@ -82,7 +83,8 @@ public class TemplateFileFormatController {
 	 *         successfully {@link ResponseEntity}
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPuttemplatefileformats())")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@PutMapping
 	@ApiOperation(value = "Service to update TemplateFileFormat", notes = "Update TemplateFileFormat and return TemplateFileFormat id")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When TemplateFileFormat updated successfully"),
@@ -105,8 +107,9 @@ public class TemplateFileFormatController {
 	 *            the TemplateFileFormat code
 	 * @return the code of templatefileformat
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeletetemplatefileformatscode())")
 	@DeleteMapping("/{code}")
 	@ApiOperation(value = "Service to delete TemplateFileFormat", notes = "Delete TemplateFileFormat and return code")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When TemplateFileFormat successfully deleted"),
@@ -133,8 +136,9 @@ public class TemplateFileFormatController {
 	 *         given TemplateFileFormat code and Language code
 	 *         {@link TemplateFileFormatResponseDto}
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettemplatefileformatscodelangcode())")
 	@GetMapping(value = { "/code/{code}", "/{code}/{langcode}" })
 	@ApiOperation(value = "Retrieve all TemplateFileFormat Details, /langCode pathparam will be deprecated soon", notes = "Retrieve all TemplateFileFormat Detail for given code")
 	@ApiResponses({
@@ -162,8 +166,9 @@ public class TemplateFileFormatController {
 	 *         {@link TemplateFileFormatResponseDto}
 	 */
 	@Deprecated
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettemplatefileformatslangcode())")
 	@GetMapping(value = { "", "/{langcode}" })
 	@ApiOperation(value = "Retrieve all TemplateFileFormat Details, /langCode pathparam will be deprecated soon", notes = "Retrieve all TemplateFileFormat Detail")
 	@ApiResponses({
@@ -179,7 +184,8 @@ public class TemplateFileFormatController {
 	}
 	
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+//	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPatchtemplatefileformats())")
 	@PatchMapping
 	@ApiOperation(value = "Service to update TemplateFileFormat", notes = "Update TemplateFileFormat and return TemplateFileFormat code")
 	public ResponseWrapper<StatusResponseDto> updateFileFormatStatus(@Valid @RequestParam boolean isActive,

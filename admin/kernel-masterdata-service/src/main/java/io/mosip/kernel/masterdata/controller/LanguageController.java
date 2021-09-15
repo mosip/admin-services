@@ -48,6 +48,7 @@ public class LanguageController {
 
 	@ResponseFilter
 	@GetMapping
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlanguages())")
 	@ApiOperation(value = "Retrieve all Languages", notes = "Retrieve all Languages")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When all Language retrieved from database"),
 			@ApiResponse(code = 404, message = "When No Language found"),
@@ -58,8 +59,9 @@ public class LanguageController {
 		return responseWrapper;
 	}
 
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostlanguages())")
 	@PostMapping
 	@ApiOperation(value = "Service to save Language", notes = "Saves Language and return Language code")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Language successfully created"),
@@ -71,8 +73,9 @@ public class LanguageController {
 		return responseWrapper;
 	}
 
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutlanguages())")
 	@PutMapping
 	@ApiOperation(value = "Service to update Language", notes = "Update Language and return Language code")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When Language successfully updated"),
@@ -86,8 +89,9 @@ public class LanguageController {
 		return responseWrapper;
 	}
 
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPatchlanguages())")
 	@PatchMapping
 	@ApiOperation(value = "Service to update Language status", notes = "Update Language and return status")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When Language status successfully updated"),
@@ -101,8 +105,9 @@ public class LanguageController {
 		return responseWrapper;
 	}
 
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeletelanguagescode())")
 	@DeleteMapping("/{code}")
 	@ApiOperation(value = "Service to delete Language", notes = "Delete Language and return Language code")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When Language successfully deleted"),

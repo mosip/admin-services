@@ -30,6 +30,7 @@ public class ApplicantTypeController {
 	private ApplicantTypeService applicantTypeService;
 
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getPostgetapplicanttype())")
 	@PostMapping(value = "/getApplicantType")
 	public ResponseWrapper<ResponseDTO> getApplicantType(@Valid @RequestBody RequestWrapper<RequestDTO> dto) {
 		ResponseWrapper<ResponseDTO> response = new ResponseWrapper<>();
