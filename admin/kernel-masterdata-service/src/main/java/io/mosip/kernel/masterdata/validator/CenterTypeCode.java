@@ -23,19 +23,19 @@ public @interface CenterTypeCode {
 	/*
 	 * or
 	 */
-	String OR_MSG = " or ";
+	String OR_MSG = " OR ";
 	/*
 	 * Code should be start and end with alphanumeric
 	 */
-	String ALPHANUMERIC_MSG = "Code should be start and end with alphanumeric";
+	String ALPHANUMERIC_MSG = "Code should start and end with an alphanumeric character";
 	/*
 	 * Hypen or underscore should accept between the alphanumeric
 	 */
-	String HYPER_UNDERSCORE_MSG = "Hypen/Underscore accept only between the alphanumeric";
+	String HYPER_UNDERSCORE_MSG = "Code should not start or end with a hyphen or an underscore";
 	/*
 	 * Hypen or underscore should not accept consecutively
 	 */
-	String HYPER_UNDERSCORE_NOT_MSG = "Hypen/Underscore not accept consecutively";
+	String HYPER_UNDERSCORE_NOT_MSG = "Code should not contain consecutive hyphen or underscore";
 	/*
 	 * code length message
 	 */
