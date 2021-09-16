@@ -318,7 +318,7 @@ public class MasterdataSearchHelper {
 			}
 		}
 		if (FilterTypeEnum.EQUALS.name().equalsIgnoreCase(filterType)) {
-			 return buildPredicate(builder, root, columnName, value);
+			return buildPredicate(builder, root, columnName, value);
 		}
 		if (FilterTypeEnum.STARTSWITH.name().equalsIgnoreCase(filterType)) {
 			if (value.endsWith("*")) {
@@ -730,13 +730,19 @@ public class MasterdataSearchHelper {
 		String nativeQuery = MISSING_IDS_QUERY.replaceAll("ID", colName).replaceAll("TABLE",
 				String.format("%s.%s", schemaName, tableName));
 
-		if (fieldName != null) {
+		if (fieldName != null && !idFieldName.equalsIgnoreCase(fieldName)) {
 			String columnName = getColumnName(entity, fieldName);
 			if (columnName == null)
 				throw new MasterDataServiceException(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
 						String.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage(), fieldName));
-			nativeQuery = MISSING_IDS_QUERY_WITH_FIELDNAME.replaceAll("ID", colName)
-					.replaceAll("TABLE", String.format("%s.%s", schemaName, tableName)).replaceAll("FIELD", columnName);
+			if (colName.equalsIgnoreCase(columnName)) {
+				nativeQuery = MISSING_IDS_QUERY_WITH_FIELDNAME.replaceAll("ID", colName).replaceAll("TABLE",
+						String.format("%s.%s", schemaName, tableName));
+			} else {
+				nativeQuery = MISSING_IDS_QUERY_WITH_FIELDNAME.replaceAll("ID", colName)
+						.replaceAll("TABLE", String.format("%s.%s", schemaName, tableName))
+						.replaceAll("FIELD", columnName);
+			}
 		}
 
 		try {
