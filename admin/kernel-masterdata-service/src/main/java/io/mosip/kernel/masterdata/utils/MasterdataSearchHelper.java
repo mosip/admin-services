@@ -318,7 +318,7 @@ public class MasterdataSearchHelper {
 			}
 		}
 		if (FilterTypeEnum.EQUALS.name().equalsIgnoreCase(filterType)) {
-			return buildPredicate(builder, root, columnName, value);
+			 return buildPredicate(builder, root, columnName, value);
 		}
 		if (FilterTypeEnum.STARTSWITH.name().equalsIgnoreCase(filterType)) {
 			if (value.endsWith("*")) {
@@ -332,16 +332,8 @@ public class MasterdataSearchHelper {
 		}
 		if (FilterTypeEnum.IN.name().equalsIgnoreCase(filterType)) {
 			String[] values = value.split(",");
-			List<String> val=Arrays.asList(values);
-			/*List<String> val = new ArrayList<>();
-			for (int i = 0; i < values.length-1; i++) {
-				val.add(values[0]);
-			}*/
-
-			//return  builder.lower(root.get(columnName).in(val));
-			return  (root.get(columnName).in(val));
-			//Expression<String> l =
-			// return l;
+			List<String> val = Arrays.asList(values);
+			return (root.get(columnName).in(val));
 		}
 		return null;
 	}
