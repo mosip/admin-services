@@ -91,5 +91,11 @@ public class MachineDto {
 
 	@ApiModelProperty(value = "signPublicKey", required = false, dataType = "java.lang.String")
 	private String signPublicKey;
+	
+	/**
+	 * Field for zone code
+	 */
+	@ApiModelProperty(value = "zoneCode", required = true, dataType = "java.lang.String")
+	private String zoneCode;
 
 }
