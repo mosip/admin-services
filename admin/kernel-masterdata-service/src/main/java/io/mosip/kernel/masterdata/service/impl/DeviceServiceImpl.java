@@ -509,7 +509,7 @@ public class DeviceServiceImpl implements DeviceService {
 			String zoneCode=deviceSearchDto.getZoneCode();
 			String langCode=deviceSearchDto.getLangCode();
 			registrationCenterList.forEach(registrationCenter -> {
-				if (registrationCenter.getId().equals(regId) && registrationCenter.getLangCode().toString().equalsIgnoreCase(langCode) && registrationCenter.getZoneCode().toString().equalsIgnoreCase(zoneCode)) {
+				if (registrationCenter.getId().equals(regId) && registrationCenter.getLangCode().toString().equalsIgnoreCase(langCode)) {
 					deviceSearchDto.setMapStatus(registrationCenter.getName());
 				}
 			});

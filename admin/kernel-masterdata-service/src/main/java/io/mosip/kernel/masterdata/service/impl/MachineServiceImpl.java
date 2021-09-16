@@ -504,7 +504,7 @@ public class MachineServiceImpl implements MachineService {
 			String zoneCode=machineSearchDto.getZoneCode();
 			String langCode=machineSearchDto.getLangCode();
 			registrationCenterList.forEach(registrationCenter -> {
-				if (registrationCenter.getId().equals(regId)  && registrationCenter.getLangCode().toString().equalsIgnoreCase(langCode) && registrationCenter.getZoneCode().toString().equalsIgnoreCase(zoneCode)) {
+				if (registrationCenter.getId().equals(regId)  && registrationCenter.getLangCode().toString().equalsIgnoreCase(langCode)) {
 					machineSearchDto.setMapStatus(registrationCenter.getName());
 				}
 			});
