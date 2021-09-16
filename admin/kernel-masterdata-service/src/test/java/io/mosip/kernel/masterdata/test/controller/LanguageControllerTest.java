@@ -124,7 +124,7 @@ public class LanguageControllerTest {
 	}
 
 	@Test
-	@WithUserDetails("global-admin")
+	//@WithUserDetails("global-admin")
 	public void t3updateLanguageTest() throws Exception {
 
 		MasterDataTest.checkResponse(
@@ -134,7 +134,7 @@ public class LanguageControllerTest {
 	}
 
 	@Test
-	@WithUserDetails("global-admin")
+	//@WithUserDetails("global-admin")
 	public void t4updateLanguageFailTest() throws Exception {
 
 		MasterDataTest.checkResponse(
@@ -144,7 +144,7 @@ public class LanguageControllerTest {
 	}
 
 	@Test
-	@WithUserDetails("global-admin")
+	//@WithUserDetails("global-admin")
 	public void t8deleteLanguageTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/languages/ara")).andReturn(),
@@ -152,7 +152,7 @@ public class LanguageControllerTest {
 	}
 
 	@Test
-	@WithUserDetails("global-admin")
+	//@WithUserDetails("global-admin")
 	public void t9deleteLanguageFailTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/languages/eng1")).andReturn(),
@@ -160,7 +160,7 @@ public class LanguageControllerTest {
 	}
 
 	@Test
-	@WithUserDetails("global-admin")
+	//@WithUserDetails("global-admin")
 	public void t5updateLanguageStatusTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
@@ -169,7 +169,7 @@ public class LanguageControllerTest {
 	}
 
 	@Test
-	@WithUserDetails("global-admin")
+	//@WithUserDetails("global-admin")
 	public void t6updateLanguageStatusFailTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
