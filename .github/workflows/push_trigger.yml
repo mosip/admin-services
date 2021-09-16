@@ -55,7 +55,7 @@ jobs:
     - name: Build with Maven
       run: |
         cd admin
-        mvn -B -U -DskipTests package -s $GITHUB_WORKSPACE/settings.xml --file pom.xml
+        mvn -B -U package -s $GITHUB_WORKSPACE/settings.xml --file pom.xml
     - name: Ready the springboot artifacts
       run: find -name '*.jar' -executable -type f  -exec zip release.zip {} +
 
@@ -124,7 +124,7 @@ jobs:
         mvn -B -U package -s $GITHUB_WORKSPACE/settings.xml --file pom.xml
     - name: Publish the maven package
       run: |
-        cd admin && mvn deploy -DskipTests -DaltDeploymentRepository=ossrh::default::${{ secrets.RELEASE_URL }} -s $GITHUB_WORKSPACE/settings.xml -f pom.xml
+        cd admin && mvn deploy -DaltDeploymentRepository=ossrh::default::${{ secrets.RELEASE_URL }} -s $GITHUB_WORKSPACE/settings.xml -f pom.xml
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         GPG_TTY: $(tty)
