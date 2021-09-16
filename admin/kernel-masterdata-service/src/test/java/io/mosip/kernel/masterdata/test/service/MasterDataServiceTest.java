@@ -2164,7 +2164,7 @@ public class MasterDataServiceTest {
 	@Test(expected = MasterDataServiceException.class)
 	public void getAllTemplateByLanguageCodeFetchExceptionTest() {
 		hin.setCode("hin");
-		Mockito.when(languageRepository.findLanguageByCodeNameAndNativeName(Mockito.anyString(),Mockito.anyString(),Mockito.anyString()))
+		Mockito.when(languageRepository.findLanguageByCodeNameAndNativeName(Mockito.anyString()))
 		.thenReturn(hin);
 		Mockito.when(templateRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -2176,7 +2176,7 @@ public class MasterDataServiceTest {
 	public void getAllTemplateByLanguageCodeNotFoundExceptionTest() {
 		templateList = new ArrayList<>();
 		hin.setCode("hin");
-		Mockito.when(languageRepository.findLanguageByCodeNameAndNativeName(Mockito.anyString(),Mockito.anyString(),Mockito.anyString()))
+		Mockito.when(languageRepository.findLanguageByCodeNameAndNativeName(Mockito.anyString()))
 		.thenReturn(hin);
 		Mockito.when(templateRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenReturn(templateList);
@@ -2194,6 +2194,9 @@ public class MasterDataServiceTest {
 	@Test(expected = DataNotFoundException.class)
 	public void getAllTemplateByLanguageCodeAndTemplateTypeCodeNotFoundExceptionTest() {
 		templateList = new ArrayList<>();
+		hin.setCode("hin");
+		Mockito.when(languageRepository.findLanguageByCodeNameAndNativeName(Mockito.anyString()))
+		.thenReturn(hin);
 		Mockito.when(templateRepository.findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(
 				Mockito.anyString(), Mockito.anyString())).thenReturn(templateList);
 		templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode("HIN", "EMAIL");
@@ -2212,7 +2215,7 @@ public class MasterDataServiceTest {
 	@Test
 	public void getAllTemplateByLanguageCodeTest() {
 		hin.setCode("hin");
-		Mockito.when(languageRepository.findLanguageByCodeNameAndNativeName(Mockito.anyString(),Mockito.anyString(),Mockito.anyString()))
+		Mockito.when(languageRepository.findLanguageByCodeNameAndNativeName(Mockito.anyString()))
 		.thenReturn(hin);
 		Mockito.when(templateRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenReturn(templateList);
@@ -2224,10 +2227,12 @@ public class MasterDataServiceTest {
 
 	@Test
 	public void getAllTemplateByLanguageCodeAndTemplateTypeCodeTest() {
+		hin.setCode("hin");
+		Mockito.when(languageRepository.findLanguageByCodeNameAndNativeName(Mockito.anyString()))
+		.thenReturn(hin);
 		Mockito.when(templateRepository.findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(
 				Mockito.anyString(), Mockito.anyString())).thenReturn(templateList);
-		templateResponseDto = templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(Mockito.anyString(),
-				Mockito.anyString());
+		templateResponseDto = templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode("HIN","EMAIL");
 
 		assertEquals(templateList.get(0).getId(), templateResponseDto.getTemplates().get(0).getId());
 		assertEquals(templateList.get(0).getName(), templateResponseDto.getTemplates().get(0).getName());
