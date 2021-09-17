@@ -29,7 +29,7 @@ public enum DeviceErrorCode {
 	DEVICE_REGISTRATION_CENTER_NOT_FOUND_EXCEPTION("KER-MSD-441", "Registration Center and Device Not Found"),
 	DEVICE_ZONE_NOT_FOUND_EXCEPTION("KER-MSD-395", "User is not authorized to decommission the Device "),
 	MAPPED_TO_REGCENTER("KER-MSD-438", "Device cannot be Decommissioned as it is assigned to a Registration Center"),
-	DEVICE_ERROR("KER-MSD-XXX", "Device Error"),
+	DEVICE_ERROR("KER-MSD-700", "Device Error"),
 	INVALID_DEVICE_ZONE("KER-MSD-439", "Admin not authorized to access this Device for this Zone"),
 	DECOMMISSIONED("KER-MSD-DDD", "Device has been already decommissioned or Device not found"), 
 	INVALID_CENTER_ZONE("KER-MSD-440", "The zone of the  registration center in the request does not match the zone of the device"),
