@@ -161,6 +161,8 @@ public class AuthorizedRolesDto {
 	//private List<String> getdocumenttypeslangcode;
 	
 	private List<String> patchdocumenttypes;
+
+	private List<String> getdocumenttypesmissingidslangcode;
 	
 //	private List<String> getdynamicfields;
 	
