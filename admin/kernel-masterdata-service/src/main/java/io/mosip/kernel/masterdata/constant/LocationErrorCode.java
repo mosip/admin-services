@@ -22,7 +22,7 @@ public enum LocationErrorCode {
 	LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY("KER-MSD-385", "Location %s already exist under the hierarchy"),
 	LOCATION_CHILD_STATUS_EXCEPTION("KER-MSD-300",
 			"Cannot deactivate the Location as active child Location are mapped"),
-	NO_DATA_FOR_FILTER_VALUES("KER-MSD-___", "No Data Found for the given filter column");
+	NO_DATA_FOR_FILTER_VALUES("KER-MSD-710", "No Data Found for the given filter column");
 
 	private String errorCode;
 	private String errorMessage;
