@@ -290,7 +290,8 @@ public class DocumentTypeController {
 	 */
 	@ResponseFilter
 	@GetMapping("/documenttypes/missingids/{langcode}")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumenttypesmissingidslangcode())")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<List<MissingDataDto>> getMissingDocumentTypeDetails(
 			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
 
