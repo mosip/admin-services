@@ -3,6 +3,7 @@ package io.mosip.kernel.syncdata.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -26,6 +27,12 @@ public interface DocumentTypeRepository extends JpaRepository<DocumentType, Stri
 	 * @param currentTimeStamp - currentTimestamp
 	 * @return list of {@link DocumentType} - list of document type
 	 */
+	@Cacheable(cacheNames = "initial-sync", key = "'doc_type'", condition = "#a0.getYear() <= 1970")
 	@Query("FROM DocumentType WHERE (createdDateTime BETWEEN ?1 AND ?2) OR (updatedDateTime BETWEEN ?1 AND ?2)  OR (deletedDateTime BETWEEN ?1 AND ?2)")
 	List<DocumentType> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp);
+
+	@Cacheable(cacheNames = "delta-sync", key = "'doc_type'")
+	@Query(value = "select max(aam.createdDateTime), max(aam.updatedDateTime) from DocumentType aam ")
+	List<Object[]> getMaxCreatedDateTimeMaxUpdatedDateTime();
+
 }

@@ -17,6 +17,7 @@ import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 public class MachineDataHelper {
 		
 	private String regCenterId;
+	private String machineId;
 	private LocalDateTime lastUpdated;
 	private LocalDateTime currentTimestamp;
 	
@@ -26,28 +27,22 @@ public class MachineDataHelper {
 
 	private String publicKey;
 	
-	public MachineDataHelper(String regCenterId, LocalDateTime lastUpdated, LocalDateTime currentTimestamp, String publicKey) {
+	public MachineDataHelper(String regCenterId, String machineId, LocalDateTime lastUpdated, LocalDateTime currentTimestamp, String publicKey) {
 		this.regCenterId = regCenterId;
 		this.lastUpdated = lastUpdated;
 		this.currentTimestamp = currentTimestamp;
 		this.publicKey = publicKey;
+		this.machineId = machineId;
 	}
 	
 	public void retrieveData(final SyncMasterDataServiceHelper serviceHelper, final List<CompletableFuture> futures) {
-		this.machineDetails = serviceHelper.getMachines(this.regCenterId, this.lastUpdated, this.currentTimestamp);
-		//this.machineSpecification = serviceHelper.getMachineSpecification(this.regCenterId, this.lastUpdated, this.currentTimestamp);
-		//this.machineType = serviceHelper.getMachineType(this.regCenterId, this.lastUpdated, this.currentTimestamp);
-		
+		this.machineDetails = serviceHelper.getMachines(this.regCenterId, this.lastUpdated, this.currentTimestamp, this.machineId);
 		futures.add(this.machineDetails);
-		//futures.add(this.machineSpecification);
-		//futures.add(this.machineType);
 	}
 	
 	public void fillRetrievedData(final SyncMasterDataServiceHelper serviceHelper, final List<SyncDataBaseDto> list) 
 			throws InterruptedException, ExecutionException {
 		serviceHelper.getSyncDataBaseDto(Machine.class, "structured", this.machineDetails.get(), this.publicKey, list);
-		//list.add(serviceHelper.getSyncDataBaseDto(MachineSpecification.class, "structured", this.machineSpecification.get(), this.publicKey));
-		//list.add(serviceHelper.getSyncDataBaseDto(MachineType.class, "structured", this.machineType.get(), this.publicKey));
 	}
 
 }
