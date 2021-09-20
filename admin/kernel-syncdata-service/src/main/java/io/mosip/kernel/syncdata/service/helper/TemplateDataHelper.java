@@ -35,18 +35,18 @@ public class TemplateDataHelper {
 	
 	public void retrieveData(final SyncMasterDataServiceHelper serviceHelper, final List<CompletableFuture> futures) {
 		this.templates = serviceHelper.getTemplates(this.moduleId, this.lastUpdated, this.currentTimestamp);
-		this.templateFileFormats = serviceHelper.getTemplateFileFormats(this.lastUpdated, this.currentTimestamp);
-		this.templateTypes = serviceHelper.getTemplateTypes(this.lastUpdated, this.currentTimestamp);	
+		//this.templateFileFormats = serviceHelper.getTemplateFileFormats(this.lastUpdated, this.currentTimestamp);
+		//this.templateTypes = serviceHelper.getTemplateTypes(this.lastUpdated, this.currentTimestamp);
 		
 		futures.add(this.templates);
-		futures.add(this.templateFileFormats);
-		futures.add(this.templateTypes);
+		//futures.add(this.templateFileFormats);
+		//futures.add(this.templateTypes);
 	}
 	
 	public void fillRetrievedData(final SyncMasterDataServiceHelper serviceHelper, final List<SyncDataBaseDto> list) 
 			throws InterruptedException, ExecutionException {
 		serviceHelper.getSyncDataBaseDto(Template.class, "structured", this.templates.get(), this.publicKey,list);
-		serviceHelper.getSyncDataBaseDto(TemplateFileFormat.class, "structured", this.templateFileFormats.get(), this.publicKey,list);
-		serviceHelper.getSyncDataBaseDto(TemplateType.class, "structured", this.templateTypes.get(), this.publicKey,list);
+		//serviceHelper.getSyncDataBaseDto(TemplateFileFormat.class, "structured", this.templateFileFormats.get(), this.publicKey,list);
+		//serviceHelper.getSyncDataBaseDto(TemplateType.class, "structured", this.templateTypes.get(), this.publicKey,list);
 	}
 }

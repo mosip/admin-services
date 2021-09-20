@@ -3,6 +3,7 @@ package io.mosip.kernel.syncdata.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -17,6 +18,7 @@ public interface ReasonCategoryRepository extends JpaRepository<ReasonCategory, 
 	 * @param currentTimeStamp - currentTimestamp
 	 * @return list of {@link ReasonCategory} -list of reason category
 	 */
+	@Cacheable(cacheNames = "initial-sync", key = "'reason_category'", condition = "#a0.getYear() <= 1970")
 	@Query(value = "select rc.code,rc.lang_code,rc.cr_by,rc.cr_dtimes,rc.del_dtimes,rc.is_active,rc.is_deleted,rc.upd_by,rc.upd_dtimes,rc.descr,rc.name from master.reason_category rc where (rc.cr_dtimes BETWEEN ?1 AND ?2) or (rc.upd_dtimes BETWEEN ?1 AND ?2) or (rc.del_dtimes BETWEEN ?1 AND ?2)", nativeQuery = true)
 	List<ReasonCategory> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp);
 
@@ -27,4 +29,9 @@ public interface ReasonCategoryRepository extends JpaRepository<ReasonCategory, 
 	 */
 	@Query(value = "select rc.code,rc.lang_code,rc.cr_by,rc.cr_dtimes,rc.del_dtimes,rc.is_active,rc.is_deleted,rc.upd_by,rc.upd_dtimes,rc.descr,rc.name from master.reason_category rc", nativeQuery = true)
 	List<ReasonCategory> findAllReasons();
+
+	@Cacheable(cacheNames = "delta-sync", key = "'reason_category'")
+	@Query(value = "select max(aam.createdDateTime), max(aam.updatedDateTime) from ReasonCategory aam ")
+	List<Object[]> getMaxCreatedDateTimeMaxUpdatedDateTime();
+
 }

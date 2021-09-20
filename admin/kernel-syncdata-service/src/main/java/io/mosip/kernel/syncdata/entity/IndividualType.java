@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "individual_type", schema = "master")
+		@Table(name = "individual_type", schema = "master")
 public class IndividualType extends BaseEntity implements Serializable {
 
 	/**

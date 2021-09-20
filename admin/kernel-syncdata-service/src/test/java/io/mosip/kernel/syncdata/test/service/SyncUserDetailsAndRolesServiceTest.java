@@ -75,9 +75,6 @@ public class SyncUserDetailsAndRolesServiceTest {
 	@Autowired
 	RestTemplate restTemplate;
 
-	@MockBean
-	private SyncJobDefService registrationCenterUserService;
-
 	@Autowired
 	private SyncMasterDataServiceHelper serviceHelper;
 

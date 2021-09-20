@@ -74,9 +74,6 @@ public class SyncDataServiceTest {
 	RestTemplate restTemplate;
 
 	@MockBean
-	private SyncJobDefService registrationCenterUserService;
-
-	@MockBean
 	MachineRepository machineRespository;
 
 	@Autowired

@@ -97,6 +97,9 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	@Autowired
 	private AppDetailRepository appDetailRepository;
 
+	@Value("${mosip.syncdata.regclient.module.id:10002}")
+	private String regClientModuleId;
+
 
 	@Override
 	public SyncDataResponseDto syncClientSettings(String regCenterId, String keyIndex,
@@ -117,12 +120,10 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		ApplicationDataHelper applicationDataHelper = new ApplicationDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		applicationDataHelper.retrieveData(serviceHelper, futures);		
 		
-		MachineDataHelper machineDataHelper = new MachineDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
+		MachineDataHelper machineDataHelper = new MachineDataHelper(registrationCenterId, machineId,
+				lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		machineDataHelper.retrieveData(serviceHelper, futures);		
-		
-		//DeviceDataHelper deviceDataHelper = new DeviceDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		//deviceDataHelper.retrieveData(serviceHelper, futures);
-		
+
 		IndividualDataHelper individualDataHelper = new IndividualDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		individualDataHelper.retrieveData(serviceHelper, futures);
 		
@@ -130,16 +131,12 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 				lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		RegistrationCenterDataHelper.retrieveData(serviceHelper, futures);
 
-		AppDetail appDetail = appDetailRepository.findByNameAndLangCode("Registration Client", "eng");
 		TemplateDataHelper templateDataHelper = new TemplateDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey(),
-				appDetail != null ? appDetail.getId() : "10003");
+				regClientModuleId);
 		templateDataHelper.retrieveData(serviceHelper, futures);
 		
 		DocumentDataHelper documentDataHelper = new DocumentDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		documentDataHelper.retrieveData(serviceHelper, futures);
-		
-		//HistoryDataHelper historyDataHelper = new HistoryDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		//historyDataHelper.retrieveData(serviceHelper, futures);
 		
 		MiscellaneousDataHelper miscellaneousDataHelper = new MiscellaneousDataHelper(machineId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		miscellaneousDataHelper.retrieveData(serviceHelper, futures);		
