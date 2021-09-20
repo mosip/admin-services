@@ -386,13 +386,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 			userDetailsDto = masterdataCreationUtil.updateMasterData(UserDetails.class, userDetailsDto);
 
-			userDetailsPutDto.setEmail(userDetailsDto.getEmail());
+			//userDetailsPutDto.setEmail(userDetailsDto.getEmail());
 			userDetailsPutDto.setId(userDetailsDto.getId());
 			userDetailsPutDto.setIsActive(userDetailsDto.getIsActive());
-			userDetailsPutDto.setMobile(userDetailsDto.getMobile());
+			//userDetailsPutDto.setMobile(userDetailsDto.getMobile());
 			userDetailsPutDto.setLangCode(userDetailsDto.getLangCode());
 			userDetailsPutDto.setName(userDetailsDto.getName());
-			userDetailsPutDto.setUin(userDetailsDto.getUin());
+			//userDetailsPutDto.setUin(userDetailsDto.getUin());
 			userDetailsPutDto.setStatusCode(userDetailsDto.getStatusCode());
 			userDetailsPutDto.setRegCenterId(userDetailsDto.getRegCenterId());
 
@@ -490,7 +490,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 
 	@Override
-	public UsersDto getUsers(String roleName, int pageStart, int pageFetch, String email, String firstName,
+	public UsersDto getUsers(String roleName, int pageStart, int pageFetch/*, String email*/, String firstName,
 			String lastName, String userName) {
 		ResponseEntity<String> response = null;
 		UriComponentsBuilder uriComponentsBuilder = null;
@@ -500,9 +500,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			if (StringUtils.isNotBlank(roleName)) {
 				uriComponentsBuilder.queryParam("roleName", roleName);
 			}
-			if (StringUtils.isNotBlank(email)) {
+			/*if (StringUtils.isNotBlank(email)) {
 				uriComponentsBuilder.queryParam("email", email);
-			}
+			}*/
 			if (StringUtils.isNotBlank(firstName)) {
 				uriComponentsBuilder.queryParam("firstName", firstName);
 			}
