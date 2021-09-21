@@ -143,7 +143,9 @@ public class AuthorizedRolesDto {
 	private List<String> postdocumentcategoriesfiltervalues;
 	
 	private List<String> patchdocumentcategories;
-	
+
+	private List<String> getdocumentcategoriesmissingidslangcode;
+
 	//private List<String> getdocumenttypesdocumentcategorycode;
 	
 	private List<String> postdocumenttypes;
