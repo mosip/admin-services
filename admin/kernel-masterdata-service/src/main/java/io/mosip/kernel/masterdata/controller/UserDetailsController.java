@@ -191,7 +191,7 @@ public class UserDetailsController {
 	public ResponseWrapper<UsersDto>  getUsersDetails(@RequestParam(required = false,name ="roleName") String roleName,
 			@RequestParam(defaultValue = "0", required = false, name = "pageStart") int pageStart,
 			@RequestParam(defaultValue = "0", required = false, name = "pageFetch") int pageFetch,
-			@RequestParam(required = false, name = "email") String email,
+			//@RequestParam(required = false, name = "email") String email,
 			@RequestParam(required = false, name = "firstName") String firstName,
 			@RequestParam(required = false, name = "lastName") String lastName,
 			@RequestParam(required = false, name = "userName") String userName) {
@@ -199,7 +199,9 @@ public class UserDetailsController {
 		auditUtil.auditRequest(MasterDataConstant.GET_USER_DETAILS_API_IS_CALLED + UserDetailsController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.GET_USER_DETAILS_API_IS_CALLED + UserDetailsController.class.getCanonicalName());
-		responseWrapper.setResponse(userDetailsService.getUsers(roleName,pageStart, pageFetch, email,
+		/*responseWrapper.setResponse(userDetailsService.getUsers(roleName,pageStart, pageFetch, email,
+				firstName, lastName, userName));*/
+		responseWrapper.setResponse(userDetailsService.getUsers(roleName,pageStart, pageFetch,
 				firstName, lastName, userName));
 		return responseWrapper;
 	}

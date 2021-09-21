@@ -23,11 +23,13 @@ import io.mosip.kernel.syncdata.dto.IdSchemaDto;
 import io.mosip.kernel.syncdata.dto.MachineAuthDto;
 import io.mosip.kernel.syncdata.dto.MachineOtpDto;
 import io.mosip.kernel.syncdata.dto.response.TokenResponseDto;
+import io.mosip.kernel.syncdata.dto.response.UserDetailResponseDto;
 import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.entity.UserDetails;
 import io.mosip.kernel.syncdata.exception.RequestException;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.repository.UserDetailsRepository;
+import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
 import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,7 +102,7 @@ public class SyncAuthTokenServiceImpl {
     private MachineRepository machineRepository;
 
     @Autowired
-    private UserDetailsRepository userDetailsRepository;
+    private SyncUserDetailsService syncUserDetailsService;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -171,9 +173,13 @@ public class SyncAuthTokenServiceImpl {
     private OtpUser getOtpUser(MachineOtpDto machineOtpDto) {
         OtpUser otpUser = new OtpUser();
 
-        Optional<UserDetails> result = userDetailsRepository.findActiveUserById(machineOtpDto.getUserId());
-        if(result.isPresent())
-            otpUser.setUserId(result.get().getEmail() == null ? result.get().getMobile() : result.get().getEmail());
+        UserDetailResponseDto userDetailResponseDto = syncUserDetailsService.getUserDetailsFromAuthServer(Arrays.asList(machineOtpDto.getUserId()));
+        if(userDetailResponseDto != null && userDetailResponseDto.getMosipUserDtoList() != null &&
+                !userDetailResponseDto.getMosipUserDtoList().isEmpty()) {
+           otpUser.setUserId(machineOtpDto.getOtpChannel().contains("email") ?
+                           userDetailResponseDto.getMosipUserDtoList().get(0).getMail() :
+                           userDetailResponseDto.getMosipUserDtoList().get(0).getMobile());
+        }
         else
             otpUser.setUserId(machineOtpDto.getUserId());
 
