@@ -206,7 +206,7 @@ public class TemplateController {
 	 * @return All {@link TemplateDto}
 	 */
 
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettemplatestemplatetypecodescode())")
+//	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettemplatestemplatetypecodescode())")
 	@GetMapping("/templatetypecodes/{code}")
 	@ResponseFilter
 	//@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','PRE_REGISTRATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION','AUTH','ZONAL_ADMIN','GLOBAL_ADMIN','PRE_REGISTRATION_ADMIN','RESIDENT','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
