@@ -490,7 +490,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 
 	@Override
-	public UsersDto getUsers(String roleName, int pageStart, int pageFetch/*, String email*/, String firstName,
+	public UsersDto getUsers(String roleName, int pageStart, int pageFetch, String firstName,
 			String lastName, String userName) {
 		ResponseEntity<String> response = null;
 		UriComponentsBuilder uriComponentsBuilder = null;
@@ -500,9 +500,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			if (StringUtils.isNotBlank(roleName)) {
 				uriComponentsBuilder.queryParam("roleName", roleName);
 			}
-			/*if (StringUtils.isNotBlank(email)) {
-				uriComponentsBuilder.queryParam("email", email);
-			}*/
 			if (StringUtils.isNotBlank(firstName)) {
 				uriComponentsBuilder.queryParam("firstName", firstName);
 			}
