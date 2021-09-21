@@ -1,7 +1,9 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
+import io.mosip.kernel.masterdata.dto.DocMissingData;
 import io.mosip.kernel.masterdata.dto.MissingDataDto;
+import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.service.GenericService;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
@@ -47,5 +49,23 @@ public class GenericServiceImpl implements GenericService {
 			}
 		}
 		return list;
+	}
+
+	public List<DocMissingData> getMissingsDetails(Class entity, String langCode, String fieldName) {
+
+		List<MissingDataDto> lst = getMissingData(entity, langCode, "name", fieldName);
+		List<DocMissingData> doc = new ArrayList<>();
+		for (int i = 0; i < lst.size(); i++) {
+
+			DocMissingData d = new DocMissingData(
+					null == lst.get(i).getFieldValue() ? lst.get(i).getId() : lst.get(i).getFieldValue(),
+					null == lst.get(i).getFieldValue() ? lst.get(i).getFieldValue() : lst.get(i).getId(),
+					lst.get(i).getLangCode());
+			doc.add(d);
+
+		}
+
+		return doc;
+
 	}
 }

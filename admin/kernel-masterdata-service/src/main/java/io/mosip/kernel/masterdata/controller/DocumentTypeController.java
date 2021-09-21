@@ -21,6 +21,7 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
+import io.mosip.kernel.masterdata.dto.DocMissingData;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypePutReqDto;
@@ -37,6 +38,7 @@ import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
@@ -67,11 +69,9 @@ public class DocumentTypeController {
 
 	@Autowired
 	AuditUtil auditUtil;
-	
-	
+
 	@Autowired
 	private GenericService genericService;
-
 
 	/**
 	 * 
@@ -81,7 +81,7 @@ public class DocumentTypeController {
 	 */
 	@ResponseFilter
 	@ApiOperation(value = "Fetch all the  valid doucment type avialbale for specific document category code ")
-	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumenttypesdocumentcategorycode())")
+	// @PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumenttypesdocumentcategorycode())")
 	@GetMapping("/documenttypes/{documentcategorycode}/{langcode}")
 	public ResponseWrapper<ValidDocumentTypeResponseDto> getDoucmentTypesForDocumentCategoryAndLangCode(
 			@PathVariable("langcode") String langCode,
@@ -102,7 +102,7 @@ public class DocumentTypeController {
 	 * 
 	 * @return {@link CodeAndLanguageCodeID }
 	 */
-	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	// @PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdocumenttypes())")
 	@PostMapping("/documenttypes")
@@ -128,7 +128,7 @@ public class DocumentTypeController {
 	 * @param types the DTO of document type.
 	 * @return {@link CodeAndLanguageCodeID}.
 	 */
-	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	// @PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutdocumenttypes())")
 	@PutMapping("/documenttypes")
@@ -144,8 +144,8 @@ public class DocumentTypeController {
 		responseWrapper.setResponse(documentTypeService.updateDocumentType(types.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, DocumentTypePutReqDto.class.getCanonicalName()),
-				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC, DocumentTypePutReqDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
+						DocumentTypePutReqDto.class.getCanonicalName()),
 				"ADM-682");
 		return responseWrapper;
 	}
@@ -156,7 +156,7 @@ public class DocumentTypeController {
 	 * @param code the document type code.
 	 * @return the code.
 	 */
-	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	// @PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeletedocumenttypescode())")
 	@DeleteMapping("/documenttypes/{code}")
@@ -177,7 +177,7 @@ public class DocumentTypeController {
 	 * 
 	 * @return the response i.e. pages containing the document types.
 	 */
-	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	// @PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumenttypesall())")
 	@GetMapping("/documenttypes/all")
@@ -206,7 +206,7 @@ public class DocumentTypeController {
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdocumenttypesfiltervalues())")
 	@PostMapping("/documenttypes/filtervalues")
-	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	// @PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> documentTypeFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(),
@@ -230,7 +230,7 @@ public class DocumentTypeController {
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdocumenttypessearch())")
 	@PostMapping("/documenttypes/search")
-	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	// @PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<DocumentTypeExtnDto>> searchDocumentType(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(),
@@ -253,7 +253,7 @@ public class DocumentTypeController {
 	 * @return {@link DocumentTypeResponseDto}
 	 */
 	@ResponseFilter
-	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumenttypeslangcode())")
+	// @PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumenttypeslangcode())")
 	@GetMapping("/documenttypes/{langcode}")
 	public ResponseWrapper<DocumentTypeResponseDto> getAllDocumentTypeByLaguageCode(
 			@PathVariable("langcode") String langCode) {
@@ -261,8 +261,8 @@ public class DocumentTypeController {
 		responseWrapper.setResponse(documentTypeService.getAllDocumentTypeByLaguageCode(langCode));
 		return responseWrapper;
 	}
-	
-	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+
+	// @PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPatchdocumenttypes())")
 	@PatchMapping("/documenttypes")
@@ -282,7 +282,7 @@ public class DocumentTypeController {
 				"ADM-688");
 		return responseWrapper;
 	}
-	
+
 	/**
 	 * Function to fetch missing ids/codes in the provided language code
 	 *
@@ -291,12 +291,12 @@ public class DocumentTypeController {
 	@ResponseFilter
 	@GetMapping("/documenttypes/missingids/{langcode}")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumenttypesmissingidslangcode())")
-	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
-	public ResponseWrapper<List<MissingDataDto>> getMissingDocumentTypeDetails(
+	// @PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	public ResponseWrapper<List<DocMissingData>> getMissingDocumentTypeDetails(
 			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
 
-		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(genericService.getMissingData(DocumentType.class, langCode, "name", fieldName));
+		ResponseWrapper<List<DocMissingData>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(genericService.getMissingsDetails(DocumentType.class, langCode, fieldName));
 		return responseWrapper;
 	}
 

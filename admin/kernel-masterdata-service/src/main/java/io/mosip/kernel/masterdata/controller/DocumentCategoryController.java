@@ -22,6 +22,7 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
+import io.mosip.kernel.masterdata.dto.DocMissingData;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryPutDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
@@ -64,11 +65,13 @@ public class DocumentCategoryController {
 	@Autowired
 	AuditUtil auditUtil;
 
-	@Autowired
-	DocumentCategoryService documentCategoryService;
 	
 	@Autowired
 	private GenericService genericService;
+	
+	@Autowired
+	DocumentCategoryService documentCategoryService;
+	
 
 	/**
 	 * API to fetch all Document categories details
@@ -311,10 +314,10 @@ public class DocumentCategoryController {
 	@ResponseFilter
 	@GetMapping("/documentcategories/missingids/{langcode}")
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
-	public ResponseWrapper<List<MissingDataDto>> getMissingDocumentCategoryDetails(
+	public ResponseWrapper<List<DocMissingData>> getMissingDocumentCategoryDetails(
 			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
-		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(genericService.getMissingData(DocumentCategory.class, langCode, "name", fieldName));
+		ResponseWrapper<List<DocMissingData>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(genericService.getMissingsDetails(DocumentCategory.class,langCode,fieldName));
 		return responseWrapper;
 	}
 }
