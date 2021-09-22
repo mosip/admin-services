@@ -291,12 +291,11 @@ public class DocumentTypeController {
 	@ResponseFilter
 	@GetMapping("/documenttypes/missingids/{langcode}")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumenttypesmissingidslangcode())")
-	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<List<MissingDataDto>> getMissingDocumentTypeDetails(
 			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
 
 		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(genericService.getMissingData(DocumentType.class, langCode, "name", fieldName));
+		responseWrapper.setResponse(genericService.getMissingData(DocumentType.class, langCode, "code", fieldName));
 		return responseWrapper;
 	}
 

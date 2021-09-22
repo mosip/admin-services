@@ -40,8 +40,9 @@ public class DocumentCategory extends BaseEntity implements Serializable {
 	@AttributeOverrides({ @AttributeOverride(name = "code", column = @Column(name = "code", nullable = false)),
 			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
 	@OneToMany(mappedBy = "docCategoryCode")
-	@Column(name="code")
+	@Column(name = "code")
 	private String code;
+
 	@OneToMany(mappedBy = "langCode")
 	private String langCode;
 
