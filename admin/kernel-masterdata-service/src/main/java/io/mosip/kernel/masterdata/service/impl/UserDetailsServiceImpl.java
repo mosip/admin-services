@@ -53,6 +53,7 @@ import io.mosip.kernel.masterdata.dto.UsersDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.UserDetails;
@@ -76,6 +77,7 @@ import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
 /**
  * @author Sidhant Agarwal
@@ -588,12 +590,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		PageResponseDto<UserDetailsExtnDto> pageDto = new PageResponseDto<>();
 		List<UserDetailsExtnDto> userDetails = null;
 
-		searchDto.getFilters().stream().forEach(fil -> {
-			if (fil.getColumnName().equalsIgnoreCase("name")) {
-				fil.setValue("*" + fil.getValue() + "*");
-				fil.setType("contains");
+		for (SearchFilter sf : searchDto.getFilters()) {
+			if (sf.getColumnName().equalsIgnoreCase("zoneCode")) {
+				List<ZoneUser> zu = zoneUserService.getZoneUsersBasedOnZoneCode(sf.getValue());
+				String userIds = new String();
+				for (int i = 0; i < zu.size(); i++) {
+					userIds = userIds + zu.get(i).getUserId() + ",";
+				}
+				sf.setColumnName("id");
+				sf.setType(FilterTypeEnum.IN.toString());
+				sf.setValue(userIds);
 			}
-		});
+		}
 		Page<UserDetails> page = masterDataSearchHelper.searchMasterdataWithoutLangCode(UserDetails.class, searchDto,
 				null);
 		if (page.getContent() != null && !page.getContent().isEmpty()) {
