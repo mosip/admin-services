@@ -578,4 +578,6 @@ public class AuthorizedRolesDto {
 
 	private List<String> postzoneusersearch;
 
+	private List<String> getdocumentcategoriesmissingidslangcode;
+
 }
