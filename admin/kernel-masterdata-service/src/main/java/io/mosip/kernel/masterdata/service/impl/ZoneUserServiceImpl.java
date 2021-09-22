@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
@@ -23,8 +22,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -43,6 +40,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.ZoneNameResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.UserDetails;
+import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.entity.ZoneUser;
 import io.mosip.kernel.masterdata.entity.ZoneUserHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -311,20 +309,30 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		for (int i = 0; i < searchDto.getFilters().size(); i++) {
 			if (searchDto.getFilters().get(i).getColumnName().equalsIgnoreCase("userName")) {
 				String userId = getUserDetailsBasedonUserName(searchDto.getFilters().get(i).getValue());
-				if (null == userId )
+				if (null == userId)
 					return pageDto;
+				searchDto.getFilters().get(i).setValue(userId);
 				if (!userId.contains(",")) {
-					searchDto.getFilters().get(i).setValue(userId);
 					searchDto.getFilters().get(i).setType(FilterTypeEnum.EQUALS.toString());
 				} else {
-
-					searchDto.getFilters().get(i).setValue(userId);
 					searchDto.getFilters().get(i).setType(FilterTypeEnum.IN.toString());
 				}
 				searchDto.getFilters().get(i).setColumnName("userId");
-				break;
+			}
+			if (searchDto.getFilters().get(i).getColumnName().equalsIgnoreCase("zoneName")) {
+				String zoneCodes = getZoneCode(searchDto.getFilters().get(i).getValue());
+				if (null == zoneCodes)
+					return pageDto;
+				searchDto.getFilters().get(i).setValue(zoneCodes);
+				if (!zoneCodes.contains(",")) {
+					searchDto.getFilters().get(i).setType(FilterTypeEnum.EQUALS.toString());
+				} else {
+					searchDto.getFilters().get(i).setType(FilterTypeEnum.IN.toString());
+				}
+				searchDto.getFilters().get(i).setColumnName("zoneCode");
 			}
 		}
+
 		Page<ZoneUser> page = masterDataSearchHelper.searchMasterdataWithoutLangCode(ZoneUser.class, searchDto, null);
 		if (page.getContent() != null && !page.getContent().isEmpty()) {
 			zoneUserSearchDetails = MapperUtils.mapAll(page.getContent(), ZoneUserExtnDto.class);
@@ -420,7 +428,21 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		}
 
 		return null;
+	}
 
+	private String getZoneCode(String zoneName) {
+		List<Zone> zones = zoneservice.getZoneListBasedonZoneName(zoneName);
+		String zoneCodes = new String();
+		for (int i = 0; i < zones.size(); i++) {
+			zoneCodes = zoneCodes + zones.get(i).getCode() + ",";
+		}
+		return zoneCodes;
+	}
+
+	@Override
+	public List<ZoneUser> getZoneUsersBasedOnZoneCode(String zoneCode) {
+		// TODO Auto-generated method stub
+		return zoneUserRepo.findZoneByZoneCodeActiveAndNonDeleted(zoneCode);
 	}
 
 }
