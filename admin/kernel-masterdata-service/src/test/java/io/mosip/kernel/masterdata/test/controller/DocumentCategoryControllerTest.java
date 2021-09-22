@@ -347,5 +347,14 @@ public class DocumentCategoryControllerTest {
 				.andReturn(),"KER-MSD-123");
 
 	}
+	
+	@Test()
+	@WithUserDetails("global-admin")
+	public void t018getMissingDocumentCategoryDetailsTest() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/missingids/fra"))
+				.andReturn(),null);
+
+	}
 
 }
