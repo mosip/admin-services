@@ -10,6 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 
 import lombok.Data;
 
+/**
+ * @author GOVINDARAJ VELU
+ *
+ */
 @Data
 public class CenterTypeCodeValidator implements ConstraintValidator<CenterTypeCode, String> {
 
