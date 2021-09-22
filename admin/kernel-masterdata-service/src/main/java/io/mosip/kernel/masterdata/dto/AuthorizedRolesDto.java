@@ -580,4 +580,6 @@ public class AuthorizedRolesDto {
 
 	private List<String> getdocumentcategoriesmissingidslangcode;
 
+	private List<String> getdynamicfieldmissingidslangcode;
+
 }
