@@ -6,37 +6,29 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureMockRestServiceServer;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.client.MockServerRestTemplateCustomizer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.mosip.kernel.masterdata.dto.KeyValues;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.dto.KeyValues;
 import io.mosip.kernel.masterdata.dto.request.RequestDTO;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
-import org.springframework.web.client.RestTemplate;
-
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
@@ -77,7 +69,7 @@ public class ApplicantTypeControllerTest {
 	@WithUserDetails("global-admin")
 	public void getApplicantTypeTest() throws Exception {
 
-		mockMvc.perform(MockMvcRequestBuilders.post("/documenttypes").contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(MockMvcRequestBuilders.post("/getApplicantType").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(reqDto))).andExpect(MockMvcResultMatchers.status().isOk());
 
 	}
