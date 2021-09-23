@@ -666,12 +666,12 @@ public class MasterdataIntegrationTest {
 		user = new UserDetailsHistory();
 		user.setId("11001");
 		user.setRegCenterId("10002");
-		user.setEmail("abcd");
+		//user.setEmail("abcd");
 		user.setLangCode("eng");
-		user.setMobile("124134");
+		//user.setMobile("124134");
 		user.setName("abcd");
 		user.setStatusCode("dwd");
-		user.setUin("dfwefw");
+		//user.setUin("dfwefw");
 		users.add(user);
 	}
 	
@@ -679,12 +679,12 @@ public class MasterdataIntegrationTest {
 		userDetailsDto = new UserDetailsDto();
 		userDetailsDto.setId("11001");
 		userDetailsDto.setRegCenterId("10002");
-		userDetailsDto.setEmail("abcd");
+		//userDetailsDto.setEmail("abcd");
 		userDetailsDto.setLangCode("eng");
-		userDetailsDto.setMobile("124134");
+		//userDetailsDto.setMobile("124134");
 		userDetailsDto.setName("abcd");
 		userDetailsDto.setStatusCode("dwd");
-		userDetailsDto.setUin("dfwefw");
+		//userDetailsDto.setUin("dfwefw");
 		
 	}
 	
@@ -692,12 +692,12 @@ public class MasterdataIntegrationTest {
 		ud = new UserDetails();
 		ud.setId("11001");
 		ud.setRegCenterId("10002");
-		ud.setEmail("abcd");
+		//ud.setEmail("abcd");
 		ud.setLangCode("eng");
-		ud.setMobile("124134");
+		//ud.setMobile("124134");
 		ud.setName("abcd");
 		ud.setStatusCode("dwd");
-		ud.setUin("dfwefw");
+		//ud.setUin("dfwefw");
 		uds.add(ud);
 	}
 

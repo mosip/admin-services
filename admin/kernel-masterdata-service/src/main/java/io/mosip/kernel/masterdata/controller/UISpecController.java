@@ -44,8 +44,9 @@ public class UISpecController {
 	UISpecService uiSpecService;
 
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostuispec())")
 	@PostMapping
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PRE_REGISTRATION_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PRE_REGISTRATION_ADMIN')")
 	@ApiOperation(value = "Service to define ui specification")
 	public ResponseWrapper<UISpecResponseDto> defineUISpec(@Valid @RequestBody RequestWrapper<UISpecDto> request) {
 		ResponseWrapper<UISpecResponseDto> response = new ResponseWrapper<UISpecResponseDto>();
@@ -54,8 +55,9 @@ public class UISpecController {
 	}
 
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutuispec())")
 	@PutMapping
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PRE_REGISTRATION_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PRE_REGISTRATION_ADMIN')")
 	@ApiOperation(value = "Service to update ui specification")
 	public ResponseWrapper<UISpecResponseDto> updateUISpec(
 			@RequestParam(name = "id", required = true) @ApiParam(value = "uispec id") String id,
@@ -66,8 +68,9 @@ public class UISpecController {
 	}
 
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostuispecpublish())")
 	@PutMapping("/publish")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PRE_REGISTRATION_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PRE_REGISTRATION_ADMIN')")
 	@ApiOperation(value = "Service to publish draftted ui specification")
 	public ResponseWrapper<String> publishUISpec(@Valid @RequestBody RequestWrapper<UISpecPublishDto> request) {
 		ResponseWrapper<String> response = new ResponseWrapper<String>();
@@ -76,8 +79,9 @@ public class UISpecController {
 	}
 
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeleteuispec())")
 	@DeleteMapping
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PRE_REGISTRATION_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PRE_REGISTRATION_ADMIN')")
 	@ApiOperation(value = "Service to delete draftted ui specification")
 	public ResponseWrapper<String> deleteUISpec(
 			@RequestParam(name = "id", required = true) @ApiParam(value = "uispec id") String id) {
@@ -87,8 +91,9 @@ public class UISpecController {
 	}
 
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetuispecall())")
 	@GetMapping("/all")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PRE_REGISTRATION_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PRE_REGISTRATION_ADMIN')")
 	@ApiOperation(value = "Service to fetch all ui specifications")
 	public ResponseWrapper<PageDto<UISpecResponseDto>> getAllUISpecs(
 			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page number", defaultValue = "0") int pageNumber,
@@ -101,6 +106,7 @@ public class UISpecController {
 	}
 
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetuispecdomainlatest())")
 	@GetMapping("/{domain}/latest")
 	@ApiOperation(value = "Service to fetch latest published ui specification of a domain")
 	public ResponseWrapper<List<UISpecResponseDto>> getLatestPublishedSchema(@PathVariable String domain,

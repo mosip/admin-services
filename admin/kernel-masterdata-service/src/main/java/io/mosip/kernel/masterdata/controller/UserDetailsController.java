@@ -57,8 +57,9 @@ public class UserDetailsController {
 	@Autowired
 	private AuditUtil auditUtil;
 
-	@PreAuthorize("hasAnyRole('ID_AUTHENTICATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ID_AUTHENTICATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetusersid())")
 	@GetMapping(value = "/users/{id}")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When User exists"),
 			@ApiResponse(code = 400, message = "When path param id is null or invalid"),
@@ -70,8 +71,9 @@ public class UserDetailsController {
 		return responseWrapper;
 	}
 
-	@PreAuthorize("hasAnyRole('ID_AUTHENTICATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ID_AUTHENTICATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetusers())")
 	@GetMapping(value = "/users")
 	public ResponseWrapper<PageDto<UserDetailsExtnDto>>  getUsers(@RequestParam(value = "pageNumber", defaultValue = "0") @ApiParam(value = "page number for the requested data", defaultValue = "0") int page,
 	@RequestParam(value = "pageSize", defaultValue = "1") @ApiParam(value = "page size for the request data", defaultValue = "1") int size,
@@ -91,7 +93,8 @@ public class UserDetailsController {
 	 *         {@link ResponseEntity}
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetusercentermapping())")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@PostMapping("usercentermapping")
 	@ApiOperation(value = "Service to map Users with regcenter", notes = "Maps User Detail and return User id")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When User and Registration center successfully mapped"),
@@ -116,7 +119,8 @@ public class UserDetailsController {
 	 *         {@link ResponseEntity}
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutusercentermapping())")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@PutMapping("/usercentermapping")
 	@ApiOperation(value = "Service to map Users with regcenter", notes = "updates User Detail and return User id")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When User and Registration center successfully mapped"),
@@ -133,7 +137,8 @@ public class UserDetailsController {
 	}
 	
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPatchusercentermapping())")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@PatchMapping(value = "/usercentermapping")
 	public ResponseWrapper<StatusResponseDto> updateUserRegCenterStatus(@Valid @RequestParam boolean isActive,
 			@RequestParam String id) {
@@ -156,8 +161,9 @@ public class UserDetailsController {
 	 *         {@link ResponseEntity}
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
-	@DeleteMapping("/users/{id}")
+    //@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+    @PreAuthorize("hasAnyRole(@authorizedRoles.getDeleteusersid())")
+    @DeleteMapping("/users/{id}")
 	@ApiOperation(value = "Service to delete User", notes = "delete the User Detail and return User id")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When User and Registration center successfully mapped"),
 			@ApiResponse(code = 400, message = "When Request is invalid"),
@@ -178,13 +184,14 @@ public class UserDetailsController {
 	 * @param roleName
 	 * @return
 	 */	
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetuserdetails())")
 	@GetMapping(value = "/usersdetails")
 	public ResponseWrapper<UsersDto>  getUsersDetails(@RequestParam(required = false,name ="roleName") String roleName,
 			@RequestParam(defaultValue = "0", required = false, name = "pageStart") int pageStart,
 			@RequestParam(defaultValue = "0", required = false, name = "pageFetch") int pageFetch,
-			@RequestParam(required = false, name = "email") String email,
+			//@RequestParam(required = false, name = "email") String email,
 			@RequestParam(required = false, name = "firstName") String firstName,
 			@RequestParam(required = false, name = "lastName") String lastName,
 			@RequestParam(required = false, name = "userName") String userName) {
@@ -192,7 +199,9 @@ public class UserDetailsController {
 		auditUtil.auditRequest(MasterDataConstant.GET_USER_DETAILS_API_IS_CALLED + UserDetailsController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.GET_USER_DETAILS_API_IS_CALLED + UserDetailsController.class.getCanonicalName());
-		responseWrapper.setResponse(userDetailsService.getUsers(roleName,pageStart, pageFetch, email,
+		/*responseWrapper.setResponse(userDetailsService.getUsers(roleName,pageStart, pageFetch, email,
+				firstName, lastName, userName));*/
+		responseWrapper.setResponse(userDetailsService.getUsers(roleName,pageStart, pageFetch,
 				firstName, lastName, userName));
 		return responseWrapper;
 	}
@@ -202,8 +211,9 @@ public class UserDetailsController {
 	 * @param roleName
 	 * @return
 	 */	
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetuserssearch())")
 	@PostMapping(value = "/users/search")
 	public ResponseWrapper<PageResponseDto<UserDetailsExtnDto>> serachUsersDetails(
 			@RequestBody @Valid RequestWrapper<SearchDtoWithoutLangCode> dto) {

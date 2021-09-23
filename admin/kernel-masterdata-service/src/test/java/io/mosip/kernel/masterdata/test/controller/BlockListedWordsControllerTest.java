@@ -91,7 +91,7 @@ public class BlockListedWordsControllerTest {
 								+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
 								+ "   \"description\": \"Block listed word\",\n" + "    \"isActive\": true,\n"
 								+ "    \"langCode\": \"eng\",\n" + "    \"word\": \"damm\"\n" + "  }\n" + "}"))
-				.andReturn(), null);
+				.andReturn(), "KER-MSD-071");
 		;
 
 	}

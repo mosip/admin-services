@@ -15,34 +15,37 @@ import java.util.List;
 @Service
 public class GenericServiceImpl implements GenericService {
 
-    @Value("#{'${mosip.mandatory-languages:}'.concat(',').concat('${mosip.optional-languages:}')}")
-    private String supportedLanguages;
+	@Value("#{'${mosip.mandatory-languages:}'.concat(',').concat('${mosip.optional-languages:}')}")
+	private String supportedLanguages;
 
-    @Autowired
-    private MasterdataSearchHelper masterdataSearchHelper;
+	@Autowired
+	private MasterdataSearchHelper masterdataSearchHelper;
 
-    @Override
-    public List<MissingDataDto> getMissingData(Class entity, String langCode, String idFieldName, String fieldName) {
-        List<MissingDataDto> list = new ArrayList<>();
+	@Override
+	public List<MissingDataDto> getMissingData(Class entity, String langCode, String idFieldName, String fieldName) {
+		List<MissingDataDto> list = new ArrayList<>();
 
-        if (!supportedLanguages.contains(langCode)) {
-            throw new MasterDataServiceException(MasterdataSearchErrorCode.INVALID_LANGCODE.getErrorCode(),
-                    MasterdataSearchErrorCode.INVALID_LANGCODE.getErrorMessage());
-        }
+		if (!supportedLanguages.contains(langCode)) {
+			throw new MasterDataServiceException(MasterdataSearchErrorCode.INVALID_LANGCODE.getErrorCode(),
+					MasterdataSearchErrorCode.INVALID_LANGCODE.getErrorMessage());
+		}
 
-        List<Object[]> resultSet = masterdataSearchHelper.fetchMissingValues(entity, langCode, idFieldName, fieldName);
-        for(Object[] obj : resultSet) {
-            String identifier = obj[0] instanceof String ? (String)obj[0] : String.valueOf(obj[0]);
-            if(!list.stream().anyMatch(dto -> dto.getId().equals(identifier))) {
-                MissingDataDto dto = new MissingDataDto();
-                dto.setId(identifier);
-                dto.setLangCode((String)obj[1]);
-                if(obj.length > 2) {
-                    dto.setFieldValue((String)obj[2]);
-                }
-                list.add(dto);
-            }
-        }
-        return list;
-    }
+		List<Object[]> resultSet = masterdataSearchHelper.fetchMissingValues(entity, langCode, idFieldName, fieldName);
+		for (Object[] obj : resultSet) {
+			String identifier = obj[0] instanceof String ? (String) obj[0] : String.valueOf(obj[0]);
+			if (!list.stream().anyMatch(dto -> dto.getId().equals(identifier))) {
+				MissingDataDto dto = new MissingDataDto();
+				dto.setId(identifier);
+				dto.setLangCode((String) obj[1]);
+				if (idFieldName.equalsIgnoreCase(fieldName)) {
+					dto.setFieldValue(identifier);
+				}
+				if (obj.length > 2) {
+					dto.setFieldValue((String) obj[2]);
+				}
+				list.add(dto);
+			}
+		}
+		return list;
+	}
 }

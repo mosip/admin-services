@@ -1154,7 +1154,7 @@ public class MasterdataControllerTest {
 		templateResponseDto.setTemplates(templateDtoList);
 		Mockito.when(templateService.getAllTemplateByTemplateTypeCode(Mockito.anyString()))
 				.thenReturn(templateResponseDto);
-		mockMvc.perform(MockMvcRequestBuilders.get("/templates/templatetypecodes/EMAIL")).andExpect(status().isOk());
+		mockMvc.perform(MockMvcRequestBuilders.get("/templates/templatetypecodes/EMAIL")).andExpect(status().is(200));
 	}
 	
 	@Test
@@ -1440,7 +1440,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("global-admin")
 	public void updateLanguageStatusTest() throws Exception {
 
 		StatusResponseDto dto = new StatusResponseDto();
@@ -1450,7 +1450,7 @@ public class MasterdataControllerTest {
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/languages").characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("code", "ara")
 				.param("isActive", "true");
-		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+		mockMvc.perform(requestBuilder).andExpect(status().is(500));
 	}
 
 	@Test
@@ -1525,7 +1525,7 @@ public class MasterdataControllerTest {
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/registrationcentertypes")
 				.characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
 				.contentType(MediaType.APPLICATION_JSON).param("code", "BCC").param("isActive", "true");
-		mockMvc.perform(requestBuilder).andExpect(status().is(500));
+		mockMvc.perform(requestBuilder).andExpect(status().is(200));
 	}
 
 	// -----------------------------WorkingDayControllerTest------------------------

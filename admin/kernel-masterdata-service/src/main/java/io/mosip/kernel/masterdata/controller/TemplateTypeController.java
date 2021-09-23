@@ -44,8 +44,9 @@ public class TemplateTypeController {
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPosttemplatetypes())")
 	@PostMapping("/templatetypes")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "Service to create template type", notes = "create TemplateType  and return  code and LangCode")
 	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created"),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
@@ -72,6 +73,7 @@ public class TemplateTypeController {
 	 *         type code and Language code {@link TemplateTypeResponseDto}
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGettemplatetypescodelangcode())")
 	@GetMapping(value = "/templatetypes/{code}/{langcode}")
 	@ApiOperation(value = "Retrieve all template type Details for given Languge Code", notes = "Retrieve all template type Detail for given Languge Code and code")
 	@ApiResponses({
@@ -96,6 +98,7 @@ public class TemplateTypeController {
 	 *         code {@link TemplateTypeResponseDto}
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGettemplatetypeslangcode())")
 	@GetMapping(value = "/templatetypes/{langcode}")
 	@ApiOperation(value = "Retrieve all template type Details for given Languge Code", notes = "Retrieve all template type Detail for given Languge Code")
 	@ApiResponses({

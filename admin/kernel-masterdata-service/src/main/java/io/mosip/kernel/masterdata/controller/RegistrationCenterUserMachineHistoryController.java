@@ -40,8 +40,9 @@ public class RegistrationCenterUserMachineHistoryController {
 	 * @return {@link RegistrationCenterUserMachineMappingHistoryResponseDto} based
 	 *         on user inputs
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetregistrationcentershistoryregistrationcenterid())")
 	@GetMapping("/getregistrationmachineusermappinghistory/{effdtimes}/{registrationcenterid}/{machineid}/{userid}")
 	public ResponseWrapper<RegistrationCenterUserMachineMappingHistoryResponseDto> getRegistrationCentersMachineUserMapping(
 			@PathVariable("effdtimes") String effectiveTimestamp,

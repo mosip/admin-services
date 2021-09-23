@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalDateTime;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -89,9 +90,12 @@ public class MachinePostReqDto {
 	@ApiModelProperty(value = "regCenterId",  dataType = "java.lang.String")
 	private String regCenterId;
 	
-	@ApiModelProperty(value = "publicKey", required = false, dataType = "java.lang.String")
+	
+	@NotBlank(message = "Public key cannot be blank or null")
+	@ApiModelProperty(value = "publicKey", required = true, dataType = "java.lang.String")
 	private String publicKey;
 
+	@NotBlank(message = "Sign public key cannot be blank or null")
 	@ApiModelProperty(value = "signPublicKey", required = false, dataType = "java.lang.String")
 	private String signPublicKey;
 

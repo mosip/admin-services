@@ -33,7 +33,7 @@ public interface LanguageRepository extends BaseRepository<Language, String> {
 	@Query("FROM Language l where l.code = ?1 and (l.isDeleted is null or l.isDeleted = false) AND isActive=true")
 	public Language findLanguageByCode(String code);
 	
-	@Query("FROM Language l where l.code = ?1 or l.name =?2 or l.nativeName=?3 and (l.isDeleted is null or l.isDeleted = false) AND isActive=true")
-	public Language findLanguageByCodeNameAndNativeName(String code,String name, String nativeName);
+	@Query("FROM Language l where l.code = ?1 or l.name =?1 or l.nativeName=?1 and (l.isDeleted is null or l.isDeleted = false) AND isActive=true")
+	public Language findLanguageByCodeNameAndNativeName(String langCode);
 
 }
