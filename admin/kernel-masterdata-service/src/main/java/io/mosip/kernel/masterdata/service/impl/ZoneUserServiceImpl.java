@@ -445,7 +445,7 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 	@Override
 	public List<ZoneUser> getZoneUsersBasedOnZoneCode(String zoneCode) {
 
-		return zoneUserRepo.findZoneByZoneCodeActiveAndNonDeleted(zoneCode);
+		return zoneUserRepo.findZoneByZoneCodeActiveAndNonDeleted(zoneCode.toLowerCase());
 	}
 
 }
