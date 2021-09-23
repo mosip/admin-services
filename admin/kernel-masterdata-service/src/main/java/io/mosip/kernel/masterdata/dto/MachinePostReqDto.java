@@ -95,6 +95,7 @@ public class MachinePostReqDto {
 	@ApiModelProperty(value = "publicKey", required = true, dataType = "java.lang.String")
 	private String publicKey;
 
+	@NotBlank(message = "Sign public key cannot be blank or null")
 	@ApiModelProperty(value = "signPublicKey", required = false, dataType = "java.lang.String")
 	private String signPublicKey;
 
