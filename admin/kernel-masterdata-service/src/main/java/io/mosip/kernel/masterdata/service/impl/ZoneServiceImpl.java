@@ -224,7 +224,7 @@ public class ZoneServiceImpl implements ZoneService {
 	@Override
 	public List<Zone> getZoneListBasedonZoneName(String zoneName) {
 
-		return zoneRepository.findListZonesFromZoneName(zoneName);
+		return zoneRepository.findListZonesFromZoneName(zoneName.toLowerCase());
 	}
 
 

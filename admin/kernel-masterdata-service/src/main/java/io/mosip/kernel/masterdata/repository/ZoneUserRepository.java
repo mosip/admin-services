@@ -45,6 +45,6 @@ public interface ZoneUserRepository extends BaseRepository<ZoneUser, ZoneUserId>
 	@Query("FROM ZoneUser zu WHERE zu.userId=?1 and zu.isActive=true and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
 	public ZoneUser findZoneByUserIdActiveAndNonDeleted(String userId);
 	
-	@Query("FROM ZoneUser zu WHERE zu.zoneCode=?1 and zu.isActive=true and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
+	@Query("FROM ZoneUser zu WHERE LOWER(zu.zoneCode) like (%?1%)  and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
 	public List<ZoneUser> findZoneByZoneCodeActiveAndNonDeleted(String zoneCode);
 }
