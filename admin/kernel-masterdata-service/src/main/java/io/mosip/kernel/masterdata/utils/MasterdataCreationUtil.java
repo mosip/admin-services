@@ -4,7 +4,6 @@
 package io.mosip.kernel.masterdata.utils;
 
 import java.lang.reflect.Field;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -24,13 +23,10 @@ import javax.persistence.criteria.Root;
 
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -54,10 +50,11 @@ public class MasterdataCreationUtil {
 	private static final String NAME_COLUMN_NAME = "name";
 	
 	private static final String UPD_BY_COLUMN_NAME = "updatedBy";
-
+	
 	private static final String UPDA_DTIMES_COLUMN_NAME = "updatedDateTime";
 
 	private static String contextUser = "superadmin";
+
 
 
 	@Value("#{'${mosip.mandatory-languages:}'.concat('${mosip.optional-languages:}')}")

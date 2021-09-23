@@ -76,6 +76,7 @@ public class DocumentCategoryController {
 	 * @return All Document categories
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumentcategories())")
 	@GetMapping("/documentcategories")
 	public ResponseWrapper<DocumentCategoryResponseDto> getAllDocumentCategory() {
 		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL, DocumentCategoryDto.class.getSimpleName()),
@@ -99,6 +100,7 @@ public class DocumentCategoryController {
 	 * @return {@link DocumentCategoryResponseDto}
 	 */
 	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumentcategorieslangcode())")
 	@GetMapping("/documentcategories/{langcode}")
 	public ResponseWrapper<DocumentCategoryResponseDto> getAllDocumentCategoryByLaguageCode(
 			@PathVariable("langcode") String langCode) {
@@ -114,8 +116,9 @@ public class DocumentCategoryController {
 	 * @param langCode the language code
 	 * @return {@link DocumentCategoryResponseDto}
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','INDIVIDUAL','PRE_REGISTRATION','REGISTRATION_SUPERVISOR','RESIDENT','REGISTRATION_PROCESSOR','REGISTRATION_PROCESSOR','REGISTRATION_OFFICER','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','INDIVIDUAL','PRE_REGISTRATION','REGISTRATION_SUPERVISOR','RESIDENT','REGISTRATION_PROCESSOR','REGISTRATION_PROCESSOR','REGISTRATION_OFFICER','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumentcategoriescode())")
 	@GetMapping("/documentcategories/{code}/{langcode}")
 	public ResponseWrapper<DocumentCategoryResponseDto> getDocumentCategoryByCodeAndLangCode(
 			@PathVariable("code") String code, @PathVariable("langcode") String langCode) {
@@ -133,8 +136,9 @@ public class DocumentCategoryController {
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdocumentcategories())")
 	@PostMapping("/documentcategories")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to create document category", notes = "Create document category and return composite id")
 	public ResponseWrapper<CodeAndLanguageCodeID> createDocumentCategory(
 			@ApiParam("Document category DTO to create") @Valid @RequestBody RequestWrapper<DocumentCategoryDto> category) {
@@ -159,8 +163,9 @@ public class DocumentCategoryController {
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutdocumentcategories())")
 	@PutMapping("/documentcategories")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to update document category", notes = "Update document category and return composite id")
 	public ResponseWrapper<CodeAndLanguageCodeID> updateDocumentCategory(
 			@ApiParam("Document category DTO to update") @Valid @RequestBody RequestWrapper<DocumentCategoryPutDto> category) {
@@ -185,8 +190,9 @@ public class DocumentCategoryController {
 	 * @return the code.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeletedocumentcategoriescode())")
 	@DeleteMapping("/documentcategories/{code}")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to delete document category", notes = "Delete document category and return composite id")
 	public ResponseWrapper<CodeResponseDto> deleteDocumentCategory(@PathVariable("code") String code) {
 
@@ -206,8 +212,9 @@ public class DocumentCategoryController {
 	 */
 	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumentcategoriesall())")
 	@GetMapping("/documentcategories/all")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Retrieve all the document category with metadata", notes = "Retrieve all the document categories")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of device specifications"),
 			@ApiResponse(code = 500, message = "Error occured while retrieving device specifications") })
@@ -231,8 +238,9 @@ public class DocumentCategoryController {
 	 *         required.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdocumentcategoriessearch())")
 	@PostMapping("/documentcategories/search")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<DocumentCategoryExtnDto>> searchDocCategories(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(),
@@ -257,8 +265,9 @@ public class DocumentCategoryController {
 	 *         name and type.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdocumentcategoriesfiltervalues())")
 	@PostMapping("/documentcategories/filtervalues")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> docCategoriesFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + DocumentCategoryDto.class.getCanonicalName(),
@@ -275,8 +284,9 @@ public class DocumentCategoryController {
 	}
 	
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPatchdocumentcategories())")
 	@PatchMapping("/documentcategories")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to update document category", notes = "Update document category")
 	public ResponseWrapper<StatusResponseDto> updateDocumentCategoryStatus(@RequestParam boolean isActive,
 			@RequestParam String code) {
@@ -300,11 +310,11 @@ public class DocumentCategoryController {
 	 */
 	@ResponseFilter
 	@GetMapping("/documentcategories/missingids/{langcode}")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumentcategoriesmissingidslangcode())")
 	public ResponseWrapper<List<MissingDataDto>> getMissingDocumentCategoryDetails(
 			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
 		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(genericService.getMissingData(DocumentCategory.class, langCode, "name", fieldName));
+		responseWrapper.setResponse(genericService.getMissingData(DocumentCategory.class, langCode, "code", fieldName));
 		return responseWrapper;
 	}
 }

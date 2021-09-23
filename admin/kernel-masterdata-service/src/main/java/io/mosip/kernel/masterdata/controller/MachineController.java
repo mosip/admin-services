@@ -78,8 +78,9 @@ public class MachineController {
 	 *         Language code {@link MachineResponseDto}
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetmachinesidlangcode())")
 	@GetMapping(value = { "/machines/id/{id}", "/machines/{id}/{langcode}" })
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_CLIENT','REGISTRATION_PROCESSOR','RESIDENT')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_CLIENT','REGISTRATION_PROCESSOR','RESIDENT')")
 	@ApiOperation(value = "Retrieve all Machine Details, /langCode pathparam will be deprecated soon", notes = "Retrieve all Machine Detail for given ID")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given ID"),
 			@ApiResponse(code = 404, message = "When No Machine Details found for the given ID"),
@@ -103,8 +104,9 @@ public class MachineController {
 	 */
 	@Deprecated
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetmachineslangcode())")
 	@GetMapping(value = { "/machines/{langcode}" })
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_CLIENT','REGISTRATION_PROCESSOR')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_CLIENT','REGISTRATION_PROCESSOR')")
 	@ApiOperation(value = "Retrieve all Machine Details, /langCode pathparam will be deprecated soon", notes = "Retrieve all Machine Detail")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Machine Details retrieved from database"),
@@ -121,8 +123,9 @@ public class MachineController {
 	 * 
 	 * @return MachineResponseDto all machines details {@link MachineResponseDto}
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_CLIENT','REGISTRATION_PROCESSOR')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_CLIENT','REGISTRATION_PROCESSOR')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetmachines())")
 	@GetMapping(value = "/machines")
 	@ApiOperation(value = "Retrieve all Machine Details", notes = "Retrieve all Machine Detail")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When all Machine retrieved from database"),
@@ -143,8 +146,9 @@ public class MachineController {
 	 *         {@link ResponseEntity}
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeletemachinesid())")
 	@DeleteMapping("/machines/{id}")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "Service to delete Machine ", notes = "Delete Machine  and return Machine  Id ")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When Machine successfully deleted"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
@@ -201,8 +205,9 @@ public class MachineController {
 	 * @return MachineResponseDto all machines details those are mapped with given
 	 *         registration Id {@link MachineResponseDto}
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_PROCESSOR','REGISTRATION_CLIENT','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_PROCESSOR','REGISTRATION_CLIENT','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetmachinesmappedmachinesregcenterid())")
 	@GetMapping(value = "/machines/mappedmachines/{regCenterId}")
 	@ApiOperation(value = "Retrieve all Machines which are mapped to given Registration Center Id", notes = "Retrieve all Machines which are mapped to given Registration Center Id")
 	@ApiResponses({
@@ -230,8 +235,9 @@ public class MachineController {
 	 * @return the pages of {@link MachineExtnDto}.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostmachinessearch())")
 	@PostMapping("/machines/search")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<MachineSearchDto>> searchMachine(
 			@RequestBody @Valid RequestWrapper<SearchDtoWithoutLangCode> request) {
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + MachineSearchDto.class.getCanonicalName(),
@@ -253,8 +259,9 @@ public class MachineController {
 	 * @return the {@link FilterResponseDto}.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostmachinesfiltervalues())")
 	@PostMapping("/machines/filtervalues")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseCodeDto> machineFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + MachineDto.class.getCanonicalName(),
@@ -276,8 +283,9 @@ public class MachineController {
 	 */
 	@ResponseFilter
 	@ApiOperation(value = "Decommission Machine")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutmachinesdecommissionmachineid())")
 	@PutMapping("/machines/decommission/{machineId}")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<IdResponseDto> decommissionMachine(@PathVariable("machineId") String machineId) {
 		auditUtil.auditRequest(MasterDataConstant.DECOMMISION_API_CALLED + DeviceDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
@@ -299,7 +307,8 @@ public class MachineController {
 	 *         {@link ResponseEntity}
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostmachines())")
 	@PostMapping("/machines")
 	@ApiOperation(value = "Service to save Machine", notes = "Saves Machine Detail and return Machine id")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Machine successfully created"),
@@ -323,8 +332,9 @@ public class MachineController {
 	 * @param machineCenterDto the request DTO for updating machine.
 	 * @return the response i.e. the updated machine.
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutmachines())")
 	@PutMapping("/machines")
 	@ApiOperation(value = "Service to upadte Machine", notes = "Update Machine Detail and return updated Machine")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Machine successfully updated"),
@@ -347,8 +357,9 @@ public class MachineController {
 	 * @param machineCenterDto the request DTO for updating machine.
 	 * @return the response i.e. the updated machine.
 	 */
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPatchmachines())")
 	@PatchMapping("/machines")
 	@ApiOperation(value = "Service to upadte Machine", notes = "Update Machine status and return status")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Machine successfully updated"),

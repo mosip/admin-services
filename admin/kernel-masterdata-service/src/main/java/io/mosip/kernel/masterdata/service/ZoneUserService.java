@@ -33,4 +33,6 @@ public interface ZoneUserService {
 	public List<ZoneUser> getZoneUsers(List<String> userIds);
 
 	public PageResponseDto<ZoneUserSearchDto> searchZoneUserMapping(SearchDtoWithoutLangCode request);
+	
+	public List<ZoneUser> getZoneUsersBasedOnZoneCode(String zoneCode);
 }

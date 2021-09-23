@@ -22,11 +22,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.mosip.kernel.masterdata.dto.KeyValues;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.dto.KeyValues;
 import io.mosip.kernel.masterdata.dto.request.RequestDTO;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 
@@ -42,7 +42,6 @@ public class ApplicantTypeControllerTest {
 	private PublisherClient<String, EventModel, HttpHeaders> publisher;
 	
 	private ObjectMapper mapper;
-	
 	private RequestWrapper<RequestDTO> reqDto;
 	
 	@Before
@@ -70,7 +69,7 @@ public class ApplicantTypeControllerTest {
 	@WithUserDetails("global-admin")
 	public void getApplicantTypeTest() throws Exception {
 
-		mockMvc.perform(MockMvcRequestBuilders.post("/documenttypes").contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(MockMvcRequestBuilders.post("/getApplicantType").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(reqDto))).andExpect(MockMvcResultMatchers.status().isOk());
 
 	}

@@ -31,9 +31,9 @@ import tss.tpm.TPMT_PUBLIC;
 
 @Component
 public class MachineUtil {
-	
+
 	private final Logger logger = LoggerFactory.getLogger(MachineUtil.class);
-	
+
 	private static final String ALGORITHM = "RSA";
 
 	@Autowired
@@ -44,6 +44,9 @@ public class MachineUtil {
 
 	@Autowired
 	private RegistrationCenterRepository centerRepository;
+	
+	public static String PUBLIC_KEY="PUBLIC";
+	public static String SIGN_PUBLIC_KEY="SIGN_PUBLIC";
 
 	public List<MachineSpecification> getMachineSpec() {
 		try {
@@ -65,7 +68,6 @@ public class MachineUtil {
 		}
 	}
 
-
 	public List<RegistrationCenter> getAllRegistrationCenters() {
 		try {
 			return centerRepository.findAllByIsDeletedFalseOrIsDeletedIsNull();
@@ -75,14 +77,15 @@ public class MachineUtil {
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
 		}
 	}
-	
-	public String getX509EncodedPublicKey(String encodedKey) {		
+
+	public String getX509EncodedPublicKey(String encodedKey, String key) {
 		try {
 			try {
 				TPMT_PUBLIC tpmPublic = TPMT_PUBLIC.fromTpm(CryptoUtil.decodeBase64(encodedKey));
 				return CryptoUtil.encodeBase64(tpmPublic.toTpm());
 			} catch (Throwable throwable) {
-				logger.error("Failed to parse TPM public key. Using java.security.KeyFactory, Considering it as NON-TPM key");
+				logger.error(
+						"Failed to parse TPM public key. Using java.security.KeyFactory, Considering it as NON-TPM key");
 				X509EncodedKeySpec keySpec = new X509EncodedKeySpec(CryptoUtil.decodeBase64(encodedKey));
 				KeyFactory kf = KeyFactory.getInstance(ALGORITHM);
 				PublicKey publicKey = kf.generatePublic(keySpec);
@@ -91,7 +94,11 @@ public class MachineUtil {
 		} catch (Exception e) {
 			logger.error("Invalid sign public key provided", e);
 		}
-		throw new RequestException(MachineErrorCode.INVALID_PUBLIC_KEY.getErrorCode(), 
-				MachineErrorCode.INVALID_PUBLIC_KEY.getErrorMessage());
+		if (key.equalsIgnoreCase(PUBLIC_KEY))
+			throw new RequestException(MachineErrorCode.INVALID_PUBLIC_KEY.getErrorCode(),
+					MachineErrorCode.INVALID_PUBLIC_KEY.getErrorMessage());
+		else
+			throw new RequestException(MachineErrorCode.INVALID_SIGN_PUBLIC_KEY.getErrorCode(),
+					MachineErrorCode.INVALID_SIGN_PUBLIC_KEY.getErrorMessage());
 	}
 }

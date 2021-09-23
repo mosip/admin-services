@@ -42,8 +42,9 @@ public class BiometricTypeController {
 	 * @return All Biometric types
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetbiometrictypes())")
 	@GetMapping
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<BiometricTypeResponseDto> getAllBiometricTypes() {
 
 		ResponseWrapper<BiometricTypeResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -58,8 +59,9 @@ public class BiometricTypeController {
 	 * 
 	 * @return All Biometric type details
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_PROCESSOR','REGISTRATION_OFFICER')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_PROCESSOR','REGISTRATION_OFFICER')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetbiometrictypeslangcode())")
 	@GetMapping("/{langcode}")
 	public ResponseWrapper<BiometricTypeResponseDto> getAllBiometricTypesByLanguageCode(
 			@PathVariable("langcode") String langCode) {
@@ -76,8 +78,9 @@ public class BiometricTypeController {
 	 * @param langCode the language code
 	 * @return Biometric type
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_PROCESSOR','REGISTRATION_OFFICER')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_PROCESSOR','REGISTRATION_OFFICER')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetbiometrictypescodelangcode())")
 	@GetMapping("/{code}/{langcode}")
 	public ResponseWrapper<BiometricTypeResponseDto> getBiometricTypeByCodeAndLangCode(
 			@PathVariable("code") String code, @PathVariable("langcode") String langCode) {
@@ -94,8 +97,9 @@ public class BiometricTypeController {
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostbiometrictypes())")
 	@PostMapping
 	public ResponseWrapper<CodeAndLanguageCodeID> createBiometricType(
 			@Valid @RequestBody RequestWrapper<BiometricTypeDto> biometricType) {

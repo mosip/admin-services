@@ -21,8 +21,9 @@ public class PossibleValuesController {
     private PossibleValuesService possibleValuesService;
 
     @ResponseFilter
+    @PreAuthorize("hasAnyRole(@authorizedRoles.getGetpossiblevaluesfieldname())")
     @GetMapping("/{fieldName}")
-    @PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_PROCESSOR')")
+    //@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_PROCESSOR')")
     @ApiOperation(value = "Service to fetch all possible values of any default / dynamic field")
     public ResponseWrapper<Map<String, List<PossibleValueDto>>> getAllValuesOfField(
             @PathVariable("fieldName") String fieldName,

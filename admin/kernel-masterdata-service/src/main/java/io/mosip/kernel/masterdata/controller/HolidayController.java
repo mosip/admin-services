@@ -78,8 +78,9 @@ public class HolidayController {
 	 * @return list of all holidays
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetholidays())")
 	@GetMapping
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<HolidayResponseDto> getAllHolidays() {
 		ResponseWrapper<HolidayResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.getAllHolidays());
@@ -93,8 +94,9 @@ public class HolidayController {
 	 * @return list of holidays for a particular holiday id
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetholidaysholidayid())")
 	@GetMapping("/{holidayid}")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<HolidayResponseDto> getAllHolidayById(@PathVariable("holidayid") int holidayId) {
 
 		ResponseWrapper<HolidayResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -111,8 +113,9 @@ public class HolidayController {
 	 * @return {@link HolidayResponseDto}
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetholidaysholidayidlangcode())")
 	@GetMapping("/{holidayid}/{langcode}")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_PROCESSOR','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','INDIVIDUAL','PRE_REGISTRATION','INDIVIDUAL')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_PROCESSOR','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','INDIVIDUAL','PRE_REGISTRATION','INDIVIDUAL')")
 	public ResponseWrapper<HolidayResponseDto> getAllHolidayByIdAndLangCode(@PathVariable("holidayid") int holidayId,
 			@PathVariable("langcode") String langCode) {
 		ResponseWrapper<HolidayResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -127,8 +130,9 @@ public class HolidayController {
 	 * @return primary key of inserted Holiday data
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostholidays())")
 	@PostMapping
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<HolidayIDDto> saveHoliday(@Valid @RequestBody RequestWrapper<HolidayDto> holiday) {
 		holidayValidator.validate(holiday.getRequest());
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + HolidayDto.class.getSimpleName(),
@@ -147,8 +151,9 @@ public class HolidayController {
 	 * @return id of updated Holiday data
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutholidays())")
 	@PutMapping
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "to update a holiday", response = HolidayIDDto.class)
 	public ResponseWrapper<HolidayIDDto> updateHoliday(@Valid @RequestBody RequestWrapper<HolidayUpdateDto> holiday) {
 		holidayValidator.validate(holiday.getRequest());
@@ -167,8 +172,9 @@ public class HolidayController {
 	 * @return id of updated Holiday data
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPatchholidays())")
 	@PatchMapping
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "to update a holiday status", response = HolidayIDDto.class)
 	public ResponseWrapper<StatusResponseDto> updateHolidayStatus(@RequestParam String holidayId,
 			@RequestParam boolean isActive) {
@@ -186,8 +192,9 @@ public class HolidayController {
 	 * @return id of the deleted Holiday data
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeleteholidays())")
 	@DeleteMapping
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "to delete a holiday", response = HolidayIdDeleteDto.class)
 	public ResponseWrapper<HolidayIdDeleteDto> deleteHoliday(
 			@Valid @RequestBody RequestWrapper<HolidayIdDeleteDto> request) {
@@ -206,8 +213,9 @@ public class HolidayController {
 	 * 
 	 * @return the response i.e. pages containing the holidays.
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetholidaysall())")
 	@GetMapping("/all")
 	@ApiOperation(value = "Retrieve all the holidays with additional metadata", notes = "Retrieve all the holidays with the additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of holidays"),
@@ -229,8 +237,9 @@ public class HolidayController {
 	 * @return the pages of {@link HolidaySearchDto}.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostholidayssearch())")
 	@PostMapping("/search")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<HolidaySearchDto>> searchMachine(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(
@@ -255,8 +264,9 @@ public class HolidayController {
 	 * @return the {@link FilterResponseDto}.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostholidaysfiltervalues())")
 	@PostMapping("/filtervalues")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> holidayFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -270,8 +280,9 @@ public class HolidayController {
 	 * @return List<String> list of missing ids/ codes
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetholidaysmissingidslangcode())")
 	@GetMapping("/missingids/{langcode}")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<List<MissingDataDto>> getMissingHolidayDetails(
 			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
 		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();

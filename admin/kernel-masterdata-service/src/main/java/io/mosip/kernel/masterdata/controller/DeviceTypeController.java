@@ -66,8 +66,9 @@ public class DeviceTypeController {
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdevicetypes())")
 	@PostMapping("/devicetypes")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to save Device Type", notes = "Saves Device Type and return Device Code and Languge Code")
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Device Type successfully created", response = CodeAndLanguageCodeID.class),
@@ -97,8 +98,9 @@ public class DeviceTypeController {
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutdevicetypes())")
 	@PutMapping("/devicetypes")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to save Device Type", notes = "Saves Device Type and return Device Code and Languge Code")
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Device Type successfully created", response = CodeAndLanguageCodeID.class),
@@ -129,8 +131,9 @@ public class DeviceTypeController {
 	 * @param orderBy    the order to be used
 	 * @return the response i.e. pages containing the device types.
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdevicetypesall())")
 	@GetMapping("/devicetypes/all")
 	@ApiOperation(value = "Retrieve all the device types with additional metadata", notes = "Retrieve all the device types with additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of device types"),
@@ -153,8 +156,9 @@ public class DeviceTypeController {
 	 * @return the pages of {@link DeviceTypeExtnDto}.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdevicetypessearch())")
 	@PostMapping(value = "/devicetypes/search")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Retrieve all Device Types for the given Filter parameters", notes = "Retrieve all Device Types for the given Filter parameters")
 	public ResponseWrapper<PageResponseDto<DeviceTypeExtnDto>> deviceTypeSearch(
 			@Valid @RequestBody RequestWrapper<SearchDtoWithoutLangCode> request) {
@@ -178,8 +182,9 @@ public class DeviceTypeController {
 	 * @return the {@link FilterResponseDto}.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdevicetypesfiltervalues())")
 	@PostMapping("/devicetypes/filtervalues")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseCodeDto> deviceTypeFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName(),
@@ -196,8 +201,9 @@ public class DeviceTypeController {
 	}
 	
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPatchdevicetypes())")
 	@PatchMapping("/devicetypes")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<StatusResponseDto> updateDeviceTypeStatus(@Valid @RequestParam boolean isActive,
 			@RequestParam String code) {
 		auditUtil.auditRequest(MasterDataConstant.STATUS_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName(),

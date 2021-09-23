@@ -360,10 +360,7 @@ public class DeviceServiceImpl implements DeviceService {
 
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
-			if (column.equalsIgnoreCase("name")) {
-				filter.setType("contains");
-				filter.setValue("*"+filter.getValue()+"*");
-			}
+			
 			if (column.equalsIgnoreCase("mapStatus")) {
 
 				if (filter.getValue().equalsIgnoreCase("assigned")) {
@@ -506,8 +503,9 @@ public class DeviceServiceImpl implements DeviceService {
 		List<RegistrationCenter> registrationCenterList = deviceUtil.getAllRegistrationCenters();
 		list.forEach(deviceSearchDto -> {
 			String regId = deviceSearchDto.getRegCenterId();
+			String langCode=deviceSearchDto.getLangCode();
 			registrationCenterList.forEach(registrationCenter -> {
-				if (registrationCenter.getId().equals(regId)) {
+				if (registrationCenter.getId().equals(regId) && registrationCenter.getLangCode().toString().equalsIgnoreCase(langCode)) {
 					deviceSearchDto.setMapStatus(registrationCenter.getName());
 				}
 			});

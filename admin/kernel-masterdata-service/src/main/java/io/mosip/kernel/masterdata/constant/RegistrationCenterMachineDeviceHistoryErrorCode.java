@@ -7,7 +7,7 @@ package io.mosip.kernel.masterdata.constant;
  */
 public enum RegistrationCenterMachineDeviceHistoryErrorCode {
 
-	REGISTRATION_CENTER_MACHINE_DEVICE_HISTORY_CREATE_EXCEPTION("KER-MSD-XXX",
+	REGISTRATION_CENTER_MACHINE_DEVICE_HISTORY_CREATE_EXCEPTION("KER-MSD-707",
 			"Error occurred while inserting a mapping for Center, Machine and Device");
 
 	private final String errorCode;

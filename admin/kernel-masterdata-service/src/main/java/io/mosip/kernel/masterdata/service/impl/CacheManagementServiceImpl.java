@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.masterdata.service.CacheManagementService;
 import io.mosip.kernel.masterdata.utils.CacheName;
 
+/**
+ * @author GOVINDARAJ VELU
+ *
+ */
 @Service
 public class CacheManagementServiceImpl implements CacheManagementService {
 	
@@ -17,6 +21,9 @@ public class CacheManagementServiceImpl implements CacheManagementService {
 	@Autowired
 	private CacheManager cacheManager;
 
+	/**
+	 * clear the cache by cache name
+	 */
 	@Override
 	public void clearCacheByCacheName(CacheName cacheName) {
 
@@ -28,6 +35,9 @@ public class CacheManagementServiceImpl implements CacheManagementService {
 		log.info("{} got cleared!", cacheName.name);
 	}
 
+	/**
+	 * clear the all cache
+	 */
 	@Override
 	public void clearCache() {
 		for (String name : cacheManager.getCacheNames()) {

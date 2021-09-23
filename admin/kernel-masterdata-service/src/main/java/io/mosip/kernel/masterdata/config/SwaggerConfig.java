@@ -1,17 +1,8 @@
 package io.mosip.kernel.masterdata.config;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.servlet.ServletContext;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

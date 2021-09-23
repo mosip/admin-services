@@ -758,10 +758,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		pageUtils.validateSortField(RegistrationCenterSearchDto.class, RegistrationCenter.class, dto.getSort());
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
-			if (column.equalsIgnoreCase("name")) {
-				filter.setType("contains");
-				filter.setValue("*" + filter.getValue() + "*");
-			}
 			// if registration center type name
 			if (MasterDataConstant.CENTERTYPENAME.equalsIgnoreCase(column)) {
 				serviceHelper.centerTypeSearch(addList, removeList, filter);

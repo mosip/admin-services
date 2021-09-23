@@ -44,8 +44,9 @@ public class SchemaController {
 	private IdentitySchemaService identitySchemaService;
 	
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostidschema())")
 	@PostMapping
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "Service to create identity schema")
 	public ResponseWrapper<IdSchemaResponseDto> createSchema(@Valid @RequestBody RequestWrapper<IdentitySchemaDto> schema) {
 		ResponseWrapper<IdSchemaResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -54,8 +55,9 @@ public class SchemaController {
 	}
 	
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutidschema())")
 	@PutMapping
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "Service to update identity schema in draft status")
 	public ResponseWrapper<IdSchemaResponseDto> updateSchema(@RequestParam(name = "id") @ApiParam(value = "schema id") String id,
 			@Valid @RequestBody RequestWrapper<IdentitySchemaDto> schema) {
@@ -65,8 +67,9 @@ public class SchemaController {
 	}
 	
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPutidschemapublish())")
 	@PutMapping("/publish")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "Service to publish identity schema in draft status")
 	public ResponseWrapper<String> publishSchema(@Valid @RequestBody RequestWrapper<IdSchemaPublishDto> idSchemaPublishDto) {
 		ResponseWrapper<String> responseWrapper = new ResponseWrapper<>();
@@ -75,8 +78,9 @@ public class SchemaController {
 	}
 	
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getDeleteidschema())")
 	@DeleteMapping
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "Service to delete identity schema in draft status")
 	public ResponseWrapper<String> deleteSchema(
 			@RequestParam(name = "id") @ApiParam(value = "schema id") String id) {
@@ -86,8 +90,9 @@ public class SchemaController {
 	}
 	
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetidschemaall())")
 	@GetMapping("/all")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ApiOperation(value = "Service to fetch all identity schema")
 	public ResponseWrapper<PageDto<IdSchemaResponseDto>> getAllSchema(
 			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page number", defaultValue = "0") int pageNumber,
@@ -100,8 +105,9 @@ public class SchemaController {
 	}
 	
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetidschemalatest())")
 	@GetMapping("/latest")
-	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_CLIENT','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','RESIDENT')")
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_CLIENT','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','RESIDENT')")
 	@ApiOperation(value = "Service to fetch latest published identity schema")
 	public ResponseWrapper<Map<String, Object>> getLatestPublishedSchema(
 			@RequestParam(name = "schemaVersion", defaultValue = "0", required = false) @ApiParam(value = "schema version", defaultValue = "0") double schemaVersion,

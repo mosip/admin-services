@@ -177,9 +177,9 @@ public class TemplateServiceImpl implements TemplateService {
 		Language language=null;
 		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 		try {
-			language=languageRepository.findLanguageByCodeNameAndNativeName(languageCode,languageCode,languageCode);
+			language=languageRepository.findLanguageByCodeNameAndNativeName(languageCode);
 			templateList = templateRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(language.getCode());
-		} catch (DataAccessException | DataAccessLayerException exception) {
+		} catch (DataAccessException | DataAccessLayerException | NullPointerException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(exception));
@@ -204,11 +204,13 @@ public class TemplateServiceImpl implements TemplateService {
 	public TemplateResponseDto getAllTemplateByLanguageCodeAndTemplateTypeCode(String languageCode,
 			String templateTypeCode) {
 		List<Template> templateList = null;
+		Language language=null;
 		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 		try {
+			language=languageRepository.findLanguageByCodeNameAndNativeName(languageCode);
 			templateList = templateRepository.findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(
-					languageCode, templateTypeCode);
-		} catch (DataAccessException | DataAccessLayerException exception) {
+					language.getCode(), templateTypeCode);
+		} catch (DataAccessException | DataAccessLayerException | NullPointerException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(exception));
