@@ -310,11 +310,11 @@ public class DocumentCategoryController {
 	 */
 	@ResponseFilter
 	@GetMapping("/documentcategories/missingids/{langcode}")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumentcategoriesmissingidslangcode())")
 	public ResponseWrapper<List<MissingDataDto>> getMissingDocumentCategoryDetails(
 			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
 		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(genericService.getMissingData(DocumentCategory.class, langCode, "name", fieldName));
+		responseWrapper.setResponse(genericService.getMissingData(DocumentCategory.class, langCode, "code", fieldName));
 		return responseWrapper;
 	}
 }

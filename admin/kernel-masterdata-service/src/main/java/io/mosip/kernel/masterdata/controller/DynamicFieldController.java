@@ -6,6 +6,10 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import io.mosip.kernel.masterdata.dto.MissingDataDto;
+import io.mosip.kernel.masterdata.entity.DocumentCategory;
+import io.mosip.kernel.masterdata.entity.DynamicField;
+import io.mosip.kernel.masterdata.service.GenericService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -49,10 +53,13 @@ public class DynamicFieldController {
 	private DynamicFieldService dynamicFieldService;
 
 	@Autowired
-	LocalDateTimeUtil localDateTimeUtil;
+	private LocalDateTimeUtil localDateTimeUtil;
 	
 	@Autowired
-	AuditUtil auditUtil;
+	private AuditUtil auditUtil;
+
+	@Autowired
+	private GenericService genericService;
 	
 	@ResponseFilter
 	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdynamicfields())")
@@ -203,6 +210,21 @@ public class DynamicFieldController {
 		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_SEARCH + SearchDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.SUCCESSFUL_SEARCH + SearchDto.class.getCanonicalName());
+		return responseWrapper;
+	}
+
+	/**
+	 * Function to fetch missing ids/codes in the provided language code
+	 *
+	 * @return List<String> list of missing ids/ codes
+	 */
+	@ResponseFilter
+	@GetMapping("/missingids/{langcode}")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdynamicfieldmissingidslangcode())")
+	public ResponseWrapper<List<MissingDataDto>> getMissingDynamicFields(
+			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
+		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(genericService.getMissingData(DynamicField.class, langCode, "id", fieldName));
 		return responseWrapper;
 	}
 

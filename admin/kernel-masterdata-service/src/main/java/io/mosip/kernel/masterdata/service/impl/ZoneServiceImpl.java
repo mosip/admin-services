@@ -220,5 +220,12 @@ public class ZoneServiceImpl implements ZoneService {
 		}
 		return filterResponseDto;
 	}
+	
+	@Override
+	public List<Zone> getZoneListBasedonZoneName(String zoneName) {
+
+		return zoneRepository.findListZonesFromZoneName(zoneName.toLowerCase());
+	}
+
 
 }

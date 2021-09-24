@@ -1011,13 +1011,13 @@ public class MachineServiceImpl implements MachineService {
 
 	private void updatePublicKey(String publicKey, String signPublicKey, Machine machineEntity) {
 		if(StringUtils.isNotEmpty(publicKey)) {
-			machineEntity.setPublicKey(machineUtil.getX509EncodedPublicKey(publicKey));
+			machineEntity.setPublicKey(machineUtil.getX509EncodedPublicKey(publicKey,MachineUtil.PUBLIC_KEY));
 			machineEntity.setKeyIndex(CryptoUtil.computeFingerPrint(CryptoUtil.decodeBase64(machineEntity.getPublicKey()),
 					null).toLowerCase());
 		}
 
 		if(StringUtils.isNotEmpty(signPublicKey)) {
-			machineEntity.setSignPublicKey(machineUtil.getX509EncodedPublicKey(signPublicKey));
+			machineEntity.setSignPublicKey(machineUtil.getX509EncodedPublicKey(signPublicKey,MachineUtil.SIGN_PUBLIC_KEY));
 			machineEntity.setSignKeyIndex(CryptoUtil.computeFingerPrint(CryptoUtil.decodeBase64(machineEntity.getSignPublicKey()),
 					null).toLowerCase());
 		}

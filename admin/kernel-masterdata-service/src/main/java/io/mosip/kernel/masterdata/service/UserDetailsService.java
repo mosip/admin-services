@@ -114,7 +114,7 @@ public interface UserDetailsService {
 	 */
 
 	public UsersDto getUsers(String roleName,int pageStart, int pageFetch,
-			String email, String firstName, String lastName, String username);	
+			String firstName, String lastName, String username);
 	
 	/**
 	 * 
