@@ -38,17 +38,8 @@ public class UserDetails extends BaseEntity implements Serializable {
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
 
-	@Column(name = "uin", length = 28)
-	private String uin;
-
 	@Column(name = "name", nullable = false, length = 64)
 	private String name;
-
-	@Column(name = "email", length = 64)
-	private String email;
-
-	@Column(name = "mobile", length = 16)
-	private String mobile;
 
 	@Column(name = "status_code", nullable = false, length = 36)
 	private String statusCode;
