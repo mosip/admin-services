@@ -37,14 +37,14 @@ public class ExceptionalHolidayController {
 	 */
 	@ResponseFilter
 	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetexceptionalholidaysregistrationcenterid())")
-	@GetMapping(value = "/exceptionalholidays/{registrationCenterId}/{languagecode}")
+	@GetMapping(value = "/exceptionalholidays/{registrationCenterId}/{langCode}")
 	@ApiOperation(value = "Retrieve all Exceptional Holidays for given Registration center ID and Languge Code", notes = "Retrieve all Week Days for given Registration center ID and Languge Code")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Exceptional Holidays from database for the given Registration center ID Languge Code"),
 			@ApiResponse(code = 404, message = "When Exceptional Holidays found for the given Registration center ID and Languge Code"),
 			@ApiResponse(code = 500, message = "While retrieving Exceptional Holidays any error occured") })
 	public ResponseWrapper<ExceptionalHolidayResponseDto> getExceptionalHolidays(
-			@PathVariable("registrationCenterId") String regCenterId, @PathVariable("languagecode") String langCode) {
+			@PathVariable("registrationCenterId") String regCenterId, @PathVariable("langCode") String langCode) {
 
 		ResponseWrapper<ExceptionalHolidayResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(service.getAllExceptionalHolidays(regCenterId, langCode));
