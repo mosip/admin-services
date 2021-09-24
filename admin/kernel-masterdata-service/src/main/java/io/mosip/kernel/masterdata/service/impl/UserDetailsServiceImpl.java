@@ -388,13 +388,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 			userDetailsDto = masterdataCreationUtil.updateMasterData(UserDetails.class, userDetailsDto);
 
-			//userDetailsPutDto.setEmail(userDetailsDto.getEmail());
 			userDetailsPutDto.setId(userDetailsDto.getId());
 			userDetailsPutDto.setIsActive(userDetailsDto.getIsActive());
-			//userDetailsPutDto.setMobile(userDetailsDto.getMobile());
 			userDetailsPutDto.setLangCode(userDetailsDto.getLangCode());
 			userDetailsPutDto.setName(userDetailsDto.getName());
-			//userDetailsPutDto.setUin(userDetailsDto.getUin());
 			userDetailsPutDto.setStatusCode(userDetailsDto.getStatusCode());
 			userDetailsPutDto.setRegCenterId(userDetailsDto.getRegCenterId());
 
