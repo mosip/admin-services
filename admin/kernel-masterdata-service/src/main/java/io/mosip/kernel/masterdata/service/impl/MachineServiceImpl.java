@@ -633,6 +633,7 @@ public class MachineServiceImpl implements MachineService {
 		List<SearchFilter> zoneFilter = new ArrayList<>();
 		if (zones != null && !zones.isEmpty()) {
 			zoneFilter.addAll(buildZoneFilter(zones));
+			if(null!=filterValueDto.getOptionalFilters() && filterValueDto.getOptionalFilters().size()>0)
 			zoneFilter.addAll(filterValueDto.getOptionalFilters());
 			filterValueDto.setOptionalFilters(zoneFilter);
 		} else {

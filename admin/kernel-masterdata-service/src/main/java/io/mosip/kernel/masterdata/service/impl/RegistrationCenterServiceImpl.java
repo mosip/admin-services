@@ -239,7 +239,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					RegistrationCenterErrorCode.HOLIDAY_YEAR_PATTERN.getErrorMessage());
 
 		}
-		
+
 		try {
 			registrationCenter = registrationCenterRepository.findByIdAndLangCode(registrationCenterId, langCode);
 		} catch (DataAccessException | DataAccessLayerException dataAccessException) {
@@ -822,7 +822,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<SearchFilter> zoneFilter = new ArrayList<>();
 		if (zones != null && !zones.isEmpty()) {
 			zoneFilter.addAll(buildZoneFilter(zones));
-			zoneFilter.addAll(filterValueDto.getOptionalFilters());
+			if (null != filterValueDto.getOptionalFilters() && filterValueDto.getOptionalFilters().size() > 0)
+				zoneFilter.addAll(filterValueDto.getOptionalFilters());
 			filterValueDto.setOptionalFilters(zoneFilter);
 		} else {
 			return filterResponseDto;
