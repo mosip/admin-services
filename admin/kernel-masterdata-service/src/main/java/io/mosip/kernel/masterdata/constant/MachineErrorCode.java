@@ -31,7 +31,7 @@ public enum MachineErrorCode {
 	MACHINE_ID("KER-MSD-437", "Machine ID %s does not exist for primary language"),
 	MAPPED_TO_REGCENTER("KER-MSD-352", "Machine cannot Decommissioned as some Registration centers are mapped"), 
 	INVALID_PUBLIC_KEY("KER-MSD-353", "Invalid public key provided"),
-	INVALID_SIGN_PUBLIC_KEY("KER-MSD-354", "Invalid sign public key provided");
+	INVALID_SIGN_PUBLIC_KEY("KER-MSD-410", "Invalid sign public key provided");
 	
 	private final String errorCode;
 	private final String errorMessage;

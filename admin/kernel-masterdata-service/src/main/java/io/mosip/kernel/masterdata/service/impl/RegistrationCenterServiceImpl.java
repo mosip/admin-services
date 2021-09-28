@@ -795,6 +795,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		dto.getFilters().removeAll(removeList);
 		dto.getFilters().addAll(addList);
+		dto.getFilters().stream().forEach(f->{
+			if(f.getType().isBlank()  || null==f.getType()) {
+				f.setType(FilterTypeEnum.CONTAINS.toString());
+			}
+		});
 		if (filterTypeValidator.validate(RegistrationCenterSearchDto.class, dto.getFilters()) && flag) {
 			// searching registration center
 			if (locationFilters.isEmpty()) {
