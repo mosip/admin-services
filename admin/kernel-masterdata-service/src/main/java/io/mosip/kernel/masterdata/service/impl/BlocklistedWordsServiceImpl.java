@@ -410,15 +410,7 @@ public class BlocklistedWordsServiceImpl implements BlocklistedWordsService {
 			pageUtils.validateSortField(BlocklistedWordsExtnDto.class, BlocklistedWords.class, sort);
 			dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
 			dto.setSort(Collections.emptyList());
-			List<SearchFilter> lst=new ArrayList<>();
-			dto.getFilters().stream().forEach(f->{
-				if(f.getType().equalsIgnoreCase(FilterTypeEnum.EQUALS.toString())) {
-					f.setValue("*"+f.getValue()+"*");
-					f.setType(FilterTypeEnum.CONTAINS.toString());
-				}
-				lst.add(f);
-			});
-			dto.setFilters(lst);
+
 			Page<BlocklistedWords> page = masterDataSearchHelper.searchMasterdata(BlocklistedWords.class, dto, null);
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				blockListedWords = MapperUtils.mapAll(page.getContent(), BlocklistedWordsExtnDto.class);
