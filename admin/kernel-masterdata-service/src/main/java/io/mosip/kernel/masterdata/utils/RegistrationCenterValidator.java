@@ -14,6 +14,10 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import io.mosip.kernel.masterdata.entity.*;
+import io.mosip.kernel.masterdata.repository.*;
+import io.mosip.kernel.masterdata.service.LocationService;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -26,16 +30,7 @@ import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.RegcenterBaseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
-import io.mosip.kernel.masterdata.entity.Holiday;
-import io.mosip.kernel.masterdata.entity.Machine;
-import io.mosip.kernel.masterdata.entity.RegistrationCenter;
-import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
-import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.exception.RequestException;
-import io.mosip.kernel.masterdata.repository.HolidayRepository;
-import io.mosip.kernel.masterdata.repository.MachineRepository;
-import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
-import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 
 @Component
 public class RegistrationCenterValidator {
@@ -64,6 +59,9 @@ public class RegistrationCenterValidator {
 	@Value("${mosip.optional-languages}")
 	private String optionalLang;
 
+	@Value("${mosip.recommended.centers.locCode")
+	private String locationHierarchy;
+
 	private Set<String> supportedLanguages;
 
 	/**
@@ -88,6 +86,9 @@ public class RegistrationCenterValidator {
 
 	@Autowired
 	HolidayRepository holidayRepository;
+
+	@Autowired
+	LocationRepository locationRepository;
 
 	// method to compare data
 	public <T extends RegcenterBaseDto, D extends RegcenterBaseDto> boolean isValid(T firstObj, D eachRecord,
@@ -320,7 +321,7 @@ public class RegistrationCenterValidator {
 
 		String latitude = registrationCenterDto.getLatitude();
 		String longitude = registrationCenterDto.getLongitude();
-
+		validateLocation(registrationCenterDto.getLocationCode(),errors);
 		zoneUserMapValidation(registrationCenterDto, errors, getZoneIdsForUser(registrationCenterDto.getLangCode()));
 		zoneStartEndTimeGtrValidation(registrationCenterDto, errors);
 		lunchStartEndTimeGrtValidation(registrationCenterDto, errors);
@@ -375,7 +376,7 @@ public class RegistrationCenterValidator {
 	// list zone Id mapped with the called user
 	private List<String> getZoneIdsForUser(String langCode) {
 		List<String> zoneIds;
-		List<Zone> zones = zoneUtils.getUserLeafZones(langCode);
+		List<Zone> zones = zoneUtils.getLeafZones(langCode);
 		zoneIds = zones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 		return zoneIds;
 	}
@@ -764,7 +765,8 @@ public class RegistrationCenterValidator {
 
 	public void validateRegCenterUpdate(String zoneCode,LocalTime centerStartTime, LocalTime centerEndTime,
 			LocalTime lunchStartingTime, LocalTime lunchEndingTime, String latitude, String longitude,
-			Map<String, Boolean> workingNonWorkingDaysDto, String langCode, List<ServiceError> errors) {
+			Map<String, Boolean> workingNonWorkingDaysDto, String langCode,String locationCode, List<ServiceError> errors) {
+		validateLocation(locationCode,errors);
 		zoneUserMapValidation(zoneCode, errors, getZoneIdsForUser(langCode));
 		zoneStartEndTimeGtrValidation(centerStartTime,centerEndTime, errors);
 		lunchStartEndTimeGrtValidation(lunchStartingTime, lunchEndingTime, centerStartTime, centerEndTime, errors);
@@ -772,6 +774,14 @@ public class RegistrationCenterValidator {
 		//checkWorkingNonworking(errors, workingNonWorkingDaysDto);
 		// holidayVlidation(registrationCenterDto, errors);
 
+	}
+
+	private void validateLocation(String locationCode,List<ServiceError> errors) {
+		Location location=locationRepository.findLocationByCodeAndLanguageCode(locationCode,LanguageUtils.getLanguage());
+		if(!locationHierarchy.equals(location.getHierarchyLevel())){
+			errors.add(new ServiceError(RegistrationCenterErrorCode.LOCATION_HIERARCHY_INVALID.getErrorCode(),
+					String.format(RegistrationCenterErrorCode.LOCATION_HIERARCHY_INVALID.getErrorMessage(),
+							locationCode)));		}
 	}
 
 	/*

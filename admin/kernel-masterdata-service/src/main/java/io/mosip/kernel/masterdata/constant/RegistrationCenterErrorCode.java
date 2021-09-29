@@ -90,7 +90,8 @@ public enum RegistrationCenterErrorCode {
 	EXP_HOLIDAY_DATE("ADM-SSS-sss", "this holiday date is persent in pre-defined list of country holidays"),
 	WORKING_NON_WORKING_NULL("ADM-fff-sss", "working non working request is null"),
 	HOLIDAY_YEAR_PATTERN("KER-MSD-443","Invalid year provided"),
-	EXP_HOLIDAY_NULL("ADM-fff-sss", "Expectional Holiday request is null");
+	EXP_HOLIDAY_NULL("ADM-fff-sss", "Expectional Holiday request is null"),
+	LOCATION_HIERARCHY_INVALID("ADM-MSD-445", "location hierarchy is invalid");
 	
 
 	private final String errorCode;

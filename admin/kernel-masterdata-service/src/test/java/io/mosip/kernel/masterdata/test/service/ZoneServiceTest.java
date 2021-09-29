@@ -8,6 +8,7 @@ import static org.mockito.Mockito.doNothing;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.kernel.masterdata.utils.LanguageUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,6 +56,9 @@ public class ZoneServiceTest {
 	
 	@MockBean
 	private AuditUtil auditUtil;
+
+	@MockBean
+	private LanguageUtils languageUtils;
 	
 	ZoneUser zoneUser = null;
 	
@@ -83,11 +87,11 @@ public class ZoneServiceTest {
 		assertEquals(null, response);
 	}
 	
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void zoneUserMappingTest() {
 		Mockito.when(zoneUserRepo.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),Mockito.anyString())).thenReturn(null);
 		Mockito.when(zoneUserRepo.findByUserId(Mockito.anyString())).thenReturn(zoneUser);
-		
+		Mockito.when(zoneUserRepo.findZoneByUserIdActiveAndNonDeleted(Mockito.anyString())).thenReturn(null);
 		ZoneUserDto request = new ZoneUserDto();
 		request.setIsActive(true);
 		request.setLangCode("fra");

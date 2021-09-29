@@ -931,7 +931,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	}
 
 	/**
-	 * @param exception
+	 *
+	 * @param errorCode
+	 * @param errorMessage
 	 */
 	private void auditException(String errorCode, String errorMessage) {
 		auditUtil.auditRequest(
@@ -1228,7 +1230,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					regCenterPutReqDto.getCenterStartTime(), regCenterPutReqDto.getCenterEndTime(),
 					regCenterPutReqDto.getLunchStartTime(), regCenterPutReqDto.getLunchEndTime(),
 					regCenterPutReqDto.getLatitude(), regCenterPutReqDto.getLongitude(),
-					regCenterPutReqDto.getWorkingNonWorkingDays(), regCenterPutReqDto.getLangCode(), errors);
+					regCenterPutReqDto.getWorkingNonWorkingDays(), regCenterPutReqDto.getLangCode(),regCenterPutReqDto.getLocationCode(), errors);
 			if (!errors.isEmpty()) {
 
 				throw new ValidationException(errors);
@@ -1671,7 +1673,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenterExtnDto registrationCenterExtnDto = new RegistrationCenterExtnDto();
 		registrationCenterValidator.validateRegCenterUpdate(dto.getZoneCode(), dto.getCenterStartTime(),
 				dto.getCenterEndTime(), dto.getLunchStartTime(), dto.getLunchEndTime(), dto.getLatitude(),
-				dto.getLongitude(), dto.getWorkingNonWorkingDays(), "all", errors);
+				dto.getLongitude(), dto.getWorkingNonWorkingDays(), "all",dto.getLocationCode(), errors);
 		if (!errors.isEmpty()) {
 			throw new ValidationException(errors);
 		}

@@ -3,11 +3,13 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import io.mosip.kernel.core.authmanager.authadapter.model.AuthUserDetails;
+import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
+import io.mosip.kernel.masterdata.exception.RequestException;
+import io.mosip.kernel.masterdata.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -22,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +53,11 @@ import io.mosip.kernel.masterdata.dto.UserDetailsGetExtnDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsPutDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsPutReqDto;
 import io.mosip.kernel.masterdata.dto.UsersDto;
+import io.mosip.kernel.masterdata.dto.ZoneUserExtnDto;
+import io.mosip.kernel.masterdata.dto.ZoneUserSearchDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ZoneNameResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.UserCenterMappingExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
@@ -58,6 +65,7 @@ import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.UserDetails;
 import io.mosip.kernel.masterdata.entity.UserDetailsHistory;
+import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.entity.ZoneUser;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -70,13 +78,6 @@ import io.mosip.kernel.masterdata.service.UserDetailsHistoryService;
 import io.mosip.kernel.masterdata.service.UserDetailsService;
 import io.mosip.kernel.masterdata.service.ZoneService;
 import io.mosip.kernel.masterdata.service.ZoneUserService;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
-import io.mosip.kernel.masterdata.utils.ExceptionUtils;
-import io.mosip.kernel.masterdata.utils.MapperUtils;
-import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
-import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
-import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
 /**
@@ -95,6 +96,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
 	UserDetailsHistoryService userDetailsHistoryService;
+	
+	@Value("${zone.user.details.url}")
+	private String userDetails;
 
 	@Autowired
 	MasterdataCreationUtil masterdataCreationUtil;
@@ -104,6 +108,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
 	private PageUtils pageUtils;
+
+	@Autowired
+	private ZoneUtils zoneUtils;
 
 	@Autowired
 	RegistrationCenterService registrationCenterService;
@@ -208,7 +215,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			if (userDetails == null)
 				throw new MasterDataServiceException(UserDetailsErrorCode.USER_NOT_FOUND.getErrorCode(),
 						UserDetailsErrorCode.USER_NOT_FOUND.getErrorMessage());
-			userDetailsRepository.delete(userDetails);
+			userDetailsRepository.deleteUserCenterMapping(id,LocalDateTime.now(),MetaDataUtils.getContextUser());
 			UserDetailsHistory udh = new UserDetailsHistory();
 			MapperUtils.map(userDetails, udh);
 			MapperUtils.setBaseFieldValue(userDetails, udh);
@@ -270,6 +277,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 						UserDetailsErrorCode.USER_ALREADY_EXISTS.getErrorMessage());
 
 			regCenters = registrationCenterService.getRegistrationCentersByID(userDetailsDto.getRegCenterId());
+			validateZone(regCenters.get(0).getZoneCode());
 			if (regCenters == null || regCenters.isEmpty()) {
 				auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL, UserDetails.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
@@ -364,7 +372,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 			List<RegistrationCenter> regCenters = registrationCenterService
 					.getRegistrationCentersByID(userDetailsDto.getRegCenterId()); // Throws exception if not found
-
+			validateZone(regCenters.get(0).getZoneCode());
 			if (regCenters == null || regCenters.isEmpty()) {
 				auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL, UserDetails.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
@@ -608,4 +616,173 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		}
 		return pageDto;
 	}
+	
+	@Override
+	public PageResponseDto<UserCenterMappingExtnDto> serachUserCenterMappingDetails(SearchDtoWithoutLangCode searchDto) {
+		PageResponseDto<ZoneUserSearchDto> pageDto = new PageResponseDto<>();
+		PageResponseDto<UserCenterMappingExtnDto> userCenterPageDto = new PageResponseDto<>();
+
+		List<UserDetails> userDetails = null;
+		List<UserCenterMappingExtnDto> userCenterMappingExtnDtos = null;
+
+		List<ZoneUserExtnDto> zoneUserSearchDetails = null;
+		List<ZoneUserSearchDto> zoneSearch = new ArrayList<>();
+		for (int i = 0; i < searchDto.getFilters().size(); i++) {
+			if (searchDto.getFilters().get(i).getColumnName().equalsIgnoreCase("userName")) {
+				String userId = getUserDetailsBasedonUserName(searchDto.getFilters().get(i).getValue());
+				if (null == userId)
+					return userCenterPageDto;
+				searchDto.getFilters().get(i).setValue(userId);
+				if (!userId.contains(",")) {
+
+					searchDto.getFilters().get(i).setType(FilterTypeEnum.EQUALS.toString());
+				} else {
+
+					searchDto.getFilters().get(i).setType(FilterTypeEnum.IN.toString());
+				}
+				searchDto.getFilters().get(i).setColumnName("userId");
+
+			}
+			if (searchDto.getFilters().get(i).getColumnName().equalsIgnoreCase("zoneName")) {
+				String zoneCodes = getZoneCode(searchDto.getFilters().get(i).getValue());
+				if (null == zoneCodes)
+					return userCenterPageDto;
+				searchDto.getFilters().get(i).setValue(zoneCodes);
+				if (!zoneCodes.contains(",")) {
+					searchDto.getFilters().get(i).setType(FilterTypeEnum.EQUALS.toString());
+				} else {
+					searchDto.getFilters().get(i).setType(FilterTypeEnum.IN.toString());
+				}
+				searchDto.getFilters().get(i).setColumnName("zoneCode");
+			}
+		}
+		Page<ZoneUser> page = masterDataSearchHelper.searchMasterdataWithoutLangCode(ZoneUser.class, searchDto, null);
+		userDetails=userDetailsRepository.findAllByAndIsDeletedFalseorIsDeletedIsNull();
+		if (page.getContent() != null && !page.getContent().isEmpty()) {
+			zoneUserSearchDetails = MapperUtils.mapAll(page.getContent(), ZoneUserExtnDto.class);
+			pageDto = PageUtils.pageResponse(page);
+			zoneUserSearchDetails.forEach(z -> {
+				ZoneUserSearchDto dto = new ZoneUserSearchDto();
+				dto.setCreatedBy(z.getCreatedBy());
+				dto.setCreatedDateTime(z.getCreatedDateTime());
+				dto.setDeletedDateTime(z.getDeletedDateTime());
+				dto.setIsActive(z.getIsActive());
+				dto.setIsDeleted(z.getIsDeleted());
+				dto.setLangCode(z.getLangCode());
+				dto.setZoneCode(z.getZoneCode());
+				dto.setUserId(z.getUserId());
+				dto.setUpdatedDateTime(z.getUpdatedDateTime());
+				dto.setUpdatedBy(z.getUpdatedBy());
+				if (null != z.getUserId()) {
+					dto.setUserName(getUserName(z.getUserId()));
+				} else
+					dto.setUserName(null);
+				if (null != z.getZoneCode()) {
+					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(), z.getLangCode());
+					dto.setZoneName(null != zn ? zn.getZoneName() : null);
+				} else
+					dto.setZoneName(null);
+				zoneSearch.add(dto);
+			});
+			userCenterMappingExtnDtos=dtoMapper(userDetails, zoneSearch);
+			userCenterPageDto.setData(userCenterMappingExtnDtos);
+		}
+		return userCenterPageDto;
+	}
+
+	private String getUserName(String userId) {
+
+		HttpHeaders h = new HttpHeaders();
+		h.setContentType(MediaType.APPLICATION_JSON);
+		UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(userDetails + "/admin");// .queryParam("appid",
+		// "admin");
+		List<String> userDetails = new ArrayList<>();
+		userDetails.add(userId);
+		RequestWrapper<Map<String, List<String>>> r = new RequestWrapper<>();
+		Map<String, List<String>> m = new HashMap();
+		m.put("userDetails", userDetails);
+		r.setRequest(m);
+		HttpEntity<RequestWrapper<Map<String, List<String>>>> httpReq = new HttpEntity<RequestWrapper<Map<String, List<String>>>>(
+				r, h);
+		ResponseEntity<String> response = restTemplate.exchange(uribuilder.toUriString(), HttpMethod.POST, httpReq,
+				String.class);
+		response.getBody();
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			Map m1 = mapper.readValue(response.getBody(), Map.class);
+			return ((Map<String, List<Map<String, String>>>) m1.get("response")).get("mosipUserDtoList").get(0)
+					.get("name");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+	
+	private List<UserCenterMappingExtnDto> dtoMapper(List<UserDetails> userDetails, List<ZoneUserSearchDto> zoneUserSearchDtos) {
+		List<UserCenterMappingExtnDto> userCenterMappingExtnDtos=new ArrayList();
+		userCenterMappingExtnDtos = MapperUtils.mapAll(zoneUserSearchDtos, UserCenterMappingExtnDto.class);
+		for (UserCenterMappingExtnDto userCenterMappingExtnDto : userCenterMappingExtnDtos) {
+			for (UserDetails ud:userDetails) {
+				if(ud.getId()==userCenterMappingExtnDto.getUserId()){
+					userCenterMappingExtnDto.setRegCenterId(ud.getRegCenterId());
+					userCenterMappingExtnDto.setIsActive(ud.getIsActive());
+				}
+			}
+		}
+
+		return userCenterMappingExtnDtos;
+	}
+	private String getUserDetailsBasedonUserName(String userName) {
+		String[] nameArray = userName.split(" ");
+		HttpHeaders h = new HttpHeaders();
+		h.setContentType(MediaType.APPLICATION_JSON);
+		UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(userDetails + "/admin")
+				.queryParam("firstName", nameArray[0]);
+		HttpEntity<RequestWrapper> httpReq = new HttpEntity<>(null, h);
+		ResponseEntity<String> response = restTemplate.exchange(uribuilder.toUriString(), HttpMethod.GET, httpReq,
+				String.class);
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			Map m1 = mapper.readValue(response.getBody(), Map.class);
+			// List<String> userId = new ArrayList<>();
+			String userId = new String();
+			List<Map<String, String>> m = ((Map<String, List<Map<String, String>>>) m1.get("response"))
+					.get("mosipUserDtoList");
+			if (m.size() == 1)
+				return m.get(0).get("userId");
+			for (int i = 0; i < m.size(); i++) {
+				userId = userId + m.get(i).get("userId") + ",";
+			}
+			return userId;
+		} catch (Exception e) {
+			e.printStackTrace();// TODO
+		}
+
+		return null;
+
+	}
+	
+	private String getZoneCode(String zoneName) {
+		List<Zone> zones = zoneservice.getZoneListBasedonZoneName(zoneName);
+		String zoneCodes = new String();
+		for (int i = 0; i < zones.size(); i++) {
+			zoneCodes = zoneCodes + zones.get(i).getCode() + ",";
+		}
+		return zoneCodes;
+	}
+	private void validateZone(String zoneCode) {
+		List<String> zoneIds;
+		// get user zone and child zones list
+		List<Zone> subZones = zoneUtils.getSubZones(LanguageUtils.getLanguage());
+
+		zoneIds = subZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
+
+		if (!(zoneIds.contains(zoneCode))) {
+			// check the given device zones will come under accessed user zones
+			throw new RequestException(UserDetailsErrorCode.INVALID_ZONE.getErrorCode(),
+					UserDetailsErrorCode.INVALID_ZONE.getErrorMessage());
+		}
+	}
+
 }
