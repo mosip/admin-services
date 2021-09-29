@@ -66,6 +66,7 @@ import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.service.MachineService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.LanguageUtils;
 import io.mosip.kernel.masterdata.utils.MachineUtil;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
@@ -499,10 +500,9 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	private void setMapStatus(List<MachineSearchDto> list) {
 		List<RegistrationCenter> registrationCenterList = machineUtil.getAllRegistrationCenters();
+		String langCode=LanguageUtils.getLangCode();
 		list.forEach(machineSearchDto -> {
 			String regId = machineSearchDto.getRegCenterId();
-			String zoneCode=machineSearchDto.getZoneCode();
-			String langCode=machineSearchDto.getLangCode();
 			registrationCenterList.forEach(registrationCenter -> {
 				if (registrationCenter.getId().equals(regId)  && registrationCenter.getLangCode().toString().equalsIgnoreCase(langCode)) {
 					machineSearchDto.setMapStatus(registrationCenter.getName());

@@ -4,11 +4,14 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -18,12 +21,15 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
+import io.mosip.kernel.core.authmanager.authadapter.model.AuthUserDetails;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
@@ -54,6 +60,7 @@ import io.mosip.kernel.masterdata.service.ZoneService;
 import io.mosip.kernel.masterdata.service.ZoneUserService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.LanguageUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
@@ -352,13 +359,12 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 				dto.setUpdatedDateTime(z.getUpdatedDateTime());
 				dto.setUpdatedBy(z.getUpdatedBy());
 				if (null != z.getUserId()) {
-					Optional<UserDetails> ud = userDetailsRepo.findById(z.getUserId());
-					dto.setUserName(ud.isEmpty() ? getUserName(z.getUserId()) : ud.get().getName());
+					dto.setUserName(getUserName(z.getUserId()));
 
 				} else
 					dto.setUserName(null);
 				if (null != z.getZoneCode()) {
-					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(), z.getLangCode());
+					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(), LanguageUtils.getLangCode());
 					dto.setZoneName(null != zn ? zn.getZoneName() : null);
 				} else
 					dto.setZoneName(null);

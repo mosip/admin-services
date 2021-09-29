@@ -63,6 +63,7 @@ import io.mosip.kernel.masterdata.service.ZoneService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.DeviceUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.LanguageUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
@@ -501,9 +502,9 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	private void setMapStatus(List<DeviceSearchDto> list) {
 		List<RegistrationCenter> registrationCenterList = deviceUtil.getAllRegistrationCenters();
+		String langCode=LanguageUtils.getLangCode();
 		list.forEach(deviceSearchDto -> {
 			String regId = deviceSearchDto.getRegCenterId();
-			String langCode=deviceSearchDto.getLangCode();
 			registrationCenterList.forEach(registrationCenter -> {
 				if (registrationCenter.getId().equals(regId) && registrationCenter.getLangCode().toString().equalsIgnoreCase(langCode)) {
 					deviceSearchDto.setMapStatus(registrationCenter.getName());
