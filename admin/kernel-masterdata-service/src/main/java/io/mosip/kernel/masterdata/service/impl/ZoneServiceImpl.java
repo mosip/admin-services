@@ -105,6 +105,36 @@ public class ZoneServiceImpl implements ZoneService {
 		return Collections.emptyList();	
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.ZoneService#getSubZone(java.lang.
+	 * String, java.lang.
+	 * String)
+	 */
+	@Override
+	public List<ZoneExtnDto> getSubZones(String langCode) {
+		List<Zone> zones = zoneUtils.getSubZones(langCode);
+		System.out.println(">>"+zones.toString());
+		if (zones != null && !zones.isEmpty()) {
+			List<Zone> zoneList = zones.parallelStream().filter(z -> z.getLangCode().equals(langCode))
+					.collect(Collectors.toList());
+			return MapperUtils.mapAll(zoneList, ZoneExtnDto.class);
+		}
+		return Collections.emptyList();	
+	}
+
+	
+	@Override
+	public List<ZoneExtnDto> getLeafZonesBasedOnLangCode(String langCode) {
+		List<Zone> zones = zoneUtils.getLeafZones(langCode);
+		if (zones != null && !zones.isEmpty()) {
+			return MapperUtils.mapAll(zones, ZoneExtnDto.class);
+		}
+		return Collections.emptyList();	
+	}
+
 	@Override
 	public ZoneNameResponseDto getZoneNameBasedOnLangCodeAndUserID(String userID, String langCode) {
 		ZoneNameResponseDto zoneNameResponseDto = new ZoneNameResponseDto();

@@ -7,6 +7,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.extn.ZoneExtnDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.entity.Zone;
+import io.mosip.kernel.masterdata.validator.ValidLangCode;
 
 /**
  * Zone service
@@ -45,4 +46,8 @@ public interface ZoneService {
 	public FilterResponseCodeDto zoneFilterValues(FilterValueDto filterValueDto);
 	
 	public List<Zone> getZoneListBasedonZoneName(String zoneName);
+
+	public List<ZoneExtnDto> getSubZones(String langCode);
+
+	public List<ZoneExtnDto> getLeafZonesBasedOnLangCode(String langCode);
 }
