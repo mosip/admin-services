@@ -116,7 +116,6 @@ public class ZoneServiceImpl implements ZoneService {
 	@Override
 	public List<ZoneExtnDto> getSubZones(String langCode) {
 		List<Zone> zones = zoneUtils.getSubZones(langCode);
-		System.out.println(">>"+zones.toString());
 		if (zones != null && !zones.isEmpty()) {
 			List<Zone> zoneList = zones.parallelStream().filter(z -> z.getLangCode().equals(langCode))
 					.collect(Collectors.toList());

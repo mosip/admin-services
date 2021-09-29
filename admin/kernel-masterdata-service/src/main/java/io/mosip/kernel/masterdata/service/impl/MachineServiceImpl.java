@@ -754,7 +754,6 @@ public class MachineServiceImpl implements MachineService {
 		// call method to check the machineZone will come under Accessed user zone or
 		// not
 		validateZone(machineZone);
-		System.out.println("machinePostReqDto = >>>>>>>>>>>>>>>>>>>" + machinePostReqDto);
 		try {
 			if(machinePostReqDto.getRegCenterId() != null && !machinePostReqDto.getRegCenterId().isEmpty()) {
 				validateRegistrationCenter(machinePostReqDto.getRegCenterId());
