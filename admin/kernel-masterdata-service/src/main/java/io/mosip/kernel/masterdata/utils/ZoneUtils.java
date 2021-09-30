@@ -286,6 +286,28 @@ public class ZoneUtils {
 		return zoneTree.findLeafsValue(node);
 		
 }
+	/**
+	 * method to get leaf zones
+	 * @param langCode
+	 * @return
+	 */
+	public List<Zone> getLeafZones(String langCode,String zoneCode) {
+		List<Zone> zones = getZones();
+		List<Zone> langSpecificZones = null;
+	//	ZoneUser zu=zoneUserRepository.findZoneByUserIdActiveAndNonDeleted(((AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId());
+		if (langCode.equals("all")) {
+			String lang=LanguageUtils.getLanguage();
+			langSpecificZones = zones.stream().filter(i -> lang.equals(i.getLangCode()))
+					.collect(Collectors.toList());
+		} else {
+			langSpecificZones = zones.stream().filter(i -> i.getLangCode().equals(langCode))
+					.collect(Collectors.toList());
+		}
+		List<Node<Zone>> tree = zoneTree.createTree(langSpecificZones);
+		Node<Zone> node = zoneTree.findNode(tree, zoneCode);
+		return zoneTree.findLeafsValue(node);
+
+	}
 	// ----------------------------------------
 	/**
 	 * Method to get the all the users zones based on the passed list of zone and

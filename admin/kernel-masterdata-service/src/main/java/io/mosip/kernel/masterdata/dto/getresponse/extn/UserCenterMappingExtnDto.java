@@ -18,21 +18,12 @@ public class UserCenterMappingExtnDto extends BaseDto{
 	@ApiModelProperty(value = "name", required = true, dataType = "java.lang.String")
 	private String userName;
 
-	@ApiModelProperty(value = "Language code", required = true, dataType = "java.lang.String")
-	private String langCode;
-	
-	private String zoneName;
-	
 	private String regCenterName;
-	
+
+	private String zoneName;
+
 	private String regCenterId;
 
-	private String statusCode;
-	
-	private LocalDateTime lastLoginDateTime;
-	
-	private String lastLoginMethod;
-	
 	private String zoneCode;
 
 }

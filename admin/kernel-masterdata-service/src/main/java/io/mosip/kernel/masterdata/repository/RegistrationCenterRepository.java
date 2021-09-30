@@ -219,4 +219,5 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 
 	@Query("FROM RegistrationCenter WHERE zoneCode =?1 and langCode =?2 and (isDeleted is null or isDeleted = false) and isActive = true")
 	List<RegistrationCenter> findAllActiveByZoneCodeAndLangCode(String zoneCode, String langCode);
+
 }

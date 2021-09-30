@@ -1724,8 +1724,18 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Override
 	public RegistrationCenterResponseDto getRegistrationCentersByZoneCode(String zoneCode, String langCode) {
 		List<RegistrationCenter> registrationCentersList = null;
+		List<String> zoneIds;
 		try {
-			registrationCentersList = registrationCenterRepository.findAllActiveByZoneCodeAndLangCode(zoneCode,
+			List<Zone> zones=zoneUtils.getLeafZones(langCode,zoneCode);
+			if(!zones.isEmpty()) {
+				registrationCentersList = new ArrayList<>();
+				zoneIds = zones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
+				for(String zoneC:zoneIds){
+					List<RegistrationCenter> rc=registrationCenterRepository.findAllActiveByZoneCodeAndLangCode(zoneC,langCode);
+					registrationCentersList.addAll(rc);
+				}
+			}else
+				registrationCentersList = registrationCenterRepository.findAllActiveByZoneCodeAndLangCode(zoneCode,
 					langCode);
 
 		} catch (DataAccessLayerException | DataAccessException e) {

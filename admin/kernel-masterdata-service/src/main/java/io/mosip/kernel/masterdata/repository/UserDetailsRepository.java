@@ -30,6 +30,9 @@ public interface UserDetailsRepository extends BaseRepository<UserDetails, Strin
 
 	@Query("FROM UserDetails m where m.id = ?1 and (m.isDeleted is null or m.isDeleted = false)")
 	UserDetails findByIdAndIsDeletedFalseorIsDeletedIsNull(String id);
+
+	@Query("FROM UserDetails m where m.id = ?1")
+	UserDetails findUserDetailsById(String id);
 	
 	@Query("FROM UserDetails m where (m.isDeleted is null or m.isDeleted = false)")
 	List<UserDetails> findAllByAndIsDeletedFalseorIsDeletedIsNull();
