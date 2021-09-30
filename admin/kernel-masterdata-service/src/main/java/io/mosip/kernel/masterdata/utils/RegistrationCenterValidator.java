@@ -59,7 +59,7 @@ public class RegistrationCenterValidator {
 	@Value("${mosip.optional-languages}")
 	private String optionalLang;
 
-	@Value("${mosip.recommended.centers.locCode")
+	@Value("${mosip.recommended.centers.locCode}")
 	private String locationHierarchy;
 
 	private Set<String> supportedLanguages;
@@ -778,7 +778,7 @@ public class RegistrationCenterValidator {
 
 	private void validateLocation(String locationCode,List<ServiceError> errors) {
 		Location location=locationRepository.findLocationByCodeAndLanguageCode(locationCode,LanguageUtils.getLanguage());
-		if(!locationHierarchy.equals(location.getHierarchyLevel())){
+		if(Integer.parseInt(locationHierarchy)!=location.getHierarchyLevel()){
 			errors.add(new ServiceError(RegistrationCenterErrorCode.LOCATION_HIERARCHY_INVALID.getErrorCode(),
 					String.format(RegistrationCenterErrorCode.LOCATION_HIERARCHY_INVALID.getErrorMessage(),
 							locationCode)));		}

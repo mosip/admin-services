@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import io.mosip.kernel.masterdata.utils.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,17 +91,6 @@ import io.mosip.kernel.masterdata.repository.UserDetailsRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
-import io.mosip.kernel.masterdata.utils.ExceptionUtils;
-import io.mosip.kernel.masterdata.utils.LocationUtils;
-import io.mosip.kernel.masterdata.utils.MapperUtils;
-import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
-import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
-import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import io.mosip.kernel.masterdata.utils.PageUtils;
-import io.mosip.kernel.masterdata.utils.RegistrationCenterServiceHelper;
-import io.mosip.kernel.masterdata.utils.RegistrationCenterValidator;
-import io.mosip.kernel.masterdata.utils.ZoneUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
@@ -823,7 +813,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	public FilterResponseCodeDto registrationCenterFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseCodeDto filterResponseDto = new FilterResponseCodeDto();
 		List<ColumnCodeValue> columnValueList = new ArrayList<>();
-		List<Zone> zones = zoneUtils.getUserZones();
+		List<Zone> zones = zoneUtils.getSubZones(filterValueDto.getLanguageCode());
 		List<SearchFilter> zoneFilter = new ArrayList<>();
 		if (zones != null && !zones.isEmpty()) {
 			zoneFilter.addAll(buildZoneFilter(zones));
@@ -872,7 +862,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 		List<String> zoneIds;
 		// get user zone and child zones list
-		List<Zone> userZones = zoneUtils.getUserZones();
+		List<Zone> userZones = zoneUtils.getSubZones(LanguageUtils.getLanguage());
 		zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 
 		// check the given registration center zone are come under
