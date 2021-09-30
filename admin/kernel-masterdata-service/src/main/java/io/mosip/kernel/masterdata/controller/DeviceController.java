@@ -79,13 +79,13 @@ public class DeviceController {
 	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_PROCESSOR','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER')")
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdeviceslanguagecode())")
-	@GetMapping(value = "/{languagecode}")
+	@GetMapping(value = "/{langCode}")
 	@ApiOperation(value = "Retrieve all Device for the given Languge Code", notes = "Retrieve all Device for the given Languge Code")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Device retrieved from database for the given Languge Code"),
 			@ApiResponse(code = 404, message = "When No Device Details found for the given Languge Code"),
 			@ApiResponse(code = 500, message = "While retrieving Device any error occured") })
-	public ResponseWrapper<DeviceResponseDto> getDeviceLang(@PathVariable("languagecode") String langCode) {
+	public ResponseWrapper<DeviceResponseDto> getDeviceLang(@PathVariable("langCode") String langCode) {
 
 		ResponseWrapper<DeviceResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.getDeviceLangCode(langCode));
@@ -105,14 +105,14 @@ public class DeviceController {
 	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_PROCESSOR','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER')")
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdeviceslanguagecodedevicetype())")
-	@GetMapping(value = "/{languagecode}/{deviceType}")
+	@GetMapping(value = "/{langCode}/{deviceType}")
 	@ApiOperation(value = "Retrieve all Device for the given Languge Code and Device Type", notes = "Retrieve all Device for the given Languge Code and Device Type")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Device retrieved from database for the given Languge Code"),
 			@ApiResponse(code = 404, message = "When No Device Details found for the given Languge Code and Device Type"),
 			@ApiResponse(code = 500, message = "While retrieving Device any error occured") })
 	public ResponseWrapper<DeviceLangCodeResponseDto> getDeviceLangCodeAndDeviceType(
-			@PathVariable("languagecode") String langCode, @PathVariable("deviceType") String deviceType) {
+			@PathVariable("langCode") String langCode, @PathVariable("deviceType") String deviceType) {
 
 		ResponseWrapper<DeviceLangCodeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.getDeviceLangCodeAndDeviceType(langCode, deviceType));

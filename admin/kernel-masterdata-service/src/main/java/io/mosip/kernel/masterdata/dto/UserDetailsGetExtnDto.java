@@ -19,21 +19,11 @@ public class UserDetailsGetExtnDto {
 	@Null
 	private String langCode;
 
-	/*@Null
-	@Size(min = 0, max = 28)
-	private String uin;*/
 
 	@Null
 	@StringFormatter(min = 0, max = 64)
 	private String name;
 
-	/*@Null
-	@StringFormatter(min = 0, max = 16)
-	private String email;
-
-	@Null
-	@StringFormatter(min = 0, max = 16)
-	private String mobile;*/
 
 	@Null
 	@StringFormatter(min = 0, max = 16)

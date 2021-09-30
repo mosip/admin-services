@@ -79,6 +79,44 @@ public class ZoneController {
 		response.setResponse(zoneService.getUserLeafZone(langCode));
 		return response;
 	}
+	
+	/**
+	 * api to fetch the logged-in user zone hierarchy leaf zones
+	 * 
+	 * @param langCode input language code
+	 * @return {@link List} of {@link ZoneExtnDto}
+	 */
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetzonesleafslangCode())")
+/*	@GetMapping("/leafs/{zoneCode}/{langCode}")
+	public ResponseWrapper<List<ZoneExtnDto>> getLeafZones(
+			@PathVariable("langCode") @ValidLangCode(message = "Language Code is Invalid") String langCode) {
+		ResponseWrapper<List<ZoneExtnDto>> response = new ResponseWrapper<>();
+		response.setResponse(zoneService.getUserLeafZone(langCode));
+		return response;
+	}*/
+	/**
+	 * api to fetch the logged-in user zone hierarchy leaf zones
+	 * 
+	 * @param langCode input language code
+	 * @return {@link List} of {@link ZoneExtnDto}
+	 */
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetzonesleafslangCode())")
+	@GetMapping("/subzone/{langCode}")
+	public ResponseWrapper<List<ZoneExtnDto>> getSubZones(
+			@PathVariable("langCode") @ValidLangCode(message = "Language Code is Invalid") String langCode) {
+		ResponseWrapper<List<ZoneExtnDto>> response = new ResponseWrapper<>();
+		response.setResponse(zoneService.getSubZones(langCode));
+		return response;
+	}
+	
+	@GetMapping("/leafzones/{langCode}")
+	public ResponseWrapper<List<ZoneExtnDto>> getLeafZonesBasedOnZoneCode(
+			@PathVariable("langCode") @ValidLangCode(message = "Language Code is Invalid") String langCode) {
+		ResponseWrapper<List<ZoneExtnDto>> response = new ResponseWrapper<>();
+		response.setResponse(zoneService.getLeafZonesBasedOnLangCode(langCode));
+		return response;
+	}
+	
 
 	//@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN','PRE_REGISTRATION','RESIDENT')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetzoneszonename())")
