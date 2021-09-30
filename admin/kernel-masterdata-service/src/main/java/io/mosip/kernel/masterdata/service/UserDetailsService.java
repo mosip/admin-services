@@ -13,6 +13,7 @@ import io.mosip.kernel.masterdata.dto.UserDetailsPutDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsPutReqDto;
 import io.mosip.kernel.masterdata.dto.UsersDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.UserCenterMappingExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
@@ -124,5 +125,7 @@ public interface UserDetailsService {
 	public PageResponseDto<UserDetailsExtnDto> searchUserDetails(SearchDtoWithoutLangCode searchDtoWithoutLangCode);
 
 	public StatusResponseDto updateUserStatus(String id, @Valid boolean isActive);
+
+	public PageResponseDto<UserCenterMappingExtnDto> serachUserCenterMappingDetails(SearchDtoWithoutLangCode request);
 
 }

@@ -40,17 +40,8 @@ public class UserDetailsHistory extends BaseEntity implements Serializable {
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
 
-	@Column(name = "uin", nullable = true, length = 28)
-	private String uin;
-
 	@Column(name = "name", nullable = true, length = 64)
 	private String name;
-
-	@Column(name = "email", nullable = true, length = 64)
-	private String email;
-
-	@Column(name = "mobile", nullable = true, length = 16)
-	private String mobile;
 
 	@Column(name = "status_code", nullable = true, length = 36)
 	private String statusCode;
