@@ -425,11 +425,10 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 	}
 
 	private String getUserDetailsBasedonUserName(String userName) {
-		String[] nameArray = userName.split(" ");
 		HttpHeaders h = new HttpHeaders();
 		h.setContentType(MediaType.APPLICATION_JSON);
 		UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(userDetails + "/admin")
-				.queryParam("firstName", nameArray[0]);
+				.queryParam("search", userName);
 		HttpEntity<RequestWrapper> httpReq = new HttpEntity<>(null, h);
 		ResponseEntity<String> response = restTemplate.exchange(uribuilder.toUriString(), HttpMethod.GET, httpReq,
 				String.class);
