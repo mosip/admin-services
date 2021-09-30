@@ -491,9 +491,9 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	private void setMapStatus(List<DeviceSearchDto> list) {
 		List<RegistrationCenter> registrationCenterList = deviceUtil.getAllRegistrationCenters();
+		String langCode=LanguageUtils.getLanguage();
 		list.forEach(deviceSearchDto -> {
 			String regId = deviceSearchDto.getRegCenterId();
-			String langCode=deviceSearchDto.getLangCode();
 			registrationCenterList.forEach(registrationCenter -> {
 				if (registrationCenter.getId().equals(regId) && registrationCenter.getLangCode().toString().equalsIgnoreCase(langCode)) {
 					deviceSearchDto.setMapStatus(registrationCenter.getName());

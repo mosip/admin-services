@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
@@ -11,8 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import io.mosip.kernel.masterdata.constant.UserDetailsErrorCode;
-import io.mosip.kernel.masterdata.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -56,6 +53,15 @@ import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
 import io.mosip.kernel.masterdata.service.UserDetailsService;
 import io.mosip.kernel.masterdata.service.ZoneService;
 import io.mosip.kernel.masterdata.service.ZoneUserService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.LanguageUtils;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.utils.ZoneUtils;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
 @Component
@@ -369,13 +375,11 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 				dto.setUpdatedDateTime(z.getUpdatedDateTime());
 				dto.setUpdatedBy(z.getUpdatedBy());
 				if (null != z.getUserId()) {
-					Optional<UserDetails> ud = userDetailsRepo.findById(z.getUserId());
-					dto.setUserName(ud.isEmpty() ? getUserName(z.getUserId()) : ud.get().getName());
-
+				dto.setUserName(getUserName(z.getUserId()));
 				} else
 					dto.setUserName(null);
 				if (null != z.getZoneCode()) {
-					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(), z.getLangCode());
+					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(),LanguageUtils.getLanguage());
 					dto.setZoneName(null != zn ? zn.getZoneName() : null);
 				} else
 					dto.setZoneName(null);
