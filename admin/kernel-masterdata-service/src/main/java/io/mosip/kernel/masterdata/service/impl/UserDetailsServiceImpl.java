@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 
 import io.mosip.kernel.core.authmanager.authadapter.model.AuthUserDetails;
 import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
+import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.exception.RequestException;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -102,6 +104,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
 	MasterdataCreationUtil masterdataCreationUtil;
+
+	@Autowired
+	RegistrationCenterRepository registrationCenterRepository;
 
 	@Autowired
 	private MasterdataSearchHelper masterDataSearchHelper;
@@ -621,8 +626,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	public PageResponseDto<UserCenterMappingExtnDto> serachUserCenterMappingDetails(SearchDtoWithoutLangCode searchDto) {
 		PageResponseDto<ZoneUserSearchDto> pageDto = new PageResponseDto<>();
 		PageResponseDto<UserCenterMappingExtnDto> userCenterPageDto = new PageResponseDto<>();
-
-		List<UserDetails> userDetails = null;
 		List<UserCenterMappingExtnDto> userCenterMappingExtnDtos = null;
 
 		List<ZoneUserExtnDto> zoneUserSearchDetails = null;
@@ -657,7 +660,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			}
 		}
 		Page<ZoneUser> page = masterDataSearchHelper.searchMasterdataWithoutLangCode(ZoneUser.class, searchDto, null);
-		userDetails=userDetailsRepository.findAllByAndIsDeletedFalseorIsDeletedIsNull();
 		if (page.getContent() != null && !page.getContent().isEmpty()) {
 			zoneUserSearchDetails = MapperUtils.mapAll(page.getContent(), ZoneUserExtnDto.class);
 			pageDto = PageUtils.pageResponse(page);
@@ -678,13 +680,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				} else
 					dto.setUserName(null);
 				if (null != z.getZoneCode()) {
-					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(), z.getLangCode());
+					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(), LanguageUtils.getLanguage());
+					System.out.println("ZoneNameResponseDto = " + zn);
 					dto.setZoneName(null != zn ? zn.getZoneName() : null);
 				} else
 					dto.setZoneName(null);
 				zoneSearch.add(dto);
 			});
-			userCenterMappingExtnDtos=dtoMapper(userDetails, zoneSearch);
+			userCenterMappingExtnDtos=dtoMapper(zoneSearch);
+			userCenterPageDto.setFromRecord(pageDto.getFromRecord());
+			userCenterPageDto.setToRecord(pageDto.getToRecord());
+			userCenterPageDto.setTotalRecord(pageDto.getTotalRecord());
 			userCenterPageDto.setData(userCenterMappingExtnDtos);
 		}
 		return userCenterPageDto;
@@ -710,8 +716,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			Map m1 = mapper.readValue(response.getBody(), Map.class);
-			return ((Map<String, List<Map<String, String>>>) m1.get("response")).get("mosipUserDtoList").get(0)
-					.get("name");
+			if(!m1.isEmpty()) {
+				return ((Map<String, List<Map<String, String>>>) m1.get("response")).get("mosipUserDtoList").get(0)
+						.get("name");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -719,26 +727,47 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	}
 	
-	private List<UserCenterMappingExtnDto> dtoMapper(List<UserDetails> userDetails, List<ZoneUserSearchDto> zoneUserSearchDtos) {
+	private List<UserCenterMappingExtnDto> dtoMapper(List<ZoneUserSearchDto> zoneUserSearchDtos) {
 		List<UserCenterMappingExtnDto> userCenterMappingExtnDtos=new ArrayList();
-		userCenterMappingExtnDtos = MapperUtils.mapAll(zoneUserSearchDtos, UserCenterMappingExtnDto.class);
+		mapZoneUserDetailsToUserCenter(zoneUserSearchDtos,userCenterMappingExtnDtos);
+		System.out.println("UserCenterMappingExtnDto = " + userCenterMappingExtnDtos.toString());
 		for (UserCenterMappingExtnDto userCenterMappingExtnDto : userCenterMappingExtnDtos) {
-			for (UserDetails ud:userDetails) {
-				if(ud.getId()==userCenterMappingExtnDto.getUserId()){
+			UserDetails ud=userDetailsRepository.findUserDetailsById(userCenterMappingExtnDto.getUserId());
+				if(ud!=null) {
+					System.out.println("UserDetails = " + ud.toString()+">>>>>"+ud);
+					RegistrationCenter regC=registrationCenterRepository.findByIdAndLangCode(ud.getRegCenterId(),LanguageUtils.getLanguage());
+					userCenterMappingExtnDto.setRegCenterName(regC.getName());
 					userCenterMappingExtnDto.setRegCenterId(ud.getRegCenterId());
 					userCenterMappingExtnDto.setIsActive(ud.getIsActive());
 				}
-			}
 		}
 
 		return userCenterMappingExtnDtos;
 	}
+
+	private void mapZoneUserDetailsToUserCenter(List<ZoneUserSearchDto> zoneUserSearchDtos, List<UserCenterMappingExtnDto> userCenterMappingExtnDtos) {
+		zoneUserSearchDtos.forEach(zu->{
+			UserCenterMappingExtnDto ucm=new UserCenterMappingExtnDto();
+			ucm.setZoneCode(zu.getZoneCode());
+			ucm.setZoneName(zu.getZoneName());
+			ucm.setUserId(zu.getUserId());
+			ucm.setUserName(zu.getUserId());
+			ucm.setIsActive(zu.getIsActive());
+			ucm.setCreatedBy(zu.getCreatedBy());
+			ucm.setCreatedDateTime(zu.getCreatedDateTime());
+			ucm.setUpdatedDateTime(zu.getUpdatedDateTime());
+			ucm.setUpdatedBy(zu.getUpdatedBy());
+			ucm.setDeletedDateTime(zu.getDeletedDateTime());
+			ucm.setIsDeleted(zu.getIsDeleted());
+			userCenterMappingExtnDtos.add(ucm);
+		});
+	}
+
 	private String getUserDetailsBasedonUserName(String userName) {
-		String[] nameArray = userName.split(" ");
 		HttpHeaders h = new HttpHeaders();
 		h.setContentType(MediaType.APPLICATION_JSON);
 		UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(userDetails + "/admin")
-				.queryParam("firstName", nameArray[0]);
+				.queryParam("search", userName);
 		HttpEntity<RequestWrapper> httpReq = new HttpEntity<>(null, h);
 		ResponseEntity<String> response = restTemplate.exchange(uribuilder.toUriString(), HttpMethod.GET, httpReq,
 				String.class);
