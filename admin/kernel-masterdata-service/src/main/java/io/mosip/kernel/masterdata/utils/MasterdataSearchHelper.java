@@ -62,8 +62,8 @@ import lombok.NonNull;
 @Transactional(readOnly = true)
 public class MasterdataSearchHelper {
 
-	private static String MISSING_IDS_QUERY = "select distinct A.ID, A.lang_code from ( select distinct ID, lang_code from TABLE where is_deleted IS NULL OR is_deleted = false) A left join ( select distinct ID, lang_code from TABLE where lang_code=:langCode where is_deleted IS NULL OR is_deleted = false) B on A.ID=B.ID where B.ID is null";
-	private static String MISSING_IDS_QUERY_WITH_FIELDNAME = "select distinct A.ID, A.lang_code, A.FIELD from ( select distinct ID, FIELD, lang_code from TABLE where is_deleted IS NULL OR is_deleted = false) A left join ( select distinct ID, lang_code from TABLE where lang_code=:langCode where is_deleted IS NULL OR is_deleted = false) B on A.ID=B.ID where B.ID is null";
+	private static String MISSING_IDS_QUERY = "select distinct A.ID, A.lang_code from ( select distinct ID, lang_code from TABLE where (is_deleted IS NULL OR is_deleted = false) ) A left join ( select distinct ID, lang_code from TABLE where lang_code=:langCode AND (is_deleted IS NULL OR is_deleted = false) ) B on A.ID=B.ID where B.ID is null";
+	private static String MISSING_IDS_QUERY_WITH_FIELDNAME = "select distinct A.ID, A.lang_code, A.FIELD from ( select distinct ID, FIELD, lang_code from TABLE where (is_deleted IS NULL OR is_deleted = false)) A left join ( select distinct ID, lang_code from TABLE where lang_code=:langCode AND (is_deleted IS NULL OR is_deleted = false)) B on A.ID=B.ID where B.ID is null";
 	private static final String LANGCODE_COLUMN_NAME = "langCode";
 	private static final String ENTITY_IS_NULL = "entity is null";
 	private static final String WILD_CARD_CHARACTER = "%";
