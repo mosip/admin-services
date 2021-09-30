@@ -488,10 +488,9 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	private void setMapStatus(List<MachineSearchDto> list) {
 		List<RegistrationCenter> registrationCenterList = machineUtil.getAllRegistrationCenters();
+		String langCode=LanguageUtils.getLanguage();
 		list.forEach(machineSearchDto -> {
 			String regId = machineSearchDto.getRegCenterId();
-			String zoneCode=machineSearchDto.getZoneCode();
-			String langCode=machineSearchDto.getLangCode();
 			registrationCenterList.forEach(registrationCenter -> {
 				if (registrationCenter.getId().equals(regId)  && registrationCenter.getLangCode().toString().equalsIgnoreCase(langCode)) {
 					machineSearchDto.setMapStatus(registrationCenter.getName());
