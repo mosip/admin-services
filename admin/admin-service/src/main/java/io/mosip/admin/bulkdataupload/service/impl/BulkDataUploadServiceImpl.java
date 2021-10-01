@@ -2,6 +2,7 @@ package io.mosip.admin.bulkdataupload.service.impl;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -108,29 +109,30 @@ import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.admin.packetstatusupdater.util.EventEnum;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
+
 /**
- * BulkDataUpload service 
+ * BulkDataUpload service
  * 
  * @author dhanendra
  *
  */
 @Service
-public class BulkDataUploadServiceImpl implements BulkDataService{
-	
+public class BulkDataUploadServiceImpl implements BulkDataService {
+
 	@Autowired
 	ApplicationContext applicationContext;
-	
-    @Autowired
-    JobLauncher jobLauncher;
-    
-    @Autowired
-    JobRepository jobRepository;
-    
-    @Autowired
+
+	@Autowired
+	JobLauncher jobLauncher;
+
+	@Autowired
+	JobRepository jobRepository;
+
+	@Autowired
 	private AuditUtil auditUtil;
-    
-    @Autowired
-    Mapper mapper;
+
+	@Autowired
+	Mapper mapper;
 
 	@Autowired
 	EntityManager em;
@@ -138,27 +140,26 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	@Autowired
 	EntityManagerFactory emf;
 
-    @Value("${mosip.kernel.packet-reciever-api-url}")
+	@Value("${mosip.kernel.packet-reciever-api-url}")
 	private String packetRecieverApiUrl;
-    
-    @Autowired
+
+	@Autowired
 	private RestTemplate restTemplate;
-    
-    @Autowired
-    BulkUploadTranscationRepository bulkTranscationRepo;
 
-    @Autowired
-    PlatformTransactionManager platformTransactionManager;
+	@Autowired
+	BulkUploadTranscationRepository bulkTranscationRepo;
 
-    private  Map<String,Class> entityMap=new HashMap<String, Class>();
-    
-    
+	@Autowired
+	PlatformTransactionManager platformTransactionManager;
+
+	private Map<String, Class> entityMap = new HashMap<String, Class>();
+
 	@Override
 	public BulkDataGetExtnDto getTrascationDetails(String transcationId) {
-		
-		BulkDataGetExtnDto bulkDataGetExtnDto=new BulkDataGetExtnDto();
+
+		BulkDataGetExtnDto bulkDataGetExtnDto = new BulkDataGetExtnDto();
 		try {
-			BulkUploadTranscation bulkUploadTranscation=bulkTranscationRepo.findTransactionById(transcationId);
+			BulkUploadTranscation bulkUploadTranscation = bulkTranscationRepo.findTransactionById(transcationId);
 			bulkDataGetExtnDto.setTranscationId(bulkUploadTranscation.getId());
 			bulkDataGetExtnDto.setCount(bulkUploadTranscation.getRecordCount());
 			bulkDataGetExtnDto.setOperation(bulkUploadTranscation.getUploadOperation());
@@ -169,439 +170,472 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 			bulkDataGetExtnDto.setUploadedBy(bulkUploadTranscation.getUploadedBy());
 			bulkDataGetExtnDto.setTimeStamp(bulkUploadTranscation.getCreatedDateTime().toString());
 		} catch (Exception e) {
-			auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_TRANSACTION_ERROR,transcationId +" - "+e.getMessage()));
-			throw new DataNotFoundException(BulkUploadErrorCode.UNABLE_TO_RETRIEVE_TRANSCATION.getErrorCode(), 
-					BulkUploadErrorCode.UNABLE_TO_RETRIEVE_TRANSCATION.getErrorMessage(),e);
+			auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_TRANSACTION_ERROR,
+					transcationId + " - " + e.getMessage()));
+			throw new DataNotFoundException(BulkUploadErrorCode.UNABLE_TO_RETRIEVE_TRANSCATION.getErrorCode(),
+					BulkUploadErrorCode.UNABLE_TO_RETRIEVE_TRANSCATION.getErrorMessage(), e);
 		}
-		
-		return  bulkDataGetExtnDto;
+
+		return bulkDataGetExtnDto;
 	}
 
-
 	@Override
-	public PageDto<BulkDataGetExtnDto> getAllTrascationDetails(int pageNumber, int pageSize, String sortBy,String orderBy, String category) {
+	public PageDto<BulkDataGetExtnDto> getAllTrascationDetails(int pageNumber, int pageSize, String sortBy,
+			String orderBy, String category) {
 		Page<BulkUploadTranscation> pageData = null;
-		//List<BulkDataGetExtnDto> bulkDataGetExtnDtos=new ArrayList<BulkDataGetExtnDto>();
-		List<BulkDataGetExtnDto> bulkDataGetExtnDtos2=new ArrayList<BulkDataGetExtnDto>();
-		PageDto<BulkDataGetExtnDto> pageDto2=new PageDto<BulkDataGetExtnDto>();
-		try{
-			Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy),sortBy));
-			pageData=bulkTranscationRepo.findByCategory(category,pageable);
-			for(BulkUploadTranscation bulkUploadTranscation:pageData.getContent()){
-				BulkDataGetExtnDto bulkDataGetExtnDto=new BulkDataGetExtnDto();
-				
-					bulkDataGetExtnDto.setTranscationId(bulkUploadTranscation.getId());
-					bulkDataGetExtnDto.setCount(bulkUploadTranscation.getRecordCount());
-					bulkDataGetExtnDto.setOperation(bulkUploadTranscation.getUploadOperation());
-					bulkDataGetExtnDto.setStatus(bulkUploadTranscation.getStatusCode());
-					bulkDataGetExtnDto.setStatusDescription(bulkUploadTranscation.getUploadDescription());
-					bulkDataGetExtnDto.setCategory(bulkUploadTranscation.getCategory());
-					bulkDataGetExtnDto.setEntityName(bulkUploadTranscation.getEntityName());
-					bulkDataGetExtnDto.setCategory(bulkUploadTranscation.getCategory());
-					bulkDataGetExtnDto.setUploadedBy(bulkUploadTranscation.getUploadedBy());
-					bulkDataGetExtnDto.setTimeStamp(bulkUploadTranscation.getCreatedDateTime().toString());
-					bulkDataGetExtnDtos2.add(bulkDataGetExtnDto);
-				
+		// List<BulkDataGetExtnDto> bulkDataGetExtnDtos=new
+		// ArrayList<BulkDataGetExtnDto>();
+		List<BulkDataGetExtnDto> bulkDataGetExtnDtos2 = new ArrayList<BulkDataGetExtnDto>();
+		PageDto<BulkDataGetExtnDto> pageDto2 = new PageDto<BulkDataGetExtnDto>();
+		try {
+			Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy));
+			pageData = bulkTranscationRepo.findByCategory(category, pageable);
+			for (BulkUploadTranscation bulkUploadTranscation : pageData.getContent()) {
+				BulkDataGetExtnDto bulkDataGetExtnDto = new BulkDataGetExtnDto();
+
+				bulkDataGetExtnDto.setTranscationId(bulkUploadTranscation.getId());
+				bulkDataGetExtnDto.setCount(bulkUploadTranscation.getRecordCount());
+				bulkDataGetExtnDto.setOperation(bulkUploadTranscation.getUploadOperation());
+				bulkDataGetExtnDto.setStatus(bulkUploadTranscation.getStatusCode());
+				bulkDataGetExtnDto.setStatusDescription(bulkUploadTranscation.getUploadDescription());
+				bulkDataGetExtnDto.setCategory(bulkUploadTranscation.getCategory());
+				bulkDataGetExtnDto.setEntityName(bulkUploadTranscation.getEntityName());
+				bulkDataGetExtnDto.setCategory(bulkUploadTranscation.getCategory());
+				bulkDataGetExtnDto.setUploadedBy(bulkUploadTranscation.getUploadedBy());
+				bulkDataGetExtnDto.setTimeStamp(bulkUploadTranscation.getCreatedDateTime().toString());
+				bulkDataGetExtnDtos2.add(bulkDataGetExtnDto);
+
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			auditUtil.setAuditRequestDto(EventEnum.BULKDATA_TRANSACTION_ALL_ERROR);
-			throw new DataNotFoundException(BulkUploadErrorCode.UNABLE_TO_RETRIEVE_TRANSCATION.getErrorCode(), 
-					BulkUploadErrorCode.UNABLE_TO_RETRIEVE_TRANSCATION.getErrorMessage(),e);
+			throw new DataNotFoundException(BulkUploadErrorCode.UNABLE_TO_RETRIEVE_TRANSCATION.getErrorCode(),
+					BulkUploadErrorCode.UNABLE_TO_RETRIEVE_TRANSCATION.getErrorMessage(), e);
 		}
-		pageDto2 = new PageDto<BulkDataGetExtnDto>(pageData.getNumber(), pageData.getTotalPages(), pageData.getTotalElements(),
-				bulkDataGetExtnDtos2);
+		pageDto2 = new PageDto<BulkDataGetExtnDto>(pageData.getNumber(), pageData.getTotalPages(),
+				pageData.getTotalElements(), bulkDataGetExtnDtos2);
 		return pageDto2;
 	}
 
-
 	private BulkDataResponseDto insertDataToCSVFile(String tableName, String operation, String category,
 			MultipartFile[] files) {
-    		
-			if (tableName.isBlank() || operation.isBlank() || files==null ||files.length==0) {
+
+		if (tableName.isBlank() || operation.isBlank()) {
+			auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_ARGUMENT);
+			throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
+					BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage());
+		}
+		if (files == null || files.length == 0) {
+			auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_ARGUMENT);
+			throw new RequestException(BulkUploadErrorCode.EMPTY_FILE.getErrorCode(),
+					BulkUploadErrorCode.EMPTY_FILE.getErrorMessage());
+
+		}
+		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD,
+				"{category:'" + category + "',tablename:'" + tableName + "',operation:'" + operation + "'}"));
+		BulkDataResponseDto bulkDataResponseDto = new BulkDataResponseDto();
+		mapper.init();
+		Class<?> entity = mapper.getEntity(tableName);
+		String repoBeanName = mapper.getRepo(entity);
+		JobBuilderFactory jobBuilderFactory = new JobBuilderFactory(jobRepository);
+		StepBuilderFactory stepBuilderFactory = new StepBuilderFactory(jobRepository, platformTransactionManager);
+		List<String> failureMessage = new ArrayList<String>();
+		// Map<String,String> failureMessage=new HashMap<String, String>();
+		int[] numArr = { 0 };
+		String[] status = { "PROCESS" };
+		Arrays.asList(files).stream().forEach(file -> {
+			if (file == null || null==file.getContentType() || file.getContentType().length()==0) {
 				auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_ARGUMENT);
-				throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
-						BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage());
+				throw new RequestException(BulkUploadErrorCode.EMPTY_FILE.getErrorCode(),
+						BulkUploadErrorCode.EMPTY_FILE.getErrorMessage());
+
 			}
-			auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD,"{category:'"+category+"',tablename:'"+tableName+"',operation:'"+operation+"'}"));
-    		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
-    		mapper.init();
-    		Class<?> entity=mapper.getEntity(tableName);
-    		String repoBeanName=mapper.getRepo(entity);
-        	JobBuilderFactory jobBuilderFactory = new JobBuilderFactory(jobRepository);
-        	StepBuilderFactory stepBuilderFactory = new StepBuilderFactory(jobRepository, platformTransactionManager);
-        	List<String> failureMessage = new ArrayList<String>();
-        	//Map<String,String> failureMessage=new HashMap<String, String>();
-            int[] numArr = {0};
-            String[] status= {"PROCESS"};
-            Arrays.asList(files).stream().forEach(file -> {
-            	auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV,operation + " from "+file.getOriginalFilename()));
-            	ItemReader<Object> itemReader;  
-                JobExecution jobExecution = null;
-                
-    			try {
+			auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV,
+					operation + " from " + file.getOriginalFilename()));
+			ItemReader<Object> itemReader;
+			JobExecution jobExecution = null;
 
-					String csvString = IOUtils.toString(file.getInputStream(), StandardCharsets.UTF_8);
-					String trimmedString = csvString.trim();
-					InputStream csvInputStream = new ByteArrayInputStream(
-							trimmedString.getBytes(StandardCharsets.UTF_8));
-					csvValidator(file.getOriginalFilename(), csvInputStream, entity);
-					InputStream csvStream = new ByteArrayInputStream(trimmedString.getBytes(StandardCharsets.UTF_8));
-					itemReader = itemReader(csvStream, entity);
-					ItemWriter<List<Object>> itemWriter = itemWriterMapper(repoBeanName, operationMapper(operation),
-							entity);
-    		        ItemProcessor itemProcessor=processor(operation);
-    		        JobParameters parameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters();
-    		        jobExecution = jobLauncher.run(job(jobBuilderFactory, stepBuilderFactory, itemReader,itemProcessor, itemWriter),parameters);
-    				JobInstance jobInstence=new JobInstance(jobExecution.getJobId(), "ETL-file-load");
-    				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_JOBDETAILS,jobExecution.getJobId().toString()));
-    				StepExecution stepExecution=jobRepository.getLastStepExecution(jobInstence, "ETL-file-load");
-    				status[0]=jobExecution.getStatus().toString();
-    				numArr[0]+=stepExecution.getReadCount();
-					if (status[0].equalsIgnoreCase("FAILED")) {
-						String msg = stepExecution.getExitStatus().getExitDescription().toString();
-						if (msg.length() >= 256) {
-							failureMessage.add(msg.substring(0, 250));
-							auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV_STATUS_ERROR,"{filename: '"+file.getOriginalFilename()+"',operation:'"+operation+"',jobid:'"+jobExecution.getJobId()+"', message: '"+msg.substring(0, 250)+"'}"));
-						} else {
-							failureMessage.add(msg);
-							auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV_STATUS_ERROR,"{filename: '"+file.getOriginalFilename()+"',operation:'"+operation+"',jobid:'"+jobExecution.getJobId()+"',message: '"+msg+"'}"));
-						}
-    				}
-    				else
-    				    auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV_STATUS,"{fileName: '"+file.getOriginalFilename()+"',operation:'"+operation+"',jobid:'"+jobExecution.getJobId()+"',message: '"+jobExecution.getStatus().toString()+"'}"));
-    			}catch (IOException e) {
-    				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,"{fileName: '"+file.getOriginalFilename()+"',operation:'"+operation+"',error: "+e.getMessage()+"}"));
-    				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
-    	  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
-    			}
-    			catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
-    					| JobParametersInvalidException e) {
-    				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,"{fileName: '"+file.getOriginalFilename()+"',operation:'"+operation+"',error: "+e.getMessage()+"}"));
-    				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
-    	  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
-    			}
-            });
-            
-            BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(numArr[0],operation,entity.getSimpleName(),category,failureMessage,status[0]);
-            bulkDataResponseDto=setResponseDetails(bulkUploadTranscation, tableName);
-    		return bulkDataResponseDto;
-    	}
+			try {
 
-    	@Override
-    	public BulkDataResponseDto bulkDataOperation(String tableName,String operation,String category,MultipartFile[] files) {
-    		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
-    		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CATEGORY,category));
-    		if(category.equalsIgnoreCase("masterdata")) {
-    			bulkDataResponseDto=insertDataToCSVFile(tableName, operation, category, files);
-    		}
-    		else if(category.equalsIgnoreCase("packet")) {
-    			bulkDataResponseDto=uploadPackets(files,operation, category);
-    		}
-    		else {
-    			auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_CATEGORY);
-				throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
-						BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage());
-				
-    		}
-            return bulkDataResponseDto;
-     	}
-
-    	
-		private BulkDataResponseDto uploadPackets(MultipartFile[] files, String operation, String category) {
-    		
-    		if ( files==null ||files.length==0) {
-    			auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_ARGUMENT);
-				throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
-						BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage());
+				String csvString = IOUtils.toString(file.getInputStream(), StandardCharsets.UTF_8);
+				String trimmedString = csvString.trim();
+				InputStream csvInputStream = new ByteArrayInputStream(trimmedString.getBytes(StandardCharsets.UTF_8));
+				csvValidator(file.getOriginalFilename(), csvInputStream, entity);
+				InputStream csvStream = new ByteArrayInputStream(trimmedString.getBytes(StandardCharsets.UTF_8));
+				itemReader = itemReader(csvStream, entity);
+				ItemWriter<List<Object>> itemWriter = itemWriterMapper(repoBeanName, operationMapper(operation),
+						entity);
+				ItemProcessor itemProcessor = processor(operation);
+				JobParameters parameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
+						.toJobParameters();
+				jobExecution = jobLauncher.run(
+						job(jobBuilderFactory, stepBuilderFactory, itemReader, itemProcessor, itemWriter), parameters);
+				JobInstance jobInstence = new JobInstance(jobExecution.getJobId(), "ETL-file-load");
+				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_JOBDETAILS,
+						jobExecution.getJobId().toString()));
+				StepExecution stepExecution = jobRepository.getLastStepExecution(jobInstence, "ETL-file-load");
+				status[0] = jobExecution.getStatus().toString();
+				numArr[0] += stepExecution.getReadCount();
+				if (status[0].equalsIgnoreCase("FAILED")) {
+					String msg = stepExecution.getExitStatus().getExitDescription().toString();
+					if (msg.length() >= 256) {
+						failureMessage.add(msg.substring(0, 250));
+						auditUtil.setAuditRequestDto(
+								EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV_STATUS_ERROR,
+										"{filename: '" + file.getOriginalFilename() + "',operation:'" + operation
+												+ "',jobid:'" + jobExecution.getJobId() + "', message: '"
+												+ msg.substring(0, 250) + "'}"));
+					} else {
+						failureMessage.add(msg);
+						auditUtil.setAuditRequestDto(
+								EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV_STATUS_ERROR,
+										"{filename: '" + file.getOriginalFilename() + "',operation:'" + operation
+												+ "',jobid:'" + jobExecution.getJobId() + "',message: '" + msg + "'}"));
+					}
+				} else
+					auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV_STATUS,
+							"{fileName: '" + file.getOriginalFilename() + "',operation:'" + operation + "',jobid:'"
+									+ jobExecution.getJobId() + "',message: '" + jobExecution.getStatus().toString()
+									+ "'}"));
+			} catch (IOException e) {
+				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,
+						"{fileName: '" + file.getOriginalFilename() + "',operation:'" + operation + "',error: "
+								+ e.getMessage() + "}"));
+				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
+						BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
+			} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
+					| JobParametersInvalidException e) {
+				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,
+						"{fileName: '" + file.getOriginalFilename() + "',operation:'" + operation + "',error: "
+								+ e.getMessage() + "}"));
+				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
+						BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
 			}
-    		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD,"{category:'"+category+"',operation:'"+operation+"'}"));
-    		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
-    		List<String> fileNames = new ArrayList<>();
-    		int[] numArr = {0};
-    		
-    		//Map<String,String> failureMessage=new HashMap<String, String>();
-    		List<String> failureMessage = new ArrayList<String>();
-    		String[] msgArr= {"FAILED"};
-    	    Arrays.asList(files).stream().forEach(file -> {
-    	    	auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_PACKET_UPLOAD, file.getOriginalFilename()));
-    	    	 HttpHeaders headers = new HttpHeaders();
-    	         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-    	         MultiValueMap<String, String> fileMap = new LinkedMultiValueMap<>();
-    	         ContentDisposition contentDisposition = ContentDisposition
-    	                 .builder("form-data")
-    	                 .name("file")
-    	                 .filename(file.getOriginalFilename())
-    	                 .build();
-    	         fileMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
-    	        	         try {
-    	        	        	 HttpEntity<byte[]> fileEntity = new HttpEntity<>(file.getBytes(), fileMap);
+		});
 
-    	        		         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-    	        		         body.add("file", fileEntity);
+		BulkUploadTranscation bulkUploadTranscation = saveTranscationDetails(numArr[0], operation,
+				entity.getSimpleName(), category, failureMessage, status[0]);
+		bulkDataResponseDto = setResponseDetails(bulkUploadTranscation, tableName);
+		return bulkDataResponseDto;
+	}
 
-    	        		         HttpEntity<MultiValueMap<String, Object>> requestEntity =
-    	        		                 new HttpEntity<>(body, headers);
+	@Override
+	public BulkDataResponseDto bulkDataOperation(String tableName, String operation, String category,
+			MultipartFile[] files) {
+		BulkDataResponseDto bulkDataResponseDto = new BulkDataResponseDto();
+		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CATEGORY, category));
+		if (category.equalsIgnoreCase("masterdata")) {
+			bulkDataResponseDto = insertDataToCSVFile(tableName, operation, category, files);
+		} else if (category.equalsIgnoreCase("packet")) {
+			bulkDataResponseDto = uploadPackets(files, operation, category);
+		} else {
+			auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_CATEGORY);
+			throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
+					BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage());
 
-    	             ResponseEntity<String> response = restTemplate.exchange(
-    	                     packetRecieverApiUrl,
-    	                     HttpMethod.POST,
-    	                     requestEntity,
-    	                     String.class);
-    	             JSONObject josnObject=new JSONObject(response.getBody());
-    	             if(!josnObject.get("response").equals(null)) {
-    	            	 numArr[0]++;
-    	            	 msgArr[0]="Success";
-    	            	 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_PACKET_STATUS,"{packetid: '"+file.getOriginalFilename()+"', message: 'success'}"));
-    	            	 
-    	             }else {
-    	            	 String str=josnObject.get("errors").toString();
-    	            	 JSONArray jsonArray=new JSONArray(str);
-    	            	 JSONObject josnObject1=new JSONObject(jsonArray.get(0).toString());
-    	            	 
-    	            	 failureMessage.add(failureMessage.contains(josnObject1.get("message").toString())?null:josnObject1.get("message").toString());
-    	            	// failureMessage.put(file.getOriginalFilename(), josnObject1.get("message").toString());
-    	                auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_PACKET_STATUS_ERROR,"{packetid: '"+file.getOriginalFilename()+"', message: '"+josnObject1.get("message").toString()+"'}"));
-    	             }
-    	         } catch (HttpClientErrorException e) {
-    	        	 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,"{packetid: '"+file.getOriginalFilename()+"',operation:'"+operation+"',error: "+e.getMessage()+"}"));
-    	        	 throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
-    		  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
-    	         } catch (IOException e) {
-    	        	 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,"{packetid: '"+file.getOriginalFilename()+"',operation:'"+operation+"',error: "+e.getMessage()+"}"));
-    	        	 throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
-    		  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
-    			} catch (JSONException e) {
-    				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,"{packetid: '"+file.getOriginalFilename()+"',operation:'"+operation+"',error: "+e.getMessage()+"}"));
-    				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
-    	  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
-    			}
-    	         fileNames.add(file.getOriginalFilename());
-    	      });
-    	      BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(numArr[0],operation,"",category,failureMessage,msgArr[0]);
-    	      bulkDataResponseDto=setResponseDetails(bulkUploadTranscation, "");
-    		return bulkDataResponseDto;
-    	}
-        
-
-		private Job job(JobBuilderFactory jobBuilderFactory,
-            StepBuilderFactory stepBuilderFactory,
-            ItemReader<Object> itemReader,
-            ItemProcessor itemProcessor, // ItemProcessor<User, User> itemProcessor,
-            //ItemWriter<AbstractPersistable> itemWriter
-            ItemWriter<List<Object>> itemWriter
-		) {
-		
-		 Step step = stepBuilderFactory.get("ETL-file-load")
-		         .<Object, List<Object>>chunk(100)
-		         .reader(itemReader)
-		         .processor(itemProcessor)
-		         .writer(itemWriter)
-		         .build();
-		
-		
-		 return jobBuilderFactory.get("ETL-Load")
-		         .incrementer(new RunIdIncrementer())
-		         .start(step)
-		         .build();
 		}
+		return bulkDataResponseDto;
+	}
 
-		private ConversionService testConversionService() {
-			DefaultConversionService testConversionService = new DefaultConversionService();
-			DefaultConversionService.addDefaultConverters(testConversionService);
-			testConversionService.addConverter(new Converter<String, LocalDateTime>() {
-				@Override
-				public LocalDateTime convert(String text) {
-					return LocalDateTime.parse(text, DateTimeFormatter.ISO_DATE_TIME);
-				}
-			});
-			testConversionService.addConverter(new Converter<String, LocalDate>() {
+	private BulkDataResponseDto uploadPackets(MultipartFile[] files, String operation, String category) {
 
-				@Override
-				public LocalDate convert(String text) {
-					return LocalDate.parse(text, DateTimeFormatter.ISO_DATE);
-				}
-
-			});
-
-			testConversionService.addConverter(new Converter<String, LocalTime>() {
-
-				@Override
-				public LocalTime convert(String text) {
-					return LocalTime.parse(text, DateTimeFormatter.ISO_TIME);
-				}
-
-			});
-
-
-			return testConversionService;
+		if (files == null || files.length == 0) {
+			auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_ARGUMENT);
+			throw new RequestException(BulkUploadErrorCode.EMPTY_FILE.getErrorCode(),
+					BulkUploadErrorCode.EMPTY_FILE.getErrorMessage());
 		}
-	 @StepScope
-		private FlatFileItemReader<Object> itemReader(InputStream file, Class<?> clazz) throws IOException {
-		 
-		    DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
-	        lineTokenizer.setDelimiter(",");
-	        lineTokenizer.setStrict(false);
-	        FlatFileItemReader<Object> flatFileItemReader = new FlatFileItemReader<>();
-			flatFileItemReader.setResource(new InputStreamResource(file));
-	        flatFileItemReader.setName("CSV-Reader");
-	        flatFileItemReader.setLinesToSkip(1);
-	        flatFileItemReader.setSkippedLinesCallback(new LineCallbackHandler() {
-	            @Override
-	            public void handleLine(String s) {
-	                lineTokenizer.setNames(s.split(","));
-	            }
-	        });
-	        BeanWrapperFieldSetMapper<Object> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
-	        fieldSetMapper.setTargetType(clazz);
-			fieldSetMapper.setConversionService(testConversionService());
-	        DefaultLineMapper<Object> defaultLineMapper = new DefaultLineMapper<>();
-	        defaultLineMapper.setLineTokenizer(lineTokenizer);
-	        defaultLineMapper.setFieldSetMapper(fieldSetMapper);
-	        flatFileItemReader.setLineMapper(defaultLineMapper);
-	        return flatFileItemReader;
+	
+		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD,
+				"{category:'" + category + "',operation:'" + operation + "'}"));
+		BulkDataResponseDto bulkDataResponseDto = new BulkDataResponseDto();
+		List<String> fileNames = new ArrayList<>();
+		int[] numArr = { 0 };
 
-	 }
-
-		private ItemProcessor processor(String operation) {
-		
-		 
-		 ItemProcessor itemprocessor=new ItemProcessor() {
-			 
+		// Map<String,String> failureMessage=new HashMap<String, String>();
+		List<String> failureMessage = new ArrayList<String>();
+		String[] msgArr = { "FAILED" };
+		Arrays.asList(files).stream().forEach(file -> {
 			
-			LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));  
+			if (file.getName().endsWith(".zip")) {
+				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,
+						"{packetid: '" + files.toString()+ "',error: Supported format are only zip file }"));
+				throw new RequestException(BulkUploadErrorCode.INVALID_PCK_FILE_FORMAT.getErrorCode(),
+						BulkUploadErrorCode.INVALID_PCK_FILE_FORMAT.getErrorMessage());
+			}
+			auditUtil.setAuditRequestDto(
+					EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_PACKET_UPLOAD, file.getOriginalFilename()));
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+			MultiValueMap<String, String> fileMap = new LinkedMultiValueMap<>();
+			ContentDisposition contentDisposition = ContentDisposition.builder("form-data").name("file")
+					.filename(file.getOriginalFilename()).build();
+			fileMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
+			try {
+				
+				HttpEntity<byte[]> fileEntity = new HttpEntity<>(file.getBytes(), fileMap);
+
+				MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+				body.add("file", fileEntity);
+
+				HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+				ResponseEntity<String> response = restTemplate.exchange(packetRecieverApiUrl, HttpMethod.POST,
+						requestEntity, String.class);
+				JSONObject josnObject = new JSONObject(response.getBody());
+				if (!josnObject.get("response").equals(null)) {
+					numArr[0]++;
+					msgArr[0] = "Success";
+					auditUtil
+							.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_PACKET_STATUS,
+									"{packetid: '" + file.getOriginalFilename() + "', message: 'success'}"));
+
+				} else {
+					String str = josnObject.get("errors").toString();
+					JSONArray jsonArray = new JSONArray(str);
+					JSONObject josnObject1 = new JSONObject(jsonArray.get(0).toString());
+
+					failureMessage.add(failureMessage.contains(josnObject1.get("message").toString()) ? null
+							: josnObject1.get("message").toString());
+					// failureMessage.put(file.getOriginalFilename(),
+					// josnObject1.get("message").toString());
+					auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(
+							EventEnum.BULKDATA_UPLOAD_PACKET_STATUS_ERROR, "{packetid: '" + file.getOriginalFilename()
+									+ "', message: '" + josnObject1.get("message").toString() + "'}"));
+				}
+			} catch (HttpClientErrorException e) {
+				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,
+						"{packetid: '" + file.getOriginalFilename() + "',operation:'" + operation + "',error: "
+								+ e.getMessage() + "}"));
+				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
+						BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
+			} catch (IOException e) {
+				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,
+						"{packetid: '" + file.getOriginalFilename() + "',operation:'" + operation + "',error: "
+								+ e.getMessage() + "}"));
+				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
+						BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
+			} catch (JSONException e) {
+				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,
+						"{packetid: '" + file.getOriginalFilename() + "',operation:'" + operation + "',error: "
+								+ e.getMessage() + "}"));
+				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
+						BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
+			}
+			fileNames.add(file.getOriginalFilename());
+		});
+		BulkUploadTranscation bulkUploadTranscation = saveTranscationDetails(numArr[0], operation, "", category,
+				failureMessage, msgArr[0]);
+		bulkDataResponseDto = setResponseDetails(bulkUploadTranscation, "");
+		return bulkDataResponseDto;
+	}
+
+	private Job job(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory,
+			ItemReader<Object> itemReader, ItemProcessor itemProcessor, // ItemProcessor<User, User> itemProcessor,
+			// ItemWriter<AbstractPersistable> itemWriter
+			ItemWriter<List<Object>> itemWriter) {
+
+		Step step = stepBuilderFactory.get("ETL-file-load").<Object, List<Object>>chunk(100).reader(itemReader)
+				.processor(itemProcessor).writer(itemWriter).build();
+
+		return jobBuilderFactory.get("ETL-Load").incrementer(new RunIdIncrementer()).start(step).build();
+	}
+
+	private ConversionService testConversionService() {
+		DefaultConversionService testConversionService = new DefaultConversionService();
+		DefaultConversionService.addDefaultConverters(testConversionService);
+		testConversionService.addConverter(new Converter<String, LocalDateTime>() {
+			@Override
+			public LocalDateTime convert(String text) {
+				return LocalDateTime.parse(text, DateTimeFormatter.ISO_DATE_TIME);
+			}
+		});
+		testConversionService.addConverter(new Converter<String, LocalDate>() {
+
+			@Override
+			public LocalDate convert(String text) {
+				return LocalDate.parse(text, DateTimeFormatter.ISO_DATE);
+			}
+
+		});
+
+		testConversionService.addConverter(new Converter<String, LocalTime>() {
+
+			@Override
+			public LocalTime convert(String text) {
+				return LocalTime.parse(text, DateTimeFormatter.ISO_TIME);
+			}
+
+		});
+
+		return testConversionService;
+	}
+
+	@StepScope
+	private FlatFileItemReader<Object> itemReader(InputStream file, Class<?> clazz) throws IOException {
+
+		DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
+		lineTokenizer.setDelimiter(",");
+		lineTokenizer.setStrict(false);
+		FlatFileItemReader<Object> flatFileItemReader = new FlatFileItemReader<>();
+		flatFileItemReader.setResource(new InputStreamResource(file));
+		flatFileItemReader.setName("CSV-Reader");
+		flatFileItemReader.setLinesToSkip(1);
+		flatFileItemReader.setSkippedLinesCallback(new LineCallbackHandler() {
+			@Override
+			public void handleLine(String s) {
+				lineTokenizer.setNames(s.split(","));
+			}
+		});
+		BeanWrapperFieldSetMapper<Object> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
+		fieldSetMapper.setTargetType(clazz);
+		fieldSetMapper.setConversionService(testConversionService());
+		DefaultLineMapper<Object> defaultLineMapper = new DefaultLineMapper<>();
+		defaultLineMapper.setLineTokenizer(lineTokenizer);
+		defaultLineMapper.setFieldSetMapper(fieldSetMapper);
+		flatFileItemReader.setLineMapper(defaultLineMapper);
+		return flatFileItemReader;
+
+	}
+
+	private ItemProcessor processor(String operation) {
+
+		ItemProcessor itemprocessor = new ItemProcessor() {
+
+			LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
+
 			@Override
 			public Object process(Object item) throws Exception {
 				setCreateMetaData();
-				if(operation.equalsIgnoreCase("insert")) {
-				((BaseEntity) item).setCreatedBy(setCreateMetaData());
-				((BaseEntity) item).setCreatedDateTime(now);
-				}else if(operation.equalsIgnoreCase("update")) {
+				if (operation.equalsIgnoreCase("insert")) {
+					((BaseEntity) item).setCreatedBy(setCreateMetaData());
+					((BaseEntity) item).setCreatedDateTime(now);
+				} else if (operation.equalsIgnoreCase("update")) {
 					((BaseEntity) item).setUpdatedBy(setCreateMetaData());
 					((BaseEntity) item).setUpdatedDateTime(now);
-				}else if(operation.equalsIgnoreCase("delete")) {
-					((BaseEntity)item).setIsActive(false);
+				} else if (operation.equalsIgnoreCase("delete")) {
+					((BaseEntity) item).setIsActive(false);
 					((BaseEntity) item).setIsDeleted(true);
 					((BaseEntity) item).setDeletedDateTime(now);
-				}	
+				}
 				return item;
 			}
 		};
 		return itemprocessor;
-	 }
+	}
 
-		@SuppressWarnings("unchecked")
-		private ItemWriter<List<Object>> insertItemWriter(String repoBeanName, String methodName, Class<?> entity) {
-			RepositoryListItemWriter<List<Object>> writer = new RepositoryListItemWriter<>(em,emf,entity,mapper,applicationContext);
-			writer.setRepository((BaseRepository<?, ?>) applicationContext.getBean(repoBeanName));
-			writer.setMethodName(methodName);
-			try {
-				writer.afterPropertiesSet();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return writer;
+	@SuppressWarnings("unchecked")
+	private ItemWriter<List<Object>> insertItemWriter(String repoBeanName, String methodName, Class<?> entity) {
+		RepositoryListItemWriter<List<Object>> writer = new RepositoryListItemWriter<>(em, emf, entity, mapper,
+				applicationContext);
+		writer.setRepository((BaseRepository<?, ?>) applicationContext.getBean(repoBeanName));
+		writer.setMethodName(methodName);
+		try {
+			writer.afterPropertiesSet();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return writer;
+	}
 
-		@SuppressWarnings("unchecked")
-		private <T extends BaseEntity, S> ItemWriter<List<Object>> updateItemWriter(String repoName, Class<?> entity) {
+	@SuppressWarnings("unchecked")
+	private <T extends BaseEntity, S> ItemWriter<List<Object>> updateItemWriter(String repoName, Class<?> entity) {
 
-			ItemWriter<List<Object>> writer = new ItemWriter<List<Object>>() {
+		ItemWriter<List<Object>> writer = new ItemWriter<List<Object>>() {
 
-				@Autowired(required = false)
-				@Override
-				public void write(List<? extends List<Object>> items) throws Exception {
-					// TODO Auto-generated method stub
-					Iterator i$ = items.iterator();
-					BaseRepository baserepo = (BaseRepository) applicationContext.getBean(repoName);
+			@Autowired(required = false)
+			@Override
+			public void write(List<? extends List<Object>> items) throws Exception {
+				// TODO Auto-generated method stub
+				Iterator i$ = items.iterator();
+				BaseRepository baserepo = (BaseRepository) applicationContext.getBean(repoName);
 
-					while (i$.hasNext()) {
+				while (i$.hasNext()) {
 
-						T object = (T) i$.next();
-						PersistenceUnitUtil util = emf.getPersistenceUnitUtil();
-						Object projectId = util.getIdentifier(object);
-						T machin = (T) em.find(entity, projectId);
-						try {
+					T object = (T) i$.next();
+					PersistenceUnitUtil util = emf.getPersistenceUnitUtil();
+					Object projectId = util.getIdentifier(object);
+					T machin = (T) em.find(entity, projectId);
+					try {
 						if (!machin.equals(null)) {
 							object.setCreatedBy(machin.getCreatedBy());
 							object.setCreatedDateTime(machin.getCreatedDateTime());
 							baserepo.save(object);
 							String repoBeanName1;
 							BaseRepository baserepo1;
-				            switch(entity.getCanonicalName()) {
-				            case "io.mosip.admin.bulkdataupload.entity.ZoneUser":
-				        		repoBeanName1=mapper.getRepo(ZoneUserHistory.class);
-				        		baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
-				        		ZoneUserHistory userHistory = new ZoneUserHistory();
-				        		MapperUtils.map(object, userHistory);
+							switch (entity.getCanonicalName()) {
+							case "io.mosip.admin.bulkdataupload.entity.ZoneUser":
+								repoBeanName1 = mapper.getRepo(ZoneUserHistory.class);
+								baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
+								ZoneUserHistory userHistory = new ZoneUserHistory();
+								MapperUtils.map(object, userHistory);
 								MapperUtils.setBaseFieldValue(object, userHistory);
 								userHistory.setEffDTimes(userHistory.getUpdatedDateTime());
 								baserepo1.save(userHistory);
-				            break;
-				            case "io.mosip.admin.bulkdataupload.entity.UserDetails":
-				        		repoBeanName1=mapper.getRepo(UserDetailsHistory.class);
-				        		baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
-				        		UserDetailsHistory userDetailHistory = new UserDetailsHistory();
-				        		MapperUtils.map(object, userDetailHistory);
+								break;
+							case "io.mosip.admin.bulkdataupload.entity.UserDetails":
+								repoBeanName1 = mapper.getRepo(UserDetailsHistory.class);
+								baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
+								UserDetailsHistory userDetailHistory = new UserDetailsHistory();
+								MapperUtils.map(object, userDetailHistory);
 								MapperUtils.setBaseFieldValue(object, userDetailHistory);
 								userDetailHistory.setEffDTimes(userDetailHistory.getUpdatedDateTime());
 								baserepo1.save(userDetailHistory);
-				            break;
-				            case "io.mosip.admin.bulkdataupload.entity.Machine":
-				        		repoBeanName1=mapper.getRepo(MachineHistory.class);
-				        		baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
-				        		MachineHistory machineHistory = new MachineHistory();
-				        		MapperUtils.map(object, machineHistory);
+								break;
+							case "io.mosip.admin.bulkdataupload.entity.Machine":
+								repoBeanName1 = mapper.getRepo(MachineHistory.class);
+								baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
+								MachineHistory machineHistory = new MachineHistory();
+								MapperUtils.map(object, machineHistory);
 								MapperUtils.setBaseFieldValue(object, machineHistory);
 								machineHistory.setEffectDateTime(machineHistory.getUpdatedDateTime());
 								baserepo1.save(machineHistory);
-				            break;
-				            case "io.mosip.admin.bulkdataupload.entity.Device":
-				        		repoBeanName1=mapper.getRepo(DeviceHistory.class);
-				        		baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
-				        		DeviceHistory deviceHistory = new DeviceHistory();
-				        		MapperUtils.map(object, deviceHistory);
+								break;
+							case "io.mosip.admin.bulkdataupload.entity.Device":
+								repoBeanName1 = mapper.getRepo(DeviceHistory.class);
+								baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
+								DeviceHistory deviceHistory = new DeviceHistory();
+								MapperUtils.map(object, deviceHistory);
 								MapperUtils.setBaseFieldValue(object, deviceHistory);
 								deviceHistory.setEffectDateTime(deviceHistory.getUpdatedDateTime());
 								baserepo1.save(deviceHistory);
-							break;
+								break;
 							default:
-							break;
-				            }
+								break;
+							}
 						} else {
 							throw new MasterDataServiceException(
 									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorCode(),
 									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorMessage());
 						}
-						}catch(NullPointerException e) {
-							throw new MasterDataServiceException(
-									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorCode(),
-									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorMessage(),e);
-						}
+					} catch (NullPointerException e) {
+						throw new MasterDataServiceException(
+								BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorCode(),
+								BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorMessage(), e);
 					}
 				}
-			};
+			}
+		};
 
-			return writer;
-		}
+		return writer;
+	}
 
-		@SuppressWarnings("unchecked")
-		private <T extends BaseEntity, S> ItemWriter<List<Object>> deleteItemWriter(String repoName, Class<?> entity) {
-			ItemWriter<List<Object>> writer = new ItemWriter<List<Object>>() {
+	@SuppressWarnings("unchecked")
+	private <T extends BaseEntity, S> ItemWriter<List<Object>> deleteItemWriter(String repoName, Class<?> entity) {
+		ItemWriter<List<Object>> writer = new ItemWriter<List<Object>>() {
 
-				@Autowired(required = false)
-				@Override
-				public void write(List<? extends List<Object>> items) throws Exception {
-					// TODO Auto-generated method stub
-					Iterator i$ = items.iterator();
-					BaseRepository baserepo = (BaseRepository) applicationContext.getBean(repoName);
+			@Autowired(required = false)
+			@Override
+			public void write(List<? extends List<Object>> items) throws Exception {
+				// TODO Auto-generated method stub
+				Iterator i$ = items.iterator();
+				BaseRepository baserepo = (BaseRepository) applicationContext.getBean(repoName);
 
-					while (i$.hasNext()) {
+				while (i$.hasNext()) {
 
-						T object = (T) i$.next();
-						PersistenceUnitUtil util = emf.getPersistenceUnitUtil();
-						Object projectId = util.getIdentifier(object);
-						T machin = (T) em.find(entity, projectId);
-						try {
+					T object = (T) i$.next();
+					PersistenceUnitUtil util = emf.getPersistenceUnitUtil();
+					Object projectId = util.getIdentifier(object);
+					T machin = (T) em.find(entity, projectId);
+					try {
 						if (!machin.equals(null)) {
 							object.setCreatedBy(machin.getCreatedBy());
 							object.setCreatedDateTime(machin.getCreatedDateTime());
@@ -609,346 +643,359 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 							object.setUpdatedDateTime(machin.getUpdatedDateTime());
 							baserepo.save(object);
 							String repoBeanName1;
-				            BaseRepository baserepo1;
-				            switch(entity.getCanonicalName()) {
-				            case "io.mosip.admin.bulkdataupload.entity.ZoneUser":
-				        		repoBeanName1=mapper.getRepo(ZoneUserHistory.class);
-				        		baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
-				        		ZoneUserHistory userHistory = new ZoneUserHistory();
-				        		MapperUtils.map(object, userHistory);
+							BaseRepository baserepo1;
+							switch (entity.getCanonicalName()) {
+							case "io.mosip.admin.bulkdataupload.entity.ZoneUser":
+								repoBeanName1 = mapper.getRepo(ZoneUserHistory.class);
+								baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
+								ZoneUserHistory userHistory = new ZoneUserHistory();
+								MapperUtils.map(object, userHistory);
 								MapperUtils.setBaseFieldValue(object, userHistory);
 								userHistory.setEffDTimes(userHistory.getDeletedDateTime());
 								baserepo1.save(userHistory);
-				            break;
-				            case "io.mosip.admin.bulkdataupload.entity.UserDetails":
-				        		repoBeanName1=mapper.getRepo(UserDetailsHistory.class);
-				        		baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
-				        		UserDetailsHistory userDetailHistory = new UserDetailsHistory();
-				        		MapperUtils.map(object, userDetailHistory);
+								break;
+							case "io.mosip.admin.bulkdataupload.entity.UserDetails":
+								repoBeanName1 = mapper.getRepo(UserDetailsHistory.class);
+								baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
+								UserDetailsHistory userDetailHistory = new UserDetailsHistory();
+								MapperUtils.map(object, userDetailHistory);
 								MapperUtils.setBaseFieldValue(object, userDetailHistory);
 								userDetailHistory.setEffDTimes(userDetailHistory.getDeletedDateTime());
 								baserepo1.save(userDetailHistory);
-				            break;
-				            case "io.mosip.admin.bulkdataupload.entity.Machine":
-				        		repoBeanName1=mapper.getRepo(MachineHistory.class);
-				        		baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
-				        		MachineHistory machineHistory = new MachineHistory();
-				        		MapperUtils.map(object, machineHistory);
+								break;
+							case "io.mosip.admin.bulkdataupload.entity.Machine":
+								repoBeanName1 = mapper.getRepo(MachineHistory.class);
+								baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
+								MachineHistory machineHistory = new MachineHistory();
+								MapperUtils.map(object, machineHistory);
 								MapperUtils.setBaseFieldValue(object, machineHistory);
 								machineHistory.setEffectDateTime(machineHistory.getDeletedDateTime());
 								baserepo1.save(machineHistory);
-				            break;
-				            case "io.mosip.admin.bulkdataupload.entity.Device":
-				        		repoBeanName1=mapper.getRepo(DeviceHistory.class);
-				        		baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
-				        		DeviceHistory deviceHistory = new DeviceHistory();
-				        		MapperUtils.map(object, deviceHistory);
+								break;
+							case "io.mosip.admin.bulkdataupload.entity.Device":
+								repoBeanName1 = mapper.getRepo(DeviceHistory.class);
+								baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
+								DeviceHistory deviceHistory = new DeviceHistory();
+								MapperUtils.map(object, deviceHistory);
 								MapperUtils.setBaseFieldValue(object, deviceHistory);
 								deviceHistory.setEffectDateTime(deviceHistory.getDeletedDateTime());
 								baserepo1.save(deviceHistory);
-							break;
+								break;
 							default:
-							break;
-				            }
+								break;
+							}
 
 						} else {
 							throw new MasterDataServiceException(
 									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorCode(),
 									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorMessage());
 						}
-						} catch (NullPointerException e) {
-							throw new MasterDataServiceException(
-									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorCode(),
-									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorMessage(), e);
-						}
+					} catch (NullPointerException e) {
+						throw new MasterDataServiceException(
+								BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorCode(),
+								BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorMessage(), e);
+					}
+				}
+
+			}
+		};
+
+		return writer;
+	}
+
+	private BulkUploadTranscation saveTranscationDetails(int count, String operation, String entityName,
+			String category, List<String> failureMessage, String status) {
+		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_TRANSACTION_API_CALLED,
+				"{operation:'" + operation + "',category:'" + operation + "',entity:'" + entityName + "'}"));
+		BulkUploadTranscation bulkUploadTranscation = new BulkUploadTranscation();
+		LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
+		bulkUploadTranscation.setIsActive(true);
+		bulkUploadTranscation.setLangCode("eng");
+		bulkUploadTranscation.setStatusCode(status);
+		bulkUploadTranscation.setCreatedBy(setCreateMetaData());
+		bulkUploadTranscation.setCreatedDateTime(now);
+		bulkUploadTranscation.setEntityName(entityName);
+		bulkUploadTranscation.setUploadedBy(setCreateMetaData());
+		bulkUploadTranscation.setUploadedDateTime(Timestamp.valueOf(now));
+		bulkUploadTranscation.setCategory(category);
+		if (!failureMessage.isEmpty()) {
+			bulkUploadTranscation.setUploadDescription(failureMessage.toString());
+		}
+		bulkUploadTranscation.setUploadOperation(operation);
+		bulkUploadTranscation.setRecordCount(count);
+		BulkUploadTranscation b = bulkTranscationRepo.save(bulkUploadTranscation);
+		auditUtil.setAuditRequestDto(
+				EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_TRANSACTION_API_SUCCESS, b.getId()));
+		return bulkUploadTranscation;
+
+	}
+
+	private BulkDataResponseDto setResponseDetails(BulkUploadTranscation bulkUploadTranscation, String tableName) {
+
+		BulkDataResponseDto bulkDataResponseDto = new BulkDataResponseDto();
+		bulkDataResponseDto.setTranscationId(bulkUploadTranscation.getId());
+		bulkDataResponseDto.setOperation(bulkUploadTranscation.getUploadOperation());
+		bulkDataResponseDto.setStatus(bulkUploadTranscation.getStatusCode());
+		bulkDataResponseDto.setSuccessCount(bulkUploadTranscation.getRecordCount());
+		bulkDataResponseDto.setCategory(bulkUploadTranscation.getCategory());
+		bulkDataResponseDto.setStatusDescription(bulkUploadTranscation.getUploadDescription());
+		bulkDataResponseDto.setTableName(tableName);
+		bulkDataResponseDto.setTimeStamp(bulkUploadTranscation.getCreatedDateTime().toString());
+		bulkDataResponseDto.setUploadedBy(bulkUploadTranscation.getUploadedBy());
+		return bulkDataResponseDto;
+	}
+
+	private static String setCreateMetaData() {
+		String contextUser = "superadmin";
+		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
+		if (!EmptyCheckUtils.isNullEmpty(authN)) {
+			contextUser = authN.getName();
+		}
+		return contextUser;
+	}
+
+	private void csvValidator(String csvFileName, InputStream csvFile, Class clazz) throws IOException {
+		String ext = Files.getFileExtension(csvFileName);
+		if (!ext.equalsIgnoreCase("csv")) {
+			auditUtil.setAuditRequestDto(
+					EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_EXT_VALIDATOR_ISSUE, csvFileName));
+
+			throw new RequestException(BulkUploadErrorCode.INVALID_FILE_FORMAT.getErrorCode(),
+					BulkUploadErrorCode.INVALID_FILE_FORMAT.getErrorMessage());
+
+		}
+		int count = 0;
+		int lineCount = 0;
+		String line;
+		BufferedReader br;
+		Map<Integer, Field> fieldMap = new HashMap<>();
+		List<String> clazzfields = new ArrayList<>();
+		List<String> superclazzfields = new ArrayList<>();
+		/*for (Field field : clazz.getDeclaredFields()) {
+			field.setAccessible(true);
+			clazzfields.add(field.getName());
+		}
+		for (Field field : clazz.getSuperclass().getDeclaredFields()) {
+			field.setAccessible(true);
+			superclazzfields.add(field.getName());
+		}*/
+		try {
+			br = new BufferedReader(new InputStreamReader(csvFile));
+			while ((line = br.readLine()) != null) {
+				String l = line.trim(); // Remove end of line. You can print line here.'
+
+				String[] columns = l.split(",");
+				count = columns.length;
+				lineCount++;
+				for (int i = 0; i < count; i++) {
+					if (clazzfields.contains(columns[i])) {
+						fieldMap.put(i, clazz.getDeclaredField(columns[i]));
+					} else if (superclazzfields.contains(columns[i])) {
+						fieldMap.put(i, clazz.getSuperclass().getDeclaredField(columns[i]));
+					} else {
+						auditUtil.setAuditRequestDto(EventEnum
+								.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_INVALID_CSV_FILE, csvFileName));
+						throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
+								"invalid field mentioned.The exception occured at line number " + lineCount);
+
+					}
+				}
+
+				break;
+			}
+			List<String> linelist = new ArrayList<>();
+			Set<String> lineSet = new HashSet<>();
+			while ((line = br.readLine()) != null) {
+				String l = line.trim(); // Remove end of line. You can print line here.'
+				String[] columns = l.split(",");
+				lineCount++;
+				/*
+				 * if (count != columns.length) {
+				 * auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.
+				 * BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
+				 * 
+				 * throw new
+				 * RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode()
+				 * ,"all the rows should have same number of element in csv file.The exception occured at line number "
+				 * +lineCount);
+				 * 
+				 * 
+				 * }
+				 */
+				String il = "";
+				for (int i = 0; i < columns.length; i++) {
+					if (columns[i].isBlank()) {
+						auditUtil.setAuditRequestDto(EventEnum
+								.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
+						throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
+								"Field is missing.The exception occured at line number " + lineCount);
 					}
 
+					/*
+					 * if(!validateDataType(fieldMap.get(i),columns[i].trim())) {
+					 * auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.
+					 * BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName)); throw new
+					 * RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode()
+					 * ,"Invalid data type.The exception occured at line number "+lineCount);
+					 * 
+					 * }
+					 */
+					il = il + columns[i].trim();
 				}
-			};
-
-			return writer;
-		}
-	    
-	    private BulkUploadTranscation saveTranscationDetails(int count,String operation,String entityName,String category,List<String> failureMessage, String status) {
-	    	auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_TRANSACTION_API_CALLED,"{operation:'"+operation+"',category:'"+operation+"',entity:'"+entityName+"'}"));
-	    	BulkUploadTranscation bulkUploadTranscation=new BulkUploadTranscation();
-	    	LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
-	    	bulkUploadTranscation.setIsActive(true);
-	    	bulkUploadTranscation.setLangCode("eng");
-	    	bulkUploadTranscation.setStatusCode(status);
-	    	bulkUploadTranscation.setCreatedBy(setCreateMetaData());
-	    	bulkUploadTranscation.setCreatedDateTime(now);
-	    	bulkUploadTranscation.setEntityName(entityName);
-	    	bulkUploadTranscation.setUploadedBy(setCreateMetaData());
-	    	bulkUploadTranscation.setUploadedDateTime(Timestamp.valueOf(now));
-	    	bulkUploadTranscation.setCategory(category);
-	    	if(!failureMessage.isEmpty()) {
-				bulkUploadTranscation.setUploadDescription(failureMessage.toString());
-	    	}
-	    	bulkUploadTranscation.setUploadOperation(operation);
-	    	bulkUploadTranscation.setRecordCount(count);
-	    	BulkUploadTranscation b=bulkTranscationRepo.save(bulkUploadTranscation);
-	    	auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_TRANSACTION_API_SUCCESS,b.getId()));
-			return bulkUploadTranscation;
-	    	
-	    }
-	    private BulkDataResponseDto setResponseDetails(BulkUploadTranscation bulkUploadTranscation,String tableName) {
-	    	
-	    	BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
-	    	bulkDataResponseDto.setTranscationId(bulkUploadTranscation.getId());
-	    	bulkDataResponseDto.setOperation(bulkUploadTranscation.getUploadOperation());
-	    	bulkDataResponseDto.setStatus(bulkUploadTranscation.getStatusCode());
-	    	bulkDataResponseDto.setSuccessCount(bulkUploadTranscation.getRecordCount());
-	    	bulkDataResponseDto.setCategory(bulkUploadTranscation.getCategory());
-	    	bulkDataResponseDto.setStatusDescription(bulkUploadTranscation.getUploadDescription());
-	    	bulkDataResponseDto.setTableName(tableName);
-	    	bulkDataResponseDto.setTimeStamp(bulkUploadTranscation.getCreatedDateTime().toString());
-	    	bulkDataResponseDto.setUploadedBy(bulkUploadTranscation.getUploadedBy());
-	    	return bulkDataResponseDto;
-	    }    
-
-		private static String setCreateMetaData() {
-	    	String contextUser="superadmin";
-			Authentication authN = SecurityContextHolder.getContext().getAuthentication();
-			if (!EmptyCheckUtils.isNullEmpty(authN)) {
-				contextUser = authN.getName();
+				linelist.add(il);
+				lineSet.add(il);
+				if (linelist.size() != lineSet.size()) {
+					auditUtil.setAuditRequestDto(EventEnum
+							.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
+					throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
+							"Duplicate records found.The exception occured at line number " + lineCount);
+				}
 			}
-			return contextUser;
+			br.close();
+		} catch (IOException e) {
+			lineCount++;
+			auditUtil.setAuditRequestDto(
+					EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_INVALID_CSV_FILE, csvFileName));
+			throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
+					"invalid csv file.The exception occured at line number " + lineCount, e);
+
+		} catch (NoSuchFieldException | SecurityException e) {
+			auditUtil.setAuditRequestDto(
+					EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_INVALID_CSV_FILE, csvFileName));
+			throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
+					"invalid field mentioned.The exception occured at line number " + lineCount, e);
+
 		}
 
-		private void csvValidator(String csvFileName, InputStream csvFile, Class clazz) throws IOException {
-	    	String ext=Files.getFileExtension(csvFileName);
-	    	if(!ext.equalsIgnoreCase("csv")) {
-	    		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_EXT_VALIDATOR_ISSUE, csvFileName));
+	}
 
-				throw new RequestException(BulkUploadErrorCode.INVALID_FILE_FORMAT.getErrorCode(),
-						BulkUploadErrorCode.INVALID_FILE_FORMAT.getErrorMessage());
-
-	    	}
-	    	int count=0;
-	    	int lineCount=0;
-	    	String line;
-	    	BufferedReader br;
-	    	Map<Integer,Field> fieldMap=new HashMap<>();
-	    	List<String> clazzfields=new ArrayList<>();
-	    	List<String> superclazzfields=new ArrayList<>();
-	    	for (Field field : clazz.getDeclaredFields()) {
-				field.setAccessible(true);
-				clazzfields.add(field.getName());
-	    	}
-	    	for (Field field : clazz.getSuperclass().getDeclaredFields()) {
-				field.setAccessible(true);
-				superclazzfields.add(field.getName());
-	    	}
-			try {
-				br = new BufferedReader(new InputStreamReader(csvFile));
-				while ((line = br.readLine()) != null) {
-			    	  String l = line.trim(); // Remove end of line. You can print line here.'
-			    	  
-			    	  String[] columns = l.split(",");
-			    	  count=columns.length;
-			    	  lineCount++;
-			    	  for(int i=0;i<count;i++) {
-			    		  if(clazzfields.contains(columns[i])) {
-			    			  fieldMap.put(i, clazz.getDeclaredField(columns[i]));
-			    		  }
-			    		  else if(superclazzfields.contains(columns[i])) {
-			    			  fieldMap.put(i, clazz.getSuperclass().getDeclaredField(columns[i]));
-			    		  }
-			    		  else {
-			    			 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_INVALID_CSV_FILE, csvFileName));
-			  				throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"invalid field mentioned.The exception occured at line number "+lineCount);
-			  				
-			    		  }
-			    	  }
-			    	  
-			    	  break;
-				}
-				List<String> linelist=new ArrayList<>();
-				Set<String> lineSet=new HashSet<>();
-				while ((line = br.readLine()) != null) {
-					 String l = line.trim(); // Remove end of line. You can print line here.'  
-			    	 String[] columns = l.split(",");
-			    	 lineCount++;
-						/*
-						 * if (count != columns.length) {
-						 * auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.
-						 * BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
-						 * 
-						 * throw new
-						 * RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode()
-						 * ,"all the rows should have same number of element in csv file.The exception occured at line number "
-						 * +lineCount);
-						 * 
-						 * 
-						 * }
-						 */
-					 String il="";
-					 for(int i=0;i<columns.length;i++) {
-							if (columns[i].isBlank()) {
-							 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
-							 throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"Field is missing.The exception occured at line number "+lineCount); 
-							}
-						 
-							/*
-							 * if(!validateDataType(fieldMap.get(i),columns[i].trim())) {
-							 * auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.
-							 * BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName)); throw new
-							 * RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode()
-							 * ,"Invalid data type.The exception occured at line number "+lineCount);
-							 * 
-							 * }
-							 */
-						 il=il+columns[i].trim();
-					 }
-					 linelist.add(il);
-					 lineSet.add(il);
-					 if(linelist.size()!=lineSet.size()) {
-						 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
-						 throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"Duplicate records found.The exception occured at line number "+lineCount);
-					 }
-				}
-				br.close();
-			} catch (IOException e) {
-				lineCount++;
-				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_INVALID_CSV_FILE, csvFileName));
-				throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"invalid csv file.The exception occured at line number "+lineCount,e);
-				
-			} catch (NoSuchFieldException | SecurityException e) {
-				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_INVALID_CSV_FILE, csvFileName));
-				throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),"invalid field mentioned.The exception occured at line number "+lineCount,e);
-				
-			} 
-	    	
-	    }
-
-	    private boolean validateDataType(Field field, String value) {
-			String fieldType = field.getType().getTypeName();
-			if (value.equalsIgnoreCase("NULL")) {
-				return true;
-			}
-			if (LocalDateTime.class.getName().equals(fieldType)) {
-				try {
-					LocalDateTime.parse(value, DateTimeFormatter.ISO_DATE_TIME);
-				}catch(DateTimeParseException e) {
-					return false;
-				}
-			}
-			if (LocalTime.class.getName().equals(fieldType)) {
-				try {
-					LocalTime.parse(value,DateTimeFormatter.ISO_TIME);
-
-				}catch(DateTimeParseException e) {
-					return false;
-				}
-			}
-			if (LocalDate.class.getName().equals(fieldType)) {
-				try {
-
-					LocalDate.parse(value,DateTimeFormatter.ISO_DATE);
-
-				}catch(DateTimeParseException e) {
-					return false;
-				}
-			}
-			if (Long.class.getName().equals(fieldType)) {
-				try {
-					Long.parseLong(value);
-				}catch(NumberFormatException e) {
-					return false;
-				}
-			}
-			if (long.class.getName().equals(fieldType)) {
-				try {
-					Long.parseLong(value);
-				}catch(NumberFormatException e) {
-					return false;
-				}
-			}
-			if (Integer.class.getName().equals(fieldType)) {
-				try {
-					Integer.parseInt(value);
-				}catch(NumberFormatException  e) {
-					return false;
-				}
-			}
-			if (int.class.getName().equals(fieldType)) {
-				try {
-					Integer.parseInt(value);
-				}catch(NumberFormatException  e) {
-					return false;
-				}
-			}
-			if (Float.class.getName().equals(fieldType)) {
-				try {
-					Float.parseFloat(value);
-				}catch(NumberFormatException  e) {
-					return false;
-				}
-			}
-			if (float.class.getName().equals(fieldType)) {
-				try {
-					Float.parseFloat(value);
-				}catch(NumberFormatException  e) {
-					return false;
-				}
-			}
-			if (Double.class.getName().equals(fieldType)) {
-				try {
-					Double.parseDouble(value);
-				}catch(NumberFormatException  e) {
-					return false;
-				}
-			}
-			if (double.class.getName().equals(fieldType)) {
-				try {
-					Double.parseDouble(value);
-				}catch(NumberFormatException  e) {
-					return false;
-				}
-			}
-			if (Boolean.class.getName().equals(fieldType)) {
-				if(!value.equalsIgnoreCase("true")&&!value.equalsIgnoreCase("false")) {
-					return false;
-				}
-			}
-			if (boolean.class.getName().equals(fieldType)) {
-				if(!value.equalsIgnoreCase("true")&&!value.equalsIgnoreCase("false")) {
-					return false;
-				}
-			}
-			if (Short.class.getName().equals(fieldType)) {
-				try {
-					Short.valueOf(value);
-				}catch(NumberFormatException  e) {
-					return false;
-				} 
-			}
-			if (short.class.getName().equals(fieldType)) {
-				try {
-					Short.valueOf(value);
-				}catch(NumberFormatException  e) {
-					return false;
-				} 
-			}
+	private boolean validateDataType(Field field, String value) {
+		String fieldType = field.getType().getTypeName();
+		if (value.equalsIgnoreCase("NULL")) {
 			return true;
 		}
-
-		private static String operationMapper(String operationName) {
-			if (operationName.equalsIgnoreCase("insert"))
-				operationName = "create";
-
-			return operationName;
+		if (LocalDateTime.class.getName().equals(fieldType)) {
+			try {
+				LocalDateTime.parse(value, DateTimeFormatter.ISO_DATE_TIME);
+			} catch (DateTimeParseException e) {
+				return false;
+			}
 		}
+		if (LocalTime.class.getName().equals(fieldType)) {
+			try {
+				LocalTime.parse(value, DateTimeFormatter.ISO_TIME);
 
-		ItemWriter<List<Object>> itemWriterMapper(String repoBeanName, String operationName, Class<?> entity) {
-			ItemWriter<List<Object>> item = null;
-			if (operationName.equalsIgnoreCase("create"))
-				item = insertItemWriter(repoBeanName, operationName,entity);
-			else if (operationName.equalsIgnoreCase("update"))
-				item = updateItemWriter(repoBeanName, entity);
-			else if (operationName.equalsIgnoreCase("delete"))
-				item = deleteItemWriter(repoBeanName, entity);
-			return item;
+			} catch (DateTimeParseException e) {
+				return false;
+			}
 		}
+		if (LocalDate.class.getName().equals(fieldType)) {
+			try {
+
+				LocalDate.parse(value, DateTimeFormatter.ISO_DATE);
+
+			} catch (DateTimeParseException e) {
+				return false;
+			}
+		}
+		if (Long.class.getName().equals(fieldType)) {
+			try {
+				Long.parseLong(value);
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		}
+		if (long.class.getName().equals(fieldType)) {
+			try {
+				Long.parseLong(value);
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		}
+		if (Integer.class.getName().equals(fieldType)) {
+			try {
+				Integer.parseInt(value);
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		}
+		if (int.class.getName().equals(fieldType)) {
+			try {
+				Integer.parseInt(value);
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		}
+		if (Float.class.getName().equals(fieldType)) {
+			try {
+				Float.parseFloat(value);
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		}
+		if (float.class.getName().equals(fieldType)) {
+			try {
+				Float.parseFloat(value);
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		}
+		if (Double.class.getName().equals(fieldType)) {
+			try {
+				Double.parseDouble(value);
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		}
+		if (double.class.getName().equals(fieldType)) {
+			try {
+				Double.parseDouble(value);
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		}
+		if (Boolean.class.getName().equals(fieldType)) {
+			if (!value.equalsIgnoreCase("true") && !value.equalsIgnoreCase("false")) {
+				return false;
+			}
+		}
+		if (boolean.class.getName().equals(fieldType)) {
+			if (!value.equalsIgnoreCase("true") && !value.equalsIgnoreCase("false")) {
+				return false;
+			}
+		}
+		if (Short.class.getName().equals(fieldType)) {
+			try {
+				Short.valueOf(value);
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		}
+		if (short.class.getName().equals(fieldType)) {
+			try {
+				Short.valueOf(value);
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static String operationMapper(String operationName) {
+		if (operationName.equalsIgnoreCase("insert"))
+			operationName = "create";
+
+		return operationName;
+	}
+
+	ItemWriter<List<Object>> itemWriterMapper(String repoBeanName, String operationName, Class<?> entity) {
+		ItemWriter<List<Object>> item = null;
+		if (operationName.equalsIgnoreCase("create"))
+			item = insertItemWriter(repoBeanName, operationName, entity);
+		else if (operationName.equalsIgnoreCase("update"))
+			item = updateItemWriter(repoBeanName, entity);
+		else if (operationName.equalsIgnoreCase("delete"))
+			item = deleteItemWriter(repoBeanName, entity);
+		return item;
+	}
 }
