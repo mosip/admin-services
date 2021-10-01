@@ -16,7 +16,7 @@ import lombok.Data;
 @Data
 public class OpenApiProperties {
 	private InfoProperty info;
-	private Masterdata masterdata;
+	private Service service;
 }
 
 /**
@@ -46,7 +46,7 @@ class LicenseProperty {
  *
  */
 @Data
-class Masterdata {
+class Service {
 	private List<Server> servers;
 }
 
