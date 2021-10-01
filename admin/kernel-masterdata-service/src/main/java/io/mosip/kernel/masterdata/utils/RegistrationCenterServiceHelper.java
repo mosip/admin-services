@@ -1,13 +1,6 @@
 package io.mosip.kernel.masterdata.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -524,12 +517,14 @@ public class RegistrationCenterServiceHelper {
 	private void setLocationMetadata(List<RegistrationCenterSearchDto> centers, List<Location> locations) {
 		List<Node<Location>> tree = locationTree.createTree(locations);
 		centers.forEach(center -> {
+			Map<String,String> locationMap=new HashMap<>();
 			Node<Location> location = locationTree.findNode(tree, center.getLocationCode());
 			if (location != null) {
 				List<Location> list = locationTree.getParentHierarchy(location);
 				if (list != null && !list.isEmpty()) {
 					for (Location l : list) {
 						short level = l.getHierarchyLevel();
+						locationMap.put(String.valueOf(level),l.getCode());
 						switch (level) {
 						case 3:
 							center.setCity(l.getName());
@@ -556,6 +551,7 @@ public class RegistrationCenterServiceHelper {
 					}
 				}
 			}
+			center.setLocation(locationMap);
 		});
 	}
 
