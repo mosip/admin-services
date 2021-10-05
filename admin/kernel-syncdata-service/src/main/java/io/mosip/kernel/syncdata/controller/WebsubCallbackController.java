@@ -57,8 +57,7 @@ public class WebsubCallbackController {
     public void handleCACertificate(@RequestBody EventModel eventModel) {
         logger.debug("ca_certificate EVENT RECEIVED");
         Map<String, Object> data = eventModel.getEvent().getData();
-        logger.info("websub event data -> {}", data);
-
+        
         if (data.containsKey(PARTNER_DOMAIN) && partnerAllowedDomains.contains((String) data.get(PARTNER_DOMAIN)) &&
                 data.containsKey(CERTIFICATE_DATA_SHARE_URL)) {
             CACertificateRequestDto caCertRequestDto = new CACertificateRequestDto();
@@ -66,12 +65,10 @@ public class WebsubCallbackController {
             String certificateData = restTemplate.getForObject((String) data.get(CERTIFICATE_DATA_SHARE_URL), String.class);
             caCertRequestDto.setCertificateData(certificateData);
             try {
-                logger.info("certificateData {}", certificateData);
                 partnerCertificateManagerService.uploadCACertificate(caCertRequestDto);
                 logger.info("CA certs sync completed for {}", caCertRequestDto.getPartnerDomain());
             } catch (PartnerCertManagerException ex) {
-                logger.error("Failed to insert CA cert", ex);
-
+                
                 if(PartnerCertManagerErrorConstants.INVALID_PARTNER_DOMAIN.getErrorCode().equals(ex.getErrorCode()) ||
                         PartnerCertManagerErrorConstants.CERTIFICATE_EXIST_ERROR.getErrorCode().equals(ex.getErrorCode())) {
                     logger.error("Failed to insert CA cert {}", ex.getErrorText());
@@ -82,7 +79,7 @@ public class WebsubCallbackController {
                 if(serviceError != null)
                     throw new SyncDataServiceException(serviceError.getErrorCode(), serviceError.getMessage());
 
-                //logger.error("Failed to insert CA cert", ex);
+                logger.error("Failed to insert CA cert", ex);
                 throw ex;
             }
         }
