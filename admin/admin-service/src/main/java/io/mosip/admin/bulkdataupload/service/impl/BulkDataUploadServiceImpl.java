@@ -243,12 +243,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 		int[] numArr = { 0 };
 		String[] status = { "PROCESS" };
 		Arrays.asList(files).stream().forEach(file -> {
-			if (file == null || null==file.getContentType() || file.getContentType().length()==0) {
-				auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_ARGUMENT);
-				throw new RequestException(BulkUploadErrorCode.EMPTY_FILE.getErrorCode(),
-						BulkUploadErrorCode.EMPTY_FILE.getErrorMessage());
-
-			}
+		
 			auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV,
 					operation + " from " + file.getOriginalFilename()));
 			ItemReader<Object> itemReader;
@@ -355,9 +350,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 		String[] msgArr = { "FAILED" };
 		Arrays.asList(files).stream().forEach(file -> {
 			
-			if (file.getName().endsWith(".zip")) {
+			if (!file.getName().endsWith(".zip")) {
 				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,
-						"{packetid: '" + files.toString()+ "',error: Supported format are only zip file }"));
+						"{packetid: '" + files.toString()+ "',error: Supported format is only zip file }"));
 				throw new RequestException(BulkUploadErrorCode.INVALID_PCK_FILE_FORMAT.getErrorCode(),
 						BulkUploadErrorCode.INVALID_PCK_FILE_FORMAT.getErrorMessage());
 			}
