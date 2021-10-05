@@ -97,6 +97,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	UserDetailsHistoryRepository history;
 
 	@Autowired
+	LanguageUtils languageUtils;
+
+	@Autowired
 	UserDetailsHistoryService userDetailsHistoryService;
 	
 	@Value("${zone.user.details.url}")
@@ -682,7 +685,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				} else
 					dto.setUserName(null);
 				if (null != z.getZoneCode()) {
-					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(), LanguageUtils.getLanguage());
+					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(), languageUtils.getDefaultLanguage());
 					dto.setZoneName(null != zn ? zn.getZoneName() : null);
 				} else
 					dto.setZoneName(null);
@@ -734,7 +737,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		for (UserCenterMappingExtnDto userCenterMappingExtnDto : userCenterMappingExtnDtos) {
 			UserDetails ud=userDetailsRepository.findUserDetailsById(userCenterMappingExtnDto.getUserId());
 				if(ud!=null) {
-					RegistrationCenter regC=registrationCenterRepository.findByIdAndLangCode(ud.getRegCenterId(),LanguageUtils.getLanguage());
+					RegistrationCenter regC=registrationCenterRepository.findByIdAndLangCode(ud.getRegCenterId(),languageUtils.getDefaultLanguage());
 					userCenterMappingExtnDto.setRegCenterName(regC.getName());
 					userCenterMappingExtnDto.setRegCenterId(ud.getRegCenterId());
 					userCenterMappingExtnDto.setIsActive(ud.getIsActive());
@@ -802,7 +805,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	private void validateZone(String zoneCode) {
 		List<String> zoneIds;
 		// get user zone and child zones list
-		List<Zone> subZones = zoneUtils.getSubZones(LanguageUtils.getLanguage());
+		List<Zone> subZones = zoneUtils.getSubZones(languageUtils.getDefaultLanguage());
 
 		zoneIds = subZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 

@@ -83,6 +83,9 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 	private MasterdataSearchHelper masterDataSearchHelper;
 
 	@Autowired
+	private LanguageUtils languageUtils;
+
+	@Autowired
 	ZoneUserRepository zoneUserRepo;
 
 	@Autowired
@@ -159,7 +162,7 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 
 	@Override
 	public ZoneUserExtnDto updateZoneUserMapping(ZoneUserPutDto zoneUserDto) {
-		ZoneUser zu = null;
+		ZoneUser zu;
 		ZoneUserExtnDto dto = new ZoneUserExtnDto();
 		try {
 			validateZone(zoneUserDto.getZoneCode());
@@ -178,11 +181,9 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 					throw new MasterDataServiceException(ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorCode(),
 							ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorMessage());
 				}
-				deleteZoneUserMapping(zu.getUserId(), zu.getZoneCode());
+				//deleteZoneUserMapping(zu.getUserId(), zu.getZoneCode());
 			}
 
-			// Throws exception if not found
-			zoneservice.getZone(zoneUserDto.getZoneCode(), supportedLang.split(",")[0]);
 			zu = MetaDataUtils.setUpdateMetaData(zoneUserDto, zu, false);
 			zu = zoneUserRepo.update(zu);
 			ZoneUserHistory zuh = new ZoneUserHistory();
@@ -199,7 +200,6 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 			throw new MasterDataServiceException(ZoneUserErrorCode.USER_MAPPING_EXCEPTION.getErrorCode(),
 					ZoneUserErrorCode.USER_MAPPING_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
-
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_UPDATE, ZoneUser.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
 						ZoneUser.class.getSimpleName(), zu.getUserId()));
@@ -379,7 +379,7 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 				} else
 					dto.setUserName(null);
 				if (null != z.getZoneCode()) {
-					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(),LanguageUtils.getLanguage());
+					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(),languageUtils.getDefaultLanguage());
 					dto.setZoneName(null != zn ? zn.getZoneName() : null);
 				} else
 					dto.setZoneName(null);
@@ -470,7 +470,7 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 	private void validateZone(String zoneCode) {
 		List<String> zoneIds;
 		// get user zone and child zones list
-		List<Zone> subZones = zoneUtils.getSubZones(LanguageUtils.getLanguage());
+		List<Zone> subZones = zoneUtils.getSubZones(languageUtils.getDefaultLanguage());
 
 		zoneIds = subZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 

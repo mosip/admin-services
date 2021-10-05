@@ -116,6 +116,9 @@ public class MachineServiceImpl implements MachineService {
 	private ZoneUtils zoneUtils;
 
 	@Autowired
+	private LanguageUtils languageUtils;
+
+	@Autowired
 	private MachineUtil machineUtil;
 
 	@Autowired
@@ -393,7 +396,7 @@ public class MachineServiceImpl implements MachineService {
 
 		}
 		if (flag) {
-			zones = zoneUtils.getSubZones(LanguageUtils.getLanguage());
+			zones = zoneUtils.getSubZones(dto.getLanguageCode());
 			if (zones != null && !zones.isEmpty()) {
 				zoneFilter.addAll(buildZoneFilter(zones));
 			} else {
@@ -488,7 +491,7 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	private void setMapStatus(List<MachineSearchDto> list) {
 		List<RegistrationCenter> registrationCenterList = machineUtil.getAllRegistrationCenters();
-		String langCode=LanguageUtils.getLanguage();
+		String langCode=languageUtils.getDefaultLanguage();
 		list.forEach(machineSearchDto -> {
 			String regId = machineSearchDto.getRegCenterId();
 			registrationCenterList.forEach(registrationCenter -> {
@@ -617,7 +620,7 @@ public class MachineServiceImpl implements MachineService {
 	public FilterResponseCodeDto machineFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseCodeDto filterResponseDto = new FilterResponseCodeDto();
 		List<ColumnCodeValue> columnValueList = new ArrayList<>();
-		List<Zone> zones = zoneUtils.getSubZones(LanguageUtils.getLanguage());
+		List<Zone> zones = zoneUtils.getSubZones(filterValueDto.getLanguageCode());
 		List<SearchFilter> zoneFilter = new ArrayList<>();
 		if (zones != null && !zones.isEmpty()) {
 			zoneFilter.addAll(buildZoneFilter(zones));
@@ -672,7 +675,7 @@ public class MachineServiceImpl implements MachineService {
 		List<String> zoneIds;
 
 		// get user zone and child zones list
-		List<Zone> userZones = zoneUtils.getSubZones(LanguageUtils.getLanguage());
+		List<Zone> userZones = zoneUtils.getSubZones(languageUtils.getDefaultLanguage());
 		zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 
 		// check the given device and registration center zones are come under user zone
@@ -806,7 +809,7 @@ public class MachineServiceImpl implements MachineService {
 	private void validateZone(String machineZone) {
 		List<String> zoneIds;
 		// get user zone and child zones list
-		List<Zone> subZones = zoneUtils.getSubZones(LanguageUtils.getLanguage());
+		List<Zone> subZones = zoneUtils.getSubZones(languageUtils.getDefaultLanguage());
 		zoneIds = subZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 
 		if (!(zoneIds.contains(machineZone))) {
@@ -826,7 +829,7 @@ public class MachineServiceImpl implements MachineService {
 	}
 	
 	private void validateRegistrationCenterZone(String zoneCode, String regCenterId) {
-		List<Zone> subZones = zoneUtils.getSubZones(LanguageUtils.getLanguage());
+		List<Zone> subZones = zoneUtils.getSubZones(languageUtils.getDefaultLanguage());
 		boolean isRegCenterMappedToUserZone = false;
 		boolean isInSameHierarchy = false;
 		Zone registrationCenterZone = null;		
