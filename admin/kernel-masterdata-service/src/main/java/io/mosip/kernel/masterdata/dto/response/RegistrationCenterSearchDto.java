@@ -129,6 +129,8 @@ public class RegistrationCenterSearchDto extends BaseDto {
 
 	// private WorkingNonWorkingDaysDto workingNonWorkingDays;
 
+	private Map<String, String> location;
+
 	private Map<String, Boolean> workingNonWorkingDays;
 
 	private List<ExceptionalHolidayPutPostDto> exceptionalHolidayPutPostDto;
