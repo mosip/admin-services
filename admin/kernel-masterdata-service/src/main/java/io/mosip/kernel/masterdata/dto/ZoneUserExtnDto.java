@@ -10,6 +10,5 @@ public class ZoneUserExtnDto extends BaseDto {
 	
 	private String userId;
 
-	@Deprecated
 	private String langCode;
 }

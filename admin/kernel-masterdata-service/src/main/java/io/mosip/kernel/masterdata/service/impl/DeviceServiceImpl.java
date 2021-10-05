@@ -85,6 +85,9 @@ public class DeviceServiceImpl implements DeviceService {
 	DeviceRepository deviceRepository;
 
 	@Autowired
+	LanguageUtils languageUtils;
+
+	@Autowired
 	RegistrationCenterRepository regCenterRepository;
 	/**
 	 * Field to hold Device Service object
@@ -198,7 +201,7 @@ public class DeviceServiceImpl implements DeviceService {
 		DeviceHistory entityHistory = null;
 		DeviceExtnDto deviceExtnDto = new DeviceExtnDto();
 		try {
-			validateZone(deviceDto.getZoneCode());
+			validateZone(deviceDto.getZoneCode(),deviceDto.getLangCode());
 			if (deviceDto.getRegCenterId() != null && !deviceDto.getRegCenterId().isEmpty()) {
 				validateRegistrationCenter(deviceDto.getRegCenterId());
 				validateRegistrationCenterZone(deviceDto.getZoneCode(), deviceDto.getRegCenterId());
@@ -399,7 +402,7 @@ public class DeviceServiceImpl implements DeviceService {
 		}
 		if (flag) {
 
-			zones = zoneUtils.getSubZones(LanguageUtils.getLanguage());
+			zones = zoneUtils.getSubZones(dto.getLanguageCode());
 			if (zones != null && !zones.isEmpty()) {
 				zoneFilter.addAll(buildZoneFilter(zones));
 			} else {
@@ -437,7 +440,7 @@ public class DeviceServiceImpl implements DeviceService {
 				devices = MapperUtils.mapAll(page.getContent(), DeviceSearchDto.class);
 				setDeviceMetadata(devices, zones);
 				setDeviceTypeNames(devices);
-				setMapStatus(devices);
+				setMapStatus(devices,dto.getLanguageCode());
 				devices.forEach(device -> {
 					if (device.getMapStatus() == null) {
 						device.setMapStatus("unassigned");
@@ -489,13 +492,16 @@ public class DeviceServiceImpl implements DeviceService {
 	 * 
 	 * @param list the {@link DeviceSearchDto}.
 	 */
-	private void setMapStatus(List<DeviceSearchDto> list) {
+	private void setMapStatus(List<DeviceSearchDto> list, String langCode) {
 		List<RegistrationCenter> registrationCenterList = deviceUtil.getAllRegistrationCenters();
-		String langCode=LanguageUtils.getLanguage();
+		if(langCode==null){
+			langCode=languageUtils.getDefaultLanguage();
+		}
+		String languageCode = langCode;
 		list.forEach(deviceSearchDto -> {
 			String regId = deviceSearchDto.getRegCenterId();
 			registrationCenterList.forEach(registrationCenter -> {
-				if (registrationCenter.getId().equals(regId) && registrationCenter.getLangCode().toString().equalsIgnoreCase(langCode)) {
+				if (registrationCenter.getId().equals(regId) && registrationCenter.getLangCode().toString().equalsIgnoreCase(languageCode)) {
 					deviceSearchDto.setMapStatus(registrationCenter.getName());
 				}
 			});
@@ -664,7 +670,7 @@ public class DeviceServiceImpl implements DeviceService {
 	public FilterResponseCodeDto deviceFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseCodeDto filterResponseDto = new FilterResponseCodeDto();
 		List<ColumnCodeValue> columnValueList = new ArrayList<>();
-		List<Zone> zones = zoneUtils.getSubZones(LanguageUtils.getLanguage());
+		List<Zone> zones = zoneUtils.getSubZones(filterValueDto.getLanguageCode());
 		List<SearchFilter> zoneFilter = new ArrayList<>();
 		if (zones != null && !zones.isEmpty()) {
 			zoneFilter.addAll(buildZoneFilter(zones));
@@ -741,7 +747,7 @@ public class DeviceServiceImpl implements DeviceService {
 		List<String> zoneIds;
 
 		// get user zone and child zones list
-		List<Zone> userZones = zoneUtils.getSubZones(LanguageUtils.getLanguage());
+		List<Zone> userZones = zoneUtils.getSubZones(languageUtils.getDefaultLanguage());
 		zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 
 		// check the given device and registration center zones are come under user zone
@@ -821,7 +827,7 @@ public class DeviceServiceImpl implements DeviceService {
 
 		// call method to check the machineZone will come under Accessed user zone or
 		// not
-		validateZone(deviecZone);
+		validateZone(deviecZone,devicePutReqDto.getLangCode());
 		try {
 			if (devicePutReqDto.getRegCenterId() != null && !devicePutReqDto.getRegCenterId().isEmpty()) {
 				validateRegistrationCenter(devicePutReqDto.getRegCenterId());
@@ -882,10 +888,12 @@ public class DeviceServiceImpl implements DeviceService {
 	}
 
 	// method to check the deviceZone will come under Accessed user zone or not
-	private void validateZone(String deviceZone) {
+	private void validateZone(String deviceZone,String langCode) {
 		List<String> zoneIds;
 		// get user zone and child zones list
-		List<Zone> subZones = zoneUtils.getSubZones(LanguageUtils.getLanguage());
+		if(langCode==null)
+			langCode=languageUtils.getDefaultLanguage();
+		List<Zone> subZones = zoneUtils.getSubZones(langCode);
 
 		zoneIds = subZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 
@@ -906,7 +914,7 @@ public class DeviceServiceImpl implements DeviceService {
 	}
 
 	private void validateRegistrationCenterZone(String zoneCode, String regCenterId) {
-		List<Zone> subZones = zoneUtils.getSubZones(LanguageUtils.getLanguage());
+		List<Zone> subZones = zoneUtils.getSubZones(languageUtils.getDefaultLanguage());
 		boolean isRegCenterMappedToUserZone = false;
 		boolean isInSameHierarchy = false;
 		Zone registrationCenterZone = null;

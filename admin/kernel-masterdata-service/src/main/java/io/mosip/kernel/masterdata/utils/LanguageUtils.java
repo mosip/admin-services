@@ -50,20 +50,8 @@ public class LanguageUtils {
 		configuredLanguages.addAll(optionalLang);
 	}
 
-	public static String getLanguage(){
-		String language=null;
-		try {
-			String token=((AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getToken();
-			String[] chunks = token.split("\\.");
-			Base64.Decoder decoder = Base64.getDecoder();
-			String payload = new String(decoder.decode(chunks[1]));
-			JSONObject jsonObject=new JSONObject(payload);
-			language= jsonObject.get("locale").toString().trim();
-
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return language;
+	public String getDefaultLanguage(){
+		return configuredLanguages.get(0);
 	}
 
 }
