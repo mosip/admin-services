@@ -110,7 +110,7 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 	public ZoneUserExtnDto createZoneUserMapping(ZoneUserDto zoneUserDto) {
 		ZoneUser zu = new ZoneUser();
 		try {
-			validateZone(zoneUserDto.getZoneCode());
+			validateZone(zoneUserDto.getZoneCode(),zoneUserDto.getLangCode());
 			if (zoneUserRepo.findByIdAndIsDeletedFalseOrIsDeletedIsNull(zoneUserDto.getUserId(),
 					zoneUserDto.getZoneCode()) != null) {
 				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_CREATE, ZoneUser.class.getSimpleName()),
@@ -165,7 +165,7 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		ZoneUser zu;
 		ZoneUserExtnDto dto = new ZoneUserExtnDto();
 		try {
-			validateZone(zoneUserDto.getZoneCode());
+			validateZone(zoneUserDto.getZoneCode(),zoneUserDto.getLangCode());
 			zu = zoneUserRepo.findByUserId(zoneUserDto.getUserId());
 			if (zu == null) {
 				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, ZoneUser.class.getSimpleName()),
@@ -181,7 +181,6 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 					throw new MasterDataServiceException(ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorCode(),
 							ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorMessage());
 				}
-				//deleteZoneUserMapping(zu.getUserId(), zu.getZoneCode());
 			}
 
 			zu = MetaDataUtils.setUpdateMetaData(zoneUserDto, zu, false);
@@ -467,10 +466,12 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 
 		return zoneUserRepo.findZoneByZoneCodeActiveAndNonDeleted(zoneCode.toLowerCase());
 	}
-	private void validateZone(String zoneCode) {
+	private void validateZone(String zoneCode,String langCode) {
 		List<String> zoneIds;
+		if(langCode==null)
+			langCode=languageUtils.getDefaultLanguage();
 		// get user zone and child zones list
-		List<Zone> subZones = zoneUtils.getSubZones(languageUtils.getDefaultLanguage());
+		List<Zone> subZones = zoneUtils.getSubZones(langCode);
 
 		zoneIds = subZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 

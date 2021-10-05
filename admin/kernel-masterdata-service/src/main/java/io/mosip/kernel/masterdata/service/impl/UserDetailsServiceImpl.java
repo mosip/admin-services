@@ -285,7 +285,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 						UserDetailsErrorCode.USER_ALREADY_EXISTS.getErrorMessage());
 
 			regCenters = registrationCenterService.getRegistrationCentersByID(userDetailsDto.getRegCenterId());
-			validateZone(regCenters.get(0).getZoneCode());
+			validateZone(regCenters.get(0).getZoneCode(),userDetailsDto.getLangCode());
 			if (regCenters == null || regCenters.isEmpty()) {
 				auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL, UserDetails.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
@@ -382,7 +382,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				userDetailsRepository.save(ud);
 			List<RegistrationCenter> regCenters = registrationCenterService
 					.getRegistrationCentersByID(userDetailsDto.getRegCenterId()); // Throws exception if not found
-			validateZone(regCenters.get(0).getZoneCode());
+			validateZone(regCenters.get(0).getZoneCode(),userDetailsDto.getLangCode());
 			if (regCenters == null || regCenters.isEmpty()) {
 				auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL, UserDetails.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
@@ -802,10 +802,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		}
 		return zoneCodes;
 	}
-	private void validateZone(String zoneCode) {
+	private void validateZone(String zoneCode,String langCode) {
 		List<String> zoneIds;
 		// get user zone and child zones list
-		List<Zone> subZones = zoneUtils.getSubZones(languageUtils.getDefaultLanguage());
+		if(langCode==null)
+			langCode=languageUtils.getDefaultLanguage();
+		List<Zone> subZones = zoneUtils.getSubZones(langCode);
 
 		zoneIds = subZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 

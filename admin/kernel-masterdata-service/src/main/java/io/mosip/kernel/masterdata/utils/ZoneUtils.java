@@ -253,7 +253,7 @@ public class ZoneUtils {
 			List<Zone> langSpecificZones = null;
 			ZoneUser zu=zoneUserRepository.findZoneByUserIdActiveAndNonDeleted(((AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId());
 
-		if (langCode.equals("all") || langCode==null) {
+		if (langCode==null || langCode.equals("all")) {
 			String lang=languageUtils.getDefaultLanguage();
 			langSpecificZones = zones.stream().filter(i -> lang.equals(i.getLangCode()))
 						.collect(Collectors.toList());
@@ -276,7 +276,7 @@ public class ZoneUtils {
 		List<Zone> zones = getZones();
 		List<Zone> langSpecificZones = null;
 		ZoneUser zu=zoneUserRepository.findZoneByUserIdActiveAndNonDeleted(((AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId());
-		if (langCode.equals("all") || langCode==null) {
+		if (langCode==null || langCode.equals("all")) {
 			String lang=languageUtils.getDefaultLanguage();
 			langSpecificZones = zones.stream().filter(i -> lang.equals(i.getLangCode()))
 					.collect(Collectors.toList());
@@ -298,7 +298,7 @@ public class ZoneUtils {
 		List<Zone> zones = getZones();
 		List<Zone> langSpecificZones = null;
 	//	ZoneUser zu=zoneUserRepository.findZoneByUserIdActiveAndNonDeleted(((AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId());
-		if (langCode.equals("all") || langCode==null) {
+		if (langCode==null || langCode.equals("all")) {
 			String lang=languageUtils.getDefaultLanguage();
 			langSpecificZones = zones.stream().filter(i -> lang.equals(i.getLangCode()))
 					.collect(Collectors.toList());

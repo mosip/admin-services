@@ -438,7 +438,7 @@ public class MachineServiceImpl implements MachineService {
 				machines = MapperUtils.mapAll(page.getContent(), MachineSearchDto.class);
 				setMachineMetadata(machines, zones);
 				setMachineTypeNames(machines);
-				setMapStatus(machines);
+				setMapStatus(machines, dto.getLanguageCode());
 				machines.forEach(machine -> {
 					if (machine.getMapStatus() == null) {
 						machine.setMapStatus("unassigned");
@@ -489,13 +489,16 @@ public class MachineServiceImpl implements MachineService {
 	 * 
 	 * @param list the {@link MachineSearchDto}.
 	 */
-	private void setMapStatus(List<MachineSearchDto> list) {
+	private void setMapStatus(List<MachineSearchDto> list,String langCode) {
 		List<RegistrationCenter> registrationCenterList = machineUtil.getAllRegistrationCenters();
-		String langCode=languageUtils.getDefaultLanguage();
+		if(langCode==null){
+			langCode=languageUtils.getDefaultLanguage();
+		}
+		String languageCode = langCode;
 		list.forEach(machineSearchDto -> {
 			String regId = machineSearchDto.getRegCenterId();
 			registrationCenterList.forEach(registrationCenter -> {
-				if (registrationCenter.getId().equals(regId)  && registrationCenter.getLangCode().toString().equalsIgnoreCase(langCode)) {
+				if (registrationCenter.getId().equals(regId)  && registrationCenter.getLangCode().toString().equalsIgnoreCase(languageCode)) {
 					machineSearchDto.setMapStatus(registrationCenter.getName());
 				}
 			});
@@ -755,7 +758,7 @@ public class MachineServiceImpl implements MachineService {
 
 		// call method to check the machineZone will come under Accessed user zone or
 		// not
-		validateZone(machineZone);
+		validateZone(machineZone,machinePostReqDto.getLangCode());
 		try {
 			if(machinePostReqDto.getRegCenterId() != null && !machinePostReqDto.getRegCenterId().isEmpty()) {
 				validateRegistrationCenter(machinePostReqDto.getRegCenterId());
@@ -806,10 +809,12 @@ public class MachineServiceImpl implements MachineService {
 	}
 
 	// method to check the machineZone will come under Accessed user zone or not
-	private void validateZone(String machineZone) {
+	private void validateZone(String machineZone,String langCode) {
 		List<String> zoneIds;
 		// get user zone and child zones list
-		List<Zone> subZones = zoneUtils.getSubZones(languageUtils.getDefaultLanguage());
+		if(langCode==null)
+			langCode=languageUtils.getDefaultLanguage();
+		List<Zone> subZones = zoneUtils.getSubZones(langCode);
 		zoneIds = subZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 
 		if (!(zoneIds.contains(machineZone))) {
@@ -871,7 +876,7 @@ public class MachineServiceImpl implements MachineService {
 
 		// call method to check the machineZone will come under Accessed user zone or
 		// not
-		validateZone(machineZone);
+		validateZone(machineZone,machinePutReqDto.getLangCode());
 		try {
 			if(machinePutReqDto.getRegCenterId() != null && !machinePutReqDto.getRegCenterId().isEmpty()) {
 				validateRegistrationCenter(machinePutReqDto.getRegCenterId());
