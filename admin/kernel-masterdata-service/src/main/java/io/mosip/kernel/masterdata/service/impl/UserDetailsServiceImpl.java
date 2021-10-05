@@ -685,7 +685,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				} else
 					dto.setUserName(null);
 				if (null != z.getZoneCode()) {
-					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(), languageUtils.getDefaultLanguage());
+					if(searchDto.getLanguageCode()==null)
+						searchDto.setLanguageCode(languageUtils.getDefaultLanguage());
+					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(), searchDto.getLanguageCode());
 					dto.setZoneName(null != zn ? zn.getZoneName() : null);
 				} else
 					dto.setZoneName(null);
@@ -737,7 +739,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		for (UserCenterMappingExtnDto userCenterMappingExtnDto : userCenterMappingExtnDtos) {
 			UserDetails ud=userDetailsRepository.findUserDetailsById(userCenterMappingExtnDto.getUserId());
 				if(ud!=null) {
-					RegistrationCenter regC=registrationCenterRepository.findByIdAndLangCode(ud.getRegCenterId(),languageUtils.getDefaultLanguage());
+					if(zoneUserSearchDtos.get(0).getLangCode()==null)
+						zoneUserSearchDtos.get(0).setLangCode(languageUtils.getDefaultLanguage());
+					RegistrationCenter regC=registrationCenterRepository.findByIdAndLangCode(ud.getRegCenterId(),zoneUserSearchDtos.get(0).getLangCode());
 					userCenterMappingExtnDto.setRegCenterName(regC.getName());
 					userCenterMappingExtnDto.setRegCenterId(ud.getRegCenterId());
 					userCenterMappingExtnDto.setIsActive(ud.getIsActive());

@@ -378,7 +378,9 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 				} else
 					dto.setUserName(null);
 				if (null != z.getZoneCode()) {
-					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(),languageUtils.getDefaultLanguage());
+					if(searchDto.getLanguageCode()==null)
+						searchDto.setLanguageCode(languageUtils.getDefaultLanguage());
+					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(),searchDto.getLanguageCode());
 					dto.setZoneName(null != zn ? zn.getZoneName() : null);
 				} else
 					dto.setZoneName(null);
