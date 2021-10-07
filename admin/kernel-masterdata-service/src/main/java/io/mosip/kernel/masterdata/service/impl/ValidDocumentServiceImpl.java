@@ -235,11 +235,13 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	 * int, int, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public PageDto<ValidDocumentExtnDto> getValidDocuments(int pageNumber, int pageSize, String sortBy,
+	public PageDto<ValidDocumentExtnDto> getValidDocuments(int pageNumber, Integer pageSize, String sortBy,
 			String orderBy) {
 		List<ValidDocumentExtnDto> validDocs = null;
 		PageDto<ValidDocumentExtnDto> pageDto = null;
 		try {
+			if(null==pageSize || pageSize==0)
+			 pageSize = documentRepository.getTotalValidDocuments();
 			Page<ValidDocument> pageData = documentRepository
 					.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
 			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {

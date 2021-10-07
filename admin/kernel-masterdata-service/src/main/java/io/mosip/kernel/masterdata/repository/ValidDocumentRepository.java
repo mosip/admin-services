@@ -99,5 +99,9 @@ public interface ValidDocumentRepository extends BaseRepository<ValidDocument, V
 	@Query("UPDATE ValidDocument v SET v.isActive=?1, v.updatedBy=?2, v.updatedDateTime=?3 WHERE v.docCategoryCode=?4 and v.docTypeCode=?5 and (v.isDeleted is null or v.isDeleted =false)")
 	int updateDocCategoryAndDocTypeMapping(boolean isActive, String updatedBy, LocalDateTime updatedDateTime,
 			String docCategoryCode, String docTypeCode);
+	
+	@Query("select count(docTypeCode) from ValidDocument where (isDeleted is null OR isDeleted = false)")
+	int getTotalValidDocuments();
+	
 
 }

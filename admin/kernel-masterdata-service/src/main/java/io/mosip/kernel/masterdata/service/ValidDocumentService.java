@@ -62,7 +62,7 @@ public interface ValidDocumentService {
 	 * 
 	 * @return the response i.e. pages containing the valid document category
 	 */
-	public PageDto<ValidDocumentExtnDto> getValidDocuments(int pageNumber, int pageSize, String sortBy, String orderBy);
+	public PageDto<ValidDocumentExtnDto> getValidDocuments(int pageNumber, Integer pageSize, String sortBy, String orderBy);
 
 	/**
 	 * Service method to search document category-type mapping
