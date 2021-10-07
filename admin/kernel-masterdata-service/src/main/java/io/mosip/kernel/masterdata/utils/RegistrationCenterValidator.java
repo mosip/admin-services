@@ -780,17 +780,10 @@ public class RegistrationCenterValidator {
 
 	}
 
-<<<<<<< Updated upstream
-	private void validateLocation(String locationCode,List<ServiceError> errors) {
-		Location location=locationRepository.findLocationByCodeAndLanguageCode(locationCode,languageUtils.getDefaultLanguage());
-		if(Integer.parseInt(locationHierarchy)!=location.getHierarchyLevel()){
-			errors.add(new ServiceError(RegistrationCenterErrorCode.LOCATION_HIERARCHY_INVALID.getErrorCode(),
-					String.format(RegistrationCenterErrorCode.LOCATION_HIERARCHY_INVALID.getErrorMessage(),
-							locationCode)));		}
-=======
+
 	private void validateLocation(String locationCode, List<ServiceError> errors) {
 		Location location = locationRepository.findLocationByCodeAndLanguageCode(locationCode,
-				LanguageUtils.getLanguage());
+				languageUtils.getDefaultLanguage());
 		if (null == location) {
 			errors.add(new ServiceError(RegistrationCenterErrorCode.LOCATION_INVALID.getErrorCode(), String
 					.format(RegistrationCenterErrorCode.LOCATION_INVALID.getErrorMessage(), locationCode)));
@@ -802,7 +795,7 @@ public class RegistrationCenterValidator {
 			errors.add(new ServiceError(RegistrationCenterErrorCode.LOCATION_HIERARCHY_INVALID.getErrorCode(), String
 					.format(RegistrationCenterErrorCode.LOCATION_HIERARCHY_INVALID.getErrorMessage(), locationCode)));
 		}
->>>>>>> Stashed changes
+
 	}
 
 	/*
