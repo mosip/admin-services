@@ -638,18 +638,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		for (int i = 0; i < searchDto.getFilters().size(); i++) {
 			if (searchDto.getFilters().get(i).getColumnName().equalsIgnoreCase("userName")) {
 				String userId = getUserDetailsBasedonUserName(searchDto.getFilters().get(i).getValue());
-				if (null == userId)
+				if (null == userId || userId.isBlank())
 					return userCenterPageDto;
 				searchDto.getFilters().get(i).setValue(userId);
 				if (!userId.contains(",")) {
-
 					searchDto.getFilters().get(i).setType(FilterTypeEnum.EQUALS.toString());
 				} else {
-
 					searchDto.getFilters().get(i).setType(FilterTypeEnum.IN.toString());
 				}
 				searchDto.getFilters().get(i).setColumnName("userId");
-
 			}
 			if (searchDto.getFilters().get(i).getColumnName().equalsIgnoreCase("zoneName")) {
 				String zoneCodes = getZoneCode(searchDto.getFilters().get(i).getValue());
