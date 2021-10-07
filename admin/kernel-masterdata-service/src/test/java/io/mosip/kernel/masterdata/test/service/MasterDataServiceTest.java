@@ -725,13 +725,11 @@ public class MasterDataServiceTest {
 		biometricTypeList.add(biometricType2);
 
 		biometricTypeRequestWrapper = new RequestWrapper<BiometricTypeDto>();
-		// BiometricTypeData request = new BiometricTypeData();
 		biometricTypeDto = new BiometricTypeDto();
 		biometricTypeDto.setCode("1");
 		biometricTypeDto.setName("DNA MATCHING");
 		biometricTypeDto.setDescription(null);
 		biometricTypeDto.setIsActive(true);
-		// request.setBiometricType(biometricTypeDto);
 		biometricTypeRequestWrapper.setRequest(biometricTypeDto);
 	}
 
@@ -777,14 +775,12 @@ public class MasterDataServiceTest {
 		applicationList.add(application2);
 
 		applicationRequestWrapper = new RequestWrapper<ApplicationDto>();
-		// ApplicationData request = new ApplicationData();
 		applicationDto = new ApplicationDto();
 		applicationDto.setCode("101");
 		applicationDto.setName("pre-registeration");
 		applicationDto.setDescription("Pre-registration Application Form");
 		applicationDto.setLangCode("eng");
 		applicationDto.setIsActive(true);
-		// request.setApplicationtype(applicationDto);
 		applicationRequestWrapper.setRequest(applicationDto);
 	}
 
@@ -2033,10 +2029,8 @@ public class MasterDataServiceTest {
 	}
 
 
-	@Test
-	@Ignore
+	@Test(expected = RequestException.class)
 	public void updateLocationDetailsTest() {
-
 		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any())).thenReturn(locationHierarchy);
 		Mockito.when(locationHierarchyRepository.update(Mockito.any())).thenReturn(locationHierarchy);
 
@@ -2498,30 +2492,6 @@ public class MasterDataServiceTest {
 
 	// ---------------------RegistrationCenterIntegrationTest-validatetimestamp----------------//
 
-	/*
-	 * @Test public void getStatusOfWorkingHoursRejectedTest() throws Exception {
-	 * Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any
-	 * (), Mockito.any())) .thenReturn(true);
-	 * Mockito.when(registrationCenterRepository.findById(Mockito.any(),
-	 * Mockito.anyString())) .thenReturn(registrationCenter); LocalTime startTime =
-	 * LocalTime.of(10, 00, 000); LocalTime endTime = LocalTime.of(18, 00, 000);
-	 * registrationCenter.setCenterStartTime(startTime);
-	 * registrationCenter.setCenterEndTime(endTime);
-	 * 
-	 * mockMvc.perform(get(
-	 * "/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
-	 * .andExpect(status().isOk());
-	 * 
-	 * 
-	 * ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto =
-	 * registrationCenterService .validateTimeStampWithRegistrationCenter("1",
-	 * "eng", "2017-12-12T17:59:59.999Z");
-	 * 
-	 * Assert.assertEquals(MasterDataConstant.INVALID,
-	 * resgistrationCenterStatusResponseDto.getStatus());
-	 * 
-	 * }
-	 */
 
 	@Test
 	public void getStatusOfWorkingHoursTest() throws Exception {
@@ -2536,12 +2506,6 @@ public class MasterDataServiceTest {
 
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
 				.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-12T17:59:59.999Z");
-
-		/*
-		 * mockMvc.perform(get(
-		 * "/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
-		 * .andExpect(status().isOk());
-		 */
 
 		Assert.assertEquals(MasterDataConstant.VALID, resgistrationCenterStatusResponseDto.getStatus());
 
@@ -2662,97 +2626,6 @@ public class MasterDataServiceTest {
 				.thenReturn(null);
 		registrationCenterTypeService.updateRegistrationCenterType("abc", false);
 	}
-
-	// ---------------------------------Registration Center
-	// TestCases----------------------------------
-	/*
-	 * @Test(expected= RequestException.class) public void
-	 * notAllCongfLangRegCenterCreateExcpTest() {
-	 * when(zoneUtils.getUserZones()).thenReturn(zones);
-	 * registrationCenterService.createRegistrationCenterAdmin(requestNotAllLang); }
-	 * 
-	 * @Test(expected= RequestException.class) public void
-	 * invalideLongitudeRegCenterCreateExcpTest() {
-	 * when(zoneUtils.getUserZones()).thenReturn(zones);
-	 * registrationCenterService.createRegistrationCenterAdmin(
-	 * requestSetLongitudeInvalide); }
-	 * 
-	 * @Test(expected= RequestException.class) public void
-	 * duplicateLangCodeRegCenterCreateExcpTest() {
-	 * when(zoneUtils.getUserZones()).thenReturn(zones);
-	 * registrationCenterService.createRegistrationCenterAdmin(requestDuplicateLang)
-	 * ; }
-	 * 
-	 * @Test(expected= RequestException.class) public void
-	 * startTimeValidationRegCenterCreateExcpTest() {
-	 * when(zoneUtils.getUserZones()).thenReturn(zones);
-	 * registrationCenterService.createRegistrationCenterAdmin(requestCenterTime); }
-	 * 
-	 * @Test(expected= RequestException.class) public void
-	 * lunchTimeValidationRegCenterCreateExcpTest() {
-	 * when(zoneUtils.getUserZones()).thenReturn(zones);
-	 * registrationCenterService.createRegistrationCenterAdmin(requestLunchTime); }
-	 * 
-	 * @Test(expected= RequestException.class) public void
-	 * zoneCodeValidationRegCenterCreateExcpTest() {
-	 * registrationCenterService.createRegistrationCenterAdmin(requestZoneCode); }
-	 */
-	/*
-	 * // ----------------------- update Registration center-----------------------
-	 * 
-	 * @Test(expected= RequestException.class) public void
-	 * notAllCongfLangRegCenterUpdateExcpTest() {
-	 * when(zoneUtils.getUserZones()).thenReturn(zones);
-	 * registrationCenterService.updateRegistrationCenterAdmin(updRequestNotAllLang)
-	 * ; }
-	 */
-
-	/*
-	 * @Test(expected= RequestException.class) public void
-	 * invalideIDRegCenterUpdateExcpTest() {
-	 * when(zoneUtils.getUserZones()).thenReturn(zones);
-	 * registrationCenterService.updateRegistrationCenterAdmin(updRequestInvalideID)
-	 * ; }
-	 */
-
-	/*
-	 * @Test(expected= RequestException.class) public void
-	 * invalideLongitudeRegCenterUpdateExcpTest() {
-	 * when(zoneUtils.getUserZones()).thenReturn(zones);
-	 * registrationCenterService.updateRegistrationCenterAdmin(
-	 * updRequestSetLongitudeInvalide); }
-	 */
-
-	/*
-	 * @Test(expected= RequestException.class) public void
-	 * duplicateIDLangCodeRegCenterUpdateExcpTest() {
-	 * when(zoneUtils.getUserZones()).thenReturn(zones);
-	 * registrationCenterService.updateRegistrationCenterAdmin(
-	 * updRequestDuplicateIDLang); }
-	 */
-
-	/*
-	 * @Test(expected= RequestException.class) public void
-	 * startTimeValidationRegCenterUpdateExcpTest() {
-	 * when(zoneUtils.getUserZones()).thenReturn(zones);
-	 * registrationCenterService.updateRegistrationCenterAdmin(updRequestCenterTime)
-	 * ; }
-	 */
-
-	/*
-	 * @Test(expected= RequestException.class) public void
-	 * lunchTimeValidationRegCenterUpdateExcpTest() {
-	 * when(zoneUtils.getUserZones()).thenReturn(zones);
-	 * registrationCenterService.updateRegistrationCenterAdmin(updRequestLunchTime);
-	 * }
-	 */
-
-	/*
-	 * @Test(expected= RequestException.class) public void
-	 * zoneCodeValidationRegCenterUpdateExcpTest() {
-	 * registrationCenterService.updateRegistrationCenterAdmin(updRequestZoneCode);
-	 * }
-	 */
 
 	// -----------------------------WorkingDayControllerTest------------------------
 
@@ -2985,7 +2858,6 @@ public class MasterDataServiceTest {
 		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(Device.class), Mockito.anyString(),
 				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
 		when(deviceHistoryRepository.create(Mockito.any())).thenReturn(createdHistory);
-		//doNothing().when(deviceHistoryService.createDeviceHistory(Mockito.any()));
 		StatusResponseDto actual = deviceService.updateDeviceStatus("abc", false);
 		Assert.assertEquals(dto, actual);
 	}

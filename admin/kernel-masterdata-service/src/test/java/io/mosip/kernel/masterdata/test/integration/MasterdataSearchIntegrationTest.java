@@ -1,10 +1,13 @@
 package io.mosip.kernel.masterdata.test.integration;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
@@ -32,12 +35,14 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
@@ -102,7 +107,6 @@ import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 @SpringBootTest(classes = TestBootApplication.class)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-@Ignore
 public class MasterdataSearchIntegrationTest {
 	
 		@MockBean
@@ -403,7 +407,6 @@ public class MasterdataSearchIntegrationTest {
 		docCatTypeDto.setSort(Arrays.asList());
 		docCatTypeDto.setPagination(pagination);
 		docCatTypeRequestDto.setRequest(docCatTypeDto);
-		// TODO:
 		holidayRequestDto = new RequestWrapper<>();
 		holidayFilter = new SearchFilter();
 		holidayFilter.setColumnName("hoidayId");
@@ -644,9 +647,14 @@ public class MasterdataSearchIntegrationTest {
 				Mockito.any())).thenReturn(new PageImpl<>(Arrays.asList(), PageRequest.of(0, 10), 0));
 		searchDto.setFilters(Arrays.asList(filter2));
 		String validRequest = objectMapper.writeValueAsString(request);
-		mockMvc.perform(
-				post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(validRequest))
-				.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(post("/registrationcenters/search")
+				.contentType(MediaType.APPLICATION_JSON).content(validRequest))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-321"));
 	}
 
 	@Test
@@ -656,9 +664,14 @@ public class MasterdataSearchIntegrationTest {
 				.thenThrow(DataRetrievalFailureException.class);
 		searchDto.setFilters(Arrays.asList(filter2));
 		String validRequest = objectMapper.writeValueAsString(request);
-		mockMvc.perform(
-				post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(validRequest))
-				.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(post("/registrationcenters/search")
+				.contentType(MediaType.APPLICATION_JSON).content(validRequest))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-041"));
 	}
 
 	@Test
@@ -668,9 +681,14 @@ public class MasterdataSearchIntegrationTest {
 				.thenThrow(DataRetrievalFailureException.class);
 		searchDto.setFilters(Arrays.asList(filter2));
 		String validRequest = objectMapper.writeValueAsString(request);
-		mockMvc.perform(
-				post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(validRequest))
-				.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(post("/registrationcenters/search")
+				.contentType(MediaType.APPLICATION_JSON).content(validRequest))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-041"));
 	}
 
 	@Test
@@ -680,9 +698,14 @@ public class MasterdataSearchIntegrationTest {
 				.thenThrow(DataRetrievalFailureException.class);
 		searchDto.setFilters(Arrays.asList(filter2));
 		String validRequest = objectMapper.writeValueAsString(request);
-		mockMvc.perform(
-				post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(validRequest))
-				.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(post("/registrationcenters/search")
+				.contentType(MediaType.APPLICATION_JSON).content(validRequest))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-041"));
 	}
 
 	@Test
@@ -692,12 +715,16 @@ public class MasterdataSearchIntegrationTest {
 				.findByCodeAndLangCode(Mockito.any(), Mockito.any());
 		searchDto.setFilters(Arrays.asList(filter2));
 		String validRequest = objectMapper.writeValueAsString(request);
-		mockMvc.perform(
-				post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(validRequest))
-				.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(post("/registrationcenters/search")
+				.contentType(MediaType.APPLICATION_JSON).content(validRequest))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-041"));
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchCenterByZoneName() throws Exception {
@@ -705,7 +732,7 @@ public class MasterdataSearchIntegrationTest {
 		String validRequest = objectMapper.writeValueAsString(request);
 		mockMvc.perform(
 				post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(validRequest))
-				.andExpect(status().isOk());
+		.andExpect(status().isInternalServerError());
 
 	}
 
@@ -735,7 +762,7 @@ public class MasterdataSearchIntegrationTest {
 				Mockito.any()))
 				.thenReturn(pageContentData);
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+		.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -859,10 +886,9 @@ public class MasterdataSearchIntegrationTest {
 				Mockito.anyString(), Mockito.anyList(), Mockito.any(boolean.class)))
 				.thenReturn(pageContentSpecificationData);
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+		.andExpect(status().isInternalServerError());
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchMachineByMachineTypeNameNotFoundExceptionTest() throws Exception {
@@ -881,7 +907,7 @@ public class MasterdataSearchIntegrationTest {
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(MachineSpecification.class), Mockito.any(),
 				Mockito.any())).thenReturn(pageContentSpecificationData);
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+		.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -904,7 +930,7 @@ public class MasterdataSearchIntegrationTest {
 				Mockito.any()))
 				.thenReturn(new PageImpl<>(machines, PageRequest.of(0, 10), 1));
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+		.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -959,7 +985,7 @@ public class MasterdataSearchIntegrationTest {
 		when(zoneUserRepository.findByUserIdNonDeleted(Mockito.any())).thenReturn(Arrays.asList(zoneUser));
 		doReturn(null).when(zoneRepository).findAllNonDeleted();
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isInternalServerError());
+		.andExpect(status().isOk());
 	}
 
 	@Test
@@ -998,7 +1024,7 @@ public class MasterdataSearchIntegrationTest {
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
 				.thenReturn(new PageImpl<>(machines, PageRequest.of(0, 10), 1));
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+		.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -1013,7 +1039,8 @@ public class MasterdataSearchIntegrationTest {
 				.thenReturn(pageContentData);
 		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(Device.class), Mockito.any(), Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(missingIdDataDtoList);
-		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk());
+		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
+		.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -1109,7 +1136,8 @@ public class MasterdataSearchIntegrationTest {
 				.thenReturn(pageContentData);
 		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(Device.class), Mockito.any(), Mockito.anyString(), Mockito.any()))
 				.thenReturn(missingIdDataDtoList);
-		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk());
+		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
+		.andExpect(status().isInternalServerError());
 
 	}
 
@@ -1153,7 +1181,8 @@ public class MasterdataSearchIntegrationTest {
 				.thenReturn(pageContentData);
 		when(masterdataSearchHelper.fetchMissingValues(Mockito.eq(Device.class), Mockito.any(), Mockito.anyString(), Mockito.any()))
 				.thenReturn(missingIdDataDtoList);
-		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk());
+		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
+		.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -1192,7 +1221,6 @@ public class MasterdataSearchIntegrationTest {
 				.andExpect(status().isOk());
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchDeviceByDeviceTypeNameTest() throws Exception {
@@ -1212,10 +1240,9 @@ public class MasterdataSearchIntegrationTest {
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DeviceSpecification.class), Mockito.any(),
 				Mockito.any())).thenReturn(pageContentSpecificationData);
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+		.andExpect(status().isInternalServerError());
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchDeviceByDeviceTypeNameNotFoundExceptionTest() throws Exception {
@@ -1230,16 +1257,10 @@ public class MasterdataSearchIntegrationTest {
 		Page<DeviceSpecification> pageContentSpecificationData = new PageImpl<>(Arrays.asList(specification));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
-		/*
-		 * when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DeviceSpecification.
-		 * class), Mockito.any(),
-		 * Mockito.any())).thenReturn(pageContentSpecificationData);
-		 */
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+		.andExpect(status().isInternalServerError());
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchDeviceByDeviceTypeNameWithCorrespondingSpecificationIdNotFoundExceptionTest() throws Exception {
@@ -1252,17 +1273,10 @@ public class MasterdataSearchIntegrationTest {
 		device.setId("1100022");
 		Page<Device> pageContentData = new PageImpl<>(Arrays.asList(device));
 		Page<DeviceSpecification> pageContentSpecificationData = new PageImpl<>(Arrays.asList());
-		/*
-		 * when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DeviceType.class),
-		 * Mockito.any(), Mockito.any())) .thenReturn(pageContentData);
-		 * when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DeviceSpecification.
-		 * class), Mockito.any(),
-		 * Mockito.any())).thenReturn(pageContentSpecificationData);
-		 */
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+		.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -1313,7 +1327,7 @@ public class MasterdataSearchIntegrationTest {
 		when(masterDataFilterHelper.filterValues(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
 				.thenReturn(Arrays.asList("machineName", "secondMachineName"));
 		mockMvc.perform(post("/machines/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+		.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -1322,7 +1336,6 @@ public class MasterdataSearchIntegrationTest {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("word");
 		filterDto.setType("all");
-		// filterDto.setText("re");
 		FilterValueDto filterValueDto = new FilterValueDto();
 		filterValueDto.setFilters(Arrays.asList(filterDto));
 		filterValueDto.setLanguageCode("eng");
@@ -1343,7 +1356,6 @@ public class MasterdataSearchIntegrationTest {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("ÙƒÙ„Ù…Ø© ÙÙŠ Ø§Ù„Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„Ø³ÙˆØ¯Ø§Ø¡");
 		filterDto.setType("all");
-		// filterDto.setText("السوداء");
 		FilterValueDto filterValueDto = new FilterValueDto();
 		filterValueDto.setFilters(Arrays.asList(filterDto));
 		filterValueDto.setLanguageCode("ara");
@@ -1362,7 +1374,6 @@ public class MasterdataSearchIntegrationTest {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("invalid");
 		filterDto.setType("all");
-		// filterDto.setText("rd");
 		FilterValueDto filterValueDto = new FilterValueDto();
 		filterValueDto.setFilters(Arrays.asList(filterDto));
 		filterValueDto.setLanguageCode("inv");
@@ -1395,7 +1406,7 @@ public class MasterdataSearchIntegrationTest {
 		when(masterDataFilterHelper.filterValues(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
 				.thenReturn(Arrays.asList("deviceName", "secondDeviceName"));
 		mockMvc.perform(post("/devices/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+		.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -1416,7 +1427,7 @@ public class MasterdataSearchIntegrationTest {
 		when(zoneUserRepository.findByUserIdNonDeleted(Mockito.any())).thenReturn(Arrays.asList(zoneUser));
 
 		mockMvc.perform(post("/devices/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+		.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -1436,7 +1447,7 @@ public class MasterdataSearchIntegrationTest {
 		String json = objectMapper.writeValueAsString(requestDto);
 		when(zoneUserRepository.findByUserIdNonDeleted(Mockito.any())).thenReturn(Arrays.asList(zoneUser));
 		mockMvc.perform(post("/machines/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+		.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -1456,7 +1467,7 @@ public class MasterdataSearchIntegrationTest {
 		String json = objectMapper.writeValueAsString(requestDto);
 		when(zoneUserRepository.findByUserIdNonDeleted(Mockito.any())).thenReturn(Arrays.asList(zoneUser));
 		mockMvc.perform(post("/registrationcenters/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+		.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -1913,8 +1924,6 @@ public class MasterdataSearchIntegrationTest {
 		ValidDocument validDoc = new ValidDocument();
 		validDoc.setDocCategoryCode("POI");
 
-		// MachineType type = new MachineType();
-		// type.setCode("machineCode");
 		Page<ValidDocument> pageContentData = new PageImpl<>(Arrays.asList(validDoc));
 		DocumentCategory docCategory = new DocumentCategory();
 		docCategory.setCode("POI");
@@ -1974,7 +1983,7 @@ public class MasterdataSearchIntegrationTest {
 		when(masterDataFilterHelper.filterValues(Mockito.eq(RegistrationCenter.class), Mockito.any(), Mockito.any()))
 				.thenReturn(Arrays.asList("10001", "10002", "10003"));
 		mockMvc.perform(post("/registrationcenters/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+		.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -1996,7 +2005,7 @@ public class MasterdataSearchIntegrationTest {
 		when(masterDataFilterHelper.filterValues(Mockito.eq(RegistrationCenter.class), Mockito.any(), Mockito.any()))
 				.thenReturn(Arrays.asList("10001", "10002", "10003"));
 		mockMvc.perform(post("/registrationcenters/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+		.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -2207,7 +2216,7 @@ public class MasterdataSearchIntegrationTest {
 				Mockito.any(),
 				Mockito.any())).thenReturn(pageContentSpecificationData);
 		mockMvc.perform(post("/machinespecifications/search").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+		.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -2223,7 +2232,7 @@ public class MasterdataSearchIntegrationTest {
 				Mockito.any()))
 				.thenReturn(pageContentData);
 		mockMvc.perform(post("/machinespecifications/search").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+		.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -2373,8 +2382,14 @@ public class MasterdataSearchIntegrationTest {
 				.thenReturn(locpageContentData);
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Holiday.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
-		mockMvc.perform(post("/holidays/search").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(post("/holidays/search")
+				.contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-999"));
 	}
 
 	@Test
@@ -2422,12 +2437,7 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void SearchLocationTest() throws Exception {
-		// Page<Location> pageContentData = new
-		// PageImpl<>(Arrays.asList(locationRegionEntity));
 		String json = objectMapper.writeValueAsString(locationRequestDto);
-		// when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class),
-		// Mockito.any(), Mockito.any()))
-		// .thenReturn(pageContentData);
 		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
