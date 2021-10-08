@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.*;
+import io.mosip.kernel.syncdata.service.helper.SyncJobHelperService;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -65,6 +66,9 @@ public class SyncDataController {
 	@Autowired
 	LocalDateTimeUtil localDateTimeUtil;
 
+	@Autowired
+	SyncJobHelperService syncJobHelperService;
+
 
 	
 	/**
@@ -76,7 +80,6 @@ public class SyncDataController {
 	 * @throws InterruptedException - this method will throw interrupted Exception
 	 * @throws ExecutionException   - this method will throw exeution exception
 	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetclientsettings())")
 	@ResponseFilter
 	@GetMapping("/clientsettings")
@@ -86,7 +89,7 @@ public class SyncDataController {
 			@RequestParam(value = "regcenterId", required = false) String regCenterId)
 			throws Throwable {
 
-		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
+		LocalDateTime currentTimeStamp = syncJobHelperService.getDeltaSyncCurrentTimestamp();
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		
 		SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettings(regCenterId, keyIndex,
@@ -108,7 +111,6 @@ public class SyncDataController {
 	 * @param referenceId   Reference id of the application requesting publicKey
 	 * @return {@link PublicKeyResponse} instance
 	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetpublickeyapplicationid())")
 	@ResponseFilter
 	@GetMapping(value = "/publickey/{applicationId}")
@@ -135,7 +137,6 @@ public class SyncDataController {
 	 * @param uploadPublicKeyRequestDto
 	 * @return
 	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettpmpublickeyverify())")
 	@ResponseFilter
 	@PostMapping(value = "/tpm/publickey/verify", produces = "application/json")
@@ -146,7 +147,6 @@ public class SyncDataController {
 		return response;
 	}
 	
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','RESIDENT','INDIVIDUAL','Default')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlatestidschema())")
 	@ResponseFilter
 	@GetMapping(value = "/latestidschema", produces = "application/json")
@@ -163,7 +163,6 @@ public class SyncDataController {
 		return response;
 	}
 
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetgetcertificate())")
 	@ResponseFilter
 	@GetMapping(value = "/getCertificate")
@@ -177,7 +176,6 @@ public class SyncDataController {
 	}
 
 
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','REGISTRATION_PROCESSOR')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettpmpublickeymachineid())")
 	@ResponseFilter
 	@GetMapping(value = "/tpm/publickey/{machineId}", produces = "application/json")
@@ -193,7 +191,6 @@ public class SyncDataController {
 	 *
 	 * @return JSONObject - global config response
 	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetconfigskeyIndex())")
 	@ResponseFilter
 	@ApiOperation(value = "API to sync global config details")
@@ -212,7 +209,6 @@ public class SyncDataController {
 	 * @param keyIndex
 	 * @return
 	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetuserdetails())")
 	@ResponseFilter
 	@GetMapping("/userdetails")
@@ -231,7 +227,6 @@ public class SyncDataController {
 	 * @param lastUpdated
 	 * @return
 	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetgetcacertificates())")
 	@ResponseFilter
 	@GetMapping("/getcacertificates")
@@ -256,7 +251,6 @@ public class SyncDataController {
 	 * @throws InterruptedException - this method will throw interrupted Exception
 	 * @throws ExecutionException   - this method will throw exeution exception
 	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN','Default')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetv2clientsettings())")
 	@ResponseFilter
 	@GetMapping("/v2/clientsettings")
@@ -267,7 +261,7 @@ public class SyncDataController {
 			@RequestParam(value = "version", required = false) String clientVersion)
 			throws Throwable {
 		MDC.put("client_version", clientVersion == null ? "NA": clientVersion);
-		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
+		LocalDateTime currentTimeStamp = syncJobHelperService.getDeltaSyncCurrentTimestamp();
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettingsV2(regCenterId, keyIndex,
 				timestamp, currentTimeStamp, clientVersion);
@@ -277,7 +271,6 @@ public class SyncDataController {
 		return response;
 	}
 
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','Default')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetscriptsscriptName())")
 	@ApiOperation(value = "API to download mvel scripts")
 	@GetMapping(value = "/scripts/{scriptName}")
@@ -287,7 +280,6 @@ public class SyncDataController {
 		return syncConfigDetailsService.getScript(scriptName, keyIndex);
 	}
 
-	//@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','Default')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetclientsettingsentityIdentifier())")
 	@ApiOperation(value = "API to download data json files")
 	@GetMapping(value = "/clientsettings/{entityIdentifier}")
