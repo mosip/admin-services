@@ -4086,9 +4086,15 @@ public class MasterdataIntegrationTest {
 		when(masterdataCreationUtil.createMasterData(Device.class, deviceDto)).thenReturn(deviceDto);
 		Mockito.when(deviceRepository.create(Mockito.any())).thenReturn(device);
 		when(deviceHistoryRepository.create(Mockito.any())).thenReturn(deviceHistory);
-		mockMvc.perform(post("/devices")
-				.contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(post("/devices")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(content))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-439"));
 	}
 
 	@Test
@@ -4107,9 +4113,14 @@ public class MasterdataIntegrationTest {
 		when(masterdataCreationUtil.createMasterData(Device.class, deviceDto)).thenReturn(deviceDto);
 		Mockito.when(deviceRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
-		mockMvc.perform(
-				MockMvcRequestBuilders.post("/devices").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().is5xxServerError());
+		MvcResult result = mockMvc.perform(post("/devices").contentType(MediaType.APPLICATION_JSON)
+				.content(content))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-439"));
 	}
 
 	@Test
@@ -4127,9 +4138,15 @@ public class MasterdataIntegrationTest {
 		when(zoneUtils.getUserZones()).thenReturn(zones);
 		when(masterdataCreationUtil.createMasterData(Device.class, deviceDto)).thenReturn(deviceDto);
 		Mockito.when(deviceRepository.create(Mockito.any())).thenThrow(new IllegalArgumentException());
-		mockMvc.perform(
-				MockMvcRequestBuilders.post("/devices").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(post("/devices")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(content))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-439"));
 	}
 
 	@Test
@@ -4144,8 +4161,15 @@ public class MasterdataIntegrationTest {
 				Mockito.anyString())).thenReturn(device);
 		when(deviceHistoryRepository.create(Mockito.any())).thenReturn(deviceHistory);
 		Mockito.when(deviceRepository.update(Mockito.any())).thenReturn(device);
-		mockMvc.perform(MockMvcRequestBuilders.put("/devices").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(put("/devices")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(content))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-439"));
 	}
 
 	@Test
@@ -4172,8 +4196,14 @@ public class MasterdataIntegrationTest {
 				Mockito.anyString(), Mockito.anyString())).thenReturn(null);
 		when(deviceHistoryRepository.create(Mockito.any())).thenReturn(deviceHistory);
 		Mockito.when(deviceRepository.update(Mockito.any())).thenThrow(new DataNotFoundException("", ""));
-		mockMvc.perform(MockMvcRequestBuilders.put("/devices").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(put("/devices")
+				.contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-439"));
 
 	}
 
@@ -7125,8 +7155,15 @@ public class MasterdataIntegrationTest {
 		when(masterdataCreationUtil.updateMasterData(Machine.class, machinePutReqDto)).thenReturn(machinePutReqDto);
 		Mockito.when(machineRepository.update(Mockito.any())).thenReturn(updMachine);
 		when(machineHistoryRepository.create(Mockito.any())).thenReturn(machineHistory);
-		mockMvc.perform(MockMvcRequestBuilders.put("/machines").contentType(MediaType.APPLICATION_JSON)
-				.content(updateMachinecontent)).andExpect(status().is5xxServerError());
+		MvcResult result = mockMvc.perform(put("/machines")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(updateMachinecontent))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-436"));
 	}
 
 	@Test
@@ -7144,8 +7181,15 @@ public class MasterdataIntegrationTest {
 		when(zoneUtils.getUserZones()).thenReturn(zonesMachines);
 		when(machineRepository.findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNullWithoutActiveStatusCheck(
 				Mockito.any(), Mockito.anyString())).thenReturn(null);
-		mockMvc.perform(MockMvcRequestBuilders.put("/machines").contentType(MediaType.APPLICATION_JSON)
-				.content(updateMachinecontent)).andExpect(status().is5xxServerError());
+		MvcResult result = mockMvc.perform(put("/machines")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(updateMachinecontent))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-436"));
 	}
 
 	@Test
@@ -7172,8 +7216,15 @@ public class MasterdataIntegrationTest {
 		when(masterdataCreationUtil.updateMasterData(Machine.class, machinePutReqDto)).thenReturn(machinePutReqDto);
 		Mockito.when(machineRepository.update(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
-		mockMvc.perform(MockMvcRequestBuilders.put("/machines").contentType(MediaType.APPLICATION_JSON)
-				.content(updateMachinecontent)).andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(put("/machines")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(updateMachinecontent))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-436"));
 	}
 
 	@Test
@@ -7216,9 +7267,14 @@ public class MasterdataIntegrationTest {
 		
 		when(machineRepository.decommissionMachine(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		when(machineHistoryRepository.create(Mockito.any())).thenReturn(decMachineHistory);
-		mockMvc.perform(put("/machines/decommission/10001").contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(put("/machines/decommission/10001")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
 
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-436"));
 	}
 
 	@Test
@@ -7230,8 +7286,15 @@ public class MasterdataIntegrationTest {
 		
 		when(machineRepository.decommissionMachine(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataAccessLayerException.class);
-		mockMvc.perform(put("/machines/decommission/10001").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isInternalServerError());
+		
+		MvcResult result = mockMvc.perform(put("/devices/decommission/10001")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-042"));
 
 	}
 
@@ -7258,9 +7321,14 @@ public class MasterdataIntegrationTest {
 		when(zoneUtils.getUserZones()).thenReturn(zonesMachines);
 		when(machineRepository.findMachineByIdAndIsDeletedFalseorIsDeletedIsNullNoIsActive(Mockito.any()))
 				.thenReturn(machines);
-		mockMvc.perform(put("/machines/decommission/10001").contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(put("/machines/decommission/10001")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
 
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-436"));
 	}
 
 	@Test
@@ -7274,9 +7342,14 @@ public class MasterdataIntegrationTest {
 		when(machineRepository.findMachineByIdAndIsDeletedFalseorIsDeletedIsNullNoIsActive(Mockito.any()))
 				.thenReturn(machines);
 		
-		mockMvc.perform(put("/machines/decommission/10001").contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(put("/machines/decommission/10001")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
 
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-436"));
 	}
 
 	// --------------------------decommission device test-----------------
@@ -7310,8 +7383,14 @@ public class MasterdataIntegrationTest {
 		
 		when(deviceRepository.decommissionDevice(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		when(deviceHistoryRepository.create(Mockito.any())).thenReturn(devHistory);
-		mockMvc.perform(put("/devices/decommission/10001").contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(put("/devices/decommission/10001")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-439"));
 
 	}
 
@@ -7324,8 +7403,14 @@ public class MasterdataIntegrationTest {
 		
 		when(deviceRepository.decommissionDevice(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataAccessLayerException.class);
-		mockMvc.perform(put("/devices/decommission/10001").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(put("/devices/decommission/10001")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-439"));
 
 	}
 
@@ -7355,9 +7440,14 @@ public class MasterdataIntegrationTest {
 		when(zoneUtils.getUserZones()).thenReturn(zonesDevices);
 		when(deviceRepository.findDeviceByIdAndIsDeletedFalseorIsDeletedIsNullNoIsActive(Mockito.any()))
 				.thenReturn(decDevices);
-		mockMvc.perform(put("/devices/decommission/10001").contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(put("/devices/decommission/10001")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
 
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-439"));
 	}
 
 	@Test
@@ -7373,8 +7463,13 @@ public class MasterdataIntegrationTest {
 		when(deviceRepository.findDeviceByIdAndIsDeletedFalseorIsDeletedIsNullNoIsActive(Mockito.any()))
 				.thenReturn(decDevices);
 		
-		mockMvc.perform(put("/devices/decommission/10001").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(put("/devices/decommission/10001")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-439"));
 
 	}
 
@@ -8607,8 +8702,15 @@ public class MasterdataIntegrationTest {
 		when(masterdataCreationUtil.updateMasterData(Device.class, devicePutDto)).thenReturn(devicePutDto);
 		Mockito.when(deviceRepository.update(Mockito.any())).thenReturn(device);
 		when(deviceHistoryRepository.create(Mockito.any())).thenReturn(deviceHistory);
-		mockMvc.perform(put("/devices").contentType(MediaType.APPLICATION_JSON).content(content))
-		.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(put("/devices")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(content))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-439"));
 	}
 
 	@Test
@@ -8624,8 +8726,15 @@ public class MasterdataIntegrationTest {
 		when(zoneUtils.getUserZones()).thenReturn(zonesDev);
 		Mockito.when(deviceRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNullNoIsActive(
 				Mockito.anyString(), Mockito.anyString())).thenReturn(device);
-		mockMvc.perform(put("/devices").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(put("/devices")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(content))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-439"));
 	}
 
 	@Test
@@ -8643,8 +8752,14 @@ public class MasterdataIntegrationTest {
 		when(masterdataCreationUtil.updateMasterData(Device.class, devicePutDto)).thenReturn(devicePutDto);
 		Mockito.when(deviceRepository.update(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
-		mockMvc.perform(put("/devices").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(put("/devices").contentType(MediaType.APPLICATION_JSON)
+				.content(content))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-439"));
 	}
 
 	@Test
@@ -8665,8 +8780,15 @@ public class MasterdataIntegrationTest {
 		when(masterdataCreationUtil.updateMasterData(Device.class, devicePutDto)).thenReturn(devicePutDto);
 		Mockito.when(deviceRepository.create(Mockito.any())).thenReturn(device);
 		when(deviceHistoryRepository.create(Mockito.any())).thenReturn(deviceHistory);
-		mockMvc.perform(put("/devices").contentType(MediaType.APPLICATION_JSON).content(content))
-		.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(put("/devices")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(content))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-439"));
 	}
 
 	@Test
@@ -8817,8 +8939,15 @@ public class MasterdataIntegrationTest {
 			when(machineRepository.create(Mockito.any())).thenReturn(machineEntity);
 			when(machineHistoryRepository.create(Mockito.any())).thenReturn(machineHistory);
 			
-			mockMvc.perform(post("/machines").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestDto)))
-					.andExpect(status().isInternalServerError());
+			MvcResult result = mockMvc.perform(post("/machines")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(mapper.writeValueAsString(requestDto)))
+					.andExpect(status().isOk()).andReturn();
+				
+			ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+						ResponseWrapper.class);
+
+			assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-436"));
 			
 		} catch(Exception e) {
 			Assert.fail(e.getMessage());
@@ -9152,9 +9281,14 @@ public class MasterdataIntegrationTest {
 		when(userRepository.create(Mockito.any())).thenReturn(ud);
 		RequestWrapper<UserDetailsDto> userDetailsDtoRequest = new RequestWrapper<>();
 		userDetailsDtoRequest.setRequest(userDetailsDto);
-		mockMvc.perform(post("/usercentermapping")
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(mapper.writeValueAsString(userDetailsDtoRequest))).andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(post("/usercentermapping").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(userDetailsDtoRequest)))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-USR-014"));
 	}
 	
 	@Test
@@ -9200,8 +9334,15 @@ public class MasterdataIntegrationTest {
 		when(zoneUserRepository.create(Mockito.any())).thenReturn(zoneUser);
 		when(zoneUserHistoryRepo.create(Mockito.any())).thenReturn(zoneUserhistory);
 		when(zoneRepository.findZoneByCodeAndLangCodeNonDeletedAndIsActive(Mockito.any(),Mockito.any())).thenReturn(zone);
-		mockMvc.perform(post("/zoneuser").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestDto)))
-		.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(post("/zoneuser")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(requestDto)))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-USR-014"));
 	}
 	
 	@Test
@@ -9218,8 +9359,15 @@ public class MasterdataIntegrationTest {
 		when(zoneUserRepository.update(Mockito.any())).thenReturn(zoneUser);
 		when(zoneUserHistoryRepo.create(Mockito.any())).thenReturn(zoneUserhistory);
 		when(zoneRepository.findZoneByCodeAndLangCodeNonDeletedAndIsActive(Mockito.any(),Mockito.any())).thenReturn(zone);
-		mockMvc.perform(put("/zoneuser").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestDto)))
-		.andExpect(status().isInternalServerError());
+		MvcResult result = mockMvc.perform(put("/zoneuser")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(requestDto)))
+				.andExpect(status().isOk()).andReturn();
+			
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
+					ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-USR-014"));
 	}
 	
 	@Test
