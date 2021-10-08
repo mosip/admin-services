@@ -14,7 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.scheduling.Trigger;
+import org.springframework.scheduling.TriggerContext;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
+import org.springframework.scheduling.support.CronSequenceGenerator;
+import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -23,6 +28,8 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -42,6 +49,12 @@ public class SyncJobHelperService {
     @Value("${mosip.syncdata.regclient.module.id:10002}")
     private String regClientModuleId;
 
+    @Value("${syncdata.cache.evict.delta-sync.cron:0 0 * * * *}")
+    private String deltaCacheEvictCron;
+
+    @Value("${syncdata.cache.snapshot.cron:0 0 23 * * *}")
+    private String snapshotCron;
+
     @Autowired
     private SyncMasterDataServiceHelper serviceHelper;
 
@@ -54,23 +67,49 @@ public class SyncJobHelperService {
     @Autowired
     private CacheManager cacheManager;
 
-    //By default, set to 24 hours
-    @Scheduled(fixedDelayString = "${syncdata.cache.evict.delay.millis:86400000}",
-            initialDelayString = "${syncdata.cache.evict.delay-on-startup:86400000}")
-    public void evictAllCaches() {
-        logger.info("Eviction of all caches started");
-        cacheManager.getCacheNames()
-                .parallelStream()
-                .forEach(cacheName -> cacheManager.getCache(cacheName).clear());
-        logger.info("Eviction of all caches completed");
+
+    //By default, to trigger every hour
+    @Scheduled(cron = "${syncdata.cache.evict.delta-sync.cron:0 0 * * * *}")
+    public void evictDeltaCaches() {
+        logger.info("Eviction of all keys from delta-sync cache started");
+        cacheManager.getCache("delta-sync").clear();
+        logger.info("Eviction of all keys from delta-sync cache completed");
+    }
+
+    public LocalDateTime getFullSyncCurrentTimestamp() {
+        return LocalDate.now(ZoneOffset.UTC).atTime(0,0,0,0);
+    }
+
+    public LocalDateTime getDeltaSyncCurrentTimestamp() {
+        CronSequenceGenerator cronSequenceGenerator = new CronSequenceGenerator(deltaCacheEvictCron, TimeZone.getTimeZone(ZoneOffset.UTC));
+        Date nextTrigger1 = cronSequenceGenerator.next(new Date());
+        Date nextTrigger2 = cronSequenceGenerator.next(nextTrigger1);
+
+        long minutes = ChronoUnit.MINUTES.between(nextTrigger1.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime(),
+                nextTrigger2.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime());
+
+        LocalDateTime previousTrigger = nextTrigger1.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime().minus(minutes,
+                ChronoUnit.MINUTES);
+
+        logger.debug("Identified previous trigger : {}", previousTrigger);
+        return previousTrigger;
+    }
+
+    @Scheduled(cron = "${syncdata.cache.snapshot.cron:0 0 23 * * *}")
+    public void clearCacheAndRecreateSnapshot() {
+        logger.info("Eviction of all keys from initial-sync cache started");
+        cacheManager.getCache("initial-sync").clear();
+        logger.info("Eviction of all keys from initial-sync cache Completed");
+
+        createEntitySnapshot();
     }
 
 
-    //By default, set to 12 hours
-    @Scheduled(fixedDelayString = "${syncdata.create.snapshot.delay.millis:43200000}",
-            initialDelayString = "${syncdata.create.snapshot.delay-on-startup:0}")
+
+    @Scheduled(fixedDelay = Long.MAX_VALUE, initialDelay = 0)
     public void createEntitySnapshot() {
-        LocalDateTime currentTimestamp =  LocalDate.now(ZoneOffset.UTC).atTime(0,0,0,0);
+
+        LocalDateTime currentTimestamp = getFullSyncCurrentTimestamp();
         logger.info("Create snapshot scheduled job started : {}", currentTimestamp);
 
         Map<Class, CompletableFuture> futuresMap = new HashMap<>();
@@ -106,7 +145,7 @@ public class SyncJobHelperService {
         }
 
         retrieveAndCreateSnapshot(futuresMap);
-        logger.info("Create snapshot scheduled job completed : {}");
+        logger.info("Create snapshot scheduled job completed");
     }
 
 
