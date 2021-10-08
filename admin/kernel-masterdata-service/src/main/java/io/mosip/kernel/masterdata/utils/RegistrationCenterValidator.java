@@ -64,6 +64,9 @@ public class RegistrationCenterValidator {
 
 	private Set<String> supportedLanguages;
 
+	@Autowired
+	private LanguageUtils languageUtils;
+
 	/**
 	 * Constructing regex for matching the Latitude and Longitude format
 	 */
@@ -75,6 +78,7 @@ public class RegistrationCenterValidator {
 		negRegex = "^(\\-\\d{1,2}\\.\\d{" + minDegits + ",})$";
 		posRegex = "^(\\d{1,2}\\.\\d{" + minDegits + ",})$";
 	}
+
 	@Autowired
 	RegistrationCenterIdGenerator<String> registrationCenterIdGenerator;
 
@@ -321,7 +325,7 @@ public class RegistrationCenterValidator {
 
 		String latitude = registrationCenterDto.getLatitude();
 		String longitude = registrationCenterDto.getLongitude();
-		validateLocation(registrationCenterDto.getLocationCode(),errors);
+		validateLocation(registrationCenterDto.getLocationCode(), errors);
 		zoneUserMapValidation(registrationCenterDto, errors, getZoneIdsForUser(registrationCenterDto.getLangCode()));
 		zoneStartEndTimeGtrValidation(registrationCenterDto, errors);
 		lunchStartEndTimeGrtValidation(registrationCenterDto, errors);
@@ -675,40 +679,39 @@ public class RegistrationCenterValidator {
 	// then make True for all records.
 	public void isActiveTrueAllSupLang(List<RegCenterPutReqDto> registrationCenterPutReqAdmDto) {
 
-			// call method to check isActive is true already for the given
-			// object
-			// isActiveTrueAlreadyValidator(registrationCenterPutReqAdmDto);
+		// call method to check isActive is true already for the given
+		// object
+		// isActiveTrueAlreadyValidator(registrationCenterPutReqAdmDto);
 
-			// for the given ID , records are in all supported language or not
-			List<RegistrationCenter> renRegistrationCenterList = registrationCenterRepository
-					.findByRegCenterIdAndIsDeletedFalseOrNull(registrationCenterPutReqAdmDto.get(0).getId());
-			Set<String> languageCodeDb = renRegistrationCenterList.stream().map(regObj -> regObj.getLangCode())
-					.collect(Collectors.toSet());
+		// for the given ID , records are in all supported language or not
+		List<RegistrationCenter> renRegistrationCenterList = registrationCenterRepository
+				.findByRegCenterIdAndIsDeletedFalseOrNull(registrationCenterPutReqAdmDto.get(0).getId());
+		Set<String> languageCodeDb = renRegistrationCenterList.stream().map(regObj -> regObj.getLangCode())
+				.collect(Collectors.toSet());
 
-			if (languageCodeDb.containsAll(supportedLanguages)) {
+		if (languageCodeDb.containsAll(supportedLanguages)) {
 
-				// to update isActive for
-				renRegistrationCenterList.forEach(i -> {
-					i.setIsActive(true);
-					i.setUpdatedBy(MetaDataUtils.getContextUser());
-					i.setUpdatedDateTime(MetaDataUtils.getCurrentDateTime());
+			// to update isActive for
+			renRegistrationCenterList.forEach(i -> {
+				i.setIsActive(true);
+				i.setUpdatedBy(MetaDataUtils.getContextUser());
+				i.setUpdatedDateTime(MetaDataUtils.getCurrentDateTime());
 
-					RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();
-					MapperUtils.map(i, registrationCenterHistory);
-					MapperUtils.setBaseFieldValue(i, registrationCenterHistory);
-					registrationCenterHistory.setEffectivetimes(i.getUpdatedDateTime());
-					registrationCenterHistory.setUpdatedDateTime(i.getUpdatedDateTime());
-					registrationCenterHistoryRepository.create(registrationCenterHistory);
-				});
+				RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();
+				MapperUtils.map(i, registrationCenterHistory);
+				MapperUtils.setBaseFieldValue(i, registrationCenterHistory);
+				registrationCenterHistory.setEffectivetimes(i.getUpdatedDateTime());
+				registrationCenterHistory.setUpdatedDateTime(i.getUpdatedDateTime());
+				registrationCenterHistoryRepository.create(registrationCenterHistory);
+			});
 
-				registrationCenterRepository.saveAll(renRegistrationCenterList);
+			registrationCenterRepository.saveAll(renRegistrationCenterList);
 
-			} else {
-				// for the given ID , records are not in all supported language
-				throw new RequestException(RegistrationCenterErrorCode.ID_LANGUAGE.getErrorCode(),
-						RegistrationCenterErrorCode.ID_LANGUAGE.getErrorMessage());
-			}
-
+		} else {
+			// for the given ID , records are not in all supported language
+			throw new RequestException(RegistrationCenterErrorCode.ID_LANGUAGE.getErrorCode(),
+					RegistrationCenterErrorCode.ID_LANGUAGE.getErrorMessage());
+		}
 
 	}
 
@@ -758,30 +761,41 @@ public class RegistrationCenterValidator {
 	public String generateMachineIdOrvalidateWithDB() {
 		String uniqueId = machineIdGenerator.generateMachineId();
 		List<Machine> renMachine = machineRepository
-					.findMachineByIdAndIsDeletedFalseorIsDeletedIsNullNoIsActive(uniqueId);
+				.findMachineByIdAndIsDeletedFalseorIsDeletedIsNullNoIsActive(uniqueId);
 
 		return renMachine.isEmpty() ? uniqueId : generateMachineIdOrvalidateWithDB();
 	}
 
-	public void validateRegCenterUpdate(String zoneCode,LocalTime centerStartTime, LocalTime centerEndTime,
+	public void validateRegCenterUpdate(String zoneCode, LocalTime centerStartTime, LocalTime centerEndTime,
 			LocalTime lunchStartingTime, LocalTime lunchEndingTime, String latitude, String longitude,
-			Map<String, Boolean> workingNonWorkingDaysDto, String langCode,String locationCode, List<ServiceError> errors) {
-		validateLocation(locationCode,errors);
+			Map<String, Boolean> workingNonWorkingDaysDto, String langCode, String locationCode,
+			List<ServiceError> errors) {
+		validateLocation(locationCode, errors);
 		zoneUserMapValidation(zoneCode, errors, getZoneIdsForUser(langCode));
-		zoneStartEndTimeGtrValidation(centerStartTime,centerEndTime, errors);
+		zoneStartEndTimeGtrValidation(centerStartTime, centerEndTime, errors);
 		lunchStartEndTimeGrtValidation(lunchStartingTime, lunchEndingTime, centerStartTime, centerEndTime, errors);
 		formatValidationLongitudeLatitude(errors, latitude, longitude);
-		//checkWorkingNonworking(errors, workingNonWorkingDaysDto);
+		// checkWorkingNonworking(errors, workingNonWorkingDaysDto);
 		// holidayVlidation(registrationCenterDto, errors);
 
 	}
 
-	private void validateLocation(String locationCode,List<ServiceError> errors) {
-		Location location=locationRepository.findLocationByCodeAndLanguageCode(locationCode,LanguageUtils.getLanguage());
-		if(Integer.parseInt(locationHierarchy)!=location.getHierarchyLevel()){
-			errors.add(new ServiceError(RegistrationCenterErrorCode.LOCATION_HIERARCHY_INVALID.getErrorCode(),
-					String.format(RegistrationCenterErrorCode.LOCATION_HIERARCHY_INVALID.getErrorMessage(),
-							locationCode)));		}
+
+	private void validateLocation(String locationCode, List<ServiceError> errors) {
+		Location location = locationRepository.findLocationByCodeAndLanguageCode(locationCode,
+				languageUtils.getDefaultLanguage());
+		if (null == location) {
+			errors.add(new ServiceError(RegistrationCenterErrorCode.LOCATION_INVALID.getErrorCode(), String
+					.format(RegistrationCenterErrorCode.LOCATION_INVALID.getErrorMessage(), locationCode)));
+			return;
+
+		}
+
+		if (Integer.parseInt(locationHierarchy) != location.getHierarchyLevel()) {
+			errors.add(new ServiceError(RegistrationCenterErrorCode.LOCATION_HIERARCHY_INVALID.getErrorCode(), String
+					.format(RegistrationCenterErrorCode.LOCATION_HIERARCHY_INVALID.getErrorMessage(), locationCode)));
+		}
+
 	}
 
 	/*
@@ -823,14 +837,12 @@ public class RegistrationCenterValidator {
 	// validation to check entered zoneCode is mapped with eligible user or not
 	// and
 	// is valid zoneCode
-	private void zoneUserMapValidation(String zoneCode, List<ServiceError> errors,
-			List<String> zoneIds) {
+	private void zoneUserMapValidation(String zoneCode, List<ServiceError> errors, List<String> zoneIds) {
 
 		if (!zoneIds.isEmpty()) {
 			if (!zoneIds.contains(zoneCode)) {
 				errors.add(new ServiceError(RegistrationCenterErrorCode.INVALIDE_ZONE.getErrorCode(),
-						String.format(RegistrationCenterErrorCode.INVALIDE_ZONE.getErrorMessage(),
-								zoneCode)));
+						String.format(RegistrationCenterErrorCode.INVALIDE_ZONE.getErrorMessage(), zoneCode)));
 			}
 		}
 	}
@@ -838,15 +850,14 @@ public class RegistrationCenterValidator {
 	// validation to check the RegCenter Lunch Start Time is greater
 	// than RegCenter
 	// Lunch End Time
-	private void lunchStartEndTimeGrtValidation(LocalTime lunchStartingTime,LocalTime lunchEndingTime,
-			LocalTime centerStartTime,LocalTime centerEndTime,List<ServiceError> errors) {
+	private void lunchStartEndTimeGrtValidation(LocalTime lunchStartingTime, LocalTime lunchEndingTime,
+			LocalTime centerStartTime, LocalTime centerEndTime, List<ServiceError> errors) {
 		// validation to check the RegCenter Lunch Start Time is greater than
 		// RegCenter
 		// Lunch End Time
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 		LocalTime lunchStartTime = LocalTime.parse("00:00:00", formatter);
-		if ((lunchStartingTime != null
-				&& !lunchStartingTime.equals(lunchStartTime))
+		if ((lunchStartingTime != null && !lunchStartingTime.equals(lunchStartTime))
 				&& lunchStartingTime.isAfter(lunchEndingTime)) {
 			errors.add(new ServiceError(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorCode(),
@@ -855,8 +866,7 @@ public class RegistrationCenterValidator {
 							lunchEndingTime)));
 
 		}
-		if ((lunchEndingTime != null
-				&& !lunchEndingTime.equals(lunchStartTime))
+		if ((lunchEndingTime != null && !lunchEndingTime.equals(lunchStartTime))
 				&& lunchEndingTime.isAfter(centerEndTime)) {
 			errors.add(new ServiceError(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_END_CENTER_END_EXCEPTION.getErrorCode(),
@@ -864,8 +874,7 @@ public class RegistrationCenterValidator {
 							.getErrorMessage(), lunchEndingTime)));
 
 		}
-		if ((lunchStartingTime != null
-				&& !lunchStartingTime.equals(lunchStartTime))
+		if ((lunchStartingTime != null && !lunchStartingTime.equals(lunchStartTime))
 				&& lunchStartingTime.isBefore(centerStartTime)) {
 			errors.add(new ServiceError(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_CENTER_END_EXCEPTION.getErrorCode(),
@@ -876,7 +885,8 @@ public class RegistrationCenterValidator {
 
 	// validation to check the RegCenter Start Time is greater than
 	// RegCenter End Time
-	private void zoneStartEndTimeGtrValidation(LocalTime centerStartTime, LocalTime centerEndTime, List<ServiceError> errors) {
+	private void zoneStartEndTimeGtrValidation(LocalTime centerStartTime, LocalTime centerEndTime,
+			List<ServiceError> errors) {
 		if (centerStartTime.isAfter(centerEndTime)) {
 			errors.add(new ServiceError(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorCode(),

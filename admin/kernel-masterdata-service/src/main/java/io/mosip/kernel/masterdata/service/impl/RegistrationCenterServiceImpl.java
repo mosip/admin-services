@@ -178,6 +178,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Autowired
 	private AuditUtil auditUtil;
 
+	@Autowired
+	private LanguageUtils languageUtils;
+
 	/**
 	 * minimum digits after decimal point in Longitude and latitude
 	 */
@@ -862,7 +865,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 		List<String> zoneIds;
 		// get user zone and child zones list
-		List<Zone> userZones = zoneUtils.getSubZones(LanguageUtils.getLanguage());
+		List<Zone> userZones = zoneUtils.getSubZones(languageUtils.getDefaultLanguage());
 		zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 
 		// check the given registration center zone are come under

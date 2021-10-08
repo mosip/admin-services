@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalDateTime;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -26,6 +27,8 @@ public class DeviceDto {
 	/**
 	 * Field for device id
 	 */
+	
+	@Size(min = 0, max = 36)
 	@ApiModelProperty(value = "id", required = false, dataType = "java.lang.String")
 	private String id;
 	/**

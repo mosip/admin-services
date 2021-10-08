@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Megha Tanga
  * @since 1.0.0
  */
-public interface ZoneUserRepository extends BaseRepository<ZoneUser, ZoneUserId> {
+public interface ZoneUserRepository extends BaseRepository<ZoneUser, String> {
 
 	@Query("FROM ZoneUser zu WHERE zu.userId=?1 and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
 	public List<ZoneUser> findByUserIdNonDeleted(String userId);
@@ -27,7 +27,7 @@ public interface ZoneUserRepository extends BaseRepository<ZoneUser, ZoneUserId>
 	@Query("FROM ZoneUser zu WHERE zu.userId=?1 and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
 	public ZoneUser findZoneByUserIdNonDeleted(String userId);
 
-	@Query("FROM ZoneUser zu WHERE zu.userId=?1")
+	@Query("FROM ZoneUser zu WHERE zu.userId=?1 ")
 	public ZoneUser findByUserId(String userId);
 	
 	@Query("FROM ZoneUser zu WHERE zu.userId=?1 and zu.zoneCode=?2 ")

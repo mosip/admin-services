@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.dto.request;
 
+import io.mosip.kernel.masterdata.validator.PositiveValue;
+import io.mosip.kernel.masterdata.validator.StringFormatter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,8 +18,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Pagination {
 
+	@PositiveValue
 	private int pageStart;
 
+	@PositiveValue
 	private int pageFetch = 10;
 
 }

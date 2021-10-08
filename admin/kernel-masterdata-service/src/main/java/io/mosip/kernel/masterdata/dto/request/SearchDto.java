@@ -29,6 +29,7 @@ public class SearchDto {
 	private List<SearchSort> sort;
 
 	// @NotNull
+	@Valid
 	private Pagination pagination;
 
 	@ValidLangCode(message = "Language Code is Invalid")
