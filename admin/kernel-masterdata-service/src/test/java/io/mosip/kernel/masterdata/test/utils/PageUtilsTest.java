@@ -97,7 +97,7 @@ public class PageUtilsTest {
 
 	}
 
-	@Ignore
+//	@Ignore
 	@Test
 	public void sortPageSuccess() {
 		PageResponseDto<TestPojo> page = pageUtils.sortPage(pojos, Arrays.asList(new SearchSort("id", "asc")),
@@ -107,7 +107,7 @@ public class PageUtilsTest {
 		assertEquals(6, page.getTotalRecord());
 	}
 
-	@Ignore
+//	@Ignore
 	@Test(expected = RequestException.class)
 	public void sortPagePageValueNull() {
 		pageUtils.sortPage(pojos, Arrays.asList(new SearchSort("id", "asc")), null);
