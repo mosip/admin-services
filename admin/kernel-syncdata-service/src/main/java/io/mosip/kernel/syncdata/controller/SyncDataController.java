@@ -89,7 +89,8 @@ public class SyncDataController {
 			@RequestParam(value = "regcenterId", required = false) String regCenterId)
 			throws Throwable {
 
-		LocalDateTime currentTimeStamp = syncJobHelperService.getDeltaSyncCurrentTimestamp();
+		LocalDateTime currentTimeStamp = lastUpdated==null ? syncJobHelperService.getFullSyncCurrentTimestamp() :
+				syncJobHelperService.getDeltaSyncCurrentTimestamp();
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		
 		SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettings(regCenterId, keyIndex,
@@ -261,7 +262,8 @@ public class SyncDataController {
 			@RequestParam(value = "version", required = false) String clientVersion)
 			throws Throwable {
 		MDC.put("client_version", clientVersion == null ? "NA": clientVersion);
-		LocalDateTime currentTimeStamp = syncJobHelperService.getDeltaSyncCurrentTimestamp();
+		LocalDateTime currentTimeStamp = lastUpdated==null ? syncJobHelperService.getFullSyncCurrentTimestamp() :
+				syncJobHelperService.getDeltaSyncCurrentTimestamp();
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettingsV2(regCenterId, keyIndex,
 				timestamp, currentTimeStamp, clientVersion);

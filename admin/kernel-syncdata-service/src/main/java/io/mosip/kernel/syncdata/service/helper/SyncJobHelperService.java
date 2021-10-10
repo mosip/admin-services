@@ -49,7 +49,7 @@ public class SyncJobHelperService {
     @Value("${mosip.syncdata.regclient.module.id:10002}")
     private String regClientModuleId;
 
-    @Value("${syncdata.cache.evict.delta-sync.cron:0 0 * * * *}")
+    @Value("${syncdata.cache.evict.delta-sync.cron:0 0/15 * * * *}")
     private String deltaCacheEvictCron;
 
     @Value("${syncdata.cache.snapshot.cron:0 0 23 * * *}")
@@ -69,7 +69,7 @@ public class SyncJobHelperService {
 
 
     //By default, to trigger every hour
-    @Scheduled(cron = "${syncdata.cache.evict.delta-sync.cron:0 0 * * * *}")
+    @Scheduled(cron = "${syncdata.cache.evict.delta-sync.cron}", zone = "UTC")
     public void evictDeltaCaches() {
         logger.info("Eviction of all keys from delta-sync cache started");
         cacheManager.getCache("delta-sync").clear();
@@ -95,7 +95,7 @@ public class SyncJobHelperService {
         return previousTrigger;
     }
 
-    @Scheduled(cron = "${syncdata.cache.snapshot.cron:0 0 23 * * *}")
+    @Scheduled(cron = "${syncdata.cache.snapshot.cron}", zone = "UTC")
     public void clearCacheAndRecreateSnapshot() {
         logger.info("Eviction of all keys from initial-sync cache started");
         cacheManager.getCache("initial-sync").clear();
