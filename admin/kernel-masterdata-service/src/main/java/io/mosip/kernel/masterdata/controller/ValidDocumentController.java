@@ -110,10 +110,10 @@ public class ValidDocumentController {
 	 */
 	@ResponseFilter
 	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetvaliddocumentslanguagecode())")
-	@GetMapping("/validdocuments/{languagecode}")
+	@GetMapping("/validdocuments/{langCode}")
 	@ApiOperation(value = "Service to fetch all valid document categories and associated document types for a languagecode")
 	public ResponseWrapper<ValidDocCategoryAndDocTypeResponseDto> getValidDocumentByLangCode(
-			@PathVariable("languagecode") String langCode) {
+			@PathVariable("langCode") String langCode) {
 		ResponseWrapper<ValidDocCategoryAndDocTypeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentService.getValidDocumentByLangCode(langCode));
 		return responseWrapper;
@@ -229,12 +229,12 @@ public class ValidDocumentController {
 	 */
 	@ResponseFilter
 	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetvaliddocumentsdoccategorycode())")
-	@GetMapping("/validdocuments/{docCategoryCode}/{languagecode}")
+	@GetMapping("/validdocuments/{docCategoryCode}/{langCode}")
 	@ApiOperation(value = "Service to fetch all valid document categories and associated document types for a docCategoryCode")
 	public ResponseWrapper<List<ValidDocumentMapDto>> getValidDocumentByDocCategoryCode(
-			@PathVariable("docCategoryCode") String docCategoryCode, @PathVariable("languagecode") String languagecode) {
+			@PathVariable("docCategoryCode") String docCategoryCode, @PathVariable("langCode") String langCode) {
 		ResponseWrapper<List<ValidDocumentMapDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(documentService.getValidDocumentByDocCategoryCode(docCategoryCode,languagecode));
+		responseWrapper.setResponse(documentService.getValidDocumentByDocCategoryCode(docCategoryCode,langCode));
 		return responseWrapper;
 	}
 }

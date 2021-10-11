@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import io.mosip.kernel.core.authmanager.authadapter.model.AuthUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +42,9 @@ public class ZoneUtils {
 	private ZoneUserRepository zoneUserRepository;
 
 	@Autowired
+	private LanguageUtils languageUtils;
+
+	@Autowired
 	@Qualifier("zoneTree")
 	private UBtree<Zone> zoneTree;
 
@@ -49,6 +53,7 @@ public class ZoneUtils {
 
 	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
 	private String supportedLang;
+
 
 	/**
 	 * Method to get the all the users zones based on the passed list of zone and
@@ -117,6 +122,22 @@ public class ZoneUtils {
 		else
 			return Collections.emptyList();
 	}
+	
+	/**
+	 * Method to fetch the zones .
+	 * 
+	 * @return list of zones
+	 */
+	public List<Zone> getZones() {
+		List<Zone> zones = null;
+		try {
+			zones = zoneRepository.findAllNonDeleted();
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException(ZoneErrorCode.ZONE_FETCH_EXCEPTION.getErrorCode(),
+					ZoneErrorCode.ZONE_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return zones;
+	}
 
 	/**
 	 * Method to fetch all the child zones of the passed zone.
@@ -136,6 +157,25 @@ public class ZoneUtils {
 						String[] sArray = szone.split(hierarchyPathDelimiter);
 						for (String zoneCode : sArray) {
 							zoneList.add(zoneCode);
+						}
+					});
+			return zones.stream().filter(z -> zoneList.contains(z.getCode())).collect(Collectors.toList());
+		}
+		return Collections.emptyList();
+	}
+
+	public List<Zone> getChildZones(String zoneCode) {
+		Objects.requireNonNull(zoneCode, "zone cannot be null");
+		Set<String> zoneList = new HashSet<>();
+		List<Zone> zones = getUserZones();
+		if (zones != null && !zones.isEmpty()) {
+			zones.stream().filter(z -> z.getHierarchyPath().contains(zoneCode)).map(Zone::getHierarchyPath)
+					.forEach(i -> {
+						int iIndex = i.lastIndexOf(zoneCode);
+						String szone = i.substring(iIndex);
+						String[] sArray = szone.split(hierarchyPathDelimiter);
+						for (String zoneCodeChild : sArray) {
+							zoneList.add(zoneCodeChild);
 						}
 					});
 			return zones.stream().filter(z -> zoneList.contains(z.getCode())).collect(Collectors.toList());
@@ -189,11 +229,11 @@ public class ZoneUtils {
 			if (zoneId.isPresent()) {
 				List<Zone> zones = getUserZones();
 				List<Zone> langSpecificZones = null;
-				if (!langCode.equals("all")) {
-					langSpecificZones = zones.stream().filter(i -> i.getLangCode().equals(langCode))
+				if (langCode.equals("all")) {
+					langSpecificZones = zones.stream().filter(i -> supportedLang.contains(i.getLangCode()))
 							.collect(Collectors.toList());
 				} else {
-					langSpecificZones = zones.stream().filter(i -> supportedLang.contains(i.getLangCode()))
+					langSpecificZones = zones.stream().filter(i -> i.getLangCode().equals(langCode))
 							.collect(Collectors.toList());
 				}
 				List<Node<Zone>> tree = zoneTree.createTree(langSpecificZones);
@@ -203,7 +243,74 @@ public class ZoneUtils {
 		}
 		return Collections.emptyList();
 	}
+/**
+ * method to get subzones 
+ * @param langCode
+ * @return
+ */
+	public List<Zone> getSubZones(String langCode) {
+			List<Zone> zones = getZones();
+			List<Zone> langSpecificZones = null;
+			ZoneUser zu=zoneUserRepository.findZoneByUserIdActiveAndNonDeleted(((AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId());
 
+		if (langCode==null || langCode.equals("all")) {
+			String lang=languageUtils.getDefaultLanguage();
+			langSpecificZones = zones.stream().filter(i -> lang.equals(i.getLangCode()))
+						.collect(Collectors.toList());
+			} else {
+				langSpecificZones = zones.stream().filter(i -> i.getLangCode().equals(langCode))
+							.collect(Collectors.toList());
+			}
+			List<Node<Zone>> tree = zoneTree.createTree(langSpecificZones);
+			Node<Zone> node = zoneTree.findNode(tree, zu.getZoneCode());
+
+			return zoneTree.getChildHierarchy(node);
+			
+	}
+	/**
+	 * method to get leaf zones
+	 * @param langCode
+	 * @return
+	 */
+	public List<Zone> getLeafZones(String langCode) {
+		List<Zone> zones = getZones();
+		List<Zone> langSpecificZones = null;
+		ZoneUser zu=zoneUserRepository.findZoneByUserIdActiveAndNonDeleted(((AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId());
+		if (langCode==null || langCode.equals("all")) {
+			String lang=languageUtils.getDefaultLanguage();
+			langSpecificZones = zones.stream().filter(i -> lang.equals(i.getLangCode()))
+					.collect(Collectors.toList());
+		} else {
+				langSpecificZones = zones.stream().filter(i -> i.getLangCode().equals(langCode))
+						.collect(Collectors.toList());
+		}
+		List<Node<Zone>> tree = zoneTree.createTree(langSpecificZones);
+		Node<Zone> node = zoneTree.findNode(tree, zu.getZoneCode());
+		return zoneTree.findLeafsValue(node);
+		
+}
+	/**
+	 * method to get leaf zones
+	 * @param langCode
+	 * @return
+	 */
+	public List<Zone> getLeafZones(String langCode,String zoneCode) {
+		List<Zone> zones = getZones();
+		List<Zone> langSpecificZones = null;
+	//	ZoneUser zu=zoneUserRepository.findZoneByUserIdActiveAndNonDeleted(((AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId());
+		if (langCode==null || langCode.equals("all")) {
+			String lang=languageUtils.getDefaultLanguage();
+			langSpecificZones = zones.stream().filter(i -> lang.equals(i.getLangCode()))
+					.collect(Collectors.toList());
+		} else {
+			langSpecificZones = zones.stream().filter(i -> i.getLangCode().equals(langCode))
+					.collect(Collectors.toList());
+		}
+		List<Node<Zone>> tree = zoneTree.createTree(langSpecificZones);
+		Node<Zone> node = zoneTree.findNode(tree, zoneCode);
+		return zoneTree.findLeafsValue(node);
+
+	}
 	// ----------------------------------------
 	/**
 	 * Method to get the all the users zones based on the passed list of zone and

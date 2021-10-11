@@ -1,12 +1,13 @@
 package io.mosip.kernel.masterdata.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
+import io.mosip.kernel.core.authmanager.authadapter.model.AuthUserDetails;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import lombok.Data;
@@ -47,6 +48,10 @@ public class LanguageUtils {
 		configuredLanguages = new ArrayList<>();
 		configuredLanguages.addAll(mandatoryLang);
 		configuredLanguages.addAll(optionalLang);
+	}
+
+	public String getDefaultLanguage(){
+		return configuredLanguages.get(0);
 	}
 
 }

@@ -57,7 +57,7 @@ public class WebsubCallbackController {
     public void handleCACertificate(@RequestBody EventModel eventModel) {
         logger.debug("ca_certificate EVENT RECEIVED");
         Map<String, Object> data = eventModel.getEvent().getData();
-
+        
         if (data.containsKey(PARTNER_DOMAIN) && partnerAllowedDomains.contains((String) data.get(PARTNER_DOMAIN)) &&
                 data.containsKey(CERTIFICATE_DATA_SHARE_URL)) {
             CACertificateRequestDto caCertRequestDto = new CACertificateRequestDto();
@@ -68,6 +68,7 @@ public class WebsubCallbackController {
                 partnerCertificateManagerService.uploadCACertificate(caCertRequestDto);
                 logger.info("CA certs sync completed for {}", caCertRequestDto.getPartnerDomain());
             } catch (PartnerCertManagerException ex) {
+                
                 if(PartnerCertManagerErrorConstants.INVALID_PARTNER_DOMAIN.getErrorCode().equals(ex.getErrorCode()) ||
                         PartnerCertManagerErrorConstants.CERTIFICATE_EXIST_ERROR.getErrorCode().equals(ex.getErrorCode())) {
                     logger.error("Failed to insert CA cert {}", ex.getErrorText());

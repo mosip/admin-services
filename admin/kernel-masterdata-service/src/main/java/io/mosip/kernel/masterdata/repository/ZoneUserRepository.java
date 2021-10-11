@@ -1,13 +1,16 @@
 package io.mosip.kernel.masterdata.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.ZoneUser;
 import io.mosip.kernel.masterdata.entity.id.ZoneUserId;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Zone-User mapping repository
@@ -16,7 +19,7 @@ import io.mosip.kernel.masterdata.entity.id.ZoneUserId;
  * @author Megha Tanga
  * @since 1.0.0
  */
-public interface ZoneUserRepository extends BaseRepository<ZoneUser, ZoneUserId> {
+public interface ZoneUserRepository extends BaseRepository<ZoneUser, String> {
 
 	@Query("FROM ZoneUser zu WHERE zu.userId=?1 and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
 	public List<ZoneUser> findByUserIdNonDeleted(String userId);
@@ -24,7 +27,7 @@ public interface ZoneUserRepository extends BaseRepository<ZoneUser, ZoneUserId>
 	@Query("FROM ZoneUser zu WHERE zu.userId=?1 and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
 	public ZoneUser findZoneByUserIdNonDeleted(String userId);
 
-	@Query("FROM ZoneUser zu WHERE zu.userId=?1")
+	@Query("FROM ZoneUser zu WHERE zu.userId=?1 ")
 	public ZoneUser findByUserId(String userId);
 	
 	@Query("FROM ZoneUser zu WHERE zu.userId=?1 and zu.zoneCode=?2 ")
@@ -47,4 +50,10 @@ public interface ZoneUserRepository extends BaseRepository<ZoneUser, ZoneUserId>
 	
 	@Query("FROM ZoneUser zu WHERE LOWER(zu.zoneCode) like (%?1%)  and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
 	public List<ZoneUser> findZoneByZoneCodeActiveAndNonDeleted(String zoneCode);
+	
+	@Modifying
+	@Transactional
+	@Query("UPDATE ZoneUser z SET z.updatedBy=?3, z.isDeleted =true, z.isActive = false, z.updatedDateTime=?2 ,z.deletedDateTime= ?2 WHERE z.userId =?1 and (z.isDeleted is null or z.isDeleted =false)")
+	int deleteZoneUser(String id, LocalDateTime deletedDateTime, String updatedBy);
+
 }

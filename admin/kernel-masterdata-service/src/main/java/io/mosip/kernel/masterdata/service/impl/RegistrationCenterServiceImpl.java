@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import io.mosip.kernel.masterdata.utils.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,17 +91,6 @@ import io.mosip.kernel.masterdata.repository.UserDetailsRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
-import io.mosip.kernel.masterdata.utils.ExceptionUtils;
-import io.mosip.kernel.masterdata.utils.LocationUtils;
-import io.mosip.kernel.masterdata.utils.MapperUtils;
-import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
-import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
-import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import io.mosip.kernel.masterdata.utils.PageUtils;
-import io.mosip.kernel.masterdata.utils.RegistrationCenterServiceHelper;
-import io.mosip.kernel.masterdata.utils.RegistrationCenterValidator;
-import io.mosip.kernel.masterdata.utils.ZoneUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
@@ -188,6 +178,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Autowired
 	private AuditUtil auditUtil;
 
+	@Autowired
+	private LanguageUtils languageUtils;
+
 	/**
 	 * minimum digits after decimal point in Longitude and latitude
 	 */
@@ -239,7 +232,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					RegistrationCenterErrorCode.HOLIDAY_YEAR_PATTERN.getErrorMessage());
 
 		}
-		
+
 		try {
 			registrationCenter = registrationCenterRepository.findByIdAndLangCode(registrationCenterId, langCode);
 		} catch (DataAccessException | DataAccessLayerException dataAccessException) {
@@ -795,6 +788,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		dto.getFilters().removeAll(removeList);
 		dto.getFilters().addAll(addList);
+		dto.getFilters().stream().forEach(f->{
+			if(f.getType().isBlank()  || null==f.getType()) {
+				f.setType(FilterTypeEnum.CONTAINS.toString());
+			}
+		});
 		if (filterTypeValidator.validate(RegistrationCenterSearchDto.class, dto.getFilters()) && flag) {
 			// searching registration center
 			if (locationFilters.isEmpty()) {
@@ -818,11 +816,12 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	public FilterResponseCodeDto registrationCenterFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseCodeDto filterResponseDto = new FilterResponseCodeDto();
 		List<ColumnCodeValue> columnValueList = new ArrayList<>();
-		List<Zone> zones = zoneUtils.getUserZones();
+		List<Zone> zones = zoneUtils.getSubZones(filterValueDto.getLanguageCode());
 		List<SearchFilter> zoneFilter = new ArrayList<>();
 		if (zones != null && !zones.isEmpty()) {
 			zoneFilter.addAll(buildZoneFilter(zones));
-			zoneFilter.addAll(filterValueDto.getOptionalFilters());
+			if (null != filterValueDto.getOptionalFilters() && filterValueDto.getOptionalFilters().size() > 0)
+				zoneFilter.addAll(filterValueDto.getOptionalFilters());
 			filterValueDto.setOptionalFilters(zoneFilter);
 		} else {
 			return filterResponseDto;
@@ -866,7 +865,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 		List<String> zoneIds;
 		// get user zone and child zones list
-		List<Zone> userZones = zoneUtils.getUserZones();
+		List<Zone> userZones = zoneUtils.getSubZones(languageUtils.getDefaultLanguage());
 		zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 
 		// check the given registration center zone are come under
@@ -925,7 +924,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	}
 
 	/**
-	 * @param exception
+	 *
+	 * @param errorCode
+	 * @param errorMessage
 	 */
 	private void auditException(String errorCode, String errorMessage) {
 		auditUtil.auditRequest(
@@ -1222,7 +1223,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					regCenterPutReqDto.getCenterStartTime(), regCenterPutReqDto.getCenterEndTime(),
 					regCenterPutReqDto.getLunchStartTime(), regCenterPutReqDto.getLunchEndTime(),
 					regCenterPutReqDto.getLatitude(), regCenterPutReqDto.getLongitude(),
-					regCenterPutReqDto.getWorkingNonWorkingDays(), regCenterPutReqDto.getLangCode(), errors);
+					regCenterPutReqDto.getWorkingNonWorkingDays(), regCenterPutReqDto.getLangCode(),regCenterPutReqDto.getLocationCode(), errors);
 			if (!errors.isEmpty()) {
 
 				throw new ValidationException(errors);
@@ -1665,7 +1666,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenterExtnDto registrationCenterExtnDto = new RegistrationCenterExtnDto();
 		registrationCenterValidator.validateRegCenterUpdate(dto.getZoneCode(), dto.getCenterStartTime(),
 				dto.getCenterEndTime(), dto.getLunchStartTime(), dto.getLunchEndTime(), dto.getLatitude(),
-				dto.getLongitude(), dto.getWorkingNonWorkingDays(), "all", errors);
+				dto.getLongitude(), dto.getWorkingNonWorkingDays(), "all",dto.getLocationCode(), errors);
 		if (!errors.isEmpty()) {
 			throw new ValidationException(errors);
 		}
@@ -1726,8 +1727,18 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Override
 	public RegistrationCenterResponseDto getRegistrationCentersByZoneCode(String zoneCode, String langCode) {
 		List<RegistrationCenter> registrationCentersList = null;
+		List<String> zoneIds;
 		try {
-			registrationCentersList = registrationCenterRepository.findAllActiveByZoneCodeAndLangCode(zoneCode,
+			List<Zone> zones=zoneUtils.getLeafZones(langCode,zoneCode);
+			if(!zones.isEmpty()) {
+				registrationCentersList = new ArrayList<>();
+				zoneIds = zones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
+				for(String zoneC:zoneIds){
+					List<RegistrationCenter> rc=registrationCenterRepository.findAllActiveByZoneCodeAndLangCode(zoneC,langCode);
+					registrationCentersList.addAll(rc);
+				}
+			}else
+				registrationCentersList = registrationCenterRepository.findAllActiveByZoneCodeAndLangCode(zoneCode,
 					langCode);
 
 		} catch (DataAccessLayerException | DataAccessException e) {

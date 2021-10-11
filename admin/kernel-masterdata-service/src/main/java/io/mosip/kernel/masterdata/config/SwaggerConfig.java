@@ -43,22 +43,22 @@ public class SwaggerConfig {
 				api.getInfo().license(new License()
 						.name(openApiProperties.getInfo().getLicense().getName())
 						.url(openApiProperties.getInfo().getLicense().getUrl()));
-				logger.info(msg + "info license property is added");
+				logger.info("{} info license property is added", msg);
 			} else {
-				logger.error(msg + "info license property is empty");
+				logger.error("{} info license property is empty", msg);
 			}
-			logger.info(msg + "info property is added");
+			logger.info("{} info property is added", msg);
 		} else {
-			logger.error(msg + "info property is empty");
+			logger.error("{} info property is empty", msg);
 		}
 		
-		if (null != openApiProperties.getMasterdata().getServers()) {
-			openApiProperties.getMasterdata().getServers().forEach(server -> {
+		if (null != openApiProperties.getService() && null != openApiProperties.getService().getServers()) {
+			openApiProperties.getService().getServers().forEach(server -> {
 				api.addServersItem(new Server().description(server.getDescription()).url(server.getUrl()));
 			});
-			logger.info(msg + "server property is added");
+			logger.info("{} server property is added", msg);
 		} else {
-			logger.error(msg + "server property is empty");
+			logger.error("{} server property is empty", msg);
 		}
 		return api;
     }

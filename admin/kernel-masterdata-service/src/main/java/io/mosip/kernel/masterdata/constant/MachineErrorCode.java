@@ -26,12 +26,12 @@ public enum MachineErrorCode {
 			"No Machine Specification found for the Machine Type name:%s"),
 	MACHINE_NOT_TAGGED_TO_ZONE("KER-MSD-342", "No zone assigned to the user"),
 	MACHINE_ZONE_NOT_FOUND_EXCEPTION("KER-MSD-395", "User is not authorized to decommission the machine "),
-	INVALIDE_MACHINE_ZONE("KER-MSD-436", "Admin not authorized to access this Machine for this Zone"),
+	INVALID_MACHINE_ZONE("KER-MSD-436", "Admin not authorized to access this Machine for this Zone"),
 	ZONE_NOT_EXIST("KER-MSD-343", "Zone %s doesn't exist"),
 	MACHINE_ID("KER-MSD-437", "Machine ID %s does not exist for primary language"),
 	MAPPED_TO_REGCENTER("KER-MSD-352", "Machine cannot Decommissioned as some Registration centers are mapped"), 
 	INVALID_PUBLIC_KEY("KER-MSD-353", "Invalid public key provided"),
-	INVALID_SIGN_PUBLIC_KEY("KER-MSD-354", "Invalid sign public key provided");
+	INVALID_SIGN_PUBLIC_KEY("KER-MSD-410", "Invalid sign public key provided");
 	
 	private final String errorCode;
 	private final String errorMessage;

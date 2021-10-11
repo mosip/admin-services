@@ -35,12 +35,6 @@ public class UserDetailsExtnDto extends BaseDto {
 
 	private String statusCode;
 	
-	/*private String mobile;
-	
-	private String email;
-	
-	private String uin;*/
-	
 	private LocalDateTime lastLoginDateTime;
 	
 	private String lastLoginMethod;

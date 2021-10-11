@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import io.mosip.kernel.masterdata.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -64,18 +65,6 @@ import io.mosip.kernel.masterdata.repository.MachineTypeRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.service.MachineService;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
-import io.mosip.kernel.masterdata.utils.ExceptionUtils;
-import io.mosip.kernel.masterdata.utils.MachineUtil;
-import io.mosip.kernel.masterdata.utils.MapperUtils;
-import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
-import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
-import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
-import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import io.mosip.kernel.masterdata.utils.OptionalFilter;
-import io.mosip.kernel.masterdata.utils.PageUtils;
-import io.mosip.kernel.masterdata.utils.RegistrationCenterValidator;
-import io.mosip.kernel.masterdata.utils.ZoneUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
@@ -125,6 +114,9 @@ public class MachineServiceImpl implements MachineService {
 
 	@Autowired
 	private ZoneUtils zoneUtils;
+
+	@Autowired
+	private LanguageUtils languageUtils;
 
 	@Autowired
 	private MachineUtil machineUtil;
@@ -404,7 +396,7 @@ public class MachineServiceImpl implements MachineService {
 
 		}
 		if (flag) {
-			zones = zoneUtils.getUserZones();
+			zones = zoneUtils.getSubZones(dto.getLanguageCode());
 			if (zones != null && !zones.isEmpty()) {
 				zoneFilter.addAll(buildZoneFilter(zones));
 			} else {
@@ -446,7 +438,7 @@ public class MachineServiceImpl implements MachineService {
 				machines = MapperUtils.mapAll(page.getContent(), MachineSearchDto.class);
 				setMachineMetadata(machines, zones);
 				setMachineTypeNames(machines);
-				setMapStatus(machines);
+				setMapStatus(machines, dto.getLanguageCode());
 				machines.forEach(machine -> {
 					if (machine.getMapStatus() == null) {
 						machine.setMapStatus("unassigned");
@@ -497,14 +489,16 @@ public class MachineServiceImpl implements MachineService {
 	 * 
 	 * @param list the {@link MachineSearchDto}.
 	 */
-	private void setMapStatus(List<MachineSearchDto> list) {
+	private void setMapStatus(List<MachineSearchDto> list,String langCode) {
 		List<RegistrationCenter> registrationCenterList = machineUtil.getAllRegistrationCenters();
+		if(langCode==null){
+			langCode=languageUtils.getDefaultLanguage();
+		}
+		String languageCode = langCode;
 		list.forEach(machineSearchDto -> {
 			String regId = machineSearchDto.getRegCenterId();
-			String zoneCode=machineSearchDto.getZoneCode();
-			String langCode=machineSearchDto.getLangCode();
 			registrationCenterList.forEach(registrationCenter -> {
-				if (registrationCenter.getId().equals(regId)  && registrationCenter.getLangCode().toString().equalsIgnoreCase(langCode)) {
+				if (registrationCenter.getId().equals(regId)  && registrationCenter.getLangCode().toString().equalsIgnoreCase(languageCode)) {
 					machineSearchDto.setMapStatus(registrationCenter.getName());
 				}
 			});
@@ -629,10 +623,11 @@ public class MachineServiceImpl implements MachineService {
 	public FilterResponseCodeDto machineFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseCodeDto filterResponseDto = new FilterResponseCodeDto();
 		List<ColumnCodeValue> columnValueList = new ArrayList<>();
-		List<Zone> zones = zoneUtils.getUserZones();
+		List<Zone> zones = zoneUtils.getSubZones(filterValueDto.getLanguageCode());
 		List<SearchFilter> zoneFilter = new ArrayList<>();
 		if (zones != null && !zones.isEmpty()) {
 			zoneFilter.addAll(buildZoneFilter(zones));
+			if(null!=filterValueDto.getOptionalFilters() && filterValueDto.getOptionalFilters().size()>0)
 			zoneFilter.addAll(filterValueDto.getOptionalFilters());
 			filterValueDto.setOptionalFilters(zoneFilter);
 		} else {
@@ -683,7 +678,7 @@ public class MachineServiceImpl implements MachineService {
 		List<String> zoneIds;
 
 		// get user zone and child zones list
-		List<Zone> userZones = zoneUtils.getUserZones();
+		List<Zone> userZones = zoneUtils.getSubZones(languageUtils.getDefaultLanguage());
 		zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 
 		// check the given device and registration center zones are come under user zone
@@ -692,11 +687,11 @@ public class MachineServiceImpl implements MachineService {
 					String.format(MasterDataConstant.FAILURE_DECOMMISSION, MachineSearchDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
-							MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorCode(),
-							MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorMessage()),
+							MachineErrorCode.INVALID_MACHINE_ZONE.getErrorCode(),
+							MachineErrorCode.INVALID_MACHINE_ZONE.getErrorMessage()),
 					"ADM-537");
-			throw new RequestException(MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorCode(),
-					MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorMessage());
+			throw new RequestException(MachineErrorCode.INVALID_MACHINE_ZONE.getErrorCode(),
+					MachineErrorCode.INVALID_MACHINE_ZONE.getErrorMessage());
 		}
 		try {
 			for(Machine machine: machines) {
@@ -705,8 +700,8 @@ public class MachineServiceImpl implements MachineService {
 							String.format(MasterDataConstant.FAILURE_DECOMMISSION, MachineSearchDto.class.getSimpleName()),
 							MasterDataConstant.AUDIT_SYSTEM,
 							String.format(MasterDataConstant.FAILURE_DESC,
-									MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorCode(),
-									MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorMessage()),
+									MachineErrorCode.INVALID_MACHINE_ZONE.getErrorCode(),
+									MachineErrorCode.INVALID_MACHINE_ZONE.getErrorMessage()),
 							"ADM-538");
 					throw new RequestException(MachineErrorCode.MAPPED_TO_REGCENTER.getErrorCode(),
 							MachineErrorCode.MAPPED_TO_REGCENTER.getErrorMessage());
@@ -763,7 +758,7 @@ public class MachineServiceImpl implements MachineService {
 
 		// call method to check the machineZone will come under Accessed user zone or
 		// not
-		validateZone(machineZone);
+		validateZone(machineZone,machinePostReqDto.getLangCode());
 		try {
 			if(machinePostReqDto.getRegCenterId() != null && !machinePostReqDto.getRegCenterId().isEmpty()) {
 				validateRegistrationCenter(machinePostReqDto.getRegCenterId());
@@ -814,16 +809,18 @@ public class MachineServiceImpl implements MachineService {
 	}
 
 	// method to check the machineZone will come under Accessed user zone or not
-	private void validateZone(String machineZone) {
+	private void validateZone(String machineZone,String langCode) {
 		List<String> zoneIds;
 		// get user zone and child zones list
-		List<Zone> userZones = zoneUtils.getUserZones();
-		zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
+		if(langCode==null)
+			langCode=languageUtils.getDefaultLanguage();
+		List<Zone> subZones = zoneUtils.getSubZones(langCode);
+		zoneIds = subZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 
 		if (!(zoneIds.contains(machineZone))) {
 			// check the given machine zones will come under accessed user zones
-			throw new RequestException(MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorCode(),
-					MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorMessage());
+			throw new RequestException(MachineErrorCode.INVALID_MACHINE_ZONE.getErrorCode(),
+					MachineErrorCode.INVALID_MACHINE_ZONE.getErrorMessage());
 		}
 	}
 	
@@ -837,12 +834,12 @@ public class MachineServiceImpl implements MachineService {
 	}
 	
 	private void validateRegistrationCenterZone(String zoneCode, String regCenterId) {
-		List<Zone> userZones = zoneUtils.getUserZones();
+		List<Zone> subZones = zoneUtils.getSubZones(languageUtils.getDefaultLanguage());
 		boolean isRegCenterMappedToUserZone = false;
 		boolean isInSameHierarchy = false;
 		Zone registrationCenterZone = null;		
 		List<RegistrationCenter> centers = regCenterRepository.findByRegId(regCenterId);
-		for (Zone zone : userZones) {
+		for (Zone zone : subZones) {
 
 			if (zone.getCode().equals(centers.get(0).getZoneCode())) {
 				isRegCenterMappedToUserZone = true;
@@ -855,13 +852,11 @@ public class MachineServiceImpl implements MachineService {
 					DeviceErrorCode.INVALID_CENTER_ZONE.getErrorMessage());
 		}
 		Objects.requireNonNull(registrationCenterZone, "registrationCenterZone is empty");
-		String hierarchyPath = registrationCenterZone.getHierarchyPath();
-		List<String> zoneHierarchy = Arrays.asList(hierarchyPath.split("/"));
-		isInSameHierarchy = zoneHierarchy.stream().anyMatch(zone -> zone.equals(zoneCode));
+		/*isInSameHierarchy = subZones.stream().anyMatch(zone -> zone.equals(zoneCode));
 		if(!isInSameHierarchy) {
-			throw new RequestException(DeviceErrorCode.INVALID_CENTER_ZONE.getErrorCode(),
-					DeviceErrorCode.INVALID_CENTER_ZONE.getErrorMessage());
-		}
+			throw new RequestException(MachineErrorCode.INVALID_MACHINE_ZONE.getErrorCode(),
+					MachineErrorCode.INVALID_MACHINE_ZONE.getErrorMessage());
+		}*/
 	
 	}
 
@@ -881,7 +876,7 @@ public class MachineServiceImpl implements MachineService {
 
 		// call method to check the machineZone will come under Accessed user zone or
 		// not
-		validateZone(machineZone);
+		validateZone(machineZone,machinePutReqDto.getLangCode());
 		try {
 			if(machinePutReqDto.getRegCenterId() != null && !machinePutReqDto.getRegCenterId().isEmpty()) {
 				validateRegistrationCenter(machinePutReqDto.getRegCenterId());

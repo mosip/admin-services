@@ -14,21 +14,10 @@ public class UserDetailsPutReqDto {
 	@StringFormatter(min = 1, max = 36)
 	private String id;
 
-	/*@Null
-	@Size(min = 0, max = 28)
-	private String uin;*/
 
 	@Null
 	@StringFormatter(min = 0, max = 64)
 	private String name;
-
-	/*@Null
-	@StringFormatter(min = 0, max = 16)
-	private String email;
-
-	@Null
-	@StringFormatter(min = 0, max = 16)
-	private String mobile;*/
 
 	@Null
 	@StringFormatter(min = 0, max = 16)

@@ -340,7 +340,7 @@ public class HolidayControllerTest {
 	public void t023getMissingHolidayDetailsFailTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.get("/holidays/missingids/eng1").param("fieldName", "holiday_name"))
-				.andReturn(), "KER-MSD-999");
+				.andReturn(), "KER-LANG-ERR");
 	}
 
 	@Test
