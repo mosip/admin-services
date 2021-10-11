@@ -18,14 +18,12 @@ public class LanguageUtils {
 
 	private List<String> mandatoryLang;
 	private List<String> optionalLang;
-	private List<String> configuredLanguages;
-	private List<String> supportedLangugaes;
+	private Set<String> configuredLanguages;
 
 
 	@Autowired
 	public LanguageUtils(@Value("${mosip.mandatory-languages:NOTSET}") String mandatory,
-			@Value("${mosip.optional-languages:NOTSET}") String optional,
-			@Value("${mosip.supported-languages:NOTSET}") String supported) {
+			@Value("${mosip.optional-languages:NOTSET}") String optional) {
 
 		if ("NOTSET".equals(optional)) {
 			this.optionalLang = Collections.emptyList();
@@ -39,19 +37,13 @@ public class LanguageUtils {
 			this.mandatoryLang = Arrays.asList(mandatory.split(","));
 		}
 
-
-		if ("NOTSET".equals(supported)) {
-			this.supportedLangugaes = Collections.emptyList();
-		} else {
-			this.supportedLangugaes = Arrays.asList(supported.split(","));
-		}
-		configuredLanguages = new ArrayList<>();
+		configuredLanguages = new HashSet<>();
 		configuredLanguages.addAll(mandatoryLang);
 		configuredLanguages.addAll(optionalLang);
 	}
 
 	public String getDefaultLanguage(){
-		return configuredLanguages.get(0);
+		return configuredLanguages.stream().findFirst().get();
 	}
 
 }

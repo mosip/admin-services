@@ -91,9 +91,6 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 	@Autowired
 	UserDetailsRepository userDetailsRepo;
 
-	@Value("#{'${mosip.mandatory-languages:}'.concat(',').concat('${mosip.optional-languages:}')}")
-	private String supportedLang;
-
 	@Value("${zone.user.details.url}")
 	private String userDetails;
 
@@ -135,7 +132,7 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 			zu = MetaDataUtils.setCreateMetaData(zoneUserDto, ZoneUser.class);
 
 			// Throws exception if not found
-			zoneservice.getZone(zoneUserDto.getZoneCode(), supportedLang.split(",")[0]);
+			zoneservice.getZone(zoneUserDto.getZoneCode(), languageUtils.getDefaultLanguage());
 
 			zu = zoneUserRepo.save(zu);
 			ZoneUserHistory zuh = new ZoneUserHistory();

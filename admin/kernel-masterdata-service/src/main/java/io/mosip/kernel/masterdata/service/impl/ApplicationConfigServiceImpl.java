@@ -18,16 +18,13 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 
 	@Value("${mosip.optional-languages}")
 	private String optionalLang;
-	
+
 	@Value("${aplication.configuration.level.version}")
 	private String version;
 	
 	@Value("${mosip.recommended.centers.locCode}")
 	private String locationHierarchyLevel;
-	
-	@Value("${mosip.supported-languages}")
-	private String supportedLanguages;
-	
+		
 	@Value("${mosip.admin.ui.configs}")
 	private String uiConfigs;
 

@@ -47,18 +47,6 @@ public class RegistrationCenterValidator {
 	@Value("${mosip.min-digit-longitude-latitude:4}")
 	private int minDegits;
 
-	/**
-	 * get list of mandatory languages supported by MOSIP from configuration file
-	 */
-	@Value("${mosip.mandatory-languages}")
-	private String mandatoryLang;
-
-	/**
-	 * get list of optional languages supported by MOSIP from configuration file
-	 */
-	@Value("${mosip.optional-languages}")
-	private String optionalLang;
-
 	@Value("${mosip.recommended.centers.locCode}")
 	private String locationHierarchy;
 
@@ -73,8 +61,6 @@ public class RegistrationCenterValidator {
 
 	@PostConstruct
 	public void constructRegEx() {
-		supportedLanguages = new HashSet<>(Arrays.asList(optionalLang.split(",")));
-		supportedLanguages.addAll(Arrays.asList(mandatoryLang.split(",")));
 		negRegex = "^(\\-\\d{1,2}\\.\\d{" + minDegits + ",})$";
 		posRegex = "^(\\d{1,2}\\.\\d{" + minDegits + ",})$";
 	}

@@ -97,9 +97,6 @@ public class HolidayServiceImpl implements HolidayService {
 	@Autowired
 	private AuditUtil auditUtil;
 
-	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
-	private String supportedLang;
-
 	private static final String UPDATE_HOLIDAY_QUERY = "UPDATE Holiday h SET h.updatedBy = :updatedBy , h.updatedDateTime = :updatedDateTime, h.holidayDesc = :holidayDesc,h.holidayId.holidayDate=:holidayDate,h.holidayId.holidayName = :holidayName   WHERE h.holidayId.locationCode = :locationCode  and h.holidayId.holidayId = :holidayId and h.holidayId.langCode = :langCode and (h.isDeleted is null or h.isDeleted = false)";
 	private static final int DEFAULT_HOLIDAY_ID = 2000001;
 
@@ -577,7 +574,7 @@ public class HolidayServiceImpl implements HolidayService {
 	/**
 	 * This method return Machine Types list filters.
 	 * 
-	 * @param machineTypes the list of Machine Type.
+	 * @param locations the list of Machine Type.
 	 * @return the list of {@link SearchFilter}.
 	 */
 	private List<SearchFilter> buildLocationSearchFilter(List<Location> locations) {
@@ -589,7 +586,7 @@ public class HolidayServiceImpl implements HolidayService {
 	/**
 	 * This method provide search filter for provided Machine Type.
 	 * 
-	 * @param machineType the machine type.
+	 * @param location the machine type.
 	 * @return the {@link SearchFilter}.
 	 */
 	private SearchFilter buildLocations(Location location) {

@@ -109,9 +109,6 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
-	
-	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
-	private String supportedLang;
 
 	/*
 	 * (non-Javadoc)
