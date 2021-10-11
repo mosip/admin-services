@@ -35,7 +35,7 @@
 		<!-- swagger -->
 		<swagger.core.version>2.0.7</swagger.core.version>
 		<swagger.annotations.version>1.5.21</swagger.annotations.version>
-		<springdoc.version>1.5.9</springdoc.version>
+		<springdoc.version>1.5.10</springdoc.version>
 
 		<!-- vertx -->
 		<vertx.version>3.6.2</vertx.version>
@@ -220,7 +220,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<version>${spring.boot.version}</version>
-			<optional>true</optional>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
