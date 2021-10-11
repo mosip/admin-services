@@ -35,7 +35,7 @@
 		<!-- swagger -->
 		<swagger.core.version>2.0.7</swagger.core.version>
 		<swagger.annotations.version>1.5.21</swagger.annotations.version>
-		<springdoc.version>1.5.9</springdoc.version>
+		<springdoc.version>1.5.10</springdoc.version>
 
 		<!-- vertx -->
 		<vertx.version>3.6.2</vertx.version>
@@ -122,6 +122,28 @@
 		<tss.version>0.3.0</tss.version>
 		<kernel.websubclient.api.version>1.2.0-SNAPSHOT</kernel.websubclient.api.version>
 	</properties>
+
+	<repositories>
+		<repository>
+			<id>ossrh</id>
+			<name>CentralRepository</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>central</id>
+			<name>MavenCentral</name>
+			<layout>default</layout>
+			<url>https://repo1.maven.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
@@ -220,7 +242,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<version>${spring.boot.version}</version>
-			<optional>true</optional>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 

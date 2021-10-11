@@ -73,7 +73,8 @@ public class PageUtils {
 
 	public <D> PageResponseDto<D> sortPage(List<D> content, List<SearchSort> sort, Pagination page) {
 		PageResponseDto<D> pageResponse = new PageResponseDto<>();
-		page.setPageFetch(page.getPageFetch()>maximumRows?maximumRows:page.getPageFetch());
+		if (maximumRows != 0)
+			page.setPageFetch(page.getPageFetch()>maximumRows?maximumRows:page.getPageFetch());
 		List<D> sortedList = sortUtils.sort(content, sort);
 		List<D> pageList = Collections.emptyList();
 		if (validate(page)) {
