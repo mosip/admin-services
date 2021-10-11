@@ -265,14 +265,14 @@ public class MachineSpecificationController {
 	public ResponseWrapper<FilterResponseCodeDto> machineSpecificationFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		auditUtil.auditRequest(
-				MasterDataConstant.FILTER_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName(),
+				String.format(MasterDataConstant.FILTER_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.FILTER_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName(), "ADM-671");
+				String.format(MasterDataConstant.FILTER_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName()), "ADM-671");
 		ResponseWrapper<FilterResponseCodeDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineSpecificationService.machineSpecificationFilterValues(request.getRequest()));
-		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_FILTER + MachineSpecificationDto.class.getCanonicalName(),
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER + MachineSpecificationDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SUCCESSFUL_FILTER_DESC + MachineSpecificationDto.class.getCanonicalName(),
+				String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC + MachineSpecificationDto.class.getCanonicalName()),
 				"ADM-672");
 		return responseWrapper;
 	}

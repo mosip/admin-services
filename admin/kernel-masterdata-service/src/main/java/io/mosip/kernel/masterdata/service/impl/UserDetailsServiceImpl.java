@@ -638,7 +638,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		for (int i = 0; i < searchDto.getFilters().size(); i++) {
 			if (searchDto.getFilters().get(i).getColumnName().equalsIgnoreCase("userName")) {
 				String userId = getUserDetailsBasedonUserName(searchDto.getFilters().get(i).getValue());
-				if (null == userId)
+				if (null == userId || userId.isBlank())
 					return userCenterPageDto;
 				searchDto.getFilters().get(i).setValue(userId);
 				if (!userId.contains(",")) {
