@@ -119,9 +119,6 @@ public class DeviceServiceImpl implements DeviceService {
 	@Autowired
 	private ZoneService zoneService;
 
-	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
-	private String supportedLang;
-
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
 

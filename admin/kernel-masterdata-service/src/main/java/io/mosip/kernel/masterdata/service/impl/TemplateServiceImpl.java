@@ -95,17 +95,14 @@ public class TemplateServiceImpl implements TemplateService {
 	@Autowired
 	private FilterTypeValidator filterTypeValidator;
 
-	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
-	private String supportedLang;
-
 	@Value("${mosip.kernel.masterdata.template_idauthentication_event:masterdata/idauthentication_templates}")
 	private String topic;
 
 	@Value("${websub.publish.url}")
 	private String hubURL;
 
-	@Value("${mosip.kernel.masterdata.template_idauthentication_event_module_name:ID Authentication}")
-	private String idAuthModuleName;
+	@Value("${mosip.kernel.masterdata.template_idauthentication_event_module_id:10004}")
+	private String idAuthModuleId;
 
 	@Autowired
 	private FilterColumnValidator filterColumnValidator;
@@ -292,7 +289,7 @@ public class TemplateServiceImpl implements TemplateService {
 				template = masterdataCreationUtil.updateMasterData(Template.class, template);
 				MetaDataUtils.setUpdateMetaData(template, entity, false);
 				templateRepository.update(entity);
-				if (template.getModuleName().equalsIgnoreCase(idAuthModuleName)) {
+				if (template.getModuleId().equalsIgnoreCase(idAuthModuleId)) {
 					TemplateDto templateDto = MapperUtils.map(template, TemplateDto.class);
                     EventModel eventModel  =EventPublisherUtil.populateEventModel(templateDto, MasterDataConstant.PUBLISHER_ID, topic , "templates");
 					publisher.publishUpdate(topic, eventModel, MediaType.APPLICATION_JSON_UTF8_VALUE,

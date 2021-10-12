@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.constant.TemplateTypeErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidDocumentErrorCode;
 import io.mosip.kernel.masterdata.dto.DocCategoryAndTypeMappingResponseDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
@@ -207,6 +208,12 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 		DocumentType documentType = null;
 		try {
 			List<ValidDocument> validDocuments = documentRepository.findByDocCategoryCode(docCatCode);
+			if (null == validDocuments || validDocuments.size() == 0) {
+				throw new DataNotFoundException(
+						ValidDocumentErrorCode.VALID_DOCUMENT_NOT_FOUND_EXCEPTION.getErrorCode(),
+						ValidDocumentErrorCode.VALID_DOCUMENT_NOT_FOUND_EXCEPTION.getErrorMessage());
+
+			}
 			for (ValidDocument validDocument : validDocuments) {
 				documentType = documentTypeRepository.findByCodeAndLangCode(validDocument.getDocTypeCode(), langCode);
 				ValidDocumentMapDto validDocumentDto = new ValidDocumentMapDto();

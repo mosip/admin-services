@@ -23,6 +23,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.HibernateException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -59,16 +60,14 @@ public class MasterdataCreationUtil {
 
 	private static String contextUser = "superadmin";
 
-
-
-	@Value("#{'${mosip.mandatory-languages:}'.concat('${mosip.optional-languages:}')}")
-	private String supportedLang;
-
 	/**
 	 * Field for interface used to interact with the persistence context.
 	 */
 	@PersistenceContext
 	private EntityManager entityManager;
+
+	@Autowired
+	private LanguageUtils languageUtils;
 
 	/**
 	 * Constructor for MasterdataSearchHelper having EntityManager
@@ -117,7 +116,7 @@ public class MasterdataCreationUtil {
 		if(langCode == null)
 			return t;
 
-		if (supportedLang.contains(langCode))
+		if (languageUtils.getConfiguredLanguages().contains(langCode))
 			return t;
 
 		throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
