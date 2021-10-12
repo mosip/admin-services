@@ -35,6 +35,27 @@
 		<kernel-logger-logback.version>1.2.0-SNAPSHOT</kernel-logger-logback.version>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>ossrh</id>
+			<name>CentralRepository</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>central</id>
+			<name>MavenCentral</name>
+			<layout>default</layout>
+			<url>https://repo1.maven.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.powermock</groupId>

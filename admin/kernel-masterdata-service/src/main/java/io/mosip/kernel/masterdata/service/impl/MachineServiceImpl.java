@@ -133,9 +133,6 @@ public class MachineServiceImpl implements MachineService {
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
 
-	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
-	private String supportedLang;
-
 	@Autowired
 	private RegistrationCenterRepository regCenterRepository;
 
@@ -1007,13 +1004,13 @@ public class MachineServiceImpl implements MachineService {
 	private void updatePublicKey(String publicKey, String signPublicKey, Machine machineEntity) {
 		if(StringUtils.isNotEmpty(publicKey)) {
 			machineEntity.setPublicKey(machineUtil.getX509EncodedPublicKey(publicKey,MachineUtil.PUBLIC_KEY));
-			machineEntity.setKeyIndex(CryptoUtil.computeFingerPrint(CryptoUtil.decodeBase64(machineEntity.getPublicKey()),
+			machineEntity.setKeyIndex(CryptoUtil.computeFingerPrint(CryptoUtil.decodeURLSafeBase64(machineEntity.getPublicKey()),
 					null).toLowerCase());
 		}
 
 		if(StringUtils.isNotEmpty(signPublicKey)) {
 			machineEntity.setSignPublicKey(machineUtil.getX509EncodedPublicKey(signPublicKey,MachineUtil.SIGN_PUBLIC_KEY));
-			machineEntity.setSignKeyIndex(CryptoUtil.computeFingerPrint(CryptoUtil.decodeBase64(machineEntity.getSignPublicKey()),
+			machineEntity.setSignKeyIndex(CryptoUtil.computeFingerPrint(CryptoUtil.decodeURLSafeBase64(machineEntity.getSignPublicKey()),
 					null).toLowerCase());
 		}
 	}
