@@ -9,7 +9,7 @@ import io.mosip.admin.bulkdataupload.entity.ApplicantValidDocument;
 import io.mosip.admin.bulkdataupload.entity.Application;
 import io.mosip.admin.bulkdataupload.entity.BiometricAttribute;
 import io.mosip.admin.bulkdataupload.entity.BiometricType;
-import io.mosip.admin.bulkdataupload.entity.BlacklistedWords;
+import io.mosip.admin.bulkdataupload.entity.BlocklistedWords;
 import io.mosip.admin.bulkdataupload.entity.DaysOfWeek;
 import io.mosip.admin.bulkdataupload.entity.Device;
 import io.mosip.admin.bulkdataupload.entity.DeviceHistory;
@@ -94,7 +94,7 @@ public class Mapper {
 		repositoryMap.put(Application.class, "applicationRepository");
 		repositoryMap.put(BiometricAttribute.class, "biometricAttributeRepository");
 		repositoryMap.put(BiometricType.class,"biometricTypeRepository");
-		repositoryMap.put(BlacklistedWords.class,"blacklistedWordsRepository");
+		repositoryMap.put(BlocklistedWords.class,"blocklistedWordsRepository");
 		repositoryMap.put(Device.class, "deviceRepository");
 		repositoryMap.put(DeviceHistory.class,"deviceHistoryRepository");
 		repositoryMap.put(DeviceProviderHistory.class, "deviceProviderRepository");
@@ -164,7 +164,7 @@ public class Mapper {
 		entityMap.put("appl_form_type", Application.class);
 		entityMap.put("biometric_attribute", BiometricAttribute.class);
 		entityMap.put("biometric_type",BiometricType.class );
-		entityMap.put("blacklisted_words", BlacklistedWords.class);
+		entityMap.put("blocklisted_words", BlocklistedWords.class);
 		entityMap.put("daysofweek_list", DaysOfWeek.class);
 		entityMap.put("device_master", Device.class);
 		entityMap.put("device_master_h", DeviceHistory.class);

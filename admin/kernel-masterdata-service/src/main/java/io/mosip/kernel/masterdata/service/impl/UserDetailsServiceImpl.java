@@ -12,6 +12,8 @@ import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.utils.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -89,6 +91,8 @@ import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
  */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
+
+	private static final Logger logger = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
 
 	@Autowired
 	UserDetailsRepository userDetailsRepository;
@@ -723,11 +727,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		try {
 			Map m1 = mapper.readValue(response.getBody(), Map.class);
 			if(!m1.isEmpty()) {
-				return ((Map<String, List<Map<String, String>>>) m1.get("response")).get("mosipUserDtoList").get(0)
-						.get("name");
+				List<Map<String, String>> list = ((Map<String, List<Map<String, String>>>) m1.get("response")).get("mosipUserDtoList");
+				return list == null || list.isEmpty() ? null : list.get(0).get("name");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Failed to fetch username", e);
 		}
 		return null;
 
@@ -791,7 +795,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			}
 			return userId;
 		} catch (Exception e) {
-			e.printStackTrace();// TODO
+			logger.error("Failed to fetch getUserDetailsBasedonUserName", e);
 		}
 
 		return null;

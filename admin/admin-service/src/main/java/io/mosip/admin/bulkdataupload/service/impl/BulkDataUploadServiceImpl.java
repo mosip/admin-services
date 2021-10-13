@@ -1,5 +1,7 @@
 package io.mosip.admin.bulkdataupload.service.impl;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -235,6 +237,11 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 		BulkDataResponseDto bulkDataResponseDto = new BulkDataResponseDto();
 		mapper.init();
 		Class<?> entity = mapper.getEntity(tableName);
+		if (entity == null) {
+			auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_ARGUMENT);
+			throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
+					BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage());
+		}
 		String repoBeanName = mapper.getRepo(entity);
 		JobBuilderFactory jobBuilderFactory = new JobBuilderFactory(jobRepository);
 		StepBuilderFactory stepBuilderFactory = new StepBuilderFactory(jobRepository, platformTransactionManager);
@@ -318,6 +325,11 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 			MultipartFile[] files) {
 		BulkDataResponseDto bulkDataResponseDto = new BulkDataResponseDto();
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CATEGORY, category));
+		if (!isValidOperation(operation)) {
+			auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_CATEGORY);
+			throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
+					BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage());
+		}
 		if (category.equalsIgnoreCase("masterdata")) {
 			bulkDataResponseDto = insertDataToCSVFile(tableName, operation, category, files);
 		} else if (category.equalsIgnoreCase("packet")) {
@@ -766,14 +778,14 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 		Map<Integer, Field> fieldMap = new HashMap<>();
 		List<String> clazzfields = new ArrayList<>();
 		List<String> superclazzfields = new ArrayList<>();
-		/*for (Field field : clazz.getDeclaredFields()) {
+		for (Field field : clazz.getDeclaredFields()) {
 			field.setAccessible(true);
 			clazzfields.add(field.getName());
 		}
 		for (Field field : clazz.getSuperclass().getDeclaredFields()) {
 			field.setAccessible(true);
 			superclazzfields.add(field.getName());
-		}*/
+		}
 		try {
 			br = new BufferedReader(new InputStreamReader(csvFile));
 			while ((line = br.readLine()) != null) {
@@ -992,5 +1004,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 		else if (operationName.equalsIgnoreCase("delete"))
 			item = deleteItemWriter(repoBeanName, entity);
 		return item;
+	}
+	
+	private boolean isValidOperation(String operation) {
+		return operation.equalsIgnoreCase("insert") || operation.equalsIgnoreCase("update") || operation.equalsIgnoreCase("delete"); 
 	}
 }

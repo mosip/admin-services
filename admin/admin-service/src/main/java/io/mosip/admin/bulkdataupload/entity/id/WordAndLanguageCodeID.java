@@ -27,7 +27,7 @@ public class WordAndLanguageCodeID implements Serializable {
 	private static final long serialVersionUID = 2309013416400782373L;
 
 	/**
-	 * The blacklisted word.
+	 * The blocklisted word.
 	 */
 	@Column(name = "word", nullable = false, length = 128)
 	private String word;
