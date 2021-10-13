@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.mosip.kernel.core.authmanager.authadapter.model.AuthUserDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +36,8 @@ import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
  */
 @Component
 public class ZoneUtils {
+
+	private static final Logger logger = LoggerFactory.getLogger(ZoneUtils.class);
 
 	@Autowired
 	private ZoneRepository zoneRepository;
@@ -246,9 +250,16 @@ public class ZoneUtils {
  * @return
  */
 	public List<Zone> getSubZones(String langCode) {
-			List<Zone> zones = getZones();
-			List<Zone> langSpecificZones = null;
-			ZoneUser zu=zoneUserRepository.findZoneByUserIdActiveAndNonDeleted(((AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId());
+		List<Zone> langSpecificZones = null;
+		String userId = ((AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
+		ZoneUser zu=zoneUserRepository.findZoneByUserIdActiveAndNonDeleted(userId);
+
+		if(zu == null) {
+			logger.error("User {} not mapped to any zones!!", userId);
+			return Collections.emptyList();
+		}
+
+		List<Zone> zones = getZones();
 
 		if (langCode==null || langCode.equals("all")) {
 			String lang=languageUtils.getDefaultLanguage();
