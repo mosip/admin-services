@@ -766,14 +766,14 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 		Map<Integer, Field> fieldMap = new HashMap<>();
 		List<String> clazzfields = new ArrayList<>();
 		List<String> superclazzfields = new ArrayList<>();
-		/*for (Field field : clazz.getDeclaredFields()) {
+		for (Field field : clazz.getDeclaredFields()) {
 			field.setAccessible(true);
 			clazzfields.add(field.getName());
 		}
 		for (Field field : clazz.getSuperclass().getDeclaredFields()) {
 			field.setAccessible(true);
 			superclazzfields.add(field.getName());
-		}*/
+		}
 		try {
 			br = new BufferedReader(new InputStreamReader(csvFile));
 			while ((line = br.readLine()) != null) {
