@@ -627,25 +627,24 @@ public class MachineServiceImpl implements MachineService {
 			if(null!=filterValueDto.getOptionalFilters() && filterValueDto.getOptionalFilters().size()>0)
 			zoneFilter.addAll(filterValueDto.getOptionalFilters());
 			filterValueDto.setOptionalFilters(zoneFilter);
-		} else {
-			return filterResponseDto;
-		}
-		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Machine.class)) {
-			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				List<FilterData> filterValues = masterDataFilterHelper
-						.filterValuesWithCodeWithoutLangCode(Machine.class, filterDto,
-						filterValueDto,"id");
-				filterValues.forEach(filterValue -> {
-					ColumnCodeValue columnValue = new ColumnCodeValue();
-					columnValue.setFieldCode(filterValue.getFieldCode());
-					columnValue.setFieldID(filterDto.getColumnName());
-					columnValue.setFieldValue(filterValue.getFieldValue());
-					columnValueList.add(columnValue);
-				});
-			}
 
-			filterResponseDto.setFilters(columnValueList);
+			if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Machine.class)) {
+				for (FilterDto filterDto : filterValueDto.getFilters()) {
+					List<FilterData> filterValues = masterDataFilterHelper
+							.filterValuesWithCodeWithoutLangCode(Machine.class, filterDto,
+									filterValueDto,"id");
+					filterValues.forEach(filterValue -> {
+						ColumnCodeValue columnValue = new ColumnCodeValue();
+						columnValue.setFieldCode(filterValue.getFieldCode());
+						columnValue.setFieldID(filterDto.getColumnName());
+						columnValue.setFieldValue(filterValue.getFieldValue());
+						columnValueList.add(columnValue);
+					});
+				}
+			}
 		}
+
+		filterResponseDto.setFilters(columnValueList);
 		return filterResponseDto;
 	}
 
