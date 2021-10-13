@@ -17,7 +17,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * Entity class for blacklisted words.
+ * Entity class for blocklisted words.
  * 
  * @author Abhishek Kumar
  * @author Sagar Mahapatra
@@ -27,10 +27,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "blacklisted_words", schema = "master")
+@Table(name = "blocklisted_words", schema = "master")
 @EqualsAndHashCode(callSuper = true)
 @IdClass(WordAndLanguageCodeID.class)
-public class BlacklistedWords extends BaseEntity implements Serializable {
+public class BlocklistedWords extends BaseEntity implements Serializable {
 
 	/**
 	 * Serialized version ID.
@@ -42,7 +42,7 @@ public class BlacklistedWords extends BaseEntity implements Serializable {
 			@AttributeOverride(name = "word", column = @Column(name = "word", nullable = false, length = 128)),
 			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
 	/**
-	 * The blacklisted word.
+	 * The blocklisted word.
 	 */
 	private String word;
 
