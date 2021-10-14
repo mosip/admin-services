@@ -17,6 +17,7 @@ import lombok.Data;
 public class OpenApiProperties {
 	private InfoProperty info;
 	private Service service;
+	private Group group;
 }
 
 /**
@@ -58,4 +59,14 @@ class Service {
 class Server {
 	private String description;
 	private String url;
+}
+
+/**
+ * @author GOVINDARAJ VELU
+ *
+ */
+@Data
+class Group {
+	private String name;
+	private List<String> paths;
 }
