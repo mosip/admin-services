@@ -16,7 +16,7 @@ public enum RegisteredDeviceErrorCode {
 	SERIALNO_DPID_ALREADY_EXIST("ADM-DPM-043", "Serial no and DpId already exist"),
 	DEVICE_SUB_TYPE_NOT_EXIST("ADM-DPM-027", "%s Device Sub-Type does not exist"),
 	TIMESTAMP_AFTER_CURRENTTIME("MSD-RDS-001", "Time Stamp input is %s min after the current timestamp"),
-	TIMESTAMP_BEFORE_CURRENTTIME("MSD-RDS-001", "Time Stamp input is %s min before the current timestamp"),
+	TIMESTAMP_BEFORE_CURRENTTIME("MSD-RDS-002", "Time Stamp input is %s min before the current timestamp"),
 	FOUNDATIONAL_VALUE("ADM-DPM-030", "Error occured while validating Foundational");
 
 	private final String errorCode;

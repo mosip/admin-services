@@ -262,7 +262,7 @@ public class LocationControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(locationCreateDtoReq))).andReturn(),
-				"KER-MSD-391");
+				"KER-MSD-244");
 	}
 	
 	@Test
@@ -300,7 +300,7 @@ public class LocationControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(locationCreateDtoReq))).andReturn(),
-				"KER-MSD-389");
+				"KER-MSD-243");
 	}
 
 	@Test
@@ -313,7 +313,7 @@ public class LocationControllerTest {
 								MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
 										.content(mapper.writeValueAsString(locationCreateDtoReq)))
 								.andReturn(),
-						"KER-MSD-389");
+						"KER-MSD-243");
 	}
 
 	@Test
@@ -325,7 +325,7 @@ public class LocationControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(locationCreateDtoReq))).andReturn(),
-				"KER-MSD-391");
+				"KER-MSD-244");
 	}
 	
 	@Test
