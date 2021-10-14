@@ -689,8 +689,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				} else
 					dto.setUserName(null);
 				if (null != z.getZoneCode()) {
-					if(searchDto.getLanguageCode()==null)
-						searchDto.setLanguageCode(languageUtils.getDefaultLanguage());
 					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(), searchDto.getLanguageCode());
 					dto.setZoneName(null != zn ? zn.getZoneName() : null);
 				} else
