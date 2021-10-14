@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.mosip.kernel.masterdata.utils.LanguageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -67,6 +68,9 @@ public class ZoneServiceImpl implements ZoneService {
 
 	@Value("${mosip.kernel.registrationcenterid.length}")
 	private int centerIdLength;
+
+	@Autowired
+	private LanguageUtils languageUtils;
 
 	/*
 	 * (non-Javadoc)
@@ -213,15 +217,19 @@ public class ZoneServiceImpl implements ZoneService {
 		ZoneNameResponseDto zoneNameResponseDto = new ZoneNameResponseDto();
 		Zone zone = null;
 		try {
-		zone = zoneRepository.findZoneByCodeAndLangCodeNonDeletedAndIsActive(zoneCode,langCode);
-		if (zone == null) {
-			throw new DataNotFoundException(ZoneErrorCode.ZONE_ENTITY_NOT_FOUND.getErrorCode(),
-					ZoneErrorCode.ZONE_ENTITY_NOT_FOUND.getErrorMessage());
-		}
+		zone = zoneRepository.findZoneByCodeAndLangCodeNonDeletedAndIsActive(zoneCode,
+				langCode == null? languageUtils.getDefaultLanguage() : langCode);
+
 		} catch (DataAccessException | DataAccessLayerException exception) {
 			throw new MasterDataServiceException(ZoneErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
 					ZoneErrorCode.INTERNAL_SERVER_ERROR.getErrorMessage());
 		}
+
+		if (zone == null) {
+			throw new DataNotFoundException(ZoneErrorCode.ZONE_ENTITY_NOT_FOUND.getErrorCode(),
+					ZoneErrorCode.ZONE_ENTITY_NOT_FOUND.getErrorMessage());
+		}
+
 		zoneNameResponseDto.setZoneName(zone.getName());
 		return zoneNameResponseDto;
 	}
