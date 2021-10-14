@@ -2,8 +2,8 @@ package io.mosip.kernel.masterdata.constant;
 
 public enum AuditErrorCode {
 
-	AUDIT_PARSE_EXCEPTION("KER-MSD-600", "Parse Error exception"),
-	AUDIT_EXCEPTION("KER-MSD-601", "Audit Exception from client::");
+	AUDIT_PARSE_EXCEPTION("KER-MSD-197", "Parse Error exception"),
+	AUDIT_EXCEPTION("KER-MSD-199", "Audit Exception from client::");
 
 	private final String errorCode;
 	private final String errorMessage;
