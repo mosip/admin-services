@@ -3051,7 +3051,7 @@ public class MasterdataIntegrationTest {
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 					ResponseWrapper.class);
 
-		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-101"));
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-194"));
 	}
 
 	@Test
@@ -3485,7 +3485,7 @@ public class MasterdataIntegrationTest {
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 					ResponseWrapper.class);
 
-		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-003"));
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-209"));
 	}
 
 	@Test
@@ -3894,7 +3894,7 @@ public class MasterdataIntegrationTest {
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 					ResponseWrapper.class);
 
-		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-088"));
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-251"));
 
 	}
 	// -----------------------------MachineTypeTest-------------------------------------------
@@ -4744,7 +4744,7 @@ public class MasterdataIntegrationTest {
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 					ResponseWrapper.class);
 
-		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-071"));
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-212"));
 	}
 
 	@Test
@@ -5569,7 +5569,7 @@ public class MasterdataIntegrationTest {
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 					ResponseWrapper.class);
 
-		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-106"));
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-213"));
 	}
 
 	@Test
@@ -7162,7 +7162,7 @@ public class MasterdataIntegrationTest {
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 					ResponseWrapper.class);
 
-		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-436"));
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-255"));
 	}
 
 	@Test
@@ -7188,7 +7188,7 @@ public class MasterdataIntegrationTest {
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 					ResponseWrapper.class);
 
-		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-436"));
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-255"));
 	}
 
 	@Test
@@ -7223,7 +7223,7 @@ public class MasterdataIntegrationTest {
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 					ResponseWrapper.class);
 
-		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-436"));
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-255"));
 	}
 
 	@Test
@@ -7273,7 +7273,7 @@ public class MasterdataIntegrationTest {
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 					ResponseWrapper.class);
 
-		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-436"));
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-255"));
 	}
 
 	@Test
@@ -7327,7 +7327,7 @@ public class MasterdataIntegrationTest {
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 					ResponseWrapper.class);
 
-		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-436"));
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-255"));
 	}
 
 	@Test
@@ -7348,7 +7348,7 @@ public class MasterdataIntegrationTest {
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 					ResponseWrapper.class);
 
-		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-436"));
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-255"));
 	}
 
 	// --------------------------decommission device test-----------------
@@ -7694,7 +7694,7 @@ public class MasterdataIntegrationTest {
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 					ResponseWrapper.class);
 
-		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("ADM-DPM-016"));
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("ADM-DPM-055"));
 	}
 
 	@Test
@@ -7735,7 +7735,7 @@ public class MasterdataIntegrationTest {
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 				ResponseWrapper.class);
 
-		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("ADM-DPM-016"));
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("ADM-DPM-054"));
 	}
 
 	// --------------------- create Device provider----------------------
@@ -8946,7 +8946,7 @@ public class MasterdataIntegrationTest {
 			ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 						ResponseWrapper.class);
 
-			assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-436"));
+			assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-255"));
 			
 		} catch(Exception e) {
 			Assert.fail(e.getMessage());
@@ -8984,7 +8984,7 @@ public class MasterdataIntegrationTest {
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 					ResponseWrapper.class);
 
-		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-399"));
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-246"));
 	}
 	
 	@Test
@@ -9017,7 +9017,7 @@ public class MasterdataIntegrationTest {
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 					ResponseWrapper.class);
 
-		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-399"));
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-246"));
 	}
 //----------------------------------------Template Type ------------------------------------------
 	@Test
@@ -9050,7 +9050,7 @@ public class MasterdataIntegrationTest {
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 					ResponseWrapper.class);
 
-		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-399"));
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-247"));
 	}
 	
 	//---------------
@@ -9085,7 +9085,7 @@ public class MasterdataIntegrationTest {
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 					ResponseWrapper.class);
 
-		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-399"));
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-247"));
 	}
 //-----------------------------------module----------------------------
 	@MockBean
@@ -9125,7 +9125,7 @@ public class MasterdataIntegrationTest {
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 				ResponseWrapper.class);
 
-		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-399"));
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-245"));
 	}
 	
 	//-------------------------
@@ -9165,7 +9165,7 @@ public class MasterdataIntegrationTest {
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 					ResponseWrapper.class);
 
-		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-399"));
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-245"));
 	}
 	//----------------------------Location hierarchy-------------------------
 	@MockBean

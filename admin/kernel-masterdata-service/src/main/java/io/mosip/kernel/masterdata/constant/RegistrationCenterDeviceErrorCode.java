@@ -13,7 +13,7 @@ public enum RegistrationCenterDeviceErrorCode {
 	REGISTRATION_CENTER_DEVICE_CREATE_EXCEPTION("KER-MSD-075",
 			"Error occurred while inserting a mapping of Device and Center"),
 	REGISTRATION_CENTER_DEVICE_DATA_NOT_FOUND("KER-MSD-115", "Mapping for Device and Center not found"),
-	REGISTRATION_CENTER_DEVICE_DELETE_EXCEPTION("KER-MSD-105",
+	REGISTRATION_CENTER_DEVICE_DELETE_EXCEPTION("KER-MSD-211",
 			"Error occurred while deleting a mapping of Device and Center"),
 	DEVICE_REGISTRATION_CENTER_NOT_FOUND_EXCEPTION("KER-MSD-441", "Registration Center and Device Not Found"),
 	REGISTRATION_CENTER_NOT_FOUND_EXCEPTION("KER-MSD-409", "Registration Center not found"),

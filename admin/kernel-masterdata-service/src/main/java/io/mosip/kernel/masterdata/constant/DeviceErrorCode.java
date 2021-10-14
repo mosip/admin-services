@@ -16,7 +16,7 @@ public enum DeviceErrorCode {
 	DEVICE_INSERT_EXCEPTION("KER-MSD-069", "Error occurred while inserting Device details"),
 	DEVICE_UPDATE_EXCEPTION("KER-MSD-083", "Error while updating"),
 	DEVICE_DELETE_EXCEPTION("KER-MSD-084", "Error while deleting"),
-	DEPENDENCY_EXCEPTION("KER-MSD-147", "Cannot delete as dependency found"),
+	DEPENDENCY_EXCEPTION("KER-MSD-191", "Cannot delete as dependency found"),
 	MAPPED_DEVICE_ID_NOT_FOUND_EXCEPTION("KER-MSD-332", "No Device id mapped found"),
 	DEVICE_ID_ALREADY_MAPPED_EXCEPTION("KER-MSD-333", "All Device Id are mapped"),
 	INVALID_DEVICE_FILTER_VALUE_EXCEPTION("KER-MSD-334", "Invalid filter value"),
@@ -32,8 +32,8 @@ public enum DeviceErrorCode {
 	DEVICE_ERROR("KER-MSD-700", "Device Error"),
 	INVALID_DEVICE_ZONE("KER-MSD-439", "Admin not authorized to access this Device for this Zone"),
 	DECOMMISSIONED("KER-MSD-DDD", "Device has been already decommissioned or Device not found"), 
-	INVALID_CENTER_ZONE("KER-MSD-440", "The zone of the  registration center in the request does not match the zone of the device"),
-	INVALID_CENTER("KER-MSD-441", "The registration center in the request is not present in db");
+	INVALID_CENTER_ZONE("KER-MSD-219", "The zone of the  registration center in the request does not match the zone of the device"),
+	INVALID_CENTER("KER-MSD-222", "The registration center in the request is not present in db");
 
 	private final String errorCode;
 	private final String errorMessage;
