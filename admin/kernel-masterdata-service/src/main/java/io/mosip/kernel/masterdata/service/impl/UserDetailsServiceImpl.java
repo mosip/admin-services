@@ -689,15 +689,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				} else
 					dto.setUserName(null);
 				if (null != z.getZoneCode()) {
-					if(searchDto.getLanguageCode()==null)
-						searchDto.setLanguageCode(languageUtils.getDefaultLanguage());
 					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(), searchDto.getLanguageCode());
 					dto.setZoneName(null != zn ? zn.getZoneName() : null);
 				} else
 					dto.setZoneName(null);
 				zoneSearch.add(dto);
 			});
-			userCenterMappingExtnDtos=dtoMapper(zoneSearch);
+			userCenterMappingExtnDtos=dtoMapper(zoneSearch, searchDto.getLanguageCode());
 			userCenterPageDto.setFromRecord(pageDto.getFromRecord());
 			userCenterPageDto.setToRecord(pageDto.getToRecord());
 			userCenterPageDto.setTotalRecord(pageDto.getTotalRecord());
@@ -737,17 +735,26 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	}
 	
-	private List<UserCenterMappingExtnDto> dtoMapper(List<ZoneUserSearchDto> zoneUserSearchDtos) {
+	private List<UserCenterMappingExtnDto> dtoMapper(List<ZoneUserSearchDto> zoneUserSearchDtos, String languageCode) {
 		List<UserCenterMappingExtnDto> userCenterMappingExtnDtos=new ArrayList();
 		mapZoneUserDetailsToUserCenter(zoneUserSearchDtos,userCenterMappingExtnDtos);
 		for (UserCenterMappingExtnDto userCenterMappingExtnDto : userCenterMappingExtnDtos) {
 			UserDetails ud=userDetailsRepository.findUserDetailsById(userCenterMappingExtnDto.getUserId());
 				if(ud!=null) {
-					if(zoneUserSearchDtos.get(0).getLangCode()==null)
-						zoneUserSearchDtos.get(0).setLangCode(languageUtils.getDefaultLanguage());
-					RegistrationCenter regC=registrationCenterRepository.findByIdAndLangCode(ud.getRegCenterId(),zoneUserSearchDtos.get(0).getLangCode());
-					userCenterMappingExtnDto.setRegCenterName(regC.getName());
+					RegistrationCenter regC=registrationCenterRepository.findByIdAndLangCode(ud.getRegCenterId(),
+							languageCode ==null ? languageUtils.getDefaultLanguage() : languageCode);
+
+					if(regC != null) {
+						userCenterMappingExtnDto.setRegCenterName(regC.getName());
+					}
+
 					userCenterMappingExtnDto.setRegCenterId(ud.getRegCenterId());
+					userCenterMappingExtnDto.setCreatedBy(ud.getCreatedBy());
+					userCenterMappingExtnDto.setCreatedDateTime(ud.getCreatedDateTime());
+					userCenterMappingExtnDto.setUpdatedBy(ud.getUpdatedBy());
+					userCenterMappingExtnDto.setUpdatedDateTime(ud.getUpdatedDateTime());
+					userCenterMappingExtnDto.setIsDeleted(ud.getIsDeleted());
+					userCenterMappingExtnDto.setDeletedDateTime(ud.getDeletedDateTime());
 					userCenterMappingExtnDto.setIsActive(ud.getIsActive());
 				}
 		}
