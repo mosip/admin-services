@@ -29,7 +29,6 @@ public class SearchDtoWithoutLangCode {
 	// @NotNull
 	private Pagination pagination;
 
-	@Deprecated
 	private String languageCode;
 
 }
