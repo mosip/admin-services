@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.validator;
 
+import io.mosip.kernel.masterdata.utils.LanguageUtils;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,7 +17,7 @@ import javax.validation.Payload;
  * @author Bal Vikash Sharma
  */
 @Documented
-@Constraint(validatedBy = LanguageCodeValidator.class)
+@Constraint(validatedBy = LanguageUtils.class)
 @Target({ ElementType.FIELD, ElementType.TYPE_USE, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidLangCode {
