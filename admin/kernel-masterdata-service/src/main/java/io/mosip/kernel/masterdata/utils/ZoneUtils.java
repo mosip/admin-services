@@ -244,13 +244,14 @@ public class ZoneUtils {
 		}
 		return Collections.emptyList();
 	}
-/**
- * method to get subzones 
- * @param langCode
- * @return
- */
+
+
+	/**
+	 * method to get subzones
+	 * @param langCode
+	 * @return
+	 */
 	public List<Zone> getSubZones(String langCode) {
-		List<Zone> langSpecificZones = null;
 		String userId = ((AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
 		ZoneUser zu=zoneUserRepository.findZoneByUserIdActiveAndNonDeleted(userId);
 
@@ -260,43 +261,39 @@ public class ZoneUtils {
 		}
 
 		List<Zone> zones = getZones();
+		String lang = (langCode==null || langCode.equals("all")) ? languageUtils.getDefaultLanguage() : langCode;
+		List<Zone> langSpecificZones = zones.stream().filter(i -> lang.equals(i.getLangCode()))
+				.collect(Collectors.toList());
 
-		if (langCode==null || langCode.equals("all")) {
-			String lang=languageUtils.getDefaultLanguage();
-			langSpecificZones = zones.stream().filter(i -> lang.equals(i.getLangCode()))
-						.collect(Collectors.toList());
-			} else {
-				langSpecificZones = zones.stream().filter(i -> i.getLangCode().equals(langCode))
-							.collect(Collectors.toList());
-			}
-			List<Node<Zone>> tree = zoneTree.createTree(langSpecificZones);
-			Node<Zone> node = zoneTree.findNode(tree, zu.getZoneCode());
-
-			return zoneTree.getChildHierarchy(node);
-			
+		List<Node<Zone>> tree = zoneTree.createTree(langSpecificZones);
+		Node<Zone> node = zoneTree.findNode(tree, zu.getZoneCode());
+		return zoneTree.getChildHierarchy(node);
 	}
+
 	/**
 	 * method to get leaf zones
 	 * @param langCode
 	 * @return
 	 */
 	public List<Zone> getLeafZones(String langCode) {
-		List<Zone> zones = getZones();
-		List<Zone> langSpecificZones = null;
-		ZoneUser zu=zoneUserRepository.findZoneByUserIdActiveAndNonDeleted(((AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId());
-		if (langCode==null || langCode.equals("all")) {
-			String lang=languageUtils.getDefaultLanguage();
-			langSpecificZones = zones.stream().filter(i -> lang.equals(i.getLangCode()))
-					.collect(Collectors.toList());
-		} else {
-				langSpecificZones = zones.stream().filter(i -> i.getLangCode().equals(langCode))
-						.collect(Collectors.toList());
+		String userId = ((AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
+		ZoneUser zu=zoneUserRepository.findZoneByUserIdActiveAndNonDeleted(userId);
+
+		if(zu == null) {
+			logger.error("User {} not mapped to any zones!!", userId);
+			return Collections.emptyList();
 		}
+
+		List<Zone> zones = getZones();
+		String lang = (langCode==null || langCode.equals("all")) ? languageUtils.getDefaultLanguage() : langCode;
+		List<Zone> langSpecificZones = zones.stream().filter(i -> lang.equals(i.getLangCode()))
+				.collect(Collectors.toList());
+
 		List<Node<Zone>> tree = zoneTree.createTree(langSpecificZones);
 		Node<Zone> node = zoneTree.findNode(tree, zu.getZoneCode());
 		return zoneTree.findLeafsValue(node);
-		
-}
+	}
+
 	/**
 	 * method to get leaf zones
 	 * @param langCode

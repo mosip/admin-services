@@ -11,7 +11,7 @@ package io.mosip.kernel.masterdata.constant;
  */
 public enum ValidDocumentErrorCode {
 
-	VALID_DOCUMENT_INSERT_EXCEPTION("KER-MSD-071", "Exception during inserting data into DB"),
+	VALID_DOCUMENT_INSERT_EXCEPTION("KER-MSD-212", "Exception during inserting data into DB"),
 	VALID_DOCUMENT_NOT_FOUND_EXCEPTION("KER-MSD-016", "Valid document not found"),
 	VALID_DOCUMENT_DELETE_EXCEPTION("KER-MSD-113",
 			"Error occurred while deleting a mapping of Document Category and Document Type details"),
@@ -21,7 +21,7 @@ public enum ValidDocumentErrorCode {
 			"Document Type is already mapped to the received Document Category"),
 	DOC_CATEGORY_AND_DOC_TYPE_MAPPING_NOT_FOUND_EXCEPTION("KER-MSD-361",
 			"Document Category Code %s - Document Type %s Mapping does not exist"),
-	VALID_DOCUMENT_ALREADY_UNMAPPED_EXCEPTION("KER-MSD-363",
+	VALID_DOCUMENT_ALREADY_UNMAPPED_EXCEPTION("KER-MSD-271",
 			"Document Type is already unmapped from the received Document Category"),
 	DOCUMENT_CATEGORY_NOT_FOUND("KER-MSD-355", "No Document Category found for the Document Category Code Received");
 
