@@ -54,7 +54,7 @@ public class DeviceHistoryControllerTest {
 	@WithUserDetails("global-admin")
 	public void t001getDeviceHistoryIdLangEff() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/deviceshistories/3000021/eng/2021-08-27T07:26:36.491Z"))
-				.andReturn(),null);
+				.andReturn(),"KER-MSD-128");
 
 	}
 	
