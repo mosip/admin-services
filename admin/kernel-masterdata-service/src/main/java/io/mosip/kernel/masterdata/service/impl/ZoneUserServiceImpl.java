@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
+import io.mosip.kernel.masterdata.entity.*;
 import io.mosip.kernel.masterdata.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,10 +41,6 @@ import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ZoneNameResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.entity.UserDetails;
-import io.mosip.kernel.masterdata.entity.Zone;
-import io.mosip.kernel.masterdata.entity.ZoneUser;
-import io.mosip.kernel.masterdata.entity.ZoneUserHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -297,6 +294,7 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 						ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorMessage());
 			}
 			masterdataCreationUtil.updateMasterDataStatus(ZoneUser.class, userId, isActive, "userId");
+			masterdataCreationUtil.updateMasterDataStatus(ZoneUserHistory.class, userId, isActive, "userId");
 		} else {
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, ZoneUser.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
