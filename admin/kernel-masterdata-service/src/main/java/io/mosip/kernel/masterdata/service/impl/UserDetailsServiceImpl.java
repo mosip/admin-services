@@ -669,8 +669,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				searchDto.getFilters().get(i).setColumnName("zoneCode");
 			}
 		}
-		if(searchDto.getLanguageCode()==null)
-			searchDto.setLanguageCode(languageUtils.getDefaultLanguage());
 		zones = zoneUtils.getSubZones(searchDto.getLanguageCode());
 		if (zones != null && !zones.isEmpty()) {
 			zoneFilter.addAll(buildZoneFilter(zones));
