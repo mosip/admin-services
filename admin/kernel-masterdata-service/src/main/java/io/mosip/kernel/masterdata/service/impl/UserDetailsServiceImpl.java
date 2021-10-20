@@ -636,7 +636,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		PageResponseDto<ZoneUserSearchDto> pageDto = new PageResponseDto<>();
 		PageResponseDto<UserCenterMappingExtnDto> userCenterPageDto = new PageResponseDto<>();
 		List<UserCenterMappingExtnDto> userCenterMappingExtnDtos = null;
-
+		List<Zone> zones = null;
+		List<SearchFilter> zoneFilter = new ArrayList<>();
 		List<ZoneUserExtnDto> zoneUserSearchDetails = null;
 		List<ZoneUserSearchDto> zoneSearch = new ArrayList<>();
 		for (int i = 0; i < searchDto.getFilters().size(); i++) {
@@ -668,7 +669,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				searchDto.getFilters().get(i).setColumnName("zoneCode");
 			}
 		}
-		Page<ZoneUser> page = masterDataSearchHelper.searchMasterdataWithoutLangCode(ZoneUser.class, searchDto, null);
+		zones = zoneUtils.getSubZones(searchDto.getLanguageCode());
+		if (zones != null && !zones.isEmpty()) {
+			zoneFilter.addAll(buildZoneFilter(zones));
+		}
+		OptionalFilter zoneOptionalFilter = new OptionalFilter(zoneFilter);
+		Page<ZoneUser> page = masterDataSearchHelper.searchMasterdataWithoutLangCode(ZoneUser.class, searchDto,  new OptionalFilter[] { zoneOptionalFilter });
 		if (page.getContent() != null && !page.getContent().isEmpty()) {
 			zoneUserSearchDetails = MapperUtils.mapAll(page.getContent(), ZoneUserExtnDto.class);
 			pageDto = PageUtils.pageResponse(page);
@@ -831,6 +837,32 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			throw new RequestException(UserDetailsErrorCode.INVALID_ZONE.getErrorCode(),
 					UserDetailsErrorCode.INVALID_ZONE.getErrorMessage());
 		}
+	}
+	/**
+	 * Creating Search filter from the passed zones
+	 *
+	 * @param zones filter to be created with the zones
+	 * @return list of {@link SearchFilter}
+	 */
+	public List<SearchFilter> buildZoneFilter(List<Zone> zones) {
+		if (zones != null && !zones.isEmpty()) {
+			return zones.stream().filter(Objects::nonNull).map(Zone::getCode).distinct().map(this::buildZoneFilter)
+					.collect(Collectors.toList());
+		}
+		return Collections.emptyList();
+	}
+	/**
+	 * Method to create SearchFilter for the recieved zoneCode
+	 *
+	 * @param zoneCode input from the {@link SearchFilter} has to be created
+	 * @return {@link SearchFilter}
+	 */
+	private SearchFilter buildZoneFilter(String zoneCode) {
+		SearchFilter filter = new SearchFilter();
+		filter.setColumnName(MasterDataConstant.ZONE_CODE);
+		filter.setType(FilterTypeEnum.EQUALS.name());
+		filter.setValue(zoneCode);
+		return filter;
 	}
 
 }

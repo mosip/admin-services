@@ -3,13 +3,14 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import io.mosip.kernel.masterdata.constant.MachineErrorCode;
+import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
+import io.mosip.kernel.masterdata.entity.*;
+import io.mosip.kernel.masterdata.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -40,10 +41,6 @@ import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ZoneNameResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.entity.UserDetails;
-import io.mosip.kernel.masterdata.entity.Zone;
-import io.mosip.kernel.masterdata.entity.ZoneUser;
-import io.mosip.kernel.masterdata.entity.ZoneUserHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -53,15 +50,6 @@ import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
 import io.mosip.kernel.masterdata.service.UserDetailsService;
 import io.mosip.kernel.masterdata.service.ZoneService;
 import io.mosip.kernel.masterdata.service.ZoneUserService;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
-import io.mosip.kernel.masterdata.utils.ExceptionUtils;
-import io.mosip.kernel.masterdata.utils.LanguageUtils;
-import io.mosip.kernel.masterdata.utils.MapperUtils;
-import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
-import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
-import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import io.mosip.kernel.masterdata.utils.PageUtils;
-import io.mosip.kernel.masterdata.utils.ZoneUtils;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
 @Component
@@ -306,6 +294,7 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 						ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorMessage());
 			}
 			masterdataCreationUtil.updateMasterDataStatus(ZoneUser.class, userId, isActive, "userId");
+			masterdataCreationUtil.updateMasterDataStatus(ZoneUserHistory.class, userId, isActive, "userId");
 		} else {
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, ZoneUser.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
@@ -324,6 +313,8 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 	public PageResponseDto<ZoneUserSearchDto> searchZoneUserMapping(SearchDtoWithoutLangCode searchDto) {
 		PageResponseDto<ZoneUserSearchDto> pageDto = new PageResponseDto<>();
 		List<ZoneUserExtnDto> zoneUserSearchDetails = null;
+		List<Zone> zones = null;
+		List<SearchFilter> zoneFilter = new ArrayList<>();
 		List<ZoneUserSearchDto> zoneSearch = new ArrayList<>();
 		for (int i = 0; i < searchDto.getFilters().size(); i++) {
 			if (searchDto.getFilters().get(i).getColumnName().equalsIgnoreCase("userName")) {
@@ -354,7 +345,12 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 				searchDto.getFilters().get(i).setColumnName("zoneCode");
 			}
 		}
-		Page<ZoneUser> page = masterDataSearchHelper.searchMasterdataWithoutLangCode(ZoneUser.class, searchDto, null);
+		zones = zoneUtils.getSubZones(searchDto.getLanguageCode());
+		if (zones != null && !zones.isEmpty()) {
+			zoneFilter.addAll(buildZoneFilter(zones));
+		}
+		OptionalFilter zoneOptionalFilter = new OptionalFilter(zoneFilter);
+		Page<ZoneUser> page = masterDataSearchHelper.searchMasterdataWithoutLangCode(ZoneUser.class, searchDto, new OptionalFilter[] { zoneOptionalFilter });
 		if (page.getContent() != null && !page.getContent().isEmpty()) {
 			zoneUserSearchDetails = MapperUtils.mapAll(page.getContent(), ZoneUserExtnDto.class);
 			pageDto = PageUtils.pageResponse(page);
@@ -478,5 +474,31 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 			throw new RequestException(ZoneUserErrorCode.INVALID_ZONE.getErrorCode(),
 					ZoneUserErrorCode.INVALID_ZONE.getErrorMessage());
 		}
+	}
+	/**
+	 * Creating Search filter from the passed zones
+	 *
+	 * @param zones filter to be created with the zones
+	 * @return list of {@link SearchFilter}
+	 */
+	public List<SearchFilter> buildZoneFilter(List<Zone> zones) {
+		if (zones != null && !zones.isEmpty()) {
+			return zones.stream().filter(Objects::nonNull).map(Zone::getCode).distinct().map(this::buildZoneFilter)
+					.collect(Collectors.toList());
+		}
+		return Collections.emptyList();
+	}
+	/**
+	 * Method to create SearchFilter for the recieved zoneCode
+	 *
+	 * @param zoneCode input from the {@link SearchFilter} has to be created
+	 * @return {@link SearchFilter}
+	 */
+	private SearchFilter buildZoneFilter(String zoneCode) {
+		SearchFilter filter = new SearchFilter();
+		filter.setColumnName(MasterDataConstant.ZONE_CODE);
+		filter.setType(FilterTypeEnum.EQUALS.name());
+		filter.setValue(zoneCode);
+		return filter;
 	}
 }
