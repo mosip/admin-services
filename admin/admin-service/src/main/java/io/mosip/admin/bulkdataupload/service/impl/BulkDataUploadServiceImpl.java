@@ -1,10 +1,7 @@
 package io.mosip.admin.bulkdataupload.service.impl;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,6 +27,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -86,8 +84,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.google.common.io.Files;
 
 import io.mosip.admin.bulkdataupload.constant.BulkUploadErrorCode;
 import io.mosip.admin.bulkdataupload.dto.BulkDataGetExtnDto;
@@ -762,7 +758,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	}
 
 	private void csvValidator(String csvFileName, InputStream csvFile, Class clazz) throws IOException {
-		String ext = Files.getFileExtension(csvFileName);
+		String ext = FilenameUtils.getExtension(csvFileName);
 		if (!ext.equalsIgnoreCase("csv")) {
 			auditUtil.setAuditRequestDto(
 					EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_EXT_VALIDATOR_ISSUE, csvFileName));
