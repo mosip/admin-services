@@ -7,11 +7,11 @@
 	<parent>
 		<groupId>io.mosip.admin</groupId>
 		<artifactId>admin-parent</artifactId>
-		<version>1.0.6</version>
+		<version>1.1.5</version>
 	</parent>
 	<artifactId>admin-service</artifactId>
 	<name>admin-service</name>
-	<version>1.0.7-rc1</version>
+	<version>1.1.5</version>
 	<url>http://maven.apache.org</url>
 	<packaging>jar</packaging>
 	<properties>
@@ -21,24 +21,76 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
-			<version>1.0.9-rc1</version>
+			<version>1.1.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
+			<scope>compile</scope>
+		</dependency>
+	
+	    <dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-authcodeflowproxy-api</artifactId>
+			<version>1.1.5</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-logger-logback</artifactId>
-			<version>1.0.6</version>
+			<artifactId>kernel-dataaccess-hibernate</artifactId>
+			<version>1.1.5</version>
 		</dependency>
-      	<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-auth-adapter</artifactId>
-			<version>1.0.9-rc1</version>
-		</dependency>
-		
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-config</artifactId>
 			<version>${spring-cloud-config.version}</version>
 		</dependency>
+		<dependency>
+	      <groupId>org.springframework.boot</groupId>
+	      <artifactId>spring-boot-starter-batch</artifactId>
+	      <version>${spring.boot.version}</version>
+	    </dependency>		
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<version>${spring.boot.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+		    <groupId>javax.xml.bind</groupId>
+		     <artifactId>jaxb-api</artifactId>
+		    <version>2.3.0</version>
+		 </dependency>
+		 <dependency>
+    		<groupId>com.google.code.gson</groupId>
+    		<artifactId>gson</artifactId>
+    		<version>2.8.6</version>
+		</dependency>
+		 <dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${springfox.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>${springfox.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+			<version>${spring.boot.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<version>${spring.security.test.version}</version>
+		</dependency>	
 	</dependencies>
 	<build>
 		<plugins>
@@ -48,6 +100,7 @@
 				<version>${spring.boot.version}</version>
 				<configuration>
 					<executable>true</executable>
+					<layout>ZIP</layout>
 				</configuration>
 				<executions>
 					<execution>
