@@ -877,6 +877,10 @@ public class MasterDataServiceTest {
 		registrationCenter.setLatitude("12.9180722");
 		registrationCenter.setLongitude("77.5028792");
 		registrationCenter.setLangCode("ENG");
+		registrationCenter.setCreatedBy("system");
+		registrationCenter.setCreatedDateTime(LocalDateTime.now());
+		registrationCenter.setHolidayLocationCode("BLR");
+		registrationCenter.setLocationCode("BLR");
 		registrationCenters.add(registrationCenter);
 
 		// ----

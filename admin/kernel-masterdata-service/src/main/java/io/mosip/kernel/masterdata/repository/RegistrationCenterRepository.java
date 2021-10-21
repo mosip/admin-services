@@ -97,8 +97,8 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * 
 	 * @return the list of list of {@link RegistrationCenter}.
 	 */
-	@Query("FROM RegistrationCenter WHERE (isDeleted is null or isDeleted =false) and isActive = true")
-	List<RegistrationCenter> findAllByIsDeletedFalseOrIsDeletedIsNull();
+	@Query("FROM RegistrationCenter WHERE (isDeleted is null or isDeleted =false) and isActive = true and langCode = ?1")
+	List<RegistrationCenter> findAllByIsDeletedFalseOrIsDeletedIsNullAndLangCode(String langCode);
 
 	/**
 	 * This method triggers query to find registration centers based on center type

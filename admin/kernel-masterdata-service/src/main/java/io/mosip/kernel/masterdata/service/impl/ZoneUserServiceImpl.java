@@ -6,11 +6,12 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
-import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
 import io.mosip.kernel.masterdata.entity.*;
 import io.mosip.kernel.masterdata.utils.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -55,6 +56,8 @@ import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 @Component
 public class ZoneUserServiceImpl implements ZoneUserService {
 
+	private static final Logger logger = LoggerFactory.getLogger(ZoneUserServiceImpl.class);
+
 	@Autowired
 	UserDetailsService userDetailservice;
 
@@ -90,6 +93,8 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 
 	@Autowired
 	private AuditUtil auditUtil;
+
+	private ObjectMapper mapper = new ObjectMapper();
 
 	@Override
 	public ZoneUserExtnDto createZoneUserMapping(ZoneUserDto zoneUserDto) {
@@ -403,14 +408,14 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 				r, h);
 		ResponseEntity<String> response = restTemplate.exchange(uribuilder.toUriString(), HttpMethod.POST, httpReq,
 				String.class);
-		response.getBody();
-		ObjectMapper mapper = new ObjectMapper();
 		try {
 			Map m1 = mapper.readValue(response.getBody(), Map.class);
-			return ((Map<String, List<Map<String, String>>>) m1.get("response")).get("mosipUserDtoList").get(0)
-					.get("name");
+			List<Map<String, String>> list = ((Map<String, List<Map<String, String>>>) m1.get("response"))
+					.get("mosipUserDtoList");
+			return list.isEmpty() ? null : list.get(0).get("name");
+
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("failed to get user name from authmanager", e);
 		}
 		return null;
 
@@ -424,25 +429,20 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		HttpEntity<RequestWrapper> httpReq = new HttpEntity<>(null, h);
 		ResponseEntity<String> response = restTemplate.exchange(uribuilder.toUriString(), HttpMethod.GET, httpReq,
 				String.class);
-		ObjectMapper mapper = new ObjectMapper();
+
+		List<String> userIds = new ArrayList<>();
 		try {
 			Map m1 = mapper.readValue(response.getBody(), Map.class);
-			// List<String> userId = new ArrayList<>();
-			String userId = new String();
 			List<Map<String, String>> m = ((Map<String, List<Map<String, String>>>) m1.get("response"))
 					.get("mosipUserDtoList");
-			if (m.size() == 1)
-				return m.get(0).get("userId");
+
 			for (int i = 0; i < m.size(); i++) {
-				userId = userId + m.get(i).get("userId") + ",";
+				userIds.add(m.get(i).get("userId"));
 			}
-			return userId;
 		} catch (Exception e) {
-			e.printStackTrace();// TODO
+			logger.error("failed to get userid from authmanager", e);
 		}
-
-		return null;
-
+		return userIds.isEmpty() ? null : String.join(",", userIds);
 	}
 
 	private String getZoneCode(String zoneName) {

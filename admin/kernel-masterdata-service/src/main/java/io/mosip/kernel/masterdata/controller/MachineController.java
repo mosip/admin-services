@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.controller;
 
 import javax.validation.Valid;
 
+import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -86,7 +87,7 @@ public class MachineController {
 			@ApiResponse(code = 404, message = "When No Machine Details found for the given ID"),
 			@ApiResponse(code = 500, message = "While retrieving Machine Details any error occured") })
 	public ResponseWrapper<MachineResponseDto> getMachineIdLangcode(@PathVariable("id") String machineId,
-			@PathVariable(value = "langcode", required = false) String langCode) {
+			@PathVariable(value = "langcode", required = false) @ValidLangCode String langCode) {
 
 		ResponseWrapper<MachineResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineService.getMachine(machineId, langCode));
@@ -112,7 +113,7 @@ public class MachineController {
 			@ApiResponse(code = 200, message = "When Machine Details retrieved from database"),
 			@ApiResponse(code = 404, message = "When No Machine Details found"),
 			@ApiResponse(code = 500, message = "While retrieving Machine Details any error occured") })
-	public ResponseWrapper<MachineResponseDto> getMachineLangcode(@PathVariable(value = "langcode", required = false) String langCode) {
+	public ResponseWrapper<MachineResponseDto> getMachineLangcode(@ValidLangCode @PathVariable(value = "langcode", required = false) String langCode) {
 		ResponseWrapper<MachineResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineService.getMachine(langCode));
 		return responseWrapper;

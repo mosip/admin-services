@@ -87,8 +87,7 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
 	public IdResponseDto createRegistrationCenterHistory(RegistrationCenterHistory entityHistory) {
-		RegistrationCenterHistory createdHistory;
-		createdHistory = registrationCenterHistoryRepository.create(entityHistory);
+		RegistrationCenterHistory createdHistory = registrationCenterHistoryRepository.create(entityHistory);
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(createdHistory, idResponseDto);
 		return idResponseDto;
