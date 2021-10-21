@@ -668,6 +668,20 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				}
 				searchDto.getFilters().get(i).setColumnName("zoneCode");
 			}
+			if (searchDto.getFilters().get(i).getColumnName().equalsIgnoreCase("regCenterName")) {
+
+				String userIds = getUserIdBasedOnRegistrationCenter(searchDto.getFilters().get(i).getValue());
+				if (null == userIds || userIds.isEmpty())
+					return userCenterPageDto;
+				searchDto.getFilters().get(i).setValue(userIds);
+				if (!userIds.contains(",")) {
+					searchDto.getFilters().get(i).setType(FilterTypeEnum.EQUALS.toString());
+				} else {
+					searchDto.getFilters().get(i).setType(FilterTypeEnum.IN.toString());
+				}
+				searchDto.getFilters().get(i).setColumnName("userId");
+
+			}
 		}
 		zones = zoneUtils.getSubZones(searchDto.getLanguageCode());
 		if (zones != null && !zones.isEmpty()) {
@@ -863,6 +877,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		filter.setType(FilterTypeEnum.EQUALS.name());
 		filter.setValue(zoneCode);
 		return filter;
+	}
+	
+	private String getUserIdBasedOnRegistrationCenter(String regCenterName)
+	{
+		List<String> userIdLst=registrationCenterRepository.findUserIdBasedOnRegistrationCenterName(regCenterName.toLowerCase());
+		String userIds="";
+		for(int i=0;i<userIdLst.size();i++)
+		{
+			userIds=userIds+userIdLst.get(i)+",";
+		}
+
+	return userIds;
 	}
 
 }
