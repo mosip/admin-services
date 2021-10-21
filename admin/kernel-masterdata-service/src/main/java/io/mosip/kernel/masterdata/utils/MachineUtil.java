@@ -44,6 +44,9 @@ public class MachineUtil {
 
 	@Autowired
 	private RegistrationCenterRepository centerRepository;
+
+	@Autowired
+	private LanguageUtils languageUtils;
 	
 	public static String PUBLIC_KEY="PUBLIC";
 	public static String SIGN_PUBLIC_KEY="SIGN_PUBLIC";
@@ -68,9 +71,10 @@ public class MachineUtil {
 		}
 	}
 
-	public List<RegistrationCenter> getAllRegistrationCenters() {
+	public List<RegistrationCenter> getAllRegistrationCenters(String langCode) {
 		try {
-			return centerRepository.findAllByIsDeletedFalseOrIsDeletedIsNull();
+			return centerRepository.findAllByIsDeletedFalseOrIsDeletedIsNullAndLangCode(langCode == null ?
+					languageUtils.getDefaultLanguage() : langCode);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),

@@ -2509,7 +2509,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void getAllRegistrationCentersFetchExceptionTest() throws Exception {
-		when(registrationCenterRepository.findAllByIsDeletedFalseOrIsDeletedIsNull())
+		when(registrationCenterRepository.findAllByIsDeletedFalseOrIsDeletedIsNullAndLangCode("eng"))
 				.thenThrow(DataAccessLayerException.class);
 
 		MvcResult result = mockMvc.perform(get("/registrationcenters")
@@ -2564,7 +2564,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void getAllRegistrationCenterTest() throws Exception {
-		when(registrationCenterRepository.findAllByIsDeletedFalseOrIsDeletedIsNull()).thenReturn(registrationCenters);
+		when(registrationCenterRepository.findAllByIsDeletedFalseOrIsDeletedIsNullAndLangCode("eng")).thenReturn(registrationCenters);
 
 		mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.response.registrationCenters[0].name", is("bangalore")));
