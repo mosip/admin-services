@@ -19,6 +19,7 @@ import javax.security.auth.login.LoginException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -36,7 +37,7 @@ import io.mosip.admin.login.service.LoginService;
  * @author Sasikumar Ganesan
  *
  */
-@Service
+//@Service
 public class LoginServiceImpl implements LoginService {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(LoginServiceImpl.class);

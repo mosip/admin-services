@@ -20,11 +20,9 @@ public class PacketStatusUpdateDto {
 
 	private String transactionTypeCode;
 	
-	private String parentTransactionCode;
+	private String parentTransactionId;
 	
 	private String statusCode;
-	
-	private String statusCommentCode;
 	
 	private String statusComment;
 	
