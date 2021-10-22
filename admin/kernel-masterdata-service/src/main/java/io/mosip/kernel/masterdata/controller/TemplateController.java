@@ -76,14 +76,8 @@ public class TemplateController {
 	@ResponseFilter
 	@GetMapping
 	public ResponseWrapper<TemplateResponseDto> getAllTemplate() {
-		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL, TemplateDto.class.getSimpleName()),
-				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.GET_ALL, TemplateDto.class.getSimpleName()));
 		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(templateService.getAllTemplate());
-		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL_SUCCESS, TemplateDto.class.getSimpleName()),
-				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.GET_ALL_SUCCESS_DESC, TemplateDto.class.getSimpleName()));
 		return responseWrapper;
 	}
 
@@ -96,14 +90,8 @@ public class TemplateController {
 	@ResponseFilter
 	@GetMapping("/{langcode}")
 	public ResponseWrapper<TemplateResponseDto> getAllTemplateBylangCode(@PathVariable("langcode") String langCode) {
-		auditUtil.auditRequest(String.format(MasterDataConstant.GET_LANG, TemplateDto.class.getSimpleName()),
-				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.GET_LANG, TemplateDto.class.getSimpleName()));
 		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(templateService.getAllTemplateByLanguageCode(langCode));
-		auditUtil.auditRequest(String.format(MasterDataConstant.GET_LANG_SUCCESS, TemplateDto.class.getSimpleName()),
-				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.GET_LANG_SUCCESS_DESC, TemplateDto.class.getSimpleName()));
 		return responseWrapper;
 	}
 

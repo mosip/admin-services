@@ -63,14 +63,8 @@ public class TitleController {
 	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGettitle())")
 	@GetMapping(value = "/title")
 	public ResponseWrapper<TitleResponseDto> getAllTitles() {
-		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL, TitleDto.class.getSimpleName()),
-				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.GET_ALL, TitleDto.class.getSimpleName()));
 		ResponseWrapper<TitleResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(titleService.getAllTitles());
-		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL_SUCCESS, TitleDto.class.getSimpleName()),
-				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.GET_ALL_SUCCESS_DESC, TitleDto.class.getSimpleName()));
 		return responseWrapper;
 	}
 
