@@ -105,7 +105,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
 	UserDetailsHistoryService userDetailsHistoryService;
-	
+
 	@Value("${zone.user.details.url}")
 	private String userDetails;
 
@@ -227,7 +227,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			if (userDetails == null)
 				throw new MasterDataServiceException(UserDetailsErrorCode.USER_NOT_FOUND.getErrorCode(),
 						UserDetailsErrorCode.USER_NOT_FOUND.getErrorMessage());
-			userDetailsRepository.deleteUserCenterMapping(id,LocalDateTime.now(),MetaDataUtils.getContextUser());
+			userDetailsRepository.deleteUserCenterMapping(id, LocalDateTime.now(), MetaDataUtils.getContextUser());
 			UserDetailsHistory udh = new UserDetailsHistory();
 			MapperUtils.map(userDetails, udh);
 			MapperUtils.setBaseFieldValue(userDetails, udh);
@@ -283,13 +283,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		UserDetails ud;
 		List<RegistrationCenter> regCenters;
 		try {
-			UserDetails result = userDetailsRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(userDetailsDto.getId());
-			if (result!=null)
+			UserDetails result = userDetailsRepository
+					.findByIdAndIsDeletedFalseorIsDeletedIsNull(userDetailsDto.getId());
+			if (result != null)
 				throw new MasterDataServiceException(UserDetailsErrorCode.USER_ALREADY_EXISTS.getErrorCode(),
 						UserDetailsErrorCode.USER_ALREADY_EXISTS.getErrorMessage());
 
 			regCenters = registrationCenterService.getRegistrationCentersByID(userDetailsDto.getRegCenterId());
-			validateZone(regCenters.get(0).getZoneCode(),userDetailsDto.getLangCode());
+			validateZone(regCenters.get(0).getZoneCode(), userDetailsDto.getLangCode());
 			if (regCenters == null || regCenters.isEmpty()) {
 				auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL, UserDetails.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
@@ -374,19 +375,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Transactional(propagation = Propagation.REQUIRED)
 	public UserDetailsPutDto updateUser(UserDetailsPutReqDto userDetailsDto) {
 		UserDetails ud = null;
-		UserDetailsDto udd=new UserDetailsDto();
+		UserDetailsDto udd = new UserDetailsDto();
 		UserDetailsPutDto userDetailsPutDto = new UserDetailsPutDto();
 		try {
-			ud = userDetailsRepository
-					.findByIdAndIsDeletedFalseorIsDeletedIsNull(userDetailsDto.getId());
+			ud = userDetailsRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(userDetailsDto.getId());
 			if (ud == null)
 				userDetailsDto = masterdataCreationUtil.createMasterData(UserDetails.class, userDetailsDto);
-				ud = MetaDataUtils.setCreateMetaData(userDetailsDto, UserDetails.class);
-				ud.setIsActive(false);
-				userDetailsRepository.save(ud);
+			ud = MetaDataUtils.setCreateMetaData(userDetailsDto, UserDetails.class);
+			ud.setIsActive(false);
+			userDetailsRepository.save(ud);
 			List<RegistrationCenter> regCenters = registrationCenterService
 					.getRegistrationCentersByID(userDetailsDto.getRegCenterId()); // Throws exception if not found
-			validateZone(regCenters.get(0).getZoneCode(),userDetailsDto.getLangCode());
+			validateZone(regCenters.get(0).getZoneCode(), userDetailsDto.getLangCode());
 			if (regCenters == null || regCenters.isEmpty()) {
 				auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL, UserDetails.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
@@ -511,8 +511,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 
 	@Override
-	public UsersDto getUsers(String roleName, int pageStart, int pageFetch, String firstName,
-			String lastName, String userName) {
+	public UsersDto getUsers(String roleName, int pageStart, int pageFetch, String firstName, String lastName,
+			String userName) {
 		ResponseEntity<String> response = null;
 		UriComponentsBuilder uriComponentsBuilder = null;
 		try {
@@ -630,9 +630,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		}
 		return pageDto;
 	}
-	
+
 	@Override
-	public PageResponseDto<UserCenterMappingExtnDto> serachUserCenterMappingDetails(SearchDtoWithoutLangCode searchDto) {
+	public PageResponseDto<UserCenterMappingExtnDto> serachUserCenterMappingDetails(
+			SearchDtoWithoutLangCode searchDto) {
 		PageResponseDto<ZoneUserSearchDto> pageDto = new PageResponseDto<>();
 		PageResponseDto<UserCenterMappingExtnDto> userCenterPageDto = new PageResponseDto<>();
 		List<UserCenterMappingExtnDto> userCenterMappingExtnDtos = null;
@@ -646,26 +647,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				if (null == userId || userId.isBlank())
 					return userCenterPageDto;
 				searchDto.getFilters().get(i).setValue(userId);
-				if (!userId.contains(",")) {
-
-					searchDto.getFilters().get(i).setType(FilterTypeEnum.EQUALS.toString());
-				} else {
-
-					searchDto.getFilters().get(i).setType(FilterTypeEnum.IN.toString());
-				}
+				searchDto.getFilters().get(i).setType(!userId.contains(",")?FilterTypeEnum.EQUALS.toString():FilterTypeEnum.IN.toString());
 				searchDto.getFilters().get(i).setColumnName("userId");
 
 			}
 			if (searchDto.getFilters().get(i).getColumnName().equalsIgnoreCase("zoneName")) {
 				String zoneCodes = getZoneCode(searchDto.getFilters().get(i).getValue());
-				if (null == zoneCodes)
+				if (null == zoneCodes || zoneCodes.isBlank())
 					return userCenterPageDto;
 				searchDto.getFilters().get(i).setValue(zoneCodes);
-				if (!zoneCodes.contains(",")) {
-					searchDto.getFilters().get(i).setType(FilterTypeEnum.EQUALS.toString());
-				} else {
-					searchDto.getFilters().get(i).setType(FilterTypeEnum.IN.toString());
-				}
+				searchDto.getFilters().get(i).setType(!zoneCodes.contains(",")?FilterTypeEnum.EQUALS.toString():FilterTypeEnum.IN.toString());
 				searchDto.getFilters().get(i).setColumnName("zoneCode");
 			}
 			if (searchDto.getFilters().get(i).getColumnName().equalsIgnoreCase("regCenterName")) {
@@ -674,11 +665,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				if (null == userIds || userIds.isEmpty())
 					return userCenterPageDto;
 				searchDto.getFilters().get(i).setValue(userIds);
-				if (!userIds.contains(",")) {
-					searchDto.getFilters().get(i).setType(FilterTypeEnum.EQUALS.toString());
-				} else {
-					searchDto.getFilters().get(i).setType(FilterTypeEnum.IN.toString());
-				}
+				searchDto.getFilters().get(i).setType(!userIds.contains(",")?FilterTypeEnum.EQUALS.toString():FilterTypeEnum.IN.toString());
 				searchDto.getFilters().get(i).setColumnName("userId");
 
 			}
@@ -688,7 +675,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			zoneFilter.addAll(buildZoneFilter(zones));
 		}
 		OptionalFilter zoneOptionalFilter = new OptionalFilter(zoneFilter);
-		Page<ZoneUser> page = masterDataSearchHelper.searchMasterdataWithoutLangCode(ZoneUser.class, searchDto,  new OptionalFilter[] { zoneOptionalFilter });
+		Page<ZoneUser> page = masterDataSearchHelper.searchMasterdataWithoutLangCode(ZoneUser.class, searchDto,
+				new OptionalFilter[] { zoneOptionalFilter });
 		if (page.getContent() != null && !page.getContent().isEmpty()) {
 			zoneUserSearchDetails = MapperUtils.mapAll(page.getContent(), ZoneUserExtnDto.class);
 			pageDto = PageUtils.pageResponse(page);
@@ -715,7 +703,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 					dto.setZoneName(null);
 				zoneSearch.add(dto);
 			});
-			userCenterMappingExtnDtos=dtoMapper(zoneSearch, searchDto.getLanguageCode());
+			userCenterMappingExtnDtos = dtoMapper(zoneSearch, searchDto.getLanguageCode());
 			userCenterPageDto.setFromRecord(pageDto.getFromRecord());
 			userCenterPageDto.setToRecord(pageDto.getToRecord());
 			userCenterPageDto.setTotalRecord(pageDto.getTotalRecord());
@@ -744,8 +732,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			Map m1 = mapper.readValue(response.getBody(), Map.class);
-			if(!m1.isEmpty()) {
-				List<Map<String, String>> list = ((Map<String, List<Map<String, String>>>) m1.get("response")).get("mosipUserDtoList");
+			if (!m1.isEmpty()) {
+				List<Map<String, String>> list = ((Map<String, List<Map<String, String>>>) m1.get("response"))
+						.get("mosipUserDtoList");
 				return list == null || list.isEmpty() ? null : list.get(0).get("name");
 			}
 		} catch (Exception e) {
@@ -754,37 +743,38 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		return null;
 
 	}
-	
+
 	private List<UserCenterMappingExtnDto> dtoMapper(List<ZoneUserSearchDto> zoneUserSearchDtos, String languageCode) {
-		List<UserCenterMappingExtnDto> userCenterMappingExtnDtos=new ArrayList();
-		mapZoneUserDetailsToUserCenter(zoneUserSearchDtos,userCenterMappingExtnDtos);
+		List<UserCenterMappingExtnDto> userCenterMappingExtnDtos = new ArrayList();
+		mapZoneUserDetailsToUserCenter(zoneUserSearchDtos, userCenterMappingExtnDtos);
 		for (UserCenterMappingExtnDto userCenterMappingExtnDto : userCenterMappingExtnDtos) {
-			UserDetails ud=userDetailsRepository.findUserDetailsById(userCenterMappingExtnDto.getUserId());
-				if(ud!=null) {
-					RegistrationCenter regC=registrationCenterRepository.findByIdAndLangCode(ud.getRegCenterId(),
-							languageCode ==null ? languageUtils.getDefaultLanguage() : languageCode);
+			UserDetails ud = userDetailsRepository.findUserDetailsById(userCenterMappingExtnDto.getUserId());
+			if (ud != null) {
+				RegistrationCenter regC = registrationCenterRepository.findByIdAndLangCode(ud.getRegCenterId(),
+						languageCode == null ? languageUtils.getDefaultLanguage() : languageCode);
 
-					if(regC != null) {
-						userCenterMappingExtnDto.setRegCenterName(regC.getName());
-					}
-
-					userCenterMappingExtnDto.setRegCenterId(ud.getRegCenterId());
-					userCenterMappingExtnDto.setCreatedBy(ud.getCreatedBy());
-					userCenterMappingExtnDto.setCreatedDateTime(ud.getCreatedDateTime());
-					userCenterMappingExtnDto.setUpdatedBy(ud.getUpdatedBy());
-					userCenterMappingExtnDto.setUpdatedDateTime(ud.getUpdatedDateTime());
-					userCenterMappingExtnDto.setIsDeleted(ud.getIsDeleted());
-					userCenterMappingExtnDto.setDeletedDateTime(ud.getDeletedDateTime());
-					userCenterMappingExtnDto.setIsActive(ud.getIsActive());
+				if (regC != null) {
+					userCenterMappingExtnDto.setRegCenterName(regC.getName());
 				}
+
+				userCenterMappingExtnDto.setRegCenterId(ud.getRegCenterId());
+				userCenterMappingExtnDto.setCreatedBy(ud.getCreatedBy());
+				userCenterMappingExtnDto.setCreatedDateTime(ud.getCreatedDateTime());
+				userCenterMappingExtnDto.setUpdatedBy(ud.getUpdatedBy());
+				userCenterMappingExtnDto.setUpdatedDateTime(ud.getUpdatedDateTime());
+				userCenterMappingExtnDto.setIsDeleted(ud.getIsDeleted());
+				userCenterMappingExtnDto.setDeletedDateTime(ud.getDeletedDateTime());
+				userCenterMappingExtnDto.setIsActive(ud.getIsActive());
+			}
 		}
 
 		return userCenterMappingExtnDtos;
 	}
 
-	private void mapZoneUserDetailsToUserCenter(List<ZoneUserSearchDto> zoneUserSearchDtos, List<UserCenterMappingExtnDto> userCenterMappingExtnDtos) {
-		zoneUserSearchDtos.forEach(zu->{
-			UserCenterMappingExtnDto ucm=new UserCenterMappingExtnDto();
+	private void mapZoneUserDetailsToUserCenter(List<ZoneUserSearchDto> zoneUserSearchDtos,
+			List<UserCenterMappingExtnDto> userCenterMappingExtnDtos) {
+		zoneUserSearchDtos.forEach(zu -> {
+			UserCenterMappingExtnDto ucm = new UserCenterMappingExtnDto();
 			ucm.setZoneCode(zu.getZoneCode());
 			ucm.setZoneName(zu.getZoneName());
 			ucm.setUserId(zu.getUserId());
@@ -828,7 +818,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		return null;
 
 	}
-	
+
 	private String getZoneCode(String zoneName) {
 		List<Zone> zones = zoneservice.getZoneListBasedonZoneName(zoneName);
 		String zoneCodes = new String();
@@ -837,11 +827,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		}
 		return zoneCodes;
 	}
-	private void validateZone(String zoneCode,String langCode) {
+
+	private void validateZone(String zoneCode, String langCode) {
 		List<String> zoneIds;
 		// get user zone and child zones list
-		if(langCode==null)
-			langCode=languageUtils.getDefaultLanguage();
+		if (langCode == null)
+			langCode = languageUtils.getDefaultLanguage();
 		List<Zone> subZones = zoneUtils.getSubZones(langCode);
 
 		zoneIds = subZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
@@ -852,6 +843,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 					UserDetailsErrorCode.INVALID_ZONE.getErrorMessage());
 		}
 	}
+
 	/**
 	 * Creating Search filter from the passed zones
 	 *
@@ -865,6 +857,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		}
 		return Collections.emptyList();
 	}
+
 	/**
 	 * Method to create SearchFilter for the recieved zoneCode
 	 *
@@ -878,17 +871,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		filter.setValue(zoneCode);
 		return filter;
 	}
-	
-	private String getUserIdBasedOnRegistrationCenter(String regCenterName)
-	{
-		List<String> userIdLst=registrationCenterRepository.findUserIdBasedOnRegistrationCenterName(regCenterName.toLowerCase());
-		String userIds="";
-		for(int i=0;i<userIdLst.size();i++)
-		{
-			userIds=userIds+userIdLst.get(i)+",";
-		}
 
-	return userIds;
+	private String getUserIdBasedOnRegistrationCenter(String regCenterName) {
+		List<String> userIdLst = registrationCenterRepository
+				.findUserIdBasedOnRegistrationCenterName(regCenterName.toLowerCase());
+
+		return userIdLst == null ? "" : String.join(",", userIdLst);
 	}
 
 }
