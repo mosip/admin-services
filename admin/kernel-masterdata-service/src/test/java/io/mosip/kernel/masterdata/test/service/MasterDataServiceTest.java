@@ -14,6 +14,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.kernel.masterdata.dto.request.WorkingDaysPutRequestDto;
+import io.mosip.kernel.masterdata.utils.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -142,11 +144,6 @@ import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.service.ZoneService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
-import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
-import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
-import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import io.mosip.kernel.masterdata.utils.ZoneUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 
 /**
@@ -2804,7 +2801,7 @@ public class MasterDataServiceTest {
 	public void getWorkingDaysByLangCodeService() {
 
 		List<DaysOfWeek> globalDaysList = new ArrayList<DaysOfWeek>();
-		
+
 		DaysOfWeek daysOfWeek = new DaysOfWeek();
 		daysOfWeek.setCode("101");
 		daysOfWeek.setGlobalWorking(true);
@@ -2818,7 +2815,44 @@ public class MasterDataServiceTest {
 		assertEquals("Monday",
 				regWorkingNonWorkingService.getWorkingDays("eng").getWorkingdays().get(0).getName());
 	}
-	
+	@Test
+	public void updateWorkingDaysServiceTest() throws NoSuchFieldException, IllegalAccessException {
+		DaysOfWeek daysOfWeek = new DaysOfWeek();
+		WorkingDaysPutRequestDto workingDaysPutRequestDto=new WorkingDaysPutRequestDto();
+		daysOfWeek.setCode("101");
+		daysOfWeek.setGlobalWorking(true);
+		daysOfWeek.setDaySeq((short) 1);
+		daysOfWeek.setLangCode("eng");
+		daysOfWeek.setName("Monday");
+		workingDaysPutRequestDto= MapperUtils.map(daysOfWeek,workingDaysPutRequestDto);
+
+		Mockito.when(daysOfWeekRepo.findBylangCodeAndCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(daysOfWeek);
+		when(masterdataCreationUtil.updateMasterData(Mockito.eq(DaysOfWeek.class), Mockito.any()))
+				.thenReturn(workingDaysPutRequestDto);
+		assertEquals("Monday",
+				regWorkingNonWorkingService.updateWorkingDays(workingDaysPutRequestDto).getName());
+	}
+
+	@Test
+	public void updateWorkingDaysStatusServiceTest() throws NoSuchFieldException, IllegalAccessException {
+		List<DaysOfWeek> globalDaysList = new ArrayList<DaysOfWeek>();
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for workingDays");
+		DaysOfWeek daysOfWeek = new DaysOfWeek();
+		daysOfWeek.setCode("101");
+		daysOfWeek.setGlobalWorking(true);
+		daysOfWeek.setDaySeq((short) 1);
+		daysOfWeek.setLangCode("eng");
+		daysOfWeek.setName("Monday");
+		globalDaysList.add(daysOfWeek);
+		Mockito.when(daysOfWeekRepo.findByCode(Mockito.anyString()))
+				.thenReturn(globalDaysList);
+		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(DaysOfWeek.class), Mockito.anyString(),
+				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
+		StatusResponseDto actual=regWorkingNonWorkingService.updateWorkingDaysStatus("abc",false);
+		assertEquals(dto,actual);
+	}
 	@Test(expected = MasterDataServiceException.class)
 	public void getWorkingDaysServiceFailureTest() {
 		List<WorkingDaysDto> workingDaysDtos = new ArrayList<>();
