@@ -31,9 +31,7 @@
 		<spring-cloud-config.version>2.0.4.RELEASE</spring-cloud-config.version>
 
 		<!-- swagger -->
-		<swagger.core.version>2.0.7</swagger.core.version>
-		<swagger.annotations.version>1.5.21</swagger.annotations.version>
-		<springfox.version>2.9.2</springfox.version>
+		<springdoc.version>1.5.10</springdoc.version>
 
 		<!-- vertx -->
 		<vertx.version>3.6.2</vertx.version>
@@ -156,16 +154,6 @@
 			<version>${spring.boot.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>${springfox.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>${springfox.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 			<version>${spring.boot.version}</version>
@@ -221,6 +209,23 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
 			<version>${spring.boot.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>${springdoc.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-webmvc</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<version>${spring.boot.version}</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	
