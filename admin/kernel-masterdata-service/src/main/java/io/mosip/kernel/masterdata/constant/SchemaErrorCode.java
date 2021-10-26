@@ -31,7 +31,8 @@ public enum SchemaErrorCode {
 	DUPLICATE_FIELD_EXCEPTION("KER-SCH-016", "Duplicate fields found %s"),
 	SUB_TYPE_REQUIRED_EXCEPTION("KER-SCH-017", "SubType is required for field %s"),
 	BIO_ATTRIBUTES_REQUIRED_EXCEPTION("KER-SCH-018", "BioAttributes are required for field %s"),
-	BIO_ATTRIBUTES_DUPLICATED_EXCEPTION("KER-SCH-019", "Same BioAttributes used in field with same SubType : %s");
+	BIO_ATTRIBUTES_DUPLICATED_EXCEPTION("KER-SCH-019", "Same BioAttributes used in field with same SubType : %s"),
+	DYNAMIC_FIELD_VALUE_JSON_INVALID("KER-DYN-001", "Dynamic field is invalid, must contain code and value keys");
 
 	private final String errorCode;
 	private final String errorMessage;

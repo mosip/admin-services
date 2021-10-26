@@ -3,6 +3,9 @@ package io.mosip.kernel.masterdata.test.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -107,11 +110,13 @@ public class DynamicFieldControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t001createDynamicFieldTest() throws Exception {
+		JsonNode fieldVal = mapper.readTree("{\"code\":\"oo\",\"value\":\"ooo\"}");
+		dynamicFieldDtoReq.getRequest().setFieldVal(fieldVal);
 		dynamicFieldDtoReq.getRequest().setName("bloodtype");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/dynamicfields").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(dynamicFieldDtoReq))).andReturn(),
-				null);
+				"KER-DYN-001");
 	}
 
 	@Test
@@ -129,7 +134,7 @@ public class DynamicFieldControllerTest {
 		dynamicFieldPutDtoReq.getRequest().setName("bld");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/dynamicfields").param("id", "10001")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(dynamicFieldPutDtoReq)))
-				.andReturn(), null);
+				.andReturn(), "KER-DYN-001");
 	}
 
 	@Test
