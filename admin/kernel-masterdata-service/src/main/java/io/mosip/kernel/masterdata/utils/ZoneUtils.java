@@ -303,7 +303,6 @@ public class ZoneUtils {
 	public List<Zone> getLeafZones(String langCode,String zoneCode) {
 		List<Zone> zones = getZones();
 		List<Zone> langSpecificZones = null;
-	//	ZoneUser zu=zoneUserRepository.findZoneByUserIdActiveAndNonDeleted(((AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId());
 		if (langCode==null || langCode.equals("all")) {
 			String lang=languageUtils.getDefaultLanguage();
 			langSpecificZones = zones.stream().filter(i -> lang.equals(i.getLangCode()))

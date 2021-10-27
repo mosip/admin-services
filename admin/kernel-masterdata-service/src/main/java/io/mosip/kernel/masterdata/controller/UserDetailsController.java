@@ -88,7 +88,7 @@ public class UserDetailsController {
 	/**
 	 * Post API to insert a new row of user
 	 * 
-	 * @param userDetailsDto input from user DTO
+	 * @param userDetailsDtoRequest input from user DTO
 	 * 
 	 * @return Responding with Machine which is inserted successfully
 	 *         {@link ResponseEntity}

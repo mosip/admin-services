@@ -2,22 +2,36 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
 import io.mosip.kernel.masterdata.dto.MissingDataDto;
+import io.mosip.kernel.masterdata.entity.DynamicField;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
 import io.mosip.kernel.masterdata.service.GenericService;
 import io.mosip.kernel.masterdata.utils.LanguageUtils;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class GenericServiceImpl implements GenericService {
 
+	private static final Logger logger = LoggerFactory.getLogger(GenericService.class);
+
 	@Autowired
 	private MasterdataSearchHelper masterdataSearchHelper;
+
+	@Autowired
+	private DynamicFieldRepository dynamicFieldRepository;
 
 	@Autowired
 	private LanguageUtils languageUtils;
@@ -46,6 +60,46 @@ public class GenericServiceImpl implements GenericService {
 				}
 				list.add(dto);
 			}
+		}
+		return list;
+	}
+
+	@Override
+	public List<MissingDataDto> getMissingDynamicData(String langCode, String name) {
+		List<MissingDataDto> list = new ArrayList<>();
+
+		if (!languageUtils.getConfiguredLanguages().contains(langCode)) {
+			throw new MasterDataServiceException(MasterdataSearchErrorCode.INVALID_LANGCODE.getErrorCode(),
+					MasterdataSearchErrorCode.INVALID_LANGCODE.getErrorMessage());
+		}
+
+		List<DynamicField> allFields = dynamicFieldRepository.findAllDynamicFieldValuesByName(name);
+		if(allFields != null) {
+			Set<String> codes = new HashSet<>();
+			allFields.stream()
+			.filter( f -> !f.getLangCode().equals(langCode) )
+			.forEach(f -> {
+				try {
+					codes.add(new JSONObject(f.getValueJson()).getString("code"));
+				} catch (JSONException e) {
+					logger.error("Failed to parse field {} value json {}", name, f.getValueJson(), e);
+				}
+			});
+
+			allFields.stream()
+			.filter( f -> f.getLangCode().equals(langCode) )
+			.forEach( f-> {
+				try {
+					codes.remove(new JSONObject(f.getValueJson()).getString("code"));
+				} catch (JSONException e) {
+					logger.error("Failed to parse field {} value json {}", name, f.getValueJson(), e);
+				}
+			});
+
+			codes.forEach(c -> {
+				list.add(new MissingDataDto(name, c, langCode));
+			});
+
 		}
 		return list;
 	}

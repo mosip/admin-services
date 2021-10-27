@@ -186,4 +186,7 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 
 	@Query("FROM DynamicField WHERE lower(name)=lower(?1) and langCode=?2")
 	List<DynamicField> findAllDynamicFieldValuesByNameAndLangCode(String fieldName, String langCode);
+
+	@Query("FROM DynamicField WHERE (isDeleted is null OR isDeleted = false) AND lower(name)=lower(?1)")
+	List<DynamicField> findAllDynamicFieldValuesByName(String fieldName);
 }

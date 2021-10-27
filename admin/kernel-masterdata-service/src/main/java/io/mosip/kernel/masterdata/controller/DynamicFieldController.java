@@ -224,7 +224,7 @@ public class DynamicFieldController {
 	public ResponseWrapper<List<MissingDataDto>> getMissingDynamicFields(
 			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
 		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(genericService.getMissingData(DynamicField.class, langCode, "id", fieldName));
+		responseWrapper.setResponse(genericService.getMissingDynamicData(langCode, fieldName));
 		return responseWrapper;
 	}
 

@@ -9287,7 +9287,7 @@ public class MasterdataIntegrationTest {
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 					ResponseWrapper.class);
 
-		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-USR-014"));
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-USR-008"));
 	}
 	
 	@Test
