@@ -3846,7 +3846,7 @@ public class MasterdataIntegrationTest {
 	public void getMachineLangcodeFetchExceptionTest() throws Exception {
 		when(machineRepository.findAllByIsDeletedFalseOrIsDeletedIsNull())
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get("/machines/{langcode}", "ENG")
+		MvcResult result = mockMvc.perform(get("/machines/{langcode}", "eng")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 			
