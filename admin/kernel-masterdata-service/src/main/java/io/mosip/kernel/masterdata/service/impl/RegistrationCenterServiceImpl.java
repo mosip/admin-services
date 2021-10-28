@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1577,10 +1578,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 		if (registrationCenters != null && !registrationCenters.isEmpty()) {
 			masterdataCreationUtil.updateMasterDataStatus(RegistrationCenter.class, id, isActive, "id");
-			MapperUtils.map(registrationCenters.get(0), registrationCenterHistory);
-			MapperUtils.setBaseFieldValue(registrationCenters.get(0), registrationCenterHistory);
-			registrationCenterHistory.setEffectivetimes(LocalDateTime.now());
-			registrationCenterHistory.setUpdatedDateTime(LocalDateTime.now());
+
+			MetaDataUtils.setUpdateMetaData(registrationCenters.get(0), registrationCenterHistory, true);
+			registrationCenterHistory.setEffectivetimes(LocalDateTime.now(ZoneId.of("UTC")));
 			registrationCenterHistory.setIsActive(isActive);
 			registrationCenterHistoryService.createRegistrationCenterHistory(registrationCenterHistory);
 		} else {

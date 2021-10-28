@@ -97,7 +97,7 @@ public class GenericServiceImpl implements GenericService {
 			});
 
 			codes.forEach(c -> {
-				list.add(new MissingDataDto(name, c, langCode));
+				list.add(new MissingDataDto(c, name, langCode));
 			});
 
 		}

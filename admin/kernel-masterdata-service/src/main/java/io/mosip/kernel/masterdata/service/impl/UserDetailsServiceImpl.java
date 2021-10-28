@@ -464,14 +464,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Override
 	public StatusResponseDto updateUserStatus(String id, boolean isActive) {
-		// TODO Auto-generated method stub
 		StatusResponseDto response = new StatusResponseDto();
-		UserDetails ud;
 		try {
 			Optional<UserDetails> result = userDetailsRepository.findById(id);
 			if (result != null && !result.isEmpty()) {
 				masterdataCreationUtil.updateMasterDataStatus(UserDetails.class, id, isActive, "id");
-				masterdataCreationUtil.updateMasterDataStatus(UserDetailsHistory.class, id, isActive, "id");
+
+				UserDetailsHistory udh = new UserDetailsHistory();
+				MetaDataUtils.setUpdateMetaData(result.get(), udh, true);
+				udh.setIsActive(isActive);
+				udh.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
+				userDetailsHistoryService.createUserDetailsHistory(udh);
+
 			} else {
 				throw new MasterDataServiceException(UserDetailsErrorCode.USER_NOT_FOUND.getErrorCode(),
 						UserDetailsErrorCode.USER_NOT_FOUND.getErrorMessage());
