@@ -52,4 +52,30 @@ public class TestConfig {
 		return restTemplate;
 	}
 
+	@Bean
+	public RestTemplate selfTokenRestTemplate()
+			throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
+
+		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
+
+		SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy)
+				.build();
+
+		SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
+
+		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
+		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+
+		requestFactory.setHttpClient(httpClient);
+		RestTemplate restTemplate =  new RestTemplate(requestFactory);
+
+
+		MockRestServiceServer.createServer(restTemplate)
+				.expect(requestTo("http://localhost/config/kernel-masterdata-service/mz/develop/applicanttype.mvel"))
+				.andExpect(method(HttpMethod.GET))
+				.andRespond(withSuccess().body("def getApplicantType() { return '000'; }"));
+
+		return restTemplate;
+	}
+
 }
