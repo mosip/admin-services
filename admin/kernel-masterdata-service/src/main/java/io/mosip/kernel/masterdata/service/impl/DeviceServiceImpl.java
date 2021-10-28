@@ -339,9 +339,9 @@ public class DeviceServiceImpl implements DeviceService {
 
 		List<DeviceSearchDto> devices = null;
 		List<SearchFilter> addList = new ArrayList<>();
-		List<SearchFilter> mapStatusList = new ArrayList<>();
+		//List<SearchFilter> mapStatusList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
-		List<String> mappedDeviceIdList = null;
+		//List<String> mappedDeviceIdList = null;
 		List<SearchFilter> zoneFilter = new ArrayList<>();
 		List<Zone> zones = null;
 		boolean flag = true;
@@ -351,7 +351,7 @@ public class DeviceServiceImpl implements DeviceService {
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
 			
-			if (column.equalsIgnoreCase("mapStatus")) {
+			/*if (column.equalsIgnoreCase("mapStatus")) {
 
 				if (filter.getValue().equalsIgnoreCase("assigned")) {
 					mappedDeviceIdList = deviceRepository.findMappedDeviceId();
@@ -382,7 +382,7 @@ public class DeviceServiceImpl implements DeviceService {
 
 				}
 				removeList.add(filter);
-			}
+			}*/
 
 			if (column.equalsIgnoreCase("deviceTypeName")) {
 				filter.setColumnName(MasterDataConstant.NAME);
@@ -425,24 +425,24 @@ public class DeviceServiceImpl implements DeviceService {
 			OptionalFilter optionalFilter = new OptionalFilter(addList);
 			OptionalFilter zoneOptionalFilter = new OptionalFilter(zoneFilter);
 			Page<Device> page = null;
-			if (mapStatusList.isEmpty() || addList.isEmpty()) {
-				addList.addAll(mapStatusList);
+			if (/*mapStatusList.isEmpty() ||*/ addList.isEmpty()) {
+				//addList.addAll(mapStatusList);
 				page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Device.class, dto,
 						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			} else {
 				page = masterdataSearchHelper.nativeDeviceQuerySearch(dto, typeName, zones, isAssigned);
 			}
 
-			if (page.getContent() != null && !page.getContent().isEmpty()) {
+			if (page != null && page.getContent() != null && !page.getContent().isEmpty()) {
 				devices = MapperUtils.mapAll(page.getContent(), DeviceSearchDto.class);
 				setDeviceMetadata(devices, zones);
 				setDeviceTypeNames(devices);
 				setMapStatus(devices,dto.getLanguageCode());
-				devices.forEach(device -> {
+				/*devices.forEach(device -> {
 					if (device.getMapStatus() == null) {
 						device.setMapStatus("unassigned");
 					}
-				});
+				});*/
 
 				pageDto = pageUtils.sortPage(devices, sort, pagination);
 
@@ -490,18 +490,14 @@ public class DeviceServiceImpl implements DeviceService {
 	 * @param list the {@link DeviceSearchDto}.
 	 */
 	private void setMapStatus(List<DeviceSearchDto> list, String langCode) {
-		List<RegistrationCenter> registrationCenterList = deviceUtil.getAllRegistrationCenters();
-		if(langCode==null){
-			langCode=languageUtils.getDefaultLanguage();
-		}
-		String languageCode = langCode;
+		List<RegistrationCenter> registrationCenterList = deviceUtil.getAllRegistrationCenters(langCode);
 		list.forEach(deviceSearchDto -> {
-			String regId = deviceSearchDto.getRegCenterId();
-			registrationCenterList.forEach(registrationCenter -> {
-				if (registrationCenter.getId().equals(regId) && registrationCenter.getLangCode().toString().equalsIgnoreCase(languageCode)) {
-					deviceSearchDto.setMapStatus(registrationCenter.getName());
-				}
-			});
+			Optional<RegistrationCenter> result = registrationCenterList.stream()
+					.filter(d -> d.getId().equals(deviceSearchDto.getRegCenterId()))
+					.findFirst();
+			deviceSearchDto.setMapStatus(result.isPresent() ?
+					String.format("%s (%s)", deviceSearchDto.getRegCenterId(), result.get().getName()) :
+					"");
 		});
 	}
 
@@ -956,12 +952,10 @@ public class DeviceServiceImpl implements DeviceService {
 					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(accessException));
 		}
-		if (devices != null) {
+		if (devices != null && !devices.isEmpty()) {
 			masterdataCreationUtil.updateMasterDataStatus(Device.class, id, isActive, "id");
-			MapperUtils.map(devices.get(0), deviceHistory);
-			MapperUtils.setBaseFieldValue(devices.get(0), deviceHistory);
-			deviceHistory.setEffectDateTime(LocalDateTime.now());
-			deviceHistory.setUpdatedDateTime(LocalDateTime.now());
+			MetaDataUtils.setUpdateMetaData(devices.get(0), deviceHistory, true);
+			deviceHistory.setEffectDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 			deviceHistory.setIsActive(isActive);
 			deviceHistoryService.createDeviceHistory(deviceHistory);
 		} else {

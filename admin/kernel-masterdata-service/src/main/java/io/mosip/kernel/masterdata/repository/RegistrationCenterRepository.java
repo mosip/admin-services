@@ -97,8 +97,8 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * 
 	 * @return the list of list of {@link RegistrationCenter}.
 	 */
-	@Query("FROM RegistrationCenter WHERE (isDeleted is null or isDeleted =false) and isActive = true")
-	List<RegistrationCenter> findAllByIsDeletedFalseOrIsDeletedIsNull();
+	@Query("FROM RegistrationCenter WHERE (isDeleted is null or isDeleted =false) and isActive = true and langCode = ?1")
+	List<RegistrationCenter> findAllByIsDeletedFalseOrIsDeletedIsNullAndLangCode(String langCode);
 
 	/**
 	 * This method triggers query to find registration centers based on center type
@@ -220,4 +220,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	@Query("FROM RegistrationCenter WHERE zoneCode =?1 and langCode =?2 and (isDeleted is null or isDeleted = false) and isActive = true")
 	List<RegistrationCenter> findAllActiveByZoneCodeAndLangCode(String zoneCode, String langCode);
 
+	@Query(value="select distinct(ud.id) from master.user_detail ud inner join master.registration_center rc on rc.id=ud.regcntr_id where lower(rc.name) like %?1%",nativeQuery=true)
+	List<String> findUserIdBasedOnRegistrationCenterName(String regCenterName);
+	
 }

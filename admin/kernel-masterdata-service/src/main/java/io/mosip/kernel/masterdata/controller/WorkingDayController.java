@@ -1,10 +1,13 @@
 package io.mosip.kernel.masterdata.controller;
 
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.WorkingDaysDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.WorkingDaysExtnDto;
+import io.mosip.kernel.masterdata.dto.request.WorkingDaysPutRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -100,6 +103,50 @@ public class WorkingDayController {
 
 		ResponseWrapper<WorkingDaysResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(service.getWorkingDays(langCode));
+		return responseWrapper;
+	}
+	/**
+	 *
+	 * Function to update working days detail.
+	 *
+	 * @param WorkingDaysRequest
+	 * @return WorkingDaysResponseDto working days based on given lang code {@link WorkingDaysResponseDto}
+	 */
+	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetworkingdayslangcode())")
+	@PutMapping(value = "/workingdays")
+	@ApiOperation(value = "update the working Days for given Lang Code", notes = "update the working Days")
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When working days updated"),
+			@ApiResponse(code = 404, message = "When No working days found for the given lang Code"),
+			@ApiResponse(code = 500, message = "While retrieving working days any error occured") })
+	public ResponseWrapper<WorkingDaysExtnDto> updateWorkingDays(
+			@RequestBody RequestWrapper<WorkingDaysPutRequestDto> workingDaysPutRequestDtoRequestWrapper) throws NoSuchFieldException, IllegalAccessException {
+
+		ResponseWrapper<WorkingDaysExtnDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(service.updateWorkingDays(workingDaysPutRequestDtoRequestWrapper.getRequest()));
+		return responseWrapper;
+	}
+	/**
+	 *
+	 * Function to update working days status.
+	 *
+	 * @param code
+	 *
+	 */
+	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetworkingdayslangcode())")
+	@PatchMapping(value = "/workingdays")
+	@ApiOperation(value = "update the workingdays status", notes = "update the workingdays status")
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When working days status is updated"),
+			@ApiResponse(code = 404, message = "When No working days found for the given code"),
+			@ApiResponse(code = 500, message = "While retrieving working days any error occured") })
+	public ResponseWrapper<StatusResponseDto> updateWorkingDaysStatus(
+			@RequestParam String code, @RequestParam boolean isActive) {
+
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(service.updateWorkingDaysStatus(code,isActive));
 		return responseWrapper;
 	}
 

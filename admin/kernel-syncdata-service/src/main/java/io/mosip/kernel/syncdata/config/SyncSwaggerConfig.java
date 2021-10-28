@@ -1,22 +1,17 @@
 package io.mosip.kernel.syncdata.config;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springdoc.core.GroupedOpenApi;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.servers.Server;
 
 /**
  * Configuration class for swagger config
@@ -24,88 +19,42 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @author Dharmesh Khandelwal
  * @author Raj Jha
  * @since 1.0.0
+ * @author Govindaraj Velu
+ * @implSpec upgrade the Swagger2.0 to OpenAPI (Swagger3.0)
  *
  */
 @Configuration
-@EnableSwagger2
 public class SyncSwaggerConfig {
 
 	private static final Logger logger = LoggerFactory.getLogger(SyncSwaggerConfig.class);
 
-	/**
-	 * Master service Version
-	 */
-	private static final String SYNCDATA_SERVICE_VERSION = "0.0.1";
-	/**
-	 * Application Title
-	 */
-	private static final String TITLE = "Sync Data Service";
-	/**
-	 * Master Data Service
-	 */
-	private static final String DESCRIPTION = "Sync Data Service";
-
-	@Value("${application.env.local:false}")
-	private Boolean localEnv;
-
-	@Value("${swagger.base-url:#{null}}")
-	private String swaggerBaseUrl;
-
-	@Value("${server.port:8080}")
-	private int serverPort;
-
-	String proto = "http";
-	String host = "localhost";
-	int port = -1;
-	String hostWithPort = "localhost:8080";
-
-	/**
-	 * Produces {@link ApiInfo}
-	 * 
-	 * @return {@link ApiInfo}
-	 */
-	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder().title(TITLE).description(DESCRIPTION).version(SYNCDATA_SERVICE_VERSION).build();
-	}
-
-	/**
-	 * Produce Docket bean
-	 * 
-	 * @return Docket bean
-	 */
+	@Autowired
+	private OpenApiProperties openApiProperties;
+	
 	@Bean
-	public Docket api() {
-		boolean swaggerBaseUrlSet = false;
-		if (!localEnv && swaggerBaseUrl != null && !swaggerBaseUrl.isEmpty()) {
-			try {
-				proto = new URL(swaggerBaseUrl).getProtocol();
-				host = new URL(swaggerBaseUrl).getHost();
-				port = new URL(swaggerBaseUrl).getPort();
-				if (port == -1) {
-					hostWithPort = host;
-				} else {
-					hostWithPort = host + ":" + port;
-				}
-				swaggerBaseUrlSet = true;
-			} catch (MalformedURLException e) {
-				logger.error("SwaggerUrlException: ", e);
-			}
-		}
-
-		Docket docket = new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select()
-				.paths(PathSelectors.regex("(?!/(error).*).*")).build();
-
-		if (swaggerBaseUrlSet) {
-			docket.protocols(protocols()).host(hostWithPort);
-			logger.debug("Swagger Base URL: {}://{}", proto, hostWithPort);
-		}
-
-		return docket;
+    public OpenAPI openApi() {
+		OpenAPI api = new OpenAPI()
+                .components(new Components())
+                .info(new Info()
+                		.title(openApiProperties.getInfo().getTitle())
+                		.version(openApiProperties.getInfo().getVersion())
+                		.description(openApiProperties.getInfo().getDescription())
+                		.license(new License()
+                				.name(openApiProperties.getInfo().getLicense().getName())
+                				.url(openApiProperties.getInfo().getLicense().getUrl())));
+			
+			openApiProperties.getService().getServers().forEach(server -> {
+				api.addServersItem(new Server().description(server.getDescription()).url(server.getUrl()));
+			});
+			logger.info("swagger open api bean is ready");
+		return api;
+    }
+	
+	@Bean
+	public GroupedOpenApi groupedOpenApi() {
+		return GroupedOpenApi.builder().group(openApiProperties.getGroup().getName())
+				.pathsToMatch(openApiProperties.getGroup().getPaths().stream().toArray(String[]::new))
+				.build();
 	}
-
-	private Set<String> protocols() {
-		Set<String> protocols = new HashSet<>();
-		protocols.add(proto);
-		return protocols;
-	}
+	
 }

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.masterdata.util.model.Node;
@@ -252,7 +253,7 @@ public class ZoneUtils {
 	 * @return
 	 */
 	public List<Zone> getSubZones(String langCode) {
-		String userId = ((AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
+		String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
 		ZoneUser zu=zoneUserRepository.findZoneByUserIdActiveAndNonDeleted(userId);
 
 		if(zu == null) {
@@ -262,7 +263,7 @@ public class ZoneUtils {
 
 		List<Zone> zones = getZones();
 		String lang = (langCode==null || langCode.equals("all")) ? languageUtils.getDefaultLanguage() : langCode;
-		List<Zone> langSpecificZones = zones.stream().filter(i -> lang.equals(i.getLangCode()))
+		List<Zone> langSpecificZones = zones == null ? Collections.EMPTY_LIST : zones.stream().filter(i -> lang.equals(i.getLangCode()))
 				.collect(Collectors.toList());
 
 		List<Node<Zone>> tree = zoneTree.createTree(langSpecificZones);
@@ -302,7 +303,6 @@ public class ZoneUtils {
 	public List<Zone> getLeafZones(String langCode,String zoneCode) {
 		List<Zone> zones = getZones();
 		List<Zone> langSpecificZones = null;
-	//	ZoneUser zu=zoneUserRepository.findZoneByUserIdActiveAndNonDeleted(((AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId());
 		if (langCode==null || langCode.equals("all")) {
 			String lang=languageUtils.getDefaultLanguage();
 			langSpecificZones = zones.stream().filter(i -> lang.equals(i.getLangCode()))
