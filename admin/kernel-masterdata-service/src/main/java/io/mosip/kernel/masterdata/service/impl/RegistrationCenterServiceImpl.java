@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -398,7 +399,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	public RegistrationCenterResponseDto getAllRegistrationCenters() {
 		List<RegistrationCenter> registrationCentersList = null;
 		try {
-			registrationCentersList = registrationCenterRepository.findAllByIsDeletedFalseOrIsDeletedIsNull();
+			registrationCentersList = registrationCenterRepository.findAllByIsDeletedFalseOrIsDeletedIsNullAndLangCode(
+					languageUtils.getDefaultLanguage());
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
@@ -1552,11 +1554,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return registrationCenterPages;
 	}
 
+	@Transactional
 	@Override
 	public StatusResponseDto updateRegistrationCenter(String id, boolean isActive) {
-		// TODO Auto-generated method stub
 		StatusResponseDto response = new StatusResponseDto();
-
+		RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();
 		List<RegistrationCenter> registrationCenters = null;
 		try {
 			registrationCenters = registrationCenterRepository.findByRegCenterIdAndIsDeletedFalseOrNull(id);
@@ -1576,6 +1578,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 		if (registrationCenters != null && !registrationCenters.isEmpty()) {
 			masterdataCreationUtil.updateMasterDataStatus(RegistrationCenter.class, id, isActive, "id");
+
+			MetaDataUtils.setUpdateMetaData(registrationCenters.get(0), registrationCenterHistory, true);
+			registrationCenterHistory.setEffectivetimes(LocalDateTime.now(ZoneId.of("UTC")));
+			registrationCenterHistory.setIsActive(isActive);
+			registrationCenterHistoryService.createRegistrationCenterHistory(registrationCenterHistory);
 		} else {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_UPDATE, RegistrationCenter.class.getSimpleName()),

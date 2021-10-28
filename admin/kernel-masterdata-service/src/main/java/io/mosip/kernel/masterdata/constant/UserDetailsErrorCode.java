@@ -17,7 +17,8 @@ public enum UserDetailsErrorCode {
 	ZONE_USER_MAPPING_NOT_ACTIVE("KER-USR-011","Zone user mapping is not active"),
 	CENTER_LANG_MAPPING_NOT_EXISTS("KER-USR-012","Reg center is not exists for given language"),
 	USER_ALREADY_EXISTS("KER-USR-013", "User already exists"),
-	INVALID_ZONE("KER-USR-014", "Admin not authorized to access for this Zone");
+	INVALID_ZONE("KER-USR-014", "Admin not authorized to access for this Zone"),
+	INVALID_ZONE_MAPPING("KER-USR-015", "Provided center zone is not part of user zone");
 
 	private final String errorCode;
 	private final String errorMessage;

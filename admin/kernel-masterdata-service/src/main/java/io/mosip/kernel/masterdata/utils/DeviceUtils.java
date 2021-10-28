@@ -54,9 +54,9 @@ public class DeviceUtils {
 
 	
 
-	public List<RegistrationCenter> getAllRegistrationCenters() {
+	public List<RegistrationCenter> getAllRegistrationCenters(String langCode) {
 		try {
-			return centerRepository.findAllByIsDeletedFalseOrIsDeletedIsNull();
+			return centerRepository.findAllByIsDeletedFalseOrIsDeletedIsNullAndLangCode(langCode);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),

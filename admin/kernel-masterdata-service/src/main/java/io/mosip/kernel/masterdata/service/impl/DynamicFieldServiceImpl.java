@@ -161,8 +161,13 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		DynamicField entity = MetaDataUtils.setCreateMetaData(dto, DynamicField.class);
 		entity.setId(UUID.randomUUID().toString());
 
-		if(dto.getFieldVal() != null)
-			entity.setValueJson(dto.getFieldVal().toString());
+		if(dto.getFieldVal() != null && !dto.getFieldVal().isArray()) {
+			if(dto.getFieldVal().has("code") && dto.getFieldVal().has("value"))
+				entity.setValueJson(dto.getFieldVal().toString());
+			else
+				throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_VALUE_JSON_INVALID.getErrorCode(),
+						SchemaErrorCode.DYNAMIC_FIELD_VALUE_JSON_INVALID.getErrorMessage());
+		}
 
 		try {
 			entity = dynamicFieldRepository.create(entity);
@@ -185,6 +190,13 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	public DynamicFieldResponseDto updateDynamicField(String id, DynamicFieldPutDto dto) {
 		DynamicField entity = null;
 		try {
+
+			if(dto.getFieldVal() == null || dto.getFieldVal().isArray() || !dto.getFieldVal().has("code") ||
+					!dto.getFieldVal().has("value"))
+				throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_VALUE_JSON_INVALID.getErrorCode(),
+							SchemaErrorCode.DYNAMIC_FIELD_VALUE_JSON_INVALID.getErrorMessage());
+
+
 			int updatedRows = dynamicFieldRepository.updateDynamicField(id, dto.getDescription(), dto.getLangCode(), 
 					dto.getDataType(), MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser(),
 					dto.getFieldVal() != null ? dto.getFieldVal().toString() : "{}");
@@ -341,6 +353,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		try {
 			dto.setFieldVal(objectMapper.readTree(entity.getValueJson()));
 		} catch (IOException e) {
+			LOGGER.error("Failed to parse field value json object : ", e);
 		}
 		return dto;
 	}

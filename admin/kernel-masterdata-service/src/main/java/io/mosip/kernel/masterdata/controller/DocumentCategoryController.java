@@ -79,16 +79,8 @@ public class DocumentCategoryController {
 	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumentcategories())")
 	@GetMapping("/documentcategories")
 	public ResponseWrapper<DocumentCategoryResponseDto> getAllDocumentCategory() {
-		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL, DocumentCategoryDto.class.getSimpleName()),
-				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.GET_ALL, DocumentCategoryDto.class.getSimpleName()), "ADM-692");
 		ResponseWrapper<DocumentCategoryResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentCategoryService.getAllDocumentCategory());
-		auditUtil.auditRequest(
-				String.format(MasterDataConstant.GET_ALL_SUCCESS, DocumentCategoryDto.class.getSimpleName()),
-				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.GET_ALL_SUCCESS_DESC, DocumentCategoryDto.class.getSimpleName()),
-				"ADM-693");
 		return responseWrapper;
 	}
 

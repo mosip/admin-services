@@ -323,7 +323,7 @@ public class MachineServiceImpl implements MachineService {
 		PageResponseDto<MachineSearchDto> pageDto = new PageResponseDto<>();
 		List<MachineSearchDto> machines = null;
 		List<SearchFilter> addList = new ArrayList<>();
-		List<SearchFilter> mapStatusList = new ArrayList<>();
+		//List<SearchFilter> mapStatusList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
 		List<String> mappedMachineIdList = null;
 		List<SearchFilter> zoneFilter = new ArrayList<>();
@@ -343,7 +343,7 @@ public class MachineServiceImpl implements MachineService {
 				flag = false;
 			}
 
-			if (column.equalsIgnoreCase("mapStatus")) {
+			/*if (column.equalsIgnoreCase("mapStatus")) {
 
 				if (filter.getValue().equalsIgnoreCase("assigned")) {
 					mappedMachineIdList = machineRepository.findMappedMachineId();
@@ -377,7 +377,7 @@ public class MachineServiceImpl implements MachineService {
 
 				}
 				removeList.add(filter);
-			}
+			}*/
 
 			if (column.equalsIgnoreCase("machineTypeName")) {
 				filter.setColumnName("name");
@@ -423,24 +423,24 @@ public class MachineServiceImpl implements MachineService {
 			if(typeName!=null &&!typeName.isEmpty() && addList.isEmpty()) {
 				page = masterdataSearchHelper.nativeMachineQuerySearch(dto, typeName, zones, isAssigned);
 			}
-			else if (mapStatusList.isEmpty() || addList.isEmpty()) {
-				addList.addAll(mapStatusList);
+			else if (/*mapStatusList.isEmpty() ||*/ addList.isEmpty()) {
+				//addList.addAll(mapStatusList);
 				optionalFilter = new OptionalFilter(addList);
 				page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Machine.class, dto,
 						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			} else {
 				page = masterdataSearchHelper.nativeMachineQuerySearch(dto, typeName, zones, isAssigned);
 			}
-			if (page.getContent() != null && !page.getContent().isEmpty()) {
+			if (page != null && page.getContent() != null && !page.getContent().isEmpty()) {
 				machines = MapperUtils.mapAll(page.getContent(), MachineSearchDto.class);
 				setMachineMetadata(machines, zones);
 				setMachineTypeNames(machines);
 				setMapStatus(machines, dto.getLanguageCode());
-				machines.forEach(machine -> {
+				/*machines.forEach(machine -> {
 					if (machine.getMapStatus() == null) {
 						machine.setMapStatus("unassigned");
 					}
-				});
+				});*/
 				pageDto = pageUtils.sortPage(machines, sort, pagination);
 			}
 
@@ -487,18 +487,15 @@ public class MachineServiceImpl implements MachineService {
 	 * @param list the {@link MachineSearchDto}.
 	 */
 	private void setMapStatus(List<MachineSearchDto> list,String langCode) {
-		List<RegistrationCenter> registrationCenterList = machineUtil.getAllRegistrationCenters();
-		if(langCode==null){
-			langCode=languageUtils.getDefaultLanguage();
-		}
-		String languageCode = langCode;
+		List<RegistrationCenter> registrationCenterList = machineUtil.getAllRegistrationCenters(langCode);
 		list.forEach(machineSearchDto -> {
-			String regId = machineSearchDto.getRegCenterId();
-			registrationCenterList.forEach(registrationCenter -> {
-				if (registrationCenter.getId().equals(regId)  && registrationCenter.getLangCode().toString().equalsIgnoreCase(languageCode)) {
-					machineSearchDto.setMapStatus(registrationCenter.getName());
-				}
-			});
+			Optional<RegistrationCenter> result = registrationCenterList.stream()
+					.filter(d -> d.getId().equals(machineSearchDto.getRegCenterId()))
+					.findFirst();
+
+			machineSearchDto.setMapStatus(result.isPresent() ?
+					String.format("%s (%s)", machineSearchDto.getRegCenterId(), result.get().getName()) :
+					"");
 		});
 	}
 
@@ -821,6 +818,10 @@ public class MachineServiceImpl implements MachineService {
 	}
 	
 	private void validateRegistrationCenter(String regCenterId) {
+		if(regCenterId == null || regCenterId.isEmpty())
+			throw new RequestException(DeviceErrorCode.INVALID_CENTER.getErrorCode(),
+					DeviceErrorCode.INVALID_CENTER.getErrorMessage());
+
 		List<RegistrationCenter> centers=regCenterRepository.findByIdAndIsDeletedFalseOrNull(regCenterId);
 		if(centers==null ||centers.isEmpty()) {
 			throw new RequestException(DeviceErrorCode.INVALID_CENTER.getErrorCode(),
@@ -958,14 +959,11 @@ public class MachineServiceImpl implements MachineService {
 		MachineHistory machineHistory = new MachineHistory();
 
 		try {
-			List<Machine> machines = machineRepository
-					.findMachineById(id);
-			if (machines != null) {
+			List<Machine> machines = machineRepository.findMachineById(id);
+			if (machines != null && !machines.isEmpty()) {
 				masterdataCreationUtil.updateMasterDataStatus(Machine.class, id, isActive, "id");
-				MapperUtils.map(machines.get(0), machineHistory);
-				MapperUtils.setBaseFieldValue(machines.get(0), machineHistory);
-				machineHistory.setEffectDateTime(LocalDateTime.now());
-				machineHistory.setUpdatedDateTime(LocalDateTime.now());
+				MetaDataUtils.setUpdateMetaData(machines.get(0), machineHistory, true);
+				machineHistory.setEffectDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 				machineHistory.setIsActive(isActive);
 				machineHistoryService.createMachineHistory(machineHistory);
 			} else {

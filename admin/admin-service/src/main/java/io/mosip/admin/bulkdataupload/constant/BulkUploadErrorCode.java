@@ -10,11 +10,13 @@ public enum BulkUploadErrorCode {
 	BULK_OPERATION_ERROR("ADMN-BLK-001",
 			"Any error occured during the bulk operation. If the category is masterdata, list operations are listed. If the category is packet, list of failed packet informations are listed"),
 	BULK_UPDATE_OPERATION_ERROR("ADM-BLK-001", "Data is not exist in db"),
-	INVALID_ARGUMENT("ADM-BLK-002", "plz enter valid input"),
+	INVALID_ARGUMENT("KER-MSD-999", "Invalid value : "),
 	DUPLICATE_RECORD("ADM-BLK-003", "Duplicate Record"),
 	INVALID_FILE_FORMAT("ADM-BLK-004", "Supported format are only csv file"),
 	INVALID_PCK_FILE_FORMAT("ADM-BLK-005", "Supported format is only zip file"),
 	EMPTY_FILE("ADM-BLK-006", "Empty file is not acceptable please provide valid file");
+
+
 	private final String errorCode;
 	private final String errorMessage;
 

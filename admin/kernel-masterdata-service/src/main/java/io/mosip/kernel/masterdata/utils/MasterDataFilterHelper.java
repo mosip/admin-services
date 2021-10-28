@@ -85,9 +85,9 @@ public class MasterDataFilterHelper {
 		String columnType = filterDto.getType();
 		List<Predicate> predicates = new ArrayList<>();
 		Predicate caseSensitivePredicate = null;
-		if (checkColNameAndType(columnName, columnType)) {
+		/*if (checkColNameAndType(columnName, columnType)) {
 			return (List<T>) valuesForMapStatusColumn();
-		}
+		}*/
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<String> criteriaQueryByString = criteriaBuilder.createQuery(String.class);
 		Root<E> root = criteriaQueryByString.from(entity);
@@ -139,9 +139,9 @@ public class MasterDataFilterHelper {
 		String columnType = filterDto.getType();
 		List<Predicate> predicates = new ArrayList<>();
 		Predicate caseSensitivePredicate = null;
-		if (checkColNameAndType(columnName, columnType)) {
+		/*if (checkColNameAndType(columnName, columnType)) {
 			return (List<T>) valuesForMapStatusColumn();
-		}
+		}*/
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<String> criteriaQueryByString = criteriaBuilder.createQuery(String.class);
 		Root<E> root = criteriaQueryByString.from(entity);
@@ -313,12 +313,12 @@ public class MasterDataFilterHelper {
 		return filterDataList;
 	}
 
-	private List<String> valuesForMapStatusColumn() {
+	/*private List<String> valuesForMapStatusColumn() {
 		List<String> filterDataList = new ArrayList<>();
 		filterDataList.add("Assigned");
 		filterDataList.add("Unassigned");
 		return filterDataList;
-	}
+	}*/
 
 	private <E> void buildOptionalFilter(CriteriaBuilder builder, Root<E> root,
 			final List<SearchFilter> optionalFilters, List<Predicate> predicates) {
