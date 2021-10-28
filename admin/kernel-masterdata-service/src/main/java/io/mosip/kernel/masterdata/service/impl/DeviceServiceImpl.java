@@ -954,10 +954,8 @@ public class DeviceServiceImpl implements DeviceService {
 		}
 		if (devices != null && !devices.isEmpty()) {
 			masterdataCreationUtil.updateMasterDataStatus(Device.class, id, isActive, "id");
-			MapperUtils.map(devices.get(0), deviceHistory);
-			MapperUtils.setBaseFieldValue(devices.get(0), deviceHistory);
+			MetaDataUtils.setUpdateMetaData(devices.get(0), deviceHistory, true);
 			deviceHistory.setEffectDateTime(LocalDateTime.now());
-			deviceHistory.setUpdatedDateTime(LocalDateTime.now());
 			deviceHistory.setIsActive(isActive);
 			deviceHistoryService.createDeviceHistory(deviceHistory);
 		} else {

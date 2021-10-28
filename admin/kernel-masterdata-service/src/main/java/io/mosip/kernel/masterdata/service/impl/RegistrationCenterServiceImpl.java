@@ -1577,10 +1577,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 		if (registrationCenters != null && !registrationCenters.isEmpty()) {
 			masterdataCreationUtil.updateMasterDataStatus(RegistrationCenter.class, id, isActive, "id");
-			MapperUtils.map(registrationCenters.get(0), registrationCenterHistory);
-			MapperUtils.setBaseFieldValue(registrationCenters.get(0), registrationCenterHistory);
+
+			MetaDataUtils.setUpdateMetaData(registrationCenters.get(0), registrationCenterHistory, true);
 			registrationCenterHistory.setEffectivetimes(LocalDateTime.now());
-			registrationCenterHistory.setUpdatedDateTime(LocalDateTime.now());
 			registrationCenterHistory.setIsActive(isActive);
 			registrationCenterHistoryService.createRegistrationCenterHistory(registrationCenterHistory);
 		} else {

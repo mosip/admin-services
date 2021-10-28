@@ -274,7 +274,6 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 
 	@Override
 	public StatusResponseDto updateZoneUserMapping(String userId, boolean isActive) {
-		// TODO Auto-generated method stub
 		StatusResponseDto response = new StatusResponseDto();
 
 		ZoneUser zoneUser = null;
@@ -299,7 +298,13 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 						ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorMessage());
 			}
 			masterdataCreationUtil.updateMasterDataStatus(ZoneUser.class, userId, isActive, "userId");
-			masterdataCreationUtil.updateMasterDataStatus(ZoneUserHistory.class, userId, isActive, "userId");
+
+			ZoneUserHistory zoneUserHistory = new ZoneUserHistory();
+			MetaDataUtils.setUpdateMetaData(zoneUser, zoneUserHistory, true);
+			zoneUserHistory.setEffDTimes(LocalDateTime.now());
+			zoneUserHistory.setIsActive(isActive);
+			zoneUserHistoryRepo.create(zoneUserHistory);
+
 		} else {
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, ZoneUser.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,

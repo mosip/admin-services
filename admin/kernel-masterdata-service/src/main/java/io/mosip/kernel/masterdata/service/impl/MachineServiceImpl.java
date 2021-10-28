@@ -962,10 +962,8 @@ public class MachineServiceImpl implements MachineService {
 			List<Machine> machines = machineRepository.findMachineById(id);
 			if (machines != null && !machines.isEmpty()) {
 				masterdataCreationUtil.updateMasterDataStatus(Machine.class, id, isActive, "id");
-				MapperUtils.map(machines.get(0), machineHistory);
-				MapperUtils.setBaseFieldValue(machines.get(0), machineHistory);
+				MetaDataUtils.setUpdateMetaData(machines.get(0), machineHistory, true);
 				machineHistory.setEffectDateTime(LocalDateTime.now());
-				machineHistory.setUpdatedDateTime(LocalDateTime.now());
 				machineHistory.setIsActive(isActive);
 				machineHistoryService.createMachineHistory(machineHistory);
 			} else {
