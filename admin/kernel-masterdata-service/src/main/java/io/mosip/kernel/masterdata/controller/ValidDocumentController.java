@@ -131,7 +131,7 @@ public class ValidDocumentController {
 	 */
 	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetvaliddocumentsall())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetvaliddocumentsall())")
 	@GetMapping("/validdocuments/all")
 	@ApiOperation(value = "Retrieve all the document categories and associated document types with additional metadata", notes = "Retrieve all the document categories and associated document types with the additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of document categories and associated document types"),

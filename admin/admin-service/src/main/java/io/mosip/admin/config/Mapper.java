@@ -80,15 +80,16 @@ import io.mosip.admin.bulkdataupload.entity.ZoneUserHistory;
 public class Mapper {
 
 
-	private Map<Class,String> repositoryMap=new HashMap<Class, String>();
+	private static Map<Class,String> repositoryMap=new HashMap<Class, String>();
 	
-    private  Map<String,Class> entityMap=new HashMap<String, Class>();
+    private static Map<String,Class> entityMap=new HashMap<String, Class>();
 
-    public void init() {
-    	loadEntity();
-    	loadRepo();
-    }
-    private void loadRepo() {
+	static {
+		loadEntity();
+		loadRepo();
+	}
+
+    private static void loadRepo() {
     	repositoryMap.put(Gender.class, "genderTypeRepository");
     	repositoryMap.put( ApplicantValidDocument.class, "applicantValidDocumentRepository");
 		repositoryMap.put(Application.class, "applicationRepository");
@@ -158,7 +159,9 @@ public class Mapper {
     public String getRepo(Class<?> clzz) {
     	return repositoryMap.get(clzz);
     }
-	private void loadEntity() {
+
+
+	private static void loadEntity() {
 		
 		entityMap.put("applicant_valid_document", ApplicantValidDocument.class);
 		entityMap.put("appl_form_type", Application.class);
