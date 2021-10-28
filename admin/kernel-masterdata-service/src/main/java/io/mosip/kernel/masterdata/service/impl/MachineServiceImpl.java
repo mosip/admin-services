@@ -963,7 +963,7 @@ public class MachineServiceImpl implements MachineService {
 			if (machines != null && !machines.isEmpty()) {
 				masterdataCreationUtil.updateMasterDataStatus(Machine.class, id, isActive, "id");
 				MetaDataUtils.setUpdateMetaData(machines.get(0), machineHistory, true);
-				machineHistory.setEffectDateTime(LocalDateTime.now());
+				machineHistory.setEffectDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 				machineHistory.setIsActive(isActive);
 				machineHistoryService.createMachineHistory(machineHistory);
 			} else {
