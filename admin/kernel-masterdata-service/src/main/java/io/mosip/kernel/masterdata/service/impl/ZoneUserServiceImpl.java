@@ -301,7 +301,7 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 
 			ZoneUserHistory zoneUserHistory = new ZoneUserHistory();
 			MetaDataUtils.setUpdateMetaData(zoneUser, zoneUserHistory, true);
-			zoneUserHistory.setEffDTimes(LocalDateTime.now());
+			zoneUserHistory.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
 			zoneUserHistory.setIsActive(isActive);
 			zoneUserHistoryRepo.create(zoneUserHistory);
 
