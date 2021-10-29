@@ -202,7 +202,7 @@ public class BlocklistedWordsController {
 	 */
 	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetblocklistedwordsall())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetblocklistedwordsall())")
 	@GetMapping("/all")
 	@ApiOperation(value = "Retrieve all the blocklisted words with additional metadata", notes = "Retrieve all the blocklisted words with metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of blocklistedwords"),

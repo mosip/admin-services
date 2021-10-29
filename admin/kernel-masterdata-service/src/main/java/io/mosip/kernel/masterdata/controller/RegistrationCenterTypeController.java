@@ -145,7 +145,7 @@ public class RegistrationCenterTypeController {
 	 */
 	@GetMapping("/registrationcentertypes/all")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetregistrationcentertypesall())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetregistrationcentertypesall())")
 	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','INDIVIDUAL','PRE_REGISTRATION','REGISTRATION_PROCESSOR','REGISTRATION_CLIENT')")
 	@ApiOperation(value = "Retrieve all the registration center types with additional metadata", notes = "Retrieve all the registration center types with the additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of registration center types"),
@@ -244,7 +244,7 @@ public class RegistrationCenterTypeController {
 	 * @return List<String> list of missing ids/ codes
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetregistrationcentertypesmissingidslangcode())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetregistrationcentertypesmissingidslangcode())")
 	@GetMapping("/registrationcentertypes/missingids/{langcode}")
 	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<List<MissingDataDto>> getMissingRegistrationCentersTypesDetails(
