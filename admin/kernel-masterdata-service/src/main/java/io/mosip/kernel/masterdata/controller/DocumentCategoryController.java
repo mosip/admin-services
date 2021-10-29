@@ -110,7 +110,7 @@ public class DocumentCategoryController {
 	 */
 	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','INDIVIDUAL','PRE_REGISTRATION','REGISTRATION_SUPERVISOR','RESIDENT','REGISTRATION_PROCESSOR','REGISTRATION_PROCESSOR','REGISTRATION_OFFICER','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumentcategoriescode())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumentcategoriescode())")
 	@GetMapping("/documentcategories/{code}/{langcode}")
 	public ResponseWrapper<DocumentCategoryResponseDto> getDocumentCategoryByCodeAndLangCode(
 			@PathVariable("code") String code, @PathVariable("langcode") String langCode) {
@@ -204,7 +204,7 @@ public class DocumentCategoryController {
 	 */
 	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumentcategoriesall())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumentcategoriesall())")
 	@GetMapping("/documentcategories/all")
 	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Retrieve all the document category with metadata", notes = "Retrieve all the document categories")
@@ -302,7 +302,7 @@ public class DocumentCategoryController {
 	 */
 	@ResponseFilter
 	@GetMapping("/documentcategories/missingids/{langcode}")
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumentcategoriesmissingidslangcode())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumentcategoriesmissingidslangcode())")
 	public ResponseWrapper<List<MissingDataDto>> getMissingDocumentCategoryDetails(
 			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
 		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();

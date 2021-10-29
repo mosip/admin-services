@@ -56,7 +56,7 @@ public class ZoneController {
 	 * @return {@link List} of {@link ZoneExtnDto}
 	 */
 	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetzoneshierarchylangCode())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetzoneshierarchylangCode())")
 	@GetMapping("/hierarchy/{langCode}")
 	public ResponseWrapper<List<ZoneExtnDto>> getZoneHierarchy(
 			@PathVariable("langCode") @ValidLangCode(message = "Language Code is Invalid") String langCode) {
