@@ -138,7 +138,7 @@ public class TemplateFileFormatController {
 	 */
 	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettemplatefileformatscodelangcode())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGettemplatefileformatscodelangcode())")
 	@GetMapping(value = { "/code/{code}", "/{code}/{langcode}" })
 	@ApiOperation(value = "Retrieve all TemplateFileFormat Details, /langCode pathparam will be deprecated soon", notes = "Retrieve all TemplateFileFormat Detail for given code")
 	@ApiResponses({
@@ -168,7 +168,7 @@ public class TemplateFileFormatController {
 	@Deprecated
 	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettemplatefileformatslangcode())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGettemplatefileformatslangcode())")
 	@GetMapping(value = { "", "/{langcode}" })
 	@ApiOperation(value = "Retrieve all TemplateFileFormat Details, /langCode pathparam will be deprecated soon", notes = "Retrieve all TemplateFileFormat Detail")
 	@ApiResponses({

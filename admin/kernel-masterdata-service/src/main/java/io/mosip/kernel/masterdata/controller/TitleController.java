@@ -163,7 +163,7 @@ public class TitleController {
 	 */
 	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettitleall())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGettitleall())")
 	@GetMapping("/title/all")
 	@ApiOperation(value = "Retrieve all the title with additional metadata", notes = "Retrieve all the title with the additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of title"),
