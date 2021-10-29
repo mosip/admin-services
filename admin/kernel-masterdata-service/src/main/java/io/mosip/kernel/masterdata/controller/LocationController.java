@@ -334,7 +334,7 @@ public class LocationController {
 	 * @return {@link LocationLevelResponseDto}
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlocationslevellangcode())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetlocationslevellangcode())")
 	@GetMapping("level/{langcode}")
 	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	public ResponseWrapper<LocationLevelResponseDto> getLocationCodeByLangCode(
