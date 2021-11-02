@@ -83,7 +83,7 @@ public class MachineController {
 	 */
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetmachinesidlangcode())")
-	@GetMapping(value = { "/machines/id/{id}", "/machines/{id}/{langcode}" })
+	@GetMapping(value = { "/machines/{id}", "/machines/{id}/{langcode}" })
 	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_CLIENT','REGISTRATION_PROCESSOR','RESIDENT')")
 	@ApiOperation(value = "Retrieve all Machine Details, /langCode pathparam will be deprecated soon", notes = "Retrieve all Machine Detail for given ID")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given ID"),
@@ -106,7 +106,7 @@ public class MachineController {
 	 * @return MachineResponseDto machine detail based on given Language code
 	 *         {@link MachineResponseDto}
 	 */
-	@Deprecated
+/*	@Deprecated
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetmachineslangcode())")
 	@GetMapping(value = { "/machines/{langcode}" })
@@ -120,7 +120,7 @@ public class MachineController {
 		ResponseWrapper<MachineResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineService.getMachine(langCode));
 		return responseWrapper;
-	}
+	}*/
 
 	/**
 	 * Function to fetch a all machines details
