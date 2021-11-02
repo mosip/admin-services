@@ -209,7 +209,7 @@ public class TemplateController {
 	 * @return the response i.e. pages containing the templates.
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettemplatesall())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGettemplatesall())")
 	@GetMapping("/all")
 	@ApiOperation(value = "Retrieve all the templates with additional metadata", notes = "Retrieve all the templates with the additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of templates"),
@@ -299,7 +299,7 @@ public class TemplateController {
 	 * @return List<String> list of missing ids/ codes
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGettemplatesmissingidslangcode())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGettemplatesmissingidslangcode())")
 	@GetMapping("/missingids/{langcode}")
 	public ResponseWrapper<List<MissingDataDto>> getMissingTemplateDetails(
 			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {

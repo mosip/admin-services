@@ -3841,7 +3841,7 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(get("/machines/{langcode}", "ENG")).andExpect(status().isOk());
 	}
 
-	@Test
+/*	@Test
 	@WithUserDetails("global-admin")
 	public void getMachineLangcodeFetchExceptionTest() throws Exception {
 		when(machineRepository.findAllByIsDeletedFalseOrIsDeletedIsNull())
@@ -3855,7 +3855,7 @@ public class MasterdataIntegrationTest {
 
 		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-MSD-029"));
 	}
-
+*/
 	// ---------------------------------------------------------------------------------------
 	@Test
 	@WithUserDetails("global-admin")

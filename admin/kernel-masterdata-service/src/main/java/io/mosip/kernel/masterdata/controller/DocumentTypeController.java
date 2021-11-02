@@ -179,7 +179,7 @@ public class DocumentTypeController {
 	 */
 	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumenttypesall())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumenttypesall())")
 	@GetMapping("/documenttypes/all")
 	@ApiOperation(value = "Retrieve all the document types with additional metadata", notes = "Retrieve all the document types with additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of document types"),
@@ -290,7 +290,7 @@ public class DocumentTypeController {
 	 */
 	@ResponseFilter
 	@GetMapping("/documenttypes/missingids/{langcode}")
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumenttypesmissingidslangcode())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumenttypesmissingidslangcode())")
 	public ResponseWrapper<List<MissingDataDto>> getMissingDocumentTypeDetails(
 			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
 
