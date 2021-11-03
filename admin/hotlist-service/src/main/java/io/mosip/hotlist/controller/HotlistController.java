@@ -102,7 +102,7 @@ public class HotlistController {
 	 * @return the response wrapper
 	 * @throws MethodArgumentNotValidException
 	 */
-	@GetMapping(path = "/{idType}/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/status/{idType}/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseWrapper<HotlistRequestResponseDTO> retrieveHotlist(@PathVariable String id, @PathVariable String idType)
 			throws MethodArgumentNotValidException {
 		ResponseWrapper<HotlistRequestResponseDTO> response = new ResponseWrapper<>();

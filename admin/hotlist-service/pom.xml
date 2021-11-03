@@ -14,7 +14,7 @@
 		<java.version>11</java.version>
 		<lombok.version>1.18.8</lombok.version>
 		<postgresql.version>42.2.2</postgresql.version>
-		<swagger.version>2.9.2</swagger.version>
+		<springdoc.version>1.5.10</springdoc.version>
 		<powermock.version>2.0.0</powermock.version>
 		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
 		<maven.jacoco.version>0.8.5</maven.jacoco.version>
@@ -114,6 +114,23 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 			<version>${spring.boot.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>${springdoc.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-webmvc</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<version>${spring.boot.version}</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<build>
