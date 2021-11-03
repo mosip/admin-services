@@ -143,7 +143,7 @@ public class MachineServiceImpl implements MachineService {
 	 * String, java.lang.String)
 	 */
 	@Override
-	public MachineResponseDto getMachine(String id, String langCode) {
+	public MachineResponseDto getMachineById(String id) {
 		List<Machine> machineList = null;
 		List<MachineDto> machineDtoList = null;
 		MachineResponseDto machineResponseIdDto = new MachineResponseDto();

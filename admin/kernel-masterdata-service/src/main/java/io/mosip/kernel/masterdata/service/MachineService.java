@@ -35,7 +35,6 @@ public interface MachineService {
 	 * language code
 	 * 
 	 * @param id       Machine Id given by user
-	 * @param langCode Language code given by user
 	 * @return MachineResponseDto Machine Detail for given machine id and language
 	 *         code
 	 * @throws MasterDataServiceException if any error occurs while retrieving
@@ -43,7 +42,7 @@ public interface MachineService {
 	 * @throws DataNotFoundException      if no Machine found
 	 *
 	 */
-	public MachineResponseDto getMachine(String id, String langCode);
+	public MachineResponseDto getMachineById(String id);
 
 	/**
 	 * This abstract method to fetch all machines details

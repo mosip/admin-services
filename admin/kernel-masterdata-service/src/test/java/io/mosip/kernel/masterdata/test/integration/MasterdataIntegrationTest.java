@@ -3798,7 +3798,7 @@ public class MasterdataIntegrationTest {
 		machines.add(machine);
 		when(machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(machines);
-		mockMvc.perform(get("/machines/{id}/{langcode}", "1000", "ENG")).andExpect(status().isOk());
+		mockMvc.perform(get("/machines/{id}", "1000")).andExpect(status().isOk());
 	}
 
 	@Test
@@ -3806,7 +3806,7 @@ public class MasterdataIntegrationTest {
 	public void getMachineIdLangcodeNullResponseTest() throws Exception {
 		when(machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(null);
-		mockMvc.perform(get("/machines/{id}/{langcode}", "1000", "eng")).andExpect(status().isOk());
+		mockMvc.perform(get("/machines/{id}", "1000")).andExpect(status().isOk());
 	}
 
 	@Test
@@ -3814,7 +3814,7 @@ public class MasterdataIntegrationTest {
 	public void getMachineIdLangcodeFetchExceptionTest() throws Exception {
 		when(machineRepository.findMachineByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
-		MvcResult result = mockMvc.perform(get("/machines/{id}/{langcode}", "1000", "eng")
+		MvcResult result = mockMvc.perform(get("/machines/{id}", "1000")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 			
