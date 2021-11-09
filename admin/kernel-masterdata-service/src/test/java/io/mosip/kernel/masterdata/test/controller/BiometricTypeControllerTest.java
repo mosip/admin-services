@@ -1,10 +1,6 @@
 package io.mosip.kernel.masterdata.test.controller;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doNothing;
-
-import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -21,7 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

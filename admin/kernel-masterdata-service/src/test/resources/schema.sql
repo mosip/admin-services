@@ -395,3 +395,80 @@ CREATE MEMORY TABLE IF NOT EXISTS MASTER.ZONE(
     DEL_DTIMES TIMESTAMP
 
 );
+
+CREATE MEMORY TABLE  IF NOT EXISTS MASTER.daysofweek_list(
+    code character varying(3) NOT NULL,
+    name character varying(36)  NOT NULL,
+    day_seq smallint NOT NULL,
+    is_global_working boolean NOT NULL,
+    lang_code character varying(3) NOT NULL,
+    is_active boolean NOT NULL,
+    cr_by character varying(256) NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone
+    
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.reg_working_nonworking(
+    regcntr_id character varying(10)  NOT NULL,
+    day_code character varying(3)  NOT NULL,
+    lang_code character varying(3) ,
+    is_working boolean NOT NULL,
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone
+	
+);
+
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.user_detail_h(
+    id character varying(256) NOT NULL,
+    name character varying(64) NOT NULL,
+    status_code character varying(36) ,
+    regcntr_id character varying(10) ,
+    lang_code character varying(3) ,
+    last_login_dtimes timestamp without time zone,
+    last_login_method character varying(64) ,
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone,
+    eff_dtimes timestamp without time zone NOT NULL
+    
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.machine_master_h(
+    id character varying(10) NOT NULL,
+    name character varying(64) NOT NULL,
+    mac_address character varying(64) ,
+    serial_num character varying(64),
+    ip_address character varying(17),
+    validity_end_dtimes timestamp without time zone,
+    mspec_id character varying(36),
+    public_key character varying(1024),
+    key_index character varying(128),
+    sign_public_key character varying(1024),
+    sign_key_index character varying(128),
+    zone_code character varying(36) NOT NULL,
+    regcntr_id character varying(10),
+    lang_code character varying(3),
+    is_active boolean NOT NULL,
+    cr_by character varying(256) NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256),
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone,
+    eff_dtimes timestamp without time zone NOT NULL
+    
+)
