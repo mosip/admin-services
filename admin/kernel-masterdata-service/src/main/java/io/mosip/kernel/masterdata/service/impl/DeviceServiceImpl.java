@@ -203,12 +203,10 @@ public class DeviceServiceImpl implements DeviceService {
 				validateRegistrationCenter(deviceDto.getRegCenterId());
 				validateRegistrationCenterZone(deviceDto.getZoneCode(), deviceDto.getRegCenterId());
 			}
-			if (deviceDto.getId() == null || deviceDto.getId().isBlank()) {
-				deviceDto.setId(generateId());
-			}
 			if (deviceDto != null) {
 				entity = MetaDataUtils.setCreateMetaData(deviceDto, Device.class);
-				entityHistory = MetaDataUtils.setCreateMetaData(deviceDto, DeviceHistory.class);
+				entity.setId(generateId());
+				entityHistory = MetaDataUtils.setCreateMetaData(entity, DeviceHistory.class);
 				entityHistory.setEffectDateTime(entity.getCreatedDateTime());
 				entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
 

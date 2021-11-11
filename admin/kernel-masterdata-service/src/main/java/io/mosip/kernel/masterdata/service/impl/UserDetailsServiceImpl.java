@@ -461,17 +461,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	/**
 	 * 
 	 */
-
+	@Transactional
 	@Override
 	public StatusResponseDto updateUserStatus(String id, boolean isActive) {
 		StatusResponseDto response = new StatusResponseDto();
 		try {
-			Optional<UserDetails> result = userDetailsRepository.findById(id);
-			if (result != null && !result.isEmpty()) {
+			UserDetails userDetails = userDetailsRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(id);
+			if (userDetails != null) {
 				masterdataCreationUtil.updateMasterDataStatus(UserDetails.class, id, isActive, "id");
 
 				UserDetailsHistory udh = new UserDetailsHistory();
-				MetaDataUtils.setUpdateMetaData(result.get(), udh, true);
+				MetaDataUtils.setUpdateMetaData(userDetails, udh, true);
 				udh.setIsActive(isActive);
 				udh.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
 				userDetailsHistoryService.createUserDetailsHistory(udh);

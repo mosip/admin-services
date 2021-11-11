@@ -76,7 +76,7 @@ public class DeviceControllerTest {
 		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
 		DeviceDto d1 = new DeviceDto();
-		d1.setId("1004");
+		//d1.setId("1004");
 		d1.setDeviceSpecId("327");
 		d1.setIsActive(true);
 		d1.setLangCode("eng");
