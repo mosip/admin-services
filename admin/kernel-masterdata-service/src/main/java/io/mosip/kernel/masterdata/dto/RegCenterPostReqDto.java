@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.mosip.kernel.masterdata.validator.StringFormatter;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import lombok.Data;
@@ -24,6 +25,7 @@ import lombok.Data;
  */
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RegCenterPostReqDto {
 
 	@NotNull
@@ -48,8 +50,6 @@ public class RegCenterPostReqDto {
 
 	@NotNull
 	private Boolean isActive;
-
-	private String id;
 
 	@NotNull
 	@StringFormatter(min = 1, max = 36)

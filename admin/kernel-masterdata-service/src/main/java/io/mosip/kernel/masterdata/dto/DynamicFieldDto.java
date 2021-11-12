@@ -2,9 +2,7 @@ package io.mosip.kernel.masterdata.dto;
 
 import java.util.List;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -45,7 +43,8 @@ public class DynamicFieldDto {
 	private String dataType;
 	
 	@NotBlank
+	@Size(min = 1, max = 25)
 	private String description;
-	
+
 	private JsonNode fieldVal;
 }

@@ -136,10 +136,10 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 
 	@Cacheable(value = "dynamic-field", key = "'dynamicfield'")
 	@Override
-	public List<String> getDistinctDynamicFields() {
+	public List<String> getDistinctDynamicFields(String langCode) {
 		List<String> distinctDynamicField = new ArrayList<String>();
 		try {
-			distinctDynamicField = dynamicFieldRepository.getDistinctDynamicFields();
+			distinctDynamicField = dynamicFieldRepository.getDistinctDynamicFields(langCode);
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorCode(),
@@ -160,13 +160,15 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	public DynamicFieldResponseDto createDynamicField(DynamicFieldDto dto) {
 		DynamicField entity = MetaDataUtils.setCreateMetaData(dto, DynamicField.class);
 		entity.setId(UUID.randomUUID().toString());
-
 		if(dto.getFieldVal() != null && !dto.getFieldVal().isArray()) {
 			if(dto.getFieldVal().has("code") && dto.getFieldVal().has("value"))
 				entity.setValueJson(dto.getFieldVal().toString());
 			else
 				throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_VALUE_JSON_INVALID.getErrorCode(),
 						SchemaErrorCode.DYNAMIC_FIELD_VALUE_JSON_INVALID.getErrorMessage());
+		}else{
+			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_VALUE_JSON_INVALID.getErrorCode(),
+					SchemaErrorCode.DYNAMIC_FIELD_VALUE_JSON_INVALID.getErrorMessage());
 		}
 
 		try {

@@ -69,6 +69,6 @@ public interface DynamicFieldService {
 
 	public PageResponseDto<DynamicFieldSearchResponseDto> searchDynamicFields(SearchDto request);
 
-	public List<String> getDistinctDynamicFields();
+	public List<String> getDistinctDynamicFields(String langCode);
 	
 }

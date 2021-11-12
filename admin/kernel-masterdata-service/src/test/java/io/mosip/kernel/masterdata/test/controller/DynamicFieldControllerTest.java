@@ -205,7 +205,7 @@ public class DynamicFieldControllerTest {
 	public void t009getDistinctDynamicFieldsTest() throws Exception {
 
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/distinct")).andReturn(), null);
+				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/distinct/eng")).andReturn(), null);
 	}
 
 	@Test

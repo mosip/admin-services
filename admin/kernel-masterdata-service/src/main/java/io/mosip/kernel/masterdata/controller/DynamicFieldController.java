@@ -82,11 +82,11 @@ public class DynamicFieldController {
 
 	@ResponseFilter
 	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdistinct())")
-	@GetMapping("/distinct")
+	@GetMapping("/distinct/{langCode}")
 	@ApiOperation(value = "Service to fetch distinct dynamic fields")
-	public ResponseWrapper<List<String>> getDistinctDynamicFields(){
+	public ResponseWrapper<List<String>> getDistinctDynamicFields(@PathVariable("langCode") String langCode){
 		ResponseWrapper<List<String>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(dynamicFieldService.getDistinctDynamicFields());
+		responseWrapper.setResponse(dynamicFieldService.getDistinctDynamicFields(langCode));
 		return responseWrapper;
 	}
 	
