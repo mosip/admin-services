@@ -3,14 +3,14 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import io.mosip.kernel.masterdata.dto.DynamicFieldDefDto;
+import io.mosip.kernel.masterdata.dto.DynamicFieldNameDto;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,23 +41,22 @@ import io.mosip.kernel.masterdata.entity.DynamicField;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
-import io.mosip.kernel.masterdata.service.CacheManagementService;
 import io.mosip.kernel.masterdata.service.DynamicFieldService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
-import io.mosip.kernel.masterdata.utils.CacheName;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
+import org.springframework.util.Assert;
 
 @Service
 public class DynamicFieldServiceImpl implements DynamicFieldService {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DynamicFieldServiceImpl.class);
 	
-	private ObjectMapper objectMapper = new ObjectMapper();
+	private final ObjectMapper objectMapper = new ObjectMapper();
 	
 	@Autowired
 	private DynamicFieldRepository dynamicFieldRepository;
@@ -136,16 +135,48 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 
 	@Cacheable(value = "dynamic-field", key = "'dynamicfield'")
 	@Override
-	public List<String> getDistinctDynamicFields(String langCode) {
+	public List<String> getDistinctDynamicFields() {
 		List<String> distinctDynamicField = new ArrayList<String>();
 		try {
-			distinctDynamicField = dynamicFieldRepository.getDistinctDynamicFields(langCode);
+			distinctDynamicField = dynamicFieldRepository.getDistinctDynamicFields();
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
 		return distinctDynamicField;
+	}
+
+	@Cacheable(value = "dynamic-field", key = "'dynamicfield'.concat(#langCode)")
+	@Override
+	public List<DynamicFieldDefDto> getDistinctDynamicFields(String langCode) {
+		List<DynamicFieldDefDto> dynamicFields = new ArrayList<DynamicFieldDefDto>();
+		try {
+			List<DynamicFieldNameDto> fields = dynamicFieldRepository.getDistinctDynamicFieldsWithDescription();
+
+			Map<String, List<DynamicFieldNameDto>> groupedData = fields
+					.stream()
+					.collect(Collectors.groupingBy(DynamicFieldNameDto::getName));
+
+			groupedData.keySet().forEach(k -> {
+				DynamicFieldDefDto dynamicFieldDefDto = new DynamicFieldDefDto();
+				dynamicFieldDefDto.setName(k);
+				//dynamicFieldDefDto.setIsActive(false);
+				dynamicFieldDefDto.setDescriptionData(new HashMap<>());
+
+				List<DynamicFieldNameDto> list = groupedData.getOrDefault(k, Collections.EMPTY_LIST);
+				list.stream().forEach( d -> {
+					dynamicFieldDefDto.getDescriptionData().put(d.getLangCode(), d.getDescription());
+					if(langCode.equals(d.getLangCode()))
+						dynamicFieldDefDto.setIsActive(d.getIsActive());
+				});
+			});
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorCode(),
+					ExceptionUtils.parseException(e));
+		}
+		return dynamicFields;
 	}
 
 	/*
@@ -160,17 +191,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	public DynamicFieldResponseDto createDynamicField(DynamicFieldDto dto) {
 		DynamicField entity = MetaDataUtils.setCreateMetaData(dto, DynamicField.class);
 		entity.setId(UUID.randomUUID().toString());
-		if(dto.getFieldVal() != null && !dto.getFieldVal().isArray()) {
-			if(dto.getFieldVal().has("code") && dto.getFieldVal().has("value"))
-				entity.setValueJson(dto.getFieldVal().toString());
-			else
-				throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_VALUE_JSON_INVALID.getErrorCode(),
-						SchemaErrorCode.DYNAMIC_FIELD_VALUE_JSON_INVALID.getErrorMessage());
-		}else{
-			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_VALUE_JSON_INVALID.getErrorCode(),
-					SchemaErrorCode.DYNAMIC_FIELD_VALUE_JSON_INVALID.getErrorMessage());
-		}
-
+		entity.setValueJson(getValidatedFieldValue(dto.getFieldVal()));
 		try {
 			entity = dynamicFieldRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
@@ -193,15 +214,11 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		DynamicField entity = null;
 		try {
 
-			if(dto.getFieldVal() == null || dto.getFieldVal().isArray() || !dto.getFieldVal().has("code") ||
-					!dto.getFieldVal().has("value"))
-				throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_VALUE_JSON_INVALID.getErrorCode(),
-							SchemaErrorCode.DYNAMIC_FIELD_VALUE_JSON_INVALID.getErrorMessage());
-
+			String valueJson = getValidatedFieldValue(dto.getFieldVal());
 
 			int updatedRows = dynamicFieldRepository.updateDynamicField(id, dto.getDescription(), dto.getLangCode(), 
 					dto.getDataType(), MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser(),
-					dto.getFieldVal() != null ? dto.getFieldVal().toString() : "{}");
+					valueJson);
 			
 			if (updatedRows < 1) {
 				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -353,7 +370,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		dto.setUpdatedBy(entity.getUpdatedBy());
 		dto.setUpdatedDateTime(entity.getUpdatedDateTime());
 		try {
-			dto.setFieldVal(objectMapper.readTree(entity.getValueJson()));
+			dto.setFieldVal(entity.getValueJson() != null ? objectMapper.readTree(entity.getValueJson()) : null);
 		} catch (IOException e) {
 			LOGGER.error("Failed to parse field value json object : ", e);
 		}
@@ -387,5 +404,18 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		dto.setUpdatedOn(dynamicFields.get(0).getUpdatedDateTime());
 		dto.setFieldVal(jsonArray);
 		return dto;
+	}
+
+	private String getValidatedFieldValue(JsonNode fieldValue) {
+		try {
+			JSONObject valueJson = new JSONObject(fieldValue.toString());
+			Assert.hasText(valueJson.getString("code"), "'code' must not be empty");
+			Assert.hasText(valueJson.getString("value"), "'value' must not be empty");
+			return valueJson.toString();
+		} catch (Throwable t) {
+			LOGGER.error("Failed to parse field value json", t);
+			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_VALUE_JSON_INVALID.getErrorCode(),
+					SchemaErrorCode.DYNAMIC_FIELD_VALUE_JSON_INVALID.getErrorMessage());
+		}
 	}
 }

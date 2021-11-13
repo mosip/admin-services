@@ -43,7 +43,6 @@ public class DynamicFieldDto {
 	private String dataType;
 	
 	@NotBlank
-	@Size(min = 1, max = 25)
 	private String description;
 
 	private JsonNode fieldVal;
