@@ -9309,7 +9309,7 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(put("/usercentermapping")
 		.contentType(MediaType.APPLICATION_JSON)
 		.content(mapper.writeValueAsString(userDetailsDtoRequest)))
-		.andExpect(status().isInternalServerError());
+		.andExpect(status().isOk());
 	}
 	@Test
 	@WithUserDetails("global-admin")

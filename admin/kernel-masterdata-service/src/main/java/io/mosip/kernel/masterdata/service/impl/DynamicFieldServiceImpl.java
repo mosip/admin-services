@@ -372,7 +372,8 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		try {
 			dto.setFieldVal(entity.getValueJson() != null ? objectMapper.readTree(entity.getValueJson()) : null);
 		} catch (IOException e) {
-			LOGGER.error("Failed to parse field value json object : ", e);
+			LOGGER.error("Failed to parse field {} value json object : {}", entity.getName(),
+					entity.getValueJson());
 		}
 		return dto;
 	}

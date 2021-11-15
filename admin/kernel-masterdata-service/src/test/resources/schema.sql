@@ -430,7 +430,7 @@ CREATE MEMORY TABLE IF NOT EXISTS MASTER.reg_working_nonworking(
 
 CREATE MEMORY TABLE IF NOT EXISTS MASTER.user_detail_h(
     id character varying(256) NOT NULL,
-    name character varying(64) NOT NULL,
+    name character varying(64),
     status_code character varying(36) ,
     regcntr_id character varying(10) ,
     lang_code character varying(3) ,
@@ -471,4 +471,32 @@ CREATE MEMORY TABLE IF NOT EXISTS MASTER.machine_master_h(
     del_dtimes timestamp without time zone,
     eff_dtimes timestamp without time zone NOT NULL
     
-)
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.zone_user(
+	zone_code 	character varying(36),
+	usr_id 		character varying(256) NOT NULL,
+	lang_code 	character varying(3),
+	is_active 	boolean NOT NULL,
+	cr_by 		character varying(256) NOT NULL,
+	cr_dtimes 	timestamp NOT NULL,
+	upd_by 		character varying(256),
+	upd_dtimes 	timestamp,
+	is_deleted 	boolean DEFAULT FALSE,
+	del_dtimes 	timestamp,
+	CONSTRAINT pk_zoneuser PRIMARY KEY (usr_id)
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.zone_user_h(
+	zone_code 	character varying(36),
+	usr_id 		character varying(256) NOT NULL,
+	lang_code 	character varying(3),
+	is_active 	boolean NOT NULL,
+	cr_by 		character varying(256) NOT NULL,
+	cr_dtimes 	timestamp NOT NULL,
+	upd_by 		character varying(256),
+	upd_dtimes 	timestamp,
+	is_deleted 	boolean DEFAULT FALSE,
+	del_dtimes 	timestamp,
+    eff_dtimes timestamp without time zone NOT NULL
+);

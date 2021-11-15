@@ -131,9 +131,10 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 			ZoneUserHistory zuh = new ZoneUserHistory();
 			MapperUtils.map(zu, zuh);
 			MapperUtils.setBaseFieldValue(zu, zuh);
-			zuh.setEffDTimes(zu.getCreatedDateTime());
+			zuh.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
 			zoneUserHistoryRepo.create(zuh);
 		} catch (IllegalArgumentException | SecurityException e) {
+			logger.error(ZoneUserErrorCode.USER_MAPPING_EXCEPTION.getErrorMessage(), e);
 			auditUtil.auditRequest(String.format(MasterDataConstant.CREATE_ERROR_AUDIT, ZoneUser.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
@@ -155,7 +156,7 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		ZoneUser zu;
 		ZoneUserExtnDto dto = new ZoneUserExtnDto();
 		try {
-			validateZone(zoneUserDto.getZoneCode(),zoneUserDto.getLangCode());
+			validateZone(zoneUserDto.getZoneCode(), zoneUserDto.getLangCode());
 			zu = zoneUserRepo.findByUserId(zoneUserDto.getUserId());
 			if (zu == null) {
 				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, ZoneUser.class.getSimpleName()),
@@ -166,8 +167,8 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 				throw new MasterDataServiceException(ZoneUserErrorCode.USER_MAPPING_NOT_PRSENT_IN_DB.getErrorCode(),
 						ZoneUserErrorCode.USER_MAPPING_NOT_PRSENT_IN_DB.getErrorMessage());
 			} else {
-				UserDetails ud=userDetailsRepo.findByIdAndIsDeletedFalseorIsDeletedIsNullAndIsActive(zoneUserDto.getUserId());
-				if(ud!=null) {
+				UserDetails ud = userDetailsRepo.findByIdAndIsDeletedFalseorIsDeletedIsNullAndIsActive(zoneUserDto.getUserId());
+				if (ud != null) {
 					throw new MasterDataServiceException(ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorCode(),
 							ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorMessage());
 				}
@@ -178,9 +179,10 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 			ZoneUserHistory zuh = new ZoneUserHistory();
 			MapperUtils.map(zu, zuh);
 			MapperUtils.setBaseFieldValue(zu, zuh);
-			zuh.setEffDTimes(zu.getUpdatedDateTime());
+			zuh.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
 			zoneUserHistoryRepo.create(zuh);
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | SecurityException e) {
+			logger.error(ZoneUserErrorCode.USER_MAPPING_EXCEPTION.getErrorMessage(), e);
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, ZoneUser.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
@@ -205,23 +207,32 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		try {
 			
 			List<ZoneUser> zu = zoneUserRepo.findByUserIdAndZoneCode(userId, zoneCode);
-			if(!zu.isEmpty()) {
-				UserDetails ud=userDetailsRepo.findByIdAndIsDeletedFalseorIsDeletedIsNullAndIsActive(userId);
-				if(ud!=null) {
-					throw new MasterDataServiceException(ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorCode(),
-							ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorMessage());
-				}
-				zoneUserRepo.deleteZoneUser(userId,LocalDateTime.now(),MetaDataUtils.getContextUser());
-				ZoneUserHistory udh = new ZoneUserHistory();
-				MapperUtils.map(zu.get(0), udh);
-				MapperUtils.setBaseFieldValue(zu.get(0), udh);
-				udh.setIsActive(false);
-				udh.setIsDeleted(true);
-				udh.setUpdatedBy(MetaDataUtils.getContextUser());
-				udh.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-				udh.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
-				zoneUserHistoryRepo.create(udh);
-		}
+			if (zu == null || zu.isEmpty()) {
+				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, ZoneUser.class.getSimpleName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,
+								ZoneUserErrorCode.USER_MAPPING_NOT_PRSENT_IN_DB.getErrorCode(),
+								ZoneUserErrorCode.USER_MAPPING_NOT_PRSENT_IN_DB.getErrorMessage()));
+				throw new MasterDataServiceException(ZoneUserErrorCode.USER_MAPPING_NOT_PRSENT_IN_DB.getErrorCode(),
+						ZoneUserErrorCode.USER_MAPPING_NOT_PRSENT_IN_DB.getErrorMessage());
+			}
+
+			UserDetails ud=userDetailsRepo.findByIdAndIsDeletedFalseorIsDeletedIsNullAndIsActive(userId);
+			if(ud!=null) {
+				throw new MasterDataServiceException(ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorCode(),
+						ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorMessage());
+			}
+			zoneUserRepo.deleteZoneUser(userId,LocalDateTime.now(),MetaDataUtils.getContextUser());
+			ZoneUserHistory udh = new ZoneUserHistory();
+			MapperUtils.map(zu.get(0), udh);
+			MapperUtils.setBaseFieldValue(zu.get(0), udh);
+			udh.setIsActive(false);
+			udh.setIsDeleted(true);
+			udh.setUpdatedBy(MetaDataUtils.getContextUser());
+			udh.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+			udh.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
+			zoneUserHistoryRepo.create(udh);
+
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | SecurityException e) {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_DECOMMISSION, ZoneUser.class.getSimpleName()),
