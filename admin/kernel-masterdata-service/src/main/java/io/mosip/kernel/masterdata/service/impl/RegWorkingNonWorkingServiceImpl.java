@@ -20,6 +20,7 @@ import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -222,7 +223,7 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 		return responseDto;
 	}
 
-
+	@CacheEvict(value = "working-day", allEntries = true)
 	@Override
 	@Transactional
 	public WorkingDaysExtnDto updateWorkingDays(WorkingDaysPutRequestDto workingDaysPutRequestDto) throws NoSuchFieldException, IllegalAccessException {
@@ -252,7 +253,7 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 
 		return workingDayDto;
 	}
-
+	@CacheEvict(value = "working-day", allEntries = true)
 	@Override
 	public StatusResponseDto updateWorkingDaysStatus(String code, boolean isActive) {
 		StatusResponseDto statusResponseDto = new StatusResponseDto();
