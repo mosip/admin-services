@@ -161,15 +161,14 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 			groupedData.keySet().forEach(k -> {
 				DynamicFieldDefDto dynamicFieldDefDto = new DynamicFieldDefDto();
 				dynamicFieldDefDto.setName(k);
-				//dynamicFieldDefDto.setIsActive(false);
-				dynamicFieldDefDto.setDescriptionData(new HashMap<>());
 
 				List<DynamicFieldNameDto> list = groupedData.getOrDefault(k, Collections.EMPTY_LIST);
-				list.stream().forEach( d -> {
-					dynamicFieldDefDto.getDescriptionData().put(d.getLangCode(), d.getDescription());
-					if(langCode.equals(d.getLangCode()))
-						dynamicFieldDefDto.setIsActive(d.getIsActive());
-				});
+				Optional<DynamicFieldNameDto> result = list.stream().filter( d -> langCode.equals(d.getLangCode()) ).findFirst();
+				if(result.isPresent()) {
+					dynamicFieldDefDto.setDescription(result.get().getDescription());
+					dynamicFieldDefDto.setIsActive(result.get().getIsActive());
+				}
+				dynamicFields.add(dynamicFieldDefDto);
 			});
 
 		} catch (DataAccessLayerException | DataAccessException e) {

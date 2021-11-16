@@ -8,6 +8,6 @@ import java.util.Map;
 public class DynamicFieldDefDto {
 
     private String name;
-    private Map<String, String> descriptionData;
+    private String description;
     private Boolean isActive;
 }
