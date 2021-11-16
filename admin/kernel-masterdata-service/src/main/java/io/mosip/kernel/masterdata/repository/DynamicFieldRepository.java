@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import io.mosip.kernel.masterdata.dto.DynamicFieldNameDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -104,8 +105,14 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 			+ " WHERE (isDeleted is null OR isDeleted = false) and id=?1")
 	int updateDynamicFieldIsActive(String id, boolean isActive, LocalDateTime updatedDateTime, String updatedBy);
 	
-	@Query("SELECT DISTINCT description FROM DynamicField WHERE langCode=?1 AND (isDeleted is null or isDeleted = false)")
-	List<String> getDistinctDynamicFields(String langCode);
+	@Query("SELECT DISTINCT name FROM DynamicField WHERE (isDeleted is null or isDeleted = false)")
+	List<String> getDistinctDynamicFields();
+
+	@Query("SELECT new io.mosip.kernel.masterdata.dto.DynamicFieldNameDto(name, description, langCode, isActive) FROM DynamicField " +
+			"WHERE (isDeleted is null or isDeleted = false) " +
+			"group by name, description, langCode, isActive")
+	List<DynamicFieldNameDto> getDistinctDynamicFieldsWithDescription();
+
 	/**
 	 * Update dynamic field value specific to a language code
 	 * 

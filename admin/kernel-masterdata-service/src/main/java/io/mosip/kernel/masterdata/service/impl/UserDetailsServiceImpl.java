@@ -282,6 +282,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	public UserDetailsCenterMapping createUser(UserDetailsDto userDetailsDto) {
 		UserDetails ud;
 		List<RegistrationCenter> regCenters;
+		ZoneUser zoneUser = zoneUserRepository.findZoneByUserIdActiveAndNonDeleted(userDetailsDto.getId());
+		if(zoneUser == null)
+			throw new MasterDataServiceException(UserDetailsErrorCode.ZONE_USER_MAPPING_NOT_FOUND.getErrorCode(),
+					UserDetailsErrorCode.ZONE_USER_MAPPING_NOT_FOUND.getErrorMessage());
+
 		try {
 			UserDetails result = userDetailsRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(userDetailsDto.getId());
 			if (result!=null)
@@ -365,14 +370,21 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		UserDetails ud = null;
 		UserDetailsDto udd=new UserDetailsDto();
 		UserDetailsPutDto userDetailsPutDto = new UserDetailsPutDto();
+
+		ZoneUser zoneUser = zoneUserRepository.findZoneByUserIdActiveAndNonDeleted(userDetailsDto.getId());
+		if(zoneUser == null)
+			throw new MasterDataServiceException(UserDetailsErrorCode.ZONE_USER_MAPPING_NOT_FOUND.getErrorCode(),
+					UserDetailsErrorCode.ZONE_USER_MAPPING_NOT_FOUND.getErrorMessage());
+
 		try {
 			ud = userDetailsRepository
 					.findByIdAndIsDeletedFalseorIsDeletedIsNull(userDetailsDto.getId());
-			if (ud == null)
+			if (ud == null) {
 				userDetailsDto = masterdataCreationUtil.createMasterData(UserDetails.class, userDetailsDto);
 				ud = MetaDataUtils.setCreateMetaData(userDetailsDto, UserDetails.class);
 				ud.setIsActive(false);
 				userDetailsRepository.save(ud);
+			}
 			List<RegistrationCenter> regCenters = registrationCenterService
 					.getRegistrationCentersByID(userDetailsDto.getRegCenterId()); // Throws exception if not found
 			if (regCenters == null || regCenters.isEmpty()) {
@@ -465,9 +477,25 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Override
 	public StatusResponseDto updateUserStatus(String id, boolean isActive) {
 		StatusResponseDto response = new StatusResponseDto();
+		ZoneUser zoneUser = zoneUserRepository.findZoneByUserIdNonDeleted(id);
+		if(zoneUser == null)
+			throw new MasterDataServiceException(UserDetailsErrorCode.ZONE_USER_MAPPING_NOT_FOUND.getErrorCode(),
+					UserDetailsErrorCode.ZONE_USER_MAPPING_NOT_FOUND.getErrorMessage());
+
+		if(isActive && !zoneUser.getIsActive())
+			throw new MasterDataServiceException(UserDetailsErrorCode.ZONE_USER_MAPPING_NOT_ACTIVE.getErrorCode(),
+					UserDetailsErrorCode.ZONE_USER_MAPPING_NOT_ACTIVE.getErrorMessage());
+
 		try {
 			UserDetails userDetails = userDetailsRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(id);
 			if (userDetails != null) {
+
+				if(isActive) {
+					List<RegistrationCenter> regCenters = registrationCenterService
+							.getRegistrationCentersByID(userDetails.getRegCenterId());
+					validateMappingData(id, regCenters.get(0).getZoneCode(), null);
+				}
+
 				masterdataCreationUtil.updateMasterDataStatus(UserDetails.class, id, isActive, "id");
 
 				UserDetailsHistory udh = new UserDetailsHistory();

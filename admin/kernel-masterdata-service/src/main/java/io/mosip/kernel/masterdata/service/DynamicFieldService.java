@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import io.mosip.kernel.masterdata.dto.DynamicFieldDefDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldResponseDto;
@@ -69,6 +70,8 @@ public interface DynamicFieldService {
 
 	public PageResponseDto<DynamicFieldSearchResponseDto> searchDynamicFields(SearchDto request);
 
-	public List<String> getDistinctDynamicFields(String langCode);
+	public List<String> getDistinctDynamicFields();
+
+	public List<DynamicFieldDefDto> getDistinctDynamicFields(String langCode);
 	
 }
