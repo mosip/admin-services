@@ -8,6 +8,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.mosip.kernel.masterdata.validator.OptionalStringFormatter;
 import io.mosip.kernel.masterdata.validator.StringFormatter;
 import io.swagger.annotations.ApiModelProperty;
@@ -23,14 +24,10 @@ import lombok.Data;
  */
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 // @ApiModel(value = "Machine", description = "Machine Detail resource")
 public class MachinePostReqDto {
 
-	/**
-	 * Field for machine id
-	 */
-
-	private String id;
 	/**
 	 * Field for machine name
 	 */

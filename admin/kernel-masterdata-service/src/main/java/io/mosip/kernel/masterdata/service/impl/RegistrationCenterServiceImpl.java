@@ -1614,10 +1614,19 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
+		
 		RegistrationCenter regCenterByLangCode = regCenterById.stream()
 				.filter(rc -> rc.getLangCode().equals(dto.getLangCode())).findFirst().orElse(null);
 		// Update only for this record
 		if (regCenterByLangCode != null) {
+			if (null == regCenterByLangCode.getRegistrationCenterType()) {
+				auditException(RegistrationCenterErrorCode.CENTER_NOT_FOUND_FOR_LANG.getErrorCode(),
+						RegistrationCenterErrorCode.CENTER_NOT_FOUND_FOR_LANG.getErrorMessage());
+
+				throw new MasterDataServiceException(
+						RegistrationCenterErrorCode.CENTER_NOT_FOUND_FOR_LANG.getErrorCode(),
+						RegistrationCenterErrorCode.CENTER_NOT_FOUND_FOR_LANG.getErrorMessage());
+			}
 			regCenterByLangCode.setName(dto.getName());
 			regCenterByLangCode.setContactPerson(dto.getContactPerson());
 			regCenterByLangCode.setAddressLine1(dto.getAddressLine1());

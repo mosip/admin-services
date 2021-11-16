@@ -203,4 +203,28 @@ INSERT INTO master.reg_center_type(code,name,descr,lang_code,is_active, cr_by, c
 
 
 INSERT INTO master.registration_center(id,name,cntrtyp_code,addr_line1,addr_line2,addr_line3,latitude,longitude,location_code,contact_phone,contact_person,number_of_kiosks,working_hours,per_kiosk_process_time,center_start_time,center_end_time,lunch_start_time,lunch_end_time,time_zone,holiday_loc_code,zone_code,lang_code,is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_DELETEd, del_dtimes) VALUES 
-('10001','Center A Ben Mansour','REG','P4238','Ben Mansour','MyCountry','34.52117','-6.453275','14022','779517433','John Doe',3,'8:00:00',Time '0:15:00', Time '9:00:00',Time '17:00:00',Time '13:00:00',Time '14:00:00','(GTM+01:00) CENTRAL EUROPEAN TIME','KTA','RBT','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
+('10001','Center A Ben Mansour','REG','P4238','Ben Mansour','MyCountry','34.52117','-6.453275','14022','779517433','John Doe',3,'8:00:00',Time '0:15:00', Time '9:00:00',Time '17:00:00',Time '13:00:00',Time '14:00:00','(GTM+01:00) CENTRAL EUROPEAN TIME','KTA','RBT','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('10002','Center A Ben','REG','P4239','Ben Mansour','MyCountry','34.52117','-6.453275','14022','779517433','John Doee',2,'8:00:00',Time '0:15:00', Time '9:00:00',Time '17:00:00',Time '13:00:00',Time '14:00:00','(GTM+01:00) CENTRAL EUROPEAN TIME','KTA','RBT','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('10003','Center Q','REG','P4239','Q Mansour','MyCountry','34.52117','-6.453275','14022','779517433','John Doee',2,'8:00:00',Time '0:15:00', Time '9:00:00',Time '17:00:00',Time '13:00:00',Time '14:00:00','(GTM+01:00) CENTRAL EUROPEAN TIME','KTA','CST','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
+
+
+DELETE FROM MASTER.daysofweek_list;
+INSERT INTO master.daysofweek_list(code, name, day_seq, is_global_working, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES 
+('101', 'SUN',0, true,'eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
+('102', 'MON',1, FALSE,'eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL);
+
+DELETE FROM MASTER.reg_working_nonworking;
+INSERT INTO MASTER.reg_working_nonworking(regcntr_id, day_code, lang_code, is_working, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES
+('10001','101','eng',TRUE,TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
+('10002','102','eng',FALSE,TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL);
+
+DELETE FROM MASTER.machine_master_h;
+INSERT INTO MASTER.machine_master_h(id, name, mac_address, serial_num, ip_address, validity_end_dtimes, mspec_id, public_key, key_index, sign_public_key, sign_key_index, zone_code, regcntr_id, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes, eff_dtimes) VALUES
+('10001','alm1009', 'E8-A9-64-1F-27-E6','NM19837379','192.168.0.120',NULL,'1001','MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq5TnNAD1FMWWektYigmUMGw+MtNqjqLWaOZU9focDPT+nwMdw9vOs6S+Szw9Vd+zKVQ3AWkRSyfVD0qxHsPX5N6M6eS/UXvz72WF336MbbInfwzNP+uGfkprMQMt5qg21/rPSqWPU1NA9xN8lO2uPmUH4JNRBGRyvq6X1ETTDhqPsuKDwl9ciBScCMJxf/0bv2Dx7yI8lvYUaApqpoHNbBGVgDcq4f/KRZIU2kO0Ng1ESbj6D5fm0F8ZmFx3NVCKaSbBC8NUeltIRJ6+c9Csw1o23WSFTotViWeIDelsfQDq+tMmx9i9qlX3bcPZdcb7g2wm+4cywK1K5oOf3BEBxwIDAQAB','B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:48', NULL,NULL,'NTH','10001','eng',true, 'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL,TIMESTAMP '2023-12-10 11:42:52.994');
+
+DELETE FROM MASTER.user_detail_h;
+INSERT INTO MASTER.user_detail_h(id, name, status_code, regcntr_id, lang_code, last_login_dtimes, last_login_method, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes, eff_dtimes) VALUES
+('1','abc','ACT','10001','eng',NULL,'PWD', true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL, TIMESTAMP '2023-12-10 11:42:52.994');
+
+DELETE FROM MASTER.zone_user;
+INSERT INTO MASTER.zone_user(zone_code, usr_id, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) values('NTH', 'reg-admin', 'eng', TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL);

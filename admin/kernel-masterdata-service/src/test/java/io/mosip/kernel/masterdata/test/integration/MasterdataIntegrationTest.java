@@ -1140,7 +1140,7 @@ public class MasterdataIntegrationTest {
 		Timestamp validDateTime = Timestamp.valueOf(specificDate);
 		deviceDto = new DeviceDto();
 		deviceDto.setDeviceSpecId("123");
-		deviceDto.setId("1");
+		//deviceDto.setId("1");
 		deviceDto.setIpAddress("asd");
 		deviceDto.setIsActive(true);
 		deviceDto.setMacAddress("asd");
@@ -4151,10 +4151,13 @@ public class MasterdataIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void updateDeviceTest() throws Exception {
-		RequestWrapper<DeviceDto> requestDto = new RequestWrapper<>();
+		RequestWrapper<DevicePutReqDto> requestDto = new RequestWrapper<>();
+		DevicePutReqDto devicePutReqDto=new DevicePutReqDto();
+		devicePutReqDto=MapperUtils.map(deviceDto,DevicePutReqDto.class);
+		devicePutReqDto.setId("Test12");
 		requestDto.setId("mosip.device.update");
 		requestDto.setVersion("1.0.0");
-		requestDto.setRequest(deviceDto);
+		requestDto.setRequest(devicePutReqDto);
 		String content = mapper.writeValueAsString(requestDto);
 		Mockito.when(deviceRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(device);
@@ -4186,10 +4189,13 @@ public class MasterdataIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void updateDeviceNotFoundExceptionTest() throws Exception {
-		RequestWrapper<DeviceDto> requestDto = new RequestWrapper<>();
+		RequestWrapper<DevicePutReqDto> requestDto = new RequestWrapper<>();
+		DevicePutReqDto devicePutReqDto=new DevicePutReqDto();
+		devicePutReqDto=MapperUtils.map(deviceDto,DevicePutReqDto.class);
+		devicePutReqDto.setId("Test12");
 		requestDto.setId("mosip.device.create");
 		requestDto.setVersion("1.0.0");
-		requestDto.setRequest(deviceDto);
+		requestDto.setRequest(devicePutReqDto);
 		String content = mapper.writeValueAsString(requestDto);
 		Mockito.when(deviceRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNullNoIsActive(
 				Mockito.anyString(), Mockito.anyString())).thenReturn(null);
@@ -7045,7 +7051,6 @@ public class MasterdataIntegrationTest {
 		requestDto.setVersion("1.0.0");
 
 		inValideLang = new MachinePostReqDto();
-		inValideLang.setId("10001");
 		inValideLang.setName("HP");
 		inValideLang.setIpAddress("129.0.0.0");
 		inValideLang.setMacAddress("178.0.0.0");
@@ -7075,7 +7080,6 @@ public class MasterdataIntegrationTest {
 		requestDto.setId("mosip.match.regcentr.machineid");
 		requestDto.setVersion("1.0.0");
 		inValideMID = new MachinePostReqDto();
-		inValideMID.setId("1000ddfagsdgfadsfdgdsagdsagdsagdagagagdsgagadgagdf");
 		inValideMID.setName("HP");
 		inValideMID.setIpAddress("129.0.0.0");
 		inValideMID.setMacAddress("178.0.0.0");
@@ -9305,7 +9309,7 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(put("/usercentermapping")
 		.contentType(MediaType.APPLICATION_JSON)
 		.content(mapper.writeValueAsString(userDetailsDtoRequest)))
-		.andExpect(status().isInternalServerError());
+		.andExpect(status().isOk());
 	}
 	@Test
 	@WithUserDetails("global-admin")

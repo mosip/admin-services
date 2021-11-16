@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import io.mosip.kernel.masterdata.dto.DynamicFieldDefDto;
 import io.mosip.kernel.masterdata.dto.MissingDataDto;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.DynamicField;
@@ -87,6 +88,16 @@ public class DynamicFieldController {
 	public ResponseWrapper<List<String>> getDistinctDynamicFields(){
 		ResponseWrapper<List<String>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(dynamicFieldService.getDistinctDynamicFields());
+		return responseWrapper;
+	}
+
+	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdistinct())")
+	@GetMapping("/distinct/{langCode}")
+	@ApiOperation(value = "Service to fetch distinct dynamic fields")
+	public ResponseWrapper<List<DynamicFieldDefDto>> getDistinctDynamicFieldsBasedOnLang(@PathVariable("langCode") String langCode){
+		ResponseWrapper<List<DynamicFieldDefDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(dynamicFieldService.getDistinctDynamicFields(langCode));
 		return responseWrapper;
 	}
 	
