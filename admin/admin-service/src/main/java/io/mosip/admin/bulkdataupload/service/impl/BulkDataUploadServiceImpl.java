@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
+import javax.persistence.EmbeddedId;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
@@ -481,6 +482,14 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 		});
 
+
+		testConversionService.addConverter(new Converter<String, Double>() {
+			@Override
+			public Double convert(String text) {
+				return Double.parseDouble(text);
+			}
+		});
+
 		return testConversionService;
 	}
 
@@ -778,6 +787,12 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 		Map<Integer, Field> fieldMap = new HashMap<>();
 		Map<String, Field> allowedFields = new HashMap<>();
 		for (Field field : clazz.getDeclaredFields()) {
+			if (field.isAnnotationPresent(EmbeddedId.class)) {
+				for(Field f:field.getType().getDeclaredFields()){
+					field.setAccessible(true);
+					allowedFields.put(f.getName(), f);
+				}
+			}
 			field.setAccessible(true);
 			allowedFields.put(field.getName(), field);
 		}
@@ -785,6 +800,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 			field.setAccessible(true);
 			allowedFields.put(field.getName(), field);
 		}
+
 		try {
 			br = new BufferedReader(new InputStreamReader(csvFile));
 			while ((line = br.readLine()) != null) {
