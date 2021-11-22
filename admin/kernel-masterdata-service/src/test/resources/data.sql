@@ -227,4 +227,37 @@ INSERT INTO MASTER.user_detail_h(id, name, status_code, regcntr_id, lang_code, l
 ('1','abc','ACT','10001','eng',NULL,'PWD', true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL, TIMESTAMP '2023-12-10 11:42:52.994');
 
 DELETE FROM MASTER.zone_user;
-INSERT INTO MASTER.zone_user(zone_code, usr_id, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) values('NTH', 'reg-admin', 'eng', TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL);
+INSERT INTO MASTER.zone_user(zone_code, usr_id, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) values
+('NTH', 'global-admin', 'eng', TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
+('RSK', '4', 'eng', TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
+('CST','3','eng',true,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994', NULL,NULL,NULL,NULL);
+
+
+DELETE FROM MASTER.machine_master;
+INSERT INTO MASTER.machine_master(id, name, mac_address, serial_num, ip_address, validity_end_dtimes, mspec_id, public_key, key_index, sign_public_key, sign_key_index, zone_code, regcntr_id, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES
+('10','alm1009', 'E8-A9-64-1F-27-E6','NM19837379','192.168.0.120',NULL,'1001','MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq5TnNAD1FMWWektYigmUMGw+MtNqjqLWaOZU9focDPT+nwMdw9vOs6S+Szw9Vd+zKVQ3AWkRSyfVD0qxHsPX5N6M6eS/UXvz72WF336MbbInfwzNP+uGfkprMQMt5qg21/rPSqWPU1NA9xN8lO2uPmUH4JNRBGRyvq6X1ETTDhqPsuKDwl9ciBScCMJxf/0bv2Dx7yI8lvYUaApqpoHNbBGVgDcq4f/KRZIU2kO0Ng1ESbj6D5fm0F8ZmFx3NVCKaSbBC8NUeltIRJ6+c9Csw1o23WSFTotViWeIDelsfQDq+tMmx9i9qlX3bcPZdcb7g2wm+4cywK1K5oOf3BEBxwIDAQAB','B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:48', NULL,NULL,'NTH','10001','eng',true, 'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('20','alm2009', 'E8-A9-64-1F-34-E6','NM11037379','192.168.0.121',NULL,'2222','MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq5TnNAD1FMWWektYigmUMGw+MtNqjqLWaOZU9focDPT+nwMdw9vOs6S+Szw9Vd+zKVQ3AWkRSyfVD0qxHsPX5N6M6eS/UXvz72WF336MbbInfwzNP+uGfkprMQMt5qg21/rPSqWPU1NA9xN8lO2uPmUH4JNRBGRyvq6X1ETTDhqPsuKDwl9ciBScCMJxf/0bv2Dx7yI8lvYUaApqpoHNbBGVgDcq4f/KRZIU2kO0Ng1ESbj6D5fm0F8ZmFx3NVCKaSbBC8NUeltIRJ6+c9Csw1o23WSFTotViWeIDelsfQDq+tMmx9i9qlX3bcPZdcb7g2wm+4cywK1K5oOf3BEBxwIDAQAB','B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:48', NULL,NULL,'NTH','10002','eng',true, 'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('30','alm3009', 'E8-A9-64-1F-56-E6','NM19107379','192.168.0.122',NULL,'1001','MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq5TnNAD1FMWWektYigmUMGw+MtNqjqLWaOZU9focDPT+nwMdw9vOs6S+Szw9Vd+zKVQ3AWkRSyfVD0qxHsPX5N6M6eS/UXvz72WF336MbbInfwzNP+uGfkprMQMt5qg21/rPSqWPU1NA9xN8lO2uPmUH4JNRBGRyvq6X1ETTDhqPsuKDwl9ciBScCMJxf/0bv2Dx7yI8lvYUaApqpoHNbBGVgDcq4f/KRZIU2kO0Ng1ESbj6D5fm0F8ZmFx3NVCKaSbBC8NUeltIRJ6+c9Csw1o23WSFTotViWeIDelsfQDq+tMmx9i9qlX3bcPZdcb7g2wm+4cywK1K5oOf3BEBxwIDAQAB','B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:48', NULL,NULL,'NTH','10001','eng',true, 'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
+
+DELETE FROM MASTER.zone_user_h;
+INSERT INTO master.zone_user_h(zone_code, usr_id, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes, eff_dtimes) VALUES
+('JRD','1','eng',true,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994', NULL,NULL,NULL,NULL,TIMESTAMP '2018-12-10 11:42:52.994'),
+('BRK','5','eng',true,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994', NULL,NULL,NULL,NULL,TIMESTAMP '2018-12-10 11:42:52.994');
+
+DELETE FROM MASTER.machine_type;
+INSERT INTO master.machine_type(code, name, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES
+('DKS','Desktop','desktop computer','eng',true,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994', NULL,NULL,NULL,NULL),
+('Vostro','Desktop','desktop computer','eng',true,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994', NULL,NULL,NULL,NULL);
+
+DELETE FROM MASTER.user_detail;
+INSERT INTO MASTER.user_detail(id, name, status_code, regcntr_id, lang_code, last_login_dtimes, last_login_method, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES
+('2','abcd','ACT','10002','eng',NULL,'PWD', true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
+('3','test','ACT','10001','eng',NULL,'PWD', true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
+('4','dummy','ACT','10002','eng',NULL,'PWD', true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
+('5','dummy1','ACT','10002','eng',NULL,'PWD', true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL);
+
+DELETE FROM MASTER.machine_spec;
+INSERT INTO master.machine_spec(id, name, brand, model, mtyp_code, min_driver_ver, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES
+('1001','HP','HP','1234','DKS','3.2','HP brand','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('2222','HP1','HP1','1243','DKS','3.2','HP brand','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
+
