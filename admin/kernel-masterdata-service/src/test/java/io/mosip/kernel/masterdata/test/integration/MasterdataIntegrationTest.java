@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -3796,16 +3797,16 @@ public class MasterdataIntegrationTest {
 	public void getMachineIdLangcodeSuccessTest() throws Exception {
 		List<Machine> machines = new ArrayList<Machine>();
 		machines.add(machine);
-		when(machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString(),
-				Mockito.anyString())).thenReturn(machines);
+		//when(machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString(),
+		//		Mockito.anyString())).thenReturn(machines);
 		mockMvc.perform(get("/machines/{id}", "1000")).andExpect(status().isOk());
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void getMachineIdLangcodeNullResponseTest() throws Exception {
-		when(machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString(),
-				Mockito.anyString())).thenReturn(null);
+		//when(machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString(),
+		//		Mockito.anyString())).thenReturn(null);
 		mockMvc.perform(get("/machines/{id}", "1000")).andExpect(status().isOk());
 	}
 
@@ -3828,16 +3829,16 @@ public class MasterdataIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void getMachineLangcodeSuccessTest() throws Exception {
-		when(machineRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
-				.thenReturn(machineList);
+		//when(machineRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+		//		.thenReturn(machineList);
 		mockMvc.perform(get("/machines/{langcode}", "ENG")).andExpect(status().isOk());
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void getMachineLangcodeNullResponseTest() throws Exception {
-		when(machineRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
-				.thenReturn(null);
+		//when(machineRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+		//		.thenReturn(null);
 		mockMvc.perform(get("/machines/{langcode}", "ENG")).andExpect(status().isOk());
 	}
 
@@ -3964,8 +3965,11 @@ public class MasterdataIntegrationTest {
 				.thenReturn(machineType);
 		when(machineTypeRepository.update(Mockito.any())).thenReturn(machineType);
 		when(masterdataCreationUtil.updateMasterData(MachineType.class, machineTypeDto)).thenReturn(machineTypeDto);
-		mockMvc.perform(put("/machinetypes").contentType(MediaType.APPLICATION_JSON).content(machineTypeJson))
-				.andExpect(status().isInternalServerError());
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/machinetypes").contentType(MediaType.APPLICATION_JSON)
+						.content(machineTypeJson)).andReturn(),
+				"KER-MSD-063");
 	}
 
 	@Test
@@ -3982,8 +3986,11 @@ public class MasterdataIntegrationTest {
 		Mockito.when(machineTypeRepository.update(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot update", null));
 		when(masterdataCreationUtil.updateMasterData(MachineType.class, machineTypeDto)).thenReturn(machineTypeDto);
-		mockMvc.perform(MockMvcRequestBuilders.put("/machinetypes").contentType(MediaType.APPLICATION_JSON)
-				.content(machineTypeJson)).andExpect(status().isInternalServerError());
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/machinetypes").contentType(MediaType.APPLICATION_JSON)
+						.content(machineTypeJson)).andReturn(),
+				"KER-MSD-063");
 	}
 	
 	@Test
@@ -4006,9 +4013,13 @@ public class MasterdataIntegrationTest {
 						Mockito.anyString()))
 		.thenReturn(machineSpecifications);
 
-		mockMvc.perform(put("/machinetypes").contentType(MediaType.APPLICATION_JSON).content(machineTypeJson))
-		.andExpect(status().isInternalServerError());
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/machinetypes").contentType(MediaType.APPLICATION_JSON)
+						.content(machineTypeJson)).andReturn(),
+				"KER-MSD-063");
 	}
+
+
 	// --------------------------------DeviceTest-------------------------------------------------
 	@Test
 	@WithUserDetails("zonal-admin")
@@ -8531,10 +8542,10 @@ public class MasterdataIntegrationTest {
 		deviceInfo.setDeviceSubId("1");
 		deviceInfo.setDeviceExpiry(LocalDateTime.now(ZoneOffset.UTC));
 		deviceInfo.setFirmware("firmware");
-		deviceInfo.setDigitalId(CryptoUtil.encodeBase64String(objectMapper.writeValueAsBytes(dig)));
+		deviceInfo.setDigitalId(CryptoUtil.encodeToURLSafeBase64(objectMapper.writeValueAsBytes(dig)));
 		deviceInfo.setTimeStamp(LocalDateTime.now(ZoneOffset.UTC));
 		device.setDeviceInfo(deviceInfo);
-		registeredDevicePostDto.setDeviceData(CryptoUtil.encodeBase64String(objectMapper.writeValueAsBytes(device)));
+		registeredDevicePostDto.setDeviceData(CryptoUtil.encodeToURLSafeBase64(objectMapper.writeValueAsBytes(device)));
 		return registeredDevicePostDto;
 	}
 

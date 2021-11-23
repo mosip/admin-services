@@ -775,7 +775,7 @@ public class MasterdataSearchIntegrationTest {
 		machine.setId("1001");
 		Page<Machine> pageContentData = new PageImpl<>(Arrays.asList(machine));
 		when(filterTypeValidator.validate(Mockito.eq(MachineSearchDto.class), Mockito.anyList())).thenReturn(true);
-		when(machineRepository.findMappedMachineId(Mockito.anyString())).thenReturn(machineIdList);
+		//when(machineRepository.findMappedMachineId(Mockito.anyString())).thenReturn(machineIdList);
 		when(masterdataSearchHelper.searchMasterdataWithoutLangCode(Mockito.eq(Machine.class), Mockito.any(),
 				Mockito.any()))
 				.thenReturn(pageContentData);
@@ -819,7 +819,7 @@ public class MasterdataSearchIntegrationTest {
 		machine.setId("1001");
 		when(filterTypeValidator.validate(Mockito.eq(MachineSearchDto.class), Mockito.anyList())).thenReturn(true);
 		Page<Machine> pageContentData = new PageImpl<>(Arrays.asList(machine));
-		when(machineRepository.findNotMappedMachineId(Mockito.anyString())).thenReturn(machineIdList);
+		///when(machineRepository.findNotMappedMachineId(Mockito.anyString())).thenReturn(machineIdList);
 		when(masterdataSearchHelper.searchMasterdataWithoutLangCode(Mockito.eq(Machine.class), Mockito.any(),
 				Mockito.any()))
 				.thenReturn(pageContentData);
@@ -945,10 +945,10 @@ public class MasterdataSearchIntegrationTest {
 		Object[] object = { "1001" };
 		List<Object[]> machineSpec = new ArrayList<>();
 		machineSpec.add(object);
-		when(machineRepository.findNotMappedMachineId(Mockito.anyString())).thenReturn(Arrays.asList("1001", "10002"));
+		//when(machineRepository.findNotMappedMachineId(Mockito.anyString())).thenReturn(Arrays.asList("1001", "10002"));
 		when(filterTypeValidator.validate(Mockito.eq(MachineTypeDto.class), Mockito.anyList())).thenReturn(true);
-		when(machineRepository.findMachineSpecByMachineTypeNameAndLangCode(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(machineSpec);
+		//when(machineRepository.findMachineSpecByMachineTypeNameAndLangCode(Mockito.anyString(), Mockito.anyString()))
+		//		.thenReturn(machineSpec);
 		when(masterdataSearchHelper.searchMasterdataWithoutLangCode(Mockito.eq(Machine.class), Mockito.any(),
 				Mockito.any()))
 				.thenReturn(new PageImpl<>(machines, PageRequest.of(0, 10), 1));
@@ -974,10 +974,10 @@ public class MasterdataSearchIntegrationTest {
 		Object[] object = { "1001" };
 		List<Object[]> machineSpec = new ArrayList<>();
 		machineSpec.add(object);
-		when(machineRepository.findNotMappedMachineId(Mockito.anyString())).thenReturn(Arrays.asList("1001", "10002"));
+		//when(machineRepository.findNotMappedMachineId(Mockito.anyString())).thenReturn(Arrays.asList("1001", "10002"));
 		when(filterTypeValidator.validate(Mockito.eq(MachineTypeDto.class), Mockito.anyList())).thenReturn(true);
-		when(machineRepository.findMachineSpecByMachineTypeNameAndLangCode(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(machineSpec);
+		//when(machineRepository.findMachineSpecByMachineTypeNameAndLangCode(Mockito.anyString(), Mockito.anyString()))
+		//		.thenReturn(machineSpec);
 		when(zoneUserRepository.findByUserIdNonDeleted(Mockito.any())).thenReturn(Arrays.asList(zoneUser));
 		doReturn(null).when(zoneRepository).findAllNonDeleted();
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
@@ -1001,8 +1001,8 @@ public class MasterdataSearchIntegrationTest {
 		List<Object[]> machineSpec = new ArrayList<>();
 		machineSpec.add(object);
 		when(filterTypeValidator.validate(Mockito.eq(MachineTypeDto.class), Mockito.anyList())).thenReturn(true);
-		when(machineRepository.findMachineSpecByMachineTypeNameAndLangCode(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(machineSpec);
+		//when(machineRepository.findMachineSpecByMachineTypeNameAndLangCode(Mockito.anyString(), Mockito.anyString()))
+		//		.thenReturn(machineSpec);
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
