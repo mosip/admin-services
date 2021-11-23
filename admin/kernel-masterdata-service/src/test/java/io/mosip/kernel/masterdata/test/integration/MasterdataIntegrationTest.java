@@ -3796,16 +3796,16 @@ public class MasterdataIntegrationTest {
 	public void getMachineIdLangcodeSuccessTest() throws Exception {
 		List<Machine> machines = new ArrayList<Machine>();
 		machines.add(machine);
-		when(machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString(),
-				Mockito.anyString())).thenReturn(machines);
+		//when(machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString(),
+		//		Mockito.anyString())).thenReturn(machines);
 		mockMvc.perform(get("/machines/{id}", "1000")).andExpect(status().isOk());
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void getMachineIdLangcodeNullResponseTest() throws Exception {
-		when(machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString(),
-				Mockito.anyString())).thenReturn(null);
+		//when(machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString(),
+		//		Mockito.anyString())).thenReturn(null);
 		mockMvc.perform(get("/machines/{id}", "1000")).andExpect(status().isOk());
 	}
 
@@ -3828,16 +3828,16 @@ public class MasterdataIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void getMachineLangcodeSuccessTest() throws Exception {
-		when(machineRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
-				.thenReturn(machineList);
+		//when(machineRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+		//		.thenReturn(machineList);
 		mockMvc.perform(get("/machines/{langcode}", "ENG")).andExpect(status().isOk());
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void getMachineLangcodeNullResponseTest() throws Exception {
-		when(machineRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
-				.thenReturn(null);
+		//when(machineRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+		//		.thenReturn(null);
 		mockMvc.perform(get("/machines/{langcode}", "ENG")).andExpect(status().isOk());
 	}
 
@@ -8531,10 +8531,10 @@ public class MasterdataIntegrationTest {
 		deviceInfo.setDeviceSubId("1");
 		deviceInfo.setDeviceExpiry(LocalDateTime.now(ZoneOffset.UTC));
 		deviceInfo.setFirmware("firmware");
-		deviceInfo.setDigitalId(CryptoUtil.encodeBase64String(objectMapper.writeValueAsBytes(dig)));
+		deviceInfo.setDigitalId(CryptoUtil.encodeToURLSafeBase64(objectMapper.writeValueAsBytes(dig)));
 		deviceInfo.setTimeStamp(LocalDateTime.now(ZoneOffset.UTC));
 		device.setDeviceInfo(deviceInfo);
-		registeredDevicePostDto.setDeviceData(CryptoUtil.encodeBase64String(objectMapper.writeValueAsBytes(device)));
+		registeredDevicePostDto.setDeviceData(CryptoUtil.encodeToURLSafeBase64(objectMapper.writeValueAsBytes(device)));
 		return registeredDevicePostDto;
 	}
 
