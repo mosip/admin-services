@@ -270,7 +270,7 @@ public class MachineControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/machines").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(machineRequest))).andReturn(),
-				null);
+				"KER-MSD-414");
 	}
 
 	@Test
@@ -282,7 +282,7 @@ public class MachineControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/machines").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(machineRequest))).andReturn(),
-				null);
+				"KER-MSD-414");
 	}
 
 	@Test
@@ -305,7 +305,7 @@ public class MachineControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/machines").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(machineCenterDto))).andReturn(),
-				null);
+				"KER-MSD-414");
 	}
 
 }

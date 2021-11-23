@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -3964,8 +3965,11 @@ public class MasterdataIntegrationTest {
 				.thenReturn(machineType);
 		when(machineTypeRepository.update(Mockito.any())).thenReturn(machineType);
 		when(masterdataCreationUtil.updateMasterData(MachineType.class, machineTypeDto)).thenReturn(machineTypeDto);
-		mockMvc.perform(put("/machinetypes").contentType(MediaType.APPLICATION_JSON).content(machineTypeJson))
-				.andExpect(status().isInternalServerError());
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/machinetypes").contentType(MediaType.APPLICATION_JSON)
+						.content(machineTypeJson)).andReturn(),
+				"KER-MSD-063");
 	}
 
 	@Test
@@ -3982,8 +3986,11 @@ public class MasterdataIntegrationTest {
 		Mockito.when(machineTypeRepository.update(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot update", null));
 		when(masterdataCreationUtil.updateMasterData(MachineType.class, machineTypeDto)).thenReturn(machineTypeDto);
-		mockMvc.perform(MockMvcRequestBuilders.put("/machinetypes").contentType(MediaType.APPLICATION_JSON)
-				.content(machineTypeJson)).andExpect(status().isInternalServerError());
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/machinetypes").contentType(MediaType.APPLICATION_JSON)
+						.content(machineTypeJson)).andReturn(),
+				"KER-MSD-063");
 	}
 	
 	@Test
@@ -4006,9 +4013,13 @@ public class MasterdataIntegrationTest {
 						Mockito.anyString()))
 		.thenReturn(machineSpecifications);
 
-		mockMvc.perform(put("/machinetypes").contentType(MediaType.APPLICATION_JSON).content(machineTypeJson))
-		.andExpect(status().isInternalServerError());
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/machinetypes").contentType(MediaType.APPLICATION_JSON)
+						.content(machineTypeJson)).andReturn(),
+				"KER-MSD-063");
 	}
+
+
 	// --------------------------------DeviceTest-------------------------------------------------
 	@Test
 	@WithUserDetails("zonal-admin")
