@@ -159,16 +159,17 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 					}
 					masterdataCreationUtil.updateMasterDataDeactivate(MachineType.class, machineTypeDto.getCode());
 				}*/
+			//if (null != machineTypes && machineTypes.size() > 0) {
 				machineTypeDto = masterdataCreationUtil.updateMasterData(MachineType.class, machineTypeDto);
 				updMachineType = MetaDataUtils.setUpdateMetaData(machineTypeDto, machineTypes.get(0), false);
 				machineTypeRepository.update(updMachineType);
 				MapperUtils.map(updMachineType, codeAndLanguageCodeID);
 
-				/*
-				 * } else { throw new
-				 * RequestException(MachineTypeErrorCode.MACHINE_TYPE_NOT_FOUND.getErrorCode(),
-				 * MachineTypeErrorCode.MACHINE_TYPE_NOT_FOUND.getErrorMessage()); }
-				 */
+			/*} else {
+				throw new RequestException(MachineTypeErrorCode.MACHINE_TYPE_NOT_FOUND.getErrorCode(),
+						MachineTypeErrorCode.MACHINE_TYPE_NOT_FOUND.getErrorMessage());
+			}*/
+			 
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException e) {
 			auditUtil.auditRequest(
