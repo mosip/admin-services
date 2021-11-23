@@ -2,12 +2,20 @@ package io.mosip.kernel.masterdata.test.utils;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.Pagination;
+import io.mosip.kernel.masterdata.dto.request.SearchSort;
 
 public class MasterDataTest {
 
@@ -30,5 +38,48 @@ public class MasterDataTest {
 		}
 
 	}
+	
+
+	public static RequestWrapper<SearchDtoWithoutLangCode> commonSearchDtoWithoutLangCode(String seachSort,String columnName,String value,String type)
+	{
+		RequestWrapper<SearchDtoWithoutLangCode> sr = new RequestWrapper<>();
+		SearchDtoWithoutLangCode sc = new SearchDtoWithoutLangCode();
+		List<io.mosip.kernel.masterdata.dto.request.SearchFilter> ls = new ArrayList<>();
+		io.mosip.kernel.masterdata.dto.request.SearchFilter sf = new io.mosip.kernel.masterdata.dto.request.SearchFilter();
+		List<SearchSort> ss = new ArrayList<SearchSort>();
+		Pagination pagination = new Pagination(0, 1);
+		SearchSort s = new SearchSort(seachSort, "ASC");
+		ss.add(s);
+		sf.setColumnName(columnName);
+		sf.setType(type);
+		sf.setValue(value);
+		ls.add(sf);
+		sc.setFilters(ls);
+		sc.setLanguageCode("eng");
+		sc.setPagination(pagination);
+		sc.setSort(ss);
+
+		sr.setRequest(sc);
+		return sr;
+	}
+
+	public static RequestWrapper<FilterValueDto> commonFilterValueDto(String columnName,String txt,String type)
+	{
+	    RequestWrapper<FilterValueDto> filValDto;
+		FilterValueDto f = new FilterValueDto();
+		FilterDto fdto = new FilterDto();
+		fdto.setColumnName(columnName);
+		fdto.setText(txt);
+		fdto.setType(type);
+		List<FilterDto> lf = new ArrayList<>();
+		lf.add(fdto);
+		f.setLanguageCode("eng");
+		f.setOptionalFilters(null);
+		f.setFilters(lf);
+		filValDto = new RequestWrapper<>();
+		filValDto.setRequest(f);
+		return filValDto;
+	}
+	
 
 }
