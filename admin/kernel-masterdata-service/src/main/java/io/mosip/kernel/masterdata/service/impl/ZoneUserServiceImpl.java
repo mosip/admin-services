@@ -57,6 +57,7 @@ import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 public class ZoneUserServiceImpl implements ZoneUserService {
 
 	private static final Logger logger = LoggerFactory.getLogger(ZoneUserServiceImpl.class);
+	private static final String USERNAME_FORMAT = "%s (%s)";
 
 	@Autowired
 	UserDetailsService userDetailservice;
@@ -387,10 +388,10 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 				dto.setUserId(z.getUserId());
 				dto.setUpdatedDateTime(z.getUpdatedDateTime());
 				dto.setUpdatedBy(z.getUpdatedBy());
-				if (null != z.getUserId()) {
-				dto.setUserName(getUserName(z.getUserId()));
-				} else
-					dto.setUserName(null);
+				String username = getUserName(z.getUserId());
+				dto.setUserName(username == null || username.isBlank() ? z.getUserId() :
+						String.format(USERNAME_FORMAT, z.getUserId(), username));
+
 				if (null != z.getZoneCode()) {
 					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(),searchDto.getLanguageCode());
 					dto.setZoneName(null != zn ? zn.getZoneName() : null);
@@ -409,6 +410,9 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 	}
 
 	private String getUserName(String userId) {
+
+		if(userId == null || userId.trim().isEmpty())
+			return null;
 
 		HttpHeaders h = new HttpHeaders();
 		h.setContentType(MediaType.APPLICATION_JSON);
