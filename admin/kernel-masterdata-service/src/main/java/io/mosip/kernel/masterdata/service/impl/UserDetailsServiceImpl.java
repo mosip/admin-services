@@ -93,6 +93,7 @@ import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
+	private static final String USERNAME_FORMAT = "%s (%s)";
 
 	@Autowired
 	UserDetailsRepository userDetailsRepository;
@@ -612,6 +613,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL_SUCCESS, UsersDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM,
 				String.format(MasterDataConstant.GET_ALL_SUCCESS_DESC, UsersDto.class.getSimpleName()));
+
+		if(usersDto.getMosipUserDtoList() != null) {
+			usersDto.getMosipUserDtoList().forEach(dto -> {
+				String name = dto.getName();
+				dto.setName(name == null || name.isBlank() ?
+						dto.getUserId() :
+						String.format(USERNAME_FORMAT, dto.getUserId(), name));
+			});
+		}
 		return usersDto;
 	}
 
@@ -702,10 +712,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				dto.setUserId(z.getUserId());
 				dto.setUpdatedDateTime(z.getUpdatedDateTime());
 				dto.setUpdatedBy(z.getUpdatedBy());
-				if (null != z.getUserId()) {
-					dto.setUserName(getUserName(z.getUserId()));
-				} else
-					dto.setUserName(null);
+				String username = getUserName(z.getUserId());
+				dto.setUserName(username == null || username.isBlank() ? z.getUserId() :
+						String.format(USERNAME_FORMAT, z.getUserId(), username));
+
 				if (null != z.getZoneCode()) {
 					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(), searchDto.getLanguageCode());
 					dto.setZoneName(null != zn ? zn.getZoneName() : null);

@@ -222,5 +222,9 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 
 	@Query(value="select distinct(ud.id) from master.user_detail ud inner join master.registration_center rc on rc.id=ud.regcntr_id where lower(rc.name) like %?1%",nativeQuery=true)
 	List<String> findUserIdBasedOnRegistrationCenterName(String regCenterName);
+
+	@Query(value = "select distinct(id) from master.registration_center where zone_code in :zonecodes and id in :ids", nativeQuery = true)
+	List<String> filterRegistrationIdsBasedOnAllowedZones(@Param("zonecodes") Set<String> zonecodes,
+														  @Param("ids") Set<String> ids);
 	
 }
