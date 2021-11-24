@@ -69,9 +69,6 @@ public class RegistrationCenterController {
 	@Autowired
 	private AuditUtil auditUtil;
 
-	@Autowired
-	private GenericService genericService;
-
 	/**
 	 * Function to fetch registration centers list using location code and language
 	 * code.
@@ -515,12 +512,11 @@ public class RegistrationCenterController {
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetregistrationcentersmissingids())")
 	@GetMapping("/registrationcenters/missingids/{langcode}")
-	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<List<MissingDataDto>> getMissingRegistrationCentersDetails(
 			@PathVariable("langcode") String langCode,
 			@RequestParam(required = false) String fieldName) {
 		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(genericService.getMissingData(RegistrationCenter.class, langCode, "id",fieldName));
+		responseWrapper.setResponse(registrationCenterService.getMissingIdsBasedOnZone(langCode, fieldName));
 		return responseWrapper;
 	}
 

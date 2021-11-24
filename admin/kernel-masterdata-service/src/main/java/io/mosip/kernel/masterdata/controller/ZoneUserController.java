@@ -135,9 +135,8 @@ public class ZoneUserController {
 	}
 
 	/**
-	 * This api is for searching the zoneUser mapping.
-	 * 
-	 * @param roleName
+	 * This api is for searching the users list mapped to zone.
+	 * @param dto
 	 * @return
 	 */
 	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
