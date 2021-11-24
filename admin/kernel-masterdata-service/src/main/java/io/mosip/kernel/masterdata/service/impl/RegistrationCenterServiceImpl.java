@@ -1552,7 +1552,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		if (registrationCenters != null && !registrationCenters.isEmpty()) {
 
 			validateUserZoneCenterMapping(registrationCenters.get(0).getZoneCode(),
-					registrationCenterValidator.getZoneIdsForUser(null));
+					registrationCenterValidator.getSubZoneIdsForUser(languageUtils.getDefaultLanguage()));
 
 			masterdataCreationUtil.updateMasterDataStatus(RegistrationCenter.class, id, isActive, "id");
 
@@ -1593,7 +1593,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 
 		validateUserZoneCenterMapping(regCenterById.get(0).getZoneCode(),
-				registrationCenterValidator.getZoneIdsForUser(null));
+				registrationCenterValidator.getSubZoneIdsForUser(null));
 
 		RegistrationCenterType registrationCenterType = registrationCenterTypeRepository
 				.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(regCenterById.get(0).getCenterTypeCode(), dto.getLangCode());
@@ -1768,7 +1768,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 		if(!missingList.isEmpty()) {
 			Set<String> ids = missingList.stream().map(MissingDataDto::getId).collect(Collectors.toSet());
-			Set<String> zoneCodes = new HashSet<>(registrationCenterValidator.getZoneIdsForUser(null));
+			Set<String> zoneCodes = new HashSet<>(registrationCenterValidator.getSubZoneIdsForUser(null));
 
 			List<String> allowedIds = registrationCenterRepository.filterRegistrationIdsBasedOnAllowedZones(zoneCodes, ids);
 			return missingList.stream().filter( dto -> allowedIds.contains(dto.getId()) ).collect(Collectors.toList());
@@ -1790,8 +1790,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	private void validateUserZoneCenterMapping(String zoneCode, List<String> zoneCodes) {
 		if (!zoneCodes.contains(zoneCode)) {
-			throw new RequestException(RegistrationCenterErrorCode.INVALIDE_ZONE.getErrorCode(),
-					RegistrationCenterErrorCode.INVALIDE_ZONE.getErrorMessage());
+			throw new RequestException(RegistrationCenterErrorCode.REG_CENTER_INVALIDE_ZONE.getErrorCode(),
+					RegistrationCenterErrorCode.REG_CENTER_INVALIDE_ZONE.getErrorMessage());
 		}
 	}
 }

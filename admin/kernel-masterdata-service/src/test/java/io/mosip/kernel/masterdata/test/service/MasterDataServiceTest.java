@@ -12,9 +12,12 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.mosip.kernel.masterdata.dto.request.WorkingDaysPutRequestDto;
+import io.mosip.kernel.masterdata.entity.*;
+import io.mosip.kernel.masterdata.repository.*;
 import io.mosip.kernel.masterdata.utils.*;
 import org.junit.Assert;
 import org.junit.Before;
@@ -75,51 +78,10 @@ import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
-import io.mosip.kernel.masterdata.entity.Application;
-import io.mosip.kernel.masterdata.entity.BiometricAttribute;
-import io.mosip.kernel.masterdata.entity.BiometricType;
-import io.mosip.kernel.masterdata.entity.BlocklistedWords;
-import io.mosip.kernel.masterdata.entity.DaysOfWeek;
-import io.mosip.kernel.masterdata.entity.Device;
-import io.mosip.kernel.masterdata.entity.DeviceHistory;
-import io.mosip.kernel.masterdata.entity.DeviceSpecification;
-import io.mosip.kernel.masterdata.entity.DeviceType;
-import io.mosip.kernel.masterdata.entity.DocumentCategory;
-import io.mosip.kernel.masterdata.entity.DocumentType;
-import io.mosip.kernel.masterdata.entity.DynamicField;
-import io.mosip.kernel.masterdata.entity.Language;
-import io.mosip.kernel.masterdata.entity.Location;
-import io.mosip.kernel.masterdata.entity.LocationHierarchy;
-import io.mosip.kernel.masterdata.entity.RegistrationCenter;
-import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
-import io.mosip.kernel.masterdata.entity.Template;
-import io.mosip.kernel.masterdata.entity.TemplateFileFormat;
-import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
-import io.mosip.kernel.masterdata.repository.ApplicationRepository;
-import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
-import io.mosip.kernel.masterdata.repository.BiometricTypeRepository;
-import io.mosip.kernel.masterdata.repository.BlocklistedWordsRepository;
-import io.mosip.kernel.masterdata.repository.DaysOfWeekListRepo;
-import io.mosip.kernel.masterdata.repository.DeviceHistoryRepository;
-import io.mosip.kernel.masterdata.repository.DeviceRepository;
-import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
-import io.mosip.kernel.masterdata.repository.DeviceTypeRepository;
-import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
-import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
-import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
-import io.mosip.kernel.masterdata.repository.ExceptionalHolidayRepository;
-import io.mosip.kernel.masterdata.repository.LanguageRepository;
-import io.mosip.kernel.masterdata.repository.LocationHierarchyRepository;
-import io.mosip.kernel.masterdata.repository.LocationRepository;
-import io.mosip.kernel.masterdata.repository.RegWorkingNonWorkingRepo;
-import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
-import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
-import io.mosip.kernel.masterdata.repository.TemplateFileFormatRepository;
-import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.service.ApplicationService;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
@@ -394,6 +356,15 @@ public class MasterDataServiceTest {
 
 	private BiometricTypeDto biometricTypeDto;
 
+	@Autowired
+	RegistrationCenterValidator registrationCenterValidator;
+
+	@MockBean
+	ZoneUserRepository zoneUserRepository;
+
+	@MockBean
+	ZoneRepository zoneRepository;
+
 	@Before
 	public void setUp() {
 
@@ -435,7 +406,6 @@ public class MasterDataServiceTest {
 		when(locationHierarchyRepository1.findByLangCodeAndLevelAndName(Mockito.anyString(), Mockito.anyShort(),
 				Mockito.anyString())).thenReturn(hierarchy);
 		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
-
 	}
 
 	private void documentTypeSetup() {
@@ -878,6 +848,7 @@ public class MasterDataServiceTest {
 		registrationCenter.setCreatedDateTime(LocalDateTime.now());
 		registrationCenter.setHolidayLocationCode("BLR");
 		registrationCenter.setLocationCode("BLR");
+		registrationCenter.setZoneCode("test");
 		registrationCenters.add(registrationCenter);
 
 		// ----
@@ -2615,13 +2586,37 @@ public class MasterDataServiceTest {
 	public void updateRegistrationCenterAdminStatusSuccessTest() {
 		StatusResponseDto dto = new StatusResponseDto();
 		dto.setStatus("Status updated successfully for Registration Centers");
+		List<Zone> zones = new ArrayList<>();
+		Zone zone = new Zone();
+		zone.setCode("test");
+		zone.setLangCode("eng");
+		zones.add(zone);
 
 		when(registrationCenterRepository.findByRegCenterIdAndIsDeletedFalseOrNull(Mockito.anyString()))
 				.thenReturn(registrationCenters);
 		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(RegistrationCenter.class), Mockito.anyString(),
 				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
+		when(zoneUtils.getSubZones(Mockito.anyString())).thenReturn(zones);
 		StatusResponseDto actual = registrationCenterService.updateRegistrationCenter("abc", false);
 		assertEquals(dto, actual);
+	}
+
+	@Test(expected = RequestException.class)
+	public void updateRegistrationCenterAdminStatusFailureTestWithInvalidZone() {
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Registration Centers");
+		List<Zone> zones = new ArrayList<>();
+		Zone zone = new Zone();
+		zone.setCode("test1");
+		zone.setLangCode("eng");
+		zones.add(zone);
+
+		when(registrationCenterRepository.findByRegCenterIdAndIsDeletedFalseOrNull(Mockito.anyString()))
+				.thenReturn(registrationCenters);
+		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(RegistrationCenter.class), Mockito.anyString(),
+				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
+		when(zoneUtils.getSubZones(Mockito.anyString())).thenReturn(zones);
+		registrationCenterService.updateRegistrationCenter("abc", false);
 	}
 
 	@Test(expected = MasterDataServiceException.class)
