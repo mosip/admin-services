@@ -371,6 +371,13 @@ public class RegistrationCenterValidator {
 		return zoneIds;
 	}
 
+	public List<String> getSubZoneIdsForUser(String langCode) {
+		List<String> zoneIds;
+		List<Zone> zones = zoneUtils.getSubZones(langCode);
+		zoneIds = zones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
+		return zoneIds;
+	}
+
 	// validation to check entered zoneCode is mapped with eligible user or not
 	// and
 	// is valid zoneCode

@@ -4,12 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import io.mosip.kernel.masterdata.dto.PageDto;
-import io.mosip.kernel.masterdata.dto.RegCenterLanguageSpecificPutDto;
-import io.mosip.kernel.masterdata.dto.RegCenterNonLanguageSpecificPutDto;
-import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
-import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
+import io.mosip.kernel.masterdata.dto.*;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
@@ -247,5 +242,13 @@ public interface RegistrationCenterService {
 	 * @return
 	 */
 	RegistrationCenterResponseDto getRegistrationCentersByZoneCode(String zoneCode, String langCode);
+
+	/**
+	 *
+	 * @param langCode
+	 * @param fieldName
+	 * @return
+	 */
+	List<MissingDataDto> getMissingIdsBasedOnZone(String langCode, String fieldName);
 
 }

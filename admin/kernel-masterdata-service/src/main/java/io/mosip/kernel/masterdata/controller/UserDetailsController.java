@@ -235,7 +235,7 @@ public class UserDetailsController {
 	
 	/**
 	 * This api is for searching the user details.
-	 * @param roleName
+	 * @param dto
 	 * @return
 	 */	
 	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
@@ -255,7 +255,7 @@ public class UserDetailsController {
 	
 	/**
 	 * This api is for searching the user details.
-	 * @param roleName
+	 * @param dto
 	 * @return
 	 */	
 	@ResponseFilter
