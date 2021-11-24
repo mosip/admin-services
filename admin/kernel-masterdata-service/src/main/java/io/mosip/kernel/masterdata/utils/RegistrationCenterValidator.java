@@ -364,7 +364,7 @@ public class RegistrationCenterValidator {
 	}
 
 	// list zone Id mapped with the called user
-	private List<String> getZoneIdsForUser(String langCode) {
+	public List<String> getZoneIdsForUser(String langCode) {
 		List<String> zoneIds;
 		List<Zone> zones = zoneUtils.getLeafZones(langCode);
 		zoneIds = zones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
