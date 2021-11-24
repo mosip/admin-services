@@ -25,7 +25,7 @@ import io.mosip.kernel.masterdata.entity.Machine;
 
 @Repository
 public interface MachineRepository extends BaseRepository<Machine, String> {
-	// PagingAndSortingRepository<Machine, Integer>
+
 	/**
 	 * This method trigger query to fetch the all Machine details.
 	 * 
@@ -34,30 +34,6 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 */
 	@Query("FROM Machine where (isDeleted is null OR isDeleted = false) AND isActive = true")
 	List<Machine> findAllByIsDeletedFalseOrIsDeletedIsNull();
-
-	/**
-	 * This method trigger query to fetch the Machine detail for the given machine
-	 * id and language code.
-	 * 
-	 * 
-	 * @param id       Machine Id provided by user
-	 * @param langCode language code provided by user
-	 * @return List MachineDetail fetched from database
-	 */
-
-	@Query("FROM Machine m where m.id = ?1 and m.langCode = ?2 and (m.isDeleted is null or m.isDeleted = false) and m.isActive = true")
-	List<Machine> findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(String id, String langCode);
-
-	/**
-	 * This method trigger query to fetch the Machine detail for the given language
-	 * code.
-	 * 
-	 * @param langCode langCode provided by user
-	 * 
-	 * @return List MachineDetail fetched from database
-	 */
-	@Query("FROM Machine m where m.langCode = ?1 and (m.isDeleted is null or m.isDeleted = false) and m.isActive = true")
-	List<Machine> findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);
 
 	/**
 	 * This method trigger query to fetch the Machine detail for the given id code.
@@ -93,22 +69,6 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	List<Machine> findMachineBymachineSpecIdAndIsDeletedFalseorIsDeletedIsNull(String machineSpecId);
 
 	/**
-	 * This method trigger query to fetch the Machine detail for the given id and
-	 * language code.
-	 * 
-	 * @param id       machine Id provided by user
-	 * @param langCode machine language code by user
-	 * 
-	 * @return MachineDetail fetched from database
-	 */
-
-	@Query("FROM Machine m where m.id = ?1 and m.langCode = ?2 and (m.isDeleted is null or m.isDeleted = false) AND m.isActive = true")
-	Machine findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(String id, String langCode);
-
-	@Query("FROM Machine m where m.id = ?1 and m.langCode = ?2")
-	Machine findMachineByIdAndLangCode(String id, String langCode);
-
-	/**
 	 * This method trigger query to fetch the Machine detail those are mapped with
 	 * the given regCenterId
 	 * 
@@ -123,20 +83,11 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	Machine findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNullWithoutActiveStatusCheck(String id,
 			String langCode);
 
-	@Query(value = "select m.id from master.machine_master m where m.regcntr_id is not null  and m.lang_code=?1", nativeQuery = true)
-	List<String> findMappedMachineId(String langCode);
-
-	@Query(value = "select m.id from master.machine_master m where m.regcntr_id is  null and m.lang_code=?1", nativeQuery = true)
-	List<String> findNotMappedMachineId(String langCode);
-
 	@Query(value = "select m.id from master.machine_master m where m.regcntr_id is not null", nativeQuery = true)
 	List<String> findMappedMachineId();
 
 	@Query(value = "select m.id from master.machine_master m where m.regcntr_id is  null", nativeQuery = true)
 	List<String> findNotMappedMachineId();
-
-	@Query(value = "Select * from master.machine_spec ms where (ms.is_deleted is null or ms.is_deleted = false) and ms.is_active = true and ms.mtyp_code IN (select code from master.machine_type mt where mt.name=?1) and ms.lang_code=?2", nativeQuery = true)
-	List<Object[]> findMachineSpecByMachineTypeNameAndLangCode(String name, String langCode);
 
 	@Query(value = "Select * from master.machine_spec ms where (ms.is_deleted is null or ms.is_deleted = false) and ms.is_active = true and ms.mtyp_code IN (select code from master.machine_type mt where mt.name=?1)", nativeQuery = true)
 	List<Object[]> findMachineSpecByMachineTypeName(String name);
@@ -155,7 +106,7 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	/**
 	 * Method to decommission the Machine
 	 * 
-	 * @param machineID              the machine id which needs to be
+	 * @param id              the machine id which needs to be
 	 *                               decommissioned.
 	 * @param deCommissionedBy       the user name retrieved from the context who
 	 *                               performs this operation.
@@ -171,9 +122,12 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	@Query(value = "select count(*) from master.machine_master where regcntr_id=?1 and (is_deleted is null or is_deleted=false)", nativeQuery = true)
 	long countCenterMachines(String id);
 
-	@Query("FROM Machine WHERE (isDeleted is null or isDeleted =false) and isActive = true")
-	List<Machine> getAllMachines();
-
 	@Query("FROM Machine WHERE regCenterId=?1 and (isDeleted is null or isDeleted =false) and isActive = true")
 	List<Machine> findByRegIdAndIsDeletedFalseOrIsDeletedIsNull(String regId);
+
+	@Query(value = "select id from master.machine_master WHERE lower(name) = lower(?1)  and (is_deleted is null or is_deleted =false)", nativeQuery = true)
+	List<String> findByMachineName(String machineName);
+
+	@Query(value = "select id from master.machine_master WHERE (lower(key_index) = lower(?1) or lower(sign_key_index) = lower(?2)) and (is_deleted is null or is_deleted =false)", nativeQuery = true)
+	List<String> findByMachineKeyIndexOrSignKeyIndex(String keyIndex, String signKeyIndex);
 }

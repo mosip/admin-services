@@ -762,10 +762,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 					RegistrationCenter regC=registrationCenterRepository.findByIdAndLangCode(ud.getRegCenterId(),
 							languageCode ==null ? languageUtils.getDefaultLanguage() : languageCode);
 
-					if(regC != null) {
-						userCenterMappingExtnDto.setRegCenterName(regC.getName());
-					}
-
+					userCenterMappingExtnDto.setRegCenterName((regC != null) ?
+							String.format("%s (%s)", ud.getRegCenterId(), regC.getName()) :
+							ud.getRegCenterId());
 					userCenterMappingExtnDto.setRegCenterId(ud.getRegCenterId());
 					userCenterMappingExtnDto.setCreatedBy(ud.getCreatedBy());
 					userCenterMappingExtnDto.setCreatedDateTime(ud.getCreatedDateTime());

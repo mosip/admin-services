@@ -337,9 +337,7 @@ public class DeviceServiceImpl implements DeviceService {
 
 		List<DeviceSearchDto> devices = null;
 		List<SearchFilter> addList = new ArrayList<>();
-		//List<SearchFilter> mapStatusList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
-		//List<String> mappedDeviceIdList = null;
 		List<SearchFilter> zoneFilter = new ArrayList<>();
 		List<Zone> zones = null;
 		boolean flag = true;
@@ -348,39 +346,6 @@ public class DeviceServiceImpl implements DeviceService {
 
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
-			
-			/*if (column.equalsIgnoreCase("mapStatus")) {
-
-				if (filter.getValue().equalsIgnoreCase("assigned")) {
-					mappedDeviceIdList = deviceRepository.findMappedDeviceId();
-					mapStatusList.addAll(buildRegistrationCenterDeviceTypeSearchFilter(mappedDeviceIdList));
-					if (!dto.getFilters().isEmpty() && mappedDeviceIdList.isEmpty()) {
-						pageDto = pageUtils.sortPage(devices, dto.getSort(), dto.getPagination());
-						return pageDto;
-					}
-
-				} else {
-					if (filter.getValue().equalsIgnoreCase("unassigned")) {
-						mappedDeviceIdList = deviceRepository.findNotMappedDeviceId();
-						mapStatusList.addAll(buildRegistrationCenterDeviceTypeSearchFilter(mappedDeviceIdList));
-						isAssigned = false;
-						if (!dto.getFilters().isEmpty() && mappedDeviceIdList.isEmpty()) {
-							pageDto = pageUtils.sortPage(devices, dto.getSort(), dto.getPagination());
-							return pageDto;
-						}
-					} else {
-						auditUtil.auditRequest(
-								String.format(MasterDataConstant.SEARCH_FAILED, DeviceDto.class.getSimpleName()),
-								MasterDataConstant.AUDIT_SYSTEM,
-								String.format(MasterDataConstant.SEARCH_FAILED, DeviceSearchDto.class.getSimpleName()),
-								"ADM-509");
-						throw new RequestException(DeviceErrorCode.INVALID_DEVICE_FILTER_VALUE_EXCEPTION.getErrorCode(),
-								DeviceErrorCode.INVALID_DEVICE_FILTER_VALUE_EXCEPTION.getErrorMessage());
-					}
-
-				}
-				removeList.add(filter);
-			}*/
 
 			if (column.equalsIgnoreCase("deviceTypeName")) {
 				filter.setColumnName(MasterDataConstant.NAME);
@@ -423,8 +388,7 @@ public class DeviceServiceImpl implements DeviceService {
 			OptionalFilter optionalFilter = new OptionalFilter(addList);
 			OptionalFilter zoneOptionalFilter = new OptionalFilter(zoneFilter);
 			Page<Device> page = null;
-			if (/*mapStatusList.isEmpty() ||*/ addList.isEmpty()) {
-				//addList.addAll(mapStatusList);
+			if (addList.isEmpty()) {
 				page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Device.class, dto,
 						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			} else {
@@ -436,12 +400,6 @@ public class DeviceServiceImpl implements DeviceService {
 				setDeviceMetadata(devices, zones);
 				setDeviceTypeNames(devices);
 				setMapStatus(devices,dto.getLanguageCode());
-				/*devices.forEach(device -> {
-					if (device.getMapStatus() == null) {
-						device.setMapStatus("unassigned");
-					}
-				});*/
-
 				pageDto = pageUtils.sortPage(devices, sort, pagination);
 
 			}
@@ -495,7 +453,7 @@ public class DeviceServiceImpl implements DeviceService {
 					.findFirst();
 			deviceSearchDto.setMapStatus(result.isPresent() ?
 					String.format("%s (%s)", deviceSearchDto.getRegCenterId(), result.get().getName()) :
-					"");
+					deviceSearchDto.getRegCenterId());
 		});
 	}
 

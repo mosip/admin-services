@@ -147,28 +147,23 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 		try {
 			List<MachineType> machineTypes = machineTypeRepository
 					.findtoUpdateMachineTypeByCode(machineTypeDto.getCode());
-			/*if (!EmptyCheckUtils.isNullEmpty(machineType)) {
-				if (!machineTypeDto.getIsActive()) {
-					List<MachineSpecification> machineSpecifications = machineSpecificationRepository
-							.findMachineSpecificationByMachineTypeCodeAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(
-									machineTypeDto.getCode(), machineTypeDto.getLangCode());
-					if (!EmptyCheckUtils.isNullEmpty(machineSpecifications)) {
-						throw new RequestException(
-								MachineTypeErrorCode.MACHINE_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorCode(),
-								MachineTypeErrorCode.MACHINE_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorMessage());
-					}
-					masterdataCreationUtil.updateMasterDataDeactivate(MachineType.class, machineTypeDto.getCode());
-				}*/
+			if (null != machineTypes && machineTypes.size() > 0) {
 				machineTypeDto = masterdataCreationUtil.updateMasterData(MachineType.class, machineTypeDto);
 				updMachineType = MetaDataUtils.setUpdateMetaData(machineTypeDto, machineTypes.get(0), false);
 				machineTypeRepository.update(updMachineType);
 				MapperUtils.map(updMachineType, codeAndLanguageCodeID);
-
-				/*
-				 * } else { throw new
-				 * RequestException(MachineTypeErrorCode.MACHINE_TYPE_NOT_FOUND.getErrorCode(),
-				 * MachineTypeErrorCode.MACHINE_TYPE_NOT_FOUND.getErrorMessage()); }
-				 */
+			} else {
+				auditUtil.auditRequest(
+						String.format(MasterDataConstant.FAILURE_CREATE, MachineType.class.getCanonicalName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,
+								MachineTypeErrorCode.MACHINE_TYPE_NOT_FOUND.getErrorCode(),
+								MachineTypeErrorCode.MACHINE_TYPE_NOT_FOUND.getErrorMessage()),
+						"ADM-657");
+				throw new RequestException(MachineTypeErrorCode.MACHINE_TYPE_NOT_FOUND.getErrorCode(),
+						MachineTypeErrorCode.MACHINE_TYPE_NOT_FOUND.getErrorMessage());
+			}
+			 
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException e) {
 			auditUtil.auditRequest(

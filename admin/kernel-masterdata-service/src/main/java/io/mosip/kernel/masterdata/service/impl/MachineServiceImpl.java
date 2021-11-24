@@ -323,9 +323,7 @@ public class MachineServiceImpl implements MachineService {
 		PageResponseDto<MachineSearchDto> pageDto = new PageResponseDto<>();
 		List<MachineSearchDto> machines = null;
 		List<SearchFilter> addList = new ArrayList<>();
-		//List<SearchFilter> mapStatusList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
-		List<String> mappedMachineIdList = null;
 		List<SearchFilter> zoneFilter = new ArrayList<>();
 		List<Zone> zones = null;
 		boolean flag = true;
@@ -342,42 +340,6 @@ public class MachineServiceImpl implements MachineService {
 				removeList.add(filter);
 				flag = false;
 			}
-
-			/*if (column.equalsIgnoreCase("mapStatus")) {
-
-				if (filter.getValue().equalsIgnoreCase("assigned")) {
-					mappedMachineIdList = machineRepository.findMappedMachineId();
-					mapStatusList.addAll(buildRegistrationCenterMachineTypeSearchFilter(mappedMachineIdList));
-					if (!dto.getFilters().isEmpty() && mappedMachineIdList.isEmpty()) {
-						pageDto = pageUtils.sortPage(machines, dto.getSort(), dto.getPagination());
-						return pageDto;
-					}
-
-				} else {
-					if (filter.getValue().equalsIgnoreCase("unassigned")) {
-						mappedMachineIdList = machineRepository.findNotMappedMachineId();
-						mapStatusList.addAll(buildRegistrationCenterMachineTypeSearchFilter(mappedMachineIdList));
-						isAssigned = false;
-						if (!dto.getFilters().isEmpty() && mappedMachineIdList.isEmpty()) {
-							pageDto = pageUtils.sortPage(machines, dto.getSort(), dto.getPagination());
-							return pageDto;
-						}
-					} else {
-						auditUtil.auditRequest(
-								String.format(MasterDataConstant.SEARCH_FAILED, MachineSearchDto.class.getSimpleName()),
-								MasterDataConstant.AUDIT_SYSTEM,
-								String.format(MasterDataConstant.FAILURE_DESC,
-										MachineErrorCode.INVALID_MACHINE_FILTER_VALUE_EXCEPTION.getErrorCode(),
-										MachineErrorCode.INVALID_MACHINE_FILTER_VALUE_EXCEPTION.getErrorMessage()),
-								"ADM-534");
-						throw new RequestException(
-								MachineErrorCode.INVALID_MACHINE_FILTER_VALUE_EXCEPTION.getErrorCode(),
-								MachineErrorCode.INVALID_MACHINE_FILTER_VALUE_EXCEPTION.getErrorMessage());
-					}
-
-				}
-				removeList.add(filter);
-			}*/
 
 			if (column.equalsIgnoreCase("machineTypeName")) {
 				filter.setColumnName("name");
@@ -423,8 +385,7 @@ public class MachineServiceImpl implements MachineService {
 			if(typeName!=null &&!typeName.isEmpty() && addList.isEmpty()) {
 				page = masterdataSearchHelper.nativeMachineQuerySearch(dto, typeName, zones, isAssigned);
 			}
-			else if (/*mapStatusList.isEmpty() ||*/ addList.isEmpty()) {
-				//addList.addAll(mapStatusList);
+			else if (addList.isEmpty()) {
 				optionalFilter = new OptionalFilter(addList);
 				page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Machine.class, dto,
 						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
@@ -436,11 +397,6 @@ public class MachineServiceImpl implements MachineService {
 				setMachineMetadata(machines, zones);
 				setMachineTypeNames(machines);
 				setMapStatus(machines, dto.getLanguageCode());
-				/*machines.forEach(machine -> {
-					if (machine.getMapStatus() == null) {
-						machine.setMapStatus("unassigned");
-					}
-				});*/
 				pageDto = pageUtils.sortPage(machines, sort, pagination);
 			}
 
@@ -486,7 +442,7 @@ public class MachineServiceImpl implements MachineService {
 	 * 
 	 * @param list the {@link MachineSearchDto}.
 	 */
-	private void setMapStatus(List<MachineSearchDto> list,String langCode) {
+	private void setMapStatus(List<MachineSearchDto> list, String langCode) {
 		List<RegistrationCenter> registrationCenterList = machineUtil.getAllRegistrationCenters(langCode);
 		list.forEach(machineSearchDto -> {
 			Optional<RegistrationCenter> result = registrationCenterList.stream()
@@ -495,7 +451,7 @@ public class MachineServiceImpl implements MachineService {
 
 			machineSearchDto.setMapStatus(result.isPresent() ?
 					String.format("%s (%s)", machineSearchDto.getRegCenterId(), result.get().getName()) :
-					"");
+					machineSearchDto.getRegCenterId());
 		});
 	}
 
@@ -757,10 +713,14 @@ public class MachineServiceImpl implements MachineService {
 				validateRegistrationCenter(machinePostReqDto.getRegCenterId());
 				validateRegistrationCenterZone(machineZone,machinePostReqDto.getRegCenterId());
 			}
-			// call method to set isActive value based on primary/Secondary language
-			// machinePostReqDto = masterdataCreationUtil.createMasterData(Machine.class,
-			// machinePostReqDto);
-			
+
+			//validate machine name
+			List<String> duplicateMachines = machineRepository.findByMachineName(machinePostReqDto.getName());
+			if(duplicateMachines != null && duplicateMachines.size() > 0) {
+				throw new RequestException(MachineErrorCode.MACHINE_NAME_EXISTS.getErrorCode(),
+						MachineErrorCode.MACHINE_NAME_EXISTS.getErrorMessage());
+			}
+
 			machineEntity = MetaDataUtils.setCreateMetaData(machinePostReqDto, Machine.class);
 			uniqueId = registrationCenterValidator.generateMachineIdOrvalidateWithDB();
 			machineEntity.setId(uniqueId);
@@ -770,6 +730,15 @@ public class MachineServiceImpl implements MachineService {
 
 			//update machine public key
 			updatePublicKey(machinePostReqDto.getPublicKey(), machinePostReqDto.getSignPublicKey(), machineEntity);
+
+			if ( machineEntity.getKeyIndex() != null || machineEntity.getSignKeyIndex() != null ) {
+				duplicateMachines = machineRepository.findByMachineKeyIndexOrSignKeyIndex(machineEntity.getKeyIndex(),
+						machineEntity.getSignKeyIndex());
+				if( duplicateMachines != null && duplicateMachines.size() > 0 ) {
+					throw new RequestException(MachineErrorCode.MACHINE_KEYS_ALREADY_MAPPED.getErrorCode(),
+							MachineErrorCode.MACHINE_KEYS_ALREADY_MAPPED.getErrorMessage());
+				}
+			}
 
 			// creating a Machine
 			crtMachine = machineRepository.create(machineEntity);
@@ -849,12 +818,6 @@ public class MachineServiceImpl implements MachineService {
 					DeviceErrorCode.INVALID_CENTER_ZONE.getErrorMessage());
 		}
 		Objects.requireNonNull(registrationCenterZone, "registrationCenterZone is empty");
-		/*isInSameHierarchy = subZones.stream().anyMatch(zone -> zone.equals(zoneCode));
-		if(!isInSameHierarchy) {
-			throw new RequestException(MachineErrorCode.INVALID_MACHINE_ZONE.getErrorCode(),
-					MachineErrorCode.INVALID_MACHINE_ZONE.getErrorMessage());
-		}*/
-	
 	}
 
 	/*
@@ -880,38 +843,8 @@ public class MachineServiceImpl implements MachineService {
 				validateRegistrationCenterZone(machineZone,machinePutReqDto.getRegCenterId());
 			}
 			// find requested machine is there or not in Machine Table
-			List<Machine> renMachine = machineRepository
-					.findMachineById(machinePutReqDto.getId());
-
-			if (renMachine != null) {
-
-				machinePutReqDto = masterdataCreationUtil.updateMasterData(Machine.class, machinePutReqDto);
-
-				// call method to update NumKiosis value in regCneter table.
-				// for the regCenter id which has been mapped with the given machine id
-				// updateNumKiosksRegCenter(machinePutReqDto, renMachine);
-
-				// updating registration center
-				updMachineEntity = MetaDataUtils.setUpdateMetaData(machinePutReqDto, renMachine.get(0), false);
-
-				//machine name to be stored in lowercase
-				updMachineEntity.setName(machinePutReqDto.getName());
-
-				//update machine public key
-				updatePublicKey(machinePutReqDto.getPublicKey(), machinePutReqDto.getSignPublicKey(), updMachineEntity);
-
-				// updating Machine
-				updMachine = machineRepository.update(updMachineEntity);
-
-				// updating Machine history
-				MachineHistory machineHistory = new MachineHistory();
-				MapperUtils.map(updMachine, machineHistory);
-				MapperUtils.setBaseFieldValue(updMachine, machineHistory);
-				machineHistory.setEffectDateTime(updMachine.getUpdatedDateTime());
-				machineHistory.setUpdatedDateTime(updMachine.getUpdatedDateTime());
-				machineHistoryService.createMachineHistory(machineHistory);
-
-			} else {
+			List<Machine> renMachine = machineRepository.findMachineById(machinePutReqDto.getId());
+			if(renMachine == null) {
 				// if given Id and language code is not present in DB
 				auditUtil.auditRequest(
 						String.format(MasterDataConstant.FAILURE_UPDATE, Machine.class.getSimpleName()),
@@ -923,6 +856,45 @@ public class MachineServiceImpl implements MachineService {
 				throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
+
+			//validate machine name
+			List<String> duplicateMachines = machineRepository.findByMachineName(machinePutReqDto.getName());
+			if(duplicateMachines != null && duplicateMachines.size() > 1) {
+				throw new RequestException(MachineErrorCode.MACHINE_NAME_EXISTS.getErrorCode(),
+						MachineErrorCode.MACHINE_NAME_EXISTS.getErrorMessage());
+			}
+
+			machinePutReqDto = masterdataCreationUtil.updateMasterData(Machine.class, machinePutReqDto);
+
+			// updating registration center
+			updMachineEntity = MetaDataUtils.setUpdateMetaData(machinePutReqDto, renMachine.get(0), false);
+
+			//machine name to be stored in lowercase
+			updMachineEntity.setName(machinePutReqDto.getName());
+
+			//update machine public key
+			updatePublicKey(machinePutReqDto.getPublicKey(), machinePutReqDto.getSignPublicKey(), updMachineEntity);
+			if ( updMachineEntity.getKeyIndex() != null || updMachineEntity.getSignKeyIndex() != null ) {
+				duplicateMachines = machineRepository.findByMachineKeyIndexOrSignKeyIndex(updMachineEntity.getKeyIndex(),
+						updMachineEntity.getSignKeyIndex());
+				if( duplicateMachines != null && ( !duplicateMachines.contains(machinePutReqDto.getId()) || duplicateMachines.size() > 1 )) {
+					throw new RequestException(MachineErrorCode.MACHINE_KEYS_ALREADY_MAPPED.getErrorCode(),
+							MachineErrorCode.MACHINE_KEYS_ALREADY_MAPPED.getErrorMessage());
+				}
+			}
+
+			// updating Machine
+			updMachine = machineRepository.update(updMachineEntity);
+
+			// updating Machine history
+			MachineHistory machineHistory = new MachineHistory();
+			MapperUtils.map(updMachine, machineHistory);
+			MapperUtils.setBaseFieldValue(updMachine, machineHistory);
+			machineHistory.setEffectDateTime(updMachine.getUpdatedDateTime());
+			machineHistory.setUpdatedDateTime(updMachine.getUpdatedDateTime());
+			machineHistoryService.createMachineHistory(machineHistory);
+
+
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException exception) {
 			auditUtil.auditRequest(
