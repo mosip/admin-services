@@ -64,4 +64,9 @@ public class MachineDto extends BaseDto {
 	 */
 	private String signPublicKey;
 
+	/**
+	 * Field for mapped registration center id
+	 */
+	private String regCenterId;
+
 }
