@@ -42,9 +42,12 @@ public class SwaggerConfig {
                 				.name(openApiProperties.getInfo().getLicense().getName())
                 				.url(openApiProperties.getInfo().getLicense().getUrl())));
 			
+		if (openApiProperties.getService() != null && openApiProperties.getService().getServers() != null) {
 			openApiProperties.getService().getServers().forEach(server -> {
 				api.addServersItem(new Server().description(server.getDescription()).url(server.getUrl()));
 			});
+		}
+		
 			logger.info("swagger open api bean is ready");
 		return api;
     }
