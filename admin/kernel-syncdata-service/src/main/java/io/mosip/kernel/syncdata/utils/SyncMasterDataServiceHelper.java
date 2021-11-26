@@ -209,6 +209,7 @@ public class SyncMasterDataServiceHelper {
 				responseDto.setName(machine.getName());
 				responseDto.setSerialNum(machine.getSerialNum());
 				responseDto.setValidityDateTime(machine.getValidityDateTime());
+				responseDto.setRegCenterId(machine.getRegCenterId());
 				machineDetailDtoList.add(responseDto);
 			});
 
@@ -1059,7 +1060,7 @@ public class SyncMasterDataServiceHelper {
 				if (list.size() > 0) {
 					TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
 					tpmCryptoRequestDto
-							.setValue(CryptoUtil.encodeBase64(mapper.getObjectAsJsonString(list).getBytes()));
+							.setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(list).getBytes()));
 					tpmCryptoRequestDto.setPublicKey(publicKey);
 					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService
 							.csEncrypt(tpmCryptoRequestDto);
@@ -1081,7 +1082,7 @@ public class SyncMasterDataServiceHelper {
 				if (entities.size() > 0) {
 					TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
 					tpmCryptoRequestDto
-							.setValue(CryptoUtil.encodeBase64(mapper.getObjectAsJsonString(entities).getBytes()));
+							.setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(entities).getBytes()));
 					tpmCryptoRequestDto.setPublicKey(publicKey);
 					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService
 							.csEncrypt(tpmCryptoRequestDto);

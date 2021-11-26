@@ -367,6 +367,7 @@ public class MapperUtils {
 				userDetailMapDto.setUserPassword(null);
 				userDetailMapDto.setIsActive(userDto.get().getIsActive());
 				userDetailMapDto.setIsDeleted(userDto.get().getIsDeleted());
+				userDetailMapDto.setRegCenterId(userDto.get().getRegCenterId());
 				List<String> roles = Arrays.asList(userDetail.getRole().split(","));
 				userDetailMapDto.setRoles(roles);
 				userDetailMapDtoList.add(userDetailMapDto);
