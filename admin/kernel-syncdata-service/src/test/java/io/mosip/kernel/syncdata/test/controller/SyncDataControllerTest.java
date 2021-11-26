@@ -159,7 +159,7 @@ public class SyncDataControllerTest {
 		masterDataResponseDto.setHolidays(holidays);
 		List<MachineDto> machines = new ArrayList<>();
 		machines.add(new MachineDto("1001", "Laptop", "QWE23456", "1223:23:31:23", "172.12.128.1", "1",
-				LocalDateTime.parse("2018-01-01T01:01:01"), null, "test", "test"));
+				LocalDateTime.parse("2018-01-01T01:01:01"), null, "test", "test", "test"));
 		masterDataResponseDto.setMachineDetails(machines);
 		List<MachineSpecificationDto> machineSpecifications = new ArrayList<>();
 		machineSpecifications
