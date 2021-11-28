@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.test.controller;
 
 import static org.mockito.Mockito.doNothing;
 
+import io.mosip.kernel.core.util.CryptoUtil;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -48,6 +49,8 @@ public class MachineControllerTest {
 	private ObjectMapper mapper;
 	private RequestWrapper<MachinePostReqDto> machineRequest = new RequestWrapper<>();
 	private RequestWrapper<MachinePutReqDto> machineCenterDto = new RequestWrapper<MachinePutReqDto>();
+
+	private String publicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq5TnNAD1FMWWektYigmUMGw-MtNqjqLWaOZU9focDPT-nwMdw9vOs6S-Szw9Vd-zKVQ3AWkRSyfVD0qxHsPX5N6M6eS_UXvz72WF336MbbInfwzNP-uGfkprMQMt5qg21_rPSqWPU1NA9xN8lO2uPmUH4JNRBGRyvq6X1ETTDhqPsuKDwl9ciBScCMJxf_0bv2Dx7yI8lvYUaApqpoHNbBGVgDcq4f_KRZIU2kO0Ng1ESbj6D5fm0F8ZmFx3NVCKaSbBC8NUeltIRJ6-c9Csw1o23WSFTotViWeIDelsfQDq-tMmx9i9qlX3bcPZdcb7g2wm-4cywK1K5oOf3BEBxwIDAQAB";
 
 	@Before
 	public void setUp() {
@@ -265,8 +268,8 @@ public class MachineControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t022createMachineTest1() throws Exception {
-		machineRequest.getRequest().setPublicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq5TnNAD1FMWWektYigmUMGw+MtNqjqLWaOZU9focDPT+nwMdw9vOs6S+Szw9Vd+zKVQ3AWkRSyfVD0qxHsPX5N6M6eS/UXvz72WF336MbbInfwzNP+uGfkprMQMt5qg21/rPSqWPU1NA9xN8lO2uPmUH4JNRBGRyvq6X1ETTDhqPsuKDwl9ciBScCMJxf/0bv2Dx7yI8lvYUaApqpoHNbBGVgDcq4f/KRZIU2kO0Ng1ESbj6D5fm0F8ZmFx3NVCKaSbBC8NUeltIRJ6+c9Csw1o23WSFTotViWeIDelsfQDq+tMmx9i9qlX3bcPZdcb7g2wm+4cywK1K5oOf3BEBxwIDAQAB");
-		machineRequest.getRequest().setSignPublicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq5TnNAD1FMWWektYigmUMGw+MtNqjqLWaOZU9focDPT+nwMdw9vOs6S+Szw9Vd+zKVQ3AWkRSyfVD0qxHsPX5N6M6eS/UXvz72WF336MbbInfwzNP+uGfkprMQMt5qg21/rPSqWPU1NA9xN8lO2uPmUH4JNRBGRyvq6X1ETTDhqPsuKDwl9ciBScCMJxf/0bv2Dx7yI8lvYUaApqpoHNbBGVgDcq4f/KRZIU2kO0Ng1ESbj6D5fm0F8ZmFx3NVCKaSbBC8NUeltIRJ6+c9Csw1o23WSFTotViWeIDelsfQDq+tMmx9i9qlX3bcPZdcb7g2wm+4cywK1K5oOf3BEBxwIDAQAB");
+		machineRequest.getRequest().setPublicKey(publicKey);
+		machineRequest.getRequest().setSignPublicKey(publicKey);
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/machines").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(machineRequest))).andReturn(),
@@ -276,8 +279,8 @@ public class MachineControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t023createMachineFailTest2() throws Exception {
-		machineRequest.getRequest().setPublicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq5TnNAD1FMWWektYigmUMGw+MtNqjqLWaOZU9focDPT+nwMdw9vOs6S+Szw9Vd+zKVQ3AWkRSyfVD0qxHsPX5N6M6eS/UXvz72WF336MbbInfwzNP+uGfkprMQMt5qg21/rPSqWPU1NA9xN8lO2uPmUH4JNRBGRyvq6X1ETTDhqPsuKDwl9ciBScCMJxf/0bv2Dx7yI8lvYUaApqpoHNbBGVgDcq4f/KRZIU2kO0Ng1ESbj6D5fm0F8ZmFx3NVCKaSbBC8NUeltIRJ6+c9Csw1o23WSFTotViWeIDelsfQDq+tMmx9i9qlX3bcPZdcb7g2wm+4cywK1K5oOf3BEBxwIDAQAB");
-		machineRequest.getRequest().setSignPublicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq5TnNAD1FMWWektYigmUMGw+MtNqjqLWaOZU9focDPT+nwMdw9vOs6S+Szw9Vd+zKVQ3AWkRSyfVD0qxHsPX5N6M6eS/UXvz72WF336MbbInfwzNP+uGfkprMQMt5qg21/rPSqWPU1NA9xN8lO2uPmUH4JNRBGRyvq6X1ETTDhqPsuKDwl9ciBScCMJxf/0bv2Dx7yI8lvYUaApqpoHNbBGVgDcq4f/KRZIU2kO0Ng1ESbj6D5fm0F8ZmFx3NVCKaSbBC8NUeltIRJ6+c9Csw1o23WSFTotViWeIDelsfQDq+tMmx9i9qlX3bcPZdcb7g2wm+4cywK1K5oOf3BEBxwIDAQAB");
+		machineRequest.getRequest().setPublicKey(publicKey);
+		machineRequest.getRequest().setSignPublicKey(publicKey);
 	
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/machines").contentType(MediaType.APPLICATION_JSON)
@@ -299,13 +302,12 @@ public class MachineControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t025updateMachineAdminTest() throws Exception {
-		machineCenterDto.getRequest().setPublicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq5TnNAD1FMWWektYigmUMGw+MtNqjqLWaOZU9focDPT+nwMdw9vOs6S+Szw9Vd+zKVQ3AWkRSyfVD0qxHsPX5N6M6eS/UXvz72WF336MbbInfwzNP+uGfkprMQMt5qg21/rPSqWPU1NA9xN8lO2uPmUH4JNRBGRyvq6X1ETTDhqPsuKDwl9ciBScCMJxf/0bv2Dx7yI8lvYUaApqpoHNbBGVgDcq4f/KRZIU2kO0Ng1ESbj6D5fm0F8ZmFx3NVCKaSbBC8NUeltIRJ6+c9Csw1o23WSFTotViWeIDelsfQDq+tMmx9i9qlX3bcPZdcb7g2wm+4cywK1K5oOf3BEBxwIDAQAB");
-		machineCenterDto.getRequest().setSignPublicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq5TnNAD1FMWWektYigmUMGw+MtNqjqLWaOZU9focDPT+nwMdw9vOs6S+Szw9Vd+zKVQ3AWkRSyfVD0qxHsPX5N6M6eS/UXvz72WF336MbbInfwzNP+uGfkprMQMt5qg21/rPSqWPU1NA9xN8lO2uPmUH4JNRBGRyvq6X1ETTDhqPsuKDwl9ciBScCMJxf/0bv2Dx7yI8lvYUaApqpoHNbBGVgDcq4f/KRZIU2kO0Ng1ESbj6D5fm0F8ZmFx3NVCKaSbBC8NUeltIRJ6+c9Csw1o23WSFTotViWeIDelsfQDq+tMmx9i9qlX3bcPZdcb7g2wm+4cywK1K5oOf3BEBxwIDAQAB");
+		machineCenterDto.getRequest().setPublicKey(publicKey);
+		machineCenterDto.getRequest().setSignPublicKey(publicKey);
 	
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/machines").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(machineCenterDto))).andReturn(),
 				"KER-MSD-414");
 	}
-
 }

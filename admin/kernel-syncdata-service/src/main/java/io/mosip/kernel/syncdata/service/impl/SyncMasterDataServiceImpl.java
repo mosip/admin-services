@@ -138,7 +138,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	
 	@Override
 	public UploadPublicKeyResponseDto validateKeyMachineMapping(UploadPublicKeyRequestDto dto) {
-		List<Machine> machines = machineRepo.findByMachineNameAndIsActive(dto.getMachineName());
+		List<Machine> machines = machineRepo.findByMachineName(dto.getMachineName());
 		
 		if(machines == null || machines.isEmpty())
 			throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
@@ -148,8 +148,8 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 			throw new RequestException(MasterDataErrorCode.MACHINE_PUBLIC_KEY_NOT_WHITELISTED.getErrorCode(),
 					MasterDataErrorCode.MACHINE_PUBLIC_KEY_NOT_WHITELISTED.getErrorMessage());
 		
-		if(Arrays.equals(CryptoUtil.decodeBase64(dto.getPublicKey()), 
-				CryptoUtil.decodeBase64(machines.get(0).getPublicKey()))) {
+		if(Arrays.equals(CryptoUtil.decodeURLSafeBase64(dto.getPublicKey()),
+				CryptoUtil.decodeURLSafeBase64(machines.get(0).getPublicKey()))) {
 			return new UploadPublicKeyResponseDto(machines.get(0).getKeyIndex());
 		}
 		
@@ -287,7 +287,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	private String getEncryptedData(byte[] bytes, String publicKey) {
 		try {
 			TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
-			tpmCryptoRequestDto.setValue(CryptoUtil.encodeBase64(bytes));
+			tpmCryptoRequestDto.setValue(CryptoUtil.encodeToURLSafeBase64(bytes));
 			tpmCryptoRequestDto.setPublicKey(publicKey);
 			TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
 			return tpmCryptoResponseDto.getValue();
