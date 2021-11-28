@@ -190,7 +190,7 @@ public class ClientSettingsHelper {
         try {
             TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
             tpmCryptoRequestDto
-                    .setValue(CryptoUtil.encodeBase64(mapper.getObjectAsJsonString(urlDetails).getBytes()));
+                    .setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(urlDetails).getBytes()));
             tpmCryptoRequestDto.setPublicKey(publicKey);
             TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService
                     .csEncrypt(tpmCryptoRequestDto);
@@ -209,7 +209,7 @@ public class ClientSettingsHelper {
             try {
                 TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
                 tpmCryptoRequestDto
-                        .setValue(CryptoUtil.encodeBase64(mapper.getObjectAsJsonString(urlDetail).getBytes()));
+                        .setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(urlDetail).getBytes()));
                 tpmCryptoRequestDto.setPublicKey(publicKey);
                 TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService
                         .csEncrypt(tpmCryptoRequestDto);

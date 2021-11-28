@@ -258,7 +258,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	private String getEncryptedData(String data, String publicKey) {
 		try {
 			TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
-			tpmCryptoRequestDto.setValue(CryptoUtil.encodeBase64(data.getBytes()));
+			tpmCryptoRequestDto.setValue(CryptoUtil.encodeToURLSafeBase64(data.getBytes()));
 			tpmCryptoRequestDto.setPublicKey(publicKey);
 			TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
 			return tpmCryptoResponseDto.getValue();

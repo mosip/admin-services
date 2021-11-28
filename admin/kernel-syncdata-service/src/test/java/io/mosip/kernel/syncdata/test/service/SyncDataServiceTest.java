@@ -151,7 +151,7 @@ public class SyncDataServiceTest {
 
 
 	private String encodedTPMPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn4A-U6V4SpSeJmjl0xtBDgyFaHn1CvglvnpbczxiDakH6ks8tPvIYT4jDOU-9XaUYKuMFhLxS7G8qwJhv7GKpDQXphSXjgwv_l8A--KV6C1UVaHoAs4XuJPFdXneSd9uMH94GO6lWucyOyfaZLrf5F_--2Rr4ba4rBWw20OrAl1c7FrzjIQjzYXgnBMrvETXptxKKrMELwOOsuyc1Ju4wzPJHYjI0Em4q2BOcQLXqYjhsZhcYeTqBFxXjCOM3WQKLCIsh9RN8Hz-s8yJbQId6MKIS7HQNCTbhbjl1jdfwqRwmBaZz0Gt73I4_8SVCcCQzJWVsakLC1oJAFcmi3l_mQIDAQAB";
-	private byte[] tpmPublicKey = CryptoUtil.decodeBase64(encodedTPMPublicKey);
+	private byte[] tpmPublicKey = CryptoUtil.decodeURLSafeBase64(encodedTPMPublicKey);
 	private String keyIndex = CryptoUtil.computeFingerPrint(tpmPublicKey, null);
 
 	@Before
@@ -460,8 +460,8 @@ public class SyncDataServiceTest {
 		Machine machine = new Machine("1001", "Laptop", "9876427", "172.12.01.128", "21:21:21:12", "1001", "ENG", localdateTime,
 				encodedTPMPublicKey, keyIndex, "ZONE","10002", null,encodedTPMPublicKey, keyIndex);
 		List<Machine> machines = new ArrayList<Machine>();
-		machines.add(machine);			
-		when(machineRespository.findByMachineNameAndIsActive(Mockito.anyString())).thenReturn(machines);
+		machines.add(machine);
+		when(machineRespository.findByMachineName(Mockito.anyString())).thenReturn(machines);
 		
 		UploadPublicKeyRequestDto dto = new UploadPublicKeyRequestDto("laptop", encodedTPMPublicKey, encodedTPMPublicKey);
 		UploadPublicKeyResponseDto resp = masterDataService.validateKeyMachineMapping(dto);

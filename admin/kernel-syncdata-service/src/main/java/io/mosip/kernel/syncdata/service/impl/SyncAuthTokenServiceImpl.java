@@ -128,9 +128,9 @@ public class SyncAuthTokenServiceImpl {
                 validateRequestTimestamp(machineAuthDto.getTimestamp());
                 ResponseWrapper<TokenResponseDto> responseWrapper = getTokenResponseDTO(machineAuthDto);
                 String token = objectMapper.writeValueAsString(responseWrapper.getResponse());
-                byte[] cipher = clientCryptoFacade.encrypt(CryptoUtil.decodeBase64(machine.getPublicKey()),
+                byte[] cipher = clientCryptoFacade.encrypt(CryptoUtil.decodeURLSafeBase64(machine.getPublicKey()),
                         token.getBytes());
-                return CryptoUtil.encodeBase64(cipher);
+                return CryptoUtil.encodeToURLSafeBase64(cipher);
 
             } catch (Exception ex) {
                 logger.error("Failed to get auth tokens", ex);
@@ -205,7 +205,7 @@ public class SyncAuthTokenServiceImpl {
 
             try {
                 logger.info("validateRequestData for machine : {} with status : {}", machines.get(0).getId(), machines.get(0).getIsActive());
-                boolean verified = clientCryptoFacade.validateSignature(CryptoUtil.decodeBase64(machines.get(0).getSignPublicKey()),
+                boolean verified = clientCryptoFacade.validateSignature(CryptoUtil.decodeURLSafeBase64(machines.get(0).getSignPublicKey()),
                         signature, payload);
                 logger.info("validateRequestData verified : {}", verified);
                 if(verified) {  return machines.get(0); }
