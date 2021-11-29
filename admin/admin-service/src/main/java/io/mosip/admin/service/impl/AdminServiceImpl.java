@@ -58,7 +58,9 @@ public class AdminServiceImpl implements AdminService {
 
 	private void createLostRidRequest(SearchInfo searchInfoRequest) {
 		for(FilterInfo fi:searchInfoRequest.getFilters()){
-			fi.setType("equals");
+			if(fi.getType().equalsIgnoreCase("contains")) {
+				fi.setType("equals");
+			}
 		}
 		if (searchInfoRequest.getSort().isEmpty()) {
 			List<SortInfo> sortInfos = searchInfoRequest.getSort();
