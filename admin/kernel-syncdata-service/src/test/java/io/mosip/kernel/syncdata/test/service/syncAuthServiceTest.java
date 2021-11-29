@@ -139,7 +139,7 @@ public class syncAuthServiceTest {
         otpResponseWrapper.setResponse(authNResponse);
         otpResponseWrapper.setResponsetime(LocalDateTime.now(ZoneOffset.UTC));
 
-        byte[] dumbCipher = new byte[0];
+        byte[] dumbCipher = "test-encrypted-data".getBytes(StandardCharsets.UTF_8);
         when(clientCryptoFacade.encrypt(Mockito.any(), Mockito.any())).thenReturn(dumbCipher);
 
     }

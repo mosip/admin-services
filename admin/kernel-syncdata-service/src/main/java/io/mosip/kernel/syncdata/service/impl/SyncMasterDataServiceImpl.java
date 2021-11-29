@@ -138,7 +138,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	
 	@Override
 	public UploadPublicKeyResponseDto validateKeyMachineMapping(UploadPublicKeyRequestDto dto) {
-		List<Machine> machines = machineRepo.findByMachineNameAndIsActive(dto.getMachineName());
+		List<Machine> machines = machineRepo.findByMachineName(dto.getMachineName());
 		
 		if(machines == null || machines.isEmpty())
 			throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
