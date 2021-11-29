@@ -66,7 +66,7 @@ public class UserDetailControllerTest {
 	private RequestWrapper<UserDetailsDto> ud = new RequestWrapper<>();
 	private RequestWrapper<UserDetailsPutReqDto> udp = new RequestWrapper<UserDetailsPutReqDto>();
 	private RequestWrapper<SearchDtoWithoutLangCode> sr=new RequestWrapper<SearchDtoWithoutLangCode>();
-
+	String response =null;
 	@Before
 	public void setUp() {
 		mapper = new ObjectMapper();
@@ -108,7 +108,7 @@ public class UserDetailControllerTest {
 	
 		sr.setRequest(sc);
 		
-		String response = "{\r\n" +
+		 response = "{\r\n" +
 				"  \"id\": null,\r\n" +
 				"  \"version\": null,\r\n" +
 				"  \"responsetime\": \"2021-03-31T04:27:31.590Z\",\r\n" +
@@ -285,13 +285,56 @@ public class UserDetailControllerTest {
 				mockMvc.perform(MockMvcRequestBuilders.get("/usersdetails")).andReturn(), null);
 	}
 	
-	/*@Test
+	@Test
 	@WithUserDetails("global-admin")
 	public void t016searchUserCenterMappingDetailsTest() throws Exception {
+		MockRestServiceServer mockRestServiceServer1 = MockRestServiceServer.bindTo(restTemplate).build();
+		
+		mockRestServiceServer1.expect(requestTo(userDetailsUri + "/admin?search=abcd"))
+		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
+
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
 				null);
 
-	}*/
+	}
+	@Test
+	@WithUserDetails("global-admin")
+	public void t016searchUserCenterMappingDetailsTest1() throws Exception {
+		//MockRestServiceServer mockRestServiceServer1 = MockRestServiceServer.bindTo(restTemplate).build();
+		
+		//mockRestServiceServer1.expect(requestTo(userDetailsUri + "/admin?search=abcd"))
+		//.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
+		sr.getRequest().getFilters().get(0).setColumnName("zoneCode");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
+				null);
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t016searchUserCenterMappingDetailsTest2() throws Exception {
+		//MockRestServiceServer mockRestServiceServer1 = MockRestServiceServer.bindTo(restTemplate).build();
+		
+		//mockRestServiceServer1.expect(requestTo(userDetailsUri + "/admin?search=abcd"))
+		//.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
+		sr.getRequest().getFilters().get(0).setColumnName("zoneName");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
+				null);
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t016searchUserCenterMappingDetailsTest3() throws Exception {
+		//MockRestServiceServer mockRestServiceServer1 = MockRestServiceServer.bindTo(restTemplate).build();
+		
+		//mockRestServiceServer1.expect(requestTo(userDetailsUri + "/admin?search=abcd"))
+		//.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
+		sr.getRequest().getFilters().get(0).setColumnName("regCenterName");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
+				null);
+
+	}
 
 	@Test
 	@WithUserDetails("global-admin")
