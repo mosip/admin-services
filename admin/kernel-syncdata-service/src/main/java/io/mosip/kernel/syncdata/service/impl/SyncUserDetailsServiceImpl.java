@@ -210,7 +210,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 			try {
 				if(userDetails.size() > 0) {
 					TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
-					tpmCryptoRequestDto.setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(userDetails).getBytes()));
+					tpmCryptoRequestDto.setValue(CryptoUtil.encodeBase64(mapper.getObjectAsJsonString(userDetails).getBytes()));
 					tpmCryptoRequestDto.setPublicKey(regCenterMachineDto.getPublicKey());
 					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
 					syncUserDto.setUserDetails(tpmCryptoResponseDto.getValue());

@@ -85,15 +85,15 @@ public class MachineUtil {
 	public String getX509EncodedPublicKey(String encodedKey, String key) {
 		try {
 			try {
-				TPMT_PUBLIC tpmPublic = TPMT_PUBLIC.fromTpm(CryptoUtil.decodeURLSafeBase64(encodedKey));
-				return CryptoUtil.encodeToURLSafeBase64(tpmPublic.toTpm());
+				TPMT_PUBLIC tpmPublic = TPMT_PUBLIC.fromTpm(CryptoUtil.decodeBase64(encodedKey));
+				return CryptoUtil.encodeBase64(tpmPublic.toTpm());
 			} catch (Throwable throwable) {
 				logger.error(
 						"Failed to parse TPM public key. Using java.security.KeyFactory, Considering it as NON-TPM key");
-				X509EncodedKeySpec keySpec = new X509EncodedKeySpec(CryptoUtil.decodeURLSafeBase64(encodedKey));
+				X509EncodedKeySpec keySpec = new X509EncodedKeySpec(CryptoUtil.decodeBase64(encodedKey));
 				KeyFactory kf = KeyFactory.getInstance(ALGORITHM);
 				PublicKey publicKey = kf.generatePublic(keySpec);
-				return CryptoUtil.encodeToURLSafeBase64(publicKey.getEncoded());
+				return CryptoUtil.encodeBase64(publicKey.getEncoded());
 			}
 		} catch (Exception e) {
 			logger.error("Invalid sign public key provided", e);

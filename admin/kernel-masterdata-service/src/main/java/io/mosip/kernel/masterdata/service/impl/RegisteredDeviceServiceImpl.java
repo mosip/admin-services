@@ -155,9 +155,9 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 		String deviceDataPayLoad = getPayLoad(registeredDevicePostDto.getDeviceData());
 		String headerString, signedResponse, registerDevice = null;
 
-		deviceData = mapper.readValue(CryptoUtil.decodeURLSafeBase64(deviceDataPayLoad), DeviceData.class);
+		deviceData = mapper.readValue(CryptoUtil.decodeBase64(deviceDataPayLoad), DeviceData.class);
 		validate(deviceData);
-		digitalId = mapper.readValue(CryptoUtil.decodeURLSafeBase64(deviceData.getDeviceInfo().getDigitalId()),
+		digitalId = mapper.readValue(CryptoUtil.decodeBase64(deviceData.getDeviceInfo().getDigitalId()),
 				DigitalId.class);
 		validate(digitalId);
 		deviceProvider = deviceProviderRepository.findByIdAndNameAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(
@@ -209,7 +209,7 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 
 			registerDeviceResponse = MapperUtils.mapRegisteredDeviceResponse(entity, deviceData);
 			registerDeviceResponse
-					.setDigitalId(CryptoUtil.encodeToURLSafeBase64(mapper.writeValueAsString(digitalId).getBytes("UTF-8")));
+					.setDigitalId(CryptoUtil.encodeBase64(mapper.writeValueAsString(digitalId).getBytes("UTF-8")));
 			registerDeviceResponse.setEnv(envStage);
 			HeaderRequest header = new HeaderRequest();
 			header.setAlg("RS256");
@@ -314,9 +314,9 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 
 	private String convertToJWS(String headerString, String registerDevice, String signedResponse) {
 
-		return CryptoUtil.encodeToURLSafeBase64(headerString.getBytes()) + "."
-				+ CryptoUtil.encodeToURLSafeBase64(registerDevice.getBytes()) + "."
-				+ CryptoUtil.encodeToURLSafeBase64(signedResponse.getBytes());
+		return CryptoUtil.encodeBase64String(headerString.getBytes()) + "."
+				+ CryptoUtil.encodeBase64String(registerDevice.getBytes()) + "."
+				+ CryptoUtil.encodeBase64String(signedResponse.getBytes());
 	}
 
 	private String getSignedResponse(RegisterDeviceResponse registerDeviceResponse) throws IOException {
@@ -326,7 +326,7 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 		HttpEntity<RequestWrapper<SignRequestDto>> httpEntity = new HttpEntity<>(request, new HttpHeaders());
 		
 			signatureRequestDto
-					.setData(CryptoUtil.encodeToURLSafeBase64(mapper.writeValueAsBytes(registerDeviceResponse)));
+					.setData(CryptoUtil.encodeBase64String(mapper.writeValueAsBytes(registerDeviceResponse)));
 			request.setRequest(signatureRequestDto);
 			ResponseEntity<String> response = restTemplate.exchange(signUrl, HttpMethod.POST, httpEntity, String.class);
 			ResponseWrapper<?> responseObject;
@@ -365,7 +365,7 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 		String headerString, signedResponse, deRegisterDevice = null;
 		String devicePayLoad = getPayLoad(deRegisterDevicePostDto.getDevice());
 		try {
-			DeRegisterDeviceReqDto device = mapper.readValue(CryptoUtil.decodeURLSafeBase64(devicePayLoad), DeRegisterDeviceReqDto.class);
+			DeRegisterDeviceReqDto device = mapper.readValue(CryptoUtil.decodeBase64(devicePayLoad), DeRegisterDeviceReqDto.class);
 			validate(device);
 			deviceRegisterEntity = registeredDeviceRepository.findByCodeAndIsActiveIsTrue(device.getDeviceCode());
 			if (deviceRegisterEntity != null) {
@@ -419,7 +419,7 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 		HttpEntity<RequestWrapper<SignRequestDto>> httpEntity = new HttpEntity<>(request, new HttpHeaders());
 		
 			signatureRequestDto
-					.setData(CryptoUtil.encodeToURLSafeBase64(mapper.writeValueAsBytes(registerDeviceResponse)));
+					.setData(CryptoUtil.encodeBase64String(mapper.writeValueAsBytes(registerDeviceResponse)));
 			request.setRequest(signatureRequestDto);
 			ResponseEntity<String> response = restTemplate.exchange(signUrl, HttpMethod.POST, httpEntity, String.class);
 			ResponseWrapper<?> responseObject;
