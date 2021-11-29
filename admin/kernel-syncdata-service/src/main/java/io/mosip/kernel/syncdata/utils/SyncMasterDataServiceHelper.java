@@ -53,7 +53,7 @@ import io.mosip.kernel.syncdata.dto.response.SyncDataBaseDto;
 @Component
 public class SyncMasterDataServiceHelper {
 
-	private Logger logger = LoggerFactory.getLogger(SyncMasterDataServiceHelper.class);
+	private final static Logger logger = LoggerFactory.getLogger(SyncMasterDataServiceHelper.class);
 
 	@Autowired
 	private MapperUtils mapper;

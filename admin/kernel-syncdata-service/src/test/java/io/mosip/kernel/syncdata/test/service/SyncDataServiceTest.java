@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import io.mosip.kernel.keymanagerservice.entity.CACertificateStore;
 import io.mosip.kernel.keymanagerservice.repository.CACertificateStoreRepository;
 import io.mosip.kernel.syncdata.dto.response.CACertificates;
@@ -79,6 +80,9 @@ public class SyncDataServiceTest {
 
 	@Autowired
 	private SyncRolesService syncRolesService;
+
+	@Autowired
+	private CryptomanagerUtils cryptomanagerUtils;
 
 	/**
 	 * Environment instance
@@ -151,8 +155,8 @@ public class SyncDataServiceTest {
 
 
 	private String encodedTPMPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn4A-U6V4SpSeJmjl0xtBDgyFaHn1CvglvnpbczxiDakH6ks8tPvIYT4jDOU-9XaUYKuMFhLxS7G8qwJhv7GKpDQXphSXjgwv_l8A--KV6C1UVaHoAs4XuJPFdXneSd9uMH94GO6lWucyOyfaZLrf5F_--2Rr4ba4rBWw20OrAl1c7FrzjIQjzYXgnBMrvETXptxKKrMELwOOsuyc1Ju4wzPJHYjI0Em4q2BOcQLXqYjhsZhcYeTqBFxXjCOM3WQKLCIsh9RN8Hz-s8yJbQId6MKIS7HQNCTbhbjl1jdfwqRwmBaZz0Gt73I4_8SVCcCQzJWVsakLC1oJAFcmi3l_mQIDAQAB";
-	private byte[] tpmPublicKey = CryptoUtil.decodeBase64(encodedTPMPublicKey);
-	private String keyIndex = CryptoUtil.computeFingerPrint(tpmPublicKey, null);
+	//private byte[] tpmPublicKey = cryptomanagerUtils.decodeBase64Data(encodedTPMPublicKey);
+
 
 	@Before
 	public void setup() {
@@ -455,7 +459,8 @@ public class SyncDataServiceTest {
 	
 	//machine public key mapping test cases
 	@Test
-	public void verifyPublicKeyMachineMappingSuccess() {			
+	public void verifyPublicKeyMachineMappingSuccess() {
+		String keyIndex = CryptoUtil.computeFingerPrint(cryptomanagerUtils.decodeBase64Data(encodedTPMPublicKey), null);
 		LocalDateTime localdateTime = LocalDateTime.parse("2018-11-01T01:01:01");
 		Machine machine = new Machine("1001", "Laptop", "9876427", "172.12.01.128", "21:21:21:12", "1001", "ENG", localdateTime,
 				encodedTPMPublicKey, keyIndex, "ZONE","10002", null,encodedTPMPublicKey, keyIndex);
@@ -491,7 +496,8 @@ public class SyncDataServiceTest {
 	}
 	
 	@Test(expected = RequestException.class)
-	public void verifyPublicKeyMachineMappingInvalidKey() {			
+	public void verifyPublicKeyMachineMappingInvalidKey() {
+		String keyIndex = CryptoUtil.computeFingerPrint(cryptomanagerUtils.decodeBase64Data(encodedTPMPublicKey), null);
 		LocalDateTime localdateTime = LocalDateTime.parse("2018-11-01T01:01:01");
 		Machine machine = new Machine("1001", "Laptop", "9876427", "172.12.01.128", "21:21:21:12", "1001", "ENG", localdateTime,
 				encodedTPMPublicKey, keyIndex, "ZONE","10002", null, encodedTPMPublicKey, keyIndex);
