@@ -29,20 +29,29 @@ public class MachineUtilTest {
 
     @Test(expected = Exception.class)
     public void testTPMPublicKey() {
-        TPMT_PUBLIC tpmPublic = TPMT_PUBLIC.fromTpm(CryptoUtil.decodeBase64(encodedKey));
-        Assert.assertNotNull(CryptoUtil.encodeBase64(tpmPublic.toTpm()));
+        TPMT_PUBLIC tpmPublic = TPMT_PUBLIC.fromTpm(decodeBase64Data(encodedKey));
+        Assert.assertNotNull(CryptoUtil.encodeToURLSafeBase64(tpmPublic.toTpm()));
     }
 
     @Test
     public void testPublicKey() {
-        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(CryptoUtil.decodeBase64(encodedKey));
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decodeBase64Data(encodedKey));
         PublicKey publicKey = null;
         try {
             KeyFactory kf = KeyFactory.getInstance(ALGORITHM);
             publicKey = kf.generatePublic(keySpec);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {   }
         Assert.assertNotNull(publicKey);
-        Assert.assertNotNull(CryptoUtil.encodeBase64(publicKey.getEncoded()));
+        Assert.assertNotNull(CryptoUtil.encodeToURLSafeBase64(publicKey.getEncoded()));
+    }
+
+    private byte[] decodeBase64Data(String anyBase64EncodedData){
+        try{
+            return CryptoUtil.decodeURLSafeBase64(anyBase64EncodedData);
+        } catch(IllegalArgumentException argException) {
+
+        }
+        return CryptoUtil.decodeBase64(anyBase64EncodedData);
     }
 
 }

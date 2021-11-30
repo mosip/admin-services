@@ -91,7 +91,7 @@ public class DeviceControllerTest {
 
 		devicePutReqDtoReq = new RequestWrapper<DevicePutReqDto>();
 		DevicePutReqDto devicePutReqDto = new DevicePutReqDto();
-		devicePutReqDto.setId("1004");
+		devicePutReqDto.setId("3000038");
 		devicePutReqDto.setDeviceSpecId("327");
 		devicePutReqDto.setIsActive(true);
 		devicePutReqDto.setLangCode("eng");
@@ -148,9 +148,9 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	// @WithUserDetails("zonal-admin")
+	 @WithUserDetails("global-admin")
 	public void t002createDeviceTest() throws Exception {
-		deviceDtoReq.getRequest().setZoneCode("RBT");
+		//deviceDtoReq.getRequest().setZoneCode("RBT");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devices")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(deviceDtoReq))).andReturn(),
 				null);
@@ -158,13 +158,13 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t002createDeviceFailTest1() throws Exception {
 		
 		deviceDtoReq.getRequest().setZoneCode("JRD");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devices")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(deviceDtoReq))).andReturn(),
-				"KER-MSD-339");
+				"KER-MSD-439");
 
 	}
 
@@ -194,7 +194,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t004updateDeviceTest() throws Exception {
 		
 		MasterDataTest.checkResponse(
@@ -205,7 +205,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
- 	//@WithUserDetails("global-admin")
+ 	@WithUserDetails("global-admin")
 	public void t004updateDeviceFailTest() throws Exception {
 		
 		devicePutReqDtoReq.getRequest().setName("updated");
@@ -217,7 +217,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t004updateDeviceFailTest1() throws Exception {
 		
 		devicePutReqDtoReq.getRequest().setName("updated");
@@ -376,7 +376,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t020deleteDeviceFailTest() throws Exception {
 		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/devices/100100")).andReturn(),
@@ -384,7 +384,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t019deleteDeviceTest() throws Exception {
 		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/devices/3000058")).andReturn(), null);

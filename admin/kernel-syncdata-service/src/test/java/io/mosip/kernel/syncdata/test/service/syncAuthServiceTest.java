@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.clientcrypto.service.impl.ClientCryptoFacade;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import io.mosip.kernel.syncdata.dto.MachineAuthDto;
 import io.mosip.kernel.syncdata.dto.MachineOtpDto;
 import io.mosip.kernel.syncdata.dto.UserDetailDto;
@@ -110,6 +111,9 @@ public class syncAuthServiceTest {
     @Autowired
     private SyncUserDetailsService syncUserDetailsService;
 
+    @Autowired
+    private CryptomanagerUtils cryptomanagerUtils;
+
 
     private String encodedTPMPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn4A-U6V4SpSeJmjl0xtBDgyFaHn1CvglvnpbczxiDakH6ks8tPvIYT4jDOU-9XaUYKuMFhLxS7G8qwJhv7GKpDQXphSXjgwv_l8A--KV6C1UVaHoAs4XuJPFdXneSd9uMH94GO6lWucyOyfaZLrf5F_--2Rr4ba4rBWw20OrAl1c7FrzjIQjzYXgnBMrvETXptxKKrMELwOOsuyc1Ju4wzPJHYjI0Em4q2BOcQLXqYjhsZhcYeTqBFxXjCOM3WQKLCIsh9RN8Hz-s8yJbQId6MKIS7HQNCTbhbjl1jdfwqRwmBaZz0Gt73I4_8SVCcCQzJWVsakLC1oJAFcmi3l_mQIDAQAB";
     private byte[] tpmPublicKey = Base64.getUrlDecoder().decode(encodedTPMPublicKey);
@@ -139,7 +143,7 @@ public class syncAuthServiceTest {
         otpResponseWrapper.setResponse(authNResponse);
         otpResponseWrapper.setResponsetime(LocalDateTime.now(ZoneOffset.UTC));
 
-        byte[] dumbCipher = new byte[0];
+        byte[] dumbCipher = "test-encrypted-data".getBytes(StandardCharsets.UTF_8);
         when(clientCryptoFacade.encrypt(Mockito.any(), Mockito.any())).thenReturn(dumbCipher);
 
     }

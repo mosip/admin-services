@@ -32,7 +32,7 @@ import tss.tpm.TPMT_PUBLIC;
 @Component
 public class MachineUtil {
 
-	private final Logger logger = LoggerFactory.getLogger(MachineUtil.class);
+	private static final Logger logger = LoggerFactory.getLogger(MachineUtil.class);
 
 	private static final String ALGORITHM = "RSA";
 
@@ -85,15 +85,15 @@ public class MachineUtil {
 	public String getX509EncodedPublicKey(String encodedKey, String key) {
 		try {
 			try {
-				TPMT_PUBLIC tpmPublic = TPMT_PUBLIC.fromTpm(CryptoUtil.decodeBase64(encodedKey));
-				return CryptoUtil.encodeBase64(tpmPublic.toTpm());
+				TPMT_PUBLIC tpmPublic = TPMT_PUBLIC.fromTpm(decodeBase64Data(encodedKey));
+				return CryptoUtil.encodeToURLSafeBase64(tpmPublic.toTpm());
 			} catch (Throwable throwable) {
 				logger.error(
 						"Failed to parse TPM public key. Using java.security.KeyFactory, Considering it as NON-TPM key");
-				X509EncodedKeySpec keySpec = new X509EncodedKeySpec(CryptoUtil.decodeBase64(encodedKey));
+				X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decodeBase64Data(encodedKey));
 				KeyFactory kf = KeyFactory.getInstance(ALGORITHM);
 				PublicKey publicKey = kf.generatePublic(keySpec);
-				return CryptoUtil.encodeBase64(publicKey.getEncoded());
+				return CryptoUtil.encodeToURLSafeBase64(publicKey.getEncoded());
 			}
 		} catch (Exception e) {
 			logger.error("Invalid sign public key provided", e);
@@ -104,5 +104,14 @@ public class MachineUtil {
 		else
 			throw new RequestException(MachineErrorCode.INVALID_SIGN_PUBLIC_KEY.getErrorCode(),
 					MachineErrorCode.INVALID_SIGN_PUBLIC_KEY.getErrorMessage());
+	}
+
+	public byte[] decodeBase64Data(String anyBase64EncodedData){
+		try{
+			return CryptoUtil.decodeURLSafeBase64(anyBase64EncodedData);
+		} catch(IllegalArgumentException argException) {
+			logger.error("Error Decoding Base64 URL Safe data, trying with Base64 normal decode.");
+		}
+		return CryptoUtil.decodeBase64(anyBase64EncodedData);
 	}
 }

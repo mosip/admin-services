@@ -15,12 +15,15 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -49,6 +52,7 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.FlatFileParseException;
 import org.springframework.batch.item.file.LineCallbackHandler;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
@@ -115,6 +119,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 	private static final Logger logger = LoggerFactory.getLogger(BulkDataUploadServiceImpl.class);
 
+	private static Predicate<String> emptyCheck = String::isBlank;
+
 	@Autowired
 	ApplicationContext applicationContext;
 
@@ -147,6 +153,12 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 	@Autowired
 	PlatformTransactionManager platformTransactionManager;
+
+	@Value("${mosip.mandatory-languages}")
+	private String mandatoryLanguages;
+
+	@Value("${mosip.optional-languages}")
+	private String optionalLanguages;
 
 	private Map<String, Class> entityMap = new HashMap<String, Class>();
 
@@ -223,8 +235,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 		if (files == null || files.length == 0) {
 			auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_ARGUMENT);
-			throw new RequestException(BulkUploadErrorCode.EMPTY_FILE.getErrorCode(),
-					BulkUploadErrorCode.EMPTY_FILE.getErrorMessage());
+			throw new RequestException(BulkUploadErrorCode.NO_FILE.getErrorCode(),
+					BulkUploadErrorCode.NO_FILE.getErrorMessage());
 		}
 
 		if (tableName == null || tableName.isBlank()) {
@@ -252,7 +264,6 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 		JobBuilderFactory jobBuilderFactory = new JobBuilderFactory(jobRepository);
 		StepBuilderFactory stepBuilderFactory = new StepBuilderFactory(jobRepository, platformTransactionManager);
 		List<String> failureMessage = new ArrayList<String>();
-		// Map<String,String> failureMessage=new HashMap<String, String>();
 		int[] numArr = { 0 };
 		String[] status = { "PROCESS" };
 		Arrays.asList(files).stream().forEach(file -> {
@@ -271,7 +282,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 						BulkUploadErrorCode.EMPTY_FILE.getErrorMessage());
 			}
 
-			if (!file.getOriginalFilename().endsWith("csv")) {
+			if (!file.getOriginalFilename().endsWith(".csv")) {
 				auditUtil.setAuditRequestDto(
 						EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_EXT_VALIDATOR_ISSUE, file.getOriginalFilename()));
 				throw new RequestException(BulkUploadErrorCode.INVALID_FILE_FORMAT.getErrorCode(),
@@ -302,15 +313,24 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 				numArr[0] += stepExecution.getReadCount();
 
 				if (status[0].equalsIgnoreCase("FAILED")) {
-					String msg = stepExecution.getExitStatus().getExitDescription();
-					logger.error("Exit description : {}", msg);
+					jobExecution.getStepExecutions().forEach( step -> {
+						step.getFailureExceptions().forEach( failure -> {
+							if( failure instanceof FlatFileParseException) {
+								failureMessage.add("Line: " + ((FlatFileParseException)failure).getLineNumber() +
+										" >> Datatype mismatch / Failed to write into object");
+							}
+							else
+								failureMessage.add(failure.getMessage());
 
-					failureMessage.add( (msg.length() >= 256) ? msg.substring(0, 250) : msg);
+							logger.error("Step failed - {}", file.getOriginalFilename(), failure);
+						});
+					});
+
 					auditUtil.setAuditRequestDto(
 							EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV_STATUS_ERROR,
 									"{filename: '" + file.getOriginalFilename() + "',operation:'" + operation
 											+ "',jobid:'" + jobExecution.getJobId() + "',message: '" +
-											((msg.length() >= 256) ? msg.substring(0, 250) : msg ) + "'}"));
+											failureMessage + "'}"));
 
 				} else
 					auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV_STATUS,
@@ -529,16 +549,21 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 			@Override
 			public Object process(Object item) throws Exception {
 				setCreateMetaData();
-				if (operation.equalsIgnoreCase("insert")) {
-					((BaseEntity) item).setCreatedBy(setCreateMetaData());
-					((BaseEntity) item).setCreatedDateTime(now);
-				} else if (operation.equalsIgnoreCase("update")) {
-					((BaseEntity) item).setUpdatedBy(setCreateMetaData());
-					((BaseEntity) item).setUpdatedDateTime(now);
-				} else if (operation.equalsIgnoreCase("delete")) {
-					((BaseEntity) item).setIsActive(false);
-					((BaseEntity) item).setIsDeleted(true);
-					((BaseEntity) item).setDeletedDateTime(now);
+				switch (operation.toLowerCase()) {
+					case "insert":
+						((BaseEntity) item).setCreatedBy(setCreateMetaData());
+						((BaseEntity) item).setCreatedDateTime(now);
+						((BaseEntity) item).setIsDeleted(false);
+						break;
+					case "update":
+						((BaseEntity) item).setUpdatedBy(setCreateMetaData());
+						((BaseEntity) item).setUpdatedDateTime(now);
+						break;
+					case "delete":
+						((BaseEntity) item).setIsActive(false);
+						((BaseEntity) item).setIsDeleted(true);
+						((BaseEntity) item).setDeletedDateTime(now);
+						break;
 				}
 				return item;
 			}
@@ -550,180 +575,32 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	private ItemWriter<List<Object>> insertItemWriter(String repoBeanName, String methodName, Class<?> entity) {
 		RepositoryListItemWriter<List<Object>> writer = new RepositoryListItemWriter<>(em, emf, entity, mapper,
 				applicationContext);
-		writer.setRepository((BaseRepository<?, ?>) applicationContext.getBean(repoBeanName));
+		writer.setRepoBeanName(repoBeanName);
+		writer.setOperation("insert");
 		writer.setMethodName(methodName);
-		try {
+		/*try {
 			writer.afterPropertiesSet();
 		} catch (Exception e) {
 			logger.error("error in insertItemWriter", e);
-		}
+		}*/
 		return writer;
 	}
 
 	@SuppressWarnings("unchecked")
 	private <T extends BaseEntity, S> ItemWriter<List<Object>> updateItemWriter(String repoName, Class<?> entity) {
-
-		ItemWriter<List<Object>> writer = new ItemWriter<List<Object>>() {
-
-			@Autowired(required = false)
-			@Override
-			public void write(List<? extends List<Object>> items) throws Exception {
-				// TODO Auto-generated method stub
-				Iterator i$ = items.iterator();
-				BaseRepository baserepo = (BaseRepository) applicationContext.getBean(repoName);
-
-				while (i$.hasNext()) {
-
-					T object = (T) i$.next();
-					PersistenceUnitUtil util = emf.getPersistenceUnitUtil();
-					Object projectId = util.getIdentifier(object);
-					T machin = (T) em.find(entity, projectId);
-					try {
-						if (!machin.equals(null)) {
-							object.setCreatedBy(machin.getCreatedBy());
-							object.setCreatedDateTime(machin.getCreatedDateTime());
-							baserepo.save(object);
-							String repoBeanName1;
-							BaseRepository baserepo1;
-							switch (entity.getCanonicalName()) {
-							case "io.mosip.admin.bulkdataupload.entity.ZoneUser":
-								repoBeanName1 = mapper.getRepo(ZoneUserHistory.class);
-								baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
-								ZoneUserHistory userHistory = new ZoneUserHistory();
-								MapperUtils.map(object, userHistory);
-								MapperUtils.setBaseFieldValue(object, userHistory);
-								userHistory.setEffDTimes(userHistory.getUpdatedDateTime());
-								baserepo1.save(userHistory);
-								break;
-							case "io.mosip.admin.bulkdataupload.entity.UserDetails":
-								repoBeanName1 = mapper.getRepo(UserDetailsHistory.class);
-								baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
-								UserDetailsHistory userDetailHistory = new UserDetailsHistory();
-								MapperUtils.map(object, userDetailHistory);
-								MapperUtils.setBaseFieldValue(object, userDetailHistory);
-								userDetailHistory.setEffDTimes(userDetailHistory.getUpdatedDateTime());
-								baserepo1.save(userDetailHistory);
-								break;
-							case "io.mosip.admin.bulkdataupload.entity.Machine":
-								repoBeanName1 = mapper.getRepo(MachineHistory.class);
-								baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
-								MachineHistory machineHistory = new MachineHistory();
-								MapperUtils.map(object, machineHistory);
-								MapperUtils.setBaseFieldValue(object, machineHistory);
-								machineHistory.setEffectDateTime(machineHistory.getUpdatedDateTime());
-								baserepo1.save(machineHistory);
-								break;
-							case "io.mosip.admin.bulkdataupload.entity.Device":
-								repoBeanName1 = mapper.getRepo(DeviceHistory.class);
-								baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
-								DeviceHistory deviceHistory = new DeviceHistory();
-								MapperUtils.map(object, deviceHistory);
-								MapperUtils.setBaseFieldValue(object, deviceHistory);
-								deviceHistory.setEffectDateTime(deviceHistory.getUpdatedDateTime());
-								baserepo1.save(deviceHistory);
-								break;
-							default:
-								break;
-							}
-						} else {
-							throw new MasterDataServiceException(
-									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorCode(),
-									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorMessage());
-						}
-					} catch (NullPointerException e) {
-						throw new MasterDataServiceException(
-								BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorCode(),
-								BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorMessage(), e);
-					}
-				}
-			}
-		};
-
+		RepositoryListItemWriter<List<Object>> writer = new RepositoryListItemWriter<>(em, emf, entity, mapper,
+				applicationContext);
+		writer.setRepoBeanName(repoName);
+		writer.setOperation("update");
 		return writer;
 	}
 
 	@SuppressWarnings("unchecked")
 	private <T extends BaseEntity, S> ItemWriter<List<Object>> deleteItemWriter(String repoName, Class<?> entity) {
-		ItemWriter<List<Object>> writer = new ItemWriter<List<Object>>() {
-
-			@Autowired(required = false)
-			@Override
-			public void write(List<? extends List<Object>> items) throws Exception {
-				// TODO Auto-generated method stub
-				Iterator i$ = items.iterator();
-				BaseRepository baserepo = (BaseRepository) applicationContext.getBean(repoName);
-
-				while (i$.hasNext()) {
-
-					T object = (T) i$.next();
-					PersistenceUnitUtil util = emf.getPersistenceUnitUtil();
-					Object projectId = util.getIdentifier(object);
-					T machin = (T) em.find(entity, projectId);
-					try {
-						if (!machin.equals(null)) {
-							object.setCreatedBy(machin.getCreatedBy());
-							object.setCreatedDateTime(machin.getCreatedDateTime());
-							object.setUpdatedBy(machin.getUpdatedBy());
-							object.setUpdatedDateTime(machin.getUpdatedDateTime());
-							baserepo.save(object);
-							String repoBeanName1;
-							BaseRepository baserepo1;
-							switch (entity.getCanonicalName()) {
-							case "io.mosip.admin.bulkdataupload.entity.ZoneUser":
-								repoBeanName1 = mapper.getRepo(ZoneUserHistory.class);
-								baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
-								ZoneUserHistory userHistory = new ZoneUserHistory();
-								MapperUtils.map(object, userHistory);
-								MapperUtils.setBaseFieldValue(object, userHistory);
-								userHistory.setEffDTimes(userHistory.getDeletedDateTime());
-								baserepo1.save(userHistory);
-								break;
-							case "io.mosip.admin.bulkdataupload.entity.UserDetails":
-								repoBeanName1 = mapper.getRepo(UserDetailsHistory.class);
-								baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
-								UserDetailsHistory userDetailHistory = new UserDetailsHistory();
-								MapperUtils.map(object, userDetailHistory);
-								MapperUtils.setBaseFieldValue(object, userDetailHistory);
-								userDetailHistory.setEffDTimes(userDetailHistory.getDeletedDateTime());
-								baserepo1.save(userDetailHistory);
-								break;
-							case "io.mosip.admin.bulkdataupload.entity.Machine":
-								repoBeanName1 = mapper.getRepo(MachineHistory.class);
-								baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
-								MachineHistory machineHistory = new MachineHistory();
-								MapperUtils.map(object, machineHistory);
-								MapperUtils.setBaseFieldValue(object, machineHistory);
-								machineHistory.setEffectDateTime(machineHistory.getDeletedDateTime());
-								baserepo1.save(machineHistory);
-								break;
-							case "io.mosip.admin.bulkdataupload.entity.Device":
-								repoBeanName1 = mapper.getRepo(DeviceHistory.class);
-								baserepo1 = (BaseRepository) applicationContext.getBean(repoBeanName1);
-								DeviceHistory deviceHistory = new DeviceHistory();
-								MapperUtils.map(object, deviceHistory);
-								MapperUtils.setBaseFieldValue(object, deviceHistory);
-								deviceHistory.setEffectDateTime(deviceHistory.getDeletedDateTime());
-								baserepo1.save(deviceHistory);
-								break;
-							default:
-								break;
-							}
-
-						} else {
-							throw new MasterDataServiceException(
-									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorCode(),
-									BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorMessage());
-						}
-					} catch (NullPointerException e) {
-						throw new MasterDataServiceException(
-								BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorCode(),
-								BulkUploadErrorCode.BULK_UPDATE_OPERATION_ERROR.getErrorMessage(), e);
-					}
-				}
-
-			}
-		};
-
+		RepositoryListItemWriter<List<Object>> writer = new RepositoryListItemWriter<>(em, emf, entity, mapper,
+				applicationContext);
+		writer.setRepoBeanName(repoName);
+		writer.setOperation("delete");
 		return writer;
 	}
 
@@ -780,12 +657,12 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 	private void csvValidator(String csvFileName, InputStream csvFile, Class clazz) throws IOException {
 
-		int count = 0;
 		int lineCount = 0;
+		Integer langCodeColNo = null;
 		String line;
-		BufferedReader br;
 		Map<Integer, Field> fieldMap = new HashMap<>();
 		Map<String, Field> allowedFields = new HashMap<>();
+		List<String> configuredLanguages = setupLanguages();
 		for (Field field : clazz.getDeclaredFields()) {
 			if (field.isAnnotationPresent(EmbeddedId.class)) {
 				for(Field f:field.getType().getDeclaredFields()){
@@ -801,16 +678,13 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 			allowedFields.put(field.getName(), field);
 		}
 
-		try {
-			br = new BufferedReader(new InputStreamReader(csvFile));
+		try(BufferedReader br = new BufferedReader(new InputStreamReader(csvFile))) {
+			//Reading csv header
 			while ((line = br.readLine()) != null) {
-				String l = line.trim(); // Remove end of line. You can print line here.'
-
+				String l = line.trim(); // Remove end of line. You can print line here.
 				String[] columns = l.split(",");
-				count = columns.length;
 				lineCount++;
-				for (int i = 0; i < count; i++) {
-
+				for (int i = 0; i < columns.length; i++) {
 					String columnName = columns[i];
 					Optional<String> result = allowedFields.keySet().stream().filter(k -> k.equals(columnName)).findFirst();
 					if(!result.isPresent()) {
@@ -819,77 +693,63 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 						throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
 								columnName + " - Invalid column name.");
 					}
-
+					if(columnName.equals("langCode") || columnName.equals("lang_code")) {
+						langCodeColNo = i;
+					}
 					fieldMap.put(i, allowedFields.get(columnName));
 				}
 				break;
 			}
 
-
-			List<String> linelist = new ArrayList<>();
-			Set<String> lineSet = new HashSet<>();
+			List<String> lineList = new ArrayList<>();
 			while ((line = br.readLine()) != null) {
 				String l = line.trim(); // Remove end of line. You can print line here.'
 				String[] columns = l.split(",");
 				lineCount++;
-				/*
-				 * if (count != columns.length) {
-				 * auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.
-				 * BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
-				 * 
-				 * throw new
-				 * RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode()
-				 * ,"all the rows should have same number of element in csv file.The exception occured at line number "
-				 * +lineCount);
-				 * 
-				 * 
-				 * }
-				 */
-				String il = "";
+
+				StringBuilder tempRowBuilder = new StringBuilder();
 				for (int i = 0; i < columns.length; i++) {
 					if (columns[i].isBlank()) {
 						auditUtil.setAuditRequestDto(EventEnum
 								.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
 						throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
-								"Field is missing.The exception occured at line number " + lineCount);
+								"Line:" + lineCount + " >> Field with blank value");
 					}
 
-					/*
-					 * if(!validateDataType(fieldMap.get(i),columns[i].trim())) {
-					 * auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.
-					 * BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName)); throw new
-					 * RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode()
-					 * ,"Invalid data type.The exception occured at line number "+lineCount);
-					 * 
-					 * }
-					 */
-					il = il + columns[i].trim();
+					if(langCodeColNo != null && langCodeColNo == i && !configuredLanguages.contains(columns[i])) {
+						auditUtil.setAuditRequestDto(EventEnum
+								.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
+						throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
+								"Line:" + lineCount + " >> Invalid language");
+					}
+					tempRowBuilder.append(columns[i].trim());
 				}
-				linelist.add(il);
-				lineSet.add(il);
-				if (linelist.size() != lineSet.size()) {
+
+				String tempRow = tempRowBuilder.toString();
+				if (lineList.contains(tempRow)) {
 					auditUtil.setAuditRequestDto(EventEnum
 							.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
 					throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
-							"Duplicate records found.The exception occured at line number " + lineCount);
+							"Line:" + lineCount + " >> Found duplicate record");
 				}
+				lineList.add(tempRow);
 			}
-			br.close();
-		} catch (IOException e) {
+
+			if(lineList.isEmpty()) {
+				auditUtil.setAuditRequestDto(EventEnum
+						.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_VALIDATOR_ISSUE, csvFileName));
+				throw new RequestException(BulkUploadErrorCode.EMPTY_FILE.getErrorCode(),
+						BulkUploadErrorCode.EMPTY_FILE.getErrorMessage());
+			}
+
+		} catch (IOException | SecurityException e) {
 			lineCount++;
+			logger.error("Failed to parse row : {}", lineCount, e);
+			String reason = "Line:" + lineCount + " >> Failed to parse row, "+ e.getMessage();
 			auditUtil.setAuditRequestDto(
-					EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_INVALID_CSV_FILE, csvFileName));
-			throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
-					"invalid csv file.The exception occured at line number " + lineCount, e);
-
-		} catch (SecurityException e) {
-			auditUtil.setAuditRequestDto(
-					EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_INVALID_CSV_FILE, csvFileName));
-			throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
-					"invalid field mentioned.The exception occured at line number " + lineCount, e);
-
+					EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_INVALID_CSV_FILE, reason));
+			throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(), reason);
 		}
-
 	}
 
 	private boolean validateDataType(Field field, String value) {
@@ -1026,5 +886,23 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 		return operation != null && (operation.equalsIgnoreCase("insert")
 				|| operation.equalsIgnoreCase("update")
 				|| operation.equalsIgnoreCase("delete"));
+	}
+
+	private List<String> setupLanguages() {
+		List<String> configuredLanguages = new ArrayList<>();
+		if(mandatoryLanguages != null && !mandatoryLanguages.isBlank()) {
+			configuredLanguages.addAll(Arrays.asList(mandatoryLanguages.split(","))
+					.stream()
+					.filter(emptyCheck.negate())
+					.collect(Collectors.toList()));
+		}
+
+		if(optionalLanguages != null && !optionalLanguages.isBlank()) {
+			configuredLanguages.addAll(Arrays.asList(optionalLanguages.split(","))
+					.stream()
+					.filter(emptyCheck.negate())
+					.collect(Collectors.toList()));
+		}
+		return configuredLanguages;
 	}
 }

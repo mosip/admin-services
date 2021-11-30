@@ -500,3 +500,126 @@ CREATE MEMORY TABLE IF NOT EXISTS MASTER.zone_user_h(
 	del_dtimes 	timestamp,
     eff_dtimes timestamp without time zone NOT NULL
 );
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.machine_master(
+    id character varying(10)  NOT NULL,
+    name character varying(64)  NOT NULL,
+    mac_address character varying(64) ,
+    serial_num character varying(64) ,
+    ip_address character varying(17) ,
+    validity_end_dtimes timestamp without time zone,
+    mspec_id character varying(36)  NOT NULL,
+    public_key character varying(1024) ,
+    key_index character varying(128) ,
+    sign_public_key character varying(1024) ,
+    sign_key_index character varying(128) ,
+    zone_code character varying(36)  NOT NULL,
+    regcntr_id character varying(10) ,
+    lang_code character varying(3) ,
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone
+    
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.machine_type
+(
+    code character varying(36)  NOT NULL,
+    name character varying(64)  NOT NULL,
+    descr character varying(128) ,
+    lang_code character varying(3) ,
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone
+   
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.user_detail(
+    id character varying(256)  NOT NULL,
+    name character varying(64) ,
+    status_code character varying(36) ,
+    regcntr_id character varying(10) ,
+    lang_code character varying(3),
+    last_login_dtimes timestamp without time zone,
+    last_login_method character varying(64),
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone
+    
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.machine_spec
+(
+    id character varying(36) NOT NULL,
+    name character varying(64) NOT NULL,
+    brand character varying(32) NOT NULL,
+    model character varying(16) NOT NULL,
+    mtyp_code character varying(36) NOT NULL,
+    min_driver_ver character varying(16) NOT NULL,
+    descr character varying(256) ,
+    lang_code character varying(3) ,
+    is_active boolean NOT NULL,
+    cr_by character varying(256) NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone
+
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.template
+(
+    id character varying(36) NOT NULL,
+    name character varying(128)  NOT NULL,
+    descr character varying(256) ,
+    file_format_code character varying(36)  NOT NULL,
+    model character varying(128) ,
+    file_txt character varying ,
+    module_id character varying(36) ,
+    module_name character varying(128) ,
+    template_typ_code character varying(64)  NOT NULL,
+    lang_code character varying(3)  NOT NULL,
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone
+  
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.identity_schema
+(
+    id character varying(36) NOT NULL,
+    id_version numeric(5,3),
+    title character varying(64) ,
+    description character varying(256) ,
+    schema_json character varying ,
+    status_code character varying(36) ,
+    add_props boolean,
+    effective_from timestamp without time zone,
+    lang_code character varying(3)  NOT NULL,
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone
+   
+)
+

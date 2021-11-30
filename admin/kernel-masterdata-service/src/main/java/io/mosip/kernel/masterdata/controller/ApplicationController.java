@@ -43,7 +43,7 @@ public class ApplicationController {
 	 */
 	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetapplicationtypes())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetapplicationtypes())")
 	@GetMapping
 	public ResponseWrapper<ApplicationResponseDto> getAllApplication() {
 		ResponseWrapper<ApplicationResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -60,7 +60,7 @@ public class ApplicationController {
 	 */
 	//@PreAuthorize("hasAnyRole('RESIDENT','GLOBAL_ADMIN','ZONAL_ADMIN','INDIVIDUAL','REGISTRATION_PROCESSOR','PRE_REGISTRATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetapplicationtypeslangcode())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetapplicationtypeslangcode())")
 	@GetMapping("/{langcode}")
 	public ResponseWrapper<ApplicationResponseDto> getAllApplicationByLanguageCode(
 			@PathVariable("langcode") String langCode) {
@@ -80,7 +80,7 @@ public class ApplicationController {
 	 */
 	//@PreAuthorize("hasAnyRole('RESIDENT','GLOBAL_ADMIN','ZONAL_ADMIN','INDIVIDUAL','REGISTRATION_PROCESSOR','PRE_REGISTRATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetapplicationtypescodelangcode())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetapplicationtypescodelangcode())")
 	@GetMapping("/{code}/{langcode}")
 	public ResponseWrapper<ApplicationResponseDto> getApplicationByCodeAndLanguageCode(
 			@PathVariable("code") String code, @PathVariable("langcode") String langCode) {

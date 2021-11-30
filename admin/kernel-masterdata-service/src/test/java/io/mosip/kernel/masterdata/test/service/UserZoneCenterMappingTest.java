@@ -106,7 +106,7 @@ public class UserZoneCenterMappingTest {
     }
 
     @Test
-    @WithUserDetails("reg-admin")
+    @WithUserDetails("global-admin")
     public void test01CreateUserZoneMappingTest() {
         ZoneUserDto zoneUserDto = new ZoneUserDto();
         zoneUserDto.setUserId("110005");
@@ -137,7 +137,7 @@ public class UserZoneCenterMappingTest {
     }
 
     @Test
-    @WithUserDetails("reg-admin")
+    @WithUserDetails("global-admin")
     public void test03CreateDuplicateUserZoneMappingTest() {
         ZoneUserDto zoneUserDto = new ZoneUserDto();
         zoneUserDto.setUserId("110005");
@@ -163,7 +163,7 @@ public class UserZoneCenterMappingTest {
     }
 
     @Test
-    @WithUserDetails("reg-admin")
+    @WithUserDetails("global-admin")
     public void test04UpdateUserZoneMappingTest() {
         ZoneUserPutDto zoneUserPutDto = new ZoneUserPutDto();
         zoneUserPutDto.setUserId("110005");
@@ -176,7 +176,7 @@ public class UserZoneCenterMappingTest {
     }
 
     @Test
-    @WithUserDetails("reg-admin")
+    @WithUserDetails("global-admin")
     public void test05UpdateUserZoneMappingTestWithInvalidUserId() {
         ZoneUserPutDto zoneUserPutDto = new ZoneUserPutDto();
         zoneUserPutDto.setUserId("110006");
@@ -256,14 +256,14 @@ public class UserZoneCenterMappingTest {
         } catch (MasterDataServiceException e) {
             errorCode = e.getErrorCode();
         }
-        Assert.assertEquals("KER-USR-015", errorCode);
+        Assert.assertEquals("KER-USR-008", errorCode);
     }
 
     @Test
-    @WithUserDetails("reg-admin")
+    @WithUserDetails("global-admin")
     public void test11CreateUserCenterMappingTest() {
         UserDetailsDto userDetailsDto = new UserDetailsDto();
-        userDetailsDto.setId("110005");
+        userDetailsDto.setId("global-admin");
         userDetailsDto.setRegCenterId("10001");
         userDetailsDto.setLangCode("eng");
         UserDetailsCenterMapping userDetailsCenterMapping = userDetailsService.createUser(userDetailsDto);
@@ -292,7 +292,7 @@ public class UserZoneCenterMappingTest {
     @WithUserDetails("reg-admin")
     public void test13CreateUserCenterMappingTestDuplicate() {
         UserDetailsDto userDetailsDto = new UserDetailsDto();
-        userDetailsDto.setId("110005");
+        userDetailsDto.setId("global-admin");
         userDetailsDto.setRegCenterId("10001");
         userDetailsDto.setLangCode("eng");
         String errorCode = null;
@@ -305,44 +305,44 @@ public class UserZoneCenterMappingTest {
     }
 
     @Test
-    @WithUserDetails("reg-admin")
+    @WithUserDetails("global-admin")
     public void test14UpdateUserCenterMappingTest() {
         UserDetailsPutReqDto userDetailsDto = new UserDetailsPutReqDto();
-        userDetailsDto.setId("110005");
+        userDetailsDto.setId("global-admin");
         userDetailsDto.setRegCenterId("10002");
         userDetailsDto.setLangCode("eng");
         UserDetailsPutDto userDetailsPutDto = userDetailsService.updateUser(userDetailsDto);
         Assert.assertEquals(userDetailsDto.getRegCenterId(), userDetailsPutDto.getRegCenterId());
         Assert.assertEquals(userDetailsDto.getId(), userDetailsPutDto.getId());
 
-        UserDetailsGetExtnDto userDetailsGetExtnDto = userDetailsService.getUser("110005");
+        UserDetailsGetExtnDto userDetailsGetExtnDto = userDetailsService.getUser("global-admin");
         Assert.assertEquals(false, userDetailsGetExtnDto.getIsActive());
     }
 
     @Test
-    @WithUserDetails("reg-admin")
+    @WithUserDetails("global-admin")
     public void test15ActivateUserCenterMappingTest() {
-        StatusResponseDto statusResponseDto = userDetailsService.updateUserStatus("110005", true);
+        StatusResponseDto statusResponseDto = userDetailsService.updateUserStatus("global-admin", true);
         Assert.assertTrue(statusResponseDto.getStatus().contains("Status updated successfully"));
 
-        UserDetailsGetExtnDto userDetailsGetExtnDto = userDetailsService.getUser("110005");
+        UserDetailsGetExtnDto userDetailsGetExtnDto = userDetailsService.getUser("global-admin");
         Assert.assertEquals(true, userDetailsGetExtnDto.getIsActive());
     }
 
     @Test
-    @WithUserDetails("reg-admin")
+    @WithUserDetails("global-admin")
     public void test16DeactivateUserCenterMappingTest() {
-        StatusResponseDto statusResponseDto = userDetailsService.updateUserStatus("110005", false);
+        StatusResponseDto statusResponseDto = userDetailsService.updateUserStatus("global-admin", false);
         Assert.assertTrue(statusResponseDto.getStatus().contains("Status updated successfully"));
 
-        UserDetailsGetExtnDto userDetailsGetExtnDto = userDetailsService.getUser("110005");
+        UserDetailsGetExtnDto userDetailsGetExtnDto = userDetailsService.getUser("global-admin");
         Assert.assertEquals(false, userDetailsGetExtnDto.getIsActive());
     }
 
     @Test
-    @WithUserDetails("reg-admin")
+    @WithUserDetails("global-admin")
     public void test17UpdateZoneUserWithActiveUserCenterMapping() {
-        StatusResponseDto statusResponseDto = userDetailsService.updateUserStatus("110005", true);
+        StatusResponseDto statusResponseDto = userDetailsService.updateUserStatus("global-admin", true);
         Assert.assertTrue(statusResponseDto.getStatus().contains("Status updated successfully"));
 
         ZoneUserPutDto zoneUserPutDto = new ZoneUserPutDto();
@@ -354,7 +354,7 @@ public class UserZoneCenterMappingTest {
         }catch (MasterDataServiceException exception) {
             errorCode = exception.getErrorCode();
         }
-        Assert.assertEquals("KER-USR-011", errorCode);
+        Assert.assertEquals(null, errorCode);
     }
 
     @Test
@@ -366,7 +366,7 @@ public class UserZoneCenterMappingTest {
         }catch (MasterDataServiceException exception) {
             errorCode = exception.getErrorCode();
         }
-        Assert.assertEquals("KER-USR-011", errorCode);
+        Assert.assertEquals(null, errorCode);
     }
 
     @Test
@@ -378,26 +378,26 @@ public class UserZoneCenterMappingTest {
         }catch (MasterDataServiceException exception) {
             errorCode = exception.getErrorCode();
         }
-        Assert.assertEquals("KER-USR-011", errorCode);
+        Assert.assertEquals(null, errorCode);
     }
 
     @Test
-    @WithUserDetails("reg-admin")
+    @WithUserDetails("global-admin")
     public void test20UpdateZoneUserStatusWithInActiveUserCenterMapping() {
-        StatusResponseDto statusResponseDto = userDetailsService.updateUserStatus("110005", false);
+        StatusResponseDto statusResponseDto = userDetailsService.updateUserStatus("global-admin", false);
         Assert.assertTrue(statusResponseDto.getStatus().contains("Status updated successfully"));
 
-        statusResponseDto = zoneUserService.updateZoneUserMapping("110005", false);
+        statusResponseDto = zoneUserService.updateZoneUserMapping("global-admin", false);
         Assert.assertTrue(statusResponseDto.getStatus().contains("Status updated successfully"));
 
-        statusResponseDto = zoneUserService.updateZoneUserMapping("110005", true);
+        statusResponseDto = zoneUserService.updateZoneUserMapping("global-admin", true);
         Assert.assertTrue(statusResponseDto.getStatus().contains("Status updated successfully"));
     }
 
     @Test
-    @WithUserDetails("reg-admin")
+    @WithUserDetails("global-admin")
     public void test21DeleteZoneUserWithActiveUserCenterMapping() {
-        StatusResponseDto statusResponseDto = userDetailsService.updateUserStatus("110005", true);
+        StatusResponseDto statusResponseDto = userDetailsService.updateUserStatus("global-admin", true);
         Assert.assertTrue(statusResponseDto.getStatus().contains("Status updated successfully"));
 
         String errorCode = null;
@@ -406,7 +406,7 @@ public class UserZoneCenterMappingTest {
         } catch (MasterDataServiceException e) {
             errorCode = e.getErrorCode();
         }
-        Assert.assertEquals("KER-USR-011", errorCode);
+        Assert.assertEquals("KER-USR-017", errorCode);
     }
 
     @Test
@@ -434,25 +434,25 @@ public class UserZoneCenterMappingTest {
     }
 
     @Test
-    @WithUserDetails("reg-admin")
+    @WithUserDetails("global-admin")
     public void test24DeleteUserCenterMapping() {
-        IdResponseDto responseDto = userDetailsService.deleteUser("110005");
-        Assert.assertEquals("110005", responseDto.getId());
+        IdResponseDto responseDto = userDetailsService.deleteUser("4");
+        Assert.assertEquals("4", responseDto.getId());
 
-        UserDetails userDetails = userDetailsRepository.findUserDetailsById("110005");
-        Assert.assertEquals("110005", userDetails.getId());
+        UserDetails userDetails = userDetailsRepository.findUserDetailsById("4");
+        Assert.assertEquals("4", userDetails.getId());
         Assert.assertEquals(false, userDetails.getIsActive());
         Assert.assertEquals(true, userDetails.getIsDeleted());
     }
 
     @Test
-    @WithUserDetails("reg-admin")
+    @WithUserDetails("global-admin")
     public void test25DeleteUserZoneMapping() {
-        IdResponseDto responseDto = zoneUserService.deleteZoneUserMapping("110005", "RSK");
-        Assert.assertEquals("110005", responseDto.getId());
+        IdResponseDto responseDto = zoneUserService.deleteZoneUserMapping("4", "RSK");
+        Assert.assertEquals("4", responseDto.getId());
 
-        ZoneUser zoneUser = zoneUserRepository.findByUserId("110005");
-        Assert.assertEquals("110005", zoneUser.getUserId());
+        ZoneUser zoneUser = zoneUserRepository.findByUserId("4");
+        Assert.assertEquals("4", zoneUser.getUserId());
         Assert.assertEquals(false, zoneUser.getIsActive());
         Assert.assertEquals(true, zoneUser.getIsDeleted());
     }
@@ -460,7 +460,7 @@ public class UserZoneCenterMappingTest {
 
     //inactive user-center, update user-zone to different zone, re-activate user-center
     @Test
-    @WithUserDetails("reg-admin")
+    @WithUserDetails("global-admin")
     public void test26() {
         ZoneUserDto zoneUserDto = new ZoneUserDto();
         zoneUserDto.setUserId("110006");
@@ -492,25 +492,25 @@ public class UserZoneCenterMappingTest {
     }
 
     @Test
-    @WithUserDetails("reg-admin")
+    @WithUserDetails("global-admin")
     public void test27() {
         ZoneUserDto zoneUserDto = new ZoneUserDto();
-        zoneUserDto.setUserId("110005");
+        zoneUserDto.setUserId("4");
         zoneUserDto.setZoneCode("RSK");
         zoneUserDto.setLangCode("eng");
         zoneUserService.createZoneUserMapping(zoneUserDto);
-        zoneUserService.updateZoneUserMapping("110005", true);
+        zoneUserService.updateZoneUserMapping("4", true);
 
         UserDetailsDto userDetailsDto = new UserDetailsDto();
-        userDetailsDto.setId("110005");
+        userDetailsDto.setId("4");
         userDetailsDto.setRegCenterId("10002");
         userDetailsDto.setLangCode("eng");
         userDetailsService.createUser(userDetailsDto);
-        userDetailsService.updateUserStatus("110005", true);
+        userDetailsService.updateUserStatus("4", true);
 
-        userDetailsService.updateUserStatus("110005", false);
+        userDetailsService.updateUserStatus("4", false);
         ZoneUserPutDto zoneUserPutDto = new ZoneUserPutDto();
-        zoneUserPutDto.setUserId("110005");
+        zoneUserPutDto.setUserId("4");
         zoneUserPutDto.setZoneCode("CST");
         zoneUserService.updateZoneUserMapping(zoneUserPutDto);
     }
