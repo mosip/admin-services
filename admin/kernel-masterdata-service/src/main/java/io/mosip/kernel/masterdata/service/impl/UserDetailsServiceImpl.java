@@ -767,7 +767,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		List<UserCenterMappingExtnDto> userCenterMappingExtnDtos=new ArrayList();
 		mapZoneUserDetailsToUserCenter(zoneUserSearchDtos,userCenterMappingExtnDtos);
 		for (UserCenterMappingExtnDto userCenterMappingExtnDto : userCenterMappingExtnDtos) {
-			UserDetails ud=userDetailsRepository.findUserDetailsById(userCenterMappingExtnDto.getUserId());
+			userCenterMappingExtnDto.setIsActive(false);
+			UserDetails ud=userDetailsRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(userCenterMappingExtnDto.getUserId());
 				if(ud!=null) {
 					RegistrationCenter regC=registrationCenterRepository.findByIdAndLangCode(ud.getRegCenterId(),
 							languageCode ==null ? languageUtils.getDefaultLanguage() : languageCode);
@@ -784,6 +785,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 					userCenterMappingExtnDto.setDeletedDateTime(ud.getDeletedDateTime());
 					userCenterMappingExtnDto.setIsActive(ud.getIsActive());
 				}
+
 		}
 
 		return userCenterMappingExtnDtos;

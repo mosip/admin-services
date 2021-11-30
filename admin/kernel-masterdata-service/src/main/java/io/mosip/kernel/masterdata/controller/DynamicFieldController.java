@@ -6,8 +6,10 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import io.mosip.kernel.masterdata.dto.DynamicFieldDefDto;
-import io.mosip.kernel.masterdata.dto.MissingDataDto;
+import io.mosip.kernel.masterdata.dto.*;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.DynamicField;
 import io.mosip.kernel.masterdata.service.GenericService;
@@ -29,8 +31,6 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
-import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
-import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldSearchResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
@@ -238,5 +238,31 @@ public class DynamicFieldController {
 		responseWrapper.setResponse(genericService.getMissingDynamicData(langCode, fieldName));
 		return responseWrapper;
 	}
+
+	/**
+	 * Api to filter dynamic field based on column and type provided.
+	 *
+	 * @param request the request DTO.
+	 * @return the {@link FilterResponseDto}.
+	 */
+	@ResponseFilter
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdynamicfieldsfiltervalues())")
+	@PostMapping("/filtervalues")
+	public ResponseWrapper<FilterResponseCodeDto> dynamicFieldFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.FILTER_API_IS_CALLED , DynamicFieldDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.FILTER_API_IS_CALLED , DynamicFieldDto.class.getCanonicalName()), "ADM-671");
+		ResponseWrapper<FilterResponseCodeDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(dynamicFieldService.dynamicfieldFilterValues(request.getRequest()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER , DynamicFieldDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC , DynamicFieldDto.class.getCanonicalName()),
+				"ADM-672");
+		return responseWrapper;
+	}
+
 
 }

@@ -169,7 +169,7 @@ public class AuthorizedRolesDto {
 //	private List<String> getdistinct;
 	
 	private List<String> postdynamicfields;
-	
+
 	private List<String> putdynamicfields ;
 	
 	private List<String> patchdynamicfieldsall;
@@ -582,6 +582,7 @@ public class AuthorizedRolesDto {
 
 	private List<String> getdynamicfieldmissingidslangcode;
 
+	private List<String> postdynamicfieldsfiltervalues;
 
 
 }
