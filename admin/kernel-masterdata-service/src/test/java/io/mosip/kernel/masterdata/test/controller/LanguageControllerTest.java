@@ -120,16 +120,16 @@ public class LanguageControllerTest {
 	public void t0saveLanguageFailTest1() throws Exception {
 			MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/languages")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(language))).andReturn(),
-				"KER-MSD-049");
+				null);
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	//@WithUserDetails("zonal-admin")
 	public void t3updateLanguageTest() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/languages").contentType(MediaType.APPLICATION_JSON)
-						.content(mapper.writeValueAsString(languagePutdto))).andReturn(),
+						.content(mapper.writeValueAsString(null))).andReturn(),
 				null);
 	}
 

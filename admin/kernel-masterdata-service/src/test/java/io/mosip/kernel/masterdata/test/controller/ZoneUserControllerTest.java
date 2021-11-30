@@ -171,6 +171,25 @@ public class ZoneUserControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
+	public void t003updateapUserZoneTest2() throws Exception {
+		zoneUserPutDto.getRequest().setUserId("7");
+		//zoneUserPutDto.getRequest().setIsActive(true);
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/zoneuser").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(zoneUserPutDto))).andReturn(),
+				null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t003updateapUserZoneTest1() throws Exception {
+		zoneUserPutDto.getRequest().setUserId("5");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/zoneuser").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(zoneUserPutDto))).andReturn(),
+				"KER-USR-011");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t003updateapUserZoneTest() throws Exception {
 
 		MasterDataTest.checkResponse(
@@ -203,6 +222,15 @@ public class ZoneUserControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.delete("/zoneuser/10/NTH")).andReturn(),
 				"KER-USR-017");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t005updateapUserZoneStatusTest1() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.patch("/zoneuser").param("isActive","true").param("userId", "7")).andReturn(),
+				null);
 	}
 	
 	@Test

@@ -57,12 +57,13 @@ public class HolidayControllerTest {
 
 	@MockBean
 	private AuditUtil auditUtil;
-
-	private RequestWrapper<HolidayDto> holidayReq = new RequestWrapper<HolidayDto>();
+	private ObjectMapper mapper;
+	
+	private RequestWrapper<HolidayDto> holiday = new RequestWrapper<HolidayDto>();
 
 	private RequestWrapper<HolidayUpdateDto> holidayPutReq = new RequestWrapper<HolidayUpdateDto>();
 	
-	private ObjectMapper mapper;
+	
 	
 	private RequestWrapper<HolidayIdDeleteDto> holidayDelReq = new RequestWrapper<HolidayIdDeleteDto>();;
 	private RequestWrapper<FilterValueDto> filValDto = new RequestWrapper<FilterValueDto>();
@@ -75,7 +76,7 @@ public class HolidayControllerTest {
 		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-		 holidayReq=new RequestWrapper<HolidayDto>();
+		
 		 HolidayDto dto=new HolidayDto();
 		dto.setHolidayDate(LocalDate.now());
 		dto.setHolidayDesc("National Holiday");
@@ -84,9 +85,9 @@ public class HolidayControllerTest {
 		dto.setHolidayName("May day");
 		dto.setLangCode("eng");
 		dto.setLocationCode("KTA");
-		holidayReq.setRequest(dto);
+		holiday.setRequest(dto);
 
-		 holidayPutReq=new RequestWrapper<HolidayUpdateDto>();
+		
 		HolidayUpdateDto updateDto=new HolidayUpdateDto();
 		updateDto.setHolidayDate(LocalDate.now());
 		updateDto.setHolidayDesc("National  Holiday updated");
@@ -141,36 +142,36 @@ public class HolidayControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t001saveHolidayTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays")
-				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(holidayReq))).andReturn(), null);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidayss")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(holiday))).andReturn(), null);
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
 	public void t001saveHolidayFailTest1() throws Exception {
-		holidayReq.getRequest().setLocationCode("abc");
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays")
-				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(holidayReq))).andReturn(), "KER-MSD-729");
+		holiday.getRequest().setLocationCode("abc");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidayss")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(holiday))).andReturn(), "KER-MSD-729");
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
 	public void t001saveHolidayFailTest2() throws Exception {
 
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays")
-				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(holidayReq))).andReturn(), "KER-MSD-730");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidayss")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(holiday))).andReturn(), "KER-MSD-730");
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void t002saveHolidayFailTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(holidayReq))).andReturn(),"KER-MSD-999");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidayss").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(holiday))).andReturn(),"KER-MSD-999");
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void t003updateHolidayTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/holidays")
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/holidayss")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(holidayPutReq))).andReturn(),
 				null);
 	}
@@ -180,7 +181,7 @@ public class HolidayControllerTest {
 	public void t004updateHolidayFailTest() throws Exception {
 		holidayPutReq.getRequest().setHolidayId(10);
 		
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/holidays").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(holidayPutReq))).andReturn(),"KER-MSD-999");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/holidayss").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(holidayPutReq))).andReturn(),"KER-MSD-999");
 	}
 	@Test
 	@WithUserDetails("global-admin")
@@ -354,7 +355,7 @@ public class HolidayControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t024deleteHolidayTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/holidays")
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/holidayss")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(holidayDelReq))).andReturn(),
 				null);
@@ -363,7 +364,7 @@ public class HolidayControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t025deleteHolidayFailTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/holidays")
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/holidayss")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(holidayDelReq))).andReturn(),
 				"KER-MSD-999");
 
