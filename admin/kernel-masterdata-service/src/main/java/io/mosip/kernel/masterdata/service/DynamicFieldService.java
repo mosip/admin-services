@@ -11,7 +11,9 @@ import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldSearchResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DynamicFieldExtnDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 
 /**
@@ -73,5 +75,6 @@ public interface DynamicFieldService {
 	public List<String> getDistinctDynamicFields();
 
 	public List<DynamicFieldDefDto> getDistinctDynamicFields(String langCode);
-	
+
+    FilterResponseCodeDto dynamicfieldFilterValues(FilterValueDto request);
 }

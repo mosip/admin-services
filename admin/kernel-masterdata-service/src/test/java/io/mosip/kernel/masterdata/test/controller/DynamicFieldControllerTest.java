@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.mosip.kernel.masterdata.dto.request.*;
+import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -31,9 +33,6 @@ import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
-import io.mosip.kernel.masterdata.dto.request.Pagination;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
@@ -59,6 +58,7 @@ public class DynamicFieldControllerTest {
 
 	private RequestWrapper<SearchDto> searchDtoRq;
 	private DynamicFieldDto dynamicFieldDto = new DynamicFieldDto();
+	private RequestWrapper<FilterValueDto> filValDto =new RequestWrapper<FilterValueDto>();
 	private RequestWrapper<DynamicFieldPutDto> dynamicFieldPutDtoReq = new RequestWrapper<DynamicFieldPutDto>();
 
 	@Before
@@ -104,7 +104,18 @@ public class DynamicFieldControllerTest {
 		dynamicFieldPutDto.setName("bloodtype");
 
 		dynamicFieldPutDtoReq.setRequest(dynamicFieldPutDto);
-
+		FilterValueDto f = new FilterValueDto();
+		FilterDto dto = new FilterDto();
+		dto.setColumnName("isActive");
+		dto.setText("");
+		dto.setType("unique");
+		List<FilterDto> lf = new ArrayList<>();
+		lf.add(dto);
+		f.setLanguageCode("eng");
+		f.setOptionalFilters(null);
+		f.setFilters(lf);
+		filValDto = new RequestWrapper<>();
+		filValDto.setRequest(f);
 	}
 
 	@Test
@@ -272,6 +283,14 @@ public class DynamicFieldControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.delete("/dynamicfields/all/bloodtype")).andReturn(),
 				"KER-SCH-003");
+
+	}
+	@Test
+	@WithUserDetails("global-admin")
+	public void t019dynamicFiledFilterValuesTest() throws Exception {
+		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.UNIQUE.toString());
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/dynamicfields/filtervalues").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(filValDto))).andReturn(),null);
 
 	}
 }
