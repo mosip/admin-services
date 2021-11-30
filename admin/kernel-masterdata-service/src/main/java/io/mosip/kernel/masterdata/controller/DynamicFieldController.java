@@ -249,7 +249,7 @@ public class DynamicFieldController {
 	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdynamicfieldsfiltervalues())")
 	@PostMapping("/filtervalues")
-	public ResponseWrapper<FilterResponseCodeDto> machineSpecificationFilterValues(
+	public ResponseWrapper<FilterResponseCodeDto> dynamicFieldFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.FILTER_API_IS_CALLED , DynamicFieldDto.class.getCanonicalName()),
