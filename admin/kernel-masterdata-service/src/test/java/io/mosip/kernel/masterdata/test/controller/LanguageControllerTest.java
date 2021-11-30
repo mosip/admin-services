@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.core.JsonParser.Feature;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.websub.model.EventModel;
@@ -49,14 +50,14 @@ public class LanguageControllerTest {
 	private ObjectMapper mapper;
 	private RequestWrapper<LanguageDto> language;
 
-	private RequestWrapper<LanguagePutDto> languagePutdto;
+	private RequestWrapper<LanguagePutDto> languagePutdto=new RequestWrapper<LanguagePutDto>();
 
 	@Before
 	public void setUp() {
 
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-
+		mapper.configure(Feature.AUTO_CLOSE_SOURCE, true);
 		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 		language = new RequestWrapper<LanguageDto>();
 		LanguageDto dto = new LanguageDto();
@@ -66,11 +67,11 @@ public class LanguageControllerTest {
 		dto.setNativeName("english");
 		dto.setName("french");
 		language.setRequest(dto);
-		languagePutdto = new RequestWrapper<LanguagePutDto>();
+		
 		LanguagePutDto dto2 = new LanguagePutDto();
 		dto2.setCode("eng");
 		dto2.setFamily("indo european");
-		dto2.setIsActive(true);
+		//dto2.setIsActive(true);
 		dto2.setNativeName("english");
 		dto2.setName("english");
 		languagePutdto.setRequest(dto2);
@@ -104,7 +105,7 @@ public class LanguageControllerTest {
 	@WithUserDetails("global-admin")
 	public void t0saveLanguageFailTest() throws Exception {
 		LanguageDto dto1 = new LanguageDto();
-		dto1.setCode("eng1");
+		dto1.setCode("eng");
 		dto1.setFamily("indo european1");
 		dto1.setIsActive(true);
 		dto1.setNativeName("english1");
@@ -124,27 +125,40 @@ public class LanguageControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("zonal-admin")
-	public void t3updateLanguageTest() throws Exception {
+	@WithUserDetails("global-admin")
+	public void t3updateLanguageFailTest() throws Exception {
 
-		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.put("/languages").contentType(MediaType.APPLICATION_JSON)
-						.content(mapper.writeValueAsString(null))).andReturn(),
-				null);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/languages").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(languagePutdto))).andReturn(),	"KER-MSD-701");
+	}
+	@Test
+	@WithUserDetails("global-admin")
+	public void t3updateLanguageFailTest2() throws Exception {
+		languagePutdto.getRequest().setCode("fra");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/languages").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(languagePutdto))).andReturn(),	"KER-MSD-24");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t3updateLanguageTest() throws Exception {
+		languagePutdto.getRequest().setCode("ara");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/languages").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(languagePutdto))).andReturn(),null);
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t4updateLanguageFailTest() throws Exception {
-
+		languagePutdto.getRequest().setCode("eng1");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/languages").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(languagePutdto))).andReturn(),
-				"KER-MSD-24");
+				"KER-MSD-999");
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t8deleteLanguageTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/languages/ara")).andReturn(),
@@ -152,7 +166,7 @@ public class LanguageControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t9deleteLanguageFailTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/languages/eng1")).andReturn(),
@@ -160,7 +174,7 @@ public class LanguageControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t5updateLanguageStatusTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
@@ -169,7 +183,7 @@ public class LanguageControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t6updateLanguageStatusFailTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc

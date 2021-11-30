@@ -1,7 +1,11 @@
 package io.mosip.kernel.masterdata.test.controller;
 
+import static org.mockito.Mockito.doNothing;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -17,15 +21,22 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.repository.UISpecRepository;
 import io.mosip.kernel.masterdata.service.UISpecService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecDto;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecPublishDto;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 
 /**
  * 
@@ -43,12 +54,58 @@ public class UISpecControllerTest {
 	
 		@MockBean
 	private PublisherClient<String,EventModel,HttpHeaders> publisher;
+		@MockBean
+		private AuditUtil auditUtil;
+		
+		private ObjectMapper mapper;
 
 	@MockBean
 	private UISpecService uiSpecService;
 
 	@MockBean
 	private UISpecRepository uiSpecRepository;
+	
+	private RequestWrapper<UISpecDto> request=new RequestWrapper<UISpecDto>();
+	
+	@Before
+	public void setUp() {
+
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
+		String json="[{\"order\":1,\"name\":\"ConsentDetails\",\"label\":{\"ara\":\"مافقة\",\"fra\":\"Consentement\",\"eng\":\"Consent\"},\"caption\":{\"ara\":\"موافقة\",\"fra\":\"Consentement\",\"eng\":\"Consent\"},\"fields\":[\"consentText\",\"consent\"],\"layoutTemplate\":null,\"preRegFetchRequired\":false,\"active\":false},{\"order\":2,\"name\":\"DemographicDetails\",\"label\":{\"ara\":\"التفاصيل الديموغرافية\",\"fra\":\"Détails démographiques\",\"eng\":\"Demographic Details\"},\"caption\":{\"ara\":\"التفاصيل الديموغرافية\",\"fra\":\"Détails démographiques\",\"eng\":\"Demographic Details\"},\"fields\":[\"fullName\",\"dateOfBirth\",\"gender\",\"residenceStatus\",\"addressLine1\",\"addressLine2\",\"addressLine3\",\"referenceIdentityNumber\",\"region\",\"province\",\"city\",\"zone\",\"postalCode\",\"phone\",\"email\",\"introducerName\",\"introducerRID\",\"introducerUIN\"],\"layoutTemplate\":null,\"preRegFetchRequired\":true,\"active\":false},{\"order\":3,\"name\":\"DocumentsDetails\",\"label\":{\"ara\":\"تحميل الوثيقة\",\"fra\":\"Des documents\",\"eng\":\"Document Upload\"},\"caption\":{\"ara\":\"وثائق\",\"fra\":\"Des documents\",\"eng\":\"Documents\"},\"fields\":[\"proofOfAddress\",\"proofOfIdentity\",\"proofOfRelationship\",\"proofOfDateOfBirth\",\"proofOfException\",\"proofOfException-1\"],\"layoutTemplate\":null,\"preRegFetchRequired\":false,\"active\":false},{\"order\":4,\"name\":\"BiometricDetails\",\"label\":{\"ara\":\"التفاصيل البيومترية\",\"fra\":\"Détails biométriques\",\"eng\":\"Biometric Details\"},\"caption\":{\"ara\":\"التفاصيل البيومترية\",\"fra\":\"Détails biométriques\",\"eng\":\"Biometric Details\"},\"fields\":[\"individualBiometrics\",\"individualAuthBiometrics\",\"introducerBiometrics\"],\"layoutTemplate\":null,\"preRegFetchRequired\":false,\"active\":false}]";
+		JsonNode jn;
+		UISpecDto dto=new UISpecDto();
+		try {
+			jn = mapper.readTree(json);
+			dto.setJsonspec(jn);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		dto.setDescription("screen spec");
+		dto.setDomain("reg-client");
+		dto.setIdentitySchemaId("1001");
+		
+		dto.setTitle("screenspec");
+		dto.setType("screen");
+		request.setRequest(dto);
+		
+		
+		
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t001defineUISpecTest() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/uispec").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(request))).andReturn(), null);
+	}
+	@Test
+	@WithUserDetails("global-admin")
+	public void t002updateUISpecTest() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/uispec").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(request)).param("id", "1")).andReturn(), null);
+	}
 
 	@Test
 	@WithUserDetails("global-admin")

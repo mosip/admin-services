@@ -1450,7 +1450,7 @@ public class MasterdataControllerTest {
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/languages").characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("code", "ara")
 				.param("isActive", "true");
-		mockMvc.perform(requestBuilder).andExpect(status().is(500));
+		mockMvc.perform(requestBuilder).andExpect(status().is(200));
 	}
 
 	@Test

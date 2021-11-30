@@ -303,5 +303,26 @@ public class DeviceSpecificationControllerTest {
 		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devicespecifications/devicetypecode/CMR11"))
 				.andReturn(),"KER-MSD-012");
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t021deleteDeviceSpecificationTest() throws Exception {
+		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/devicespecifications/1"))
+				.andReturn(), null);
+	}
 
+	@Test
+	@WithUserDetails("global-admin")
+	public void t022getDeviceSpecificationByLanguageCodeTest() throws Exception {
+		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devicespecifications"))
+				.andReturn(), null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t023getDeviceSpecificationByLanguageCodeTest() throws Exception {
+		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devicespecifications/eng"))
+				.andReturn(), null);
+	}
+	
 }

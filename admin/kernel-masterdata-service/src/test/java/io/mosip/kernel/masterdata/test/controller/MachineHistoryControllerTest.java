@@ -53,14 +53,14 @@ public class MachineHistoryControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t001getMachineHistoryIdLangEffTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/machines/10001/eng/2024-12-10T17:39:48.765Z")).andReturn(), null);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/machineshistories/10001/eng/2024-12-10T17:39:48.765Z")).andReturn(), null);
 
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
 	public void t001getMachineHistoryIdLangEffTest1() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/machines/10001/ara/2024-12-10T17:39:48.765Z")).andReturn(), null);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/machineshistories/10001/ara/2024-12-10T17:39:48.765Z")).andReturn(), null);
 
 	}
 	
