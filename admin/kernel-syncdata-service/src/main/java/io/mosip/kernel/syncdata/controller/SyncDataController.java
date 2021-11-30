@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.*;
+import io.mosip.kernel.syncdata.service.helper.SyncJobHelperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,19 +56,22 @@ public class SyncDataController {
 	 * Service instance {@link SyncConfigDetailsService}
 	 */
 	@Autowired
-	SyncConfigDetailsService syncConfigDetailsService;
+	private SyncConfigDetailsService syncConfigDetailsService;
 
 	/**
 	 * Service instnace {@link SyncRolesService}
 	 */
 	@Autowired
-	SyncRolesService syncRolesService;
+	private SyncRolesService syncRolesService;
 
 	@Autowired
-	SyncUserDetailsService syncUserDetailsService;
+	private SyncUserDetailsService syncUserDetailsService;
 
 	@Autowired
-	LocalDateTimeUtil localDateTimeUtil;
+	private LocalDateTimeUtil localDateTimeUtil;
+
+	@Autowired
+	private SyncJobHelperService syncJobHelperService;
 
 	/**
 	 * This API method would fetch all synced global config details from server
@@ -151,7 +155,8 @@ public class SyncDataController {
 			@RequestParam(value = "regcenterId", required = false) String regCenterId)
 			throws InterruptedException, ExecutionException {
 
-		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
+		LocalDateTime currentTimeStamp = lastUpdated==null ? syncJobHelperService.getFullSyncCurrentTimestamp() :
+				syncJobHelperService.getDeltaSyncCurrentTimestamp();
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		
 		SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettings(regCenterId, keyIndex,
@@ -183,7 +188,8 @@ public class SyncDataController {
 			@RequestParam(value = "keyindex", required = true) String keyIndex)
 			throws InterruptedException, ExecutionException {
 
-		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
+		LocalDateTime currentTimeStamp = lastUpdated==null ? syncJobHelperService.getFullSyncCurrentTimestamp() :
+				syncJobHelperService.getDeltaSyncCurrentTimestamp();
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		
 		SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettings(regCenterId, keyIndex,

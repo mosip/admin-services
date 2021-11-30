@@ -399,7 +399,7 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         List<BlacklistedWords> list = blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime, currentTime);
-        Assert.assertEquals(list.size(), getCachedValue("initial-sync", "blocklisted_words").size());
+        Assert.assertEquals(list.size(), getCachedValue("initial-sync", "blacklisted_words").size());
     }
 
     @Test
@@ -409,7 +409,7 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime, currentTime);
-        Assert.assertEquals(0, getCachedValue("initial-sync", "blocklisted_words").size());
+        Assert.assertEquals(0, getCachedValue("initial-sync", "blacklisted_words").size());
     }
 
     @Test
@@ -417,8 +417,8 @@ public class SyncCacheTest {
         blacklistedWordsRepository.save(getBlackListedWords("test"));
         evictAllKeys("delta-sync");
         List<Object[]> result = blacklistedWordsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "blocklisted_words").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "blocklisted_words").get(0));
+        Assert.assertEquals(1, getCachedValue("delta-sync", "blacklisted_words").size());
+        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "blacklisted_words").get(0));
     }
 
     @Test
@@ -430,8 +430,8 @@ public class SyncCacheTest {
 
         evictAllKeys("delta-sync");
         List<Object[]> result = blacklistedWordsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "blocklisted_words").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "blocklisted_words").get(0));
+        Assert.assertEquals(1, getCachedValue("delta-sync", "blacklisted_words").size());
+        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "blacklisted_words").get(0));
     }
 
     //
