@@ -229,13 +229,13 @@ public class ZoneControllerTest {
 
 	}
 	
-	@Test
+/*	@Test
 	@WithUserDetails("global-admin")
 	public void t018authorizeZoneTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("rid","10001")).andReturn(), null);
 
 	}
-	
+	*/
 	
 	
 }
