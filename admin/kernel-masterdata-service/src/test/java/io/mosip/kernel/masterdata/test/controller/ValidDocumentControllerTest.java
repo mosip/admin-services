@@ -196,5 +196,20 @@ public class ValidDocumentControllerTest {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/validdocuments/unmap/POA/COR")).andReturn(),
 				null);
 	}
-
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t008getValidDocumentByDocCategoryCodeTest() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/validdocuments/POI/eng")).andReturn(),
+				null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t009getValidDocumentByDocCategoryCodeTest() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/validdocuments/POA/eng")).andReturn(),
+				"KER-MSD-016");
+	}
+	
+	
 }

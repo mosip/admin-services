@@ -29,7 +29,7 @@ public class MasterDataTest {
 			} else {
 				Map m = mapper.readValue(rst.getResponse().getContentAsString(), Map.class);
 				assertEquals(rst.getResponse().getStatus(), 200);
-				if (m.containsKey("errors") && null != m.get("errors")) {
+				if (m.containsKey("errors") && null != m.get("errors") && ((List<Map<String, String>>) m.get("errors")).size()>0) {
 //					assertEquals(((List<Map<String, String>>) m.get("errors")).get(0).get("errorCode"), actualCode);
 					assertEquals(expectedCode, ((List<Map<String, String>>) m.get("errors")).get(0).get("errorCode"));
 				}

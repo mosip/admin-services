@@ -621,5 +621,41 @@ CREATE MEMORY TABLE IF NOT EXISTS MASTER.identity_schema
     is_deleted boolean DEFAULT false,
     del_dtimes timestamp without time zone
    
-)
+);
 
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.ui_spec
+(
+    id character varying(36)  NOT NULL,
+    version numeric(5,3) NOT NULL,
+    domain character varying(36)  NOT NULL,
+    title character varying(64)  NOT NULL,
+    description character varying(256)  NOT NULL,
+    type character varying(36)  NOT NULL,
+    json_spec character varying  NOT NULL,
+    identity_schema_id character varying(36)  NOT NULL,
+    identity_schema_version numeric(5,3) NOT NULL,
+    effective_from timestamp without time zone,
+    status_code character varying(36)  NOT NULL,
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean,
+    del_dtimes timestamp without time zone
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.template_file_format
+(
+    code character varying(36)  NOT NULL,
+    descr character varying(256) NOT NULL,
+    lang_code character varying(3) ,
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone
+   
+);

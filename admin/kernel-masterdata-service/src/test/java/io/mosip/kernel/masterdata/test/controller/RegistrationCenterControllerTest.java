@@ -570,14 +570,24 @@ public class RegistrationCenterControllerTest {
 				.andReturn(), "KER-MSD-215");
 	}
 
-	@Test
+/*	@Test
 	@WithUserDetails("global-admin")
-	public void t036updateRegistrationCenterNonLanguageSpecifiTest() throws Exception {
+	public void t036updateRegistrationCenterNonLanguageSpecifiTest1() throws Exception {
 		
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.put("/registrationcenters/nonlanguage")
-						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rp)))
-				.andReturn(), null);
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rl)))
+				.andReturn(), "KER-MSD-999");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t036updateRegistrationCenterNonLanguageSpecifiTest() throws Exception {
+		rl.getRequest().setHolidayLocationCode("14022");
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.put("/registrationcenters/nonlanguage")
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rl)))
+				.andReturn(),null);
 	}
 
 	@Test
@@ -587,9 +597,9 @@ public class RegistrationCenterControllerTest {
 		
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.put("/registrationcenters/nonlanguage")
-						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rp)))
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rl)))
 				.andReturn(), null);
 	}
-
+*/
 	
 }

@@ -73,7 +73,7 @@ INSERT INTO master.device_type(code, name, descr, lang_code, is_active, cr_by, c
 INSERT INTO master.device_spec(id, name, brand, model, dtyp_code, min_driver_ver, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_DELETEd, del_dtimes) VALUES 
 --('165','Fingerprint Scanner','Safran Morpho','1300 E2','FRS','1.12','To scan fingerprint','fra',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('165','Fingerprint Scanner','Safran Morpho','1300 E2','FRS','1.12','To scan fingerprint','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
---('327','High Speed Dual Iris Scanner','Cogent','3M','CMR','2.34','To scan iris','fra',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('1','High Speed Dual Iris Scanner','Cogent','3M','CMR','2.34','To scan iris','fra',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('327','High Speed Dual Iris Scanner','Cogent','3M','CMR','2.34','To scan iris','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
    
 
@@ -83,8 +83,8 @@ INSERT INTO master.device_spec(id, name, brand, model, dtyp_code, min_driver_ver
 INSERT INTO master.device_master(id, name, mac_address, serial_num, ip_address, validity_end_dtimes, dspec_id, zone_code, regcntr_id, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_DELETEd, del_dtimes) VALUES 
 ('3000038','Dummy Finger Print Scanner 18','2D-F1-90-89-64-AC','DJ2032361963',NULL,NULL,'165','SOS','10014','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('3000039','Dummy Finger Print Scanner 19','91-16-2F-35-1F-9F','RU3582050357',NULL,NULL,'165','SOS','10015','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
-('3000040','Dummy Finger Print Scanner 20','CB-B1-03-83-80-1D','RB2496727160',NULL,NULL,'165','SOS','10015','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
-('3000058','Dummy IRIS Scanner 18','AA-D8-DC-3A-0A-A8','AQ8028890156',NULL,NULL,'327','SOS','10014','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('3000040','Dummy Finger Print Scanner 20','CB-B1-03-83-80-1D','RB2496727160',NULL,NULL,'165','NTH','10015','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('3000058','Dummy IRIS Scanner 18','AA-D8-DC-3A-0A-A8','AQ8028890156',NULL,NULL,'327','NTH',NULL,'eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('3000059','Dummy IRIS Scanner 19','0D-1B-B0-5A-D9-98','KM7656759005',NULL,NULL,'327','SOS','10015','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('3000060','Dummy IRIS Scanner 20','FA-60-AC-D0-54-1C','OZ8730264911',NULL,NULL,'327','SOS','10015','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('3000077','Dummy Web Camera 17','0F-ED-8F-0F-94-88','H706H5247430756',NULL,NULL,'327','SOS','10014','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
@@ -148,6 +148,10 @@ INSERT INTO master.reg_exceptional_holiday(regcntr_id, hol_date, hol_name,hol_re
 ('10001',TO_DATE('01-12-2019','dd-MM-yyyy'),'Emergency Holiday','Emergency Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('10002',TO_DATE('01-12-2019','dd-MM-yyyy'),'Emergency Holiday','Emergency Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
 
+
+DELETE FROM MASTER.ui_spec;
+INSERT INTO master.ui_spec(id, version, domain, title, description, type, json_spec, identity_schema_id, identity_schema_version, effective_from, status_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES
+('1','0.100','REG-CLIENT','BIOMETRIC','biometric','screens','[{"order":1,"name":"ConsentDetails","label":{"ara":"موافقة","fra":"Consentement","eng":"Consent"},"caption":{"ara":"موافقة","fra":"Consentement","eng":"Consent"},"fields":["consentText","consent"],"layoutTemplate":null,"preRegFetchRequired":false,"active":false},{"order":2,"name":"DemographicDetails","label":{"ara":"التفاصيل الديموغرافية","fra":"Détails démographiques","eng":"Demographic Details"},"caption":{"ara":"التفاصيل الديموغرافية","fra":"Détails démographiques","eng":"Demographic Details"},"fields":["fullName","dateOfBirth","gender","residenceStatus","addressLine1","addressLine2","addressLine3","referenceIdentityNumber","region","province","city","zone","postalCode","phone","email","introducerName","introducerRID","introducerUIN"],"layoutTemplate":null,"preRegFetchRequired":true,"active":false},{"order":3,"name":"DocumentsDetails","label":{"ara":"تحميل الوثيقة","fra":"Des documents","eng":"Document Upload"},"caption":{"ara":"وثائق","fra":"Des documents","eng":"Documents"},"fields":["proofOfAddress","proofOfIdentity","proofOfRelationship","proofOfDateOfBirth","proofOfException","proofOfException-1"],"layoutTemplate":null,"preRegFetchRequired":false,"active":false},{"order":4,"name":"BiometricDetails","label":{"ara":"التفاصيل البيومترية","fra":"Détails biométriques","eng":"Biometric Details"},"caption":{"ara":"التفاصيل البيومترية","fra":"Détails biométriques","eng":"Biometric Details"},"fields":["individualBiometrics","individualAuthBiometrics","introducerBiometrics"],"layoutTemplate":null,"preRegFetchRequired":false,"active":false}]','1001','0.001', TIMESTAMP '2021-12-10 11:42:52.994', 'PUBLISHED', true,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
 
 DELETE FROM MASTER.blacklisted_words;
 INSERT INTO master.blacklisted_words(word, descr, lang_code,is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_DELETEd, del_dtimes) VALUES
@@ -276,3 +280,8 @@ INSERT INTO MASTER.identity_schema(id, id_version, title, description, schema_js
 ('1','0.1','mp1','mosip description','{"schema":"schema"}','DRAFT',false, null, 'eng',true, 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
 ('2','0.1','mp2','mosip description','{"schema":"schema"}','DRAFT',false, null, 'eng',true, 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
 ('3','1.1','mp3','mosip description','{"schema":"schema"}','PUBLISHED',false, null, 'eng',true, 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL);
+
+DELETE FROM MASTER.template_file_format;
+INSERT INTO master.template_file_format(code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES
+('json','json file','eng',true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL),
+('txt','text file','eng',true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL);

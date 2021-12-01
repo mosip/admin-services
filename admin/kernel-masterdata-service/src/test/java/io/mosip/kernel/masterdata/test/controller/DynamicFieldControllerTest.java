@@ -336,14 +336,14 @@ public class DynamicFieldControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t020getMissingDynamicFieldsFailTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/missingids/ara")).andReturn(), null);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/missingids/ara1")).andReturn(), "KER-LANG-ERR");
 
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void t020getMissingDynamicFieldsTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/missingids/ara")).andReturn(), null);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/missingids/ara")).andReturn(), null);
 
 	}
 
@@ -351,7 +351,7 @@ public class DynamicFieldControllerTest {
 	@WithUserDetails("global-admin")
 	public void t022getMissingDynamicFieldsTest() throws Exception {
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/missingids/ara").param("fieldName", "name")).andReturn(),
+				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/missingids/ara").param("fieldName", "name")).andReturn(),
 				null);
 
 	}
