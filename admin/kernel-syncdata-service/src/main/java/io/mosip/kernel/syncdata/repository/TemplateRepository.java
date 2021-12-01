@@ -3,6 +3,7 @@ package io.mosip.kernel.syncdata.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import io.mosip.kernel.syncdata.dto.EntityDtimes;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -34,6 +35,6 @@ public interface TemplateRepository extends JpaRepository<Template, String> {
 	List<Template> findAllLatestCreatedUpdateDeletedByModule(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp, String moduleId);
 
 	@Cacheable(cacheNames = "delta-sync", key = "'template'")
-	@Query(value = "select max(aam.createdDateTime), max(aam.updatedDateTime) from TemplateFileFormat aam ")
-	List<Object[]> getMaxCreatedDateTimeMaxUpdatedDateTime();
+	@Query(value = "select new io.mosip.kernel.syncdata.dto.EntityDtimes(max(aam.createdDateTime), max(aam.updatedDateTime), max(aam.deletedDateTime)) from TemplateFileFormat aam ")
+	EntityDtimes getMaxCreatedDateTimeMaxUpdatedDateTime();
 }

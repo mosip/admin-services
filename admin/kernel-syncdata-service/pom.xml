@@ -310,6 +310,12 @@
 			<version>${spring.boot.version}</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-afterburner -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.module</groupId>
+			<artifactId>jackson-module-afterburner</artifactId>
+			<version>2.13.0</version>
+		</dependency>
 
 	</dependencies>
 	
