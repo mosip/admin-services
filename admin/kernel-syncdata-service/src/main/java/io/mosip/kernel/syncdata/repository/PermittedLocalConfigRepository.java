@@ -1,5 +1,6 @@
 package io.mosip.kernel.syncdata.repository;
 
+import io.mosip.kernel.syncdata.dto.EntityDtimes;
 import io.mosip.kernel.syncdata.entity.PermittedLocalConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,7 +16,7 @@ public interface PermittedLocalConfigRepository extends JpaRepository<PermittedL
     List<PermittedLocalConfig> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp);
 
     @Cacheable(cacheNames = "delta-sync", key = "'permitted_local_config'")
-    @Query(value = "select max(aam.createdDateTime), max(aam.updatedDateTime) from PermittedLocalConfig aam ")
-    List<Object[]> getMaxCreatedDateTimeMaxUpdatedDateTime();
+    @Query(value = "select new io.mosip.kernel.syncdata.dto.EntityDtimes(max(aam.createdDateTime), max(aam.updatedDateTime), max(aam.deletedDateTime)) from PermittedLocalConfig aam ")
+    EntityDtimes getMaxCreatedDateTimeMaxUpdatedDateTime();
 
 }
