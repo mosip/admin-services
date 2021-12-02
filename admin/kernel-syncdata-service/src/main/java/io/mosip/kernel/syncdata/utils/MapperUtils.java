@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
+import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 import io.mosip.kernel.syncdata.dto.*;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +38,7 @@ public class MapperUtils {
 	@PostConstruct
 	private void setupObjectMapper() {
 		objectMapper.registerModule(new JavaTimeModule());
+		objectMapper.registerModule(new AfterburnerModule());
 		objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 	}
 	

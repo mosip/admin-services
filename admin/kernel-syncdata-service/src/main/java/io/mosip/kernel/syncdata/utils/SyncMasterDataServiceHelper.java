@@ -14,6 +14,7 @@ import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.syncdata.constant.AdminServiceErrorCode;
+import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.entity.*;
 import io.mosip.kernel.syncdata.exception.AdminServiceException;
 import io.mosip.kernel.syncdata.exception.RequestException;
@@ -29,57 +30,6 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
-import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
-import io.mosip.kernel.syncdata.dto.AppDetailDto;
-import io.mosip.kernel.syncdata.dto.AppRolePriorityDto;
-import io.mosip.kernel.syncdata.dto.ApplicantValidDocumentDto;
-import io.mosip.kernel.syncdata.dto.ApplicationDto;
-import io.mosip.kernel.syncdata.dto.BiometricAttributeDto;
-import io.mosip.kernel.syncdata.dto.BiometricTypeDto;
-import io.mosip.kernel.syncdata.dto.BlacklistedWordsDto;
-import io.mosip.kernel.syncdata.dto.DeviceDto;
-import io.mosip.kernel.syncdata.dto.DeviceProviderDto;
-import io.mosip.kernel.syncdata.dto.DeviceServiceDto;
-import io.mosip.kernel.syncdata.dto.DeviceSpecificationDto;
-import io.mosip.kernel.syncdata.dto.DeviceSubTypeDPMDto;
-import io.mosip.kernel.syncdata.dto.DeviceTypeDPMDto;
-import io.mosip.kernel.syncdata.dto.DeviceTypeDto;
-import io.mosip.kernel.syncdata.dto.DocumentCategoryDto;
-import io.mosip.kernel.syncdata.dto.DocumentTypeDto;
-import io.mosip.kernel.syncdata.dto.FoundationalTrustProviderDto;
-import io.mosip.kernel.syncdata.dto.GenderDto;
-import io.mosip.kernel.syncdata.dto.HolidayDto;
-import io.mosip.kernel.syncdata.dto.IdTypeDto;
-import io.mosip.kernel.syncdata.dto.IndividualTypeDto;
-import io.mosip.kernel.syncdata.dto.LanguageDto;
-import io.mosip.kernel.syncdata.dto.LocationDto;
-import io.mosip.kernel.syncdata.dto.MachineDto;
-import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
-import io.mosip.kernel.syncdata.dto.MachineTypeDto;
-import io.mosip.kernel.syncdata.dto.PostReasonCategoryDto;
-import io.mosip.kernel.syncdata.dto.ProcessListDto;
-import io.mosip.kernel.syncdata.dto.ReasonListDto;
-import io.mosip.kernel.syncdata.dto.RegisteredDeviceDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceHistoryDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDeviceDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDeviceHistoryDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineHistoryDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterTypeDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterUserHistoryDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingHistoryDto;
-import io.mosip.kernel.syncdata.dto.ScreenAuthorizationDto;
-import io.mosip.kernel.syncdata.dto.ScreenDetailDto;
-import io.mosip.kernel.syncdata.dto.SyncJobDefDto;
-import io.mosip.kernel.syncdata.dto.TemplateDto;
-import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
-import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
-import io.mosip.kernel.syncdata.dto.TitleDto;
-import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.response.SyncDataBaseDto;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.service.SyncJobDefService;
@@ -764,6 +714,10 @@ public class SyncMasterDataServiceHelper {
 		List<Device> devices = null;
 		List<DeviceDto> deviceList = null;
 		try {
+			if(!isChangesFound("Device", lastUpdated)) {
+				return CompletableFuture.completedFuture(deviceList);
+			}
+
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
@@ -884,6 +838,9 @@ public class SyncMasterDataServiceHelper {
 		List<DeviceSpecification> deviceSpecificationList = null;
 		List<DeviceSpecificationDto> deviceSpecificationDtoList = null;
 		try {
+			if(!isChangesFound("DeviceSpecification", lastUpdated)) {
+				return CompletableFuture.completedFuture(deviceSpecificationDtoList);
+			}
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
@@ -975,6 +932,9 @@ public class SyncMasterDataServiceHelper {
 		List<DeviceTypeDto> deviceTypeList = null;
 		List<DeviceType> deviceTypes = null;
 		try {
+			if(!isChangesFound("DeviceType", lastUpdated)) {
+				return CompletableFuture.completedFuture(deviceTypeList);
+			}
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
@@ -1909,7 +1869,7 @@ public class SyncMasterDataServiceHelper {
 		if(lastUpdated == null) //if it's null, then the request is for full sync
 			return true;
 
-		List<Object[]> result = Collections.EMPTY_LIST;
+		EntityDtimes result = null;
 		switch (entityName) {
 			case "AppAuthenticationMethod":
 				result = appAuthenticationMethodRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
@@ -1974,14 +1934,25 @@ public class SyncMasterDataServiceHelper {
 			case "IndividualType":
 				result = individualTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
 				break;
+			case "Device":
+				result = deviceRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				break;
+			case "DeviceSpecification":
+				result = deviceSpecificationRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				break;
+			case "DeviceType":
+				result = deviceTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				break;
 		}
-		if(result.isEmpty()) {
+
+		if(result == null) {
 			logger.info("** No data found in the table : {}", entityName);
 			return false;
 		}
-		//check if updatedDateTime is null, then always take createdDateTime
-		Object changedDate = (result.get(0).length == 2 && result.get(0)[1] == null) ? result.get(0)[0] : result.get(0)[1];
-		return changedDate == null ? false : lastUpdated.isBefore((LocalDateTime)changedDate);
+
+		return ( (result.getDeletedDateTime() != null && lastUpdated.isBefore(result.getDeletedDateTime())) ||
+				(result.getUpdatedDateTime() != null && lastUpdated.isBefore(result.getUpdatedDateTime())) ||
+				(result.getCreatedDateTime() != null && lastUpdated.isBefore(result.getCreatedDateTime())) );
 	}
 
 }

@@ -10,10 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 import io.mosip.kernel.syncdata.httpfilter.CorsFilter;
-import io.mosip.kernel.syncdata.httpfilter.ReqResFilter;
 
 import java.util.concurrent.Executor;
 

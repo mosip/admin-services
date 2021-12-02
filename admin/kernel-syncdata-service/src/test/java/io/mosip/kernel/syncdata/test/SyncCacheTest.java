@@ -1,5 +1,6 @@
 package io.mosip.kernel.syncdata.test;
 
+import io.mosip.kernel.syncdata.dto.EntityDtimes;
 import io.mosip.kernel.syncdata.entity.*;
 import io.mosip.kernel.syncdata.entity.id.ApplicantValidDocumentID;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
@@ -80,7 +81,7 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         List<AppAuthenticationMethod> list = appAuthenticationMethodRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime, currentTime);
-        Assert.assertEquals(list.size(), getCachedValue("initial-sync", "app_authentication_method").size());
+        Assert.assertEquals(list.size(), getInitialCachedValue("initial-sync", "app_authentication_method").size());
     }
 
     @Test
@@ -91,7 +92,7 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         appAuthenticationMethodRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime, currentTime);
-        Assert.assertEquals(0, getCachedValue("initial-sync", "app_authentication_method").size());
+        Assert.assertEquals(0, getInitialCachedValue("initial-sync", "app_authentication_method").size());
     }
 
     @Test
@@ -99,9 +100,9 @@ public class SyncCacheTest {
         appAuthenticationMethodRepository.save(getAppAuthMethods("test"));
         appAuthenticationMethodRepository.save(getAppAuthMethods("test1"));
         evictAllKeys("delta-sync");
-        List<Object[]> result = appAuthenticationMethodRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "app_authentication_method").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "app_authentication_method").get(0));
+        EntityDtimes result = appAuthenticationMethodRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "app_authentication_method"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "app_authentication_method"));
     }
 
     @Test
@@ -113,9 +114,9 @@ public class SyncCacheTest {
         appAuthenticationMethodRepository.save(entity);
 
         evictAllKeys("delta-sync");
-        List<Object[]> result = appAuthenticationMethodRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "app_authentication_method").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "app_authentication_method").get(0));
+        EntityDtimes result = appAuthenticationMethodRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "app_authentication_method"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "app_authentication_method"));
     }
 
     //
@@ -128,7 +129,7 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         List<AppRolePriority> list = appRolePriorityRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime, currentTime);
-        Assert.assertEquals(list.size(), getCachedValue("initial-sync", "app_role_priority").size());
+        Assert.assertEquals(list.size(), getInitialCachedValue("initial-sync", "app_role_priority").size());
     }
 
     @Test
@@ -139,7 +140,7 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         appRolePriorityRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime, currentTime);
-        Assert.assertEquals(0, getCachedValue("initial-sync", "app_role_priority").size());
+        Assert.assertEquals(0, getInitialCachedValue("initial-sync", "app_role_priority").size());
     }
 
     @Test
@@ -147,9 +148,9 @@ public class SyncCacheTest {
         appRolePriorityRepository.save(getAppRolePriority("test"));
         appRolePriorityRepository.save(getAppRolePriority("test1"));
         evictAllKeys("delta-sync");
-        List<Object[]> result = appRolePriorityRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "app_role_priority").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "app_role_priority").get(0));
+        EntityDtimes result = appRolePriorityRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "app_role_priority"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "app_role_priority"));
     }
 
     @Test
@@ -161,9 +162,9 @@ public class SyncCacheTest {
         appRolePriorityRepository.save(entity);
 
         evictAllKeys("delta-sync");
-        List<Object[]> result = appRolePriorityRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "app_role_priority").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "app_role_priority").get(0));
+        EntityDtimes result = appRolePriorityRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "app_role_priority"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "app_role_priority"));
     }
 
     //
@@ -176,7 +177,7 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         List<Template> list = templateRepository.findAllLatestCreatedUpdateDeletedByModule(lastUpdatedTime, currentTime, "test");
-        Assert.assertEquals(list.size(), getCachedValue("initial-sync", "template").size());
+        Assert.assertEquals(list.size(), getInitialCachedValue("initial-sync", "template").size());
     }
 
     @Test
@@ -187,7 +188,7 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         templateRepository.findAllLatestCreatedUpdateDeletedByModule(lastUpdatedTime, currentTime, "test");
-        Assert.assertEquals(0, getCachedValue("initial-sync", "template").size());
+        Assert.assertEquals(0, getInitialCachedValue("initial-sync", "template").size());
     }
 
     @Test
@@ -195,9 +196,9 @@ public class SyncCacheTest {
         saveModuleDetail();
         templateRepository.save(getTemplate("test"));
         evictAllKeys("delta-sync");
-        List<Object[]> result = templateRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "template").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "template").get(0));
+        EntityDtimes result = templateRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "template"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "template"));
     }
 
     @Test
@@ -209,9 +210,9 @@ public class SyncCacheTest {
         templateRepository.save(entity);
 
         evictAllKeys("delta-sync");
-        List<Object[]> result = templateRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "template").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "template").get(0));
+        EntityDtimes result = templateRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "template"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "template"));
     }
     //
 
@@ -222,7 +223,7 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         List<SyncJobDef> list = syncJobDefRepository.findLatestByLastUpdatedTimeAndCurrentTimeStamp(lastUpdatedTime, currentTime);
-        Assert.assertEquals(list.size(), getCachedValue("initial-sync", "sync_job_def").size());
+        Assert.assertEquals(list.size(), getInitialCachedValue("initial-sync", "sync_job_def").size());
     }
 
     @Test
@@ -232,16 +233,16 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         syncJobDefRepository.findLatestByLastUpdatedTimeAndCurrentTimeStamp(lastUpdatedTime, currentTime);
-        Assert.assertEquals(0, getCachedValue("initial-sync", "sync_job_def").size());
+        Assert.assertEquals(0, getInitialCachedValue("initial-sync", "sync_job_def").size());
     }
 
     @Test
     public void findMaxChangedDate_JobDef_thenOnlyCreatedUpdatedDateTimeIsCached() {
         syncJobDefRepository.save(getSyncJobDef("test"));
         evictAllKeys("delta-sync");
-        List<Object[]> result = syncJobDefRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "sync_job_def").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "sync_job_def").get(0));
+        EntityDtimes result = syncJobDefRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "sync_job_def"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "sync_job_def"));
     }
 
     @Test
@@ -252,9 +253,9 @@ public class SyncCacheTest {
         syncJobDefRepository.save(entity);
 
         evictAllKeys("delta-sync");
-        List<Object[]> result = syncJobDefRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "sync_job_def").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "sync_job_def").get(0));
+        EntityDtimes result = syncJobDefRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "sync_job_def"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "sync_job_def"));
     }
 
     //
@@ -266,7 +267,7 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         List<ScreenDetail> list = screenDetailRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime, currentTime);
-        Assert.assertEquals(list.size(), getCachedValue("initial-sync", "screen_detail").size());
+        Assert.assertEquals(list.size(), getInitialCachedValue("initial-sync", "screen_detail").size());
     }
 
     @Test
@@ -276,16 +277,16 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         screenDetailRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime, currentTime);
-        Assert.assertEquals(0, getCachedValue("initial-sync", "screen_detail").size());
+        Assert.assertEquals(0, getInitialCachedValue("initial-sync", "screen_detail").size());
     }
 
     @Test
     public void findMaxChangedDate_ScreenDetail_thenOnlyCreatedUpdatedDateTimeIsCached() {
         screenDetailRepository.save(getScreenDetail("test"));
         evictAllKeys("delta-sync");
-        List<Object[]> result = screenDetailRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "screen_detail").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "screen_detail").get(0));
+        EntityDtimes result = screenDetailRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "screen_detail"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "screen_detail"));
     }
 
     @Test
@@ -296,9 +297,9 @@ public class SyncCacheTest {
         screenDetailRepository.save(entity);
 
         evictAllKeys("delta-sync");
-        List<Object[]> result = screenDetailRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "screen_detail").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "screen_detail").get(0));
+        EntityDtimes result = screenDetailRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "screen_detail"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "screen_detail"));
     }
 
     //
@@ -310,7 +311,7 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         List<ScreenAuthorization> list = screenAuthorizationRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime, currentTime);
-        Assert.assertEquals(list.size(), getCachedValue("initial-sync", "screen_authorization").size());
+        Assert.assertEquals(list.size(), getInitialCachedValue("initial-sync", "screen_authorization").size());
     }
 
     @Test
@@ -320,16 +321,16 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         screenAuthorizationRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime, currentTime);
-        Assert.assertEquals(0, getCachedValue("initial-sync", "screen_authorization").size());
+        Assert.assertEquals(0, getInitialCachedValue("initial-sync", "screen_authorization").size());
     }
 
     @Test
     public void findMaxChangedDate_ScreenAuth_thenOnlyCreatedUpdatedDateTimeIsCached() {
         screenAuthorizationRepository.save(getScreenAuthorization("test"));
         evictAllKeys("delta-sync");
-        List<Object[]> result = screenAuthorizationRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "screen_authorization").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "screen_authorization").get(0));
+        EntityDtimes result = screenAuthorizationRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "screen_authorization"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "screen_authorization"));
     }
 
     @Test
@@ -340,9 +341,9 @@ public class SyncCacheTest {
         screenAuthorizationRepository.save(entity);
 
         evictAllKeys("delta-sync");
-        List<Object[]> result = screenAuthorizationRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "screen_authorization").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "screen_authorization").get(0));
+        EntityDtimes result = screenAuthorizationRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "screen_authorization"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "screen_authorization"));
     }
 
 
@@ -355,7 +356,7 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         List<ProcessList> list = processListRepository.findByLastUpdatedTimeAndCurrentTimeStamp(lastUpdatedTime, currentTime);
-        Assert.assertEquals(list.size(), getCachedValue("initial-sync", "process_list").size());
+        Assert.assertEquals(list.size(), getInitialCachedValue("initial-sync", "process_list").size());
     }
 
     @Test
@@ -365,16 +366,16 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         processListRepository.findByLastUpdatedTimeAndCurrentTimeStamp(lastUpdatedTime, currentTime);
-        Assert.assertEquals(0, getCachedValue("initial-sync", "process_list").size());
+        Assert.assertEquals(0, getInitialCachedValue("initial-sync", "process_list").size());
     }
 
     @Test
     public void findMaxChangedDate_PL_thenOnlyCreatedUpdatedDateTimeIsCached() {
         processListRepository.save(getProcessList("test"));
         evictAllKeys("delta-sync");
-        List<Object[]> result = processListRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "process_list").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "process_list").get(0));
+        EntityDtimes result = processListRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "process_list"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "process_list"));
     }
 
     @Test
@@ -385,9 +386,9 @@ public class SyncCacheTest {
         processListRepository.save(entity);
 
         evictAllKeys("delta-sync");
-        List<Object[]> result = processListRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "process_list").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "process_list").get(0));
+        EntityDtimes result = processListRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "process_list"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "process_list"));
     }
 
     //
@@ -399,7 +400,7 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         List<BlacklistedWords> list = blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime, currentTime);
-        Assert.assertEquals(list.size(), getCachedValue("initial-sync", "blocklisted_words").size());
+        Assert.assertEquals(list.size(), getInitialCachedValue("initial-sync", "blacklisted_words").size());
     }
 
     @Test
@@ -409,16 +410,16 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime, currentTime);
-        Assert.assertEquals(0, getCachedValue("initial-sync", "blocklisted_words").size());
+        Assert.assertEquals(0, getInitialCachedValue("initial-sync", "blacklisted_words").size());
     }
 
     @Test
     public void findMaxChangedDate_BW_thenOnlyCreatedUpdatedDateTimeIsCached() {
         blacklistedWordsRepository.save(getBlackListedWords("test"));
         evictAllKeys("delta-sync");
-        List<Object[]> result = blacklistedWordsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "blocklisted_words").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "blocklisted_words").get(0));
+        EntityDtimes result = blacklistedWordsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "blacklisted_words"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "blacklisted_words"));
     }
 
     @Test
@@ -429,22 +430,22 @@ public class SyncCacheTest {
         blacklistedWordsRepository.save(entity);
 
         evictAllKeys("delta-sync");
-        List<Object[]> result = blacklistedWordsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "blocklisted_words").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "blocklisted_words").get(0));
+        EntityDtimes result = blacklistedWordsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "blacklisted_words"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "blacklisted_words"));
     }
 
     //
 
-    @Test
+    /*@Test
     public void whenFindAllMachine_thenResultShouldBePutInCache() {
         machineRepository.save(getMachine("test"));
         LocalDateTime lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         List<Machine> list = machineRepository.findMachineLatestCreatedUpdatedDeleted("test", lastUpdatedTime, currentTime, "test");
-        Assert.assertEquals(list.size(), getCachedValue("initial-sync", "machine_master_test").size());
-    }
+        Assert.assertEquals(list.size(), getInitialCachedValue("initial-sync", "machine_master_test").size());
+    }*/
 
     @Test
     public void whenFindChangedMachine_thenResultShouldNotBePutInCache() {
@@ -453,16 +454,16 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         machineRepository.findMachineLatestCreatedUpdatedDeleted("test", lastUpdatedTime, currentTime, "test");
-        Assert.assertEquals(0, getCachedValue("initial-sync", "machine_master_test").size());
+        Assert.assertEquals(0, getInitialCachedValue("initial-sync", "machine_master_test").size());
     }
 
     @Test
     public void findMaxChangedDate_Machine_thenOnlyCreatedUpdatedDateTimeIsCached() {
         machineRepository.save(getMachine("test"));
         evictAllKeys("delta-sync");
-        List<Object[]> result = machineRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "machine_master").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "machine_master").get(0));
+        EntityDtimes result = machineRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "machine_master"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "machine_master"));
     }
 
     @Test
@@ -473,9 +474,9 @@ public class SyncCacheTest {
         machineRepository.save(entity);
 
         evictAllKeys("delta-sync");
-        List<Object[]> result = machineRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "machine_master").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "machine_master").get(0));
+        EntityDtimes result = machineRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "machine_master"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "machine_master"));
     }
 
     //
@@ -487,7 +488,7 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         List<Location> list = locationRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime, currentTime);
-        Assert.assertEquals(list.size(), getCachedValue("initial-sync", "location").size());
+        Assert.assertEquals(list.size(), getInitialCachedValue("initial-sync", "location").size());
     }
 
     @Test
@@ -497,16 +498,16 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         locationRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime, currentTime);
-        Assert.assertEquals(0, getCachedValue("initial-sync", "location").size());
+        Assert.assertEquals(0, getInitialCachedValue("initial-sync", "location").size());
     }
 
     @Test
     public void findMaxChangedDate_Location_thenOnlyCreatedUpdatedDateTimeIsCached() {
         locationRepository.save(getLocation("test"));
         evictAllKeys("delta-sync");
-        List<Object[]> result = locationRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "location").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "location").get(0));
+        EntityDtimes result = locationRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull( getCachedValue("delta-sync", "location"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "location"));
     }
 
     @Test
@@ -517,9 +518,9 @@ public class SyncCacheTest {
         locationRepository.save(entity);
 
         evictAllKeys("delta-sync");
-        List<Object[]> result = locationRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "location").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "location").get(0));
+        EntityDtimes result = locationRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "location"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "location"));
     }
 
     //
@@ -531,7 +532,7 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         List<ReasonCategory> list = reasonCategoryRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime, currentTime);
-        Assert.assertEquals(list.size(), getCachedValue("initial-sync", "reason_category").size());
+        Assert.assertEquals(list.size(), getInitialCachedValue("initial-sync", "reason_category").size());
     }
 
     @Test
@@ -541,16 +542,16 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         reasonCategoryRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime, currentTime);
-        Assert.assertEquals(0, getCachedValue("initial-sync", "reason_category").size());
+        Assert.assertEquals(0, getInitialCachedValue("initial-sync", "reason_category").size());
     }
 
     @Test
     public void findMaxChangedDate_RC_thenOnlyCreatedUpdatedDateTimeIsCached() {
         reasonCategoryRepository.save(getReasonCategory("test"));
         evictAllKeys("delta-sync");
-        List<Object[]> result = reasonCategoryRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "reason_category").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "reason_category").get(0));
+        EntityDtimes result = reasonCategoryRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "reason_category"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "reason_category"));
     }
 
     @Test
@@ -561,9 +562,9 @@ public class SyncCacheTest {
         reasonCategoryRepository.save(entity);
 
         evictAllKeys("delta-sync");
-        List<Object[]> result = reasonCategoryRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "reason_category").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "reason_category").get(0));
+        EntityDtimes result = reasonCategoryRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "reason_category"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "reason_category"));
     }
 
     //
@@ -575,7 +576,7 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         List<ReasonList> list = reasonListRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime, currentTime);
-        Assert.assertEquals(list.size(), getCachedValue("initial-sync", "reason_list").size());
+        Assert.assertEquals(list.size(), getInitialCachedValue("initial-sync", "reason_list").size());
     }
 
     @Test
@@ -585,16 +586,16 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         reasonListRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime, currentTime);
-        Assert.assertEquals(0, getCachedValue("initial-sync", "reason_list").size());
+        Assert.assertEquals(0, getInitialCachedValue("initial-sync", "reason_list").size());
     }
 
     @Test
     public void findMaxChangedDate_RL_thenOnlyCreatedUpdatedDateTimeIsCached() {
         reasonListRepository.save(getReasonList("test"));
         evictAllKeys("delta-sync");
-        List<Object[]> result = reasonListRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "reason_list").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "reason_list").get(0));
+        EntityDtimes result = reasonListRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "reason_list"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "reason_list"));
     }
 
     @Test
@@ -605,9 +606,9 @@ public class SyncCacheTest {
         reasonListRepository.save(entity);
 
         evictAllKeys("delta-sync");
-        List<Object[]> result = reasonListRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "reason_list").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "reason_list").get(0));
+        EntityDtimes result = reasonListRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "reason_list"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "reason_list"));
     }
 
     //
@@ -619,7 +620,7 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         List<DocumentType> list = documentTypeRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime, currentTime);
-        Assert.assertEquals(list.size(), getCachedValue("initial-sync", "doc_type").size());
+        Assert.assertEquals(list.size(), getInitialCachedValue("initial-sync", "doc_type").size());
     }
 
     @Test
@@ -629,16 +630,16 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         documentTypeRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime, currentTime);
-        Assert.assertEquals(0, getCachedValue("initial-sync", "doc_type").size());
+        Assert.assertEquals(0, getInitialCachedValue("initial-sync", "doc_type").size());
     }
 
     @Test
     public void findMaxChangedDate_DT_thenOnlyCreatedUpdatedDateTimeIsCached() {
         documentTypeRepository.save(getDocumentType("test"));
         evictAllKeys("delta-sync");
-        List<Object[]> result = documentTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "doc_type").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "doc_type").get(0));
+        EntityDtimes result = documentTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "doc_type"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "doc_type"));
     }
 
     @Test
@@ -649,9 +650,9 @@ public class SyncCacheTest {
         documentTypeRepository.save(entity);
 
         evictAllKeys("delta-sync");
-        List<Object[]> result = documentTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "doc_type").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "doc_type").get(0));
+        EntityDtimes result = documentTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "doc_type"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "doc_type"));
     }
 
     //
@@ -663,7 +664,7 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         List<ApplicantValidDocument> list = applicantValidDocumentRespository.findAllByTimeStamp(lastUpdatedTime, currentTime);
-        Assert.assertEquals(list.size(), getCachedValue("initial-sync", "applicant_valid_document").size());
+        Assert.assertEquals(list.size(), getInitialCachedValue("initial-sync", "applicant_valid_document").size());
     }
 
     @Test
@@ -673,16 +674,16 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         applicantValidDocumentRespository.findAllByTimeStamp(lastUpdatedTime, currentTime);
-        Assert.assertEquals(0, getCachedValue("initial-sync", "applicant_valid_document").size());
+        Assert.assertEquals(0, getInitialCachedValue("initial-sync", "applicant_valid_document").size());
     }
 
     @Test
     public void findMaxChangedDate_AVD_thenOnlyCreatedUpdatedDateTimeIsCached() {
         applicantValidDocumentRespository.save(getApplicantValidDocument("test"));
         evictAllKeys("delta-sync");
-        List<Object[]> result = applicantValidDocumentRespository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "applicant_valid_document").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "applicant_valid_document").get(0));
+        EntityDtimes result = applicantValidDocumentRespository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "applicant_valid_document"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "applicant_valid_document"));
     }
 
     @Test
@@ -693,9 +694,9 @@ public class SyncCacheTest {
         applicantValidDocumentRespository.save(entity);
 
         evictAllKeys("delta-sync");
-        List<Object[]> result = applicantValidDocumentRespository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "applicant_valid_document").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "applicant_valid_document").get(0));
+        EntityDtimes result = applicantValidDocumentRespository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "applicant_valid_document"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "applicant_valid_document"));
     }
 
 
@@ -703,9 +704,9 @@ public class SyncCacheTest {
     public void findMaxChangedDate_RCenter_thenOnlyCreatedUpdatedDateTimeIsCached() {
         registrationCenterRepository.save(getRegistrationCenter("test"));
         evictAllKeys("delta-sync");
-        List<Object[]> result = registrationCenterRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "registration_center").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "registration_center").get(0));
+        EntityDtimes result = registrationCenterRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "registration_center"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "registration_center"));
     }
 
     @Test
@@ -716,9 +717,9 @@ public class SyncCacheTest {
         registrationCenterRepository.save(entity);
 
         evictAllKeys("delta-sync");
-        List<Object[]> result = registrationCenterRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "registration_center").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "registration_center").get(0));
+        EntityDtimes result = registrationCenterRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "registration_center"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "registration_center"));
     }
 
     //
@@ -730,7 +731,7 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         List<UserDetails> list = userDetailsRepository.findAllLatestCreatedUpdatedDeleted("test", lastUpdatedTime, currentTime);
-        Assert.assertEquals(list.size(), getCachedValue("initial-sync", "user_detail_test").size());
+        Assert.assertEquals(0, getInitialCachedValue("initial-sync", "user_detail_test").size());
     }
 
     @Test
@@ -740,16 +741,16 @@ public class SyncCacheTest {
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
         userDetailsRepository.findAllLatestCreatedUpdatedDeleted("test", lastUpdatedTime, currentTime);
-        Assert.assertEquals(0, getCachedValue("initial-sync", "user_detail_test").size());
+        Assert.assertEquals(0, getInitialCachedValue("initial-sync", "user_detail_test").size());
     }
 
     @Test
     public void findMaxChangedDate_UD_thenOnlyCreatedUpdatedDateTimeIsCached() {
         userDetailsRepository.save(getUserDetail("test"));
         evictAllKeys("delta-sync");
-        List<Object[]> result = userDetailsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "user_detail").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "user_detail").get(0));
+        EntityDtimes result = userDetailsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "user_detail"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "user_detail"));
     }
 
     @Test
@@ -760,12 +761,20 @@ public class SyncCacheTest {
         userDetailsRepository.save(entity);
 
         evictAllKeys("delta-sync");
-        List<Object[]> result = userDetailsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
-        Assert.assertEquals(1, getCachedValue("delta-sync", "user_detail").size());
-        Assert.assertEquals(result.get(0), getCachedValue("delta-sync", "user_detail").get(0));
+        EntityDtimes result = userDetailsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+        Assert.assertNotNull(getCachedValue("delta-sync", "user_detail"));
+        Assert.assertEquals(result, getCachedValue("delta-sync", "user_detail"));
     }
 
-    private List getCachedValue(String cacheName, String key) {
+    private EntityDtimes getCachedValue(String cacheName, String key) {
+        Cache cache = cacheManager.getCache(cacheName);
+        if(cache != null) {
+            return cache.get(key, EntityDtimes.class) == null ? null : cache.get(key, EntityDtimes.class);
+        }
+        return null;
+    }
+
+    private List getInitialCachedValue(String cacheName, String key) {
         Cache cache = cacheManager.getCache(cacheName);
         if(cache != null) {
             return cache.get(key, List.class) == null ? Collections.emptyList() : cache.get(key, List.class);

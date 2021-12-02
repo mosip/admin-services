@@ -3,6 +3,8 @@ package io.mosip.kernel.syncdata.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import io.mosip.kernel.syncdata.dto.EntityDtimes;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -19,6 +21,7 @@ public interface TemplateFileFormatRepository extends JpaRepository<TemplateFile
 	 * @param currentTimeStamp - current time stamp
 	 * @return list of {@link TemplateFileFormat} - list of template file format
 	 */
+	@Cacheable(cacheNames = "initial-sync", key = "'template_file_format'", condition = "#a0.getYear() <= 1970")
 	@Query(value = "SELECT ff.code, ff.descr, ff.lang_code, ff.is_active, ff.cr_by, ff.cr_dtimes, ff.upd_by, ff.upd_dtimes, ff.is_deleted, ff.del_dtimes FROM master.template_file_format ff where (ff.cr_dtimes BETWEEN ?1 AND ?2) or (ff.upd_dtimes BETWEEN ?1 AND ?2) or (ff.del_dtimes BETWEEN ?1 AND ?2)", nativeQuery = true)
 	List<TemplateFileFormat> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated,
 			LocalDateTime currentTimeStamp);
@@ -30,4 +33,8 @@ public interface TemplateFileFormatRepository extends JpaRepository<TemplateFile
 	 */
 	@Query(value = "SELECT code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes FROM master.template_file_format", nativeQuery = true)
 	List<TemplateFileFormat> findAllTemplateFormat();
+
+	@Cacheable(cacheNames = "delta-sync", key = "'template_file_format'")
+	@Query(value = "select new io.mosip.kernel.syncdata.dto.EntityDtimes(max(aam.createdDateTime), max(aam.updatedDateTime), max(aam.deletedDateTime)) from TemplateFileFormat aam ")
+	EntityDtimes getMaxCreatedDateTimeMaxUpdatedDateTime();
 }
