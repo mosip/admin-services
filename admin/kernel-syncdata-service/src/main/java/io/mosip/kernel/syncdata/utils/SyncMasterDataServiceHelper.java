@@ -1144,7 +1144,7 @@ public class SyncMasterDataServiceHelper {
 		if(lastUpdated == null) //if it's null, then the request is for full sync
 			return true;
 
-		List<Object[]> result = Collections.EMPTY_LIST;
+		EntityDtimes result = null;
 		switch (entityName) {
 			case "AppAuthenticationMethod":
 				result = appAuthenticationMethodRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
@@ -1210,12 +1210,13 @@ public class SyncMasterDataServiceHelper {
 				result = validDocumentRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
 				break;
 		}
-		if(result.isEmpty()) {
+		if(result == null) {
 			logger.info("** No data found in the table : {}", entityName);
 			return false;
 		}
-		//check if updatedDateTime is null, then always take createdDateTime
-		Object changedDate = (result.get(0).length == 2 && result.get(0)[1] == null) ? result.get(0)[0] : result.get(0)[1];
-		return changedDate == null ? false : lastUpdated.isBefore((LocalDateTime)changedDate);
+
+		return ( (result.getDeletedDateTime() != null && lastUpdated.isBefore(result.getDeletedDateTime())) ||
+				(result.getUpdatedDateTime() != null && lastUpdated.isBefore(result.getUpdatedDateTime())) ||
+				(result.getCreatedDateTime() != null && lastUpdated.isBefore(result.getCreatedDateTime())) );
 	}
 }

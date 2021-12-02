@@ -74,9 +74,6 @@ public class ClientSettingsHelper {
 
         futuresMap.put(Machine.class, serviceHelper.getMachines(regCenterId, lastUpdated, currentTimestamp, machineId));
         futuresMap.put(RegistrationCenter.class, serviceHelper.getRegistrationCenter(machineId, lastUpdated, currentTimestamp));
-        futuresMap.put(RegistrationCenterMachine.class, serviceHelper.getRegistrationCenterMachines(regCenterId,
-                lastUpdated, currentTimestamp, machineId));
-        futuresMap.put(RegistrationCenterUser.class, serviceHelper.getRegistrationCenterUsers(regCenterId, lastUpdated, currentTimestamp));
 
         futuresMap.put(Template.class, hasURLDetails(Template.class, isV2API, deltaSync) ?
                 getURLDetails(Template.class) : serviceHelper.getTemplates(regClientModuleId, lastUpdated, currentTimestamp));
@@ -114,6 +111,10 @@ public class ClientSettingsHelper {
                     getURLDetails(TemplateFileFormat.class) : serviceHelper.getTemplateFileFormats(lastUpdated, currentTimestamp));
             futuresMap.put(TemplateType.class, hasURLDetails(TemplateType.class, isV2API, deltaSync) ?
                     getURLDetails(TemplateType.class) : serviceHelper.getTemplateTypes(lastUpdated, currentTimestamp));
+
+            futuresMap.put(RegistrationCenterMachine.class, serviceHelper.getRegistrationCenterMachines(regCenterId,
+                    lastUpdated, currentTimestamp, machineId));
+            futuresMap.put(RegistrationCenterUser.class, serviceHelper.getRegistrationCenterUsers(regCenterId, lastUpdated, currentTimestamp));
 
             //valid_document
             futuresMap.put(ValidDocument.class, hasURLDetails(ValidDocument.class, isV2API, deltaSync) ?
