@@ -122,7 +122,10 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		
 		MachineDataHelper machineDataHelper = new MachineDataHelper(registrationCenterId, machineId,
 				lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		machineDataHelper.retrieveData(serviceHelper, futures);		
+		machineDataHelper.retrieveData(serviceHelper, futures);
+
+		DeviceDataHelper deviceDataHelper = new DeviceDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
+		deviceDataHelper.retrieveData(serviceHelper, futures);
 
 		IndividualDataHelper individualDataHelper = new IndividualDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
 		individualDataHelper.retrieveData(serviceHelper, futures);
@@ -157,7 +160,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		List<SyncDataBaseDto> list = new ArrayList<SyncDataBaseDto>();		
 		applicationDataHelper.fillRetrievedData(serviceHelper, list);
 		machineDataHelper.fillRetrievedData(serviceHelper, list);
-		//deviceDataHelper.fillRetrievedData(serviceHelper, list);
+		deviceDataHelper.fillRetrievedData(serviceHelper, list);
 		individualDataHelper.fillRetrievedData(serviceHelper, list);
 		RegistrationCenterDataHelper.fillRetrievedData(serviceHelper, list);
 		templateDataHelper.fillRetrievedData(serviceHelper, list);

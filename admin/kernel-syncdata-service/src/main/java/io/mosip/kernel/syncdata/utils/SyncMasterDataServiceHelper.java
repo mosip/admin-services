@@ -714,6 +714,10 @@ public class SyncMasterDataServiceHelper {
 		List<Device> devices = null;
 		List<DeviceDto> deviceList = null;
 		try {
+			if(!isChangesFound("Device", lastUpdated)) {
+				return CompletableFuture.completedFuture(deviceList);
+			}
+
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
@@ -834,6 +838,9 @@ public class SyncMasterDataServiceHelper {
 		List<DeviceSpecification> deviceSpecificationList = null;
 		List<DeviceSpecificationDto> deviceSpecificationDtoList = null;
 		try {
+			if(!isChangesFound("DeviceSpecification", lastUpdated)) {
+				return CompletableFuture.completedFuture(deviceSpecificationDtoList);
+			}
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
@@ -925,6 +932,9 @@ public class SyncMasterDataServiceHelper {
 		List<DeviceTypeDto> deviceTypeList = null;
 		List<DeviceType> deviceTypes = null;
 		try {
+			if(!isChangesFound("DeviceType", lastUpdated)) {
+				return CompletableFuture.completedFuture(deviceTypeList);
+			}
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
@@ -1923,6 +1933,15 @@ public class SyncMasterDataServiceHelper {
 				break;
 			case "IndividualType":
 				result = individualTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				break;
+			case "Device":
+				result = deviceRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				break;
+			case "DeviceSpecification":
+				result = deviceSpecificationRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				break;
+			case "DeviceType":
+				result = deviceTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
 				break;
 		}
 
