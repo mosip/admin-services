@@ -146,19 +146,6 @@ public class ZoneControllerTest {
 
 	}
 	
-	/*@Test
-	@WithUserDetails("global-admin")
-	public void t007getSubZonesTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/leafzones/eng")).andReturn(), null);
-
-	}
-	
-	@Test
-	@WithUserDetails("global-admin")
-	public void t008getSubZonesFailTest1() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/leafzones/ara")).andReturn(), null);
-
-	}*/
 	
 	@Test
 	@WithUserDetails("global-admin")
@@ -194,12 +181,6 @@ public class ZoneControllerTest {
 
 	}
 	
-	/*@Test
-	@WithUserDetails("global-admin")
-	public void t013getLeafZonesBasedOnZoneCodeTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/leafzones/eng")).andReturn(), null);
-
-	}*/
 	
 	@Test
 	@WithUserDetails("global-admin")
@@ -229,13 +210,13 @@ public class ZoneControllerTest {
 
 	}
 	
-/*	@Test
+	@Test
 	@WithUserDetails("global-admin")
 	public void t018authorizeZoneTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("rid","10001")).andReturn(), null);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/authorize").param("rid","10001")).andReturn(), null);
 
 	}
-	*/
+	
 	
 	
 }
