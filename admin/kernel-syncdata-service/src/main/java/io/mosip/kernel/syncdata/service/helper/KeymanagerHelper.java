@@ -13,7 +13,6 @@ import io.mosip.kernel.syncdata.constant.AdminServiceErrorCode;
 import io.mosip.kernel.syncdata.dto.response.KeyPairGenerateResponseDto;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +83,7 @@ public class KeymanagerHelper {
             JWTSignatureRequestDto jwtSignatureRequestDto = new JWTSignatureRequestDto();
             jwtSignatureRequestDto.setApplicationId(signApplicationid);
             jwtSignatureRequestDto.setReferenceId(signRefid);
-            jwtSignatureRequestDto.setDataToSign(CryptoUtil.encodeBase64(responseBody.getBytes(StandardCharsets.UTF_8)));
+            jwtSignatureRequestDto.setDataToSign(CryptoUtil.encodeToURLSafeBase64(responseBody.getBytes(StandardCharsets.UTF_8)));
             requestWrapper.setRequest(jwtSignatureRequestDto);
 
             HttpHeaders headers = new HttpHeaders();

@@ -53,7 +53,7 @@ import io.mosip.kernel.syncdata.dto.response.SyncDataBaseDto;
 @Component
 public class SyncMasterDataServiceHelper {
 
-	private Logger logger = LoggerFactory.getLogger(SyncMasterDataServiceHelper.class);
+	private final static Logger logger = LoggerFactory.getLogger(SyncMasterDataServiceHelper.class);
 
 	@Autowired
 	private MapperUtils mapper;
@@ -209,6 +209,7 @@ public class SyncMasterDataServiceHelper {
 				responseDto.setName(machine.getName());
 				responseDto.setSerialNum(machine.getSerialNum());
 				responseDto.setValidityDateTime(machine.getValidityDateTime());
+				responseDto.setRegCenterId(machine.getRegCenterId());
 				machineDetailDtoList.add(responseDto);
 			});
 
@@ -1059,7 +1060,7 @@ public class SyncMasterDataServiceHelper {
 				if (list.size() > 0) {
 					TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
 					tpmCryptoRequestDto
-							.setValue(CryptoUtil.encodeBase64(mapper.getObjectAsJsonString(list).getBytes()));
+							.setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(list).getBytes()));
 					tpmCryptoRequestDto.setPublicKey(publicKey);
 					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService
 							.csEncrypt(tpmCryptoRequestDto);
@@ -1081,7 +1082,7 @@ public class SyncMasterDataServiceHelper {
 				if (entities.size() > 0) {
 					TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
 					tpmCryptoRequestDto
-							.setValue(CryptoUtil.encodeBase64(mapper.getObjectAsJsonString(entities).getBytes()));
+							.setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(entities).getBytes()));
 					tpmCryptoRequestDto.setPublicKey(publicKey);
 					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService
 							.csEncrypt(tpmCryptoRequestDto);
@@ -1143,7 +1144,7 @@ public class SyncMasterDataServiceHelper {
 		if(lastUpdated == null) //if it's null, then the request is for full sync
 			return true;
 
-		List<Object[]> result = Collections.EMPTY_LIST;
+		EntityDtimes result = null;
 		switch (entityName) {
 			case "AppAuthenticationMethod":
 				result = appAuthenticationMethodRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
@@ -1209,12 +1210,13 @@ public class SyncMasterDataServiceHelper {
 				result = validDocumentRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
 				break;
 		}
-		if(result.isEmpty()) {
+		if(result == null) {
 			logger.info("** No data found in the table : {}", entityName);
 			return false;
 		}
-		//check if updatedDateTime is null, then always take createdDateTime
-		Object changedDate = (result.get(0).length == 2 && result.get(0)[1] == null) ? result.get(0)[0] : result.get(0)[1];
-		return changedDate == null ? false : lastUpdated.isBefore((LocalDateTime)changedDate);
+
+		return ( (result.getDeletedDateTime() != null && lastUpdated.isBefore(result.getDeletedDateTime())) ||
+				(result.getUpdatedDateTime() != null && lastUpdated.isBefore(result.getUpdatedDateTime())) ||
+				(result.getCreatedDateTime() != null && lastUpdated.isBefore(result.getCreatedDateTime())) );
 	}
 }

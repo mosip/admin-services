@@ -3,6 +3,7 @@ package io.mosip.kernel.syncdata.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import io.mosip.kernel.syncdata.dto.EntityDtimes;
 import io.mosip.kernel.syncdata.entity.id.AppRolePriorityID;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,6 +35,6 @@ public interface AppRolePriorityRepository extends JpaRepository<AppRolePriority
 			LocalDateTime currentTimeStamp);
 
 	@Cacheable(cacheNames = "delta-sync", key = "'app_role_priority'")
-	@Query(value = "select max(aam.createdDateTime), max(aam.updatedDateTime) from AppRolePriority aam ")
-	List<Object[]> getMaxCreatedDateTimeMaxUpdatedDateTime();
+	@Query(value = "select new io.mosip.kernel.syncdata.dto.EntityDtimes(max(aam.createdDateTime), max(aam.updatedDateTime), max(aam.deletedDateTime)) from AppRolePriority aam ")
+	EntityDtimes getMaxCreatedDateTimeMaxUpdatedDateTime();
 }

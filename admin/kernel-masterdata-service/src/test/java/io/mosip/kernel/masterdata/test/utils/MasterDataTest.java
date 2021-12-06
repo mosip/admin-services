@@ -15,6 +15,7 @@ import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 
 public class MasterDataTest {
@@ -28,7 +29,7 @@ public class MasterDataTest {
 			} else {
 				Map m = mapper.readValue(rst.getResponse().getContentAsString(), Map.class);
 				assertEquals(rst.getResponse().getStatus(), 200);
-				if (m.containsKey("errors") && null != m.get("errors")) {
+				if (m.containsKey("errors") && null != m.get("errors") && ((List<Map<String, String>>) m.get("errors")).size()>0) {
 //					assertEquals(((List<Map<String, String>>) m.get("errors")).get(0).get("errorCode"), actualCode);
 					assertEquals(expectedCode, ((List<Map<String, String>>) m.get("errors")).get(0).get("errorCode"));
 				}
@@ -40,7 +41,7 @@ public class MasterDataTest {
 	}
 	
 
-	public static RequestWrapper<SearchDtoWithoutLangCode> commonSearchDtoWithoutLangCode(String seachSort,String columnName,String value,String type)
+	public static RequestWrapper<SearchDtoWithoutLangCode> commonSearchDtoWithoutLangCode(String sortField,String seachSort,String columnName,String value,String type)
 	{
 		RequestWrapper<SearchDtoWithoutLangCode> sr = new RequestWrapper<>();
 		SearchDtoWithoutLangCode sc = new SearchDtoWithoutLangCode();
@@ -48,7 +49,7 @@ public class MasterDataTest {
 		io.mosip.kernel.masterdata.dto.request.SearchFilter sf = new io.mosip.kernel.masterdata.dto.request.SearchFilter();
 		List<SearchSort> ss = new ArrayList<SearchSort>();
 		Pagination pagination = new Pagination(0, 1);
-		SearchSort s = new SearchSort(seachSort, "ASC");
+		SearchSort s = new SearchSort(sortField, seachSort);
 		ss.add(s);
 		sf.setColumnName(columnName);
 		sf.setType(type);
@@ -63,6 +64,29 @@ public class MasterDataTest {
 		return sr;
 	}
 
+	public static RequestWrapper<SearchDto> commonSearchDto(String seachSortField,String seachSortFiled,String columnName,String value,String type)
+	{
+		RequestWrapper<SearchDto> sr = new RequestWrapper<>();
+		SearchDto sc = new SearchDto();
+		List<io.mosip.kernel.masterdata.dto.request.SearchFilter> ls = new ArrayList<>();
+		io.mosip.kernel.masterdata.dto.request.SearchFilter sf = new io.mosip.kernel.masterdata.dto.request.SearchFilter();
+		List<SearchSort> ss = new ArrayList<SearchSort>();
+		Pagination pagination = new Pagination(0, 1);
+		SearchSort s = new SearchSort(seachSortField, seachSortFiled);
+		ss.add(s);
+		sf.setColumnName(columnName);
+		sf.setType(type);
+		sf.setValue(value);
+		ls.add(sf);
+		sc.setFilters(ls);
+		sc.setLanguageCode("eng");
+		sc.setPagination(pagination);
+		sc.setSort(ss);
+
+		sr.setRequest(sc);
+		return sr;
+	}
+	
 	public static RequestWrapper<FilterValueDto> commonFilterValueDto(String columnName,String txt,String type)
 	{
 	    RequestWrapper<FilterValueDto> filValDto;

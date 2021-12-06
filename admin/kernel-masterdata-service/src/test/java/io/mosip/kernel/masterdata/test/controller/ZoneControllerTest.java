@@ -142,7 +142,7 @@ public class ZoneControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t006getSubZonesFailTest1() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/subzone/ara")).andReturn(), null);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/subzone/ara1")).andReturn(), "KER-MSD-999");
 
 	}
 	
@@ -163,14 +163,20 @@ public class ZoneControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t009getZoneNameBasedOnUserIDAndLangCodeTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zonename").param("userID", "3")).andReturn(), null);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID", "3").param("langCode","eng")).andReturn(), null);
 
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
 	public void t010getZoneNameBasedOnUserIDAndLangCodeFailTest1() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zonename").param("userID","4")).andReturn(), null);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID","4").param("langCode","eng1")).andReturn(), "KER-MSD-999");
+
+	}
+	@Test
+	@WithUserDetails("global-admin")
+	public void t010getZoneNameBasedOnUserIDAndLangCodeFailTest() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID","90").param("langCode","eng")).andReturn(), "KER-MSD-391");
 
 	}
 	
@@ -187,5 +193,49 @@ public class ZoneControllerTest {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/zones/filtervalues").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(MasterDataTest.commonFilterValueDto("codee", "NTH", "all")))).andReturn(), "KER-MSD-317");
 
 	}
+	
+	/*@Test
+	@WithUserDetails("global-admin")
+	public void t013getLeafZonesBasedOnZoneCodeTest() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/leafzones/eng")).andReturn(), null);
+
+	}*/
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t014getLeafZonesBasedOnZoneCodeFailTest() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/leafzones/eng1")).andReturn(), "KER-MSD-999");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t015getZoneNameBasedOnUserIDAndLangCodeTest() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID","1").param("langCode","eng")).andReturn(), "KER-MSD-391");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t016getZoneNameBasedOnUserIDAndLangCodeFailTest() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID","19").param("langCode","eng")).andReturn(), "KER-MSD-391");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t017getZoneNameBasedOnUserIDAndLangCodeFailTest1() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID","1").param("langCode","eng1")).andReturn(), "KER-MSD-999");
+
+	}
+	
+/*	@Test
+	@WithUserDetails("global-admin")
+	public void t018authorizeZoneTest() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("rid","10001")).andReturn(), null);
+
+	}
+	*/
+	
 	
 }

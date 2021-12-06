@@ -23,4 +23,6 @@ public class UserDetailMapDto extends BaseDto {
 
 	private String rId;
 
+	private String regCenterId;
+
 }

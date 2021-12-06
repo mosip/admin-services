@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
+import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 import io.mosip.kernel.syncdata.dto.*;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +37,7 @@ public class MapperUtils {
 	
 	@PostConstruct
 	private void setupObjectMapper() {
+		objectMapper.registerModule(new AfterburnerModule());
 		objectMapper.registerModule(new JavaTimeModule());
 		objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 	}
@@ -367,6 +369,7 @@ public class MapperUtils {
 				userDetailMapDto.setUserPassword(null);
 				userDetailMapDto.setIsActive(userDto.get().getIsActive());
 				userDetailMapDto.setIsDeleted(userDto.get().getIsDeleted());
+				userDetailMapDto.setRegCenterId(userDto.get().getRegCenterId());
 				List<String> roles = Arrays.asList(userDetail.getRole().split(","));
 				userDetailMapDto.setRoles(roles);
 				userDetailMapDtoList.add(userDetailMapDto);

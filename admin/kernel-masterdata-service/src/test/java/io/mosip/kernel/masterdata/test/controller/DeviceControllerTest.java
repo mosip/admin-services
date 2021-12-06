@@ -91,7 +91,7 @@ public class DeviceControllerTest {
 
 		devicePutReqDtoReq = new RequestWrapper<DevicePutReqDto>();
 		DevicePutReqDto devicePutReqDto = new DevicePutReqDto();
-		devicePutReqDto.setId("1004");
+		devicePutReqDto.setId("3000038");
 		devicePutReqDto.setDeviceSpecId("327");
 		devicePutReqDto.setIsActive(true);
 		devicePutReqDto.setLangCode("eng");
@@ -127,7 +127,7 @@ public class DeviceControllerTest {
 		FilterDto dto = new FilterDto();
 		dto.setColumnName("name");
 		dto.setText("Dummy Web Camera 20");
-		dto.setType("equals");
+		dto.setType("UNIQUE");
 		List<FilterDto> lf = new ArrayList<>();
 		lf.add(dto);
 		f.setLanguageCode("eng");
@@ -139,7 +139,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t001getDeviceLangTest() throws Exception {
 		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devices/eng")).andReturn(),
@@ -148,9 +148,9 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	// @WithUserDetails("zonal-admin")
+	 @WithUserDetails("global-admin")
 	public void t002createDeviceTest() throws Exception {
-		deviceDtoReq.getRequest().setZoneCode("RBT");
+		//deviceDtoReq.getRequest().setZoneCode("RBT");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devices")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(deviceDtoReq))).andReturn(),
 				null);
@@ -158,18 +158,18 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t002createDeviceFailTest1() throws Exception {
 		
 		deviceDtoReq.getRequest().setZoneCode("JRD");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devices")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(deviceDtoReq))).andReturn(),
-				"KER-MSD-339");
+				"KER-MSD-439");
 
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t003getDeviceLangTest() throws Exception {
 		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devices/eng")).andReturn(), null);
@@ -177,15 +177,15 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	////@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t003getDeviceLangCodeAndDeviceTypeTest() throws Exception {
 		
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devices/eng/327")).andReturn(), null);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devices/eng/FRS")).andReturn(), null);
 
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t003getDeviceLangCodeAndDeviceTypeFailTest() throws Exception {
 		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devices/eng/IRS")).andReturn(),
@@ -194,7 +194,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t004updateDeviceTest() throws Exception {
 		
 		MasterDataTest.checkResponse(
@@ -205,7 +205,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
- 	//@WithUserDetails("global-admin")
+ 	@WithUserDetails("global-admin")
 	public void t004updateDeviceFailTest() throws Exception {
 		
 		devicePutReqDtoReq.getRequest().setName("updated");
@@ -217,7 +217,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t004updateDeviceFailTest1() throws Exception {
 		
 		devicePutReqDtoReq.getRequest().setName("updated");
@@ -229,7 +229,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t005getDevicesByRegistrationCenterTest() throws Exception {
 		
 		MasterDataTest.checkResponse(
@@ -238,7 +238,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t006searchDeviceTest() throws Exception {
 		
 		MasterDataTest
@@ -252,7 +252,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t007deviceFilterValuesTest() throws Exception {
 		
 		MasterDataTest
@@ -264,7 +264,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t008updateDeviceStatusTest() throws Exception {
 		
 		MasterDataTest.checkResponse(mockMvc
@@ -273,26 +273,43 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t009updateDeviceStatusFailTest() throws Exception {
 		
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.patch("/devices").param("isActive", "true").param("id", "1"))
 						.andReturn(),
-				"KER-MSD-004");
+				"KER-MSD-042");
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
+	public void t017decommissionDeviceFailTest1() throws Exception {
+		
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/devices/decommission/3000040")).andReturn(), "KER-MSD-438");
+
+	}
+	@Test
+	@WithUserDetails("global-admin")
+	public void t017decommissionDeviceTest1() throws Exception {
+		
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/devices/decommission/3000058")).andReturn(), null);
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t017decommissionDeviceTest() throws Exception {
 		
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.put("/devices/decommission/1004")).andReturn(), "KER-MSD-042");
+				mockMvc.perform(MockMvcRequestBuilders.put("/devices/decommission/3000077")).andReturn(), "KER-MSD-439");
 
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t018decommissionDeviceFailTest() throws Exception {
 		
 		MasterDataTest.checkResponse(
@@ -300,7 +317,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t010deviceFilterValuesTest1() throws Exception {
 		
 		filValDto.getRequest().getFilters().get(0).setType("contains");
@@ -308,12 +325,12 @@ public class DeviceControllerTest {
 				.checkResponse(mockMvc
 						.perform(MockMvcRequestBuilders.post("/devices/filtervalues")
 								.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
-						.andReturn(), null);
+						.andReturn(), "KER-MSD-324");
 
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t011createDeviceFailTest() throws Exception {
 		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devices")
@@ -323,7 +340,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t012updateDeviceFailTest() throws Exception {
 		
 		devicePutReqDtoReq.setId("7");
@@ -334,7 +351,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t013getDeviceLangCodeAndDeviceTypeFailTest() throws Exception {
 		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devices/eng1/abcd")).andReturn(),
@@ -343,7 +360,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t014getDeviceLangFailTest() throws Exception {
 		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devices/eng1")).andReturn(),
@@ -352,7 +369,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t015searchDeviceFailTest() throws Exception {
 		
 		searchLangCode.getRequest().getFilters().get(0).setType("contains");
@@ -368,7 +385,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t016getDevicesByRegistrationCenterFailTest() throws Exception {
 		
 		MasterDataTest.checkResponse(
@@ -376,7 +393,7 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t020deleteDeviceFailTest() throws Exception {
 		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/devices/100100")).andReturn(),
@@ -384,10 +401,18 @@ public class DeviceControllerTest {
 	}
 
 	@Test
-	//@WithUserDetails("global-admin")
+	@WithUserDetails("global-admin")
 	public void t019deleteDeviceTest() throws Exception {
 		
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/devices/3000058")).andReturn(), null);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/devices/3000058")).andReturn(), "KER-MSD-010");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t020deleteDeviceTest() throws Exception {
+		
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/devices/3000077")).andReturn(), null);
 
 	}
 
