@@ -19,9 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,7 +27,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import io.mosip.kernel.core.authmanager.authadapter.model.AuthUserDetails;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
@@ -43,6 +39,7 @@ import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
@@ -63,7 +60,6 @@ public class RegistrationCenterControllerTest {
 	@MockBean
 	private AuditUtil auditUtil;
 	private ObjectMapper mapper;
-	
 	
 	private RequestWrapper<SearchDto> sr = new RequestWrapper<>();
 	private RequestWrapper<FilterValueDto> fv = new RequestWrapper<FilterValueDto>();
@@ -162,28 +158,16 @@ public class RegistrationCenterControllerTest {
 		rq.setId("1");
 		rq.setLatitude("23.3434");
 		rl.setRequest(rq);
-		 MockitoAnnotations.initMocks(this);
-
-	}
+		
 	
-	/*  @Test
-	    public void mockApplicationUser() {
-		  AuthUserDetails applicationUser = Mockito.mock(AuthUserDetails.class);
-	        Authentication authentication = Mockito.mock(Authentication.class);
-	        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-	        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-	        SecurityContextHolder.setContext(securityContext);
-	        Mockito.when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(applicationUser);
-	    }*/
+	}
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void t001getRegistrationCenterDetailsByLocationCodeTest() throws Exception {
-
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/getlocspecificregistrationcenters/eng/14022")).andReturn(),
 				null);
-
 	}
 
 	@Test
@@ -525,29 +509,7 @@ public class RegistrationCenterControllerTest {
 				.andReturn(), "KER-MSD-317");
 	}
 	
-	/*@Test
-	@WithUserDetails("global-admin")
-	public void t032createRegistrationCenterTest() throws Exception {
-		
-		ZoneUtils zu =Mockito.mock(ZoneUtils.class);
-		List l=new ArrayList<String>();
-		l.add("RBT");
-		Mockito.when(zu.getLeafZones(Mockito.anyString())).thenReturn(l);
-		MasterDataTest.checkResponse(mockMvc
-				.perform(MockMvcRequestBuilders.post("/registrationcenters")
-						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rg)))
-				.andReturn(), null);
-	}
-
-	@Test
-	@WithUserDetails("global-admin")
-	public void t033createRegistrationCenterFailTest() throws Exception {
-		
-		MasterDataTest.checkResponse(mockMvc
-				.perform(MockMvcRequestBuilders.post("/registrationcenters")
-						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rg)))
-				.andReturn(), null);
-	}*/
+	
 	
 	@Test
 	@WithUserDetails("global-admin")
@@ -570,7 +532,7 @@ public class RegistrationCenterControllerTest {
 				.andReturn(), "KER-MSD-215");
 	}
 
-/*	@Test
+	@Test
 	@WithUserDetails("global-admin")
 	public void t036updateRegistrationCenterNonLanguageSpecifiTest1() throws Exception {
 		
@@ -580,26 +542,5 @@ public class RegistrationCenterControllerTest {
 				.andReturn(), "KER-MSD-999");
 	}
 	
-	@Test
-	@WithUserDetails("global-admin")
-	public void t036updateRegistrationCenterNonLanguageSpecifiTest() throws Exception {
-		rl.getRequest().setHolidayLocationCode("14022");
-		MasterDataTest.checkResponse(mockMvc
-				.perform(MockMvcRequestBuilders.put("/registrationcenters/nonlanguage")
-						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rl)))
-				.andReturn(),null);
-	}
-
-	@Test
-	@WithUserDetails("global-admin")
-	public void t037updateRegistrationCenterNonLanguageSpecifiFailTest() throws Exception {
-		rp.getRequest().setId("2");
-		
-		MasterDataTest.checkResponse(mockMvc
-				.perform(MockMvcRequestBuilders.put("/registrationcenters/nonlanguage")
-						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rl)))
-				.andReturn(), null);
-	}
-*/
 	
 }
