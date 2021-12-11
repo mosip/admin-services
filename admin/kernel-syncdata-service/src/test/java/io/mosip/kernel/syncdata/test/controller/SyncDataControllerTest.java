@@ -1,281 +1,636 @@
 package io.mosip.kernel.syncdata.test.controller;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
-
-import io.mosip.kernel.syncdata.config.SyncResponseBodyAdviceConfig;
-import io.mosip.kernel.syncdata.dto.*;
-import io.mosip.kernel.syncdata.dto.response.ClientPublicKeyResponseDto;
-import io.mosip.kernel.syncdata.entity.Machine;
-import io.mosip.kernel.syncdata.repository.MachineRepository;
-import org.junit.Assert;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
-import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
-import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
-import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
-import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
-import io.mosip.kernel.syncdata.exception.RequestException;
-import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
-import io.mosip.kernel.syncdata.repository.UserDetailsRepository;
-import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
-import io.mosip.kernel.syncdata.service.SyncMasterDataService;
-import io.mosip.kernel.syncdata.service.SyncRolesService;
-import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.syncdata.dto.UploadPublicKeyRequestDto;
 import io.mosip.kernel.syncdata.test.TestBootApplication;
-import net.minidev.json.JSONObject;
+import io.mosip.kernel.syncdata.test.utils.SyncDataUtil;
 
-@SpringBootTest(classes = TestBootApplication.class)
 @RunWith(SpringRunner.class)
+@SpringBootTest(classes = TestBootApplication.class)
 @AutoConfigureMockMvc
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SyncDataControllerTest {
-	private MasterDataResponseDto masterDataResponseDto;
+
 	@Autowired
-	private MockMvc mockMvc;
+	public MockMvc mockMvc;
 
 	@MockBean
-	private SyncMasterDataService masterDataService;
+	private PublisherClient<String, EventModel, HttpHeaders> publisher;
 
-	@MockBean
-	private SyncConfigDetailsService syncConfigDetailsService;
-
-	@MockBean
-	private SyncUserDetailsService syncUserDetailsService;
-
-	@MockBean
-	private SyncRolesService syncRolesService;
-
-	@MockBean
-	private UserDetailsRepository userRepository;
-
-	JSONObject globalConfigMap = null;
-	JSONObject regCentreConfigMap = null;
+	private ObjectMapper mapper;
 	
-	@Autowired
-	private ObjectMapper objectMapper;
-	
+	@Value("${mosip.kernel.keymanager-service-publickey-url}")
+	private String publicKeyUrl;
+
+	private RequestWrapper<UploadPublicKeyRequestDto> uploadPublicKeyRequestDto = new RequestWrapper<>();
+
+
+
 	@Value("${mosip.kernel.syncdata-service-idschema-url}")
 	private String idSchemaUrl;
+	
+	@Value("${mosip.kernel.syncdata-service-machine-url}")
+	private String machineUrl;
+
+	  @Value("${mosip.kernel.keymanager.cert.url}")
+	    private String certificateUrl;
 	
 	@Autowired
 	RestTemplate restTemplate;
 	
-	private MockRestServiceServer mockRestServer;
+	
 
-	@Value("${mosip.kernel.syncdata-service-machine-url}")
-	private String machineUrl;
-
-	@MockBean
-	private SyncResponseBodyAdviceConfig syncResponseBodyAdviceConfig;
+	MockRestServiceServer mockRestServiceServer;
 
 	@Before
-	public void setup() {
+	public void setUp() {
+		mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
+		UploadPublicKeyRequestDto dto = new UploadPublicKeyRequestDto();
+		dto.setMachineName("alm3119");
+		dto.setPublicKey(
+				"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq-7fM8-oz_RDcLWOvsRl-4tLST5s86mKfsTjqmjnmUZTezSz8lb3_8YDl_K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw_F8wC2T9wsLaIwIDAQAB");
+		dto.setSignPublicKey(
+				"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq-7fM8-oz_RDcLWOvsRl-4tLST5s86mKfsTjqmjnmUZTezSz8lb3_8YDl_K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw_F8wC2T9wsLaIwIDAQAB");
+		uploadPublicKeyRequestDto.setRequest(dto);
 
-		configDetialsSyncSetup();
-		syncMasterDataSetup();
-		getUsersBasedOnRegCenterSetUp();
-
-		mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
+		 mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
 	}
-
-	SyncUserDetailDto syncUserDetailDto;
-	List<UserDetailMapDto> users;
-	UserDetailMapDto userDetailMapDto;
-
-	public void getUsersBasedOnRegCenterSetUp() {
-		List<String> roles = new ArrayList<>();
-		roles.add("admin");
-		roles.add("superAdmin");
-		syncUserDetailDto = new SyncUserDetailDto();
-		users = new ArrayList<>();
-		userDetailMapDto = new UserDetailMapDto();
-		userDetailMapDto.setMail("mosip@gmail.com");
-		userDetailMapDto.setMobile("9988866600");
-		userDetailMapDto.setName("100022");
-		userDetailMapDto.setUserName("individula");
-		userDetailMapDto.setRoles(roles);
-		users.add(userDetailMapDto);
-		syncUserDetailDto.setUserDetails(users);
-	}
-
-	public void configDetialsSyncSetup() {
-		globalConfigMap = new JSONObject();
-		globalConfigMap.put("archivalPolicy", "arc_policy_2");
-		globalConfigMap.put("otpTimeOutInMinutes", 2);
-		globalConfigMap.put("numberOfWrongAttemptsForOtp", 5);
-		globalConfigMap.put("uinLength", 24);
-
-		regCentreConfigMap = new JSONObject();
-
-		regCentreConfigMap.put("fingerprintQualityThreshold", 120);
-		regCentreConfigMap.put("irisQualityThreshold", 25);
-		regCentreConfigMap.put("irisRetryAttempts", 10);
-		regCentreConfigMap.put("faceQualityThreshold", 25);
-		regCentreConfigMap.put("faceRetry", 12);
-		regCentreConfigMap.put("supervisorVerificationRequiredForExceptions", true);
-		regCentreConfigMap.put("operatorRegSubmissionMode", "fingerprint");
-
-	}
-
-	public void syncMasterDataSetup() {
-		masterDataResponseDto = new MasterDataResponseDto();
-		List<ApplicationDto> applications = new ArrayList<>();
-		applications.add(new ApplicationDto("01", "REG FORM", "REG Form"));
-		masterDataResponseDto.setApplications(applications);
-		List<HolidayDto> holidays = new ArrayList<>();
-		holidays.add(new HolidayDto("1", "2018-01-01", "01", "01", "2018", "NEW YEAR", "LOC01"));
-		masterDataResponseDto.setHolidays(holidays);
-		List<MachineDto> machines = new ArrayList<>();
-		machines.add(new MachineDto("1001", "Laptop", "QWE23456", "1223:23:31:23", "172.12.128.1", "1",
-				LocalDateTime.parse("2018-01-01T01:01:01"), null, "test", "test", "test"));
-		masterDataResponseDto.setMachineDetails(machines);
-		List<MachineSpecificationDto> machineSpecifications = new ArrayList<>();
-		machineSpecifications
-				.add(new MachineSpecificationDto("1", "lenovo Thinkpad", "Lenovo", "T480", "1", "1.0.1", "Thinkpad"));
-		masterDataResponseDto.setMachineSpecification(machineSpecifications);
-		List<MachineTypeDto> machineTypes = new ArrayList<>();
-		machineTypes.add(new MachineTypeDto("1", "ENG", "Laptop"));
-		masterDataResponseDto.setMachineType(machineTypes);
-	}
-
-	// -----------------------public key-------------------------------------//
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void getPublicKey() throws Exception {
-		PublicKeyResponse<String> publicKeyResponse = new PublicKeyResponse<>();
-		publicKeyResponse.setPublicKey("aasfdsfsadfdsaf");
-		//when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
-		Mockito.when(syncConfigDetailsService.getPublicKey(Mockito.anyString(), Mockito.anyString(), Mockito.any()))
-				.thenReturn(publicKeyResponse);
-		mockMvc.perform(get("/publickey/REGISTRATION").param("timeStamp", "2019-09-09T09%3A00%3A00.000Z"))
-				.andExpect(status().isOk());
+	public void t001syncClientSettingsTest() throws Exception {
+
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/clientsettings").param("keyindex",
+				"B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:48")
+				.param("regcenterId", "10001")).andReturn(), "KER-SNC-141");
+
 	}
 
-	// -----------------AllRoles-------------------------------//
-
-	/*@WithUserDetails(value = "reg-officer")
 	@Test
-	public void getAllRoles() throws Exception {
-		//when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
-		RolesResponseDto rolesResponseDto = new RolesResponseDto();
-		rolesResponseDto.setLastSyncTime("2019-09-09T09:09:09.000Z");
-		Mockito.when(syncRolesService.getAllRoles()).thenReturn(rolesResponseDto);
-		mockMvc.perform(get("/roles")).andExpect(status().isOk());
-	}*/
-	
-	
-	// -----------------AllRoles-------------------------------//
-
 	@WithUserDetails(value = "reg-officer")
-	@Test
-	public void validateMachineMapping() throws Exception {
-		UploadPublicKeyResponseDto resp = new UploadPublicKeyResponseDto("keyindex");
-		when(masterDataService.validateKeyMachineMapping(Mockito.any())).thenReturn(resp);		
-		mockMvc.perform(post("/tpm/publickey/verify").contentType(MediaType.APPLICATION_JSON)
-				.content("{\"machineName\":\"name\",\"publicKey\":\"key\"}")).andExpect(status().isOk());
+	public void t001syncClientSettingsTest1() throws Exception {
+
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/clientsettings").param("keyindex",
+				"B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:49")
+				.param("regcenterId", "10001")).andReturn(), "KER-SNC-149");
+
 	}
 	
-	@WithUserDetails(value = "reg-officer")
 	@Test
-	public void validateMachineMappingWithInvalidInput() throws Exception {
-		MvcResult result = mockMvc.perform(post("/tpm/publickey/verify").contentType(MediaType.APPLICATION_JSON)
-		.content("{\"machineName\":\"name\",\"publicKey\":null}")).andExpect(status().isOk()).andReturn();
+	@WithUserDetails(value = "reg-officer")
+	public void t001syncClientSettingsTest2() throws Exception {
+		String str1="{\r\n" + 
+				"  \"id\": \"string\",\r\n" + 
+				"  \"version\": \"string\",\r\n" + 
+				"  \"responsetime\": \"2021-12-10T05:44:42.885Z\",\r\n" + 
+				"  \"metadata\": {},\r\n" + 
+				"  \"response\": {\r\n" + 
+				"    \"locationHierarchyLevels\": [\r\n" + 
+				"      {\r\n" + 
+				"        \"hierarchyLevel\": 0,\r\n" + 
+				"        \"hierarchyLevelName\": \"country\",\r\n" + 
+				"        \"langCode\": \"eng\",\r\n" + 
+				"        \"isActive\": true\r\n" + 
+				"      }\r\n" + 
+				"    ]\r\n" + 
+				"  },\r\n" + 
+				"  \"errors\": [\r\n" + 
+
+				"  ]\r\n" + 
+				"}";
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/masterdata/locationHierarchyLevels"))
+		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
+	
 		
-		ResponseWrapper<UploadPublicKeyResponseDto> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
-				new TypeReference<ResponseWrapper<UploadPublicKeyResponseDto>>() {});
+		String str="{\r\n" + 
+				"  \"id\": \"string\",\r\n" + 
+				"  \"version\": \"string\",\r\n" + 
+				"  \"responsetime\": \"2021-12-10T05:59:29.437Z\",\r\n" + 
+				"  \"metadata\": {},\r\n" + 
+				"  \"response\": {\r\n" + 
+				"    \"pageNo\": 0,\r\n" + 
+				"    \"totalPages\": 0,\r\n" + 
+				"    \"totalItems\": 0,\r\n" + 
+				"    \"data\": [\r\n" + 
+				"      {\r\n" + 
+				"        \"id\": \"string\",\r\n" + 
+				"        \"name\": \"string\",\r\n" + 
+				"        \"langCode\": \"string\",\r\n" + 
+				"        \"dataType\": \"string\",\r\n" + 
+				"        \"description\": \"string\",\r\n" + 
+				"        \"fieldVal\": [\r\n" + 
+				"          {\r\n" + 
+				"            \"array\": true,\r\n" + 
+				"            \"null\": true,\r\n" + 
+				"            \"float\": true,\r\n" + 
+				"            \"number\": true,\r\n" + 
+				"            \"valueNode\": true,\r\n" + 
+				"            \"containerNode\": true,\r\n" + 
+				"            \"missingNode\": true,\r\n" + 
+				"            \"object\": true,\r\n" + 
+				"            \"nodeType\": \"ARRAY\",\r\n" + 
+				"            \"pojo\": true,\r\n" + 
+				"            \"integralNumber\": true,\r\n" + 
+				"            \"floatingPointNumber\": true,\r\n" + 
+				"            \"short\": true,\r\n" + 
+				"            \"int\": true,\r\n" + 
+				"            \"long\": true,\r\n" + 
+				"            \"double\": true,\r\n" + 
+				"            \"bigDecimal\": true,\r\n" + 
+				"            \"bigInteger\": true,\r\n" + 
+				"            \"textual\": true,\r\n" + 
+				"            \"boolean\": true,\r\n" + 
+				"            \"binary\": true\r\n" + 
+				"          }\r\n" + 
+				"        ],\r\n" + 
+				"        \"isActive\": true,\r\n" + 
+				"        \"createdBy\": \"string\",\r\n" + 
+				"        \"updatedBy\": \"string\",\r\n" + 
+				"        \"createdOn\": \"2021-12-10T05:59:29.437Z\",\r\n" + 
+				"        \"updatedOn\": \"2021-12-10T05:59:29.437Z\"\r\n" + 
+				"      }\r\n" + 
+				"    ]\r\n" + 
+				"  },\r\n" + 
+				"  \"errors\": [\r\n" + 
+				"    {\r\n" + 
+				"      \"errorCode\": \"string\",\r\n" + 
+				"      \"message\": \"string\"\r\n" + 
+				"    }\r\n" + 
+				"  ]\r\n" + 
+				"}";
 		
-		assertEquals(MasterDataErrorCode.INVALID_INPUT_REQUEST.getErrorCode(), responseWrapper.getErrors().get(0).getErrorCode());
+			mockRestServiceServer.expect(requestTo(" http://localhost:8086/v1/masterdata/dynamicfields?pageNumber=0"))
+		.andRespond(withSuccess().body(str).contentType(MediaType.APPLICATION_JSON));
+	/*	SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/clientsettings").param("keyindex",
+				"B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:49")
+				.param("regcenterId", "10002")).andReturn(), null);
+*/
+		mockMvc.perform(MockMvcRequestBuilders.get("/clientsettings").param("keyindex",
+				"B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:49")
+				.param("regcenterId", "10002")).andExpect(status().is(500));
+	
+
+	}
+	 
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t002syncClientSettingsTest() throws Exception {
+			SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/clientsettings").param("keyindex",
+				"abcd")
+				.param("regcenterId", "10001")).andReturn(), "KER-SNC-155");
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t003getPublicKeyTest() throws Exception {
+
+		String str="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"lastSyncTime\":null,\"publicKey\":\"B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:48\",\"issuedAt\":null,\"expiryAt\":null,\"profile\":\"local\"},\"errors\":[]}";
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.io/v1/keymanager/publickey/REGISTRATION?referenceId=10001&timeStamp=2019-09-09T09%253A00%253A00.000Z"))
+		.andRespond(withSuccess().body(str).contentType(MediaType.APPLICATION_JSON));
+		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}"; 
+		
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
+		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
+	
+		SyncDataUtil.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/publickey/REGISTRATION")
+						.param("timeStamp", "2019-09-09T09%3A00%3A00.000Z").param("referenceId", "10001")).andReturn(),
+				null);
+
 	}
 	
-	@WithUserDetails(value = "reg-officer")
 	@Test
-	public void validateMachineMappingException() throws Exception {
-		when(masterDataService.validateKeyMachineMapping(Mockito.any())).thenThrow(RequestException.class);
-		mockMvc.perform(post("/tpm/publickey/verify").contentType(MediaType.APPLICATION_JSON)
-				.content("{\"machineName\":\"name\",\"publicKey\":\"key\"}")).andExpect(status().isOk());
+	@WithUserDetails(value = "reg-officer")
+	public void t003getPublicKeyTest1() throws Exception {
+
+		String str="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"lastSyncTime\":null,\"publicKey\":\"B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:48\",\"issuedAt\":null,\"expiryAt\":null,\"profile\":\"local\"},\"errors\":[]}";
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.io/v1/keymanager/publickey/REGISTRATION?referenceId&timeStamp=2019-09-09T09%253A00%253A00.000Z"))
+		.andRespond(withSuccess().body(str).contentType(MediaType.APPLICATION_JSON));
+		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}"; 
+		
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
+		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
+	
+		SyncDataUtil.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/publickey/REGISTRATION")
+						.param("timeStamp", "2019-09-09T09%3A00%3A00.000Z")).andReturn(),
+				"KER-SNC-003");
+
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t004validateKeyMachineMappingTest() throws Exception {
+		uploadPublicKeyRequestDto.getRequest().setMachineName("abc");
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/tpm/publickey/verify")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(uploadPublicKeyRequestDto)))
+				.andReturn(), "KER-SNC-155");
+
 	}
 	
-	@WithUserDetails(value = "reg-officer")
 	@Test
-	public void validateLatestSchemaSync() throws Exception {
-		//when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
-		mockMvc.perform(get("/latestidschema").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
-	}
-
 	@WithUserDetails(value = "reg-officer")
-	public void fetchClientPublicKey() throws Exception {
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(String.format(machineUrl, "12121"));
-		mockRestServer.expect(MockRestRequestMatchers.requestTo(builder.build().toString()))
-				.andRespond(withSuccess().body(
-						"{ \"id\": null, \"version\": null, \"responsetime\": \"2019-04-24T09:07:42.017Z\", \"metadata\": null, "
-								+ "\"response\": null, \"errors\": null }"));
-		when(masterDataService.getClientPublicKey(Mockito.any())).thenReturn(null);
-		MvcResult result = mockMvc.perform(get("/tpm/publickey/12121").contentType(MediaType.APPLICATION_JSON))
-				.andReturn();
-		ResponseWrapper<ClientPublicKeyResponseDto> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
-				new TypeReference<ResponseWrapper<ClientPublicKeyResponseDto>>() {});
-		Assert.assertNull(responseWrapper.getResponse());
-	}
+	public void t004validateKeyMachineMappingTest1() throws Exception {
+		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}"; 
+		
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
+		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/tpm/publickey/verify")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(uploadPublicKeyRequestDto)))
+				.andReturn(), "KER-SNC-155");
 
-	@WithUserDetails(value = "reg-officer")
+	}
+	
+	
+
 	@Test
-	public void fetchValidClientPublicKey() throws Exception {
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(String.format(machineUrl, "10001"));
-		mockRestServer.expect(MockRestRequestMatchers.requestTo(builder.build().toString()))
-				.andRespond(withSuccess().body(
-						"{ \"id\": null, \"version\": null, \"responsetime\": \"2019-04-24T09:07:42.017Z\", \"metadata\": null, "
-								+ "\"response\": { \"machines\" : [ { \"id\": \"10001\", "
-								+ "\"publicKey\": \"test\", \"signPublicKey\": \"test\"}]}, \"errors\": null }"));
-		//ClientPublicKeyResponseDto clientPublicKeyResponseDto = new ClientPublicKeyResponseDto("test","test");
-		//when(masterDataService.getClientPublicKey(Mockito.any())).thenReturn(clientPublicKeyResponseDto);
-		MvcResult result = mockMvc.perform(get("/tpm/publickey/12121").contentType(MediaType.APPLICATION_JSON))
-				.andReturn();
+	@WithUserDetails(value = "reg-officer")
+	public void t006validateKeyMachineMappingTest() throws Exception {
+		uploadPublicKeyRequestDto.getRequest().setPublicKey(null);
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/tpm/publickey/verify")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(uploadPublicKeyRequestDto)))
+				.andReturn(), "KER-SNC-158");
+
 	}
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncClientConfigDetailsSuccess() throws Exception {
-		//when(signingUtil.sign(Mockito.anyString())).thenReturn(signResponse);
-		JSONObject config = new JSONObject();
-		config.put("globalConfiguration", "tttttttttttttttttttttt");
-		config.put("registrationConfiguration", "tttttttttttttttttttttt");
-		ConfigDto configDto = new ConfigDto();
-		configDto.setConfigDetail(config);
-		when(syncConfigDetailsService.getConfigDetails("testmachine")).thenReturn(configDto);
-		mockMvc.perform(get("/configs/testmachine")).andExpect(status().isOk());
+	public void t007getLatestPublishedIdSchemaTest() throws Exception {
+		String res="{\r\n" + 
+				"  \"id\": \"string\",\r\n" + 
+				"  \"version\": \"string\",\r\n" + 
+				"  \"responsetime\": \"2021-12-07T12:51:29.957Z\",\r\n" + 
+				"  \"metadata\": {},\r\n" + 
+				"  \"response\": {\r\n" + 
+				"    \"additionalProp1\": {},\r\n" + 
+				"    \"additionalProp2\": {},\r\n" + 
+				"    \"additionalProp3\": {}\r\n" + 
+				"  },\r\n" + 
+				"  \"errors\": [\r\n" + 
+
+				"  ]\r\n" + 
+				"}";
+		mockRestServiceServer.expect(requestTo(idSchemaUrl+"?schemaVersion=0.0"))
+				.andRespond(withSuccess().body(res).contentType(MediaType.APPLICATION_JSON));
+		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}"; 
+			
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
+		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/latestidschema")).andReturn(), "KER-SNC-166");
+
+	}
+	
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t007getLatestPublishedIdSchemaTest1() throws Exception {
+		String res="{\r\n" + 
+				"  \"id\": \"string\",\r\n" + 
+				"  \"version\": \"string\",\r\n" + 
+				"  \"responsetime\": \"2021-12-07T12:51:29.957Z\",\r\n" + 
+				"  \"metadata\": {},\r\n" + 
+				"  \"response\": {\r\n" + 
+				"    \"additionalProp1\": {},\r\n" + 
+				"    \"additionalProp2\": {},\r\n" + 
+				"    \"additionalProp3\": {}\r\n" + 
+				"  },\r\n" + 
+				"  \"errors\": [\r\n" + 
+
+				"  ]\r\n" + 
+				"}";
+		
+		
+		mockRestServiceServer.expect(requestTo(idSchemaUrl+"?schemaVersion=0.0"))
+				.andRespond(withSuccess().body(res).contentType(MediaType.APPLICATION_JSON));
+
+		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}"; 
+		
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
+		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/latestidschema")).andReturn(), null);
+
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t008getCertificateTest() throws Exception {
+		
+		String res="{\r\n" + 
+				"  \"id\": \"string\",\r\n" + 
+				"  \"version\": \"string\",\r\n" + 
+				"  \"responsetime\": \"2021-12-07T12:51:29.957Z\",\r\n" + 
+				"  \"metadata\": {},\r\n" + 
+				"  \"response\": {\r\n" + 
+				"    \"certificate\": \"certificate\",\r\n" + 
+				"    \"certSignRequest\": \"2021-12-07T12:51:29.957Z\",\r\n" + 
+				"    \"expiryAt\": \"2021-12-07T12:51:29.957Z\",\r\n" +
+				"    \"timestamp\": \"2021-12-07T12:51:29.957Z\",\r\n" +
+				"    \"issuedAt\": \"2021-12-07T12:51:29.957Z\"\r\n" + 
+				"  },\r\n" + 
+				"  \"errors\": [\r\n" + 
+
+				"  ]\r\n" + 
+				"}";
+		mockRestServiceServer.expect(requestTo(certificateUrl+"?applicationId=app&referenceId=1111"))
+		.andRespond(withSuccess().body(res).contentType(MediaType.APPLICATION_JSON));
+		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}"; 
+		
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
+		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
+	
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/getCertificate")
+				.param("applicationId", "app").param("referenceId", "1111")).andReturn(), null);
+
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t009getClientPublicKeyTest() throws Exception {
+		String bd="{\r\n" + 
+				"  \"id\": \"string\",\r\n" + 
+				"  \"version\": \"string\",\r\n" + 
+				"  \"responsetime\": \"2021-12-07T12:51:29.957Z\",\r\n" + 
+				"  \"metadata\": {},\r\n" + 
+				"  \"response\": {\"machines\":[\r\n" + 
+				"      {\r\n" + 
+				"        \"id\": \"10\",\r\n" + 
+				"        \"name\": \"alm1009\",\r\n" + 
+				"        \"serialNum\": \"NM19837379\",\r\n" + 
+				"        \"macAddress\": \"E8-A9-64-1F-27-E6\",\r\n" + 
+				"        \"ipAddress\": \"192.168.0.120\",\r\n" + 
+				"        \"machineSpecId\": \"1001\",\r\n" + 
+				"        \"regCenterId\": \"10001\",\r\n" + 
+				"        \"langCode\": \"eng\",\r\n" + 
+				"        \"isActive\": \"true\",\r\n" + 
+				"        \"validityDateTime\": null ,\r\n" + 
+				"        \"keyIndex\":  \"B5\" ,\r\n" +
+				"        \"publicKey\": \"M10674\" ,\r\n" +
+				"        \"signPublicKey\": \"M1882734\"\r\n" +
+				"      }\r\n" + 
+				"    ]}}";
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(String.format(machineUrl, "10"));
+		
+		mockRestServiceServer.expect(MockRestRequestMatchers.requestTo(builder.build().toString()))
+		.andRespond(withSuccess().body(bd).contentType(MediaType.APPLICATION_JSON));
+		
+	String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}"; 
+		
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
+		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
+
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/tpm/publickey/10")).andReturn(), null);
+
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t010getClientPublicKeyTest() throws Exception {
+		String bd="{\r\n" + 
+				"  \"id\": \"string\",\r\n" + 
+				"  \"version\": \"string\",\r\n" + 
+				"  \"responsetime\": \"2021-12-07T12:51:29.957Z\",\r\n" + 
+				"  \"metadata\": {},\r\n" + 
+				"  \"response\": [\r\n" + 
+				"      {\r\n" + 
+				"        \"id\": \"1000\",\r\n" + 
+				"        \"name\": \"alm1009\",\r\n" + 
+				"        \"serialNum\": \"NM19837379\",\r\n" + 
+				"        \"macAddress\": \"E8-A9-64-1F-27-E6\",\r\n" + 
+				"        \"ipAddress\": \"192.168.0.120\",\r\n" + 
+				"        \"machineSpecId\": \"1001\",\r\n" + 
+				"        \"regCenterId\": \"10001\",\r\n" + 
+				"        \"langCode\": \"eng\",\r\n" + 
+				"        \"isActive\": \"true\",\r\n" + 
+				"        \"validityDateTime\": null ,\r\n" + 
+				"        \"keyIndex\":  \"B5\" ,\r\n" +
+				"        \"publicKey\": \"M10674\" ,\r\n" +
+				"        \"signPublicKey\": \"M1882734\"\r\n" +
+				"      }\r\n" + 
+				"    ]}";
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(String.format(machineUrl, "1000"));
+		
+		mockRestServiceServer.expect(MockRestRequestMatchers.requestTo(builder.build().toString()))
+		.andRespond(withSuccess().body(
+				"{ \"id\": null, \"version\": null, \"responsetime\": \"2019-04-24T09:07:42.017Z\", \"metadata\": null, "
+						+ "\"response\": "+bd+", \"errors\": null }"));
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/tpm/publickey/1000")).andReturn(),
+				"KER-SNC-155");
+
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t011getMachineConfigDetailsTest() throws Exception {
+		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"responseData\":\"signed\"},\"errors\":[]}"; 
+	
+			mockRestServiceServer.expect(requestTo("/localhost/kernel-syncdata-service/test/0.9.0/registration-test.properties"))
+		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
+		
+		mockRestServiceServer.expect(requestTo("/localhost/kernel-syncdata-service/test/0.9.0/application-test.properties"))
+		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
+
+		mockMvc.perform(MockMvcRequestBuilders.get(
+				"/configs/B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:48")).andExpect(status().is(500));
+	
+
+	}
+	
+	
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t012getMachineConfigDetailsTest() throws Exception {
+		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"responseData\":\"signed\"},\"errors\":[]}"; 
+		
+		mockRestServiceServer.expect(requestTo("/localhost/kernel-syncdata-service/test/0.9.0/application-test.properties"))
+		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
+	
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/configs/abcd")).andReturn(), "KER-SNC-155");
+
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t013getUserDetailsBasedOnKeyIndexTest() throws Exception {
+
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get(
+				"/userdetails").param("keyindex","B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:48"))
+				.andReturn(), "KER-SNC-141");
+
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t014getUserDetailsBasedOnKeyIndexTest() throws Exception {
+		String res="{\r\n" + 
+				"  \"id\": \"string\",\r\n" + 
+				"  \"version\": \"string\",\r\n" + 
+				"  \"responsetime\": \"2021-12-07T12:51:29.957Z\",\r\n" + 
+				"  \"metadata\": {},\r\n" + 
+				"  \"response\": {\r\n" + 
+				"    \"lastSyncTime\": \"2021-12-07T12:51:29.957Z\",\r\n" + 
+				"    \"mosipUserDtoList\":[{" +
+				" \"userId\": \"2\","+
+				" \"mobile\": \"7898787687\","+
+				" \"mail\": \"abc@gmail.com\","+
+				" \"userPassword\": null ,"+
+				" \"name\": \"abc\","+
+				" \"role\": \"admin\","+
+				" \"rId\": \"1234\","+
+				" \"isDeleted\": \"false\","+
+				" \"langCode\": \"eng\","+
+				" \"isActive\": \"true\""+
+				 "}] \r\n"+
+				"  },\r\n" + 
+				"  \"errors\": [\r\n" + 
+
+				"  ]\r\n" + 
+				"}";
+		mockRestServiceServer.expect(requestTo("http://localhost:8091/authmanager/userdetails/registrationclient"))
+		.andRespond(withSuccess().body(res).contentType(MediaType.APPLICATION_JSON));
+		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}"; 
+		
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
+		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
+
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/userdetails").param("keyindex", "B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:49")).andReturn(),null);
+
+	}
+	
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t014getUserDetailsBasedOnKeyIndexTest1() throws Exception {
+
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/userdetails").param("keyindex", "B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:50")).andReturn(),"KER-SNC-303");
+
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t015getCACertificatesTest() throws Exception {
+		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}"; 
+		
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
+		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/getcacertificates")).andReturn(), null);
+
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t016getCACertificatesTest() throws Exception {
+
+		SyncDataUtil.checkResponse(mockMvc.perform(
+				MockMvcRequestBuilders.get("/getcacertificates").param("lastupdated", "2018-12-12 11:42:52.994"))
+				.andReturn(), "KER_SNC-100");
+
+	}
+	
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t016getCACertificatesTest1() throws Exception {
+
+		SyncDataUtil.checkResponse(mockMvc.perform(
+				MockMvcRequestBuilders.get("/getcacertificates").param("lastupdated", "2050-12-29T13:03:44.719Z"))
+				.andReturn(), "KER-SNC-135");
+
+	}
+	
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t016getCACertificatesTest2() throws Exception {
+		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}"; 
+		
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
+		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
+	
+		SyncDataUtil.checkResponse(mockMvc.perform(
+				MockMvcRequestBuilders.get("/getcacertificates").param("lastupdated", "2021-12-09T13:03:44.719Z"))
+				.andReturn(), null);
+
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t017downloadScriptTest() throws Exception {
+		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"responseData\":\"signed\"},\"errors\":[]}"; 
+		
+		mockRestServiceServer.expect(requestTo("/localhost/kernel-syncdata-service/test/0.9.0/abcd"))
+		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
+		
+		String res="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}"; 
+		
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
+		.andRespond(withSuccess().body(res).contentType(MediaType.APPLICATION_JSON));
+		
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/scripts/abcd").param("keyindex",
+				"B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:48"))
+				.andReturn(), null);
+
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t018downloadScriptTest() throws Exception {
+
+		SyncDataUtil.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.get("/scripts/testscript").param("keyindex", "abcd")).andReturn(),
+				"KER-SNC-155");
+
+	}
+
+	
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t020downloadEntityDataTest() throws Exception {
+
+		mockMvc.perform(MockMvcRequestBuilders.get("/clientsettings/abcd").param("keyindex",
+				"B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:48"))
+				.andExpect(status().is(500));		
+	
+
+	}
+
+	
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t022downloadEntityDataTest() throws Exception {
+
+		SyncDataUtil.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/clientsettings/1").param("keyindex", "abcd")).andReturn(),
+				"KER-SNC-155");
+
 	}
 
 }
