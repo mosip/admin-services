@@ -770,13 +770,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			userCenterMappingExtnDto.setIsActive(false);
 			UserDetails ud=userDetailsRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(userCenterMappingExtnDto.getUserId());
 				if(ud!=null) {
-					RegistrationCenter regC=registrationCenterRepository.findByIdAndLangCode(ud.getRegCenterId(),
-							languageCode ==null ? languageUtils.getDefaultLanguage() : languageCode);
 
-					userCenterMappingExtnDto.setRegCenterName((regC != null) ?
-							String.format("%s (%s)", ud.getRegCenterId(), regC.getName()) :
-							ud.getRegCenterId());
-					userCenterMappingExtnDto.setRegCenterId(ud.getRegCenterId());
+					if(!ud.getIsDeleted()) {
+						RegistrationCenter regC=registrationCenterRepository.findByIdAndLangCode(ud.getRegCenterId(),
+								languageCode ==null ? languageUtils.getDefaultLanguage() : languageCode);
+
+						userCenterMappingExtnDto.setRegCenterName((regC != null) ?
+								String.format("%s (%s)", ud.getRegCenterId(), regC.getName()) :
+								ud.getRegCenterId());
+						userCenterMappingExtnDto.setRegCenterId(ud.getRegCenterId());
+					}
 					userCenterMappingExtnDto.setCreatedBy(ud.getCreatedBy());
 					userCenterMappingExtnDto.setCreatedDateTime(ud.getCreatedDateTime());
 					userCenterMappingExtnDto.setUpdatedBy(ud.getUpdatedBy());
