@@ -485,7 +485,7 @@ public class SyncCacheTest {
 
     @Test
     public void whenFindAllMachine_thenResultShouldBePutInCache() {
-        machineRepository.save(getMachine("test"));
+        machineRepository.save(getMachine("test10"));
         LocalDateTime lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
@@ -495,7 +495,7 @@ public class SyncCacheTest {
 
     @Test
     public void whenFindChangedMachine_thenResultShouldNotBePutInCache() {
-        machineRepository.save(getMachine("test"));
+        machineRepository.save(getMachine("test20"));
         LocalDateTime lastUpdatedTime = LocalDateTime.now(ZoneOffset.UTC).minusDays(10);
         LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
         evictAllKeys("initial-sync");
@@ -505,7 +505,7 @@ public class SyncCacheTest {
 
     @Test
     public void findMaxChangedDate_Machine_thenOnlyCreatedUpdatedDateTimeIsCached() {
-        machineRepository.save(getMachine("test"));
+        machineRepository.save(getMachine("test30"));
         evictAllKeys("delta-sync");
         EntityDtimes result = machineRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
         Assert.assertNotNull(getCachedValue("delta-sync", "machine_master"));
@@ -514,7 +514,7 @@ public class SyncCacheTest {
 
     @Test
     public void findMaxChangedDate_Machine_thenBothCreatedUpdatedDateTimeIsCached() {
-        Machine entity = getMachine("test");
+        Machine entity = getMachine("test40");
         entity.setUpdatedBy("test");
         entity.setUpdatedDateTime(LocalDateTime.now(ZoneOffset.UTC));
         machineRepository.save(entity);
