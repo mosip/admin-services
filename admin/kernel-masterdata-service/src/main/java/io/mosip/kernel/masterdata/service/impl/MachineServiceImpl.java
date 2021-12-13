@@ -236,9 +236,10 @@ public class MachineServiceImpl implements MachineService {
 		try {
 			List<Machine> renMachineList = machineRepository.findMachineByIdAndIsDeletedFalseorIsDeletedIsNull(id);
 			if (!renMachineList.isEmpty()) {
-				for (Machine renMachine : renMachineList) {
 
-					
+				validateZone(renMachineList.get(0).getZoneCode(), null);
+
+				for (Machine renMachine : renMachineList) {
 						MetaDataUtils.setDeleteMetaData(renMachine);
 						delMachine = machineRepository.update(renMachine);
 
@@ -624,24 +625,8 @@ public class MachineServiceImpl implements MachineService {
 					String.format(MachineErrorCode.MACHINE_NOT_EXIST_EXCEPTION.getErrorMessage(), machineId));
 		}
 
-		List<String> zoneIds;
+		validateZone(machines.get(0).getZoneCode(), null);
 
-		// get user zone and child zones list
-		List<Zone> userZones = zoneUtils.getSubZones(languageUtils.getDefaultLanguage());
-		zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
-
-		// check the given device and registration center zones are come under user zone
-		if (!zoneIds.contains(machines.get(0).getZoneCode())) {
-			auditUtil.auditRequest(
-					String.format(MasterDataConstant.FAILURE_DECOMMISSION, MachineSearchDto.class.getSimpleName()),
-					MasterDataConstant.AUDIT_SYSTEM,
-					String.format(MasterDataConstant.FAILURE_DESC,
-							MachineErrorCode.INVALID_MACHINE_ZONE.getErrorCode(),
-							MachineErrorCode.INVALID_MACHINE_ZONE.getErrorMessage()),
-					"ADM-537");
-			throw new RequestException(MachineErrorCode.INVALID_MACHINE_ZONE.getErrorCode(),
-					MachineErrorCode.INVALID_MACHINE_ZONE.getErrorMessage());
-		}
 		try {
 			for(Machine machine: machines) {
 				if(!(machine.getRegCenterId() ==null || machine.getRegCenterId().isEmpty())) {
@@ -707,7 +692,7 @@ public class MachineServiceImpl implements MachineService {
 
 		// call method to check the machineZone will come under Accessed user zone or
 		// not
-		validateZone(machineZone,machinePostReqDto.getLangCode());
+		validateZone(machineZone, null);
 		try {
 			if(machinePostReqDto.getRegCenterId() != null && !machinePostReqDto.getRegCenterId().isEmpty()) {
 				validateRegistrationCenter(machinePostReqDto.getRegCenterId());
@@ -780,6 +765,13 @@ public class MachineServiceImpl implements MachineService {
 		zoneIds = subZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 
 		if (!(zoneIds.contains(machineZone))) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_DECOMMISSION, MachineSearchDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							MachineErrorCode.INVALID_MACHINE_ZONE.getErrorCode(),
+							MachineErrorCode.INVALID_MACHINE_ZONE.getErrorMessage()),
+					"ADM-537");
 			// check the given machine zones will come under accessed user zones
 			throw new RequestException(MachineErrorCode.INVALID_MACHINE_ZONE.getErrorCode(),
 					MachineErrorCode.INVALID_MACHINE_ZONE.getErrorMessage());
@@ -836,7 +828,7 @@ public class MachineServiceImpl implements MachineService {
 
 		// call method to check the machineZone will come under Accessed user zone or
 		// not
-		validateZone(machineZone,machinePutReqDto.getLangCode());
+		validateZone(machineZone, null);
 		try {
 			if(machinePutReqDto.getRegCenterId() != null && !machinePutReqDto.getRegCenterId().isEmpty()) {
 				validateRegistrationCenter(machinePutReqDto.getRegCenterId());
@@ -933,6 +925,7 @@ public class MachineServiceImpl implements MachineService {
 		try {
 			List<Machine> machines = machineRepository.findMachineById(id);
 			if (machines != null && !machines.isEmpty()) {
+				validateZone(machines.get(0).getZoneCode(), null);
 				masterdataCreationUtil.updateMasterDataStatus(Machine.class, id, isActive, "id");
 				MetaDataUtils.setUpdateMetaData(machines.get(0), machineHistory, true);
 				machineHistory.setEffectDateTime(LocalDateTime.now(ZoneId.of("UTC")));
