@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -66,4 +67,6 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	
 	@Query("FROM DocumentCategory WHERE code =?1 AND (isDeleted is null OR isDeleted = false)")
 	List<DocumentCategory> findtoUpdateDocumentCategoryByCode(String code);
+
+	Optional<DocumentCategory> findFirstByCodeAndIsDeletedFalseOrIsDeletedIsNull(String code);
 }

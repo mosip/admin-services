@@ -680,7 +680,7 @@ public class DeviceServiceImpl implements DeviceService {
 		List<Device> devices = deviceRepository.findDeviceByIdAndIsDeletedFalseorIsDeletedIsNullNoIsActive(deviceId);
 
 		// device is not in DB
-		if (devices.isEmpty()) {
+		if (devices == null || devices.isEmpty()) {
 			auditUtil
 					.auditRequest(
 							String.format(MasterDataConstant.FAILURE_DECOMMISSION, DeviceDto.class.getSimpleName()),
@@ -713,7 +713,7 @@ public class DeviceServiceImpl implements DeviceService {
 		try {
 			// check the device has mapped to any reg-Center
 			for (Device device : devices) {
-				if (!(device.getRegCenterId() == null || device.getRegCenterId().isEmpty())) {
+				if (device.getRegCenterId() != null) {
 					auditUtil.auditRequest(
 							String.format(MasterDataConstant.FAILURE_DECOMMISSION, DeviceDto.class.getSimpleName()),
 							MasterDataConstant.AUDIT_SYSTEM,
@@ -785,13 +785,13 @@ public class DeviceServiceImpl implements DeviceService {
 			// find requested device is there or not in Device Table
 			List<Device> renDevice = deviceRepository.findtoUpdateDeviceById(devicePutReqDto.getId());
 
-			devicePutReqDto = masterdataCreationUtil.updateMasterData(Device.class, devicePutReqDto);
+			//devicePutReqDto = masterdataCreationUtil.updateMasterData(Device.class, devicePutReqDto);
 
-			if (renDevice == null) {
+			if (renDevice == null || renDevice.isEmpty()) {
 				// create new entry
 				Device crtDeviceEntity = new Device();
 				crtDeviceEntity = MetaDataUtils.setCreateMetaData(devicePutReqDto, crtDeviceEntity.getClass());
-				crtDeviceEntity = deviceRepository.create(crtDeviceEntity);
+				deviceRepository.create(crtDeviceEntity);
 
 				// updating Device history
 				MapperUtils.map(crtDeviceEntity, deviceHistory);
@@ -802,7 +802,7 @@ public class DeviceServiceImpl implements DeviceService {
 
 				deviceExtnDto = MapperUtils.map(crtDeviceEntity, DeviceExtnDto.class);
 			}
-			if (renDevice != null) {
+			else {
 				// updating registration center
 				updDeviecEntity = MetaDataUtils.setUpdateMetaData(devicePutReqDto, renDevice.get(0), false);
 
@@ -818,8 +818,7 @@ public class DeviceServiceImpl implements DeviceService {
 				deviceExtnDto = MapperUtils.map(updDevice, DeviceExtnDto.class);
 			}
 
-		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
-				| NoSuchFieldException | SecurityException exception) {
+		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | SecurityException exception) {
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, DeviceDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_UPDATE,

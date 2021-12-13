@@ -22,6 +22,5 @@ public class HolidayIdDeleteDto {
 	private String locationCode;
 	@NotNull
 	private LocalDate holidayDate;
-	@NotBlank
-	private String holidayName;
+
 }

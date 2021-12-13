@@ -193,6 +193,9 @@ public class ZoneUtils {
 	 * @return list of zones
 	 */
 	private List<Zone> getDescedants(List<Zone> zones, Zone zone) {
+		if(zone == null)
+			return Collections.EMPTY_LIST;
+
 		List<Zone> zoneList = zones.stream().filter(i -> i.getLangCode().equals(zone.getLangCode()))
 				.collect(Collectors.toList());
 		List<Node<Zone>> tree = zoneTree.createTree(zoneList);

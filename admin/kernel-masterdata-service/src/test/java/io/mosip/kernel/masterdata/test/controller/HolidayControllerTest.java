@@ -101,7 +101,6 @@ public class HolidayControllerTest {
 		 holidayDelReq=new RequestWrapper<HolidayIdDeleteDto>();
 		 HolidayIdDeleteDto deleteDto=new HolidayIdDeleteDto();
 		deleteDto.setHolidayDate(LocalDate.now());
-		deleteDto.setHolidayName("May Day");
 		deleteDto.setLocationCode("KTA");
 		
 		holidayDelReq.setRequest(deleteDto);

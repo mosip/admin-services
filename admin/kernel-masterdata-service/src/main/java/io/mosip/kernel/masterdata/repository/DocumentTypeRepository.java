@@ -2,7 +2,9 @@ package io.mosip.kernel.masterdata.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
+import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -74,4 +76,6 @@ public interface DocumentTypeRepository extends BaseRepository<DocumentType, Cod
 	 */
 	@Query("FROM DocumentType WHERE langCode =?1 AND (isDeleted is null OR isDeleted = false) AND isActive = true")
 	List<DocumentType> findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);
+
+	Optional<DocumentType> findFirstByCodeAndIsDeletedFalseOrIsDeletedIsNull(String code);
 }
