@@ -13,7 +13,6 @@ import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
-import io.mosip.kernel.masterdata.entity.MachineSpecification;
 import io.mosip.kernel.masterdata.utils.*;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import org.json.JSONObject;
@@ -195,6 +194,9 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		entity.setId(UUID.randomUUID().toString());
 		entity.setValueJson(getValidatedFieldValue(dto.getFieldVal()));
 		try {
+			Optional<DynamicField> existingField = dynamicFieldRepository.findFirstByFieldNameAndCode(dto.getName(),
+					"%"+dto.getFieldVal().get("code").toString()+ "%");
+			if(existingField.isPresent())  { entity.setIsActive(existingField.get().getIsActive()); }
 			entity = dynamicFieldRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_INSERT_EXCEPTION.getErrorCode(),
@@ -241,15 +243,23 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	public StatusResponseDto deleteDynamicFieldValue(String id) {
 		StatusResponseDto statusResponseDto = new StatusResponseDto();
 		try {
-			int deletedRows = dynamicFieldRepository.deleteDynamicField(id, MetaDataUtils.getCurrentDateTime(),
-					MetaDataUtils.getContextUser());
+			DynamicField dynamicField = dynamicFieldRepository.findDynamicFieldById(id);
+			if(dynamicField == null)
+				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
+						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
+
+			JsonNode valueJson = dynamicField.getValueJson() != null ? objectMapper.readTree(dynamicField.getValueJson()) : null;
+			String code = valueJson.get("code").toString();
+
+			int deletedRows = dynamicFieldRepository.deleteDynamicField(dynamicField.getName(), "%"+code+"%",
+					MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser());
 
 			if (deletedRows < 1) {
 				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 			statusResponseDto.setStatus("DynamicField deleted successfully");
-		} catch (DataAccessLayerException | DataAccessException e) {
+		} catch (DataAccessLayerException | DataAccessException  | IOException e) {
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_DELETE_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
@@ -323,14 +333,22 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	public StatusResponseDto updateDynamicFieldValueStatus(String id, boolean isActive) {
 		StatusResponseDto response = new StatusResponseDto();
 		try {
-			int updatedRows = dynamicFieldRepository.updateDynamicFieldIsActive(id, isActive,
+			DynamicField dynamicField = dynamicFieldRepository.findDynamicFieldById(id);
+			if(dynamicField == null)
+				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
+						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
+
+			JsonNode valueJson = dynamicField.getValueJson() != null ? objectMapper.readTree(dynamicField.getValueJson()) : null;
+			String code = valueJson.get("code").toString();
+
+			int updatedRows = dynamicFieldRepository.updateDynamicFieldIsActive(dynamicField.getName(), "%"+code+"%", isActive,
 					MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser());
 
 			if (updatedRows < 1) {
 				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
-		} catch (DataAccessLayerException | DataAccessException e) {
+		} catch (DataAccessLayerException | DataAccessException | IOException e) {
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_UPDATE_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}

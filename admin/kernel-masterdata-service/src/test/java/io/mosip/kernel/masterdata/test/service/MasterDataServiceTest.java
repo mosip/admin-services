@@ -2989,10 +2989,14 @@ public class MasterDataServiceTest {
 	public void updateDynamicFieldStatusSuccessTest() {
 		StatusResponseDto dto = new StatusResponseDto();
 		dto.setStatus("Status updated successfully for Dynamic Fields");
-
-		when(dynamicFieldRepository.updateDynamicFieldIsActive(Mockito.anyString(), Mockito.anyBoolean(),
+		DynamicField dynamicField = new DynamicField();
+		dynamicField.setId("10001");
+		dynamicField.setName("bloodType1");
+		dynamicField.setValueJson("{\"code\":\"code\",\"value\":\"value\"}");
+		when(dynamicFieldRepository.findDynamicFieldById(Mockito.anyString())).thenReturn(dynamicField);
+		when(dynamicFieldRepository.updateDynamicFieldIsActive(Mockito.anyString(),Mockito.anyString(), Mockito.anyBoolean(),
 				Mockito.any(), Mockito.anyString())).thenReturn(1);
-		StatusResponseDto actual = dynamicFieldService.updateDynamicFieldValueStatus("abc", false);
+		StatusResponseDto actual = dynamicFieldService.updateDynamicFieldValueStatus("10001", false);
 		assertEquals(dto, actual);
 	}
 
@@ -3015,15 +3019,21 @@ public class MasterDataServiceTest {
 	@Test(expected = MasterDataServiceException.class)
 	@WithUserDetails("reg-officer")
 	public void updateDynamicFieldStatusFailureTest() {
-		when(dynamicFieldRepository.updateDynamicFieldIsActive(Mockito.anyString(), Mockito.anyBoolean(),
+		when(dynamicFieldRepository.updateDynamicFieldIsActive(Mockito.anyString(),Mockito.anyString(), Mockito.anyBoolean(),
 				Mockito.any(), Mockito.anyString())).thenThrow(MasterDataServiceException.class);
-		dynamicFieldService.updateDynamicFieldValueStatus("abc", false);
+		DynamicField dynamicField = new DynamicField();
+		dynamicField.setId("10001");
+		dynamicField.setName("bloodType1");
+		dynamicField.setValueJson("{\"code\":\"code\",\"value\":\"value\"}");
+		when(dynamicFieldRepository.findDynamicFieldById(Mockito.anyString())).thenReturn(dynamicField);
+
+		dynamicFieldService.updateDynamicFieldValueStatus("10001", false);
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	@WithUserDetails("reg-officer")
 	public void updateDynamicFieldStatusFailureDataNotFoundTest() {
-		when(dynamicFieldRepository.updateDynamicFieldIsActive(Mockito.anyString(), Mockito.anyBoolean(),
+		when(dynamicFieldRepository.updateDynamicFieldIsActive(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
 				Mockito.any(), Mockito.anyString())).thenReturn(0);
 		dynamicFieldService.updateDynamicFieldValueStatus("abc", false);
 	}

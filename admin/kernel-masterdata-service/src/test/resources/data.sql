@@ -133,8 +133,8 @@ INSERT INTO master.valid_document(doctyp_code, doccat_code, lang_code, is_active
 
 DELETE FROM MASTER.dynamic_field;
 INSERT INTO master.dynamic_field(id, name, description, data_type,value_json,lang_code,is_active,cr_by, cr_dtimes, upd_by, upd_dtimes, is_DELETEd, del_dtimes) VALUES 
-('10001','bloodType1','Blood Type11','string',Null,'eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
-('10002','bloodType2','Blood Type12','string',Null,'eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
+('10001','bloodType1','Blood Type11','string','{\"code\":\"code\",\"value\":\"value\"}','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('10002','bloodType2','Blood Type12','string','{\"code\":\"code\",\"value\":\"value\"}','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
 
 DELETE FROM MASTER.loc_holiday;
 INSERT INTO master.loc_holiday(id, location_code, holiday_date,holiday_name,holiday_desc, lang_code,is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_DELETEd, del_dtimes) VALUES 
@@ -234,6 +234,7 @@ INSERT INTO MASTER.user_detail_h(id, name, status_code, regcntr_id, lang_code, l
 DELETE FROM MASTER.zone_user;
 INSERT INTO MASTER.zone_user(zone_code, usr_id, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) values
 ('NTH', 'global-admin', 'eng', TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
+('RSK', 'zonal-admin', 'eng', TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
 ('RSK', '4', 'eng', TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
 ('RBT','7','eng',true,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994', NULL,NULL,NULL,NULL),
 ('CST','3','eng',true,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994', NULL,NULL,NULL,NULL);
