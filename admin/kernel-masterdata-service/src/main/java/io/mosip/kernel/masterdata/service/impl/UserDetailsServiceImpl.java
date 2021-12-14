@@ -800,7 +800,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			ucm.setZoneCode(zu.getZoneCode());
 			ucm.setZoneName(zu.getZoneName());
 			ucm.setUserId(zu.getUserId());
-			ucm.setUserName(zu.getUserId());
+			ucm.setUserName(zu.getUserName());
 			ucm.setIsActive(zu.getIsActive());
 			ucm.setCreatedBy(zu.getCreatedBy());
 			ucm.setCreatedDateTime(zu.getCreatedDateTime());
