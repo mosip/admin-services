@@ -281,11 +281,11 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 		T packetStatusUpdateDto = null;
 		if (!validationErrorsList.isEmpty()) {
 			if (validationErrorsList.size() == 1 && validationErrorsList.get(0).getErrorCode().equals("RPR-RTS-001")) {
-				auditUtil.setAuditRequestDto(EventEnum.RID_INVALID);
+				auditUtil.setAuditRequestDto(EventEnum.RID_NOT_FOUND);
 				logger.error("SESSIONID", "ADMIN-SERVICE",
-						"ADMIN-SERVICE", PacketStatusUpdateErrorCode.RID_INVALID.getErrorMessage());
-				throw new RequestException(PacketStatusUpdateErrorCode.RID_INVALID.getErrorCode(),
-						PacketStatusUpdateErrorCode.RID_INVALID.getErrorMessage());
+						"ADMIN-SERVICE", PacketStatusUpdateErrorCode.RID_NOT_FOUND.getErrorMessage());
+				throw new RequestException(PacketStatusUpdateErrorCode.RID_NOT_FOUND.getErrorCode(),
+						PacketStatusUpdateErrorCode.RID_NOT_FOUND.getErrorMessage());
 			} else if (validationErrorsList.size() == 1
 					&& validationErrorsList.get(0).getErrorCode().equals("KER-MSD-042")) {
 				auditUtil.setAuditRequestDto(EventEnum.CENTRE_NOT_EXISTS);
