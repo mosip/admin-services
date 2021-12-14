@@ -2,10 +2,7 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import javax.transaction.Transactional;
 
@@ -154,8 +151,10 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		DocumentType documentType = null;
 		DocumentTypePostResponseDto documentTypePostResponseDto = new DocumentTypePostResponseDto();
 		try {
+			Optional<DocumentType> existingType = documentTypeRepository.findFirstByCodeAndIsDeletedFalseOrIsDeletedIsNull(documentTypeDto.getCode());
 			documentTypeDto = masterdataCreationUtil.createMasterData(DocumentType.class, documentTypeDto);
 			DocumentType entity = MetaDataUtils.setCreateMetaData(documentTypeDto, DocumentType.class);
+			if(existingType.isPresent()) { entity.setIsActive(existingType.get().getIsActive()); }
 			documentType = documentTypeRepository.create(entity);
 			Objects.requireNonNull(documentType);
 			MapperUtils.map(documentType, documentTypePostResponseDto);

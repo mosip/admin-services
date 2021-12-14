@@ -921,6 +921,7 @@ public class SyncCacheTest {
         entity.setLangCode("eng");
         entity.setMachineSpecification(machineSpecification);
         entity.setCreatedDateTime(LocalDateTime.now(ZoneOffset.UTC));
+        entity.setZoneCode("NTH");
         return entity;
     }
 

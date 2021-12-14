@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.repository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -112,8 +113,8 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	 */
 	@Modifying
 	@Transactional
-	@Query("UPDATE Holiday  SET isDeleted=true ,deletedDateTime =?1 WHERE holidayName = ?2 AND holidayDate = ?3 AND locationCode = ?4 AND (isDeleted = false OR isDeleted IS NULL)")
-	int deleteHolidays(LocalDateTime deletedTime, String holidayName, LocalDate holidayDate, String locationCode);
+	@Query("UPDATE Holiday  SET isDeleted=true ,deletedDateTime =?1 WHERE holidayDate = ?2 AND locationCode = ?3 AND (isDeleted = false OR isDeleted IS NULL)")
+	int deleteHolidays(LocalDateTime deletedTime, LocalDate holidayDate, String locationCode);
 
 	/**
 	 * Fetch the holiday by id and location code
@@ -151,5 +152,11 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	@Query(value = "FROM Holiday where holidayName=?1 and holidayDate = ?2 and location_code = ?3 and lang_code=?4 and (isDeleted = false or isDeleted is null) ")
 	Holiday findHolidayByHolidayNameHolidayDateLocationCodeLangCode(String holidayName, LocalDate holidayDate,
 			String locationCode, String langCode);
+
+	@Query(value = "select max(id) from loc_holiday", nativeQuery = true)
+	int findMaxHolidayId();
+
+	@Query(value = "FROM Holiday where holidayDate = ?1 and location_code = ?2 and lang_code=?3 and (isDeleted = false or isDeleted is null) ")
+	Optional<Holiday> findFirstByHolidayByHolidayDateLocationCodeLangCode(LocalDate holidayDate, String locationCode, String langCode);
 
 }

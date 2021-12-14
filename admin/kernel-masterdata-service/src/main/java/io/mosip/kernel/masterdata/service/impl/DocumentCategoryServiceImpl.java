@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -215,11 +216,13 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	@CacheEvict(value = "document-category", allEntries = true)
 	@Override
 	public CodeAndLanguageCodeID createDocumentCategory(DocumentCategoryDto category) {
-
 		DocumentCategory documentCategory;
 		try {
+
+			Optional<DocumentCategory> existingCategory = documentCategoryRepository.findFirstByCodeAndIsDeletedFalseOrIsDeletedIsNull(category.getCode());
 			category = masterdataCreationUtil.createMasterData(DocumentCategory.class, category);
 			DocumentCategory entity = MetaDataUtils.setCreateMetaData(category, DocumentCategory.class);
+			if(existingCategory.isPresent()) { entity.setIsActive(existingCategory.get().getIsActive()); }
 			documentCategory = documentCategoryRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException e) {
