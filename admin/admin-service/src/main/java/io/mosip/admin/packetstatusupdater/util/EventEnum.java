@@ -27,7 +27,7 @@ public enum EventEnum {
 	ACCESS_DENIED("ADM-PKT-405",AuditConstant.AUDIT_SYSTEM,"Check access","Access denied from AuthManager","ADM-PKT","Packet service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 	AUTHEN_ERROR_401("ADM-PKT-401",AuditConstant.AUDIT_SYSTEM,"Check authentication","The user tried to operate on a protected resource without providing the proper authorization","ADM-PKT","Packet service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 	AUTHEN_ERROR_403("ADM-PKT-403",AuditConstant.AUDIT_SYSTEM,"Check authentication","The user does not have the necessary permissions for the resource","ADM-PKT","Packet service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
-
+	RID_NOT_FOUND("ADM-PKT-411",AuditConstant.AUDIT_USER,"Request to get packet status","Registration id is not found","ADM-PKT","Packet service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 
 	BULKDATA_UPLOAD_API_CALLED("ADM-BLK-101",AuditConstant.AUDIT_SYSTEM,"Request for bulkdata upload API","API called for uploading bulk data","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 	BULKDATA_UPLOAD_SUCCESS("ADM-BLK-200",AuditConstant.AUDIT_SYSTEM,"Request for bulkdata upload API","Bulkdata upload is successful","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),

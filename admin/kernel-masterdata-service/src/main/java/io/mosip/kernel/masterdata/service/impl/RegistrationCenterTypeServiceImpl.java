@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -75,9 +76,6 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 	@Autowired
 	private RegistrationCenterTypeRepository registrationCenterTypeRepository;
 
-	/**
-	 * Autowired reference for {@link RegistrationCenteRepository}.
-	 */
 	@Autowired
 	private RegistrationCenterRepository registrationCenterRepository;
 
@@ -114,10 +112,13 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 
 		RegistrationCenterType registrationCenterType;
 		try {
+			Optional<RegistrationCenterType> existingType = registrationCenterTypeRepository.findFirstByCodeAndIsDeletedFalseOrIsDeletedIsNull(
+					registrationCenterTypeRequestDto.getCode());
 			registrationCenterTypeRequestDto = masterdataCreationUtil.createMasterData(RegistrationCenterType.class,
 					registrationCenterTypeRequestDto);
 			RegistrationCenterType entity = MetaDataUtils.setCreateMetaData(registrationCenterTypeRequestDto,
 					RegistrationCenterType.class);
+			if(existingType.isPresent()) { entity.setIsActive(existingType.get().getIsActive()); }
 			registrationCenterType = registrationCenterTypeRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException exception) {

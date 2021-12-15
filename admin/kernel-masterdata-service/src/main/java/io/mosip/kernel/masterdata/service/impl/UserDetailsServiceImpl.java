@@ -770,13 +770,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			userCenterMappingExtnDto.setIsActive(false);
 			UserDetails ud=userDetailsRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(userCenterMappingExtnDto.getUserId());
 				if(ud!=null) {
-					RegistrationCenter regC=registrationCenterRepository.findByIdAndLangCode(ud.getRegCenterId(),
-							languageCode ==null ? languageUtils.getDefaultLanguage() : languageCode);
 
-					userCenterMappingExtnDto.setRegCenterName((regC != null) ?
-							String.format("%s (%s)", ud.getRegCenterId(), regC.getName()) :
-							ud.getRegCenterId());
-					userCenterMappingExtnDto.setRegCenterId(ud.getRegCenterId());
+					if(!ud.getIsDeleted()) {
+						RegistrationCenter regC=registrationCenterRepository.findByIdAndLangCode(ud.getRegCenterId(),
+								languageCode ==null ? languageUtils.getDefaultLanguage() : languageCode);
+
+						userCenterMappingExtnDto.setRegCenterName((regC != null) ?
+								String.format("%s (%s)", ud.getRegCenterId(), regC.getName()) :
+								ud.getRegCenterId());
+						userCenterMappingExtnDto.setRegCenterId(ud.getRegCenterId());
+					}
 					userCenterMappingExtnDto.setCreatedBy(ud.getCreatedBy());
 					userCenterMappingExtnDto.setCreatedDateTime(ud.getCreatedDateTime());
 					userCenterMappingExtnDto.setUpdatedBy(ud.getUpdatedBy());
@@ -797,7 +800,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			ucm.setZoneCode(zu.getZoneCode());
 			ucm.setZoneName(zu.getZoneName());
 			ucm.setUserId(zu.getUserId());
-			ucm.setUserName(zu.getUserId());
+			ucm.setUserName(zu.getUserName());
 			ucm.setIsActive(zu.getIsActive());
 			ucm.setCreatedBy(zu.getCreatedBy());
 			ucm.setCreatedDateTime(zu.getCreatedDateTime());

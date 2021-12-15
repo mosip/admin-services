@@ -83,10 +83,9 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
 	public IdResponseDto createDeviceHistory(DeviceHistory entityHistory) {
-		DeviceHistory createdHistory;
-		createdHistory = deviceHistoryRepository.create(entityHistory);
+		deviceHistoryRepository.create(entityHistory);
 		IdResponseDto idResponseDto = new IdResponseDto();
-		MapperUtils.map(createdHistory, idResponseDto);
+		MapperUtils.map(entityHistory, idResponseDto);
 		return idResponseDto;
 	}
 

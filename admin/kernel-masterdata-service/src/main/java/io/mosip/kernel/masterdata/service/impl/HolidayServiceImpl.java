@@ -2,14 +2,7 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -230,23 +223,19 @@ public class HolidayServiceImpl implements HolidayService {
 				// holidayDto.setIsActive(getisActive(holidayDto.getHolidayName(),holidayDto.getHolidayDate(),holidayDto.getLangCode(),
 				// holidayDto.getLocationCode(),holidayDto.getIsActive()));
 				entity = MetaDataUtils.setCreateMetaData(holidayDto, Holiday.class);
-				List<Holiday> hols=holidayRepository.findHolidayByHolidayDateHolidayName(holidayDto.getHolidayDate(),holidayDto.getHolidayName());
-				List<Holiday> holidays=holidayRepository.findAll();
-			
-				if(holidays==null || holidays.isEmpty() ) {
+				Optional<Holiday> existingHoliday = holidayRepository.findFirstByHolidayByHolidayDateLocationCodeLangCode(holidayDto.getHolidayDate(),
+						holidayDto.getLocationCode(), holidayDto.getLangCode());
+
+				if(holidayRepository.count() <= 0) {
 					entity.setHolidayId(DEFAULT_HOLIDAY_ID);
 				}
-				else if(hols!=null && !hols.isEmpty()){
-					entity.setHolidayId(hols.get(0).getHolidayId());
+				else if(existingHoliday.isPresent()){
+					entity.setHolidayId(existingHoliday.get().getHolidayId());
+					entity.setIsActive(existingHoliday.get().getIsActive());
 				}
 				else {
-					List<Integer> holidayIds=new ArrayList<>();
-					for(Holiday holidayEntry:holidays) {
-						holidayIds.add(Integer.valueOf(holidayEntry.getHolidayId()));
-					}
-				
-				entity.setHolidayId(Collections.max(holidayIds)+1);
-			}
+					entity.setHolidayId(holidayRepository.findMaxHolidayId()+1);
+				}
 			
 			holiday = holidayRepository.create(entity);
 			/*
@@ -397,7 +386,7 @@ public class HolidayServiceImpl implements HolidayService {
 		HolidayIdDeleteDto idDto = request.getRequest();
 		try {
 			int affectedRows = holidayRepository.deleteHolidays(LocalDateTime.now(ZoneId.of("UTC")),
-					idDto.getHolidayName(), idDto.getHolidayDate(), idDto.getLocationCode());
+					idDto.getHolidayDate(), idDto.getLocationCode());
 			if (affectedRows == 0)
 				throw new RequestException(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
 						HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorMessage());

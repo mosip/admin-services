@@ -28,6 +28,7 @@ import io.swagger.annotations.Api;
  *
  */
 
+@Deprecated(since = "1.2.0")
 @Api(tags = { "Application" })
 @RestController
 @RequestMapping("/applicationtypes")
