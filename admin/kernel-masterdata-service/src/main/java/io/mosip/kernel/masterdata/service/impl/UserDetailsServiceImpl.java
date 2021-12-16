@@ -770,11 +770,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			userCenterMappingExtnDto.setIsActive(false);
 			UserDetails ud=userDetailsRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(userCenterMappingExtnDto.getUserId());
 				if(ud!=null) {
-
-					if(!ud.getIsDeleted()) {
+					if(ud.getIsDeleted() == null || !ud.getIsDeleted()) {
 						RegistrationCenter regC=registrationCenterRepository.findByIdAndLangCode(ud.getRegCenterId(),
 								languageCode ==null ? languageUtils.getDefaultLanguage() : languageCode);
-
 						userCenterMappingExtnDto.setRegCenterName((regC != null) ?
 								String.format("%s (%s)", ud.getRegCenterId(), regC.getName()) :
 								ud.getRegCenterId());
