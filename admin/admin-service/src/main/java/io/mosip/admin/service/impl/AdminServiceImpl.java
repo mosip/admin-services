@@ -61,6 +61,9 @@ public class AdminServiceImpl implements AdminService {
 			if(fi.getType().equalsIgnoreCase("contains")) {
 				fi.setType("equals");
 			}
+			if(fi.getColumnName().equalsIgnoreCase("locationCode")) {
+				fi.setColumnName("postalCode");
+			}
 		}
 		if (searchInfoRequest.getSort().isEmpty()) {
 			List<SortInfo> sortInfos = searchInfoRequest.getSort();
