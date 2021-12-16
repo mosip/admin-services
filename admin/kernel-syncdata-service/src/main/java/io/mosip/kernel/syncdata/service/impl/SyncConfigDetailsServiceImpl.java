@@ -159,7 +159,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	public PublicKeyResponse<String> getPublicKey(String applicationId, String timeStamp, String referenceId) {
 		ResponseEntity<String> publicKeyResponseEntity = null;
 
-		ResponseWrapper<PublicKeyResponse> publicKeyResponseMapped = null;
+		ResponseWrapper<PublicKeyResponse<String>> publicKeyResponseMapped = null;
 		Map<String, String> uriParams = new HashMap<>();
 		uriParams.put("applicationId", applicationId);
 		try {
