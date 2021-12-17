@@ -2687,8 +2687,8 @@ public class MasterDataServiceTest {
 		Mockito.when(regWorkingNonWorkingRepo
 				.findByregistrationCenterIdAndlanguagecodeForWorkingDays(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(nameSeqDtoList);
-		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(registCent);
+		Mockito.when(registrationCenterRepository.countByIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(3L);
 		assertEquals("Monday",
 				regWorkingNonWorkingService.getWorkingDays("10001", "eng").getWorkingdays().get(0).getName());
 	}
@@ -2704,8 +2704,8 @@ public class MasterDataServiceTest {
 		RegistrationCenter registCent = new RegistrationCenter();
 		registCent.setId("10001");
 		registCent.setLangCode("eng");
-		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(registCent);
+		Mockito.when(registrationCenterRepository.countByIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(3L);
 
 		Mockito.when(regWorkingNonWorkingRepo.findByregistrationCenterIdAndlangCodeForWeekDays("10001", "eng"))
 				.thenReturn(workingDaysDtos);
@@ -2730,8 +2730,8 @@ public class MasterDataServiceTest {
 
 		Mockito.when(regWorkingNonWorkingRepo.findByregistrationCenterIdAndlangCodeForWeekDays("10001", "eng"))
 				.thenReturn(null);
-		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(registCent);
+		Mockito.when(registrationCenterRepository.countByIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(2L);
 		Mockito.when(daysOfWeekRepo.findBylangCode(Mockito.anyString())).thenReturn(globalDaysList);
 
 		assertEquals("Monday",
@@ -2754,13 +2754,27 @@ public class MasterDataServiceTest {
 		regWorkingNonWorkingService.getWeekDaysList("10001", "eng");
 	}
 
-	@Test(expected = MasterDataServiceException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void getWeekDaysServiceFailureTest() {
 		List<WorkingDaysDto> workingDaysDtos = new ArrayList<>();
 		WorkingDaysDto workingDaysDto = new WorkingDaysDto();
 
 		workingDaysDtos.add(workingDaysDto);
 
+		Mockito.when(regWorkingNonWorkingRepo.findByregistrationCenterIdAndlangCodeForWeekDays("10001", "eng"))
+				.thenThrow(DataAccessLayerException.class);
+		regWorkingNonWorkingService.getWeekDaysList("10001", "eng");
+	}
+
+
+	@Test(expected = MasterDataServiceException.class)
+	public void getWeekDaysServiceFailureTest2() {
+		List<WorkingDaysDto> workingDaysDtos = new ArrayList<>();
+		WorkingDaysDto workingDaysDto = new WorkingDaysDto();
+
+		workingDaysDtos.add(workingDaysDto);
+		Mockito.when(registrationCenterRepository.countByIsDeletedFalseOrIsDeletedIsNull("10001"))
+				.thenReturn(1L);
 		Mockito.when(regWorkingNonWorkingRepo.findByregistrationCenterIdAndlangCodeForWeekDays("10001", "eng"))
 				.thenThrow(DataAccessLayerException.class);
 		regWorkingNonWorkingService.getWeekDaysList("10001", "eng");
@@ -2775,7 +2789,7 @@ public class MasterDataServiceTest {
 		regWorkingNonWorkingService.getWorkingDays("10001", "eng");
 	}
 
-	@Test(expected = MasterDataServiceException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void getWorkingServiceFailureTest2() {
 
 		Mockito.when(regWorkingNonWorkingRepo

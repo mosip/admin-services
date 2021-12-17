@@ -69,52 +69,46 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 	public WeekDaysResponseDto getWeekDaysList(String regCenterId, String langCode) {
 
 		List<WeekDaysDto> weekdayList = null;
-
 		WeekDaysResponseDto weekdays = new WeekDaysResponseDto();
-		RegistrationCenter registrationCenter = null;
-
 		Objects.requireNonNull(regCenterId);
 		Objects.requireNonNull(langCode);
 
 		try {
+			if(registrationCenterRepository.countByIsDeletedFalseOrIsDeletedIsNull(regCenterId) <= 0)
+				throw new DataNotFoundException(WorkingNonWorkingDayErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						WorkingNonWorkingDayErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+
 			weekdayList = workingDaysRepo.findByregistrationCenterIdAndlangCodeForWeekDays(regCenterId, langCode);
-			registrationCenter = registrationCenterRepository.findByIdAndLangCode(regCenterId, langCode);
+
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					WorkingNonWorkingDayErrorCode.WORKING_DAY_TABLE_NOT_ACCESSIBLE.getErrorCode(),
 					WorkingNonWorkingDayErrorCode.WORKING_DAY_TABLE_NOT_ACCESSIBLE.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
-		if (registrationCenter == null) {
-			throw new DataNotFoundException(WorkingNonWorkingDayErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
-					WorkingNonWorkingDayErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
-		} else {
-			if (weekdayList != null && !weekdayList.isEmpty()) {
-				weekdays.setWeekdays(weekdayList);
-			}
-			// Fetch from global level .
-			else {
-				List<DaysOfWeek> globalDaysList = daysOfWeekRepo.findBylangCode(langCode);
-				if (globalDaysList != null && !globalDaysList.isEmpty()) {
-					weekdayList = globalDaysList.stream().map(day -> {
-						WeekDaysDto globalWorkingDay = new WeekDaysDto();
-						globalWorkingDay.setDayCode(day.getCode());
-						globalWorkingDay.setGlobalWorking(day.isGlobalWorking());
-						globalWorkingDay.setLanguagecode(day.getLangCode());
-						globalWorkingDay.setName(day.getName());
-						return globalWorkingDay;
-					}).collect(Collectors.toList());
 
-					weekdays.setWeekdays(weekdayList);
-				} else {
-					throw new DataNotFoundException(
-							WorkingNonWorkingDayErrorCode.WEEK_DAY_DATA_FOUND_EXCEPTION.getErrorCode(),
-							WorkingNonWorkingDayErrorCode.WEEK_DAY_DATA_FOUND_EXCEPTION.getErrorMessage());
-				}
-
-			}
+		if (weekdayList != null && !weekdayList.isEmpty()) {
+			weekdays.setWeekdays(weekdayList);
+			return weekdays;
 		}
 
+		// Fetch from global level .
+		List<DaysOfWeek> globalDaysList = daysOfWeekRepo.findBylangCode(langCode);
+		if (globalDaysList != null && !globalDaysList.isEmpty()) {
+			weekdayList = globalDaysList.stream().map(day -> {
+				WeekDaysDto globalWorkingDay = new WeekDaysDto();
+				globalWorkingDay.setDayCode(day.getCode());
+				globalWorkingDay.setGlobalWorking(day.isGlobalWorking());
+				globalWorkingDay.setLanguagecode(day.getLangCode());
+				globalWorkingDay.setName(day.getName());
+				return globalWorkingDay;
+			}).collect(Collectors.toList());
+			weekdays.setWeekdays(weekdayList);
+		} else {
+			throw new DataNotFoundException(
+					WorkingNonWorkingDayErrorCode.WEEK_DAY_DATA_FOUND_EXCEPTION.getErrorCode(),
+					WorkingNonWorkingDayErrorCode.WEEK_DAY_DATA_FOUND_EXCEPTION.getErrorMessage());
+		}
 		return weekdays;
 	}
 
@@ -130,19 +124,20 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 		Objects.requireNonNull(langCode);
 		RegistrationCenter registrationCenter = null;
 		try {
+			if(registrationCenterRepository.countByIsDeletedFalseOrIsDeletedIsNull(regCenterId) <= 0)
+				throw new DataNotFoundException(WorkingNonWorkingDayErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						WorkingNonWorkingDayErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+
 			nameSeqList = workingDaysRepo.findByregistrationCenterIdAndlanguagecodeForWorkingDays(regCenterId,
 					langCode);
-			registrationCenter = registrationCenterRepository.findByIdAndLangCode(regCenterId, langCode);
+
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					WorkingNonWorkingDayErrorCode.WORKING_DAY_TABLE_NOT_ACCESSIBLE.getErrorCode(),
 					WorkingNonWorkingDayErrorCode.WORKING_DAY_TABLE_NOT_ACCESSIBLE.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
-		if (registrationCenter == null) {
-			throw new DataNotFoundException(WorkingNonWorkingDayErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
-					WorkingNonWorkingDayErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
-		} else {
+
 			// Fetch from DB.
 			if (nameSeqList != null && !nameSeqList.isEmpty()) {
 
@@ -178,8 +173,6 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 				}
 
 			}
-
-		}
 
 		return responseDto;
 	}

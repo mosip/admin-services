@@ -20,4 +20,6 @@ public interface ExceptionalHolidayService {
 	 */
 	ExceptionalHolidayResponseDto getAllExceptionalHolidays(String regCenterId, String langCode);
 
+	ExceptionalHolidayResponseDto getAllExceptionalHolidays(String regCenterId);
+
 }
