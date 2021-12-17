@@ -4,16 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -210,14 +202,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Override
 	public RegistrationCenterHolidayDto getRegistrationCenterHolidays(String registrationCenterId, Integer year,
 			String langCode) {
-		List<RegistrationCenterDto> registrationCenters;
-		List<RegistrationCenter> registrationCenterEntity = new ArrayList<>();
 		RegistrationCenterHolidayDto registrationCenterHolidayResponse = null;
 		RegistrationCenterDto registrationCenterDto = null;
-		RegistrationCenter registrationCenter = null;
+		List<RegistrationCenter> centerEntities = null;
 		List<HolidayDto> holidayDto = null;
 		List<Holiday> holidays = null;
-		String holidayLocationCode = "";
 
 		Objects.requireNonNull(registrationCenterId);
 		Objects.requireNonNull(year);
@@ -226,42 +215,41 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		if (!year.toString().matches("[1-9][0-9][0-9][0-9]")) {
 			throw new RequestException(RegistrationCenterErrorCode.HOLIDAY_YEAR_PATTERN.getErrorCode(),
 					RegistrationCenterErrorCode.HOLIDAY_YEAR_PATTERN.getErrorMessage());
-
 		}
 
 		try {
-			registrationCenter = registrationCenterRepository.findByIdAndLangCode(registrationCenterId, langCode);
+			centerEntities = registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(registrationCenterId);
+			if (centerEntities == null || centerEntities.isEmpty()) {
+				throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			}
 		} catch (DataAccessException | DataAccessLayerException dataAccessException) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(dataAccessException));
 		}
-		if (registrationCenter == null) {
-			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
-		} else {
-			registrationCenterEntity.add(registrationCenter);
-			registrationCenters = MapperUtils.mapAll(registrationCenterEntity, RegistrationCenterDto.class);
-			registrationCenterDto = registrationCenters.get(0);
-			try {
-				holidayLocationCode = registrationCenterDto.getHolidayLocationCode();
-				holidays = holidayRepository.findAllByLocationCodeYearAndLangCode(holidayLocationCode, langCode, year);
-				if (holidayLocationCode != null)
-					holidays = holidayRepository.findAllByLocationCodeYearAndLangCode(holidayLocationCode, langCode,
-							year);
-			} catch (DataAccessException | DataAccessLayerException dataAccessException) {
-				throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
-						HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorMessage());
 
-			}
-			if (holidays != null)
-				holidayDto = MapperUtils.mapHolidays(holidays);
+		Optional<RegistrationCenter> result = centerEntities.stream().filter(c -> c.getLangCode().equalsIgnoreCase(langCode)).findFirst();
+		registrationCenterDto =  MapperUtils.map((result.isPresent()) ? result.get() : centerEntities.get(0) , RegistrationCenterDto.class);
+		try {
+			String holidayLocationCode = registrationCenterDto.getHolidayLocationCode();
+			if (holidayLocationCode != null)
+				holidays = langCode.equalsIgnoreCase("all") ?
+						holidayRepository.findAllByLocationCodeYearWithoutLangCode(holidayLocationCode, year) :
+						holidayRepository.findAllByLocationCodeYearAndLangCode(holidayLocationCode, langCode, year);
+
+		} catch (DataAccessException | DataAccessLayerException dataAccessException) {
+			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
+					HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorMessage());
 		}
+
+		if (holidays != null)
+			holidayDto = MapperUtils.mapHolidays(holidays);
+
 		registrationCenterHolidayResponse = new RegistrationCenterHolidayDto();
 		registrationCenterHolidayResponse.setRegistrationCenter(registrationCenterDto);
 		registrationCenterHolidayResponse.setHolidays(holidayDto);
-
 		return registrationCenterHolidayResponse;
 	}
 
