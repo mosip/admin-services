@@ -226,5 +226,8 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	@Query(value = "select distinct(id) from master.registration_center where zone_code in :zonecodes and id in :ids", nativeQuery = true)
 	List<String> filterRegistrationIdsBasedOnAllowedZones(@Param("zonecodes") Set<String> zonecodes,
 														  @Param("ids") Set<String> ids);
+
+	@Query("SELECT COUNT(*) FROM RegistrationCenter WHERE id=?1 and (isDeleted is null or isDeleted =false) and isActive = true")
+	long countByIsDeletedFalseOrIsDeletedIsNull(String regCenterId);
 	
 }

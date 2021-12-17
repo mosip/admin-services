@@ -5918,7 +5918,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	@WithUserDetails("individual")
 	public void testGetRegistraionCenterHolidaysRegistrationCenterFetchException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLangCode(anyString(), anyString()))
+		Mockito.when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		MvcResult result = mockMvc.perform(
 				get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
@@ -5935,8 +5935,10 @@ public class MasterdataIntegrationTest {
 	@Test
 	@WithUserDetails("individual")
 	public void testGetRegistraionCenterHolidaysHolidayFetchException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLangCode(anyString(), anyString()))
-				.thenReturn(registrationCenter);
+		List<RegistrationCenter> list = new ArrayList<>();
+		list.add(registrationCenter);
+		Mockito.when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(anyString()))
+				.thenReturn(list);
 
 		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
 				.thenThrow(DataRetrievalFailureException.class);
