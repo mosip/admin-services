@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +20,7 @@ public interface ExceptionalHolidayRepository extends BaseRepository<Exceptional
 
 	@Query("From ExceptionalHoliday where regcntr_id=?1 and lang_code=?2 and (isDeleted = false or isDeleted is null) and isActive = true")
 	List<ExceptionalHoliday> findAllNonDeletedExceptionalHoliday(String regCenterId, String langcode);
+
+	@Query("SELECT DISTINCT holidayDate From ExceptionalHoliday where regcntr_id=?1 and (isDeleted = false or isDeleted is null) and isActive = true")
+	List<LocalDate> findDistinctByRegistrationCenterId(String regCenterId);
 }
