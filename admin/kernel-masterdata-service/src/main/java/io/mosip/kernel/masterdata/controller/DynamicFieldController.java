@@ -67,16 +67,16 @@ public class DynamicFieldController {
 	@GetMapping
 	@ApiOperation(value = "Service to fetch all dynamic fields")
 	public ResponseWrapper<PageDto<DynamicFieldExtnDto>> getAllDynamicFields(
-			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page number", defaultValue = "0") int pageNumber,
+			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page number, sorted based on name", defaultValue = "0") int pageNumber,
 			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size", defaultValue = "10") int pageSize,
-			@RequestParam(name = "sortBy", defaultValue = "name") @ApiParam(value = "sort on field name", defaultValue = "name") String sortBy,
-			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "sort order", defaultValue = "desc") OrderEnum orderBy,
 			@RequestParam(name = "langCode", required = false) @ApiParam(value = "Lang Code", required = false) String langCode,
 			@RequestParam(name = "lastUpdated", required = false) @ApiParam(value = "last updated rows", required = false) String lastUpdated) {
 		ResponseWrapper<PageDto<DynamicFieldExtnDto>> responseWrapper = new ResponseWrapper<>();
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
-		responseWrapper.setResponse(dynamicFieldService.getAllDynamicField(pageNumber, pageSize, sortBy, orderBy.name(), langCode,
+		//We only sort by name as internally pagination is applied on distinct name, hence sorting is currently
+		// restricted to only name field
+		responseWrapper.setResponse(dynamicFieldService.getAllDynamicField(pageNumber, pageSize, "name", "asc", langCode,
 				timestamp, currentTimeStamp));
 		return responseWrapper;
 	}
