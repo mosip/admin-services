@@ -191,12 +191,24 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	@Transactional
 	public DynamicFieldResponseDto createDynamicField(DynamicFieldDto dto) {
 		DynamicField entity = MetaDataUtils.setCreateMetaData(dto, DynamicField.class);
-		entity.setId(UUID.randomUUID().toString());
-		entity.setValueJson(getValidatedFieldValue(dto.getFieldVal()));
+
 		try {
-			Optional<DynamicField> existingField = dynamicFieldRepository.findFirstByFieldNameAndCode(dto.getName(),
+			List<DynamicField> existingFields = dynamicFieldRepository.findAllByFieldNameAndCode(dto.getName(),
 					"%"+dto.getFieldVal().get("code").toString()+ "%");
-			if(existingField.isPresent())  { entity.setIsActive(existingField.get().getIsActive()); }
+			if(existingFields != null && !existingFields.isEmpty()) {
+				Optional<DynamicField> result = existingFields.stream()
+						.filter( f-> f.getLangCode().equalsIgnoreCase(dto.getLangCode()) )
+						.findFirst();
+
+				if(result.isPresent())
+					throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_ALREADY_EXISTS.getErrorCode(),
+							SchemaErrorCode.DYNAMIC_FIELD_ALREADY_EXISTS.getErrorMessage());
+
+				entity.setIsActive(existingFields.get(0).getIsActive());
+			}
+
+			entity.setId(UUID.randomUUID().toString());
+			entity.setValueJson(getValidatedFieldValue(dto.getFieldVal()));
 			entity = dynamicFieldRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_INSERT_EXCEPTION.getErrorCode(),
