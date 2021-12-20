@@ -136,7 +136,7 @@ public class LanguageControllerTest {
 	public void t3updateLanguageFailTest2() throws Exception {
 		languagePutdto.getRequest().setCode("fra");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/languages").contentType(MediaType.APPLICATION_JSON)
-						.content(mapper.writeValueAsString(languagePutdto))).andReturn(),	"KER-MSD-24");
+						.content(mapper.writeValueAsString(languagePutdto))).andReturn(),	"KER-MSD-701");
 	}
 	
 	@Test
