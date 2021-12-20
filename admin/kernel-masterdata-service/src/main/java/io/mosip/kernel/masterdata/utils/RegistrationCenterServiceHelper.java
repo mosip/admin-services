@@ -85,6 +85,9 @@ public class RegistrationCenterServiceHelper {
 	@Autowired
 	private RegExceptionalHolidayRepository regExceptionalHolidayRepository;
 
+	@Autowired
+	private LanguageUtils languageUtils;
+
 	/**
 	 * Method to search center
 	 * 
@@ -209,6 +212,7 @@ public class RegistrationCenterServiceHelper {
 	 * @return list of {@link Location}
 	 */
 	public List<Location> fetchLocations(String langCode) {
+		langCode = langCode == null ? languageUtils.getDefaultLanguage() : langCode;
 		List<Location> locations = null;
 		try {
 			if (!langCode.equals("all")) {
