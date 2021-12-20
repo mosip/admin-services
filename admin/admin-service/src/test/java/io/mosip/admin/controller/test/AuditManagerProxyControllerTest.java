@@ -1,15 +1,21 @@
 package io.mosip.admin.controller.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
+import java.net.InetAddress;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -21,6 +27,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.client.RestTemplate;
@@ -56,13 +63,14 @@ public class AuditManagerProxyControllerTest {
 	RestTemplate restTemplate;
 	MockRestServiceServer mockRestServiceServer;
 
+	
 	private RequestWrapper<AuditManagerRequestDto> requestDto = new RequestWrapper<AuditManagerRequestDto>();
 
 	@Before
 	public void setUp() {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-
+		
 		AuditManagerRequestDto auditManagerRequestDto = new AuditManagerRequestDto();
 		auditManagerRequestDto.setActionTimeStamp(LocalDateTime.now());
 		auditManagerRequestDto.setApplicationId("test");
@@ -81,6 +89,7 @@ public class AuditManagerProxyControllerTest {
 		auditManagerRequestDto.setSessionUserName("test");
 		requestDto.setRequest(auditManagerRequestDto);
 		mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
+
 	}
 
 	@Test
@@ -110,4 +119,22 @@ public class AuditManagerProxyControllerTest {
 				.content(mapper.writeValueAsString(requestDto))).andExpect(MockMvcResultMatchers.status().is(500));
 
 	}
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void t003addAuditTest() throws Exception {
+		String str = "{\r\n    \"id\": null,\r\n    \"version\": null,\r\n    \"responsetime\": \"2019-12-02T09:45:24.512Z\",\r\n    \"metadata\": null,\r\n    \"response\": true,\r\n    \"errors\": []\r\n}";
+
+		mockRestServiceServer.expect(requestTo(auditUrl))
+				.andRespond(withBadRequest().body(str).contentType(MediaType.APPLICATION_JSON));
+
+	MvcResult m	=mockMvc.perform(MockMvcRequestBuilders.post("/auditmanager/log").contentType(MediaType.APPLICATION_JSON)
+		.content(mapper.writeValueAsString(requestDto))).andReturn();
+	assertEquals(m.getResponse().getStatus(), 500);
+	Map mp = mapper.readValue(m.getResponse().getContentAsString(), Map.class);
+	assertEquals("ADM-PKT-000", ((List<Map<String, String>>) mp.get("errors")).get(0).get("errorCode"));
+	
+	}
+	
+	
 }
