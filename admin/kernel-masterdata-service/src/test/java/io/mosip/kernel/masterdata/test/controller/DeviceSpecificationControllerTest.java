@@ -143,6 +143,16 @@ public class DeviceSpecificationControllerTest {
 				.andReturn(),null);
 
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t001createDeviceSpecificationTest1() throws Exception {
+		
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devicespecifications").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(deviceSpecification)))
+				.andReturn(),null);
+
+	}
 
 
 	@Test
@@ -247,6 +257,15 @@ public class DeviceSpecificationControllerTest {
 		 MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/devicespecifications").param("isActive", "true").param("id", "170"))
 				.andReturn(),"KER-MSD-012");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t013updateDeviceSpecificationStatusFailTest1() throws Exception {
+
+		 MasterDataTest.checkResponse(mockMvc.perform(
+				MockMvcRequestBuilders.patch("/devicespecifications").param("isActive", "true").param("id", "327"))
+				.andReturn(),"KER-MSD-217");
 	}
 
 	@Test

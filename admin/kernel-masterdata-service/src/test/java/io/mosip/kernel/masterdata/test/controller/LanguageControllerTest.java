@@ -191,4 +191,14 @@ public class LanguageControllerTest {
 				.andReturn(), "KER-MSD-24");
 
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t7updateLanguageStatusFailTest() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.patch("/languages").param("code", "").param("isActive", "true"))
+				.andReturn(), "KER-MSD-24");
+
+	}
 }

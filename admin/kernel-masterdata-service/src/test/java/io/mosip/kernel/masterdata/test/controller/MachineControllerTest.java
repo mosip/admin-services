@@ -181,6 +181,18 @@ public class MachineControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
+	public void t010searchMachineTest1() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.post("/machines/search").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(
+								MasterDataTest.commonSearchDtoWithoutLangCode("name","ASC", "zone", "NTH", "contains"))))
+				.andReturn(), null);
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t011searchMachineTest1() throws Exception {
 		MasterDataTest
 				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/machines/search")
@@ -280,6 +292,28 @@ public class MachineControllerTest {
 				"KER-MSD-413");
 	}
 
+	@Test
+	@WithUserDetails("global-admin")
+	public void t022createMachineTest3() throws Exception {
+		machineRequest.getRequest().setPublicKey("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq-7fM8-oz_RDcLWOvsRl-4tLST5s86mKfsTjqmjnmUZTezSz8lb3_8YDl_K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw_F8wC2T9wsLaIwIDAQAB");
+		machineRequest.getRequest().setSignPublicKey("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq-7fM8-oz_RDcLWOvsRl-4tLST5s86mKfsTjqmjnmUZTezSz8lb3_8YDl_K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw_F8wC2T9wsLaIwIDAQAB");
+		
+		machineRequest.getRequest().setRegCenterId(null);
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/machines").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(machineRequest))).andReturn(),
+				"KER-MSD-222");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t022createMachineTest4() throws Exception {
+		machineRequest.getRequest().setRegCenterId("122");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/machines").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(machineRequest))).andReturn(),
+				"KER-MSD-222");
+	}
 	
 	@Test
 	@WithUserDetails("global-admin")

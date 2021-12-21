@@ -82,6 +82,31 @@ public class LocationHierarchyControllerTest {
 				.andReturn(),null);
 
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t003getLocationHierarchyLevelTest1() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locationHierarchyLevels").param("lastUpdated", "2018-12-1210:10:30.956Z"))
+				.andReturn(),"KER-MSD-261");
+
+	}
+	@Test
+	@WithUserDetails("global-admin")
+	public void t003getLocationHierarchyLevelTest2() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locationHierarchyLevels").param("lastUpdated", "2018-12-12T10:10:30.956Z"))
+				.andReturn(),null);
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t003getLocationHierarchyLevelTest3() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locationHierarchyLevels").param("lastUpdated", "2016-12-12T10:10:30.956Z"))
+				.andReturn(),null);
+
+	}
+	
+	
 
 	@Test
 	@WithUserDetails("global-admin")
