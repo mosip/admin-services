@@ -98,7 +98,7 @@ public class TitleServiceImpl implements TitleService {
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
 
-	@Value("${mosip.kernel.masterdata.title_event:masterdata/titles}")
+	@Value("${mosip.kernel.masterdata.title_event:MASTERDATA_TITLES}")
 	private String topic;
 
 	@Value("${websub.publish.url}")
