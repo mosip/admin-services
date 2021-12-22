@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
@@ -45,12 +46,16 @@ import io.mosip.kernel.masterdata.dto.DocumentCategoryPutDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypePutReqDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
+import io.mosip.kernel.masterdata.dto.LocationCreateDto;
+import io.mosip.kernel.masterdata.dto.LocationPutDto;
 import io.mosip.kernel.masterdata.dto.MachinePostReqDto;
 import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.masterdata.dto.MachineSpecificationPutDto;
 import io.mosip.kernel.masterdata.dto.MachineTypePutDto;
 import io.mosip.kernel.masterdata.dto.UserDetailsDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.WorkingDaysPutRequestDto;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceType;
@@ -73,6 +78,7 @@ import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
 import io.mosip.kernel.masterdata.repository.ExceptionalHolidayRepository;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.repository.LocationHierarchyRepository;
+import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.repository.MachineSpecificationRepository;
@@ -90,6 +96,7 @@ import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
@@ -185,6 +192,8 @@ public class IntegratedRepositoryTest {
 
 	@MockBean
 	private LanguageRepository languageRepository;
+	@MockBean
+	private LocationRepository locReg;
 
 	@Before
 	public void setUp() {
@@ -1457,4 +1466,84 @@ public class IntegratedRepositoryTest {
 				.andReturn(), "KER-USR-020");
 	}
 
+	
+	
+		
+	public void tst005createLocationHierarchyDetailsTest1() throws Exception {
+		when(locReg
+				.findLocationHierarchyByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString())).thenThrow(new IllegalArgumentException("...") {});
+		
+		RequestWrapper<LocationCreateDto> locationCreateDtoReq=new RequestWrapper<LocationCreateDto>();
+		LocationCreateDto createDto = new LocationCreateDto();
+		createDto.setCode("11111");
+		createDto.setHierarchyLevel((short) 0);
+		createDto.setIsActive(true);
+		createDto.setHierarchyName("Country");
+		createDto.setLangCode("eng");
+		createDto.setName("11111");
+		createDto.setParentLocCode("");
+		
+		locationCreateDtoReq.setRequest(createDto);
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(locationCreateDtoReq))).andReturn(),
+				"KER-MSD-242");
+	}
+	
+	public void tst005createLocationHierarchyDetailsTest() throws Exception {
+		when(locReg
+				.findLocationHierarchyByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString())).thenThrow(new DataAccessException("...") {});
+		
+		RequestWrapper<LocationCreateDto> locationCreateDtoReq=new RequestWrapper<LocationCreateDto>();
+		LocationCreateDto createDto = new LocationCreateDto();
+		createDto.setCode("11111");
+		createDto.setHierarchyLevel((short) 0);
+		createDto.setIsActive(true);
+		createDto.setHierarchyName("Country");
+		createDto.setLangCode("eng");
+		createDto.setName("11111");
+		createDto.setParentLocCode("");
+		
+		locationCreateDtoReq.setRequest(createDto);
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(locationCreateDtoReq))).andReturn(),
+				"KER-MSD-242");
+	}
+	
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void tst021updateLocationStatusFailTest() throws Exception {
+		when(locReg.findLocationByCode(Mockito.anyString())).thenThrow(new IllegalArgumentException("..."));
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.patch("/locations").param("code", "10099").param("isActive", "false"))
+				.andReturn(), "KER-MSD-097");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void tst017locationFilterValuesTest() throws Exception {
+		FilterValueDto f = new FilterValueDto();
+		FilterDto fdto = new FilterDto();
+		fdto.setColumnName("code");
+		fdto.setText("RSK");
+		fdto.setType("all");
+		List<FilterDto> lf = new ArrayList<>();
+		lf.add(fdto);
+		f.setLanguageCode("eng");
+		f.setOptionalFilters(null);
+		f.setFilters(lf);
+		 RequestWrapper<FilterValueDto> filValDto = new RequestWrapper<>();
+		filValDto.setRequest(f);
+		when(locReg.findLocationAllHierarchyNames()).thenThrow(new DataAccessLayerException("...","...",new Throwable()));
+		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.ALL.toString());
+		MasterDataTest
+				.checkResponse(mockMvc
+						.perform(MockMvcRequestBuilders.post("/locations/filtervalues")
+								.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
+						.andReturn(), "KER-MSD-025");
+	}
+	
 }
