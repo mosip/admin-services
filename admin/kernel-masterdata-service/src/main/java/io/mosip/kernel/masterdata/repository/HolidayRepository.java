@@ -156,7 +156,7 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	Holiday findHolidayByHolidayNameHolidayDateLocationCodeLangCode(String holidayName, LocalDate holidayDate,
 			String locationCode, String langCode);
 
-	@Query(value = "select max(id) from loc_holiday", nativeQuery = true)
+	@Query(value = "select max(id) from master.loc_holiday", nativeQuery = true)
 	int findMaxHolidayId();
 
 	@Query(value = "FROM Holiday where holidayDate = ?1 and location_code = ?2 and lang_code=?3 and (isDeleted = false or isDeleted is null) ")
