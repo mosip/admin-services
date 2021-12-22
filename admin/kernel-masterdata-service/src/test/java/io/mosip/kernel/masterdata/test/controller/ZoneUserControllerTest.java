@@ -272,7 +272,7 @@ public class ZoneUserControllerTest {
 	}
 	
 	
-	@Test
+/*	@Test
 	@WithUserDetails("global-admin")
 	public void t009searchZoneUserMappingTest1() throws Exception {
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin"))
@@ -284,7 +284,7 @@ public class ZoneUserControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/zoneuser/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
 				null);
-	}
+	}*/
 	
 	@Test
 	@WithUserDetails("global-admin")
