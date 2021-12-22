@@ -9,7 +9,7 @@ INSERT INTO MASTER.location(code, name, hierarchy_level, hierarchy_level_name, p
 ('RSK','Rabat Sale Kenitra',1,'Region','MOR','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL),
 ('KTA','Kenitra',2,'Province','RSK','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL),
 ('KNT','Kenitra',3,'City','KTA','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL),
-('BNMR','Ben Mansour',4,'Zone','KNT','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL),
+('BNMR','Ben Mansour',4,'Zone','KNT','ara',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL),
 ('14022','14022',5,'Postal Code','BNMR','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL),
 ('MOGR','Mograne',4,'Zone','KNT','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL);
 
@@ -21,9 +21,8 @@ INSERT INTO MASTER.LANGUAGE(CODE, CR_BY, CR_DTIMES, DEL_DTIMES, IS_ACTIVE, IS_DE
 ('ara', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 'Afro-Asiatic', 'Arabic', STRINGDECODE('\u0627\u0644\u0639\u064e\u0631\u064e\u0628\u0650\u064a\u064e\u0651\u0629\u200e'));
 --('fra', 'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, TRUE, NULL, NULL, NULL, 'Indo-European', 'French', STRINGDECODE('fran\u00e7ais'));
 DELETE FROM MASTER.loc_hierarchy_list;
-INSERT INTO master.loc_hierarchy_list(
-	hierarchy_level, hierarchy_level_name, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, IS_DELETED, del_dtimes)
-	VALUES ('0','Country','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL, NULL, NULL),
+INSERT INTO master.loc_hierarchy_list(hierarchy_level, hierarchy_level_name, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, IS_DELETED, del_dtimes) VALUES
+('0','Country','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL, NULL, NULL),
 ('0','بلد','ara',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL, NULL, NULL),
 --('0','Pays','fra',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL, NULL, NULL),
 ('1','Region','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL, NULL, NULL);
@@ -114,14 +113,18 @@ DELETE FROM MASTER.valid_document;
 DELETE FROM MASTER.doc_category;
 INSERT INTO master.doc_category(code, name, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_DELETEd, del_dtimes) VALUES 
 ('POI','Proof of Identity','Identity Proof','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('POI','Proof of Identity1','Identity Proof','ara',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('POR','Proof of Relationship','Proof Relationship of the person','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
-('POA','Proof of Biometric Exception','Proof of Biometric Exception','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
-
+('POA','Proof of Biometric Exception','Proof of Biometric Exception','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('POA2','Proof of Biometric Exception2','Proof of Biometric Exception','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('P1','Proof of Biometric Exception1','Proof of Biometric Exception','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
 
 DELETE FROM MASTER.doc_type;
 INSERT INTO master.doc_type(code, name, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_DELETEd, del_dtimes) VALUES 
 ('CIN','Certification of Exception','Certificate of Exception','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('DOC002','PAN card','PAN card','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('C1','Certificate of residence1','Proof of Resident','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('COR2','Certificate of residence1','Proof of Resident','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('COR','Certificate of residence','Proof of Resident','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
 
 
@@ -129,7 +132,9 @@ INSERT INTO master.doc_type(code, name, descr, lang_code, is_active, cr_by, cr_d
 INSERT INTO master.valid_document(doctyp_code, doccat_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_DELETEd, del_dtimes) VALUES 
 ('CIN','POI','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('COR','POA','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
-('DOC002','POI','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
+('CIN','POI','ara',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('DOC002','POI','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('COR2','POA2','eng',False,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
 
 DELETE FROM MASTER.dynamic_field;
 INSERT INTO master.dynamic_field(id, name, description, data_type,value_json,lang_code,is_active,cr_by, cr_dtimes, upd_by, upd_dtimes, is_DELETEd, del_dtimes) VALUES 
@@ -164,7 +169,7 @@ INSERT INTO master.blacklisted_words(word, descr, lang_code,is_active, cr_by, cr
 DELETE FROM MASTER.applicant_valid_document;
 Insert INTO master.applicant_valid_document(apptyp_code, doccat_code, doctyp_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_DELETEd, del_dtimes) VALUES 
 ('001','POI','CIN','eng',true,'superadmin',Timestamp '2018-12-10 11:42:52.994',null,null,null,null),
---('001','POA','RNC','eng',true,'superadmin',Timestamp '2018-12-10 11:42:52.994',null,null,null,null),
+('001','POI','RNCC','ara',true,'superadmin',Timestamp '2018-12-10 11:42:52.994',null,null,null,null),
 ('002','POA','COR','eng',true,'superadmin',Timestamp '2018-12-10 11:42:52.994',null,null,null,null);
 --('002','POB','COB','eng',true,'superadmin',Timestamp '2018-12-10 11:42:52.994',null,null,null,null);
 
@@ -210,6 +215,8 @@ INSERT INTO master.registration_center(id,name,cntrtyp_code,addr_line1,addr_line
 ('10001','Center A Ben Mansour','REG','P4238','Ben Mansour','MyCountry','23.3454','34.5434','14022','779517433','John Doe',3,'8:00:00',Time '0:15:00', Time '9:00:00',Time '17:00:00',Time '13:00:00',Time '14:00:00','(GTM+01:00) CENTRAL EUROPEAN TIME','KTA','RBT','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('10002','Center A Ben','REG','P4239','Ben Mansour','MyCountry','34.52117','-6.453275','14022','779517433','John Doee',2,'8:00:00',Time '0:15:00', Time '9:00:00',Time '17:00:00',Time '13:00:00',Time '14:00:00','(GTM+01:00) CENTRAL EUROPEAN TIME','KTA','RBT','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('10004','Center A Ben1','REG','P4239','Ben Mansour1','MyCountry1','34.52117','-6.453275','14022','779517433','John Doee',2,'8:00:00',Time '0:15:00', Time '9:00:00',Time '17:00:00',Time '13:00:00',Time '14:00:00','(GTM+01:00) CENTRAL EUROPEAN TIME','KTA','RBT','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('10077','Center A','REG','P4239','Ben Mansour1','MyCountry1','34.52117','-6.453275','14022','779517433','John Doee',2,'8:00:00',Time '0:15:00', Time '9:00:00',Time '17:00:00',Time '13:00:00',Time '14:00:00','(GTM+01:00) CENTRAL EUROPEAN TIME','KTA','RBT','kan',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('10078','Center B','REG','P4239','Ben Mansour1','MyCountry1','34.52117','-6.453275','14022','779517433','John Doee',2,'8:00:00',Time '0:15:00', Time '9:00:00',Time '17:00:00',Time '13:00:00',Time '14:00:00','(GTM+01:00) CENTRAL EUROPEAN TIME','KTA','RBT','kan',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('10003','Center Q','REG','P4239','Q Mansour','MyCountry','34.52117','-6.453275','14022','779517433','John Doee',2,'8:00:00',Time '0:15:00', Time '9:00:00',Time '17:00:00',Time '13:00:00',Time '14:00:00','(GTM+01:00) CENTRAL EUROPEAN TIME','KTA','CST','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
 
 
@@ -229,7 +236,8 @@ INSERT INTO MASTER.machine_master_h(id, name, mac_address, serial_num, ip_addres
 
 DELETE FROM MASTER.user_detail_h;
 INSERT INTO MASTER.user_detail_h(id, name, status_code, regcntr_id, lang_code, last_login_dtimes, last_login_method, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes, eff_dtimes) VALUES
-('1','abc','ACT','10001','eng',NULL,'PWD', true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL, TIMESTAMP '2023-12-10 11:42:52.994');
+('1','abc','ACT','10001','eng',NULL,'PWD', true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL, TIMESTAMP '2023-12-10 11:42:52.994'),
+('100','abc','ACT','10003','eng',NULL,'PWD', true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL, TIMESTAMP '2023-12-10 11:42:52.994');
 
 DELETE FROM MASTER.zone_user;
 INSERT INTO MASTER.zone_user(zone_code, usr_id, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) values
@@ -237,6 +245,7 @@ INSERT INTO MASTER.zone_user(zone_code, usr_id, lang_code, is_active, cr_by, cr_
 ('RSK', 'zonal-admin', 'eng', TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
 ('RSK', '4', 'eng', TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
 ('RBT','7','eng',true,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994', NULL,NULL,NULL,NULL),
+('NTN','42','eng',true,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994', NULL,NULL,NULL,NULL),
 ('CST','3','eng',true,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994', NULL,NULL,NULL,NULL);
 
 
@@ -255,13 +264,15 @@ INSERT INTO master.zone_user_h(zone_code, usr_id, lang_code, is_active, cr_by, c
 DELETE FROM MASTER.machine_type;
 INSERT INTO master.machine_type(code, name, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES
 ('DKS','Desktop','desktop computer','eng',true,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994', NULL,NULL,NULL,NULL),
+('VDKS','Desktop','desktop computer','eng',false,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994', NULL,NULL,NULL,NULL),
 ('Vostro','Desktop','desktop computer','eng',true,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994', NULL,NULL,NULL,NULL);
 
 DELETE FROM MASTER.user_detail;
 INSERT INTO MASTER.user_detail(id, name, status_code, regcntr_id, lang_code, last_login_dtimes, last_login_method, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES
 ('2','abcd','ACT','10002','eng',NULL,'PWD', true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
-('3','test','ACT','10001','eng',NULL,'PWD', true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
+('3','test','ACT','10001','eng',NULL,'PWD', true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, false,NULL),
 ('4','dummy','ACT','10002','eng',NULL,'PWD', true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
+('42','dummy42','ACT','10002','eng',NULL,'PWD', true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
 ('5','dummy1','ACT','10002','eng',NULL,'PWD', true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL);
 
 DELETE FROM MASTER.machine_spec;
@@ -286,3 +297,8 @@ DELETE FROM MASTER.template_file_format;
 INSERT INTO master.template_file_format(code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES
 ('json','json file','eng',true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL),
 ('txt','text file','eng',true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL);
+
+DELETE FROM MASTER.registration_center_h;
+INSERT INTO master.registration_center_h(id, name, cntrtyp_code, addr_line1, addr_line2, addr_line3, latitude, longitude, location_code, contact_phone, contact_person, number_of_kiosks, working_hours, per_kiosk_process_time, center_start_time, center_end_time, lunch_start_time, lunch_end_time, time_zone, holiday_loc_code, zone_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes, eff_dtimes) VALUES
+('10001','Center A Ben Mansour','REG','P4238','Ben Mansour','MyCountry','23.3454','34.5434','14022','779517433','John Doe',3,'8:00:00',Time '0:15:00', Time '9:00:00',Time '17:00:00',Time '13:00:00',Time '14:00:00','(GTM+01:00) CENTRAL EUROPEAN TIME','KTA','RBT','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL,TIMESTAMP '2018-12-10 11:42:52.994');
+

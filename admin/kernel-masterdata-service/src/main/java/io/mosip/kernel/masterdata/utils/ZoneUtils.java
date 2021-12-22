@@ -234,7 +234,7 @@ public class ZoneUtils {
 			if (zoneId.isPresent()) {
 				List<Zone> zones = getUserZones();
 				List<Zone> langSpecificZones = null;
-				if (langCode.equals("all")) {
+				if (langCode == null || langCode.equals("all")) {
 					langSpecificZones = zones.stream().filter(i -> languageUtils.getConfiguredLanguages().contains(i.getLangCode()))
 							.collect(Collectors.toList());
 				} else {

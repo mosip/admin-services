@@ -5918,7 +5918,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	@WithUserDetails("individual")
 	public void testGetRegistraionCenterHolidaysRegistrationCenterFetchException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLangCode(anyString(), anyString()))
+		Mockito.when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		MvcResult result = mockMvc.perform(
 				get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
@@ -5935,8 +5935,10 @@ public class MasterdataIntegrationTest {
 	@Test
 	@WithUserDetails("individual")
 	public void testGetRegistraionCenterHolidaysHolidayFetchException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLangCode(anyString(), anyString()))
-				.thenReturn(registrationCenter);
+		List<RegistrationCenter> list = new ArrayList<>();
+		list.add(registrationCenter);
+		Mockito.when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(anyString()))
+				.thenReturn(list);
 
 		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -5968,6 +5970,8 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(get("/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}", "RCI1000",
 				"DID10", "2018-01-01T10:10:30.956Z")).andExpect(status().isOk());
 	}
+	
+	
 
 	@Test
 	@WithUserDetails("reg-processor")
@@ -9405,4 +9409,7 @@ public class MasterdataIntegrationTest {
 		when(zoneUserHistoryRepo.getByUserIdAndTimestamp(Mockito.any(), Mockito.any())).thenReturn(Arrays.asList(zoneUserhistory));
 		mockMvc.perform(get("/zoneuser/history/110006/2021-02-08T03:54:33.489Z")).andExpect(status().isOk());
 	}
+	
+	 
+
 }

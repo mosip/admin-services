@@ -95,7 +95,7 @@ public class TemplateServiceImpl implements TemplateService {
 	@Autowired
 	private FilterTypeValidator filterTypeValidator;
 
-	@Value("${mosip.kernel.masterdata.template_idauthentication_event:masterdata/idauthentication_templates}")
+	@Value("${mosip.kernel.masterdata.template_idauthentication_event:MASTERDATA_IDAUTHENTICATION_TEMPLATES}")
 	private String topic;
 
 	@Value("${websub.publish.url}")

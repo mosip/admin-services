@@ -54,13 +54,10 @@ public class PartnerCACertEventSubscriber /*implements ApplicationListener<Appli
     @Autowired
     protected SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscribe;
 
-    //@Autowired
-    //private TaskScheduler taskScheduler;
-
     /**
      * Try register topic partner service events.
      */
-    private void tryRegisterTopicPartnerCertEvents() {
+   /* private void tryRegisterTopicPartnerCertEvents() {
         try {
             logger.info("Trying to register topic: {}", topicName);
             publisherClient.registerTopic(topicName, publisherUrl);
@@ -68,7 +65,7 @@ public class PartnerCACertEventSubscriber /*implements ApplicationListener<Appli
         } catch (Exception e) {
             logger.error("Error registering topic: {}", topicName, e);
         }
-    }
+    }*/
 
     /**
      * Subscribe for partner service events.
@@ -91,7 +88,6 @@ public class PartnerCACertEventSubscriber /*implements ApplicationListener<Appli
 
     private boolean initSubsriptions() {
         try {
-            tryRegisterTopicPartnerCertEvents();
             subscribeForPartnerCertEvent();
             return true;
         } catch (Throwable e) {

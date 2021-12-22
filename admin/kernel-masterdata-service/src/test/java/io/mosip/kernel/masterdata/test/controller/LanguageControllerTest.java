@@ -136,7 +136,7 @@ public class LanguageControllerTest {
 	public void t3updateLanguageFailTest2() throws Exception {
 		languagePutdto.getRequest().setCode("fra");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/languages").contentType(MediaType.APPLICATION_JSON)
-						.content(mapper.writeValueAsString(languagePutdto))).andReturn(),	"KER-MSD-24");
+						.content(mapper.writeValueAsString(languagePutdto))).andReturn(),	"KER-MSD-701");
 	}
 	
 	@Test
@@ -188,6 +188,16 @@ public class LanguageControllerTest {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.patch("/languages").param("code", "eng1").param("isActive", "true"))
+				.andReturn(), "KER-MSD-24");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t7updateLanguageStatusFailTest() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.patch("/languages").param("code", "").param("isActive", "true"))
 				.andReturn(), "KER-MSD-24");
 
 	}

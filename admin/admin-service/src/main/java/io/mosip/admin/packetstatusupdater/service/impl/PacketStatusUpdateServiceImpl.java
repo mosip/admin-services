@@ -124,22 +124,19 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	@Override
 	public PacketStatusUpdateResponseDto getStatus(String rId, String langCode) {
 
-		if (langCode == null) {
-			langCode = supportedLang.split(",")[0];
-		}
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE,rId));
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();	
 		for(GrantedAuthority x:authentication.getAuthorities()) {
 			if(x.getAuthority().equals("ROLE_GLOBAL_ADMIN")) {		
 				auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS);
-				return getPacketStatus(rId, langCode);
+				return getPacketStatus(rId);
 			}
-		}	
+		}
 		if(!authorizeRidWithZone(rId)) {
 			return null;
 		}
 		auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS);
-		return getPacketStatus(rId, langCode);
+		return getPacketStatus(rId);
 	}
 
 	/**
@@ -150,7 +147,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	 * @return the packet status
 	 */
 	@SuppressWarnings({ "unchecked" })
-	private PacketStatusUpdateResponseDto getPacketStatus(String rId, String langCode) {
+	private PacketStatusUpdateResponseDto getPacketStatus(String rId) {
 		try {
 
 			HttpHeaders packetHeaders = new HttpHeaders();
@@ -168,7 +165,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 						new TypeReference<List<PacketStatusUpdateDto>>() {
 						});
 				packStautsDto.sort(createdDateTimesResultComparator);
-				setStatusMessage(packStautsDto, langCode);
+				setStatusMessage(packStautsDto);
 				regProcPacketStatusRequestDto.setPacketStatusUpdateList(packStautsDto);
 				packStautsDto.stream().forEach(pcksts->{
 					auditUtil.setAuditRequestDto(EventEnum.getEventEnumBasedOnPAcketStatus(pcksts));
@@ -401,14 +398,13 @@ private HttpEntity<Object> setRequestHeader() throws IOException {
 	}
 	
 	/**
-	 * @param langCode
 	 * @return
 	 * description: It's returning property based on the langCode
 	 */
-	private Properties getPropertiesByLangCode(String langCode) {
+	private Properties getProperties() {
 		Properties prop = null;
 		ClassLoader classLoader = getClass().getClassLoader();
-		String messagesPropertiesFileName = globalPropertyPrefix + langCode + globalPropertySuffix;
+		String messagesPropertiesFileName = globalPropertyPrefix+ globalPropertySuffix;
 		try(
 			InputStream inputStream = classLoader.getResourceAsStream(messagesPropertiesFileName);
 			InputStreamReader streamReader = new InputStreamReader(inputStream, "UTF-8");) {
@@ -425,11 +421,10 @@ private HttpEntity<Object> setRequestHeader() throws IOException {
 	
 	/**
 	 * @param packStautsDtos
-	 * @param langCode
 	 * Description: It's calling the property file and set the comment based on the sub-status-code
 	 */
-	private void setStatusMessage(List<PacketStatusUpdateDto> packStautsDtos, String langCode) {
-		Properties prop = getPropertiesByLangCode(langCode);
+	private void setStatusMessage(List<PacketStatusUpdateDto> packStautsDtos) {
+		Properties prop = getProperties();
 		if (null != prop) {
 			packStautsDtos.stream().forEach(packStautsDto -> {
 				String subStatusCode = packStautsDto.getSubStatusCode();

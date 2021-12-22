@@ -159,6 +159,7 @@ public class ZoneServiceImpl implements ZoneService {
 					ZoneErrorCode.INTERNAL_SERVER_ERROR.getErrorMessage());
 		}
 		zoneNameResponseDto.setZoneName(zone.getName());
+		zoneNameResponseDto.setZoneCode(zone.getCode());
 		return zoneNameResponseDto;
 	}
 

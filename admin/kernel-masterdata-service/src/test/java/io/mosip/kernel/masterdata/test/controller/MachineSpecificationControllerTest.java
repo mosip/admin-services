@@ -202,6 +202,27 @@ public class MachineSpecificationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
+	public void t009searchMachineSpecificationTest1() throws Exception {
+		sr.getRequest().getFilters().get(0).setType("equals");
+		sr.getRequest().getSort().get(0).setSortField("machineTypeName");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/machinespecifications/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
+				null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t009searchMachineSpecificationTest2() throws Exception {
+		sr.getRequest().getFilters().get(0).setType("Contains");
+		sr.getRequest().getFilters().get(0).setValue("HP");
+		sr.getRequest().getFilters().get(0).setColumnName("machineTypeName");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/machinespecifications/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
+				null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t010searchMachineSpecificationTest() throws Exception {
 		sr.getRequest().getFilters().get(0).setType("startsWith");
 		MasterDataTest.checkResponse(

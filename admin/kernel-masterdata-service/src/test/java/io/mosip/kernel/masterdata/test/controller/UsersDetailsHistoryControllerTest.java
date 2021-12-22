@@ -31,8 +31,8 @@ import io.mosip.kernel.masterdata.utils.AuditUtil;
 @SpringBootTest(classes = TestBootApplication.class)
 @AutoConfigureMockMvc
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class RegistrationCenterUserMachineHistoryControllerTest {
-
+public class UsersDetailsHistoryControllerTest {
+	
 	@Autowired
 	public MockMvc mockMvc;
 
@@ -41,56 +41,36 @@ public class RegistrationCenterUserMachineHistoryControllerTest {
 
 	@MockBean
 	private AuditUtil auditUtil;
-
 	private ObjectMapper mapper;
-
 	@Before
 	public void setUp() {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
 		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
-
 	}
 
 	@Test
-	@WithUserDetails("global-admin")
-	public void t001getRegistrationCentersMachineUserMappingTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc
-				.perform(MockMvcRequestBuilders
-						.get("/getregistrationmachineusermappinghistory/2024-11-08T16:17:14.811Z/10001/10001/1"))
-				.andReturn(),null);
-
+	@WithUserDetails("zonal-admin")
+	public void t001getUserdetailsByLangIdAndEffTimeTest1() throws Exception {
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/users/1/2023-12-10T11:42:52.994Z")).andReturn(),
+				null);
 	}
 	
 	@Test
-	@WithUserDetails("global-admin")
-	public void t001getRegistrationCentersMachineUserMappingTest1() throws Exception {
-		MasterDataTest.checkResponse(mockMvc
-				.perform(MockMvcRequestBuilders
-						.get("/getregistrationmachineusermappinghistory/2024-11-08T16:17:14.811Z/10001/10001/4"))
-				.andReturn(),"KER-MSD-038");
-
-	}
-	
-
-	@Test
-	@WithUserDetails("global-admin")
-	public void t002getRegistrationCentersMachineUserMappingFailTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc
-				.perform(MockMvcRequestBuilders
-						.get("/getregistrationmachineusermappinghistory/17-12-2018T07:22:22.233Z/10001/1000/1"))
-				.andReturn(), "KER-MSD-043");
-
+	@WithUserDetails("zonal-admin")
+	public void t002getUserdetailsByLangIdAndEffTimeTest1() throws Exception {
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/users/2/2023-12-10T11:42:52.994Z")).andReturn(),
+				"KER-USR-003");
 	}
 	
 	@Test
-	@WithUserDetails("global-admin")
-	public void t003getRegistrationCentersMachineUserMappingFailTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc
-				.perform(MockMvcRequestBuilders
-						.get("/getregistrationmachineusermappinghistory/2024-11-08T16:17:14.811Z/10001/1001/1"))
-				.andReturn(),"KER-MSD-038");
-
+	@WithUserDetails("zonal-admin")
+	public void t003getUserdetailsByLangIdAndEffTimeTest1() throws Exception {
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/users/1/2023-12-1011:42:52.994Z")).andReturn(),
+				"KER-USR-002");
 	}
-
+	
 }

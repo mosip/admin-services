@@ -130,6 +130,14 @@ public class TemplateControllerTest {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/templates")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(template))).andReturn(), null);
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t004createTemplateTest1() throws Exception {
+		template.getRequest().setId("");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/templates")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(template))).andReturn(), null);
+	}
 
 	@Test
 	@WithUserDetails("global-admin")
@@ -151,6 +159,15 @@ public class TemplateControllerTest {
 	@WithUserDetails("global-admin")
 	public void t005updateTemplateTest2() throws Exception {
 		templateUpdate.getRequest().setId("4");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/templates")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(templateUpdate))).andReturn(), null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t005updateTemplateTest3() throws Exception {
+		templateUpdate.getRequest().setId("4");
+		templateUpdate.getRequest().setModuleId("10004");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/templates")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(templateUpdate))).andReturn(), null);
 	}
