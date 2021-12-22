@@ -89,9 +89,9 @@ public class MachineTypeControllerTest {
 		Pagination pagination = new Pagination(0, 1);
 		SearchSort s = new SearchSort("name", "ASC");
 		ss.add(s);
-		sf.setColumnName("name");
+		sf.setColumnName("code");
 		sf.setType("contains");
-		sf.setValue("Vostro");
+		sf.setValue("DKS");
 		ls.add(sf);
 		sc.setFilters(ls);
 		sc.setLanguageCode("eng");
@@ -154,6 +154,24 @@ public class MachineTypeControllerTest {
 				mockMvc.perform(MockMvcRequestBuilders.patch("/machinetypes").param("code","DKS").param("isActive", "true")).andReturn(),
 				null);
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t005updateMachineTypeStatusTest1() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.patch("/machinetypes").param("code","VDKS").param("isActive", "false")).andReturn(),
+				null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t005updateMachineTypeStatusTest2() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.patch("/machinetypes").param("code","DKS").param("isActive", "false")).andReturn(),
+				"KER-MSD-065");
+	}
 
 	@Test
 	@WithUserDetails("global-admin")
@@ -180,7 +198,7 @@ public class MachineTypeControllerTest {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/machinetypes/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
-				null);
+				"KER-MSD-318");
 	}
 	
 	@Test
@@ -198,7 +216,7 @@ public class MachineTypeControllerTest {
 		sr.getRequest().getFilters().get(0).setType("startsWith");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/machinetypes/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
-				null);
+				"KER-MSD-318");
 	}
 	
 

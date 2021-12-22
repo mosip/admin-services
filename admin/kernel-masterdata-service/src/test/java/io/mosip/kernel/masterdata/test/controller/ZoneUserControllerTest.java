@@ -63,7 +63,8 @@ public class ZoneUserControllerTest {
 	private RequestWrapper<SearchDtoWithoutLangCode> sr = new RequestWrapper<>();
 	private RequestWrapper<ZoneUserPutDto> zoneUserPutDto =new RequestWrapper<ZoneUserPutDto>();
 	private  RequestWrapper<ZoneUserDto> zoneUserDto=new  RequestWrapper<ZoneUserDto>();
-	
+	String response=null;
+	MockRestServiceServer mockRestServiceServer;
 	@Before
 	public void setUp() {
 		mapper = new ObjectMapper();
@@ -100,7 +101,7 @@ public class ZoneUserControllerTest {
 
 		sr.setRequest(sc);
 		
-		String response = "{\r\n" +
+		 response = "{\r\n" +
 				"  \"id\": null,\r\n" +
 				"  \"version\": null,\r\n" +
 				"  \"responsetime\": \"2021-03-31T04:27:31.590Z\",\r\n" +
@@ -134,7 +135,7 @@ public class ZoneUserControllerTest {
 				"  \"errors\": null\r\n" +
 				"}";
 		
-		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
+		 mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
 		mockRestServiceServer.expect(requestTo(userDetailsUri + "/admin"))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 
@@ -206,14 +207,14 @@ public class ZoneUserControllerTest {
 				"KER-USR-014");
 	}
 	
-	/*@Test
+	@Test
 	@WithUserDetails("global-admin")
 	public void t005deleteMapUserZoneTest() throws Exception {
 		
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.delete("/zoneuser/4/CST")).andReturn(),
-				null);
-	}*/
+				mockMvc.perform(MockMvcRequestBuilders.delete("/zoneuser/3/CST")).andReturn(),
+				"KER-USR-011");
+	}
 	
 	@Test
 	@WithUserDetails("global-admin")
@@ -270,6 +271,32 @@ public class ZoneUserControllerTest {
 				null);
 	}
 	
+	
+/*	@Test
+	@WithUserDetails("global-admin")
+	public void t009searchZoneUserMappingTest1() throws Exception {
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin"))
+		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
+
+		sr.getRequest().getFilters().get(0).setType("contains");
+		sr.getRequest().getFilters().get(0).setColumnName("userName");
+		sr.getRequest().getFilters().get(0).setValue("dummy");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/zoneuser/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
+				null);
+	}*/
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t009searchZoneUserMappingTest3() throws Exception {
+		sr.getRequest().getFilters().get(0).setType("contains");
+		sr.getRequest().getFilters().get(0).setColumnName("zoneName");
+		sr.getRequest().getFilters().get(0).setValue("North");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/zoneuser/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
+				null);
+	}
+	
 	@Test
 	@WithUserDetails("global-admin")
 	public void t010searchZoneUserMappingTest() throws Exception {
@@ -290,6 +317,15 @@ public class ZoneUserControllerTest {
 	}
 	
 
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t013getHistoryByUserIdAndTimestampTest1() throws Exception {
+		
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/zoneuser/history/5/2021-11-1605:12:27.164Z")).andReturn(),
+				"KER-USR-002");
+	}
 	
 	@Test
 	@WithUserDetails("global-admin")

@@ -132,6 +132,21 @@ public class DynamicFieldControllerTest {
 								.andReturn(),
 						"KER-DYN-001");
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t001createDynamicFieldTest1() throws Exception {
+		JsonNode fieldVal = mapper.readTree("{\"code\":\"10001\",\"value\":\"bloodType1\"}");
+		dynamicFieldDtoReq.getRequest().setFieldVal(fieldVal);
+		dynamicFieldDtoReq.getRequest().setName("bloodtype");
+		MasterDataTest
+				.checkResponse(
+						mockMvc.perform(
+								MockMvcRequestBuilders.post("/dynamicfields").contentType(MediaType.APPLICATION_JSON)
+										.content(mapper.writeValueAsString(dynamicFieldDtoReq)))
+								.andReturn(),
+						"KER-SCH-012");
+	}
 
 	@Test
 	@WithUserDetails("global-admin")

@@ -659,3 +659,37 @@ CREATE MEMORY TABLE IF NOT EXISTS MASTER.template_file_format
     del_dtimes timestamp without time zone
    
 );
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.registration_center_h
+(
+    id character varying(10)  NOT NULL,
+    name character varying(128)  NOT NULL,
+    cntrtyp_code character varying(36) ,
+    addr_line1 character varying(256) ,
+    addr_line2 character varying(256) ,
+    addr_line3 character varying(256) ,
+    latitude character varying(32) ,
+    longitude character varying(32) ,
+    location_code character varying(36)  NOT NULL,
+    contact_phone character varying(16) ,
+    contact_person character varying(128) ,
+    number_of_kiosks smallint,
+    working_hours character varying(32) ,
+    per_kiosk_process_time time without time zone,
+    center_start_time time without time zone,
+    center_end_time time without time zone,
+    lunch_start_time time without time zone,
+    lunch_end_time time without time zone,
+    time_zone character varying(64) ,
+    holiday_loc_code character varying(36) ,
+    zone_code character varying(36)  NOT NULL,
+    lang_code character varying(3)  NOT NULL,
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone,
+    eff_dtimes timestamp without time zone NOT NULL
+   
+);

@@ -58,5 +58,29 @@ public class ExceptionalHolidayControllerTest {
 		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10001/eng1")).andReturn(),"KER-MSD-999");
 		
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t4getExceptionalHolidaysTest() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10001"))
+				.andReturn(),null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t5getExceptionalHolidaysTest() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10078"))
+				.andReturn(),"KER-MSD-802");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t5getExceptionalHolidaysTest1() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10001"))
+				.andReturn(),null);
+	}
 
 }

@@ -126,4 +126,5 @@ public class PossibleValuesControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/bloodType?langCode=eng"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
+   
 }
