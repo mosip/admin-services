@@ -97,11 +97,11 @@ public class PacketWorkflowActionServiceImpl implements PacketWorkflowActionServ
 	private SearchRequestDto packetPauseRequestMapper(SearchDtoWithoutLangCode searchDto) {
 		SearchRequestDto searchRequestDto=new SearchRequestDto();
 		List<SearchRequestFilter> searchRequestFilters = new ArrayList<SearchRequestFilter>();
-		SearchSort searchSort = new SearchSort();
 		if (!searchDto.getFilters().isEmpty()) {
 			for (SearchFilter sf : searchDto.getFilters()) {
 				SearchRequestFilter searchRequestFilter = new SearchRequestFilter();
-				searchRequestFilter.setColumnName(sf.getColumnName());
+				if(sf.getColumnName().equalsIgnoreCase("workflowId")) { searchRequestFilter.setColumnName("regId"); }
+				else { searchRequestFilter.setColumnName(sf.getColumnName()); }
 				searchRequestFilter.setValue(sf.getValue());
 				searchRequestFilters.add(searchRequestFilter);
 			}
