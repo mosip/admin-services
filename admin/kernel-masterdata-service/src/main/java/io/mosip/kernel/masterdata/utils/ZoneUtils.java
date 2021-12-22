@@ -376,4 +376,11 @@ public class ZoneUtils {
 		return zoneHeirarchyList;
 	}
 
+	public List<String> getZoneCodes(List<Zone> zones) {
+		if (zones != null && !zones.isEmpty()) {
+			return zones.stream().filter(Objects::nonNull).map(Zone::getCode).distinct().collect(Collectors.toList());
+		}
+		return Collections.emptyList();
+	}
+
 }

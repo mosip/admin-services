@@ -802,19 +802,15 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		FilterResponseCodeDto filterResponseDto = new FilterResponseCodeDto();
 		List<ColumnCodeValue> columnValueList = new ArrayList<>();
 		List<Zone> zones = zoneUtils.getSubZones(filterValueDto.getLanguageCode());
-		List<SearchFilter> zoneFilter = new ArrayList<>();
-		if (zones != null && !zones.isEmpty()) {
-			zoneFilter.addAll(buildZoneFilter(zones));
-			if (null != filterValueDto.getOptionalFilters() && filterValueDto.getOptionalFilters().size() > 0)
-				zoneFilter.addAll(filterValueDto.getOptionalFilters());
-			filterValueDto.setOptionalFilters(zoneFilter);
-		} else {
+
+		if (zones == null || zones.isEmpty()) {
 			return filterResponseDto;
 		}
+
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), RegistrationCenter.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
 				List<FilterData> filterValues = masterDataFilterHelper.filterValuesWithCode(RegistrationCenter.class,
-						filterDto, filterValueDto, "id");
+						filterDto, filterValueDto, "id", zoneUtils.getZoneCodes(zones));
 				filterValues.forEach(filterValue -> {
 					ColumnCodeValue columnValue = new ColumnCodeValue();
 					columnValue.setFieldCode(filterValue.getFieldCode());
