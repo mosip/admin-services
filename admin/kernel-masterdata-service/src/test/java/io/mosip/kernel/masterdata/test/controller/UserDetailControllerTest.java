@@ -7,6 +7,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tomcat.jni.Status;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -21,6 +22,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
@@ -41,12 +43,14 @@ import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
 @AutoConfigureMockMvc
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class UserDetailControllerTest {
+public class UserDetailControllerTest 
+{
 
 	@Autowired
 	public MockMvc mockMvc;
@@ -67,6 +71,7 @@ public class UserDetailControllerTest {
 	private RequestWrapper<UserDetailsPutReqDto> udp = new RequestWrapper<UserDetailsPutReqDto>();
 	private RequestWrapper<SearchDtoWithoutLangCode> sr=new RequestWrapper<SearchDtoWithoutLangCode>();
 	String response =null;
+	MockRestServiceServer mockRestServiceServer;
 	@Before
 	public void setUp() {
 		mapper = new ObjectMapper();
@@ -142,12 +147,12 @@ public class UserDetailControllerTest {
 				"  \"errors\": null\r\n" +
 				"}";
 		
-		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo(userDetailsUri + "/admin?pageStart=0&pageFetch=100"))
+		 mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
+	/*	mockRestServiceServer.expect(requestTo(userDetailsUri + "/admin?pageStart=0&pageFetch=100"))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 		mockRestServiceServer.expect(requestTo(userDetailsUri + "/admin?search=abcd"))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
-
+*/
 
 	}
 
@@ -272,6 +277,9 @@ public class UserDetailControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t014getUsersDetailsTest() throws Exception {
+		mockRestServiceServer.expect(requestTo(userDetailsUri + "/admin?pageStart=0&pageFetch=100"))
+		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
+
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/usersdetails")).andReturn(),
 				null);
 
@@ -280,14 +288,15 @@ public class UserDetailControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t015getUsersDetailsFailTest() throws Exception {
-
-		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/usersdetails")).andReturn(), null);
+		
+	
+			mockMvc.perform(MockMvcRequestBuilders.get("/usersdetails")).andExpect(status().is5xxServerError());
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
 	public void t016searchUserCenterMappingDetailsTest() throws Exception {
+		
 		MockRestServiceServer mockRestServiceServer1 = MockRestServiceServer.bindTo(restTemplate).build();
 		
 		mockRestServiceServer1.expect(requestTo(userDetailsUri + "/admin?search=abcd"))
@@ -313,11 +322,11 @@ public class UserDetailControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t016searchUserCenterMappingDetailsTest2() throws Exception {
-		//MockRestServiceServer mockRestServiceServer1 = MockRestServiceServer.bindTo(restTemplate).build();
 		
-		//mockRestServiceServer1.expect(requestTo(userDetailsUri + "/admin?search=abcd"))
-		//.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin"))
+		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 		sr.getRequest().getFilters().get(0).setColumnName("zoneName");
+		sr.getRequest().getFilters().get(0).setValue("Kenitra");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
 				null);
 
@@ -326,16 +335,29 @@ public class UserDetailControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t016searchUserCenterMappingDetailsTest3() throws Exception {
-		//MockRestServiceServer mockRestServiceServer1 = MockRestServiceServer.bindTo(restTemplate).build();
-		
-		//mockRestServiceServer1.expect(requestTo(userDetailsUri + "/admin?search=abcd"))
-		//.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
-		sr.getRequest().getFilters().get(0).setColumnName("regCenterName");
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin"))
+		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
+			sr.getRequest().getFilters().get(0).setColumnName("regCenterName");
+		sr.getRequest().getFilters().get(0).setValue("Center A Ben Mansour");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
 				null);
 
 	}
 
+	@Test
+	@WithUserDetails("global-admin")
+	public void t016searchUserCenterMappingDetailsTest4() throws Exception {
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin?search=test"))
+		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
+		
+		sr.getRequest().getFilters().get(0).setColumnName("userName");
+		sr.getRequest().getFilters().get(0).setValue("test");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
+				null);
+
+	}
+	
+	
 	@Test
 	@WithUserDetails("global-admin")
 	public void t017searchUserCenterMappingDetailsFailTest() throws Exception {

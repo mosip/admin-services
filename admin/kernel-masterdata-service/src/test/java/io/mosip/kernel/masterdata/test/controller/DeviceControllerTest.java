@@ -158,6 +158,18 @@ public class DeviceControllerTest {
 	}
 
 	@Test
+	 @WithUserDetails("global-admin")
+	public void t002createDeviceTest3() throws Exception {
+		deviceDtoReq.getRequest().setZoneCode("NTH");
+		deviceDtoReq.getRequest().setRegCenterId("10003");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devices")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(deviceDtoReq))).andReturn(),
+				"KER-MSD-219");
+
+	}
+
+	
+	@Test
 	@WithUserDetails("global-admin")
 	public void t002createDeviceFailTest1() throws Exception {
 		
@@ -253,8 +265,36 @@ public class DeviceControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
+	public void t006searchDeviceTest1() throws Exception {
+		searchLangCode.getRequest().getFilters().get(0).setType("contains");
+		searchLangCode.getRequest().getFilters().get(0).setValue("Finger");
+		MasterDataTest
+				.checkResponse(
+						mockMvc.perform(
+								MockMvcRequestBuilders.post("/devices/search").contentType(MediaType.APPLICATION_JSON)
+										.content(mapper.writeValueAsString(searchLangCode)))
+								.andReturn(),
+						null);
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t007deviceFilterValuesTest() throws Exception {
 		
+		MasterDataTest
+				.checkResponse(mockMvc
+						.perform(MockMvcRequestBuilders.post("/devices/filtervalues")
+								.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
+						.andReturn(), null);
+
+	}
+	
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void t007deviceFilterValuesTest1() throws Exception {
+		filValDto.getRequest().getFilters().get(0).setType("");
 		MasterDataTest
 				.checkResponse(mockMvc
 						.perform(MockMvcRequestBuilders.post("/devices/filtervalues")

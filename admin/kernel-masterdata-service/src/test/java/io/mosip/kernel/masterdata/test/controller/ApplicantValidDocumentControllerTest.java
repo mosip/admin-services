@@ -35,23 +35,14 @@ public class ApplicantValidDocumentControllerTest {
 	@MockBean
 	private PublisherClient<String, EventModel, HttpHeaders> publisher;
 
-	private ObjectMapper mapper;
-	private List<String> lst=new ArrayList();
-	@Before
-	public void setUp() {
-		mapper = new ObjectMapper();
-		mapper.registerModule(new JavaTimeModule());
-		
-		lst.add("eng");
 
-	}
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void t001getApplicantValidDocumentTest() throws Exception {
 		
 		MasterDataTest
-				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/applicanttype/001/"+lst)).andReturn(), null);
+				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/applicanttype/001/languages?languages=eng&languages=fra&languages=ara")).andReturn(), null);
 
 	}
 
@@ -59,7 +50,7 @@ public class ApplicantValidDocumentControllerTest {
 	@WithUserDetails("global-admin")
 	public void t002getApplicantValidDocumentfailTest() throws Exception {
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/applicanttype/app/"+lst)).andReturn(), "KER-MSD-149");
+				mockMvc.perform(MockMvcRequestBuilders.get("/applicanttype/app/languages?languages=eng")).andReturn(), "KER-MSD-150");
 	}
 
 }

@@ -5970,6 +5970,8 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(get("/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}", "RCI1000",
 				"DID10", "2018-01-01T10:10:30.956Z")).andExpect(status().isOk());
 	}
+	
+	
 
 	@Test
 	@WithUserDetails("reg-processor")
@@ -9407,4 +9409,7 @@ public class MasterdataIntegrationTest {
 		when(zoneUserHistoryRepo.getByUserIdAndTimestamp(Mockito.any(), Mockito.any())).thenReturn(Arrays.asList(zoneUserhistory));
 		mockMvc.perform(get("/zoneuser/history/110006/2021-02-08T03:54:33.489Z")).andExpect(status().isOk());
 	}
+	
+	 
+
 }

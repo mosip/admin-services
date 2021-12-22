@@ -143,6 +143,14 @@ public class ValidDocumentControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
+	public void t005searchValidDocumentFailTest1() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/validdocuments/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(MasterDataTest.commonSearchDto("createdDateTime","ASC", "docCategoryCode", "PINI","equals")))).andReturn(),
+				"KER-MSD-355");
+	}
+	
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t006categoryTypeFilterValuesTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/validdocuments/filtervalues").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(MasterDataTest.commonFilterValueDto("docTypeCode", "CIN","all")))).andReturn(),
 				null);
@@ -183,6 +191,14 @@ public class ValidDocumentControllerTest {
 				"KER-MSD-360");
 	}
 	
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void t011mapDocCategoryAndDocTypeFailTest() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/validdocuments/map/POA/COR")).andReturn(),
+				"KER-MSD-360");
+	}
+	
 	@Test
 	@WithUserDetails("global-admin")
 	public void t008unmapDocCategoryAndDocTypeTest() throws Exception {
@@ -207,8 +223,8 @@ public class ValidDocumentControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t009getValidDocumentByDocCategoryCodeTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/validdocuments/POA/eng")).andReturn(),
-				"KER-MSD-016");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/validdocuments/map/P1/C1")).andReturn(),
+				"KER-MSD-212");
 	}
 	
 	
