@@ -14,7 +14,8 @@ public enum UserDetailsErrorCode {
 	ZONE_USER_MAPPING_NOT_FOUND("KER-USR-008", "Zone user mapping not exists or not active"),
 	USER_DETAILS_PARSE_ERROR("KER-USR-009","Error occured while parsing auth service userdetails response"),
 	ZONE_USER_MAPPING_ERROR("KER-USR-010","Error occured while zone user mapping"),
-	ZONE_USER_MAPPING_NOT_ACTIVE("KER-USR-011","User Center mapping must be deactivated before remapping user to different center"),
+	ZONE_USER_MAPPING_NOT_ACTIVE("KER-USR-025","User Center mapping must be deactivated before remapping user to different center"),
+	
 	CENTER_LANG_MAPPING_NOT_EXISTS("KER-USR-012","Reg center is not exists for given language"),
 	USER_ALREADY_EXISTS("KER-USR-013", "User already exists"),
 	INVALID_ZONE("KER-USR-014", "Admin not authorized to access for this Zone"),
