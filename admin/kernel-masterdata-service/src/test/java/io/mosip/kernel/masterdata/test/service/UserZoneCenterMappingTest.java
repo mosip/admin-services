@@ -459,7 +459,7 @@ public class UserZoneCenterMappingTest {
 
 
     //inactive user-center, update user-zone to different zone, re-activate user-center
-    @Test
+   /* @Test
     @WithUserDetails("global-admin")
     public void test26() {
         ZoneUserDto zoneUserDto = new ZoneUserDto();
@@ -513,5 +513,5 @@ public class UserZoneCenterMappingTest {
         zoneUserPutDto.setUserId("4");
         zoneUserPutDto.setZoneCode("CST");
         zoneUserService.updateZoneUserMapping(zoneUserPutDto);
-    }
+    }*/
 }
