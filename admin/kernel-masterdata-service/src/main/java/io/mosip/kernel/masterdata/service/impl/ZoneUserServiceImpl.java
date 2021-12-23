@@ -168,7 +168,7 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 				throw new MasterDataServiceException(ZoneUserErrorCode.USER_MAPPING_NOT_PRSENT_IN_DB.getErrorCode(),
 						ZoneUserErrorCode.USER_MAPPING_NOT_PRSENT_IN_DB.getErrorMessage());
 			} else {
-				UserDetails ud = userDetailsRepo.findByIdAndIsDeletedFalseorIsDeletedIsNullAndIsActive(zoneUserDto.getUserId());
+				UserDetails ud = userDetailsRepo.findByIdAndIsDeletedFalseorIsDeletedIsNull(zoneUserDto.getUserId());
 				if (ud != null) {
 					throw new MasterDataServiceException(ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorCode(),
 							ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorMessage());
