@@ -26,7 +26,6 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -39,11 +38,9 @@ import io.mosip.admin.dto.LostRidDto;
 import io.mosip.admin.dto.LostRidResponseDto;
 import io.mosip.admin.dto.SearchInfo;
 import io.mosip.admin.dto.SortInfo;
-import io.mosip.admin.packetstatusupdater.constant.AdminManagerProxyErrorCode;
 import io.mosip.admin.packetstatusupdater.dto.AuditManagerRequestDto;
 import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateDto;
 import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateResponseDto;
-import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
 import io.mosip.admin.packetstatusupdater.service.AuditManagerProxyService;
 import io.mosip.admin.packetstatusupdater.service.PacketStatusUpdateService;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
@@ -174,7 +171,7 @@ public class IntegratedControllerTest {
 				"BBB,BBB,eng,TRUE";
 		MockMultipartFile gender = new MockMultipartFile("data", "filename.txt", "text/plain", content.getBytes());
 		MockMultipartFile[] f=new MockMultipartFile[]{gender};
-		Mockito.when(bulkDataService.bulkDataOperation("Gender", "update", "masterdata", f)).thenReturn(bulkDataResponseDto);
+		Mockito.when(bulkDataService.bulkDataOperation("Gender", "update", "masterdata", f, "10006")).thenReturn(bulkDataResponseDto);
 		
 		AdminDataUtil.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/bulkupload/transcation/123455")).andReturn(),

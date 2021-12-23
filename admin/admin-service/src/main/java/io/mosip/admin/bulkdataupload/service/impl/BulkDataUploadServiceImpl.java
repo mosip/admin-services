@@ -21,10 +21,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EmbeddedId;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnitUtil;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -91,21 +88,15 @@ import io.mosip.admin.bulkdataupload.dto.BulkDataResponseDto;
 import io.mosip.admin.bulkdataupload.dto.PageDto;
 import io.mosip.admin.bulkdataupload.entity.BaseEntity;
 import io.mosip.admin.bulkdataupload.entity.BulkUploadTranscation;
-import io.mosip.admin.bulkdataupload.entity.DeviceHistory;
-import io.mosip.admin.bulkdataupload.entity.MachineHistory;
-import io.mosip.admin.bulkdataupload.entity.UserDetailsHistory;
-import io.mosip.admin.bulkdataupload.entity.ZoneUserHistory;
 import io.mosip.admin.bulkdataupload.repositories.BulkUploadTranscationRepository;
 import io.mosip.admin.bulkdataupload.service.BulkDataService;
 import io.mosip.admin.config.Mapper;
-import io.mosip.admin.config.MapperUtils;
 import io.mosip.admin.config.RepositoryListItemWriter;
 import io.mosip.admin.packetstatusupdater.exception.DataNotFoundException;
 import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
 import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.admin.packetstatusupdater.util.EventEnum;
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 /**
@@ -356,7 +347,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 	@Override
 	public BulkDataResponseDto bulkDataOperation(String tableName, String operation, String category,
-			MultipartFile[] files) {
+                                                 MultipartFile[] files, String centerId) {
 
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CATEGORY, category));
 
@@ -365,7 +356,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 				return insertDataToCSVFile(tableName, operation, category, files);
 
 			case "packet":
-				return uploadPackets(files, operation, category);
+				return uploadPackets(files, operation, category,centerId);
 		}
 
 		auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_CATEGORY);
@@ -373,7 +364,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 				BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage() + "CATEGORY");
 	}
 
-	private BulkDataResponseDto uploadPackets(MultipartFile[] files, String operation, String category) {
+	private BulkDataResponseDto uploadPackets(MultipartFile[] files, String operation, String category, String centerId) {
 
 		if (files == null || files.length == 0) {
 			auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_ARGUMENT);
