@@ -132,4 +132,14 @@ public class ApplicantTypeControllerTest {
 
 	}
 
+	@Test
+	@WithUserDetails("global-admin")
+	public void getApplicantTypeTest4() throws Exception {
+		Mockito.when(applicantCodeService.getApplicantType(Mockito.anyMap())).thenThrow(new InvalidApplicantArgumentException("KER-MSD-149",""));
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/getApplicantType").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(reqDto))).andReturn(),"KER-MSD-149");
+
+	}
+
+	
 }
