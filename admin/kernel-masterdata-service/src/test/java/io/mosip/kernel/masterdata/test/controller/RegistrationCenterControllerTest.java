@@ -4,7 +4,9 @@ import static org.mockito.Mockito.doNothing;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -12,7 +14,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +31,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.dto.ExceptionalHolidayPutPostDto;
 import io.mosip.kernel.masterdata.dto.RegCenterLanguageSpecificPutDto;
 import io.mosip.kernel.masterdata.dto.RegCenterNonLanguageSpecificPutDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
@@ -39,11 +41,9 @@ import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
-import io.mosip.kernel.masterdata.utils.ZoneUtils;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
@@ -180,6 +180,9 @@ public class RegistrationCenterControllerTest {
 
 	}
 
+	
+	
+	
 	@Test
 	@WithUserDetails("global-admin")
 	public void t003getgetRegistrationCenterHolidaysTest() throws Exception {
@@ -192,11 +195,31 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t004getgetRegistrationCenterHolidaysFailTest() throws Exception {
+	public void t004getgetRegistrationCenterHolidaysTest1() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.get("/getregistrationcenterholidays/eng/10002/2000")).andReturn(),
 				null);
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t004getgetRegistrationCenterHolidaysTest2() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.get("/getregistrationcenterholidays/all/10002/2000")).andReturn(),
+				null);
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t004getRegistrationCenterHolidaysFailTest1() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.get("/getregistrationcenterholidays/eng/10002/00000")).andReturn(),
+				"KER-MSD-443");
 
 	}
 
@@ -258,6 +281,26 @@ public class RegistrationCenterControllerTest {
 				"KER-MSD-026");
 
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t011getRegistrationCenterByHierarchyLevelAndTextAndlangCodeTest1() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/eng/0/14022")).andReturn(),
+				"KER-MSD-215");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t011getRegistrationCenterByHierarchyLevelAndTextAndlangCodeTest5() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/ara/4/abc")).andReturn(),
+				"KER-MSD-215");
+
+	}
 
 	@Test
 	@WithUserDetails("global-admin")
@@ -298,6 +341,16 @@ public class RegistrationCenterControllerTest {
 				null);
 
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t015validateTimestampTest1() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.get("/registrationcenters/validate/10001/eng/2019-12-10T13:09:19.695Z")).andReturn(),
+				null);
+
+	}
 
 	@Test
 	@WithUserDetails("global-admin")
@@ -334,11 +387,21 @@ public class RegistrationCenterControllerTest {
 	public void t019getRegistrationCenterByHierarchyLevelAndListTextAndlangCodeTest() throws Exception {
 
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/eng1/5/14022")).andReturn(),
+				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/eng1/5/names?name=MyCountry&name=kenitra")).andReturn(),
 				"KER-MSD-026");
 
 	}
 
+	@Test
+	@WithUserDetails("global-admin")
+	public void t019getRegistrationCenterByHierarchyLevelAndListTextAndlangCodeTestFail() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/eng1/6/names?name=MyCountry")).andReturn(),
+				"KER-MSD-026");
+
+	}
+	
 	
 
 	@Test
@@ -369,7 +432,47 @@ public class RegistrationCenterControllerTest {
 				null);
 
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t022decommissionRegCenterTest1() throws Exception {
 
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10077")).andReturn(),
+				"KER-MSD-441");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t022decommissionRegCenterTest3() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10002")).andReturn(),
+				"KER-MSD-352");
+
+	}
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void t022decommissionRegCenterTest4() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10003")).andReturn(),
+				"KER-MSD-215");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t022decommissionRegCenterTest5() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/100031")).andReturn(),
+				"KER-MSD-353");
+
+	}
+	
 	@Test
 	@WithUserDetails("global-admin")
 	public void t023decommissionRegCenterFailTest() throws Exception {
@@ -428,11 +531,31 @@ public class RegistrationCenterControllerTest {
 				null);
 
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t028getCenterSpecificToZoneTest1() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/getzonespecificregistrationcenters/eng/KT")).andReturn(),
+				"KER-MSD-215");
+
+	}
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void t029searchRegistrationCenterTest() throws Exception {
 
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.post("/registrationcenters/search")
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr)))
+				.andReturn(), null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t029searchRegistrationCenterTest5() throws Exception {
+		sr.getRequest().getFilters().get(0).setType("");
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.post("/registrationcenters/search")
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr)))
@@ -535,6 +658,18 @@ public class RegistrationCenterControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t036updateRegistrationCenterNonLanguageSpecifiTest1() throws Exception {
+		
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.put("/registrationcenters/nonlanguage")
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rl)))
+				.andReturn(), "KER-MSD-999");
+	}
+	
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t036updateRegistrationCenterNonLanguageSpecifiTestFail1() throws Exception {
+		rl.getRequest().setCenterTypeCode("REG1");
 		
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.put("/registrationcenters/nonlanguage")
