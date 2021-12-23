@@ -697,8 +697,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
 			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
 				registrationCenters = MapperUtils.mapAll(pageData.getContent(), RegistrationCenterExtnDto.class);
-				registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), 0, null,
-						pageData.getTotalPages(), (int) pageData.getTotalElements(), registrationCenters);
+				registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), pageSize, null,
+						(int) pageData.getTotalElements(), pageData.getTotalPages(), registrationCenters);
 			} else {
 				throw new DataNotFoundException(
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
