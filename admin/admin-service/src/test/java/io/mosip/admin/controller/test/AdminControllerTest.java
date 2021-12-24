@@ -110,7 +110,7 @@ public class AdminControllerTest {
 		ld.setResponse(ll);
 		RegProcRequestWrapper<SearchInfo> procRequestWrapper = new RegProcRequestWrapper<>();
 		
-		String str = "{\r\n    \"id\": null,\r\n    \"version\": null,\r\n    \"responsetime\": \"2019-12-02T09:45:24.512Z\",\r\n    \"metadata\": null,\r\n    \"response\": [{\"registrationId\":\"1234\",\"registrationDate\":\"2021-12-14 16:29:13,436\"}],\r\n    \"errors\": []\r\n}";
+		String str = "{\"id\":null,\"version\":null,\"responsetime\":\"2019-12-02T09:45:24.512Z\",\"metadata\":null,\"response\":[{\"registrationId\":\"1234\",\"registrationDate\":\"2021-12-14 16:29:13,436\",\"additionalInfo\":{\"name\":\"test2\"},\"syncDateTime\":\"2021-12-23T13:00:00.917697\"}],\"errors\":[]}";
 		
 	//	Mockito.when(restClient.postApi(ApiName.LOST_RID_API, null, "", "", MediaType.APPLICATION_JSON,
 	//			procRequestWrapper, String.class)).thenReturn(str);
