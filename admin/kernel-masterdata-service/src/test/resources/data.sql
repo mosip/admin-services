@@ -139,7 +139,7 @@ INSERT INTO master.valid_document(doctyp_code, doccat_code, lang_code, is_active
 DELETE FROM MASTER.dynamic_field;
 INSERT INTO master.dynamic_field(id, name, description, data_type,value_json,lang_code,is_active,cr_by, cr_dtimes, upd_by, upd_dtimes, is_DELETEd, del_dtimes) VALUES 
 ('10001','bloodType1','Blood Type11','string','{\"code\":\"code\",\"value\":\"value\"}','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
-('10002','bloodType2','Blood Type12','string','{\"code\":\"code\",\"value\":\"value\"}','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
+('10002','bloodType2','Blood Type12','string','{\"code\":\"code\",\"value\":\"value\"}','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('10003','bloodType2','Blood Type12','string','{\"code\":\"code\",\"value\":\"value\"}','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
 
 
