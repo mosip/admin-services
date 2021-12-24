@@ -18,10 +18,21 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EmbeddedId;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.admin.bulkdataupload.dto.MachineRegistrationCenterDto;
+import io.mosip.admin.packetstatusupdater.constant.ApiName;
+import io.mosip.admin.packetstatusupdater.util.RestClient;
+import io.mosip.commons.khazana.dto.ObjectDto;
+import io.mosip.commons.packet.keeper.PacketKeeper;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -116,6 +127,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	private static Predicate<String> emptyCheck = String::isBlank;
 
 	@Autowired
+	PacketKeeper packetKeeper;
+
+	@Autowired
 	ApplicationContext applicationContext;
 
 	@Autowired
@@ -132,6 +146,12 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 	@Autowired
 	EntityManager em;
+
+	@Autowired
+	RestClient restClient;
+
+	@Autowired
+	ObjectMapper objectMapper;
 
 	@Autowired
 	EntityManagerFactory emf;
@@ -154,11 +174,21 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	@Value("${mosip.optional-languages}")
 	private String optionalLanguages;
 
+
+	//@Autowired
+	//@Qualifier("selfTokenRestTemplate")
+	//private RestTemplate selfTokenRestTemplate;
+
 	@Autowired
 	@Qualifier("OnlinePacketCryptoServiceImpl")
 	private io.mosip.commons.packet.spi.IPacketCryptoService onlineCrypto;
 
 	private Map<String, Class> entityMap = new HashMap<String, Class>();
+
+/*	@PostConstruct
+	private void init(){
+		restTemplate.setInterceptors(selfTokenRestTemplate.getInterceptors());
+	}*/
 
 	@Override
 	public BulkDataGetExtnDto getTrascationDetails(String transcationId) {
@@ -417,7 +447,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 			try {
 				
 				HttpEntity<byte[]> fileEntity = new HttpEntity<>(file.getBytes(), fileMap);
-
+				//syncPacket(file,centerId);
 				MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 				body.add("file", fileEntity);
 
@@ -461,6 +491,41 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 		bulkDataResponseDto = setResponseDetails(bulkUploadTranscation, "");
 		return bulkDataResponseDto;
 	}
+	/*private void syncPacket(MultipartFile file, String centerId) {
+		try {
+			ResponseWrapper<PageDto<MachineRegistrationCenterDto>> pageDtoResponseWrapper = new ResponseWrapper<>();
+			pageDtoResponseWrapper = restClient.getApi(ApiName.MACHINE_GET_API, null,null,null, ResponseWrapper.class);
+			System.out.println(">>>>>>>>>>>>"+pageDtoResponseWrapper);
+			PageDto<MachineRegistrationCenterDto> machineRegistrationCenterDtoList=new PageDto<MachineRegistrationCenterDto>();
+			ResponseWrapper<PageDto<MachineRegistrationCenterDto>> pageDtoResponseWrapper1 = new ResponseWrapper<>();
+			List<MachineRegistrationCenterDto> machineRegistrationCenterDtos=new ArrayList<>();
+
+			machineRegistrationCenterDtoList = objectMapper.readValue(objectMapper.writeValueAsString(pageDtoResponseWrapper.getResponse()),
+					PageDto.class);
+			machineRegistrationCenterDtos = objectMapper.readValue(objectMapper.writeValueAsString(machineRegistrationCenterDtoList.getData()),
+					List.class);
+			List<MachineRegistrationCenterDto> machineRegistrationCenterDtoList1 = objectMapper.convertValue(machineRegistrationCenterDtos
+					, new TypeReference<List<MachineRegistrationCenterDto>>(){}
+			);
+			List<ObjectDto> objectDtos=packetKeeper.get
+			System.out.println();
+		/*	machineRegistrationCenterDtoList1.forEach(machine->{
+				byte[] data = null;
+				try {
+					data = onlineCrypto.decrypt(centerId+"_"+machine.getId(), file.getBytes());
+					String decryptedData= new String(data);
+					System.out.println(">>>>>>>>>>>>"+decryptedData);
+				} catch ( Throwable e) {
+					throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
+							BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
+				}
+			});
+
+		}  catch (Exception e) {
+			throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
+					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);		}
+
+	}*/
 
 	private Job job(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory,
 			ItemReader<Object> itemReader, ItemProcessor itemProcessor, // ItemProcessor<User, User> itemProcessor,

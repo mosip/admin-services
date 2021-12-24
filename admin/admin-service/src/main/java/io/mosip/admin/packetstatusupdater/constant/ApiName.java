@@ -7,6 +7,6 @@ package io.mosip.admin.packetstatusupdater.constant;
  */
 public enum ApiName {
 
-	LOST_RID_API;
+	LOST_RID_API,CRYPTOMANAGERDECRYPT_API,MACHINE_GET_API;
 
 }
