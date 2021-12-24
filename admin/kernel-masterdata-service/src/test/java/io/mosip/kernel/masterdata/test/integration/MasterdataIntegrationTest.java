@@ -24,14 +24,7 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
 import org.junit.Assert;
@@ -2428,7 +2421,7 @@ public class MasterdataIntegrationTest {
 	@WithUserDetails("global-admin")
 	public void getSpecificRegistrationCenterByIdAndLangCodeFetchExceptionTest() throws Exception {
 
-		when(registrationCenterRepository.findByIdAndLangCode("1", "ENG")).thenThrow(DataAccessLayerException.class);
+		when(registrationCenterRepository.findAllByLangCodeAndId("1", "ENG")).thenThrow(DataAccessLayerException.class);
 
 		MvcResult result = mockMvc.perform(get("/registrationcenters/{id}/{langcode}", "1", "ENG")
 				.contentType(MediaType.APPLICATION_JSON))
@@ -2529,7 +2522,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void getSpecificRegistrationCenterByIdTestSuccessTest() throws Exception {
-		when(registrationCenterRepository.findByIdAndLangCode("1", "ENG")).thenReturn(banglore);
+		when(registrationCenterRepository.findAllByLangCodeAndId("1", "ENG")).thenReturn(Collections.singletonList(banglore));
 		mockMvc.perform(get("/registrationcenters/1/ENG").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.response.registrationCenters[0].name", is("bangalore")));

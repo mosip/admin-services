@@ -229,5 +229,8 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 
 	@Query("SELECT COUNT(*) FROM RegistrationCenter WHERE id=?1 and (isDeleted is null or isDeleted =false) and isActive = true")
 	long countByIsDeletedFalseOrIsDeletedIsNull(String regCenterId);
+
+	@Query("FROM RegistrationCenter WHERE id= ?1 and  langCode =?2  and (isDeleted is null or isDeleted = false)")
+	List<RegistrationCenter> findAllByLangCodeAndId(String id, String langCode);
 	
 }
