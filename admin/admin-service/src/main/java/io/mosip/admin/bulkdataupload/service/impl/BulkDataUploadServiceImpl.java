@@ -55,6 +55,7 @@ import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.convert.ConversionService;
@@ -91,12 +92,14 @@ import io.mosip.admin.bulkdataupload.entity.BulkUploadTranscation;
 import io.mosip.admin.bulkdataupload.repositories.BulkUploadTranscationRepository;
 import io.mosip.admin.bulkdataupload.service.BulkDataService;
 import io.mosip.admin.config.Mapper;
+
 import io.mosip.admin.config.RepositoryListItemWriter;
 import io.mosip.admin.packetstatusupdater.exception.DataNotFoundException;
 import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
 import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.admin.packetstatusupdater.util.EventEnum;
+
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 /**
@@ -150,6 +153,10 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 	@Value("${mosip.optional-languages}")
 	private String optionalLanguages;
+
+	@Autowired
+	@Qualifier("OnlinePacketCryptoServiceImpl")
+	private io.mosip.commons.packet.spi.IPacketCryptoService onlineCrypto;
 
 	private Map<String, Class> entityMap = new HashMap<String, Class>();
 
