@@ -384,15 +384,18 @@ public class MachineServiceImpl implements MachineService {
 			OptionalFilter zoneOptionalFilter = new OptionalFilter(zoneFilter);
 			Page<Machine> page = null;
 			if(typeName!=null &&!typeName.isEmpty() && addList.isEmpty()) {
-				page = masterdataSearchHelper.nativeMachineQuerySearch(dto, typeName, zones, isAssigned);
+				optionalFilter = new OptionalFilter(addList);
+				page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Machine.class, dto,
+						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			}
 			else if (addList.isEmpty()) {
 				optionalFilter = new OptionalFilter(addList);
 				page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Machine.class, dto,
 						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			} else {
-				page = masterdataSearchHelper.nativeMachineQuerySearch(dto, typeName, zones, isAssigned);
-			}
+				optionalFilter = new OptionalFilter(addList);
+				page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Machine.class, dto,
+						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });			}
 			if (page != null && page.getContent() != null && !page.getContent().isEmpty()) {
 				machines = MapperUtils.mapAll(page.getContent(), MachineSearchDto.class);
 				setMachineMetadata(machines, zones);

@@ -392,7 +392,8 @@ public class DeviceServiceImpl implements DeviceService {
 				page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Device.class, dto,
 						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			} else {
-				page = masterdataSearchHelper.nativeDeviceQuerySearch(dto, typeName, zones, isAssigned);
+				page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Device.class, dto,
+						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			}
 
 			if (page != null && page.getContent() != null && !page.getContent().isEmpty()) {
