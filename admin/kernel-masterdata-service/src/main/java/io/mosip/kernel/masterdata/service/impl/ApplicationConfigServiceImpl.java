@@ -2,17 +2,16 @@ package io.mosip.kernel.masterdata.service.impl;
 
 
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.mosip.kernel.masterdata.utils.LanguageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationConfigResponseDto;
 import io.mosip.kernel.masterdata.service.ApplicationConfigService;
+import io.mosip.kernel.masterdata.utils.LanguageUtils;
 @Component
 public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 

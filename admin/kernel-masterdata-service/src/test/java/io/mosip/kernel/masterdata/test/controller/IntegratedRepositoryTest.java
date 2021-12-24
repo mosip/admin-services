@@ -3,9 +3,11 @@ package io.mosip.kernel.masterdata.test.controller;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,10 +44,12 @@ import io.mosip.kernel.masterdata.constant.MachinePutReqDto;
 import io.mosip.kernel.masterdata.dto.BlocklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.DevicePutReqDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
+import io.mosip.kernel.masterdata.dto.DeviceTypePutDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryPutDto;
-import io.mosip.kernel.masterdata.dto.DocumentTypePutReqDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
+import io.mosip.kernel.masterdata.dto.IdSchemaPublishDto;
+import io.mosip.kernel.masterdata.dto.IdentitySchemaDto;
 import io.mosip.kernel.masterdata.dto.LocationCreateDto;
 import io.mosip.kernel.masterdata.dto.LocationPutDto;
 import io.mosip.kernel.masterdata.dto.MachinePostReqDto;
@@ -56,9 +60,13 @@ import io.mosip.kernel.masterdata.dto.UserDetailsDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.Pagination;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.request.WorkingDaysPutRequestDto;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceType;
+import io.mosip.kernel.masterdata.entity.IdentitySchema;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.MachineType;
@@ -66,6 +74,7 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.UserDetailsHistory;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.entity.ZoneUser;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.BlocklistedWordsRepository;
 import io.mosip.kernel.masterdata.repository.DaysOfWeekListRepo;
@@ -76,6 +85,7 @@ import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
 import io.mosip.kernel.masterdata.repository.ExceptionalHolidayRepository;
+import io.mosip.kernel.masterdata.repository.IdentitySchemaRepository;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.repository.LocationHierarchyRepository;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
@@ -89,14 +99,18 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
 import io.mosip.kernel.masterdata.repository.TemplateFileFormatRepository;
 import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.repository.UserDetailsHistoryRepository;
+import io.mosip.kernel.masterdata.repository.UserDetailsRepository;
 import io.mosip.kernel.masterdata.repository.ValidDocumentRepository;
 import io.mosip.kernel.masterdata.repository.ZoneRepository;
 import io.mosip.kernel.masterdata.repository.ZoneUserHistoryRepository;
 import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
+import io.mosip.kernel.masterdata.service.UISpecService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
+import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
@@ -195,6 +209,17 @@ public class IntegratedRepositoryTest {
 	@MockBean
 	private LocationRepository locReg;
 
+	@MockBean
+	private UserDetailsRepository  userDetailsRepository;
+	
+	@MockBean
+	private IdentitySchemaRepository identitySchemaRepository;
+	
+	@MockBean
+	private UISpecService uiSpecService;
+	IdentitySchema is=null;
+	List<UISpecResponseDto> lstui=new ArrayList<UISpecResponseDto>();
+	
 	@Before
 	public void setUp() {
 		// MockitoAnnotations.initMocks(this);
@@ -242,6 +267,37 @@ public class IntegratedRepositoryTest {
 		machinetype();
 		dynamicFieldDtoReq();
 		workDay();
+		
+		 is=new IdentitySchema();
+			is.setAdditionalProperties(false);
+			is.setCreatedBy("superuser");
+			is.setCreatedDateTime(LocalDateTime.now());
+			is.setDescription("test");
+			is.setEffectiveFrom(LocalDateTime.now());
+			is.setId("test");
+			is.setIdVersion(0.1);
+			is.setIsActive(false);
+			is.setIsDeleted(false);
+			is.setLangCode("eng");
+			is.setSchemaJson("{\"code\":\"test\"}");
+			is.setStatus("active");
+			is.setTitle("test");
+			
+			 lstui=new ArrayList<UISpecResponseDto>();
+				UISpecResponseDto u=new UISpecResponseDto();
+				
+				u.setCreatedBy("superuser");
+				u.setCreatedOn(LocalDateTime.now());
+				u.setDescription("test");
+				u.setEffectiveFrom(LocalDateTime.now());
+				u.setId("test");
+				u.setIdentitySchemaId("test");u.setIdSchemaVersion(0.1);
+			
+				
+				u.setStatus("active");
+				u.setTitle("test");
+				lstui.add(u);
+				
 	}
 
 	private List<Machine> getMachines() {
@@ -1305,6 +1361,42 @@ public class IntegratedRepositoryTest {
 
 		devicePutReqDto.setName("Mock Iris Scanner updted");
 		devicePutReqDto.setMacAddress("85-BB-97-4B-14-05");
+		//devicePutReqDto.setRegCenterId("10001");
+		devicePutReqDto.setSerialNum("3456789012");
+
+		devicePutReqDto.setZoneCode("NTH");
+		devicePutReqDtoReq.setRequest(devicePutReqDto);
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/devices").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(devicePutReqDtoReq))).andReturn(),
+				"KER-MSD-083");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void tst004updateDeviceTest1() throws Exception {
+		List rl = new ArrayList();
+		RegistrationCenter rc=getRegistrationCenter();
+		rc.setZoneCode("RTH");
+		rl.add(rc);
+		when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(Mockito.anyString())).thenReturn(rl);
+		when(registrationCenterRepository.findByRegId(Mockito.anyString())).thenReturn(rl);
+		when(zoneRepository.findAllNonDeleted()).thenReturn(getZoneLst());
+		when(zoneUserRepo.findZoneByUserIdActiveAndNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
+		when(deviceRepository.findtoUpdateDeviceById(Mockito.anyString())).thenThrow(new DataAccessException("...") {
+		});
+		when(deviceRepository.update(Mockito.any())).thenThrow(new DataAccessException("...") {
+		});
+		RequestWrapper<DevicePutReqDto> devicePutReqDtoReq = new RequestWrapper<DevicePutReqDto>();
+		DevicePutReqDto devicePutReqDto = new DevicePutReqDto();
+		devicePutReqDto.setId("3000038");
+		devicePutReqDto.setDeviceSpecId("327");
+		devicePutReqDto.setIsActive(true);
+		devicePutReqDto.setLangCode("eng");
+
+		devicePutReqDto.setName("Mock Iris Scanner updted");
+		devicePutReqDto.setMacAddress("85-BB-97-4B-14-05");
 		devicePutReqDto.setRegCenterId("10001");
 		devicePutReqDto.setSerialNum("3456789012");
 
@@ -1313,9 +1405,10 @@ public class IntegratedRepositoryTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/devices").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(devicePutReqDtoReq))).andReturn(),
-				"KER-MSD-222");
+				"KER-MSD-219");
 
 	}
+
 
 	@Test
 	@WithUserDetails("global-admin")
@@ -1545,5 +1638,316 @@ public class IntegratedRepositoryTest {
 								.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
 						.andReturn(), "KER-MSD-025");
 	}
+	
+/*	@Test
+	@WithUserDetails("global-admin")
+	public void tst023updateLocationHierarchyDetailsTest() throws Exception {
+		RequestWrapper<LocationPutDto> locationRequestDto=new  RequestWrapper<LocationPutDto>();
+		LocationPutDto dto = new LocationPutDto();
+		dto.setCode("11111");
+		dto.setHierarchyLevel((short) 1);
+		dto.setIsActive(true);
+		dto.setHierarchyName("Postal Code");
+		dto.setLangCode("eng");
+		dto.setName("11111");
+		//dto.setParentLocCode("QRHS");
+		locationRequestDto.setRequest(dto);
+		
+	when(locHierarchyRepo.findByLangCodeAndLevelAndName(Mockito.anyString(),Mockito.any(),Mockito.anyString())).thenThrow(new IllegalArgumentException("KER-MSD-097") {});
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/locations").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(locationRequestDto))).andReturn(),
+				"KER-MSD-027");
+	}*/
+	
+	@Test
+	@WithUserDetails("reg-processor")
+	public void tst003getUsersTest() throws Exception {
+		when(userDetailsRepository.findAllByIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenThrow(new DataAccessException("...") {});
+		
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/users/0/1/cr_dtimes/DESC")).andReturn(), "KER-USR-004");
+
+	}
+	
+	@Test
+	@WithUserDetails("reg-processor")
+	public void tst003getUsersTest1() throws Exception {
+		when(userDetailsRepository.findAllByIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenThrow(new DataNotFoundException("KER-USR-007","Data not found") {});
+		
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/users/0/1/cr_dtimes/DESC")).andReturn(), "KER-USR-007");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void getAllSchema() throws Exception {		
+		Mockito.when(identitySchemaRepository.findAllIdentitySchema(Mockito.anyBoolean(),Mockito.any())).thenThrow(new DataAccessException("...") {});		
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/idschema/all")).andReturn(),"KER-SCH-004");
+	}
+	
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void getLatestPublishedSchema() throws Exception {		
+		Mockito.when(uiSpecService.getUISpec(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(lstui);
+		Mockito.when(identitySchemaRepository.findLatestPublishedIdentitySchema()).thenReturn(is);		
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/idschema/latest").param("schemaVersion", "0").param("domain", "").param("type","")).andReturn(),null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void getLatestPublishedSchema1() throws Exception {		
+		IdentitySchema is=null;
+				
+		Mockito.when(identitySchemaRepository.findLatestPublishedIdentitySchema()).thenReturn(is);		
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/idschema/latest").param("schemaVersion", "0").param("domain", "").param("type","")).andReturn(),"KER-SCH-007");
+	}
+	
+/*	@Test
+	@WithUserDetails("global-admin")
+	public void getLatestPublishedSchema2() throws Exception {		
+	
+		Mockito.when(uiSpecService.getUISpec(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(lstui);
+		Mockito.when(identitySchemaRepository.findLatestPublishedIdentitySchema()).thenReturn(is);		
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/idschema/latest").param("schemaVersion", "0").param("domain", "").param("type","a")).andReturn(),null);
+	}*/
+	
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void tst001createMachineSpecificationTest() throws Exception {
+		RequestWrapper<MachineSpecificationDto> m=new RequestWrapper<MachineSpecificationDto>();
+		MachineSpecificationDto dto=new MachineSpecificationDto();
+		dto.setBrand("DELL");
+		dto.setDescription("Dell brand");
+		dto.setId("1002");
+		dto.setLangCode("eng");
+		dto.setMachineTypeCode("Vostro");
+		dto.setMinDriverversion("1.3");
+		dto.setModel("Dell");
+		dto.setName("Dell");
+    	dto.setIsActive(true);
+
+		m.setRequest(dto);
+		List<MachineType> mt=new ArrayList<>();
+		MachineType mtype=new MachineType();
+		mtype.setCode("test");
+		mtype.setDescription("test");
+		mt.add(mtype);
+		when(machineTypeRepository.findtoUpdateMachineTypeByCode(Mockito.anyString())).thenReturn(mt);
+		when( machineSpecificationRepository.findMachineSpecById(Mockito.anyString())).thenThrow(new DataAccessException("...") {});
+		when(machineSpecificationRepository.create(Mockito.any())).thenThrow(new DataAccessException("...") {});
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/machinespecifications").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(m))).andReturn(),
+				"KER-MSD-258");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void tst003updateMachineSpecificationTest1() throws Exception {
+		List<MachineType> mt=new ArrayList<>();
+		MachineType mtype=new MachineType();
+		mtype.setCode("test");
+		mtype.setDescription("test");
+		mt.add(mtype);
+		when(machineTypeRepository.findtoUpdateMachineTypeByCode(Mockito.anyString())).thenReturn(mt);
+	
+		RequestWrapper<MachineSpecificationPutDto> machineSpecification = new RequestWrapper<MachineSpecificationPutDto>();
+		when(machineSpecificationRepository.findMachineSpecById(Mockito.anyString()))
+				.thenThrow(new DataAccessException("...") {
+				});
+		MachineSpecificationPutDto dto1 = new MachineSpecificationPutDto();
+		dto1.setBrand("DELLupdate");
+		dto1.setDescription("Dell brandupdate");
+		dto1.setId("1001");
+		dto1.setLangCode("eng");
+		dto1.setMachineTypeCode("Vostro");
+		dto1.setMinDriverversion("1.3");
+		dto1.setModel("Dell");
+		dto1.setName("Dell");
+
+		machineSpecification.setRequest(dto1);
+
+		when(machineSpecificationRepository.update(Mockito.any())).thenThrow(new DataAccessException("...") {
+		});
+
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/machinespecifications")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(machineSpecification)))
+				.andReturn(), "KER-MSD-085");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void tst005updateMachineSpecificationStatusTest3() throws Exception {
+		when(machineSpecificationRepository.findMachineSpecById(Mockito.anyString()))
+				.thenThrow(new DataAccessException("...") {
+				});
+
+		MasterDataTest.checkResponse(mockMvc.perform(
+				MockMvcRequestBuilders.patch("/machinespecifications").param("id", "1001").param("isActive", "false"))
+				.andReturn(), "KER-MSD-085");
+	}
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void t006getLatestPublishedSchemaTest() throws Exception {
+		when(identitySchemaRepository.findIdentitySchemaById(Mockito.anyString())).thenThrow(new DataAccessException("...") {});
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/idschema/latest").param("schemaVersion","1.1")).andReturn(), "KER-SCH-007");
+	}
+	
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t001createSchemaTest() throws Exception {
+		when(identitySchemaRepository.create(Mockito.any())).thenThrow(new DataAccessException("...") {});
+		RequestWrapper<IdentitySchemaDto> schema =new RequestWrapper<>();
+		IdentitySchemaDto request = new IdentitySchemaDto();
+		request.setDescription("mp test");
+		request.setSchema("{\"schema\":\"schema\"}");
+		request.setTitle("mp test");
+		schema.setRequest(request);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/idschema")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(schema))).andReturn(), "KER-SCH-005");
+	}
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void t002updateSchemaTest() throws Exception {
+		IdentitySchema ischema=new IdentitySchema();
+		ischema.setId("test");
+		ischema.setIdVersion(1.0);
+		ischema.setTitle("test");
+		ischema.setDescription("test");
+		ischema.setSchemaJson("test");
+		when(identitySchemaRepository.findIdentitySchemaById(Mockito.any())).thenReturn(ischema);
+		RequestWrapper<IdentitySchemaDto> schema =new RequestWrapper<>();
+		IdentitySchemaDto request = new IdentitySchemaDto();
+		request.setDescription("mp test");
+		request.setSchema("{\"schema\":\"schema\"}");
+		request.setTitle("mp test");
+		schema.setRequest(request);
+		when(identitySchemaRepository.save(Mockito.any())).thenThrow(new DataAccessException("...") {});
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.put("/idschema").param("id", "1")
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(schema)))
+				.andReturn(), "KER-SCH-006");
+	}
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void t003publishSchemaTest1() throws Exception {
+		when(identitySchemaRepository.findIdentitySchemaById(Mockito.anyString())).thenThrow(new DataAccessException("...") {
+		});
+		RequestWrapper<IdSchemaPublishDto> idSchemaPublishDto = new RequestWrapper<IdSchemaPublishDto>();
+
+		IdSchemaPublishDto dto = new IdSchemaPublishDto();
+		dto.setId("2");
+		dto.setEffectiveFrom(LocalDateTime.now());
+		idSchemaPublishDto.setRequest(dto);
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/idschema/publish").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(idSchemaPublishDto))).andReturn(),
+				"KER-SCH-006");
+	}
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void tst001getUserdetailsByLangIdAndEffTimeTest1() throws Exception {
+		when(userHistoryRepository.getByUserIdAndTimestamp(Mockito.anyString(),Mockito.any())).thenThrow(new DataAccessException("...") {});
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/users/1/2023-12-10T11:42:52.994Z")).andReturn(),
+				"KER-USR-001");
+	}
+	
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void t003updateDeviceTypeTest() throws Exception {
+		
+		RequestWrapper<DeviceTypePutDto> filPutDto=new RequestWrapper<DeviceTypePutDto>();
+		DeviceTypePutDto dp = new DeviceTypePutDto();
+		dp.setCode("CMR1");
+		dp.setDescription("For capturing photo");
+		dp.setIsActive(true);
+		dp.setLangCode("eng");
+		dp.setName("Camera");
+		filPutDto = new RequestWrapper<DeviceTypePutDto>();
+		filPutDto.setRequest(dp);
+		when(deviceTypeRepository
+					.findtoUpdateDeviceTypeByCode(Mockito.anyString())).thenThrow(new DataAccessException("...") {});
+		
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/devicetypes").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(filPutDto))).andReturn(),"KER-MSD-231");
+	}
+	
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t3getExceptionalHolidaysFailTest() throws Exception {
+		when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(Mockito.any())).thenThrow(new DataAccessException("...") {});
+		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10001/eng")).andReturn(),"KER-EHD-001");
+		
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t009updateWorkingDaysStatusTest() throws Exception
+	{
+		when(daysOfWeekRepo.findByCode(Mockito.anyString())).thenThrow(new DataAccessException("...") {});
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.patch("/workingdays").param("code", "101").param("isActive","true"))
+				.andReturn(),"KER-MSD-800");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void tst003updateHolidayTest3() throws Exception {
+		
+	when(locReg.findByCode(Mockito.anyString())).thenThrow(new DataAccessException("...") {});
+		 DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		    LocalDate ld = LocalDate.parse("2021-12-13", DATEFORMATTER);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/holidays").contentType(MediaType.APPLICATION_JSON)
+				.content("{\n" + "  \"id\": \"string\",\n" + "  \"version\": \"string\",\n"
+						+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
+						+ "    \"holidayId\": \"1\",\n" + "    \"locationCode\": \"KTAA\",\n"
+						+"     \"holidayDate\":\""+ld+"\",\n"
+						+ "    \"holidayName\": \"May day\",\n" + "    \"langCode\": \"eng\",\n" + "    \"holidayDesc\": \"National holiday\"\n"
+						+ "  }\n" + "}"))
+
+				.andReturn(),"KER-MSD-731");
+		
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void tst011searchMachineTest1() throws Exception {
+		when(locReg.findByLangCode(Mockito.anyString())).thenThrow(new DataAccessException("...") {});
+		RequestWrapper<SearchDto> searchDtoReq = new RequestWrapper<SearchDto>();
+		Pagination pagination = new Pagination(0, 1);
+		List<SearchSort> ss = new ArrayList<SearchSort>();
+		io.mosip.kernel.masterdata.dto.request.SearchFilter sf = new io.mosip.kernel.masterdata.dto.request.SearchFilter();
+		List<io.mosip.kernel.masterdata.dto.request.SearchFilter> ls = new ArrayList<>();
+		sf.setColumnName("holidayName");
+		sf.setType("equals");
+		sf.setValue("New Year Day");
+		ls.add(sf);
+		SearchSort s = new SearchSort("holidayName", "ASC");
+		SearchDto sd = new SearchDto();
+		sd.setFilters(ls);
+		sd.setLanguageCode("eng");
+		sd.setPagination(pagination);
+		ss.add(s);
+		sd.setSort(ss);
+
+		searchDtoReq.setRequest(sd);
+		searchDtoReq.getRequest().getFilters().get(0).setType(FilterTypeEnum.CONTAINS.toString());
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays/search")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoReq))).andReturn(),
+				"KER-MSD-025");
+	}
+	
 	
 }

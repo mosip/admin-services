@@ -81,6 +81,16 @@ public class WorkingDayControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
+	public void t001getWeekDaysTest1() throws Exception
+	{
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/weekdays/10001/ara"))
+				.andReturn(),"KER-WKDS-002");
+
+	}
+	
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t002getWeekDaysFailTest() throws Exception
 	{
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/weekdays/10001/eng1"))
@@ -93,6 +103,15 @@ public class WorkingDayControllerTest {
 	public void t003getWorkindaysTest() throws Exception
 	{
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/workingdays/10001/eng"))
+				.andReturn(),null);
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t003getWorkindaysTest1() throws Exception
+	{
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/workingdays/10004/eng"))
 				.andReturn(),null);
 
 	}
