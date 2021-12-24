@@ -3,9 +3,11 @@ package io.mosip.kernel.masterdata.test.controller;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +60,9 @@ import io.mosip.kernel.masterdata.dto.UserDetailsDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.Pagination;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.request.WorkingDaysPutRequestDto;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceType;
@@ -105,6 +110,7 @@ import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
@@ -1894,6 +1900,53 @@ public class IntegratedRepositoryTest {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.patch("/workingdays").param("code", "101").param("isActive","true"))
 				.andReturn(),"KER-MSD-800");
 
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void tst003updateHolidayTest3() throws Exception {
+		
+	when(locReg.findByCode(Mockito.anyString())).thenThrow(new DataAccessException("...") {});
+		 DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		    LocalDate ld = LocalDate.parse("2021-12-13", DATEFORMATTER);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/holidays").contentType(MediaType.APPLICATION_JSON)
+				.content("{\n" + "  \"id\": \"string\",\n" + "  \"version\": \"string\",\n"
+						+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
+						+ "    \"holidayId\": \"1\",\n" + "    \"locationCode\": \"KTAA\",\n"
+						+"     \"holidayDate\":\""+ld+"\",\n"
+						+ "    \"holidayName\": \"May day\",\n" + "    \"langCode\": \"eng\",\n" + "    \"holidayDesc\": \"National holiday\"\n"
+						+ "  }\n" + "}"))
+
+				.andReturn(),"KER-MSD-731");
+		
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void tst011searchMachineTest1() throws Exception {
+		when(locReg.findByLangCode(Mockito.anyString())).thenThrow(new DataAccessException("...") {});
+		RequestWrapper<SearchDto> searchDtoReq = new RequestWrapper<SearchDto>();
+		Pagination pagination = new Pagination(0, 1);
+		List<SearchSort> ss = new ArrayList<SearchSort>();
+		io.mosip.kernel.masterdata.dto.request.SearchFilter sf = new io.mosip.kernel.masterdata.dto.request.SearchFilter();
+		List<io.mosip.kernel.masterdata.dto.request.SearchFilter> ls = new ArrayList<>();
+		sf.setColumnName("holidayName");
+		sf.setType("equals");
+		sf.setValue("New Year Day");
+		ls.add(sf);
+		SearchSort s = new SearchSort("holidayName", "ASC");
+		SearchDto sd = new SearchDto();
+		sd.setFilters(ls);
+		sd.setLanguageCode("eng");
+		sd.setPagination(pagination);
+		ss.add(s);
+		sd.setSort(ss);
+
+		searchDtoReq.setRequest(sd);
+		searchDtoReq.getRequest().getFilters().get(0).setType(FilterTypeEnum.CONTAINS.toString());
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays/search")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoReq))).andReturn(),
+				"KER-MSD-025");
 	}
 	
 	
