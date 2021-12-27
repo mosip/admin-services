@@ -66,7 +66,7 @@ public class SchemaControllerTest {
 		schema.setRequest(request);
 		IdSchemaPublishDto dto = new IdSchemaPublishDto();
 		dto.setId("2");
-		dto.setEffectiveFrom(LocalDateTime.now());
+		dto.setEffectiveFrom(LocalDateTime.of(2019, 12, 10, 10, 20));
 		idSchemaPublishDto.setRequest(dto);
 	}
 
@@ -85,6 +85,15 @@ public class SchemaControllerTest {
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(schema)))
 				.andReturn(), null);
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t002updateSchemaTest1() throws Exception {
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.put("/idschema").param("id", "3")
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(schema)))
+				.andReturn(), "KER-SCH-009");
+	}
 
 	@Test
 	@WithUserDetails("global-admin")
@@ -102,6 +111,26 @@ public class SchemaControllerTest {
 				mockMvc.perform(MockMvcRequestBuilders.put("/idschema/publish").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(idSchemaPublishDto))).andReturn(),
 				null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t003publishSchemaTest1() throws Exception {
+		
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/idschema/publish").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(idSchemaPublishDto))).andReturn(),
+				"KER-SCH-010");
+	}
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void t003publishSchemaTest3() throws Exception {
+		idSchemaPublishDto.getRequest().setId("10");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/idschema/publish").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(idSchemaPublishDto))).andReturn(),
+				"KER-SCH-007");
 	}
 
 	@Test

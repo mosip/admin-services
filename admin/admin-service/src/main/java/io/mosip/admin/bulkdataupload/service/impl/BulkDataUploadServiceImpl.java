@@ -1,11 +1,8 @@
 package io.mosip.admin.bulkdataupload.service.impl;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.reflect.Field;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -21,14 +18,13 @@ import java.util.stream.Collectors;
 import javax.persistence.EmbeddedId;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnitUtil;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.apache.commons.io.FilenameUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.admin.bulkdataupload.dto.*;
+import io.mosip.admin.bulkdataupload.service.PacketUploadService;
+import io.mosip.admin.packetstatusupdater.util.RestClient;
+import io.mosip.kernel.core.util.*;
 import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -69,44 +65,27 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.admin.bulkdataupload.constant.BulkUploadErrorCode;
-import io.mosip.admin.bulkdataupload.dto.BulkDataGetExtnDto;
-import io.mosip.admin.bulkdataupload.dto.BulkDataResponseDto;
-import io.mosip.admin.bulkdataupload.dto.PageDto;
 import io.mosip.admin.bulkdataupload.entity.BaseEntity;
 import io.mosip.admin.bulkdataupload.entity.BulkUploadTranscation;
-import io.mosip.admin.bulkdataupload.entity.DeviceHistory;
-import io.mosip.admin.bulkdataupload.entity.MachineHistory;
-import io.mosip.admin.bulkdataupload.entity.UserDetailsHistory;
-import io.mosip.admin.bulkdataupload.entity.ZoneUserHistory;
 import io.mosip.admin.bulkdataupload.repositories.BulkUploadTranscationRepository;
 import io.mosip.admin.bulkdataupload.service.BulkDataService;
 import io.mosip.admin.config.Mapper;
-import io.mosip.admin.config.MapperUtils;
+
 import io.mosip.admin.config.RepositoryListItemWriter;
 import io.mosip.admin.packetstatusupdater.exception.DataNotFoundException;
 import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
 import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.admin.packetstatusupdater.util.EventEnum;
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.kernel.core.util.EmptyCheckUtils;
+
 
 /**
  * BulkDataUpload service
@@ -118,8 +97,8 @@ import io.mosip.kernel.core.util.EmptyCheckUtils;
 public class BulkDataUploadServiceImpl implements BulkDataService {
 
 	private static final Logger logger = LoggerFactory.getLogger(BulkDataUploadServiceImpl.class);
-
 	private static Predicate<String> emptyCheck = String::isBlank;
+	private static String STATUS_MESSAGE = "TOTAL: %d, SUCCESS: %d, FAILED: %d";
 
 	@Autowired
 	ApplicationContext applicationContext;
@@ -140,10 +119,13 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	EntityManager em;
 
 	@Autowired
-	EntityManagerFactory emf;
+	RestClient restClient;
 
-	@Value("${mosip.kernel.packet-reciever-api-url}")
-	private String packetRecieverApiUrl;
+	@Autowired
+	ObjectMapper objectMapper;
+
+	@Autowired
+	EntityManagerFactory emf;
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -154,6 +136,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	@Autowired
 	PlatformTransactionManager platformTransactionManager;
 
+	@Autowired
+	private PacketUploadService packetUploadService;
+
 	@Value("${mosip.mandatory-languages}")
 	private String mandatoryLanguages;
 
@@ -161,6 +146,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	private String optionalLanguages;
 
 	private Map<String, Class> entityMap = new HashMap<String, Class>();
+
 
 	@Override
 	public BulkDataGetExtnDto getTrascationDetails(String transcationId) {
@@ -258,105 +244,103 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD,
 				"{category:'" + category + "',tablename:'" + tableName + "',operation:'" + operation + "'}"));
 
-		BulkDataResponseDto bulkDataResponseDto = new BulkDataResponseDto();
-
 		String repoBeanName = mapper.getRepo(entity);
 		JobBuilderFactory jobBuilderFactory = new JobBuilderFactory(jobRepository);
 		StepBuilderFactory stepBuilderFactory = new StepBuilderFactory(jobRepository, platformTransactionManager);
-		List<String> failureMessage = new ArrayList<String>();
-		int[] numArr = { 0 };
-		String[] status = { "PROCESS" };
-		Arrays.asList(files).stream().forEach(file -> {
-		
-			auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV,
-					operation + " from " + file.getOriginalFilename()));
-			ItemReader<Object> itemReader;
-			JobExecution jobExecution = null;
+		List<String> statusMessage = new ArrayList<String>();
+		int numArr = 0;
+		String status= "PROCESSING";
 
-			logger.info("Is file empty ? {}, file-size :{}", file.isEmpty(), file.getSize());
+		MultipartFile file = files[0];
+		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV,
+				operation + " from " + file.getOriginalFilename()));
 
-			if(file.isEmpty()) {
-				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,
-						"{fileName: '" + file.getOriginalFilename() + "',operation:'" + operation + "',error: 'Empty file, nothing to do'}"));
-				throw new RequestException(BulkUploadErrorCode.EMPTY_FILE.getErrorCode(),
-						BulkUploadErrorCode.EMPTY_FILE.getErrorMessage());
-			}
+		logger.info("Is file empty ? {}, file-size :{}", file.isEmpty(), file.getSize());
 
-			if (!file.getOriginalFilename().endsWith(".csv")) {
-				auditUtil.setAuditRequestDto(
-						EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_EXT_VALIDATOR_ISSUE, file.getOriginalFilename()));
-				throw new RequestException(BulkUploadErrorCode.INVALID_FILE_FORMAT.getErrorCode(),
-						BulkUploadErrorCode.INVALID_FILE_FORMAT.getErrorMessage());
-			}
+		if(file.isEmpty()) {
+			auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,
+					"{fileName: '" + file.getOriginalFilename() + "',operation:'" + operation + "',error: 'Empty file, nothing to do'}"));
+			throw new RequestException(BulkUploadErrorCode.EMPTY_FILE.getErrorCode(),
+					BulkUploadErrorCode.EMPTY_FILE.getErrorMessage());
+		}
 
-			try {
-				String csvString = IOUtils.toString(file.getInputStream(), StandardCharsets.UTF_8);
-				String trimmedString = csvString.trim();
-				InputStream csvInputStream = new ByteArrayInputStream(trimmedString.getBytes(StandardCharsets.UTF_8));
-				csvValidator(file.getOriginalFilename(), csvInputStream, entity);
-				InputStream csvStream = new ByteArrayInputStream(trimmedString.getBytes(StandardCharsets.UTF_8));
-				itemReader = itemReader(csvStream, entity);
-				ItemWriter<List<Object>> itemWriter = itemWriterMapper(repoBeanName, operationMapper(operation),
-						entity);
-				ItemProcessor itemProcessor = processor(operation);
-				JobParameters parameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
-						.toJobParameters();
-				jobExecution = jobLauncher.run(
-						job(jobBuilderFactory, stepBuilderFactory, itemReader, itemProcessor, itemWriter), parameters);
-				JobInstance jobInstence = new JobInstance(jobExecution.getJobId(), "ETL-file-load");
+		if (!file.getOriginalFilename().endsWith(".csv")) {
+			auditUtil.setAuditRequestDto(
+					EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_CSV_EXT_VALIDATOR_ISSUE, file.getOriginalFilename()));
+			throw new RequestException(BulkUploadErrorCode.INVALID_FILE_FORMAT.getErrorCode(),
+					BulkUploadErrorCode.INVALID_FILE_FORMAT.getErrorMessage());
+		}
 
-				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_JOBDETAILS,
-						jobExecution.getJobId().toString()));
+		try {
+			String csvString = IOUtils.toString(file.getInputStream(), StandardCharsets.UTF_8);
+			String trimmedString = csvString.trim();
+			InputStream csvInputStream = new ByteArrayInputStream(trimmedString.getBytes(StandardCharsets.UTF_8));
+			csvValidator(file.getOriginalFilename(), csvInputStream, entity);
+			InputStream csvStream = new ByteArrayInputStream(trimmedString.getBytes(StandardCharsets.UTF_8));
+			ItemReader<Object> itemReader = itemReader(csvStream, entity);
+			ItemWriter<List<Object>> itemWriter = itemWriterMapper(repoBeanName, operationMapper(operation),
+					entity);
+			ItemProcessor itemProcessor = processor(operation);
+			JobParameters parameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
+					.toJobParameters();
+			JobExecution jobExecution = jobLauncher.run(
+					job(jobBuilderFactory, stepBuilderFactory, itemReader, itemProcessor, itemWriter), parameters);
+			JobInstance jobInstance = new JobInstance(jobExecution.getJobId(), "ETL-file-load");
 
-				StepExecution stepExecution = jobRepository.getLastStepExecution(jobInstence, "ETL-file-load");
-				status[0] = jobExecution.getStatus().toString();
-				numArr[0] += stepExecution.getReadCount();
+			auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_JOBDETAILS,
+					jobExecution.getJobId().toString()));
 
-				if (status[0].equalsIgnoreCase("FAILED")) {
-					jobExecution.getStepExecutions().forEach( step -> {
-						step.getFailureExceptions().forEach( failure -> {
-							if( failure instanceof FlatFileParseException) {
-								failureMessage.add("Line: " + ((FlatFileParseException)failure).getLineNumber() +
-										" >> Datatype mismatch / Failed to write into object");
-							}
-							else
-								failureMessage.add(failure.getMessage());
+			StepExecution stepExecution = jobRepository.getLastStepExecution(jobInstance, "ETL-file-load");
+			status = jobExecution.getStatus().toString();
+			numArr += stepExecution.getReadCount();
 
-							logger.error("Step failed - {}", file.getOriginalFilename(), failure);
-						});
+			if (status.equalsIgnoreCase("FAILED")) {
+				jobExecution.getStepExecutions().forEach( step -> {
+					step.getFailureExceptions().forEach( failure -> {
+						if( failure instanceof FlatFileParseException) {
+							statusMessage.add("file: " + file.getOriginalFilename() +
+									"Line: " + ((FlatFileParseException)failure).getLineNumber() +
+									", message: Datatype mismatch / Failed to write into object");
+						}
+						else
+							statusMessage.add("file: " + file.getOriginalFilename() + ", message: " + failure.getMessage());
+
+						logger.error("Step failed - {}", file.getOriginalFilename(), failure);
 					});
+				});
 
-					auditUtil.setAuditRequestDto(
-							EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV_STATUS_ERROR,
-									"{filename: '" + file.getOriginalFilename() + "',operation:'" + operation
-											+ "',jobid:'" + jobExecution.getJobId() + "',message: '" +
-											failureMessage + "'}"));
+				auditUtil.setAuditRequestDto(
+						EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV_STATUS_ERROR,
+								"{filename: '" + file.getOriginalFilename() + "',operation:'" + operation
+										+ "',jobid:'" + jobExecution.getJobId() + "',message: '" +
+										statusMessage + "'}"));
 
-				} else
-					auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV_STATUS,
-							"{fileName: '" + file.getOriginalFilename() + "',operation:'" + operation + "',jobid:'"
-									+ jobExecution.getJobId() + "',message: '" + jobExecution.getStatus().toString()
-									+ "'}"));
+			} else {
+				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV_STATUS,
+						"{fileName: '" + file.getOriginalFilename() + "',operation:'" + operation + "',jobid:'"
+								+ jobExecution.getJobId() + "',message: '" + jobExecution.getStatus().toString()
+								+ "'}"));
 
-			} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
-					| JobParametersInvalidException | IOException e) {
-				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,
-						"{fileName: '" + file.getOriginalFilename() + "',operation:'" + operation + "',error: "
-								+ e.getMessage() + "}"));
-				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
-						BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
+				statusMessage.add("file: " + file.getOriginalFilename() + ", message: " + status);
 			}
-		});
 
-		BulkUploadTranscation bulkUploadTranscation = saveTranscationDetails(numArr[0], operation,
-				entity.getSimpleName(), category, failureMessage, status[0]);
-		bulkDataResponseDto = setResponseDetails(bulkUploadTranscation, tableName);
-		return bulkDataResponseDto;
+		} catch (Throwable e) {
+			logger.error("Failed to import data from CSV", e);
+			auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,
+					"{fileName: '" + file.getOriginalFilename() + "',operation:'" + operation + "',error: "
+							+ e.getMessage() + "}"));
+			status = "FAILED";
+		}
+
+		BulkUploadTranscation bulkUploadTranscation = saveTranscationDetails(numArr, operation,
+				entity.getSimpleName(), category, statusMessage, status);
+		return setResponseDetails(bulkUploadTranscation, tableName);
 	}
 
 	@Override
 	public BulkDataResponseDto bulkDataOperation(String tableName, String operation, String category,
-			MultipartFile[] files) {
+                                                 MultipartFile[] files, String centerId, String source, String process,
+												 String supervisorStatus) {
 
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CATEGORY, category));
 
@@ -365,7 +349,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 				return insertDataToCSVFile(tableName, operation, category, files);
 
 			case "packet":
-				return uploadPackets(files, operation, category);
+				return uploadPackets(files, operation, category, centerId, source, process, supervisorStatus);
 		}
 
 		auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_CATEGORY);
@@ -373,7 +357,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 				BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage() + "CATEGORY");
 	}
 
-	private BulkDataResponseDto uploadPackets(MultipartFile[] files, String operation, String category) {
+	private BulkDataResponseDto uploadPackets(MultipartFile[] files, String operation, String category, String centerId,
+											  String source, String process, String supervisorStatus) {
 
 		if (files == null || files.length == 0) {
 			auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_ARGUMENT);
@@ -383,18 +368,14 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD,
 				"{category:'" + category + "',operation:'" + operation + "'}"));
-		BulkDataResponseDto bulkDataResponseDto = new BulkDataResponseDto();
-		List<String> fileNames = new ArrayList<>();
-		int[] numArr = { 0 };
 
-		// Map<String,String> failureMessage=new HashMap<String, String>();
-		List<String> failureMessage = new ArrayList<String>();
-		String[] msgArr = { "FAILED" };
-		Arrays.asList(files).stream().forEach(file -> {
-			
+		int failed = 0;
+		List<String> statuses = new ArrayList<String>();
+
+		for(MultipartFile file : files) {
 			if (!file.getOriginalFilename().endsWith(".zip")) {
 				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,
-						"{packetid: '" + files.toString()+ "',error: Supported format is only zip file }"));
+						"{packet: '" + files.toString()+ "',error: Supported format is only zip file }"));
 				throw new RequestException(BulkUploadErrorCode.INVALID_PCK_FILE_FORMAT.getErrorCode(),
 						BulkUploadErrorCode.INVALID_PCK_FILE_FORMAT.getErrorMessage());
 			}
@@ -403,65 +384,32 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 			if (file.isEmpty()) {
 				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,
-						"{packetid: '" + files.toString()+ "',error: Empty zip file }"));
+						"{packet: '" + files.toString()+ "',error: Empty zip file }"));
 				throw new RequestException(BulkUploadErrorCode.EMPTY_FILE.getErrorCode(),
 						BulkUploadErrorCode.EMPTY_FILE.getErrorMessage());
 			}
 
-			auditUtil.setAuditRequestDto(
-					EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_PACKET_UPLOAD, file.getOriginalFilename()));
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-			MultiValueMap<String, String> fileMap = new LinkedMultiValueMap<>();
-			ContentDisposition contentDisposition = ContentDisposition.builder("form-data").name("file")
-					.filename(file.getOriginalFilename()).build();
-			fileMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
+			auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_PACKET_UPLOAD, file.getOriginalFilename()));
 			try {
-				
-				HttpEntity<byte[]> fileEntity = new HttpEntity<>(file.getBytes(), fileMap);
 
-				MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-				body.add("file", fileEntity);
+				PacketUploadStatus status = packetUploadService.syncAndUploadPacket(file, centerId, supervisorStatus, source, process);
+				failed = failed + (status.isFailed() ? 1 : 0);
+				String message = "{packet : '" + file.getOriginalFilename() + "', status: '"+status.getMessage()+"'}";
+				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_PACKET_STATUS, message));
+				statuses.add(message);
 
-				HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-				ResponseEntity<String> response = restTemplate.exchange(packetRecieverApiUrl, HttpMethod.POST,
-						requestEntity, String.class);
-				JSONObject josnObject = new JSONObject(response.getBody());
-				if (!josnObject.get("response").equals(null)) {
-					numArr[0]++;
-					msgArr[0] = "Success";
-					auditUtil
-							.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_PACKET_STATUS,
-									"{packetid: '" + file.getOriginalFilename() + "', message: 'success'}"));
-
-				} else {
-					String str = josnObject.get("errors").toString();
-					JSONArray jsonArray = new JSONArray(str);
-					JSONObject josnObject1 = new JSONObject(jsonArray.get(0).toString());
-
-					failureMessage.add(failureMessage.contains(josnObject1.get("message").toString()) ? null
-							: josnObject1.get("message").toString());
-					// failureMessage.put(file.getOriginalFilename(),
-					// josnObject1.get("message").toString());
-					auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(
-							EventEnum.BULKDATA_UPLOAD_PACKET_STATUS_ERROR, "{packetid: '" + file.getOriginalFilename()
-									+ "', message: '" + josnObject1.get("message").toString() + "'}"));
-				}
-
-			} catch (HttpClientErrorException | IOException | JSONException e) {
+			} catch (Throwable e) {
+				logger.error("Failed to sync and upload packet", e);
 				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,
-						"{packetid: '" + file.getOriginalFilename() + "',operation:'" + operation + "',error: "
+						"{packet: '" + file.getOriginalFilename() + "',operation:'" + operation + "',error: "
 								+ e.getMessage() + "}"));
-				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
-						BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
+				failed++;
 			}
-			fileNames.add(file.getOriginalFilename());
-		});
-		BulkUploadTranscation bulkUploadTranscation = saveTranscationDetails(numArr[0], operation, "", category,
-				failureMessage, msgArr[0]);
-		bulkDataResponseDto = setResponseDetails(bulkUploadTranscation, "");
-		return bulkDataResponseDto;
+		}
+
+		BulkUploadTranscation bulkUploadTranscation = saveTranscationDetails(files.length - failed, operation, "", category,
+				statuses, String.format(STATUS_MESSAGE, files.length, files.length - failed, failed));
+		return setResponseDetails(bulkUploadTranscation, "");
 	}
 
 	private Job job(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory,

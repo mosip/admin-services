@@ -7,7 +7,7 @@ public enum ZoneUserErrorCode {
 	USER_MAPPING_NOT_PRSENT_IN_DB("KER-USR-017", "Zone & User mapping  not present in db"),
 	DUPLICATE_REQUEST("KER-USR-018", "duplicate request"),
 	USER_MAPPING_PRSENT_IN_DB("KER-USR-021", "The given user already mapped with different zone"),
-	USER_MAPPING_EXIST("KER-USR-011", "mapping exists for usercenter"),
+	USER_MAPPING_EXIST("KER-USR-011", "User Center mapping must be deleted before remapping user to different zone"),
 	INVALID_ZONE("KER-USR-014", "Admin not authorized to access for this Zone");
 
 

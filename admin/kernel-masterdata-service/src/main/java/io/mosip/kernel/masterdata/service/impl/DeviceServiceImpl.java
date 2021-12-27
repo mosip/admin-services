@@ -392,7 +392,8 @@ public class DeviceServiceImpl implements DeviceService {
 				page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Device.class, dto,
 						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			} else {
-				page = masterdataSearchHelper.nativeDeviceQuerySearch(dto, typeName, zones, isAssigned);
+				page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Device.class, dto,
+						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			}
 
 			if (page != null && page.getContent() != null && !page.getContent().isEmpty()) {
@@ -581,32 +582,6 @@ public class DeviceServiceImpl implements DeviceService {
 		return filter;
 	}
 
-	/**
-	 * This method provide search filter for provided Device specification.
-	 * 
-	 * @param deviceSpecification the device specification.
-	 * @return the {@link SearchFilter}.
-	 */
-	/*
-	 * private SearchFilter buildDeviceSpecification(DeviceSpecification
-	 * deviceSpecification) { SearchFilter filter = new SearchFilter();
-	 * filter.setColumnName("deviceSpecId");
-	 * filter.setType(FilterTypeEnum.EQUALS.name());
-	 * filter.setValue(deviceSpecification.getId()); return filter; }
-	 */
-
-	/**
-	 * This method provide search filter for provided Device Type.
-	 * 
-	 * @param deviceType the device type.
-	 * @return the {@link SearchFilter}.
-	 */
-	/*
-	 * private SearchFilter buildDeviceType(DeviceType deviceType) { SearchFilter
-	 * filter = new SearchFilter(); filter.setColumnName("deviceTypeCode");
-	 * filter.setType(FilterTypeEnum.EQUALS.name());
-	 * filter.setValue(deviceType.getCode()); return filter; }
-	 */
 
 	/*
 	 * (non-Javadoc)
@@ -620,15 +595,10 @@ public class DeviceServiceImpl implements DeviceService {
 		FilterResponseCodeDto filterResponseDto = new FilterResponseCodeDto();
 		List<ColumnCodeValue> columnValueList = new ArrayList<>();
 		List<Zone> zones = zoneUtils.getSubZones(filterValueDto.getLanguageCode());
-		List<SearchFilter> zoneFilter = new ArrayList<>();
-		if (zones != null && !zones.isEmpty()) {
-			zoneFilter.addAll(buildZoneFilter(zones));
-			zoneFilter.addAll(null == filterValueDto.getOptionalFilters() ? Collections.emptyList()
-					: filterValueDto.getOptionalFilters());
-			filterValueDto.setOptionalFilters(zoneFilter);
-		} else {
+		if (zones == null || zones.isEmpty()) {
 			return filterResponseDto;
 		}
+
 		List<FilterDto> fil = new ArrayList<>();
 		filterValueDto.getFilters().forEach(f -> {
 			if (null == f.getType() || f.getType().isBlank() || f.getType().isEmpty()) {
@@ -642,11 +612,10 @@ public class DeviceServiceImpl implements DeviceService {
 		});
 		filterValueDto.setFilters(fil);
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Device.class))
-        
 		{
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
 				masterDataFilterHelper
-						.filterValuesWithCodeWithoutLangCode(Device.class, filterDto, filterValueDto, "id")
+						.filterValuesWithCodeWithoutLangCode(Device.class, filterDto, filterValueDto, "id", zoneUtils.getZoneCodes(zones))
 						.forEach(filterValue -> {
 							if (filterValue != null) {
 								ColumnCodeValue columnValue = new ColumnCodeValue();

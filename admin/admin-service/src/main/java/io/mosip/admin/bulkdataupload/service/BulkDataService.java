@@ -19,10 +19,12 @@ public interface BulkDataService {
 	 * perfrom the bulk data operation
 	 * 
 	 * @param bulkDataRequestDto
-	 * @return
+	 * @param centerId
+     * @return
 
 	 */
-	public BulkDataResponseDto bulkDataOperation(String tableName,String operation,String category,MultipartFile[] files);
+	public BulkDataResponseDto bulkDataOperation(String tableName, String operation, String category, MultipartFile[] files,
+												 String centerId, String source, String process, String supervisorStatus);
 	
 	
 	/**

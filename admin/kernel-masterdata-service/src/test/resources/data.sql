@@ -5,7 +5,7 @@ INSERT INTO master.appl_form_type(code, name,descr, lang_code,is_active, cr_by, 
 
 DELETE FROM MASTER.location;
 INSERT INTO MASTER.location(code, name, hierarchy_level, hierarchy_level_name, parent_loc_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, IS_DELETED, del_dtimes) VALUES
---('MOR','MyCountry',0,'Country',NULL,'eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL),
+('MOR','MyCountry',0,'Country','Country','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL),
 ('RSK','Rabat Sale Kenitra',1,'Region','MOR','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL),
 ('KTA','Kenitra',2,'Province','RSK','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL),
 ('KNT','Kenitra',3,'City','KTA','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994', NULL, NULL, NULL, NULL),
@@ -139,13 +139,15 @@ INSERT INTO master.valid_document(doctyp_code, doccat_code, lang_code, is_active
 DELETE FROM MASTER.dynamic_field;
 INSERT INTO master.dynamic_field(id, name, description, data_type,value_json,lang_code,is_active,cr_by, cr_dtimes, upd_by, upd_dtimes, is_DELETEd, del_dtimes) VALUES 
 ('10001','bloodType1','Blood Type11','string','{\"code\":\"code\",\"value\":\"value\"}','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
-('10002','bloodType2','Blood Type12','string','{\"code\":\"code\",\"value\":\"value\"}','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
+('10002','bloodType2','Blood Type12','string','{\"code\":\"code\",\"value\":\"value\"}','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('10003','bloodType2','Blood Type12','string','{\"code\":\"code\",\"value\":\"value\"}','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
+
 
 DELETE FROM MASTER.loc_holiday;
 INSERT INTO master.loc_holiday(id, location_code, holiday_date,holiday_name,holiday_desc, lang_code,is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_DELETEd, del_dtimes) VALUES 
 ('2000001','KTA',TO_DATE('10-12-2019','dd-MM-yyyy'),'New Year Day', 'National Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('2000002','KTA',TO_DATE('12-12-2019','dd-MM-yyyy'),'Anniversary of the Independence Manifesto',' National Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
-('2000004','RBT',TO_DATE('14-12-2019','dd-MM-yyyy'),'Eid al-Fitr','National Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('2000004','KTA',TO_DATE('14-12-2019','dd-MM-yyyy'),'Eid','National Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('2000005','RBT',TO_DATE('20-12-2019','dd-MM-yyyy'),'Feast of the Throne',' National Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
 
 DELETE FROM MASTER.reg_exceptional_holiday;
@@ -278,6 +280,7 @@ INSERT INTO MASTER.user_detail(id, name, status_code, regcntr_id, lang_code, las
 DELETE FROM MASTER.machine_spec;
 INSERT INTO master.machine_spec(id, name, brand, model, mtyp_code, min_driver_ver, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) VALUES
 ('1001','HP','HP','1234','DKS','3.2','HP brand','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('11','HPTest','HPTest','1234','DKS','3.2','HP brand','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('2222','HP1','HP1','1243','DKS','3.2','HP brand','eng',TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
 
 DELETE FROM MASTER.template;

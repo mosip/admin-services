@@ -61,6 +61,15 @@ public class ExceptionalHolidayControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
+	public void t3getExceptionalHolidaysFailTest1() throws Exception {
+
+		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10004/eng")).andReturn(),"KER-EHD-002");
+		
+	}
+	
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t4getExceptionalHolidaysTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10001"))

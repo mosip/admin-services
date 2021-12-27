@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -35,7 +36,10 @@ import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
 import io.mosip.kernel.masterdata.repository.IdentitySchemaRepository;
 import io.mosip.kernel.masterdata.service.DynamicFieldService;
 import io.mosip.kernel.masterdata.service.IdentitySchemaService;
+import io.mosip.kernel.masterdata.service.UISpecService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
+import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
 
 /**
  * 
@@ -70,6 +74,9 @@ public class IdentitySchemaControllerTest {
 	@MockBean
 	private DynamicFieldRepository dynamicFieldRepository;
 	
+	@MockBean
+	private UISpecService uiSpecService;
+	
 	private Page<DynamicField> fieldPagedResult;
 	private Page<IdentitySchema> schemaPagedResult;
 	private IdentitySchema publishedSchema;
@@ -77,9 +84,26 @@ public class IdentitySchemaControllerTest {
 	private DynamicField bloodTypeField;
 	private DynamicField mstatusField;	
 	PageRequest pageRequest = null;
-	
-	@Before
+	IdentitySchema is=null;
+	List<UISpecResponseDto> lstui=new ArrayList<UISpecResponseDto>();
+@Before
 	public void setup() {
+		
+		 is=new IdentitySchema();
+		is.setAdditionalProperties(false);
+		is.setCreatedBy("superuser");
+		is.setCreatedDateTime(LocalDateTime.now());
+		is.setDescription("test");
+		is.setEffectiveFrom(LocalDateTime.now());
+		is.setId("test");
+		is.setIdVersion(0.1);
+		is.setIsActive(false);
+		is.setIsDeleted(false);
+		is.setLangCode("eng");
+		is.setSchemaJson("{\"code\":\"test\"}");
+		is.setStatus("active");
+		is.setTitle("test");
+		
 		List<DynamicField> list = new ArrayList<DynamicField>();		
 		bloodTypeField = new DynamicField();
 		bloodTypeField.setDataType("simpleType");
@@ -129,6 +153,21 @@ public class IdentitySchemaControllerTest {
 		
 		schemaPagedResult = new PageImpl<IdentitySchema>(schemaList);
 		
+		 lstui=new ArrayList<UISpecResponseDto>();
+		UISpecResponseDto u=new UISpecResponseDto();
+		
+		u.setCreatedBy("superuser");
+		u.setCreatedOn(LocalDateTime.now());
+		u.setDescription("test");
+		u.setEffectiveFrom(LocalDateTime.now());
+		u.setId("test");
+		u.setIdentitySchemaId("test");u.setIdSchemaVersion(0.1);
+	
+		
+		u.setStatus("active");
+		u.setTitle("test");
+		lstui.add(u);
+		
 		pageRequest = PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "cr_dtimes"));
 	}
 	
@@ -137,6 +176,39 @@ public class IdentitySchemaControllerTest {
 	public void fetchAllDynamicFields() throws Exception {		
 		Mockito.when(dynamicFieldRepository.findAllDynamicFields(pageRequest)).thenReturn(fieldPagedResult);		
 		mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields")).andExpect(MockMvcResultMatchers.status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void getAllSchema() throws Exception {		
+		Mockito.when(identitySchemaRepository.findAllIdentitySchema(Mockito.anyBoolean(),Mockito.any())).thenThrow(new DataAccessException("...") {});		
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/all")).andReturn(),"KER-SCH-004");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void getLatestPublishedSchema() throws Exception {		
+		Mockito.when(uiSpecService.getUISpec(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(lstui);
+		Mockito.when(identitySchemaRepository.findLatestPublishedIdentitySchema()).thenReturn(is);		
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/latest").param("schemaVersion", "0").param("domain", "").param("type","")).andReturn(),null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void getLatestPublishedSchema1() throws Exception {		
+		IdentitySchema is=null;
+				
+		Mockito.when(identitySchemaRepository.findLatestPublishedIdentitySchema()).thenReturn(is);		
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/latest").param("schemaVersion", "0").param("domain", "").param("type","")).andReturn(),"KER-SCH-007");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void getLatestPublishedSchema2() throws Exception {		
+	
+		Mockito.when(uiSpecService.getUISpec(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(lstui);
+		Mockito.when(identitySchemaRepository.findLatestPublishedIdentitySchema()).thenReturn(is);		
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/latest").param("schemaVersion", "0").param("domain", "").param("type","a")).andReturn(),null);
 	}
 	
 	@Test

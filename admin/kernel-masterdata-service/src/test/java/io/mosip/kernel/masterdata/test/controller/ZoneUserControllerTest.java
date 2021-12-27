@@ -136,12 +136,6 @@ public class ZoneUserControllerTest {
 				"}";
 		
 		 mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo(userDetailsUri + "/admin"))
-				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
-
-		mockRestServiceServer.expect(requestTo(userDetailsUri + "/admin?search=110006"))
-				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
-
 	}
 	@Test
 	@WithUserDetails("global-admin")
@@ -256,6 +250,8 @@ public class ZoneUserControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t008searchZoneUserMappingTest() throws Exception {
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin"))
+		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/zoneuser/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
@@ -265,6 +261,9 @@ public class ZoneUserControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t009searchZoneUserMappingTest() throws Exception {
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin"))
+		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
+
 		sr.getRequest().getFilters().get(0).setType("equals");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/zoneuser/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
@@ -272,10 +271,10 @@ public class ZoneUserControllerTest {
 	}
 	
 	
-/*	@Test
+	@Test
 	@WithUserDetails("global-admin")
 	public void t009searchZoneUserMappingTest1() throws Exception {
-		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin"))
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin?search=dummy"))
 		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 
 		sr.getRequest().getFilters().get(0).setType("contains");
@@ -284,11 +283,14 @@ public class ZoneUserControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/zoneuser/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
 				null);
-	}*/
+	}
 	
 	@Test
 	@WithUserDetails("global-admin")
 	public void t009searchZoneUserMappingTest3() throws Exception {
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin"))
+		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
+
 		sr.getRequest().getFilters().get(0).setType("contains");
 		sr.getRequest().getFilters().get(0).setColumnName("zoneName");
 		sr.getRequest().getFilters().get(0).setValue("North");
@@ -300,6 +302,9 @@ public class ZoneUserControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t010searchZoneUserMappingTest() throws Exception {
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin"))
+		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
+
 		sr.getRequest().getFilters().get(0).setType("startsWith");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/zoneuser/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
@@ -310,6 +315,9 @@ public class ZoneUserControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t011searchZoneUserMappingTest() throws Exception {
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin"))
+		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
+
 		sr.getRequest().getFilters().get(0).setType("endsWith");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/zoneuser/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
