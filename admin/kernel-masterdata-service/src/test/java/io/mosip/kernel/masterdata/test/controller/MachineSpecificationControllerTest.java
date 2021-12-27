@@ -34,7 +34,6 @@ import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
@@ -170,6 +169,24 @@ public class MachineSpecificationControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.patch("/machinespecifications").param("id","3").param("isActive", "false")).andReturn(),
 				null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t006updateMachineSpecificationStatusFailTest1() throws Exception {
+		
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.patch("/machinespecifications").param("id","300").param("isActive", "false")).andReturn(),
+				"KER-MSD-117");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t006updateMachineSpecificationStatusFailTest2() throws Exception {
+		
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.patch("/machinespecifications").param("id","11").param("isActive", "false")).andReturn(),
+				"KER-MSD-088");
 	}
 	
 	@Test

@@ -325,26 +325,26 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Override
 	public RegistrationCenterResponseDto getRegistrationCentersByIDAndLangCode(String registrationCenterId,
 			String langCode) {
-		List<RegistrationCenterDto> registrationCenters = new ArrayList<>();
-
-		RegistrationCenter registrationCenter = null;
+		List<RegistrationCenter> entities = null;
 		try {
-			registrationCenter = registrationCenterRepository.findByIdAndLangCode(registrationCenterId, langCode);
+			if(langCode.equalsIgnoreCase("all"))
+				entities = registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(registrationCenterId);
+			else
+				entities = registrationCenterRepository.findAllByLangCodeAndId(registrationCenterId, langCode);
+
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
-		if (registrationCenter == null) {
+		if (entities == null || entities.isEmpty()) {
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
 
-		RegistrationCenterDto registrationCenterDto = MapperUtils.map(registrationCenter, RegistrationCenterDto.class);
-		registrationCenters.add(registrationCenterDto);
 		RegistrationCenterResponseDto response = new RegistrationCenterResponseDto();
-		response.setRegistrationCenters(registrationCenters);
+		response.setRegistrationCenters(MapperUtils.mapAll(entities, RegistrationCenterDto.class));
 		return response;
 	}
 
@@ -697,8 +697,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
 			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
 				registrationCenters = MapperUtils.mapAll(pageData.getContent(), RegistrationCenterExtnDto.class);
-				registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), 0, null,
-						pageData.getTotalPages(), (int) pageData.getTotalElements(), registrationCenters);
+				registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), pageSize, null,
+						(int) pageData.getTotalElements(), pageData.getTotalPages(), registrationCenters);
 			} else {
 				throw new DataNotFoundException(
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
@@ -802,19 +802,15 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		FilterResponseCodeDto filterResponseDto = new FilterResponseCodeDto();
 		List<ColumnCodeValue> columnValueList = new ArrayList<>();
 		List<Zone> zones = zoneUtils.getSubZones(filterValueDto.getLanguageCode());
-		List<SearchFilter> zoneFilter = new ArrayList<>();
-		if (zones != null && !zones.isEmpty()) {
-			zoneFilter.addAll(buildZoneFilter(zones));
-			if (null != filterValueDto.getOptionalFilters() && filterValueDto.getOptionalFilters().size() > 0)
-				zoneFilter.addAll(filterValueDto.getOptionalFilters());
-			filterValueDto.setOptionalFilters(zoneFilter);
-		} else {
+
+		if (zones == null || zones.isEmpty()) {
 			return filterResponseDto;
 		}
+
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), RegistrationCenter.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
 				List<FilterData> filterValues = masterDataFilterHelper.filterValuesWithCode(RegistrationCenter.class,
-						filterDto, filterValueDto, "id");
+						filterDto, filterValueDto, "id", zoneUtils.getZoneCodes(zones));
 				filterValues.forEach(filterValue -> {
 					ColumnCodeValue columnValue = new ColumnCodeValue();
 					columnValue.setFieldCode(filterValue.getFieldCode());

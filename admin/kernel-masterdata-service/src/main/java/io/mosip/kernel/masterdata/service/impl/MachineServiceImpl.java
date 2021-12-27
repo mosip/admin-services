@@ -384,15 +384,18 @@ public class MachineServiceImpl implements MachineService {
 			OptionalFilter zoneOptionalFilter = new OptionalFilter(zoneFilter);
 			Page<Machine> page = null;
 			if(typeName!=null &&!typeName.isEmpty() && addList.isEmpty()) {
-				page = masterdataSearchHelper.nativeMachineQuerySearch(dto, typeName, zones, isAssigned);
+				optionalFilter = new OptionalFilter(addList);
+				page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Machine.class, dto,
+						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			}
 			else if (addList.isEmpty()) {
 				optionalFilter = new OptionalFilter(addList);
 				page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Machine.class, dto,
 						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			} else {
-				page = masterdataSearchHelper.nativeMachineQuerySearch(dto, typeName, zones, isAssigned);
-			}
+				optionalFilter = new OptionalFilter(addList);
+				page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Machine.class, dto,
+						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });			}
 			if (page != null && page.getContent() != null && !page.getContent().isEmpty()) {
 				machines = MapperUtils.mapAll(page.getContent(), MachineSearchDto.class);
 				setMachineMetadata(machines, zones);
@@ -575,26 +578,22 @@ public class MachineServiceImpl implements MachineService {
 		FilterResponseCodeDto filterResponseDto = new FilterResponseCodeDto();
 		List<ColumnCodeValue> columnValueList = new ArrayList<>();
 		List<Zone> zones = zoneUtils.getSubZones(filterValueDto.getLanguageCode());
-		List<SearchFilter> zoneFilter = new ArrayList<>();
-		if (zones != null && !zones.isEmpty()) {
-			zoneFilter.addAll(buildZoneFilter(zones));
-			if(null!=filterValueDto.getOptionalFilters() && filterValueDto.getOptionalFilters().size()>0)
-			zoneFilter.addAll(filterValueDto.getOptionalFilters());
-			filterValueDto.setOptionalFilters(zoneFilter);
+		if (zones == null || zones.isEmpty()) {
+			return filterResponseDto;
+		}
 
-			if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Machine.class)) {
-				for (FilterDto filterDto : filterValueDto.getFilters()) {
-					List<FilterData> filterValues = masterDataFilterHelper
-							.filterValuesWithCodeWithoutLangCode(Machine.class, filterDto,
-									filterValueDto,"id");
-					filterValues.forEach(filterValue -> {
-						ColumnCodeValue columnValue = new ColumnCodeValue();
-						columnValue.setFieldCode(filterValue.getFieldCode());
-						columnValue.setFieldID(filterDto.getColumnName());
-						columnValue.setFieldValue(filterValue.getFieldValue());
-						columnValueList.add(columnValue);
-					});
-				}
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Machine.class)) {
+			for (FilterDto filterDto : filterValueDto.getFilters()) {
+				List<FilterData> filterValues = masterDataFilterHelper
+						.filterValuesWithCodeWithoutLangCode(Machine.class, filterDto,
+								filterValueDto,"id", zoneUtils.getZoneCodes(zones));
+				filterValues.forEach(filterValue -> {
+					ColumnCodeValue columnValue = new ColumnCodeValue();
+					columnValue.setFieldCode(filterValue.getFieldCode());
+					columnValue.setFieldID(filterDto.getColumnName());
+					columnValue.setFieldValue(filterValue.getFieldValue());
+					columnValueList.add(columnValue);
+				});
 			}
 		}
 

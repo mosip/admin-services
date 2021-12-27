@@ -693,3 +693,4 @@ CREATE MEMORY TABLE IF NOT EXISTS MASTER.registration_center_h
     eff_dtimes timestamp without time zone NOT NULL
    
 );
+

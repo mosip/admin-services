@@ -365,5 +365,7 @@ public class UserDetailControllerTest
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(), "KER-MSD-390");
 	}
+	
+	
 
 }

@@ -3,7 +3,9 @@ package io.mosip.kernel.masterdata.test.controller;
 import static org.mockito.Mockito.doNothing;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +31,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.entity.UISpec;
 import io.mosip.kernel.masterdata.repository.UISpecRepository;
 import io.mosip.kernel.masterdata.service.UISpecService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
@@ -92,8 +95,28 @@ public class UISpecControllerTest {
 		dto.setType("screen");
 		request.setRequest(dto);
 		
+		getLstUISpec();
 		
-		
+	}
+	
+	private List<UISpec> getLstUISpec()
+	{
+		List<UISpec> lst=new ArrayList<>();
+		UISpec u=new UISpec();
+		u.setCreatedBy("superuser");
+		u.setCreatedDateTime(LocalDateTime.now());
+		u.setDescription("Test");
+		u.setDomain("test");
+		u.setVersion(1.0);
+		u.setId("test");
+		u.setIdentitySchemaId("Test");
+		u.setIsActive(true);
+		u.setIsDeleted(false);
+		u.setJsonSpec("{\"code\":\"value\"}");
+		u.setTitle("test");
+		u.setType("test");
+		lst.add(u);
+		return lst;
 	}
 	
 	@Test
@@ -180,4 +203,57 @@ public class UISpecControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.get("/uispec/regclient/latest"))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
+	
+	
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void getLatestUISpec1() throws Exception {
+		
+		Mockito.when(uiSpecService.getLatestUISpec(Mockito.anyString())).thenReturn(new ArrayList<>());
+		mockMvc.perform(MockMvcRequestBuilders.get("/uispec/regclient/latest"))
+				.andExpect(MockMvcResultMatchers.status().isOk());
+	}
+	
+	
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void getLatestPublishedSchema1() throws Exception {
+		
+		Mockito.when(uiSpecRepository.findPublishedUISpec(Mockito.anyInt(),Mockito.anyString())).thenReturn(getLstUISpec());
+				MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/uispec/reg/latest").param("version", "1.0"))
+				.andReturn(),null);
+	}
+	
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void getLatestPublishedSchema2() throws Exception {
+		
+		Mockito.when(uiSpecRepository.findPublishedUISpec(Mockito.anyInt(),Mockito.anyString())).thenReturn(getLstUISpec());
+				MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/uispec/reg/latest").param("version", "0.1"))
+				.andReturn(),null);
+	}
+	
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void getLatestPublishedSchema3() throws Exception {
+		
+		Mockito.when(uiSpecRepository.findPublishedUISpec(Mockito.anyInt(),Mockito.anyString())).thenReturn(getLstUISpec());
+				MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/uispec/reg/latest").param("version", "1.0").param("type", "dom"))
+				.andReturn(),null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void getLatestPublishedSchema4() throws Exception {
+		
+		Mockito.when(uiSpecRepository.findPublishedUISpec(Mockito.anyInt(),Mockito.anyString())).thenReturn(getLstUISpec());
+				MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/uispec/reg/latest").param("version", "0.1").param("type", "dom"))
+				.andReturn(),null);
+	}
 }
+
+
