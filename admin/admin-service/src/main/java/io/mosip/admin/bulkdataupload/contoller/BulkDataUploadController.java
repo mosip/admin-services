@@ -38,11 +38,18 @@ public class BulkDataUploadController {
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostbulkupload())")
 	@PostMapping(value = { "/bulkupload" }, consumes = { "multipart/form-data" })
 	//@PreAuthorize("hasRole('GLOBAL_ADMIN')")
-	public ResponseWrapper<BulkDataResponseDto> uploadData(@RequestParam("tableName") String tableName,@RequestParam("operation") String operation,@RequestParam("category") String category,
-	         @RequestParam("files") MultipartFile[] files,@RequestParam(value = "centerId",required = false) String centerId) {
+	public ResponseWrapper<BulkDataResponseDto> uploadData(@RequestParam(value = "tableName", required = false, defaultValue = "") String tableName,
+														   @RequestParam("operation") String operation,
+														   @RequestParam("category") String category,
+														   @RequestParam("files") MultipartFile[] files,
+														   @RequestParam(value = "centerId", required = false) String centerId,
+														   @RequestParam(value = "source", required = false, defaultValue = "REGISTRATION_CLIENT") String source,
+														   @RequestParam(value = "process", required = false, defaultValue = "NEW") String process,
+														   @RequestParam(value = "supervisorStatus", required = false, defaultValue = "APPROVED") String supervisorStatus) {
 		auditUtil.setAuditRequestDto(EventEnum.BULKDATA_UPLOAD_API_CALLED);
 		ResponseWrapper<BulkDataResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(bulkDataService.bulkDataOperation(tableName,operation,category,files,centerId));
+		responseWrapper.setResponse(bulkDataService.bulkDataOperation(tableName, operation, category, files, centerId, source,
+				process, supervisorStatus));
 		auditUtil.setAuditRequestDto(EventEnum.BULKDATA_UPLOAD_SUCCESS);
 		return responseWrapper;
 		
