@@ -9,22 +9,6 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.mosip.kernel.clientcrypto.dto.TpmCryptoRequestDto;
-import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
-import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
-
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.syncdata.constant.AdminServiceErrorCode;
-import io.mosip.kernel.syncdata.dto.*;
-import io.mosip.kernel.syncdata.entity.*;
-import io.mosip.kernel.syncdata.exception.*;
-import io.mosip.kernel.syncdata.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +21,119 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.mosip.kernel.clientcrypto.dto.TpmCryptoRequestDto;
+import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
+import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.syncdata.constant.AdminServiceErrorCode;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
+import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
+import io.mosip.kernel.syncdata.dto.AppRolePriorityDto;
+import io.mosip.kernel.syncdata.dto.ApplicantValidDocumentDto;
+import io.mosip.kernel.syncdata.dto.BlacklistedWordsDto;
+import io.mosip.kernel.syncdata.dto.DocumentTypeDto;
+import io.mosip.kernel.syncdata.dto.DynamicFieldDto;
+import io.mosip.kernel.syncdata.dto.EntityDtimes;
+import io.mosip.kernel.syncdata.dto.HolidayDto;
+import io.mosip.kernel.syncdata.dto.LocationDto;
+import io.mosip.kernel.syncdata.dto.LocationHierarchyDto;
+import io.mosip.kernel.syncdata.dto.LocationHierarchyLevelResponseDto;
+import io.mosip.kernel.syncdata.dto.MachineDto;
+import io.mosip.kernel.syncdata.dto.PageDto;
+import io.mosip.kernel.syncdata.dto.PermittedConfigDto;
+import io.mosip.kernel.syncdata.dto.PostReasonCategoryDto;
+import io.mosip.kernel.syncdata.dto.ProcessListDto;
+import io.mosip.kernel.syncdata.dto.ReasonListDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
+import io.mosip.kernel.syncdata.dto.ScreenAuthorizationDto;
+import io.mosip.kernel.syncdata.dto.ScreenDetailDto;
+import io.mosip.kernel.syncdata.dto.SyncJobDefDto;
+import io.mosip.kernel.syncdata.dto.TemplateDto;
+import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
+import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
+import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.response.SyncDataBaseDto;
+import io.mosip.kernel.syncdata.entity.AppAuthenticationMethod;
+import io.mosip.kernel.syncdata.entity.AppRolePriority;
+import io.mosip.kernel.syncdata.entity.ApplicantValidDocument;
+import io.mosip.kernel.syncdata.entity.BlocklistedWords;
+import io.mosip.kernel.syncdata.entity.DocumentType;
+import io.mosip.kernel.syncdata.entity.Holiday;
+import io.mosip.kernel.syncdata.entity.Location;
+import io.mosip.kernel.syncdata.entity.Machine;
+import io.mosip.kernel.syncdata.entity.PermittedLocalConfig;
+import io.mosip.kernel.syncdata.entity.ProcessList;
+import io.mosip.kernel.syncdata.entity.ReasonCategory;
+import io.mosip.kernel.syncdata.entity.ReasonList;
+import io.mosip.kernel.syncdata.entity.RegistrationCenter;
+import io.mosip.kernel.syncdata.entity.ScreenAuthorization;
+import io.mosip.kernel.syncdata.entity.ScreenDetail;
+import io.mosip.kernel.syncdata.entity.SyncJobDef;
+import io.mosip.kernel.syncdata.entity.Template;
+import io.mosip.kernel.syncdata.entity.TemplateFileFormat;
+import io.mosip.kernel.syncdata.entity.TemplateType;
+import io.mosip.kernel.syncdata.entity.UserDetails;
+import io.mosip.kernel.syncdata.entity.ValidDocument;
+import io.mosip.kernel.syncdata.exception.AdminServiceException;
+import io.mosip.kernel.syncdata.exception.RequestException;
+import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
+import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
+import io.mosip.kernel.syncdata.exception.SyncServiceException;
+import io.mosip.kernel.syncdata.repository.AppAuthenticationMethodRepository;
+import io.mosip.kernel.syncdata.repository.AppDetailRepository;
+import io.mosip.kernel.syncdata.repository.AppRolePriorityRepository;
+import io.mosip.kernel.syncdata.repository.ApplicantValidDocumentRespository;
+import io.mosip.kernel.syncdata.repository.ApplicationRepository;
+import io.mosip.kernel.syncdata.repository.BiometricAttributeRepository;
+import io.mosip.kernel.syncdata.repository.BiometricTypeRepository;
+import io.mosip.kernel.syncdata.repository.BlocklistedWordsRepository;
+import io.mosip.kernel.syncdata.repository.DeviceHistoryRepository;
+import io.mosip.kernel.syncdata.repository.DeviceProviderRepository;
+import io.mosip.kernel.syncdata.repository.DeviceRepository;
+import io.mosip.kernel.syncdata.repository.DeviceServiceRepository;
+import io.mosip.kernel.syncdata.repository.DeviceSpecificationRepository;
+import io.mosip.kernel.syncdata.repository.DeviceSubTypeDPMRepository;
+import io.mosip.kernel.syncdata.repository.DeviceTypeDPMRepository;
+import io.mosip.kernel.syncdata.repository.DeviceTypeRepository;
+import io.mosip.kernel.syncdata.repository.DocumentCategoryRepository;
+import io.mosip.kernel.syncdata.repository.DocumentTypeRepository;
+import io.mosip.kernel.syncdata.repository.FoundationalTrustProviderRepository;
+import io.mosip.kernel.syncdata.repository.HolidayRepository;
+import io.mosip.kernel.syncdata.repository.IdTypeRepository;
+import io.mosip.kernel.syncdata.repository.LanguageRepository;
+import io.mosip.kernel.syncdata.repository.LocationRepository;
+import io.mosip.kernel.syncdata.repository.MachineHistoryRepository;
+import io.mosip.kernel.syncdata.repository.MachineRepository;
+import io.mosip.kernel.syncdata.repository.MachineSpecificationRepository;
+import io.mosip.kernel.syncdata.repository.MachineTypeRepository;
+import io.mosip.kernel.syncdata.repository.PermittedLocalConfigRepository;
+import io.mosip.kernel.syncdata.repository.ProcessListRepository;
+import io.mosip.kernel.syncdata.repository.ReasonCategoryRepository;
+import io.mosip.kernel.syncdata.repository.ReasonListRepository;
+import io.mosip.kernel.syncdata.repository.RegisteredDeviceRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterTypeRepository;
+import io.mosip.kernel.syncdata.repository.ScreenAuthorizationRepository;
+import io.mosip.kernel.syncdata.repository.ScreenDetailRepository;
+import io.mosip.kernel.syncdata.repository.SyncJobDefRepository;
+import io.mosip.kernel.syncdata.repository.TemplateFileFormatRepository;
+import io.mosip.kernel.syncdata.repository.TemplateRepository;
+import io.mosip.kernel.syncdata.repository.TemplateTypeRepository;
+import io.mosip.kernel.syncdata.repository.TitleRepository;
+import io.mosip.kernel.syncdata.repository.UserDetailsHistoryRepository;
+import io.mosip.kernel.syncdata.repository.UserDetailsRepository;
+import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
 
 /**
  * Sync handler masterData service helper
@@ -217,7 +309,7 @@ public class SyncMasterDataServiceHelper {
 
 		return CompletableFuture.completedFuture(machineDetailDtoList);
 	}
-
+	
 	/**
 	 * Method to fetch location hierarchy details
 	 * 
@@ -319,14 +411,23 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-		if (list != null && !list.isEmpty()) {
-			registrationCenterList = MapperUtils.mapAll(list, RegistrationCenterDto.class);
-		}
+		
+			registrationCenterList = convertRegistrationCenterToDto(list);
 
 		return CompletableFuture.completedFuture(registrationCenterList);
 	}
 
-
+	private List<RegistrationCenterDto> convertRegistrationCenterToDto(List<RegistrationCenter> list) {
+		   if(list != null && !list.isEmpty()) {
+		      List<RegistrationCenterDto> registrationCenterDtos  = new ArrayList<>();
+		      list.stream().forEach( entity -> {
+		    	  RegistrationCenterDto regiDto = copyRegistrationCenterProperties(entity);		    	  
+		    	  registrationCenterDtos.add(regiDto);
+		      });
+		      return registrationCenterDtos;
+		   }
+		   return null;
+		}
 
 	/**
 	 * Method to fetch templates
@@ -355,10 +456,29 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-		if (templateList != null && !templateList.isEmpty()) {
-			templates = MapperUtils.mapAll(templateList, TemplateDto.class);
-		}
+			templates = convertTemplateEntityToDto(templateList);
 		return CompletableFuture.completedFuture(templates);
+	}	
+	/**
+	 * this method copy the properties from TemplateEntity to TemplateDTO
+	 * @param templateList
+	 * @return
+	 */
+	private List<TemplateDto> convertTemplateEntityToDto(List<Template> templateList) {
+		if (templateList != null && !templateList.isEmpty()) {
+			List<TemplateDto> templateDtos = new ArrayList<>();
+			templateList.stream().forEach(entity -> {
+			TemplateDto	entityDTO = new TemplateDto(entity.getId(), entity.getName(), entity.getDescription(),
+						entity.getFileFormatCode(), entity.getModel(), entity.getFileText(), entity.getModuleId(),
+						entity.getModuleName(), entity.getTemplateTypeCode());			
+			entityDTO.setIsDeleted(entity.getIsDeleted());
+			entityDTO.setIsActive(entity.getIsActive());
+			entityDTO.setLangCode(entity.getLangCode());
+			templateDtos.add(entityDTO);
+			});
+			return templateDtos;
+		}
+		return null;
 	}
 
 	/**
@@ -388,8 +508,30 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.TEMPLATE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-		templateFormats = MapperUtils.mapAll(templateTypes, TemplateFileFormatDto.class);
+		templateFormats = convertTemplateFileFormatEntityToDto(templateTypes);
 		return CompletableFuture.completedFuture(templateFormats);
+	}
+	
+	
+	/**
+	 * this method copy the properties from TemplateFileFormatEntity to TemplateFileFormatDto
+	 * 
+	 * @param templateList
+	 * @return
+	 */
+	private List<TemplateFileFormatDto> convertTemplateFileFormatEntityToDto(List<TemplateFileFormat> templateTypesList) {
+		if (templateTypesList != null && !templateTypesList.isEmpty()) {
+			List<TemplateFileFormatDto> templateFileFormatDtos = new ArrayList<>();
+			templateTypesList.stream().forEach(entity -> {
+				TemplateFileFormatDto entityDTO = 	new TemplateFileFormatDto(entity.getCode(), entity.getDescription());
+				entityDTO.setIsDeleted(entity.getIsDeleted());
+				entityDTO.setIsActive(entity.getIsActive());
+				entityDTO.setLangCode(entity.getLangCode());	
+			templateFileFormatDtos.add(entityDTO);	
+			});
+			return templateFileFormatDtos;
+		}
+		return null;
 	}
 
 	/**
@@ -419,12 +561,30 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.REASON_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-		if (reasons != null && !reasons.isEmpty()) {
-			reasonCategories = MapperUtils.mapAll(reasons, PostReasonCategoryDto.class);
-		}
+			reasonCategories = convertPostReasonCategoryEntityToDto(reasons);
 		return CompletableFuture.completedFuture(reasonCategories);
 	}
 
+	/**
+	 * this method copy the properties from ReasonCategoryEntity to ReasonCategoryDTO
+	 * @param appAuthenticationMethods
+	 * @return
+	 */
+	private List<PostReasonCategoryDto> convertPostReasonCategoryEntityToDto(List<ReasonCategory> reasons) {
+		   if(reasons != null && !reasons.isEmpty()) {
+		      List<PostReasonCategoryDto> postReasonCategoryDtos  = new ArrayList<>();
+		      reasons.stream().forEach( entity -> {
+		    	  PostReasonCategoryDto entityDTO =  new PostReasonCategoryDto(entity.getCode(),entity.getDescription(), entity.getName());
+		      entityDTO.setIsDeleted(entity.getIsDeleted());
+		      entityDTO.setIsActive(entity.getIsActive());
+		      entityDTO.setLangCode(entity.getLangCode());  
+		      postReasonCategoryDtos.add(entityDTO);
+		      });
+		      return postReasonCategoryDtos;
+		   }
+		   return null;
+		}
+	
 	/**
 	 * Method to fetch Reason List
 	 * 
@@ -451,13 +611,33 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.REASON_LIST_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-
-		if (reasons != null && !reasons.isEmpty())
-			reasonList = MapperUtils.mapAll(reasons, ReasonListDto.class);
+		
+			reasonList = convertReasonListEntityToDto(reasons);
 
 		return CompletableFuture.completedFuture(reasonList);
 	}
 
+	/**
+	 * this method is copying the properties from ReasonListEntity to ReasonDTO
+	 * @param reasons
+	 * @return
+	 */
+	private List<ReasonListDto> convertReasonListEntityToDto(List<ReasonList> reasons) {
+		if (reasons != null && !reasons.isEmpty()) {
+			List<ReasonListDto> reasonListDtos = new ArrayList<>();
+			reasons.stream().forEach(entity -> {
+			ReasonListDto entityDTO = new ReasonListDto(entity.getCode(), entity.getName(), entity.getDescription(),
+						entity.getRsnCatCode());
+			entityDTO.setIsDeleted(entity.getIsDeleted());
+			entityDTO.setIsActive(entity.getIsActive());
+			entityDTO.setLangCode(entity.getLangCode());			
+			reasonListDtos.add(entityDTO);
+			});
+			return reasonListDtos;
+		}
+		return null;
+	}
+	
 	/**
 	 * Method to fetch Holidays
 	 * 
@@ -522,14 +702,29 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-		if (words != null && !words.isEmpty()) {
-			blacklistedWords = MapperUtils.mapAll(words, BlacklistedWordsDto.class);
-		}
-
-		return CompletableFuture.completedFuture(blacklistedWords);
+			blacklistedWords = convertBlocklistedWordsEntityToDto(words);		return CompletableFuture.completedFuture(blacklistedWords);
 	}
 
-
+	/**
+	 * this method copy the properties from BlocklistedWordsEnity to BlocklistedWordsDTO
+	 * @param appAuthenticationMethods
+	 * @return
+	 */
+	private List<BlacklistedWordsDto> convertBlocklistedWordsEntityToDto(List<BlocklistedWords> words) {
+		if (words != null && !words.isEmpty()) {
+			List<BlacklistedWordsDto> blocklistedWordsDtos = new ArrayList<>();
+			words.stream().forEach(entity -> {
+				BlacklistedWordsDto	entityDTO = new BlacklistedWordsDto(entity.getWord(), entity.getDescription());
+				entityDTO.setIsDeleted(entity.getIsDeleted());
+				entityDTO.setIsActive(entity.getIsActive());
+				entityDTO.setLangCode(entity.getLangCode());
+			blocklistedWordsDtos.add(entityDTO);
+			});
+			return blocklistedWordsDtos;
+		}
+		return null;
+	}
+	
 	/**
 	 * Method to fetch document type
 	 * 
@@ -556,13 +751,30 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.DOCUMENT_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-
-		if (documentTypes != null && !documentTypes.isEmpty())
-			documentTypeList = MapperUtils.mapAll(documentTypes, DocumentTypeDto.class);
-
+		
+			documentTypeList = convertDocumentTypeEntityToDto(documentTypes);
 		return CompletableFuture.completedFuture(documentTypeList);
 	}
 
+	/**
+	 * copy the documentTypeEntity properties to documentTypeDTO 
+	 * @param documentTypes
+	 * @return
+	 */
+	private List<DocumentTypeDto> convertDocumentTypeEntityToDto(List<DocumentType> documentTypes) {
+		if (documentTypes != null && !documentTypes.isEmpty()) {
+			List<DocumentTypeDto> documentTypeDtos = new ArrayList<>();
+			documentTypes.stream().forEach(entity -> {
+				DocumentTypeDto entityDTO = new DocumentTypeDto(entity.getCode(), entity.getName(), entity.getDescription());
+				entityDTO.setIsDeleted(entity.getIsDeleted());
+				entityDTO.setIsActive(entity.getIsActive());
+				entityDTO.setLangCode(entity.getLangCode());
+				documentTypeDtos.add(entityDTO);
+			});
+			return documentTypeDtos;
+		}
+		return null;
+	}
 
 	/**
 	 * Method to fetch locations
@@ -591,12 +803,32 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-		if (!locations.isEmpty()) {
-			responseList = MapperUtils.mapAll(locations, LocationDto.class);
-		}
+			responseList =  convertLocationsEntityToDto(locations);
 		return CompletableFuture.completedFuture(responseList);
 	}
 
+	/**
+	 * copy the properties of LocatinEntity to LocationDTO
+	 * 
+	 * @param locations
+	 * @return
+	 */
+	private List<LocationDto> convertLocationsEntityToDto(List<Location> locations) {
+		if (locations != null && !locations.isEmpty()) {
+			List<LocationDto> locationDtos = new ArrayList<>();
+			locations.stream().forEach(entity -> {
+				LocationDto entityDTO = new LocationDto(entity.getCode(), entity.getName(), entity.getHierarchyLevel(),
+						entity.getHierarchyName(), entity.getParentLocCode());
+				entityDTO.setIsDeleted(entity.getIsDeleted());
+				entityDTO.setIsActive(entity.getIsActive());
+				entityDTO.setLangCode(entity.getLangCode());
+				locationDtos.add(entityDTO);
+			});
+			return locationDtos;
+		}
+		return null;
+	}
+	
 	/**
 	 * Method to fetch template types
 	 * 
@@ -623,13 +855,31 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.TEMPLATE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-
-		if (templateTypes != null && !templateTypes.isEmpty())
-			templateTypeList = MapperUtils.mapAll(templateTypes, TemplateTypeDto.class);
+			templateTypeList = convertTemplateTypeEntityToDto(templateTypes);
 
 		return CompletableFuture.completedFuture(templateTypeList);
 	}
 
+	/**
+	 * copy the properties from TemplateTypeEntity to TemplateTypeDTO
+	 * 
+	 * @param templateList
+	 * @return
+	 */
+	private List<TemplateTypeDto> convertTemplateTypeEntityToDto(List<TemplateType> templateTypesList) {
+		if (templateTypesList != null && !templateTypesList.isEmpty()) {
+			List<TemplateTypeDto> templateTypeDtos = new ArrayList<>();
+			templateTypesList.stream().forEach(entity -> {
+			TemplateTypeDto	entityDTO = new TemplateTypeDto(entity.getCode(), entity.getDescription());
+			entityDTO.setIsDeleted(entity.getIsDeleted());
+			entityDTO.setIsActive(entity.getIsActive());
+			entityDTO.setLangCode(entity.getLangCode());
+			templateTypeDtos.add(entityDTO);
+			});
+			return templateTypeDtos;
+		}
+		return null;
+	}
 
 	/**
 	 * Method to fetch document mapping
@@ -658,12 +908,31 @@ public class SyncMasterDataServiceHelper {
 					e.getMessage(), e);
 		}
 
-		if (validDocuments != null && !validDocuments.isEmpty()) {
-			validDocumentList = MapperUtils.mapAll(validDocuments, ValidDocumentDto.class);
-		}
+			validDocumentList =convertValidDocumentEntityToDto(validDocuments);
 		return CompletableFuture.completedFuture(validDocumentList);
 	}
 
+	/**
+	 * this method copy the properties from ValidDocumentEntity to ValidDocumentDTO
+	 * 
+	 * @param appAuthenticationMethods
+	 * @return
+	 */
+	private List<ValidDocumentDto> convertValidDocumentEntityToDto(List<ValidDocument> validDocuments) {
+		if (validDocuments != null && !validDocuments.isEmpty()) {
+			List<ValidDocumentDto> validDocumentsDtos = new ArrayList<>();
+			validDocuments.stream().forEach(entity -> {
+			ValidDocumentDto entityDTO = new ValidDocumentDto(entity.getDocTypeCode(), entity.getDocCategoryCode());
+			entityDTO.setIsDeleted(entity.getIsDeleted());
+			entityDTO.setIsActive(entity.getIsActive());
+			entityDTO.setLangCode(entity.getLangCode());
+			validDocumentsDtos.add(entityDTO);
+			});
+			return validDocumentsDtos;
+		}
+		return null;
+	}
+	
 	/**
 	 * 
 	 * @param regCenterId
@@ -782,13 +1051,30 @@ public class SyncMasterDataServiceHelper {
 					MasterDataErrorCode.APPLICANT_VALID_DOCUMENT_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.APPLICANT_VALID_DOCUMENT_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if (applicantValidDocuments != null && !applicantValidDocuments.isEmpty()) {
-			applicantValidDocumentDtos = MapperUtils.mapAll(applicantValidDocuments, ApplicantValidDocumentDto.class);
-		}
+			applicantValidDocumentDtos = convertApplicantValidDocumentEntityToDto(applicantValidDocuments);
 		return CompletableFuture.completedFuture(applicantValidDocumentDtos);
 	}
 
-
+	/**
+	 * copy the documentTypeEntity properties to documentTypeDTO 
+	 * @param documentTypes
+	 * @return
+	 */
+	private List<ApplicantValidDocumentDto> convertApplicantValidDocumentEntityToDto(List<ApplicantValidDocument> applicantValidDocuments) {
+		if (applicantValidDocuments != null && !applicantValidDocuments.isEmpty()) {
+			List<ApplicantValidDocumentDto> applicantValidDocumentseDtos = new ArrayList<>();
+			applicantValidDocuments.stream().forEach(entity -> {
+				ApplicantValidDocumentDto entityDTO = new ApplicantValidDocumentDto();
+				entityDTO.setIsDeleted(entity.getIsDeleted());
+				entityDTO.setIsActive(entity.getIsActive());
+				entityDTO.setLangCode(entity.getLangCode());
+				applicantValidDocumentseDtos.add(entityDTO);
+			});
+			return applicantValidDocumentseDtos;
+		}
+		return null;
+	}
+	
 	@Async
 	public CompletableFuture<List<AppAuthenticationMethodDto>> getAppAuthenticationMethodDetails(
 			LocalDateTime lastUpdatedTime, LocalDateTime currentTimeStamp) {
@@ -811,14 +1097,31 @@ public class SyncMasterDataServiceHelper {
 					MasterDataErrorCode.APP_AUTHORIZATION_METHOD_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.APP_AUTHORIZATION_METHOD_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if (appAuthenticationMethods != null && !appAuthenticationMethods.isEmpty()) {
-			appAuthenticationMethodDtos = MapperUtils.mapAll(appAuthenticationMethods,
-					AppAuthenticationMethodDto.class);
-		}
+			appAuthenticationMethodDtos = convertAppAuthMethodEntityToDto(appAuthenticationMethods);
 		return CompletableFuture.completedFuture(appAuthenticationMethodDtos);
 
 	}
 
+	/**
+	 * this method copy the properties from AppAuthenticationMethodEntity to AppAuthenticationMethodDTO
+	 * @param appAuthenticationMethods
+	 * @return
+	 */
+	private List<AppAuthenticationMethodDto> convertAppAuthMethodEntityToDto(List<AppAuthenticationMethod> appAuthenticationMethods) {
+		if (appAuthenticationMethods != null && !appAuthenticationMethods.isEmpty()) {
+			List<AppAuthenticationMethodDto> appAuthenticationMethodDtos = new ArrayList<>();
+			appAuthenticationMethods.stream().forEach(entity -> {
+				AppAuthenticationMethodDto entityDTO = new AppAuthenticationMethodDto(entity.getAppId(),entity.getProcessId(), entity.getRoleCode(),
+						entity.getAuthMethodCode(),entity.getMethodSequence(), entity.getLangCode());
+				entityDTO.setIsDeleted(entity.getIsDeleted());
+				entityDTO.setIsActive(entity.getIsActive());
+				entityDTO.setLangCode(entity.getLangCode());
+				appAuthenticationMethodDtos.add(entityDTO);
+			});
+			return appAuthenticationMethodDtos;
+		}
+		return null;
+	}
 
 	@Async
 	public CompletableFuture<List<AppRolePriorityDto>> getAppRolePriorityDetails(LocalDateTime lastUpdatedTime,
@@ -840,12 +1143,25 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.APP_ROLE_PRIORITY_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.APP_ROLE_PRIORITY_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if (appRolePriorities != null && !appRolePriorities.isEmpty()) {
-			appRolePriorityDtos = MapperUtils.mapAll(appRolePriorities, AppRolePriorityDto.class);
-		}
-		return CompletableFuture.completedFuture(appRolePriorityDtos);
+			appRolePriorityDtos = convertAppRolePrioritiesToDto(appRolePriorities);
+			return CompletableFuture.completedFuture(appRolePriorityDtos);
 	}
 
+	private List<AppRolePriorityDto> convertAppRolePrioritiesToDto(List<AppRolePriority> appRolePriorities) {
+		   if(appRolePriorities != null && !appRolePriorities.isEmpty()) {
+		      List<AppRolePriorityDto> appRolePriorityDtos  = new ArrayList<>();
+		      appRolePriorities.stream().forEach( entity -> {
+		      AppRolePriorityDto entityDTO= new AppRolePriorityDto(entity.getAppId(), 
+		               entity.getProcessId(), entity.getRoleCode(), entity.getPriority(), entity.getLangCode());		      
+		      entityDTO.setIsDeleted(entity.getIsDeleted());
+		      entityDTO.setIsActive(entity.getIsActive());
+		      entityDTO.setLangCode(entity.getLangCode());
+		      appRolePriorityDtos.add(entityDTO);
+		      });
+		      return appRolePriorityDtos;
+		   }
+		   return null;
+		}
 	@Async
 	public CompletableFuture<List<ScreenAuthorizationDto>> getScreenAuthorizationDetails(LocalDateTime lastUpdatedTime,
 			LocalDateTime currentTimeStamp) {
@@ -865,12 +1181,34 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.SCREEN_AUTHORIZATION_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.SCREEN_AUTHORIZATION_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if (screenAuthorizationList != null && !screenAuthorizationList.isEmpty()) {
-			screenAuthorizationDtos = MapperUtils.mapAll(screenAuthorizationList, ScreenAuthorizationDto.class);
-		}
+				screenAuthorizationDtos = convertScreenAuthorizationToDto(screenAuthorizationList);
 		return CompletableFuture.completedFuture(screenAuthorizationDtos);
 	}
 
+	/**
+	 * This method is copying the properties from ScreenAuthorizationEntity to ScreenAuthorizationDTO
+	 * 
+	 * @param screenAuthorizationList
+	 * @return
+	 */
+	private List<ScreenAuthorizationDto> convertScreenAuthorizationToDto(
+			List<ScreenAuthorization> screenAuthorizationList) {
+		if (screenAuthorizationList != null && !screenAuthorizationList.isEmpty()) {
+			List<ScreenAuthorizationDto> screenAuthorizationDtos = new ArrayList<>();
+			screenAuthorizationList.stream().forEach(entity -> {
+			ScreenAuthorizationDto entityDTO=new ScreenAuthorizationDto(entity.getScreenId(), entity.getRoleCode(),
+						entity.getIsPermitted());
+			entityDTO.setIsDeleted(entity.getIsDeleted());
+			entityDTO.setIsActive(entity.getIsActive());
+			entityDTO.setLangCode(entity.getLangCode());
+			screenAuthorizationDtos.add(entityDTO);	
+			});
+			return screenAuthorizationDtos;
+		}
+		return null;
+	}
+	
+	
 	@Async
 	public CompletableFuture<List<ProcessListDto>> getProcessList(LocalDateTime lastUpdatedTime,
 			LocalDateTime currentTimeStamp) {
@@ -891,11 +1229,31 @@ public class SyncMasterDataServiceHelper {
 					MasterDataErrorCode.PROCESS_LIST_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (processList != null && !processList.isEmpty()) {
-			processListDtos = MapperUtils.mapAll(processList, ProcessListDto.class);
+			processListDtos = convertprocessListEntityToDto(processList);
 		}
 		return CompletableFuture.completedFuture(processListDtos);
 	}
 
+	/**
+	 *  copy the properties from ProcessListEntity to ProcessListDto
+	 * @param templateList
+	 * @return
+	 */
+	private List<ProcessListDto> convertprocessListEntityToDto(List<ProcessList> processList) {
+		if (processList != null && !processList.isEmpty()) {
+			List<ProcessListDto> processListDtos = new ArrayList<>();
+			processList.stream().forEach(entity -> {
+			ProcessListDto entityDTO = new ProcessListDto(entity.getId(), entity.getName(), entity.getDescr());
+			entityDTO.setIsDeleted(entity.getIsDeleted());
+			entityDTO.setIsActive(entity.getIsActive());
+			entityDTO.setLangCode(entity.getLangCode());
+			processListDtos.add(entityDTO);
+			});
+			return processListDtos;
+		}
+		return null;
+	}
+	
 	@Async
 	public CompletableFuture<List<SyncJobDefDto>> getSyncJobDefDetails(LocalDateTime lastUpdatedTime,
 			LocalDateTime currentTimeStamp) {
@@ -914,12 +1272,34 @@ public class SyncMasterDataServiceHelper {
 			throw new AdminServiceException(AdminServiceErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorCode(),
 					AdminServiceErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorMessage()+e);
 		}
-		if (syncJobDefs != null && !syncJobDefs.isEmpty()) {
-			syncJobDefDtos = MapperUtils.mapAll(syncJobDefs, SyncJobDefDto.class);
-		}
+			syncJobDefDtos = convertSyncJobDefEntityToDto(syncJobDefs);
 		return CompletableFuture.completedFuture(syncJobDefDtos);
 	}
 
+	/**
+	 * copy the properties from SyncJobDefEntity to SyncJobDefDTO
+	 * 
+	 * @param templateList
+	 * @return
+	 */
+	private List<SyncJobDefDto> convertSyncJobDefEntityToDto(List<SyncJobDef> syncJobDefs) {
+		if (syncJobDefs != null && !syncJobDefs.isEmpty()) {
+			List<SyncJobDefDto> syncJobDefDtos = new ArrayList<>();
+			syncJobDefs.stream().forEach(entity -> {
+			 SyncJobDefDto entityDTO = new SyncJobDefDto(entity.getId(), entity.getName(), entity.getApiName(),
+						entity.getParentSyncJobId(), entity.getSyncFreq(), entity.getLockDuration(),
+						entity.getIsActive(), entity.getIsDeleted(), entity.getLangCode());
+				entityDTO.setIsDeleted(entity.getIsDeleted());
+				entityDTO.setIsActive(entity.getIsActive());
+				entityDTO.setLangCode(entity.getLangCode());
+				syncJobDefDtos.add(entityDTO);
+				
+			});
+			return syncJobDefDtos;
+		}
+		return null;
+	}
+	
 	@Async
 	public CompletableFuture<List<ScreenDetailDto>> getScreenDetails(LocalDateTime lastUpdatedTime,
 			LocalDateTime currentTimeStamp) {
@@ -940,12 +1320,31 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if (screenDetails != null && !screenDetails.isEmpty()) {
-			screenDetailDtos = MapperUtils.mapAll(screenDetails, ScreenDetailDto.class);
-		}
-		return CompletableFuture.completedFuture(screenDetailDtos);
+			screenDetailDtos = convertScreenDetailToDto(screenDetails);
+			return CompletableFuture.completedFuture(screenDetailDtos);
 	}
 
+	/**
+	 * copy the properties from screenDetailEntity to convertScreenDetailToDto
+	 * 
+	 * @param screenDetails
+	 * @return
+	 */
+	private List<ScreenDetailDto> convertScreenDetailToDto(List<ScreenDetail> screenDetails) {
+		if (screenDetails != null && !screenDetails.isEmpty()) {
+			List<ScreenDetailDto> screenDetailDtos = new ArrayList<>();
+			screenDetails.stream().forEach(entity -> {
+			ScreenDetailDto	entityDTO =	new ScreenDetailDto(entity.getId(), entity.getAppId(), entity.getName(), entity.getDescr());
+			entityDTO.setIsDeleted(entity.getIsDeleted());
+			entityDTO.setIsActive(entity.getIsActive());
+			entityDTO.setLangCode(entity.getLangCode());
+			screenDetailDtos.add(entityDTO);		
+			});
+			return screenDetailDtos;
+		}
+		return null;
+	}
+	
 
 	@Async
 	public CompletableFuture<List<DynamicFieldDto>> getAllDynamicFields(LocalDateTime lastUpdated) {
@@ -1034,12 +1433,29 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.PERMITTED_CONFIG_FETCH_FAILED.getErrorCode(),
 					e.getMessage(), e);
 		}
-		if (list != null && !list.isEmpty()) {
-			dtoList = MapperUtils.mapAll(list, PermittedConfigDto.class);
-		}
+			dtoList = convertPermittedConfigEntityToDto(list);
 		return CompletableFuture.completedFuture(dtoList);
 	}
 
+	/**
+	 * this method is copy the properties from PermittedLocalConfigEntity to PermittedLocalConfigDTO
+	 * 
+	 * @param templateList
+	 * @return
+	 */
+	private List<PermittedConfigDto> convertPermittedConfigEntityToDto(List<PermittedLocalConfig> PermittedLocalConfigList) {
+		if (PermittedLocalConfigList != null && !PermittedLocalConfigList.isEmpty()) {
+			List<PermittedConfigDto> permittedConfigDtos = new ArrayList<>();
+			PermittedLocalConfigList.stream().forEach(entity -> {
+			PermittedConfigDto entityDTO = new PermittedConfigDto(entity.getCode(), entity.getName(), entity.getType());
+			entityDTO.setIsDeleted(entity.getIsDeleted());
+			entityDTO.setIsActive(entity.getIsActive());
+			permittedConfigDtos.add(entityDTO);	
+			});
+			return permittedConfigDtos;
+		}
+		return null;
+	}
 
 	@SuppressWarnings("unchecked")
 	public void getSyncDataBaseDto(String entityName, String entityType, List entities, String publicKey, List result) {
@@ -1218,5 +1634,40 @@ public class SyncMasterDataServiceHelper {
 		return ( (result.getDeletedDateTime() != null && lastUpdated.isBefore(result.getDeletedDateTime())) ||
 				(result.getUpdatedDateTime() != null && lastUpdated.isBefore(result.getUpdatedDateTime())) ||
 				(result.getCreatedDateTime() != null && lastUpdated.isBefore(result.getCreatedDateTime())) );
+	}
+
+	/**
+	 * copy the properties from RegistrationCenterEntity to RegistrationCenterDTO
+	 * 
+	 * @param regEntity
+	 * @return
+	 */
+	private RegistrationCenterDto copyRegistrationCenterProperties(RegistrationCenter regEntity) {
+		RegistrationCenterDto regDTO = new RegistrationCenterDto();
+		regDTO.setId(regEntity.getId());
+		regDTO.setName(regEntity.getName());
+		regDTO.setCenterTypeCode(regEntity.getCenterTypeCode());
+		regDTO.setAddressLine1(regEntity.getAddressLine1());
+		regDTO.setAddressLine2(regEntity.getAddressLine2());
+		regDTO.setAddressLine3(regEntity.getAddressLine3());
+		regDTO.setLatitude(regEntity.getLatitude());
+		regDTO.setLangCode(regEntity.getLongitude());
+		regDTO.setLocationCode(regEntity.getLocationCode());
+		regDTO.setHolidayLocationCode(regEntity.getHolidayLocationCode());
+		regDTO.setContactPhone(regEntity.getContactPerson());
+		regDTO.setWorkingHours(regEntity.getWorkingHours());
+		regDTO.setNumberOfKiosks(regEntity.getNumberOfKiosks());
+		regDTO.setPerKioskProcessTime(regEntity.getPerKioskProcessTime());
+		regDTO.setCenterStartTime(regEntity.getCenterStartTime());
+		regDTO.setCenterEndTime(regEntity.getCenterEndTime());
+		regDTO.setTimeZone(regEntity.getTimeZone());
+		regDTO.setContactPerson(regEntity.getContactPerson());
+		regDTO.setLunchStartTime(regEntity.getLunchStartTime());
+		regDTO.setLunchEndTime(regEntity.getLunchEndTime());
+		regDTO.setIsDeleted(regEntity.getIsDeleted());
+		regDTO.setIsActive(regEntity.getIsActive());
+		regDTO.setLangCode(regEntity.getLangCode());
+		
+		return regDTO;
 	}
 }

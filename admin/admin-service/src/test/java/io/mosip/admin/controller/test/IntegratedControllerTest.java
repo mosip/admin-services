@@ -154,10 +154,11 @@ public class IntegratedControllerTest {
 		String content = "code,genderName,langCode,isActive\r\n" + "MLO,Test,eng,FALSE\r\n" + "AAA,AAA,ara,TRUE\r\n"
 				+ "BBB,BBB,eng,TRUE";
 		MockMultipartFile gender = new MockMultipartFile("data", "filename.txt", "text/plain", content.getBytes());
-		MockMultipartFile[] f = new MockMultipartFile[] { gender };
-		Mockito.when(bulkDataService.bulkDataOperation("Gender", "update", "masterdata", f, "10006"))
-				.thenReturn(bulkDataResponseDto);
 
+		MockMultipartFile[] f=new MockMultipartFile[]{gender};
+		Mockito.when(bulkDataService.bulkDataOperation("Gender", "update", "masterdata", f, "10006",
+				"REGISTRATION_CLIENT", "NEW", "APPROVED")).thenReturn(bulkDataResponseDto);
+		
 		AdminDataUtil.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/bulkupload/transcation/123455")).andReturn(), null);
 

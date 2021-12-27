@@ -94,7 +94,6 @@ public class AdminControllerTest {
 		info.setSort(s);
 		searchInfoReq.setRequest(info);
 		mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-
 	}
 
 	@Test
