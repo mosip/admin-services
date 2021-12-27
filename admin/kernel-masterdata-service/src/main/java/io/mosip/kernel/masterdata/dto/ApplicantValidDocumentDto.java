@@ -1,9 +1,9 @@
 package io.mosip.kernel.masterdata.dto;
 
-import lombok.AllArgsConstructor;
+
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import java.util.Collection;
+import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryAndTypeResponseDto;
 
 /**
  * 
@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
  */
 @Data
 public class ApplicantValidDocumentDto {
-
 	private String appTypeCode;
 	private String langCode;
 	private Boolean isActive;
