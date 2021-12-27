@@ -1,4 +1,4 @@
-package io.mosip.kernel.syncdata.dto;
+package io.mosip.kernel.masterdata.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,17 +11,11 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor
-@NoArgsConstructor
-public class ApplicantValidDocumentDto extends BaseDto {
+public class ApplicantValidDocumentDto {
 
 	private String appTypeCode;
-
-	private String docTypeCode;
-
-	private String docCatCode;
-
 	private String langCode;
+	private Boolean isActive;
+	private Collection<DocumentCategoryAndTypeResponseDto> documentCategories;
 
 }
