@@ -10,6 +10,8 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class ApplicantValidDocumentDto extends BaseDto {
 
 	private String appTypeCode;
