@@ -1,5 +1,6 @@
 package io.mosip.kernel.syncdata.utils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import io.mosip.kernel.syncdata.entity.id.HolidayID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -393,11 +395,10 @@ public class SyncMasterDataServiceHelper {
 	@Async
 	public CompletableFuture<List<RegistrationCenterDto>> getRegistrationCenter(String machineId,
 			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) {
-		List<RegistrationCenterDto> registrationCenterList = null;
 		List<RegistrationCenter> list = null;
 		try {
 			if(!isChangesFound("RegistrationCenter", lastUpdated)) {
-				return CompletableFuture.completedFuture(registrationCenterList);
+				return CompletableFuture.completedFuture(null);
 			}
 
 			if (lastUpdated == null) {
@@ -411,10 +412,7 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-		
-			registrationCenterList = convertRegistrationCenterToDto(list);
-
-		return CompletableFuture.completedFuture(registrationCenterList);
+		return CompletableFuture.completedFuture(convertRegistrationCenterToDto(list));
 	}
 
 	private List<RegistrationCenterDto> convertRegistrationCenterToDto(List<RegistrationCenter> list) {
@@ -439,11 +437,10 @@ public class SyncMasterDataServiceHelper {
 	@Async
 	public CompletableFuture<List<TemplateDto>> getTemplates(String moduleId, LocalDateTime lastUpdated,
 			LocalDateTime currentTimeStamp) {
-		List<TemplateDto> templates = null;
 		List<Template> templateList = null;
 		try {
 			if(!isChangesFound("Template", lastUpdated)) {
-				return CompletableFuture.completedFuture(templates);
+				return CompletableFuture.completedFuture(null);
 			}
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -456,8 +453,7 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-			templates = convertTemplateEntityToDto(templateList);
-		return CompletableFuture.completedFuture(templates);
+		return CompletableFuture.completedFuture(convertTemplateEntityToDto(templateList));
 	}	
 	/**
 	 * this method copy the properties from TemplateEntity to TemplateDTO
@@ -491,11 +487,10 @@ public class SyncMasterDataServiceHelper {
 	@Async
 	public CompletableFuture<List<TemplateFileFormatDto>> getTemplateFileFormats(LocalDateTime lastUpdated,
 			LocalDateTime currentTimeStamp) {
-		List<TemplateFileFormatDto> templateFormats = null;
 		List<TemplateFileFormat> templateTypes = null;
 		try {
 			if(!isChangesFound("TemplateFileFormat", lastUpdated)) {
-				return CompletableFuture.completedFuture(templateFormats);
+				return CompletableFuture.completedFuture(null);
 			}
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -508,15 +503,14 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.TEMPLATE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-		templateFormats = convertTemplateFileFormatEntityToDto(templateTypes);
-		return CompletableFuture.completedFuture(templateFormats);
+		return CompletableFuture.completedFuture(convertTemplateFileFormatEntityToDto(templateTypes));
 	}
 	
 	
 	/**
 	 * this method copy the properties from TemplateFileFormatEntity to TemplateFileFormatDto
 	 * 
-	 * @param templateList
+	 * @param templateTypesList
 	 * @return
 	 */
 	private List<TemplateFileFormatDto> convertTemplateFileFormatEntityToDto(List<TemplateFileFormat> templateTypesList) {
@@ -544,11 +538,10 @@ public class SyncMasterDataServiceHelper {
 	@Async
 	public CompletableFuture<List<PostReasonCategoryDto>> getReasonCategory(LocalDateTime lastUpdated,
 			LocalDateTime currentTimeStamp) {
-		List<PostReasonCategoryDto> reasonCategories = null;
 		List<ReasonCategory> reasons = null;
 		try {
 			if(!isChangesFound("ReasonCategory", lastUpdated)) {
-				return CompletableFuture.completedFuture(reasonCategories);
+				return CompletableFuture.completedFuture(null);
 			}
 
 			if (lastUpdated == null) {
@@ -561,20 +554,19 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.REASON_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-			reasonCategories = convertPostReasonCategoryEntityToDto(reasons);
-		return CompletableFuture.completedFuture(reasonCategories);
+		return CompletableFuture.completedFuture(convertPostReasonCategoryEntityToDto(reasons));
 	}
 
 	/**
 	 * this method copy the properties from ReasonCategoryEntity to ReasonCategoryDTO
-	 * @param appAuthenticationMethods
+	 * @param reasons
 	 * @return
 	 */
 	private List<PostReasonCategoryDto> convertPostReasonCategoryEntityToDto(List<ReasonCategory> reasons) {
 		   if(reasons != null && !reasons.isEmpty()) {
 		      List<PostReasonCategoryDto> postReasonCategoryDtos  = new ArrayList<>();
 		      reasons.stream().forEach( entity -> {
-		    	  PostReasonCategoryDto entityDTO =  new PostReasonCategoryDto(entity.getCode(),entity.getDescription(), entity.getName());
+		    	  PostReasonCategoryDto entityDTO = new PostReasonCategoryDto(entity.getCode(), entity.getDescription(), entity.getName());
 		      entityDTO.setIsDeleted(entity.getIsDeleted());
 		      entityDTO.setIsActive(entity.getIsActive());
 		      entityDTO.setLangCode(entity.getLangCode());  
@@ -595,11 +587,10 @@ public class SyncMasterDataServiceHelper {
 	@Async
 	public CompletableFuture<List<ReasonListDto>> getReasonList(LocalDateTime lastUpdated,
 			LocalDateTime currentTimeStamp) {
-		List<ReasonListDto> reasonList = null;
 		List<ReasonList> reasons = null;
 		try {
 			if(!isChangesFound("ReasonList", lastUpdated)) {
-				return CompletableFuture.completedFuture(reasonList);
+				return CompletableFuture.completedFuture(null);
 			}
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -611,10 +602,7 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.REASON_LIST_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-		
-			reasonList = convertReasonListEntityToDto(reasons);
-
-		return CompletableFuture.completedFuture(reasonList);
+		return CompletableFuture.completedFuture(convertReasonListEntityToDto(reasons));
 	}
 
 	/**
@@ -649,11 +637,10 @@ public class SyncMasterDataServiceHelper {
 	@Async
 	public CompletableFuture<List<HolidayDto>> getHolidays(LocalDateTime lastUpdated, String machineId,
 			LocalDateTime currentTimeStamp) {
-		List<HolidayDto> holidayList = null;
 		List<Holiday> holidays = null;
 		try {
 			if(!isChangesFound("Holiday", lastUpdated)) {
-				return CompletableFuture.completedFuture(holidayList);
+				return CompletableFuture.completedFuture(null);
 			}
 
 			if (lastUpdated == null) {
@@ -667,11 +654,31 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
+		return CompletableFuture.completedFuture(convertEntityToHoliday(holidays));
+	}
 
-		if (holidays != null && !holidays.isEmpty())
-			holidayList = mapper.mapHolidays(holidays);
+	private List<HolidayDto> convertEntityToHoliday(List<Holiday> holidays) {
+		if(holidays == null || holidays.isEmpty())
+			return null;
 
-		return CompletableFuture.completedFuture(holidayList);
+		List<HolidayDto> holidayDtos = new ArrayList<>();
+		holidays.forEach(holiday -> {
+			LocalDate date = holiday.getHolidayId().getHolidayDate();
+			HolidayID holidayId = holiday.getHolidayId();
+			HolidayDto dto = new HolidayDto();
+			dto.setHolidayId(String.valueOf(holiday.getId()));
+			dto.setHolidayDate(String.valueOf(date));
+			dto.setHolidayName(holidayId.getHolidayName());
+			dto.setLangCode(holidayId.getLangCode());
+			dto.setHolidayYear(String.valueOf(date.getYear()));
+			dto.setHolidayMonth(String.valueOf(date.getMonth().getValue()));
+			dto.setHolidayDay(String.valueOf(date.getDayOfWeek().getValue()));
+			dto.setIsActive(holiday.getIsActive());
+			dto.setLocationCode(holidayId.getLocationCode());
+			dto.setIsDeleted(holiday.getIsDeleted());
+			holidayDtos.add(dto);
+		});
+		return holidayDtos;
 	}
 
 	/**
@@ -684,12 +691,11 @@ public class SyncMasterDataServiceHelper {
 	@Async
 	public CompletableFuture<List<BlacklistedWordsDto>> getBlackListedWords(LocalDateTime lastUpdated,
 			LocalDateTime currentTimeStamp) {
-		List<BlacklistedWordsDto> blacklistedWords = null;
 		List<BlocklistedWords> words = null;
 
 		try {
 			if(!isChangesFound("BlacklistedWords", lastUpdated)) {
-				return CompletableFuture.completedFuture(blacklistedWords);
+				return CompletableFuture.completedFuture(null);
 			}
 
 			if (lastUpdated == null) {
@@ -702,12 +708,12 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-			blacklistedWords = convertBlocklistedWordsEntityToDto(words);		return CompletableFuture.completedFuture(blacklistedWords);
+		return CompletableFuture.completedFuture(convertBlocklistedWordsEntityToDto(words));
 	}
 
 	/**
 	 * this method copy the properties from BlocklistedWordsEnity to BlocklistedWordsDTO
-	 * @param appAuthenticationMethods
+	 * @param words
 	 * @return
 	 */
 	private List<BlacklistedWordsDto> convertBlocklistedWordsEntityToDto(List<BlocklistedWords> words) {
@@ -735,11 +741,10 @@ public class SyncMasterDataServiceHelper {
 	@Async
 	public CompletableFuture<List<DocumentTypeDto>> getDocumentTypes(LocalDateTime lastUpdated,
 			LocalDateTime currentTimeStamp) {
-		List<DocumentTypeDto> documentTypeList = null;
 		List<DocumentType> documentTypes = null;
 		try {
 			if(!isChangesFound("DocumentType", lastUpdated)) {
-				return CompletableFuture.completedFuture(documentTypeList);
+				return CompletableFuture.completedFuture(null);
 			}
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -751,9 +756,7 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.DOCUMENT_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-		
-			documentTypeList = convertDocumentTypeEntityToDto(documentTypes);
-		return CompletableFuture.completedFuture(documentTypeList);
+		return CompletableFuture.completedFuture(convertDocumentTypeEntityToDto(documentTypes));
 	}
 
 	/**
@@ -786,11 +789,10 @@ public class SyncMasterDataServiceHelper {
 	@Async
 	public CompletableFuture<List<LocationDto>> getLocationHierarchy(LocalDateTime lastUpdated,
 			LocalDateTime currentTimeStamp) {
-		List<LocationDto> responseList = null;
 		List<Location> locations = null;
 		try {
 			if(!isChangesFound("Location", lastUpdated)) {
-				return CompletableFuture.completedFuture(responseList);
+				return CompletableFuture.completedFuture(null);
 			}
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -803,8 +805,7 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-			responseList =  convertLocationsEntityToDto(locations);
-		return CompletableFuture.completedFuture(responseList);
+		return CompletableFuture.completedFuture(convertLocationsEntityToDto(locations));
 	}
 
 	/**
@@ -839,11 +840,10 @@ public class SyncMasterDataServiceHelper {
 	@Async
 	public CompletableFuture<List<TemplateTypeDto>> getTemplateTypes(LocalDateTime lastUpdated,
 			LocalDateTime currentTimeStamp) {
-		List<TemplateTypeDto> templateTypeList = null;
 		List<TemplateType> templateTypes = null;
 		try {
 			if(!isChangesFound("TemplateType", lastUpdated)) {
-				return CompletableFuture.completedFuture(templateTypeList);
+				return CompletableFuture.completedFuture(null);
 			}
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -855,15 +855,13 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.TEMPLATE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-			templateTypeList = convertTemplateTypeEntityToDto(templateTypes);
-
-		return CompletableFuture.completedFuture(templateTypeList);
+		return CompletableFuture.completedFuture(convertTemplateTypeEntityToDto(templateTypes));
 	}
 
 	/**
 	 * copy the properties from TemplateTypeEntity to TemplateTypeDTO
 	 * 
-	 * @param templateList
+	 * @param templateTypesList
 	 * @return
 	 */
 	private List<TemplateTypeDto> convertTemplateTypeEntityToDto(List<TemplateType> templateTypesList) {
@@ -891,11 +889,10 @@ public class SyncMasterDataServiceHelper {
 	@Async
 	public CompletableFuture<List<ValidDocumentDto>> getValidDocuments(LocalDateTime lastUpdated,
 			LocalDateTime currentTimeStamp) {
-		List<ValidDocumentDto> validDocumentList = null;
 		List<ValidDocument> validDocuments = null;
 		try {
 			if(!isChangesFound("ValidDocument", lastUpdated)) {
-				return CompletableFuture.completedFuture(validDocumentList);
+				return CompletableFuture.completedFuture(null);
 			}
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -907,15 +904,13 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-
-			validDocumentList =convertValidDocumentEntityToDto(validDocuments);
-		return CompletableFuture.completedFuture(validDocumentList);
+		return CompletableFuture.completedFuture(convertValidDocumentEntityToDto(validDocuments));
 	}
 
 	/**
 	 * this method copy the properties from ValidDocumentEntity to ValidDocumentDTO
 	 * 
-	 * @param appAuthenticationMethods
+	 * @param validDocuments
 	 * @return
 	 */
 	private List<ValidDocumentDto> convertValidDocumentEntityToDto(List<ValidDocument> validDocuments) {
@@ -943,11 +938,11 @@ public class SyncMasterDataServiceHelper {
 	@Async
 	public CompletableFuture<List<RegistrationCenterMachineDto>> getRegistrationCenterMachines(String regCenterId,
 			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp, String machineId) {
-		List<RegistrationCenterMachineDto> registrationCenterMachineDtos = new ArrayList<>();
+
 		List<Machine> machines = null;
 		try {
 			if(!isChangesFound("Machine", lastUpdated)) {
-				return CompletableFuture.completedFuture(registrationCenterMachineDtos);
+				return CompletableFuture.completedFuture(null);
 			}
 
 			if (lastUpdated == null) {
@@ -961,9 +956,10 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
+
+		List<RegistrationCenterMachineDto> registrationCenterMachineDtos = new ArrayList<>();
 		if (machines != null && !machines.isEmpty()) {
 			for (Machine machine : machines) {
-
 				RegistrationCenterMachineDto dto = new RegistrationCenterMachineDto();
 				dto.setIsActive(machine.getIsActive());
 				dto.setIsDeleted(machine.getIsDeleted());
@@ -971,9 +967,7 @@ public class SyncMasterDataServiceHelper {
 				dto.setMachineId(machine.getId());
 				dto.setRegCenterId(machine.getRegCenterId());
 				registrationCenterMachineDtos.add(dto);
-
 			}
-
 		}
 		return CompletableFuture.completedFuture(registrationCenterMachineDtos);
 	}
@@ -1010,7 +1004,6 @@ public class SyncMasterDataServiceHelper {
 		}
 		if (userDetails != null && !userDetails.isEmpty()) {
 			for (UserDetails userDetail : userDetails) {
-
 				RegistrationCenterUserDto dto = new RegistrationCenterUserDto();
 				dto.setIsActive(userDetail.getIsActive());
 				dto.setIsDeleted(userDetail.getIsDeleted());
@@ -1018,9 +1011,7 @@ public class SyncMasterDataServiceHelper {
 				dto.setUserId(userDetail.getId());
 				dto.setRegCenterId(userDetail.getRegCenterId());
 				registrationCenterUserDtos.add(dto);
-
 			}
-
 		}
 		return CompletableFuture.completedFuture(registrationCenterUserDtos);
 	}
@@ -1034,11 +1025,10 @@ public class SyncMasterDataServiceHelper {
 	@Async
 	public CompletableFuture<List<ApplicantValidDocumentDto>> getApplicantValidDocument(LocalDateTime lastUpdatedTime,
 			LocalDateTime currentTimeStamp) {
-		List<ApplicantValidDocumentDto> applicantValidDocumentDtos = null;
 		List<ApplicantValidDocument> applicantValidDocuments = null;
 		try {
 			if(!isChangesFound("ApplicantValidDocument", lastUpdatedTime)) {
-				return CompletableFuture.completedFuture(applicantValidDocumentDtos);
+				return CompletableFuture.completedFuture(null);
 			}
 			if (lastUpdatedTime == null) {
 				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -1051,23 +1041,23 @@ public class SyncMasterDataServiceHelper {
 					MasterDataErrorCode.APPLICANT_VALID_DOCUMENT_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.APPLICANT_VALID_DOCUMENT_FETCH_EXCEPTION.getErrorMessage());
 		}
-			applicantValidDocumentDtos = convertApplicantValidDocumentEntityToDto(applicantValidDocuments);
-		return CompletableFuture.completedFuture(applicantValidDocumentDtos);
+		return CompletableFuture.completedFuture(convertApplicantValidDocumentEntityToDto(applicantValidDocuments));
 	}
 
 	/**
 	 * copy the documentTypeEntity properties to documentTypeDTO 
-	 * @param documentTypes
+	 * @param applicantValidDocuments
 	 * @return
 	 */
 	private List<ApplicantValidDocumentDto> convertApplicantValidDocumentEntityToDto(List<ApplicantValidDocument> applicantValidDocuments) {
 		if (applicantValidDocuments != null && !applicantValidDocuments.isEmpty()) {
 			List<ApplicantValidDocumentDto> applicantValidDocumentseDtos = new ArrayList<>();
 			applicantValidDocuments.stream().forEach(entity -> {
-				ApplicantValidDocumentDto entityDTO = new ApplicantValidDocumentDto();
+				ApplicantValidDocumentDto entityDTO = new ApplicantValidDocumentDto(entity.getApplicantValidDocumentId().getAppTypeCode(),
+						entity.getApplicantValidDocumentId().getDocTypeCode(), entity.getApplicantValidDocumentId().getDocCatCode(),
+						entity.getLangCode());
 				entityDTO.setIsDeleted(entity.getIsDeleted());
 				entityDTO.setIsActive(entity.getIsActive());
-				entityDTO.setLangCode(entity.getLangCode());
 				applicantValidDocumentseDtos.add(entityDTO);
 			});
 			return applicantValidDocumentseDtos;
@@ -1079,10 +1069,9 @@ public class SyncMasterDataServiceHelper {
 	public CompletableFuture<List<AppAuthenticationMethodDto>> getAppAuthenticationMethodDetails(
 			LocalDateTime lastUpdatedTime, LocalDateTime currentTimeStamp) {
 		List<AppAuthenticationMethod> appAuthenticationMethods = null;
-		List<AppAuthenticationMethodDto> appAuthenticationMethodDtos = null;
 		try {
 			if(!isChangesFound("AppAuthenticationMethod", lastUpdatedTime)) {
-				return CompletableFuture.completedFuture(appAuthenticationMethodDtos);
+				return CompletableFuture.completedFuture(null);
 			}
 
 			if (lastUpdatedTime == null) {
@@ -1097,8 +1086,7 @@ public class SyncMasterDataServiceHelper {
 					MasterDataErrorCode.APP_AUTHORIZATION_METHOD_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.APP_AUTHORIZATION_METHOD_FETCH_EXCEPTION.getErrorMessage());
 		}
-			appAuthenticationMethodDtos = convertAppAuthMethodEntityToDto(appAuthenticationMethods);
-		return CompletableFuture.completedFuture(appAuthenticationMethodDtos);
+		return CompletableFuture.completedFuture(convertAppAuthMethodEntityToDto(appAuthenticationMethods));
 
 	}
 
@@ -1127,11 +1115,10 @@ public class SyncMasterDataServiceHelper {
 	public CompletableFuture<List<AppRolePriorityDto>> getAppRolePriorityDetails(LocalDateTime lastUpdatedTime,
 			LocalDateTime currentTimeStamp) {
 		List<AppRolePriority> appRolePriorities = null;
-		List<AppRolePriorityDto> appRolePriorityDtos = null;
 		try {
 
 			if(!isChangesFound("AppRolePriority", lastUpdatedTime)) {
-				return CompletableFuture.completedFuture(appRolePriorityDtos);
+				return CompletableFuture.completedFuture(null);
 			}
 
 			if (lastUpdatedTime == null) {
@@ -1143,8 +1130,7 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.APP_ROLE_PRIORITY_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.APP_ROLE_PRIORITY_FETCH_EXCEPTION.getErrorMessage());
 		}
-			appRolePriorityDtos = convertAppRolePrioritiesToDto(appRolePriorities);
-			return CompletableFuture.completedFuture(appRolePriorityDtos);
+		return CompletableFuture.completedFuture(convertAppRolePrioritiesToDto(appRolePriorities));
 	}
 
 	private List<AppRolePriorityDto> convertAppRolePrioritiesToDto(List<AppRolePriority> appRolePriorities) {
@@ -1161,15 +1147,16 @@ public class SyncMasterDataServiceHelper {
 		      return appRolePriorityDtos;
 		   }
 		   return null;
-		}
+	}
+
+
 	@Async
 	public CompletableFuture<List<ScreenAuthorizationDto>> getScreenAuthorizationDetails(LocalDateTime lastUpdatedTime,
 			LocalDateTime currentTimeStamp) {
 		List<ScreenAuthorization> screenAuthorizationList = null;
-		List<ScreenAuthorizationDto> screenAuthorizationDtos = null;
 		try {
 			if(!isChangesFound("ScreenAuthorization", lastUpdatedTime)) {
-				return CompletableFuture.completedFuture(screenAuthorizationDtos);
+				return CompletableFuture.completedFuture(null);
 			}
 			if (lastUpdatedTime == null) {
 				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -1181,8 +1168,7 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.SCREEN_AUTHORIZATION_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.SCREEN_AUTHORIZATION_FETCH_EXCEPTION.getErrorMessage());
 		}
-				screenAuthorizationDtos = convertScreenAuthorizationToDto(screenAuthorizationList);
-		return CompletableFuture.completedFuture(screenAuthorizationDtos);
+		return CompletableFuture.completedFuture(convertScreenAuthorizationToDto(screenAuthorizationList));
 	}
 
 	/**
@@ -1213,10 +1199,9 @@ public class SyncMasterDataServiceHelper {
 	public CompletableFuture<List<ProcessListDto>> getProcessList(LocalDateTime lastUpdatedTime,
 			LocalDateTime currentTimeStamp) {
 		List<ProcessList> processList = null;
-		List<ProcessListDto> processListDtos = null;
 		try {
 			if(!isChangesFound("ProcessList", lastUpdatedTime)) {
-				return CompletableFuture.completedFuture(processListDtos);
+				return CompletableFuture.completedFuture(null);
 			}
 			if (lastUpdatedTime == null) {
 				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -1228,15 +1213,12 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.PROCESS_LIST_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.PROCESS_LIST_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if (processList != null && !processList.isEmpty()) {
-			processListDtos = convertprocessListEntityToDto(processList);
-		}
-		return CompletableFuture.completedFuture(processListDtos);
+		return CompletableFuture.completedFuture(convertprocessListEntityToDto(processList));
 	}
 
 	/**
 	 *  copy the properties from ProcessListEntity to ProcessListDto
-	 * @param templateList
+	 * @param processList
 	 * @return
 	 */
 	private List<ProcessListDto> convertprocessListEntityToDto(List<ProcessList> processList) {
@@ -1257,11 +1239,10 @@ public class SyncMasterDataServiceHelper {
 	@Async
 	public CompletableFuture<List<SyncJobDefDto>> getSyncJobDefDetails(LocalDateTime lastUpdatedTime,
 			LocalDateTime currentTimeStamp) {
-		List<SyncJobDefDto> syncJobDefDtos = null;
 		List<SyncJobDef> syncJobDefs = null;
 		try {
 			if(!isChangesFound("SyncJobDef", lastUpdatedTime)) {
-				return CompletableFuture.completedFuture(syncJobDefDtos);
+				return CompletableFuture.completedFuture(null);
 			}
 			if (lastUpdatedTime == null) {
 				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -1272,14 +1253,13 @@ public class SyncMasterDataServiceHelper {
 			throw new AdminServiceException(AdminServiceErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorCode(),
 					AdminServiceErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorMessage()+e);
 		}
-			syncJobDefDtos = convertSyncJobDefEntityToDto(syncJobDefs);
-		return CompletableFuture.completedFuture(syncJobDefDtos);
+		return CompletableFuture.completedFuture(convertSyncJobDefEntityToDto(syncJobDefs));
 	}
 
 	/**
 	 * copy the properties from SyncJobDefEntity to SyncJobDefDTO
 	 * 
-	 * @param templateList
+	 * @param syncJobDefs
 	 * @return
 	 */
 	private List<SyncJobDefDto> convertSyncJobDefEntityToDto(List<SyncJobDef> syncJobDefs) {
@@ -1289,11 +1269,7 @@ public class SyncMasterDataServiceHelper {
 			 SyncJobDefDto entityDTO = new SyncJobDefDto(entity.getId(), entity.getName(), entity.getApiName(),
 						entity.getParentSyncJobId(), entity.getSyncFreq(), entity.getLockDuration(),
 						entity.getIsActive(), entity.getIsDeleted(), entity.getLangCode());
-				entityDTO.setIsDeleted(entity.getIsDeleted());
-				entityDTO.setIsActive(entity.getIsActive());
-				entityDTO.setLangCode(entity.getLangCode());
 				syncJobDefDtos.add(entityDTO);
-				
 			});
 			return syncJobDefDtos;
 		}
@@ -1304,10 +1280,9 @@ public class SyncMasterDataServiceHelper {
 	public CompletableFuture<List<ScreenDetailDto>> getScreenDetails(LocalDateTime lastUpdatedTime,
 			LocalDateTime currentTimeStamp) {
 		List<ScreenDetail> screenDetails = null;
-		List<ScreenDetailDto> screenDetailDtos = null;
 		try {
 			if(!isChangesFound("ScreenDetail", lastUpdatedTime)) {
-				return CompletableFuture.completedFuture(screenDetailDtos);
+				return CompletableFuture.completedFuture(null);
 			}
 			if (lastUpdatedTime == null) {
 				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -1320,8 +1295,7 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorMessage());
 		}
-			screenDetailDtos = convertScreenDetailToDto(screenDetails);
-			return CompletableFuture.completedFuture(screenDetailDtos);
+		return CompletableFuture.completedFuture(convertScreenDetailToDto(screenDetails));
 	}
 
 	/**
@@ -1417,11 +1391,10 @@ public class SyncMasterDataServiceHelper {
 	@Async
 	public CompletableFuture<List<PermittedConfigDto>> getPermittedConfig(LocalDateTime lastUpdated,
 															 LocalDateTime currentTimeStamp) {
-		List<PermittedConfigDto> dtoList = null;
 		List<PermittedLocalConfig> list = null;
 		try {
 			if(!isChangesFound("PermittedLocalConfig", lastUpdated)) {
-				return CompletableFuture.completedFuture(dtoList);
+				return CompletableFuture.completedFuture(null);
 			}
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -1433,14 +1406,13 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(MasterDataErrorCode.PERMITTED_CONFIG_FETCH_FAILED.getErrorCode(),
 					e.getMessage(), e);
 		}
-			dtoList = convertPermittedConfigEntityToDto(list);
-		return CompletableFuture.completedFuture(dtoList);
+		return CompletableFuture.completedFuture(convertPermittedConfigEntityToDto(list));
 	}
 
 	/**
 	 * this method is copy the properties from PermittedLocalConfigEntity to PermittedLocalConfigDTO
 	 * 
-	 * @param templateList
+	 * @param PermittedLocalConfigList
 	 * @return
 	 */
 	private List<PermittedConfigDto> convertPermittedConfigEntityToDto(List<PermittedLocalConfig> PermittedLocalConfigList) {
@@ -1654,7 +1626,7 @@ public class SyncMasterDataServiceHelper {
 		regDTO.setLangCode(regEntity.getLongitude());
 		regDTO.setLocationCode(regEntity.getLocationCode());
 		regDTO.setHolidayLocationCode(regEntity.getHolidayLocationCode());
-		regDTO.setContactPhone(regEntity.getContactPerson());
+		regDTO.setContactPhone(regEntity.getContactPhone());
 		regDTO.setWorkingHours(regEntity.getWorkingHours());
 		regDTO.setNumberOfKiosks(regEntity.getNumberOfKiosks());
 		regDTO.setPerKioskProcessTime(regEntity.getPerKioskProcessTime());
@@ -1667,7 +1639,6 @@ public class SyncMasterDataServiceHelper {
 		regDTO.setIsDeleted(regEntity.getIsDeleted());
 		regDTO.setIsActive(regEntity.getIsActive());
 		regDTO.setLangCode(regEntity.getLangCode());
-		
 		return regDTO;
 	}
 }

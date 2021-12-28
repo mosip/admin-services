@@ -826,6 +826,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return filterResponseDto;
 	}
 
+	@CacheEvict(value = {"exceptional-holiday","working-day"}, allEntries = true)
 	@Override
 	@Transactional
 	public IdResponseDto decommissionRegCenter(String regCenterID) {
@@ -1568,6 +1569,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * Get the reg center by id filter with given lang code if exists update only
 	 * language specific columns else insert record into table with given language
 	 */
+	@CacheEvict(value = {"exceptional-holiday","working-day"}, allEntries = true)
 	@Override
 	@Transactional
 	public RegistrationCenterExtnDto updateRegistrationCenterWithLanguageSpecific(
@@ -1651,6 +1653,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return MapperUtils.map(clonedObject, registrationCenterExtnDto);
 	}
 
+	@CacheEvict(value = {"exceptional-holiday","working-day"}, allEntries = true)
 	@Override
 	@Transactional
 	public RegistrationCenterExtnDto updateRegistrationCenterWithNonLanguageSpecific(
