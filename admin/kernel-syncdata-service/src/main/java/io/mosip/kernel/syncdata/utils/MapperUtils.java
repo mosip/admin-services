@@ -41,28 +41,6 @@ public class MapperUtils {
 		objectMapper.registerModule(new JavaTimeModule());
 		objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 	}
-	
-	public List<HolidayDto> mapHolidays(List<Holiday> holidays) {
-		Objects.requireNonNull(holidays);
-		List<HolidayDto> holidayDtos = new ArrayList<>();
-		holidays.forEach(holiday -> {
-			LocalDate date = holiday.getHolidayId().getHolidayDate();
-			HolidayID holidayId = holiday.getHolidayId();
-			HolidayDto dto = new HolidayDto();
-			dto.setHolidayId(String.valueOf(holiday.getId()));
-			dto.setHolidayDate(String.valueOf(date));
-			dto.setHolidayName(holidayId.getHolidayName());
-			dto.setLangCode(holidayId.getLangCode());
-			dto.setHolidayYear(String.valueOf(date.getYear()));
-			dto.setHolidayMonth(String.valueOf(date.getMonth().getValue()));
-			dto.setHolidayDay(String.valueOf(date.getDayOfWeek().getValue()));
-			dto.setIsActive(holiday.getIsActive());
-			dto.setLocationCode(holidayId.getLocationCode());
-			dto.setIsDeleted(holiday.getIsDeleted());
-			holidayDtos.add(dto);
-		});
-		return holidayDtos;
-	}
 
 	private MapperUtils() {
 		super();
