@@ -18,6 +18,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -505,6 +506,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * deleteRegistrationCenter(java.lang.String)
 	 */
 	@Override
+	@CacheEvict(value = {"exceptional-holiday","working-day"}, allEntries = true)
 	@Transactional
 	public IdResponseDto deleteRegistrationCenter(String id) {
 		RegistrationCenter delRegistrationCenter = null;
@@ -924,6 +926,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * HEAD createRegistrationCenterAdminPriSecLang(java.util.List)
 	 */
 	@Transactional
+	@CacheEvict(value = {"exceptional-holiday","working-day"}, allEntries = true)
 	@Override
 	public RegistrationCenterExtnDto createRegistrationCenter(RegCenterPostReqDto regCenterPostReqDto) {
 		RegistrationCenter registrationCenterEntity = null;
@@ -1189,6 +1192,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
 	 * updateRegistrationCenter1(java.util.List)
 	 */
+	@CacheEvict(value = {"exceptional-holiday","working-day"}, allEntries = true)
 	@Transactional
 	@Override
 	public RegistrationCenterExtnDto updateRegistrationCenter(RegCenterPutReqDto regCenterPutReqDto) {
@@ -1400,6 +1404,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	}
 
 	// update the WorkingNonWorking table
+	@CacheEvict(value = {"exceptional-holiday","working-day"}, allEntries = true)
 	@Transactional
 	private void updateRegWorkingNonWorking(Map<String, Boolean> workingNonWorkingDays,
 			RegistrationCenter updRegistrationCenter, List<RegWorkingNonWorking> dbRegWorkingNonWorkings) {
