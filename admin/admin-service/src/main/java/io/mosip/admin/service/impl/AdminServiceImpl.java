@@ -3,9 +3,15 @@ package io.mosip.admin.service.impl;
 import java.util.List;
 
 import io.mosip.admin.dto.*;
+import io.mosip.admin.packetstatusupdater.dto.AuditRequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +22,7 @@ import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import io.mosip.admin.packetstatusupdater.util.RestClient;
 import io.mosip.admin.service.AdminService;
 import io.mosip.kernel.core.util.DateUtils;
+import org.springframework.web.client.RestTemplate;
 
 
 @Service
@@ -31,6 +38,12 @@ public class AdminServiceImpl implements AdminService {
 	RestClient restClient;
 
 	@Autowired
+	RestTemplate restTemplate;
+
+	@Autowired
+	Environment environment;
+
+	@Autowired
 	ObjectMapper objectMapper;
 
 
@@ -44,10 +57,13 @@ public class AdminServiceImpl implements AdminService {
 		procRequestWrapper.setRequest(searchInfo);
 		String dateTime = DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
 		procRequestWrapper.setRequesttime(dateTime);
+		HttpEntity<RegProcRequestWrapper<SearchInfo>> httpEntity = new HttpEntity<>(procRequestWrapper);
+		ResponseEntity<String> response = null;
 		try {
-			String response = restClient.postApi(ApiName.LOST_RID_API, null, "", "", MediaType.APPLICATION_JSON,
-					procRequestWrapper, String.class);
-			lostRidResponseDto = objectMapper.readValue(response, LostRidResponseDto.class);
+		//response = restClient.postApi(ApiName.LOST_RID_API, null, "", "", MediaType.APPLICATION_JSON,
+		//			procRequestWrapper, String.class);
+			response = restTemplate.exchange(environment.getProperty("LOST_RID_API"), HttpMethod.POST, httpEntity, String.class);
+			lostRidResponseDto = objectMapper.readValue(response.getBody(), LostRidResponseDto.class);
 		} catch (Exception e) {
 			throw new RequestException(LostRidErrorCode.UNABLE_TO_RETRIEVE_LOSTRID.getErrorCode(),
 					LostRidErrorCode.UNABLE_TO_RETRIEVE_LOSTRID.getErrorMessage()
