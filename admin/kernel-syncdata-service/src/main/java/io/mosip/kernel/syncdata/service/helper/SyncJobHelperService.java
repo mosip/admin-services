@@ -11,6 +11,7 @@ import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -57,6 +58,7 @@ public class SyncJobHelperService {
     private MapperUtils mapper;
 
     @Autowired
+    @Qualifier("selfTokenRestTemplate")
     private RestTemplate selfTokenRestTemplate;
 
     @Autowired
