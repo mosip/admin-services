@@ -12,6 +12,7 @@ import io.mosip.admin.bulkdataupload.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobExecutionException;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemWriter;
@@ -124,7 +125,7 @@ public class RepositoryListItemWriter<T> implements ItemWriter<T> {
             }
         } catch (Throwable t) {
             LOGGER.error(BulkUploadErrorCode.BATCH_ERROR.getErrorCode(), t);
-            throw t;
+            throw new JobExecutionException(t.getMessage() + (t.getCause() != null ? t.getCause().getMessage() : ""));
         }
     }
 

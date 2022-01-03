@@ -8,9 +8,9 @@ package io.mosip.kernel.masterdata.constant;
  */
 public enum UpdateQueryConstants {
 	BLOCKLISTED_WORD_UPDATE_QUERY_WITHOUT_DESCRIPTION(
-			"UPDATE BlocklistedWords bw SET bw.updatedBy = :updatedBy , bw.updatedDateTime = :updatedDateTime, bw.word = :word WHERE bw.word = :oldWord and  bw.langCode = :langCode and  (bw.isDeleted is null or bw.isDeleted = false)"),
+			"UPDATE BlocklistedWords bw SET bw.updatedBy = :updatedBy , bw.updatedDateTime = :updatedDateTime, bw.word = :word WHERE bw.word = :oldWord and  (bw.isDeleted is null or bw.isDeleted = false)"),
 	BLOCKLISTED_WORD_UPDATE_QUERY_WITH_DESCRIPTION(
-			"UPDATE BlocklistedWords bw SET bw.description = :description ,bw.updatedBy = :updatedBy , bw.updatedDateTime = :updatedDateTime, bw.word = :word  WHERE bw.word = :oldWord and  bw.langCode = :langCode and (bw.isDeleted is null or bw.isDeleted = false)");
+			"UPDATE BlocklistedWords bw SET bw.description = :description ,bw.updatedBy = :updatedBy , bw.updatedDateTime = :updatedDateTime, bw.word = :word  WHERE bw.word = :oldWord and (bw.isDeleted is null or bw.isDeleted = false)");
 
 	/**
 	 * The variable for query.
