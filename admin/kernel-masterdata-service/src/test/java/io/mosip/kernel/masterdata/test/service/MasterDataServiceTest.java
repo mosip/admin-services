@@ -2449,11 +2449,9 @@ public class MasterDataServiceTest {
 
 	@Test
 	public void validateWordNegativeTest() {
-		List<BlocklistedWords> badWords = new ArrayList<>();
-		BlocklistedWords word = new BlocklistedWords();
-		word.setWord("not-allowed");
-		badWords.add(word);
-		doReturn(badWords).when(wordsRepository).findAllByIsDeletedFalseOrIsDeletedNull();
+		List<String> badWords = new ArrayList<>();
+		badWords.add("not-allowed");
+		doReturn(badWords).when(wordsRepository).getAllBlockListedWords();
 		List<String> wordsList = new ArrayList<>();
 		wordsList.add("not-allowed");
 		boolean isValid = blocklistedWordsService.validateWord(wordsList);
@@ -2475,7 +2473,7 @@ public class MasterDataServiceTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	public void validateWordExceptionTest() {
-		doThrow(DataRetrievalFailureException.class).when(wordsRepository).findAllByIsDeletedFalseOrIsDeletedNull();
+		doThrow(DataRetrievalFailureException.class).when(wordsRepository).getAllBlockListedWords();
 		List<String> wordsList = new ArrayList<>();
 		wordsList.add("allowed");
 		blocklistedWordsService.validateWord(wordsList);
