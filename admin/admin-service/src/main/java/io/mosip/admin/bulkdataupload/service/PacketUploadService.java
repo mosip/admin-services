@@ -16,10 +16,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.StepContribution;
-import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +37,7 @@ import java.util.*;
 import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
 
 @Component
-public class PacketUploadService implements Tasklet {
+public class PacketUploadService {
 
     private static final Logger logger = LoggerFactory.getLogger(PacketUploadService.class);
     private static final String PACKET_SYNC_STATUS_ID = "mosip.registration.sync";
@@ -255,11 +251,6 @@ public class PacketUploadService implements Tasklet {
         } catch (Exception e) {
             logger.error("Failed to upload packet : {}", file.getOriginalFilename(), e);
         }
-        return null;
-    }
-
-    @Override
-    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         return null;
     }
 }
