@@ -733,10 +733,7 @@ public class IntegratedRepositoryTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void tst001updateBlockListedWordExceptWordTest2() throws Exception {
-		when(blocklistedWordsRepository.findByWordAndLangCode(Mockito.anyString(), Mockito.anyString()))
-				.thenThrow(new DataAccessException("...") {
-				});
-		when(blocklistedWordsRepository.findtoUpdateBlocklistedWordByWord(Mockito.anyString()))
+		when(blocklistedWordsRepository.updateBlockListedWordDetails(Mockito.anyString(), Mockito.anyString(), Mockito.any(), Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
 		MasterDataTest.checkResponse(

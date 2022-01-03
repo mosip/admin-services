@@ -65,4 +65,15 @@ public interface BlocklistedWordsRepository extends BaseRepository<BlocklistedWo
 	@Transactional
 	@Query("UPDATE BlocklistedWords bw SET bw.isDeleted = true , bw.deletedDateTime = ?2 WHERE lower(bw.word) = lower(?1) AND (bw.isDeleted IS NULL OR bw.isDeleted = false)")
 	int deleteBlockListedWord(String word, LocalDateTime deletedDateTime);
+
+	@Modifying
+	@Transactional
+	@Query("UPDATE BlocklistedWords bw SET bw.description = ?2 , bw.updatedDateTime = ?3, bw.updatedBy = ?4 WHERE lower(bw.word) = lower(?1) AND (bw.isDeleted IS NULL OR bw.isDeleted = false)")
+	int updateBlockListedWordDetails(String word, String description, LocalDateTime updatedDateTime, String updatedBy);
+
+	@Query("SELECT lower(word) from BlocklistedWords WHERE (isDeleted is null OR isDeleted = false) AND isActive = true")
+	List<String> getAllBlockListedWords();
+
+	@Query("FROM BlocklistedWords blw WHERE lower(blw.word) = lower(?1)")
+	BlocklistedWords findByOnlyWord(String word);
 }
