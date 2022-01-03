@@ -12,11 +12,14 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.HMACUtils2;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.StepContribution;
+import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,12 +37,11 @@ import java.math.BigInteger;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
 
 @Component
-public class PacketUploadService {
+public class PacketUploadService implements Tasklet {
 
     private static final Logger logger = LoggerFactory.getLogger(PacketUploadService.class);
     private static final String PACKET_SYNC_STATUS_ID = "mosip.registration.sync";
@@ -256,4 +258,8 @@ public class PacketUploadService {
         return null;
     }
 
+    @Override
+    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+        return null;
+    }
 }

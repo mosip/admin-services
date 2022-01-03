@@ -1,29 +1,17 @@
 package io.mosip.admin.config;
 
-import java.io.InputStream;
-import java.util.List;
-
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.file.FlatFileItemReader;
-import org.springframework.batch.item.file.LineCallbackHandler;
-import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
-import org.springframework.batch.item.file.mapping.DefaultLineMapper;
-import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.support.SimpleJobLauncher;
+import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.transaction.PlatformTransactionManager;
 
-import io.mosip.admin.bulkdataupload.entity.MachineType;
 /**
  * Spring batch configuration
  * 
@@ -36,96 +24,26 @@ public class SpringBatchConfig {
 
 	@Autowired
 	ApplicationContext applicationContext;
-	
-	
-	
-    @Bean
-    public Job job(JobBuilderFactory jobBuilderFactory,
-                   StepBuilderFactory stepBuilderFactory,
-                   ItemReader<Object> itemReader,
-                  // ItemProcessor<User, User> itemProcessor,
-                   //ItemWriter<AbstractPersistable> itemWriter
-                   ItemWriter<List<Object>> itemWriter
-    ) {
 
-        Step step = stepBuilderFactory.get("ETL-file-load")
-                .<Object, List<Object>>chunk(100)
-                .reader(itemReader)
-               // .processor(itemProcessor)
-                .writer(itemWriter)
-                .build();
+    @Autowired
+    JobRepository jobRepository;
 
+    @Autowired
+    PlatformTransactionManager platformTransactionManager;
 
-        return jobBuilderFactory.get("ETL-Load")
-                .incrementer(new RunIdIncrementer())
-                .start(step)
-                .build();
+    @Bean(name = "customStepBuilderFactory")
+    public StepBuilderFactory customStepBuilderFactory() {
+        return  new StepBuilderFactory(jobRepository, platformTransactionManager);
     }
 
 
-    @Bean
-    @StepScope
-    public FlatFileItemReader<Object> itemReader() {
-
-        DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
-        lineTokenizer.setDelimiter(",");
-        lineTokenizer.setStrict(false);
-
-        FlatFileItemReader<Object> flatFileItemReader = new FlatFileItemReader<>();
-        InputStream istream = this.getClass().getClassLoader().getResourceAsStream("users.csv");
-		flatFileItemReader.setResource(new InputStreamResource(istream));
-        flatFileItemReader.setName("CSV-Reader");
-        flatFileItemReader.setLinesToSkip(1);
-        flatFileItemReader.setSkippedLinesCallback(new LineCallbackHandler() {
-            @Override
-            public void handleLine(String s) {
-                lineTokenizer.setNames(s.split(","));
-            }
-        });
-
-
-        BeanWrapperFieldSetMapper<Object> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
-        fieldSetMapper.setTargetType(MachineType.class);
-
-        DefaultLineMapper<Object> defaultLineMapper = new DefaultLineMapper<>();
-        defaultLineMapper.setLineTokenizer(lineTokenizer);
-        defaultLineMapper.setFieldSetMapper(fieldSetMapper);
-
-        flatFileItemReader.setLineMapper(defaultLineMapper);
-        return flatFileItemReader;
-    }
-
-    /*@Bean
-    public LineMapper<User> lineMapper() {
-
-        DefaultLineMapper<User> defaultLineMapper = new DefaultLineMapper<>();
-        DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
-
-        lineTokenizer.setDelimiter(",");
-        lineTokenizer.setStrict(false);
-        lineTokenizer.setNames(new String[]{"id", "name", "dept", "salary"});
-
-        BeanWrapperFieldSetMapper<User> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
-        fieldSetMapper.setTargetType(User.class);
-
-        defaultLineMapper.setLineTokenizer(lineTokenizer);
-        defaultLineMapper.setFieldSetMapper(fieldSetMapper);
-
-        return defaultLineMapper;
-    }*/
-
-    @SuppressWarnings("unchecked")
-	@Bean
-    public ItemWriter<List<Object>> itemWriter() {
-    	ItemWriter<List<Object>> writer=new ItemWriter<List<Object>>() {
-
-			@Override
-			public void write(List<? extends List<Object>> items) throws Exception {
-				// TODO Auto-generated method stub	
-			}
-		};
-
-        return writer;
+    @Bean(name = "asyncJobLauncher")
+    public JobLauncher simpleJobLauncher(JobRepository jobRepository) throws Exception {
+        SimpleJobLauncher jobLauncher = new SimpleJobLauncher();
+        jobLauncher.setJobRepository(jobRepository);
+        jobLauncher.setTaskExecutor(new SimpleAsyncTaskExecutor());
+        jobLauncher.afterPropertiesSet();
+        return jobLauncher;
     }
 
 }
