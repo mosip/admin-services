@@ -17,4 +17,7 @@ public class TestBootApplication {
 		return new RestTemplate();
 	}
 
+	@Bean
+	public RestTemplate selfTokenRestTemplate() { return new RestTemplate(); }
+
 }

@@ -2,15 +2,11 @@ package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.Table;
 
-import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,7 +25,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "blocklisted_words", schema = "master")
 @EqualsAndHashCode(callSuper = true)
-@IdClass(WordAndLanguageCodeID.class)
 public class BlocklistedWords extends BaseEntity implements Serializable {
 
 	/**
@@ -37,18 +32,17 @@ public class BlocklistedWords extends BaseEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = -402658536057675404L;
 
-	@Id
-	@AttributeOverrides({
-			@AttributeOverride(name = "word", column = @Column(name = "word", nullable = false, length = 128)),
-			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
 	/**
 	 * The blocklisted word.
 	 */
+	@Id
+	@Column(name = "word", length = 128)
 	private String word;
 
 	/**
 	 * The language code of the word.
 	 */
+	@Column(name = "lang_code", length = 3)
 	private String langCode;
 
 	/**

@@ -136,7 +136,7 @@ public class Mapper {
 		repositoryMap.put(ZoneUserHistory.class,"zoneUserHistoryRepository");
 		
     }
-    public String getRepo(Class<?> clzz) {
+    public static String getRepo(Class<?> clzz) {
     	return repositoryMap.get(clzz);
     }
 
@@ -190,7 +190,7 @@ public class Mapper {
 		entityMap.put("zone_user_h", ZoneUserHistory.class);
 	}
 	
-	public Class<?> getEntity(String tableName) {
+	public static Class<?> getEntity(String tableName) {
 		return entityMap.get(tableName);
 	}
 }

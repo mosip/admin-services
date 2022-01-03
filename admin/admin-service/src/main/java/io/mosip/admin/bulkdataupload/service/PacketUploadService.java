@@ -12,7 +12,6 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.HMACUtils2;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -34,7 +33,6 @@ import java.math.BigInteger;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
 
@@ -255,5 +253,4 @@ public class PacketUploadService {
         }
         return null;
     }
-
 }

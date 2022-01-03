@@ -209,10 +209,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 		try {
 			List<ValidDocument> validDocuments = documentRepository.findByDocCategoryCode(docCatCode);
 			if (null == validDocuments || validDocuments.size() == 0) {
-				throw new DataNotFoundException(
-						ValidDocumentErrorCode.VALID_DOCUMENT_NOT_FOUND_EXCEPTION.getErrorCode(),
-						ValidDocumentErrorCode.VALID_DOCUMENT_NOT_FOUND_EXCEPTION.getErrorMessage());
-
+				return validDocumentDtos;
 			}
 			for (ValidDocument validDocument : validDocuments) {
 				documentType = documentTypeRepository.findByCodeAndLangCode(validDocument.getDocTypeCode(), langCode);
