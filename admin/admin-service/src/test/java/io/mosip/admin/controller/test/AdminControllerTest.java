@@ -61,12 +61,15 @@ public class AdminControllerTest {
 	private PublisherClient<String, EventModel, HttpHeaders> publisher;
 
 	private ObjectMapper mapper;
-	@MockBean
+
+	@Autowired
 	private AuditUtil auditUtil;
 
 	@Autowired
 	RestTemplate restTemplate;
+
 	MockRestServiceServer mockRestServiceServer;
+
 	@Value("${LOST_RID_API}")
 	String lstRidUrl;
 
@@ -77,7 +80,7 @@ public class AdminControllerTest {
 	public void setUp() throws Exception {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-		doNothing().when(auditUtil).setAuditRequestDto(Mockito.any());
+		//doNothing().when(auditUtil).setAuditRequestDto(Mockito.any());
 
 		List<FilterInfo> lst = new ArrayList<>();
 		FilterInfo e = new FilterInfo();

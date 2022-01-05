@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -24,7 +25,9 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,6 +54,9 @@ import io.mosip.admin.util.AdminDataUtil;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.client.RestTemplate;
+
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -67,10 +73,10 @@ public class IntegratedControllerTest {
 
 	private ObjectMapper mapper;
 
-	@MockBean
+	@Autowired
 	private AuditUtil auditUtil;
 
-	@MockBean
+	@Autowired
 	private BulkDataService bulkDataService;
 
 	@MockBean
@@ -82,13 +88,28 @@ public class IntegratedControllerTest {
 
 	private PacketStatusUpdateResponseDto packetUpdateResDto = new PacketStatusUpdateResponseDto();
 
-	@MockBean
+	@Autowired
 	private PacketStatusUpdateService packetUpdateStatusService;
 
 	private AuditManagerRequestDto auditManagerRequestDto;
 
-	@MockBean
+	@Autowired
 	RestClient restClient;
+
+	@Autowired
+	private RestTemplate restTemplate;
+
+	@Value("${mosip.kernel.packet-status-update-url}")
+	private String packetUpdateStatusUrl;
+
+	@Value("${LOST_RID_API}")
+	private String lostRIDUrl;
+
+	@Value("${mosip.kernel.zone-validation-url}")
+	private String zoneAuthorizeUrl;
+
+	private MockRestServiceServer mockRestServiceServer;
+
 	SearchInfo info;
 	LostRidResponseDto lDto = new LostRidResponseDto();
 	private RequestWrapper<SearchInfo> searchInfoReq = new RequestWrapper<SearchInfo>();
@@ -97,7 +118,8 @@ public class IntegratedControllerTest {
 	public void setUp() {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-		doNothing().when(auditUtil).setAuditRequestDto(Mockito.any());
+		//doNothing().when(auditUtil).setAuditRequestDto(Mockito.any());
+		mockRestServiceServer=MockRestServiceServer.createServer(restTemplate);
 
 		bulkDataResponseDto = new BulkDataResponseDto();
 		bulkDataResponseDto.setCategory("masterdata");
@@ -145,7 +167,6 @@ public class IntegratedControllerTest {
 		lstRid.add(l);
 		lDto.setErrors(new ArrayList<>());
 		lDto.setResponse(lstRid);
-
 	}
 
 	@Test
@@ -156,22 +177,29 @@ public class IntegratedControllerTest {
 		MockMultipartFile gender = new MockMultipartFile("data", "filename.txt", "text/plain", content.getBytes());
 
 		MockMultipartFile[] f=new MockMultipartFile[]{gender};
-		Mockito.when(bulkDataService.bulkDataOperation("Gender", "update", "masterdata", f, "10006",
+		/*Mockito.when(bulkDataService.bulkDataOperation("Gender", "update", "masterdata", f, "10006",
 				"REGISTRATION_CLIENT", "NEW", "APPROVED")).thenReturn(bulkDataResponseDto);
-		
+		*/
 		AdminDataUtil.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/bulkupload/transcation/123455")).andReturn(), null);
+				mockMvc.perform(MockMvcRequestBuilders.get("/bulkupload/transcation/123455")).andReturn(), "ADMN-BLK-TRNSCTNS-001");
 
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void t002validatePacketTest() throws Exception {
-		Mockito.when(packetUpdateStatusService.getStatus("1234", "eng")).thenReturn(packetUpdateResDto);
+
+		mockRestServiceServer.expect(requestTo(zoneAuthorizeUrl + "?rid=1234"))
+				.andRespond(withSuccess().body("{}"));
+
+		StringBuilder urlBuilder = new StringBuilder();
+		urlBuilder.append(packetUpdateStatusUrl).append("/").append("1234");
+		mockRestServiceServer.expect(requestTo(urlBuilder.toString()))
+				.andRespond(withSuccess().body("{\"id\":null,\"version\":null,\"responsetime\":\"2022-01-04T18:56:45.275Z\",\"metadata\":null,\"response\":[],\"errors\":null}"));
 
 		AdminDataUtil.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/packetstatusupdate").param("rid", "1234")).andReturn(),
-				null);
+				mockMvc.perform(MockMvcRequestBuilders.get("/packetstatusupdate")
+						.param("rid", "1234")).andReturn(), null);
 
 	}
 
@@ -184,9 +212,10 @@ public class IntegratedControllerTest {
 				+ "\",\r\n    \"metadata\": null,\r\n    \"response\": [{\"registrationId\":\"1234\",\"registrationDate\":\""
 				+ LocalDate.now().toString()
 				+ "\"}],\r\n    \"errors\": [{\"errorCode\":\"ADMN-LRID-001\",\"errorMessage\":\"unable to get rid\"}]\r\n}";
+		mockRestServiceServer.expect(requestTo(lostRIDUrl))
+				.andRespond(withSuccess().body(str));
+
 		searchInfoReq.getRequest().setSort(new ArrayList<SortInfo>());
-		when(restClient.postApi(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
-				Mockito.any(), Mockito.any())).thenReturn(str);
 
 		AdminDataUtil.checkResponse(
 				(mockMvc.perform(MockMvcRequestBuilders.post("/lostRid").contentType(MediaType.APPLICATION_JSON)

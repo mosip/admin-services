@@ -246,7 +246,8 @@ public class AuditUtil {
 		//if current profile is local or dev donot call this method
 		if(Arrays.stream(env.getActiveProfiles().length == 0 ?
 				env.getDefaultProfiles() : env.getActiveProfiles()).anyMatch(
-				environment -> (environment.equalsIgnoreCase("local")) )) {
+				environment -> (environment.equalsIgnoreCase("local") ||
+						environment.equalsIgnoreCase("test")) )) {
 			LOGGER.info("Recieved Audit : "+auditRequestDto.toString());
 
 		} else {
