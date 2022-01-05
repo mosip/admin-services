@@ -44,8 +44,9 @@ public class BulkDataUploadControllerTest {
 
 	private ObjectMapper mapper;
 
-	@MockBean
+	@Autowired
 	private AuditUtil auditUtil;
+
 	@Autowired
 	RestTemplate restTemplate;
 	MockRestServiceServer mockRestServiceServer;
@@ -54,7 +55,7 @@ public class BulkDataUploadControllerTest {
 	public void setUp() {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-		doNothing().when(auditUtil).setAuditRequestDto(Mockito.any());
+		//doNothing().when(auditUtil).setAuditRequestDto(Mockito.any());
 		mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
 	}
 

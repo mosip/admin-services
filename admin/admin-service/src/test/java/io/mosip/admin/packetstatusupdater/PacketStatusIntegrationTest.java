@@ -14,6 +14,9 @@ import java.net.http.HttpClient;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateResponseDto;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -32,6 +35,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -74,14 +78,11 @@ public class PacketStatusIntegrationTest {
 	@Autowired
 	private ObjectMapper objectMapper;
 	
-	@MockBean
+	@Autowired
 	private AuditUtil auditUtil;
 	
 	private List<ServiceError> validationErrorList=null;
-	
-	@Mock
-	private HttpClient defaultHttpClient;
-	
+
 	@Autowired
 	private MockMvc mockMvc;
 	
@@ -98,7 +99,7 @@ public class PacketStatusIntegrationTest {
 		serviceError.setMessage("Forbidden");
 		validationErrorList= new ArrayList<ServiceError>();
 		validationErrorList.add(serviceError);
-		doNothing().when(auditUtil).setAuditRequestDto(EventEnum.ACCESS_DENIED);
+		//doNothing().when(auditUtil).setAuditRequestDto(EventEnum.ACCESS_DENIED);
 		//mockRestServiceServer=MockRestServiceServer.bindTo(restTemplate).build();
 		mockRestServiceServer=MockRestServiceServer.createServer(restTemplate);
 	}
@@ -112,13 +113,12 @@ public class PacketStatusIntegrationTest {
 		mockRestServiceServer.expect(requestTo(uribuilder.toUriString()))
 				.andRespond(withSuccess().body(POSITIVE_RESPONSE_ZONE_VALIATION));
 		mockRestServiceServer
-				.expect(requestTo(packetUpdateStatusUrl.toString() + "/" + mandatoryLang.split(",")[0]
-						+ "/1000012232223243224234"))
+				.expect(requestTo(packetUpdateStatusUrl + "/1000012232223243224234"))
 		.andRespond(withSuccess().body(POSITIVE_RESPONSE_REG_PROC));
 		
 		mockMvc.perform(
 				get("/packetstatusupdate").param("rid", "1000012232223243224234"))
-				.andExpect(status().is5xxServerError());
+				.andExpect(status().isOk());
 		
 		
 	}
@@ -131,10 +131,12 @@ public class PacketStatusIntegrationTest {
 		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withUnauthorizedRequest());
 		
 		
-		mockMvc.perform(
-				get("/packetstatusupdate").param("rid","1000012232223243224234")).andExpect(status().is5xxServerError());
-		
-		
+		MvcResult mvcResult = mockMvc.perform(
+				get("/packetstatusupdate").param("rid","1000012232223243224234")).andExpect(status().isOk()).andReturn();
+
+		ResponseWrapper<PacketStatusUpdateResponseDto> response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+				new TypeReference<ResponseWrapper<PacketStatusUpdateResponseDto>>(){});
+		Assert.assertNull(response.getResponse());
 	}
 	
 	@Test
@@ -144,12 +146,14 @@ public class PacketStatusIntegrationTest {
 		UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(zoneValidationUrl).queryParam("rid",
 				"1000012232223243224234");
 		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withStatus(HttpStatus.FORBIDDEN));
-		
-		
-		mockMvc.perform(
-				get("/packetstatusupdate").param("rid","1000012232223243224234")).andExpect(status().is5xxServerError());
-		
-		
+
+
+		MvcResult mvcResult = mockMvc.perform(
+				get("/packetstatusupdate").param("rid","1000012232223243224234")).andExpect(status().isOk()).andReturn();
+
+		ResponseWrapper<PacketStatusUpdateResponseDto> response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+				new TypeReference<ResponseWrapper<PacketStatusUpdateResponseDto>>(){});
+		Assert.assertNull(response.getResponse());
 	}
 	
 	@Test
@@ -160,12 +164,14 @@ public class PacketStatusIntegrationTest {
 		ResponseWrapper<?> validatationResponse= new ResponseWrapper<>();
 		validatationResponse.setErrors(validationErrorList);
 		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withUnauthorizedRequest().body(objectMapper.writeValueAsString(validatationResponse)));
-		
-		
-		mockMvc.perform(
-				get("/packetstatusupdate").param("rid","1000012232223243224234")).andExpect(status().isUnauthorized());
-		
-		
+
+
+		MvcResult mvcResult = mockMvc.perform(
+				get("/packetstatusupdate").param("rid","1000012232223243224234")).andExpect(status().isOk()).andReturn();
+
+		ResponseWrapper<PacketStatusUpdateResponseDto> response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+				new TypeReference<ResponseWrapper<PacketStatusUpdateResponseDto>>(){});
+		Assert.assertNull(response.getResponse());
 	}
 	
 	@Test
@@ -177,8 +183,7 @@ public class PacketStatusIntegrationTest {
 		ResponseWrapper<?> validatationResponse= new ResponseWrapper<>();
 		validatationResponse.setErrors(validationErrorList);
 		mockRestServiceServer
-				.expect(requestTo(packetUpdateStatusUrl.toString() + "/" + mandatoryLang.split(",")[0]
-						+ "/1000012232223243224234"))
+				.expect(requestTo(packetUpdateStatusUrl + "/1000012232223243224234"))
 		.andRespond(withStatus(HttpStatus.FORBIDDEN).body(objectMapper.writeValueAsString(validatationResponse)));
 		
 		
@@ -197,8 +202,7 @@ public class PacketStatusIntegrationTest {
 		ResponseWrapper<?> validatationResponse= new ResponseWrapper<>();
 		validatationResponse.setErrors(validationErrorList);
 		mockRestServiceServer
-				.expect(requestTo(packetUpdateStatusUrl.toString() + "/" + mandatoryLang.split(",")[0]
-						+ "/1000012232223243224234"))
+				.expect(requestTo(packetUpdateStatusUrl+ "/1000012232223243224234"))
 		.andRespond(withBadRequest());
 		
 		
@@ -217,8 +221,7 @@ public class PacketStatusIntegrationTest {
 		validatationResponse.setErrors(validationErrorList);
 		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(POSITIVE_RESPONSE_ZONE_VALIATION));
 		mockRestServiceServer
-				.expect(requestTo(packetUpdateStatusUrl.toString() + "/" + mandatoryLang.split(",")[0]
-						+ "/1000012232223243224234"))
+				.expect(requestTo(packetUpdateStatusUrl + "/1000012232223243224234"))
 		.andRespond(withStatus(HttpStatus.FORBIDDEN).body(objectMapper.writeValueAsString(validatationResponse)));
 		
 		mockMvc.perform(
@@ -238,14 +241,12 @@ public class PacketStatusIntegrationTest {
 		validatationResponse.setErrors(validationErrorList);
 		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(PARSE_ERROR_RESPONSE_REG_PROC));
 		mockRestServiceServer
-				.expect(requestTo(packetUpdateStatusUrl.toString() + "/" + mandatoryLang.split(",")[0]
-						+ "/1000012232223243224234"))
+				.expect(requestTo(packetUpdateStatusUrl + "/1000012232223243224234"))
 		.andRespond(withSuccess().body(objectMapper.writeValueAsString(validatationResponse)));
 		
-		mockMvc.perform(
-				get("/packetstatusupdate").param("rid","1000012232223243224234")).andExpect(status().isInternalServerError());
-		
-		
+		AdminDataUtil.checkResponse(mockMvc.perform(get("/packetstatusupdate")
+				.param("rid","1000012232223243224234")).andExpect(status().isOk()).andReturn(),
+				"ADM-PKT-010");
 	}
 	
 /*	@Test
@@ -281,8 +282,7 @@ public class PacketStatusIntegrationTest {
 				"}";
 		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(str1));
 		mockRestServiceServer
-				.expect(requestTo(packetUpdateStatusUrl.toString() + "/" + mandatoryLang.split(",")[0]
-						+ "/1000012232223243224234"))
+				.expect(requestTo(packetUpdateStatusUrl + "/1000012232223243224234"))
 		.andRespond(withSuccess().body(objectMapper.writeValueAsString(validatationResponse)));
 		mockMvc.perform(
 				get("/packetstatusupdate").param("rid","1000012232223243224234").param("lang", "eng")).andExpect(status().is(500));
@@ -320,8 +320,7 @@ public class PacketStatusIntegrationTest {
 				"}";
 		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(str1));
 		mockRestServiceServer
-				.expect(requestTo(packetUpdateStatusUrl.toString() + "/" + mandatoryLang.split(",")[0]
-						+ "/1000012232223243224234"))
+				.expect(requestTo(packetUpdateStatusUrl + "/1000012232223243224234"))
 		.andRespond(withSuccess().body(objectMapper.writeValueAsString(str)));
 		mockMvc.perform(
 				get("/packetstatusupdate").param("rid","1000012232223243224234").param("lang", "eng")).andExpect(status().is(500));
@@ -359,8 +358,7 @@ public class PacketStatusIntegrationTest {
 				"}";
 		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(str1));
 		mockRestServiceServer
-				.expect(requestTo(packetUpdateStatusUrl.toString() + "/" + mandatoryLang.split(",")[0]
-						+ "/1000012232223243224234"))
+				.expect(requestTo(packetUpdateStatusUrl + "/1000012232223243224234"))
 		.andRespond(withSuccess().body(objectMapper.writeValueAsString(str)));
 		AdminDataUtil.checkResponse(mockMvc.perform(
 				get("/packetstatusupdate").param("rid","1000012232223243224234").param("lang", "eng")).andReturn(), "ADM-PKT-001");
@@ -438,7 +436,7 @@ public class PacketStatusIntegrationTest {
 				"}";
 		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(str1));
 		mockRestServiceServer
-				.expect(requestTo("<https://dev.mosip.io/registrationprocessor/v1/registrationtransaction/search/eng/1000012232223243224234>"))
+				.expect(requestTo(packetUpdateStatusUrl + "/1000012232223243224234>"))
 		.andRespond(withSuccess().body(objectMapper.writeValueAsString(str)));
 		
 		mockMvc.perform(

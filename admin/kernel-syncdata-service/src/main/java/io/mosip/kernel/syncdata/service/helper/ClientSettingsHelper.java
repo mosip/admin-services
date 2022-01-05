@@ -73,7 +73,7 @@ public class ClientSettingsHelper {
                 getURLDetails(AppRolePriority.class) : serviceHelper.getAppRolePriorityDetails(lastUpdated, currentTimestamp));
 
         futuresMap.put(Machine.class, serviceHelper.getMachines(regCenterId, lastUpdated, currentTimestamp, machineId));
-        futuresMap.put(RegistrationCenter.class, serviceHelper.getRegistrationCenter(machineId, lastUpdated, currentTimestamp));
+        futuresMap.put(RegistrationCenter.class, serviceHelper.getRegistrationCenter(regCenterId, lastUpdated, currentTimestamp));
 
         futuresMap.put(Template.class, hasURLDetails(Template.class, isV2API, deltaSync) ?
                 getURLDetails(Template.class) : serviceHelper.getTemplates(regClientModuleId, lastUpdated, currentTimestamp));
