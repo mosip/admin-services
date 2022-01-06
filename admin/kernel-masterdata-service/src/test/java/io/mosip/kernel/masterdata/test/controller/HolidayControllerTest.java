@@ -259,6 +259,16 @@ public class HolidayControllerTest {
 				.andReturn(), "KER-MSD-731");
 
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t007updateHolidayStatusTest() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc.perform(
+				MockMvcRequestBuilders.patch("/holidays").param("holidayId", "2000002").param("isActive", "false"))
+				.andReturn(), "KER-MSD-731");
+
+	}
 
 	@Test
 	@WithUserDetails("global-admin")
@@ -305,6 +315,17 @@ public class HolidayControllerTest {
 	@WithUserDetails("global-admin")
 	public void t011searchMachineTest1() throws Exception {
 		searchDtoReq.getRequest().getFilters().get(0).setType(FilterTypeEnum.CONTAINS.toString());
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays/search")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoReq))).andReturn(),
+				null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t011searchMachineTest6() throws Exception {
+		searchDtoReq.getRequest().getFilters().get(0).setType(FilterTypeEnum.CONTAINS.toString());
+		searchDtoReq.getRequest().getFilters().get(0).setToValue("Year");
+		searchDtoReq.getRequest().getFilters().get(0).setColumnName("holidayName");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoReq))).andReturn(),
 				null);

@@ -181,7 +181,15 @@ public class DeviceTypeControllerTest {
 	public void t006updateDeviceTypeStatusTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.patch("/devicetypes").param("isActive", "true").param("code", "CMR"))
-				.andReturn(),null);;
+				.andReturn(),null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t006updateDeviceTypeStatusTest1() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.patch("/devicetypes").param("isActive", "false").param("code", "CMR"))
+				.andReturn(),"KER-MSD-055");
 	}
 
 	@Test

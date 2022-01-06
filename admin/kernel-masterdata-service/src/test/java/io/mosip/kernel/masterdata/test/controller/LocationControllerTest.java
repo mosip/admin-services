@@ -230,6 +230,20 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
+	public void t027updateLocationHierarchyDetailsTest() throws Exception {
+		locationRequestDto.getRequest().setCode("MOR");
+		locationRequestDto.getRequest().setName("MyCountry");
+		locationRequestDto.getRequest().setHierarchyLevel((short)0);
+		locationRequestDto.getRequest().setLangCode("eng");
+		locationRequestDto.getRequest().setParentLocCode("");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/locations").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(locationRequestDto))).andReturn(),
+				"KER-MSD-244");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t023updateLocationHierarchyDetailsTest1() throws Exception {
 		locationRequestDto.getRequest().setCode("MOR1");
 		locationRequestDto.getRequest().setName("MyCountry1");
@@ -322,6 +336,25 @@ public class LocationControllerTest {
 				mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(locationCreateDtoReq))).andReturn(),
 				null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t005createLocationHierarchyDetailsTest4() throws Exception {
+		LocationCreateDto createDto = new LocationCreateDto();
+		createDto.setCode("11111");
+		createDto.setHierarchyLevel((short) 0);
+		createDto.setIsActive(true);
+		createDto.setHierarchyName("Country");
+		createDto.setLangCode("eng");
+		createDto.setName("11111");
+		createDto.setParentLocCode("");
+		
+		locationCreateDtoReq.setRequest(createDto);
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(locationCreateDtoReq))).andReturn(),
+				"KER-MSD-385");
 	}
 	
 	@Test

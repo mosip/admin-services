@@ -22,22 +22,23 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.servlet.MockMvc;
+
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -99,9 +100,11 @@ public class PacketStatusIntegrationTest {
 		serviceError.setMessage("Forbidden");
 		validationErrorList= new ArrayList<ServiceError>();
 		validationErrorList.add(serviceError);
+
 		//doNothing().when(auditUtil).setAuditRequestDto(EventEnum.ACCESS_DENIED);
 		//mockRestServiceServer=MockRestServiceServer.bindTo(restTemplate).build();
 		mockRestServiceServer=MockRestServiceServer.createServer(restTemplate);
+
 	}
 	
 	@Test
@@ -113,9 +116,9 @@ public class PacketStatusIntegrationTest {
 		
 		mockMvc.perform(
 				get("/packetstatusupdate").param("rid", "1000012232223243224234"))
+
 				.andExpect(status().isOk());
-		
-		
+
 	}
 	
 	/*@Test

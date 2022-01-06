@@ -252,6 +252,23 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
+	public void t5registrationCenterTypeFilterValuesFailureAll1() throws Exception {
+		//given
+		setValueInFilter(FilterColumnEnum.ALL.toString());
+		registrationCenterTypeFilterWrapper.getRequest().getFilters().get(0).setColumnName("code");
+		registrationCenterTypeFilterWrapper.getRequest().getFilters().get(0).setText("REG");
+		//when
+		String uri = "/registrationcentertypes/filtervalues";
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post(uri)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(mapToJson(registrationCenterTypeFilterWrapper));
+		//then
+		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), null);
+	}
+	
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t5registrationCenterTypeFilterValuesFailureEmpty() throws Exception {
 		//given
 		setValueInFilter(FilterColumnEnum.EMPTY.toString());
@@ -511,4 +528,19 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 				.content(mapper.writeValueAsString(MasterDataTest.commonFilterValueDto("name", "Regular", "unique")))).andReturn(),null);
 	}
 	
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void registrationCenterFilterValuesTest1() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/registrationcenters/filtervalues").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(MasterDataTest.commonFilterValueDto("name", "Regular", "all")))).andReturn(),null);
+	}
+	
+	
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void updateRegistrationCenterTypeStatusTest1() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.patch("/registrationcentertypes").param("isActive", "false").param("code","REG")).andReturn(),"KER-MSD-270");
+	}
 }

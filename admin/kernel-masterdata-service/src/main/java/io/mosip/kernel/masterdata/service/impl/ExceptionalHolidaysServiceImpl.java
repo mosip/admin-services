@@ -105,7 +105,7 @@ public class ExceptionalHolidaysServiceImpl implements ExceptionalHolidayService
 		ExceptionalHolidayResponseDto excepHolidayResponseDto = new ExceptionalHolidayResponseDto();
 		excepHolidayResponseDto.setExceptionalHolidayList(new ArrayList<>());
 
-		if(exeptionalHolidayList == null)
+		if(exeptionalHolidayList == null || exeptionalHolidayList.size()==0)
 			return excepHolidayResponseDto;
 
 		exeptionalHolidayList.forEach(v -> {

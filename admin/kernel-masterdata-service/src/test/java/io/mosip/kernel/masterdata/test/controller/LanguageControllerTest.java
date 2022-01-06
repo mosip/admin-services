@@ -146,6 +146,13 @@ public class LanguageControllerTest {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/languages").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(languagePutdto))).andReturn(),null);
 	}
+	@Test
+	@WithUserDetails("global-admin")
+	public void t3updateLanguageTest1() throws Exception {
+		languagePutdto.getRequest().setCode("tam");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/languages").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(languagePutdto))).andReturn(),"KER-MSD-999");
+	}
 
 	@Test
 	@WithUserDetails("global-admin")

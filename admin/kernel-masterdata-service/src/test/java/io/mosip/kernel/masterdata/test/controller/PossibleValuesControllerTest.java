@@ -60,7 +60,7 @@ public class PossibleValuesControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001createMachineSpecificationTest() throws Exception {
+	public void t001getAllValuesOfFieldTest() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/Country").param("langCode", "eng")).andReturn(),
@@ -70,7 +70,7 @@ public class PossibleValuesControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001createMachineSpecificationTest1() throws Exception {
+	public void t001getAllValuesOfFieldTest1() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/bloodType2").param("langCode", "eng")).andReturn(),
@@ -79,7 +79,7 @@ public class PossibleValuesControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001createMachineSpecificationTest6() throws Exception {
+	public void t001getAllValuesOfFieldTest6() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/bloodType2").param("langCode", "ara")).andReturn(),
@@ -88,7 +88,7 @@ public class PossibleValuesControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001createMachineSpecificationTest7() throws Exception {
+	public void t001getAllValuesOfFieldTest7() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/bl").param("langCode", "eng")).andReturn(),
@@ -97,7 +97,7 @@ public class PossibleValuesControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001createMachineSpecificationTest5() throws Exception {
+	public void t001getAllValuesOfFieldTest5() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/country1").param("langCode", "eng")).andReturn(),
@@ -106,17 +106,26 @@ public class PossibleValuesControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001createMachineSpecificationTest2() throws Exception {
+	public void t001getAllValuesOfFieldTest9() throws Exception {
 
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/Country").param("langCode", "")).andReturn(),
+				mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/bloodType1").param("langCode", "eng")).andReturn(),
+				null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t001getAllValuesOfFieldTest2() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/Country").param("langCode","")).andReturn(),
 				null);
 	}
 	
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001createMachineSpecificationTest3() throws Exception {
+	public void t001getAllValuesOfFieldTest3() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/Country").param("langCode", "eng,ara")).andReturn(),
@@ -125,7 +134,7 @@ public class PossibleValuesControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001createMachineSpecificationTest4() throws Exception {
+	public void t001getAllValuesOfFieldTest4() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/Country").param("langCode", "eng,ara")).andReturn(),
