@@ -189,9 +189,6 @@ public class IntegratedControllerTest {
 	@WithUserDetails("global-admin")
 	public void t002validatePacketTest() throws Exception {
 
-		mockRestServiceServer.expect(requestTo(zoneAuthorizeUrl + "?rid=1234"))
-				.andRespond(withSuccess().body("{}"));
-
 		StringBuilder urlBuilder = new StringBuilder();
 		urlBuilder.append(packetUpdateStatusUrl).append("/").append("1234");
 		mockRestServiceServer.expect(requestTo(urlBuilder.toString()))

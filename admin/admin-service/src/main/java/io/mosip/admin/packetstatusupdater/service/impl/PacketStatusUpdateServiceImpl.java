@@ -126,10 +126,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	 */
 	@Override
 	public PacketStatusUpdateResponseDto getStatus(String rId, String langCode) {
-		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE,rId));
-		if(!authorizeRidWithZone(rId)) {
-			return null;
-		}
+		//Any Packet status can be viewed from any admin from any center
 		auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS);
 		return getPacketStatus(rId);
 	}
@@ -176,37 +173,6 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 
 	}
 
-	/**
-	 * Authorize rid with zone.
-	 *
-	 * @param rId
-	 *            the r id
-	 * @return true, if successful
-	 */
-	private boolean authorizeRidWithZone(String rId) {
-		try {
-			HttpHeaders packetHeaders = new HttpHeaders();
-			packetHeaders.setContentType(MediaType.APPLICATION_JSON);
-			UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(zoneValidationUrl).queryParam("rid",
-					rId);
-			HttpEntity<RequestWrapper<String>> httpReq = new HttpEntity<>(null, packetHeaders);
-			ResponseEntity<String> response = restTemplate.exchange(uribuilder.toUriString(), HttpMethod.GET, httpReq,
-					String.class);
-			if (response.getStatusCode().is2xxSuccessful()) {
-				boolean isAuthorized = getPacketResponse(Boolean.class, response.getBody());
-				if(isAuthorized)
-					auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE_SUCCESS,rId));
-				else
-					auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE_FAILURE,rId));
-				return isAuthorized;
-			}
-			auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE_FAILURE,rId));
-		} catch (Exception e) {
-			logger.error("SESSIONID", "ADMIN-SERVICE",
-					"ADMIN-SERVICE", e.getMessage() + ExceptionUtils.getStackTrace(e));
-		}
-		return false;
-	}
 
 	/**
 	 * Gets the packet response.

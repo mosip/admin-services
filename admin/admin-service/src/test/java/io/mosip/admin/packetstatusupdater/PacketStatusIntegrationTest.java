@@ -107,11 +107,6 @@ public class PacketStatusIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void testPacketStatusUpdate() throws Exception {
-		UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(zoneValidationUrl).queryParam("rid",
-				"1000012232223243224234");
-
-		mockRestServiceServer.expect(requestTo(uribuilder.toUriString()))
-				.andRespond(withSuccess().body(POSITIVE_RESPONSE_ZONE_VALIATION));
 		mockRestServiceServer
 				.expect(requestTo(packetUpdateStatusUrl + "/1000012232223243224234"))
 		.andRespond(withSuccess().body(POSITIVE_RESPONSE_REG_PROC));
@@ -123,7 +118,7 @@ public class PacketStatusIntegrationTest {
 		
 	}
 	
-	@Test
+	/*@Test
 	@WithUserDetails("zonal-admin")
 	public void testPacketStatusUpdate401Excption() throws Exception {
 		UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(zoneValidationUrl).queryParam("rid",
@@ -172,7 +167,7 @@ public class PacketStatusIntegrationTest {
 		ResponseWrapper<PacketStatusUpdateResponseDto> response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
 				new TypeReference<ResponseWrapper<PacketStatusUpdateResponseDto>>(){});
 		Assert.assertNull(response.getResponse());
-	}
+	}*/
 	
 	@Test
 	@WithUserDetails("zonal-admin")
@@ -235,18 +230,19 @@ public class PacketStatusIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void testPacketStatusUpdateParseException() throws Exception {
-		UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(zoneValidationUrl).queryParam("rid",
-				"1000012232223243224234");
 		ResponseWrapper<?> validatationResponse= new ResponseWrapper<>();
 		validatationResponse.setErrors(validationErrorList);
-		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(PARSE_ERROR_RESPONSE_REG_PROC));
 		mockRestServiceServer
 				.expect(requestTo(packetUpdateStatusUrl + "/1000012232223243224234"))
-		.andRespond(withSuccess().body(objectMapper.writeValueAsString(validatationResponse)));
-		
-		AdminDataUtil.checkResponse(mockMvc.perform(get("/packetstatusupdate")
-				.param("rid","1000012232223243224234")).andExpect(status().isOk()).andReturn(),
-				"ADM-PKT-010");
+		.andRespond(withSuccess().body(PARSE_ERROR_RESPONSE_REG_PROC));
+
+		MvcResult mvcResult = mockMvc.perform(get("/packetstatusupdate")
+				.param("rid","1000012232223243224234")).andExpect(status().is5xxServerError()).andReturn();
+
+		ResponseWrapper<PacketStatusUpdateResponseDto> responseWrapper = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+				new TypeReference<ResponseWrapper<PacketStatusUpdateResponseDto>>() {});
+		Assert.assertNotNull(responseWrapper.getErrors());
+		Assert.assertEquals("ADM-PKT-090", responseWrapper.getErrors().get(0).getErrorCode());
 	}
 	
 /*	@Test
@@ -330,9 +326,7 @@ public class PacketStatusIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void testPacketStatusUpdateParseException3() throws Exception {
-		UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(zoneValidationUrl).queryParam("rid",
-				"1000012232223243224234");
-	
+
 		String str="{\r\n" + 
 				"	\"id\": \"mosip.registration.transaction\",\r\n" + 
 				"	\"version\": \"1.0\",\r\n" + 
@@ -356,14 +350,16 @@ public class PacketStatusIntegrationTest {
 				"  \"response\": true,\r\n" + 
 				"  \"errors\": [{\"errorCode\":\"ADM-PKT-001\",\"message\":\"Admin is not authorized\"}]\r\n" + 
 				"}";
-		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(str1));
 		mockRestServiceServer
 				.expect(requestTo(packetUpdateStatusUrl + "/1000012232223243224234"))
 		.andRespond(withSuccess().body(objectMapper.writeValueAsString(str)));
-		AdminDataUtil.checkResponse(mockMvc.perform(
-				get("/packetstatusupdate").param("rid","1000012232223243224234").param("lang", "eng")).andReturn(), "ADM-PKT-001");
-		
-		
+
+		MvcResult mvcResult = mockMvc.perform(
+				get("/packetstatusupdate").param("rid","1000012232223243224234")).andReturn();
+		ResponseWrapper<PacketStatusUpdateResponseDto> responseWrapper = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+				new TypeReference<ResponseWrapper<PacketStatusUpdateResponseDto>>() {});
+		Assert.assertNotNull(responseWrapper.getErrors());
+		Assert.assertEquals("ADM-PKT-090", responseWrapper.getErrors().get(0).getErrorCode());
 		
 	}
 	
@@ -409,8 +405,7 @@ public class PacketStatusIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void testPacketStatus6() throws Exception {
-		UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(zoneValidationUrl).queryParam("rid",
-				"1000012232223243224234");
+
 		String str="{\r\n" + 
 				"	\"id\": \"mosip.registration.transaction\",\r\n" + 
 				"	\"version\": \"1.0\",\r\n" + 
@@ -420,9 +415,10 @@ public class PacketStatusIntegrationTest {
 				"			\"registrationId\": \"10002100320002420191210085947\",\r\n" + 
 				"			\"transactionTypeCode\": \"PACKET_RECEIVER\",\r\n" + 
 				"			\"parentTransactionId\": null,\r\n" + 
-				"			\"statusCode\": \"SUCCESS\",\r\n" + 
+				"			\"statusCode\": \"SUCCESS\",\r\n" +
+				"\"subStatusCode\": \"RPR-PKR-SUCCESS-001\",\r\n" +
 				"			\"statusComment\": \"Packet has reached Packet Receiver\",\r\n" + 
-				"			\"createdDateTimes\": \"2019-12-10T09:05:06.709\"\r\n" + 
+				"			\"createdDateTimes\": \"2019-12-10T09:05:06.709Z\"\r\n" +
 				"		}],\r\n" + 
 				"	\"errors\": []\r\n" + 
 				"}";
@@ -434,13 +430,12 @@ public class PacketStatusIntegrationTest {
 				"  \"response\": false,\r\n" + 
 				"  \"errors\": null\r\n" + 
 				"}";
-		mockRestServiceServer.expect(requestTo(uribuilder.toUriString())).andRespond(withSuccess().body(str1));
 		mockRestServiceServer
-				.expect(requestTo(packetUpdateStatusUrl + "/1000012232223243224234>"))
+				.expect(requestTo(packetUpdateStatusUrl + "/1000012232223243224234"))
 		.andRespond(withSuccess().body(objectMapper.writeValueAsString(str)));
 		
 		mockMvc.perform(
-				get("/packetstatusupdate").param("rid","1000012232223243224234").param("lang", "eng")).andExpect(status().isOk());
+				get("/packetstatusupdate").param("rid","1000012232223243224234")).andExpect(status().is5xxServerError());
 		
 		
 	}
