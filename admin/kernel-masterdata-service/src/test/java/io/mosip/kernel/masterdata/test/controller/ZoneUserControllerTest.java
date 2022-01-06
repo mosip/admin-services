@@ -203,11 +203,29 @@ public class ZoneUserControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
+	public void t005deleteMapUserZoneTest1() throws Exception {
+		
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.delete("/zoneuser/31/CST")).andReturn(),
+				"KER-USR-017");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t005deleteMapUserZoneTest() throws Exception {
 		
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.delete("/zoneuser/3/CST")).andReturn(),
 				"KER-USR-011");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t005deleteMapUserZoneTest2() throws Exception {
+		
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.delete("/zoneuser/29/NTI")).andReturn(),
+				null);
 	}
 	
 	@Test
@@ -301,6 +319,34 @@ public class ZoneUserControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
+	public void t013searchZoneUserMappingTest3() throws Exception {
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin"))
+		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
+
+		sr.getRequest().getFilters().get(0).setType("contains");
+		sr.getRequest().getFilters().get(0).setColumnName("zoneName");
+		sr.getRequest().getFilters().get(0).setValue("");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/zoneuser/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
+				null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t014searchZoneUserMappingTest3() throws Exception {
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin"))
+		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
+
+		sr.getRequest().getFilters().get(0).setType("contains");
+		sr.getRequest().getFilters().get(0).setColumnName("zoneName");
+		sr.getRequest().getFilters().get(0).setValue("a");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/zoneuser/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
+				null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t010searchZoneUserMappingTest() throws Exception {
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin"))
 		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
@@ -324,6 +370,64 @@ public class ZoneUserControllerTest {
 				null);
 	}
 	
+	
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void t012searchZoneUserMappingTest() throws Exception {
+	String	 response1 = "{\r\n" +
+					"  \"id\": null,\r\n" +
+					"  \"version\": null,\r\n" +
+					"  \"responsetime\": \"2021-03-31T04:27:31.590Z\",\r\n" +
+					"  \"metadata\": null,\r\n" +
+					"  \"response\": {\r\n" +
+					"    \"mosipUserDtoList\": [\r\n" +
+					"    ]\r\n" +
+					"  },\r\n" +
+					"  \"errors\": null\r\n" +
+					"}";
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin"))
+		.andRespond(withSuccess().body(response1).contentType(MediaType.APPLICATION_JSON));
+
+		sr.getRequest().getFilters().get(0).setType("contains");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/zoneuser/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
+				null);
+	}
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void t013searchZoneUserMappingTest() throws Exception {
+		String response1 = "{\r\n" +
+					"  \"id\": null,\r\n" +
+					"  \"version\": null,\r\n" +
+					"  \"responsetime\": \"2021-03-31T04:27:31.590Z\",\r\n" +
+					"  \"metadata\": null,\r\n" +
+					"  \"response\": {\r\n" +
+					"    \"mosipUserDtoList\": [\r\n" +
+					"      {\r\n" +
+					"        \"userId\": \"110005\",\r\n" +
+					"        \"mobile\": null,\r\n" +
+					"        \"mail\": \"110005@xyz.com\",\r\n" +
+					"        \"langCode\": null,\r\n" +
+					"        \"userPassword\": null,\r\n" +
+					"        \"name\": \"Test110005 Auto110005\",\r\n" +
+					"        \"role\": \"ZONAL_ADMIN,GLOBAL_ADMIN\",\r\n" +
+					"        \"token\": null,\r\n" +
+					"        \"rid\": null\r\n" +
+					"      }"+
+					"    ]\r\n" +
+					"  },\r\n" +
+					"  \"errors\": null\r\n" +
+					"}";
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin"))
+		.andRespond(withSuccess().body(response1).contentType(MediaType.APPLICATION_JSON));
+
+		sr.getRequest().getFilters().get(0).setType("contains");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/zoneuser/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
+				null);
+	}
 
 	
 	@Test

@@ -694,3 +694,21 @@ CREATE MEMORY TABLE IF NOT EXISTS MASTER.registration_center_h
    
 );
 
+
+CREATE MEMORY TABLE IF NOT EXISTS  MASTER.title
+(
+    code character varying(16)  NOT NULL,
+    name character varying(64) NOT NULL,
+    descr character varying(128) ,
+    lang_code character varying(3)  NOT NULL,
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone
+    
+);
+
+

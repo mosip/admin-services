@@ -65,5 +65,13 @@ public class RegistrationCenterDeviceHistoryControllerTest {
 				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenterdevicehistory/10001/3000021/2018-12-1210:10:30.956Z")).andReturn(),
 				"KER-MSD-033");
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t001getRegCentDevHistByregCentIdDevIdEffTimeTest2() throws Exception {
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenterdevicehistory/10001/300021/2018-12-12T10:10:30.956Z")).andReturn(),
+				"KER-MSD-133");
+	}
 
 }

@@ -149,6 +149,13 @@ public class ZoneControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
+	public void t005getSubZonesTest1() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/subzone/ara")).andReturn(), null);
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t006getSubZonesFailTest1() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/subzone/ara1")).andReturn(), "KER-MSD-999");
 
@@ -210,6 +217,13 @@ public class ZoneControllerTest {
 
 	}
 	
+	/*@Test
+	@WithUserDetails("global-admin")
+	public void t014getLeafZonesBasedOnZoneCodeTest() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/leafzones/ara")).andReturn(),null);
+
+	}*/
+	
 	
 	@Test
 	@WithUserDetails("global-admin")
@@ -238,7 +252,12 @@ public class ZoneControllerTest {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/authorize").param("rid","10001")).andReturn(), null);
 
 	}
-	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t018authorizeZoneTest1() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/authorize").param("rid","10103")).andReturn(), "ADM-PKT-001");
+
+	}
 	
 	
 }
