@@ -28,7 +28,6 @@ import io.swagger.annotations.Api;
  *
  */
 
-@Deprecated(since = "1.2.0")
 @Api(tags = { "Application" })
 @RestController
 @RequestMapping("/applicationtypes")
@@ -45,6 +44,7 @@ public class ApplicationController {
 	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
 	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetapplicationtypes())")
+	@Deprecated(since = "1.2.0")
 	@GetMapping
 	public ResponseWrapper<ApplicationResponseDto> getAllApplication() {
 		ResponseWrapper<ApplicationResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -62,6 +62,7 @@ public class ApplicationController {
 	//@PreAuthorize("hasAnyRole('RESIDENT','GLOBAL_ADMIN','ZONAL_ADMIN','INDIVIDUAL','REGISTRATION_PROCESSOR','PRE_REGISTRATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
 	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetapplicationtypeslangcode())")
+	@Deprecated(since = "1.2.0")
 	@GetMapping("/{langcode}")
 	public ResponseWrapper<ApplicationResponseDto> getAllApplicationByLanguageCode(
 			@PathVariable("langcode") String langCode) {
@@ -82,6 +83,7 @@ public class ApplicationController {
 	//@PreAuthorize("hasAnyRole('RESIDENT','GLOBAL_ADMIN','ZONAL_ADMIN','INDIVIDUAL','REGISTRATION_PROCESSOR','PRE_REGISTRATION','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
 	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetapplicationtypescodelangcode())")
+	@Deprecated(since = "1.2.0")
 	@GetMapping("/{code}/{langcode}")
 	public ResponseWrapper<ApplicationResponseDto> getApplicationByCodeAndLanguageCode(
 			@PathVariable("code") String code, @PathVariable("langcode") String langCode) {
@@ -100,6 +102,7 @@ public class ApplicationController {
 	@ResponseFilter
 	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostapplicationtypes())")
+	@Deprecated(since = "1.2.0")
 	@PostMapping
 	public ResponseWrapper<CodeAndLanguageCodeID> createApplication(
 			@Valid @RequestBody RequestWrapper<ApplicationDto> application) {
