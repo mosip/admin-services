@@ -59,8 +59,8 @@ public class AuditManagerRequestDto {
 
 	@NotNull
 	@Size(min = 1, max = 64)
-
 	private String id;
+
 	@NotNull
 	@Size(min = 1, max = 64)
 	private String idType;
@@ -69,9 +69,11 @@ public class AuditManagerRequestDto {
 	@Size(min = 1, max = 256)
 	private String createdBy;
 
+	@NotNull
 	@Size(max = 128)
 	private String moduleName;
 
+	@NotNull
 	@Size(max = 64)
 	private String moduleId;
 
