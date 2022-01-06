@@ -3,6 +3,8 @@ package io.mosip.admin.packetstatusupdater.service;
 import io.mosip.admin.packetstatusupdater.dto.AuditManagerRequestDto;
 import io.mosip.admin.packetstatusupdater.dto.AuditManagerResponseDto;
 
+import java.util.Map;
+
 /**
  * The Interface AuditManagerProxyService.
  * 
@@ -10,6 +12,6 @@ import io.mosip.admin.packetstatusupdater.dto.AuditManagerResponseDto;
  */
 public interface AuditManagerProxyService {
 
-	public AuditManagerResponseDto logAdminAudit(AuditManagerRequestDto auditManagerRequestDto);
+	public AuditManagerResponseDto logAdminAudit(AuditManagerRequestDto auditManagerRequestDto,  Map<String, String> headers);
 
 }
