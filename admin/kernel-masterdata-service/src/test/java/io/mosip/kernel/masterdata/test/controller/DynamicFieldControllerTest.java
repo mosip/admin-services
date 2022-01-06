@@ -161,7 +161,7 @@ public class DynamicFieldControllerTest {
 								MockMvcRequestBuilders.post("/dynamicfields").contentType(MediaType.APPLICATION_JSON)
 										.content(mapper.writeValueAsString(dynamicFieldDtoReq)))
 								.andReturn(),
-						"KER-MSD-999");
+						"KER-SCH-012");
 	}
 
 	@Test
