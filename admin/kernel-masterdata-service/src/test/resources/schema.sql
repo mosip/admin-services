@@ -13,7 +13,7 @@ CREATE MEMORY TABLE IF NOT EXISTS master.appl_form_type(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 );
 
 CREATE MEMORY TABLE if not exists master.location(
@@ -31,7 +31,7 @@ CREATE MEMORY TABLE if not exists master.location(
 	is_deleted boolean,
 	del_dtimes timestamp
 
-	
+
 );
 CREATE MEMORY TABLE if not exists master.language(
 	code character varying(3) NOT NULL,
@@ -45,7 +45,7 @@ CREATE MEMORY TABLE if not exists master.language(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 
@@ -60,7 +60,7 @@ CREATE MEMORY TABLE if not exists master.loc_hierarchy_list(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 
@@ -76,10 +76,10 @@ CREATE MEMORY TABLE if not exists master.biometric_type(
 	upd_by character varying(256),
 	upd_dtimes timestamp,
 	is_deleted boolean,
-	del_dtimes timestamp	
-	
+	del_dtimes timestamp
 
-);   
+
+);
 --ALTER TABLE master.biometric_type ADD CONSTRAINT [master.pk_bmtyp_code] PRIMARY KEY(CODE, LANG_CODE);
 
 CREATE MEMORY TABLE if not exists master.biometric_attribute(
@@ -95,7 +95,7 @@ CREATE MEMORY TABLE if not exists master.biometric_attribute(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 
@@ -118,7 +118,7 @@ CREATE MEMORY TABLE if not exists master.device_master(
 	upd_dtimes 	timestamp,
 	is_deleted 	boolean,
 	del_dtimes 	timestamp
-	
+
 
 );
 
@@ -139,7 +139,7 @@ CREATE MEMORY TABLE if not exists master.device_spec(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 
@@ -162,7 +162,7 @@ CREATE MEMORY TABLE if not exists master.device_master_h(
 	is_deleted 	boolean,
 	del_dtimes 	timestamp,
 	eff_dtimes 	timestamp NOT NULL
-	
+
 
 );
 CREATE MEMORY TABLE if not exists master.device_type(
@@ -177,7 +177,7 @@ CREATE MEMORY TABLE if not exists master.device_type(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 CREATE MEMORY TABLE if not exists master.doc_category(
@@ -192,7 +192,7 @@ CREATE MEMORY TABLE if not exists master.doc_category(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 CREATE MEMORY TABLE if not exists master.doc_type(
@@ -207,7 +207,7 @@ CREATE MEMORY TABLE if not exists master.doc_type(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 
@@ -222,7 +222,7 @@ CREATE MEMORY TABLE if not exists master.valid_document(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp,
-	
+
 
 );
 
@@ -240,7 +240,7 @@ CREATE MEMORY TABLE if not exists master.dynamic_field(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 
@@ -258,7 +258,7 @@ CREATE MEMORY TABLE if not exists master.loc_holiday(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 
@@ -276,9 +276,9 @@ CREATE MEMORY TABLE if not exists master.reg_exceptional_holiday(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
 
-);   
+
+);
 
 CREATE MEMORY TABLE if not exists master.reg_center_type(
 	code character varying(36) NOT NULL,
@@ -326,7 +326,7 @@ CREATE MEMORY TABLE if not exists master.registration_center(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 
@@ -341,7 +341,7 @@ CREATE MEMORY TABLE if not exists master.blacklisted_words(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 
@@ -359,7 +359,7 @@ create MEMORY table IF NOT EXISTS master.applicant_valid_document(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 CREATE MEMORY TABLE if not exists master.id_type(
@@ -374,7 +374,7 @@ CREATE MEMORY TABLE if not exists master.id_type(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 
@@ -409,7 +409,7 @@ CREATE MEMORY TABLE  IF NOT EXISTS MASTER.daysofweek_list(
     upd_dtimes timestamp without time zone,
     is_deleted boolean DEFAULT false,
     del_dtimes timestamp without time zone
-    
+
 );
 
 CREATE MEMORY TABLE IF NOT EXISTS MASTER.reg_working_nonworking(
@@ -424,7 +424,7 @@ CREATE MEMORY TABLE IF NOT EXISTS MASTER.reg_working_nonworking(
     upd_dtimes timestamp without time zone,
     is_deleted boolean DEFAULT false,
     del_dtimes timestamp without time zone
-	
+
 );
 
 
@@ -444,7 +444,7 @@ CREATE MEMORY TABLE IF NOT EXISTS MASTER.user_detail_h(
     is_deleted boolean DEFAULT false,
     del_dtimes timestamp without time zone,
     eff_dtimes timestamp without time zone NOT NULL
-    
+
 );
 
 CREATE MEMORY TABLE IF NOT EXISTS MASTER.machine_master_h(
@@ -470,7 +470,7 @@ CREATE MEMORY TABLE IF NOT EXISTS MASTER.machine_master_h(
     is_deleted boolean DEFAULT false,
     del_dtimes timestamp without time zone,
     eff_dtimes timestamp without time zone NOT NULL
-    
+
 );
 
 CREATE MEMORY TABLE IF NOT EXISTS MASTER.zone_user(
@@ -523,7 +523,7 @@ CREATE MEMORY TABLE IF NOT EXISTS MASTER.machine_master(
     upd_dtimes timestamp without time zone,
     is_deleted boolean DEFAULT false,
     del_dtimes timestamp without time zone
-    
+
 );
 
 CREATE MEMORY TABLE IF NOT EXISTS MASTER.machine_type
@@ -539,7 +539,7 @@ CREATE MEMORY TABLE IF NOT EXISTS MASTER.machine_type
     upd_dtimes timestamp without time zone,
     is_deleted boolean DEFAULT false,
     del_dtimes timestamp without time zone
-   
+
 );
 
 CREATE MEMORY TABLE IF NOT EXISTS MASTER.user_detail(
@@ -557,7 +557,7 @@ CREATE MEMORY TABLE IF NOT EXISTS MASTER.user_detail(
     upd_dtimes timestamp without time zone,
     is_deleted boolean DEFAULT false,
     del_dtimes timestamp without time zone
-    
+
 );
 
 CREATE MEMORY TABLE IF NOT EXISTS MASTER.machine_spec
@@ -599,7 +599,7 @@ CREATE MEMORY TABLE IF NOT EXISTS MASTER.template
     upd_dtimes timestamp without time zone,
     is_deleted boolean DEFAULT false,
     del_dtimes timestamp without time zone
-  
+
 );
 
 CREATE MEMORY TABLE IF NOT EXISTS MASTER.identity_schema
@@ -620,7 +620,7 @@ CREATE MEMORY TABLE IF NOT EXISTS MASTER.identity_schema
     upd_dtimes timestamp without time zone,
     is_deleted boolean DEFAULT false,
     del_dtimes timestamp without time zone
-   
+
 );
 
 CREATE MEMORY TABLE IF NOT EXISTS MASTER.ui_spec
@@ -657,7 +657,7 @@ CREATE MEMORY TABLE IF NOT EXISTS MASTER.template_file_format
     upd_dtimes timestamp without time zone,
     is_deleted boolean DEFAULT false,
     del_dtimes timestamp without time zone
-   
+
 );
 CREATE MEMORY TABLE IF NOT EXISTS MASTER.registration_center_h
 (
@@ -691,7 +691,7 @@ CREATE MEMORY TABLE IF NOT EXISTS MASTER.registration_center_h
     is_deleted boolean DEFAULT false,
     del_dtimes timestamp without time zone,
     eff_dtimes timestamp without time zone NOT NULL
-   
+
 );
 
 
@@ -708,7 +708,5 @@ CREATE MEMORY TABLE IF NOT EXISTS  MASTER.title
     upd_dtimes timestamp without time zone,
     is_deleted boolean DEFAULT false,
     del_dtimes timestamp without time zone
-    
+
 );
-
-

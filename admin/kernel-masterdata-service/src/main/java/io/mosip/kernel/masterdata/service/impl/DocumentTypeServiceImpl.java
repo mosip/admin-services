@@ -6,6 +6,8 @@ import java.util.*;
 
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -73,6 +75,8 @@ import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 @Service
 @Transactional
 public class DocumentTypeServiceImpl implements DocumentTypeService {
+
+	private static final Logger logger = LoggerFactory.getLogger(DocumentTypeServiceImpl.class);
 
 	/**
 	 * Reference to DocumentTypeRepository.
@@ -252,7 +256,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 					DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e1) {
-			e1.printStackTrace();
+			logger.error("",e1);
 		}
 		DocumentTypePutResponseDto documentTypePutResponseDto = new DocumentTypePutResponseDto();
 

@@ -87,7 +87,7 @@ public class AuditManagerProxyServiceImpl implements AuditManagerProxyService {
 	public AuditManagerResponseDto logAdminAudit(AuditManagerRequestDto auditManagerRequestDto,
 												 Map<String, String> headers) {
 
-		String hostName = headers.get(HttpHeaders.HOST);
+		String hostName = headers.get(HttpHeaders.ORIGIN);
 		validateAuditRequestDto(auditManagerRequestDto, hostName);
 
 		auditManagerRequestDto.setHostIp(hostName);
@@ -125,6 +125,10 @@ public class AuditManagerProxyServiceImpl implements AuditManagerProxyService {
 	}
 
 	private void validateAuditRequestDto(AuditManagerRequestDto auditManagerRequestDto, String hostName) {
+		if(hostName == null || hostName.isBlank())
+			throw new MasterDataServiceException(AdminManagerProxyErrorCode.INVALID_ADMIN_LOG.getErrorCode(),
+					AdminManagerProxyErrorCode.INVALID_ADMIN_LOG.getErrorMessage());
+
 		validateRequestTimestamp(auditManagerRequestDto.getActionTimeStamp());
 
 		if(!allowedModuleIds.contains(auditManagerRequestDto.getModuleId()) ||
@@ -138,8 +142,7 @@ public class AuditManagerProxyServiceImpl implements AuditManagerProxyService {
 		}
 
 		if(!Pattern.matches(eventIdPattern, auditManagerRequestDto.getEventId()) ||
-				!Pattern.matches(eventNamePattern, auditManagerRequestDto.getEventName()) ||
-					!Pattern.matches(hostNamePattern, hostName)) {
+				!Pattern.matches(eventNamePattern, auditManagerRequestDto.getEventName())) {
 			logger.error("Audit log pattern check validation failed");
 			throw new MasterDataServiceException(AdminManagerProxyErrorCode.INVALID_ADMIN_LOG.getErrorCode(),
 					AdminManagerProxyErrorCode.INVALID_ADMIN_LOG.getErrorMessage());
