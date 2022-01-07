@@ -215,5 +215,16 @@ public class BulkDataUploadControllerTest {
 				mockMvc.perform(MockMvcRequestBuilders.get("/bulkupload/getAllTransactions")).andReturn(), null);
 
 	}
+	@Test
+	@WithUserDetails("global-admin")
+	public void t011uploadDataTest() throws Exception {
+		String content="code,genderName,langCode,isActive\r\n" +
+				"TST,Test1,eng,TRUE\r\n" +
+				"BBB,AAA,ara,TRUE";
+		MockMultipartFile gender = new MockMultipartFile("files", "gender.zip", "multipart/form-data", content.getBytes());
+		AdminDataUtil.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(gender).param("tableName","gender").param("operation","insert").param("category","packet")).andReturn(),
+				null);
+	}
 
 }
