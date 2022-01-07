@@ -9,11 +9,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.admin.bulkdataupload.entity.BulkUploadTranscation;
+import io.mosip.admin.bulkdataupload.repositories.BulkUploadTranscationRepository;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -93,6 +96,9 @@ public class IntegratedControllerTest {
 
 	private AuditManagerRequestDto auditManagerRequestDto;
 
+	@MockBean
+	private BulkUploadTranscationRepository bulkDataOperation;
+
 	@Autowired
 	RestClient restClient;
 
@@ -110,6 +116,8 @@ public class IntegratedControllerTest {
 
 	private MockRestServiceServer mockRestServiceServer;
 
+	BulkUploadTranscation bulkUploadTranscation;
+
 	SearchInfo info;
 	LostRidResponseDto lDto = new LostRidResponseDto();
 	private RequestWrapper<SearchInfo> searchInfoReq = new RequestWrapper<SearchInfo>();
@@ -120,6 +128,14 @@ public class IntegratedControllerTest {
 		mapper.registerModule(new JavaTimeModule());
 		//doNothing().when(auditUtil).setAuditRequestDto(Mockito.any());
 		mockRestServiceServer=MockRestServiceServer.createServer(restTemplate);
+
+		bulkUploadTranscation =new BulkUploadTranscation();
+		bulkUploadTranscation.setId("123456");
+		bulkUploadTranscation.setCategory("masterdata");
+		bulkUploadTranscation.setRecordCount(3);
+		bulkUploadTranscation.setEntityName("gender");
+		bulkUploadTranscation.setStatusCode("FAILED");
+		bulkUploadTranscation.setCreatedDateTime(LocalDateTime.now());
 
 		bulkDataResponseDto = new BulkDataResponseDto();
 		bulkDataResponseDto.setCategory("masterdata");
@@ -218,6 +234,14 @@ public class IntegratedControllerTest {
 				(mockMvc.perform(MockMvcRequestBuilders.post("/lostRid").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(searchInfoReq))).andReturn()),
 				"ADMN-LRID-001");
+
+	}
+	@Test
+	@WithUserDetails("global-admin")
+	public void t004getTranscationDetailTest() throws Exception {
+		Mockito.when(bulkDataOperation.findTransactionById(Mockito.anyString())).thenReturn(bulkUploadTranscation);
+		AdminDataUtil.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/bulkupload/transcation/12345678")).andReturn(), null);
 
 	}
 
