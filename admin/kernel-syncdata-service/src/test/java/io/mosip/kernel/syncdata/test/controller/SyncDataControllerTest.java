@@ -70,8 +70,17 @@ public class SyncDataControllerTest {
 	@Value("${mosip.kernel.syncdata-service-machine-url}")
 	private String machineUrl;
 
-	  @Value("${mosip.kernel.keymanager.cert.url}")
-	    private String certificateUrl;
+  	@Value("${mosip.kernel.keymanager.cert.url}")
+  	private String certificateUrl;
+
+	@Value("${mosip.kernel.masterdata.locationhierarchylevels.uri}")
+	private String locationHirerarchyUrl;
+
+	@Value("${mosip.kernel.syncdata-service-dynamicfield-url}")
+	private String dynamicfieldUrl;
+
+	@Value("${mosip.kernel.keymanager-service-sign-url}")
+	private String signUrl;
 	
 	@Autowired
 	RestTemplate restTemplate;
@@ -90,7 +99,7 @@ public class SyncDataControllerTest {
 				"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq-7fM8-oz_RDcLWOvsRl-4tLST5s86mKfsTjqmjnmUZTezSz8lb3_8YDl_K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw_F8wC2T9wsLaIwIDAQAB");
 		uploadPublicKeyRequestDto.setRequest(dto);
 
-		 mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
+		 mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).ignoreExpectOrder(true).build();
 	}
 
 	@Test
@@ -1069,23 +1078,16 @@ public class SyncDataControllerTest {
 				"}";
 		
 		String str3="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}"; 
-		
-	
-		
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(String.format("https://dev.mosip.net/v1/masterdata/locationHierarchyLevels"));
-		
-		mockRestServiceServer.expect(MockRestRequestMatchers.requestTo(builder.build().toString()))
+
+		mockRestServiceServer.expect(MockRestRequestMatchers.requestTo(locationHirerarchyUrl))
 		.andRespond(withSuccess().body(str).contentType(MediaType.APPLICATION_JSON));
 		
-		UriComponentsBuilder builder1 = UriComponentsBuilder.fromUriString(String.format("http://localhost:8086/v1/masterdata/dynamicfields?pageNumber=0"));
+		UriComponentsBuilder builder1 = UriComponentsBuilder.fromUriString(String.format(dynamicfieldUrl+"?pageNumber=0"));
 		
 		mockRestServiceServer.expect(MockRestRequestMatchers.requestTo(builder1.build().toString()))
 		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
-		
-			
-			mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
-		.andRespond(withSuccess().body(str3).contentType(MediaType.APPLICATION_JSON));
-	
+
+		mockRestServiceServer.expect(requestTo(signUrl)).andRespond(withSuccess().body(str3));
 		
 	/*	SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/v2/clientsettings").param("keyindex",
 				"B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:49")

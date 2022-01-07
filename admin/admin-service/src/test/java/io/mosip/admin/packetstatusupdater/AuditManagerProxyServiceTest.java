@@ -57,7 +57,7 @@ public class AuditManagerProxyServiceTest {
     public void auditLogTest() {
         Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeaders.REFERER, "ttest");
-        headers.put(HttpHeaders.HOST, "dev.mosip.net");
+        headers.put(HttpHeaders.ORIGIN, "dev.mosip.net");
         AuditManagerRequestDto auditManagerRequestDto = new AuditManagerRequestDto();
         auditManagerRequestDto.setActionTimeStamp(LocalDateTime.now(ZoneOffset.UTC));
         auditManagerRequestDto.setDescription("Test description");
@@ -83,7 +83,7 @@ public class AuditManagerProxyServiceTest {
     public void auditLogEmptyValuesTest() {
         Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeaders.REFERER, "ttest");
-        headers.put(HttpHeaders.HOST, "dev.mosip.net");
+        headers.put(HttpHeaders.ORIGIN, "dev.mosip.net");
         AuditManagerRequestDto auditManagerRequestDto = new AuditManagerRequestDto();
         auditManagerRequestDto.setActionTimeStamp(LocalDateTime.now(ZoneOffset.UTC));
         auditManagerRequestDto.setDescription("Test description");
@@ -116,7 +116,7 @@ public class AuditManagerProxyServiceTest {
     public void auditLogInvalidEventIdTest() {
         Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeaders.REFERER, "ttest");
-        headers.put(HttpHeaders.HOST, "dev.mosip.net");
+        headers.put(HttpHeaders.ORIGIN, "dev.mosip.net");
         AuditManagerRequestDto auditManagerRequestDto = new AuditManagerRequestDto();
         auditManagerRequestDto.setActionTimeStamp(LocalDateTime.now(ZoneOffset.UTC));
         auditManagerRequestDto.setDescription("Test description");
@@ -148,7 +148,7 @@ public class AuditManagerProxyServiceTest {
     public void auditLogInvalidEventNameTest() {
         Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeaders.REFERER, "ttest");
-        headers.put(HttpHeaders.HOST, "dev.mosip.net");
+        headers.put(HttpHeaders.ORIGIN, "dev.mosip.net");
         AuditManagerRequestDto auditManagerRequestDto = new AuditManagerRequestDto();
         auditManagerRequestDto.setActionTimeStamp(LocalDateTime.now(ZoneOffset.UTC));
         auditManagerRequestDto.setDescription("Test description");
@@ -180,7 +180,7 @@ public class AuditManagerProxyServiceTest {
     public void auditLogInvalidActionTimestampTest() {
         Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeaders.REFERER, "ttest");
-        headers.put(HttpHeaders.HOST, "dev.mosip.net");
+        headers.put(HttpHeaders.ORIGIN, "dev.mosip.net");
         AuditManagerRequestDto auditManagerRequestDto = new AuditManagerRequestDto();
         auditManagerRequestDto.setActionTimeStamp(LocalDateTime.now(ZoneOffset.UTC).plusMinutes(10));
         auditManagerRequestDto.setDescription("Test description");
