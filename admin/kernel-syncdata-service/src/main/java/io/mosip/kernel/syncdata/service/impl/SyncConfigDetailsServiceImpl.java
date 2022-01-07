@@ -123,7 +123,8 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 				.append(environment.getProperty("spring.cloud.config.label")).append(SLASH)
 				.append(fileName);
 		try {
-			return restTemplate.getForObject(uriBuilder.toString(), String.class);
+			 String str=restTemplate.getForObject(uriBuilder.toString(), String.class);
+			return str;
 		} catch (RestClientException e) {
 			LOGGER.error("Failed to getConfigDetailsResponse", e);
 			throw new SyncDataServiceException(
