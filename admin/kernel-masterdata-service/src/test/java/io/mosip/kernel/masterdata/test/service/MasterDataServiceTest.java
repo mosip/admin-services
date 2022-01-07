@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.masterdata.dto.request.WorkingDaysPutRequestDto;
 import io.mosip.kernel.masterdata.entity.*;
 import io.mosip.kernel.masterdata.repository.*;
@@ -3048,6 +3049,59 @@ public class MasterDataServiceTest {
 		when(dynamicFieldRepository.updateDynamicFieldIsActive(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
 				Mockito.any(), Mockito.anyString())).thenReturn(0);
 		dynamicFieldService.updateDynamicFieldValueStatus("abc", false);
+	}
+
+	@Test
+	public void validateRegCenterCreateTest() {
+		List<ServiceError> serviceErrors = new ArrayList<>();
+		RegCenterPostReqDto registrationCenterDto = new RegCenterPostReqDto();
+		registrationCenterDto.setName("TEST CENTER");
+		registrationCenterDto.setAddressLine1("Address Line 1");
+		registrationCenterDto.setAddressLine2("Address Line 2");
+		registrationCenterDto.setAddressLine3("Address Line 3");
+		registrationCenterDto.setCenterTypeCode("REG");
+		registrationCenterDto.setContactPerson("Test");
+		registrationCenterDto.setContactPhone("9999999999");
+		registrationCenterDto.setHolidayLocationCode("HLC01");
+		registrationCenterDto.setLangCode("eng");
+		registrationCenterDto.setLatitude("12.9646818");
+		registrationCenterDto.setLocationCode("10190");
+		registrationCenterDto.setLongitude("77.70168");
+		registrationCenterDto.setPerKioskProcessTime(LocalTime.of(0,15,0));
+		registrationCenterDto.setCenterStartTime(LocalTime.of(7,0));
+		registrationCenterDto.setCenterEndTime(LocalTime.of(17,0));
+		registrationCenterDto.setLunchStartTime(LocalTime.of(12,0));
+		registrationCenterDto.setLunchEndTime(LocalTime.of(13,0));
+		registrationCenterDto.setTimeZone("UTC");
+		registrationCenterDto.setWorkingHours("9");
+		registrationCenterDto.setZoneCode("JRD");
+		registrationCenterValidator.validateRegCenterCreate(registrationCenterDto, serviceErrors);
+		Assert.assertEquals(1, serviceErrors.size());
+		Assert.assertEquals("ADM-MSD-446", serviceErrors.get(0).getErrorCode());
+	}
+
+	@Test
+	@WithUserDetails("reg-officer")
+	public void getSubZoneIdsForUserTest() {
+		when(zoneUtils.getSubZones(Mockito.anyString())).thenReturn(zones);
+		List<String> subZoneIds = registrationCenterValidator.getSubZoneIdsForUser("eng");
+		Assert.assertTrue(subZoneIds != null && !subZoneIds.isEmpty());
+	}
+
+	@Test
+	public void validateRegCenterUpdateTest() {
+		List<ServiceError> serviceErrors = new ArrayList<>();
+		registrationCenterValidator.validateRegCenterUpdate("JRD",
+				LocalTime.of(17,0), LocalTime.of(7,0),
+				LocalTime.of(12,30), LocalTime.of(12,0),
+				"12.9646818", "77.70168", null, "eng",
+				"RBT", serviceErrors);
+		Assert.assertEquals(5, serviceErrors.size());
+		Assert.assertEquals("ADM-MSD-446", serviceErrors.get(0).getErrorCode());
+		Assert.assertEquals("KER-MSD-309", serviceErrors.get(1).getErrorCode());
+		Assert.assertEquals("KER-MSD-308", serviceErrors.get(2).getErrorCode());
+		Assert.assertEquals("KER-MSD-260", serviceErrors.get(3).getErrorCode());
+		Assert.assertEquals("KER-MSD-259", serviceErrors.get(4).getErrorCode());
 	}
 
 }
