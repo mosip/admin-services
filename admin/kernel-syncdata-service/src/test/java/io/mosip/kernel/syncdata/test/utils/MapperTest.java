@@ -127,6 +127,6 @@ public class MapperTest {
 	public void exceptionUtilsTest() {
 		String message = "test exception";
 		String exception = ExceptionUtils.parseException(new NullPointerException(message));
-		Assert.assertEquals(message, exception);
+		Assert.assertEquals(message.trim(), exception.trim());
 	}
 }
