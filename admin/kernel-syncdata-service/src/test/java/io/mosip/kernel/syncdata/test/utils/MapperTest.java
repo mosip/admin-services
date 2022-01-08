@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.kernel.syncdata.utils.ExceptionUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
@@ -120,5 +121,12 @@ public class MapperTest {
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
+	}
+
+	@Test
+	public void exceptionUtilsTest() {
+		String message = "test exception";
+		String exception = ExceptionUtils.parseException(new NullPointerException(message));
+		Assert.assertEquals(message.trim(), exception.trim());
 	}
 }

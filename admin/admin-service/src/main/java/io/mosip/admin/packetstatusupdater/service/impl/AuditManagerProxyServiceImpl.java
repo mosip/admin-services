@@ -29,6 +29,7 @@ import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
 import io.mosip.admin.packetstatusupdater.service.AuditManagerProxyService;
 import io.mosip.kernel.core.http.RequestWrapper;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -83,11 +84,15 @@ public class AuditManagerProxyServiceImpl implements AuditManagerProxyService {
 	@Autowired
 	RestTemplate restTemplate;
 
+	@Autowired
+	HttpServletRequest request;
+
 	@Override
 	public AuditManagerResponseDto logAdminAudit(AuditManagerRequestDto auditManagerRequestDto,
 												 Map<String, String> headers) {
 
-		String hostName = headers.get(HttpHeaders.ORIGIN);
+		String hostName = request.getHeader(HttpHeaders.ORIGIN) != null ? request.getHeader(HttpHeaders.ORIGIN) :
+				request.getHeader(HttpHeaders.ORIGIN.toLowerCase());
 		validateAuditRequestDto(auditManagerRequestDto, hostName);
 
 		auditManagerRequestDto.setHostIp(hostName);
@@ -98,7 +103,8 @@ public class AuditManagerProxyServiceImpl implements AuditManagerProxyService {
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		auditManagerRequestDto.setSessionUserId(username);
 		auditManagerRequestDto.setSessionUserName(username);
-		auditManagerRequestDto.setCreatedBy(headers.get(HttpHeaders.REFERER));
+		auditManagerRequestDto.setCreatedBy(request.getHeader(HttpHeaders.REFERER) != null ? request.getHeader(HttpHeaders.REFERER) :
+				request.getHeader(HttpHeaders.REFERER.toLowerCase()));
 
 		HttpHeaders auditReqHeaders = new HttpHeaders();
 		auditReqHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -125,9 +131,11 @@ public class AuditManagerProxyServiceImpl implements AuditManagerProxyService {
 	}
 
 	private void validateAuditRequestDto(AuditManagerRequestDto auditManagerRequestDto, String hostName) {
-		if(hostName == null || hostName.isBlank())
+		if(hostName == null || hostName.isBlank()) {
+			logger.error("Audit log hostname validation failed");
 			throw new MasterDataServiceException(AdminManagerProxyErrorCode.INVALID_ADMIN_LOG.getErrorCode(),
 					AdminManagerProxyErrorCode.INVALID_ADMIN_LOG.getErrorMessage());
+		}
 
 		validateRequestTimestamp(auditManagerRequestDto.getActionTimeStamp());
 

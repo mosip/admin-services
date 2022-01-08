@@ -8,6 +8,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,10 +17,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.HashMap;
@@ -50,6 +54,10 @@ public class AuditManagerProxyServiceTest {
     public void setUp() {
         mockRestServiceServer=MockRestServiceServer.createServer(restTemplate);
         mockRestServiceServer.expect(requestTo(auditmanagerapi)).andRespond(withSuccess());
+
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        ReflectionTestUtils.setField(auditManagerProxyService, "request", request);
+        Mockito.when(request.getHeader(Mockito.anyString())).thenReturn("testset");
     }
 
     @Test
