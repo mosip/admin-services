@@ -165,7 +165,7 @@ public class SyncMasterDataServiceHelperTest {
                 lastUpdated, syncJobHelperService.getDeltaSyncCurrentTimestamp());
         Assert.assertNotNull(syncDataResponseDeltaDto.getDataToSync());
 
-        Assert.assertEquals(syncDataResponseDto.getDataToSync().size(), syncDataResponseDeltaDto.getDataToSync().size(), 1);
+        Assert.assertEquals(syncDataResponseDto.getDataToSync().size(), syncDataResponseDeltaDto.getDataToSync().size(), 5);
     }
 
     @Test
@@ -200,7 +200,7 @@ public class SyncMasterDataServiceHelperTest {
                 lastUpdated, syncJobHelperService.getFullSyncCurrentTimestamp(), "1.2.0");
         Assert.assertNotNull(syncDataResponseDto.getDataToSync());
 
-        Assert.assertEquals(syncDataResponseDto.getDataToSync().size(), syncDataResponseDeltaDto.getDataToSync().size());
+        Assert.assertEquals(syncDataResponseDto.getDataToSync().size(), syncDataResponseDeltaDto.getDataToSync().size(), 5);
     }
 
     @Test
