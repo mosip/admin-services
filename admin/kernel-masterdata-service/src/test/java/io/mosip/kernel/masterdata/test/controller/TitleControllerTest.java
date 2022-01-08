@@ -181,6 +181,22 @@ public class TitleControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
+	public void t01updateTitleFailureNotFound1() throws Exception {
+		//given
+		//when
+		requestWrapper.getRequest().setIsActive(false);
+		String uri = "/title";
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put(uri)
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(mapToJson(requestWrapper));
+		//then
+		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), 
+				TitleErrorCode.TITLE_NOT_FOUND.getErrorCode());
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t0deleteTitleFailure() throws Exception {
 		//given
 		String code = "tam";

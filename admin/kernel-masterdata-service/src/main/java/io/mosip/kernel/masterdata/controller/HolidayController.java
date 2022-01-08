@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -267,9 +268,9 @@ public class HolidayController {
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostholidaysfiltervalues())")
 	@PostMapping("/filtervalues")
 	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
-	public ResponseWrapper<FilterResponseDto> holidayFilterValues(
+	public ResponseWrapper<FilterResponseCodeDto> holidayFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
-		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<FilterResponseCodeDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.holidaysFilterValues(request.getRequest()));
 		return responseWrapper;
 	}

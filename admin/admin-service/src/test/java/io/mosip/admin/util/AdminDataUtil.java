@@ -15,11 +15,11 @@ public class AdminDataUtil {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			if (rst.getResponse().getContentAsString().isEmpty() && rst.getResponse().getStatus() == 404) {
-				assertEquals(rst.getResponse().getStatus(), 404);
+				assertEquals(404, rst.getResponse().getStatus());
 
 			} else {
 				Map m = mapper.readValue(rst.getResponse().getContentAsString(), Map.class);
-				assertEquals(rst.getResponse().getStatus(), 200);
+				assertEquals(200, rst.getResponse().getStatus());
 				if (m.containsKey("errors") && null != m.get("errors")) {
 //					assertEquals(((List<Map<String, String>>) m.get("errors")).get(0).get("errorCode"), actualCode);
 					assertEquals(expectedCode, ((List<Map<String, String>>) m.get("errors")).get(0).get("errorCode"));

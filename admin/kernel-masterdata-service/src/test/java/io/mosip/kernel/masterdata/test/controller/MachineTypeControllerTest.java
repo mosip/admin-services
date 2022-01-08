@@ -248,6 +248,17 @@ public class MachineTypeControllerTest {
 				"KER-MSD-317");
 	}
 	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t014machineTypesFilterValuesTest() throws Exception {
+		fv.getRequest().getFilters().get(0).setType("all");
+		fv.getRequest().getFilters().get(0).setColumnName("name");
+		fv.getRequest().getFilters().get(0).setText("Desktop");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/machinetypes/filtervalues").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(fv))).andReturn(),
+				null);
+	}
+	
 		
 	@Test
 	@WithUserDetails("global-admin")

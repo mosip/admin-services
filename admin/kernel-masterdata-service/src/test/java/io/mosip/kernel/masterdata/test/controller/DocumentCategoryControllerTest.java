@@ -312,6 +312,16 @@ public class DocumentCategoryControllerTest {
 				.andReturn(),null);
 
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t015updateDocumentCategoryStatusTest1() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc.perform(
+				MockMvcRequestBuilders.patch("/documentcategories").param("isActive", "false").param("code", "POI"))
+				.andReturn(),"KER-MSD-055");
+
+	}
 
 	@Test
 	@WithUserDetails("global-admin")

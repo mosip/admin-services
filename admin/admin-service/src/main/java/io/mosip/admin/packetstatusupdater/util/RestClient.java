@@ -141,9 +141,7 @@ public class RestClient {
 			uriComponents = builder.build(false).encode();
 
 			try {
-				result = (T) restTemplate
-						.exchange(uriComponents.toUri(), HttpMethod.GET, setRequestHeader(null, null), responseType)
-						.getBody();
+				result = (T) restTemplate.getForEntity(uriComponents.toUri(), responseType).getBody();
 			} catch (Exception e) {
 				throw new Exception(e);
 			}
@@ -152,28 +150,7 @@ public class RestClient {
 		return result;
 	}
 
-	/**
-	 * Gets the rest template.
-	 *
-	 * @return the rest template
-	 * @throws KeyManagementException   the key management exception
-	 * @throws NoSuchAlgorithmException the no such algorithm exception
-	 * @throws KeyStoreException        the key store exception
-	 */
-	public RestTemplate getRestTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
-		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
-		SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy)
-				.build();
-		SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
-		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
-		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-		requestFactory.setHttpClient(httpClient);
-
-		return new RestTemplate(requestFactory);
-
-	}
-
-	/**
+		/**
 	 * Sets the request header.
 	 *
 	 * @param requestType the request type
@@ -184,7 +161,6 @@ public class RestClient {
 	@SuppressWarnings("unchecked")
 	private HttpEntity<Object> setRequestHeader(Object requestType, MediaType mediaType) throws IOException {
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>();
-		//headers.add("Cookie", getToken());
 		if (mediaType != null) {
 			headers.add("Content-Type", mediaType.toString());
 		}

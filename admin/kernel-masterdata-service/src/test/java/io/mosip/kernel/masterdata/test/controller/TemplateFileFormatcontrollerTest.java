@@ -164,6 +164,14 @@ public class TemplateFileFormatcontrollerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
+	public void t008updateFileFormatStatusTest1() throws Exception {
+		
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.patch("/templatefileformats").param("isActive","false").param("code","json")).andReturn(), "KER-MSD-237");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t009updateFileFormatStatusTest() throws Exception {
 		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.patch("/templatefileformats").param("isActive","true").param("code","json1")).andReturn(), "KER-MSD-046");

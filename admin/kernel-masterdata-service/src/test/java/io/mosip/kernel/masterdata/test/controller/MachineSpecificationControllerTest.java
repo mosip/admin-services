@@ -161,6 +161,25 @@ public class MachineSpecificationControllerTest {
 				mockMvc.perform(MockMvcRequestBuilders.patch("/machinespecifications").param("id","1001").param("isActive", "true")).andReturn(),
 				null);
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t005updateMachineSpecificationStatusTest1() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.patch("/machinespecifications").param("id","1001").param("isActive", "false")).andReturn(),
+				"KER-MSD-088");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t005updateMachineSpecificationStatusTest2() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.patch("/machinespecifications").param("id","100100").param("isActive", "false")).andReturn(),
+				"KER-MSD-117");
+	}
+
 
 	@Test
 	@WithUserDetails("global-admin")
@@ -237,6 +256,18 @@ public class MachineSpecificationControllerTest {
 				mockMvc.perform(MockMvcRequestBuilders.post("/machinespecifications/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
 				null);
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t009searchMachineSpecificationTest4() throws Exception {
+		sr.getRequest().getFilters().get(0).setType("Contains");
+		sr.getRequest().getFilters().get(0).setValue("Desktop");
+		sr.getRequest().getFilters().get(0).setColumnName("machineTypeName");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/machinespecifications/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(),
+				null);
+	}
+	
 	
 	@Test
 	@WithUserDetails("global-admin")

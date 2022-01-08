@@ -16,7 +16,6 @@ import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
-import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationPostResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationPutResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
@@ -144,5 +143,5 @@ public interface LocationService {
 
 	public StatusResponseDto updateLocationStatus(String code, boolean isActive);
 
-	public FilterResponseDto locFilterValues(FilterValueDto filterValueDto);
+	public FilterResponseCodeDto locFilterValues(FilterValueDto filterValueDto);
 }
