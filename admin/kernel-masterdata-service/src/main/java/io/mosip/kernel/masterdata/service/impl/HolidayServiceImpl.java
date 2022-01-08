@@ -5,8 +5,9 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import io.mosip.kernel.masterdata.dto.response.*;
+import io.mosip.kernel.masterdata.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,10 +36,6 @@ import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.dto.response.ColumnValue;
-import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
-import io.mosip.kernel.masterdata.dto.response.HolidaySearchDto;
-import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -86,6 +83,8 @@ public class HolidayServiceImpl implements HolidayService {
 	private PageUtils pageUtils;
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
+	@Autowired
+	LocationService locationService;
 
 	@Autowired
 	private AuditUtil auditUtil;
@@ -542,16 +541,21 @@ public class HolidayServiceImpl implements HolidayService {
 	}
 
 	@Override
-	public FilterResponseDto holidaysFilterValues(FilterValueDto filterValueDto) {
-		FilterResponseDto filterResponseDto = new FilterResponseDto();
-		List<ColumnValue> columnValueList = new ArrayList<>();
+	public FilterResponseCodeDto holidaysFilterValues(FilterValueDto filterValueDto) {
+		FilterResponseCodeDto filterResponseDto = new FilterResponseCodeDto();
+		List<ColumnCodeValue> columnValueList = new ArrayList<>();
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Holiday.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
 				List<?> filterValues = masterDataFilterHelper.filterValues(Holiday.class, filterDto, filterValueDto);
 				filterValues.forEach(filterValue -> {
-					ColumnValue columnValue = new ColumnValue();
+					ColumnCodeValue columnValue = new ColumnCodeValue();
 					columnValue.setFieldID(filterDto.getColumnName());
-					columnValue.setFieldValue(filterValue.toString());
+					if(filterDto.getColumnName().equalsIgnoreCase("locationCode")){
+						columnValue.setFieldValue(locationService.getLocationDetailsByLangCode(filterValue.toString(),filterValueDto.getLanguageCode()).getName());
+						columnValue.setFieldCode(filterValue.toString());
+					}else{
+						columnValue.setFieldValue(filterValue.toString());
+					}
 					columnValueList.add(columnValue);
 				});
 			}

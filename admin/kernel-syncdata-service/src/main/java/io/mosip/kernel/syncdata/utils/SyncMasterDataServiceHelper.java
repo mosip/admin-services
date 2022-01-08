@@ -393,7 +393,7 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link RegistrationCenterDto}
 	 */
 	@Async
-	public CompletableFuture<List<RegistrationCenterDto>> getRegistrationCenter(String machineId,
+	public CompletableFuture<List<RegistrationCenterDto>> getRegistrationCenter(String centerId,
 			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) {
 		List<RegistrationCenter> list = null;
 		try {
@@ -404,7 +404,7 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			list = registrationCenterRepository.findLatestRegistrationCenterByMachineId(machineId, lastUpdated,
+			list = registrationCenterRepository.findRegistrationCentersById(centerId, lastUpdated,
 					currentTimeStamp);
 
 		} catch (DataAccessException e) {

@@ -130,11 +130,14 @@ public class UISpecControllerTest {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/uispec").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(request)).param("id", "1")).andReturn(), null);
 	}
 
-	@Test
+/*	@Test
 	@WithUserDetails("global-admin")
 	public void defineUISpecTest() throws Exception {
-		Mockito.when(uiSpecService.defineUISpec(Mockito.any(UISpecDto.class))).thenReturn(new UISpecResponseDto());
-		mockMvc.perform(MockMvcRequestBuilders.post("/uispec").contentType(MediaType.APPLICATION_JSON).content(
+		
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/uispec").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(request)).andReturn(),null);
+		
+		//Mockito.when(uiSpecService.defineUISpec(Mockito.any(UISpecDto.class))).thenReturn(new UISpecResponseDto());
+	/*	MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/uispec").contentType(MediaType.APPLICATION_JSON).content(
 				"{\"id\":\"string\",\"version\":\"string\",\"requesttime\":\"2018-12-17T07:15:06.724Z\",\"request\":"
 						+ "{\"title\":\"title\",\"description\":\"test desc\",\"schema\":[{\"id\":\"IDSchemaVersion\",\"inputRequired\":false,"
 						+ "\"type\":\"number\",\"minimum\":0,\"maximum\":0,\"description\":\"\",\"label\":[{\"value\":\"IDSchemaVersion\",\"language\":\"eng\"}],\"controlType\":\"none\","
@@ -144,16 +147,24 @@ public class UISpecControllerTest {
 						+ "\"fieldCategory\":\"Pvt\",\"required\":false},{\"id\":\"fullName\",\"inputRequired\":true,\"type\":\"simpleType\","
 						+ "\"minimum\":0,\"maximum\":0,\"description\":\"\",\"label\":[{\"value\":\"Full Name\",\"language\":\"eng\"}],\"controlType\":\"textbox\",\"fieldType\":\"default\","
 						+ "\"format\":\"none\",\"validators\":[],\"fieldCategory\":\"Pvt\",\"required\":true}],"
-						+ "\"effectiveFrom\":\"2018-12-17T07:15:06.724Z\"}}"))
-				.andExpect(MockMvcResultMatchers.status().isOk());
-	}
-
+						+ "\"effectiveFrom\":\"2018-12-17T07:15:06.724Z\"}}")).andReturn(),null);
+				//.andExpect(MockMvcResultMatchers.status().isOk());
+	}*/
+	
 	@Test
 	@WithUserDetails("global-admin")
+	public void defineUISpecTest() throws Exception {
+		
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/uispec").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(request))).andReturn(),null);
+		
+	}
+
+	/*@Test
+	@WithUserDetails("global-admin")
 	public void updateUISpec() throws Exception {
-		Mockito.when(uiSpecService.updateUISpec(Mockito.anyString(), Mockito.any(UISpecDto.class)))
-				.thenReturn(new UISpecResponseDto());
-		mockMvc.perform(MockMvcRequestBuilders.put("/uispec").param("id", "test-test-test-test")
+		//Mockito.when(uiSpecService.updateUISpec(Mockito.anyString(), Mockito.any(UISpecDto.class)))
+		//		.thenReturn(new UISpecResponseDto());
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/uispec").param("id", "test-test-test-test")
 				.contentType(MediaType.APPLICATION_JSON).content(
 						"{\"id\":\"string\",\"version\":\"string\",\"requesttime\":\"2018-12-17T07:15:06.724Z\",\"request\":"
 								+ "{\"title\":\"MOSIP ID Schema\",\"description\":\"test desc\",\"schema\":[{\"id\":\"IDSchemaVersion\",\"inputRequired\":false,"
@@ -164,44 +175,54 @@ public class UISpecControllerTest {
 								+ "\"fieldCategory\":\"Pvt\",\"required\":false},{\"id\":\"fullName\",\"inputRequired\":true,\"type\":\"simpleType\","
 								+ "\"minimum\":0,\"maximum\":0,\"description\":\"\",\"label\":[{\"value\":\"Full Name\",\"language\":\"eng\"}],\"controlType\":\"textbox\",\"fieldType\":\"default\","
 								+ "\"format\":\"none\",\"validators\":[],\"fieldCategory\":\"Pvt\",\"required\":true}],"
-								+ "\"effectiveFrom\":\"2018-12-17T07:15:06.724Z\"}}"))
-				.andExpect(MockMvcResultMatchers.status().isOk());
+								+ "\"effectiveFrom\":\"2018-12-17T07:15:06.724Z\"}}")).andReturn(),null);
+				//.andExpect(MockMvcResultMatchers.status().isOk());
+
+	}*/
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void updateUISpec() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/uispec").param("id", "test-test-test-test")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(request))).andReturn(),null);
+
 
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void publishUISpec() throws Exception {
-		Mockito.when(uiSpecService.publishUISpec(Mockito.any(UISpecPublishDto.class))).thenReturn("");
-		mockMvc.perform(MockMvcRequestBuilders.put("/uispec/publish").contentType(MediaType.APPLICATION_JSON).content(
+	//	Mockito.when(uiSpecService.publishUISpec(Mockito.any(UISpecPublishDto.class))).thenReturn("");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/uispec/publish").contentType(MediaType.APPLICATION_JSON).content(
 				"{\"id\":\"string\",\"version\":\"string\",\"requesttime\":\"2018-12-17T07:15:06.724Z\",\"request\":"
-						+ "{\"id\":\"test-test-test-test\",\"effectiveFrom\":\"2048-12-17T07:15:06.724Z\"}}"))
-				.andExpect(MockMvcResultMatchers.status().isOk());
+						+ "{\"id\":\"test-test-test-test\",\"effectiveFrom\":\"2048-12-17T07:15:06.724Z\"}}")).andReturn(),null);
+				//.andExpect(MockMvcResultMatchers.status().isOk());
 
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void deleteUISpec() throws Exception {
-		Mockito.when(uiSpecService.deleteUISpec(Mockito.anyString())).thenReturn("");
-		mockMvc.perform(MockMvcRequestBuilders.delete("/uispec").param("id", "test-test-test-test")
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(MockMvcResultMatchers.status().isOk());
+		//Mockito.when(uiSpecService.deleteUISpec(Mockito.anyString())).thenReturn("");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/uispec").param("id", "test-test-test-test")
+				.contentType(MediaType.APPLICATION_JSON)).andReturn(),null);//.andExpect(MockMvcResultMatchers.status().isOk());
 
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void fetchAllUISpec() throws Exception {
-		Mockito.when(uiSpecService.getAllUISpecs(1, 10, "id", "desc")).thenReturn(new PageDto<UISpecResponseDto>());
-		mockMvc.perform(MockMvcRequestBuilders.get("/uispec/all")).andExpect(MockMvcResultMatchers.status().isOk());
+	//	Mockito.when(uiSpecService.getAllUISpecs(1, 10, "id", "desc")).thenReturn(new PageDto<UISpecResponseDto>());
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/uispec/all")).andReturn(),null);//.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void getLatestUISpec() throws Exception {
-		Mockito.when(uiSpecService.getLatestUISpec(Mockito.anyString())).thenReturn(new ArrayList<>());
-		mockMvc.perform(MockMvcRequestBuilders.get("/uispec/regclient/latest"))
-				.andExpect(MockMvcResultMatchers.status().isOk());
+		//Mockito.when(uiSpecService.getLatestUISpec(Mockito.anyString())).thenReturn(new ArrayList<>());
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/uispec/regclient/latest")).andReturn(),null);
+			//	.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 	
 	
@@ -210,9 +231,9 @@ public class UISpecControllerTest {
 	@WithUserDetails("global-admin")
 	public void getLatestUISpec1() throws Exception {
 		
-		Mockito.when(uiSpecService.getLatestUISpec(Mockito.anyString())).thenReturn(new ArrayList<>());
-		mockMvc.perform(MockMvcRequestBuilders.get("/uispec/regclient/latest"))
-				.andExpect(MockMvcResultMatchers.status().isOk());
+	//	Mockito.when(uiSpecService.getLatestUISpec(Mockito.anyString())).thenReturn(new ArrayList<>());
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/uispec/regclient/latest")).andReturn(),null);
+				//.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 	
 	
@@ -221,7 +242,7 @@ public class UISpecControllerTest {
 	@WithUserDetails("global-admin")
 	public void getLatestPublishedSchema1() throws Exception {
 		
-		Mockito.when(uiSpecRepository.findPublishedUISpec(Mockito.anyInt(),Mockito.anyString())).thenReturn(getLstUISpec());
+	//	Mockito.when(uiSpecRepository.findPublishedUISpec(Mockito.anyInt(),Mockito.anyString())).thenReturn(getLstUISpec());
 				MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/uispec/reg/latest").param("version", "1.0"))
 				.andReturn(),null);
 	}
@@ -231,7 +252,7 @@ public class UISpecControllerTest {
 	@WithUserDetails("global-admin")
 	public void getLatestPublishedSchema2() throws Exception {
 		
-		Mockito.when(uiSpecRepository.findPublishedUISpec(Mockito.anyInt(),Mockito.anyString())).thenReturn(getLstUISpec());
+		//Mockito.when(uiSpecRepository.findPublishedUISpec(Mockito.anyInt(),Mockito.anyString())).thenReturn(getLstUISpec());
 				MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/uispec/reg/latest").param("version", "0.1"))
 				.andReturn(),null);
 	}
@@ -241,7 +262,7 @@ public class UISpecControllerTest {
 	@WithUserDetails("global-admin")
 	public void getLatestPublishedSchema3() throws Exception {
 		
-		Mockito.when(uiSpecRepository.findPublishedUISpec(Mockito.anyInt(),Mockito.anyString())).thenReturn(getLstUISpec());
+		//Mockito.when(uiSpecRepository.findPublishedUISpec(Mockito.anyInt(),Mockito.anyString())).thenReturn(getLstUISpec());
 				MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/uispec/reg/latest").param("version", "1.0").param("type", "dom"))
 				.andReturn(),null);
 	}
@@ -250,7 +271,7 @@ public class UISpecControllerTest {
 	@WithUserDetails("global-admin")
 	public void getLatestPublishedSchema4() throws Exception {
 		
-		Mockito.when(uiSpecRepository.findPublishedUISpec(Mockito.anyInt(),Mockito.anyString())).thenReturn(getLstUISpec());
+		//Mockito.when(uiSpecRepository.findPublishedUISpec(Mockito.anyInt(),Mockito.anyString())).thenReturn(getLstUISpec());
 				MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/uispec/reg/latest").param("version", "0.1").param("type", "dom"))
 				.andReturn(),null);
 	}

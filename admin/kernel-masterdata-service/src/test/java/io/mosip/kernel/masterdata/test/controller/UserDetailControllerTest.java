@@ -3,11 +3,11 @@ package io.mosip.kernel.masterdata.test.controller;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.tomcat.jni.Status;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -20,11 +20,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.test.web.client.response.DefaultResponseCreator;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.RestTemplate;
@@ -43,7 +44,6 @@ import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
@@ -199,11 +199,33 @@ public class UserDetailControllerTest
 	@Test
 	@WithUserDetails("global-admin")
 	public void t001mapUserRegCenterTest() throws Exception {
-	//	ud
+	
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping")
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(ud))).andReturn(),
 				null);
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t002mapUserRegCenterTest() throws Exception {
+		ud.getRequest().setLangCode(null);
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping")
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(ud))).andReturn(),
+				"KER-USR-013");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t001mapUserRegCenterTest1() throws Exception {
+	ud.getRequest().setId("79");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping")
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(ud))).andReturn(),
+				"KER-USR-008");
 
 	}
 
@@ -227,6 +249,39 @@ public class UserDetailControllerTest
 				null);
 
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t008updateUserRegCenterTest2() throws Exception {
+		udp.getRequest().setId("109");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/usercentermapping")
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(udp))).andReturn(),
+				"KER-USR-008");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t008updateUserRegCenterTest4() throws Exception {
+		udp.getRequest().setLangCode(null);
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/usercentermapping")
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(udp))).andReturn(),
+				null);
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t008updateUserRegCenterTest3() throws Exception {
+		udp.getRequest().setId("79");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/usercentermapping")
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(udp))).andReturn(),
+				"KER-USR-008");
+
+	}
 
 	@Test
 	@WithUserDetails("global-admin")
@@ -245,6 +300,15 @@ public class UserDetailControllerTest
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.patch("/usercentermapping").param("isActive", "true").param("id", "4"))
 				.andReturn(), null);
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t010updateUserRegCenterStatusTest1() throws Exception {
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.patch("/usercentermapping").param("isActive", "true").param("id", "109"))
+				.andReturn(), "KER-USR-025");
 
 	}
 
@@ -284,7 +348,215 @@ public class UserDetailControllerTest
 				null);
 
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t014getUsersDetailsTest7() throws Exception {
+		String rs=response = "{\r\n" +
+				"  \"id\": null,\r\n" +
+				"  \"version\": null,\r\n" +
+				"  \"responsetime\": \"2021-03-31T04:27:31.590Z\",\r\n" +
+				"  \"metadata\": null,\r\n" +
+				"  \"response\": {\r\n" +
+				"    \"mosipUserDtoList\": [\r\n" +
+				"      {\r\n" +
+				"        \"userId\": \"110005\",\r\n" +
+				"        \"mobile\": null,\r\n" +
+				"        \"mail\": \"110005@xyz.com\",\r\n" +
+				"        \"langCode\": null,\r\n" +
+				"        \"userPassword\": null,\r\n" +
+				"        \"name\": \"Test110005 Auto110005\",\r\n" +
+				"        \"role\": \"ZONAL_ADMIN,GLOBAL_ADMIN\",\r\n" +
+				"        \"token\": null,\r\n" +
+				"        \"rid\": null\r\n" +
+				"      }"+
+				"    ]\r\n" +
+				"  },\r\n" +
+				"  \"errors\": { "+
+				"   \"errorCode\":\"KER-MSD-500\", " +
+				"   \"errorMessage\" : \"ErrorMessage\"}" +
+				" }\r\n" +
+				"}";
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin?firstName=a&lastName=a&userName=a&pageStart=0&pageFetch=100"))
+		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 
+		MasterDataTest.checkErrorResponse(mockMvc.perform(MockMvcRequestBuilders.get("/usersdetails")).andReturn());
+			
+
+	}
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void t014getUsersDetailsTest1() throws Exception {
+		 DefaultResponseCreator responseCreator = withStatus(HttpStatus.UNAUTHORIZED).body(response).contentType(MediaType.APPLICATION_JSON_UTF8);
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin?firstName=a&lastName=a&userName=a&pageStart=0&pageFetch=100"))
+		.andRespond(responseCreator);
+
+		MasterDataTest.checkErrorResponse(mockMvc.perform(MockMvcRequestBuilders.get("/usersdetails").param("firstName", "a").param("lastName", "a").param("userName", "a")).andReturn());
+				
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t014getUsersDetailsTest2() throws Exception {
+		String res = "{\r\n" +
+				"  \"id\": null,\r\n" +
+				"  \"version\": null,\r\n" +
+				"  \"responsetime\": \"2021-03-31T04:27:31.590Z\",\r\n" +
+				"  \"metadata\": null,\r\n" +
+				"  \"response\": {\r\n" +
+				"    \"mosipUserDtoList\": [\r\n" +
+				"      {\r\n" +
+				"        \"userId\": \"110005\",\r\n" +
+				"        \"mobile\": null,\r\n" +
+				"        \"mail\": \"110005@xyz.com\",\r\n" +
+				"        \"langCode\": null,\r\n" +
+				"        \"userPassword\": null,\r\n" +
+				"        \"name\": \"Test110005 Auto110005\",\r\n" +
+				"        \"role\": \"ZONAL_ADMIN,GLOBAL_ADMIN\",\r\n" +
+				"        \"token\": null,\r\n" +
+				"        \"rid\": null\r\n" +
+				"      }"+
+				"    ]\r\n" +
+				"  },\r\n" +
+				"  \"errors\": { "+
+				"   \"errorCode\":\"KER-MSD-500\", "+
+				"   \"errorMessage\" : \"ErrorMessage\"}"+
+				" }\r\n" +
+				"}";
+		 DefaultResponseCreator responseCreator = withStatus(HttpStatus.UNAUTHORIZED).body(res).contentType(MediaType.APPLICATION_JSON_UTF8);
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin?firstName=a&lastName=a&userName=a&pageStart=0&pageFetch=100"))
+		.andRespond(responseCreator);
+
+		MasterDataTest.checkErrorResponse(mockMvc.perform(MockMvcRequestBuilders.get("/usersdetails").param("firstName", "a").param("lastName", "a").param("userName", "a")).andReturn());
+				
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t014getUsersDetailsTest9() throws Exception {
+		String res = "{\r\n" +
+				"  \"id\": null,\r\n" +
+				"  \"version\": null,\r\n" +
+				"  \"responsetime\": \"2021-03-31T04:27:31.590Z\",\r\n" +
+				"  \"metadata\": null,\r\n" +
+				"  \"response\": {\r\n" +
+				"    \"mosipUserDtoList\": null "+
+				"  },\r\n" +
+				"  \"errors\": { "+
+				"   \"errorCode\":\"KER-MSD-500\", "+
+				"   \"errorMessage\" : \"ErrorMessage\"}"+
+				" }\r\n" +
+				"}";
+		 DefaultResponseCreator responseCreator = withStatus(HttpStatus.OK).body(res).contentType(MediaType.APPLICATION_JSON_UTF8);
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin?firstName=a&lastName=a&userName=a&pageStart=0&pageFetch=100"))
+		.andRespond(responseCreator);
+
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/usersdetails").param("firstName", "a").param("lastName", "a").param("userName", "a")).andReturn(),
+				null);
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t014getUsersDetailsTest8() throws Exception {
+		String res = "{\r\n" +
+				"  \"id\": null,\r\n" +
+				"  \"version\": null,\r\n" +
+				"  \"responsetime\": \"2021-03-31T04:27:31.590Z\",\r\n" +
+				"  \"metadata\": null,\r\n" +
+				"  \"response\": {\r\n" +
+				"    \"mosipUserDtoList\": [\r\n" +
+				"      {\r\n" +
+				"        \"userId\": \"110005\",\r\n" +
+				"        \"mobile\": null,\r\n" +
+				"        \"mail\": \"110005@xyz.com\",\r\n" +
+				"        \"langCode\": null,\r\n" +
+				"        \"userPassword\": null,\r\n" +
+				"        \"name\": \"Test110005 Auto110005\",\r\n" +
+				"        \"role\": \"ZONAL_ADMIN,GLOBAL_ADMIN\",\r\n" +
+				"        \"token\": null,\r\n" +
+				"        \"rid\": null\r\n" +
+				"      }"+
+				"    ]\r\n" +
+				"  },\r\n" +
+				"  \"errors\": { "+
+				"   \"errorCode\":\"KER-MSD-500\", "+
+				"   \"errorMessage\" : \"ErrorMessage\"}"+
+				" }\r\n" +
+				"}";
+		 DefaultResponseCreator responseCreator = withStatus(HttpStatus.OK).body(res).contentType(MediaType.APPLICATION_JSON_UTF8);
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin?firstName=a&lastName=a&userName=a&pageStart=0&pageFetch=100"))
+		.andRespond(responseCreator);
+
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/usersdetails").param("firstName", "a").param("lastName", "a").param("userName", "a")).andReturn(),
+				null);
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t014getUsersDetailsTest3() throws Exception {
+		 DefaultResponseCreator responseCreator = withStatus(HttpStatus.FORBIDDEN).body(response).contentType(MediaType.APPLICATION_JSON_UTF8);
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin?firstName=a&lastName=a&userName=a&pageStart=0&pageFetch=100"))
+		.andRespond(responseCreator);
+
+		MasterDataTest.checkErrorResponse(mockMvc.perform(MockMvcRequestBuilders.get("/usersdetails").param("firstName", "a").param("lastName", "a").param("userName", "a")).andReturn());
+				
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t014getUsersDetailsTest4() throws Exception {
+		String res = "{\r\n" +
+				"  \"id\": null,\r\n" +
+				"  \"version\": null,\r\n" +
+				"  \"responsetime\": \"2021-03-31T04:27:31.590Z\",\r\n" +
+				"  \"metadata\": null,\r\n" +
+				"  \"response\": {\r\n" +
+				"    \"mosipUserDtoList\": [\r\n" +
+				"      {\r\n" +
+				"        \"userId\": \"110005\",\r\n" +
+				"        \"mobile\": null,\r\n" +
+				"        \"mail\": \"110005@xyz.com\",\r\n" +
+				"        \"langCode\": null,\r\n" +
+				"        \"userPassword\": null,\r\n" +
+				"        \"name\": \"Test110005 Auto110005\",\r\n" +
+				"        \"role\": \"ZONAL_ADMIN,GLOBAL_ADMIN\",\r\n" +
+				"        \"token\": null,\r\n" +
+				"        \"rid\": null\r\n" +
+				"      }"+
+				"    ]\r\n" +
+				"  },\r\n" +
+				"  \"errors\": { "+
+				"   \"errorCode\":\"KER-MSD-500\", "+
+				"   \"errorMessage\" : \"ErrorMessage\"}"+
+				" }\r\n" +
+				"}";
+		 DefaultResponseCreator responseCreator = withStatus(HttpStatus.FORBIDDEN).body(res).contentType(MediaType.APPLICATION_JSON_UTF8);
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin?firstName=a&lastName=a&userName=a&pageStart=0&pageFetch=100"))
+		.andRespond(responseCreator);
+
+		MasterDataTest.checkErrorResponse(mockMvc.perform(MockMvcRequestBuilders.get("/usersdetails").param("firstName", "a").param("lastName", "a").param("userName", "a")).andReturn());
+				
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t014getUsersDetailsTest5() throws Exception {
+		 DefaultResponseCreator responseCreator = withStatus(HttpStatus.INTERNAL_SERVER_ERROR).body(response).contentType(MediaType.APPLICATION_JSON_UTF8);
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin?firstName=a&lastName=a&userName=a&pageStart=0&pageFetch=100"))
+		.andRespond(responseCreator);
+
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/usersdetails").param("firstName", "a").param("lastName", "a").param("userName", "a")).andReturn(),
+				"KER-USR-004");
+
+	}
+	
 	@Test
 	@WithUserDetails("global-admin")
 	public void t015getUsersDetailsFailTest() throws Exception {

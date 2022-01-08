@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import io.mosip.kernel.masterdata.dto.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,11 +36,6 @@ import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
-import io.mosip.kernel.masterdata.dto.response.LocationPostResponseDto;
-import io.mosip.kernel.masterdata.dto.response.LocationPutResponseDto;
-import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
-import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.service.GenericService;
 import io.mosip.kernel.masterdata.service.LocationService;
@@ -313,12 +309,12 @@ public class LocationController {
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostlocationsfiltervalues())")
 	@PostMapping("/filtervalues")
-	public ResponseWrapper<FilterResponseDto> locationFilterValues(
+	public ResponseWrapper<FilterResponseCodeDto> locationFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + LocationDto.class.getSimpleName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.FILTER_API_IS_CALLED + LocationDto.class.getSimpleName(), "ADM-572");
-		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<FilterResponseCodeDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(locationHierarchyService.locFilterValues(request.getRequest()));
 		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_FILTER + LocationDto.class.getSimpleName(),
 				MasterDataConstant.AUDIT_SYSTEM,

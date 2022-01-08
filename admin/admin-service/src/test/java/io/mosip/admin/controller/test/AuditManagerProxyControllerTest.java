@@ -6,7 +6,9 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import java.net.InetAddress;
+import java.net.URI;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 
@@ -70,23 +72,26 @@ public class AuditManagerProxyControllerTest {
 	public void setUp() {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-		
+
 		AuditManagerRequestDto auditManagerRequestDto = new AuditManagerRequestDto();
-		auditManagerRequestDto.setActionTimeStamp(LocalDateTime.now());
-		auditManagerRequestDto.setApplicationId("test");
-		auditManagerRequestDto.setApplicationName("test");
-		auditManagerRequestDto.setCreatedBy("test");
-		auditManagerRequestDto.setEventId("test");
-		auditManagerRequestDto.setEventName("test");
-		auditManagerRequestDto.setEventType("test");
-		auditManagerRequestDto.setHostName("test");
-		auditManagerRequestDto.setHostIp("test");
-		auditManagerRequestDto.setId("test");
-		auditManagerRequestDto.setIdType("test");
-		auditManagerRequestDto.setModuleId("test");
-		auditManagerRequestDto.setModuleName("test");
-		auditManagerRequestDto.setSessionUserId("test");
-		auditManagerRequestDto.setSessionUserName("test");
+		auditManagerRequestDto.setActionTimeStamp(LocalDateTime.now(ZoneOffset.UTC));
+		auditManagerRequestDto.setDescription("Test description");
+
+		auditManagerRequestDto.setApplicationName("Admin Portal");
+		auditManagerRequestDto.setApplicationId("10009");
+		auditManagerRequestDto.setSessionUserName("Test");
+		auditManagerRequestDto.setSessionUserId("Test");
+		auditManagerRequestDto.setHostIp("Test");
+		auditManagerRequestDto.setHostName("Test");
+		auditManagerRequestDto.setCreatedBy("Test");
+
+		auditManagerRequestDto.setEventId("ADM-045");
+		auditManagerRequestDto.setEventName("Click: Clicked on Home Page");
+		auditManagerRequestDto.setEventType("Navigation: Page View Event");
+		auditManagerRequestDto.setId("NO_ID");
+		auditManagerRequestDto.setIdType("ADMIN");
+		auditManagerRequestDto.setModuleId("ADM-NAV");
+		auditManagerRequestDto.setModuleName("Navigation");
 		requestDto.setRequest(auditManagerRequestDto);
 		mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
 
@@ -97,12 +102,14 @@ public class AuditManagerProxyControllerTest {
 	public void t001addAuditTest() throws Exception {
 		String str = "{\r\n    \"id\": null,\r\n    \"version\": null,\r\n    \"responsetime\": \"2019-12-02T09:45:24.512Z\",\r\n    \"metadata\": null,\r\n    \"response\": true,\r\n    \"errors\": []\r\n}";
 
-		mockRestServiceServer.expect(requestTo(auditUrl))
-				.andRespond(withSuccess().body(str).contentType(MediaType.APPLICATION_JSON));
+		mockRestServiceServer.expect(requestTo(auditUrl)).andRespond(withSuccess());
 		AdminDataUtil
 				.checkResponse(mockMvc
 						.perform(MockMvcRequestBuilders.post("/auditmanager/log")
-								.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestDto)))
+								.contentType(MediaType.APPLICATION_JSON)
+								.content(mapper.writeValueAsString(requestDto))
+								.header(HttpHeaders.ORIGIN, "dev.mosip.io")
+								.header(HttpHeaders.REFERER, "test"))
 						.andReturn(), null);
 
 	}
@@ -116,7 +123,8 @@ public class AuditManagerProxyControllerTest {
 				.andRespond(withSuccess().body(str).contentType(MediaType.APPLICATION_JSON));
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/auditmanager/log").contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsString(requestDto))).andExpect(MockMvcResultMatchers.status().is(500));
+				.content(mapper.writeValueAsString(requestDto)).header(HttpHeaders.ORIGIN, "dev.mosip.io")
+				.header(HttpHeaders.REFERER, "test")).andExpect(MockMvcResultMatchers.status().is(500));
 
 	}
 	
@@ -128,7 +136,9 @@ public class AuditManagerProxyControllerTest {
 		mockRestServiceServer.expect(requestTo(auditUrl))
 				.andRespond(withBadRequest().body(str).contentType(MediaType.APPLICATION_JSON));
 
-	MvcResult m	=mockMvc.perform(MockMvcRequestBuilders.post("/auditmanager/log").contentType(MediaType.APPLICATION_JSON)
+	MvcResult m	=mockMvc.perform(MockMvcRequestBuilders.post("/auditmanager/log")
+					.header(HttpHeaders.ORIGIN, "dev.mosip.io")
+					.header(HttpHeaders.REFERER, "test").contentType(MediaType.APPLICATION_JSON)
 		.content(mapper.writeValueAsString(requestDto))).andReturn();
 	assertEquals(m.getResponse().getStatus(), 500);
 	Map mp = mapper.readValue(m.getResponse().getContentAsString(), Map.class);

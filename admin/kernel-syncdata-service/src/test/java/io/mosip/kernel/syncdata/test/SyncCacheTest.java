@@ -759,6 +759,7 @@ public class SyncCacheTest {
     public void findMaxChangedDate_RCenter_thenBothCreatedUpdatedDateTimeIsCached() {
         RegistrationCenter entity = getRegistrationCenter("test");
         entity.setUpdatedBy("test");
+        entity.setLocationCode("test");
         entity.setUpdatedDateTime(LocalDateTime.now(ZoneOffset.UTC));
         registrationCenterRepository.save(entity);
 
@@ -943,6 +944,7 @@ public class SyncCacheTest {
         entity.setName(value);
         entity.setIsActive(true);
         entity.setCreatedBy(value);
+        entity.setLocationCode("test");
         entity.setHolidayLocationCode(value);
         entity.setRegistrationCenterType(registrationCenterType);
         entity.setCreatedDateTime(LocalDateTime.now(ZoneOffset.UTC));
@@ -974,6 +976,7 @@ public class SyncCacheTest {
         entity.setName(value);
         entity.setIsActive(true);
         entity.setCreatedBy(value);
+        entity.setTemplateTypeCode("test");
         entity.setCreatedDateTime(LocalDateTime.now(ZoneOffset.UTC));
         return entity;
     }

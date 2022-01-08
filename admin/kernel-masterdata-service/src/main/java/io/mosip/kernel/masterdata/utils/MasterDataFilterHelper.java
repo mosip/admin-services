@@ -342,6 +342,7 @@ public class MasterDataFilterHelper {
 		return filterDataList;
 	}*/
 
+	//Should be "AND" operation b/w the provided optional filters
 	private <E> void buildOptionalFilter(CriteriaBuilder builder, Root<E> root,
 										 final List<SearchFilter> optionalFilters, List<Predicate> predicates, List<String> zoneCodes) {
 		Predicate zonePredicate = null;
@@ -356,7 +357,7 @@ public class MasterDataFilterHelper {
 		if (optionalFilters != null && !optionalFilters.isEmpty()) {
 			List<Predicate> optionalPredicates = optionalFilters.stream().map(i -> masterdataSearchHelper.buildFilters(builder, root, i))
 					.filter(Objects::nonNull).collect(Collectors.toList());
-			optionalPredicate = builder.or(optionalPredicates.toArray(new Predicate[optionalPredicates.size()]));
+			optionalPredicate = builder.and(optionalPredicates.toArray(new Predicate[optionalPredicates.size()]));
 		}
 
 		if(zonePredicate == null && optionalPredicate == null)

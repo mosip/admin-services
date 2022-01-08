@@ -108,6 +108,9 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	@Autowired
 	private Environment environment;
 
+	@Autowired
+	private Properties packetProperties;
+
 	private static final String SLASH = "/";
 	
 	@Value("${mosip.admin.globalproperty.prefix}")
@@ -123,18 +126,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	 */
 	@Override
 	public PacketStatusUpdateResponseDto getStatus(String rId, String langCode) {
-
-		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE,rId));
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();	
-		for(GrantedAuthority x:authentication.getAuthorities()) {
-			if(x.getAuthority().equals("ROLE_GLOBAL_ADMIN")) {		
-				auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS);
-				return getPacketStatus(rId);
-			}
-		}
-		if(!authorizeRidWithZone(rId)) {
-			return null;
-		}
+		//Any Packet status can be viewed from any admin from any center
 		auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS);
 		return getPacketStatus(rId);
 	}
@@ -154,9 +146,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 			packetHeaders.setContentType(MediaType.APPLICATION_JSON);
 			StringBuilder urlBuilder = new StringBuilder();
 			urlBuilder.append(packetUpdateStatusUrl).append(SLASH).append(rId);
-			RestTemplate restTemplate1=new RestTemplate();
-			ResponseEntity<String> response = restTemplate1.exchange(urlBuilder.toString(), HttpMethod.GET, setRequestHeader(),
-					String.class);
+			ResponseEntity<String> response = restTemplate.getForEntity(urlBuilder.toString(), String.class);
 			if (response.getStatusCode().is2xxSuccessful()) {
 				List<PacketStatusUpdateDto> packetStatusUpdateDtos = getPacketResponse(ArrayList.class,
 						response.getBody());
@@ -172,16 +162,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 				});
 				return regProcPacketStatusRequestDto;
 			}
-		} catch (HttpServerErrorException | HttpClientErrorException ex) {
-			logger.error("SESSIONID", "ADMIN-SERVICE",
-					"ADMIN-SERVICE", ex.getMessage() + ExceptionUtils.getStackTrace(ex));
-			throwRestExceptions(ex);
-		} catch (RestClientException e) {
-			logger.error("SESSIONID", "ADMIN-SERVICE",
-					"ADMIN-SERVICE", e.getMessage() + ExceptionUtils.getStackTrace(e));
-			throw new MasterDataServiceException(PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
-					PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorMessage(), e);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error("SESSIONID", "ADMIN-SERVICE",
 					"ADMIN-SERVICE", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new MasterDataServiceException(PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
@@ -192,73 +173,6 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 
 	}
 
-	/**
-	 * Throw rest exceptions.
-	 *
-	 * @param ex
-	 *            the ex
-	 */
-	private void throwRestExceptions(HttpStatusCodeException ex) {
-		List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
-
-		if (ex.getRawStatusCode() == 401) {
-			if (!validationErrorsList.isEmpty()) {
-				auditUtil.setAuditRequestDto(EventEnum.AUTHEN_ERROR_401);
-				throw new AuthNException(validationErrorsList);
-			} else {
-				auditUtil.setAuditRequestDto(EventEnum.AUTH_FAILED_AUTH_MANAGER);
-				throw new BadCredentialsException("Authentication failed from AuthManager");
-			}
-		}
-		if (ex.getRawStatusCode() == 403) {
-			if (!validationErrorsList.isEmpty()) {
-				auditUtil.setAuditRequestDto(EventEnum.AUTHEN_ERROR_403);
-				throw new AuthZException(validationErrorsList);
-			} else {
-				auditUtil.setAuditRequestDto(EventEnum.ACCESS_DENIED);
-				throw new AccessDeniedException("Access denied from AuthManager");
-			}
-		}
-		auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS_ERROR);
-		throw new MasterDataServiceException(PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorCode(),
-				PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorMessage(), ex);
-
-	}
-
-	/**
-	 * Authorize rid with zone.
-	 *
-	 * @param rId
-	 *            the r id
-	 * @return true, if successful
-	 */
-	private boolean authorizeRidWithZone(String rId) {
-		try {
-			HttpHeaders packetHeaders = new HttpHeaders();
-			// packetHeaders.set("Cookie",
-			// "Authorization=Mosip-TokeneyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMTAwMDYiLCJtb2JpbGUiOiI3OTE4MzA5ODYiLCJtYWlsIjoiYXVkcmEuYW1lenF1aXRhQHh5ei5jb20iLCJyb2xlIjoiUkVHSVNUUkFUSU9OX0FETUlOLFJFR0lTVFJBVElPTl9PRkZJQ0VSLFpPTkFMX0FETUlOLFJFR0lTVFJBVElPTl9TVVBFUlZJU09SLEdMT0JBTF9BRE1JTiIsIm5hbWUiOiJ0ZXN0IiwicklkIjoiMjc4NDc2NTczNjAwMDI1MjAxOTA4MjAxMDQ5NTciLCJpYXQiOjE1NzQ1OTkxNzIsImV4cCI6MTU3NDYwNTE3Mn0.va8-7sfCL1XlUcI4soQfy9ulNvFsjjI-H6jna7AMvFFoAPwgb3kYzxwBuFXzJcPHnLXaBBziiJXTHqOUwSph5g");
-			packetHeaders.setContentType(MediaType.APPLICATION_JSON);
-			UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(zoneValidationUrl).queryParam("rid",
-					rId);
-			HttpEntity<RequestWrapper<String>> httpReq = new HttpEntity<>(null, packetHeaders);
-			ResponseEntity<String> response = restTemplate.exchange(uribuilder.toUriString(), HttpMethod.GET, httpReq,
-					String.class);
-			if (response.getStatusCode().is2xxSuccessful()) {
-				boolean isAuthorized = getPacketResponse(Boolean.class, response.getBody());
-				if(isAuthorized)
-					auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE_SUCCESS,rId));
-				else
-					auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE_FAILURE,rId));
-				return isAuthorized;
-			}
-			auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.AUTH_RID_WITH_ZONE_FAILURE,rId));
-		} catch (HttpClientErrorException | HttpServerErrorException e) {
-			logger.error("SESSIONID", "ADMIN-SERVICE",
-					"ADMIN-SERVICE", e.getMessage() + ExceptionUtils.getStackTrace(e));
-			throwRestExceptions(e);
-		}
-		return false;
-	}
 
 	/**
 	 * Gets the packet response.
@@ -318,18 +232,16 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 		return packetStatusUpdateDto;
 	}
 
-	Comparator<PacketStatusUpdateDto> createdDateTimesComparator = new Comparator<PacketStatusUpdateDto>() {
-
+	/*Comparator<PacketStatusUpdateDto> createdDateTimesComparator = new Comparator<PacketStatusUpdateDto>() {
 		@Override
 		public int compare(PacketStatusUpdateDto o1, PacketStatusUpdateDto o2) {
 			LocalDateTime o1CreatedDateTimes = DateUtils.parseToLocalDateTime(o1.getCreatedDateTimes());
 			LocalDateTime o2CreatedDateTimes = DateUtils.parseToLocalDateTime(o2.getCreatedDateTimes());
 			return o2CreatedDateTimes.compareTo(o1CreatedDateTimes);
 		}
-	};
+	};*/
 
 	Comparator<PacketStatusUpdateDto> createdDateTimesResultComparator = new Comparator<PacketStatusUpdateDto>() {
-
 		@Override
 		public int compare(PacketStatusUpdateDto o1, PacketStatusUpdateDto o2) {
 			LocalDateTime o1CreatedDateTimes = DateUtils.parseToLocalDateTime(o1.getCreatedDateTimes());
@@ -337,99 +249,17 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 			return o1CreatedDateTimes.compareTo(o2CreatedDateTimes);
 		}
 	};
-
-	@SafeVarargs
-	private static <T> Predicate<T> distinctTypeCode(Function<? super T, Object>... keyRetrievers) {
-
-		final Map<List<?>, Boolean> seen = new ConcurrentHashMap<>();
-
-		return t -> {
-
-			final List<?> keys = Arrays.stream(keyRetrievers).map(key -> key.apply(t)).collect(Collectors.toList());
-			return seen.putIfAbsent(keys, Boolean.TRUE) == null;
-
-		};
-
-	}
-	
-private HttpEntity<Object> setRequestHeader() throws IOException {
-		
-		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>();
-		String token="";
-		TokenRequestDTO<SecretKeyRequest> tokenRequestDTO = new TokenRequestDTO<SecretKeyRequest>();
-		tokenRequestDTO.setId(environment.getProperty("regproc.token.request.id"));
-		tokenRequestDTO.setMetadata(new Metadata());
-
-		tokenRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
-		tokenRequestDTO.setRequest(setSecretKeyRequestDTO());
-		tokenRequestDTO.setVersion(environment.getProperty("regproc.token.request.version"));
-
-		Gson gson = new Gson();
-		HttpClient httpClient = HttpClientBuilder.create().build();
-		HttpPost post = new HttpPost(environment.getProperty("KEYBASEDTOKENAPI"));
-		try {
-			StringEntity postingString = new StringEntity(gson.toJson(tokenRequestDTO));
-			post.setEntity(postingString);
-			post.setHeader("Content-type", "application/json");
-			HttpResponse response = httpClient.execute(post);
-			org.apache.http.HttpEntity entity = response.getEntity();
-			String responseBody = EntityUtils.toString(entity, "UTF-8");
-			Header[] cookie = response.getHeaders("Set-Cookie");
-			if (cookie.length == 0)
-				throw new MasterDataServiceException(PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
-						 "Token generation failed");
-			token = response.getHeaders("Set-Cookie")[0].getValue();
-			
-		} catch (IOException e) {
-			logger.error("SESSIONID", "ADMIN-SERVICE",
-					"ADMIN-SERVICE", e.getMessage() + ExceptionUtils.getStackTrace(e));
-			throw e;
-			}
-		headers.add("Cookie", token.substring(0, token.indexOf(';')));
-		return new HttpEntity<Object>(headers);
-	}
-
-	private SecretKeyRequest setSecretKeyRequestDTO() {
-		SecretKeyRequest request = new SecretKeyRequest();
-		request.setAppId(environment.getProperty("regproc.token.request.appid"));
-		request.setClientId(environment.getProperty("regproc.token.request.clientId"));
-		request.setSecretKey(environment.getProperty("regproc.token.request.secretKey"));
-		return request;
-	}
-	
-	/**
-	 * @return
-	 * description: It's returning property based on the langCode
-	 */
-	private Properties getProperties() {
-		Properties prop = null;
-		ClassLoader classLoader = getClass().getClassLoader();
-		String messagesPropertiesFileName = globalPropertyPrefix+ globalPropertySuffix;
-		try(
-			InputStream inputStream = classLoader.getResourceAsStream(messagesPropertiesFileName);
-			InputStreamReader streamReader = new InputStreamReader(inputStream, "UTF-8");) {
-			prop = new Properties();
-			prop.load(streamReader);
-		} catch (IOException e) {
-			throw new MasterDataServiceException("RPR-RTS-002",
-					"Unknown Exception Occured" + " -->" + e.getMessage());
-//			throw new MasterDataServiceException(PlatformErrorMessages.RPR_RTS_UNKNOWN_EXCEPTION.getCode(),
-//					PlatformErrorMessages.RPR_RTS_UNKNOWN_EXCEPTION.getMessage() + " -->" + e.getMessage());
-		}
-		return prop;
-	}
 	
 	/**
 	 * @param packStautsDtos
 	 * Description: It's calling the property file and set the comment based on the sub-status-code
 	 */
 	private void setStatusMessage(List<PacketStatusUpdateDto> packStautsDtos) {
-		Properties prop = getProperties();
-		if (null != prop) {
+		if (null != packetProperties) {
 			packStautsDtos.stream().forEach(packStautsDto -> {
 				String subStatusCode = packStautsDto.getSubStatusCode();
 				if (subStatusCode != null && !subStatusCode.isEmpty()) {
-					packStautsDto.setStatusComment(prop.getProperty(subStatusCode));
+					packStautsDto.setStatusComment(packetProperties.getProperty(subStatusCode));
 				}
 			});
 		}

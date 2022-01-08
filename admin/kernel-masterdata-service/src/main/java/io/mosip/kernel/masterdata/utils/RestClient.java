@@ -57,6 +57,9 @@ public class RestClient {
 	@Autowired
 	private Environment environment;
 
+	@Autowired
+	private RestTemplate restTemplate;
+
 	/** The Constant AUTHORIZATION. */
 	private static final String AUTHORIZATION = "Authorization=";
 
@@ -101,10 +104,7 @@ public class RestClient {
 				}
 			}
 
-			RestTemplate restTemplate;
-
 			try {
-				restTemplate = getRestTemplate();
 				result = (T) restTemplate.postForObject(builder.toUriString(), setRequestHeader(requestType, mediaType),
 						responseClass);
 			} catch (Exception e) {
@@ -156,10 +156,8 @@ public class RestClient {
 
 			}
 			uriComponents = builder.build(false).encode();
-			RestTemplate restTemplate;
 
 			try {
-				restTemplate = getRestTemplate();
 				result = (T) restTemplate
 						.exchange(uriComponents.toUri(), HttpMethod.GET, setRequestHeader(null, null), responseType)
 						.getBody();
@@ -171,26 +169,6 @@ public class RestClient {
 		return result;
 	}
 
-	/**
-	 * Gets the rest template.
-	 *
-	 * @return the rest template
-	 * @throws KeyManagementException   the key management exception
-	 * @throws NoSuchAlgorithmException the no such algorithm exception
-	 * @throws KeyStoreException        the key store exception
-	 */
-	public RestTemplate getRestTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
-		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
-		SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy)
-				.build();
-		SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
-		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
-		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-		requestFactory.setHttpClient(httpClient);
-
-		return new RestTemplate(requestFactory);
-
-	}
 
 	/**
 	 * Sets the request header.
@@ -203,7 +181,6 @@ public class RestClient {
 	@SuppressWarnings("unchecked")
 	private HttpEntity<Object> setRequestHeader(Object requestType, MediaType mediaType) throws IOException {
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>();
-		headers.add("Cookie", getToken());
 		if (mediaType != null) {
 			headers.add("Content-Type", mediaType.toString());
 		}
@@ -223,70 +200,5 @@ public class RestClient {
 			}
 		} else
 			return new HttpEntity<Object>(headers);
-	}
-
-	/**
-	 * Gets the token.
-	 *
-	 * @return the token
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public String getToken() throws IOException {
-		String token = System.getProperty("token");
-		boolean isValid = false;
-
-		if (StringUtils.isNotEmpty(token)) {
-
-			isValid = TokenHandlerUtil.isValidBearerToken(token,
-					environment.getProperty("mosip.kernel.token.request.issuerUrl"),
-					environment.getProperty("mosip.kernel.auth.clientId"));
-
-		}
-		if (!isValid) {
-			TokenRequestDTO<SecretKeyRequest> tokenRequestDTO = new TokenRequestDTO<SecretKeyRequest>();
-			tokenRequestDTO.setId(environment.getProperty("mosip.kernel.token.request.id"));
-			tokenRequestDTO.setMetadata(new Metadata());
-
-			tokenRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
-			// tokenRequestDTO.setRequest(setPasswordRequestDTO());
-			tokenRequestDTO.setRequest(setSecretKeyRequestDTO());
-			tokenRequestDTO.setVersion(environment.getProperty("mosip.kernel.token.request.version"));
-
-			Gson gson = new Gson();
-			HttpClient httpClient = HttpClientBuilder.create().build();
-			// HttpPost post = new
-			// HttpPost(environment.getProperty("PASSWORDBASEDTOKENAPI"));
-			HttpPost post = new HttpPost(environment.getProperty("KEYBASEDTOKENAPI"));
-			try {
-				StringEntity postingString = new StringEntity(gson.toJson(tokenRequestDTO));
-				post.setEntity(postingString);
-				post.setHeader("Content-type", "application/json");
-				HttpResponse response = httpClient.execute(post);
-				org.apache.http.HttpEntity entity = response.getEntity();
-				String responseBody = EntityUtils.toString(entity, "UTF-8");
-				Header[] cookie = response.getHeaders("Set-Cookie");
-				if (cookie.length == 0)
-					throw new IOException("cookie is empty. Could not generate new token.");
-				token = response.getHeaders("Set-Cookie")[0].getValue();
-				System.setProperty("token", token.substring(14, token.indexOf(';')));
-				return token.substring(0, token.indexOf(';'));
-			} catch (IOException e) {
-				throw e;
-			}
-		}
-		return AUTHORIZATION + token;
-	}
-
-	/**
-	 * Sets the secret key request DTO.
-	 *
-	 * @return the secret key request
-	 */
-	private SecretKeyRequest setSecretKeyRequestDTO() {
-		SecretKeyRequest request = new SecretKeyRequest();
-		request.setAppId(environment.getProperty("mosip.kernel.ida.app.id"));
-		request.setClientId(environment.getProperty("mosip.kernel.ida.client.id"));
-		request.setSecretKey(environment.getProperty("mosip.kernel.ida.secret.key"));
-		return request;
 	}
 }
