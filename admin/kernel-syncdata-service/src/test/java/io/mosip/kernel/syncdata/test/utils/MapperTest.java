@@ -1,33 +1,22 @@
 package io.mosip.kernel.syncdata.test.utils;
 
-import static io.mosip.kernel.syncdata.utils.MapperUtils.map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import io.mosip.kernel.syncdata.utils.ExceptionUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.syncdata.dto.ApplicationDto;
 import io.mosip.kernel.syncdata.dto.MachineDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceDto;
-import io.mosip.kernel.syncdata.entity.Language;
 import io.mosip.kernel.syncdata.entity.RegistrationCenter;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
 
@@ -43,16 +32,6 @@ public class MapperTest {
 	@Autowired
 	private MapperUtils mapperUtils;
 
-	
-	@Test(expected = NullPointerException.class)
-	public void testMapSourceNull() {
-		map(null, new Language());
-	}
-
-	@Test(expected = NullPointerException.class)
-	public void testMapDestinationNull() {
-		map(new Language(), null);
-	}
 
 	@Test
 	public void testObjectMapperWithNullArg() {
