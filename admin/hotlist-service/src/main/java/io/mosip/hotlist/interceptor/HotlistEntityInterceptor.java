@@ -27,6 +27,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class HotlistEntityInterceptor extends EmptyInterceptor {
 
+	private static final String ID_VALUE = "idValue";
+
 	/** The mosip logger. */
 	private transient Logger mosipLogger = HotlistLogger.getLogger(HotlistEntityInterceptor.class);
 
@@ -38,7 +40,7 @@ public class HotlistEntityInterceptor extends EmptyInterceptor {
 
 	/** The security manager. */
 	@Autowired
-	private HotlistSecurityManager securityManager;
+	private transient HotlistSecurityManager securityManager;
 	
 	/**
 	 * On save.
@@ -65,7 +67,7 @@ public class HotlistEntityInterceptor extends EmptyInterceptor {
 				String encryptedData = securityManager.encrypt(hotlistEntity.getIdValue());
 				hotlistEntity.setIdValue(encryptedData);
 				List<String> propertyNamesList = Arrays.asList(propertyNames);
-				int indexOfData = propertyNamesList.indexOf("idValue");
+				int indexOfData = propertyNamesList.indexOf(ID_VALUE);
 				state[indexOfData] = encryptedData;
 				return super.onSave(hotlistEntity, id, state, propertyNames, types);
 			}
@@ -74,7 +76,7 @@ public class HotlistEntityInterceptor extends EmptyInterceptor {
 				String encryptedData = securityManager.encrypt(hotlistEntity.getIdValue());
 				hotlistEntity.setIdValue(encryptedData);
 				List<String> propertyNamesList = Arrays.asList(propertyNames);
-				int indexOfData = propertyNamesList.indexOf("idValue");
+				int indexOfData = propertyNamesList.indexOf(ID_VALUE);
 				state[indexOfData] = encryptedData;
 				return super.onSave(hotlistEntity, id, state, propertyNames, types);
 			}
@@ -107,7 +109,7 @@ public class HotlistEntityInterceptor extends EmptyInterceptor {
 		try {
 			if (entity instanceof Hotlist) {
 				List<String> propertyNamesList = Arrays.asList(propertyNames);
-				int indexOfData = propertyNamesList.indexOf("idValue");
+				int indexOfData = propertyNamesList.indexOf(ID_VALUE);
 				state[indexOfData] = securityManager.decrypt((String) state[indexOfData]);
 			}
 		} catch (HotlistAppException e) {
@@ -137,7 +139,7 @@ public class HotlistEntityInterceptor extends EmptyInterceptor {
 		try {
 			if (entity instanceof Hotlist || entity instanceof HotlistHistory) {
 				List<String> propertyNamesList = Arrays.asList(propertyNames);
-				int indexOfData = propertyNamesList.indexOf("idValue");
+				int indexOfData = propertyNamesList.indexOf(ID_VALUE);
 				currentState[indexOfData] = securityManager.encrypt((String) currentState[indexOfData]);
 				return super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types);
 			}
