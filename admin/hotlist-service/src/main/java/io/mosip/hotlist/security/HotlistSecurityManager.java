@@ -90,7 +90,6 @@ public class HotlistSecurityManager {
 		try {
 			return HMACUtils2.digestAsPlainText(data);
 		} catch (NoSuchAlgorithmException e) {
-			// TODO to be removed
 			throw new HotlistAppUncheckedException(HotlistErrorConstants.UNKNOWN_ERROR, e);
 		}
 	}
@@ -105,7 +104,7 @@ public class HotlistSecurityManager {
 	public String encrypt(String dataToEncrypt) throws HotlistAppException {
 		RequestWrapper<CryptomanagerRequestDto> requestWrapper = new RequestWrapper<>();
 		CryptomanagerRequestDto request = new CryptomanagerRequestDto(appId, refId, DateUtils.getUTCCurrentDateTime(),
-				CryptoUtil.encodeBase64(dataToEncrypt.getBytes()), null, null, true);
+				CryptoUtil.encodeToURLSafeBase64(dataToEncrypt.getBytes()), null, null, true);
 		requestWrapper.setRequest(request);
 		return encryptDecryptData(restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_ENCRYPT, requestWrapper,
 				ResponseWrapper.class));
@@ -123,7 +122,7 @@ public class HotlistSecurityManager {
 		CryptomanagerRequestDto request = new CryptomanagerRequestDto(appId, refId, DateUtils.getUTCCurrentDateTime(),
 				dataToDecrypt, null, null, true);
 		requestWrapper.setRequest(request);
-		return new String(CryptoUtil.decodeBase64(encryptDecryptData(restBuilder
+		return new String(CryptoUtil.decodeURLSafeBase64(encryptDecryptData(restBuilder
 				.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT, requestWrapper, ResponseWrapper.class))));
 	}
 
