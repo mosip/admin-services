@@ -116,14 +116,15 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	 * @return String
 	 */
 	private String getConfigDetailsResponse(@NotNull String fileName) {
-		StringBuilder uriBuilder = new StringBuilder();
-		uriBuilder.append(environment.getProperty("spring.cloud.config.uri")).append(SLASH)
-				.append(environment.getProperty("spring.application.name")).append(SLASH)
-				.append(environment.getProperty("spring.profiles.active")).append(SLASH)
-				.append(environment.getProperty("spring.cloud.config.label")).append(SLASH)
-				.append(fileName);
+		UriComponentsBuilder uriBuilder = UriComponentsBuilder
+				.fromUriString(environment.getProperty("spring.cloud.config.uri")).
+				path(SLASH).path(environment.getProperty("spring.application.name")).
+				path(SLASH).path(environment.getProperty("spring.profiles.active")).
+				path(SLASH).path(environment.getProperty("spring.cloud.config.label")).
+				path(SLASH).path(fileName);
+	
 		try {
-			 String str=restTemplate.getForObject(uriBuilder.toString(), String.class);
+			 String str=restTemplate.getForObject(uriBuilder.toUriString(), String.class);
 			return str;
 		} catch (RestClientException e) {
 			LOGGER.error("Failed to getConfigDetailsResponse", e);

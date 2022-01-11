@@ -21,6 +21,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.syncdata.constant.HibernatePersistenceConstant;
 
 /**
@@ -36,6 +37,9 @@ import io.mosip.kernel.syncdata.constant.HibernatePersistenceConstant;
 @EnableJpaRepositories(basePackages = {"io.mosip.kernel.syncdata.repository", "io.mosip.kernel.keymanagerservice.repository"},
 		entityManagerFactoryRef = "syncDataEntityManager", transactionManagerRef = "syncDataTransactionManager")
 public class SyncDataConfig {
+
+	private static final Logger logger = LoggerConfiguration.logConfig(SyncDataConfig.class);
+
 
 	@Autowired
 	private Environment env;
@@ -126,7 +130,7 @@ public class SyncDataConfig {
 				 * We can add a default interceptor whenever we require here.
 				 */
 			} catch (BeanInstantiationException | ClassNotFoundException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 		} else {
 			jpaProperties.put(property, env.containsProperty(property) ? env.getProperty(property) : defaultValue);

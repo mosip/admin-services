@@ -13,9 +13,9 @@ import javax.validation.ConstraintViolationException;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -41,7 +41,6 @@ import io.mosip.kernel.masterdata.constant.RegistrationCenterUserMappingHistoryE
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceRegResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegisterResponseDto;
-
 /**
  * Rest Controller Advice for Master Data
  * 
@@ -56,6 +55,8 @@ public class ApiExceptionHandler {
 
 	@Autowired
 	private ObjectMapper objectMapper;
+	
+	private static final Logger logger = LoggerFactory.getLogger(ApiExceptionHandler.class);
 
 	@ExceptionHandler(MasterDataServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataServiceException(
@@ -194,7 +195,7 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(
 			final HttpServletRequest httpServletRequest, Exception e) throws IOException {
-		e.printStackTrace();
+		logger.info(e.getMessage());
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(RequestErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), e.getMessage());
 		errorResponse.getErrors().add(error);
@@ -261,7 +262,7 @@ public class ApiExceptionHandler {
 				responseWrapper.setId((String) json.get("id"));
 				responseWrapper.setVersion((String) json.get("version"));
 			} catch (JSONException e) {
-				e.printStackTrace();
+				logger.info(e.getMessage());
 			}
 //			int idIndex = requestBody.indexOf("id") + 5;
 //			int verIndex = requestBody.indexOf("version");
