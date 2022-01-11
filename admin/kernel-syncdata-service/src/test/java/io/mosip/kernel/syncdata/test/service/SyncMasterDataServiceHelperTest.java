@@ -247,4 +247,37 @@ public class SyncMasterDataServiceHelperTest {
         Assert.assertNotNull(responseEntity.getHeaders().get("file-signature"));
         Assert.assertNotNull(responseEntity.getHeaders().get(HttpHeaders.CONTENT_DISPOSITION));
     }
+    
+    @Test
+    public void getClientSettingsJsonFileTest3() throws Exception {
+        MockRestServiceServer mockRestServiceServer2 = MockRestServiceServer.bindTo(selfTokenRestTemplate)
+                .ignoreExpectOrder(true)
+                .build();
+        ResponseWrapper<LocationHierarchyLevelResponseDto> locationsResponse = new ResponseWrapper<>();
+        locationsResponse.setResponse(locationHierarchyLevelResponseDto);
+        mockRestServiceServer2.expect(requestTo(locationHirerarchyUrl)).andRespond(withSuccess()
+                .body(objectMapper.writeValueAsString(locationsResponse)));
+
+        ResponseWrapper<PageDto<DynamicFieldDto>> dynamicDataResponseWrapper = new ResponseWrapper<>();
+        dynamicDataResponseWrapper.setResponse(pagedDynamicFields);
+        dynamicDataResponseWrapper.setResponsetime(LocalDateTime.now(ZoneOffset.UTC));
+        mockRestServiceServer2.expect(requestTo(dynamicfieldUrl+"?pageNumber=0"))
+                .andRespond(withSuccess().body(objectMapper.writeValueAsString(dynamicDataResponseWrapper)));
+
+        ResponseWrapper<JWTSignatureResponseDto> signResponse = new ResponseWrapper<>();
+        JWTSignatureResponseDto jwtSignatureResponseDto = new JWTSignatureResponseDto();
+        jwtSignatureResponseDto.setJwtSignedData("header.payload.signature");
+        jwtSignatureResponseDto.setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
+        signResponse.setResponse(jwtSignatureResponseDto);
+        mockRestServiceServer.expect(requestTo(signUrl))
+                .andRespond(withSuccess().body(objectMapper.writeValueAsString(signResponse)));
+
+        syncJobHelperService.createEntitySnapshot();
+
+        ResponseEntity responseEntity = syncMasterDataService.getClientSettingsJsonFile("LOCATIONHIERARCHY",
+                "41:3a:ed:6d:38:a0:28:36:72:a6:75:08:8a:41:3c:a3:4f:48:72:6f:c8:fb:29:dd:53:bd:6f:12:70:9b:e3:29");
+        Assert.assertNotNull(responseEntity.getBody());
+        Assert.assertNotNull(responseEntity.getHeaders().get("file-signature"));
+        Assert.assertNotNull(responseEntity.getHeaders().get(HttpHeaders.CONTENT_DISPOSITION));
+    }
 }
