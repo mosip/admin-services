@@ -1,5 +1,6 @@
 package io.mosip.kernel.syncdata.test.controller;
 
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,8 +30,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.doReturn;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -906,6 +905,20 @@ public class SyncDataControllerTest {
 		SyncDataUtil.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/v2/clientsettings").param("keyindex", "41:3a:ed:6d:38:a0:28:36:72:a6:75:08:8a:41:3c:a3:4f:48:72:6f:c8:fb:29:dd:53:bd:6f:12:70:9b:e3:29").param("regcenterId", "10002")).andReturn(),
 				"KER-SNC-149");
+
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t024getV2Userdetails() throws Exception {
+		String signResponse = "{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
+
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
+				.andRespond(withSuccess().body(signResponse).contentType(MediaType.APPLICATION_JSON));
+
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/v2/userdetails")
+				.param("keyindex", "41:3a:ed:6d:38:a0:28:36:72:a6:75:08:8a:41:3c:a3:4f:48:72:6f:c8:fb:29:dd:53:bd:6f:12:70:9b:e3:29"))
+				.andReturn(), null);
 
 	}
 

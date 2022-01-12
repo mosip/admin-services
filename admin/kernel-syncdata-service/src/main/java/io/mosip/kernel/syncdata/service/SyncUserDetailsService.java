@@ -30,4 +30,11 @@ public interface SyncUserDetailsService {
 	 * @return
 	 */
 	UserDetailResponseDto getUserDetailsFromAuthServer(List<String> userIds);
+
+	/**
+	 * get all the userids with their status belonging to respective registration center based on keyindex provided
+	 * @param keyIndex
+	 * @return
+	 */
+	SyncUserDto getAllUserDetailsBasedOnKeyIndexV2(String keyIndex);
 }
