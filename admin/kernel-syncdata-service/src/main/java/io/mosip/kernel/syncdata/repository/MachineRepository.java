@@ -109,7 +109,6 @@ public interface MachineRepository extends JpaRepository<Machine, String> {
 	@Query("From Machine m WHERE lower(m.keyIndex) = lower(?1) and (m.isDeleted is null or m.isDeleted =false)")
 	List<Machine> findByMachineKeyIndex(String keyIndex);
 
-	@Cacheable(cacheNames = "initial-sync", key = "'machine_master'.concat('_').concat(#a3)", condition = "#a1.getYear() <= 1970")
 	@Query("From Machine mm WHERE mm.regCenterId =?1 AND mm.id = ?4 AND ((mm.createdDateTime BETWEEN ?2 AND ?3) OR (mm.updatedDateTime BETWEEN ?2 AND ?3) OR (mm.deletedDateTime BETWEEN ?2 AND ?3))")
 	List<Machine> findMachineLatestCreatedUpdatedDeleted(String regCenterId, LocalDateTime lastUpdated,
 													 LocalDateTime currentTimeStamp, String machineId);
