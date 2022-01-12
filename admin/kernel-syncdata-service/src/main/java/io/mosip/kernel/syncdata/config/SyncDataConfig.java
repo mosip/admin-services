@@ -1,6 +1,7 @@
 package io.mosip.kernel.syncdata.config;
 
 import java.util.HashMap;
+import io.mosip.kernel.core.logger.spi.Logger;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -39,6 +40,8 @@ public class SyncDataConfig {
 
 	@Autowired
 	private Environment env;
+	
+	private static final Logger logger = LoggerConfiguration.logConfig(SyncDataConfig.class);
 
 	@Value("${hikari.maximumPoolSize:100}")
 	private int maximumPoolSize;
@@ -126,7 +129,7 @@ public class SyncDataConfig {
 				 * We can add a default interceptor whenever we require here.
 				 */
 			} catch (BeanInstantiationException | ClassNotFoundException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(),e);
 			}
 		} else {
 			jpaProperties.put(property, env.containsProperty(property) ? env.getProperty(property) : defaultValue);

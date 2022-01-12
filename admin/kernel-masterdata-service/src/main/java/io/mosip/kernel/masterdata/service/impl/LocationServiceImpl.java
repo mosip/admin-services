@@ -550,7 +550,7 @@ public class LocationServiceImpl implements LocationService {
 			List<Location> childLocHierList = getLocationChildHierarchyList(locCode, langCode);
 			childHierarchyList.addAll(childLocHierList);
 			childLocHierList.parallelStream().filter(entity -> entity.getCode() != null && !entity.getCode().isEmpty())
-					.map(entity -> getChildList(entity.getCode(), langCode)).collect(Collectors.toList());
+					.map(entity -> getChildList(entity.getCode(), langCode));//.collect(Collectors.toList());
 		}
 
 		return childHierarchyList;
@@ -572,7 +572,7 @@ public class LocationServiceImpl implements LocationService {
 
 			parentLocHierList.parallelStream()
 					.filter(entity -> entity.getParentLocCode() != null && !entity.getParentLocCode().isEmpty())
-					.map(entity -> getParentList(entity.getParentLocCode(), langCode)).collect(Collectors.toList());
+					.map(entity -> getParentList(entity.getParentLocCode(), langCode));//.collect(Collectors.toList());
 		}
 
 		return parentHierarchyList;
@@ -673,8 +673,8 @@ public class LocationServiceImpl implements LocationService {
 		if (locCode != null && !locCode.isEmpty()) {
 			List<String> childLocHierList = getLocationChildHierarchyList(locCode);
 			childList.addAll(childLocHierList);
-			childLocHierList.parallelStream().filter(Objects::nonNull).map(this::getChildByLocCode)
-					.collect(Collectors.toList());
+			childLocHierList.parallelStream().filter(Objects::nonNull).map(this::getChildByLocCode);
+					//.collect(Collectors.toList());
 		}
 		return childList;
 	}

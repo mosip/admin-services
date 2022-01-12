@@ -261,7 +261,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
 
 			JsonNode valueJson = dynamicField.getValueJson() != null ? objectMapper.readTree(dynamicField.getValueJson()) : null;
-			String code = valueJson.get("code").toString();
+			String code = null!=valueJson ? valueJson.get("code").toString():"";
 
 			int deletedRows = dynamicFieldRepository.deleteDynamicField(dynamicField.getName(), "%"+code+"%",
 					MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser());
@@ -351,7 +351,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
 
 			JsonNode valueJson = dynamicField.getValueJson() != null ? objectMapper.readTree(dynamicField.getValueJson()) : null;
-			String code = valueJson.get("code").toString();
+			String code = null!=valueJson?valueJson.get("code").toString():"";
 
 			int updatedRows = dynamicFieldRepository.updateDynamicFieldIsActive(dynamicField.getName(), "%"+code+"%", isActive,
 					MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser());

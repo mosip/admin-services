@@ -921,5 +921,45 @@ public class SyncDataControllerTest {
 				.andReturn(), null);
 
 	}
+	
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t009getClientPublicKeyTest1() throws Exception {
+		String bd="{\r\n" + 
+				"  \"id\": \"string\",\r\n" + 
+				"  \"version\": \"string\",\r\n" + 
+				"  \"responsetime\": \"2021-12-07T12:51:29.957Z\",\r\n" + 
+				"  \"metadata\": {},\r\n" + 
+				"  \"response\": {\"machines\":[\r\n" + 
+				"      {\r\n" + 
+				"        \"id\": \"10\",\r\n" + 
+				"        \"name\": \"alm1009\",\r\n" + 
+				"        \"serialNum\": \"NM19837379\",\r\n" + 
+				"        \"macAddress\": \"E8-A9-64-1F-27-E6\",\r\n" + 
+				"        \"ipAddress\": \"192.168.0.120\",\r\n" + 
+				"        \"machineSpecId\": \"1001\",\r\n" + 
+				"        \"regCenterId\": \"10001\",\r\n" + 
+				"        \"langCode\": \"eng\",\r\n" + 
+				"        \"isActive\": \"true\",\r\n" + 
+				"        \"validityDateTime\": null ,\r\n" + 
+				"        \"keyIndex\":  \"B5\" ,\r\n" +
+				"        \"publicKey\": \"M10674\" ,\r\n" +
+				"        \"signPublicKey\": \"M1882734\"\r\n" +
+				"      }\r\n" + 
+				"    ]}," +
+				"\"errors\":[{\"errorCode\":\"KER-SNC-102\",\"errorMessage\":\"error\"}]"
+				+ "}";
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(String.format(machineUrl, "10"));
+
+		mockRestServiceServer.expect(MockRestRequestMatchers.requestTo(builder.build().toString()))
+		.andRespond(withSuccess().body(bd).contentType(MediaType.APPLICATION_JSON));
+
+	String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}"; 
+
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
+		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
+		mockMvc.perform(MockMvcRequestBuilders.get("/tpm/publickey/10")).andExpect(status().is(500));
+	}
+
 
 }

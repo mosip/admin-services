@@ -28,7 +28,7 @@ public class CacheManagementServiceImpl implements CacheManagementService {
 	public void clearCacheByCacheName(CacheName cacheName) {
 
 		for (String name : cacheManager.getCacheNames()) {
-			if (name.equals(cacheName.getName())) {
+			if (name.equals(cacheName.getName()) && null!=cacheManager.getCache(name)) {
 				cacheManager.getCache(name).clear();
 			}
 		}
@@ -41,6 +41,7 @@ public class CacheManagementServiceImpl implements CacheManagementService {
 	@Override
 	public void clearCache() {
 		for (String name : cacheManager.getCacheNames()) {
+			if(null!=cacheManager.getCache(name))
 			cacheManager.getCache(name).clear();
 		}
 	}

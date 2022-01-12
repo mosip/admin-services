@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -102,9 +103,9 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 
 			HttpHeaders packetHeaders = new HttpHeaders();
 			packetHeaders.setContentType(MediaType.APPLICATION_JSON);
-			StringBuilder urlBuilder = new StringBuilder();
-			urlBuilder.append(packetUpdateStatusUrl).append(SLASH).append(rId);
-			ResponseEntity<String> response = restTemplate.getForEntity(urlBuilder.toString(), String.class);
+			UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromUriString(packetUpdateStatusUrl + SLASH)
+					.path(rId);
+			ResponseEntity<String> response = restTemplate.getForEntity(urlBuilder.toUriString(), String.class);
 			if (response.getStatusCode().is2xxSuccessful()) {
 				List<PacketStatusUpdateDto> packetStatusUpdateDtos = getPacketResponse(ArrayList.class,
 						response.getBody());
@@ -115,7 +116,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 				packStautsDto.sort(createdDateTimesResultComparator);
 				setStatusMessage(packStautsDto);
 				regProcPacketStatusRequestDto.setPacketStatusUpdateList(packStautsDto);
-				packStautsDto.stream().forEach(pcksts->{
+				packStautsDto.stream().forEach(pcksts -> {
 					auditUtil.setAuditRequestDto(EventEnum.getEventEnumBasedOnPAcketStatus(pcksts));
 				});
 				return regProcPacketStatusRequestDto;
