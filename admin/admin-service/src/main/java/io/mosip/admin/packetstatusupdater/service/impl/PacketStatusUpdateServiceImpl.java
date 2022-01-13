@@ -30,6 +30,7 @@ import io.mosip.admin.packetstatusupdater.util.EventEnum;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 import io.mosip.kernel.core.util.DateUtils;
@@ -74,6 +75,9 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 
 	@Autowired
 	private Properties packetProperties;
+	
+	@Autowired
+	private RidValidator<String> ridValidatorImpl;
 
 	private static final String SLASH = "/";
 
@@ -100,6 +104,10 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	@SuppressWarnings({ "unchecked" })
 	private PacketStatusUpdateResponseDto getPacketStatus(String rId) {
 		try {
+			if (!ridValidatorImpl.validateId(rId)) {
+				throw new MasterDataServiceException(PacketStatusUpdateErrorCode.RID_INVALID.getErrorCode(),
+						PacketStatusUpdateErrorCode.RID_INVALID.getErrorMessage());
+			}
 
 			HttpHeaders packetHeaders = new HttpHeaders();
 			packetHeaders.setContentType(MediaType.APPLICATION_JSON);
