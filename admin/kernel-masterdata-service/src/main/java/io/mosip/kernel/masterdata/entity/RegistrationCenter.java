@@ -194,7 +194,7 @@ public class RegistrationCenter extends BaseEntity implements Cloneable,Serializ
 		try {
 			return super.clone();
 		} catch (Exception ex) {
-			return "";
+			return null;
 		}
 	} 
 }

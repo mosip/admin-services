@@ -259,10 +259,14 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 			if(dynamicField == null)
 				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
-
-			JsonNode valueJson = dynamicField.getValueJson() != null ? objectMapper.readTree(dynamicField.getValueJson()) : null;
-			String code = null!=valueJson ? valueJson.get("code").toString():"";
-
+            if(dynamicField.getValueJson()==null)
+            	throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_VALUE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						SchemaErrorCode.DYNAMIC_FIELD_VALUE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			JsonNode valueJson =objectMapper.readTree(dynamicField.getValueJson());
+			String code = valueJson.get("code").toString();
+                 
+			
+			
 			int deletedRows = dynamicFieldRepository.deleteDynamicField(dynamicField.getName(), "%"+code+"%",
 					MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser());
 
@@ -349,9 +353,11 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 			if(dynamicField == null)
 				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
-
-			JsonNode valueJson = dynamicField.getValueJson() != null ? objectMapper.readTree(dynamicField.getValueJson()) : null;
-			String code = null!=valueJson?valueJson.get("code").toString():"";
+			if(null==dynamicField.getValueJson())
+				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_VALUE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						SchemaErrorCode.DYNAMIC_FIELD_VALUE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			JsonNode valueJson = objectMapper.readTree(dynamicField.getValueJson());
+			String code = valueJson.get("code").toString();
 
 			int updatedRows = dynamicFieldRepository.updateDynamicFieldIsActive(dynamicField.getName(), "%"+code+"%", isActive,
 					MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser());

@@ -264,7 +264,7 @@ public class SyncAuthTokenServiceImpl {
                 break;
         }
 
-        ResponseWrapper<TokenResponseDto> responseWrapper = objectMapper.readValue(null!=responseEntity?responseEntity.getBody():"",
+        ResponseWrapper<TokenResponseDto> responseWrapper = objectMapper.readValue(responseEntity.getBody(),
                 new TypeReference<ResponseWrapper<TokenResponseDto>>() {});
 
         if(Objects.nonNull(responseWrapper.getErrors()) && !responseWrapper.getErrors().isEmpty())

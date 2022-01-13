@@ -1,7 +1,8 @@
 package io.mosip.kernel.syncdata.config;
 
 import java.util.HashMap;
-import io.mosip.kernel.core.logger.spi.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -41,7 +42,7 @@ public class SyncDataConfig {
 	@Autowired
 	private Environment env;
 	
-	private static final Logger logger = LoggerConfiguration.logConfig(SyncDataConfig.class);
+	private static final Logger logger = LoggerFactory.getLogger(SyncDataConfig.class);
 
 	@Value("${hikari.maximumPoolSize:100}")
 	private int maximumPoolSize;

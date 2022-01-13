@@ -198,7 +198,7 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(
 			final HttpServletRequest httpServletRequest, Exception e) throws IOException {
-		logger.info(e.getMessage(),e);
+		logger.error(e.getMessage(),e);
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(RequestErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), e.getMessage());
 		errorResponse.getErrors().add(error);
