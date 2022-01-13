@@ -46,7 +46,7 @@ import java.util.*;
 
 
 /**
- * @since 1.2.0-SNAPSHOT
+ * @since 1.2.0-rc2
  */
 @RefreshScope
 @Service
