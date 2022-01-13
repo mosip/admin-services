@@ -103,7 +103,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 
 			HttpHeaders packetHeaders = new HttpHeaders();
 			packetHeaders.setContentType(MediaType.APPLICATION_JSON);
-			UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromUriString(packetUpdateStatusUrl + SLASH)
+			UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromUriString(packetUpdateStatusUrl)
 					.path(rId);
 			ResponseEntity<String> response = restTemplate.getForEntity(urlBuilder.toUriString(), String.class);
 			if (response.getStatusCode().is2xxSuccessful()) {
