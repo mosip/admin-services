@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +30,7 @@ import io.mosip.admin.packetstatusupdater.util.EventEnum;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 import io.mosip.kernel.core.util.DateUtils;
@@ -73,6 +75,9 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 
 	@Autowired
 	private Properties packetProperties;
+	
+	@Autowired
+	private RidValidator<String> ridValidatorImpl;
 
 	private static final String SLASH = "/";
 
@@ -99,12 +104,16 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	@SuppressWarnings({ "unchecked" })
 	private PacketStatusUpdateResponseDto getPacketStatus(String rId) {
 		try {
+			if (!ridValidatorImpl.validateId(rId)) {
+				throw new MasterDataServiceException(PacketStatusUpdateErrorCode.RID_INVALID.getErrorCode(),
+						PacketStatusUpdateErrorCode.RID_INVALID.getErrorMessage());
+			}
 
 			HttpHeaders packetHeaders = new HttpHeaders();
 			packetHeaders.setContentType(MediaType.APPLICATION_JSON);
-			StringBuilder urlBuilder = new StringBuilder();
-			urlBuilder.append(packetUpdateStatusUrl).append(SLASH).append(rId);
-			ResponseEntity<String> response = restTemplate.getForEntity(urlBuilder.toString(), String.class);
+			UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromUriString(packetUpdateStatusUrl)
+					.path(rId);
+			ResponseEntity<String> response = restTemplate.getForEntity(urlBuilder.toUriString(), String.class);
 			if (response.getStatusCode().is2xxSuccessful()) {
 				List<PacketStatusUpdateDto> packetStatusUpdateDtos = getPacketResponse(ArrayList.class,
 						response.getBody());
@@ -115,7 +124,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 				packStautsDto.sort(createdDateTimesResultComparator);
 				setStatusMessage(packStautsDto);
 				regProcPacketStatusRequestDto.setPacketStatusUpdateList(packStautsDto);
-				packStautsDto.stream().forEach(pcksts->{
+				packStautsDto.stream().forEach(pcksts -> {
 					auditUtil.setAuditRequestDto(EventEnum.getEventEnumBasedOnPAcketStatus(pcksts));
 				});
 				return regProcPacketStatusRequestDto;

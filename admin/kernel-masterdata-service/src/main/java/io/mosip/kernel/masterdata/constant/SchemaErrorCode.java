@@ -12,7 +12,7 @@ public enum SchemaErrorCode {
 	DYNAMIC_FIELD_DELETE_EXCEPTION("KER-SCH-020", "Error occurred while deleting dynamic field"),
 
 	DYNAMIC_FIELD_NOT_FOUND_EXCEPTION("KER-SCH-003", "Dynamic field not found"),
-		
+	DYNAMIC_FIELD_VALUE_NOT_FOUND_EXCEPTION("KER-SCH-021", "Dynamic field value not found"),	
 	SCHEMA_FETCH_EXCEPTION("KER-SCH-004", "Error occurred while fetching Identity schema"),
 	SCHEMA_INSERT_EXCEPTION("KER-SCH-005", "Error occurred while inserting Identity schema"),
 	SCHEMA_UPDATE_EXCEPTION("KER-SCH-006", "Error occurred while updating Identity schema"),

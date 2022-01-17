@@ -91,6 +91,11 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+   		<groupId>io.mosip.kernel</groupId>
+   		<artifactId>kernel-idvalidator-rid</artifactId>
+   		<version>${project.version}</version>
+   	</dependency>
+		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
 			<version>${springdoc.version}</version>

@@ -132,12 +132,12 @@ public class HotlistExceptionHandler extends ResponseEntityExceptionHandler {
 		} else if (ex instanceof HttpMessageNotReadableException && Objects.nonNull(ex.getCause())
 				&& org.apache.commons.lang3.exception.ExceptionUtils.getRootCause(ex).getClass()
 						.isAssignableFrom(DateTimeParseException.class)) {
-			if (((HttpMessageNotReadableException) ex).getMessage().contains(EXPIRY_TIMESTAMP)) {
+			if (null!=((HttpMessageNotReadableException) ex).getMessage() && ((HttpMessageNotReadableException) ex).getMessage().contains(EXPIRY_TIMESTAMP)) {
 				return new ResponseEntity<>(
 						buildExceptionResponse(INVALID_INPUT_PARAMETER.getErrorCode(),
 								String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), EXPIRY_TIMESTAMP_PATH)),
 						HttpStatus.OK);
-			} else if (((HttpMessageNotReadableException) ex).getMessage().contains(REQUEST_TIME)) {
+			} else if (null!=((HttpMessageNotReadableException) ex).getMessage() && ((HttpMessageNotReadableException) ex).getMessage().contains(REQUEST_TIME)) {
 				return new ResponseEntity<>(buildExceptionResponse(INVALID_INPUT_PARAMETER.getErrorCode(),
 						String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME)), HttpStatus.OK);
 			} else {

@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -33,6 +34,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.syncdata.entity.Location;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.service.helper.ClientSettingsHelper;
 import io.mosip.kernel.syncdata.test.TestBootApplication;
@@ -129,10 +131,11 @@ public class IntegratedControllerTest {
 	public void tst001syncClientSettingsTest5() throws Exception {
 
 		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
+		CompletableFuture c = new CompletableFuture<>();
+		c.completeExceptionally(new SyncDataServiceException("", ""));
+		futuresMap.put(Location.class, c);
 		when(clientSettingsHelper.getInitiateDataFetch(Mockito.anyString(), Mockito.anyString(), Mockito.any(),
-				Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean()))
-						.thenThrow(new SyncDataServiceException("...", "...") {
-						});
+				Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn(futuresMap);
 		String str3 = "{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
 
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
@@ -142,6 +145,26 @@ public class IntegratedControllerTest {
 				"41:3a:ed:6d:38:a0:28:36:72:a6:75:08:8a:41:3c:a3:4f:48:72:6f:c8:fb:29:dd:53:bd:6f:12:70:9b:e3:29")
 				.param("regcenterId", "10001")).andExpect(status().is(500));
 
+	}
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void tst001syncClientSettingsTest6() throws Exception {
+
+		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
+		CompletableFuture c=new CompletableFuture<>();
+		c.completeExceptionally(new CompletionException("",new RuntimeException()));
+		futuresMap.put(Location.class, c);
+
+		when(clientSettingsHelper.getInitiateDataFetch(Mockito.anyString(), Mockito.anyString(), Mockito.any(),
+				Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean()))
+						.thenReturn(futuresMap);
+		String str3 = "{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
+
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
+				.andRespond(withSuccess().body(str3).contentType(MediaType.APPLICATION_JSON));
+		mockMvc.perform(MockMvcRequestBuilders.get("/v2/clientsettings").param("keyindex",
+				"41:3a:ed:6d:38:a0:28:36:72:a6:75:08:8a:41:3c:a3:4f:48:72:6f:c8:fb:29:dd:53:bd:6f:12:70:9b:e3:29")
+				.param("regcenterId", "10001")).andExpect(status().is(500));
 	}
 
 }

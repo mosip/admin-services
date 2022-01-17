@@ -383,7 +383,11 @@ public class MachineServiceImpl implements MachineService {
 			OptionalFilter optionalFilter = new OptionalFilter(addList);
 			OptionalFilter zoneOptionalFilter = new OptionalFilter(zoneFilter);
 			Page<Machine> page = null;
-			if(typeName!=null &&!typeName.isEmpty() && addList.isEmpty()) {
+			optionalFilter = new OptionalFilter(addList);
+			page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Machine.class, dto,
+					new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
+	
+		/*	if(typeName!=null &&!typeName.isEmpty() && addList.isEmpty()) {
 				optionalFilter = new OptionalFilter(addList);
 				page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Machine.class, dto,
 						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
@@ -395,7 +399,7 @@ public class MachineServiceImpl implements MachineService {
 			} else {
 				optionalFilter = new OptionalFilter(addList);
 				page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Machine.class, dto,
-						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });			}
+						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });			}*/
 			if (page != null && page.getContent() != null && !page.getContent().isEmpty()) {
 				machines = MapperUtils.mapAll(page.getContent(), MachineSearchDto.class);
 				setMachineMetadata(machines, zones);
