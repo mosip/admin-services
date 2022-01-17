@@ -1,6 +1,8 @@
 package io.mosip.kernel.masterdata.exception;
 
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
@@ -56,6 +58,8 @@ public class ApiExceptionHandler {
 
 	@Autowired
 	private ObjectMapper objectMapper;
+	
+	private static final Logger logger = LoggerFactory.getLogger(ApiExceptionHandler.class);
 
 	@ExceptionHandler(MasterDataServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataServiceException(
@@ -194,7 +198,7 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(
 			final HttpServletRequest httpServletRequest, Exception e) throws IOException {
-		e.printStackTrace();
+		logger.error(e.getMessage(),e);
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(RequestErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), e.getMessage());
 		errorResponse.getErrors().add(error);
@@ -261,7 +265,7 @@ public class ApiExceptionHandler {
 				responseWrapper.setId((String) json.get("id"));
 				responseWrapper.setVersion((String) json.get("version"));
 			} catch (JSONException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(),e);
 			}
 //			int idIndex = requestBody.indexOf("id") + 5;
 //			int verIndex = requestBody.indexOf("version");

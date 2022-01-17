@@ -45,7 +45,7 @@ public class AdminServiceImpl implements AdminService {
 		String dateTime = DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
 		procRequestWrapper.setRequesttime(dateTime);
 		try {
-			String response = restClient.postApi(ApiName.LOST_RID_API, null, "", "", MediaType.APPLICATION_JSON,
+			String response = restClient.postApi(ApiName.LOST_RID_API, MediaType.APPLICATION_JSON,
 					procRequestWrapper, String.class);
 			lostRidResponseDto = objectMapper.readValue(response, LostRidResponseDto.class);
 		} catch (Exception e) {

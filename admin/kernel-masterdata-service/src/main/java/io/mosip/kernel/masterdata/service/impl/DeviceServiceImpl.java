@@ -388,19 +388,15 @@ public class DeviceServiceImpl implements DeviceService {
 			OptionalFilter optionalFilter = new OptionalFilter(addList);
 			OptionalFilter zoneOptionalFilter = new OptionalFilter(zoneFilter);
 			Page<Device> page = null;
-			if (addList.isEmpty()) {
-				page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Device.class, dto,
-						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
-			} else {
-				page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Device.class, dto,
-						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
-			}
+
+			page = masterdataSearchHelper.searchMasterdataWithoutLangCode(Device.class, dto,
+					new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 
 			if (page != null && page.getContent() != null && !page.getContent().isEmpty()) {
 				devices = MapperUtils.mapAll(page.getContent(), DeviceSearchDto.class);
 				setDeviceMetadata(devices, zones);
 				setDeviceTypeNames(devices);
-				setMapStatus(devices,dto.getLanguageCode());
+				setMapStatus(devices, dto.getLanguageCode());
 				pageDto = pageUtils.sortPage(devices, sort, pagination);
 
 			}

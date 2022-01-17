@@ -67,11 +67,12 @@ public class SyncJobHelperService {
 
     //By default, to trigger every hour
     @Scheduled(cron = "${syncdata.cache.evict.delta-sync.cron}", zone = "UTC")
-    public void evictDeltaCaches() {
-        logger.info("Eviction of all keys from delta-sync cache started");
-        cacheManager.getCache("delta-sync").clear();
-        logger.info("Eviction of all keys from delta-sync cache completed");
-    }
+	public void evictDeltaCaches() {
+		logger.info("Eviction of all keys from delta-sync cache started");
+		if (null != cacheManager.getCache("delta-sync"))
+			cacheManager.getCache("delta-sync").clear();
+		logger.info("Eviction of all keys from delta-sync cache completed");
+	}
 
     public LocalDateTime getFullSyncCurrentTimestamp() {
         return LocalDate.now(ZoneOffset.UTC).atTime(0,0,0,0);
@@ -95,7 +96,8 @@ public class SyncJobHelperService {
     @Scheduled(cron = "${syncdata.cache.snapshot.cron}", zone = "UTC")
     public void clearCacheAndRecreateSnapshot() {
         logger.info("Eviction of all keys from initial-sync cache started");
-        cacheManager.getCache("initial-sync").clear();
+        if(null!=cacheManager.getCache("initial-sync"))
+        	cacheManager.getCache("initial-sync").clear();
         logger.info("Eviction of all keys from initial-sync cache Completed");
 
         createEntitySnapshot();

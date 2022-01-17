@@ -18,12 +18,13 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring-cloud-config.version>2.0.4.RELEASE</spring-cloud-config.version>
 		<springdoc.version>1.5.10</springdoc.version>
+		<kernel.version>1.2.0-SNAPSHOT</kernel.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
-			<version>1.2.0-SNAPSHOT</version>
+			<version>${kernel.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -35,7 +36,7 @@
 	    <dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-authcodeflowproxy-api</artifactId>
-			<version>1.2.0-SNAPSHOT</version>
+			<version>${kernel.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>io.mosip.kernel</groupId>
@@ -46,7 +47,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-dataaccess-hibernate</artifactId>
-			<version>1.2.0-SNAPSHOT</version>
+			<version>${kernel.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
@@ -91,6 +92,11 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idvalidator-rid</artifactId>
+			<version>${kernel.version}</version>
+   		</dependency>
+		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
 			<version>${springdoc.version}</version>
@@ -105,7 +111,7 @@
 		<dependency>
 			<groupId>io.mosip.commons</groupId>
 			<artifactId>commons-packet-manager</artifactId>
-			<version>1.2.0-SNAPSHOT</version>
+			<version>${kernel.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.cloud</groupId>
@@ -172,4 +178,86 @@
 			</plugin>
 		</plugins>
 	</build>
+<profiles>
+<profile>
+<id>openapi-doc-generate-profile</id>
+<dependencies>
+	<dependency>
+		<groupId>io.mosip.kernel</groupId>
+		<artifactId>kernel-auth-adapter</artifactId>
+		<version>${project.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>io.netty</groupId>
+		<artifactId>netty-transport</artifactId>
+		<version>4.1.72.Final</version>
+	</dependency>
+</dependencies>
+<build>
+	<plugins>
+		<plugin>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-maven-plugin</artifactId>
+			<version>${spring.boot.version}</version>
+			<configuration>
+				<executable>true</executable>
+				<layout>ZIP</layout>
+			</configuration>
+			<executions>
+				<execution>
+					<id>pre-integration-test</id>
+					<goals>
+						<goal>start</goal>
+					</goals>
+					<configuration>
+						<folders>
+							<folder>src/test/resources</folder>
+						</folders>
+						<profiles>
+							<profile>test</profile>
+						</profiles>
+						<arguments>
+							<argument>--server.port=8090</argument>
+							<argument>--server.servlet.context-path=/app/generic</argument>
+						</arguments>
+
+					</configuration>
+				</execution>
+				<execution>
+					<id>post-integration-test</id>
+					<goals>
+						<goal>stop</goal>
+					</goals>
+				</execution>
+				<execution>
+					<goals>
+						<goal>build-info</goal>
+						<goal>repackage</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
+		<plugin>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-maven-plugin</artifactId>
+			<version>0.2</version>
+			<executions>
+				<execution>
+					<id>integration-test</id>
+					<goals>
+						<goal>generate</goal>
+					</goals>
+				</execution>
+			</executions>
+			<configuration>
+				<apiDocsUrl>http://localhost:8090/app/generic/v3/api-docs/Admin%20Service</apiDocsUrl>
+				<outputFileName>${artifactId}-openapi.json</outputFileName>
+				<outputDir>${project.build.directory}</outputDir>
+				<skip>false</skip>
+			</configuration>
+		</plugin>
+	</plugins>
+</build>
+</profile>
+		</profiles>
 </project>
