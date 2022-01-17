@@ -178,7 +178,7 @@ public class HotlistServiceImpl implements HotlistService {
 
 	private void updateStatus(HotlistRequestResponseDTO request, String idHash, Optional<Hotlist> hotlistedOptionalData,
 			String dbStatus, String requestedStatus) {
-		if (hotlistedOptionalData.get().getStatus().contentEquals(dbStatus)) {
+		if (hotlistedOptionalData.isPresent() && hotlistedOptionalData.get().getStatus().contentEquals(dbStatus)) {
 			updateHotlist(request, idHash, Objects.nonNull(request.getExpiryTimestamp()) ? dbStatus : requestedStatus,
 					hotlistedOptionalData);
 		} else {
@@ -198,6 +198,8 @@ public class HotlistServiceImpl implements HotlistService {
 	 */
 	private HotlistRequestResponseDTO updateHotlist(HotlistRequestResponseDTO updateRequest, String idHash, String status,
 			Optional<Hotlist> hotlistedOptionalData) {
+		if(!hotlistedOptionalData.isPresent())
+			return null;
 		Hotlist hotlist = hotlistedOptionalData.get();
 		buildHotlistEntity(updateRequest, idHash, status, hotlist);
 		hotlist.setUpdatedBy(HotlistSecurityManager.getUser());

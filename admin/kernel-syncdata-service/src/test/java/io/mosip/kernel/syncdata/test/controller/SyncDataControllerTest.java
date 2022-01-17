@@ -1,5 +1,6 @@
 package io.mosip.kernel.syncdata.test.controller;
 
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,8 +30,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.doReturn;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -109,6 +108,19 @@ public class SyncDataControllerTest {
 		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/clientsettings").param("keyindex",
 				"B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:48")
 				.param("regcenterId", "10001")).andReturn(), "KER-SNC-141");
+
+	}
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t001syncClientSettingsTest4() throws Exception {
+		String str3="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}"; 
+
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
+	.andRespond(withSuccess().body(str3).contentType(MediaType.APPLICATION_JSON));
+
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/v2/clientsettings").param("keyindex",
+				"B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:49")
+				.param("regcenterId", "10002")).andReturn(), null);
 
 	}
 	
@@ -895,219 +907,59 @@ public class SyncDataControllerTest {
 				"KER-SNC-149");
 
 	}
-	
-	
-/*	@Test
+
+	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t023syncClientSettingsV2Test1() throws Exception {
-		String str="{\r\n" + 
-				"  \"id\": \"string\",\r\n" + 
-				"  \"version\": \"string\",\r\n" + 
-				"  \"responsetime\": \"2021-12-10T05:44:42.885Z\",\r\n" + 
-				"  \"metadata\": {},\r\n" + 
-				"  \"response\": {\r\n" + 
-				"    \"locationHierarchyLevels\": [\r\n" + 
-				"      {\r\n" + 
-				"        \"hierarchyLevel\": 0,\r\n" + 
-				"        \"hierarchyLevelName\": \"country\",\r\n" + 
-				"        \"langCode\": \"eng\",\r\n" + 
-				"        \"isActive\": true\r\n" + 
-				"      }\r\n" + 
-				"    ]\r\n" + 
-				"  },\r\n" + 
-				"  \"errors\": [\r\n" + 
+	public void t024getV2Userdetails() throws Exception {
+		String signResponse = "{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
 
-				"  ]\r\n" + 
-				"}";
-		
-		
-		String str1="{\r\n" + 
-				"  \"id\": \"string\",\r\n" + 
-				"  \"version\": \"string\",\r\n" + 
-				"  \"responsetime\": \"2021-12-10T05:59:29.437Z\",\r\n" + 
-				"  \"metadata\": {},\r\n" + 
-				"  \"response\": {\r\n" + 
-				"    \"pageNo\": 0,\r\n" + 
-				"    \"totalPages\": 0,\r\n" + 
-				"    \"totalItems\": 0,\r\n" + 
-				"    \"data\": [\r\n" + 
-				"      {\r\n" + 
-				"        \"id\": \"string\",\r\n" + 
-				"        \"name\": \"string\",\r\n" + 
-				"        \"langCode\": \"string\",\r\n" + 
-				"        \"dataType\": \"string\",\r\n" + 
-				"        \"description\": \"string\",\r\n" + 
-				"        \"fieldVal\": [\r\n" + 
-				"          {\r\n" + 
-				"            \"array\": true,\r\n" + 
-				"            \"null\": true,\r\n" + 
-				"            \"float\": true,\r\n" + 
-				"            \"number\": true,\r\n" + 
-				"            \"valueNode\": true,\r\n" + 
-				"            \"containerNode\": true,\r\n" + 
-				"            \"missingNode\": true,\r\n" + 
-				"            \"object\": true,\r\n" + 
-				"            \"nodeType\": \"ARRAY\",\r\n" + 
-				"            \"pojo\": true,\r\n" + 
-				"            \"integralNumber\": true,\r\n" + 
-				"            \"floatingPointNumber\": true,\r\n" + 
-				"            \"short\": true,\r\n" + 
-				"            \"int\": true,\r\n" + 
-				"            \"long\": true,\r\n" + 
-				"            \"double\": true,\r\n" + 
-				"            \"bigDecimal\": true,\r\n" + 
-				"            \"bigInteger\": true,\r\n" + 
-				"            \"textual\": true,\r\n" + 
-				"            \"boolean\": true,\r\n" + 
-				"            \"binary\": true\r\n" + 
-				"          }\r\n" + 
-				"        ],\r\n" + 
-				"        \"isActive\": true,\r\n" + 
-				"        \"createdBy\": \"string\",\r\n" + 
-				"        \"updatedBy\": \"string\",\r\n" + 
-				"        \"createdOn\": \"2021-12-10T05:59:29.437Z\",\r\n" + 
-				"        \"updatedOn\": \"2021-12-10T05:59:29.437Z\"\r\n" + 
-				"      }\r\n" + 
-				"    ]\r\n" + 
-				"  },\r\n" + 
-				"  \"errors\": [\r\n" + 
-				"  ]\r\n" + 
-				"}";
-		
-		String str3="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}"; 
-		
-	
-		
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(String.format("https://dev.mosip.net/v1/masterdata/locationHierarchyLevels"));
-		
-		mockRestServiceServer.expect(MockRestRequestMatchers.requestTo(builder.build().toString()))
-		.andRespond(withSuccess().body(str).contentType(MediaType.APPLICATION_JSON));
-		
-		UriComponentsBuilder builder1 = UriComponentsBuilder.fromUriString(String.format("http://localhost:8086/v1/masterdata/dynamicfields?pageNumber=0"));
-		
-		mockRestServiceServer.expect(MockRestRequestMatchers.requestTo(builder1.build().toString()))
-		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
-		
-			
-			mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
-		.andRespond(withSuccess().body(str3).contentType(MediaType.APPLICATION_JSON));
-	
-		
-		mockMvc.perform(MockMvcRequestBuilders.get("/v2/clientsettings").param("keyindex",
-				"B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:49")
-				.param("regcenterId", "10002")).andExpect(status().is(200));
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
+				.andRespond(withSuccess().body(signResponse).contentType(MediaType.APPLICATION_JSON));
 
-	
-	}*/
-	
-	/*@Test
-	@WithUserDetails(value = "reg-officer")
-	public void t023syncClientSettingsV2Test2() throws Exception {
-		String str="{\r\n" + 
-				"  \"id\": \"string\",\r\n" + 
-				"  \"version\": \"string\",\r\n" + 
-				"  \"responsetime\": \"2021-12-10T05:44:42.885Z\",\r\n" + 
-				"  \"metadata\": {},\r\n" + 
-				"  \"response\": {\r\n" + 
-				"    \"locationHierarchyLevels\": [\r\n" + 
-				"      {\r\n" + 
-				"        \"hierarchyLevel\": 0,\r\n" + 
-				"        \"hierarchyLevelName\": \"country\",\r\n" + 
-				"        \"langCode\": \"eng\",\r\n" + 
-				"        \"isActive\": true\r\n" + 
-				"      }\r\n" + 
-				"    ]\r\n" + 
-				"  },\r\n" + 
-				"  \"errors\": [\r\n" + 
-
-				"  ]\r\n" + 
-				"}";
-		
-		
-		String str1="{\r\n" + 
-				"  \"id\": \"string\",\r\n" + 
-				"  \"version\": \"string\",\r\n" + 
-				"  \"responsetime\": \"2021-12-10T05:59:29.437Z\",\r\n" + 
-				"  \"metadata\": {},\r\n" + 
-				"  \"response\": {\r\n" + 
-				"    \"pageNo\": 0,\r\n" + 
-				"    \"totalPages\": 0,\r\n" + 
-				"    \"totalItems\": 0,\r\n" + 
-				"    \"data\": [\r\n" + 
-				"      {\r\n" + 
-				"        \"id\": \"string\",\r\n" + 
-				"        \"name\": \"string\",\r\n" + 
-				"        \"langCode\": \"string\",\r\n" + 
-				"        \"dataType\": \"string\",\r\n" + 
-				"        \"description\": \"string\",\r\n" + 
-				"        \"fieldVal\": [\r\n" + 
-				"          {\r\n" + 
-				"            \"array\": true,\r\n" + 
-				"            \"null\": true,\r\n" + 
-				"            \"float\": true,\r\n" + 
-				"            \"number\": true,\r\n" + 
-				"            \"valueNode\": true,\r\n" + 
-				"            \"containerNode\": true,\r\n" + 
-				"            \"missingNode\": true,\r\n" + 
-				"            \"object\": true,\r\n" + 
-				"            \"nodeType\": \"ARRAY\",\r\n" + 
-				"            \"pojo\": true,\r\n" + 
-				"            \"integralNumber\": true,\r\n" + 
-				"            \"floatingPointNumber\": true,\r\n" + 
-				"            \"short\": true,\r\n" + 
-				"            \"int\": true,\r\n" + 
-				"            \"long\": true,\r\n" + 
-				"            \"double\": true,\r\n" + 
-				"            \"bigDecimal\": true,\r\n" + 
-				"            \"bigInteger\": true,\r\n" + 
-				"            \"textual\": true,\r\n" + 
-				"            \"boolean\": true,\r\n" + 
-				"            \"binary\": true\r\n" + 
-				"          }\r\n" + 
-				"        ],\r\n" + 
-				"        \"isActive\": true,\r\n" + 
-				"        \"createdBy\": \"string\",\r\n" + 
-				"        \"updatedBy\": \"string\",\r\n" + 
-				"        \"createdOn\": \"2021-12-10T05:59:29.437Z\",\r\n" + 
-				"        \"updatedOn\": \"2021-12-10T05:59:29.437Z\"\r\n" + 
-				"      }\r\n" + 
-				"    ]\r\n" + 
-				"  },\r\n" + 
-				"  \"errors\": [\r\n" + 
-				"  ]\r\n" + 
-				"}";
-		
-		String str3="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}"; 
-
-		mockRestServiceServer.expect(MockRestRequestMatchers.requestTo(locationHirerarchyUrl))
-		.andRespond(withSuccess().body(str).contentType(MediaType.APPLICATION_JSON));
-		
-		UriComponentsBuilder builder1 = UriComponentsBuilder.fromUriString(String.format(dynamicfieldUrl+"?pageNumber=0"));
-		
-		mockRestServiceServer.expect(MockRestRequestMatchers.requestTo(builder1.build().toString()))
-		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
-
-		mockRestServiceServer.expect(requestTo(signUrl)).andRespond(withSuccess().body(str3));
-		
-	/*	SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/v2/clientsettings").param("keyindex",
-				"B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:49")
-				.param("regcenterId", "10002")).andReturn(), null);
-
-			mockMvc.perform(MockMvcRequestBuilders.get("/v2/clientsettings").param("keyindex",
-					"B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:50")
-					.param("regcenterId", "10003")).andExpect(status().is(200));
-
-	}*/
-	
-	/*@Test
-	@WithUserDetails(value = "reg-officer")
-	public void t024downloadEntityDataTest() throws Exception {
-
-		SyncDataUtil.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/clientsettings/abcd").param("keyindex", "B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:48")).andReturn(),
-				null);
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/v2/userdetails")
+				.param("keyindex", "41:3a:ed:6d:38:a0:28:36:72:a6:75:08:8a:41:3c:a3:4f:48:72:6f:c8:fb:29:dd:53:bd:6f:12:70:9b:e3:29"))
+				.andReturn(), null);
 
 	}
-	*/
+	
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void t009getClientPublicKeyTest1() throws Exception {
+		String bd="{\r\n" + 
+				"  \"id\": \"string\",\r\n" + 
+				"  \"version\": \"string\",\r\n" + 
+				"  \"responsetime\": \"2021-12-07T12:51:29.957Z\",\r\n" + 
+				"  \"metadata\": {},\r\n" + 
+				"  \"response\": {\"machines\":[\r\n" + 
+				"      {\r\n" + 
+				"        \"id\": \"10\",\r\n" + 
+				"        \"name\": \"alm1009\",\r\n" + 
+				"        \"serialNum\": \"NM19837379\",\r\n" + 
+				"        \"macAddress\": \"E8-A9-64-1F-27-E6\",\r\n" + 
+				"        \"ipAddress\": \"192.168.0.120\",\r\n" + 
+				"        \"machineSpecId\": \"1001\",\r\n" + 
+				"        \"regCenterId\": \"10001\",\r\n" + 
+				"        \"langCode\": \"eng\",\r\n" + 
+				"        \"isActive\": \"true\",\r\n" + 
+				"        \"validityDateTime\": null ,\r\n" + 
+				"        \"keyIndex\":  \"B5\" ,\r\n" +
+				"        \"publicKey\": \"M10674\" ,\r\n" +
+				"        \"signPublicKey\": \"M1882734\"\r\n" +
+				"      }\r\n" + 
+				"    ]}," +
+				"\"errors\":[{\"errorCode\":\"KER-SNC-102\",\"errorMessage\":\"error\"}]"
+				+ "}";
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(String.format(machineUrl, "10"));
+
+		mockRestServiceServer.expect(MockRestRequestMatchers.requestTo(builder.build().toString()))
+		.andRespond(withSuccess().body(bd).contentType(MediaType.APPLICATION_JSON));
+
+	String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}"; 
+
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
+		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
+		mockMvc.perform(MockMvcRequestBuilders.get("/tpm/publickey/10")).andExpect(status().is(500));
+	}
+
 
 }

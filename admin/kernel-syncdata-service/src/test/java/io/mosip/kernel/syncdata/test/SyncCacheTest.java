@@ -484,16 +484,6 @@ public class SyncCacheTest {
     //
 
     @Test
-    public void whenFindAllMachine_thenResultShouldBePutInCache() {
-        machineRepository.save(getMachine("test"));
-        LocalDateTime lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
-        LocalDateTime currentTime = LocalDateTime.now(ZoneOffset.UTC);
-        evictAllKeys("initial-sync");
-        List<Machine> list = machineRepository.findMachineLatestCreatedUpdatedDeleted("test", lastUpdatedTime, currentTime, "test");
-        Assert.assertEquals(list.size(), getInitialCachedValue("initial-sync", "machine_master_test").size());
-    }
-
-    @Test
     public void whenFindChangedMachine_thenResultShouldNotBePutInCache() {
         machineRepository.save(getMachine("test"));
         LocalDateTime lastUpdatedTime = LocalDateTime.now(ZoneOffset.UTC).minusDays(10);

@@ -673,8 +673,7 @@ public class LocationServiceImpl implements LocationService {
 		if (locCode != null && !locCode.isEmpty()) {
 			List<String> childLocHierList = getLocationChildHierarchyList(locCode);
 			childList.addAll(childLocHierList);
-			childLocHierList.parallelStream().filter(Objects::nonNull).map(this::getChildByLocCode)
-					.collect(Collectors.toList());
+			childLocHierList.parallelStream().filter(Objects::nonNull).map(this::getChildByLocCode).collect(Collectors.toList());
 		}
 		return childList;
 	}
