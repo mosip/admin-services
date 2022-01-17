@@ -51,6 +51,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -234,7 +235,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 				"{category:'" + category + "',tablename:'" + tableName + "',operation:'" + operation + "'}"));
 
 		BulkUploadTranscation bulkUploadTranscation = saveTranscationDetails(0, operation,
-				entity.getSimpleName(), category, Collections.EMPTY_LIST, "PROCESSING");
+				entity.getSimpleName(), category, "", "PROCESSING");
 
 		Arrays.stream(new MultipartFile[]{files[0]}).forEach(file -> {
 			String message = null;
@@ -323,8 +324,10 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD,
 				"{category:'" + category + "',operation:'" + operation + "'}"));
 
+		boolean hasDataReadRole = hasDataReadRole();
 		BulkUploadTranscation bulkUploadTranscation = saveTranscationDetails(0,
-				operation, "", category, null, "PROCESSING");
+				operation, "", category, hasDataReadRole ? "NOTE: Only after successful RID sync, Packet upload will be attempted" :
+				"NOTE: Only packet upload is attempted. DATA_READ role is not present to perform RID sync", "PROCESSING");
 
 		Arrays.stream(files).forEach( file -> {
 			String message = null;
@@ -347,7 +350,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 						.incrementer(new RunIdIncrementer())
 						.start(stepBuilderFactory.get("packet-upload")
 								.tasklet(new PacketUploadTasklet(file, packetUploadService, centerId, supervisorStatus,
-										source, process))
+										source, process, hasDataReadRole ? "SYNC-UPLOAD" : "UPLOAD"))
 								.build())
 						.build();
 
@@ -372,6 +375,12 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 			}
 		});
 		return setResponseDetails(bulkUploadTranscation, "");
+	}
+
+	private boolean hasDataReadRole() {
+		Collection<GrantedAuthority> grantedAuthorities = (Collection<GrantedAuthority>) SecurityContextHolder
+				.getContext().getAuthentication().getAuthorities();
+		return grantedAuthorities.stream().anyMatch( ga -> ga.getAuthority().equalsIgnoreCase("DATA_READ"));
 	}
 
 	private Job getJob(MultipartFile file, String operation, String repositoryName, String contextUser,
@@ -513,7 +522,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	}
 
 	private BulkUploadTranscation saveTranscationDetails(int count, String operation, String entityName,
-			String category, List<String> failureMessage, String status) {
+			String category, String message, String status) {
 		BulkUploadTranscation bulkUploadTranscation = new BulkUploadTranscation();
 		LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
 		bulkUploadTranscation.setIsActive(true);
@@ -525,8 +534,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 		bulkUploadTranscation.setUploadedBy(setCreateMetaData());
 		bulkUploadTranscation.setUploadedDateTime(Timestamp.valueOf(now));
 		bulkUploadTranscation.setCategory(category);
-		bulkUploadTranscation.setUploadDescription((failureMessage !=null && !failureMessage.isEmpty()) ?
-				failureMessage.toString() : "");
+		bulkUploadTranscation.setUploadDescription(message);
 		bulkUploadTranscation.setUploadOperation(operation);
 		bulkUploadTranscation.setRecordCount(count);
 		return  bulkTranscationRepo.save(bulkUploadTranscation);

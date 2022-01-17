@@ -19,7 +19,7 @@ import java.util.Optional;
 public class JobResultListener implements JobExecutionListener {
 
     private static final Logger logger = LoggerFactory.getLogger(JobResultListener.class);
-    private static String STATUS_MESSAGE = " | READ: %d, STATUS: %s, MESSAGE: %s";
+    private static String STATUS_MESSAGE = " <br/> READ: %d, STATUS: %s, MESSAGE: %s";
     private static String UPDATE_QUERY = "UPDATE bulkupload_transaction SET status_code=?, record_count=record_count+?, upload_description=upload_description||? , upd_dtimes=now() WHERE id=?";
     private DataSource dataSource;
     private AuditUtil auditUtil;

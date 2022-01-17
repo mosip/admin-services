@@ -175,7 +175,8 @@ public class PacketUploadServiceTest {
                 "10003",
                 "APPROVED",
                 "REGISTRATION_CLIENT",
-                "NEW");
+                "NEW",
+                "erwrwerwerwerwer");
 
         Assert.assertNotNull(packetUploadStatus);
         Assert.assertFalse(packetUploadStatus.isFailed());
