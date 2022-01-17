@@ -77,7 +77,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	private Properties packetProperties;
 	
 	@Autowired
-	private RidValidator<String> ridValidatorImpl;
+	private RidValidator<String> ridValidator;
 
 	private static final String SLASH = "/";
 
@@ -104,7 +104,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	@SuppressWarnings({ "unchecked" })
 	private PacketStatusUpdateResponseDto getPacketStatus(String rId) {
 		try {
-			if (!ridValidatorImpl.validateId(rId)) {
+			if (!ridValidator.validateId(rId)) {
 				throw new MasterDataServiceException(PacketStatusUpdateErrorCode.RID_INVALID.getErrorCode(),
 						PacketStatusUpdateErrorCode.RID_INVALID.getErrorMessage());
 			}

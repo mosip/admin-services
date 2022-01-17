@@ -11,6 +11,7 @@ import java.util.List;
 
 import io.mosip.admin.bulkdataupload.entity.BulkUploadTranscation;
 import io.mosip.admin.bulkdataupload.repositories.BulkUploadTranscationRepository;
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -104,6 +105,9 @@ public class IntegratedControllerTest {
 
 	@Autowired
 	private RestTemplate restTemplate;
+
+	@Autowired
+	private RidValidator<String> ridValidator;
 
 	@Value("${mosip.kernel.packet-status-update-url}")
 	private String packetUpdateStatusUrl;
@@ -206,13 +210,13 @@ public class IntegratedControllerTest {
 	public void t002validatePacketTest() throws Exception {
 
 		StringBuilder urlBuilder = new StringBuilder();
-		urlBuilder.append(packetUpdateStatusUrl).append("/").append("1234");
+		urlBuilder.append(packetUpdateStatusUrl).append("10002101080001920220117114148");
 		mockRestServiceServer.expect(requestTo(urlBuilder.toString()))
 				.andRespond(withSuccess().body("{\"id\":null,\"version\":null,\"responsetime\":\"2022-01-04T18:56:45.275Z\",\"metadata\":null,\"response\":[],\"errors\":null}"));
 
 		AdminDataUtil.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/packetstatusupdate")
-						.param("rid", "1234")).andReturn(), null);
+						.param("rid", "10002101080001920220117114148")).andReturn(), null);
 
 	}
 
