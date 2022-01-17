@@ -87,11 +87,11 @@ public class PacketStatusIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void testPacketStatusUpdate() throws Exception {
-		mockRestServiceServer.expect(requestTo(packetUpdateStatusUrl + "/1000012232223243224234"))
+		mockRestServiceServer.expect(requestTo(packetUpdateStatusUrl + "10002101080001920220117114148"))
 		.andRespond(withSuccess().body(POSITIVE_RESPONSE_REG_PROC));
 		
 		mockMvc.perform(
-				get("/packetstatusupdate").param("rid", "1000012232223243224234"))
+				get("/packetstatusupdate").param("rid", "10002101080001920220117114148"))
 				.andExpect(status().isOk());
 	}
 	
