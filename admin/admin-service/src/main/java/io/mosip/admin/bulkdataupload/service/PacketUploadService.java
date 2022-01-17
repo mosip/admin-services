@@ -111,7 +111,7 @@ public class PacketUploadService {
             int pageNo = 0;
 
             do {
-                UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(MACHINE_GET_API+centerId);
+                UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(MACHINE_GET_API).pathSegment(centerId);
                 builder.queryParam("pageNumber", pageNo++);
 
                 ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().toUri(), String.class);
@@ -138,7 +138,7 @@ public class PacketUploadService {
     }
 
     public PacketUploadStatus syncAndUploadPacket(MultipartFile file, String centerId, String supervisorStatus,
-                                    String source, String process) throws JSONException {
+                                    String source, String process, String transactionId) throws JSONException {
         String[] nameFields = nameFieldNames.split(",");
         List<String> additionalInfoFields = new ArrayList<>();
         additionalInfoFields.addAll(List.of(nameFields));
@@ -152,7 +152,7 @@ public class PacketUploadService {
             return new PacketUploadStatus("No machines found for the provided centerId", true);
 
         ResponseEntity<String> responseEntity = syncRegistration(centerId, source, process, file, supervisorStatus,
-                additionalInfoFields, machineList);
+                additionalInfoFields, machineList, transactionId);
 
         if(responseEntity != null && responseEntity.hasBody()) {
             JSONObject response = new JSONObject(responseEntity.getBody());
@@ -170,6 +170,15 @@ public class PacketUploadService {
         return new PacketUploadStatus("UNKNOWN ERROR : Empty Response", true);
     }
 
+    public PacketUploadStatus onlyUploadPacket(MultipartFile file) throws JSONException {
+        ResponseEntity<String> responseEntity = uploadPacket(file);
+        if(responseEntity != null && responseEntity.hasBody()) {
+            JSONObject response = new JSONObject(responseEntity.getBody());
+            return getUploadStatus(response);
+        }
+        return new PacketUploadStatus("UNKNOWN ERROR : Empty Response from upload API", true);
+    }
+
 
     private PacketUploadStatus getUploadStatus(JSONObject response) throws JSONException {
         if(!(response.get("errors") == JSONObject.NULL)) {
@@ -182,8 +191,8 @@ public class PacketUploadService {
         return new PacketUploadStatus("UNKNOWN ERROR : Empty Response", true);
     }
 
-    public ResponseEntity<String> syncRegistration(String centerId, String source, String process, MultipartFile file, String supervisorStatus,
-                                 List<String> additionalInfoFields, List<MachineRegistrationCenterDto> machineList) {
+    private ResponseEntity<String> syncRegistration(String centerId, String source, String process, MultipartFile file, String supervisorStatus,
+                                 List<String> additionalInfoFields, List<MachineRegistrationCenterDto> machineList, String transactionId) {
         String containerName = file.getOriginalFilename().replace(".zip", "");
         String id = containerName.split("-")[0];
 
@@ -217,6 +226,7 @@ public class PacketUploadService {
                 syncdto.setPhone(additionalInfoFieldValues.get(phoneFieldName));
                 syncdto.setEmail(additionalInfoFieldValues.get(emailFieldName));
                 syncdto.setLangCode(language);
+                syncdto.setSupervisorComment("Uploaded from admin portal with transactionId : " + transactionId);
 
                 RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
                 registrationPacketSyncDTO
@@ -246,7 +256,7 @@ public class PacketUploadService {
         return null;
     }
 
-    public ResponseEntity<String> uploadPacket(MultipartFile file) {
+    private ResponseEntity<String> uploadPacket(MultipartFile file) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         MultiValueMap<String, String> fileMap = new LinkedMultiValueMap<>();
