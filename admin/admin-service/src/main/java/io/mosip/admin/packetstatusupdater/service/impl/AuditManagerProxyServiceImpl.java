@@ -63,11 +63,8 @@ public class AuditManagerProxyServiceImpl implements AuditManagerProxyService {
 	@Value("${mosip.admin.audit.manager.eventId.pattern:^ADM-[0-9]{3}$}")
 	private String eventIdPattern;
 
-	@Value("${mosip.admin.audit.manager.eventName.pattern:^(Click|Page View): ([a-zA-Z0-9 -_]{1,50}$)}")
+	@Value("${mosip.admin.audit.manager.eventName.pattern:^(Click|Page View): ([\\W|\\w]{1,100}$)}")
 	private String eventNamePattern;
-
-	@Value("${mosip.admin.audit.manager.hostName.pattern:^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9])$}")
-	private String hostNamePattern;
 
 	@Value("${mosip.admin.audit.manager.application.id:10009}")
 	private String applicationId;
