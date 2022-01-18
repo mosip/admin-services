@@ -22,6 +22,7 @@ import io.mosip.admin.bulkdataupload.dto.*;
 import io.mosip.admin.bulkdataupload.batch.CustomRecordSeparatorPolicy;
 import io.mosip.admin.bulkdataupload.service.PacketUploadService;
 import io.mosip.kernel.core.util.*;
+import org.digibooster.spring.batch.security.listener.JobExecutionSecurityContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.*;
@@ -82,6 +83,7 @@ import io.mosip.admin.packetstatusupdater.util.EventEnum;
 public class BulkDataUploadServiceImpl implements BulkDataService {
 
 	private static final Logger logger = LoggerFactory.getLogger(BulkDataUploadServiceImpl.class);
+	private static final String DATA_READ_ROLE = "ROLE_DATA_READ";
 	private static Predicate<String> emptyCheck = String::isBlank;
 	private static String STATUS_MESSAGE = "SUCCESS: %d, FAILED: %d";
 	private static String CSV_UPLOAD_MESSAGE = "FILE: %s, READ: %d, STATUS: %s, MESSAGE: %s";
@@ -130,6 +132,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 	@Autowired
 	private DataSource dataSource;
+
+	@Autowired
+	private JobResultListener jobResultListener;
 
 	@Value("${mosip.mandatory-languages}")
 	private String mandatoryLanguages;
@@ -346,7 +351,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 				}
 
 				Job job = jobBuilderFactory.get("ETL-Load")
-						.listener(new JobResultListener(this.dataSource, this.auditUtil))
+						.listener(jobResultListener)
 						.incrementer(new RunIdIncrementer())
 						.start(stepBuilderFactory.get("packet-upload")
 								.tasklet(new PacketUploadTasklet(file, packetUploadService, centerId, supervisorStatus,
@@ -380,7 +385,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	private boolean hasDataReadRole() {
 		Collection<GrantedAuthority> grantedAuthorities = (Collection<GrantedAuthority>) SecurityContextHolder
 				.getContext().getAuthentication().getAuthorities();
-		return grantedAuthorities.stream().anyMatch( ga -> ga.getAuthority().equalsIgnoreCase("DATA_READ"));
+		return grantedAuthorities.stream().anyMatch( ga -> ga.getAuthority().equalsIgnoreCase(DATA_READ_ROLE));
 	}
 
 	private Job getJob(MultipartFile file, String operation, String repositoryName, String contextUser,
@@ -393,7 +398,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 				.build();
 
 		return jobBuilderFactory.get("ETL-Load")
-				.listener(new JobResultListener(this.dataSource, this.auditUtil))
+				.listener(jobResultListener)
 				.incrementer(new RunIdIncrementer())
 				.start(step)
 				.build();

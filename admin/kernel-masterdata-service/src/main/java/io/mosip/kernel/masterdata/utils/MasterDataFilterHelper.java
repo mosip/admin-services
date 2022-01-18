@@ -66,6 +66,7 @@ public class MasterDataFilterHelper {
 	}
 
 	private static final String LANGCODE_COLUMN_NAME = "langCode";
+	private static final String ISDELETED_COLUMN_NAME = "isDeleted";
 	private static final String MAP_STATUS_COLUMN_NAME = "mapStatus";
 	private static final String FILTER_VALUE_UNIQUE = "unique";
 	private static final String FILTER_VALUE_ALL = "all";
@@ -108,6 +109,7 @@ public class MasterDataFilterHelper {
 		if (!filterValueDto.getLanguageCode().equals("all")) {
 			predicates.add(langCodePredicate);
 		}
+
 		caseSensitivePredicate = criteriaBuilder.and(criteriaBuilder
 				.like(criteriaBuilder.lower(rootType.get(filterDto.getColumnName())), criteriaBuilder.lower(
 						criteriaBuilder.literal(WILD_CARD_CHARACTER + filterDto.getText() + WILD_CARD_CHARACTER))));
@@ -118,7 +120,13 @@ public class MasterDataFilterHelper {
 		buildOptionalFilter(criteriaBuilder, rootType, filterValueDto.getOptionalFilters(), predicates, zoneCodes);
 		columnTypeValidator(rootType, columnName);
 
+		//deleted entries should be filtered out
+		Predicate isDeletedPredicate = criteriaBuilder.or(criteriaBuilder.equal(rootType.get(ISDELETED_COLUMN_NAME),false),
+				criteriaBuilder.isNull(rootType.get(ISDELETED_COLUMN_NAME)));
+		predicates.add(isDeletedPredicate);
+
 		Predicate filterPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+
 		criteriaQueryByType.where(filterPredicate);
 		criteriaQueryByType.orderBy(criteriaBuilder.asc(rootType.get(columnName)));
 

@@ -47,7 +47,6 @@ import io.swagger.annotations.ApiResponses;
  * @since 1.0.0
  *
  */
-@CrossOrigin
 @RestController
 @Api(value = "Operation related to Gender Type", tags = { "GenderType" })
 @Deprecated
