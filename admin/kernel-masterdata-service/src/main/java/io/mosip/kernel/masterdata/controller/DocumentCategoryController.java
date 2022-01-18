@@ -56,7 +56,7 @@ import io.swagger.annotations.ApiResponses;
  * @since 1.0.0
  *
  */
-@CrossOrigin
+//@CrossOrigin
 @RestController
 @Api(tags = { "DocumentCategory" })
 public class DocumentCategoryController {
