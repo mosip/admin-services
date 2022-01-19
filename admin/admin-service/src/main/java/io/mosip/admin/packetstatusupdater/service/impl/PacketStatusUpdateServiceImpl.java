@@ -129,7 +129,13 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 				});
 				return regProcPacketStatusRequestDto;
 			}
-		} catch (Exception e) {
+		}
+		catch (RequestException e) {
+			logger.error("SESSIONID", "ADMIN-SERVICE",
+					"ADMIN-SERVICE", e.getMessage() + ExceptionUtils.getStackTrace(e));
+			throw new RequestException(e.getErrorCode(),
+					e.getErrorText(), e);
+		}catch (Exception e) {
 			logger.error("SESSIONID", "ADMIN-SERVICE",
 					"ADMIN-SERVICE", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new MasterDataServiceException(PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
