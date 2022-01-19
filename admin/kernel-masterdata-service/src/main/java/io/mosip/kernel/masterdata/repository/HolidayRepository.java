@@ -169,7 +169,7 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	 * @param isActive
 	 * @return
 	 */
-	@Query(value = "UPDATE master.loc_holiday SET is_active=?3 WHERE location_code=?1 and holiday_date=?2 RETURNING *", nativeQuery = true)
+	@Query(value = "UPDATE master.loc_holiday SET is_active=?3 WHERE location_code=?1 and holiday_date=?2", nativeQuery = true)
 	List<Holiday> updateHolidayByLocationCodeAndHolidayDate(String locationCode,LocalDate holidayDate, boolean isActive);
 
 }
