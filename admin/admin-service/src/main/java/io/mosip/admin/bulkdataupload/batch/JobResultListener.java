@@ -2,7 +2,6 @@ package io.mosip.admin.bulkdataupload.batch;
 
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.admin.packetstatusupdater.util.EventEnum;
-import org.digibooster.spring.batch.listener.JobExecutionContextListener;
 import org.digibooster.spring.batch.security.listener.JobExecutionSecurityContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +29,9 @@ public class JobResultListener implements JobExecutionListener {
     private AuditUtil auditUtil;
     private JobExecutionSecurityContextListener jobExecutionSecurityContextListener;
 
+    private static final String SECURITY_PARAM_NAME = "security-param";
+    private static final ThreadLocal<Authentication> ORIGINAL_CONTEXT = new ThreadLocal<>();
+
     public JobResultListener(DataSource dataSource,
                              AuditUtil auditUtil, JobExecutionSecurityContextListener jobExecutionSecurityContextListener) {
         this.dataSource = dataSource;
@@ -37,18 +39,13 @@ public class JobResultListener implements JobExecutionListener {
         this.jobExecutionSecurityContextListener = new JobExecutionSecurityContextListener();
     }
 
-
-
     @Override
     public void beforeJob(JobExecution jobExecution) {
         logger.info("Job started : {}", jobExecution.getJobParameters().getString("transactionId"));
         this.jobExecutionSecurityContextListener.fillJobExecutionContext(jobExecution);
 
         if(jobExecution.getStepExecutions().isEmpty()) {
-            Authentication authentication = (Authentication) jobExecution.getExecutionContext()
-                    .get("security-param");
-            SecurityContext securityContext = SecurityContextHolder.getContext();
-            securityContext.setAuthentication(authentication);
+            restoreContext(jobExecution);
         }
         else {
             for(StepExecution stepExecution : jobExecution.getStepExecutions()) {
@@ -69,7 +66,7 @@ public class JobResultListener implements JobExecutionListener {
                         failures.add("Line --> " + ((FlatFileParseException) failure).getLineNumber() +
                                 " --> Datatype mismatch / Failed to write into object");
                     } else
-                        failures.add(failure.getMessage());
+                        failures.add(failure.getCause() != null ? failure.getCause().getMessage() : failure.getMessage());
                 });
             });
 
@@ -90,8 +87,32 @@ public class JobResultListener implements JobExecutionListener {
         } catch (Throwable t) {
             logger.error("Failed  to update job status {}", jobId, t);
         } finally {
-            this.jobExecutionSecurityContextListener.clearContext(null);
+            clearContext();
             this.jobExecutionSecurityContextListener.removeFromJobExecutionContext(jobExecution);
+        }
+    }
+
+
+    private void restoreContext(JobExecution jobExecution) {
+        if (jobExecution.getExecutionContext().containsKey(SECURITY_PARAM_NAME)) {
+            logger.debug("Restore the security context");
+            Authentication authentication = (Authentication) jobExecution.getExecutionContext()
+                    .get(SECURITY_PARAM_NAME);
+            SecurityContext securityContext = SecurityContextHolder.getContext();
+            ORIGINAL_CONTEXT.set(securityContext.getAuthentication());
+            securityContext.setAuthentication(authentication);
+        } else {
+            logger.error("Could not find key {} in the job execution context", SECURITY_PARAM_NAME);
+        }
+    }
+
+    private void clearContext() {
+        logger.debug("Clear the security context");
+        SecurityContextHolder.clearContext();
+        Authentication originalAuth = ORIGINAL_CONTEXT.get();
+        if (originalAuth != null) {
+            SecurityContextHolder.getContext().setAuthentication(originalAuth);
+            ORIGINAL_CONTEXT.remove();
         }
     }
 }

@@ -42,7 +42,7 @@ public class AuditManagerProxyController {
 	public ResponseWrapper<AuditManagerResponseDto> addAudit(@RequestBody @Valid RequestWrapper<AuditManagerRequestDto> requestDto,
 															 @RequestHeader Map<String, String> headers) {
 		ResponseWrapper<AuditManagerResponseDto> response = new ResponseWrapper<>();
-		response.setResponse(auditManagerProxyService.logAdminAudit(requestDto.getRequest(), headers));
+		response.setResponse(auditManagerProxyService.logAdminAudit(requestDto.getRequest()));
 		return response;
 	}
 
