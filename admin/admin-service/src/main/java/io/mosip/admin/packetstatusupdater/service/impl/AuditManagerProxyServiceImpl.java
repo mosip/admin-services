@@ -3,10 +3,7 @@ package io.mosip.admin.packetstatusupdater.service.impl;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
@@ -41,6 +38,7 @@ import javax.validation.constraints.NotNull;
 public class AuditManagerProxyServiceImpl implements AuditManagerProxyService {
 
 	private static final Logger logger = LoggerFactory.getLogger(AuditManagerProxyServiceImpl.class);
+	private static final String X_FORWARDED_FOR = "X-Forwarded-For";
 
 	@Value("${mosip.kernel.audit.manager.api}")
 	String auditmanagerapi;
@@ -84,12 +82,24 @@ public class AuditManagerProxyServiceImpl implements AuditManagerProxyService {
 	@Autowired
 	HttpServletRequest request;
 
-	@Override
-	public AuditManagerResponseDto logAdminAudit(AuditManagerRequestDto auditManagerRequestDto,
-												 Map<String, String> headers) {
+	private String getHeaderValue(String headerName) {
+		Iterator<String> headerNames = request.getHeaderNames().asIterator();
+		while(headerNames.hasNext()) {
+			String current = headerNames.next();
+			if(current.equalsIgnoreCase(headerName))
+				return request.getHeader(current);
+		}
+		return null;
+	}
 
-		String hostName = request.getHeader(HttpHeaders.ORIGIN) != null ? request.getHeader(HttpHeaders.ORIGIN) :
-				request.getHeader(HttpHeaders.ORIGIN.toLowerCase());
+	@Override
+	public AuditManagerResponseDto logAdminAudit(AuditManagerRequestDto auditManagerRequestDto) {
+
+		String hostName = getHeaderValue(X_FORWARDED_FOR);
+		if(hostName == null) {
+			hostName = getHeaderValue(HttpHeaders.ORIGIN);
+		}
+
 		validateAuditRequestDto(auditManagerRequestDto, hostName);
 
 		auditManagerRequestDto.setHostIp(hostName);
@@ -100,8 +110,7 @@ public class AuditManagerProxyServiceImpl implements AuditManagerProxyService {
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		auditManagerRequestDto.setSessionUserId(username);
 		auditManagerRequestDto.setSessionUserName(username);
-		auditManagerRequestDto.setCreatedBy(request.getHeader(HttpHeaders.REFERER) != null ? request.getHeader(HttpHeaders.REFERER) :
-				request.getHeader(HttpHeaders.REFERER.toLowerCase()));
+		auditManagerRequestDto.setCreatedBy(getHeaderValue(HttpHeaders.REFERER));
 
 		HttpHeaders auditReqHeaders = new HttpHeaders();
 		auditReqHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
