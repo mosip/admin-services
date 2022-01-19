@@ -1,6 +1,6 @@
 # Masterdata services Configuration Guide
 ## Overview
-The guide here lists down some of the important properties that may be customised for a given installation. Note that the listing here is not exhaustive, but a checklist to review properties that are likely to be different from default.  If you would like to see all the properites, then refer to the files listed below.
+The guide here lists down some of the important properties that may be customised for a given installation. Note that the listing here is not exhaustive, but a checklist to review properties that are likely to be different from default.  If you would like to see all the properties, then refer to the files listed below.
 
 ## Configuration files
 Masterdata services uses the following configuration files:
@@ -21,7 +21,7 @@ Point the above to your DB .  Default is set to point to in-cluster Postgres ins
 * `mosip.admin.ui.configs`
 Above property is used for UI configuration of admin. Value of the property is a key value pairs. Example:
 
-* `mosip.admin.ui.configsversion=version:${application.configuration.level.version};HierarchyLevel:${mosip.recommended.centers.locCode}`
+* `mosip.admin.ui.configs=version:${application.configuration.level.version};HierarchyLevel:${mosip.recommended.centers.locCode}`
 
 ## Value limit on fields
 * `mosip.kernel.registrationcenterid.length:specify length of registration center id`
@@ -30,7 +30,6 @@ Above property is used for UI configuration of admin. Value of the property is a
 * `master.search.maximum.rows:specify maximum number of rows to be fetched in the search and filter queries`
 * `masterdata.registerdevice.timestamp.validate:specify value with + or - to validate device time stamp`
 * `application.configuration.level.version:specify version of application`
-* `mosip.kernel.applicant.type.age.limit:specify adult age limit this differs based on country`
 
 Above properties are used for limiting values on fields , can be varied based on country.
 
