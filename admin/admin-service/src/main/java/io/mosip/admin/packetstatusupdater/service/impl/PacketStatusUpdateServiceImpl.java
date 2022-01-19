@@ -133,8 +133,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 		catch (RequestException e) {
 			logger.error("SESSIONID", "ADMIN-SERVICE",
 					"ADMIN-SERVICE", e.getMessage() + ExceptionUtils.getStackTrace(e));
-			throw new RequestException(e.getErrorCode(),
-					e.getErrorText(), e);
+			throw e;
 		}catch (Exception e) {
 			logger.error("SESSIONID", "ADMIN-SERVICE",
 					"ADMIN-SERVICE", e.getMessage() + ExceptionUtils.getStackTrace(e));
