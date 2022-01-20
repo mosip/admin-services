@@ -137,7 +137,7 @@ public class PacketUploadService {
         return machineList;
     }
 
-    public PacketUploadStatus syncAndUploadPacket(MultipartFile file, String centerId, String supervisorStatus,
+    public PacketUploadStatus syncAndUploadPacket(String fileName, byte[] file, String centerId, String supervisorStatus,
                                     String source, String process, String transactionId) throws JSONException {
         String[] nameFields = nameFieldNames.split(",");
         List<String> additionalInfoFields = new ArrayList<>();
@@ -151,14 +151,14 @@ public class PacketUploadService {
         if(machineList.isEmpty())
             return new PacketUploadStatus("No machines found for the provided centerId", true);
 
-        ResponseEntity<String> responseEntity = syncRegistration(centerId, source, process, file, supervisorStatus,
+        ResponseEntity<String> responseEntity = syncRegistration(centerId, source, process, fileName, file, supervisorStatus,
                 additionalInfoFields, machineList, transactionId);
 
         if(responseEntity != null && responseEntity.hasBody()) {
             JSONObject response = new JSONObject(responseEntity.getBody());
             if(response.get("response") != null && !(response.get("response") == JSONObject.NULL)) {
-                logger.info("{} RID Sync is successful with response : {}", file.getOriginalFilename(), response.get("response"));
-                responseEntity = uploadPacket(file);
+                logger.info("{} RID Sync is successful with response : {}", fileName, response.get("response"));
+                responseEntity = uploadPacket(fileName, file);
                 if(responseEntity != null && responseEntity.hasBody()) {
                     response = new JSONObject(responseEntity.getBody());
                     return getUploadStatus(response);
@@ -170,8 +170,8 @@ public class PacketUploadService {
         return new PacketUploadStatus("UNKNOWN ERROR : Empty Response", true);
     }
 
-    public PacketUploadStatus onlyUploadPacket(MultipartFile file) throws JSONException {
-        ResponseEntity<String> responseEntity = uploadPacket(file);
+    public PacketUploadStatus onlyUploadPacket(String fileName, byte[] file) throws JSONException {
+        ResponseEntity<String> responseEntity = uploadPacket(fileName, file);
         if(responseEntity != null && responseEntity.hasBody()) {
             JSONObject response = new JSONObject(responseEntity.getBody());
             return getUploadStatus(response);
@@ -191,9 +191,9 @@ public class PacketUploadService {
         return new PacketUploadStatus("UNKNOWN ERROR : Empty Response", true);
     }
 
-    private ResponseEntity<String> syncRegistration(String centerId, String source, String process, MultipartFile file, String supervisorStatus,
+    private ResponseEntity<String> syncRegistration(String centerId, String source, String process, String fileName, byte[] file, String supervisorStatus,
                                  List<String> additionalInfoFields, List<MachineRegistrationCenterDto> machineList, String transactionId) {
-        String containerName = file.getOriginalFilename().replace(".zip", "");
+        String containerName = fileName.replace(".zip", "");
         String id = containerName.split("-")[0];
 
         for(MachineRegistrationCenterDto m : machineList) {
@@ -201,7 +201,7 @@ public class PacketUploadService {
             File packet = new File(baseLocation + File.separator + account + File.separator + id + ".zip");
             try {
                 logger.info("Iterating RefId : {} with additionalInfoFields : {}", refId, additionalInfoFields);
-                FileUtils.writeByteArrayToFile(packet, onlineCrypto.decrypt(refId, file.getBytes()));
+                FileUtils.writeByteArrayToFile(packet, onlineCrypto.decrypt(refId, file));
                 Map<String, String> additionalInfoFieldValues = packetReader.getFields(id, additionalInfoFields, source, process, true);
 
                 List<String> fullName = new ArrayList<>();
@@ -219,8 +219,8 @@ public class PacketUploadService {
                 syncdto.setRegistrationId(id);
                 syncdto.setRegistrationType(process);
                 syncdto.setPacketId(containerName);
-                syncdto.setPacketHashValue(HMACUtils2.digestAsPlainText(file.getBytes()));
-                syncdto.setPacketSize(BigInteger.valueOf(file.getBytes().length));
+                syncdto.setPacketHashValue(HMACUtils2.digestAsPlainText(file));
+                syncdto.setPacketSize(BigInteger.valueOf(file.length));
                 syncdto.setSupervisorStatus(supervisorStatus);
                 syncdto.setName(String.join(SPACE, fullName));
                 syncdto.setPhone(additionalInfoFieldValues.get(phoneFieldName));
@@ -256,15 +256,15 @@ public class PacketUploadService {
         return null;
     }
 
-    private ResponseEntity<String> uploadPacket(MultipartFile file) {
+    private ResponseEntity<String> uploadPacket(String fileName, byte[] file) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         MultiValueMap<String, String> fileMap = new LinkedMultiValueMap<>();
         ContentDisposition contentDisposition = ContentDisposition.builder("form-data").name("file")
-                .filename(file.getOriginalFilename()).build();
+                .filename(fileName).build();
         fileMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
         try {
-            HttpEntity<byte[]> fileEntity = new HttpEntity<>(file.getBytes(), fileMap);
+            HttpEntity<byte[]> fileEntity = new HttpEntity<>(file, fileMap);
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
             body.add("file", fileEntity);
             HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
@@ -272,7 +272,7 @@ public class PacketUploadService {
                     requestEntity, String.class);
 
         } catch (Exception e) {
-            logger.error("Failed to upload packet : {}", file.getOriginalFilename(), e);
+            logger.error("Failed to upload packet : {}", fileName, e);
         }
         return null;
     }

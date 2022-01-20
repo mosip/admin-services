@@ -1,5 +1,10 @@
 package io.mosip.admin.config;
 
+import io.mosip.admin.bulkdataupload.batch.JobResultListener;
+import io.mosip.admin.packetstatusupdater.util.AuditUtil;
+import org.digibooster.spring.batch.listener.JobExecutionListenerContextSupport;
+import org.digibooster.spring.batch.security.listener.JobExecutionSecurityContextListener;
+import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -11,6 +16,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import javax.sql.DataSource;
 
 /**
  * Spring batch configuration
@@ -30,6 +37,17 @@ public class SpringBatchConfig {
 
     @Autowired
     PlatformTransactionManager platformTransactionManager;
+
+    @Autowired
+    private DataSource dataSource;
+
+    @Autowired
+    private AuditUtil auditUtil;
+
+    @Bean
+    public JobResultListener jobResultListener() {
+        return new JobResultListener(dataSource, auditUtil, new JobExecutionSecurityContextListener());
+    }
 
     @Bean(name = "customStepBuilderFactory")
     public StepBuilderFactory customStepBuilderFactory() {

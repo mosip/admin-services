@@ -25,8 +25,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
@@ -57,15 +56,17 @@ public class AuditManagerProxyServiceTest {
 
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         ReflectionTestUtils.setField(auditManagerProxyService, "request", request);
+        List<String> list = new ArrayList<>();
+        list.add("origin");
+        list.add("referrer");
+        list.add("x-forwarded-for");
+        Mockito.when(request.getHeaderNames()).thenReturn(Collections.enumeration(list));
         Mockito.when(request.getHeader(Mockito.anyString())).thenReturn("testset");
     }
 
     @Test
     @WithUserDetails("zonal-admin")
     public void auditLogTest() {
-        Map<String, String> headers = new HashMap<>();
-        headers.put(HttpHeaders.REFERER, "ttest");
-        headers.put(HttpHeaders.ORIGIN, "dev.mosip.net");
         AuditManagerRequestDto auditManagerRequestDto = new AuditManagerRequestDto();
         auditManagerRequestDto.setActionTimeStamp(LocalDateTime.now(ZoneOffset.UTC));
         auditManagerRequestDto.setDescription("Test description");
@@ -84,14 +85,11 @@ public class AuditManagerProxyServiceTest {
         auditManagerRequestDto.setIdType("ADMIN");
         auditManagerRequestDto.setModuleId("ADM-NAV");
         auditManagerRequestDto.setModuleName("Navigation");
-        auditManagerProxyService.logAdminAudit(auditManagerRequestDto, headers);
+        auditManagerProxyService.logAdminAudit(auditManagerRequestDto);
     }
 
     @Test
     public void auditLogEmptyValuesTest() {
-        Map<String, String> headers = new HashMap<>();
-        headers.put(HttpHeaders.REFERER, "ttest");
-        headers.put(HttpHeaders.ORIGIN, "dev.mosip.net");
         AuditManagerRequestDto auditManagerRequestDto = new AuditManagerRequestDto();
         auditManagerRequestDto.setActionTimeStamp(LocalDateTime.now(ZoneOffset.UTC));
         auditManagerRequestDto.setDescription("Test description");
@@ -113,7 +111,7 @@ public class AuditManagerProxyServiceTest {
 
         String errorCode = null;
         try {
-            auditManagerProxyService.logAdminAudit(auditManagerRequestDto, headers);
+            auditManagerProxyService.logAdminAudit(auditManagerRequestDto);
         } catch (MasterDataServiceException e) {
             errorCode = e.getErrorCode();
         }
@@ -122,9 +120,6 @@ public class AuditManagerProxyServiceTest {
 
     @Test
     public void auditLogInvalidEventIdTest() {
-        Map<String, String> headers = new HashMap<>();
-        headers.put(HttpHeaders.REFERER, "ttest");
-        headers.put(HttpHeaders.ORIGIN, "dev.mosip.net");
         AuditManagerRequestDto auditManagerRequestDto = new AuditManagerRequestDto();
         auditManagerRequestDto.setActionTimeStamp(LocalDateTime.now(ZoneOffset.UTC));
         auditManagerRequestDto.setDescription("Test description");
@@ -145,7 +140,7 @@ public class AuditManagerProxyServiceTest {
 
         String errorCode = null;
         try {
-            auditManagerProxyService.logAdminAudit(auditManagerRequestDto, headers);
+            auditManagerProxyService.logAdminAudit(auditManagerRequestDto);
         } catch (MasterDataServiceException e) {
             errorCode = e.getErrorCode();
         }
@@ -154,9 +149,6 @@ public class AuditManagerProxyServiceTest {
 
     @Test
     public void auditLogInvalidEventNameTest() {
-        Map<String, String> headers = new HashMap<>();
-        headers.put(HttpHeaders.REFERER, "ttest");
-        headers.put(HttpHeaders.ORIGIN, "dev.mosip.net");
         AuditManagerRequestDto auditManagerRequestDto = new AuditManagerRequestDto();
         auditManagerRequestDto.setActionTimeStamp(LocalDateTime.now(ZoneOffset.UTC));
         auditManagerRequestDto.setDescription("Test description");
@@ -177,7 +169,7 @@ public class AuditManagerProxyServiceTest {
 
         String errorCode = null;
         try {
-            auditManagerProxyService.logAdminAudit(auditManagerRequestDto, headers);
+            auditManagerProxyService.logAdminAudit(auditManagerRequestDto);
         } catch (MasterDataServiceException e) {
             errorCode = e.getErrorCode();
         }
@@ -186,9 +178,6 @@ public class AuditManagerProxyServiceTest {
 
     @Test
     public void auditLogInvalidActionTimestampTest() {
-        Map<String, String> headers = new HashMap<>();
-        headers.put(HttpHeaders.REFERER, "ttest");
-        headers.put(HttpHeaders.ORIGIN, "dev.mosip.net");
         AuditManagerRequestDto auditManagerRequestDto = new AuditManagerRequestDto();
         auditManagerRequestDto.setActionTimeStamp(LocalDateTime.now(ZoneOffset.UTC).plusMinutes(10));
         auditManagerRequestDto.setDescription("Test description");
@@ -209,7 +198,7 @@ public class AuditManagerProxyServiceTest {
 
         String errorCode = null;
         try {
-            auditManagerProxyService.logAdminAudit(auditManagerRequestDto, headers);
+            auditManagerProxyService.logAdminAudit(auditManagerRequestDto);
         } catch (MasterDataServiceException e) {
             errorCode = e.getErrorCode();
         }
