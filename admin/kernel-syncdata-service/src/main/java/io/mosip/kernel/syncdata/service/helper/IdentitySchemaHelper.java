@@ -49,7 +49,6 @@ public class IdentitySchemaHelper {
 			}
 			ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().toUri(), String.class);
 
-			objectMapper.registerModule(new JavaTimeModule());
 			ResponseWrapper<JsonNode> resp = objectMapper.readValue(responseEntity.getBody(),
 					new TypeReference<ResponseWrapper<JsonNode>>() {
 					});
