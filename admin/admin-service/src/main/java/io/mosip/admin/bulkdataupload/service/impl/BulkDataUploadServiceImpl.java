@@ -354,7 +354,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 						.listener(jobResultListener)
 						.incrementer(new RunIdIncrementer())
 						.start(stepBuilderFactory.get("packet-upload")
-								.tasklet(new PacketUploadTasklet(file, packetUploadService, centerId, supervisorStatus,
+								.tasklet(new PacketUploadTasklet(file.getOriginalFilename(), file.getBytes(),
+										packetUploadService, centerId, supervisorStatus,
 										source, process, hasDataReadRole ? "SYNC-UPLOAD" : "UPLOAD"))
 								.build())
 						.build();
