@@ -82,7 +82,6 @@ public class WebsubCallbackController {
 
     private ServiceError parseDataShareResponse(String response) {
         try {
-            objectMapper.registerModule(new JavaTimeModule());
             ResponseWrapper<JsonNode> resp = objectMapper.readValue(response,
                     new TypeReference<ResponseWrapper<JsonNode>>() {});
             if(resp.getErrors() != null && !resp.getErrors().isEmpty())
