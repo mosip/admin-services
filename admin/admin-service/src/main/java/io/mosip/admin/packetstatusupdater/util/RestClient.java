@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.annotation.CheckForNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
@@ -79,11 +81,11 @@ public class RestClient {
 		if (requestType != null) {
 			try {
 				HttpEntity<Object> httpEntity = (HttpEntity<Object>) requestType;
-				HttpHeaders httpHeader = httpEntity.getHeaders();
+				@CheckForNull HttpHeaders httpHeader = httpEntity.getHeaders();
 				Iterator<String> iterator = httpHeader.keySet().iterator();
 				while (iterator.hasNext()) {
 					String key = iterator.next();
-					if (!(headers.containsKey("Content-Type") && key.equalsIgnoreCase("Content-Type")) && null!=httpHeader.get(key))
+					if (null!=httpHeader && !(headers.containsKey("Content-Type") && key.equalsIgnoreCase("Content-Type")) && null!=httpHeader.get(key))
 						headers.add(key, httpHeader.get(key).get(0));
 				}
 				return new HttpEntity<Object>(httpEntity.getBody(), headers);

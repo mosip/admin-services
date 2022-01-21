@@ -165,7 +165,9 @@ public class SyncJobHelperService {
                     handleDynamicFields(entities); //Fills dynamic field data
 
             } catch (Exception e) {
+            	
                 logger.error("Failed to create snapshot {} {}", entry.getKey().getSimpleName(), e);
+                throw new RuntimeException(e.getCause());
             }
         }
     }
