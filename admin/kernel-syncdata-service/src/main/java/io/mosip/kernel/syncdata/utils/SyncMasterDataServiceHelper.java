@@ -1333,7 +1333,6 @@ public class SyncMasterDataServiceHelper {
 				//its with default sort on crd_dtimes
 				ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().toUri(), String.class);
 
-				objectMapper.registerModule(new JavaTimeModule());
 				ResponseWrapper<PageDto<DynamicFieldDto>> resp = objectMapper.readValue(responseEntity.getBody(),
 						new TypeReference<ResponseWrapper<PageDto<DynamicFieldDto>>>() {});
 
@@ -1367,7 +1366,6 @@ public class SyncMasterDataServiceHelper {
 				//its with default sort on crd_dtimes
 				ResponseEntity<String> responseEntity = restClient.getForEntity(builder.build().toUri(), String.class);
 
-				objectMapper.registerModule(new JavaTimeModule());
 				ResponseWrapper<PageDto<DynamicFieldDto>> resp = objectMapper.readValue(responseEntity.getBody(),
 						new TypeReference<ResponseWrapper<PageDto<DynamicFieldDto>>>() {});
 

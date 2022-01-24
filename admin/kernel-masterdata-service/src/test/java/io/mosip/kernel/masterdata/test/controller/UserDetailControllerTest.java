@@ -275,11 +275,23 @@ public class UserDetailControllerTest
 	@Test
 	@WithUserDetails("global-admin")
 	public void t008updateUserRegCenterTest3() throws Exception {
-		udp.getRequest().setId("79");
+		udp.getRequest().setId("3");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/usercentermapping")
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(udp))).andReturn(),
-				"KER-USR-008");
+				"KER-USR-015");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t008updateUserRegCenterTest5() throws Exception {
+		udp.getRequest().setId("3");
+		udp.getRequest().setRegCenterId("10003");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/usercentermapping")
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(udp))).andReturn(),
+				"KER-USR-012");
 
 	}
 
@@ -444,7 +456,7 @@ public class UserDetailControllerTest
 				"  \"metadata\": null,\r\n" +
 				"  \"response\": {\r\n" +
 				"    \"mosipUserDtoList\": null "+
-				"  },\r\n" +
+				"  }},\r\n" +
 				"  \"errors\": { "+
 				"   \"errorCode\":\"KER-MSD-500\", "+
 				"   \"errorMessage\" : \"ErrorMessage\"}"+
@@ -455,7 +467,7 @@ public class UserDetailControllerTest
 		.andRespond(responseCreator);
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/usersdetails").param("firstName", "a").param("lastName", "a").param("userName", "a")).andReturn(),
-				null);
+				"KER-USR-009");
 
 	}
 	

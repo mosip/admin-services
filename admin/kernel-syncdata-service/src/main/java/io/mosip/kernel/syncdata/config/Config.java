@@ -2,6 +2,7 @@ package io.mosip.kernel.syncdata.config;
 
 import javax.servlet.Filter;
 
+import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 import io.mosip.kernel.websub.api.filter.MultipleReadRequestBodyFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
@@ -99,6 +100,11 @@ public class Config {
 		methodInvokingFactoryBean.setTargetMethod("setStrategyName");
 		methodInvokingFactoryBean.setArguments(new String[]{SecurityContextHolder.MODE_INHERITABLETHREADLOCAL});
 		return methodInvokingFactoryBean;
+	}
+
+	@Bean
+	public AfterburnerModule afterburnerModule() {
+		return new AfterburnerModule();
 	}
 
 }

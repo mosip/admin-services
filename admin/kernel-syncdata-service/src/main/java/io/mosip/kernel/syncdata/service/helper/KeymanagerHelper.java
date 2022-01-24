@@ -60,7 +60,6 @@ public class KeymanagerHelper {
                 builder.queryParam("referenceId", referenceId.get());
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().toUri(), String.class);
 
-            objectMapper.registerModule(new JavaTimeModule());
             ResponseWrapper<KeyPairGenerateResponseDto> resp = objectMapper.readValue(responseEntity.getBody(),
                     new TypeReference<ResponseWrapper<KeyPairGenerateResponseDto>>() {});
 
@@ -92,7 +91,6 @@ public class KeymanagerHelper {
             ResponseEntity<String> responseEntity = restTemplate.postForEntity(builder.build().toUri(),
                     requestEntity,String.class);
 
-            objectMapper.registerModule(new JavaTimeModule());
             ResponseWrapper<JWTSignatureResponseDto> resp = objectMapper.readValue(responseEntity.getBody(),
                     new TypeReference<ResponseWrapper<JWTSignatureResponseDto>>() {});
 

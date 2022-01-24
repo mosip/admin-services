@@ -91,7 +91,7 @@ public class RestRequestBuilder {
 
 		checkHttpMethod(request, httpMethod);
 
-		if (requestBody != null && null!=headers) {
+		if (requestBody != null && null!=headers && null!= headers.getContentType()) {
 			if (!headers.getContentType().includes(MediaType.MULTIPART_FORM_DATA)) {
 				request.setRequestBody(requestBody);
 			} else {

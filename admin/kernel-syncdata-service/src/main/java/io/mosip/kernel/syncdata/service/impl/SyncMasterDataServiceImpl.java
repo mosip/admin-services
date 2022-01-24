@@ -307,7 +307,6 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(String.format(machineUrl, machineId));
 			ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().toUri(), String.class);
 
-			objectMapper.registerModule(new JavaTimeModule());
 			ResponseWrapper<MachineResponseDto> resp = objectMapper.readValue(responseEntity.getBody(),
 					new TypeReference<ResponseWrapper<MachineResponseDto>>() {});
 

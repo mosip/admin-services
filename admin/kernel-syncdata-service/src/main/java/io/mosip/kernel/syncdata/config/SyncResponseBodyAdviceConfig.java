@@ -83,7 +83,6 @@ public class SyncResponseBodyAdviceConfig implements ResponseBodyAdvice<Response
 								.getContentAsByteArray());
 			}
 
-			objectMapper.registerModule(new JavaTimeModule());
 			if (!EmptyCheckUtils.isNullEmpty(requestBody)) {
 				requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
 				body.setId(requestWrapper.getId());

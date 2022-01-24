@@ -153,7 +153,6 @@ public class SyncHandlerControllerAdvice {
 		if (EmptyCheckUtils.isNullEmpty(requestBody)) {
 			return responseWrapper;
 		}
-		objectMapper.registerModule(new JavaTimeModule());
 		JsonNode reqNode = objectMapper.readTree(requestBody);
 		responseWrapper.setId(reqNode.path("id").asText());
 		responseWrapper.setVersion(reqNode.path("version").asText());

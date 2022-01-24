@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.test.controller;
 
 import static org.mockito.Mockito.doNothing;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -284,6 +285,16 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
+	public void t011getRegistrationCenterByHierarchyLevelAndTextAndlangCodeTest2() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/eng/5/33")).andReturn(),
+				"KER-MSD-215");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t011getRegistrationCenterByHierarchyLevelAndTextAndlangCodeTest1() throws Exception {
 
 		MasterDataTest.checkResponse(
@@ -368,6 +379,16 @@ public class RegistrationCenterControllerTest {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.delete("/registrationcenters/10003")).andReturn(),
+				"KER-MSD-192");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t017deleteRegistrationCenterTest1() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.delete("/registrationcenters/11113")).andReturn(),
 				null);
 
 	}
@@ -377,7 +398,7 @@ public class RegistrationCenterControllerTest {
 	public void t018deleteRegistrationCenterFailTest() throws Exception {
 
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.delete("/registrationcenters/10003")).andReturn(),
+				mockMvc.perform(MockMvcRequestBuilders.delete("/registrationcenters/11113")).andReturn(),
 				"KER-MSD-215");
 
 	}
@@ -392,6 +413,17 @@ public class RegistrationCenterControllerTest {
 
 	}
 
+	@Test
+	@WithUserDetails("global-admin")
+	public void t019getRegistrationCenterByHierarchyLevelAndListTextAndlangCodeTest1() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/eng/4/names?name=MyCountry")).andReturn(),
+				"KER-MSD-215");
+
+	}
+	
+	
 	@Test
 	@WithUserDetails("global-admin")
 	public void t019getRegistrationCenterByHierarchyLevelAndListTextAndlangCodeTestFail() throws Exception {
@@ -438,7 +470,7 @@ public class RegistrationCenterControllerTest {
 	public void t022decommissionRegCenterTest1() throws Exception {
 
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10077")).andReturn(),
+				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10103")).andReturn(),
 				"KER-MSD-441");
 
 	}
@@ -458,8 +490,8 @@ public class RegistrationCenterControllerTest {
 	public void t022decommissionRegCenterTest4() throws Exception {
 
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10003")).andReturn(),
-				"KER-MSD-215");
+				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/100")).andReturn(),
+				"KER-MSD-216");
 
 	}
 	
@@ -480,6 +512,36 @@ public class RegistrationCenterControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/1009")).andReturn(),
 				"KER-MSD-216");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t023decommissionRegCenterFailTest1() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10003")).andReturn(),
+				"KER-MSD-351");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t023decommissionRegCenterFailTest2() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10077")).andReturn(),
+				"KER-MSD-350");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t023decommissionRegCenterFailTest3() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10103")).andReturn(),
+				"KER-MSD-441");
 
 	}
 
@@ -551,6 +613,54 @@ public class RegistrationCenterControllerTest {
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr)))
 				.andReturn(), null);
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t029createRegistrationCenterTest4() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.post("registrationcenters")
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rg)))
+				.andReturn(), null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t029createRegistrationCenterTest() throws Exception {
+		List<ExceptionalHolidayPutPostDto> elst=new ArrayList<>();
+		ExceptionalHolidayPutPostDto e=new ExceptionalHolidayPutPostDto();
+		e.setExceptionHolidayDate(LocalDate.now().toString());
+		e.setExceptionHolidayName("Test");
+		e.setExceptionHolidayReson("test");
+		elst.add(e);
+		rg.getRequest().setExceptionalHolidayPutPostDto(elst);
+		
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.post("registrationcenters")
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rg)))
+				.andReturn(), null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t029createRegistrationCenterTest1() throws Exception {
+		List<ExceptionalHolidayPutPostDto> elst=new ArrayList<>();
+		ExceptionalHolidayPutPostDto e=new ExceptionalHolidayPutPostDto();
+		e.setExceptionHolidayDate(LocalDate.now().toString());
+		e.setExceptionHolidayName("Test");
+		e.setExceptionHolidayReson("test");
+		elst.add(e);
+		
+		rg.getRequest().setExceptionalHolidayPutPostDto(elst);
+		Map<String,Boolean> m=new HashMap<>();
+		m.put("101", true);
+		rg.getRequest().setWorkingNonWorkingDays(m);
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.post("registrationcenters")
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rg)))
+				.andReturn(), null);
+	}
+	
 	
 	@Test
 	@WithUserDetails("global-admin")

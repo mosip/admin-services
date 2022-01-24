@@ -47,7 +47,8 @@ public class PacketUploadTasklet implements Tasklet, InitializingBean {
                         (String) chunkContext.getStepContext().getJobParameters().get("transactionId"));
                 break;
         }
-        if(status.isFailed())
+
+        if(null!=status && status.isFailed())
             throw new JobExecutionException(this.fileName + " --> " + status.getMessage());
 
         return RepeatStatus.FINISHED;

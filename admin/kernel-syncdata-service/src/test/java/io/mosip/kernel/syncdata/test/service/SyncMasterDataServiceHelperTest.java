@@ -34,6 +34,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
@@ -131,6 +132,24 @@ public class SyncMasterDataServiceHelperTest {
         locationHierarchyDto.setIsDeleted(false);
         locations.add(locationHierarchyDto);
         locationHierarchyLevelResponseDto.setLocationHierarchyLevels(locations);
+    }
+
+    @Test
+    public void validateMapperRegisteredModule() {
+       Set<Object> modules = objectMapper.getRegisteredModuleIds();
+       boolean afterburnerPresent = false;
+       boolean javaTimeModulePresent = false;
+       for(Object module : modules) {
+           if(module.equals("com.fasterxml.jackson.module.afterburner.AfterburnerModule")) {
+               afterburnerPresent = true;
+           }
+           if(module.equals("com.fasterxml.jackson.datatype.jsr310.JavaTimeModule")) {
+               javaTimeModulePresent = true;
+           }
+       }
+
+       Assert.assertTrue(afterburnerPresent);
+       Assert.assertTrue(javaTimeModulePresent);
     }
 
     @Test
