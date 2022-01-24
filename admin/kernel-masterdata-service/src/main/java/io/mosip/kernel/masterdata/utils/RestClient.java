@@ -191,7 +191,7 @@ public class RestClient {
 				Iterator<String> iterator = httpHeader.keySet().iterator();
 				while (iterator.hasNext()) {
 					String key = iterator.next();
-					if (!(headers.containsKey("Content-Type") && key.equalsIgnoreCase("Content-Type")))
+					if (null!=httpHeader.get(key) && !(headers.containsKey("Content-Type") && key.equalsIgnoreCase("Content-Type")))
 						headers.add(key, httpHeader.get(key).get(0));
 				}
 				return new HttpEntity<Object>(httpEntity.getBody(), headers);

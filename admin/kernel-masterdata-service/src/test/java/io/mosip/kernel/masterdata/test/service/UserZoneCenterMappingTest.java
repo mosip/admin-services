@@ -1,19 +1,8 @@
 package io.mosip.kernel.masterdata.test.service;
 
-import io.mosip.kernel.masterdata.dto.*;
-import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
-import io.mosip.kernel.masterdata.entity.UserDetails;
-import io.mosip.kernel.masterdata.entity.ZoneUser;
-import io.mosip.kernel.masterdata.exception.DataNotFoundException;
-import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-import io.mosip.kernel.masterdata.exception.RequestException;
-import io.mosip.kernel.masterdata.repository.UserDetailsRepository;
-import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
-import io.mosip.kernel.masterdata.service.UserDetailsService;
-import io.mosip.kernel.masterdata.service.ZoneUserService;
-import io.mosip.kernel.masterdata.test.TestBootApplication;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -29,10 +18,34 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import io.mosip.kernel.masterdata.dto.UserDetailsCenterMapping;
+import io.mosip.kernel.masterdata.dto.UserDetailsDto;
+import io.mosip.kernel.masterdata.dto.UserDetailsGetExtnDto;
+import io.mosip.kernel.masterdata.dto.UserDetailsPutDto;
+import io.mosip.kernel.masterdata.dto.UserDetailsPutReqDto;
+import io.mosip.kernel.masterdata.dto.ZoneUserDto;
+import io.mosip.kernel.masterdata.dto.ZoneUserExtnDto;
+import io.mosip.kernel.masterdata.dto.ZoneUserPutDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.entity.UserDetails;
+import io.mosip.kernel.masterdata.entity.ZoneUser;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
+import io.mosip.kernel.masterdata.repository.UserDetailsRepository;
+import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
+import io.mosip.kernel.masterdata.service.UserDetailsService;
+import io.mosip.kernel.masterdata.service.ZoneUserService;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 
 @SpringBootTest(classes = TestBootApplication.class)
 @RunWith(SpringRunner.class)
@@ -60,9 +73,9 @@ public class UserZoneCenterMappingTest {
 
     @Autowired
     ZoneUserRepository zoneUserRepository;
-
+ 
     public void setup() {
-        String response = "{\r\n" +
+      String response = "{\r\n" +
                 "  \"id\": null,\r\n" +
                 "  \"version\": null,\r\n" +
                 "  \"responsetime\": \"2021-03-31T04:27:31.590Z\",\r\n" +
@@ -270,6 +283,23 @@ public class UserZoneCenterMappingTest {
         Assert.assertEquals(userDetailsDto.getRegCenterId(), userDetailsCenterMapping.getRegCenterId());
         Assert.assertEquals(userDetailsDto.getId(), userDetailsCenterMapping.getId());
         Assert.assertEquals(false, userDetailsCenterMapping.getIsActive());
+    }
+    
+    @Test
+    @WithUserDetails("global-admin")
+    public void test11CreateUserCenterMappingTest1() throws JsonProcessingException, Exception {
+        UserDetailsDto userDetailsDto = new UserDetailsDto();
+        userDetailsDto.setId("29");
+        userDetailsDto.setRegCenterId("11");
+        userDetailsDto.setLangCode("eng");
+        String errorCode = null;
+        try {
+            userDetailsService.createUser(userDetailsDto);
+        } catch (DataNotFoundException e) {
+            errorCode = e.getErrorCode();
+        }
+        Assert.assertEquals("KER-MSD-215", errorCode);
+          
     }
 
     @Test

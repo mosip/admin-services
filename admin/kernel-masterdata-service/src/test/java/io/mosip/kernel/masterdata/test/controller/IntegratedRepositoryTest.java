@@ -2,8 +2,6 @@ package io.mosip.kernel.masterdata.test.controller;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -2068,7 +2066,7 @@ public class IntegratedRepositoryTest {
 	@WithUserDetails("global-admin")
 	public void tst009mapDocCategoryAndDocTypeTest2() throws Exception {
 		ValidDocument validDocument = new ValidDocument();
-		validDocument.setIsActive(true);
+		validDocument.setIsActive(false);
 
 		when(validDocumentRepository.findByDocCategoryCodeAndDocTypeCode(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(validDocument);
@@ -2076,7 +2074,7 @@ public class IntegratedRepositoryTest {
 				Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
 
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.put("/validdocuments/map/POA/CIN1")).andReturn(), "KER-MSD-360");
+				mockMvc.perform(MockMvcRequestBuilders.put("/validdocuments/map/POA/CIN1")).andReturn(), "KER-MSD-016");
 	}
 
 	@Test
@@ -2137,9 +2135,9 @@ public class IntegratedRepositoryTest {
 
 	/*@Test
 	@WithUserDetails("global-admin")
-	public void tst011updateDynamicFieldStatusTest() throws Exception {
+	public void tst011updateDyamicFieldStatusTest() throws Exception {
 		when(dynamicFieldRepository.updateAllDynamicFieldIsActive(Mockito.anyString(), Mockito.any(), Mockito.any(),
-				Mockito.any())).thenThrow(new DataAccessException("...") {
+				Mockito.any())).thenThrow(new NullPointerException("KER-SCH-011") {
 				});
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.patch("/dynamicfields").param("isActive", "false").param("id", "10001"))
@@ -2174,12 +2172,12 @@ public class IntegratedRepositoryTest {
 		 RequestWrapper<LocationCreateDto> locationCreateDtoReq=new RequestWrapper<>();
 		LocationCreateDto createDto = new LocationCreateDto();
 		createDto.setCode("11111");
-		createDto.setHierarchyLevel((short) 1);
+		createDto.setHierarchyLevel((short) 0);
 		createDto.setIsActive(true);
 		createDto.setHierarchyName("Region");
 		createDto.setLangCode("eng");
 		createDto.setName("11111");
-		createDto.setParentLocCode("");
+		createDto.setParentLocCode("Loc");
 		
 		locationCreateDtoReq.setRequest(createDto);
 		when(locReg.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenThrow(new IllegalArgumentException("...") {});
@@ -2187,7 +2185,7 @@ public class IntegratedRepositoryTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(locationCreateDtoReq))).andReturn(),
-				"KER-MSD-244");
+				"KER-MSD-242");
 	}
 	
 	@Test
@@ -2303,6 +2301,51 @@ public class IntegratedRepositoryTest {
 
 	}
 	
+	@Test
+	@WithUserDetails("global-admin")
+	public void tst023decommissionRegCenterFailTest() throws Exception {
+		List<RegistrationCenter> regCenters =new ArrayList<>();
+		RegistrationCenter centerPostReqDto=new RegistrationCenter();
+		centerPostReqDto.setAddressLine1("add1");
+		centerPostReqDto.setAddressLine2("add2");
+		centerPostReqDto.setAddressLine3("add3");
+		centerPostReqDto.setCenterEndTime(LocalTime.NOON);
+		centerPostReqDto.setCenterStartTime(LocalTime.MIDNIGHT);
+		centerPostReqDto.setCenterTypeCode("REG");
+		centerPostReqDto.setContactPerson("Magic");
+		centerPostReqDto.setContactPhone("1234567891");
+		centerPostReqDto.setZoneCode("NTH");
+		centerPostReqDto.setWorkingHours("8");
+		centerPostReqDto.setTimeZone("(GTM+01:00) CENTRAL EUROPEAN TIME");
+		centerPostReqDto.setNumberOfKiosks((short)2);
+		centerPostReqDto.setPerKioskProcessTime(LocalTime.NOON);
+		centerPostReqDto.setName("Mysore road");
+		centerPostReqDto.setLocationCode("14022");
+		regCenters.add(centerPostReqDto);
+		when(registrationCenterRepository.findByRegId(Mockito.anyString())).thenReturn(regCenters);
+		when(zoneRepository.findAllNonDeleted()).thenReturn(getZoneLst());
+		when(zoneUserRepo.findZoneByUserIdActiveAndNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
+
+		when(userDetailsRepository.findByRegIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString())).thenThrow(new DataAccessException("...") {});
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10103")).andReturn(),
+				"KER-MSD-354");
+
+	}
+	
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t028getCenterSpecificToZoneTest() throws Exception {
+		when(zoneRepository.findAllNonDeleted()).thenReturn(getZoneLst());
+		when(zoneUserRepo.findZoneByUserIdActiveAndNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
+
+		when(registrationCenterRepository.findAllActiveByZoneCodeAndLangCode(Mockito.anyString(),Mockito.anyString())).thenThrow(new DataAccessException("...") {});
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/getzonespecificregistrationcenters/eng/NTH")).andReturn(),
+				"KER-MSD-041");
+
+	}
 	
 	
 }

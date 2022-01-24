@@ -156,7 +156,7 @@ public class Mapper {
 		entityMap.put("doc_category", DocumentCategory.class);
 		entityMap.put("doc_type", DocumentType.class);
 		entityMap.put("dynamic_field", DynamicField.class);
-		entityMap.put("reg_exceptional_holiday", ExceptionalHoliday.class);
+		//entityMap.put("reg_exceptional_holiday", ExceptionalHoliday.class);
 		entityMap.put("gender", Gender.class);
 		entityMap.put("loc_holiday", Holiday.class);
 		entityMap.put("identity_schema", IdentitySchema.class);
