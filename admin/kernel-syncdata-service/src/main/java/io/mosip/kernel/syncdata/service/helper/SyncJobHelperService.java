@@ -167,7 +167,7 @@ public class SyncJobHelperService {
             } catch (Exception e) {
             	
                 logger.error("Failed to create snapshot {} {}", entry.getKey().getSimpleName(), e);
-               
+                
             }
         }
     }
