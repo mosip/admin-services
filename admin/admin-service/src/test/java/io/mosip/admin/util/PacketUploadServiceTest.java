@@ -168,10 +168,11 @@ public class PacketUploadServiceTest {
         Mockito.when(onlineCrypto.encrypt(Mockito.anyString(), Mockito.any())).thenReturn("encrypted-bytest".getBytes(StandardCharsets.UTF_8));
 
         PacketUploadStatus packetUploadStatus = packetUploadService.syncAndUploadPacket(
+                "10003101070000220211225191146-10003_10107-20211225191543.zip",
                 new MockMultipartFile("10003101070000220211225191146-10003_10107-20211225191543",
                         "10003101070000220211225191146-10003_10107-20211225191543.zip",
                         "application/zip",
-                        new StringInputStream("dsdgsdfgsdfgdfgdfgsdfgsdfgsdfgsdfgsdfgsdfg")),
+                        new StringInputStream("dsdgsdfgsdfgdfgdfgsdfgsdfgsdfgsdfgsdfgsdfg")).getBytes(),
                 "10003",
                 "APPROVED",
                 "REGISTRATION_CLIENT",

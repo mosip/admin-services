@@ -186,7 +186,6 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 		}
 
 		try {
-			objectMapper.registerModule(new JavaTimeModule());
 			publicKeyResponseMapped = objectMapper.readValue(publicKeyResponseEntity.getBody(),
 					new TypeReference<ResponseWrapper<PublicKeyResponse<String>>>() {
 					});

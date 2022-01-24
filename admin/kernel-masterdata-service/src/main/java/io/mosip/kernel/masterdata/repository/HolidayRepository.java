@@ -162,4 +162,16 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	@Query(value = "FROM Holiday where holidayDate = ?1 and location_code = ?2 and lang_code=?3 and (isDeleted = false or isDeleted is null) ")
 	Optional<Holiday> findFirstByHolidayByHolidayDateLocationCodeLangCode(LocalDate holidayDate, String locationCode, String langCode);
 
+	/**
+	 * Get all the holidays
+	 * @param locationCode
+	 * @param holidayDate
+	 * @param isActive
+	 * @return
+	 */
+	@Modifying
+	@Transactional
+	@Query("UPDATE Holiday SET isActive=?3, updatedBy=?4, updatedDateTime=?5 WHERE locationCode=?1 and holidayDate=?2")
+	int updateHolidayByLocationCodeAndHolidayDate(String locationCode,LocalDate holidayDate, boolean isActive,String updatedBy,LocalDateTime updatedDateTime);
+
 }

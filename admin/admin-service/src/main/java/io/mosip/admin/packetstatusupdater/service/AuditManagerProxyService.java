@@ -12,6 +12,6 @@ import java.util.Map;
  */
 public interface AuditManagerProxyService {
 
-	public AuditManagerResponseDto logAdminAudit(AuditManagerRequestDto auditManagerRequestDto,  Map<String, String> headers);
+	public AuditManagerResponseDto logAdminAudit(AuditManagerRequestDto auditManagerRequestDto);
 
 }

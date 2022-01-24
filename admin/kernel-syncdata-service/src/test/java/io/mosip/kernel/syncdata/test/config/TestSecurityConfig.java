@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -74,5 +75,10 @@ public class TestSecurityConfig extends WebSecurityConfigurerAdapter {
 		users.add(new User("individual", "mosip", Arrays.asList(new SimpleGrantedAuthority("ROLE_INDIVIDUAL"))));
 		users.add(new User("test", "mosip", Arrays.asList(new SimpleGrantedAuthority("ROLE_TEST"))));
 		return new InMemoryUserDetailsManager(users);
+	}
+
+	@Bean
+	public AfterburnerModule afterburnerModule() {
+		return new AfterburnerModule();
 	}
 }
