@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.test.controller;
 
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -59,6 +60,7 @@ public class ExceptionalHolidayControllerTest {
 		
 	}
 	
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t3getExceptionalHolidaysFailTest1() throws Exception {
@@ -100,6 +102,7 @@ public class ExceptionalHolidayControllerTest {
 				.andReturn(),null);
 	}
 	
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t7getExceptionalHolidaysTest1() throws Exception {

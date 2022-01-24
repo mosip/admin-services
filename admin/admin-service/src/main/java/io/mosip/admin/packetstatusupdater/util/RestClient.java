@@ -81,7 +81,7 @@ public class RestClient {
 		if (requestType != null) {
 			try {
 				HttpEntity<Object> httpEntity = (HttpEntity<Object>) requestType;
-				@CheckForNull HttpHeaders httpHeader = httpEntity.getHeaders();
+				HttpHeaders httpHeader = httpEntity.getHeaders();
 				Iterator<String> iterator = httpHeader.keySet().iterator();
 				while (iterator.hasNext()) {
 					String key = iterator.next();
