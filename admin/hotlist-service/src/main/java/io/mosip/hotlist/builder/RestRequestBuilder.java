@@ -91,17 +91,22 @@ public class RestRequestBuilder {
 
 		checkHttpMethod(request, httpMethod);
 
-		if (requestBody != null && null!=headers && null!= headers.getContentType()) {
-			if (!headers.getContentType().includes(MediaType.MULTIPART_FORM_DATA)) {
-				request.setRequestBody(requestBody);
-			} else {
-				if (requestBody instanceof MultiValueMap) {
+		try {
+			if (requestBody != null && null!=headers && null!= headers.getContentType()) {
+				if (!headers.getContentType().includes(MediaType.MULTIPART_FORM_DATA)) {
 					request.setRequestBody(requestBody);
 				} else {
-					throw new HotlistAppException(INVALID_INPUT_PARAMETER.getErrorCode(),
+					if (requestBody instanceof MultiValueMap) {
+					request.setRequestBody(requestBody);
+					} else {
+						throw new HotlistAppException(INVALID_INPUT_PARAMETER.getErrorCode(),
 							String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), "requestBody"));
-				}
+					}
 			}
+		}
+		}catch (NullPointerException e){
+			throw new HotlistAppException(INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), "requestBody"));
 		}
 
 		checkReturnType(returnType, request);

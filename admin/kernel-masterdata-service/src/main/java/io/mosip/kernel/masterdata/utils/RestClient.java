@@ -195,7 +195,10 @@ public class RestClient {
 						headers.add(key, httpHeader.get(key).get(0));
 				}
 				return new HttpEntity<Object>(httpEntity.getBody(), headers);
-			} catch (ClassCastException e) {
+			}catch (NullPointerException e) {
+				throw e;
+			}
+			catch (ClassCastException e) {
 				return new HttpEntity<Object>(requestType, headers);
 			}
 		} else
