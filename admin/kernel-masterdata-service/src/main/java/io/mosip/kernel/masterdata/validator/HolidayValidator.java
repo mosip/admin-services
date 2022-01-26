@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.validator;
 
+import io.mosip.kernel.masterdata.utils.LanguageUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
@@ -13,8 +15,9 @@ import io.mosip.kernel.masterdata.exception.RequestException;
 
 @Component
 public class HolidayValidator {
-	@Value("${mosip.supported-languages}")
-	private String supportedLanguages;
+
+	@Autowired
+	private LanguageUtils languageUtils;
 	
 	public void validate(HolidayDto request) {
 		if( EmptyCheckUtils.isNullEmpty(request.getLocationCode()) || 
@@ -62,12 +65,8 @@ public class HolidayValidator {
 			throw new RequestException(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(), "lang_code size must be between 1 and 3");
 		} else {
 			try {
-				String[] langArray = supportedLanguages.split(",");
-
-				for (String string : langArray) {
-					if (langCode.equals(string) || langCode.equals("all")) {
-						return true;
-					}
+				if (langCode.equals("all") || languageUtils.getConfiguredLanguages().contains(langCode)) {
+					return true;
 				}
 			} catch (RestClientException e) {
 				throw new RequestException(ValidLangCodeErrorCode.LANG_CODE_VALIDATION_EXCEPTION.getErrorCode(),

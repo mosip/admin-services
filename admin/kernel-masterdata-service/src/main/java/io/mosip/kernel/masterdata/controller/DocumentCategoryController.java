@@ -56,7 +56,7 @@ import io.swagger.annotations.ApiResponses;
  * @since 1.0.0
  *
  */
-@CrossOrigin
+//@CrossOrigin
 @RestController
 @Api(tags = { "DocumentCategory" })
 public class DocumentCategoryController {
@@ -79,16 +79,8 @@ public class DocumentCategoryController {
 	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumentcategories())")
 	@GetMapping("/documentcategories")
 	public ResponseWrapper<DocumentCategoryResponseDto> getAllDocumentCategory() {
-		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL, DocumentCategoryDto.class.getSimpleName()),
-				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.GET_ALL, DocumentCategoryDto.class.getSimpleName()), "ADM-692");
 		ResponseWrapper<DocumentCategoryResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentCategoryService.getAllDocumentCategory());
-		auditUtil.auditRequest(
-				String.format(MasterDataConstant.GET_ALL_SUCCESS, DocumentCategoryDto.class.getSimpleName()),
-				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.GET_ALL_SUCCESS_DESC, DocumentCategoryDto.class.getSimpleName()),
-				"ADM-693");
 		return responseWrapper;
 	}
 
@@ -118,7 +110,7 @@ public class DocumentCategoryController {
 	 */
 	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','INDIVIDUAL','PRE_REGISTRATION','REGISTRATION_SUPERVISOR','RESIDENT','REGISTRATION_PROCESSOR','REGISTRATION_PROCESSOR','REGISTRATION_OFFICER','PARTNER','AUTH_PARTNER','PARTNER_ADMIN','DEVICE_PROVIDER','DEVICE_MANAGER')")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumentcategoriescode())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumentcategoriescode())")
 	@GetMapping("/documentcategories/{code}/{langcode}")
 	public ResponseWrapper<DocumentCategoryResponseDto> getDocumentCategoryByCodeAndLangCode(
 			@PathVariable("code") String code, @PathVariable("langcode") String langCode) {
@@ -212,7 +204,7 @@ public class DocumentCategoryController {
 	 */
 	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumentcategoriesall())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumentcategoriesall())")
 	@GetMapping("/documentcategories/all")
 	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Retrieve all the document category with metadata", notes = "Retrieve all the document categories")
@@ -310,7 +302,7 @@ public class DocumentCategoryController {
 	 */
 	@ResponseFilter
 	@GetMapping("/documentcategories/missingids/{langcode}")
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumentcategoriesmissingidslangcode())")
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdocumentcategoriesmissingidslangcode())")
 	public ResponseWrapper<List<MissingDataDto>> getMissingDocumentCategoryDetails(
 			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
 		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();

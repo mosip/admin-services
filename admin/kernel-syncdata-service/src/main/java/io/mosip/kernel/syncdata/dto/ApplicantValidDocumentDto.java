@@ -1,7 +1,9 @@
 package io.mosip.kernel.syncdata.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -10,6 +12,8 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class ApplicantValidDocumentDto extends BaseDto {
 
 	private String appTypeCode;

@@ -2,7 +2,9 @@ package io.mosip.kernel.masterdata.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
+import io.mosip.kernel.masterdata.dto.DynamicFieldNameDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -100,12 +102,18 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 	int updateAllDynamicFieldIsActive(String name, boolean isActive, LocalDateTime updatedDateTime, String updatedBy);
 
 	@Modifying
-	@Query("UPDATE DynamicField SET isActive=?2 , updatedDateTime=?3, updatedBy=?4"
-			+ " WHERE (isDeleted is null OR isDeleted = false) and id=?1")
-	int updateDynamicFieldIsActive(String id, boolean isActive, LocalDateTime updatedDateTime, String updatedBy);
+	@Query("UPDATE DynamicField SET isActive=?3 , updatedDateTime=?4, updatedBy=?5"
+			+ " WHERE (isDeleted is null OR isDeleted = false) and lower(name)=lower(?1) and valueJson like ?2")
+	int updateDynamicFieldIsActive(String name, String code, boolean isActive, LocalDateTime updatedDateTime, String updatedBy);
 	
 	@Query("SELECT DISTINCT name FROM DynamicField WHERE (isDeleted is null or isDeleted = false)")
 	List<String> getDistinctDynamicFields();
+
+	@Query("SELECT new io.mosip.kernel.masterdata.dto.DynamicFieldNameDto(name, description, langCode, isActive) FROM DynamicField " +
+			"WHERE (isDeleted is null or isDeleted = false) " +
+			"group by name, description, langCode, isActive")
+	List<DynamicFieldNameDto> getDistinctDynamicFieldsWithDescription();
+
 	/**
 	 * Update dynamic field value specific to a language code
 	 * 
@@ -129,11 +137,11 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 	 * @return
 	 */
 	@Modifying
-	@Query("UPDATE DynamicField SET isDeleted=true, updatedDateTime=?2, updatedBy=?3 WHERE id=?1 AND (isDeleted is null OR isDeleted = false)")
-	int deleteDynamicField(String id, LocalDateTime updatedDateTime, String updatedBy);
+	@Query("UPDATE DynamicField SET isDeleted=true, updatedDateTime=?3, updatedBy=?4 WHERE lower(name)=lower(?1) AND valueJson like ?2 AND (isDeleted is null OR isDeleted = false)")
+	int deleteDynamicField(String name, String code, LocalDateTime updatedDateTime, String updatedBy);
 
 	@Modifying
-	@Query("UPDATE DynamicField SET isDeleted=true, updatedDateTime=?2, updatedBy=?3 WHERE name=?1 AND (isDeleted is null OR isDeleted = false)")
+	@Query("UPDATE DynamicField SET isDeleted=true, updatedDateTime=?2, updatedBy=?3 WHERE lower(name)=lower(?1) AND (isDeleted is null OR isDeleted = false)")
 	int deleteAllDynamicField(String fieldName, LocalDateTime updatedDateTime, String updatedBy);
 
 
@@ -186,4 +194,10 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 
 	@Query("FROM DynamicField WHERE lower(name)=lower(?1) and langCode=?2")
 	List<DynamicField> findAllDynamicFieldValuesByNameAndLangCode(String fieldName, String langCode);
+
+	@Query("FROM DynamicField WHERE (isDeleted is null OR isDeleted = false) AND lower(name)=lower(?1)")
+	List<DynamicField> findAllDynamicFieldValuesByName(String fieldName);
+
+	@Query("FROM DynamicField WHERE (isDeleted is null OR isDeleted = false) and lower(name)=lower(?1) and valueJson like ?2")
+	List<DynamicField> findAllByFieldNameAndCode(String name, String code);
 }

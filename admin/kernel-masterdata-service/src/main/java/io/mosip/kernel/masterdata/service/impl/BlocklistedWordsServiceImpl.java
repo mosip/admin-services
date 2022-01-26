@@ -2,11 +2,7 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -147,28 +144,22 @@ public class BlocklistedWordsServiceImpl implements BlocklistedWordsService {
 	@Override
 	public boolean validateWord(List<String> words) {
 		List<String> wordList = new ArrayList<>();
-		boolean isValid = true;
-		List<BlocklistedWords> blockListedWordsList = null;
 		try {
-			blockListedWordsList = blocklistedWordsRepository.findAllByIsDeletedFalseOrIsDeletedNull();
+			wordList = blocklistedWordsRepository.getAllBlockListedWords();
 		} catch (DataAccessException | DataAccessLayerException accessException) {
 			throw new MasterDataServiceException(
 					BlocklistedWordsErrorCode.BLOCKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
 					BlocklistedWordsErrorCode.BLOCKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(accessException));
 		}
-		for (BlocklistedWords blockListedWords : blockListedWordsList) {
-			wordList.add(blockListedWords.getWord());
-		}
-		words.replaceAll(String::toLowerCase);
-		wordList.replaceAll(String::toLowerCase);
 
-		for (String temp : wordList) {
-			if (words.contains(temp)) {
-				isValid = false;
+		if(words != null) {
+			for(String word : words) {
+				if(wordList.stream().anyMatch( w -> word.trim().toLowerCase().contains(w)))
+					return false;
 			}
 		}
-		return isValid;
+		return true;
 	}
 
 	/*
@@ -184,7 +175,7 @@ public class BlocklistedWordsServiceImpl implements BlocklistedWordsService {
 		BlocklistedWords entity = MetaDataUtils.setCreateMetaData(blockListedWordsRequestDto, BlocklistedWords.class);
 		entity.setWord(entity.getWord().toLowerCase());
 		try {
-			if(blocklistedWordsRepository.findByOnlyWordAndLangCode(blockListedWordsRequestDto.getWord(), blockListedWordsRequestDto.getLangCode()) !=null) {
+			if(blocklistedWordsRepository.findByOnlyWord(blockListedWordsRequestDto.getWord()) !=null) {
 				throw new RequestException(BlocklistedWordsErrorCode.DUPLICATE_BLOCKLISTED_WORDS_FOUND.getErrorCode(),
 						BlocklistedWordsErrorCode.DUPLICATE_BLOCKLISTED_WORDS_FOUND.getErrorMessage());
 			}
@@ -204,9 +195,7 @@ public class BlocklistedWordsServiceImpl implements BlocklistedWordsService {
 		}
 
 		WordAndLanguageCodeID wordAndLanguageCodeId = new WordAndLanguageCodeID();
-
 		MapperUtils.map(entity, wordAndLanguageCodeId);
-
 		return wordAndLanguageCodeId;
 	}
 
@@ -343,24 +332,17 @@ public class BlocklistedWordsServiceImpl implements BlocklistedWordsService {
 			params.put("description", dto.getDescription());
 		params.put("updatedBy", MetaDataUtils.getContextUser());
 		params.put("updatedDateTime", LocalDateTime.now(ZoneId.of("UTC")));
-		params.put("langCode", dto.getLangCode());
 		return params;
 	}
 
 	@CacheEvict(value = "blocklisted-words", allEntries = true)
 	@Override
 	public WordAndLanguageCodeID updateBlockListedWordExceptWord(BlocklistedWordsDto blocklistedWordsDto) {
-		WordAndLanguageCodeID id = null;
-		BlocklistedWords wordEntity = null;
-		blocklistedWordsDto.setWord(blocklistedWordsDto.getWord().toLowerCase());
+		int updated = 0;
 		try {
-			wordEntity = blocklistedWordsRepository.findByWordAndLangCode(blocklistedWordsDto.getWord(),
-					blocklistedWordsDto.getLangCode());
-			if (wordEntity != null) {
-				MetaDataUtils.setUpdateMetaData(blocklistedWordsDto, wordEntity, false);
-				wordEntity = blocklistedWordsRepository.update(wordEntity);
-				id = MapperUtils.map(wordEntity, WordAndLanguageCodeID.class);
-			}
+			updated = blocklistedWordsRepository.updateBlockListedWordDetails(blocklistedWordsDto.getWord(),
+					blocklistedWordsDto.getDescription(), LocalDateTime.now(ZoneId.of("UTC")),
+					SecurityContextHolder.getContext().getAuthentication().getName());
 		} catch (DataAccessException | DataAccessLayerException e) {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_UPDATE, BlockListedWordsUpdateDto.class.getSimpleName()),
@@ -374,7 +356,7 @@ public class BlocklistedWordsServiceImpl implements BlocklistedWordsService {
 					BlocklistedWordsErrorCode.BLOCKLISTED_WORDS_UPDATE_EXCEPTION.getErrorMessage());
 		}
 
-		if (id == null) {
+		if (updated <= 0) {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_UPDATE, BlockListedWordsUpdateDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
@@ -388,9 +370,9 @@ public class BlocklistedWordsServiceImpl implements BlocklistedWordsService {
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, BlockListedWordsUpdateDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
-						BlockListedWordsUpdateDto.class.getSimpleName(), id.getWord()),
+						BlockListedWordsUpdateDto.class.getSimpleName(), blocklistedWordsDto.getWord()),
 				"ADM-558");
-		return id;
+		return new WordAndLanguageCodeID(blocklistedWordsDto.getWord(), blocklistedWordsDto.getLangCode());
 	}
 
 	/*

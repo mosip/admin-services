@@ -157,7 +157,7 @@ public class DeviceTypeControllerTest {
 	public void t003updateDeviceTypeFailTest() throws Exception {
 		filPutDto.getRequest().setCode("CMRK");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/devicetypes").contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsString(filPutDto))).andReturn(),"KER-MSD-003");;
+				.content(mapper.writeValueAsString(filPutDto))).andReturn(),"KER-MSD-209");;
 	}
 
 	@Test
@@ -181,7 +181,15 @@ public class DeviceTypeControllerTest {
 	public void t006updateDeviceTypeStatusTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.patch("/devicetypes").param("isActive", "true").param("code", "CMR"))
-				.andReturn(),null);;
+				.andReturn(),null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t006updateDeviceTypeStatusTest1() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.patch("/devicetypes").param("isActive", "false").param("code", "CMR"))
+				.andReturn(),"KER-MSD-055");
 	}
 
 	@Test
@@ -218,7 +226,7 @@ public class DeviceTypeControllerTest {
 
 		 MasterDataTest.checkResponse( mockMvc
 				.perform(MockMvcRequestBuilders.patch("/devicetypes").param("isActive", "true").param("code", "CMRR"))
-				.andReturn(), "KER-MSD-003");
+				.andReturn(), "KER-MSD-209");
 	
 	}
 
@@ -243,7 +251,7 @@ public class DeviceTypeControllerTest {
 	public void t014updateDeviceTypeFailTest() throws Exception {
 		filPutDto.getRequest().setCode("aa");
 		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/devicetypes")
-				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filPutDto))).andReturn(),"KER-MSD-003");
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filPutDto))).andReturn(),"KER-MSD-209");
 	
 	}
 

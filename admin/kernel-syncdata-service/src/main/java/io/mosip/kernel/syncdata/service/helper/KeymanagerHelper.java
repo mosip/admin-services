@@ -13,7 +13,6 @@ import io.mosip.kernel.syncdata.constant.AdminServiceErrorCode;
 import io.mosip.kernel.syncdata.dto.response.KeyPairGenerateResponseDto;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +60,6 @@ public class KeymanagerHelper {
                 builder.queryParam("referenceId", referenceId.get());
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().toUri(), String.class);
 
-            objectMapper.registerModule(new JavaTimeModule());
             ResponseWrapper<KeyPairGenerateResponseDto> resp = objectMapper.readValue(responseEntity.getBody(),
                     new TypeReference<ResponseWrapper<KeyPairGenerateResponseDto>>() {});
 
@@ -84,7 +82,7 @@ public class KeymanagerHelper {
             JWTSignatureRequestDto jwtSignatureRequestDto = new JWTSignatureRequestDto();
             jwtSignatureRequestDto.setApplicationId(signApplicationid);
             jwtSignatureRequestDto.setReferenceId(signRefid);
-            jwtSignatureRequestDto.setDataToSign(CryptoUtil.encodeBase64(responseBody.getBytes(StandardCharsets.UTF_8)));
+            jwtSignatureRequestDto.setDataToSign(CryptoUtil.encodeToURLSafeBase64(responseBody.getBytes(StandardCharsets.UTF_8)));
             requestWrapper.setRequest(jwtSignatureRequestDto);
 
             HttpHeaders headers = new HttpHeaders();
@@ -93,7 +91,6 @@ public class KeymanagerHelper {
             ResponseEntity<String> responseEntity = restTemplate.postForEntity(builder.build().toUri(),
                     requestEntity,String.class);
 
-            objectMapper.registerModule(new JavaTimeModule());
             ResponseWrapper<JWTSignatureResponseDto> resp = objectMapper.readValue(responseEntity.getBody(),
                     new TypeReference<ResponseWrapper<JWTSignatureResponseDto>>() {});
 

@@ -82,14 +82,14 @@ public class ZoneIntegrationTest {
 	@WithUserDetails("zonal-admin")
 	public void getZoneHierarchySuccess() throws Exception {
 		doReturn(zones).when(zoneUtils).getUserZones();
-		mockMvc.perform(get("/zones/hierarchy/{langCode}", "eng")).andExpect(status().is(500));
+		mockMvc.perform(get("/zones/hierarchy/{langCode}", "eng")).andExpect(status().is(200));
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void getZoneHierarchyNoZones() throws Exception {
 		
-		mockMvc.perform(get("/zones/hierarchy/{langCode}", "eng")).andExpect(status().is(500));
+		mockMvc.perform(get("/zones/hierarchy/{langCode}", "eng")).andExpect(status().is(200));
 	}
 
 	@Test

@@ -16,9 +16,10 @@ public enum MasterdataSearchErrorCode {
 	INVALID_PAGINATION("KER-MSD-356", "Pagination cannot be null"),
 	INVALID_SORT_TYPE("KER-MSD-358", "Sort type %s is not supported"),
 	ERROR_OCCURED_WHILE_SORTING("KER-MSD-359", "Error occured while sorting"),
-	INVALID_SORT_FIELD("KER-MSD-357", "Invalid sort field %s"), INVALID_VALUE("KER-MSD-390", "Invalid filter value"),
-	LAST_UPDATED_PARSE_EXCEPTION("KER-MSD-360", "Erro occurred while parsing lastUpdated timesatamp"),
-	INVALID_TIMESTAMP_EXCEPTION("KER-MSD-361", "Timestamp cannot be future date"),
+	INVALID_SORT_FIELD("KER-MSD-357", "Invalid sort field %s"),
+	INVALID_VALUE("KER-MSD-390", "Invalid filter value"),
+	LAST_UPDATED_PARSE_EXCEPTION("KER-MSD-261", "Error occurred while parsing lastUpdated timesatamp"),
+	INVALID_TIMESTAMP_EXCEPTION("KER-MSD-262", "Timestamp cannot be future date"),
 	INVALID_LANGCODE("KER-LANG-ERR","Language Code is Invalid");
 
 	/**

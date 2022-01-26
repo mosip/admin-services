@@ -1,7 +1,9 @@
 package io.mosip.kernel.syncdata.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Srinivasan
@@ -9,6 +11,8 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@AllArgsConstructor
+@NoArgsConstructor
 public class ScreenDetailDto extends BaseDto {
 
 	/** The id. */

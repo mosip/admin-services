@@ -14,7 +14,7 @@
 		<java.version>11</java.version>
 		<lombok.version>1.18.8</lombok.version>
 		<postgresql.version>42.2.2</postgresql.version>
-		<swagger.version>2.9.2</swagger.version>
+		<springdoc.version>1.5.10</springdoc.version>
 		<powermock.version>2.0.0</powermock.version>
 		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
 		<maven.jacoco.version>0.8.5</maven.jacoco.version>
@@ -34,6 +34,27 @@
 		<kernel-websubclient-api.version>1.2.0-SNAPSHOT</kernel-websubclient-api.version>
 		<kernel-logger-logback.version>1.2.0-SNAPSHOT</kernel-logger-logback.version>
 	</properties>
+
+	<repositories>
+		<repository>
+			<id>ossrh</id>
+			<name>CentralRepository</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>central</id>
+			<name>MavenCentral</name>
+			<layout>default</layout>
+			<url>https://repo1.maven.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -93,6 +114,23 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 			<version>${spring.boot.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>${springdoc.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-webmvc</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<version>${spring.boot.version}</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<build>
@@ -181,6 +219,81 @@
 								</goals>
 							</execution>
 						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>openapi-doc-generate-profile</id>
+			<dependencies>
+				<dependency>
+					<groupId>io.mosip.kernel</groupId>
+					<artifactId>kernel-auth-adapter</artifactId>
+					<version>${project.version}</version>
+				</dependency>
+			</dependencies>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<version>${spring.boot.version}</version>
+						<configuration>
+							<executable>true</executable>
+							<layout>ZIP</layout>
+						</configuration>
+						<executions>
+							<execution>
+								<id>pre-integration-test</id>
+								<goals>
+									<goal>start</goal>
+								</goals>
+								<configuration>
+									<folders>
+										<folder>src/test/resources</folder>
+									</folders>
+									<profiles>
+										<profile>openapi-profile</profile>
+									</profiles>
+									<arguments>
+										<argument>--server.port=8090</argument>
+										<argument>--server.servlet.context-path=/app/generic</argument>
+									</arguments>
+
+								</configuration>
+							</execution>
+							<execution>
+								<id>post-integration-test</id>
+								<goals>
+									<goal>stop</goal>
+								</goals>
+							</execution>
+							<execution>
+								<goals>
+									<goal>build-info</goal>
+									<goal>repackage</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.springdoc</groupId>
+						<artifactId>springdoc-openapi-maven-plugin</artifactId>
+						<version>0.2</version>
+						<executions>
+							<execution>
+								<id>integration-test</id>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<apiDocsUrl>http://localhost:8090/app/generic/v3/api-docs/HOTLIST</apiDocsUrl>
+							<outputFileName>${artifactId}-openapi.json</outputFileName>
+							<outputDir>${project.build.directory}</outputDir>
+							<skip>false</skip>
+						</configuration>
 					</plugin>
 				</plugins>
 			</build>

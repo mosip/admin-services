@@ -15,7 +15,6 @@ public class ZoneUserDto {
 	@StringFormatter(min = 1, max = 256)
 	private String userId;
 
-	@Deprecated
 	private String langCode;
 	
 	@NotNull

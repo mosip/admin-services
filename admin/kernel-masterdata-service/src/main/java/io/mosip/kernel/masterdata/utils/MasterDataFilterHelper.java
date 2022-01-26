@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -18,6 +19,8 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -33,11 +36,11 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 /**
  * Class that provides generic methods for implementation of filter values
  * search.
- * 
+ *
  * @author Sagar Mahapatra
  * @author Ritesh Sinha
  * @author Urvil Joshi
- * 
+ *
  * @since 1.0
  *
  */
@@ -46,7 +49,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 public class MasterDataFilterHelper {
 
 	private static List<Class<?>> classes = null;
-	
+
 	@Autowired
 	private MasterdataSearchHelper masterdataSearchHelper;
 
@@ -63,6 +66,7 @@ public class MasterDataFilterHelper {
 	}
 
 	private static final String LANGCODE_COLUMN_NAME = "langCode";
+	private static final String ISDELETED_COLUMN_NAME = "isDeleted";
 	private static final String MAP_STATUS_COLUMN_NAME = "mapStatus";
 	private static final String FILTER_VALUE_UNIQUE = "unique";
 	private static final String FILTER_VALUE_ALL = "all";
@@ -79,15 +83,18 @@ public class MasterDataFilterHelper {
 		this.entityManager = entityManager;
 	}
 
-	@SuppressWarnings("unchecked")
 	public <E, T> List<T> filterValues(Class<E> entity, FilterDto filterDto, FilterValueDto filterValueDto) {
+		return filterValues(entity, filterDto, filterValueDto, null);
+	}
+
+	public <E, T> List<T> filterValues(Class<E> entity, FilterDto filterDto, FilterValueDto filterValueDto, List<String> zoneCodes) {
 		String columnName = filterDto.getColumnName();
 		String columnType = filterDto.getType();
 		List<Predicate> predicates = new ArrayList<>();
 		Predicate caseSensitivePredicate = null;
-		if (checkColNameAndType(columnName, columnType)) {
+		/*if (checkColNameAndType(columnName, columnType)) {
 			return (List<T>) valuesForMapStatusColumn();
-		}
+		}*/
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<String> criteriaQueryByString = criteriaBuilder.createQuery(String.class);
 		Root<E> root = criteriaQueryByString.from(entity);
@@ -102,6 +109,7 @@ public class MasterDataFilterHelper {
 		if (!filterValueDto.getLanguageCode().equals("all")) {
 			predicates.add(langCodePredicate);
 		}
+
 		caseSensitivePredicate = criteriaBuilder.and(criteriaBuilder
 				.like(criteriaBuilder.lower(rootType.get(filterDto.getColumnName())), criteriaBuilder.lower(
 						criteriaBuilder.literal(WILD_CARD_CHARACTER + filterDto.getText() + WILD_CARD_CHARACTER))));
@@ -109,10 +117,16 @@ public class MasterDataFilterHelper {
 			predicates.add(caseSensitivePredicate);
 		}
 		criteriaQueryByType.select(rootType.get(columnName));
-		buildOptionalFilter(criteriaBuilder, rootType, filterValueDto.getOptionalFilters(), predicates);
+		buildOptionalFilter(criteriaBuilder, rootType, filterValueDto.getOptionalFilters(), predicates, zoneCodes);
 		columnTypeValidator(rootType, columnName);
 
+		//deleted entries should be filtered out
+		Predicate isDeletedPredicate = criteriaBuilder.or(criteriaBuilder.equal(rootType.get(ISDELETED_COLUMN_NAME),false),
+				criteriaBuilder.isNull(rootType.get(ISDELETED_COLUMN_NAME)));
+		predicates.add(isDeletedPredicate);
+
 		Predicate filterPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+
 		criteriaQueryByType.where(filterPredicate);
 		criteriaQueryByType.orderBy(criteriaBuilder.asc(rootType.get(columnName)));
 
@@ -132,16 +146,20 @@ public class MasterDataFilterHelper {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	public <E, T> List<T> filterValuesWithoutLangCode(Class<E> entity, FilterDto filterDto,
-			FilterValueDto filterValueDto) {
+													  FilterValueDto filterValueDto) {
+		return filterValuesWithoutLangCode(entity, filterDto, filterValueDto, null);
+	}
+
+	public <E, T> List<T> filterValuesWithoutLangCode(Class<E> entity, FilterDto filterDto,
+													  FilterValueDto filterValueDto, List<String> zoneCodes) {
 		String columnName = filterDto.getColumnName();
 		String columnType = filterDto.getType();
 		List<Predicate> predicates = new ArrayList<>();
 		Predicate caseSensitivePredicate = null;
-		if (checkColNameAndType(columnName, columnType)) {
+		/*if (checkColNameAndType(columnName, columnType)) {
 			return (List<T>) valuesForMapStatusColumn();
-		}
+		}*/
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<String> criteriaQueryByString = criteriaBuilder.createQuery(String.class);
 		Root<E> root = criteriaQueryByString.from(entity);
@@ -158,7 +176,7 @@ public class MasterDataFilterHelper {
 			predicates.add(caseSensitivePredicate);
 		}
 		criteriaQueryByType.select(rootType.get(columnName));
-		buildOptionalFilter(criteriaBuilder, rootType, filterValueDto.getOptionalFilters(), predicates);
+		buildOptionalFilter(criteriaBuilder, rootType, filterValueDto.getOptionalFilters(), predicates, zoneCodes);
 		columnTypeValidator(rootType, columnName);
 
 		Predicate filterPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
@@ -192,7 +210,12 @@ public class MasterDataFilterHelper {
 	}
 
 	public <E> List<FilterData> filterValuesWithCode(Class<E> entity, FilterDto filterDto,
-			FilterValueDto filterValueDto, String fieldCodeColumnName) {
+													 FilterValueDto filterValueDto, String fieldCodeColumnName) {
+		return filterValuesWithCode(entity, filterDto, filterValueDto, fieldCodeColumnName, null);
+	}
+
+	public <E> List<FilterData> filterValuesWithCode(Class<E> entity, FilterDto filterDto,
+													 FilterValueDto filterValueDto, String fieldCodeColumnName, List<String> zoneCodes) {
 
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		String columnName = filterDto.getColumnName();
@@ -220,7 +243,7 @@ public class MasterDataFilterHelper {
 			predicates.add(caseSensitivePredicate);
 			predicates.add(langCodePredicate);
 		}
-		buildOptionalFilter(criteriaBuilder, rootType, filterValueDto.getOptionalFilters(), predicates);
+		buildOptionalFilter(criteriaBuilder, rootType, filterValueDto.getOptionalFilters(), predicates, zoneCodes);
 		Predicate filterPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 		criteriaQueryByType.where(filterPredicate);
 		criteriaQueryByType.orderBy(criteriaBuilder.asc(rootType.get(columnName)));
@@ -244,7 +267,14 @@ public class MasterDataFilterHelper {
 	}
 
 	public <E> List<FilterData> filterValuesWithCodeWithoutLangCode(Class<E> entity, FilterDto filterDto,
-			FilterValueDto filterValueDto, String fieldCodeColumnName) {
+																	FilterValueDto filterValueDto, String fieldCodeColumnName) {
+		return filterValuesWithCodeWithoutLangCode(entity, filterDto,
+				filterValueDto, fieldCodeColumnName, null);
+
+	}
+
+	public <E> List<FilterData> filterValuesWithCodeWithoutLangCode(Class<E> entity, FilterDto filterDto,
+																	FilterValueDto filterValueDto, String fieldCodeColumnName, List<String> zoneCodes) {
 
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		String columnName = filterDto.getColumnName();
@@ -266,7 +296,7 @@ public class MasterDataFilterHelper {
 		if (!(rootType.get(columnName).getJavaType().equals(Boolean.class))) {
 			predicates.add(caseSensitivePredicate);
 		}
-		buildOptionalFilter(criteriaBuilder, rootType, filterValueDto.getOptionalFilters(), predicates);
+		buildOptionalFilter(criteriaBuilder, rootType, filterValueDto.getOptionalFilters(), predicates, zoneCodes);
 		Predicate filterPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 		criteriaQueryByType.where(filterPredicate);
 		criteriaQueryByType.orderBy(criteriaBuilder.asc(rootType.get(columnName)));
@@ -313,25 +343,41 @@ public class MasterDataFilterHelper {
 		return filterDataList;
 	}
 
-	private List<String> valuesForMapStatusColumn() {
+	/*private List<String> valuesForMapStatusColumn() {
 		List<String> filterDataList = new ArrayList<>();
 		filterDataList.add("Assigned");
 		filterDataList.add("Unassigned");
 		return filterDataList;
-	}
+	}*/
 
+	//Should be "AND" operation b/w the provided optional filters
 	private <E> void buildOptionalFilter(CriteriaBuilder builder, Root<E> root,
-			final List<SearchFilter> optionalFilters, List<Predicate> predicates) {
+										 final List<SearchFilter> optionalFilters, List<Predicate> predicates, List<String> zoneCodes) {
+		Predicate zonePredicate = null;
+		if(zoneCodes != null && !zoneCodes.isEmpty()) {
+			List<Predicate> zonePredicates = zoneCodes.stream().map(i -> masterdataSearchHelper.buildFilters(builder, root,
+							new SearchFilter(i, null, null, MasterDataConstant.ZONE_CODE, FilterTypeEnum.EQUALS.name())))
+					.filter(Objects::nonNull).collect(Collectors.toList());
+			zonePredicate = builder.or(zonePredicates.toArray(new Predicate[zonePredicates.size()]));
+		}
+
+		Predicate optionalPredicate = null;
 		if (optionalFilters != null && !optionalFilters.isEmpty()) {
 			List<Predicate> optionalPredicates = optionalFilters.stream().map(i -> masterdataSearchHelper.buildFilters(builder, root, i))
 					.filter(Objects::nonNull).collect(Collectors.toList());
-			if (!optionalPredicates.isEmpty()) {
-				Predicate orPredicate = builder
-						.or(optionalPredicates.toArray(new Predicate[optionalPredicates.size()]));
-				predicates.add(orPredicate);
-			}
+			optionalPredicate = builder.and(optionalPredicates.toArray(new Predicate[optionalPredicates.size()]));
 		}
+
+		if(zonePredicate == null && optionalPredicate == null)
+			return;
+
+		if(zonePredicate != null && optionalPredicate != null) {
+			predicates.add(builder.and(zonePredicate, optionalPredicate));
+			return;
+		}
+
+		predicates.add((zonePredicate != null) ? zonePredicate : optionalPredicate);
 	}
 
-	
+
 }

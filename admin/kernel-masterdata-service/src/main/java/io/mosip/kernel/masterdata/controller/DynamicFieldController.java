@@ -6,7 +6,10 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import io.mosip.kernel.masterdata.dto.MissingDataDto;
+import io.mosip.kernel.masterdata.dto.*;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.DynamicField;
 import io.mosip.kernel.masterdata.service.GenericService;
@@ -28,8 +31,6 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
-import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
-import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldSearchResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
@@ -66,16 +67,16 @@ public class DynamicFieldController {
 	@GetMapping
 	@ApiOperation(value = "Service to fetch all dynamic fields")
 	public ResponseWrapper<PageDto<DynamicFieldExtnDto>> getAllDynamicFields(
-			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page number", defaultValue = "0") int pageNumber,
+			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page number, sorted based on name", defaultValue = "0") int pageNumber,
 			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size", defaultValue = "10") int pageSize,
-			@RequestParam(name = "sortBy", defaultValue = "name") @ApiParam(value = "sort on field name", defaultValue = "name") String sortBy,
-			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "sort order", defaultValue = "desc") OrderEnum orderBy,
 			@RequestParam(name = "langCode", required = false) @ApiParam(value = "Lang Code", required = false) String langCode,
 			@RequestParam(name = "lastUpdated", required = false) @ApiParam(value = "last updated rows", required = false) String lastUpdated) {
 		ResponseWrapper<PageDto<DynamicFieldExtnDto>> responseWrapper = new ResponseWrapper<>();
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
-		responseWrapper.setResponse(dynamicFieldService.getAllDynamicField(pageNumber, pageSize, sortBy, orderBy.name(), langCode,
+		//We only sort by name as internally pagination is applied on distinct name, hence sorting is currently
+		// restricted to only name field
+		responseWrapper.setResponse(dynamicFieldService.getAllDynamicField(pageNumber, pageSize, "name", "asc", langCode,
 				timestamp, currentTimeStamp));
 		return responseWrapper;
 	}
@@ -87,6 +88,16 @@ public class DynamicFieldController {
 	public ResponseWrapper<List<String>> getDistinctDynamicFields(){
 		ResponseWrapper<List<String>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(dynamicFieldService.getDistinctDynamicFields());
+		return responseWrapper;
+	}
+
+	@ResponseFilter
+	//@PreAuthorize("hasAnyRole(@authorizedRoles.getGetdistinct())")
+	@GetMapping("/distinct/{langCode}")
+	@ApiOperation(value = "Service to fetch distinct dynamic fields")
+	public ResponseWrapper<List<DynamicFieldDefDto>> getDistinctDynamicFieldsBasedOnLang(@PathVariable("langCode") String langCode){
+		ResponseWrapper<List<DynamicFieldDefDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(dynamicFieldService.getDistinctDynamicFields(langCode));
 		return responseWrapper;
 	}
 	
@@ -224,8 +235,34 @@ public class DynamicFieldController {
 	public ResponseWrapper<List<MissingDataDto>> getMissingDynamicFields(
 			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
 		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(genericService.getMissingData(DynamicField.class, langCode, "id", fieldName));
+		responseWrapper.setResponse(genericService.getMissingDynamicData(langCode, fieldName));
 		return responseWrapper;
 	}
+
+	/**
+	 * Api to filter dynamic field based on column and type provided.
+	 *
+	 * @param request the request DTO.
+	 * @return the {@link FilterResponseDto}.
+	 */
+	@ResponseFilter
+	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostdynamicfieldsfiltervalues())")
+	@PostMapping("/filtervalues")
+	public ResponseWrapper<FilterResponseCodeDto> dynamicFieldFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.FILTER_API_IS_CALLED , DynamicFieldDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.FILTER_API_IS_CALLED , DynamicFieldDto.class.getCanonicalName()), "ADM-671");
+		ResponseWrapper<FilterResponseCodeDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(dynamicFieldService.dynamicfieldFilterValues(request.getRequest()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER , DynamicFieldDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC , DynamicFieldDto.class.getCanonicalName()),
+				"ADM-672");
+		return responseWrapper;
+	}
+
 
 }

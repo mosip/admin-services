@@ -3,6 +3,7 @@ package io.mosip.kernel.syncdata.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import io.mosip.kernel.syncdata.dto.EntityDtimes;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -49,7 +50,11 @@ public interface RegistrationCenterRepository extends JpaRepository<Registration
 	 */
 	List<RegistrationCenter> findRegistrationCenterByIdAndIsActiveIsTrue(String regCenterId);
 
+	@Query(value = "FROM RegistrationCenter WHERE id = ?1 AND ((createdDateTime BETWEEN ?2 AND ?3) OR (updatedDateTime BETWEEN ?2 AND ?3) OR (deletedDateTime BETWEEN ?2 AND ?3))")
+	List<RegistrationCenter> findRegistrationCentersById(String regCenterId, LocalDateTime lastUpdated,
+														 LocalDateTime currentTimeStamp);
+
 	@Cacheable(cacheNames = "delta-sync", key = "'registration_center'")
-	@Query(value = "select max(aam.createdDateTime), max(aam.updatedDateTime) from RegistrationCenter aam ")
-	List<Object[]> getMaxCreatedDateTimeMaxUpdatedDateTime();
+	@Query(value = "select new io.mosip.kernel.syncdata.dto.EntityDtimes(max(aam.createdDateTime), max(aam.updatedDateTime), max(aam.deletedDateTime)) from RegistrationCenter aam ")
+	EntityDtimes getMaxCreatedDateTimeMaxUpdatedDateTime();
 }

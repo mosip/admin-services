@@ -291,4 +291,22 @@ public class SyncDataController {
 		return masterDataService.getClientSettingsJsonFile(entityIdentifier, keyIndex);
 	}
 
+	/**
+	 * API will get all the userDetails belonging to respective registration center based on keyindex provided
+	 * @param keyIndex
+	 * @return
+	 */
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetuserdetails())")
+	@ResponseFilter
+	@GetMapping("/v2/userdetails")
+	public ResponseWrapper<SyncUserDto> getUserDetailsBasedOnKeyIndexV2(
+			@RequestParam(value = "keyindex", required = true) String keyIndex) {
+		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
+		SyncUserDto syncUserDto = syncUserDetailsService.getAllUserDetailsBasedOnKeyIndexV2(keyIndex);
+		syncUserDto.setLastSyncTime(currentTimeStamp);
+		ResponseWrapper<SyncUserDto> response = new ResponseWrapper<>();
+		response.setResponse(syncUserDto);
+		return response;
+	}
+
 }

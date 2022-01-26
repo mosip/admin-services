@@ -51,11 +51,11 @@ public class MasterDataConstant {
 
 	public static final String SEARCH_API_IS_CALLED = "Search API called::";
 	public static final String SUCCESSFUL_SEARCH = " %s Search Success";
-	public static final String SUCCESSFUL_SEARCH_DESC = " System successfully searched List of %s";
+	public static final String SUCCESSFUL_SEARCH_DESC = "System successfully searched List of %s";
 	public static final String SEARCH_FAILED = "%s - Search Failure";
 	public static final String FILTER_API_IS_CALLED = "Filter API called::";
 	public static final String SUCCESSFUL_FILTER = " %s - Filter Success";
-	public static final String SUCCESSFUL_FILTER_DESC = " System successfully searched filter values for %s";
+	public static final String SUCCESSFUL_FILTER_DESC = "System successfully searched filter values for %s";
 	public static final String FILTER_FAILED = "%s - Filter Failure";
 	public static final String CREATE_API_IS_CALLED = "Create API called::";
 	public static final String SUCCESSFUL_UPDATED_STATUS = "Updated status %s - successfully";

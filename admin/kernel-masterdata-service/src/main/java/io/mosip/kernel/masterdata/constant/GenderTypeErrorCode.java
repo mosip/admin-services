@@ -17,7 +17,7 @@ public enum GenderTypeErrorCode {
 
 	GENDER_TYPE_INSERT_EXCEPTION("KER-MSD-068", "Could not insert Gender Data"),
 
-	GENDER_TYPE_UPDATE_EXCEPTION("KER-MSD-101", "Error occurred while updating Gender Type details"),
+	GENDER_TYPE_UPDATE_EXCEPTION("KER-MSD-194", "Error occurred while updating Gender Type details"),
 
 	GENDER_TYPE_DELETE_EXCEPTION("KER-MSD-102", "Error occurred while deleting Gender Type details");
 

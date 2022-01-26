@@ -48,9 +48,7 @@ import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
-import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
-import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationPostResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationPutResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
@@ -675,8 +673,7 @@ public class LocationServiceImpl implements LocationService {
 		if (locCode != null && !locCode.isEmpty()) {
 			List<String> childLocHierList = getLocationChildHierarchyList(locCode);
 			childList.addAll(childLocHierList);
-			childLocHierList.parallelStream().filter(Objects::nonNull).map(this::getChildByLocCode)
-					.collect(Collectors.toList());
+			childLocHierList.parallelStream().filter(Objects::nonNull).map(this::getChildByLocCode).collect(Collectors.toList());
 		}
 		return childList;
 	}
@@ -928,17 +925,19 @@ public class LocationServiceImpl implements LocationService {
 		return pageDto;
 	}
 	@Override
-	public FilterResponseDto locFilterValues(FilterValueDto filterValueDto) {
-		FilterResponseDto filterResponseDto = new FilterResponseDto();
-		List<ColumnValue> columnValueList = new ArrayList<>();
+	public FilterResponseCodeDto locFilterValues(FilterValueDto filterValueDto) {
+		FilterResponseCodeDto filterResponseDto = new FilterResponseCodeDto();
+		List<ColumnCodeValue> columnValueList = new ArrayList<>();
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Location.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				List<?> filterValues = masterDataFilterHelper.filterValues(Location.class, filterDto, filterValueDto);
+				List<FilterData> filterValues = masterDataFilterHelper.filterValuesWithCode(Location.class,
+						filterDto, filterValueDto, "code");
 				filterValues.forEach(filterValue -> {
-					ColumnValue columnValue = new ColumnValue();
-					columnValue.setFieldID(filterDto.getColumnName());
-					columnValue.setFieldValue(filterValue.toString());
-					columnValueList.add(columnValue);
+					ColumnCodeValue columnCodeValue = new ColumnCodeValue();
+					columnCodeValue.setFieldID(filterDto.getColumnName());
+					columnCodeValue.setFieldValue(filterValue.getFieldValue());
+					columnCodeValue.setFieldCode(filterValue.getFieldCode());
+					columnValueList.add(columnCodeValue);
 				});
 			}
 			filterResponseDto.setFilters(columnValueList);

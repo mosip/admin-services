@@ -210,7 +210,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 			try {
 				if(userDetails.size() > 0) {
 					TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
-					tpmCryptoRequestDto.setValue(CryptoUtil.encodeBase64(mapper.getObjectAsJsonString(userDetails).getBytes()));
+					tpmCryptoRequestDto.setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(userDetails).getBytes()));
 					tpmCryptoRequestDto.setPublicKey(regCenterMachineDto.getPublicKey());
 					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
 					syncUserDto.setUserDetails(tpmCryptoResponseDto.getValue());
@@ -241,6 +241,30 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 			throw new SyncDataServiceException(UserDetailsErrorCode.USER_DETAILS_FETCH_EXCEPTION.getErrorCode(),
 					UserDetailsErrorCode.USER_DETAILS_FETCH_EXCEPTION.getErrorMessage(), ex);
 		}
+	}
+
+	@Override
+	public SyncUserDto getAllUserDetailsBasedOnKeyIndexV2(String keyIndex) {
+		RegistrationCenterMachineDto regCenterMachineDto = serviceHelper.getRegistrationCenterMachine(null, keyIndex);
+		RegistrationCenterUserResponseDto registrationCenterResponseDto = getUsersBasedOnRegistrationCenterId(regCenterMachineDto.getRegCenterId());
+
+		SyncUserDto syncUserDto = new SyncUserDto();
+		if (registrationCenterResponseDto.getRegistrationCenterUsers() != null &&
+				!registrationCenterResponseDto.getRegistrationCenterUsers().isEmpty()) {
+			logger.info("{} Users synced for this reg center {}", registrationCenterResponseDto.getRegistrationCenterUsers().size(),
+					regCenterMachineDto.getRegCenterId());
+			try {
+					TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
+					tpmCryptoRequestDto.setValue(CryptoUtil.encodeToURLSafeBase64(
+							mapper.getObjectAsJsonString(registrationCenterResponseDto.getRegistrationCenterUsers()).getBytes()));
+					tpmCryptoRequestDto.setPublicKey(regCenterMachineDto.getPublicKey());
+					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
+					syncUserDto.setUserDetails(tpmCryptoResponseDto.getValue());
+			} catch (Exception e) {
+				logger.error("Failed to encrypt user data", e);
+			}
+		}
+		return syncUserDto;
 	}
 
 }

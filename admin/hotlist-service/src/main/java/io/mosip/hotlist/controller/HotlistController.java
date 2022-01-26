@@ -4,6 +4,7 @@ import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -75,6 +76,7 @@ public class HotlistController {
 	 * @param request the request
 	 * @return the response wrapper
 	 */
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostHotlistBlock())")
 	@PostMapping(path = "/block", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseWrapper<HotlistRequestResponseDTO> block(
 			@Validated @RequestBody RequestWrapper<HotlistRequestResponseDTO> request) {
@@ -102,7 +104,8 @@ public class HotlistController {
 	 * @return the response wrapper
 	 * @throws MethodArgumentNotValidException
 	 */
-	@GetMapping(path = "/{idType}/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetHotlistStatus())")
+	@GetMapping(path = "/status/{idType}/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseWrapper<HotlistRequestResponseDTO> retrieveHotlist(@PathVariable String id, @PathVariable String idType)
 			throws MethodArgumentNotValidException {
 		ResponseWrapper<HotlistRequestResponseDTO> response = new ResponseWrapper<>();
@@ -131,6 +134,7 @@ public class HotlistController {
 	 * @param request the request
 	 * @return the response wrapper
 	 */
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostHotlistUnblock())")
 	@PostMapping(path = "/unblock", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseWrapper<HotlistRequestResponseDTO> unblock(
 			@Validated @RequestBody RequestWrapper<HotlistRequestResponseDTO> request) {

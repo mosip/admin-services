@@ -13,7 +13,7 @@ CREATE MEMORY TABLE IF NOT EXISTS master.appl_form_type(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 );
 
 CREATE MEMORY TABLE if not exists master.location(
@@ -31,7 +31,7 @@ CREATE MEMORY TABLE if not exists master.location(
 	is_deleted boolean,
 	del_dtimes timestamp
 
-	
+
 );
 CREATE MEMORY TABLE if not exists master.language(
 	code character varying(3) NOT NULL,
@@ -45,7 +45,7 @@ CREATE MEMORY TABLE if not exists master.language(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 
@@ -60,7 +60,7 @@ CREATE MEMORY TABLE if not exists master.loc_hierarchy_list(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 
@@ -76,10 +76,10 @@ CREATE MEMORY TABLE if not exists master.biometric_type(
 	upd_by character varying(256),
 	upd_dtimes timestamp,
 	is_deleted boolean,
-	del_dtimes timestamp	
-	
+	del_dtimes timestamp
 
-);   
+
+);
 --ALTER TABLE master.biometric_type ADD CONSTRAINT [master.pk_bmtyp_code] PRIMARY KEY(CODE, LANG_CODE);
 
 CREATE MEMORY TABLE if not exists master.biometric_attribute(
@@ -95,7 +95,7 @@ CREATE MEMORY TABLE if not exists master.biometric_attribute(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 
@@ -118,7 +118,7 @@ CREATE MEMORY TABLE if not exists master.device_master(
 	upd_dtimes 	timestamp,
 	is_deleted 	boolean,
 	del_dtimes 	timestamp
-	
+
 
 );
 
@@ -139,7 +139,7 @@ CREATE MEMORY TABLE if not exists master.device_spec(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 
@@ -162,7 +162,7 @@ CREATE MEMORY TABLE if not exists master.device_master_h(
 	is_deleted 	boolean,
 	del_dtimes 	timestamp,
 	eff_dtimes 	timestamp NOT NULL
-	
+
 
 );
 CREATE MEMORY TABLE if not exists master.device_type(
@@ -177,7 +177,7 @@ CREATE MEMORY TABLE if not exists master.device_type(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 CREATE MEMORY TABLE if not exists master.doc_category(
@@ -192,7 +192,7 @@ CREATE MEMORY TABLE if not exists master.doc_category(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 CREATE MEMORY TABLE if not exists master.doc_type(
@@ -207,7 +207,7 @@ CREATE MEMORY TABLE if not exists master.doc_type(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 
@@ -222,7 +222,7 @@ CREATE MEMORY TABLE if not exists master.valid_document(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp,
-	
+
 
 );
 
@@ -240,7 +240,7 @@ CREATE MEMORY TABLE if not exists master.dynamic_field(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 
@@ -258,7 +258,7 @@ CREATE MEMORY TABLE if not exists master.loc_holiday(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 
@@ -276,9 +276,9 @@ CREATE MEMORY TABLE if not exists master.reg_exceptional_holiday(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
 
-);   
+
+);
 
 CREATE MEMORY TABLE if not exists master.reg_center_type(
 	code character varying(36) NOT NULL,
@@ -326,7 +326,7 @@ CREATE MEMORY TABLE if not exists master.registration_center(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 
@@ -341,7 +341,7 @@ CREATE MEMORY TABLE if not exists master.blacklisted_words(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 
@@ -359,7 +359,7 @@ create MEMORY table IF NOT EXISTS master.applicant_valid_document(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 CREATE MEMORY TABLE if not exists master.id_type(
@@ -374,7 +374,7 @@ CREATE MEMORY TABLE if not exists master.id_type(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-	
+
 
 );
 
@@ -393,5 +393,320 @@ CREATE MEMORY TABLE IF NOT EXISTS MASTER.ZONE(
     UPD_DTIMES TIMESTAMP,
     IS_DELETED BOOLEAN,
     DEL_DTIMES TIMESTAMP
+
+);
+
+CREATE MEMORY TABLE  IF NOT EXISTS MASTER.daysofweek_list(
+    code character varying(3) NOT NULL,
+    name character varying(36)  NOT NULL,
+    day_seq smallint NOT NULL,
+    is_global_working boolean NOT NULL,
+    lang_code character varying(3) NOT NULL,
+    is_active boolean NOT NULL,
+    cr_by character varying(256) NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone
+
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.reg_working_nonworking(
+    regcntr_id character varying(10)  NOT NULL,
+    day_code character varying(3)  NOT NULL,
+    lang_code character varying(3) ,
+    is_working boolean NOT NULL,
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone
+
+);
+
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.user_detail_h(
+    id character varying(256) NOT NULL,
+    name character varying(64),
+    status_code character varying(36) ,
+    regcntr_id character varying(10) ,
+    lang_code character varying(3) ,
+    last_login_dtimes timestamp without time zone,
+    last_login_method character varying(64) ,
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone,
+    eff_dtimes timestamp without time zone NOT NULL
+
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.machine_master_h(
+    id character varying(10) NOT NULL,
+    name character varying(64) NOT NULL,
+    mac_address character varying(64) ,
+    serial_num character varying(64),
+    ip_address character varying(17),
+    validity_end_dtimes timestamp without time zone,
+    mspec_id character varying(36),
+    public_key character varying(1024),
+    key_index character varying(128),
+    sign_public_key character varying(1024),
+    sign_key_index character varying(128),
+    zone_code character varying(36) NOT NULL,
+    regcntr_id character varying(10),
+    lang_code character varying(3),
+    is_active boolean NOT NULL,
+    cr_by character varying(256) NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256),
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone,
+    eff_dtimes timestamp without time zone NOT NULL
+
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.zone_user(
+	zone_code 	character varying(36),
+	usr_id 		character varying(256) NOT NULL,
+	lang_code 	character varying(3),
+	is_active 	boolean NOT NULL,
+	cr_by 		character varying(256) NOT NULL,
+	cr_dtimes 	timestamp NOT NULL,
+	upd_by 		character varying(256),
+	upd_dtimes 	timestamp,
+	is_deleted 	boolean DEFAULT FALSE,
+	del_dtimes 	timestamp,
+	CONSTRAINT pk_zoneuser PRIMARY KEY (usr_id)
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.zone_user_h(
+	zone_code 	character varying(36),
+	usr_id 		character varying(256) NOT NULL,
+	lang_code 	character varying(3),
+	is_active 	boolean NOT NULL,
+	cr_by 		character varying(256) NOT NULL,
+	cr_dtimes 	timestamp NOT NULL,
+	upd_by 		character varying(256),
+	upd_dtimes 	timestamp,
+	is_deleted 	boolean DEFAULT FALSE,
+	del_dtimes 	timestamp,
+    eff_dtimes timestamp without time zone NOT NULL
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.machine_master(
+    id character varying(10)  NOT NULL,
+    name character varying(64)  NOT NULL,
+    mac_address character varying(64) ,
+    serial_num character varying(64) ,
+    ip_address character varying(17) ,
+    validity_end_dtimes timestamp without time zone,
+    mspec_id character varying(36)  NOT NULL,
+    public_key character varying(1024) ,
+    key_index character varying(128) ,
+    sign_public_key character varying(1024) ,
+    sign_key_index character varying(128) ,
+    zone_code character varying(36)  NOT NULL,
+    regcntr_id character varying(10) ,
+    lang_code character varying(3) ,
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone
+
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.machine_type
+(
+    code character varying(36)  NOT NULL,
+    name character varying(64)  NOT NULL,
+    descr character varying(128) ,
+    lang_code character varying(3) ,
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone
+
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.user_detail(
+    id character varying(256)  NOT NULL,
+    name character varying(64) ,
+    status_code character varying(36) ,
+    regcntr_id character varying(10) ,
+    lang_code character varying(3),
+    last_login_dtimes timestamp without time zone,
+    last_login_method character varying(64),
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone
+
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.machine_spec
+(
+    id character varying(36) NOT NULL,
+    name character varying(64) NOT NULL,
+    brand character varying(32) NOT NULL,
+    model character varying(16) NOT NULL,
+    mtyp_code character varying(36) NOT NULL,
+    min_driver_ver character varying(16) NOT NULL,
+    descr character varying(256) ,
+    lang_code character varying(3) ,
+    is_active boolean NOT NULL,
+    cr_by character varying(256) NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone
+
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.template
+(
+    id character varying(36) NOT NULL,
+    name character varying(128)  NOT NULL,
+    descr character varying(256) ,
+    file_format_code character varying(36)  NOT NULL,
+    model character varying(128) ,
+    file_txt character varying ,
+    module_id character varying(36) ,
+    module_name character varying(128) ,
+    template_typ_code character varying(64)  NOT NULL,
+    lang_code character varying(3)  NOT NULL,
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone
+
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.identity_schema
+(
+    id character varying(36) NOT NULL,
+    id_version numeric(5,3),
+    title character varying(64) ,
+    description character varying(256) ,
+    schema_json character varying ,
+    status_code character varying(36) ,
+    add_props boolean,
+    effective_from timestamp without time zone,
+    lang_code character varying(3)  NOT NULL,
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone
+
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.ui_spec
+(
+    id character varying(36)  NOT NULL,
+    version numeric(5,3) NOT NULL,
+    domain character varying(36)  NOT NULL,
+    title character varying(64)  NOT NULL,
+    description character varying(256)  NOT NULL,
+    type character varying(36)  NOT NULL,
+    json_spec character varying  NOT NULL,
+    identity_schema_id character varying(36)  NOT NULL,
+    identity_schema_version numeric(5,3) NOT NULL,
+    effective_from timestamp without time zone,
+    status_code character varying(36)  NOT NULL,
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean,
+    del_dtimes timestamp without time zone
+);
+
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.template_file_format
+(
+    code character varying(36)  NOT NULL,
+    descr character varying(256) NOT NULL,
+    lang_code character varying(3) ,
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone
+
+);
+CREATE MEMORY TABLE IF NOT EXISTS MASTER.registration_center_h
+(
+    id character varying(10)  NOT NULL,
+    name character varying(128)  NOT NULL,
+    cntrtyp_code character varying(36) ,
+    addr_line1 character varying(256) ,
+    addr_line2 character varying(256) ,
+    addr_line3 character varying(256) ,
+    latitude character varying(32) ,
+    longitude character varying(32) ,
+    location_code character varying(36)  NOT NULL,
+    contact_phone character varying(16) ,
+    contact_person character varying(128) ,
+    number_of_kiosks smallint,
+    working_hours character varying(32) ,
+    per_kiosk_process_time time without time zone,
+    center_start_time time without time zone,
+    center_end_time time without time zone,
+    lunch_start_time time without time zone,
+    lunch_end_time time without time zone,
+    time_zone character varying(64) ,
+    holiday_loc_code character varying(36) ,
+    zone_code character varying(36)  NOT NULL,
+    lang_code character varying(3)  NOT NULL,
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone,
+    eff_dtimes timestamp without time zone NOT NULL
+
+);
+
+
+CREATE MEMORY TABLE IF NOT EXISTS  MASTER.title
+(
+    code character varying(16)  NOT NULL,
+    name character varying(64) NOT NULL,
+    descr character varying(128) ,
+    lang_code character varying(3)  NOT NULL,
+    is_active boolean NOT NULL,
+    cr_by character varying(256)  NOT NULL,
+    cr_dtimes timestamp without time zone NOT NULL,
+    upd_by character varying(256) ,
+    upd_dtimes timestamp without time zone,
+    is_deleted boolean DEFAULT false,
+    del_dtimes timestamp without time zone
 
 );

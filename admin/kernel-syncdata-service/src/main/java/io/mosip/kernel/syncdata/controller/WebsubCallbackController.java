@@ -60,27 +60,21 @@ public class WebsubCallbackController {
         
         if (data.containsKey(PARTNER_DOMAIN) && partnerAllowedDomains.contains((String) data.get(PARTNER_DOMAIN)) &&
                 data.containsKey(CERTIFICATE_DATA_SHARE_URL)) {
-            CACertificateRequestDto caCertRequestDto = new CACertificateRequestDto();
-            caCertRequestDto.setPartnerDomain((String) data.get(PARTNER_DOMAIN));
-            String certificateData = restTemplate.getForObject((String) data.get(CERTIFICATE_DATA_SHARE_URL), String.class);
-            caCertRequestDto.setCertificateData(certificateData);
             try {
-                partnerCertificateManagerService.uploadCACertificate(caCertRequestDto);
-                logger.info("CA certs sync completed for {}", caCertRequestDto.getPartnerDomain());
-            } catch (PartnerCertManagerException ex) {
-                
-                if(PartnerCertManagerErrorConstants.INVALID_PARTNER_DOMAIN.getErrorCode().equals(ex.getErrorCode()) ||
-                        PartnerCertManagerErrorConstants.CERTIFICATE_EXIST_ERROR.getErrorCode().equals(ex.getErrorCode())) {
-                    logger.error("Failed to insert CA cert {}", ex.getErrorText());
-                    return;
+                CACertificateRequestDto caCertRequestDto = new CACertificateRequestDto();
+                caCertRequestDto.setPartnerDomain((String) data.get(PARTNER_DOMAIN));
+                String certificateData = restTemplate.getForObject((String) data.get(CERTIFICATE_DATA_SHARE_URL), String.class);
+                ServiceError serviceError = parseDataShareResponse(certificateData);
+                if(serviceError == null) {
+                    caCertRequestDto.setCertificateData(certificateData);
+                    partnerCertificateManagerService.uploadCACertificate(caCertRequestDto);
+                    logger.info("CA certs sync completed for {}", caCertRequestDto.getPartnerDomain());
+                } else {
+                    logger.error("Failed to get certs from data-sync service {}", serviceError.getErrorCode());
                 }
 
-                ServiceError serviceError = parseDataShareResponse(certificateData);
-                if(serviceError != null)
-                    throw new SyncDataServiceException(serviceError.getErrorCode(), serviceError.getMessage());
-
-                logger.error("Failed to insert CA cert", ex);
-                throw ex;
+            } catch (Throwable t) {
+                logger.error("Failed to insert CA cert", t);
             }
         }
 
@@ -88,7 +82,6 @@ public class WebsubCallbackController {
 
     private ServiceError parseDataShareResponse(String response) {
         try {
-            objectMapper.registerModule(new JavaTimeModule());
             ResponseWrapper<JsonNode> resp = objectMapper.readValue(response,
                     new TypeReference<ResponseWrapper<JsonNode>>() {});
             if(resp.getErrors() != null && !resp.getErrors().isEmpty())

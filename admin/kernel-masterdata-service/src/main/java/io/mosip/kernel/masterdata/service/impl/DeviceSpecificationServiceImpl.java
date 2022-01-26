@@ -107,8 +107,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
 	
-	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
-	private String supportedLang;
+
 	/*
 	 * (non-Javadoc)
 	 * 

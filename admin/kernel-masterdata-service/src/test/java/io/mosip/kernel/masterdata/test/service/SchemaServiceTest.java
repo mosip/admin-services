@@ -7,6 +7,12 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.kernel.masterdata.service.impl.SchemaDefinitionServiceImpl;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,6 +80,9 @@ public class SchemaServiceTest {
 	
 	@Autowired
 	private DynamicFieldService dynamicFieldService;
+
+	@Autowired
+	private SchemaDefinitionServiceImpl schemaDefinitionService;
 	
 	
 	private Page<DynamicField> fieldPagedResult;
@@ -139,6 +148,15 @@ public class SchemaServiceTest {
 		schemaPagedResult = new PageImpl<IdentitySchema>(schemaList);
 		pageRequest = PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "cr_dtimes"));
 	}
+
+	@Test
+	public void getAllDefinitionsTest() throws JSONException {
+		JSONObject jsonObject = schemaDefinitionService.getAllSchemaDefinitions();
+		Assert.assertNotNull(jsonObject.getJSONObject("definitions"));
+		Assert.assertNotNull(jsonObject.getJSONObject("definitions").getJSONObject("simpleType"));
+		Assert.assertNotNull(jsonObject.getJSONObject("definitions").getJSONObject("documentType"));
+		Assert.assertNotNull(jsonObject.getJSONObject("definitions").getJSONObject("biometricsType"));
+	}
 	
 	@Test
 	@WithUserDetails("reg-officer")
@@ -165,7 +183,8 @@ public class SchemaServiceTest {
 		dto.setName("bloodType");
 		dto.setDataType("simpleType");
 		dto.setLangCode("eng");
-		
+		dto.setFieldVal(new ObjectMapper().readTree("{\"code\":\"oo\",\"value\":\"ooo\"}"));
+
 		dynamicFieldService.createDynamicField(dto);
 	}
 	
@@ -181,6 +200,7 @@ public class SchemaServiceTest {
 		dto.setName("bloodType");
 		dto.setDataType("simpleType");
 		dto.setLangCode("eng");
+		dto.setFieldVal(new ObjectMapper().readTree("{\"code\":\"oo\",\"value\":\"ooo\"}"));
 		
 		dynamicFieldService.updateDynamicField("1233", dto);
 	}

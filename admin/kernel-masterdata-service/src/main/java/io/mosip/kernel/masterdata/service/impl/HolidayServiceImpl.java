@@ -2,18 +2,12 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import io.mosip.kernel.masterdata.dto.response.*;
+import io.mosip.kernel.masterdata.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,10 +36,6 @@ import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.dto.response.ColumnValue;
-import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
-import io.mosip.kernel.masterdata.dto.response.HolidaySearchDto;
-import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -93,12 +83,11 @@ public class HolidayServiceImpl implements HolidayService {
 	private PageUtils pageUtils;
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
+	@Autowired
+	LocationService locationService;
 
 	@Autowired
 	private AuditUtil auditUtil;
-
-	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
-	private String supportedLang;
 
 	private static final String UPDATE_HOLIDAY_QUERY = "UPDATE Holiday h SET h.updatedBy = :updatedBy , h.updatedDateTime = :updatedDateTime, h.holidayDesc = :holidayDesc,h.holidayId.holidayDate=:holidayDate,h.holidayId.holidayName = :holidayName   WHERE h.holidayId.locationCode = :locationCode  and h.holidayId.holidayId = :holidayId and h.holidayId.langCode = :langCode and (h.isDeleted is null or h.isDeleted = false)";
 	private static final int DEFAULT_HOLIDAY_ID = 2000001;
@@ -233,23 +222,19 @@ public class HolidayServiceImpl implements HolidayService {
 				// holidayDto.setIsActive(getisActive(holidayDto.getHolidayName(),holidayDto.getHolidayDate(),holidayDto.getLangCode(),
 				// holidayDto.getLocationCode(),holidayDto.getIsActive()));
 				entity = MetaDataUtils.setCreateMetaData(holidayDto, Holiday.class);
-				List<Holiday> hols=holidayRepository.findHolidayByHolidayDateHolidayName(holidayDto.getHolidayDate(),holidayDto.getHolidayName());
-				List<Holiday> holidays=holidayRepository.findAll();
-			
-				if(holidays==null || holidays.isEmpty() ) {
+				Optional<Holiday> existingHoliday = holidayRepository.findFirstByHolidayByHolidayDateLocationCodeLangCode(holidayDto.getHolidayDate(),
+						holidayDto.getLocationCode(), holidayDto.getLangCode());
+
+				if(holidayRepository.count() <= 0) {
 					entity.setHolidayId(DEFAULT_HOLIDAY_ID);
 				}
-				else if(hols!=null && !hols.isEmpty()){
-					entity.setHolidayId(hols.get(0).getHolidayId());
+				else if(existingHoliday.isPresent()){
+					entity.setHolidayId(existingHoliday.get().getHolidayId());
+					entity.setIsActive(existingHoliday.get().getIsActive());
 				}
 				else {
-					List<Integer> holidayIds=new ArrayList<>();
-					for(Holiday holidayEntry:holidays) {
-						holidayIds.add(Integer.valueOf(holidayEntry.getHolidayId()));
-					}
-				
-				entity.setHolidayId(Collections.max(holidayIds)+1);
-			}
+					entity.setHolidayId(holidayRepository.findMaxHolidayId()+1);
+				}
 			
 			holiday = holidayRepository.create(entity);
 			/*
@@ -364,9 +349,9 @@ public class HolidayServiceImpl implements HolidayService {
 			int id = Integer.parseInt(holidayId);
 			List<Holiday> holidays = holidayRepository.findById(id);
 			if (!EmptyCheckUtils.isNullEmpty(holidays)) {
-				// masterdataCreationUtil.updateMasterDataStatus(Holiday.class, holidayId,
-				// isActive, "id");
-				holidayRepository.updateHolidayById(id, isActive);
+				holidays.forEach(h->{
+					holidayRepository.updateHolidayByLocationCodeAndHolidayDate(h.getLocationCode(),h.getHolidayDate(),isActive,MetaDataUtils.getContextUser(),MetaDataUtils.getCurrentDateTime());
+				});
 			} else {
 				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, Holiday.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM, String.format(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
@@ -400,7 +385,7 @@ public class HolidayServiceImpl implements HolidayService {
 		HolidayIdDeleteDto idDto = request.getRequest();
 		try {
 			int affectedRows = holidayRepository.deleteHolidays(LocalDateTime.now(ZoneId.of("UTC")),
-					idDto.getHolidayName(), idDto.getHolidayDate(), idDto.getLocationCode());
+					idDto.getHolidayDate(), idDto.getLocationCode());
 			if (affectedRows == 0)
 				throw new RequestException(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
 						HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorMessage());
@@ -556,16 +541,21 @@ public class HolidayServiceImpl implements HolidayService {
 	}
 
 	@Override
-	public FilterResponseDto holidaysFilterValues(FilterValueDto filterValueDto) {
-		FilterResponseDto filterResponseDto = new FilterResponseDto();
-		List<ColumnValue> columnValueList = new ArrayList<>();
+	public FilterResponseCodeDto holidaysFilterValues(FilterValueDto filterValueDto) {
+		FilterResponseCodeDto filterResponseDto = new FilterResponseCodeDto();
+		List<ColumnCodeValue> columnValueList = new ArrayList<>();
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Holiday.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
 				List<?> filterValues = masterDataFilterHelper.filterValues(Holiday.class, filterDto, filterValueDto);
 				filterValues.forEach(filterValue -> {
-					ColumnValue columnValue = new ColumnValue();
+					ColumnCodeValue columnValue = new ColumnCodeValue();
 					columnValue.setFieldID(filterDto.getColumnName());
-					columnValue.setFieldValue(filterValue.toString());
+					if(filterDto.getColumnName().equalsIgnoreCase("locationCode")){
+						columnValue.setFieldValue(locationService.getLocationDetailsByLangCode(filterValue.toString(),filterValueDto.getLanguageCode()).getName());
+						columnValue.setFieldCode(filterValue.toString());
+					}else{
+						columnValue.setFieldValue(filterValue.toString());
+					}
 					columnValueList.add(columnValue);
 				});
 			}
@@ -577,7 +567,7 @@ public class HolidayServiceImpl implements HolidayService {
 	/**
 	 * This method return Machine Types list filters.
 	 * 
-	 * @param machineTypes the list of Machine Type.
+	 * @param locations the list of Machine Type.
 	 * @return the list of {@link SearchFilter}.
 	 */
 	private List<SearchFilter> buildLocationSearchFilter(List<Location> locations) {
@@ -589,7 +579,7 @@ public class HolidayServiceImpl implements HolidayService {
 	/**
 	 * This method provide search filter for provided Machine Type.
 	 * 
-	 * @param machineType the machine type.
+	 * @param location the machine type.
 	 * @return the {@link SearchFilter}.
 	 */
 	private SearchFilter buildLocations(Location location) {

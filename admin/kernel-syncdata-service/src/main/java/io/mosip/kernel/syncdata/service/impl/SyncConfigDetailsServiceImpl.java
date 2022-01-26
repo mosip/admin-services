@@ -1,6 +1,5 @@
 package io.mosip.kernel.syncdata.service.impl;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
@@ -11,7 +10,6 @@ import io.mosip.kernel.clientcrypto.dto.TpmCryptoRequestDto;
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
 import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.entity.Machine;
@@ -118,14 +116,16 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	 * @return String
 	 */
 	private String getConfigDetailsResponse(@NotNull String fileName) {
-		StringBuilder uriBuilder = new StringBuilder();
-		uriBuilder.append(environment.getProperty("spring.cloud.config.uri")).append(SLASH)
-				.append(environment.getProperty("spring.application.name")).append(SLASH)
-				.append(environment.getProperty("spring.profiles.active")).append(SLASH)
-				.append(environment.getProperty("spring.cloud.config.label")).append(SLASH)
-				.append(fileName);
+		UriComponentsBuilder uriBuilder = UriComponentsBuilder
+				.fromUriString(environment.getProperty("spring.cloud.config.uri")).
+				path(SLASH).path(environment.getProperty("spring.application.name")).
+				path(SLASH).path(environment.getProperty("spring.profiles.active")).
+				path(SLASH).path(environment.getProperty("spring.cloud.config.label")).
+				path(SLASH).path(fileName);
+		
 		try {
-			return restTemplate.getForObject(uriBuilder.toString(), String.class);
+			 String str=restTemplate.getForObject(uriBuilder.toUriString(), String.class);
+			return str;
 		} catch (RestClientException e) {
 			LOGGER.error("Failed to getConfigDetailsResponse", e);
 			throw new SyncDataServiceException(
@@ -161,7 +161,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	public PublicKeyResponse<String> getPublicKey(String applicationId, String timeStamp, String referenceId) {
 		ResponseEntity<String> publicKeyResponseEntity = null;
 
-		ResponseWrapper<PublicKeyResponse> publicKeyResponseMapped = null;
+		ResponseWrapper<PublicKeyResponse<String>> publicKeyResponseMapped = null;
 		Map<String, String> uriParams = new HashMap<>();
 		uriParams.put("applicationId", applicationId);
 		try {
@@ -186,7 +186,6 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 		}
 
 		try {
-			objectMapper.registerModule(new JavaTimeModule());
 			publicKeyResponseMapped = objectMapper.readValue(publicKeyResponseEntity.getBody(),
 					new TypeReference<ResponseWrapper<PublicKeyResponse<String>>>() {
 					});
@@ -258,7 +257,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	private String getEncryptedData(String data, String publicKey) {
 		try {
 			TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
-			tpmCryptoRequestDto.setValue(CryptoUtil.encodeBase64(data.getBytes()));
+			tpmCryptoRequestDto.setValue(CryptoUtil.encodeToURLSafeBase64(data.getBytes()));
 			tpmCryptoRequestDto.setPublicKey(publicKey);
 			TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
 			return tpmCryptoResponseDto.getValue();

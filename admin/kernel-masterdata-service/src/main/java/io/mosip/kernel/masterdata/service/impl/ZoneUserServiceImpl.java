@@ -3,13 +3,15 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.entity.*;
+import io.mosip.kernel.masterdata.utils.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -40,10 +42,6 @@ import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ZoneNameResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.entity.UserDetails;
-import io.mosip.kernel.masterdata.entity.Zone;
-import io.mosip.kernel.masterdata.entity.ZoneUser;
-import io.mosip.kernel.masterdata.entity.ZoneUserHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -53,19 +51,13 @@ import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
 import io.mosip.kernel.masterdata.service.UserDetailsService;
 import io.mosip.kernel.masterdata.service.ZoneService;
 import io.mosip.kernel.masterdata.service.ZoneUserService;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
-import io.mosip.kernel.masterdata.utils.ExceptionUtils;
-import io.mosip.kernel.masterdata.utils.LanguageUtils;
-import io.mosip.kernel.masterdata.utils.MapperUtils;
-import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
-import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
-import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import io.mosip.kernel.masterdata.utils.PageUtils;
-import io.mosip.kernel.masterdata.utils.ZoneUtils;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
 @Component
 public class ZoneUserServiceImpl implements ZoneUserService {
+
+	private static final Logger logger = LoggerFactory.getLogger(ZoneUserServiceImpl.class);
+	private static final String USERNAME_FORMAT = "%s (%s)";
 
 	@Autowired
 	UserDetailsService userDetailservice;
@@ -91,9 +83,6 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 	@Autowired
 	UserDetailsRepository userDetailsRepo;
 
-	@Value("#{'${mosip.mandatory-languages:}'.concat(',').concat('${mosip.optional-languages:}')}")
-	private String supportedLang;
-
 	@Value("${zone.user.details.url}")
 	private String userDetails;
 
@@ -105,6 +94,8 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 
 	@Autowired
 	private AuditUtil auditUtil;
+
+	private ObjectMapper mapper = new ObjectMapper();
 
 	@Override
 	public ZoneUserExtnDto createZoneUserMapping(ZoneUserDto zoneUserDto) {
@@ -135,15 +126,16 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 			zu = MetaDataUtils.setCreateMetaData(zoneUserDto, ZoneUser.class);
 
 			// Throws exception if not found
-			zoneservice.getZone(zoneUserDto.getZoneCode(), supportedLang.split(",")[0]);
+			zoneservice.getZone(zoneUserDto.getZoneCode(), languageUtils.getDefaultLanguage());
 
 			zu = zoneUserRepo.save(zu);
 			ZoneUserHistory zuh = new ZoneUserHistory();
 			MapperUtils.map(zu, zuh);
 			MapperUtils.setBaseFieldValue(zu, zuh);
-			zuh.setEffDTimes(zu.getCreatedDateTime());
+			zuh.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
 			zoneUserHistoryRepo.create(zuh);
 		} catch (IllegalArgumentException | SecurityException e) {
+			logger.error(ZoneUserErrorCode.USER_MAPPING_EXCEPTION.getErrorMessage(), e);
 			auditUtil.auditRequest(String.format(MasterDataConstant.CREATE_ERROR_AUDIT, ZoneUser.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
@@ -165,7 +157,7 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		ZoneUser zu;
 		ZoneUserExtnDto dto = new ZoneUserExtnDto();
 		try {
-			validateZone(zoneUserDto.getZoneCode(),zoneUserDto.getLangCode());
+			validateZone(zoneUserDto.getZoneCode(), zoneUserDto.getLangCode());
 			zu = zoneUserRepo.findByUserId(zoneUserDto.getUserId());
 			if (zu == null) {
 				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, ZoneUser.class.getSimpleName()),
@@ -176,8 +168,8 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 				throw new MasterDataServiceException(ZoneUserErrorCode.USER_MAPPING_NOT_PRSENT_IN_DB.getErrorCode(),
 						ZoneUserErrorCode.USER_MAPPING_NOT_PRSENT_IN_DB.getErrorMessage());
 			} else {
-				UserDetails ud=userDetailsRepo.findByIdAndIsDeletedFalseorIsDeletedIsNullAndIsActive(zoneUserDto.getUserId());
-				if(ud!=null) {
+				UserDetails ud = userDetailsRepo.findByIdAndIsDeletedFalseorIsDeletedIsNull(zoneUserDto.getUserId());
+				if (ud != null) {
 					throw new MasterDataServiceException(ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorCode(),
 							ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorMessage());
 				}
@@ -188,9 +180,10 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 			ZoneUserHistory zuh = new ZoneUserHistory();
 			MapperUtils.map(zu, zuh);
 			MapperUtils.setBaseFieldValue(zu, zuh);
-			zuh.setEffDTimes(zu.getUpdatedDateTime());
+			zuh.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
 			zoneUserHistoryRepo.create(zuh);
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | SecurityException e) {
+			logger.error(ZoneUserErrorCode.USER_MAPPING_EXCEPTION.getErrorMessage(), e);
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, ZoneUser.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
@@ -215,23 +208,32 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		try {
 			
 			List<ZoneUser> zu = zoneUserRepo.findByUserIdAndZoneCode(userId, zoneCode);
-			if(!zu.isEmpty()) {
-				UserDetails ud=userDetailsRepo.findByIdAndIsDeletedFalseorIsDeletedIsNullAndIsActive(userId);
-				if(ud!=null) {
-					throw new MasterDataServiceException(ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorCode(),
-							ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorMessage());
-				}
-				zoneUserRepo.deleteZoneUser(userId,LocalDateTime.now(),MetaDataUtils.getContextUser());
-				ZoneUserHistory udh = new ZoneUserHistory();
-				MapperUtils.map(zu.get(0), udh);
-				MapperUtils.setBaseFieldValue(zu.get(0), udh);
-				udh.setIsActive(false);
-				udh.setIsDeleted(true);
-				udh.setUpdatedBy(MetaDataUtils.getContextUser());
-				udh.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-				udh.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
-				zoneUserHistoryRepo.create(udh);
-		}
+			if (zu == null || zu.isEmpty()) {
+				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, ZoneUser.class.getSimpleName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,
+								ZoneUserErrorCode.USER_MAPPING_NOT_PRSENT_IN_DB.getErrorCode(),
+								ZoneUserErrorCode.USER_MAPPING_NOT_PRSENT_IN_DB.getErrorMessage()));
+				throw new MasterDataServiceException(ZoneUserErrorCode.USER_MAPPING_NOT_PRSENT_IN_DB.getErrorCode(),
+						ZoneUserErrorCode.USER_MAPPING_NOT_PRSENT_IN_DB.getErrorMessage());
+			}
+
+			UserDetails ud=userDetailsRepo.findByIdAndIsDeletedFalseorIsDeletedIsNullAndIsActive(userId);
+			if(ud!=null) {
+				throw new MasterDataServiceException(ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorCode(),
+						ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorMessage());
+			}
+			zoneUserRepo.deleteZoneUser(userId,LocalDateTime.now(),MetaDataUtils.getContextUser());
+			ZoneUserHistory udh = new ZoneUserHistory();
+			MapperUtils.map(zu.get(0), udh);
+			MapperUtils.setBaseFieldValue(zu.get(0), udh);
+			udh.setIsActive(false);
+			udh.setIsDeleted(true);
+			udh.setUpdatedBy(MetaDataUtils.getContextUser());
+			udh.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+			udh.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
+			zoneUserHistoryRepo.create(udh);
+
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | SecurityException e) {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_DECOMMISSION, ZoneUser.class.getSimpleName()),
@@ -284,7 +286,6 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 
 	@Override
 	public StatusResponseDto updateZoneUserMapping(String userId, boolean isActive) {
-		// TODO Auto-generated method stub
 		StatusResponseDto response = new StatusResponseDto();
 
 		ZoneUser zoneUser = null;
@@ -309,6 +310,13 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 						ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorMessage());
 			}
 			masterdataCreationUtil.updateMasterDataStatus(ZoneUser.class, userId, isActive, "userId");
+
+			ZoneUserHistory zoneUserHistory = new ZoneUserHistory();
+			MetaDataUtils.setUpdateMetaData(zoneUser, zoneUserHistory, true);
+			zoneUserHistory.setEffDTimes(LocalDateTime.now(ZoneId.of("UTC")));
+			zoneUserHistory.setIsActive(isActive);
+			zoneUserHistoryRepo.create(zoneUserHistory);
+
 		} else {
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, ZoneUser.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
@@ -327,6 +335,8 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 	public PageResponseDto<ZoneUserSearchDto> searchZoneUserMapping(SearchDtoWithoutLangCode searchDto) {
 		PageResponseDto<ZoneUserSearchDto> pageDto = new PageResponseDto<>();
 		List<ZoneUserExtnDto> zoneUserSearchDetails = null;
+		List<Zone> zones = null;
+		List<SearchFilter> zoneFilter = new ArrayList<>();
 		List<ZoneUserSearchDto> zoneSearch = new ArrayList<>();
 		for (int i = 0; i < searchDto.getFilters().size(); i++) {
 			if (searchDto.getFilters().get(i).getColumnName().equalsIgnoreCase("userName")) {
@@ -357,7 +367,12 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 				searchDto.getFilters().get(i).setColumnName("zoneCode");
 			}
 		}
-		Page<ZoneUser> page = masterDataSearchHelper.searchMasterdataWithoutLangCode(ZoneUser.class, searchDto, null);
+		zones = zoneUtils.getSubZones(searchDto.getLanguageCode());
+		if (zones != null && !zones.isEmpty()) {
+			zoneFilter.addAll(buildZoneFilter(zones));
+		}
+		OptionalFilter zoneOptionalFilter = new OptionalFilter(zoneFilter);
+		Page<ZoneUser> page = masterDataSearchHelper.searchMasterdataWithoutLangCode(ZoneUser.class, searchDto, new OptionalFilter[] { zoneOptionalFilter });
 		if (page.getContent() != null && !page.getContent().isEmpty()) {
 			zoneUserSearchDetails = MapperUtils.mapAll(page.getContent(), ZoneUserExtnDto.class);
 			pageDto = PageUtils.pageResponse(page);
@@ -373,13 +388,11 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 				dto.setUserId(z.getUserId());
 				dto.setUpdatedDateTime(z.getUpdatedDateTime());
 				dto.setUpdatedBy(z.getUpdatedBy());
-				if (null != z.getUserId()) {
-				dto.setUserName(getUserName(z.getUserId()));
-				} else
-					dto.setUserName(null);
+				String username = getUserName(z.getUserId());
+				dto.setUserName(username == null || username.isBlank() ? z.getUserId() :
+						String.format(USERNAME_FORMAT, z.getUserId(), username));
+
 				if (null != z.getZoneCode()) {
-					if(searchDto.getLanguageCode()==null)
-						searchDto.setLanguageCode(languageUtils.getDefaultLanguage());
 					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(),searchDto.getLanguageCode());
 					dto.setZoneName(null != zn ? zn.getZoneName() : null);
 				} else
@@ -398,6 +411,9 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 
 	private String getUserName(String userId) {
 
+		if(userId == null || userId.trim().isEmpty())
+			return null;
+
 		HttpHeaders h = new HttpHeaders();
 		h.setContentType(MediaType.APPLICATION_JSON);
 		UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(userDetails + "/admin");// .queryParam("appid",
@@ -412,14 +428,14 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 				r, h);
 		ResponseEntity<String> response = restTemplate.exchange(uribuilder.toUriString(), HttpMethod.POST, httpReq,
 				String.class);
-		response.getBody();
-		ObjectMapper mapper = new ObjectMapper();
 		try {
 			Map m1 = mapper.readValue(response.getBody(), Map.class);
-			return ((Map<String, List<Map<String, String>>>) m1.get("response")).get("mosipUserDtoList").get(0)
-					.get("name");
+			List<Map<String, String>> list = ((Map<String, List<Map<String, String>>>) m1.get("response"))
+					.get("mosipUserDtoList");
+			return list.isEmpty() ? null : list.get(0).get("name");
+
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("failed to get user name from authmanager", e);
 		}
 		return null;
 
@@ -433,25 +449,20 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		HttpEntity<RequestWrapper> httpReq = new HttpEntity<>(null, h);
 		ResponseEntity<String> response = restTemplate.exchange(uribuilder.toUriString(), HttpMethod.GET, httpReq,
 				String.class);
-		ObjectMapper mapper = new ObjectMapper();
+
+		List<String> userIds = new ArrayList<>();
 		try {
 			Map m1 = mapper.readValue(response.getBody(), Map.class);
-			// List<String> userId = new ArrayList<>();
-			String userId = new String();
 			List<Map<String, String>> m = ((Map<String, List<Map<String, String>>>) m1.get("response"))
 					.get("mosipUserDtoList");
-			if (m.size() == 1)
-				return m.get(0).get("userId");
+
 			for (int i = 0; i < m.size(); i++) {
-				userId = userId + m.get(i).get("userId") + ",";
+				userIds.add(m.get(i).get("userId"));
 			}
-			return userId;
 		} catch (Exception e) {
-			e.printStackTrace();// TODO
+			logger.error("failed to get userid from authmanager", e);
 		}
-
-		return null;
-
+		return userIds.isEmpty() ? null : String.join(",", userIds);
 	}
 
 	private String getZoneCode(String zoneName) {
@@ -483,5 +494,31 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 			throw new RequestException(ZoneUserErrorCode.INVALID_ZONE.getErrorCode(),
 					ZoneUserErrorCode.INVALID_ZONE.getErrorMessage());
 		}
+	}
+	/**
+	 * Creating Search filter from the passed zones
+	 *
+	 * @param zones filter to be created with the zones
+	 * @return list of {@link SearchFilter}
+	 */
+	public List<SearchFilter> buildZoneFilter(List<Zone> zones) {
+		if (zones != null && !zones.isEmpty()) {
+			return zones.stream().filter(Objects::nonNull).map(Zone::getCode).distinct().map(this::buildZoneFilter)
+					.collect(Collectors.toList());
+		}
+		return Collections.emptyList();
+	}
+	/**
+	 * Method to create SearchFilter for the recieved zoneCode
+	 *
+	 * @param zoneCode input from the {@link SearchFilter} has to be created
+	 * @return {@link SearchFilter}
+	 */
+	private SearchFilter buildZoneFilter(String zoneCode) {
+		SearchFilter filter = new SearchFilter();
+		filter.setColumnName(MasterDataConstant.ZONE_CODE);
+		filter.setType(FilterTypeEnum.EQUALS.name());
+		filter.setValue(zoneCode);
+		return filter;
 	}
 }

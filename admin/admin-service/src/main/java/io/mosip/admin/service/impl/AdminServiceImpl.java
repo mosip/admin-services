@@ -2,6 +2,7 @@ package io.mosip.admin.service.impl;
 
 import java.util.List;
 
+import io.mosip.admin.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -10,10 +11,6 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.admin.constant.LostRidErrorCode;
-import io.mosip.admin.dto.LostRidResponseDto;
-import io.mosip.admin.dto.RegProcRequestWrapper;
-import io.mosip.admin.dto.SearchInfo;
-import io.mosip.admin.dto.SortInfo;
 import io.mosip.admin.packetstatusupdater.constant.ApiName;
 import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import io.mosip.admin.packetstatusupdater.util.RestClient;
@@ -48,7 +45,7 @@ public class AdminServiceImpl implements AdminService {
 		String dateTime = DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
 		procRequestWrapper.setRequesttime(dateTime);
 		try {
-			String response = restClient.postApi(ApiName.LOST_RID_API, null, "", "", MediaType.APPLICATION_JSON,
+			String response = restClient.postApi(ApiName.LOST_RID_API, MediaType.APPLICATION_JSON,
 					procRequestWrapper, String.class);
 			lostRidResponseDto = objectMapper.readValue(response, LostRidResponseDto.class);
 		} catch (Exception e) {
@@ -60,6 +57,11 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	private void createLostRidRequest(SearchInfo searchInfoRequest) {
+		for(FilterInfo fi:searchInfoRequest.getFilters()){
+			if(fi.getType().equalsIgnoreCase("contains")) {
+				fi.setType("equals");
+			}
+		}
 		if (searchInfoRequest.getSort().isEmpty()) {
 			List<SortInfo> sortInfos = searchInfoRequest.getSort();
 			SortInfo sortInfo = new SortInfo();

@@ -12,8 +12,14 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.masterdata.dto.request.WorkingDaysPutRequestDto;
+import io.mosip.kernel.masterdata.entity.*;
+import io.mosip.kernel.masterdata.repository.*;
+import io.mosip.kernel.masterdata.utils.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,51 +79,10 @@ import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
-import io.mosip.kernel.masterdata.entity.Application;
-import io.mosip.kernel.masterdata.entity.BiometricAttribute;
-import io.mosip.kernel.masterdata.entity.BiometricType;
-import io.mosip.kernel.masterdata.entity.BlocklistedWords;
-import io.mosip.kernel.masterdata.entity.DaysOfWeek;
-import io.mosip.kernel.masterdata.entity.Device;
-import io.mosip.kernel.masterdata.entity.DeviceHistory;
-import io.mosip.kernel.masterdata.entity.DeviceSpecification;
-import io.mosip.kernel.masterdata.entity.DeviceType;
-import io.mosip.kernel.masterdata.entity.DocumentCategory;
-import io.mosip.kernel.masterdata.entity.DocumentType;
-import io.mosip.kernel.masterdata.entity.DynamicField;
-import io.mosip.kernel.masterdata.entity.Language;
-import io.mosip.kernel.masterdata.entity.Location;
-import io.mosip.kernel.masterdata.entity.LocationHierarchy;
-import io.mosip.kernel.masterdata.entity.RegistrationCenter;
-import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
-import io.mosip.kernel.masterdata.entity.Template;
-import io.mosip.kernel.masterdata.entity.TemplateFileFormat;
-import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
-import io.mosip.kernel.masterdata.repository.ApplicationRepository;
-import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
-import io.mosip.kernel.masterdata.repository.BiometricTypeRepository;
-import io.mosip.kernel.masterdata.repository.BlocklistedWordsRepository;
-import io.mosip.kernel.masterdata.repository.DaysOfWeekListRepo;
-import io.mosip.kernel.masterdata.repository.DeviceHistoryRepository;
-import io.mosip.kernel.masterdata.repository.DeviceRepository;
-import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
-import io.mosip.kernel.masterdata.repository.DeviceTypeRepository;
-import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
-import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
-import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
-import io.mosip.kernel.masterdata.repository.ExceptionalHolidayRepository;
-import io.mosip.kernel.masterdata.repository.LanguageRepository;
-import io.mosip.kernel.masterdata.repository.LocationHierarchyRepository;
-import io.mosip.kernel.masterdata.repository.LocationRepository;
-import io.mosip.kernel.masterdata.repository.RegWorkingNonWorkingRepo;
-import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
-import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
-import io.mosip.kernel.masterdata.repository.TemplateFileFormatRepository;
-import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.service.ApplicationService;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
@@ -142,11 +107,6 @@ import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.service.ZoneService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
-import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
-import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
-import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import io.mosip.kernel.masterdata.utils.ZoneUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 
 /**
@@ -397,6 +357,15 @@ public class MasterDataServiceTest {
 
 	private BiometricTypeDto biometricTypeDto;
 
+	@Autowired
+	RegistrationCenterValidator registrationCenterValidator;
+
+	@MockBean
+	ZoneUserRepository zoneUserRepository;
+
+	@MockBean
+	ZoneRepository zoneRepository;
+
 	@Before
 	public void setUp() {
 
@@ -438,7 +407,6 @@ public class MasterDataServiceTest {
 		when(locationHierarchyRepository1.findByLangCodeAndLevelAndName(Mockito.anyString(), Mockito.anyShort(),
 				Mockito.anyString())).thenReturn(hierarchy);
 		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
-
 	}
 
 	private void documentTypeSetup() {
@@ -877,6 +845,11 @@ public class MasterDataServiceTest {
 		registrationCenter.setLatitude("12.9180722");
 		registrationCenter.setLongitude("77.5028792");
 		registrationCenter.setLangCode("ENG");
+		registrationCenter.setCreatedBy("system");
+		registrationCenter.setCreatedDateTime(LocalDateTime.now());
+		registrationCenter.setHolidayLocationCode("BLR");
+		registrationCenter.setLocationCode("BLR");
+		registrationCenter.setZoneCode("test");
 		registrationCenters.add(registrationCenter);
 
 		// ----
@@ -2477,11 +2450,9 @@ public class MasterDataServiceTest {
 
 	@Test
 	public void validateWordNegativeTest() {
-		List<BlocklistedWords> badWords = new ArrayList<>();
-		BlocklistedWords word = new BlocklistedWords();
-		word.setWord("not-allowed");
-		badWords.add(word);
-		doReturn(badWords).when(wordsRepository).findAllByIsDeletedFalseOrIsDeletedNull();
+		List<String> badWords = new ArrayList<>();
+		badWords.add("not-allowed");
+		doReturn(badWords).when(wordsRepository).getAllBlockListedWords();
 		List<String> wordsList = new ArrayList<>();
 		wordsList.add("not-allowed");
 		boolean isValid = blocklistedWordsService.validateWord(wordsList);
@@ -2503,7 +2474,7 @@ public class MasterDataServiceTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	public void validateWordExceptionTest() {
-		doThrow(DataRetrievalFailureException.class).when(wordsRepository).findAllByIsDeletedFalseOrIsDeletedNull();
+		doThrow(DataRetrievalFailureException.class).when(wordsRepository).getAllBlockListedWords();
 		List<String> wordsList = new ArrayList<>();
 		wordsList.add("allowed");
 		blocklistedWordsService.validateWord(wordsList);
@@ -2614,13 +2585,37 @@ public class MasterDataServiceTest {
 	public void updateRegistrationCenterAdminStatusSuccessTest() {
 		StatusResponseDto dto = new StatusResponseDto();
 		dto.setStatus("Status updated successfully for Registration Centers");
+		List<Zone> zones = new ArrayList<>();
+		Zone zone = new Zone();
+		zone.setCode("test");
+		zone.setLangCode("eng");
+		zones.add(zone);
 
 		when(registrationCenterRepository.findByRegCenterIdAndIsDeletedFalseOrNull(Mockito.anyString()))
 				.thenReturn(registrationCenters);
 		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(RegistrationCenter.class), Mockito.anyString(),
 				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
+		when(zoneUtils.getSubZones(Mockito.anyString())).thenReturn(zones);
 		StatusResponseDto actual = registrationCenterService.updateRegistrationCenter("abc", false);
 		assertEquals(dto, actual);
+	}
+
+	@Test(expected = RequestException.class)
+	public void updateRegistrationCenterAdminStatusFailureTestWithInvalidZone() {
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for Registration Centers");
+		List<Zone> zones = new ArrayList<>();
+		Zone zone = new Zone();
+		zone.setCode("test1");
+		zone.setLangCode("eng");
+		zones.add(zone);
+
+		when(registrationCenterRepository.findByRegCenterIdAndIsDeletedFalseOrNull(Mockito.anyString()))
+				.thenReturn(registrationCenters);
+		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(RegistrationCenter.class), Mockito.anyString(),
+				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
+		when(zoneUtils.getSubZones(Mockito.anyString())).thenReturn(zones);
+		registrationCenterService.updateRegistrationCenter("abc", false);
 	}
 
 	@Test(expected = MasterDataServiceException.class)
@@ -2691,8 +2686,8 @@ public class MasterDataServiceTest {
 		Mockito.when(regWorkingNonWorkingRepo
 				.findByregistrationCenterIdAndlanguagecodeForWorkingDays(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(nameSeqDtoList);
-		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(registCent);
+		Mockito.when(registrationCenterRepository.countByIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(3L);
 		assertEquals("Monday",
 				regWorkingNonWorkingService.getWorkingDays("10001", "eng").getWorkingdays().get(0).getName());
 	}
@@ -2708,8 +2703,8 @@ public class MasterDataServiceTest {
 		RegistrationCenter registCent = new RegistrationCenter();
 		registCent.setId("10001");
 		registCent.setLangCode("eng");
-		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(registCent);
+		Mockito.when(registrationCenterRepository.countByIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(3L);
 
 		Mockito.when(regWorkingNonWorkingRepo.findByregistrationCenterIdAndlangCodeForWeekDays("10001", "eng"))
 				.thenReturn(workingDaysDtos);
@@ -2734,8 +2729,8 @@ public class MasterDataServiceTest {
 
 		Mockito.when(regWorkingNonWorkingRepo.findByregistrationCenterIdAndlangCodeForWeekDays("10001", "eng"))
 				.thenReturn(null);
-		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(registCent);
+		Mockito.when(registrationCenterRepository.countByIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(2L);
 		Mockito.when(daysOfWeekRepo.findBylangCode(Mockito.anyString())).thenReturn(globalDaysList);
 
 		assertEquals("Monday",
@@ -2758,13 +2753,27 @@ public class MasterDataServiceTest {
 		regWorkingNonWorkingService.getWeekDaysList("10001", "eng");
 	}
 
-	@Test(expected = MasterDataServiceException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void getWeekDaysServiceFailureTest() {
 		List<WorkingDaysDto> workingDaysDtos = new ArrayList<>();
 		WorkingDaysDto workingDaysDto = new WorkingDaysDto();
 
 		workingDaysDtos.add(workingDaysDto);
 
+		Mockito.when(regWorkingNonWorkingRepo.findByregistrationCenterIdAndlangCodeForWeekDays("10001", "eng"))
+				.thenThrow(DataAccessLayerException.class);
+		regWorkingNonWorkingService.getWeekDaysList("10001", "eng");
+	}
+
+
+	@Test(expected = MasterDataServiceException.class)
+	public void getWeekDaysServiceFailureTest2() {
+		List<WorkingDaysDto> workingDaysDtos = new ArrayList<>();
+		WorkingDaysDto workingDaysDto = new WorkingDaysDto();
+
+		workingDaysDtos.add(workingDaysDto);
+		Mockito.when(registrationCenterRepository.countByIsDeletedFalseOrIsDeletedIsNull("10001"))
+				.thenReturn(1L);
 		Mockito.when(regWorkingNonWorkingRepo.findByregistrationCenterIdAndlangCodeForWeekDays("10001", "eng"))
 				.thenThrow(DataAccessLayerException.class);
 		regWorkingNonWorkingService.getWeekDaysList("10001", "eng");
@@ -2779,7 +2788,7 @@ public class MasterDataServiceTest {
 		regWorkingNonWorkingService.getWorkingDays("10001", "eng");
 	}
 
-	@Test(expected = MasterDataServiceException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void getWorkingServiceFailureTest2() {
 
 		Mockito.when(regWorkingNonWorkingRepo
@@ -2800,7 +2809,7 @@ public class MasterDataServiceTest {
 	public void getWorkingDaysByLangCodeService() {
 
 		List<DaysOfWeek> globalDaysList = new ArrayList<DaysOfWeek>();
-		
+
 		DaysOfWeek daysOfWeek = new DaysOfWeek();
 		daysOfWeek.setCode("101");
 		daysOfWeek.setGlobalWorking(true);
@@ -2814,7 +2823,44 @@ public class MasterDataServiceTest {
 		assertEquals("Monday",
 				regWorkingNonWorkingService.getWorkingDays("eng").getWorkingdays().get(0).getName());
 	}
-	
+	@Test
+	public void updateWorkingDaysServiceTest() throws NoSuchFieldException, IllegalAccessException {
+		DaysOfWeek daysOfWeek = new DaysOfWeek();
+		WorkingDaysPutRequestDto workingDaysPutRequestDto=new WorkingDaysPutRequestDto();
+		daysOfWeek.setCode("101");
+		daysOfWeek.setGlobalWorking(true);
+		daysOfWeek.setDaySeq((short) 1);
+		daysOfWeek.setLangCode("eng");
+		daysOfWeek.setName("Monday");
+		workingDaysPutRequestDto= MapperUtils.map(daysOfWeek,workingDaysPutRequestDto);
+
+		Mockito.when(daysOfWeekRepo.findBylangCodeAndCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(daysOfWeek);
+		when(masterdataCreationUtil.updateMasterData(Mockito.eq(DaysOfWeek.class), Mockito.any()))
+				.thenReturn(workingDaysPutRequestDto);
+		assertEquals("Monday",
+				regWorkingNonWorkingService.updateWorkingDays(workingDaysPutRequestDto).getName());
+	}
+
+	@Test
+	public void updateWorkingDaysStatusServiceTest() throws NoSuchFieldException, IllegalAccessException {
+		List<DaysOfWeek> globalDaysList = new ArrayList<DaysOfWeek>();
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for workingDays");
+		DaysOfWeek daysOfWeek = new DaysOfWeek();
+		daysOfWeek.setCode("101");
+		daysOfWeek.setGlobalWorking(true);
+		daysOfWeek.setDaySeq((short) 1);
+		daysOfWeek.setLangCode("eng");
+		daysOfWeek.setName("Monday");
+		globalDaysList.add(daysOfWeek);
+		Mockito.when(daysOfWeekRepo.findByCode(Mockito.anyString()))
+				.thenReturn(globalDaysList);
+		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(DaysOfWeek.class), Mockito.anyString(),
+				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
+		StatusResponseDto actual=regWorkingNonWorkingService.updateWorkingDaysStatus("abc",false);
+		assertEquals(dto,actual);
+	}
 	@Test(expected = MasterDataServiceException.class)
 	public void getWorkingDaysServiceFailureTest() {
 		List<WorkingDaysDto> workingDaysDtos = new ArrayList<>();
@@ -2956,10 +3002,14 @@ public class MasterDataServiceTest {
 	public void updateDynamicFieldStatusSuccessTest() {
 		StatusResponseDto dto = new StatusResponseDto();
 		dto.setStatus("Status updated successfully for Dynamic Fields");
-
-		when(dynamicFieldRepository.updateDynamicFieldIsActive(Mockito.anyString(), Mockito.anyBoolean(),
+		DynamicField dynamicField = new DynamicField();
+		dynamicField.setId("10001");
+		dynamicField.setName("bloodType1");
+		dynamicField.setValueJson("{\"code\":\"code\",\"value\":\"value\"}");
+		when(dynamicFieldRepository.findDynamicFieldById(Mockito.anyString())).thenReturn(dynamicField);
+		when(dynamicFieldRepository.updateDynamicFieldIsActive(Mockito.anyString(),Mockito.anyString(), Mockito.anyBoolean(),
 				Mockito.any(), Mockito.anyString())).thenReturn(1);
-		StatusResponseDto actual = dynamicFieldService.updateDynamicFieldValueStatus("abc", false);
+		StatusResponseDto actual = dynamicFieldService.updateDynamicFieldValueStatus("10001", false);
 		assertEquals(dto, actual);
 	}
 
@@ -2982,17 +3032,76 @@ public class MasterDataServiceTest {
 	@Test(expected = MasterDataServiceException.class)
 	@WithUserDetails("reg-officer")
 	public void updateDynamicFieldStatusFailureTest() {
-		when(dynamicFieldRepository.updateDynamicFieldIsActive(Mockito.anyString(), Mockito.anyBoolean(),
+		when(dynamicFieldRepository.updateDynamicFieldIsActive(Mockito.anyString(),Mockito.anyString(), Mockito.anyBoolean(),
 				Mockito.any(), Mockito.anyString())).thenThrow(MasterDataServiceException.class);
-		dynamicFieldService.updateDynamicFieldValueStatus("abc", false);
+		DynamicField dynamicField = new DynamicField();
+		dynamicField.setId("10001");
+		dynamicField.setName("bloodType1");
+		dynamicField.setValueJson("{\"code\":\"code\",\"value\":\"value\"}");
+		when(dynamicFieldRepository.findDynamicFieldById(Mockito.anyString())).thenReturn(dynamicField);
+
+		dynamicFieldService.updateDynamicFieldValueStatus("10001", false);
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	@WithUserDetails("reg-officer")
 	public void updateDynamicFieldStatusFailureDataNotFoundTest() {
-		when(dynamicFieldRepository.updateDynamicFieldIsActive(Mockito.anyString(), Mockito.anyBoolean(),
+		when(dynamicFieldRepository.updateDynamicFieldIsActive(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
 				Mockito.any(), Mockito.anyString())).thenReturn(0);
 		dynamicFieldService.updateDynamicFieldValueStatus("abc", false);
+	}
+
+	@Test
+	public void validateRegCenterCreateTest() {
+		List<ServiceError> serviceErrors = new ArrayList<>();
+		RegCenterPostReqDto registrationCenterDto = new RegCenterPostReqDto();
+		registrationCenterDto.setName("TEST CENTER");
+		registrationCenterDto.setAddressLine1("Address Line 1");
+		registrationCenterDto.setAddressLine2("Address Line 2");
+		registrationCenterDto.setAddressLine3("Address Line 3");
+		registrationCenterDto.setCenterTypeCode("REG");
+		registrationCenterDto.setContactPerson("Test");
+		registrationCenterDto.setContactPhone("9999999999");
+		registrationCenterDto.setHolidayLocationCode("HLC01");
+		registrationCenterDto.setLangCode("eng");
+		registrationCenterDto.setLatitude("12.9646818");
+		registrationCenterDto.setLocationCode("10190");
+		registrationCenterDto.setLongitude("77.70168");
+		registrationCenterDto.setPerKioskProcessTime(LocalTime.of(0,15,0));
+		registrationCenterDto.setCenterStartTime(LocalTime.of(7,0));
+		registrationCenterDto.setCenterEndTime(LocalTime.of(17,0));
+		registrationCenterDto.setLunchStartTime(LocalTime.of(12,0));
+		registrationCenterDto.setLunchEndTime(LocalTime.of(13,0));
+		registrationCenterDto.setTimeZone("UTC");
+		registrationCenterDto.setWorkingHours("9");
+		registrationCenterDto.setZoneCode("JRD");
+		registrationCenterValidator.validateRegCenterCreate(registrationCenterDto, serviceErrors);
+		Assert.assertEquals(1, serviceErrors.size());
+		Assert.assertEquals("ADM-MSD-446", serviceErrors.get(0).getErrorCode());
+	}
+
+	@Test
+	@WithUserDetails("reg-officer")
+	public void getSubZoneIdsForUserTest() {
+		when(zoneUtils.getSubZones(Mockito.anyString())).thenReturn(zones);
+		List<String> subZoneIds = registrationCenterValidator.getSubZoneIdsForUser("eng");
+		Assert.assertTrue(subZoneIds != null && !subZoneIds.isEmpty());
+	}
+
+	@Test
+	public void validateRegCenterUpdateTest() {
+		List<ServiceError> serviceErrors = new ArrayList<>();
+		registrationCenterValidator.validateRegCenterUpdate("JRD",
+				LocalTime.of(17,0), LocalTime.of(7,0),
+				LocalTime.of(12,30), LocalTime.of(12,0),
+				"12.9646818", "77.70168", null, "eng",
+				"RBT", serviceErrors);
+		Assert.assertEquals(5, serviceErrors.size());
+		Assert.assertEquals("ADM-MSD-446", serviceErrors.get(0).getErrorCode());
+		Assert.assertEquals("KER-MSD-309", serviceErrors.get(1).getErrorCode());
+		Assert.assertEquals("KER-MSD-308", serviceErrors.get(2).getErrorCode());
+		Assert.assertEquals("KER-MSD-260", serviceErrors.get(3).getErrorCode());
+		Assert.assertEquals("KER-MSD-259", serviceErrors.get(4).getErrorCode());
 	}
 
 }

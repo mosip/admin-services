@@ -11,6 +11,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.HolidayExtnDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.HolidaySearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
@@ -118,6 +119,6 @@ public interface HolidayService {
 	 * @param filterValueDto the filter DTO.
 	 * @return the {@link FilterResponseDto}.
 	 */
-	public FilterResponseDto holidaysFilterValues(FilterValueDto filterValueDto);
+	public FilterResponseCodeDto holidaysFilterValues(FilterValueDto filterValueDto);
 
 }

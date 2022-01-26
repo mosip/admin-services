@@ -1,7 +1,11 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.kernel.masterdata.entity.RegistrationCenter;
+import io.mosip.kernel.masterdata.utils.LanguageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -34,8 +38,9 @@ public class ExceptionalHolidaysServiceImpl implements ExceptionalHolidayService
 	@Autowired
 	private RegistrationCenterRepository regCenterRepo;
 
-	@Value("#{'${mosip.mandatory-languages}'.concat('${mosip.optional-languages}')}")
-	private String supportedLang;
+	@Autowired
+	private LanguageUtils languageUtils;
+
 
 	@Cacheable(value = "exceptional-holiday", key = "'exceptionalholiday'.concat('-').concat(#regCenterId).concat('-').concat(#langCode)",
 			condition = "#regCenterId != null && #langCode != null")
@@ -45,11 +50,13 @@ public class ExceptionalHolidaysServiceImpl implements ExceptionalHolidayService
 		List<ExceptionalHolidayDto> excepHolidays = null;
 		List<ExceptionalHoliday> exeptionalHolidayList = null;
 		try {
-			if (!supportedLang.contains(langCode)) {
+			if (!languageUtils.getConfiguredLanguages().contains(langCode)) {
 				throw new MasterDataServiceException(ExceptionalHolidayErrorCode.INVALIDE_LANGCODE.getErrorCode(),
 						ExceptionalHolidayErrorCode.INVALIDE_LANGCODE.getErrorMessage());
 			}
-			if (regCenterRepo.findByIdAndLangCode(regCenterId, langCode) == null) {
+
+			List<RegistrationCenter> center = regCenterRepo.findByIdAndIsDeletedFalseOrNull(regCenterId);
+			if (center == null || center.isEmpty()) {
 				throw new MasterDataServiceException(
 						ExceptionalHolidayErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 						ExceptionalHolidayErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
@@ -70,6 +77,44 @@ public class ExceptionalHolidaysServiceImpl implements ExceptionalHolidayService
 		}
 		excepHolidayResponseDto = new ExceptionalHolidayResponseDto();
 		excepHolidayResponseDto.setExceptionalHolidayList(excepHolidays);
+		return excepHolidayResponseDto;
+	}
+
+	@Cacheable(value = "exceptional-holiday", key = "'exceptionalholiday'.concat('-').concat(#regCenterId)",
+			condition = "#regCenterId != null")
+	@Override
+	public ExceptionalHolidayResponseDto getAllExceptionalHolidays(String regCenterId) {
+		List<LocalDate> exeptionalHolidayList = null;
+		try {
+
+			List<RegistrationCenter> center = regCenterRepo.findByIdAndIsDeletedFalseOrNull(regCenterId);
+			if (center == null || center.isEmpty()) {
+				throw new MasterDataServiceException(
+						ExceptionalHolidayErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						ExceptionalHolidayErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			}
+			exeptionalHolidayList = repository.findDistinctByRegistrationCenterId(regCenterId);
+
+		} catch (DataAccessException | DataAccessLayerException dataAccessException) {
+			throw new MasterDataServiceException(
+					ExceptionalHolidayErrorCode.EXCEPTIONAL_HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
+					ExceptionalHolidayErrorCode.EXCEPTIONAL_HOLIDAY_FETCH_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(dataAccessException));
+		}
+
+		ExceptionalHolidayResponseDto excepHolidayResponseDto = new ExceptionalHolidayResponseDto();
+		excepHolidayResponseDto.setExceptionalHolidayList(new ArrayList<>());
+
+		if(exeptionalHolidayList == null || exeptionalHolidayList.size()==0)
+			return excepHolidayResponseDto;
+
+		exeptionalHolidayList.forEach(v -> {
+			ExceptionalHolidayDto dto = new ExceptionalHolidayDto();
+			dto.setHolidayDate(v);
+			dto.setIsActive(true);
+			dto.setIsDeleted(false);
+			excepHolidayResponseDto.getExceptionalHolidayList().add(dto);
+		});
 		return excepHolidayResponseDto;
 	}
 

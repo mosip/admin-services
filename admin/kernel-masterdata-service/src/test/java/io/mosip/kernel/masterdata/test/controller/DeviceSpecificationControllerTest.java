@@ -143,6 +143,26 @@ public class DeviceSpecificationControllerTest {
 				.andReturn(),null);
 
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t001createDeviceSpecificationTest1() throws Exception {
+		
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devicespecifications").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(deviceSpecification)))
+				.andReturn(),null);
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t001createDeviceSpecificationTest2() throws Exception {
+		deviceSpecification.getRequest().setId(null);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devicespecifications").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(deviceSpecification)))
+				.andReturn(),null);
+
+	}
 
 
 	@Test
@@ -212,6 +232,16 @@ public class DeviceSpecificationControllerTest {
 				MockMvcRequestBuilders.patch("/devicespecifications").param("isActive", "true").param("id", "165"))
 				.andReturn(),null);
 	}
+	
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void t008updateDeviceSpecificationStatusTest1() throws Exception {
+		searchLangCode.getRequest().getFilters().get(0).setType("contains");
+		MasterDataTest.checkResponse(mockMvc.perform(
+				MockMvcRequestBuilders.patch("/devicespecifications").param("isActive", "false").param("id", "165"))
+				.andReturn(),"KER-MSD-217");
+	}
 
 	@Test
 	@WithUserDetails("global-admin")
@@ -248,6 +278,15 @@ public class DeviceSpecificationControllerTest {
 				MockMvcRequestBuilders.patch("/devicespecifications").param("isActive", "true").param("id", "170"))
 				.andReturn(),"KER-MSD-012");
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t013updateDeviceSpecificationStatusFailTest1() throws Exception {
+
+		 MasterDataTest.checkResponse(mockMvc.perform(
+				MockMvcRequestBuilders.patch("/devicespecifications").param("isActive", "true").param("id", "327"))
+				.andReturn(),"KER-MSD-217");
+	}
 
 	@Test
 	@WithUserDetails("global-admin")
@@ -262,8 +301,7 @@ public class DeviceSpecificationControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t015deleteDeviceSpecificationTest() throws Exception {
-		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/devicespecifications/165")
-				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(deviceSpecification)))
+		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/devicespecifications/165"))
 				.andReturn(), "KER-MSD-121");
 	}
 
@@ -278,8 +316,7 @@ public class DeviceSpecificationControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t017deleteDeviceSpecificationFailTest() throws Exception {
-		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/devicespecifications/167")
-				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(deviceSpecification)))
+		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/devicespecifications/167"))
 				.andReturn(),"KER-MSD-012");
 	}
 
@@ -305,5 +342,26 @@ public class DeviceSpecificationControllerTest {
 		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devicespecifications/devicetypecode/CMR11"))
 				.andReturn(),"KER-MSD-012");
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t021deleteDeviceSpecificationTest() throws Exception {
+		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/devicespecifications/1"))
+				.andReturn(), null);
+	}
 
+	@Test
+	@WithUserDetails("global-admin")
+	public void t022getDeviceSpecificationByLanguageCodeTest() throws Exception {
+		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devicespecifications"))
+				.andReturn(), null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t023getDeviceSpecificationByLanguageCodeTest() throws Exception {
+		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devicespecifications/eng"))
+				.andReturn(), null);
+	}
+	
 }

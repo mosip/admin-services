@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.test.controller;
 
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -57,6 +58,57 @@ public class ExceptionalHolidayControllerTest {
 
 		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10001/eng1")).andReturn(),"KER-MSD-999");
 		
+	}
+	
+	@Ignore
+	@Test
+	@WithUserDetails("global-admin")
+	public void t3getExceptionalHolidaysFailTest1() throws Exception {
+
+		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10004/eng")).andReturn(),"KER-EHD-002");
+		
+	}
+	
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t4getExceptionalHolidaysTest() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10001"))
+				.andReturn(),null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t5getExceptionalHolidaysTest() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10078"))
+				.andReturn(),"KER-MSD-802");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t6getExceptionalHolidaysTest() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/100780"))
+				.andReturn(),"KER-MSD-802");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t5getExceptionalHolidaysTest1() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10001"))
+				.andReturn(),null);
+	}
+	
+	@Ignore
+	@Test
+	@WithUserDetails("global-admin")
+	public void t7getExceptionalHolidaysTest1() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10004"))
+				.andReturn(),null);
 	}
 
 }

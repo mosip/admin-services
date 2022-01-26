@@ -27,14 +27,14 @@ public enum EventEnum {
 	ACCESS_DENIED("ADM-PKT-405",AuditConstant.AUDIT_SYSTEM,"Check access","Access denied from AuthManager","ADM-PKT","Packet service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 	AUTHEN_ERROR_401("ADM-PKT-401",AuditConstant.AUDIT_SYSTEM,"Check authentication","The user tried to operate on a protected resource without providing the proper authorization","ADM-PKT","Packet service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 	AUTHEN_ERROR_403("ADM-PKT-403",AuditConstant.AUDIT_SYSTEM,"Check authentication","The user does not have the necessary permissions for the resource","ADM-PKT","Packet service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
-	
-	
+	RID_NOT_FOUND("ADM-PKT-411",AuditConstant.AUDIT_USER,"Request to get packet status","Registration id is not found","ADM-PKT","Packet service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+
 	BULKDATA_UPLOAD_API_CALLED("ADM-BLK-101",AuditConstant.AUDIT_SYSTEM,"Request for bulkdata upload API","API called for uploading bulk data","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 	BULKDATA_UPLOAD_SUCCESS("ADM-BLK-200",AuditConstant.AUDIT_SYSTEM,"Request for bulkdata upload API","Bulkdata upload is successful","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 	BULKDATA_UPLOAD_CATEGORY("ADM-BLK-102",AuditConstant.AUDIT_SYSTEM,"Request for bulkdata upload operation","Bulk data upload based on category %s","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 	BULKDATA_UPLOAD("ADM-BLK-103",AuditConstant.AUDIT_SYSTEM,"Request for bulkdata operation","Bulk data upload based on %s","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 	BULKDATA_UPLOAD_CSV("ADM-BLK-104",AuditConstant.AUDIT_SYSTEM,"Request for bulkdata upload operation","Bulk data %s file","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
-	BULKDATA_UPLOAD_CSV_STATUS_ERROR("ADM-BLK-401",AuditConstant.AUDIT_SYSTEM,"Request for bulkdata upload operation","Bulk data upload failed - %s","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	BULKDATA_UPLOAD_COMPLETED("ADM-BLK-401",AuditConstant.AUDIT_SYSTEM,"Request for bulkdata upload operation","Bulk data upload completed - %s","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 	BULKDATA_UPLOAD_JOBDETAILS("ADM-BLK-105",AuditConstant.AUDIT_SYSTEM,"Request for bulkdata upload operation","Bulk data upload job started with job id - %s","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 	BULKDATA_OPERATION_ERROR("ADM-BLK-402",AuditConstant.AUDIT_SYSTEM,"Request for bulkdata operation","Error occured while operating bulk data for %s","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 	BULKDATA_OPERATION_CSV_EXT_VALIDATOR_ISSUE("ADM-BLK-403",AuditConstant.AUDIT_SYSTEM,"Validating CSV file request","%s is not csv file","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
@@ -75,9 +75,11 @@ public enum EventEnum {
 			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME),
 	LOST_RID_SUCCESS("ADM-BLK-202", AuditConstant.AUDIT_SYSTEM, "Request for Lost rid API",
 			"successfully return the lost rid", "ADM-LRID", "admin service", "NO_ID", "NO_ID_TYPE",
-			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME);
-	
-	
+			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME),
+	BULKDATA_INVALID_OPERATION("ADM-BLK-411",AuditConstant.AUDIT_SYSTEM,"Request for bulkdata invalid operation based on category","Invalid operation","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME);
+
+
+
 	private final String eventId;
 
 	private final String type;

@@ -228,16 +228,31 @@ public class LocationControllerTest {
 				"KER-MSD-027");
 	}
 	
-/*	@Test
+	@Test
 	@WithUserDetails("global-admin")
-	public void t023updateLocationHierarchyDetailsTest1() throws Exception {
+	public void t027updateLocationHierarchyDetailsTest() throws Exception {
 		locationRequestDto.getRequest().setCode("MOR");
 		locationRequestDto.getRequest().setName("MyCountry");
+		locationRequestDto.getRequest().setHierarchyLevel((short)0);
+		locationRequestDto.getRequest().setLangCode("eng");
+		locationRequestDto.getRequest().setParentLocCode("");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/locations").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(locationRequestDto))).andReturn(),
-				null);
-	}*/
+				"KER-MSD-244");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t023updateLocationHierarchyDetailsTest1() throws Exception {
+		locationRequestDto.getRequest().setCode("MOR1");
+		locationRequestDto.getRequest().setName("MyCountry1");
+		locationRequestDto.getRequest().setParentLocCode("MOR");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/locations").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(locationRequestDto))).andReturn(),
+				"KER-MSD-244");
+	};
 
 	@Test
 	@WithUserDetails("global-admin")
@@ -250,6 +265,17 @@ public class LocationControllerTest {
 
 	}
 
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t022updateLocationHierarchyDetailsFailTest1() throws Exception {
+		locationRequestDto.getRequest().setHierarchyLevel((short)8);
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/locations").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(locationRequestDto))).andReturn(),
+				"KER-MSD-027");
+
+	}
 
 	
 	@Test
@@ -262,8 +288,36 @@ public class LocationControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(locationCreateDtoReq))).andReturn(),
-				"KER-MSD-391");
+				"KER-MSD-244");
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t023updateLocationHierarchyDetailsTest2() throws Exception {
+		locationRequestDto.getRequest().setCode("MOR1");
+		locationRequestDto.getRequest().setName("MyCountry1");
+		locationRequestDto.getRequest().setParentLocCode("MOR");
+		locationRequestDto.getRequest().setHierarchyLevel((short)0);
+		locationRequestDto.getRequest().setHierarchyName("Country");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/locations").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(locationRequestDto))).andReturn(),
+				"KER-MSD-026");
+	};
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t023updateLocationHierarchyDetailsTest3() throws Exception {
+		locationRequestDto.getRequest().setCode("RSK");
+		locationRequestDto.getRequest().setName("Rabat Sale Kenitra");
+		locationRequestDto.getRequest().setParentLocCode("MOR");
+		locationRequestDto.getRequest().setHierarchyLevel((short)1);
+		locationRequestDto.getRequest().setHierarchyName("Region");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/locations").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(locationRequestDto))).andReturn(),
+				null);
+	};
 	
 	@Test
 	@WithUserDetails("global-admin")
@@ -286,6 +340,25 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
+	public void t005createLocationHierarchyDetailsTest4() throws Exception {
+		LocationCreateDto createDto = new LocationCreateDto();
+		createDto.setCode("11111");
+		createDto.setHierarchyLevel((short) 0);
+		createDto.setIsActive(true);
+		createDto.setHierarchyName("Country");
+		createDto.setLangCode("eng");
+		createDto.setName("11111");
+		createDto.setParentLocCode("");
+		
+		locationCreateDtoReq.setRequest(createDto);
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(locationCreateDtoReq))).andReturn(),
+				"KER-MSD-385");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t005createLocationHierarchyDetailsTest1() throws Exception {
 		LocationCreateDto createDto = new LocationCreateDto();
 		createDto.setCode("11112");
@@ -300,7 +373,7 @@ public class LocationControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(locationCreateDtoReq))).andReturn(),
-				"KER-MSD-389");
+				"KER-MSD-243");
 	}
 
 	@Test
@@ -313,7 +386,20 @@ public class LocationControllerTest {
 								MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
 										.content(mapper.writeValueAsString(locationCreateDtoReq)))
 								.andReturn(),
-						"KER-MSD-389");
+						"KER-MSD-243");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t006createLocationHierarchyDetailsFailTest1() throws Exception {
+		
+		MasterDataTest
+				.checkResponse(
+						mockMvc.perform(
+								MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
+										.content(mapper.writeValueAsString(null)))
+								.andReturn(),
+						"KER-MSD-242");
 	}
 
 	@Test
@@ -325,9 +411,46 @@ public class LocationControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(locationCreateDtoReq))).andReturn(),
-				"KER-MSD-391");
+				"KER-MSD-244");
 	}
 	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t007createLocationHierarchyDetailsTest() throws Exception {
+		locationCreateDtoReq.getRequest().setHierarchyLevel((short) 0 );
+		locationCreateDtoReq.getRequest().setHierarchyName("Country");
+		locationCreateDtoReq.getRequest().setLangCode("eng");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(locationCreateDtoReq))).andReturn(),
+				null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t007createLocationHierarchyDetailsTest1() throws Exception {
+		locationCreateDtoReq.getRequest().setHierarchyLevel((short) 1 );
+		locationCreateDtoReq.getRequest().setHierarchyName("Region");
+		locationCreateDtoReq.getRequest().setLangCode("eng");
+		locationCreateDtoReq.getRequest().setName("Rabat Sale Kenitra");
+		locationCreateDtoReq.getRequest().setCode("RSK");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(locationCreateDtoReq))).andReturn(),
+				"KER-MSD-385");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t007createLocationHierarchyDetailsFailTest3() throws Exception {
+		locationCreateDtoReq.getRequest().setHierarchyLevel((short) 1 );
+		locationCreateDtoReq.getRequest().setCode("RSK");
+		locationCreateDtoReq.getRequest().setName("RSK");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(locationCreateDtoReq))).andReturn(),
+				"KER-MSD-244");
+	}
 	@Test
 	@WithUserDetails("global-admin")
 	public void t019getLocationsTest() throws Exception {
@@ -388,14 +511,14 @@ public class LocationControllerTest {
 	}
 	
 
-	/*@Test
+	@Test
 	@WithUserDetails("global-admin")
 	public void t010getMissingLocationDetailsTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(
-				MockMvcRequestBuilders.get("/locations/missingids").param("langcode", "eng").param("fieldName", "RSK"))
+				MockMvcRequestBuilders.get("/locations/missingids/eng").param("fieldName", "name"))
 				.andReturn(),null);
-	}*/
+	}
 	
 	@Test
 	@WithUserDetails("global-admin")
@@ -422,46 +545,46 @@ public class LocationControllerTest {
 
 	}
 
-	/*@Test
+	@Test
 	@WithUserDetails("global-admin")
 	public void t014searchLocationTest() throws Exception {
 
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/search")
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/locations/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoRq))).andReturn(),
 				null);
-	}*/
+	}
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void t015searchLocationFailTest() throws Exception {
 		//searchDtoRq
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/search")
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/locations/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoRq))).andReturn(),
 				"KER-MSD-026");
 
 	}
 
-/*	@Test
+	@Test
 	@WithUserDetails("global-admin")
 	public void t017locationFilterValuesTest() throws Exception {
 		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.ALL.toString());
 		MasterDataTest
 				.checkResponse(mockMvc
-						.perform(MockMvcRequestBuilders.get("/locations/filtervalues")
+						.perform(MockMvcRequestBuilders.post("/locations/filtervalues")
 								.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
 						.andReturn(), null);
-	}*/
+	}
 	
-	/*@Test
+	@Test
 	@WithUserDetails("global-admin")
 	public void t017locationFilterValuesTest3() throws Exception {
 		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.ALL.toString());
 		MasterDataTest
 				.checkResponse(mockMvc
-						.perform(MockMvcRequestBuilders.get("/locations/filtervalues")
+						.perform(MockMvcRequestBuilders.post("/locations/filtervalues")
 								.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
 						.andReturn(), null);
-	}*/
+	}
 	
 	@Test
 	@WithUserDetails("global-admin")
@@ -469,22 +592,22 @@ public class LocationControllerTest {
 		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.EMPTY.toString());
 		MasterDataTest
 				.checkResponse(mockMvc
-						.perform(MockMvcRequestBuilders.get("/locations/filtervalues")
+						.perform(MockMvcRequestBuilders.post("/locations/filtervalues")
 								.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
-						.andReturn(), "KER-MSD-026");
+						.andReturn(), "KER-MSD-322");
 	}
 	
 
-/*	@Test
+	@Test
 	@WithUserDetails("global-admin")
 	public void t017locationFilterValuesTest2() throws Exception {
 		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.UNIQUE.toString());
 		MasterDataTest
 				.checkResponse(mockMvc
-						.perform(MockMvcRequestBuilders.get("/locations/filtervalues")
+						.perform(MockMvcRequestBuilders.post("/locations/filtervalues")
 								.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
-						.andReturn(), null);
-	}*/
+						.andReturn(), "KER-MSD-026");
+	}
 
 	@Test
 	@WithUserDetails("global-admin")
@@ -492,7 +615,7 @@ public class LocationControllerTest {
 
 		MasterDataTest
 				.checkResponse(mockMvc
-						.perform(MockMvcRequestBuilders.get("/locations/filtervalues")
+						.perform(MockMvcRequestBuilders.post("/locations/filtervalues")
 								.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
 						.andReturn(), "KER-MSD-026");
 	}
@@ -518,8 +641,8 @@ public class LocationControllerTest {
 	@WithUserDetails("global-admin")
 	public void t20getMissingLocationDetailsFailTest() throws Exception {
 
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/missingids")
-				.param("langcode", "eng1").param("fieldName", "1")).andReturn(), "KER-MSD-026");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/missingids/eng1")
+				.param("fieldName", "1")).andReturn(), "KER-LANG-ERR");
 
 	}
 

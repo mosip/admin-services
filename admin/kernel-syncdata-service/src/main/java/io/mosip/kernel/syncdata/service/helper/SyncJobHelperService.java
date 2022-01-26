@@ -11,15 +11,12 @@ import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.scheduling.Trigger;
-import org.springframework.scheduling.TriggerContext;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
 import org.springframework.scheduling.support.CronSequenceGenerator;
-import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -29,7 +26,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -62,6 +58,7 @@ public class SyncJobHelperService {
     private MapperUtils mapper;
 
     @Autowired
+    @Qualifier("selfTokenRestTemplate")
     private RestTemplate selfTokenRestTemplate;
 
     @Autowired
@@ -70,11 +67,12 @@ public class SyncJobHelperService {
 
     //By default, to trigger every hour
     @Scheduled(cron = "${syncdata.cache.evict.delta-sync.cron}", zone = "UTC")
-    public void evictDeltaCaches() {
-        logger.info("Eviction of all keys from delta-sync cache started");
-        cacheManager.getCache("delta-sync").clear();
-        logger.info("Eviction of all keys from delta-sync cache completed");
-    }
+	public void evictDeltaCaches() {
+		logger.info("Eviction of all keys from delta-sync cache started");
+		if (null != cacheManager.getCache("delta-sync"))
+			cacheManager.getCache("delta-sync").clear();
+		logger.info("Eviction of all keys from delta-sync cache completed");
+	}
 
     public LocalDateTime getFullSyncCurrentTimestamp() {
         return LocalDate.now(ZoneOffset.UTC).atTime(0,0,0,0);
@@ -98,7 +96,8 @@ public class SyncJobHelperService {
     @Scheduled(cron = "${syncdata.cache.snapshot.cron}", zone = "UTC")
     public void clearCacheAndRecreateSnapshot() {
         logger.info("Eviction of all keys from initial-sync cache started");
-        cacheManager.getCache("initial-sync").clear();
+        if(null!=cacheManager.getCache("initial-sync"))
+        	cacheManager.getCache("initial-sync").clear();
         logger.info("Eviction of all keys from initial-sync cache Completed");
 
         createEntitySnapshot();
@@ -166,7 +165,9 @@ public class SyncJobHelperService {
                     handleDynamicFields(entities); //Fills dynamic field data
 
             } catch (Exception e) {
+            	
                 logger.error("Failed to create snapshot {} {}", entry.getKey().getSimpleName(), e);
+                
             }
         }
     }

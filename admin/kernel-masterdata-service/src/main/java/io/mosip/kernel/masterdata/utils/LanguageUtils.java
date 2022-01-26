@@ -1,57 +1,59 @@
 package io.mosip.kernel.masterdata.utils;
 
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-import io.mosip.kernel.core.authmanager.authadapter.model.AuthUserDetails;
-import org.json.JSONException;
-import org.json.JSONObject;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
+import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import lombok.Data;
 
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
 @Data
 @Component
-public class LanguageUtils {
+public class LanguageUtils implements ConstraintValidator<ValidLangCode, String>  {
 
-	private List<String> mandatoryLang;
-	private List<String> optionalLang;
+	private static Predicate<String> emptyCheck = String::isBlank;
+	private List<String> mandatoryLanguages;
+	private List<String> optionalLanguages;
 	private List<String> configuredLanguages;
-	private List<String> supportedLangugaes;
 
 
 	@Autowired
-	public LanguageUtils(@Value("${mosip.mandatory-languages:NOTSET}") String mandatory,
-			@Value("${mosip.optional-languages:NOTSET}") String optional,
-			@Value("${mosip.supported-languages:NOTSET}") String supported) {
-
-		if ("NOTSET".equals(optional)) {
-			this.optionalLang = Collections.emptyList();
-		} else {
-			this.optionalLang = Arrays.asList(optional.split(","));
-		}
-
-		if ("NOTSET".equals(optional)) {
-			this.mandatoryLang = Collections.emptyList();
-		} else {
-			this.mandatoryLang = Arrays.asList(mandatory.split(","));
-		}
-
-
-		if ("NOTSET".equals(supported)) {
-			this.supportedLangugaes = Collections.emptyList();
-		} else {
-			this.supportedLangugaes = Arrays.asList(supported.split(","));
-		}
+	public LanguageUtils(@Value("${mosip.mandatory-languages}") String mandatory,
+			@Value("${mosip.optional-languages}") String optional) {
 		configuredLanguages = new ArrayList<>();
-		configuredLanguages.addAll(mandatoryLang);
-		configuredLanguages.addAll(optionalLang);
+		mandatoryLanguages = getLanguages(mandatory);
+		optionalLanguages = getLanguages(optional);
+		configuredLanguages.addAll(mandatoryLanguages);
+		configuredLanguages.addAll(optionalLanguages);
 	}
 
-	public String getDefaultLanguage(){
-		return configuredLanguages.get(0);
+	public String getDefaultLanguage() {
+		return configuredLanguages.isEmpty() ? "eng" : configuredLanguages.get(0);
 	}
 
+	private List<String> getLanguages(String value) {
+		if(value == null || value.isBlank())
+			return Collections.emptyList();
+
+		return Arrays.asList(value.split(","))
+				.stream()
+				.filter(emptyCheck.negate())
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public boolean isValid(String value, ConstraintValidatorContext context) {
+		if (EmptyCheckUtils.isNullEmpty(value) || value.trim().length() > 3) {
+			return false;
+		}
+		return (value.equals("all") || configuredLanguages.contains(value));
+	}
 }

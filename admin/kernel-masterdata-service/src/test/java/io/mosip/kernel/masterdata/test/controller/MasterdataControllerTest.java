@@ -1450,7 +1450,7 @@ public class MasterdataControllerTest {
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/languages").characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("code", "ara")
 				.param("isActive", "true");
-		mockMvc.perform(requestBuilder).andExpect(status().is(500));
+		mockMvc.perform(requestBuilder).andExpect(status().is(200));
 	}
 
 	@Test
@@ -1546,7 +1546,19 @@ public class MasterdataControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.get("/workingdays/10001/101")).andExpect(status().isOk());
 
 	}
-	
+	@Test
+	@WithUserDetails("reg-processor")
+	public void updateWorkDaysStatusControllerTest() throws Exception {
+
+		StatusResponseDto dto = new StatusResponseDto();
+		dto.setStatus("Status updated successfully for workingDays");
+		Mockito.when(regWorkingNonWorkingService.updateWorkingDaysStatus(Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(dto);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/workingdays").characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("code", "ABC")
+				.param("isActive", "true");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
 	@Test
 	@WithUserDetails("reg-processor")
 	public void workDaysControllerByLangCodeTest() throws Exception {

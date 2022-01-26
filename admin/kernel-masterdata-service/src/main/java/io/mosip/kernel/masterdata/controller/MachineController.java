@@ -2,9 +2,11 @@ package io.mosip.kernel.masterdata.controller;
 
 import javax.validation.Valid;
 
+import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -35,6 +37,7 @@ import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.service.MachineService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
@@ -56,6 +59,7 @@ import io.swagger.annotations.ApiResponses;
  */
 
 @RestController
+@Validated
 @Api(tags = { "Machine" })
 public class MachineController {
 
@@ -73,50 +77,23 @@ public class MachineController {
 	 * Function to fetch machine detail based on given Machine ID.
 	 * 
 	 * @param machineId pass Machine ID as String
-	 * @param langCode  pass language code as String
 	 * @return MachineResponseDto machine detail based on given Machine ID and
 	 *         Language code {@link MachineResponseDto}
 	 */
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetmachinesidlangcode())")
-	@GetMapping(value = { "/machines/id/{id}", "/machines/{id}/{langcode}" })
-	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_CLIENT','REGISTRATION_PROCESSOR','RESIDENT')")
+	@GetMapping(value = { "/machines/{id}" })
 	@ApiOperation(value = "Retrieve all Machine Details, /langCode pathparam will be deprecated soon", notes = "Retrieve all Machine Detail for given ID")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given ID"),
 			@ApiResponse(code = 404, message = "When No Machine Details found for the given ID"),
 			@ApiResponse(code = 500, message = "While retrieving Machine Details any error occured") })
-	public ResponseWrapper<MachineResponseDto> getMachineIdLangcode(@PathVariable("id") String machineId,
-			@PathVariable(value = "langcode", required = false) String langCode) {
-
+	public ResponseWrapper<MachineResponseDto> getMachineIdById(@PathVariable("id") String machineId) {
 		ResponseWrapper<MachineResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(machineService.getMachine(machineId, langCode));
+		responseWrapper.setResponse(machineService.getMachineById(machineId));
 		return responseWrapper;
 	}
 
-	/**
-	 * 
-	 * Function to fetch machine detail based
-	 * 
-	 * @param langCode pass language code as String
-	 * 
-	 * @return MachineResponseDto machine detail based on given Language code
-	 *         {@link MachineResponseDto}
-	 */
-	@Deprecated
-	@ResponseFilter
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetmachineslangcode())")
-	@GetMapping(value = { "/machines/{langcode}" })
-	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','REGISTRATION_CLIENT','REGISTRATION_PROCESSOR')")
-	@ApiOperation(value = "Retrieve all Machine Details, /langCode pathparam will be deprecated soon", notes = "Retrieve all Machine Detail")
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When Machine Details retrieved from database"),
-			@ApiResponse(code = 404, message = "When No Machine Details found"),
-			@ApiResponse(code = 500, message = "While retrieving Machine Details any error occured") })
-	public ResponseWrapper<MachineResponseDto> getMachineLangcode(@PathVariable(value = "langcode", required = false) String langCode) {
-		ResponseWrapper<MachineResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(machineService.getMachine(langCode));
-		return responseWrapper;
-	}
+
 
 	/**
 	 * Function to fetch a all machines details
@@ -353,9 +330,9 @@ public class MachineController {
 
 	/**
 	 * This method updates Machine status by Admin.
-	 * 
-	 * @param machineCenterDto the request DTO for updating machine.
-	 * @return the response i.e. the updated machine.
+	 * @param id
+	 * @param isActive
+	 * @return
 	 */
 	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter

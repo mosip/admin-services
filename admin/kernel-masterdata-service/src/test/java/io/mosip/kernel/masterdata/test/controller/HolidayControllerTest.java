@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.test.controller;
 import static org.mockito.Mockito.doNothing;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,17 +58,15 @@ public class HolidayControllerTest {
 
 	@MockBean
 	private AuditUtil auditUtil;
-
-	private RequestWrapper<HolidayDto> holidayReq = new RequestWrapper<HolidayDto>();
-
-	private RequestWrapper<HolidayUpdateDto> holidayPutReq = new RequestWrapper<HolidayUpdateDto>();
-	
 	private ObjectMapper mapper;
-	
+
+	private RequestWrapper<HolidayDto> holiday = new RequestWrapper<HolidayDto>();
+
+	private RequestWrapper<HolidayUpdateDto> holidayPutReq1 = new RequestWrapper<HolidayUpdateDto>();
+
 	private RequestWrapper<HolidayIdDeleteDto> holidayDelReq = new RequestWrapper<HolidayIdDeleteDto>();;
 	private RequestWrapper<FilterValueDto> filValDto = new RequestWrapper<FilterValueDto>();
 	private RequestWrapper<SearchDto> searchDtoReq = new RequestWrapper<SearchDto>();
-	
 
 	@Before
 	public void setUp() {
@@ -75,8 +74,8 @@ public class HolidayControllerTest {
 		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-		 holidayReq=new RequestWrapper<HolidayDto>();
-		 HolidayDto dto=new HolidayDto();
+
+		HolidayDto dto = new HolidayDto();
 		dto.setHolidayDate(LocalDate.now());
 		dto.setHolidayDesc("National Holiday");
 		dto.setHolidayId(1);
@@ -84,25 +83,13 @@ public class HolidayControllerTest {
 		dto.setHolidayName("May day");
 		dto.setLangCode("eng");
 		dto.setLocationCode("KTA");
-		holidayReq.setRequest(dto);
+		holiday.setRequest(dto);
 
-		 holidayPutReq=new RequestWrapper<HolidayUpdateDto>();
-		HolidayUpdateDto updateDto=new HolidayUpdateDto();
-		updateDto.setHolidayDate(LocalDate.now());
-		updateDto.setHolidayDesc("National  Holiday updated");
-		updateDto.setHolidayId(1);
-		updateDto.setIsActive(true);
-		updateDto.setHolidayName("May day");
-		updateDto.setLangCode("eng");
-		updateDto.setLocationCode("KTA");
-		holidayPutReq.setRequest(updateDto);
-
-		 holidayDelReq=new RequestWrapper<HolidayIdDeleteDto>();
-		 HolidayIdDeleteDto deleteDto=new HolidayIdDeleteDto();
+		holidayDelReq = new RequestWrapper<HolidayIdDeleteDto>();
+		HolidayIdDeleteDto deleteDto = new HolidayIdDeleteDto();
 		deleteDto.setHolidayDate(LocalDate.now());
-		deleteDto.setHolidayName("May Day");
 		deleteDto.setLocationCode("KTA");
-		
+
 		holidayDelReq.setRequest(deleteDto);
 
 		Pagination pagination = new Pagination(0, 1);
@@ -141,64 +128,120 @@ public class HolidayControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t001saveHolidayTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays")
-				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(holidayReq))).andReturn(), null);
-	}
-	
-	@Test
-	@WithUserDetails("global-admin")
-	public void t001saveHolidayFailTest1() throws Exception {
-		holidayReq.getRequest().setLocationCode("abc");
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays")
-				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(holidayReq))).andReturn(), "KER-MSD-729");
-	}
-	
-	@Test
-	@WithUserDetails("global-admin")
-	public void t001saveHolidayFailTest2() throws Exception {
 
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays")
-				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(holidayReq))).andReturn(), "KER-MSD-730");
+		DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate ld = LocalDate.parse("2021-12-13", DATEFORMATTER);
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.post("/holidays").contentType(MediaType.APPLICATION_JSON)
+						.content("{\n" + "  \"id\": \"string\",\n" + "  \"version\": \"string\",\n"
+								+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
+								+ "    \"holidayId\": \"19\",\n" + "    \"locationCode\": \"KTA\",\n"
+								+ "     \"holidayDate\":\"" + ld + "\",\n" + "    \"isActive\": \"true\",\n"
+								+ "    \"holidayName\": \"May day\",\n" + "    \"langCode\": \"eng\",\n"
+								+ "    \"holidayDesc\": \"National holiday\"\n" + "  }\n" + "}"))
+
+				.andReturn(), null);
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002saveHolidayFailTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(holidayReq))).andReturn(),"KER-MSD-999");
+	public void t001saveHolidayTest1() throws Exception {
+
+		DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate ld = LocalDate.parse("2019-12-14", DATEFORMATTER);
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.post("/holidays").contentType(MediaType.APPLICATION_JSON)
+						.content("{\n" + "  \"id\": \"string\",\n" + "  \"version\": \"string\",\n"
+								+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
+								+ "    \"holidayId\": \"12\",\n" + "    \"locationCode\": \"KTA\",\n"
+								+ "     \"holidayDate\":\"" + ld + "\",\n" + "    \"isActive\": \"true\",\n"
+								+ "    \"holidayName\": \"Eid\",\n" + "    \"langCode\": \"eng\",\n"
+								+ "    \"holidayDesc\": \"National holiday\"\n" + "  }\n" + "}"))
+
+				.andReturn(), "KER-MSD-240");
 	}
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void t001saveHolidayTest2() throws Exception {
+
+		DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate ld = LocalDate.parse("2019-12-14", DATEFORMATTER);
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.post("/holidays").contentType(MediaType.APPLICATION_JSON)
+						.content("{\n" + "  \"id\": \"string\",\n" + "  \"version\": \"string\",\n"
+								+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
+								+ "    \"holidayId\": \"12\",\n" + "    \"locationCode\": \"KTA\",\n"
+								+ "     \"holidayDate\":\"" + ld + "\",\n" + "    \"isActive\": \"true\",\n"
+								+ "    \"holidayName\": \"Eidi\",\n" + "    \"langCode\": \"eng\",\n"
+								+ "    \"holidayDesc\": \"National holiday\"\n" + "  }\n" + "}"))
+
+				.andReturn(), null);
+	}
+
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void t003updateHolidayTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/holidays")
-				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(holidayPutReq))).andReturn(),
-				null);
+		DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate ld = LocalDate.parse("2021-12-13", DATEFORMATTER);
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.put("/holidays").contentType(MediaType.APPLICATION_JSON)
+						.content("{\n" + "  \"id\": \"string\",\n" + "  \"version\": \"string\",\n"
+								+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
+								+ "    \"holidayId\": \"1\",\n" + "    \"locationCode\": \"KTA\",\n"
+								+ "     \"holidayDate\":\"" + ld + "\",\n" + "    \"holidayName\": \"May day\",\n"
+								+ "    \"langCode\": \"eng\",\n" + "    \"holidayDesc\": \"National holiday\"\n"
+								+ "  }\n" + "}"))
+
+				.andReturn(), "KER-MSD-020");
+
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t004updateHolidayFailTest() throws Exception {
-		holidayPutReq.getRequest().setHolidayId(10);
-		
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/holidays").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(holidayPutReq))).andReturn(),"KER-MSD-999");
+	public void t003updateHolidayTest2() throws Exception {
+		DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate ld = LocalDate.parse("2021-12-13", DATEFORMATTER);
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.put("/holidays").contentType(MediaType.APPLICATION_JSON)
+						.content("{\n" + "  \"id\": \"string\",\n" + "  \"version\": \"string\",\n"
+								+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
+								+ "    \"holidayId\": \"2000001\",\n" + "    \"locationCode\": \"KTA\",\n"
+								+ "     \"holidayDate\":\"" + ld + "\",\n" + "    \"holidayName\": \"May day\",\n"
+								+ "    \"langCode\": \"eng\",\n" + "    \"holidayDesc\": \"National holiday\"\n"
+								+ "  }\n" + "}"))
+
+				.andReturn(), null);
+
 	}
+
 	@Test
 	@WithUserDetails("global-admin")
-	public void t006updateHolidayStatusTest1() throws Exception {
+	public void t003updateHolidayTest3() throws Exception {
+		DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate ld = LocalDate.parse("2021-12-13", DATEFORMATTER);
 		MasterDataTest.checkResponse(mockMvc
-				.perform(MockMvcRequestBuilders.patch("/holidays").param("holidayId", "2000001").param("isActive", "true"))
-				.andReturn(),"KER-MSD-731");
+				.perform(MockMvcRequestBuilders.put("/holidays").contentType(MediaType.APPLICATION_JSON)
+						.content("{\n" + "  \"id\": \"string\",\n" + "  \"version\": \"string\",\n"
+								+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
+								+ "    \"holidayId\": \"1\",\n" + "    \"locationCode\": \"KTAA\",\n"
+								+ "     \"holidayDate\":\"" + ld + "\",\n" + "    \"holidayName\": \"May day\",\n"
+								+ "    \"langCode\": \"eng\",\n" + "    \"holidayDesc\": \"National holiday\"\n"
+								+ "  }\n" + "}"))
+
+				.andReturn(), "KER-MSD-732");
+
 	}
-	
+
 	@Test
 	@WithUserDetails("global-admin")
 	public void t006updateHolidayStatusTest2() throws Exception {
-		MasterDataTest.checkResponse(mockMvc
-				.perform(MockMvcRequestBuilders.patch("/holidays").param("holidayId", "2000001").param("isActive", "true"))
-				.andReturn(),"KER-MSD-731");
+		MasterDataTest.checkResponse(mockMvc.perform(
+				MockMvcRequestBuilders.patch("/holidays").param("holidayId", "2000001").param("isActive", "true"))
+				.andReturn(), "KER-MSD-731");
 	}
-	
-	
+
 	@Test
 	@WithUserDetails("global-admin")
 	public void t006updateHolidayStatusTest() throws Exception {
@@ -211,9 +254,19 @@ public class HolidayControllerTest {
 	@WithUserDetails("global-admin")
 	public void t007updateHolidayStatusFailTest() throws Exception {
 
-		MasterDataTest.checkResponse(mockMvc
-				.perform(MockMvcRequestBuilders.patch("/holidays").param("holidayId", "10").param("isActive", "true"))
-				.andReturn(), "KER-MSD-020");
+		MasterDataTest.checkResponse(mockMvc.perform(
+				MockMvcRequestBuilders.patch("/holidays").param("holidayId", "2000002").param("isActive", "true"))
+				.andReturn(), "KER-MSD-731");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t007updateHolidayStatusTest() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc.perform(
+				MockMvcRequestBuilders.patch("/holidays").param("holidayId", "2000002").param("isActive", "false"))
+				.andReturn(), "KER-MSD-731");
 
 	}
 
@@ -238,7 +291,7 @@ public class HolidayControllerTest {
 								.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
 						.andReturn(), "KER-MSD-322");
 	}
-	
+
 	@Test
 	@WithUserDetails("global-admin")
 	public void t009holidayFilterValuesTest2() throws Exception {
@@ -266,6 +319,37 @@ public class HolidayControllerTest {
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoReq))).andReturn(),
 				null);
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t011searchMachineTest6() throws Exception {
+		searchDtoReq.getRequest().getFilters().get(0).setType(FilterTypeEnum.CONTAINS.toString());
+		searchDtoReq.getRequest().getFilters().get(0).setToValue("Year");
+		searchDtoReq.getRequest().getFilters().get(0).setColumnName("holidayName");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays/search")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoReq))).andReturn(),
+				null);
+	}
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void t011searchMachineTest3() throws Exception {
+		searchDtoReq.getRequest().getFilters().get(0).setType(FilterTypeEnum.CONTAINS.toString());
+		searchDtoReq.getRequest().setLanguageCode("ara");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays/search")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoReq))).andReturn(),
+				"KER-MSD-026");
+	}
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void t011searchMachineTest2() throws Exception {
+		searchDtoReq.getRequest().getFilters().get(0).setColumnName("name");
+		searchDtoReq.getRequest().getFilters().get(0).setType(FilterTypeEnum.CONTAINS.toString());
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays/search")
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoReq))).andReturn(),
+				null);
+	}
 
 	@Test
 	@WithUserDetails("global-admin")
@@ -285,14 +369,16 @@ public class HolidayControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t016getAllHolidaysFailTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/holidays")).andReturn(),"KER-MSD-020");
-		
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/holidays")).andReturn(),
+				"KER-MSD-020");
+
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void t017getAllHolidayByIdTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/holidays/2000001")).andReturn(), null);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/holidays/2000001")).andReturn(),
+				null);
 	}
 
 	@Test
@@ -350,22 +436,39 @@ public class HolidayControllerTest {
 				.perform(MockMvcRequestBuilders.get("/holidays/missingids/eng").param("fieldName", "holidayName"))
 				.andReturn(), null);
 	}
-	
+
+
 	@Test
 	@WithUserDetails("global-admin")
-	public void t024deleteHolidayTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/holidays")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsString(holidayDelReq))).andReturn(),
-				null);
+	public void t024deleteHolidayTest1() throws Exception {
+
+		DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate ld = LocalDate.parse("2019-12-12", DATEFORMATTER);
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.delete("/holidays").contentType(MediaType.APPLICATION_JSON)
+						.content("{\n" + "  \"id\": \"string\",\n" + "  \"version\": \"string\",\n"
+								+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
+								+ "    \"locationCode\": \"KTA\",\n" + "     \"holidayDate\":\"" + ld + "\"" + "  }\n"
+								+ "}"))
+
+				.andReturn(), null);
+
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t025deleteHolidayFailTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/holidays")
-				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(holidayDelReq))).andReturn(),
-				"KER-MSD-999");
+	public void t024deleteHolidayTest2() throws Exception {
+
+		DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate ld = LocalDate.parse("2019-12-13", DATEFORMATTER);
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.delete("/holidays").contentType(MediaType.APPLICATION_JSON)
+						.content("{\n" + "  \"id\": \"string\",\n" + "  \"version\": \"string\",\n"
+								+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
+								+ "    \"locationCode\": \"KTA\",\n" + "     \"holidayDate\":\"" + ld + "\"" + "  }\n"
+								+ "}"))
+
+				.andReturn(), "KER-MSD-020");
 
 	}
 

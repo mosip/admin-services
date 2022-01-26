@@ -2,7 +2,9 @@ package io.mosip.kernel.masterdata.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
+import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -94,4 +96,6 @@ public interface RegistrationCenterTypeRepository
 	 */
 	@Query( "select r from RegistrationCenterType r WHERE isActive=?1 AND (isDeleted is null OR isDeleted = false)" )
 	Page<RegistrationCenterType> findAllByIsActive(boolean isActive, Pageable pageable);
+
+	Optional<RegistrationCenterType> findFirstByCodeAndIsDeletedFalseOrIsDeletedIsNull(String code);
 }

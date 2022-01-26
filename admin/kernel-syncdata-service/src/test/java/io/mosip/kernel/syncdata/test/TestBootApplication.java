@@ -2,6 +2,8 @@ package io.mosip.kernel.syncdata.test;
 
 import java.util.concurrent.Executor;
 
+import io.mosip.kernel.websub.api.verifier.AuthenticatedContentVerifier;
+import org.mockito.Mockito;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
@@ -40,6 +42,4 @@ public class TestBootApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TestBootApplication.class, args);
 	}
-
-
 }

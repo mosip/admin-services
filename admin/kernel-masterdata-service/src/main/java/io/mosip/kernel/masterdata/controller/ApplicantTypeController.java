@@ -21,7 +21,7 @@ import io.swagger.annotations.Api;
  * @author Bal Vikash Sharma
  *
  */
-@CrossOrigin
+//@CrossOrigin
 @RestController
 @Api(value = "This service provide operations on applicant type", tags = { "ApplicantType" })
 public class ApplicantTypeController {

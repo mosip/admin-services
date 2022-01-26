@@ -169,7 +169,7 @@ public class AuthorizedRolesDto {
 //	private List<String> getdistinct;
 	
 	private List<String> postdynamicfields;
-	
+
 	private List<String> putdynamicfields ;
 	
 	private List<String> patchdynamicfieldsall;
@@ -248,11 +248,11 @@ public class AuthorizedRolesDto {
 	
 	private List<String> postlanguages;
 	
-	private List<String> getputlanguages;
+	private List<String> putlanguages;
 	
-	private List<String> getpatchlanguages;
+	private List<String> patchlanguages;
 	
-	private List<String> getdeletelanguagescode;
+	private List<String> deletelanguagescode;
 	
 	//private List<String> getlocationslangcode;
 	
@@ -581,5 +581,8 @@ public class AuthorizedRolesDto {
 	private List<String> getdocumentcategoriesmissingidslangcode;
 
 	private List<String> getdynamicfieldmissingidslangcode;
+
+	private List<String> postdynamicfieldsfiltervalues;
+
 
 }

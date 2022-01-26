@@ -91,9 +91,20 @@ public class BlockListedWordsControllerTest {
 								+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
 								+ "   \"description\": \"Block listed word\",\n" + "    \"isActive\": true,\n"
 								+ "    \"langCode\": \"eng\",\n" + "    \"word\": \"damm\"\n" + "  }\n" + "}"))
-				.andReturn(), "KER-MSD-071");
-		;
+				.andReturn(), null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t001createBlockListedWordTest1() throws Exception {
 
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.post("/blocklistedwords").contentType(MediaType.APPLICATION_JSON)
+						.content("{\n" + "  \"id\": \"string\",\n" + "  \"version\": \"string\",\n"
+								+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
+								+ "   \"description\": \"Block listed word\",\n" + "    \"isActive\": true,\n"
+								+ "    \"langCode\": \"eng\",\n" + "    \"word\": \"damm\"\n" + "  }\n" + "}"))
+				.andReturn(), "KER-MSD-071");
 	}
 
 	@Test
@@ -284,6 +295,21 @@ public class BlockListedWordsControllerTest {
 								+ "   \"description\": \"Block listed word\",\n" + "    \"isActive\": true,\n"
 								+ "    \"langCode\": \"eng1\",\n" + "    \"word\": \"damm\"\n" + "  }\n" + "}"))
 				.andReturn(), "KER-MSD-999");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t013updateBlockListedWordFailTest1() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/blocklistedwords").contentType(MediaType.APPLICATION_JSON)
+						.content("{\n" + "  \"id\": \"string\",\n" + "  \"version\": \"string\",\n"
+								+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
+								+ "   \"description\": null,\n" + "    \"isActive\": true,\n"
+								+ "    \"langCode\": \"eng\",\n" + "    \"oldWord\": \"abcd\",\n"
+								+ "  \"word\": \"damit\"\n" + "  }\n" + "}"))
+						.andReturn(),
+				"KER-MSD-008");
 	}
 
 	@Test

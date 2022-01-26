@@ -12,7 +12,7 @@ public enum SchemaErrorCode {
 	DYNAMIC_FIELD_DELETE_EXCEPTION("KER-SCH-020", "Error occurred while deleting dynamic field"),
 
 	DYNAMIC_FIELD_NOT_FOUND_EXCEPTION("KER-SCH-003", "Dynamic field not found"),
-		
+	DYNAMIC_FIELD_VALUE_NOT_FOUND_EXCEPTION("KER-SCH-021", "Dynamic field value not found"),	
 	SCHEMA_FETCH_EXCEPTION("KER-SCH-004", "Error occurred while fetching Identity schema"),
 	SCHEMA_INSERT_EXCEPTION("KER-SCH-005", "Error occurred while inserting Identity schema"),
 	SCHEMA_UPDATE_EXCEPTION("KER-SCH-006", "Error occurred while updating Identity schema"),
@@ -31,7 +31,8 @@ public enum SchemaErrorCode {
 	DUPLICATE_FIELD_EXCEPTION("KER-SCH-016", "Duplicate fields found %s"),
 	SUB_TYPE_REQUIRED_EXCEPTION("KER-SCH-017", "SubType is required for field %s"),
 	BIO_ATTRIBUTES_REQUIRED_EXCEPTION("KER-SCH-018", "BioAttributes are required for field %s"),
-	BIO_ATTRIBUTES_DUPLICATED_EXCEPTION("KER-SCH-019", "Same BioAttributes used in field with same SubType : %s");
+	BIO_ATTRIBUTES_DUPLICATED_EXCEPTION("KER-SCH-019", "Same BioAttributes used in field with same SubType : %s"),
+	DYNAMIC_FIELD_VALUE_JSON_INVALID("KER-DYN-001", "Dynamic field is invalid, must contain code and value keys");
 
 	private final String errorCode;
 	private final String errorMessage;

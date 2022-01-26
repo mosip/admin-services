@@ -18,6 +18,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -139,6 +140,9 @@ public class SyncDataIntegrationTest {
 
 	@Autowired
 	private ObjectMapper objectMapper;
+
+	@Autowired
+	private CryptomanagerUtils cryptomanagerUtils;
 
 	private Machine machine;
 	private List<Application> applications;
@@ -294,8 +298,8 @@ public class SyncDataIntegrationTest {
 	private SignatureResponse signResponse;
 
 	private String encodedTPMPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn4A-U6V4SpSeJmjl0xtBDgyFaHn1CvglvnpbczxiDakH6ks8tPvIYT4jDOU-9XaUYKuMFhLxS7G8qwJhv7GKpDQXphSXjgwv_l8A--KV6C1UVaHoAs4XuJPFdXneSd9uMH94GO6lWucyOyfaZLrf5F_--2Rr4ba4rBWw20OrAl1c7FrzjIQjzYXgnBMrvETXptxKKrMELwOOsuyc1Ju4wzPJHYjI0Em4q2BOcQLXqYjhsZhcYeTqBFxXjCOM3WQKLCIsh9RN8Hz-s8yJbQId6MKIS7HQNCTbhbjl1jdfwqRwmBaZz0Gt73I4_8SVCcCQzJWVsakLC1oJAFcmi3l_mQIDAQAB";
-	private byte[] tpmPublicKey = CryptoUtil.decodeBase64(encodedTPMPublicKey);
-	private String keyIndex = CryptoUtil.computeFingerPrint(tpmPublicKey, null);
+	//private byte[] tpmPublicKey = cryptomanagerUtils.decodeBase64Data(encodedTPMPublicKey);
+	//private String keyIndex = CryptoUtil.computeFingerPrint(tpmPublicKey, null);
 	private static final String ID = "mosip.syncdata.service";
 	private static final String VERSION = "V1.0";
 	private static final String MACHINE_NAME = "Machine 2";
@@ -303,7 +307,7 @@ public class SyncDataIntegrationTest {
 
 	@Before
 	public void setup() {
-
+		String keyIndex = CryptoUtil.computeFingerPrint(cryptomanagerUtils.decodeBase64Data(encodedTPMPublicKey), null);
 		signResponse = new SignatureResponse();
 		signResponse.setData("asdasdsadf4e");
 		signResponse.setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
