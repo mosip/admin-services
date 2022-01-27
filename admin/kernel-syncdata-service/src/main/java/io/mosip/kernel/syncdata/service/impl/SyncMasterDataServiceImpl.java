@@ -257,7 +257,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	@Override
 	public ResponseEntity getClientSettingsJsonFile(String entityIdentifier, String keyIndex)
 			throws Exception {
-		logger.info("getClientSettingsJsonFile({}) started for machine : {}", entityIdentifier, keyIndex);
+		logger.info("getClientSettingsJsonFile({}) started for machine : {}", io.mosip.kernel.syncdata.utils.ExceptionUtils.neutralizeParam(entityIdentifier),  io.mosip.kernel.syncdata.utils.ExceptionUtils.neutralizeParam(keyIndex));
 		List<Machine> machines = machineRepo.findByMachineKeyIndex(keyIndex);
 		if(machines == null || machines.isEmpty())
 			throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
