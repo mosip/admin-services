@@ -233,8 +233,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 					BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage() + "TABLENAME");
 		}
 
-		logger.info("category {}, tablename: {} , operation: {}, Uploaded files : {}", category, tableName, operation,
-				files.length);
+		logger.info("category {}, tablename: {} , operation: {}, Uploaded files : {}", AuditUtil.neutralizeParam(category), AuditUtil.neutralizeParam(tableName), AuditUtil.neutralizeParam(operation),
+				AuditUtil.neutralizeParam(files.length));
 
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD,
 				"{category:'" + category + "',tablename:'" + tableName + "',operation:'" + operation + "'}"));

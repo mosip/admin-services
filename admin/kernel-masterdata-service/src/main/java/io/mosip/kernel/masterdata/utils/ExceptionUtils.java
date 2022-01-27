@@ -34,4 +34,10 @@ public final class ExceptionUtils {
 		String cause = rootCause.isPresent() ? rootCause.get().getMessage() : exception.getMessage();
 		return " " + cause;
 	}
+	public static Object neutralizeParam(Object param) {
+		if(param != null && param instanceof String)
+			return ((String) param).replaceAll("[\n\r\t]", "_");
+
+		return param;
+	}
 }

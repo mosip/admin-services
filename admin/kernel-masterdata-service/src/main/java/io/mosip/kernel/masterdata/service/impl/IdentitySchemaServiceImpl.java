@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -279,7 +280,7 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 			}
 
 		} catch (DataAccessException | DataAccessLayerException e) {
-			LOGGER.error("Error while deleting identity schema : " , id, e);
+			LOGGER.error("Error while deleting identity schema : " , ExceptionUtils.neutralizeParam(id), e);
 			throw new MasterDataServiceException(SchemaErrorCode.SCHEMA_UPDATE_EXCEPTION.getErrorCode(),
 					SchemaErrorCode.SCHEMA_UPDATE_EXCEPTION.getErrorMessage());
 		}
@@ -301,7 +302,7 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 		if (domain == null || domain.isEmpty() || domain.isBlank()) {
 			domain = defaultDomain;
 		}
-        LOGGER.info("Getting latest published schema with version domain type", version, domain, type);
+        LOGGER.info("Getting latest published schema with version domain type", ExceptionUtils.neutralizeParam(version), ExceptionUtils.neutralizeParam(domain), ExceptionUtils.neutralizeParam(type));
 		
         // with identity schema version absent and type is absent
 		if (version <= 0 && (type == null || type.isBlank() || type.isEmpty())) {
