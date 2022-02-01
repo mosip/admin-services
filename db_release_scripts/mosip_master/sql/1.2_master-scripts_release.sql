@@ -268,7 +268,7 @@ ALTER TABLE master.batch_job_execution_params ALTER COLUMN string_val TYPE varch
 ALTER TABLE master.blocklisted_words DROP CONSTRAINT IF EXISTS pk_blwrd_code;
 ALTER TABLE master.blocklisted_words ALTER COLUMN lang_code DROP NOT NULL;
 ALTER TABLE master.blocklisted_words ADD CONSTRAINT pk_blwrd_code PRIMARY KEY (word);
-
+ALTER TABLE master.batch_job_execution_params ALTER COLUMN string_val TYPE varchar(5000) USING string_val::varchar;
 
 -----------------------------------------------------------------------------------------------------------------------------------------------
 -------------------------------------template,template_type and module_detail----------------------------------------------------------
