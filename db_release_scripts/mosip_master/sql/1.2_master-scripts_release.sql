@@ -107,19 +107,6 @@ REFERENCES master.machine_type (code) MATCH SIMPLE
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 
-
-ALTER TABLE master.template DROP CONSTRAINT IF EXISTS fk_tmplt_tmpltyp CASCADE;
-ALTER TABLE master.template ADD CONSTRAINT fk_tmplt_tmpltyp FOREIGN KEY (template_typ_code)
-REFERENCES master.template_type (code) MATCH SIMPLE
-ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
-
-ALTER TABLE master.template DROP CONSTRAINT IF EXISTS fk_tmplt_tffmt CASCADE;
-ALTER TABLE master.template ADD CONSTRAINT fk_tmplt_tffmt FOREIGN KEY (file_format_code)
-REFERENCES master.template_file_format (code) MATCH SIMPLE
-ON DELETE NO ACTION ON UPDATE NO ACTION;
-
 ALTER TABLE master.biometric_attribute DROP CONSTRAINT IF EXISTS fk_bmattr_bmtyp CASCADE;
 ALTER TABLE master.biometric_attribute ADD CONSTRAINT fk_bmattr_bmtyp FOREIGN KEY (bmtyp_code)
 REFERENCES master.biometric_type (code) MATCH SIMPLE
@@ -243,16 +230,6 @@ ALTER TABLE master.reg_working_nonworking ALTER COLUMN lang_code DROP NOT NULL;
 ALTER TABLE master.reg_working_nonworking ADD CONSTRAINT pk_working_nonworking PRIMARY KEY (regcntr_id,day_code);
 
 
-ALTER TABLE master.template_file_format DROP CONSTRAINT IF EXISTS pk_tffmt_code;
-ALTER TABLE master.template_file_format ALTER COLUMN lang_code DROP NOT NULL;
-ALTER TABLE master.template_file_format ADD CONSTRAINT pk_tffmt_code PRIMARY KEY (code);
-
-
-ALTER TABLE master.template_type DROP CONSTRAINT IF EXISTS pk_tmpltyp_code;
-ALTER TABLE master.template_type ALTER COLUMN lang_code DROP NOT NULL;
-ALTER TABLE master.template_type ADD CONSTRAINT pk_tmpltyp_code PRIMARY KEY (code);
-
-
 ALTER TABLE master.zone_user DROP CONSTRAINT IF EXISTS pk_tmpltyp_code;
 ALTER TABLE master.zone_user ALTER COLUMN lang_code DROP NOT NULL;
 ALTER TABLE master.user_detail_h ALTER COLUMN status_code DROP NOT NULL;
@@ -272,14 +249,6 @@ ALTER TABLE master.batch_job_execution_params ALTER COLUMN string_val TYPE varch
 
 -----------------------------------------------------------------------------------------------------------------------------------------------
 -------------------------------------template,template_type and module_detail----------------------------------------------------------
-
-TRUNCATE TABLE master.template cascade ;
-
-\COPY master.template (id,name,descr,file_format_code,model,file_txt,module_id,module_name,template_typ_code,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-template.csv' delimiter ',' HEADER  csv;
-
-TRUNCATE TABLE master.template_type cascade ;
-
-\COPY master.template_type (code,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-template_type.csv' delimiter ',' HEADER  csv;
 
 TRUNCATE TABLE master.module_detail cascade ;
 
