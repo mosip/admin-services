@@ -186,7 +186,7 @@ public class PacketUploadService {
         }
 
         if(!(response.get("response") == JSONObject.NULL))
-            return new PacketUploadStatus(response.getString("response"), false);
+            return new PacketUploadStatus(response.get("response").toString(), false);
 
         return new PacketUploadStatus("UNKNOWN ERROR : Empty Response", true);
     }
