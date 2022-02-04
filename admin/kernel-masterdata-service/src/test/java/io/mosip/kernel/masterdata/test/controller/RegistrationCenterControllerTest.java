@@ -418,7 +418,7 @@ public class RegistrationCenterControllerTest {
 	public void t019getRegistrationCenterByHierarchyLevelAndListTextAndlangCodeTest1() throws Exception {
 
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/eng/4/names?name=MyCountry")).andReturn(),
+				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/eng/2/names?name=MyCountry")).andReturn(),
 				"KER-MSD-215");
 
 	}
