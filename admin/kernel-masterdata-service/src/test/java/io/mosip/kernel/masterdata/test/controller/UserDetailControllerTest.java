@@ -310,7 +310,7 @@ public class UserDetailControllerTest
 	@WithUserDetails("global-admin")
 	public void t010updateUserRegCenterStatusTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc
-				.perform(MockMvcRequestBuilders.patch("/usercentermapping").param("isActive", "true").param("id", "4"))
+				.perform(MockMvcRequestBuilders.patch("/usercentermapping").param("isActive", "true").param("id", "41"))
 				.andReturn(), null);
 
 	}
