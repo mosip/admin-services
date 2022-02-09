@@ -13,7 +13,7 @@
 		<!-- common properties -->
 		<java.version>11</java.version>
 		<lombok.version>1.18.8</lombok.version>
-		<postgresql.version>42.2.2</postgresql.version>
+		<postgresql.version>42.2.25</postgresql.version>
 		<springdoc.version>1.5.10</springdoc.version>
 		<powermock.version>2.0.0</powermock.version>
 		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
