@@ -236,8 +236,9 @@ public class LocationServiceImpl implements LocationService {
 					throw new RequestException(LocationErrorCode.INVALID_HIERARCY_LEVEL.getErrorCode(),
 							LocationErrorCode.INVALID_HIERARCY_LEVEL.getErrorMessage());
 				}
-				List<Location> list = locationRepository.findByNameAndLevelLangCode(dto.getName(),
-						dto.getHierarchyLevel(), dto.getLangCode());
+				List<Location> list =(null!=dto.getParentLocCode() && !dto.getParentLocCode().isEmpty())?locationRepository.findByNameParentCodeAndLevelLangCode(dto.getName(),dto.getParentLocCode(),
+						dto.getHierarchyLevel(), dto.getLangCode()):locationRepository.findByNameAndLevelLangCode(dto.getName(),
+										dto.getHierarchyLevel(), dto.getLangCode());
 				if (list != null && !list.isEmpty()) {
 					auditUtil.auditRequest(
 							String.format(MasterDataConstant.FAILURE_CREATE, LocationDto.class.getSimpleName()),
@@ -299,6 +300,7 @@ public class LocationServiceImpl implements LocationService {
 	public LocationPutResponseDto updateLocationDetails(LocationDto locationDto) {
 		LocationPutResponseDto postLocationCodeResponseDto = new LocationPutResponseDto();
 		try {
+			
 			if (!EmptyCheckUtils.isNullEmpty(locationDto.getParentLocCode())) {
 				List<Location> parentLocList = locationRepository.findLocationHierarchyByCodeAndLanguageCode(
 						locationDto.getParentLocCode(), locationDto.getLangCode());
@@ -311,7 +313,8 @@ public class LocationServiceImpl implements LocationService {
 				throw new RequestException(LocationErrorCode.INVALID_HIERARCY_LEVEL.getErrorCode(),
 						LocationErrorCode.INVALID_HIERARCY_LEVEL.getErrorMessage());
 			}
-			List<Location> list = locationRepository.findByNameAndLevelLangCodeNotCode(locationDto.getName(),
+			List<Location> list = (null!=locationDto.getParentLocCode() && !locationDto.getParentLocCode().isEmpty())? locationRepository.findByNameParentLoccodeAndLevelLangCodeNotCode(locationDto.getName(),
+					locationDto.getParentLocCode(),	locationDto.getHierarchyLevel(), locationDto.getLangCode(), locationDto.getCode()): locationRepository.findByNameAndLevelLangCodeNotCode(locationDto.getName(),
 					locationDto.getHierarchyLevel(), locationDto.getLangCode(), locationDto.getCode());
 			if (list != null && !list.isEmpty()) {
 				auditUtil.auditRequest(
@@ -342,6 +345,7 @@ public class LocationServiceImpl implements LocationService {
 				throw new MasterDataServiceException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 			} else {
+							
 				location = MetaDataUtils.setUpdateMetaData(locationDto, location, false);
 				locationRepository.update(location);
 				MapperUtils.map(location, postLocationCodeResponseDto);
