@@ -243,6 +243,8 @@ public class LocationControllerIntegrationTest {
 		dto1.setIsActive(true);
 		request.setRequest(dto1);
 		String requestJson = mapper.writeValueAsString(request);
+		when(repo.findByNameParentLoccodeAndLevelLangCodeNotCode(Mockito.any(),Mockito.any(),Mockito.any(),Mockito.any(), Mockito.any()))
+		.thenReturn(Arrays.asList(location1));
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(), Mockito.any()))
 				.thenReturn(Arrays.asList(location1));
 		when(repo.findByNameAndLevelLangCodeNotCode(Mockito.any(),Mockito.any(),Mockito.any(), Mockito.any())).thenReturn(Arrays.asList(location1));
