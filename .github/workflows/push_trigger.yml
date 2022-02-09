@@ -122,7 +122,7 @@ jobs:
     - name: Build with Maven
       run: |
         cd admin
-        mvn -B -U package -s $GITHUB_WORKSPACE/settings.xml --file pom.xml
+        mvn -B -U package gpg:sign -s $GITHUB_WORKSPACE/settings.xml --file pom.xml
 
     - name: Publish the maven package
       run: |
