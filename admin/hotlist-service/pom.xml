@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.mosip.hotlist</groupId>
 	<artifactId>hotlist-service</artifactId>
-	<version>1.2.0</version>
+	<version>1.2.0.1</version>
 	<name>Hotlist Service</name>
 	<description>Service to block/unblock ids in MOSIP</description>
      <url>https://github.com/mosip/admin-services</url>
@@ -30,9 +30,9 @@
 		<spring-webflux.version>5.0.6.RELEASE</spring-webflux.version>
 
 		<!-- kernel properties -->
-		<kernel-core.version>1.2.0</kernel-core.version>
-		<kernel-websubclient-api.version>1.2.0</kernel-websubclient-api.version>
-		<kernel-logger-logback.version>1.2.0</kernel-logger-logback.version>
+		<kernel-core.version>1.2.0-SNAPSHOT</kernel-core.version>
+		<kernel-websubclient-api.version>1.2.0-SNAPSHOT</kernel-websubclient-api.version>
+		<kernel-logger-logback.version>1.2.0-SNAPSHOT</kernel-logger-logback.version>
 	</properties>
 
 	<repositories>
