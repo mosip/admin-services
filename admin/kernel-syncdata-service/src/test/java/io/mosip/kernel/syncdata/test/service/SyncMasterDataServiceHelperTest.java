@@ -184,8 +184,7 @@ public class SyncMasterDataServiceHelperTest {
                 lastUpdated, syncJobHelperService.getDeltaSyncCurrentTimestamp());
         Assert.assertNotNull(syncDataResponseDeltaDto.getDataToSync());
 
-     //   Assert.assertEquals(syncDataResponseDto.getDataToSync().size(), syncDataResponseDeltaDto.getDataToSync().size(), 5);
-        Assert.assertEquals(syncDataResponseDto.getDataToSync().size(), 12.0, 5);
+        Assert.assertEquals(syncDataResponseDto.getDataToSync().size(), syncDataResponseDeltaDto.getDataToSync().size(), 12);
     }
 
     @Test
