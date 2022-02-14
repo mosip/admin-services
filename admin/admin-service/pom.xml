@@ -7,18 +7,18 @@
 	<parent>
 		<groupId>io.mosip.admin</groupId>
 		<artifactId>admin-parent</artifactId>
-		<version>1.2.0-SNAPSHOT</version>
+		<version>1.2.0</version>
 	</parent>
 	<artifactId>admin-service</artifactId>
 	<name>admin-service</name>
-	<version>1.2.0-SNAPSHOT</version>
+	<version>1.2.0</version>
 	<url>http://maven.apache.org</url>
 	<packaging>jar</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring-cloud-config.version>2.0.4.RELEASE</spring-cloud-config.version>
 		<springdoc.version>1.5.10</springdoc.version>
-		<kernel.version>1.2.0-SNAPSHOT</kernel.version>
+		<kernel.version>1.2.0</kernel.version>
 	</properties>
 	<dependencies>
 		<dependency>

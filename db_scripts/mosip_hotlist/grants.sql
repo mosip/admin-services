@@ -1,0 +1,18 @@
+\c mosip_hotlist
+
+GRANT CONNECT
+   ON DATABASE mosip_hotlist
+   TO hotlistuser;
+
+GRANT USAGE
+   ON SCHEMA hotlist
+   TO hotlistuser;
+
+
+GRANT SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES
+   ON ALL TABLES IN SCHEMA hotlist 
+   TO hotlistuser;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA hotlist 
+	GRANT SELECT,INSERT,UPDATE,DELETE,REFERENCES ON TABLES TO hotlistuser;
+
