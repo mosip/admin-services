@@ -247,6 +247,14 @@ ALTER TABLE master.blocklisted_words ALTER COLUMN lang_code DROP NOT NULL;
 ALTER TABLE master.blocklisted_words ADD CONSTRAINT pk_blwrd_code PRIMARY KEY (word);
 ALTER TABLE master.batch_job_execution_params ALTER COLUMN string_val TYPE varchar(5000) USING string_val::varchar;
 
+ALTER TABLE master.user_detail DROP COLUMN uin;
+ALTER TABLE master.user_detail DROP COLUMN email;
+ALTER TABLE master.user_detail DROP COLUMN mobile;
+
+ALTER TABLE master.user_detail_h DROP COLUMN uin;
+ALTER TABLE master.user_detail_h DROP COLUMN email;
+ALTER TABLE master.user_detail_h DROP COLUMN mobile;
+
 -----------------------------------------------------------------------------------------------------------------------------------------------
 -------------------------------------template,template_type and module_detail----------------------------------------------------------
 
