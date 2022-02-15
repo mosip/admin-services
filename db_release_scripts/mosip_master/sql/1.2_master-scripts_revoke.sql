@@ -27,3 +27,11 @@ ALTER TABLE master.bulkupload_transaction ALTER COLUMN upload_description charac
 
 ALTER TABLE master.ui_spec ALTER COLUMN version TYPE numeric(5);
 ALTER TABLE master.ui_spec ALTER COLUMN identity_schema_version TYPE numeric(5);
+
+ALTER TABLE master.user_detail DROP COLUMN uin;
+ALTER TABLE master.user_detail DROP COLUMN email;
+ALTER TABLE master.user_detail DROP COLUMN mobile;
+
+ALTER TABLE master.user_detail_h DROP COLUMN uin;
+ALTER TABLE master.user_detail_h DROP COLUMN email;
+ALTER TABLE master.user_detail_h DROP COLUMN mobile;
