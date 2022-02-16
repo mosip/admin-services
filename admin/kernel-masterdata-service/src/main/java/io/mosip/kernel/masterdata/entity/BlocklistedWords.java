@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import io.mosip.kernel.masterdata.validator.CharacterValidator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -37,6 +38,7 @@ public class BlocklistedWords extends BaseEntity implements Serializable {
 	 */
 	@Id
 	@Column(name = "word", length = 128)
+	@CharacterValidator(message = "Blocklisted word cannot contain special characters")
 	private String word;
 
 	/**

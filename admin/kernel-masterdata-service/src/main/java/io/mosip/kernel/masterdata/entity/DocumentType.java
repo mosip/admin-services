@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
+import io.mosip.kernel.masterdata.validator.CharacterValidator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -38,8 +39,10 @@ public class DocumentType extends BaseEntity implements Serializable {
 	@AttributeOverrides({ @AttributeOverride(name = "code", column = @Column(name = "code", nullable = false)),
 			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
 	@OneToMany(mappedBy = "docTypeCode")
-  @Column(name = "code")
+	@Column(name = "code")
+	@CharacterValidator(message = "Document type code cannot contain special characters")
 	private String code;
+	
 	@OneToMany(mappedBy = "langCode")
 	private String langCode;
 

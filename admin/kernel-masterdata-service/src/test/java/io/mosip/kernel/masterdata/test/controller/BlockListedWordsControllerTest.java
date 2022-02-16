@@ -94,6 +94,20 @@ public class BlockListedWordsControllerTest {
 				.andReturn(), null);
 	}
 	
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void t001createBlockListedWordTest3() throws Exception {
+
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.post("/blocklistedwords").contentType(MediaType.APPLICATION_JSON)
+						.content("{\n" + "  \"id\": \"string\",\n" + "  \"version\": \"string\",\n"
+								+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
+								+ "   \"description\": \"Block listed word\",\n" + "    \"isActive\": true,\n"
+								+ "    \"langCode\": \"eng\",\n" + "    \"word\": \"damm%%\"\n" + "  }\n" + "}"))
+				.andReturn(), null);
+	}
+	
 	@Test
 	@WithUserDetails("global-admin")
 	public void t001createBlockListedWordTest1() throws Exception {
