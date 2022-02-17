@@ -114,6 +114,11 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 			"group by name, description, langCode, isActive")
 	List<DynamicFieldNameDto> getDistinctDynamicFieldsWithDescription();
 
+	@Query("SELECT new io.mosip.kernel.masterdata.dto.DynamicFieldNameDto(name, description, langCode, isActive) FROM DynamicField " +
+			"WHERE name=?1 and (isDeleted is null or isDeleted = false) " +
+			"group by name, description, langCode, isActive")
+	List<DynamicFieldNameDto> getDistinctDynamicFieldsWithDescriptionByFieldName(String name);
+
 	/**
 	 * Update dynamic field value specific to a language code
 	 * 
