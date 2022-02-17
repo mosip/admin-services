@@ -124,7 +124,7 @@ public class DocumentCategoryControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t001createDocumentCategoryTest1() throws Exception {
-		doCatDto.getRequest().setCode("abc%");
+		doCatDto.getRequest().setCode("a$%bc%");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/documentcategories").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(doCatDto))).andReturn(),"KER-MSD-999");
 

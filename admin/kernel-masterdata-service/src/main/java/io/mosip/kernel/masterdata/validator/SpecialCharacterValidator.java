@@ -13,16 +13,15 @@ import lombok.Data;
 @Data
 public class SpecialCharacterValidator implements ConstraintValidator<CharacterValidator, String> {
 
-	@Value("${mosip.kernel.masterdata.code.validate.regex:a-z0-9}")
-	private String allowedCharacters;
-
+	@Value("${mosip.kernel.masterdata.code.validate.regex:[^a-z0-9]}")
+	private String allowedCharactersRegex;
 	
+
 	@Override
 	public boolean isValid(String value, ConstraintValidatorContext context) {
-        
-		 allowedCharacters="[^"+allowedCharacters+"]";
-		 Pattern p = Pattern.compile(""+allowedCharacters+"", Pattern.CASE_INSENSITIVE);
-					Matcher m = p.matcher(value.trim());
+
+		Pattern p = Pattern.compile(allowedCharactersRegex, Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(value.trim());
 		return !(m.find());
 
 	}
