@@ -312,5 +312,13 @@ public class DocumentTypeControllerTest {
 		.andReturn(),null);
 	
 	}
+	@Test
+	@WithUserDetails("global-admin")
+	public void t001createDocumentCategoryTest1() throws Exception {
+		documentTypeDtoReq.getRequest().setCode("abc%");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/documenttypes").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(documentTypeDtoReq))).andReturn(),"KER-MSD-999");
+
+	}
 
 }
