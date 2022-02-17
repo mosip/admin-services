@@ -13,7 +13,7 @@ import lombok.Data;
 @Data
 public class SpecialCharacterValidator implements ConstraintValidator<CharacterValidator, String> {
 
-	@Value("${allowed_characters:a-z0-9}")
+	@Value("${mosip.kernel.masterdata.code.validate.regex:a-z0-9}")
 	private String allowedCharacters;
 
 	
