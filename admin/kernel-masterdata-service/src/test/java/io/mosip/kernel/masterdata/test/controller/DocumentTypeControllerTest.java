@@ -170,6 +170,14 @@ public class DocumentTypeControllerTest {
 				.content(mapper.writeValueAsString(mapper.writeValueAsString(documentTypeupdateDtoReq)))).andReturn(), "KER-MSD-999");
 	}
 	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t006updateDocumentTypeFailTest1() throws Exception {
+		documentTypeupdateDtoReq.getRequest().setCode("@#gsf");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/documenttypes").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(mapper.writeValueAsString(documentTypeupdateDtoReq)))).andReturn(), "KER-MSD-999");
+	}
+	
 	
 	/*@Test
 	@WithUserDetails("global-admin")
@@ -285,6 +293,8 @@ public class DocumentTypeControllerTest {
 				.andReturn(),null);
 
 	}
+	
+
 	
 	@Test
 	@WithUserDetails("global-admin")

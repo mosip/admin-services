@@ -15,15 +15,13 @@ public class SpecialCharacterValidator implements ConstraintValidator<CharacterV
 
 	@Value("${mosip.kernel.masterdata.code.validate.regex:[^a-z0-9]}")
 	private String allowedCharactersRegex;
-	
 
 	@Override
 	public boolean isValid(String value, ConstraintValidatorContext context) {
-
-		Pattern p = Pattern.compile(allowedCharactersRegex, Pattern.CASE_INSENSITIVE);
-		Matcher m = p.matcher(value.trim());
-		return !(m.find());
-
+	
+			Pattern p = Pattern.compile(allowedCharactersRegex, Pattern.CASE_INSENSITIVE);
+			Matcher m = p.matcher(value.trim());
+			return !(m.find());
 	}
 
 }

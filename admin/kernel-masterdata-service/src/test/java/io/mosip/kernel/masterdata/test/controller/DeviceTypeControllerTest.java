@@ -127,6 +127,15 @@ public class DeviceTypeControllerTest {
 				.content(mapper.writeValueAsString(filDto))).andReturn(),"KER-MSD-053");
 
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t001createDeviceTypeTest4() throws Exception {
+		filDto.getRequest().setCode("!@#xgzdf");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devicetypes").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(filDto))).andReturn(),"KER-MSD-999");
+
+	}
 
 	@Test
 	@WithUserDetails("global-admin")
@@ -136,7 +145,7 @@ public class DeviceTypeControllerTest {
 				.content(mapper.writeValueAsString(filDto))).andReturn(),null);
 
 	}
-	@Test
+/*	@Test
 	@WithUserDetails("global-admin")
 	public void t002createDeviceTypeFailTest() throws Exception {
 		filDto.getRequest().setCode(null);
@@ -144,12 +153,20 @@ public class DeviceTypeControllerTest {
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filDto))).andReturn(),"KER-MSD-999");
 
 	}
-
+*/
 	@Test
 	@WithUserDetails("global-admin")
 	public void t003updateDeviceTypeTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/devicetypes").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(filPutDto))).andReturn(),null);;
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t003updateDeviceTypeTest1() throws Exception {
+		filPutDto.getRequest().setCode("Q@$f213");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/devicetypes").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(filPutDto))).andReturn(),"KER-MSD-999");;
 	}
 	
 	@Test
