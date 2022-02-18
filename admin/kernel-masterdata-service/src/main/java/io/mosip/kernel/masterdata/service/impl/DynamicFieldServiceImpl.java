@@ -148,6 +148,35 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		}
 		return distinctDynamicField;
 	}
+	@Cacheable(value = "dynamic-field", key = "'dynamicfield'.concat(#langCode).concat(#fieldName)")
+	@Override
+	public List<DynamicFieldDefDto> getDistinctDynamicFieldsBasedOnFieldName(String fieldName, String langCode) {
+		List<DynamicFieldDefDto> dynamicFields = new ArrayList<DynamicFieldDefDto>();
+		try {
+			List<DynamicFieldNameDto> fields = dynamicFieldRepository.getDistinctDynamicFieldsWithDescriptionByFieldName(fieldName);
+			Map<String, List<DynamicFieldNameDto>> groupedData = fields
+					.stream()
+					.collect(Collectors.groupingBy(DynamicFieldNameDto::getName));
+
+			groupedData.keySet().forEach(k -> {
+				DynamicFieldDefDto dynamicFieldDefDto = new DynamicFieldDefDto();
+				dynamicFieldDefDto.setName(k);
+
+				List<DynamicFieldNameDto> list = groupedData.getOrDefault(k, Collections.EMPTY_LIST);
+				Optional<DynamicFieldNameDto> result = list.stream().filter( d -> langCode.equals(d.getLangCode()) && fieldName.equalsIgnoreCase(d.getName())).findFirst();
+				if(result.isPresent()) {
+					dynamicFieldDefDto.setDescription(result.get().getDescription());
+					dynamicFieldDefDto.setIsActive(result.get().getIsActive());
+				}
+				dynamicFields.add(dynamicFieldDefDto);
+			});
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorCode(),
+					ExceptionUtils.parseException(e));
+		}
+		return dynamicFields;
+	}
 
 	@Cacheable(value = "dynamic-field", key = "'dynamicfield'.concat(#langCode)")
 	@Override
