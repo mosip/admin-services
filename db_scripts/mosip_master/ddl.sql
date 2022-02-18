@@ -47,8 +47,8 @@
 \ir ddl/master-status_list.sql
 \ir ddl/master-status_type.sql
 \ir ddl/master-template_type.sql
-\ir ddl/master-template.sql
 \ir ddl/master-template_file_format.sql
+\ir ddl/master-template.sql
 \ir ddl/master-title.sql
 \ir ddl/master-tspid_seq.sql
 \ir ddl/master-user_detail.sql
