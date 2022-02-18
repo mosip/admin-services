@@ -58,6 +58,9 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 
 	@Autowired
 	private UISpecService uiSpecService;
+	
+	@Value("${mosip.mandatory-languages}")
+	private String mandatoryLanguage;
 
 	@Value("${mosip.ui.spec.default.domain:registration-client}")
 	private String defaultDomain;
@@ -159,7 +162,7 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 		entity.setIdVersion(0);
 		entity.setSchemaJson(dto.getSchema());
 		entity.setId(UUID.randomUUID().toString());
-		entity.setLangCode("eng");
+		entity.setLangCode(mandatoryLanguage.contains(",")?mandatoryLanguage.split(",")[0]:mandatoryLanguage);
 		entity.setIsDeleted(false);
 		entity.setAdditionalProperties(false);
 		try {
