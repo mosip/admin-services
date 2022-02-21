@@ -3,6 +3,11 @@ package io.mosip.kernel.masterdata.test.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.JsonUtils;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
+import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -17,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,6 +51,9 @@ public class DeviceTypeControllerTest {
 
 	@Autowired
 	public MockMvc mockMvc;
+
+	@Autowired
+	ObjectMapper objectMapper;
 
 	@MockBean
 	private PublisherClient<String, EventModel, HttpHeaders> publisher;
@@ -225,6 +234,20 @@ public class DeviceTypeControllerTest {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devicetypes/filtervalues").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(filValDto))).andReturn(),null);;
 
+	}
+	@Test
+	@WithUserDetails("global-admin")
+	public void t007deviceTypeFilterValuesTest2() throws Exception {
+		filValDto.getRequest().setPageFetch(1);
+		FilterResponseCodeDto filterResponseCodeDto=new FilterResponseCodeDto();
+		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.ALL.toString());
+		MvcResult mvcResult=mockMvc.perform(MockMvcRequestBuilders.post("/devicetypes/filtervalues").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(filValDto))).andReturn();
+		String content = mvcResult.getResponse().getContentAsString();
+		JSONObject jsonObject=new JSONObject(content);
+		JSONObject jsonObject1= (JSONObject) jsonObject.get("response");
+		filterResponseCodeDto=objectMapper.readValue(jsonObject1.toString(),FilterResponseCodeDto.class);
+		Assert.assertEquals(1,filterResponseCodeDto.getFilters().size());
 	}
 
 	@Test

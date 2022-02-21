@@ -2,12 +2,9 @@ package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,12 +21,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "template_type", schema = "master")
+@IdClass(CodeAndLanguageCodeID.class)
 public class TemplateType extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = -854194758755759037L;
 
 	@Id
-	@AttributeOverride(name = "code", column = @Column(name = "code", nullable = false, length = 36))
+	@AttributeOverrides({
+		@AttributeOverride(name = "code", column = @Column(name = "code", nullable = false, length = 36)),
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3))
+			})
 	private String code;
 
 	@Column(name = "lang_code", length = 3)
