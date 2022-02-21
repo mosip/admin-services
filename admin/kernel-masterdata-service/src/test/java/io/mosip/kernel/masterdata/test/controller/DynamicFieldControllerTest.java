@@ -386,5 +386,36 @@ public class DynamicFieldControllerTest {
 				null);
 
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t000getDynamicFieldByNameTest() throws Exception {
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/fieldName").param("fieldName", "bloodType1").param("langCode","eng")).andReturn(),
+				null);
+	}
+	@Test
+	@WithUserDetails("global-admin")
+	public void t000getDynamicFieldByNameTest3() throws Exception {
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/fieldName").param("fieldName", "bloodType1").param("langCode","eng").param("withValue", "true")).andReturn(),
+				null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t000getDynamicFieldByNameTest1() throws Exception {
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/fieldName").param("fieldName", "blod").param("langCode","eng")).andReturn(),
+				"KER-SCH-003");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t022getDynamicFieldByNameTest2() throws Exception {
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/fieldName").param("fieldName", "bloodType").param("langCode","eng1")).andReturn(),
+				"KER-SCH-003");
+	}
 
 }
