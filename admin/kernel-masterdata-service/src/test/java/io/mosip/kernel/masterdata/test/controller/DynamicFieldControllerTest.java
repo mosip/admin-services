@@ -272,14 +272,6 @@ public class DynamicFieldControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/distinct/eng")).andReturn(), null);
 	}
-
-	@Test
-	@WithUserDetails("global-admin")
-	public void t009getDistinctDynamicFieldsBasedOnLangAndFieldNameTest() throws Exception {
-
-		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/distinct/blood type/eng")).andReturn(), null);
-	}
 	
 	@Test
 	@WithUserDetails("global-admin")
@@ -287,13 +279,6 @@ public class DynamicFieldControllerTest {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/distinct/eng1")).andReturn(), null);
-	}
-	@Test
-	@WithUserDetails("global-admin")
-	public void t009getDistinctDynamicFieldsBasedOnLangAndFieldNameFailTest() throws Exception {
-
-		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/distinct/blood type/eng1")).andReturn(), null);
 	}
 	
 	@Test
