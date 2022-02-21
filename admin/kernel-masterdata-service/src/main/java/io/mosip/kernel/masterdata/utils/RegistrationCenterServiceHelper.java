@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.masterdata.util.model.Node;
 import io.mosip.kernel.core.masterdata.util.spi.UBtree;
+import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
@@ -29,11 +30,13 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.repository.RegExceptionalHolidayRepository;
 import io.mosip.kernel.masterdata.repository.RegWorkingNonWorkingRepo;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
 import io.mosip.kernel.masterdata.repository.UserDetailsRepository;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
@@ -66,6 +69,9 @@ public class RegistrationCenterServiceHelper {
 
 	@Autowired
 	private UserDetailsRepository userDetailsRepository;
+	
+	@Autowired
+	private RegistrationCenterRepository regCenterRepository ;
 
 	@Autowired
 	private ZoneUtils zoneUtils;
@@ -630,6 +636,28 @@ public class RegistrationCenterServiceHelper {
 			}
 		}
 		return true;
+
 	}
 
+	public void validateRegistrationCenterZone(String zoneCode, String regCenterId) {
+		List<Zone> subZones = zoneUtils.getChildZones(zoneCode);
+		boolean isRegCenterMappedToUserZone = false;
+		boolean isInSameHierarchy = false;
+		Zone registrationCenterZone = null;		
+		List<RegistrationCenter> centers = regCenterRepository.findByRegId(regCenterId);
+		for (Zone zone : subZones) {
+
+			if (zone.getCode().equals(centers.get(0).getZoneCode())) {
+				isRegCenterMappedToUserZone = true;
+				registrationCenterZone = zone;
+
+			}
+		}
+		if(!isRegCenterMappedToUserZone) {
+			throw new RequestException(DeviceErrorCode.INVALID_CENTER_ZONE.getErrorCode(),
+					DeviceErrorCode.INVALID_CENTER_ZONE.getErrorMessage());
+		}
+		Objects.requireNonNull(registrationCenterZone, "registrationCenterZone is empty");
+	}
+	
 }

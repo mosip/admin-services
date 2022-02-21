@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import io.mosip.kernel.masterdata.dto.DynamicFieldConsolidateResponseDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldDefDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
@@ -15,6 +16,7 @@ import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.DynamicField;
 
 /**
  * Methods to create / update / inactivate / addValues dynamic field
@@ -77,4 +79,8 @@ public interface DynamicFieldService {
 	public List<DynamicFieldDefDto> getDistinctDynamicFields(String langCode);
 
     FilterResponseCodeDto dynamicfieldFilterValues(FilterValueDto request);
+
+ 	public DynamicFieldConsolidateResponseDto getDynamicFieldByNameAndLangcode(String fieldName,String langCode,boolean withValue);
+
+
 }

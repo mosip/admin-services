@@ -121,6 +121,16 @@ public class MachineTypeControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
+	public void t001createMachineTypeTest1() throws Exception {
+		machineType.getRequest().setCode("#$dfg3");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/machinetypes").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(machineType))).andReturn(),
+				"KER-MSD-999");
+	}
+
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t002createMachineTypeFailTest() throws Exception {
 
 		MasterDataTest.checkResponse(
@@ -128,6 +138,7 @@ public class MachineTypeControllerTest {
 				null);
 	}
 	
+
 	@Test
 	@WithUserDetails("global-admin")
 	public void t003updateMachineTypeTest() throws Exception {
@@ -137,6 +148,16 @@ public class MachineTypeControllerTest {
 				"KER-MSD-064");
 	}
 
+	@Test
+	@WithUserDetails("global-admin")
+	public void t003updateMachineTypeTest1() throws Exception {
+		machineTypePut.getRequest().setCode("ETRrt$#%@$%");
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/machinetypes").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(machineTypePut))).andReturn(),
+				"KER-MSD-999");
+	}
+	
+	
 	/*@Test
 	@WithUserDetails("global-admin")
 	public void t004updateMachineTypeFailTest() throws Exception {

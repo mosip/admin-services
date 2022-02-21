@@ -135,6 +135,9 @@ public class MachineServiceImpl implements MachineService {
 
 	@Autowired
 	private RegistrationCenterRepository regCenterRepository;
+	
+	@Autowired
+	private RegistrationCenterServiceHelper regCenterServiceHelper;
 
 	/*
 	 * (non-Javadoc)
@@ -699,7 +702,7 @@ public class MachineServiceImpl implements MachineService {
 		try {
 			if(machinePostReqDto.getRegCenterId() != null && !machinePostReqDto.getRegCenterId().isEmpty()) {
 				validateRegistrationCenter(machinePostReqDto.getRegCenterId());
-				validateRegistrationCenterZone(machineZone,machinePostReqDto.getRegCenterId());
+				regCenterServiceHelper.validateRegistrationCenterZone(machineZone,machinePostReqDto.getRegCenterId());
 			}
 
 			//validate machine name
@@ -794,26 +797,7 @@ public class MachineServiceImpl implements MachineService {
 		
 	}
 	
-	private void validateRegistrationCenterZone(String zoneCode, String regCenterId) {
-		List<Zone> subZones = zoneUtils.getSubZones(languageUtils.getDefaultLanguage());
-		boolean isRegCenterMappedToUserZone = false;
-		boolean isInSameHierarchy = false;
-		Zone registrationCenterZone = null;		
-		List<RegistrationCenter> centers = regCenterRepository.findByRegId(regCenterId);
-		for (Zone zone : subZones) {
-
-			if (zone.getCode().equals(centers.get(0).getZoneCode())) {
-				isRegCenterMappedToUserZone = true;
-				registrationCenterZone = zone;
-
-			}
-		}
-		if(!isRegCenterMappedToUserZone) {
-			throw new RequestException(DeviceErrorCode.INVALID_CENTER_ZONE.getErrorCode(),
-					DeviceErrorCode.INVALID_CENTER_ZONE.getErrorMessage());
-		}
-		Objects.requireNonNull(registrationCenterZone, "registrationCenterZone is empty");
-	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -835,7 +819,7 @@ public class MachineServiceImpl implements MachineService {
 		try {
 			if(machinePutReqDto.getRegCenterId() != null && !machinePutReqDto.getRegCenterId().isEmpty()) {
 				validateRegistrationCenter(machinePutReqDto.getRegCenterId());
-				validateRegistrationCenterZone(machineZone,machinePutReqDto.getRegCenterId());
+				regCenterServiceHelper.validateRegistrationCenterZone(machineZone,machinePutReqDto.getRegCenterId());
 			}
 			// find requested machine is there or not in Machine Table
 			List<Machine> renMachine = machineRepository.findMachineById(machinePutReqDto.getId());

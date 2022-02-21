@@ -5,6 +5,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import io.mosip.kernel.masterdata.validator.CharacterValidator;
 import io.mosip.kernel.masterdata.validator.StringFormatter;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,6 +21,7 @@ public class DocumentCategoryPutDto {
 	@NotNull
 	@StringFormatter(min = 1, max = 36)
 	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")
+	@CharacterValidator(message = "Document category code cannot have special characters")
 	private String code;
 
 	/**

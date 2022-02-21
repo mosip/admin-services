@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.dto;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import io.mosip.kernel.masterdata.validator.CharacterValidator;
 import io.mosip.kernel.masterdata.validator.StringFormatter;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import lombok.Data;
@@ -13,6 +14,7 @@ public class BlockListedWordsUpdateDto {
 
 	@NotNull
 	@StringFormatter(min = 1, max = 128)
+	@CharacterValidator(message = "Blocklisted word cannot have special characters")
 	private String word;
 
 
