@@ -1384,7 +1384,7 @@ public class IntegratedRepositoryTest {
 	public void tst004updateDeviceTest1() throws Exception {
 		List rl = new ArrayList();
 		RegistrationCenter rc = getRegistrationCenter();
-		rc.setZoneCode("RTH");
+		rc.setZoneCode("NTH");//RTH
 		rl.add(rc);
 		when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(Mockito.anyString())).thenReturn(rl);
 		when(registrationCenterRepository.findByRegId(Mockito.anyString())).thenReturn(rl);
