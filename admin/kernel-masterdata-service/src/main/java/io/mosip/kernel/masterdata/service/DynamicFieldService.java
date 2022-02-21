@@ -77,6 +77,4 @@ public interface DynamicFieldService {
 	public List<DynamicFieldDefDto> getDistinctDynamicFields(String langCode);
 
     FilterResponseCodeDto dynamicfieldFilterValues(FilterValueDto request);
-
-    List<DynamicFieldDefDto> getDistinctDynamicFieldsBasedOnFieldName(String fieldName, String langCode);
 }
