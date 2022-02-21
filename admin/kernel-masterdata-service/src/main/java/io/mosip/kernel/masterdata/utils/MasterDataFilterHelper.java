@@ -90,7 +90,6 @@ public class MasterDataFilterHelper {
 	public <E, T> List<T> filterValues(Class<E> entity, FilterDto filterDto, FilterValueDto filterValueDto, List<String> zoneCodes) {
 		String columnName = filterDto.getColumnName();
 		String columnType = filterDto.getType();
-		int filterValueMaxRecord=0;
 		List<Predicate> predicates = new ArrayList<>();
 		Predicate caseSensitivePredicate = null;
 		/*if (checkColNameAndType(columnName, columnType)) {
@@ -142,8 +141,7 @@ public class MasterDataFilterHelper {
 			criteriaQueryByType.distinct(false);
 		}
 		TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQueryByType);
-		filterValueMaxRecord=filterValueDto.getPageFetch()>0 ? filterValueDto.getPageFetch() : filterValueMaxColumns;
-		results = typedQuery.setMaxResults(filterValueMaxRecord).getResultList();
+		results = typedQuery.setMaxResults(filterValueDto.getPageFetch()>0 ? filterValueDto.getPageFetch() : filterValueMaxColumns).getResultList();
 		return results;
 
 	}
@@ -156,7 +154,6 @@ public class MasterDataFilterHelper {
 	public <E, T> List<T> filterValuesWithoutLangCode(Class<E> entity, FilterDto filterDto,
 													  FilterValueDto filterValueDto, List<String> zoneCodes) {
 		String columnName = filterDto.getColumnName();
-		int filterValueMaxRecord=0;
 		String columnType = filterDto.getType();
 		List<Predicate> predicates = new ArrayList<>();
 		Predicate caseSensitivePredicate = null;
@@ -197,8 +194,7 @@ public class MasterDataFilterHelper {
 			criteriaQueryByType.distinct(false);
 		}
 		TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQueryByType);
-		filterValueMaxRecord=filterValueDto.getPageFetch()>0 ? filterValueDto.getPageFetch() : filterValueMaxColumns;
-		results = typedQuery.setMaxResults(filterValueMaxRecord).getResultList();
+		results = typedQuery.setMaxResults(filterValueDto.getPageFetch()>0 ? filterValueDto.getPageFetch() : filterValueMaxColumns).getResultList();
 		return results;
 
 	}
@@ -220,7 +216,6 @@ public class MasterDataFilterHelper {
 
 	public <E> List<FilterData> filterValuesWithCode(Class<E> entity, FilterDto filterDto,
 													 FilterValueDto filterValueDto, String fieldCodeColumnName, List<String> zoneCodes) {
-		int filterValueMaxRecord=0;
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		String columnName = filterDto.getColumnName();
 		String columnType = filterDto.getType();
@@ -265,8 +260,7 @@ public class MasterDataFilterHelper {
 			criteriaQueryByType.distinct(false);
 		}
 		TypedQuery<FilterData> typedQuery = entityManager.createQuery(criteriaQueryByType);
-		filterValueMaxRecord=filterValueDto.getPageFetch()>0 ? filterValueDto.getPageFetch() : filterValueMaxColumns;
-		results = typedQuery.setMaxResults(filterValueMaxRecord).getResultList();
+		results = typedQuery.setMaxResults(filterValueDto.getPageFetch()>0 ? filterValueDto.getPageFetch() : filterValueMaxColumns).getResultList();
 		return results;
 
 	}
@@ -280,7 +274,6 @@ public class MasterDataFilterHelper {
 
 	public <E> List<FilterData> filterValuesWithCodeWithoutLangCode(Class<E> entity, FilterDto filterDto,
 																	FilterValueDto filterValueDto, String fieldCodeColumnName, List<String> zoneCodes) {
-		int filterValueMaxRecord=0;
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		String columnName = filterDto.getColumnName();
 		String columnType = filterDto.getType();
@@ -319,8 +312,7 @@ public class MasterDataFilterHelper {
 			criteriaQueryByType.distinct(false);
 		}
 		TypedQuery<FilterData> typedQuery = entityManager.createQuery(criteriaQueryByType);
-		filterValueMaxRecord=filterValueDto.getPageFetch()>0 ? filterValueDto.getPageFetch() : filterValueMaxColumns;
-		results = typedQuery.setMaxResults(filterValueMaxRecord).getResultList();
+		results = typedQuery.setMaxResults(filterValueDto.getPageFetch()>0 ? filterValueDto.getPageFetch() : filterValueMaxColumns).getResultList();
 		return results;
 
 	}
