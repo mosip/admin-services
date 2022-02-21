@@ -1203,7 +1203,7 @@ public class IntegratedRepositoryTest {
 
 	}
 
-	@Test
+/*	@Test
 	@WithUserDetails("global-admin")
 	public void tst022createMachineTest() throws Exception {
 		List rl = new ArrayList();
@@ -1239,9 +1239,9 @@ public class IntegratedRepositoryTest {
 				mockMvc.perform(MockMvcRequestBuilders.post("/machines").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(machineRequest))).andReturn(),
 				"KER-MSD-250");
-	}
+	}*/
 
-	@Test
+/*	@Test
 	@WithUserDetails("global-admin")
 	public void tst024updateMachineAdminTest() throws Exception {
 		RequestWrapper<MachinePutReqDto> machineCenterDto = new RequestWrapper<MachinePutReqDto>();
@@ -1273,7 +1273,7 @@ public class IntegratedRepositoryTest {
 				mockMvc.perform(MockMvcRequestBuilders.put("/machines").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(machineCenterDto))).andReturn(),
 				"KER-MSD-030");
-	}
+	}*/
 
 	public void tst024updateMachineAdminTest4() throws Exception {
 		when(machineRepository.findMachineById(Mockito.anyString())).thenThrow(new DataAccessException("...") {
@@ -1379,7 +1379,7 @@ public class IntegratedRepositoryTest {
 
 	}
 
-	@Test
+/*	@Test
 	@WithUserDetails("global-admin")
 	public void tst004updateDeviceTest1() throws Exception {
 		List rl = new ArrayList();
@@ -1413,7 +1413,7 @@ public class IntegratedRepositoryTest {
 						.content(mapper.writeValueAsString(devicePutReqDtoReq))).andReturn(),
 				"KER-MSD-219");
 
-	}
+	}*/
 
 	@Test
 	@WithUserDetails("global-admin")
