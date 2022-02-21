@@ -827,7 +827,7 @@ public class DeviceServiceImpl implements DeviceService {
 	}
 
 	private void validateRegistrationCenterZone(String zoneCode, String regCenterId) {
-		List<Zone> subZones = zoneUtils.getSubZones(languageUtils.getDefaultLanguage());
+		List<Zone> subZones = zoneUtils.getChildZones(zoneCode);
 		boolean isRegCenterMappedToUserZone = false;
 		boolean isInSameHierarchy = false;
 		Zone registrationCenterZone = null;
