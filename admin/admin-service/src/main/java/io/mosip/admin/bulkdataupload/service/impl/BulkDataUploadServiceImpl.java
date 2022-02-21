@@ -20,6 +20,7 @@ import io.mosip.admin.bulkdataupload.batch.JobResultListener;
 import io.mosip.admin.bulkdataupload.batch.PacketUploadTasklet;
 import io.mosip.admin.bulkdataupload.dto.*;
 import io.mosip.admin.bulkdataupload.batch.CustomRecordSeparatorPolicy;
+import io.mosip.admin.bulkdataupload.batch.CustomChunkListener;
 import io.mosip.admin.bulkdataupload.service.PacketUploadService;
 import io.mosip.kernel.core.util.*;
 import org.digibooster.spring.batch.security.listener.JobExecutionSecurityContextListener;
@@ -88,13 +89,13 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	private static String STATUS_MESSAGE = "SUCCESS: %d, FAILED: %d";
 	private static String CSV_UPLOAD_MESSAGE = "FILE: %s, READ: %d, STATUS: %s, MESSAGE: %s";
 	private static String PKT_UPLOAD_MESSAGE = "FILE: %s, STATUS: %s, MESSAGE: %s";
-
+	
 	@Autowired
 	ApplicationContext applicationContext;
 
 	@Autowired
 	private AuditUtil auditUtil;
-
+	
 	@Autowired
 	private Mapper mapper;
 
@@ -132,6 +133,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 	@Autowired
 	private DataSource dataSource;
+	
+	@Autowired
+	private CustomChunkListener customChunkListener;
 
 	@Autowired
 	private JobResultListener jobResultListener;
@@ -396,6 +400,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 				.reader(itemReader(file, entity))
 				.processor(processor(operation, contextUser))
 				.writer(itemWriterMapper(repositoryName, operationMapper(operation), entity))
+				.listener(customChunkListener)
 				.build();
 
 		return jobBuilderFactory.get("ETL-Load")

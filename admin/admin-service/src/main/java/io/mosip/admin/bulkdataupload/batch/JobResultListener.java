@@ -23,8 +23,8 @@ import java.util.Optional;
 public class JobResultListener implements JobExecutionListener {
 
     private static final Logger logger = LoggerFactory.getLogger(JobResultListener.class);
-    private static String STATUS_MESSAGE = " <br/> READ: %d, STATUS: %s, MESSAGE: %s";
-    private static String UPDATE_QUERY = "UPDATE bulkupload_transaction SET status_code=?, record_count=record_count+?, upload_description=upload_description||? , upd_dtimes=now() WHERE id=?";
+    private static String STATUS_MESSAGE = " <br/> STATUS: %s, MESSAGE: %s";
+    private static String UPDATE_QUERY = "UPDATE bulkupload_transaction SET status_code=?, upload_description=upload_description||? , upd_dtimes=now() WHERE id=?";
     private DataSource dataSource;
     private AuditUtil auditUtil;
     private JobExecutionSecurityContextListener jobExecutionSecurityContextListener;
@@ -70,18 +70,14 @@ public class JobResultListener implements JobExecutionListener {
                 });
             });
 
-            Optional<Integer> commitResult = jobExecution.getStepExecutions().stream().map(StepExecution::getCommitCount).findFirst();
-            Optional<Integer> readResult = jobExecution.getStepExecutions().stream().map(StepExecution::getCommitCount).findFirst();
-            int readCount = readResult.isPresent() ? readResult.get() : 0;
-            int commitCount = commitResult.isPresent() ? commitResult.get() : 0;
-            String message = String.format(STATUS_MESSAGE, readCount,
+            String message = String.format(STATUS_MESSAGE,
                     jobExecution.getStatus().toString(), failures.isEmpty() ? "0 Errors" : failures.toString());
             auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_COMPLETED,
                             jobId + " --> " + message), jobExecution.getJobParameters().getString("username"));
 
             JdbcTemplate jdbcTemplate = new JdbcTemplate(this.dataSource);
-            Object[] params = {jobExecution.getExitStatus().getExitCode(), commitCount, message, jobId};
-            int[] types = {Types.VARCHAR, Types.INTEGER, Types.VARCHAR, Types.VARCHAR};
+            Object[] params = {jobExecution.getExitStatus().getExitCode(), message, jobId};
+            int[] types = {Types.VARCHAR, Types.VARCHAR, Types.VARCHAR};
             jdbcTemplate.update(UPDATE_QUERY, params, types);
 
         } catch (Throwable t) {
