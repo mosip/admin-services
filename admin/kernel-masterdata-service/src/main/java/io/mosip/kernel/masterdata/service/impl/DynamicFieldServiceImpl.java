@@ -496,7 +496,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		}
 	}
 
-	@Cacheable(value = "dynamic-field", key = "'dynamicfield'.concat('-').concat(#fieldName)")
+	@Cacheable(value = "dynamic-field", key = "'dynamicfield'.concat('-').concat(#fieldName).concat('-').concat(#langCode).concat('-').concat(#withValue)")
 	@Override
 	public DynamicFieldConsolidateResponseDto getDynamicFieldByNameAndLangcode(String fieldName, String langCode,boolean withValue) {
 		try {

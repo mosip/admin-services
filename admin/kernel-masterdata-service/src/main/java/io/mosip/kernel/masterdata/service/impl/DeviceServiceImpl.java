@@ -125,6 +125,8 @@ public class DeviceServiceImpl implements DeviceService {
 	@Autowired
 	private AuditUtil auditUtil;
 
+	@Autowired
+	private RegistrationCenterServiceHelper regCenterServiceHelper;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -201,7 +203,7 @@ public class DeviceServiceImpl implements DeviceService {
 			validateZone(deviceDto.getZoneCode(),deviceDto.getLangCode());
 			if (deviceDto.getRegCenterId() != null && !deviceDto.getRegCenterId().isEmpty()) {
 				validateRegistrationCenter(deviceDto.getRegCenterId());
-				validateRegistrationCenterZone(deviceDto.getZoneCode(), deviceDto.getRegCenterId());
+				regCenterServiceHelper.validateRegistrationCenterZone(deviceDto.getZoneCode(), deviceDto.getRegCenterId());
 			}
 			if (deviceDto != null) {
 				entity = MetaDataUtils.setCreateMetaData(deviceDto, Device.class);
@@ -745,7 +747,7 @@ public class DeviceServiceImpl implements DeviceService {
 		try {
 			if (devicePutReqDto.getRegCenterId() != null && !devicePutReqDto.getRegCenterId().isEmpty()) {
 				validateRegistrationCenter(devicePutReqDto.getRegCenterId());
-				validateRegistrationCenterZone(devicePutReqDto.getZoneCode(), devicePutReqDto.getRegCenterId());
+				regCenterServiceHelper.validateRegistrationCenterZone(devicePutReqDto.getZoneCode(), devicePutReqDto.getRegCenterId());
 			}
 			// find requested device is there or not in Device Table
 			List<Device> renDevice = deviceRepository.findtoUpdateDeviceById(devicePutReqDto.getId());
@@ -824,33 +826,6 @@ public class DeviceServiceImpl implements DeviceService {
 					DeviceErrorCode.INVALID_CENTER.getErrorMessage());
 		}
 
-	}
-
-	private void validateRegistrationCenterZone(String zoneCode, String regCenterId) {
-		List<Zone> subZones = zoneUtils.getChildZones(zoneCode);
-		boolean isRegCenterMappedToUserZone = false;
-		boolean isInSameHierarchy = false;
-		Zone registrationCenterZone = null;
-		List<String> zoneIds = subZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
-		List<RegistrationCenter> centers = regCenterRepository.findByRegId(regCenterId);
-		for (Zone zone : subZones) {
-
-			if (zone.getCode().equals(centers.get(0).getZoneCode())) {
-				isRegCenterMappedToUserZone = true;
-				registrationCenterZone = zone;
-
-			}
-		}
-		if (!isRegCenterMappedToUserZone) {
-			throw new RequestException(DeviceErrorCode.INVALID_CENTER_ZONE.getErrorCode(),
-					DeviceErrorCode.INVALID_CENTER_ZONE.getErrorMessage());
-		}
-		Objects.requireNonNull(registrationCenterZone, "registrationCenterZone is empty");
-	/*	isInSameHierarchy = subZones.stream().anyMatch(zone -> zone.equals(zoneCode));
-		if (!isInSameHierarchy) {
-			throw new RequestException(DeviceErrorCode.INVALID_CENTER_ZONE.getErrorCode(),
-					DeviceErrorCode.INVALID_CENTER_ZONE.getErrorMessage());
-		}*/
 	}
 
 	@Override
