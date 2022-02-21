@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.mosip.kernel.masterdata.utils.OptionalFilter;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import lombok.Data;
@@ -16,6 +17,7 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FilterValueDto {
 	@NotNull
 	@Valid
@@ -25,4 +27,6 @@ public class FilterValueDto {
 	private String languageCode;
 
 	private List<SearchFilter> optionalFilters;
+
+	private int pageFetch;
 }

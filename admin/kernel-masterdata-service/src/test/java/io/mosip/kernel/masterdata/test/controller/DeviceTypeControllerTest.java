@@ -209,6 +209,15 @@ public class DeviceTypeControllerTest {
 				.content(mapper.writeValueAsString(filValDto))).andReturn(),null);;
 
 	}
+	@Test
+	@WithUserDetails("global-admin")
+	public void t007deviceTypeFilterValuesTest2() throws Exception {
+		filValDto.getRequest().setPageFetch(3);
+		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.ALL.toString());
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devicetypes/filtervalues").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(filValDto))).andReturn(),null);;
+
+	}
 
 	@Test
 	@WithUserDetails("global-admin")
