@@ -391,14 +391,14 @@ public class DynamicFieldControllerTest {
 	@WithUserDetails("global-admin")
 	public void t000getDynamicFieldByNameTest() throws Exception {
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/fieldName").param("fieldName", "bloodType1").param("langCode","eng")).andReturn(),
+				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/bloodType1/eng")).andReturn(),
 				null);
 	}
 	@Test
 	@WithUserDetails("global-admin")
 	public void t000getDynamicFieldByNameTest3() throws Exception {
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/fieldName").param("fieldName", "bloodType1").param("langCode","eng").param("withValue", "true")).andReturn(),
+				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/bloodType1/eng").param("withValue", "true")).andReturn(),
 				null);
 	}
 	
@@ -406,7 +406,7 @@ public class DynamicFieldControllerTest {
 	@WithUserDetails("global-admin")
 	public void t000getDynamicFieldByNameTest1() throws Exception {
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/fieldName").param("fieldName", "blod").param("langCode","eng")).andReturn(),
+				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/blod/eng")).andReturn(),
 				"KER-SCH-003");
 	}
 	
@@ -414,7 +414,7 @@ public class DynamicFieldControllerTest {
 	@WithUserDetails("global-admin")
 	public void t022getDynamicFieldByNameTest2() throws Exception {
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/fieldName").param("fieldName", "bloodType").param("langCode","eng1")).andReturn(),
+				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/bloodType/eng1")).andReturn(),
 				"KER-SCH-003");
 	}
 

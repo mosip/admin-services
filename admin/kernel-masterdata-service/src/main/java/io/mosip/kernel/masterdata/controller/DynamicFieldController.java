@@ -5,6 +5,7 @@ import java.time.ZoneOffset;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -85,9 +86,9 @@ public class DynamicFieldController {
 
 
 	@ResponseFilter
-	@GetMapping("/fieldName")
+	@GetMapping("/{fieldName}/{langCode}")
 	@ApiOperation(value = "Service to fetch  dynamic field based on langcode and field name")
-	public ResponseWrapper<DynamicFieldConsolidateResponseDto> getDynamicFieldByName(@RequestParam("fieldName") String fieldName,@RequestParam("langCode") String langCode,@RequestParam(name = "withValue",defaultValue = "false",required = false) boolean withValue){
+	public ResponseWrapper<DynamicFieldConsolidateResponseDto> getDynamicFieldByName(@PathParam("fieldName") String fieldName,@PathParam("langCode") String langCode,@RequestParam(name = "withValue",defaultValue = "false",required = false) boolean withValue){
 		ResponseWrapper<DynamicFieldConsolidateResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(dynamicFieldService.getDynamicFieldByNameAndLangcode(fieldName,langCode,withValue));
 		return responseWrapper;
