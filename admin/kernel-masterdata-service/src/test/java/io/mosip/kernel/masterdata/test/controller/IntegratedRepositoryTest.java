@@ -2353,7 +2353,7 @@ public class IntegratedRepositoryTest {
 	public void tst022getDynamicFieldByNameTest1() throws Exception {
 		when( dynamicFieldRepository.findAllDynamicFieldByNameAndLangCode(Mockito.anyString(), Mockito.anyString())).thenThrow(new DataAccessException("...") {});
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/fieldName").param("fieldName", "blod").param("langCode","eng")).andReturn(),
+				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/blod/eng")).andReturn(),
 				"KER-SCH-001");
 	}
 	
