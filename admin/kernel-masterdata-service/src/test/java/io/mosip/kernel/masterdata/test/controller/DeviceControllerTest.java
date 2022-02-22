@@ -86,7 +86,7 @@ public class DeviceControllerTest {
 		d1.setRegCenterId("10001");
 		d1.setSerialNum("3456789012");
 
-		d1.setZoneCode("RBT");
+		d1.setZoneCode("NTH");
 		deviceDtoReq.setRequest(d1);
 
 		devicePutReqDtoReq = new RequestWrapper<DevicePutReqDto>();
@@ -101,7 +101,7 @@ public class DeviceControllerTest {
 		devicePutReqDto.setRegCenterId("10001");
 		devicePutReqDto.setSerialNum("3456789012");
 
-		devicePutReqDto.setZoneCode("RBT");
+		devicePutReqDto.setZoneCode("NTH");
 		devicePutReqDtoReq.setRequest(devicePutReqDto);
 
 		SearchDtoWithoutLangCode sc = new SearchDtoWithoutLangCode();

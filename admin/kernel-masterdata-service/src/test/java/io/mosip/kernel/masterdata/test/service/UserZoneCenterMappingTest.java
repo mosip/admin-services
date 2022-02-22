@@ -277,7 +277,7 @@ public class UserZoneCenterMappingTest {
     public void test11CreateUserCenterMappingTest() {
         UserDetailsDto userDetailsDto = new UserDetailsDto();
         userDetailsDto.setId("global-admin");
-        userDetailsDto.setRegCenterId("10001");
+        userDetailsDto.setRegCenterId("10002");
         userDetailsDto.setLangCode("eng");
         UserDetailsCenterMapping userDetailsCenterMapping = userDetailsService.createUser(userDetailsDto);
         Assert.assertEquals(userDetailsDto.getRegCenterId(), userDetailsCenterMapping.getRegCenterId());
