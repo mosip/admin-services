@@ -181,7 +181,7 @@ public class ZoneServiceImpl implements ZoneService {
 		return zoneValid;
 	}
 
-	@Override
+	/*@Override
 	public boolean authorizeZone(String rId) {
 		String centerId = rId.substring(0, centerIdLength);
 		RegistrationCenter registrationCenter = getZoneBasedOnTheRId(centerId);
@@ -200,9 +200,9 @@ public class ZoneServiceImpl implements ZoneService {
 		}
 
 		return registrationCenter.get(0);
-	}
+	}*/
 
-	private boolean isPresentInTheHierarchy(RegistrationCenter registrationCenter) {
+	/*private boolean isPresentInTheHierarchy(RegistrationCenter registrationCenter) {
 		List<Zone> zones = zoneUtils.getUserLeafZones(registrationCenter.getLangCode());
 		boolean isAuthorized = zones.stream().anyMatch(zone -> zone.getCode().equals(registrationCenter.getZoneCode()));
 		if (!isAuthorized) {
@@ -211,7 +211,7 @@ public class ZoneServiceImpl implements ZoneService {
 		}
 
 		return isAuthorized;
-	}
+	}*/
 
 	@Override
 	public ZoneNameResponseDto getZone(String zoneCode, String langCode) {

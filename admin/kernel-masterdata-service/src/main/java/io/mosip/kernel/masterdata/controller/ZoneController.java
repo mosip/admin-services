@@ -129,7 +129,7 @@ public class ZoneController {
 		return responseWrapper;
 	}
 
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetzonesauthorize())")
+	/*@PreAuthorize("hasAnyRole(@authorizedRoles.getGetzonesauthorize())")
 	@GetMapping("/authorize")
 	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
@@ -137,7 +137,7 @@ public class ZoneController {
 		ResponseWrapper<Boolean> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(zoneService.authorizeZone(rId));
 		return responseWrapper;
-	}
+	}*/
 	
 	/**
 	 * Api to filter Zone based on column and type provided.
