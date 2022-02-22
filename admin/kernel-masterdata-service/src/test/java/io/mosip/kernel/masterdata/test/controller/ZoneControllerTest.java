@@ -246,18 +246,18 @@ public class ZoneControllerTest {
 
 	}
 	
-	@Test
+	/*@Test
 	@WithUserDetails("global-admin")
-	public void t018authorizeZoneTest() throws Exception {
+	public void t018authorizeZoneTest1() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/authorize").param("rid","10002")).andReturn(), null);
 
 	}
 	@Test
 	@WithUserDetails("global-admin")
-	public void t018authorizeZoneTest1() throws Exception {
+	public void t018authorizeZoneTest2() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/authorize").param("rid","10103")).andReturn(), "ADM-PKT-001");
 
-	}
+	}*/
 	
 	
 }

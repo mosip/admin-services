@@ -39,7 +39,7 @@ public interface ZoneService {
 
 	public boolean getUserValidityZoneHierarchy(String langCode, String zoneCode);
 
-	public boolean authorizeZone(String rId);
+	//public boolean authorizeZone(String rId);
 
 	public ZoneNameResponseDto getZone(String zoneCode, String langCode);
 
