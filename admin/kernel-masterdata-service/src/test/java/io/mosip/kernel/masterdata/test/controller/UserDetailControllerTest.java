@@ -189,6 +189,7 @@ public class UserDetailControllerTest
 	@Test
 	@WithUserDetails("global-admin")
 	public void t002mapUserRegCenterFailTest() throws Exception {
+		ud.getRequest().setRegCenterId("10002");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping")
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(ud))).andReturn(),
@@ -199,7 +200,7 @@ public class UserDetailControllerTest
 	@Test
 	@WithUserDetails("global-admin")
 	public void t001mapUserRegCenterTest() throws Exception {
-	
+		ud.getRequest().setRegCenterId("10002");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping")
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(ud))).andReturn(),
@@ -211,6 +212,7 @@ public class UserDetailControllerTest
 	@WithUserDetails("global-admin")
 	public void t002mapUserRegCenterTest() throws Exception {
 		ud.getRequest().setLangCode(null);
+		ud.getRequest().setRegCenterId("10002");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping")
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(ud))).andReturn(),
@@ -243,6 +245,7 @@ public class UserDetailControllerTest
 	@Test
 	@WithUserDetails("global-admin")
 	public void t008updateUserRegCenterTest() throws Exception {
+		udp.getRequest().setRegCenterId("10002");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/usercentermapping")
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(udp))).andReturn(),
@@ -265,6 +268,7 @@ public class UserDetailControllerTest
 	@WithUserDetails("global-admin")
 	public void t008updateUserRegCenterTest4() throws Exception {
 		udp.getRequest().setLangCode(null);
+		udp.getRequest().setRegCenterId("10002");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/usercentermapping")
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(udp))).andReturn(),
@@ -275,6 +279,7 @@ public class UserDetailControllerTest
 	@Test
 	@WithUserDetails("global-admin")
 	public void t008updateUserRegCenterTest3() throws Exception {
+		udp.getRequest().setRegCenterId("10002");
 		udp.getRequest().setId("3");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/usercentermapping")
