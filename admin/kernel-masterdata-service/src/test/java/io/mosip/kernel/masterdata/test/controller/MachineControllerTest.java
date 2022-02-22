@@ -271,7 +271,7 @@ public class MachineControllerTest {
 				.andReturn(), "KER-MSD-317");
 	}
 
-/*	@Test
+	@Test
 	@WithUserDetails("global-admin")
 	public void t022createMachineTest() throws Exception {
 		machineRequest.getRequest().setPublicKey("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq-7fM8-oz_RDcLWOvsRl-4tLST5s86mKfsTjqmjnmUZTezSz8lb3_8YDl_K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw_F8wC2T9wsLaIwIDAQAB");
@@ -399,6 +399,6 @@ public class MachineControllerTest {
 				mockMvc.perform(MockMvcRequestBuilders.put("/machines").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(machineCenterDto))).andReturn(),
 				"KER-MSD-257");
-	}*/
+	}
 
 }
