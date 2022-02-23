@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.test.service;
 
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
@@ -59,7 +60,7 @@ public class UserDetailsServiceTest {
 	public void setup() {
 		userDetailsUri = new StringBuilder();
 		userDetailsUri.append(authUserDetailsBaseUri).append(authUserDetailsUri);
-		Mockito.doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 	}
 	
 	@Test

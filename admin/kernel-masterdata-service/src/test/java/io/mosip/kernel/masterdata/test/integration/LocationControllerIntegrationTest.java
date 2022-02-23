@@ -124,7 +124,7 @@ public class LocationControllerIntegrationTest {
 				Mockito.anyString())).thenReturn(hierarchy);
 		parentLocList = new ArrayList<>();
 		parentLocList.add(parentLoc);
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 		Object[] object1= {(short) 1,"hierarchy_level_name",true};
 		Object[] object2= {(short) 2,"hierarchy_level_name",true};
 		locationObjects=Arrays.asList(object1,object2);

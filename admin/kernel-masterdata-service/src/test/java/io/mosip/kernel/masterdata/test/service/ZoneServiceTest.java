@@ -70,7 +70,7 @@ public class ZoneServiceTest {
 		zoneUser.setLangCode("eng");
 		zoneUser.setUserId("110124");
 		zoneUser.setZoneCode("NTH");
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 	}
 	
 	@Test

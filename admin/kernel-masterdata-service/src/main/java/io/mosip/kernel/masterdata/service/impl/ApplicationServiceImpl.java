@@ -164,7 +164,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 					String.format(MasterDataConstant.FAILURE_DESC,
 							ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 							ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage()
-									+ ExceptionUtils.parseException(e)));
+									+ ExceptionUtils.parseException(e)),"ADM-931");
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
@@ -172,7 +172,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		}
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_CREATE, GenderTypeDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
-						ApplicationDto.class.getSimpleName(), application.getCode()));
+						ApplicationDto.class.getSimpleName(), application.getCode()),"ADM-932");
 		return applicationToCodeandlanguagecodeDefaultMapper.map(application);
 	}
 }

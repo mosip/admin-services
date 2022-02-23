@@ -66,7 +66,7 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							TemplateTypeErrorCode.TEMPLATE_TYPE_INSERT_EXCEPTION.getErrorCode(),
-							TemplateTypeErrorCode.TEMPLATE_TYPE_INSERT_EXCEPTION.getErrorMessage()));
+							TemplateTypeErrorCode.TEMPLATE_TYPE_INSERT_EXCEPTION.getErrorMessage()),"ADM-955");
 			throw new MasterDataServiceException(TemplateTypeErrorCode.TEMPLATE_TYPE_INSERT_EXCEPTION.getErrorCode(),
 					TemplateTypeErrorCode.TEMPLATE_TYPE_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
@@ -76,7 +76,7 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 		MapperUtils.map(templateType, codeLangCodeId);
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_CREATE, TemplateType.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
-						TemplateType.class.getSimpleName(), codeLangCodeId.getCode()));
+						TemplateType.class.getSimpleName(), codeLangCodeId.getCode()),"ADM-956");
 		return codeLangCodeId;
 	}
 

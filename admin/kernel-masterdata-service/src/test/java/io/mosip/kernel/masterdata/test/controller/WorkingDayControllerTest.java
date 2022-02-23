@@ -55,7 +55,7 @@ public class WorkingDayControllerTest {
 	public void setUp() {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 		
 		WorkingDaysPutRequestDto putRequestDto=new WorkingDaysPutRequestDto();
 		putRequestDto.setCode("101");

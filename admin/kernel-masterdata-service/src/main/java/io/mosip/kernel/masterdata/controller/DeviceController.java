@@ -170,7 +170,7 @@ public class DeviceController {
 		responseWrapper.setResponse(deviceService.updateDevice(devicePutReqDto.getRequest()));
 		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_UPDATE + DeviceDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SUCCESSFUL_UPDATE + DeviceDto.class.getCanonicalName());
+				MasterDataConstant.SUCCESSFUL_UPDATE + DeviceDto.class.getCanonicalName(),"ADM-900");
 		return responseWrapper;
 	}
 
@@ -288,12 +288,12 @@ public class DeviceController {
 	public ResponseWrapper<IdResponseDto> decommissionDevice(@PathVariable("deviceId") String deviceId) {
 		auditUtil.auditRequest(MasterDataConstant.DECOMMISION_API_CALLED + DeviceDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.DECOMMISION_API_CALLED + DeviceDto.class.getCanonicalName());
+				MasterDataConstant.DECOMMISION_API_CALLED + DeviceDto.class.getCanonicalName(),"ADM-901");
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.decommissionDevice(deviceId));
 		auditUtil.auditRequest(MasterDataConstant.DECOMMISSION_SUCCESS + DeviceDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.DECOMMISSION_SUCCESS_DESC + DeviceDto.class.getCanonicalName());
+				MasterDataConstant.DECOMMISSION_SUCCESS_DESC + DeviceDto.class.getCanonicalName(),"ADM-902");
 		return responseWrapper;
 	}
 
@@ -311,7 +311,7 @@ public class DeviceController {
 		responseWrapper.setResponse(deviceService.updateDeviceStatus(id, isActive));
 		auditUtil.auditRequest(MasterDataConstant.STATUS_UPDATED_SUCCESS + DeviceDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.STATUS_UPDATED_SUCCESS + DeviceDto.class.getCanonicalName());
+				MasterDataConstant.STATUS_UPDATED_SUCCESS + DeviceDto.class.getCanonicalName(),"ADM-903");
 		return responseWrapper;
 	}
 

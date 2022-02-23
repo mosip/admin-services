@@ -234,7 +234,7 @@ public class IntegratedRepositoryTest {
 	@Before
 	public void setUp() {
 		// MockitoAnnotations.initMocks(this);
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
 		MachineHistory mh = new MachineHistory();

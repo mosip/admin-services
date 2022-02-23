@@ -484,7 +484,7 @@ public class MasterdataSearchIntegrationTest {
 		zoneFilter.setColumnName("zone");
 		zoneFilter.setType("equals");
 		zoneFilter.setValue("ZONE1");
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 
 	}
 

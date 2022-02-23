@@ -72,7 +72,7 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_INSERT_EXCEPTION.getErrorCode(),
-							TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_INSERT_EXCEPTION.getErrorMessage()));
+							TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_INSERT_EXCEPTION.getErrorMessage()),"ADM-951");
 			throw new MasterDataServiceException(
 					TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_INSERT_EXCEPTION.getErrorCode(),
 					TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_INSERT_EXCEPTION.getErrorMessage() + " "
@@ -83,7 +83,7 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_CREATE, TemplateFileFormat.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
-						TemplateFileFormat.class.getSimpleName(), codeLangCodeId.getCode()));
+						TemplateFileFormat.class.getSimpleName(), codeLangCodeId.getCode()),"ADM-952");
 		return codeLangCodeId;
 	}
 
@@ -137,7 +137,7 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 					String.format(MasterDataConstant.FAILURE_DESC,
 							TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_UPDATE_EXCEPTION.getErrorCode(),
 							TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_UPDATE_EXCEPTION.getErrorMessage()
-									+ ExceptionUtils.parseException(e)));
+									+ ExceptionUtils.parseException(e)),"ADM-953");
 			throw new MasterDataServiceException(
 					TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_UPDATE_EXCEPTION.getErrorCode(),
 					TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_UPDATE_EXCEPTION.getErrorMessage() + " "
@@ -146,7 +146,7 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, TemplateFileFormat.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
-						TemplateFileFormat.class.getSimpleName(), templateFileFormatId.getCode()));
+						TemplateFileFormat.class.getSimpleName(), templateFileFormatId.getCode()),"ADM-954");
 		return templateFileFormatId;
 	}
 

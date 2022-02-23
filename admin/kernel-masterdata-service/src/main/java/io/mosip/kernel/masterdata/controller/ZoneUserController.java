@@ -59,7 +59,7 @@ public class ZoneUserController {
 			@Valid @RequestBody RequestWrapper<ZoneUserPutDto> zoneUserDto) {
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + ZoneUserController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.UPDATE_API_IS_CALLED + ZoneUserController.class.getCanonicalName());
+				MasterDataConstant.UPDATE_API_IS_CALLED + ZoneUserController.class.getCanonicalName(),"ADM-925");
 		ResponseWrapper<ZoneUserExtnDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(zoneUserService.updateZoneUserMapping(zoneUserDto.getRequest()));
 		return responseWrapper;
@@ -77,7 +77,7 @@ public class ZoneUserController {
 	public ResponseWrapper<ZoneUserExtnDto> mapUserZone(@Valid @RequestBody RequestWrapper<ZoneUserDto> zoneUserDto) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + ZoneUserController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.CREATE_API_IS_CALLED + ZoneUserController.class.getCanonicalName());
+				MasterDataConstant.CREATE_API_IS_CALLED + ZoneUserController.class.getCanonicalName(),"ADM-926");
 		ResponseWrapper<ZoneUserExtnDto> responseWrapper = new ResponseWrapper<>();
 		
 		responseWrapper.setResponse(zoneUserService.createZoneUserMapping(zoneUserDto.getRequest()));
@@ -97,7 +97,7 @@ public class ZoneUserController {
 			@Valid @NotEmpty @StringFormatter(min = 1, max = 256) @PathVariable("zonecode") String zoneCode) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + ZoneUserController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.CREATE_API_IS_CALLED + ZoneUserController.class.getCanonicalName());
+				MasterDataConstant.CREATE_API_IS_CALLED + ZoneUserController.class.getCanonicalName(),"ADM-927");
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		
 		responseWrapper.setResponse(zoneUserService.deleteZoneUserMapping(userId,zoneCode));
@@ -125,12 +125,12 @@ public class ZoneUserController {
 			@RequestParam String userId) {
 		auditUtil.auditRequest(MasterDataConstant.STATUS_API_IS_CALLED + ZoneUserController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.STATUS_API_IS_CALLED + ZoneUserController.class.getCanonicalName());
+				MasterDataConstant.STATUS_API_IS_CALLED + ZoneUserController.class.getCanonicalName(),"ADM-928");
 		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(zoneUserService.updateZoneUserMapping(userId, isActive));
 		auditUtil.auditRequest(MasterDataConstant.STATUS_UPDATED_SUCCESS + ZoneUserController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.STATUS_UPDATED_SUCCESS + ZoneUserController.class.getCanonicalName());
+				MasterDataConstant.STATUS_UPDATED_SUCCESS + ZoneUserController.class.getCanonicalName(),"ADM-929");
 		return responseWrapper;
 	}
 
@@ -149,7 +149,7 @@ public class ZoneUserController {
 		auditUtil.auditRequest(
 				MasterDataConstant.SEARCH_USER_DETAILS_API_IS_CALLED + SearchDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SEARCH_USER_DETAILS_API_IS_CALLED + SearchDto.class.getCanonicalName());
+				MasterDataConstant.SEARCH_USER_DETAILS_API_IS_CALLED + SearchDto.class.getCanonicalName(),"ADM-930");
 		responseWrapper.setResponse(zoneUserService.searchZoneUserMapping(dto.getRequest()));
 		return responseWrapper;
 	}

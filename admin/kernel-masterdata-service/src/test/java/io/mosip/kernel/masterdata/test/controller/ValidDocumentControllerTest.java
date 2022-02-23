@@ -51,7 +51,7 @@ public class ValidDocumentControllerTest {
 	@Before
 	public void setUp() {
 
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
 		ValidDocumentDto dto = new ValidDocumentDto();

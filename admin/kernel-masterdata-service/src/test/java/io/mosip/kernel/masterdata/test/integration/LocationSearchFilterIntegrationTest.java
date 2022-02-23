@@ -120,7 +120,7 @@ public class LocationSearchFilterIntegrationTest {
 		searchDto.setPagination(pagination);
 		searchDto.setSort(Arrays.asList(sort));
 		request.setRequest(searchDto);
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 
 	}
 

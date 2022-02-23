@@ -93,7 +93,7 @@ public class BiometricAttributeServiecImpl implements BiometricAttributeService 
 					String.format(MasterDataConstant.FAILURE_DESC,
 							BiometricAttributeErrorCode.BIOMETRICATTRIBUTE_INSERT_EXCEPTION.getErrorCode(),
 							BiometricAttributeErrorCode.BIOMETRICATTRIBUTE_INSERT_EXCEPTION.getErrorMessage()
-									+ ExceptionUtils.parseException(e)));
+									+ ExceptionUtils.parseException(e)),"ADM-933");
 			throw new MasterDataServiceException(
 					BiometricAttributeErrorCode.BIOMETRICATTRIBUTE_INSERT_EXCEPTION.getErrorCode(),
 					BiometricAttributeErrorCode.BIOMETRICATTRIBUTE_INSERT_EXCEPTION.getErrorMessage() + " "
@@ -106,7 +106,7 @@ public class BiometricAttributeServiecImpl implements BiometricAttributeService 
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_CREATE, BiometricAttribute.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
-						BiometricAttribute.class.getSimpleName(), codeAndLanguageCodeId.getCode()));
+						BiometricAttribute.class.getSimpleName(), codeAndLanguageCodeId.getCode()),"ADM-934");
 		return codeAndLanguageCodeId;
 	}
 
