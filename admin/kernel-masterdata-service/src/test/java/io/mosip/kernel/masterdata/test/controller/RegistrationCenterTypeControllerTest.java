@@ -54,7 +54,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	@Before
 	public void setUp() {
 
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 		registrationCenterTypeWrapper = new RequestWrapper<>();
 		String code = "TVM", langCode = "eng", name = "tvmcn", descr="tvm center";
 		boolean isActive = true;

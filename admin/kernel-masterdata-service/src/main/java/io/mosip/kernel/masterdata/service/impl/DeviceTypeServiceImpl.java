@@ -121,7 +121,7 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 		MapperUtils.map(renDeviceType, codeLangCodeId);
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_CREATE, DeviceType.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
-						DeviceType.class.getSimpleName(), codeLangCodeId.getCode()));
+						DeviceType.class.getSimpleName(), codeLangCodeId.getCode()),"ADM-937");
 		return codeLangCodeId;
 	}
 	/*
@@ -178,7 +178,7 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_UPDATE, DeviceType.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
-						DeviceType.class.getSimpleName(), codeAndLanguageCodeID.getCode()));
+						DeviceType.class.getSimpleName(), codeAndLanguageCodeID.getCode()),"ADM-938");
 		return codeAndLanguageCodeID;
 	}
 

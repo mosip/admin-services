@@ -243,7 +243,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_CREATE, DocumentCategory.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
-						DocumentCategory.class.getSimpleName(), codeLangCodeId.getCode()));
+						DocumentCategory.class.getSimpleName(), codeLangCodeId.getCode()),"ADM-939");
 		return codeLangCodeId;
 	}
 
@@ -309,7 +309,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, DocumentCategory.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
-						DocumentCategory.class.getSimpleName(), documentCategoryId.getCode()));
+						DocumentCategory.class.getSimpleName(), documentCategoryId.getCode()),"ADM-940");
 		return documentCategoryId;
 	}
 

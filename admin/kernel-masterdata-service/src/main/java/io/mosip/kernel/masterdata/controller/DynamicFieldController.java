@@ -230,11 +230,11 @@ public class DynamicFieldController {
 		auditUtil.auditRequest(
 				MasterDataConstant.SEARCH_API_IS_CALLED + SearchDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SEARCH_API_IS_CALLED + SearchDto.class.getCanonicalName());
+				MasterDataConstant.SEARCH_API_IS_CALLED + SearchDto.class.getCanonicalName(),"ADM-904");
 		responseWrapper.setResponse(dynamicFieldService.searchDynamicFields(dto.getRequest()));
 		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_SEARCH + SearchDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SUCCESSFUL_SEARCH + SearchDto.class.getCanonicalName());
+				MasterDataConstant.SUCCESSFUL_SEARCH + SearchDto.class.getCanonicalName(),"ADM-905");
 		return responseWrapper;
 	}
 

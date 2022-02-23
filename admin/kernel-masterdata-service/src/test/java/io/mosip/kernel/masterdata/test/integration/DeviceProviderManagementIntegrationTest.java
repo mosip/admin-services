@@ -220,7 +220,7 @@ public class DeviceProviderManagementIntegrationTest {
 						.thenReturn(deviceServiceHistory);
 		when(deviceServiceRepository.findByDeviceProviderIdAndSwVersionAndMakeAndModel(Mockito.anyString(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(deviceService);
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 	}
 
 	@WithUserDetails("zonal-admin")

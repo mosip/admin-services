@@ -53,7 +53,7 @@ public class MachineControllerTest {
 	public void setUp() {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 		MachinePostReqDto dto = new MachinePostReqDto();
 		//dto.setId("50");
 		dto.setIpAddress("192.168.0.122");

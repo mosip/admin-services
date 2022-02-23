@@ -179,7 +179,7 @@ public class MasterDataPaginationIntegrationTest {
 		deviceTypeSetUp();
 		deviceSpecificationSetUp();
 		registrationCenterTypeSetUp();
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 	}
 
 	private void blockListedWordSetUp() {

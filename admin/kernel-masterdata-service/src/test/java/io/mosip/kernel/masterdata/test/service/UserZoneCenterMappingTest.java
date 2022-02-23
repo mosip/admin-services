@@ -115,7 +115,7 @@ public class UserZoneCenterMappingTest {
         mockRestServiceServer.expect(requestTo(userDetailsUri + "/admin?search=110006"))
                 .andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 
-        Mockito.doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+        Mockito.doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
     }
 
     @Test

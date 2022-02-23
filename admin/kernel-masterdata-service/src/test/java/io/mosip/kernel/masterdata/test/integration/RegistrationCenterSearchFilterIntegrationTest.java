@@ -156,7 +156,7 @@ public class RegistrationCenterSearchFilterIntegrationTest {
 		filterValueDto.setLanguageCode("eng");
 		requestDto = new RequestWrapper<>();
 		requestDto.setRequest(filterValueDto);
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 
 	}
 	@Test
