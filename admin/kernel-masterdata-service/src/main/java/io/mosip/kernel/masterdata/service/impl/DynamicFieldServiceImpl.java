@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -500,7 +503,8 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	@Override
 	public DynamicFieldConsolidateResponseDto getDynamicFieldByNameAndLangcode(String fieldName, String langCode,boolean withValue) {
 		try {
-			List<DynamicField> lst = dynamicFieldRepository.findAllDynamicFieldByNameLangCodeAndisDeleted(fieldName, langCode);
+			List<DynamicField> lst = dynamicFieldRepository.findAllDynamicFieldByNameLangCodeAndisDeleted(fieldName,
+					langCode);
 			if (null == lst || lst.size() == 0) {
 				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -511,16 +515,16 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 			dto.setName(lst.get(0).getName());
 			dto.setJsonValues(null);
 			if (withValue == true) {
-				List<String> l = new ArrayList<>();
-				lst.stream().forEach(f -> {
-					l.add(f.getValueJson());
-				});
-				dto.setJsonValues(l);
-			}
 
+				List<JSONObject> l = new ArrayList<>();
+				for (int i = 0; i < lst.size(); i++) {
+					l.add(new JSONObject(lst.get(i).getValueJson()));
+				}
+				dto.setJsonValues(new JSONArray(l));
+			}
 			return dto;
 
-		} catch (DataAccessLayerException | DataAccessException e) {
+		} catch (DataAccessLayerException | DataAccessException | JSONException  e) {
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
