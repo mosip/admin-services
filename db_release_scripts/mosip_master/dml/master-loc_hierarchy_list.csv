@@ -3,7 +3,7 @@
 0,بلد,ara,TRUE,superadmin,now()
 0,Pays,fra,TRUE,superadmin,now()
 1,Region,eng,TRUE,superadmin,now()
-1,منطقة,ara,TRUE,superadmin,now()
+1,المناطق,ara,TRUE,superadmin,now()
 1,Région,fra,TRUE,superadmin,now()
 2,Province,eng,TRUE,superadmin,now()
 2,المحافظة,ara,TRUE,superadmin,now()

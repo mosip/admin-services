@@ -2,9 +2,13 @@ package io.mosip.kernel.masterdata.service.impl;
 
 
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.slf4j.SLF4JLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,6 +18,8 @@ import io.mosip.kernel.masterdata.service.ApplicationConfigService;
 import io.mosip.kernel.masterdata.utils.LanguageUtils;
 @Component
 public class ApplicationConfigServiceImpl implements ApplicationConfigService {
+
+	private static final Logger logger = LoggerFactory.getLogger(ApplicationConfigServiceImpl.class);
 
 	@Value("${aplication.configuration.level.version}")
 	private String version;
@@ -46,6 +52,7 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 	@Override
 	public Map<String,String> getConfigValues(){
 		Map<String, String> response = new HashMap<String, String>();
+		logger.info("admin.ui.config : {} ",uiConfigs);
 		String[] arrayOfKeys = uiConfigs.split(";");
 		for (String key : arrayOfKeys) {
 			if (key.split(":").length > 1) {
@@ -53,7 +60,6 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 			} else {
 				response.put(key.split(":")[0], null);
 			}
-
 		}
 		return response;
 	}
