@@ -91,7 +91,7 @@ public interface HolidayService {
 	 * @param holidayId input holiday id
 	 * @return id of the holiday which been deleted
 	 */
-	public HolidayIdDeleteDto deleteHoliday(RequestWrapper<HolidayIdDeleteDto> holidayId);
+	public HolidayIdDeleteDto deleteHoliday(HolidayIdDeleteDto holidayId);
 
 	/**
 	 * This method provides with all holidays.

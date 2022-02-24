@@ -36,7 +36,7 @@ public interface RegistrationCenterTypeRepository
 	 * @return the number of rows whose isDeleted is set to true.
 	 */
 	@Modifying
-	@Query("UPDATE RegistrationCenterType r SET r.isDeleted =true , r.deletedDateTime = ?1, r.updatedBy = ?3 WHERE r.code =?2 and (r.isDeleted is null or r.isDeleted =false)")
+	@Query("UPDATE RegistrationCenterType r SET r.isDeleted =true , r.isActive =false, r.deletedDateTime = ?1, r.updatedBy = ?3 WHERE r.code =?2 and (r.isDeleted is null or r.isDeleted =false)")
 	int deleteRegistrationCenterType(LocalDateTime deletedDateTime, String code, String updatedBy);
 
 	/**
