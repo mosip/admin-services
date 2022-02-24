@@ -142,7 +142,7 @@ public class MasterdataControllerTest {
 	private PublisherClient<String,EventModel,HttpHeaders> publisher;
 
 	@MockBean
-	AuditUtil aditUtil;
+	AuditUtil auditUtil;
 
 	@Qualifier("restTemplateConfig")
 	@MockBean
@@ -310,7 +310,7 @@ public class MasterdataControllerTest {
 	public void setUp() {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-		doNothing().when(aditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 		Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_STRING_RESPONSE);
 		biometricTypeSetup();
 

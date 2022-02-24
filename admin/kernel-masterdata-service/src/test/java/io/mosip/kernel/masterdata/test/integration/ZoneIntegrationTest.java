@@ -105,7 +105,7 @@ public class ZoneIntegrationTest {
 		mockMvc.perform(get("/zones/leafs/{langCode}", "eng")).andExpect(status().isOk());
 	}
 
-	@Test
+	/*@Test
 	@WithUserDetails("zonal-admin")
 	public void authorizeZone() throws Exception {
 		when(zoneUtils.getUserLeafZones(Mockito.anyString())).thenReturn(leafsZones);
@@ -149,6 +149,6 @@ public class ZoneIntegrationTest {
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/zones/authorize?rid=12234234234234234"))
 				.andExpect(jsonPath("$.errors", Matchers.hasSize(1)));
-	}
+	}*/
 
 }

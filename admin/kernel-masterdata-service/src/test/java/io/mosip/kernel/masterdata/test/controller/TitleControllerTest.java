@@ -48,7 +48,7 @@ public class TitleControllerTest extends AbstractTest {
 	
 	@Before
 	public void setUp() {
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 		
 		requestWrapper = new RequestWrapper<>();
 		String langCode = "eng", code = "TVM", titleName = "tvm-center", titleDescription = "tit-descrip";
@@ -201,7 +201,7 @@ public class TitleControllerTest extends AbstractTest {
 		//given
 		String code = "tam";
 		//when
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 		String uri = "/title/" + code;
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete(uri)
 				.accept(MediaType.APPLICATION_JSON_VALUE)

@@ -88,7 +88,7 @@ public class DynamicFieldController {
 	@ResponseFilter
 	@GetMapping("/{fieldName}/{langCode}")
 	@ApiOperation(value = "Service to fetch  dynamic field based on langcode and field name")
-	public ResponseWrapper<DynamicFieldConsolidateResponseDto> getDynamicFieldByName(@PathParam("fieldName") String fieldName,@PathParam("langCode") String langCode,@RequestParam(name = "withValue",defaultValue = "false",required = false) boolean withValue){
+	public ResponseWrapper<DynamicFieldConsolidateResponseDto> getDynamicFieldByName(@PathVariable("fieldName") String fieldName,@PathVariable("langCode") String langCode,@RequestParam(name = "withValue",defaultValue = "false",required = false) boolean withValue){
 		ResponseWrapper<DynamicFieldConsolidateResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(dynamicFieldService.getDynamicFieldByNameAndLangcode(fieldName,langCode,withValue));
 		return responseWrapper;
@@ -230,11 +230,11 @@ public class DynamicFieldController {
 		auditUtil.auditRequest(
 				MasterDataConstant.SEARCH_API_IS_CALLED + SearchDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SEARCH_API_IS_CALLED + SearchDto.class.getCanonicalName());
+				MasterDataConstant.SEARCH_API_IS_CALLED + SearchDto.class.getCanonicalName(),"ADM-904");
 		responseWrapper.setResponse(dynamicFieldService.searchDynamicFields(dto.getRequest()));
 		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_SEARCH + SearchDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SUCCESSFUL_SEARCH + SearchDto.class.getCanonicalName());
+				MasterDataConstant.SUCCESSFUL_SEARCH + SearchDto.class.getCanonicalName(),"ADM-905");
 		return responseWrapper;
 	}
 

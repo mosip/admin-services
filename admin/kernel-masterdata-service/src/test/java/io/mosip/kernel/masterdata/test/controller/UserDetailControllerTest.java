@@ -76,7 +76,7 @@ public class UserDetailControllerTest
 	public void setUp() {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 		UserDetailsDto detailsDto = new UserDetailsDto();
 		detailsDto.setId("7");
 		detailsDto.setIsActive(true);
@@ -189,9 +189,18 @@ public class UserDetailControllerTest
 	@Test
 	@WithUserDetails("global-admin")
 	public void t002mapUserRegCenterFailTest() throws Exception {
+		RequestWrapper<UserDetailsDto> requestWrapper = new RequestWrapper<>();
+		UserDetailsDto detailsDto = new UserDetailsDto();
+		detailsDto.setId("7");
+		detailsDto.setIsActive(true);
+		detailsDto.setLangCode("eng");
+		detailsDto.setName("Desh");
+		detailsDto.setRegCenterId("10022");
+		detailsDto.setStatusCode("Act");
+		requestWrapper.setRequest(detailsDto);
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping")
-						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(ud))).andReturn(),
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper))).andReturn(),
 				"KER-USR-013");
 
 	}
@@ -199,10 +208,18 @@ public class UserDetailControllerTest
 	@Test
 	@WithUserDetails("global-admin")
 	public void t001mapUserRegCenterTest() throws Exception {
-	
+		RequestWrapper<UserDetailsDto> requestWrapper = new RequestWrapper<>();
+		UserDetailsDto detailsDto = new UserDetailsDto();
+		detailsDto.setId("7");
+		detailsDto.setIsActive(true);
+		detailsDto.setLangCode("eng");
+		detailsDto.setName("Desh");
+		detailsDto.setRegCenterId("10022");
+		detailsDto.setStatusCode("Act");
+		requestWrapper.setRequest(detailsDto);
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping")
-						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(ud))).andReturn(),
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper))).andReturn(),
 				null);
 
 	}
@@ -210,10 +227,18 @@ public class UserDetailControllerTest
 	@Test
 	@WithUserDetails("global-admin")
 	public void t002mapUserRegCenterTest() throws Exception {
-		ud.getRequest().setLangCode(null);
+		RequestWrapper<UserDetailsDto> requestWrapper = new RequestWrapper<>();
+		UserDetailsDto detailsDto = new UserDetailsDto();
+		detailsDto.setId("7");
+		detailsDto.setIsActive(true);
+		detailsDto.setLangCode(null);
+		detailsDto.setName("Desh");
+		detailsDto.setRegCenterId("10022");
+		detailsDto.setStatusCode("Act");
+		requestWrapper.setRequest(detailsDto);
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping")
-						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(ud))).andReturn(),
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper))).andReturn(),
 				"KER-USR-013");
 
 	}
@@ -221,10 +246,18 @@ public class UserDetailControllerTest
 	@Test
 	@WithUserDetails("global-admin")
 	public void t001mapUserRegCenterTest1() throws Exception {
-	ud.getRequest().setId("79");
+		RequestWrapper<UserDetailsDto> requestWrapper = new RequestWrapper<>();
+		UserDetailsDto detailsDto = new UserDetailsDto();
+		detailsDto.setId("79");
+		detailsDto.setIsActive(true);
+		detailsDto.setLangCode(null);
+		detailsDto.setName("Desh");
+		detailsDto.setRegCenterId("10022");
+		detailsDto.setStatusCode("Act");
+		requestWrapper.setRequest(detailsDto);
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping")
-						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(ud))).andReturn(),
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper))).andReturn(),
 				"KER-USR-008");
 
 	}
@@ -232,10 +265,18 @@ public class UserDetailControllerTest
 	@Test
 	@WithUserDetails("global-admin")
 	public void t007mapUserRegCenterFailTest1() throws Exception {
-		ud.getRequest().setRegCenterId("REGG");
+		RequestWrapper<UserDetailsDto> requestWrapper = new RequestWrapper<>();
+		UserDetailsDto detailsDto = new UserDetailsDto();
+		detailsDto.setId("7");
+		detailsDto.setIsActive(true);
+		detailsDto.setLangCode("eng");
+		detailsDto.setName("Desh");
+		detailsDto.setRegCenterId("REGG");
+		detailsDto.setStatusCode("Act");
+		requestWrapper.setRequest(detailsDto);
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping")
-						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(ud))).andReturn(),
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper))).andReturn(),
 				"KER-USR-013");
 
 	}
@@ -243,9 +284,18 @@ public class UserDetailControllerTest
 	@Test
 	@WithUserDetails("global-admin")
 	public void t008updateUserRegCenterTest() throws Exception {
+		RequestWrapper<UserDetailsPutReqDto> requestWrapper = new RequestWrapper<UserDetailsPutReqDto>();
+		UserDetailsPutReqDto detailsPutReqDto = new UserDetailsPutReqDto();
+		detailsPutReqDto.setId("7");
+		detailsPutReqDto.setIsActive(true);
+		detailsPutReqDto.setLangCode("eng");
+		detailsPutReqDto.setName("Desh");
+		detailsPutReqDto.setRegCenterId("10022");
+		detailsPutReqDto.setStatusCode("Act");
+		requestWrapper.setRequest(detailsPutReqDto);
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/usercentermapping")
-						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(udp))).andReturn(),
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper))).andReturn(),
 				null);
 
 	}
@@ -253,10 +303,18 @@ public class UserDetailControllerTest
 	@Test
 	@WithUserDetails("global-admin")
 	public void t008updateUserRegCenterTest2() throws Exception {
-		udp.getRequest().setId("109");
+		RequestWrapper<UserDetailsPutReqDto> requestWrapper = new RequestWrapper<UserDetailsPutReqDto>();
+		UserDetailsPutReqDto detailsPutReqDto = new UserDetailsPutReqDto();
+		detailsPutReqDto.setId("109");
+		detailsPutReqDto.setIsActive(true);
+		detailsPutReqDto.setLangCode("eng");
+		detailsPutReqDto.setName("Desh");
+		detailsPutReqDto.setRegCenterId("10022");
+		detailsPutReqDto.setStatusCode("Act");
+		requestWrapper.setRequest(detailsPutReqDto);
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/usercentermapping")
-						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(udp))).andReturn(),
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper))).andReturn(),
 				"KER-USR-008");
 
 	}
@@ -264,10 +322,18 @@ public class UserDetailControllerTest
 	@Test
 	@WithUserDetails("global-admin")
 	public void t008updateUserRegCenterTest4() throws Exception {
-		udp.getRequest().setLangCode(null);
+		RequestWrapper<UserDetailsPutReqDto> requestWrapper = new RequestWrapper<UserDetailsPutReqDto>();
+		UserDetailsPutReqDto detailsPutReqDto = new UserDetailsPutReqDto();
+		detailsPutReqDto.setId("7");
+		detailsPutReqDto.setIsActive(true);
+		detailsPutReqDto.setLangCode(null);
+		detailsPutReqDto.setName("Desh");
+		detailsPutReqDto.setRegCenterId("10022");
+		detailsPutReqDto.setStatusCode("Act");
+		requestWrapper.setRequest(detailsPutReqDto);
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/usercentermapping")
-						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(udp))).andReturn(),
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper))).andReturn(),
 				null);
 
 	}
@@ -275,10 +341,19 @@ public class UserDetailControllerTest
 	@Test
 	@WithUserDetails("global-admin")
 	public void t008updateUserRegCenterTest3() throws Exception {
-		udp.getRequest().setId("3");
+		RequestWrapper<UserDetailsPutReqDto> requestWrapper = new RequestWrapper<UserDetailsPutReqDto>();
+		UserDetailsPutReqDto detailsPutReqDto = new UserDetailsPutReqDto();
+		detailsPutReqDto.setId("3");
+		detailsPutReqDto.setIsActive(true);
+		detailsPutReqDto.setLangCode("eng");
+		detailsPutReqDto.setName("Desh");
+		detailsPutReqDto.setRegCenterId("10022");
+		detailsPutReqDto.setStatusCode("Act");
+		requestWrapper.setRequest(detailsPutReqDto);
+
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/usercentermapping")
-						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(udp))).andReturn(),
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper))).andReturn(),
 				"KER-USR-015");
 
 	}
@@ -286,11 +361,19 @@ public class UserDetailControllerTest
 	@Test
 	@WithUserDetails("global-admin")
 	public void t008updateUserRegCenterTest5() throws Exception {
-		udp.getRequest().setId("3");
-		udp.getRequest().setRegCenterId("10003");
+		RequestWrapper<UserDetailsPutReqDto> requestWrapper = new RequestWrapper<UserDetailsPutReqDto>();
+		UserDetailsPutReqDto detailsPutReqDto = new UserDetailsPutReqDto();
+		detailsPutReqDto.setId("3");
+		detailsPutReqDto.setIsActive(true);
+		detailsPutReqDto.setLangCode("eng");
+		detailsPutReqDto.setName("Desh");
+		detailsPutReqDto.setRegCenterId("10003");
+		detailsPutReqDto.setStatusCode("Act");
+		requestWrapper.setRequest(detailsPutReqDto);
+
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/usercentermapping")
-						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(udp))).andReturn(),
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper))).andReturn(),
 				"KER-USR-012");
 
 	}
@@ -298,10 +381,18 @@ public class UserDetailControllerTest
 	@Test
 	@WithUserDetails("global-admin")
 	public void t009updateUserRegCenterFailTest() throws Exception {
-		udp.getRequest().setId("200");
+		RequestWrapper<UserDetailsPutReqDto> requestWrapper = new RequestWrapper<UserDetailsPutReqDto>();
+		UserDetailsPutReqDto detailsPutReqDto = new UserDetailsPutReqDto();
+		detailsPutReqDto.setId("200");
+		detailsPutReqDto.setIsActive(true);
+		detailsPutReqDto.setLangCode("eng");
+		detailsPutReqDto.setName("Desh");
+		detailsPutReqDto.setRegCenterId("10003");
+		detailsPutReqDto.setStatusCode("Act");
+		requestWrapper.setRequest(detailsPutReqDto);
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/usercentermapping")
-						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(udp))).andReturn(),
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper))).andReturn(),
 				"KER-USR-008");
 
 	}

@@ -164,14 +164,14 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 					String.format(MasterDataConstant.FAILURE_DESC,
 							BiometricTypeErrorCode.BIOMETRIC_TYPE_INSERT_EXCEPTION.getErrorCode(),
 							BiometricTypeErrorCode.BIOMETRIC_TYPE_INSERT_EXCEPTION.getErrorMessage()
-									+ ExceptionUtils.parseException(e)));
+									+ ExceptionUtils.parseException(e)),"ADM-935");
 			throw new MasterDataServiceException(BiometricTypeErrorCode.BIOMETRIC_TYPE_INSERT_EXCEPTION.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
 		}
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_CREATE, GenderTypeDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
-						BiometricTypeDto.class.getSimpleName(), biometricType.getCode()));
+						BiometricTypeDto.class.getSimpleName(), biometricType.getCode()),"ADM-936");
 		return biometricTypeToCodeandlanguagecodeDefaultMapper.map(biometricType);
 
 	}

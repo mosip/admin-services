@@ -52,7 +52,7 @@ public class TemplateFileFormatcontrollerTest {
 	public void setUp() {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 		TemplateFileFormatDto dto=new TemplateFileFormatDto();
 		dto.setCode("html");
 		dto.setDescription("htmldesc");

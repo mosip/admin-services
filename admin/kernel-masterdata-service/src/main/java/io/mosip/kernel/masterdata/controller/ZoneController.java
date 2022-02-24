@@ -129,7 +129,7 @@ public class ZoneController {
 		return responseWrapper;
 	}
 
-	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetzonesauthorize())")
+	/*@PreAuthorize("hasAnyRole(@authorizedRoles.getGetzonesauthorize())")
 	@GetMapping("/authorize")
 	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
@@ -137,7 +137,7 @@ public class ZoneController {
 		ResponseWrapper<Boolean> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(zoneService.authorizeZone(rId));
 		return responseWrapper;
-	}
+	}*/
 	
 	/**
 	 * Api to filter Zone based on column and type provided.
@@ -153,12 +153,12 @@ public class ZoneController {
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + Zone.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.FILTER_API_IS_CALLED + Zone.class.getCanonicalName());
+				MasterDataConstant.FILTER_API_IS_CALLED + Zone.class.getCanonicalName(),"ADM-923");
 		ResponseWrapper<FilterResponseCodeDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(zoneService.zoneFilterValues(request.getRequest()));
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER, Zone.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, Zone.class.getCanonicalName()));
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, Zone.class.getCanonicalName()),"ADM-924");
 		return responseWrapper;
 	}
 

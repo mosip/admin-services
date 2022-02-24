@@ -148,7 +148,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		MapperUtils.map(renMachineSpecification, idAndLanguageCodeID);
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_CREATE, MachineSpecification.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
-						MachineSpecification.class.getSimpleName(), idAndLanguageCodeID.getId()));
+						MachineSpecification.class.getSimpleName(), idAndLanguageCodeID.getId()),"ADM-945");
 		return idAndLanguageCodeID;
 
 	}
@@ -227,7 +227,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		MapperUtils.map(updMachineSpecification, idAndLanguageCodeID);
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_UPDATE, MachineSpecification.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
-						MachineSpecification.class.getSimpleName(), idAndLanguageCodeID.getId()));
+						MachineSpecification.class.getSimpleName(), idAndLanguageCodeID.getId()),"ADM-946");
 		return idAndLanguageCodeID;
 	}
 
@@ -280,7 +280,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, MachineSpecification.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
-						MachineSpecification.class.getSimpleName(), id));
+						MachineSpecification.class.getSimpleName(), id),"ADM-947");
 		return statusResponseDto;
 	}
 

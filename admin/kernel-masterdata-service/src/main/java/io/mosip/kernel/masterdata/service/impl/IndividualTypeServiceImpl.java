@@ -212,7 +212,7 @@ public class IndividualTypeServiceImpl implements IndividualTypeService {
 					String.format(MasterDataConstant.FAILURE_DESC,
 							IndividualTypeErrorCode.INDIVIDUAL_TYPE_INSERT_EXCEPTION.getErrorCode(),
 							IndividualTypeErrorCode.INDIVIDUAL_TYPE_INSERT_EXCEPTION.getErrorMessage()
-									+ ExceptionUtils.parseException(e)));
+									+ ExceptionUtils.parseException(e)),"ADM-941");
 			throw new MasterDataServiceException(
 					IndividualTypeErrorCode.INDIVIDUAL_TYPE_INSERT_EXCEPTION.getErrorCode(),
 					IndividualTypeErrorCode.INDIVIDUAL_TYPE_INSERT_EXCEPTION.getErrorMessage() + " "
@@ -225,7 +225,7 @@ public class IndividualTypeServiceImpl implements IndividualTypeService {
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_CREATE, IndividualType.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
-						IndividualType.class.getSimpleName(), individualTypeExtnDto.getCode()));
+						IndividualType.class.getSimpleName(), individualTypeExtnDto.getCode()),"ADM-942");
 		return individualTypeExtnDto;
 	}
 
@@ -256,7 +256,7 @@ public class IndividualTypeServiceImpl implements IndividualTypeService {
 					String.format(MasterDataConstant.FAILURE_DESC,
 							IndividualTypeErrorCode.INDIVIDUAL_TYPE_UPDATE_EXCEPTION.getErrorCode(),
 							IndividualTypeErrorCode.INDIVIDUAL_TYPE_UPDATE_EXCEPTION.getErrorMessage()
-									+ ExceptionUtils.parseException(e)));
+									+ ExceptionUtils.parseException(e)),"ADM-943");
 			throw new MasterDataServiceException(IndividualTypeErrorCode.INDIVIDUAL_TYPE_UPDATE_EXCEPTION.getErrorCode(),
 					IndividualTypeErrorCode.INDIVIDUAL_TYPE_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
@@ -264,7 +264,7 @@ public class IndividualTypeServiceImpl implements IndividualTypeService {
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, IndividualType.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
-						IndividualType.class.getSimpleName(), individualTypeExtnDto.getCode()));
+						IndividualType.class.getSimpleName(), individualTypeExtnDto.getCode()),"ADM-944");
 		return individualTypeExtnDto;
 	}
 	

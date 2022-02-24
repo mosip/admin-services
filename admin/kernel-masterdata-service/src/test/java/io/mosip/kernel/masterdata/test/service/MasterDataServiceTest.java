@@ -406,7 +406,7 @@ public class MasterDataServiceTest {
 		LocationHierarchy hierarchy = new LocationHierarchy((short) 3, "City", "eng");
 		when(locationHierarchyRepository1.findByLangCodeAndLevelAndName(Mockito.anyString(), Mockito.anyShort(),
 				Mockito.anyString())).thenReturn(hierarchy);
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 	}
 
 	private void documentTypeSetup() {

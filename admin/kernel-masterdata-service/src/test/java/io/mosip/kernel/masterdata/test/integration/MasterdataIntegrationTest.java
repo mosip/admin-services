@@ -284,7 +284,7 @@ public class MasterdataIntegrationTest {
 	ZoneUtils zoneUtils;
 
 	@MockBean
-	AuditUtil aditUtil;
+	AuditUtil auditUtil;
 
 	@Autowired
 	ZoneUserRepository zoneUserRepository;
@@ -619,7 +619,7 @@ public class MasterdataIntegrationTest {
 
 		setUpRegisteredDevice();
 
-		doNothing().when(aditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 	}
 
 	/*private void zoneUserSetUp() {

@@ -214,8 +214,9 @@ INSERT INTO master.reg_center_type(code,name,descr,lang_code,is_active, cr_by, c
 
 
 INSERT INTO master.registration_center(id,name,cntrtyp_code,addr_line1,addr_line2,addr_line3,latitude,longitude,location_code,contact_phone,contact_person,number_of_kiosks,working_hours,per_kiosk_process_time,center_start_time,center_end_time,lunch_start_time,lunch_end_time,time_zone,holiday_loc_code,zone_code,lang_code,is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_DELETEd, del_dtimes) VALUES 
-('10001','Center A Ben Mansour','REG','P4238','Ben Mansour','MyCountry','23.3454','34.5434','14022','779517433','John Doe',3,'8:00:00',Time '0:15:00', Time '9:00:00',Time '17:00:00',Time '13:00:00',Time '14:00:00','(GTM+01:00) CENTRAL EUROPEAN TIME','KTA','RBT','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('10001','Center A Ben Mansour','REG','P4238','Ben Mansour','MyCountry','23.3454','34.5434','14022','779517433','John Doe',3,'8:00:00',Time '0:15:00', Time '9:00:00',Time '17:00:00',Time '13:00:00',Time '14:00:00','(GTM+01:00) CENTRAL EUROPEAN TIME','KTA','NTH','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('10002','Center A Ben','REG','P4239','Ben Mansour','MyCountry','34.52117','-6.453275','14022','779517433','John Doee',2,'8:00:00',Time '0:15:00', Time '9:00:00',Time '17:00:00',Time '13:00:00',Time '14:00:00','(GTM+01:00) CENTRAL EUROPEAN TIME','KTA','RBT','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('10022','Center A Ben','REG','P4239','Ben Mansour','MyCountry','34.52117','-6.453275','14022','779517433','John Doee',2,'8:00:00',Time '0:15:00', Time '9:00:00',Time '17:00:00',Time '13:00:00',Time '14:00:00','(GTM+01:00) CENTRAL EUROPEAN TIME','KTA','RBT','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('50005','Center A Ben2','REG','P4239','Ben Mansour','MyCountry','34.52117','-6.453275','14022','779517433','John Doee',2,'8:00:00',Time '0:15:00', Time '9:00:00',Time '17:00:00',Time '13:00:00',Time '14:00:00','(GTM+01:00) CENTRAL EUROPEAN TIME','KTA','RBT','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('10004','Center A Ben1','REG','P4239','Ben Mansour1','MyCountry1','34.52117','-6.453275','14022','779517433','John Doee',2,'8:00:00',Time '0:15:00', Time '9:00:00',Time '17:00:00',Time '13:00:00',Time '14:00:00','(GTM+01:00) CENTRAL EUROPEAN TIME','KTA','RBT','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
 ('10077','Center A','REG','P4239','Ben Mansour1','MyCountry1','34.52117','-6.453275','14022','779517433','John Doee',2,'8:00:00',Time '0:15:00', Time '9:00:00',Time '17:00:00',Time '13:00:00',Time '14:00:00','(GTM+01:00) CENTRAL EUROPEAN TIME','KTA','RBT','kan',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
@@ -252,7 +253,7 @@ INSERT INTO MASTER.zone_user(zone_code, usr_id, lang_code, is_active, cr_by, cr_
 ('RSK', '4', 'eng', TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
 ('RSK', '41', 'eng', TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
 ('RSK', 'user7', 'eng', TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
-('RBT','7','eng',true,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994', NULL,NULL,NULL,NULL),
+('NTH','7','eng',true,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994', NULL,NULL,NULL,NULL),
 ('NTN','42','eng',true,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994', NULL,NULL,NULL,NULL),
 ('NTI','29','eng',true,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994', NULL,NULL,NULL,NULL),
 ('KTI','109','eng',false,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994', NULL,NULL,NULL,NULL),

@@ -245,14 +245,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							UserDetailsErrorCode.USER_UNMAP_EXCEPTION.getErrorCode(),
-							UserDetailsErrorCode.USER_UNMAP_EXCEPTION.getErrorMessage()));
+							UserDetailsErrorCode.USER_UNMAP_EXCEPTION.getErrorMessage()),"ADM-957");
 			throw new MasterDataServiceException(UserDetailsErrorCode.USER_CREATION_EXCEPTION.getErrorCode(),
 					UserDetailsErrorCode.USER_UNMAP_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.DECOMMISSION_SUCCESS, UserDetails.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.DECOMMISSION_SUCCESS, idResponse.getId()));
+				String.format(MasterDataConstant.DECOMMISSION_SUCCESS, idResponse.getId()),"ADM-958");
 		return idResponse;
 
 	}
@@ -300,7 +300,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 						MasterDataConstant.AUDIT_SYSTEM,
 						String.format(MasterDataConstant.FAILURE_DESC,
 								UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorCode(),
-								UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorMessage()));
+								UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorMessage()),"ADM-959");
 				throw new MasterDataServiceException(UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorCode(),
 						UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorMessage());
 			}
@@ -325,7 +325,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							UserDetailsErrorCode.USER_CREATION_EXCEPTION.getErrorCode(),
-							UserDetailsErrorCode.USER_CREATION_EXCEPTION.getErrorMessage()));
+							UserDetailsErrorCode.USER_CREATION_EXCEPTION.getErrorMessage()),"ADM-960");
 			throw new MasterDataServiceException(UserDetailsErrorCode.USER_CREATION_EXCEPTION.getErrorCode(),
 					UserDetailsErrorCode.USER_CREATION_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
@@ -361,7 +361,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		}
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_CREATE, UserDetails.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
-						UserDetails.class.getSimpleName(), userDetailsGetExtnDto.getId()));
+						UserDetails.class.getSimpleName(), userDetailsGetExtnDto.getId()),"ADM-961");
 		return uc;
 	}
 
@@ -393,7 +393,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 						MasterDataConstant.AUDIT_SYSTEM,
 						String.format(MasterDataConstant.FAILURE_DESC,
 								UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorCode(),
-								UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorMessage()));
+								UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorMessage()),"ADM-962");
 				throw new MasterDataServiceException(UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorCode(),
 						UserDetailsErrorCode.CENTER_LANG_MAPPING_NOT_EXISTS.getErrorMessage());
 			}
@@ -451,14 +451,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							UserDetailsErrorCode.USER_CREATION_EXCEPTION.getErrorCode(),
-							UserDetailsErrorCode.USER_CREATION_EXCEPTION.getErrorMessage()));
+							UserDetailsErrorCode.USER_CREATION_EXCEPTION.getErrorMessage()),"ADM-978");
 			throw new MasterDataServiceException(UserDetailsErrorCode.USER_CREATION_EXCEPTION.getErrorCode(),
 					UserDetailsErrorCode.USER_CREATION_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_UPDATE, UserDetails.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
-						UserDetails.class.getSimpleName(), ud.getId()));
+						UserDetails.class.getSimpleName(), ud.getId()),"ADM-963");
 
 		return userDetailsPutDto;
 	}
@@ -568,7 +568,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							UserDetailsErrorCode.USER_FETCH_EXCEPTION.getErrorCode(),
-							UserDetailsErrorCode.USER_FETCH_EXCEPTION.getErrorMessage()));
+							UserDetailsErrorCode.USER_FETCH_EXCEPTION.getErrorMessage()),"ADM-964");
 			throw new MasterDataServiceException(UserDetailsErrorCode.USER_FETCH_EXCEPTION.getErrorCode(),
 					UserDetailsErrorCode.USER_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -605,14 +605,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							UserDetailsErrorCode.USER_DETAILS_PARSE_ERROR.getErrorCode(),
-							UserDetailsErrorCode.USER_DETAILS_PARSE_ERROR.getErrorMessage()));
+							UserDetailsErrorCode.USER_DETAILS_PARSE_ERROR.getErrorMessage()),"ADM-965");
 			throw new ParseResponseException(UserDetailsErrorCode.USER_DETAILS_PARSE_ERROR.getErrorCode(),
 					UserDetailsErrorCode.USER_DETAILS_PARSE_ERROR.getErrorMessage() + exception.getMessage(),
 					exception);
 		}
 		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL_SUCCESS, UsersDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.GET_ALL_SUCCESS_DESC, UsersDto.class.getSimpleName()));
+				String.format(MasterDataConstant.GET_ALL_SUCCESS_DESC, UsersDto.class.getSimpleName()),"ADM-966");
 
 		if(usersDto.getMosipUserDtoList() != null) {
 			usersDto.getMosipUserDtoList().forEach(dto -> {

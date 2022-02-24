@@ -58,7 +58,7 @@ public class LanguageControllerTest {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
 		mapper.configure(Feature.AUTO_CLOSE_SOURCE, true);
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 		language = new RequestWrapper<LanguageDto>();
 		LanguageDto dto = new LanguageDto();
 		dto.setCode("fra");

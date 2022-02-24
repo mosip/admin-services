@@ -105,7 +105,7 @@ public class UserDetailsController {
 	public ResponseWrapper<UserDetailsCenterMapping> mapUserRegCenter(@RequestBody RequestWrapper<UserDetailsDto> userDetailsDtoRequest) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + UserDetailsController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.CREATE_API_IS_CALLED + UserDetailsController.class.getCanonicalName());
+				MasterDataConstant.CREATE_API_IS_CALLED + UserDetailsController.class.getCanonicalName(),"ADM-915");
 		ResponseWrapper<UserDetailsCenterMapping> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(userDetailsService.createUser(userDetailsDtoRequest.getRequest()));
 		return responseWrapper;
@@ -131,7 +131,7 @@ public class UserDetailsController {
 	public ResponseWrapper<UserDetailsPutDto> updateUserRegCenter(@RequestBody RequestWrapper<UserDetailsPutReqDto> userDetailsDtoRequest) {
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + UserDetailsController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.UPDATE_API_IS_CALLED + UserDetailsController.class.getCanonicalName());
+				MasterDataConstant.UPDATE_API_IS_CALLED + UserDetailsController.class.getCanonicalName(),"ADM-915");
 		ResponseWrapper<UserDetailsPutDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(userDetailsService.updateUser(userDetailsDtoRequest.getRequest()));
 		return responseWrapper;
@@ -145,12 +145,12 @@ public class UserDetailsController {
 			@RequestParam String id) {
 		auditUtil.auditRequest(MasterDataConstant.STATUS_API_IS_CALLED + ZoneUserController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.STATUS_API_IS_CALLED + ZoneUserController.class.getCanonicalName());
+				MasterDataConstant.STATUS_API_IS_CALLED + ZoneUserController.class.getCanonicalName(),"ADM-916");
 		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(userDetailsService.updateUserStatus(id, isActive));
 		auditUtil.auditRequest(MasterDataConstant.STATUS_UPDATED_SUCCESS + ZoneUserController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.STATUS_UPDATED_SUCCESS + ZoneUserController.class.getCanonicalName());
+				MasterDataConstant.STATUS_UPDATED_SUCCESS + ZoneUserController.class.getCanonicalName(),"ADM-917");
 		return responseWrapper;
 	}
 
@@ -174,7 +174,7 @@ public class UserDetailsController {
 	public ResponseWrapper<IdResponseDto> deleteUserRegCenter(@PathVariable("id") String userId) {
 		auditUtil.auditRequest(MasterDataConstant.DECOMMISION_API_CALLED + UserDetailsController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.DECOMMISION_API_CALLED + UserDetailsController.class.getCanonicalName());
+				MasterDataConstant.DECOMMISION_API_CALLED + UserDetailsController.class.getCanonicalName(),"ADM-918");
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		
 		responseWrapper.setResponse(userDetailsService.deleteUser(userId));
@@ -201,7 +201,7 @@ public class UserDetailsController {
 	public ResponseWrapper<IdResponseDto> deleteUserRegCenterMapping(@PathVariable("id") String userId) {
 		auditUtil.auditRequest(MasterDataConstant.DECOMMISION_API_CALLED + UserDetailsController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.DECOMMISION_API_CALLED + UserDetailsController.class.getCanonicalName());
+				MasterDataConstant.DECOMMISION_API_CALLED + UserDetailsController.class.getCanonicalName(),"ADM-919");
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		
 		responseWrapper.setResponse(userDetailsService.deleteUser(userId));
@@ -227,7 +227,7 @@ public class UserDetailsController {
 		ResponseWrapper<UsersDto> responseWrapper = new ResponseWrapper<>();
 		auditUtil.auditRequest(MasterDataConstant.GET_USER_DETAILS_API_IS_CALLED + UserDetailsController.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.GET_USER_DETAILS_API_IS_CALLED + UserDetailsController.class.getCanonicalName());
+				MasterDataConstant.GET_USER_DETAILS_API_IS_CALLED + UserDetailsController.class.getCanonicalName(),"ADM-920");
 		responseWrapper.setResponse(userDetailsService.getUsers(roleName,pageStart, pageFetch,
 				firstName, lastName, userName));
 		return responseWrapper;
@@ -248,7 +248,7 @@ public class UserDetailsController {
 		ResponseWrapper<PageResponseDto<UserDetailsExtnDto>> responseWrapper = new ResponseWrapper<>();
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_USER_DETAILS_API_IS_CALLED + SearchDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SEARCH_USER_DETAILS_API_IS_CALLED + SearchDto.class.getCanonicalName());
+				MasterDataConstant.SEARCH_USER_DETAILS_API_IS_CALLED + SearchDto.class.getCanonicalName(),"ADM-921");
 		responseWrapper.setResponse(userDetailsService.searchUserDetails(dto.getRequest()));
 		return responseWrapper;
 	}
@@ -266,7 +266,7 @@ public class UserDetailsController {
 		ResponseWrapper<PageResponseDto<UserCenterMappingExtnDto>> responseWrapper = new ResponseWrapper<>();
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_USER_DETAILS_API_IS_CALLED + SearchDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SEARCH_USER_DETAILS_API_IS_CALLED + SearchDto.class.getCanonicalName());
+				MasterDataConstant.SEARCH_USER_DETAILS_API_IS_CALLED + SearchDto.class.getCanonicalName(),"ADM-922");
 		responseWrapper.setResponse(userDetailsService.serachUserCenterMappingDetails(dto.getRequest()));
 		return responseWrapper;
 	}

@@ -115,7 +115,7 @@ public class UserZoneCenterMappingTest {
         mockRestServiceServer.expect(requestTo(userDetailsUri + "/admin?search=110006"))
                 .andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 
-        Mockito.doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+        Mockito.doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
     }
 
     @Test
@@ -277,7 +277,7 @@ public class UserZoneCenterMappingTest {
     public void test11CreateUserCenterMappingTest() {
         UserDetailsDto userDetailsDto = new UserDetailsDto();
         userDetailsDto.setId("global-admin");
-        userDetailsDto.setRegCenterId("10001");
+        userDetailsDto.setRegCenterId("10002");
         userDetailsDto.setLangCode("eng");
         UserDetailsCenterMapping userDetailsCenterMapping = userDetailsService.createUser(userDetailsDto);
         Assert.assertEquals(userDetailsDto.getRegCenterId(), userDetailsCenterMapping.getRegCenterId());

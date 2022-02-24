@@ -234,7 +234,7 @@ public class IntegratedRepositoryTest {
 	@Before
 	public void setUp() {
 		// MockitoAnnotations.initMocks(this);
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
 		MachineHistory mh = new MachineHistory();
@@ -417,7 +417,7 @@ public class IntegratedRepositoryTest {
 		z.setCode("NTH");
 		z.setHierarchyLevel((short) 0);
 		z.setHierarchyName("North");
-		z.setHierarchyPath("/N");
+		z.setHierarchyPath("/NTH");
 
 		return z;
 	}
@@ -1205,10 +1205,59 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
+	public void tst022createMachineTest1() throws Exception {
+		List rl = new ArrayList();
+		getRegistrationCenter().setZoneCode("NTH");
+		rl.add(getRegistrationCenter());
+		List zl = new ArrayList();
+		zl.add(getZoneUser());
+		when(zoneUserRepo.findByUserIdNonDeleted(Mockito.any())).thenReturn(zl);
+	
+		when(registrationCenterRepository.findByRegId(Mockito.anyString())).thenReturn(rl);
+		List<Zone> zlst=getZoneLst();
+		
+		zlst.get(0).setHierarchyPath("/N");
+		when(zoneRepository.findAllNonDeleted()).thenReturn(zlst);
+		when(zoneUserRepo.findZoneByUserIdActiveAndNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
+		when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(Mockito.anyString())).thenReturn(rl);
+		when(machineRepository.findByMachineName(Mockito.anyString())).thenThrow(new DataAccessException("...") {
+		});
+		RequestWrapper<MachinePostReqDto> machineRequest = new RequestWrapper<>();
+		MachinePostReqDto dto = new MachinePostReqDto();
+		// dto.setId("50");
+		dto.setIpAddress("192.168.0.122");
+		dto.setIsActive(true);
+		dto.setLangCode("eng");
+		dto.setMacAddress("E8-A9-64-1F-27-E6");
+		dto.setMachineSpecId("1001");
+		dto.setName("machine11");
+		dto.setPublicKey(
+				"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq-7fM8-oz_RDcLWOvsRl-4tLST5s86mKfsTjqmjnmUZTezSz8lb3_8YDl_K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw_F8wC2T9wsLaIwIDAQAB");
+		dto.setRegCenterId("10001");
+		dto.setSerialNum("NM10037379");
+		dto.setSignPublicKey(
+				"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq-7fM8-oz_RDcLWOvsRl-4tLST5s86mKfsTjqmjnmUZTezSz8lb3_8YDl_K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw_F8wC2T9wsLaIwIDAQAB");
+		dto.setZoneCode("NTH");
+		machineRequest.setRequest(dto);
+		when(machineRepository.create(Mockito.any())).thenThrow(new DataAccessException("...") {
+		});
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.post("/machines").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(machineRequest))).andReturn(),
+				"KER-MSD-219");
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void tst022createMachineTest() throws Exception {
 		List rl = new ArrayList();
 		getRegistrationCenter().setZoneCode("NTH");
 		rl.add(getRegistrationCenter());
+		List zl = new ArrayList();
+		zl.add(getZoneUser());
+		when(zoneUserRepo.findByUserIdNonDeleted(Mockito.any())).thenReturn(zl);
+	
 		when(registrationCenterRepository.findByRegId(Mockito.anyString())).thenReturn(rl);
 		when(zoneRepository.findAllNonDeleted()).thenReturn(getZoneLst());
 		when(zoneUserRepo.findZoneByUserIdActiveAndNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
@@ -1263,6 +1312,10 @@ public class IntegratedRepositoryTest {
 
 		List rl = new ArrayList();
 		rl.add(getRegistrationCenter());
+		List zl = new ArrayList();
+		zl.add(getZoneUser());
+		when(zoneUserRepo.findByUserIdNonDeleted(Mockito.any())).thenReturn(zl);
+	
 		when(registrationCenterRepository.findByRegId("10001")).thenReturn(rl);
 		when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull("10001")).thenReturn(rl);
 		when(zoneRepository.findAllNonDeleted()).thenReturn(getZoneLst());
@@ -1384,8 +1437,52 @@ public class IntegratedRepositoryTest {
 	public void tst004updateDeviceTest1() throws Exception {
 		List rl = new ArrayList();
 		RegistrationCenter rc = getRegistrationCenter();
+		rc.setZoneCode("NTH");//RTH
+		rl.add(rc);
+		List zl = new ArrayList();
+		zl.add(getZoneUser());
+		when(zoneUserRepo.findByUserIdNonDeleted(Mockito.any())).thenReturn(zl);
+		
+		when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(Mockito.anyString())).thenReturn(rl);
+		when(registrationCenterRepository.findByRegId(Mockito.anyString())).thenReturn(rl);
+		when(zoneRepository.findAllNonDeleted()).thenReturn(getZoneLst());
+		when(zoneUserRepo.findZoneByUserIdActiveAndNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
+		when(deviceRepository.findtoUpdateDeviceById(Mockito.anyString())).thenThrow(new DataAccessException("...") {
+		});
+		when(deviceRepository.update(Mockito.any())).thenThrow(new DataAccessException("...") {
+		});
+		RequestWrapper<DevicePutReqDto> devicePutReqDtoReq = new RequestWrapper<DevicePutReqDto>();
+		DevicePutReqDto devicePutReqDto = new DevicePutReqDto();
+		devicePutReqDto.setId("3000038");
+		devicePutReqDto.setDeviceSpecId("327");
+		devicePutReqDto.setIsActive(true);
+		devicePutReqDto.setLangCode("eng");
+
+		devicePutReqDto.setName("Mock Iris Scanner updted");
+		devicePutReqDto.setMacAddress("85-BB-97-4B-14-05");
+		devicePutReqDto.setRegCenterId("10001");
+		devicePutReqDto.setSerialNum("3456789012");
+
+		devicePutReqDto.setZoneCode("NTH");
+		devicePutReqDtoReq.setRequest(devicePutReqDto);
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/devices").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(devicePutReqDtoReq))).andReturn(),
+				"KER-MSD-083");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void tst004updateDeviceTest2() throws Exception {
+		List rl = new ArrayList();
+		RegistrationCenter rc = getRegistrationCenter();
 		rc.setZoneCode("RTH");
 		rl.add(rc);
+		List zl = new ArrayList();
+		zl.add(getZoneUser());
+		when(zoneUserRepo.findByUserIdNonDeleted(Mockito.any())).thenReturn(zl);
+		
 		when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(Mockito.anyString())).thenReturn(rl);
 		when(registrationCenterRepository.findByRegId(Mockito.anyString())).thenReturn(rl);
 		when(zoneRepository.findAllNonDeleted()).thenReturn(getZoneLst());
@@ -2351,7 +2448,7 @@ public class IntegratedRepositoryTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void tst022getDynamicFieldByNameTest1() throws Exception {
-		when( dynamicFieldRepository.findAllDynamicFieldByNameAndLangCode(Mockito.anyString(), Mockito.anyString())).thenThrow(new DataAccessException("...") {});
+		when( dynamicFieldRepository.findAllDynamicFieldByNameLangCodeAndisDeleted(Mockito.anyString(), Mockito.anyString())).thenThrow(new DataAccessException("...") {});
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/blod/eng")).andReturn(),
 				"KER-SCH-001");

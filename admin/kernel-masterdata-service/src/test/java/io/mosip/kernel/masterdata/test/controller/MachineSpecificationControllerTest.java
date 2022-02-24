@@ -63,7 +63,7 @@ public class MachineSpecificationControllerTest {
 	public void setUp() {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 		MachineSpecificationDto dto=new MachineSpecificationDto();
 		dto.setBrand("DELL");
 		dto.setDescription("Dell brand");

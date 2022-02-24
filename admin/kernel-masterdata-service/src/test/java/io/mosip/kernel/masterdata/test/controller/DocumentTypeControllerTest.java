@@ -64,7 +64,7 @@ public class DocumentTypeControllerTest {
 	private RequestWrapper<SearchDto> searchDtoRq=new RequestWrapper<SearchDto>();
 	@Before
 	public void setUp(){
-		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
 		documentTypeDtoReq=new RequestWrapper<DocumentTypeDto>();
