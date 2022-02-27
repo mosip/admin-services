@@ -381,11 +381,10 @@ public class HolidayServiceImpl implements HolidayService {
 	 * kernel.masterdata.entity.id.HolidayID)
 	 */
 	@Override
-	public HolidayIdDeleteDto deleteHoliday(RequestWrapper<HolidayIdDeleteDto> request) {
-		HolidayIdDeleteDto idDto = request.getRequest();
+	public HolidayIdDeleteDto deleteHoliday(HolidayIdDeleteDto request) {
 		try {
 			int affectedRows = holidayRepository.deleteHolidays(LocalDateTime.now(ZoneId.of("UTC")),
-					idDto.getHolidayDate(), idDto.getLocationCode());
+					request.getHolidayDate(), request.getLocationCode());
 			if (affectedRows == 0)
 				throw new RequestException(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
 						HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorMessage());
@@ -394,7 +393,7 @@ public class HolidayServiceImpl implements HolidayService {
 			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_DELETE_EXCEPTION.getErrorCode(),
 					HolidayErrorCode.HOLIDAY_DELETE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
-		return idDto;
+		return request;
 	}
 
 	/**
