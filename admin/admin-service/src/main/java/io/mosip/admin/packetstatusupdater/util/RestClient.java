@@ -2,9 +2,6 @@ package io.mosip.admin.packetstatusupdater.util;
 
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.List;
-
-import javax.annotation.CheckForNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -16,6 +13,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
 import io.mosip.admin.packetstatusupdater.constant.ApiName;
 
 
@@ -58,7 +56,7 @@ public class RestClient {
 				result = (T) restTemplate.postForObject(builder.toUriString(), setRequestHeader(requestType, mediaType),
 						responseClass);
 			} catch (Exception e) {
-				throw new Exception(e);
+				throw e;
 			}
 		}
 		return result;
@@ -73,10 +71,11 @@ public class RestClient {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("unchecked")
-	private HttpEntity<Object> setRequestHeader(Object requestType, MediaType mediaType) throws IOException {
-		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>();
+	private HttpEntity<Object> setRequestHeader(Object requestType, MediaType mediaType) {
+		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+		String contentType="Content-Type";
 		if (mediaType != null) {
-			headers.add("Content-Type", mediaType.toString());
+			headers.add(contentType, mediaType.toString());
 		}
 		if (requestType != null) {
 			try {
@@ -85,15 +84,15 @@ public class RestClient {
 				Iterator<String> iterator = httpHeader.keySet().iterator();
 				while (iterator.hasNext()) {
 					String key = iterator.next();
-					if (null!=httpHeader && !(headers.containsKey("Content-Type") && key.equalsIgnoreCase("Content-Type")) && null!=httpHeader.get(key))
+					if ( !(headers.containsKey(contentType) && key.equalsIgnoreCase(contentType)) && null!=httpHeader.get(key) && null!=httpHeader.get(key).get(0))
 						headers.add(key, httpHeader.get(key).get(0));
 				}
-				return new HttpEntity<Object>(httpEntity.getBody(), headers);
+				return new HttpEntity<>(httpEntity.getBody(), headers);
 			} catch (ClassCastException e) {
-				return new HttpEntity<Object>(requestType, headers);
+				return new HttpEntity<>(requestType, headers);
 			}
 		} else
-			return new HttpEntity<Object>(headers);
+			return new HttpEntity<>(headers);
 	}
 
 }
