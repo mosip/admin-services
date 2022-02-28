@@ -1245,7 +1245,7 @@ public class IntegratedRepositoryTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/machines").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(machineRequest))).andReturn(),
-				"KER-MSD-219");
+				"KER-MSD-250");
 	}
 	
 	@Test
