@@ -273,6 +273,15 @@ public class ZoneUtils {
 		Node<Zone> node = zoneTree.findNode(tree, zu.getZoneCode());
 		return zoneTree.getChildHierarchy(node);
 	}
+	public List<Zone> getSubZonesBasedOnZoneCode(String zoneCode) {
+		List<Zone> zones = getZones();
+		List<Zone> specificZones = zones == null ? Collections.EMPTY_LIST : zones.stream().filter(i -> languageUtils.getDefaultLanguage().equals(i.getLangCode()))
+				.collect(Collectors.toList());
+
+		List<Node<Zone>> tree = zoneTree.createTree(specificZones);
+		Node<Zone> node = zoneTree.findNode(tree, zoneCode);
+		return zoneTree.getChildHierarchy(node);
+	}
 
 	/**
 	 * method to get leaf zones
