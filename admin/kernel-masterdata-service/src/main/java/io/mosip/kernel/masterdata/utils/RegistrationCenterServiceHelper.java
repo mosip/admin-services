@@ -640,13 +640,12 @@ public class RegistrationCenterServiceHelper {
 	}
 
 	public void validateRegistrationCenterZone(String zoneCode, String regCenterId) {
-		List<Zone> subZones = zoneUtils.getChildZones(zoneCode);
+		List<Zone> subZones = zoneUtils.getSubZonesBasedOnZoneCode(zoneCode);
 		boolean isRegCenterMappedToUserZone = false;
 		boolean isInSameHierarchy = false;
 		Zone registrationCenterZone = null;		
 		List<RegistrationCenter> centers = regCenterRepository.findByRegId(regCenterId);
 		for (Zone zone : subZones) {
-
 			if (zone.getCode().equals(centers.get(0).getZoneCode())) {
 				isRegCenterMappedToUserZone = true;
 				registrationCenterZone = zone;
