@@ -104,11 +104,11 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	@SuppressWarnings({ "unchecked" })
 	private PacketStatusUpdateResponseDto getPacketStatus(String rId) {
 		try {
-			if (!ridValidator.validateId(rId)) {
+		/*	if (!ridValidator.validateId(rId)) {
 				throw new MasterDataServiceException(PacketStatusUpdateErrorCode.RID_INVALID.getErrorCode(),
 						PacketStatusUpdateErrorCode.RID_INVALID.getErrorMessage());
 			}
-
+*/
 			HttpHeaders packetHeaders = new HttpHeaders();
 			packetHeaders.setContentType(MediaType.APPLICATION_JSON);
 			UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromUriString(packetUpdateStatusUrl)
