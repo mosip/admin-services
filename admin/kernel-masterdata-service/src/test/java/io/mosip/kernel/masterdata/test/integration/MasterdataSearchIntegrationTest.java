@@ -527,7 +527,7 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void searchRegCenterWithCityNameSuccess() throws Exception {
-		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
+		when(locationService.getChildList(Mockito.anyString(),Mockito.anyList())).thenReturn(Arrays.asList("10001"));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
 				.thenReturn(new PageImpl<>(Arrays.asList(locationCityEntity), PageRequest.of(0, 10), 1));
 
@@ -541,7 +541,7 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void searchRegCenterWithPostalCodeNameSuccess() throws Exception {
-		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
+		when(locationService.getChildList(Mockito.anyString(),Mockito.anyList())).thenReturn(Arrays.asList("10001"));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
 				.thenReturn(new PageImpl<>(Arrays.asList(locationPostalCodeEntity), PageRequest.of(0, 10), 1));
 
@@ -555,7 +555,7 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void searchRegCenterWithRegionNameSuccess() throws Exception {
-		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
+		when(locationService.getChildList(Mockito.anyString(),Mockito.anyList())).thenReturn(Arrays.asList("10001"));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
 				.thenReturn(new PageImpl<>(Arrays.asList(locationRegionEntity), PageRequest.of(0, 10), 1));
 
@@ -569,7 +569,7 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void searchRegCenterWithLAANameSuccess() throws Exception {
-		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
+		when(locationService.getChildList(Mockito.anyString(),Mockito.anyList())).thenReturn(Arrays.asList("10001"));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
 				.thenReturn(new PageImpl<>(Arrays.asList(locationLaaEntity), PageRequest.of(0, 10), 1));
 
@@ -583,7 +583,7 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void searchRegCenterWithProvinceNameSuccess() throws Exception {
-		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
+		when(locationService.getChildList(Mockito.anyString(),Mockito.anyList())).thenReturn(Arrays.asList("10001"));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
 				.thenReturn(new PageImpl<>(Arrays.asList(locationProvinceEntity), PageRequest.of(0, 10), 1));
 
@@ -597,7 +597,7 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void searchInvalidCenterFilterTypeSuccess() throws Exception {
-		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
+		when(locationService.getChildList(Mockito.anyString(),Mockito.anyList())).thenReturn(Arrays.asList("10001"));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
 				.thenReturn(new PageImpl<>(Arrays.asList(), PageRequest.of(0, 10), 0));
 
@@ -613,7 +613,7 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchInvalidCityName() throws Exception {
-		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
+		when(locationService.getChildList(Mockito.anyString(),Mockito.anyList())).thenReturn(Arrays.asList("10001"));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
 				.thenReturn(new PageImpl<>(Arrays.asList(), PageRequest.of(0, 10), 0));
 

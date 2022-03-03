@@ -84,7 +84,7 @@ public class RestClient {
 				Iterator<String> iterator = httpHeader.keySet().iterator();
 				while (iterator.hasNext()) {
 					String key = iterator.next();
-					if ( !(headers.containsKey(contentType) && key.equalsIgnoreCase(contentType)) && null!=httpHeader.get(key) && null!=httpHeader.get(key).get(0))
+					if ( !(headers.containsKey(contentType) && key.equalsIgnoreCase(contentType)) && null!=httpHeader.get(key) && !httpHeader.get(key).isEmpty())
 						headers.add(key, httpHeader.get(key).get(0));
 				}
 				return new HttpEntity<>(httpEntity.getBody(), headers);

@@ -119,7 +119,7 @@ public interface LocationService {
 	 * @param locCode - location code
 	 * @return List<Location>
 	 */
-	public List<String> getChildList(String locCode);
+	public List<String> getChildList(String locCode,List<String> childList);
 
 	/**
 	 * Service method to search location
@@ -144,4 +144,5 @@ public interface LocationService {
 	public StatusResponseDto updateLocationStatus(String code, boolean isActive);
 
 	public FilterResponseCodeDto locFilterValues(FilterValueDto filterValueDto);
+
 }
