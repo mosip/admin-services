@@ -1,12 +1,19 @@
 package io.mosip.admin.controller.test;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.doNothing;
 
+import io.mosip.admin.bulkdataupload.dto.BulkDataGetExtnDto;
 import io.mosip.admin.bulkdataupload.dto.BulkDataResponseDto;
 import io.mosip.admin.bulkdataupload.entity.BulkUploadTranscation;
 import io.mosip.admin.bulkdataupload.repositories.BulkUploadTranscationRepository;
 import io.mosip.admin.bulkdataupload.service.BulkDataService;
 import io.mosip.kernel.core.http.ResponseWrapper;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -24,6 +31,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.RestTemplate;
 
@@ -55,6 +63,8 @@ public class BulkDataUploadControllerTest {
 
 	@Autowired
 	private AuditUtil auditUtil;
+	
+	private static String transactionId = ""; 
 
 	@Mock
 	private BulkUploadTranscationRepository bulkDataOperation;
@@ -62,7 +72,7 @@ public class BulkDataUploadControllerTest {
 	@Autowired
 	RestTemplate restTemplate;
 	MockRestServiceServer mockRestServiceServer;
-
+   
 	BulkUploadTranscation bulkUploadTranscation;
 
 	@Before
@@ -85,6 +95,23 @@ public class BulkDataUploadControllerTest {
 		MockMultipartFile gender = new MockMultipartFile("files", "gender.csv", "multipart/form-data", content.getBytes());
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(gender).param("tableName","gender").param("operation","insert").param("category","masterdata"));
 
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	@WithUserDetails("global-admin")
+	public void t012checkCountUpload() throws Exception {
+		String content="code,genderName,langCode,isActive\r\n" +
+				"MLIO,Test,eng,FALSE\r\n" +
+				"AABA,AAA,ara,TRUE\r\n" +
+				"BBCB,BBB,eng,TRUE";
+		MockMultipartFile gender = new MockMultipartFile("files", "gender.csv", "multipart/form-data", content.getBytes());
+		MvcResult response = mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(gender).param("tableName","gender").param("operation","insert").param("category","masterdata")).andReturn();
+		String transaction = response.getResponse().getContentAsString();
+		JSONParser parser = new JSONParser();
+		JSONObject json = (JSONObject) parser.parse(transaction);
+		JSONObject jsonResponse = (JSONObject) parser.parse(json.get("response").toString());
+		transactionId = jsonResponse.get("transcationId").toString();
 	}
 
 	@Test
@@ -225,6 +252,21 @@ public class BulkDataUploadControllerTest {
 		AdminDataUtil.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(gender).param("tableName","gender").param("operation","insert").param("category","packet")).andReturn(),
 				null);
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	@WithUserDetails("global-admin")
+	public void t013checkCount() throws Exception {
+		Thread.sleep(20000);
+		MvcResult response = mockMvc.perform(MockMvcRequestBuilders.get("/bulkupload/transcation/"+transactionId)).andReturn();
+		String transaction = response.getResponse().getContentAsString();
+		JSONParser parser = new JSONParser();
+		JSONObject json = (JSONObject) parser.parse(transaction);
+		JSONObject jsonResponse = (JSONObject) parser.parse(json.get("response").toString());
+		int count = Integer.valueOf(jsonResponse.get("count").toString());
+		assertSame(count,0);
 	}
 
 }

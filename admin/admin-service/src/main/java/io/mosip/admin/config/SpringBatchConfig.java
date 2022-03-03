@@ -2,6 +2,8 @@ package io.mosip.admin.config;
 
 import io.mosip.admin.bulkdataupload.batch.CustomChunkListener;
 import io.mosip.admin.bulkdataupload.batch.JobResultListener;
+import io.mosip.admin.bulkdataupload.batch.PacketJobResultListener;
+import io.mosip.admin.bulkdataupload.repositories.BulkUploadTranscationRepository;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import org.digibooster.spring.batch.listener.JobExecutionListenerContextSupport;
 import org.digibooster.spring.batch.security.listener.JobExecutionSecurityContextListener;
@@ -46,18 +48,27 @@ public class SpringBatchConfig {
 
     @Autowired
     private DataSource dataSource;
+    
+    @Autowired
+    private BulkUploadTranscationRepository bulkUploadTranscationRepository;
 
     @Autowired
     private AuditUtil auditUtil;
     
     @Bean
     public CustomChunkListener customChunkListener() {
-        return new CustomChunkListener(dataSource);
+        return new CustomChunkListener(bulkUploadTranscationRepository);
     }
-
+    
+    
     @Bean
     public JobResultListener jobResultListener() {
-        return new JobResultListener(dataSource, auditUtil, new JobExecutionSecurityContextListener());
+        return new JobResultListener(bulkUploadTranscationRepository, auditUtil, new JobExecutionSecurityContextListener());
+    }
+    
+    @Bean
+    public PacketJobResultListener packetjobResultListener() {
+        return new PacketJobResultListener(bulkUploadTranscationRepository, auditUtil, new JobExecutionSecurityContextListener());
     }
 
     @Bean(name = "customStepBuilderFactory")

@@ -17,6 +17,7 @@ import javax.sql.DataSource;
 
 import io.mosip.admin.bulkdataupload.batch.CustomLineMapper;
 import io.mosip.admin.bulkdataupload.batch.JobResultListener;
+import io.mosip.admin.bulkdataupload.batch.PacketJobResultListener;
 import io.mosip.admin.bulkdataupload.batch.PacketUploadTasklet;
 import io.mosip.admin.bulkdataupload.dto.*;
 import io.mosip.admin.bulkdataupload.batch.CustomRecordSeparatorPolicy;
@@ -139,6 +140,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 	@Autowired
 	private JobResultListener jobResultListener;
+	
+	@Autowired
+	private PacketJobResultListener packetJobResultListener;
 
 	@Value("${mosip.mandatory-languages}")
 	private String mandatoryLanguages;
@@ -355,7 +359,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 				}
 
 				Job job = jobBuilderFactory.get("ETL-Load")
-						.listener(jobResultListener)
+						.listener(packetJobResultListener)
 						.incrementer(new RunIdIncrementer())
 						.start(stepBuilderFactory.get("packet-upload")
 								.tasklet(new PacketUploadTasklet(file.getOriginalFilename(), file.getBytes(),
@@ -396,7 +400,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	private Job getJob(MultipartFile file, String operation, String repositoryName, String contextUser,
 					   Class<?> entity) throws IOException {
 		Step step = stepBuilderFactory.get("ETL-file-load")
-				.<Object, List<Object>>chunk(100)
+				.<Object, List<Object>>chunk(3)
 				.reader(itemReader(file, entity))
 				.processor(processor(operation, contextUser))
 				.writer(itemWriterMapper(repositoryName, operationMapper(operation), entity))
