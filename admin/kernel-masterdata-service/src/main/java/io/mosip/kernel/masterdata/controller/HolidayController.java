@@ -169,7 +169,7 @@ public class HolidayController {
 	/**
 	 * Method to update status of holiday
 	 * 
-	 * @param holiday input values to update the data
+	 * @param holidayId input values to update the data
 	 * @return id of updated Holiday data
 	 */
 	@ResponseFilter
@@ -200,7 +200,7 @@ public class HolidayController {
 	public ResponseWrapper<HolidayIdDeleteDto> deleteHoliday(
 			@Valid @RequestBody RequestWrapper<HolidayIdDeleteDto> request) {
 		ResponseWrapper<HolidayIdDeleteDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(holidayService.deleteHoliday(request));
+		responseWrapper.setResponse(holidayService.deleteHoliday(request.getRequest()));
 		return responseWrapper;
 	}
 

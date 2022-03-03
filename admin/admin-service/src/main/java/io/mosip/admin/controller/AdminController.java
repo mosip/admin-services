@@ -30,9 +30,9 @@ public class AdminController {
 
 	@PostMapping("/lostRid")
 	private ResponseWrapper<LostRidExtnDto> lostRid(@RequestBody RequestWrapper<SearchInfo> searchInfo) {
-		auditUtil.setAuditRequestDto(EventEnum.LOST_RID_API_CALLED);
+		auditUtil.setAuditRequestDto(EventEnum.LOST_RID_API_CALLED,null);
 		LostRidResponseDto lostRidResponseDto = adminService.lostRid(searchInfo.getRequest());
-		auditUtil.setAuditRequestDto(EventEnum.LOST_RID_SUCCESS);
+		auditUtil.setAuditRequestDto(EventEnum.LOST_RID_SUCCESS,null);
 		return buildLostRidResponse(lostRidResponseDto);
 	}
 	

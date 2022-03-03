@@ -5,8 +5,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Predicate;
 
 import javax.annotation.PostConstruct;
 
@@ -52,20 +50,12 @@ public class AuditUtil {
 
 	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AuditUtil.class);
 
-	/** The Constant APPLICATION_ID. */
-	private static final String APPLICATION_ID = "10009";
-
-	/** The Constant APPLICATION_NAME. */
-	private static final String APPLICATION_NAME = "Admin_Portal";
-
 	/** The Constant UNKNOWN_HOST. */
 	private static final String UNKNOWN_HOST = "Unknown Host";
 
 	private String hostIpAddress = null;
 
 	private String hostName = null;
-
-	private volatile AtomicInteger eventCounter;
 
 	@Value("${mosip.kernel.masterdata.audit-url}")
 	private String auditUrl;
@@ -79,37 +69,6 @@ public class AuditUtil {
 
 	@Autowired
 	private Environment env;
-
-	/**
-	 * Audit request.
-	 *
-	 * the audit request dto
-	 */
-	@PostConstruct
-	private void init() {
-		if(System.getProperty("seqGen")==null) {
-		eventCounter = new AtomicInteger(500);
-		}else {
-			Integer eventCount=Integer.getInteger(System.getProperty("seqGen"));
-			eventCounter=new AtomicInteger(eventCount);
-		}
-		
-	}
-	
-	/**
-	 * Validate security context holder.
-	 *
-	 * @return true, if successful
-	 */
-	private boolean validateSecurityContextHolder() {
-		Predicate<SecurityContextHolder> contextPredicate = i -> SecurityContextHolder.getContext() != null;
-		Predicate<SecurityContextHolder> authPredicate = i -> SecurityContextHolder.getContext()
-				.getAuthentication() != null;
-		Predicate<SecurityContextHolder> principlePredicate = i -> SecurityContextHolder.getContext()
-				.getAuthentication().getPrincipal() != null;
-		return contextPredicate.and(authPredicate).and(principlePredicate) != null;
-
-	}
 
 	/**
 	 * Gets the server ip.
@@ -214,11 +173,6 @@ public class AuditUtil {
 
 	}
 
-
-	public  void setAuditRequestDto(EventEnum eventEnum) {
-		setAuditRequestDto(eventEnum, null);
-	}
-
 	public void setAuditRequestDto(EventEnum eventEnum, String username) {
 		if(null==eventEnum)
 			return ;
@@ -248,14 +202,13 @@ public class AuditUtil {
 				env.getDefaultProfiles() : env.getActiveProfiles()).anyMatch(
 				environment -> (environment.equalsIgnoreCase("local") ||
 						environment.equalsIgnoreCase("test")) )) {
-			LOGGER.info("Recieved Audit : "+auditRequestDto.toString());
-
+			LOGGER.info("Recieved Audit : {}",auditRequestDto.toString());
 		} else {
 			callAuditManager(auditRequestDto);
 		}
 	}
 	public static Object neutralizeParam(Object param) {
-		if(param != null && param instanceof String)
+		if(param instanceof String)
 			return ((String) param).replaceAll("[\n\r\t]", "_");
 
 		return param;

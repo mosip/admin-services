@@ -1,6 +1,8 @@
 package io.mosip.kernel.masterdata.dto;
 
-import java.util.List;
+import org.json.JSONArray;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
@@ -17,6 +19,7 @@ public class DynamicFieldConsolidateResponseDto {
 	
 	private String description;
 	
-	private List<String> jsonValues;
-
+    @JsonIgnore
+	private JSONArray jsonValues;
+	
 }

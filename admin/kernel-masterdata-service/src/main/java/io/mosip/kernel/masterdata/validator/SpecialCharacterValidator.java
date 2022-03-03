@@ -18,10 +18,13 @@ public class SpecialCharacterValidator implements ConstraintValidator<CharacterV
 
 	@Override
 	public boolean isValid(String value, ConstraintValidatorContext context) {
-	
+
+		if (null != value && !value.isEmpty()) {
 			Pattern p = Pattern.compile(allowedCharactersRegex, Pattern.CASE_INSENSITIVE);
 			Matcher m = p.matcher(value.trim());
 			return !(m.find());
+		}
+		return true;
 	}
 
 }

@@ -77,4 +77,15 @@ public class SpecialCharacterValidatorTest {
 	public void testValidate7() {
 		assertEquals(validator.isValid("abcd123123",context),true);
 	}
+	
+	@Test
+	public void testValidate8() {
+		assertEquals(validator.isValid("",context),true);
+	}
+	
+	
+	@Test
+	public void testValidate9() {
+		assertEquals(validator.isValid(null,context),true);
+	}
 }

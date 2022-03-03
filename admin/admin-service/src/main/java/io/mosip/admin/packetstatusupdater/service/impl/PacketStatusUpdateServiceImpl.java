@@ -90,7 +90,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	@Override
 	public PacketStatusUpdateResponseDto getStatus(String rId, String langCode) {
 		//Any Packet status can be viewed from any admin from any center
-		auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS);
+		auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS,null);
 		return getPacketStatus(rId);
 	}
 
@@ -104,11 +104,11 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	@SuppressWarnings({ "unchecked" })
 	private PacketStatusUpdateResponseDto getPacketStatus(String rId) {
 		try {
-			if (!ridValidator.validateId(rId)) {
+		/*	if (!ridValidator.validateId(rId)) {
 				throw new MasterDataServiceException(PacketStatusUpdateErrorCode.RID_INVALID.getErrorCode(),
 						PacketStatusUpdateErrorCode.RID_INVALID.getErrorMessage());
 			}
-
+*/
 			HttpHeaders packetHeaders = new HttpHeaders();
 			packetHeaders.setContentType(MediaType.APPLICATION_JSON);
 			UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromUriString(packetUpdateStatusUrl)
@@ -125,7 +125,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 				setStatusMessage(packStautsDto);
 				regProcPacketStatusRequestDto.setPacketStatusUpdateList(packStautsDto);
 				packStautsDto.stream().forEach(pcksts -> {
-					auditUtil.setAuditRequestDto(EventEnum.getEventEnumBasedOnPAcketStatus(pcksts));
+					auditUtil.setAuditRequestDto(EventEnum.getEventEnumBasedOnPAcketStatus(pcksts),null);
 				});
 				return regProcPacketStatusRequestDto;
 			}
@@ -140,7 +140,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 			throw new MasterDataServiceException(PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
 					PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorMessage(), e);
 		}
-		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.PACKET_STATUS_ERROR,rId));
+		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.PACKET_STATUS_ERROR,rId),null);
 		throw new RequestException(PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
 				PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorMessage());
 	}
@@ -169,25 +169,25 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 			for (ServiceError serviceError : validationErrorsList) {
 				switch (serviceError.getErrorCode()) {
 					case "RPR-RTS-001":
-						auditUtil.setAuditRequestDto(EventEnum.RID_NOT_FOUND);
+						auditUtil.setAuditRequestDto(EventEnum.RID_NOT_FOUND,null);
 						logger.error(PacketStatusUpdateErrorCode.RID_NOT_FOUND.getErrorMessage());
 						throw new RequestException(PacketStatusUpdateErrorCode.RID_NOT_FOUND.getErrorCode(),
 								PacketStatusUpdateErrorCode.RID_NOT_FOUND.getErrorMessage());
 
 					case "KER-MSD-042":
-						auditUtil.setAuditRequestDto(EventEnum.CENTRE_NOT_EXISTS);
+						auditUtil.setAuditRequestDto(EventEnum.CENTRE_NOT_EXISTS,null);
 						logger.error(PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorMessage());
 						throw new RequestException(PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorCode(),
 								PacketStatusUpdateErrorCode.CENTER_ID_NOT_PRESENT.getErrorMessage());
 
 					case "ADM-PKT-001":
-						auditUtil.setAuditRequestDto(EventEnum.USER_NOT_AUTHORIZED);
+						auditUtil.setAuditRequestDto(EventEnum.USER_NOT_AUTHORIZED,null);
 						logger.error(PacketStatusUpdateErrorCode.ADMIN_UNAUTHORIZED.getErrorMessage());
 						throw new RequestException(PacketStatusUpdateErrorCode.ADMIN_UNAUTHORIZED.getErrorCode(),
 								PacketStatusUpdateErrorCode.ADMIN_UNAUTHORIZED.getErrorMessage());
 				}
 			}
-			auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS_ERROR);
+			auditUtil.setAuditRequestDto(EventEnum.PACKET_STATUS_ERROR,null);
 			logger.error("Unknown error from get packet status API : {}", validationErrorsList);
 			throw new RequestException(PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorCode(),
 					PacketStatusUpdateErrorCode.PACKET_FETCH_EXCEPTION.getErrorMessage());
@@ -197,7 +197,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 			ResponseWrapper<T> responseObject = objectMapper.readValue(responseBody, new TypeReference<ResponseWrapper<T>>() {});
 			packetStatusUpdateDto = responseObject.getResponse();
 		} catch (NullPointerException | java.io.IOException exception) {
-			auditUtil.setAuditRequestDto(EventEnum.PACKET_JSON_PARSE_EXCEPTION);
+			auditUtil.setAuditRequestDto(EventEnum.PACKET_JSON_PARSE_EXCEPTION,null);
 			logger.error("SESSIONID", "ADMIN-SERVICE",
 					"ADMIN-SERVICE", exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			throw new ParseResponseException(PacketStatusUpdateErrorCode.PACKET_JSON_PARSE_EXCEPTION.getErrorCode(),
