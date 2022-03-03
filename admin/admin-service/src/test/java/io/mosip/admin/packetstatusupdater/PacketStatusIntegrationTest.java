@@ -236,7 +236,7 @@ public class PacketStatusIntegrationTest {
 		ResponseWrapper<PacketStatusUpdateResponseDto> responseWrapper = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
 				new TypeReference<ResponseWrapper<PacketStatusUpdateResponseDto>>() {});
 		Assert.assertNotNull(responseWrapper.getErrors());
-		Assert.assertEquals("ADM-PKT-090", responseWrapper.getErrors().get(0).getErrorCode());
+		Assert.assertEquals("KER-MSD-500", responseWrapper.getErrors().get(0).getErrorCode());
 	}
 	
 	@Test
@@ -268,7 +268,7 @@ public class PacketStatusIntegrationTest {
 		ResponseWrapper<PacketStatusUpdateResponseDto> responseWrapper = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
 				new TypeReference<ResponseWrapper<PacketStatusUpdateResponseDto>>() {});
 		Assert.assertNotNull(responseWrapper.getErrors());
-		Assert.assertEquals("ADM-PKT-090", responseWrapper.getErrors().get(0).getErrorCode());
+		Assert.assertEquals("KER-MSD-500", responseWrapper.getErrors().get(0).getErrorCode());
 		
 	}
 	
