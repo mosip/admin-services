@@ -40,7 +40,7 @@ public enum RegistrationCenterErrorCode {
 	WORKING_NONWORKING_EXCEPTION("KER-MSD-803", "Cannot create as data for all seven days is not received"),
 
 	PRIMARY_LANGUAGE_EXCEPTION("KER-MSD-704", "Received data is not present in Primary Language supported by MOSIP"),
-	SECONDARY_LANGUAGE_EXCEPTION("KER-MSD-705", "%s Language does not supported by MOSIP"),
+	SECONDARY_LANGUAGE_EXCEPTION("KER-MSD-705", "%s Language does not suCLONE_NOT_SUPPORTEDpported by MOSIP"),
 	REGISTRATION_CENTER_ALL_Lang("KER-MSD-706",
 			"For the given ID data is present in all supported Language code of the MOSIP, So go for Edit"),
 
@@ -93,7 +93,8 @@ public enum RegistrationCenterErrorCode {
 	EXP_HOLIDAY_NULL("ADM-fff-eee", "Expectional Holiday request is null"),
 	LOCATION_HIERARCHY_INVALID("ADM-MSD-445", "location hierarchy is invalid"),
 	LOCATION_INVALID("ADM-MSD-446", "Location not found"),
-	CENTER_NOT_FOUND_FOR_LANG("KER-MSD-280","Center Type not found for language");
+	CENTER_NOT_FOUND_FOR_LANG("KER-MSD-280","Center Type not found for language"),
+	CLONE_NOT_SUPPORTED("ADM-MSD-447","Clone not supported");
 
 	private final String errorCode;
 	private final String errorMessage;

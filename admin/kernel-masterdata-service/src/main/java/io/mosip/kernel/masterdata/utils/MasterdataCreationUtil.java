@@ -133,7 +133,7 @@ public class MasterdataCreationUtil {
 		return primaryKeyCol;
 	}
 
-	private <T> void setIsActive(Class<?> dtoClass, boolean activeDto, T t, boolean priSecIdentical,Field isActive)
+	private <T> void setIsActive1(Class<?> dtoClass, boolean activeDto, T t, boolean priSecIdentical,Field isActive)
 			throws NoSuchFieldException, IllegalAccessException {
 		
 		if (activeDto && priSecIdentical) {

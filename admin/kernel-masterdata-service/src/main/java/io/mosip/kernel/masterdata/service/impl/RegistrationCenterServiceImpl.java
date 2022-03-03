@@ -1627,7 +1627,22 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			return MapperUtils.map(regCenterByLangCode, registrationCenterExtnDto);
 
 		}
-		RegistrationCenter clonedObject = (RegistrationCenter) regCenterById.get(0).clone();
+		RegistrationCenter clonedObject =null;
+		try {
+		clonedObject = (RegistrationCenter) regCenterById.get(0).clone();
+		}catch(CloneNotSupportedException ex)
+		{
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, RegCenterPutReqDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterErrorCode.CLONE_NOT_SUPPORTED.getErrorCode(),
+							RegistrationCenterErrorCode.CLONE_NOT_SUPPORTED.getErrorMessage()),
+					"ADM-529");
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.CLONE_NOT_SUPPORTED.getErrorCode(),
+					RegistrationCenterErrorCode.CLONE_NOT_SUPPORTED.getErrorMessage());
+		}
 		clonedObject.setName(dto.getName());
 		clonedObject.setContactPerson(dto.getContactPerson());
 		clonedObject.setAddressLine1(dto.getAddressLine1());
