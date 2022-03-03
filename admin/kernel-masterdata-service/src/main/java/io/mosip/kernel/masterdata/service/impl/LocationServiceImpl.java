@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -549,7 +550,7 @@ public class LocationServiceImpl implements LocationService {
 			List<Location> childLocHierList = getLocationChildHierarchyList(locCode, langCode);
 			childHierarchyList.addAll(childLocHierList);
 			childLocHierList.parallelStream().filter(entity -> entity.getCode() != null && !entity.getCode().isEmpty())
-					.map(entity -> getChildList(entity.getCode(), langCode,childHierarchyList));//.collect(Collectors.toList());
+					.map(entity -> getChildList(entity.getCode(), langCode,childHierarchyList)).collect(Collectors.toList());
 		}
 
 		return childHierarchyList;
@@ -571,7 +572,7 @@ public class LocationServiceImpl implements LocationService {
 
 			parentLocHierList.parallelStream()
 					.filter(entity -> entity.getParentLocCode() != null && !entity.getParentLocCode().isEmpty())
-					.map(entity -> getParentList(entity.getParentLocCode(), langCode,parentHierarchyList));//.collect(Collectors.toList());
+					.map(entity -> getParentList(entity.getParentLocCode(), langCode,parentHierarchyList)).collect(Collectors.toList());
 		}
 
 		return parentHierarchyList;
@@ -672,7 +673,7 @@ public class LocationServiceImpl implements LocationService {
 		if (locCode != null && !locCode.isEmpty()) {
 			List<String> childLocHierList = getLocationChildHierarchyList(locCode);
 			childList.addAll(childLocHierList);
-			childLocHierList.parallelStream().filter(Objects::nonNull).map(entity->getChildByLocCode(locCode,childList));//.collect(Collectors.toList());
+			childLocHierList.parallelStream().filter(Objects::nonNull).map(entity->getChildByLocCode(locCode,childList)).collect(Collectors.toList());
 		}
 		return childList;
 	}
