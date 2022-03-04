@@ -400,7 +400,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	private Job getJob(MultipartFile file, String operation, String repositoryName, String contextUser,
 					   Class<?> entity) throws IOException {
 		Step step = stepBuilderFactory.get("ETL-file-load")
-				.<Object, List<Object>>chunk(3)
+				.<Object, List<Object>>chunk(100)
 				.reader(itemReader(file, entity))
 				.processor(processor(operation, contextUser))
 				.writer(itemWriterMapper(repositoryName, operationMapper(operation), entity))
