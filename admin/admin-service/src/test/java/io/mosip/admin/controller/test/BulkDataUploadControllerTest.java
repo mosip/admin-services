@@ -112,6 +112,7 @@ public class BulkDataUploadControllerTest {
 		JSONObject json = (JSONObject) parser.parse(transaction);
 		JSONObject jsonResponse = (JSONObject) parser.parse(json.get("response").toString());
 		transactionId = jsonResponse.get("transcationId").toString();
+		AdminDataUtil.checkResponse(response,null);
 	}
 
 	@Test
