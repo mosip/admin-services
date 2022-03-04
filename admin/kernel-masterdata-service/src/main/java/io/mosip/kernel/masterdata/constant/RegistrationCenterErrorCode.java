@@ -40,7 +40,7 @@ public enum RegistrationCenterErrorCode {
 	WORKING_NONWORKING_EXCEPTION("KER-MSD-803", "Cannot create as data for all seven days is not received"),
 
 	PRIMARY_LANGUAGE_EXCEPTION("KER-MSD-704", "Received data is not present in Primary Language supported by MOSIP"),
-	SECONDARY_LANGUAGE_EXCEPTION("KER-MSD-705", "%s Language does not suCLONE_NOT_SUPPORTEDpported by MOSIP"),
+	SECONDARY_LANGUAGE_EXCEPTION("KER-MSD-705", "%s Language does not supported by MOSIP"),
 	REGISTRATION_CENTER_ALL_Lang("KER-MSD-706",
 			"For the given ID data is present in all supported Language code of the MOSIP, So go for Edit"),
 
