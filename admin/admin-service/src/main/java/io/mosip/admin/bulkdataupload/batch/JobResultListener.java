@@ -1,5 +1,6 @@
 package io.mosip.admin.bulkdataupload.batch;
 
+import io.mosip.admin.bulkdataupload.repositories.BulkUploadTranscationRepository;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.admin.packetstatusupdater.util.EventEnum;
 import org.digibooster.spring.batch.security.listener.JobExecutionSecurityContextListener;
@@ -9,32 +10,26 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.item.file.FlatFileParseException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.sql.DataSource;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class JobResultListener implements JobExecutionListener {
 
     private static final Logger logger = LoggerFactory.getLogger(JobResultListener.class);
-    private static String STATUS_MESSAGE = " <br/> READ: %d, STATUS: %s, MESSAGE: %s";
-    private static String UPDATE_QUERY = "UPDATE bulkupload_transaction SET status_code=?, record_count=record_count+?, upload_description=upload_description||? , upd_dtimes=now() WHERE id=?";
-    private DataSource dataSource;
+    private static String STATUS_MESSAGE = " <br/> STATUS: %s, MESSAGE: %s";
     private AuditUtil auditUtil;
     private JobExecutionSecurityContextListener jobExecutionSecurityContextListener;
-
+    private BulkUploadTranscationRepository bulkUploadTranscationRepository;
     private static final String SECURITY_PARAM_NAME = "security-param";
     private static final ThreadLocal<Authentication> ORIGINAL_CONTEXT = new ThreadLocal<>();
 
-    public JobResultListener(DataSource dataSource,
+    public JobResultListener(BulkUploadTranscationRepository bulkUploadTranscationRepository,
                              AuditUtil auditUtil, JobExecutionSecurityContextListener jobExecutionSecurityContextListener) {
-        this.dataSource = dataSource;
+        this.bulkUploadTranscationRepository = bulkUploadTranscationRepository;
         this.auditUtil = auditUtil;
         this.jobExecutionSecurityContextListener = new JobExecutionSecurityContextListener();
     }
@@ -52,6 +47,7 @@ public class JobResultListener implements JobExecutionListener {
                 this.jobExecutionSecurityContextListener.restoreContext(stepExecution);
             }
         }
+        
     }
 
     @Override
@@ -70,19 +66,12 @@ public class JobResultListener implements JobExecutionListener {
                 });
             });
 
-            Optional<Integer> commitResult = jobExecution.getStepExecutions().stream().map(StepExecution::getCommitCount).findFirst();
-            Optional<Integer> readResult = jobExecution.getStepExecutions().stream().map(StepExecution::getCommitCount).findFirst();
-            int readCount = readResult.isPresent() ? readResult.get() : 0;
-            int commitCount = commitResult.isPresent() ? commitResult.get() : 0;
-            String message = String.format(STATUS_MESSAGE, readCount,
+            String message = String.format(STATUS_MESSAGE,
                     jobExecution.getStatus().toString(), failures.isEmpty() ? "0 Errors" : failures.toString());
             auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_COMPLETED,
                             jobId + " --> " + message), jobExecution.getJobParameters().getString("username"));
 
-            JdbcTemplate jdbcTemplate = new JdbcTemplate(this.dataSource);
-            Object[] params = {jobExecution.getExitStatus().getExitCode(), commitCount, message, jobId};
-            int[] types = {Types.VARCHAR, Types.INTEGER, Types.VARCHAR, Types.VARCHAR};
-            jdbcTemplate.update(UPDATE_QUERY, params, types);
+            bulkUploadTranscationRepository.updateBulkUploadTransactionStatus(jobId, jobExecution.getExitStatus().getExitCode(), message);
 
         } catch (Throwable t) {
             logger.error("Failed  to update job status {}", jobId, t);
