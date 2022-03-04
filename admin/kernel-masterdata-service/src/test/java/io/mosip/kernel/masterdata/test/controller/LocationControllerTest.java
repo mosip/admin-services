@@ -157,7 +157,7 @@ public class LocationControllerTest {
 	public void t029getLocationHierarchyByLangCodeTest1() throws Exception {
 
 		MasterDataTest
-				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/BNMR/eng")).andReturn(), null);
+				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/BNMR/ara")).andReturn(), null);
 	}
 	
 	

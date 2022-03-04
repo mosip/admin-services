@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.FieldSetter;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -76,8 +77,8 @@ public class LocationHierarchyTest {
 		List<Location> mockPoint = mock(List.class);
 
 		LocationServiceImpl hierarchyImplSpy = PowerMockito.spy(new LocationServiceImpl());
-		FieldSetter.setField(hierarchyImplSpy, LocationServiceImpl.class.getDeclaredField("parentHierarchyList"),
-				mockList);
+		//FieldSetter.setField(hierarchyImplSpy, LocationServiceImpl.class.getDeclaredField("parentHierarchyList"),
+		//		mockList);
 		PowerMockito.doReturn(mockPoint).when(hierarchyImplSpy, "getLocationHierarchyList", ArgumentMatchers.any(),
 				ArgumentMatchers.any());
 
@@ -87,7 +88,7 @@ public class LocationHierarchyTest {
 		// locationRepo.findLocationHierarchyByCodeAndLanguageCode(Mockito.anyString(),
 		// Mockito.anyString()));
 
-		Whitebox.invokeMethod(hierarchyImplSpy, "getParentList", "KAR", "KAN");
+		Whitebox.invokeMethod(hierarchyImplSpy, "getParentList", "KAR", "KAN",mockPoint);
 	}
 
 }

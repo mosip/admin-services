@@ -133,22 +133,7 @@ public class MasterdataCreationUtil {
 		return primaryKeyCol;
 	}
 
-	private <T> void setIsActive(Class<?> dtoClass, boolean activeDto, T t, boolean priSecIdentical,Field isActive)
-			throws NoSuchFieldException, IllegalAccessException {
-		
-		if (activeDto && priSecIdentical) {
-			isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
-			isActive.setAccessible(true);
-			isActive.set(t, Boolean.TRUE);
-		} else {
-			isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
-			isActive.setAccessible(true);
-			isActive.set(t, Boolean.FALSE);
-		}
-	}
-
-
-
+	
 	private <E> int updatePrimaryToTrue(Class<E> entityClass, String id, String primaryKeyCol, boolean active) {
 		List<Predicate> predicates = new ArrayList<Predicate>();
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
