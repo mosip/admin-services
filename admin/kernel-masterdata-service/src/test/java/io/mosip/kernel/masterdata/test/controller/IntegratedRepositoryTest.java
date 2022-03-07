@@ -774,7 +774,7 @@ public class IntegratedRepositoryTest {
 				.andReturn(), "KER-MSD-045");
 	}
 
-	@Test
+	/*@Test
 	@WithUserDetails("global-admin")
 	public void tst001TemplateUpdateTest4() throws Exception {
 		when(zoneUserRepo.findZoneByUserIdNonDeleted(Mockito.any())).thenThrow(new DataAccessException("...") {
@@ -783,9 +783,9 @@ public class IntegratedRepositoryTest {
 				.thenThrow(new DataAccessException("...") {
 				});
 		MasterDataTest.checkResponse(mockMvc
-				.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID", "42").param("langCode", "eng"))
+				.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID", "global-admin").param("langCode", "eng"))
 				.andReturn(), "KER-MSD-393");
-	}
+	}*/
 
 	@Test
 	@WithUserDetails("global-admin")

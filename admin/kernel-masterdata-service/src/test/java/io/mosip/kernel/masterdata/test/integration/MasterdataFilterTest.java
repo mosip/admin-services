@@ -1,25 +1,19 @@
 package io.mosip.kernel.masterdata.test.integration;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.masterdata.constant.RequestErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
-import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResult;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
-import io.mosip.kernel.masterdata.entity.ZoneUser;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
-import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
-import io.mosip.kernel.masterdata.service.impl.ZoneServiceImpl;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
@@ -41,7 +35,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.Arrays;
 
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -64,12 +57,6 @@ public class MasterdataFilterTest {
 
     @MockBean
     private AuditUtil auditUtil;
-
-    @MockBean
-    private ZoneUserRepository zoneUserRepository;
-
-    @Autowired
-    private ZoneServiceImpl zoneServiceImpl;
 
     @Before
     public void init() {
@@ -306,29 +293,6 @@ public class MasterdataFilterTest {
 
         mockMvc.perform(post("/blocklistedwords/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isOk());
-    }
-
-    @Test
-    @WithUserDetails("global-admin")
-    public void firstUserTestInvalidUserId() {
-        try {
-            zoneServiceImpl.getZoneNameBasedOnLangCodeAndUserID("test", "eng");
-            Assert.fail();
-        } catch (MasterDataServiceException e) {
-            Assert.assertEquals(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
-                    e.getErrorCode());
-        }
-    }
-
-    @Test
-    @WithUserDetails("global-admin")
-    public void firstUserTestValidUserId() {
-        when(zoneUserRepository.count()).thenReturn(0L);
-        ZoneUser zoneUser = new ZoneUser();
-        zoneUser.setUserId("global-admin");
-        zoneUser.setZoneCode("MOR");
-        when(zoneUserRepository.findZoneByUserIdNonDeleted("global-admin")).thenReturn(zoneUser);
-        zoneServiceImpl.getZoneNameBasedOnLangCodeAndUserID("global-admin", "eng");
     }
 
 }
