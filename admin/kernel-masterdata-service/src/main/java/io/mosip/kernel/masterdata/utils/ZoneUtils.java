@@ -306,6 +306,20 @@ public class ZoneUtils {
 		Node<Zone> node = zoneTree.findNode(tree, zu.getZoneCode());
 		return zoneTree.findLeafsValue(node);
 	}
+	/**
+	 * method to get parent zone
+	 * @param langCode
+	 * @return
+	 */
+	public Zone getRootZone(String langCode) {
+		List<Zone> zones = getZones();
+		String lang = (langCode==null || langCode.equals("all")) ? languageUtils.getDefaultLanguage() : langCode;
+		List<Zone> langSpecificZones = zones.stream().filter(i -> lang.equals(i.getLangCode()))
+				.collect(Collectors.toList());
+		List<Node<Zone>> tree = zoneTree.createTree(langSpecificZones);
+		Node<Zone> rootZone = zoneTree.findRootNode(tree.get(1));
+		return rootZone.getValue();
+	}
 
 	/**
 	 * method to get leaf zones

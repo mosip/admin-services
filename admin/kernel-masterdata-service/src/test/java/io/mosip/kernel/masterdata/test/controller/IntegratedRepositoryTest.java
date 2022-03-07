@@ -779,6 +779,8 @@ public class IntegratedRepositoryTest {
 	public void tst001TemplateUpdateTest4() throws Exception {
 		when(zoneUserRepo.findZoneByUserIdNonDeleted(Mockito.any())).thenThrow(new DataAccessException("...") {
 		});
+		when(zoneUserRepo.count()).thenThrow(new DataAccessException("...") {
+		});
 		when(zoneRepository.findZoneByCodeAndLangCodeNonDeleted(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});

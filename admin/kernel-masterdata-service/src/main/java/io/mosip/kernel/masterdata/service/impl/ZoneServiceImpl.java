@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.mosip.kernel.masterdata.dto.ZoneUserDto;
+import io.mosip.kernel.masterdata.service.ZoneUserService;
 import io.mosip.kernel.masterdata.utils.LanguageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,6 +64,9 @@ public class ZoneServiceImpl implements ZoneService {
 	
 	@Autowired
 	private FilterColumnValidator filterColumnValidator;
+
+	@Autowired
+	ZoneUserService zoneUserService;
 	
 	@Autowired
 	private MasterDataFilterHelper masterDataFilterHelper;
@@ -141,13 +146,22 @@ public class ZoneServiceImpl implements ZoneService {
 	@Override
 	public ZoneNameResponseDto getZoneNameBasedOnLangCodeAndUserID(String userID, String langCode) {
 		ZoneNameResponseDto zoneNameResponseDto = new ZoneNameResponseDto();
+		ZoneUserDto zoneUserDto=new ZoneUserDto();
 		ZoneUser zoneUser = null;
 		Zone zone = null;
+		long count=0;
 		try {
+			count=zoneUserRepository.count();
+			if(count<=0){
+				zoneUserDto.setUserId(userID);
+				zoneUserDto.setZoneCode(zoneUtils.getRootZone(langCode).getCode());
+				zoneUserDto.setLangCode(langCode);
+				zoneUserService.createZoneUserMapping(zoneUserDto);
+			}
 			zoneUser = zoneUserRepository.findZoneByUserIdNonDeleted(userID);
 			if (zoneUser == null) {
-				throw new DataNotFoundException(ZoneErrorCode.ZONEUSER_ENTITY_NOT_FOUND.getErrorCode(),
-						ZoneErrorCode.ZONEUSER_ENTITY_NOT_FOUND.getErrorMessage());
+				throw new DataNotFoundException(ZoneErrorCode.ZONEUSER_NOT_FOUND.getErrorCode(),
+						ZoneErrorCode.ZONEUSER_NOT_FOUND.getErrorMessage());
 			}
 			zone = zoneRepository.findZoneByCodeAndLangCodeNonDeleted(zoneUser.getZoneCode(), langCode);
 			if (zone == null) {

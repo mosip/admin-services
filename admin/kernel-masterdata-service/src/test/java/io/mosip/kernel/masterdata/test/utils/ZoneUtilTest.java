@@ -150,4 +150,11 @@ public class ZoneUtilTest {
 		zoneUtils.getZones(zones.get(0));
 	}
 
+	@WithUserDetails("zonal-admin")
+	@Test
+	public void testGetRootZone() {
+		doReturn(zones).when(zoneRepository).findAllNonDeleted();
+		zoneUtils.getRootZone("ENG");
+	}
+
 }
