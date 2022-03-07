@@ -15,6 +15,8 @@ import javax.transaction.Transactional;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import io.mosip.kernel.masterdata.dto.response.FilterResult;
+
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -400,16 +402,17 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		List<ColumnCodeValue> columnValueList = new ArrayList<>();
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), DynamicField.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				List<FilterData> filterValues = masterDataFilterHelper.filterValuesWithCodeWithoutLangCode(
+				FilterResult<FilterData> filterResult = masterDataFilterHelper.filterValuesWithCode(
 						DynamicField.class, filterDto,
 						filterValueDto,"id");
-				filterValues.forEach(filterValue -> {
+				filterResult.getFilterData().forEach(filterValue -> {
 					ColumnCodeValue columnValue = new ColumnCodeValue();
 					columnValue.setFieldCode(filterValue.getFieldCode());
 					columnValue.setFieldID(filterDto.getColumnName());
 					columnValue.setFieldValue(filterValue.getFieldValue());
 					columnValueList.add(columnValue);
 				});
+				filterResponseDto.setTotalCount(filterResult.getTotalCount());
 			}
 			filterResponseDto.setFilters(columnValueList);
 		}
@@ -522,6 +525,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 				}
 				dto.setJsonValues(new JSONArray(l));
 			}
+
 			return dto;
 
 		} catch (DataAccessLayerException | DataAccessException | JSONException  e) {

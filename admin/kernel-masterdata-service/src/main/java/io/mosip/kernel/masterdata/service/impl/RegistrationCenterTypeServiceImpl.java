@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import io.mosip.kernel.masterdata.dto.response.FilterResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -300,15 +301,16 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(),
 				RegistrationCenterType.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				List<FilterData> filterValues = masterDataFilterHelper
+				FilterResult<FilterData> filterResult = masterDataFilterHelper
 						.filterValuesWithCode(RegistrationCenterType.class, filterDto, filterValueDto, "code");
-				filterValues.forEach(filterValue -> {
+				filterResult.getFilterData().forEach(filterValue -> {
 					ColumnCodeValue columnValue = new ColumnCodeValue();
 					columnValue.setFieldCode(filterValue.getFieldCode());
 					columnValue.setFieldID(filterDto.getColumnName());
 					columnValue.setFieldValue(filterValue.getFieldValue());
 					columnValueList.add(columnValue);
 				});
+				filterResponseDto.setTotalCount(filterResult.getTotalCount());
 			}
 			filterResponseDto.setFilters(columnValueList);
 		}

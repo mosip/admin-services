@@ -129,14 +129,6 @@ public interface LocationService {
 	 */
 	public PageResponseDto<LocationSearchDto> searchLocation(SearchDto dto);
 
-	/**
-	 * Service method to filter location values
-	 * 
-	 * @param filterValueDto
-	 * @return names corresponding to the eneted filter dto
-	 */
-	public FilterResponseCodeDto locationFilterValues(FilterValueDto filterValueDto);
-
 	public LocationLevelResponseDto getLocationCodeByLangCode(String langCode);
 
 	public LocationExtnDto getLocationDetailsByLangCode(String locationCode, String langCode);

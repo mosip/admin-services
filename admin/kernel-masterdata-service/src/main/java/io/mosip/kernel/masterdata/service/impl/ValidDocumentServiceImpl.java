@@ -10,6 +10,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
+
+import io.mosip.kernel.masterdata.dto.response.FilterResult;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -391,7 +393,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	/**
 	 * method to return list of doc-category code
 	 * 
-	 * @param value of valid document table
+	 * @param doc of valid document table
 	 * @return list of document category code in search filter
 	 */
 	public SearchFilter buildFilterDocumentCategory(ValidDocument doc) {
@@ -415,15 +417,16 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 		List<ColumnValue> columnValueList = new ArrayList<>();
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), ValidDocument.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				List<?> filterValues = masterDataFilterHelper.filterValues(ValidDocument.class, filterDto,
+				FilterResult<String> filterResult = masterDataFilterHelper.filterValues(ValidDocument.class, filterDto,
 						filterValueDto);
 
-				filterValues.forEach(filterValue -> {
+				filterResult.getFilterData().forEach(filterValue -> {
 					ColumnValue columnValue = new ColumnValue();
 					columnValue.setFieldID(filterDto.getColumnName());
-					columnValue.setFieldValue(filterValue.toString());
+					columnValue.setFieldValue(filterValue);
 					columnValueList.add(columnValue);
 				});
+				filterResponseDto.setTotalCount(filterResult.getTotalCount());
 			}
 			filterResponseDto.setFilters(columnValueList);
 		}

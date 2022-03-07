@@ -17,6 +17,7 @@ import java.util.List;
 
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.masterdata.dto.request.WorkingDaysPutRequestDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResult;
 import io.mosip.kernel.masterdata.entity.*;
 import io.mosip.kernel.masterdata.repository.*;
 import io.mosip.kernel.masterdata.utils.*;
@@ -2909,7 +2910,7 @@ public class MasterDataServiceTest {
 
 		Mockito.when(filterColumnValidator.validate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
 		Mockito.when(masterDataFilterHelper.filterValuesWithCode(Mockito.any(), Mockito.any(), Mockito.any(),
-				Mockito.anyString())).thenReturn(filterValues);
+				Mockito.anyString())).thenReturn(new FilterResult(filterValues, 0));
 		FilterResponseCodeDto response = zoneService.zoneFilterValues(filterValueDto);
 		Assert.assertEquals(filterResponseCodeDto, response);
 	}
