@@ -62,7 +62,7 @@ public class MasterdataFilterTest {
 
     @Before
     public void init() {
-        doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+        doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
     }
 
     @Test
