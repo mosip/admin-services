@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import io.mosip.kernel.masterdata.dto.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
@@ -28,7 +29,6 @@ import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
-import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
 import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.LocationCreateDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
@@ -47,12 +47,6 @@ import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
-import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
-import io.mosip.kernel.masterdata.dto.response.LocationPostResponseDto;
-import io.mosip.kernel.masterdata.dto.response.LocationPutResponseDto;
-import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
-import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -68,7 +62,6 @@ import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
-import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
@@ -696,7 +689,7 @@ public class LocationServiceImpl implements LocationService {
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.LocationService#locationFilterValues(
 	 * io. mosip.kernel.masterdata.dto.request.FilterValueDto)
-	 */
+	 *//*
 	@Override
 	public FilterResponseCodeDto locationFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseCodeDto filterResponseDto = new FilterResponseCodeDto();
@@ -745,9 +738,9 @@ public class LocationServiceImpl implements LocationService {
 				}
 				if (filter.getType().equals(FilterColumnEnum.UNIQUE.toString())) {
 					if (filter.getColumnName().equals(MasterDataConstant.IS_ACTIVE)) {
-						List<FilterData> filterValues = masterDataFilterHelper.filterValuesWithCode(Location.class,
+						FilterResult<FilterData> filterResult = masterDataFilterHelper.filterValuesWithCode(Location.class,
 								filter, filterValueDto, "code");
-						filterValues.forEach(filterValue -> {
+						filterResult.getFilterData().forEach(filterValue -> {
 							ColumnCodeValue columnValue = new ColumnCodeValue();
 							columnValue.setFieldCode(filterValue.getFieldCode());
 							columnValue.setFieldID(filter.getColumnName());
@@ -820,7 +813,7 @@ public class LocationServiceImpl implements LocationService {
 		}
 
 		return filterResponseDto;
-	}
+	}*/
 
 	/**
 	 * Method to find out the hierrachy level from the column name
@@ -924,21 +917,23 @@ public class LocationServiceImpl implements LocationService {
 		}
 		return pageDto;
 	}
+
 	@Override
 	public FilterResponseCodeDto locFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseCodeDto filterResponseDto = new FilterResponseCodeDto();
 		List<ColumnCodeValue> columnValueList = new ArrayList<>();
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Location.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				List<FilterData> filterValues = masterDataFilterHelper.filterValuesWithCode(Location.class,
+				FilterResult<FilterData> filterResult = masterDataFilterHelper.filterValuesWithCode(Location.class,
 						filterDto, filterValueDto, "code");
-				filterValues.forEach(filterValue -> {
+				filterResult.getFilterData().forEach(filterValue -> {
 					ColumnCodeValue columnCodeValue = new ColumnCodeValue();
 					columnCodeValue.setFieldID(filterDto.getColumnName());
 					columnCodeValue.setFieldValue(filterValue.getFieldValue());
 					columnCodeValue.setFieldCode(filterValue.getFieldCode());
 					columnValueList.add(columnCodeValue);
 				});
+				filterResponseDto.setTotalCount(filterResult.getTotalCount());
 			}
 			filterResponseDto.setFilters(columnValueList);
 		}

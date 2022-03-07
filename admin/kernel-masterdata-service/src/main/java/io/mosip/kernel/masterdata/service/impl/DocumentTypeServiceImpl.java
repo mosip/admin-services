@@ -6,6 +6,7 @@ import java.util.*;
 
 import javax.transaction.Transactional;
 
+import io.mosip.kernel.masterdata.dto.response.FilterResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -352,15 +353,19 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		List<ColumnValue> columnValueList = new ArrayList<>();
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), DocumentType.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				masterDataFilterHelper.filterValues(DocumentType.class, filterDto, filterValueDto)
-						.forEach(filterValue -> {
+				FilterResult<String> filterResult = masterDataFilterHelper.filterValues(DocumentType.class, filterDto,
+								filterValueDto);
+
+				filterResult.getFilterData().forEach(filterValue -> {
 							if (filterValue != null) {
 								ColumnValue columnValue = new ColumnValue();
 								columnValue.setFieldID(filterDto.getColumnName());
-								columnValue.setFieldValue(filterValue.toString());
+								columnValue.setFieldValue(filterValue);
 								columnValueList.add(columnValue);
 							}
 						});
+
+				filterResponseDto.setTotalCount(filterResult.getTotalCount());
 			}
 			filterResponseDto.setFilters(columnValueList);
 		}

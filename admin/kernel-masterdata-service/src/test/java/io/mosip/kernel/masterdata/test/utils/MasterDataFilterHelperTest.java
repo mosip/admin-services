@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.kernel.masterdata.dto.response.FilterResult;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,7 @@ public class MasterDataFilterHelperTest {
 		FilterValueDto valueDto = new FilterValueDto();
 		valueDto.setFilters(filterDtoList);
 		valueDto.setLanguageCode("eng");
-		List<?> list = masterDataFilterHelper.filterValues(Application.class, filterDto, valueDto);
-		assertThat(list.isEmpty(), is(false));
+		FilterResult<?> filterResult = masterDataFilterHelper.filterValues(Application.class, filterDto, valueDto);
+		assertThat(filterResult.getFilterData().isEmpty(), is(false));
 	}
 }

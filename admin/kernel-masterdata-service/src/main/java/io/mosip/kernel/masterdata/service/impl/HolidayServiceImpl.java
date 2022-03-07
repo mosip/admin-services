@@ -545,18 +545,20 @@ public class HolidayServiceImpl implements HolidayService {
 		List<ColumnCodeValue> columnValueList = new ArrayList<>();
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Holiday.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				List<?> filterValues = masterDataFilterHelper.filterValues(Holiday.class, filterDto, filterValueDto);
-				filterValues.forEach(filterValue -> {
+				FilterResult<String> filterResult = masterDataFilterHelper.filterValues(Holiday.class, filterDto, filterValueDto);
+				filterResult.getFilterData().forEach(filterValue -> {
 					ColumnCodeValue columnValue = new ColumnCodeValue();
 					columnValue.setFieldID(filterDto.getColumnName());
+					//TODO incorrect implementation, need to store locationName in the holiday table
 					if(filterDto.getColumnName().equalsIgnoreCase("locationCode")){
-						columnValue.setFieldValue(locationService.getLocationDetailsByLangCode(filterValue.toString(),filterValueDto.getLanguageCode()).getName());
-						columnValue.setFieldCode(filterValue.toString());
+						columnValue.setFieldValue(locationService.getLocationDetailsByLangCode(filterValue, filterValueDto.getLanguageCode()).getName());
+						columnValue.setFieldCode(filterValue);
 					}else{
-						columnValue.setFieldValue(filterValue.toString());
+						columnValue.setFieldValue(filterValue);
 					}
 					columnValueList.add(columnValue);
 				});
+				filterResponseDto.setTotalCount(filterResult.getTotalCount());
 			}
 			filterResponseDto.setFilters(columnValueList);
 		}

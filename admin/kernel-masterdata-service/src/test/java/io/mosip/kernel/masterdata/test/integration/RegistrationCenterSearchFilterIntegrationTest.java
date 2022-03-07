@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import io.mosip.kernel.masterdata.dto.response.FilterResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -224,7 +225,8 @@ public class RegistrationCenterSearchFilterIntegrationTest {
 		String json = objectMapper.writeValueAsString(requestDto);
 		when(zoneUtils.getUserZones()).thenReturn(zones);
 		when(filterColumnValidator.validate(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(true);
-		when(masterDataFilterHelper.filterValues(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(Arrays.asList("a"));
+		when(masterDataFilterHelper.filterValues(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(
+				new FilterResult(Arrays.asList("a"), 1));
 		
 		mockMvc.perform(post("/registrationcenters/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());

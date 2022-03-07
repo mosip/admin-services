@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FilterResponseDto {
 	private List<ColumnValue> filters;
+	private long totalCount;
 }

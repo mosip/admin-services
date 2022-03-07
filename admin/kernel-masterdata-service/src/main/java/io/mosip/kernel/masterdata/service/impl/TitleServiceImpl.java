@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
+import io.mosip.kernel.masterdata.dto.response.FilterResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -374,14 +375,16 @@ public class TitleServiceImpl implements TitleService {
 
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Title.class)) {
 			filterValueDto.getFilters().stream().forEach(filter -> {
-				masterDataFilterHelper.filterValues(Title.class, filter, filterValueDto).forEach(filteredValue -> {
+				FilterResult<String> filterResult = masterDataFilterHelper.filterValues(Title.class, filter, filterValueDto);
+				filterResult.getFilterData().forEach(filteredValue -> {
 					if (filteredValue != null) {
 						ColumnValue columnValue = new ColumnValue();
 						columnValue.setFieldID(filter.getColumnName());
-						columnValue.setFieldValue(filteredValue.toString());
+						columnValue.setFieldValue(filteredValue);
 						columnValueList.add(columnValue);
 					}
 				});
+				filterResponseDto.setTotalCount(filterResult.getTotalCount());
 			});
 			filterResponseDto.setFilters(columnValueList);
 		}
