@@ -4,11 +4,15 @@ package io.mosip.kernel.masterdata.test.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.kernel.masterdata.constant.RequestErrorCode;
+import io.mosip.kernel.masterdata.service.impl.ZoneServiceImpl;
 import io.mosip.kernel.masterdata.utils.LanguageUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.websub.model.EventModel;
@@ -59,6 +64,10 @@ public class ZoneServiceTest {
 
 	@MockBean
 	private LanguageUtils languageUtils;
+
+	@Autowired
+	private ZoneServiceImpl zoneServiceImpl;
+
 	
 	ZoneUser zoneUser = null;
 	
@@ -118,5 +127,28 @@ public class ZoneServiceTest {
 		List<ZoneUser> users = zoneUserService.getZoneUsers(userIds);
 		assertEquals("eng", users.get(0).getLangCode());
 		
+	}
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void firstUserTestInvalidUserId() {
+		try {
+			zoneServiceImpl.getZoneNameBasedOnLangCodeAndUserID("test", "eng");
+			Assert.fail();
+		} catch (MasterDataServiceException e) {
+			Assert.assertEquals(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+					e.getErrorCode());
+		}
+	}
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void firstUserTestValidUserId() {
+		when(zoneUserRepo.count()).thenReturn(0L);
+		ZoneUser zoneUser = new ZoneUser();
+		zoneUser.setUserId("global-admin");
+		zoneUser.setZoneCode("MOR");
+		when(zoneUserRepo.findZoneByUserIdNonDeleted("global-admin")).thenReturn(zoneUser);
+		zoneServiceImpl.getZoneNameBasedOnLangCodeAndUserID("global-admin", "eng");
 	}
 }
