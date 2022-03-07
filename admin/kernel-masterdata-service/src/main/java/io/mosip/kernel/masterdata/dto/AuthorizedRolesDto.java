@@ -583,6 +583,12 @@ public class AuthorizedRolesDto {
 	private List<String> getdynamicfieldmissingidslangcode;
 
 	private List<String> postdynamicfieldsfiltervalues;
+	
+	
+	private List<String> getgeneratecsrcertificateapplicationidreferenceid;
+	private List<String> postuploadcertificate;
+	private List<String> postgeneratecsr;
+	private List<String> postuploadotherdomaincertificate;
 
 
 }

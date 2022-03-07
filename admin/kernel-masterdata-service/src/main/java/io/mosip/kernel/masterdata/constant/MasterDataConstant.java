@@ -58,6 +58,9 @@ public class MasterDataConstant {
 	public static final String SUCCESSFUL_FILTER_DESC = "System successfully searched filter values for %s";
 	public static final String FILTER_FAILED = "%s - Filter Failure";
 	public static final String CREATE_API_IS_CALLED = "Create API called::";
+	public static final String GENERATE_API_IS_CALLED = "Generate API called::";
+	public static final String GENERATE_CERTIFICATE_API_IS_CALLED = "Generate certificate API called::";
+	public static final String UPLOAD_CERTIFICATE_API_IS_CALLED="Upload certificate API called:: ";
 	public static final String SUCCESSFUL_UPDATED_STATUS = "Updated status %s - successfully";
 	public static final String FAILURE_TO_UPDATE_STATUS = "Update status %s - failure";
 
@@ -109,7 +112,9 @@ public class MasterDataConstant {
 	public static final String SUBTYPE = "subType";
 	public static final String GET_USER_DETAILS_API_IS_CALLED = "GET user details API called::";
 	public static final String SEARCH_USER_DETAILS_API_IS_CALLED = "Search user details API called::";
-
+	public static final String UPLOAD_CERTIFICATE_ERROR="Upload certificate error :: %s";
+	public static final String GENERATE_CERTIFICATE_ERROR="Generate certificate error :: %s";
 	public static final String AUDIT_SYSTEM = "SYSTEM";
-	public static final String PUBLISHER_ID = "MASTERDATA";	
+	public static final String PUBLISHER_ID = "MASTERDATA";
+	public static final String GENERATE_CSR_ERROR = "Generate CSR error:: %s";	
 }
