@@ -54,7 +54,7 @@ public class KeyManagerController {
 
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetgeneratecsrcertificateapplicationidreferenceid())")
-	@GetMapping("generatecsrcertificate/{applicationid}/{referenceid}")
+	@GetMapping("generatecsrcertificate")
 	@ApiOperation(value = "Service to generte csr certificate ", notes = "Generates csr certificate by delegating request to keymanager")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When  csr certificate is obtained successfully"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
