@@ -26,6 +26,13 @@ public class AuthorizedRolesDto {
 
 	//packet status update controller
 	private List<String> getpacketstatusupdate;
+	
+	
+	// keymanager controller
+	private List<String> getgeneratecsrcertificateapplicationidreferenceid;
+	private List<String> postuploadcertificate;
+	private List<String> postgeneratecsr;
+	private List<String> postuploadotherdomaincertificate;
 
 	
 }

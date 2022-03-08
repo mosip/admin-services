@@ -76,10 +76,21 @@ public enum EventEnum {
 	LOST_RID_SUCCESS("ADM-BLK-202", AuditConstant.AUDIT_SYSTEM, "Request for Lost rid API",
 			"successfully return the lost rid", "ADM-LRID", "admin service", "NO_ID", "NO_ID_TYPE",
 			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME),
-	BULKDATA_INVALID_OPERATION("ADM-BLK-411",AuditConstant.AUDIT_SYSTEM,"Request for bulkdata invalid operation based on category","Invalid operation","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME);
+	BULKDATA_INVALID_OPERATION("ADM-BLK-411",AuditConstant.AUDIT_SYSTEM,"Request for bulkdata invalid operation based on category","Invalid operation","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	GENERATE_CSR("ADM-KMS-200",AuditConstant.AUDIT_SYSTEM,"Request for generating CSR","Generate CSR","ADM-KMS","Key Manager service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	UPLOAD_CERTIFICATE("ADM-KMS-201",AuditConstant.AUDIT_SYSTEM,"Request for uploading certificate","Upload certificate","ADM-KMS","Key Manager service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	GENERATE_CSR_CERTIFICATE("ADM-KMS-202",AuditConstant.AUDIT_SYSTEM,"Request for generating CSR certificate","Generate CSR certificate","ADM-KMS","Key Manager service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 
+	UPLOAD_OTHER_DOMAIN_CERTIFICATE("ADM-KMS-203",AuditConstant.AUDIT_SYSTEM,"Request for uploading other domain certificate","Upload other domain certificate","ADM-KMS","Key Manager service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 
+	GENERATE_CSR_ERROR("ADM-KMS-400",AuditConstant.AUDIT_SYSTEM,"Error while generating CSR","Generate CSR","ADM-KMS","Key Manager service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	UPLOAD_CERTIFICATE_ERROR("ADM-KMS-401",AuditConstant.AUDIT_SYSTEM,"Error while uploading certificate","Upload certificate","ADM-KMS","Key Manager service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	GENERATE_CSR_CERTIFICATE_ERROR("ADM-KMS-402",AuditConstant.AUDIT_SYSTEM,"Error while generating CSR certificate","Generate CSR certificate","ADM-KMS","Key Manager service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 
+	UPLOAD_OTHER_DOMAIN_CERTIFICATE_ERROR("ADM-KMS-403",AuditConstant.AUDIT_SYSTEM,"Error while uploading other domain certificate","Upload other domain certificate","ADM-KMS","Key Manager service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME);
+
+	
+	
 	private final String eventId;
 
 	private final String type;
