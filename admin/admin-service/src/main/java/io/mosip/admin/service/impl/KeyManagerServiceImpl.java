@@ -1,5 +1,6 @@
 package io.mosip.admin.service.impl;
 
+import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -60,7 +61,7 @@ public class KeyManagerServiceImpl implements KeyManagerService {
 				ResponseWrapper.class);
 		if (null != response.getBody() && null != response.getBody().getErrors()) {
 			audit.setAuditRequestDto(EventEnum.GENERATE_CSR_ERROR, null);
-			throw new MasterDataServiceException(((ServiceError) response.getBody().getErrors().get(0)).getErrorCode(),
+			throw new RequestException(((ServiceError) response.getBody().getErrors().get(0)).getErrorCode(),
 					((ServiceError) response.getBody().getErrors().get(0)).getMessage());
 
 		}
@@ -81,7 +82,7 @@ public class KeyManagerServiceImpl implements KeyManagerService {
 
 		if (null != response.getBody() && null != response.getBody().getErrors()) {
 			audit.setAuditRequestDto(EventEnum.GENERATE_CSR_CERTIFICATE_ERROR, null);
-			throw new MasterDataServiceException(((ServiceError) response.getBody().getErrors().get(0)).getErrorCode(),
+			throw new RequestException(((ServiceError) response.getBody().getErrors().get(0)).getErrorCode(),
 					((ServiceError) response.getBody().getErrors().get(0)).getMessage());
 
 		}
@@ -108,7 +109,7 @@ public class KeyManagerServiceImpl implements KeyManagerService {
 				audit.setAuditRequestDto(EventEnum.UPLOAD_OTHER_DOMAIN_CERTIFICATE_ERROR, null);
 			else
 				audit.setAuditRequestDto(EventEnum.UPLOAD_CERTIFICATE_ERROR, null);
-			throw new MasterDataServiceException(((ServiceError) response.getBody().getErrors().get(0)).getErrorCode(),
+			throw new RequestException(((ServiceError) response.getBody().getErrors().get(0)).getErrorCode(),
 					((ServiceError) response.getBody().getErrors().get(0)).getMessage());
 
 		}
