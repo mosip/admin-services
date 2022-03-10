@@ -21,6 +21,7 @@ import io.mosip.admin.bulkdataupload.batch.PacketJobResultListener;
 import io.mosip.admin.bulkdataupload.batch.PacketUploadTasklet;
 import io.mosip.admin.bulkdataupload.dto.*;
 import io.mosip.admin.bulkdataupload.batch.CustomRecordSeparatorPolicy;
+import io.mosip.admin.bulkdataupload.batch.ApplicantValidDocumentFieldSetMapper;
 import io.mosip.admin.bulkdataupload.batch.CustomChunkListener;
 import io.mosip.admin.bulkdataupload.service.PacketUploadService;
 import io.mosip.kernel.core.util.*;
@@ -62,6 +63,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.admin.bulkdataupload.constant.BulkUploadErrorCode;
+import io.mosip.admin.bulkdataupload.entity.ApplicantValidDocument;
 import io.mosip.admin.bulkdataupload.entity.BaseEntity;
 import io.mosip.admin.bulkdataupload.entity.BulkUploadTranscation;
 import io.mosip.admin.bulkdataupload.repositories.BulkUploadTranscationRepository;
@@ -90,6 +92,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	private static String STATUS_MESSAGE = "SUCCESS: %d, FAILED: %d";
 	private static String CSV_UPLOAD_MESSAGE = "FILE: %s, READ: %d, STATUS: %s, MESSAGE: %s";
 	private static String PKT_UPLOAD_MESSAGE = "FILE: %s, STATUS: %s, MESSAGE: %s";
+	private static String ApplicantValidDocumentEntity = "io.mosip.admin.bulkdataupload.entity.ApplicantValidDocument";
 	
 	@Autowired
 	ApplicationContext applicationContext;
@@ -117,6 +120,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 	@Autowired
 	private PacketUploadService packetUploadService;
+	
+	@Autowired
+	private ApplicantValidDocumentFieldSetMapper applicantValidDocumentFieldSetMapper;
 
 	@Autowired
 	@Qualifier("asyncJobLauncher")
@@ -399,6 +405,21 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 	private Job getJob(MultipartFile file, String operation, String repositoryName, String contextUser,
 					   Class<?> entity) throws IOException {
+		if(entity.getName() == ApplicantValidDocumentEntity) {
+		Step step = stepBuilderFactory.get("ETL-file-load")
+				.<ApplicantValidDocument, List<ApplicantValidDocument>>chunk(100)
+				.reader(applicantValidDocumentItemReader(file, entity))
+				.processor(processor(operation, contextUser))
+				.writer(itemWriterMapper(repositoryName, operationMapper(operation), entity))
+				.listener(customChunkListener)
+				.build();
+		
+		return jobBuilderFactory.get("ETL-Load")
+				.listener(jobResultListener)
+				.incrementer(new RunIdIncrementer())
+				.start(step)
+				.build();
+		}
 		Step step = stepBuilderFactory.get("ETL-file-load")
 				.<Object, List<Object>>chunk(100)
 				.reader(itemReader(file, entity))
@@ -406,7 +427,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 				.writer(itemWriterMapper(repositoryName, operationMapper(operation), entity))
 				.listener(customChunkListener)
 				.build();
-
+		
 		return jobBuilderFactory.get("ETL-Load")
 				.listener(jobResultListener)
 				.incrementer(new RunIdIncrementer())
@@ -480,6 +501,32 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 		flatFileItemReader.setLineMapper(lineMapper);
 		return flatFileItemReader;
 
+	}
+
+	@StepScope
+	private FlatFileItemReader<ApplicantValidDocument> applicantValidDocumentItemReader(MultipartFile file, Class<?> clazz) throws IOException {
+
+		DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
+		lineTokenizer.setDelimiter(",");
+		lineTokenizer.setStrict(false);
+		FlatFileItemReader<ApplicantValidDocument> flatFileItemReader = new FlatFileItemReader<>();
+		flatFileItemReader.setEncoding("UTF-8");
+		flatFileItemReader.setResource(new InputStreamResource(file.getInputStream()));
+		flatFileItemReader.setName("CSV-Reader");
+		flatFileItemReader.setRecordSeparatorPolicy(new CustomRecordSeparatorPolicy());
+		flatFileItemReader.setLinesToSkip(1);
+		flatFileItemReader.setSkippedLinesCallback(new LineCallbackHandler() {
+			@Override
+			public void handleLine(String s) {
+				lineTokenizer.setNames(s.split(","));
+			}
+		});
+		CustomLineMapper<ApplicantValidDocument> lineMapper = new CustomLineMapper<ApplicantValidDocument>(setupLanguages(), null);
+		lineMapper.setLineTokenizer(lineTokenizer);
+		lineMapper.setFieldSetMapper(applicantValidDocumentFieldSetMapper);
+		flatFileItemReader.setLineMapper(lineMapper);
+		return flatFileItemReader;
+		
 	}
 
 	private ItemProcessor processor(String operation, String contextUser) {

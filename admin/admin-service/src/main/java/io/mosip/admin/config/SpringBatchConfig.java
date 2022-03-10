@@ -1,5 +1,6 @@
 package io.mosip.admin.config;
 
+import io.mosip.admin.bulkdataupload.batch.ApplicantValidDocumentFieldSetMapper;
 import io.mosip.admin.bulkdataupload.batch.CustomChunkListener;
 import io.mosip.admin.bulkdataupload.batch.JobResultListener;
 import io.mosip.admin.bulkdataupload.batch.PacketJobResultListener;
@@ -60,6 +61,10 @@ public class SpringBatchConfig {
         return new CustomChunkListener(bulkUploadTranscationRepository);
     }
     
+    @Bean
+    public ApplicantValidDocumentFieldSetMapper applicantValidDocumentFieldSetMapper() {
+    	return new ApplicantValidDocumentFieldSetMapper();
+    }
     
     @Bean
     public JobResultListener jobResultListener() {
