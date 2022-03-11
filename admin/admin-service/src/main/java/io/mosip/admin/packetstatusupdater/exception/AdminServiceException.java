@@ -17,7 +17,10 @@ public class AdminServiceException extends BaseUncheckedException {
 		this.errors = errors;
 	}
 
-	public List<ServiceError> getErrors() {
+    public AdminServiceException(String errorCode, String errorMsg) {
+    }
+
+    public List<ServiceError> getErrors() {
 		return errors;
 	}
 

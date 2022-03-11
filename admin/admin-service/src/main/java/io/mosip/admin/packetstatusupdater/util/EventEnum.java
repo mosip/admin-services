@@ -87,7 +87,11 @@ public enum EventEnum {
 	UPLOAD_CERTIFICATE_ERROR("ADM-KMS-401",AuditConstant.AUDIT_SYSTEM,"Error while uploading certificate","Upload certificate","ADM-KMS","Key Manager service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 	GENERATE_CSR_CERTIFICATE_ERROR("ADM-KMS-402",AuditConstant.AUDIT_SYSTEM,"Error while generating CSR certificate","Generate CSR certificate","ADM-KMS","Key Manager service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 
-	UPLOAD_OTHER_DOMAIN_CERTIFICATE_ERROR("ADM-KMS-403",AuditConstant.AUDIT_SYSTEM,"Error while uploading other domain certificate","Upload other domain certificate","ADM-KMS","Key Manager service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME);
+	UPLOAD_OTHER_DOMAIN_CERTIFICATE_ERROR("ADM-KMS-403",AuditConstant.AUDIT_SYSTEM,"Error while uploading other domain certificate","Upload other domain certificate","ADM-KMS","Key Manager service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	MASTERDATA_PROXY_API_CALLED("ADM-MSD-410", AuditConstant.AUDIT_SYSTEM, "Request for Masterdata proxy API",
+			"API called for Masterdata proxy", "ADM-MSD", "Masterdata Proxy service", "NO_ID", "NO_ID_TYPE",
+			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME ),
+	MASTERDATA_PROXY_ERROR("ADM-MSD-411",AuditConstant.AUDIT_SYSTEM,"Request for Masterdata Proxy","Failed to call masterdata api - %s","ADM-MSD","Masterdata Proxy service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME);
 
 	
 	
