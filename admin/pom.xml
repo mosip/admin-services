@@ -167,7 +167,7 @@
 		<io.jsonwebtoken.jjwt.version>0.6.0</io.jsonwebtoken.jjwt.version>
 		<apache.directory.api.version>2.0.0.AM2</apache.directory.api.version>
 
-		<sonar.coverage.exclusions>**/repositories/**,**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**,**/*Util.java,**/helper/beans/**,**/OptionalFilter.java,**/*Enum.java</sonar.coverage.exclusions>
+		<sonar.coverage.exclusions>**/repositories/**,**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**,**/*Util.java,**/helper/beans/**,**/OptionalFilter.java,**/*Enum.java,**/validator.registereddevice/**,**/DeviceProvider*.java,**/DeviceRegister*.java,**/FoundationalTrustProvider*.java,**/GenderType*.java,**/IndividualType*.java,**/MOSIPDeviceService*.java,**/RegisteredDevice*.java,**/RegistrationCenterDeviceHistoryServiceImpl.java,**/RegistrationCenterMachineUserServiceHistoryImpl.java</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
 
