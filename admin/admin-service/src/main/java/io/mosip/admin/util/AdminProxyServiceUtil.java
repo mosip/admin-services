@@ -1,6 +1,5 @@
 package io.mosip.admin.util;
 
-import io.mosip.admin.bulkdataupload.service.impl.BulkDataUploadServiceImpl;
 import io.mosip.admin.packetstatusupdater.exception.AdminServiceException;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.admin.packetstatusupdater.util.EventEnum;
@@ -8,9 +7,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -21,13 +18,10 @@ import java.net.URI;
 import java.net.URLDecoder;
 
 @Component
-public class MasterdataProxyServiceUtil {
+public class AdminProxyServiceUtil {
 
 	@Value("${mosip.admin.base.url}")
 	private String baseUrl;
-
-	@Value("${mosip.admin.masterdata.service.version}")
-	private String version;
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -35,11 +29,11 @@ public class MasterdataProxyServiceUtil {
 	@Autowired
 	AuditUtil auditUtil;
 
-	private static final Logger logger = LoggerFactory.getLogger(MasterdataProxyServiceUtil.class);
+	private static final Logger logger = LoggerFactory.getLogger(AdminProxyServiceUtil.class);
 
 
 	@SuppressWarnings("deprecation")
-	public URI getUrl(HttpServletRequest request) {
+	public URI getUrl(HttpServletRequest request,String version) {
 
 		logger.info("getUrl method of proxyMasterDataServiceUtil");
 
@@ -117,7 +111,7 @@ public class MasterdataProxyServiceUtil {
 			logger.info("Proxy MasterData Call response for :{}" , uri);
 
 		} catch (Exception e) {
-			auditUtil.setAuditRequestDto(EventEnum.MASTERDATA_PROXY_ERROR,null);
+			auditUtil.setAuditRequestDto(EventEnum.ADMIN_PROXY_ERROR,null);
 			logger.error("Proxy MasterData Call Exception response for url {}, {} ", uri, ExceptionUtils.getStackTrace(e));
 			throw new AdminServiceException("ADM-MSD-001", "Failed to call masterdata api");
 

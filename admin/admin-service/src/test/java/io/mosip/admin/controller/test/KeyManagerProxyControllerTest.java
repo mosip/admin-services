@@ -28,8 +28,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.admin.TestBootApplication;
-import io.mosip.admin.dto.GenerateCsrDto;
-import io.mosip.admin.dto.UploadCertificateDto;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.websub.model.EventModel;
@@ -40,7 +38,7 @@ import io.mosip.admin.util.AdminDataUtil;
 @SpringBootTest(classes = TestBootApplication.class)
 @AutoConfigureMockMvc
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class KeyManagerServiceControllerTest {
+public class KeyManagerProxyControllerTest {
 
 	@Autowired
 	public MockMvc mockMvc;
@@ -53,37 +51,17 @@ public class KeyManagerServiceControllerTest {
 
 	private ObjectMapper mapper;
 
-	@Value("${mosip.kernel.keymanager.generatecsr}")
-	private String generteCSR;
-
-	@Value("${mosip.kernel.keymanager.getcertificate}")
-	private String generatecsrCertificate;
-
-	@Value("${mosip.kernel.keymanager.uploadcertificate}")
-	private String uploadCertificate;
-
-	@Value("${mosip.kernel.keymanager.uploadotherdomaincertificate}")
-	private String uploadOtherCertificate;
-
 	@Autowired
 	RestTemplate restTemplate;
 
-	private RequestWrapper<GenerateCsrDto> req = new RequestWrapper<GenerateCsrDto>();
-	GenerateCsrDto csrDto = new GenerateCsrDto();
-	private RequestWrapper<UploadCertificateDto> uploadCertificateDtoReq = new RequestWrapper<UploadCertificateDto>();
+	@Value("${mosip.admin.base.url}")
+	private String baseUrl;
 
 	@Before
 	public void setUp() {
-
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
 		doNothing().when(auditUtil).setAuditRequestDto(Mockito.any(),Mockito.any());
-		// GenerateCsrDto csrDto=new GenerateCsrDto();
-		csrDto.setApplicationId("REGISTRATION");
-		req.setRequest(csrDto);
-		UploadCertificateDto uc = new UploadCertificateDto();
-		uc.setApplicationId("REGISTRATION");
-		uploadCertificateDtoReq.setRequest(uc);
 	}
 
 	@Test
@@ -96,11 +74,11 @@ public class KeyManagerServiceControllerTest {
 				+ "      \"message\": \"ApplicationId not found in Key Policy. Key/CSR generation not allowed.\"\r\n"
 				+ "    }\r\n" + "  ]\r\n" + "}";
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo(generteCSR))
+		mockRestServiceServer.expect(requestTo(baseUrl+"/v1/keymanager/generatecsr"))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 		AdminDataUtil.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/keymanager/generatecsr")
-						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(req))).andReturn(),
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString("string"))).andReturn(),
 				"KER-KMS-002");
 	}
 
@@ -115,12 +93,12 @@ public class KeyManagerServiceControllerTest {
 				+ "    \"expiryAt\": \"2025-02-20T07:19:50.000Z\",\r\n"
 				+ "    \"timestamp\": \"2022-03-07T12:08:52.656Z\"\r\n" + "  },\r\n" + "  \"errors\": null\r\n" + "}";
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo(generteCSR))
+		mockRestServiceServer.expect(requestTo(baseUrl+"/v1/keymanager/generatecsr"))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 
 		AdminDataUtil.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/keymanager/generatecsr")
-						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(req))).andReturn(),
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString("string"))).andReturn(),
 				null);
 	}
 
@@ -137,33 +115,15 @@ public class KeyManagerServiceControllerTest {
 				+ "    \"timestamp\": \"2022-03-07T11:53:27.121Z\"\r\n" + "  },\r\n" + "  \"errors\": null\r\n" + "}";
 
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo(generatecsrCertificate + "applicationId=REGISTRATION&referenceId=refID"))
+		mockRestServiceServer.expect(requestTo(baseUrl+"/v1/keymanager/generatecsrcertificate?applicationId=REGISTRATION&referenceId=refID"))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 
 		AdminDataUtil.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/keymanager/generatecsrcertificate").param("applicationid", "REGISTRATION").param("referenceid", "refID"))
+				mockMvc.perform(MockMvcRequestBuilders.get("/keymanager/generatecsrcertificate?applicationId=REGISTRATION&referenceId=refID"))
 						.andReturn(),
 				null);
 	}
 
-	@Test
-	@WithUserDetails("global-admin")
-	public void t001generateCsrCertificateTest() throws Exception {
-		String response = "{\r\n" + "  \"id\": null,\r\n" + "  \"version\": null,\r\n"
-				+ "  \"responsetime\": \"2022-03-07T12:15:47.337Z\",\r\n" + "  \"metadata\": null,\r\n"
-				+ "  \"response\": null,\r\n" + "  \"errors\": [\r\n" + "    {\r\n"
-				+ "      \"errorCode\": \"KER-KMS-002\",\r\n"
-				+ "      \"message\": \"ApplicationId not found in Key Policy. Key/CSR generation not allowed.\"\r\n"
-				+ "    }\r\n" + "  ]\r\n" + "}";
-
-		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo(generatecsrCertificate + "applicationId=test&referenceId=refID"))
-				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
-
-		AdminDataUtil.checkResponse(mockMvc
-				.perform(MockMvcRequestBuilders.get("/keymanager/generatecsrcertificate").param("applicationid", "test").param("referenceid", "refID")).andReturn(),
-				"KER-KMS-002");
-	}
 
 	@Test
 	@WithUserDetails("global-admin")
@@ -174,40 +134,18 @@ public class KeyManagerServiceControllerTest {
 				+ "      \"errorCode\": \"KER-KMS-003\",\r\n" + "      \"message\": \"No unique alias is found\"\r\n"
 				+ "    }\r\n" + "  ]\r\n" + "}";
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo(uploadCertificate))
+		mockRestServiceServer.expect(requestTo(baseUrl+"/v1/keymanager/uploadcertificate"))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 
 		AdminDataUtil
 				.checkResponse(
 						mockMvc.perform(MockMvcRequestBuilders.post("/keymanager/uploadcertificate")
 								.accept(MediaType.APPLICATION_ATOM_XML.APPLICATION_JSON)
-								.content(mapper.writeValueAsString(uploadCertificateDtoReq))).andReturn(),
+								.content(mapper.writeValueAsString("string"))).andReturn(),
 						"KER-KMS-003");
 	}
 
-	@Test
-	@WithUserDetails("global-admin")
-	public void t003uploadCertificate1() throws Exception {
-		uploadCertificateDtoReq.getRequest().setApplicationId("");
-		AdminDataUtil
-				.checkResponse(
-						mockMvc.perform(MockMvcRequestBuilders.post("/keymanager/uploadcertificate")
-								.accept(MediaType.APPLICATION_ATOM_XML.APPLICATION_JSON)
-								.content(mapper.writeValueAsString(uploadCertificateDtoReq))).andReturn(),
-						"KER-KMS-005");
-	}
 
-	@Test
-	@WithUserDetails("global-admin")
-	public void t004uploadotherDomainCertificate() throws Exception {
-		uploadCertificateDtoReq.getRequest().setApplicationId("");
-		AdminDataUtil
-				.checkResponse(
-						mockMvc.perform(MockMvcRequestBuilders.post("/keymanager/uploadotherdomaincertificate")
-								.accept(MediaType.APPLICATION_ATOM_XML.APPLICATION_JSON)
-								.content(mapper.writeValueAsString(uploadCertificateDtoReq))).andReturn(),
-						"KER-KMS-005");
-	}
 
 	@Test
 	@WithUserDetails("global-admin")
@@ -219,14 +157,14 @@ public class KeyManagerServiceControllerTest {
 				+ "      \"errorCode\": \"KER-KMS-003\",\r\n" + "      \"message\": \"No unique alias is found\"\r\n"
 				+ "    }\r\n" + "  ]\r\n" + "}";
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo(uploadOtherCertificate))
+		mockRestServiceServer.expect(requestTo(baseUrl+"/v1/keymanager/uploadotherdomaincertificate"))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 
 		AdminDataUtil
 				.checkResponse(
 						mockMvc.perform(MockMvcRequestBuilders.post("/keymanager/uploadotherdomaincertificate")
 								.accept(MediaType.APPLICATION_ATOM_XML.APPLICATION_JSON)
-								.content(mapper.writeValueAsString(uploadCertificateDtoReq))).andReturn(),
+								.content(mapper.writeValueAsString("temp"))).andReturn(),
 						"KER-KMS-003");
 	}
 
