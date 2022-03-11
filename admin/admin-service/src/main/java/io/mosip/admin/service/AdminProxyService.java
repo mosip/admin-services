@@ -24,7 +24,7 @@ public class AdminProxyService {
 	public Object getResponse(String body, HttpServletRequest request,String version) {
 		logger.info("In getResponse of AdminProxyService");
 
-		return util.masterDataRestCall(util.getUrl(request,version), body, util.getHttpMethodType(request));
+		return util.adminRestCall(util.getUrl(request,version), body, util.getHttpMethodType(request));
 	}
 
 }

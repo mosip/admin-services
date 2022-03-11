@@ -35,7 +35,7 @@ public class AdminProxyServiceUtil {
 	@SuppressWarnings("deprecation")
 	public URI getUrl(HttpServletRequest request,String version) {
 
-		logger.info("getUrl method of proxyMasterDataServiceUtil");
+		logger.info("getUrl method of adminProxyServiceUtil");
 
 		String query = request.getQueryString();
 		String requestUrl = request.getRequestURI();
@@ -91,9 +91,9 @@ public class AdminProxyServiceUtil {
 	}
 
 	
-	public Object masterDataRestCall(URI uri, String body, HttpMethod methodType) {
+	public Object adminRestCall(URI uri, String body, HttpMethod methodType) {
 
-		logger.info("masterDataRestCall method with request url {}", uri);
+		logger.info("adminRestCall method with request url {}", uri);
       
 		ResponseEntity<?> response = null;
 
@@ -108,12 +108,12 @@ public class AdminProxyServiceUtil {
 
 			response = restTemplate.exchange(uri, methodType, entity, String.class);
 
-			logger.info("Proxy MasterData Call response for :{}" , uri);
+			logger.info("adminRestCall response for :{}" , uri);
 
 		} catch (Exception e) {
 			auditUtil.setAuditRequestDto(EventEnum.ADMIN_PROXY_ERROR,null);
-			logger.error("Proxy MasterData Call Exception response for url {}, {} ", uri, ExceptionUtils.getStackTrace(e));
-			throw new AdminServiceException("ADM-MSD-001", "Failed to call masterdata api");
+			logger.error("Proxy Admin Call Exception response for url {}, {} ", uri, ExceptionUtils.getStackTrace(e));
+			throw new AdminServiceException("ADM-MSD-001", "Failed to call api");
 
 		}
 
