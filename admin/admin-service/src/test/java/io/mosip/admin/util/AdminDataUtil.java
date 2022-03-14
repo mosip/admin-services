@@ -30,5 +30,8 @@ public class AdminDataUtil {
 		}
 
 	}
+	public static void checkErrorResponse(MvcResult rst, String s) {
+		assertEquals(rst.getResponse().getStatus(), 500);
+	}
 
 }
