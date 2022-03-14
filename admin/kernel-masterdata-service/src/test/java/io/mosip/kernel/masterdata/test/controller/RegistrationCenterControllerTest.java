@@ -254,6 +254,16 @@ public class RegistrationCenterControllerTest {
 				null);
 
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t008getSpecificRegistrationCenterByIdTest1() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/10001/all")).andReturn(),
+				null);
+
+	}
 
 	@Test
 	@WithUserDetails("global-admin")
@@ -280,6 +290,16 @@ public class RegistrationCenterControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/eng/6/14022")).andReturn(),
 				"KER-MSD-026");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t011getRegistrationCenterByHierarchyLevelAndTextAndlangCodeTest4() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/eng/1/14022")).andReturn(),
+				"KER-MSD-215");
 
 	}
 	
@@ -434,7 +454,15 @@ public class RegistrationCenterControllerTest {
 
 	}
 	
-	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t019getRegistrationCenterByHierarchyLevelAndListTextAndlangCodeTestFail4() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/eng/1/names?name=MyCountry")).andReturn(),
+				"KER-MSD-215");
+
+	}
 
 	@Test
 	@WithUserDetails("global-admin")
@@ -462,6 +490,16 @@ public class RegistrationCenterControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10004")).andReturn(),
 				null);
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t022decommissionRegCenterTest6() throws Exception {
+
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/1004")).andReturn(),
+				"KER-MSD-216");
 
 	}
 	
@@ -635,6 +673,26 @@ public class RegistrationCenterControllerTest {
 		elst.add(e);
 		rg.getRequest().setExceptionalHolidayPutPostDto(elst);
 		
+		MasterDataTest.checkResponse(mockMvc
+				.perform(MockMvcRequestBuilders.post("registrationcenters")
+						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rg)))
+				.andReturn(), null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t029createRegistrationCenterTest3() throws Exception {
+		List<ExceptionalHolidayPutPostDto> elst=new ArrayList<>();
+		ExceptionalHolidayPutPostDto e=new ExceptionalHolidayPutPostDto();
+		e.setExceptionHolidayDate(LocalDate.now().toString());
+		e.setExceptionHolidayName("Test");
+		e.setExceptionHolidayReson("test");
+		elst.add(e);
+		rg.getRequest().setExceptionalHolidayPutPostDto(elst);
+		Map<String, Boolean> workingNonWorkingDays=new HashMap<>();
+		
+		
+		rg.getRequest().setWorkingNonWorkingDays(workingNonWorkingDays);
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.post("registrationcenters")
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rg)))

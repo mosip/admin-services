@@ -70,6 +70,7 @@ import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.DynamicField;
 import io.mosip.kernel.masterdata.entity.IdentitySchema;
+import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.MachineType;
@@ -2454,5 +2455,68 @@ public class IntegratedRepositoryTest {
 				"KER-SCH-001");
 	}
 	
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void tst009getZoneNameBasedOnUserIDAndLangCodeTest() throws Exception {
+		when(zoneUserRepo.count()).thenReturn((long) 1);
+		when(zoneUserRepo.findZoneByUserIdNonDeleted(Mockito.anyString())).thenReturn(null);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID", "global-admin").param("langCode","eng")).andReturn(), "KER-MSD-391");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void tst009getZoneNameBasedOnUserIDAndLangCodeTest1() throws Exception {
+		when(zoneUserRepo.count()).thenReturn((long) 1);
+		when(zoneUserRepo.findZoneByUserIdNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
+		when(zoneRepository.findZoneByCodeAndLangCodeNonDeleted(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID", "global-admin").param("langCode","eng")).andReturn(), "KER-MSD-392");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void tst009getZoneNameBasedOnUserIDAndLangCodeTest2() throws Exception {
+		when(zoneUserRepo.count()).thenReturn((long) 1);
+		when(zoneUserRepo.findZoneByUserIdNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
+		when(zoneRepository.findZoneByCodeAndLangCodeNonDeleted(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID", "global-admin").param("langCode","eng")).andReturn(), "KER-MSD-392");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void tst009getZoneNameBasedOnUserIDAndLangCodeTest3() throws Exception {
+		when(zoneUserRepo.count()).thenReturn((long) 1);
+		when(zoneUserRepo.findZoneByUserIdNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
+		when(zoneRepository.findZoneByCodeAndLangCodeNonDeleted(Mockito.anyString(), Mockito.anyString())).thenThrow(new DataAccessException("...") {});
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID", "global-admin").param("langCode","eng")).andReturn(), "KER-MSD-393");
+
+	}
+	
+	
+	/*@Test
+	@WithUserDetails("global-admin")
+	public void tst019getRegistrationCenterByHierarchyLevelAndListTextAndlangCodeTest1() throws Exception {
+		Location l=new Location();
+		List<Location> lts=new ArrayList<>(); 
+		when(locReg.getAllLocationsByLangCodeAndLevel(Mockito.anyString(),Mockito.any())).thenReturn(lts);
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/eng/2/names?name=MyCountry")).andReturn(),
+				"KER-MSD-215");
+
+	}
+	*/
+
+	
+	@Test
+	@WithUserDetails("reg-processor")
+	public void tst003getUsersTest3() throws Exception {
+		when(userDetailsRepository.findAllByIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/users/0/1/cr_dtimes/DESC")).andReturn(), "KER-USR-004");
+
+	}
 	
 }

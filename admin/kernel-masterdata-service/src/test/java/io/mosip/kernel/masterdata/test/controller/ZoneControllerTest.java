@@ -149,6 +149,13 @@ public class ZoneControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
+	public void t005getSubZonesTest2() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/subzone/fra")).andReturn(), null);
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t005getSubZonesTest1() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/subzone/ara")).andReturn(), null);
 
@@ -175,6 +182,7 @@ public class ZoneControllerTest {
 
 	}
 	
+		
 	@Test
 	@WithUserDetails("global-admin")
 	public void t010getZoneNameBasedOnUserIDAndLangCodeFailTest1() throws Exception {
