@@ -7,7 +7,10 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
+
 
 import io.mosip.admin.bulkdataupload.entity.id.ApplicantValidDocumentId;
 import lombok.AllArgsConstructor;
@@ -27,6 +30,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@IdClass(ApplicantValidDocumentId.class)
 @Table(name = "applicant_valid_document", schema = "master")
 public class ApplicantValidDocument extends BaseEntity implements Serializable {
 
@@ -35,12 +39,17 @@ public class ApplicantValidDocument extends BaseEntity implements Serializable {
 	/**
 	 * Field for individual type code
 	 */
-	@EmbeddedId
+	@Id
 	@AttributeOverrides({ @AttributeOverride(name = "appTypeCode", column = @Column(name = "apptyp_code")),
 			@AttributeOverride(name = "docCategoryCode", column = @Column(name = "doccat_code")),
 			@AttributeOverride(name = "docTypeCode", column = @Column(name = "doctyp_code")) })
-	private ApplicantValidDocumentId applicantValidDocumentId;
-
+//	@Column(name = "apptyp_code ", nullable = false, length = 36)
+	private String appTypeCode;
+//	@Column(name = "doccat_code ", nullable = false, length = 36)
+	private String docCategoryCode;
+//	@Column(name = "doctyp_code  ", nullable = false, length = 36)
+	private String docTypeCode;
+	
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
 	
