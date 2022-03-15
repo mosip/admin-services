@@ -43,11 +43,8 @@ public class ApplicantValidDocument extends BaseEntity implements Serializable {
 	@AttributeOverrides({ @AttributeOverride(name = "appTypeCode", column = @Column(name = "apptyp_code")),
 			@AttributeOverride(name = "docCategoryCode", column = @Column(name = "doccat_code")),
 			@AttributeOverride(name = "docTypeCode", column = @Column(name = "doctyp_code")) })
-//	@Column(name = "apptyp_code ", nullable = false, length = 36)
 	private String appTypeCode;
-//	@Column(name = "doccat_code ", nullable = false, length = 36)
 	private String docCategoryCode;
-//	@Column(name = "doctyp_code  ", nullable = false, length = 36)
 	private String docTypeCode;
 	
 	@Column(name = "lang_code", nullable = false, length = 3)
