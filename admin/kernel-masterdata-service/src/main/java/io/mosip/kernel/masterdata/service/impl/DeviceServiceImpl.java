@@ -673,7 +673,7 @@ public class DeviceServiceImpl implements DeviceService {
 		try {
 			// check the device has mapped to any reg-Center
 			for (Device device : devices) {
-				if (device.getRegCenterId() != null) {
+				if (device.getRegCenterId() != null || device.getRegCenterId().isBlank()) {
 					auditUtil.auditRequest(
 							String.format(MasterDataConstant.FAILURE_DECOMMISSION, DeviceDto.class.getSimpleName()),
 							MasterDataConstant.AUDIT_SYSTEM,
