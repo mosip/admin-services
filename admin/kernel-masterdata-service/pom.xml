@@ -121,7 +121,7 @@
 		<kernel.logger.logback.version>1.2.0</kernel.logger.logback.version>
 		<tss.version>0.3.0</tss.version>
 		<kernel.websubclient.api.version>1.2.0</kernel.websubclient.api.version>
-		<kernel.version>1.2.0</kernel.version>
+		<kernel.version>1.2.0.1-SNAPSHOT</kernel.version>
 	</properties>
 
 	<repositories>
