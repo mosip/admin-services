@@ -174,6 +174,7 @@ public class RepositoryListItemWriter<T> implements ItemWriter<T> {
                 MapperUtils.setBaseFieldValue(object, registrationCenterHistory);
                 registrationCenterHistory.setEffectivetimes(registrationCenterHistory.getCreatedDateTime());
                 historyBaseRepo.save(registrationCenterHistory);
+                break;
             default:
                 break;
         }

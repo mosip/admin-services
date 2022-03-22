@@ -31,6 +31,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
 @Component
@@ -69,8 +70,9 @@ public class SyncJobHelperService {
     @Scheduled(cron = "${syncdata.cache.evict.delta-sync.cron}", zone = "UTC")
 	public void evictDeltaCaches() {
 		logger.info("Eviction of all keys from delta-sync cache started");
-		if (null != cacheManager.getCache("delta-sync"))
-			cacheManager.getCache("delta-sync").clear();
+		Cache c=cacheManager.getCache("delta-sync");
+		if (null != c)
+			c.clear();
 		logger.info("Eviction of all keys from delta-sync cache completed");
 	}
 
@@ -96,8 +98,9 @@ public class SyncJobHelperService {
     @Scheduled(cron = "${syncdata.cache.snapshot.cron}", zone = "UTC")
     public void clearCacheAndRecreateSnapshot() {
         logger.info("Eviction of all keys from initial-sync cache started");
-        if(null!=cacheManager.getCache("initial-sync"))
-        	cacheManager.getCache("initial-sync").clear();
+        Cache c=cacheManager.getCache("initial-sync");
+        if(null!=c)
+        	c.clear();
         logger.info("Eviction of all keys from initial-sync cache Completed");
 
         createEntitySnapshot();
@@ -164,11 +167,14 @@ public class SyncJobHelperService {
                 else
                     handleDynamicFields(entities); //Fills dynamic field data
 
-            } catch (Exception e) {
-            	
-                logger.error("Failed to create snapshot {} {}", entry.getKey().getSimpleName(), e);
-                
-            }
+			} catch (InterruptedException ie) {
+				logger.error("InterruptedException: ", ie);
+				Thread.currentThread().interrupt();
+			} catch (Exception e) {
+
+				logger.error("Failed to create snapshot {} {}", entry.getKey().getSimpleName(), e);
+
+			}
         }
     }
 
