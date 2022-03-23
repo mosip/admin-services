@@ -113,12 +113,12 @@
 		<micrometer.core.version>1.4.2</micrometer.core.version>
 		<micrometer.registry.prometheus.version>1.4.2</micrometer.registry.prometheus.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<kernel.core.version>1.2.0</kernel.core.version>
-		<kernel.auth.adaptor.version>1.2.0</kernel.auth.adaptor.version>
-		<kernel.logger.version>1.2.0</kernel.logger.version>
-		<kernel.crypto.version>1.2.0</kernel.crypto.version>
-		<kernel.keymanager.version>1.2.0</kernel.keymanager.version>
-		<kernel-websubclient-api.version>1.2.0</kernel-websubclient-api.version>
+		<kernel.core.version>1.2.1-SNAPSHOT</kernel.core.version>
+		<kernel.auth.adaptor.version>1.2.1-SNAPSHOT</kernel.auth.adaptor.version>
+		<kernel.logger.version>1.2.1-SNAPSHOT</kernel.logger.version>
+		<kernel.crypto.version>1.2.1-SNAPSHOT</kernel.crypto.version>
+		<kernel.keymanager.version>1.2.1-SNAPSHOT</kernel.keymanager.version>
+		<kernel-websubclient-api.version>1.2.1-SNAPSHOT</kernel-websubclient-api.version>
 	</properties>
 
     <repositories>

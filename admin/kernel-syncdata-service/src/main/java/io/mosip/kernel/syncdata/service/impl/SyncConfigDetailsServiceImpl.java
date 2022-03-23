@@ -124,7 +124,9 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 				path(SLASH).path(fileName);
 		
 		try {
-			 String str=restTemplate.getForObject(uriBuilder.toUriString(), String.class);
+			String str = restTemplate.getForObject(uriBuilder.toUriString(), String.class);
+			if (null == str)
+				throw new RestClientException("Obtained null from the service");
 			return str;
 		} catch (RestClientException e) {
 			LOGGER.error("Failed to getConfigDetailsResponse", e);

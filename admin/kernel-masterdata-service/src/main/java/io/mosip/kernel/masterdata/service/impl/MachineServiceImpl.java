@@ -633,7 +633,7 @@ public class MachineServiceImpl implements MachineService {
 
 		try {
 			for(Machine machine: machines) {
-				if(!(machine.getRegCenterId() ==null || machine.getRegCenterId().isEmpty())) {
+				if(machine.getRegCenterId() !=null && !machine.getRegCenterId().isBlank()) {
 					auditUtil.auditRequest(
 							String.format(MasterDataConstant.FAILURE_DECOMMISSION, MachineSearchDto.class.getSimpleName()),
 							MasterDataConstant.AUDIT_SYSTEM,

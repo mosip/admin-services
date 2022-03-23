@@ -194,9 +194,9 @@ public class MasterDataFilterHelper {
 		}
 
 		//deleted entries should be filtered out
-		//Predicate isDeletedPredicate = criteriaBuilder.or(criteriaBuilder.equal(rootType.get(ISDELETED_COLUMN_NAME),false),
-		//		criteriaBuilder.isNull(rootType.get(ISDELETED_COLUMN_NAME)));
-		//predicates.add(isDeletedPredicate);
+		Predicate isDeletedPredicate = criteriaBuilder.or(criteriaBuilder.equal(rootType.get(ISDELETED_COLUMN_NAME),false),
+				criteriaBuilder.isNull(rootType.get(ISDELETED_COLUMN_NAME)));
+		predicates.add(isDeletedPredicate);
 
 		buildOptionalFilter(criteriaBuilder, rootType, filterValueDto.getOptionalFilters(), predicates, zoneCodes);
 		return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));

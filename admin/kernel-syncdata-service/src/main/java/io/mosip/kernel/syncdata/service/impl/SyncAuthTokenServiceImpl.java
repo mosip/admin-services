@@ -265,7 +265,11 @@ public class SyncAuthTokenServiceImpl {
                 responseEntity = restTemplate.postForEntity(refreshRequestBuilder.build().toUri(), httpEntity, String.class);
                 break;
         }
+		if (null == responseEntity) {
+			throw new RequestException(SyncAuthErrorCode.ERROR_GETTING_TOKEN.getErrorCode(),
+					SyncAuthErrorCode.ERROR_GETTING_TOKEN.getErrorMessage());
 
+		}
         ResponseWrapper<TokenResponseDto> responseWrapper = objectMapper.readValue(responseEntity.getBody(),
                 new TypeReference<ResponseWrapper<TokenResponseDto>>() {});
 
