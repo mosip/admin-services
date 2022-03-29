@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.kernel.clientcrypto.constant.ClientType;
 import io.mosip.kernel.clientcrypto.exception.ClientCryptoException;
 import io.mosip.kernel.clientcrypto.service.impl.ClientCryptoFacade;
 import io.mosip.kernel.core.authmanager.model.*;
@@ -25,6 +26,7 @@ import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.exception.RequestException;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
+import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,7 +127,10 @@ public class SyncAuthTokenServiceImpl {
                 validateRequestTimestamp(machineAuthDto.getTimestamp());
                 ResponseWrapper<TokenResponseDto> responseWrapper = getTokenResponseDTO(machineAuthDto);
                 String token = objectMapper.writeValueAsString(responseWrapper.getResponse());
-                byte[] cipher = clientCryptoFacade.encrypt(cryptomanagerUtils.decodeBase64Data(machine.getPublicKey()),
+
+                byte[] cipher = clientCryptoFacade.encrypt(
+                        SyncMasterDataServiceHelper.getClientType(machine),
+                        cryptomanagerUtils.decodeBase64Data(machine.getPublicKey()),
                         token.getBytes());
                 return CryptoUtil.encodeToURLSafeBase64(cipher);
 
@@ -202,7 +207,9 @@ public class SyncAuthTokenServiceImpl {
 
             try {
                 logger.info("validateRequestData for machine : {} with status : {}", machines.get(0).getId(), machines.get(0).getIsActive());
-                boolean verified = clientCryptoFacade.validateSignature(cryptomanagerUtils.decodeBase64Data(machines.get(0).getSignPublicKey()),
+                boolean verified = clientCryptoFacade.validateSignature(
+                        SyncMasterDataServiceHelper.getClientType(machines.get(0)),
+                        cryptomanagerUtils.decodeBase64Data(machines.get(0).getSignPublicKey()),
                         signature, payload);
                 logger.info("validateRequestData verified : {}", verified);
                 if(verified) {  return machines.get(0); }

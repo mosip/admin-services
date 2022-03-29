@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import io.mosip.kernel.clientcrypto.constant.ClientType;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -252,6 +253,8 @@ public class SyncMasterDataServiceHelper {
 	@Value("${mosip.kernel.syncdata-service-dynamicfield-url}")
 	private String dynamicfieldUrl;
 
+	private static final String ANDROID_MACHINE_TYPE_CODE = "ANDROID";
+
 
 
 	/**
@@ -387,7 +390,7 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch registration center detail.
 	 *
-	 * @param machineId        machine id
+	 * @param centerId        Center Id
 	 * @param lastUpdated      lastUpdated timestamp
 	 * @param currentTimeStamp the current time stamp
 	 * @return list of {@link RegistrationCenterDto}
@@ -1428,7 +1431,8 @@ public class SyncMasterDataServiceHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void getSyncDataBaseDto(String entityName, String entityType, List entities, String publicKey, List result) {
+	public void getSyncDataBaseDto(String entityName, String entityType, List entities, RegistrationCenterMachineDto
+			registrationCenterMachineDto, List result) {
 		if (null != entities) {
 			List<String> list = Collections.synchronizedList(new ArrayList<String>());
 			entities.parallelStream().filter(Objects::nonNull).forEach(obj -> {
@@ -1447,7 +1451,8 @@ public class SyncMasterDataServiceHelper {
 					TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
 					tpmCryptoRequestDto
 							.setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(list).getBytes()));
-					tpmCryptoRequestDto.setPublicKey(publicKey);
+					tpmCryptoRequestDto.setPublicKey(registrationCenterMachineDto.getPublicKey());
+					tpmCryptoRequestDto.setClientType(registrationCenterMachineDto.getClientType());
 					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService
 							.csEncrypt(tpmCryptoRequestDto);
 
@@ -1461,7 +1466,8 @@ public class SyncMasterDataServiceHelper {
 		}
 	}
 
-	public void getSyncDataBaseDtoV2(String entityName, String entityType, List entities, String publicKey, List result) {
+	public void getSyncDataBaseDtoV2(String entityName, String entityType, List entities, RegistrationCenterMachineDto
+			registrationCenterMachineDto, List result) {
 		if (null != entities) {
 			try {
 				entities = (List) entities.parallelStream().filter(Objects::nonNull).collect(Collectors.toList());
@@ -1469,9 +1475,9 @@ public class SyncMasterDataServiceHelper {
 					TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
 					tpmCryptoRequestDto
 							.setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(entities).getBytes()));
-					tpmCryptoRequestDto.setPublicKey(publicKey);
-					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService
-							.csEncrypt(tpmCryptoRequestDto);
+					tpmCryptoRequestDto.setPublicKey(registrationCenterMachineDto.getPublicKey());
+					tpmCryptoRequestDto.setClientType(registrationCenterMachineDto.getClientType());
+					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
 					result.add(new SyncDataBaseDto(entityName, entityType, tpmCryptoResponseDto.getValue()));
 				}
 			} catch (Exception e) {
@@ -1495,16 +1501,15 @@ public class SyncMasterDataServiceHelper {
 	public RegistrationCenterMachineDto getRegistrationCenterMachine(String registrationCenterId, String keyIndex)
 			throws SyncDataServiceException {
 		try {
+			//get the machine entry without status check
+			Machine machine = machineRepository.findOneByKeyIndexIgnoreCase(keyIndex);
 
-			List<Object[]> regCenterMachines = machineRepository
-					.getRegistrationCenterMachineWithKeyIndexWithoutStatusCheck(keyIndex);
-
-			if (regCenterMachines.isEmpty()) {
+			if (machine == null) {
 				throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
 						MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
 			}
 
-			String mappedRegCenterId = (String) ((Object[]) regCenterMachines.get(0))[0];
+			String mappedRegCenterId = machine.getRegCenterId();
 
 			if (mappedRegCenterId == null)
 				throw new RequestException(MasterDataErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
@@ -1514,9 +1519,9 @@ public class SyncMasterDataServiceHelper {
 				throw new RequestException(MasterDataErrorCode.REG_CENTER_UPDATED.getErrorCode(),
 						MasterDataErrorCode.REG_CENTER_UPDATED.getErrorMessage());
 
-			return new RegistrationCenterMachineDto(mappedRegCenterId,
-					(String) ((Object[]) regCenterMachines.get(0))[1],
-					(String) ((Object[]) regCenterMachines.get(0))[2]);
+			return new RegistrationCenterMachineDto(mappedRegCenterId,machine.getId(), machine.getPublicKey(),
+					machine.getMachineSpecId(), machine.getMachineSpecification() != null ?
+					machine.getMachineSpecification().getMachineTypeCode() : null, getClientType(machine));
 
 		} catch (DataAccessException | DataAccessLayerException e) {
 			logger.error("Failed to fetch registrationCenterMachine : ", e);
@@ -1524,6 +1529,16 @@ public class SyncMasterDataServiceHelper {
 
 		throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
 				MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorMessage());
+	}
+
+	public static ClientType getClientType(Machine machine) {
+		if(machine.getMachineSpecification() == null)
+			return null;
+
+		if(ANDROID_MACHINE_TYPE_CODE.equalsIgnoreCase(machine.getMachineSpecification().getMachineTypeCode()))
+			return ClientType.ANDROID;
+
+		return null;
 	}
 
 	private boolean isChangesFound(String entityName, LocalDateTime lastUpdated) {
