@@ -215,7 +215,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
 		LOGGER.info("getConfigDetails() started for machine : {} with status {}", keyIndex,  machines.get(0).getIsActive());
 		JSONObject config = new JSONObject();
-		JSONObject globalConfig = parsePropertiesString(getConfigDetailsResponse(globalConfigFileName));
+		JSONObject globalConfig = new JSONObject();//parsePropertiesString(getConfigDetailsResponse(globalConfigFileName));
 		JSONObject regConfig = parsePropertiesString(getConfigDetailsResponse(regCenterfileName));
 		config.put("globalConfiguration", getEncryptedData(globalConfig, machines.get(0).getPublicKey()));
 		config.put("registrationConfiguration", getEncryptedData(regConfig, machines.get(0).getPublicKey()));
@@ -248,6 +248,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	private String getEncryptedData(JSONObject config, String publicKey) {
 		try {
 			String json = mapper.getObjectAsJsonString(config);
+			LOGGER.info("json >>> " + json);
 			return getEncryptedData(json, publicKey);
 		} catch (Exception e) {
 			LOGGER.error("Failed to convert json to string", e);
