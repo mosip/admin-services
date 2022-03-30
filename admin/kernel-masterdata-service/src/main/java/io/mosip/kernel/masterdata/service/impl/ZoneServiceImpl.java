@@ -85,6 +85,9 @@ public class ZoneServiceImpl implements ZoneService {
 	@Value("${mosip.kernel.registrationcenterid.length}")
 	private int centerIdLength;
 
+	@Value("${mosip.kernel.default.zoneuserid:Service-account-mosip-resident-client}")
+	private String defaultZoneUserId;
+
 	@Autowired
 	private LanguageUtils languageUtils;
 
@@ -166,7 +169,8 @@ public class ZoneServiceImpl implements ZoneService {
 						RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorMessage());
 			}
 
-			if(zoneUserRepository.count() <= 0) {
+			//first admin user login check, if yes map the user to top most zone
+			if(!hasAnyZoneUserMapping()) {
 				setFirstUserZone(userID, langCode);
 			}
 
@@ -187,6 +191,17 @@ public class ZoneServiceImpl implements ZoneService {
 		zoneNameResponseDto.setZoneName(zone.getName());
 		zoneNameResponseDto.setZoneCode(zone.getCode());
 		return zoneNameResponseDto;
+	}
+
+	private boolean hasAnyZoneUserMapping() {
+		if(zoneUserRepository.count() <= 0)
+			return false;
+
+		if(zoneUserRepository.count() == 1 &&
+				zoneUserRepository.findOneByUserIdIgnoreCase(defaultZoneUserId) != null)
+			return false;
+
+		return true;
 	}
 
 	/**

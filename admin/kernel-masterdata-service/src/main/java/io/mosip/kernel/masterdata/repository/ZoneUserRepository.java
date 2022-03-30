@@ -56,4 +56,6 @@ public interface ZoneUserRepository extends BaseRepository<ZoneUser, String> {
 	@Query("UPDATE ZoneUser z SET z.updatedBy=?3, z.isDeleted =true, z.isActive = false, z.updatedDateTime=?2 ,z.deletedDateTime= ?2 WHERE z.userId =?1 and (z.isDeleted is null or z.isDeleted =false)")
 	int deleteZoneUser(String id, LocalDateTime deletedDateTime, String updatedBy);
 
+	ZoneUser findOneByUserIdIgnoreCase(String userId);
+
 }
