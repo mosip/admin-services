@@ -1320,12 +1320,13 @@ public class SyncClientSettingsIntegrationTest {
 	@WithUserDetails(value = "reg-officer")
 	public void syncClientSettingsForUpdatedRegCenterId() throws Exception {
 		mockSuccess();
-		String[] regcenterMachineId = { "1001", "230030", "ewerwerwerer" };
-		List<Object[]> data = new ArrayList<Object[]>();
-		data.add(regcenterMachineId);
+		Machine machine = new Machine();
+		machine.setId("230030");
+		machine.setRegCenterId("1001");
+		machine.setPublicKey("ewerwerwerer");
 
-		when(machineRepository.getRegistrationCenterMachineWithKeyIndexWithoutStatusCheck(Mockito.anyString()))
-				.thenReturn(data);
+		when(machineRepository.findOneByKeyIndexIgnoreCase(Mockito.anyString()))
+				.thenReturn(machine);
 
 		MvcResult result = mockMvc.perform(get(syncDataUrlWithKeyIndexAndRegCenterId)).andExpect(status().isOk())
 				.andReturn();
