@@ -8,19 +8,18 @@ import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
 import io.mosip.kernel.masterdata.service.GenericService;
 import io.mosip.kernel.masterdata.utils.LanguageUtils;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Map.Entry;
 
 @Service
 public class GenericServiceImpl implements GenericService {
@@ -75,12 +74,13 @@ public class GenericServiceImpl implements GenericService {
 
 		List<DynamicField> allFields = dynamicFieldRepository.findAllDynamicFieldValuesByName(name);
 		if(allFields != null) {
-			Set<String> codes = new HashSet<>();
+			HashMap<String, String> codes = new HashMap<>();
 			allFields.stream()
 			.filter( f -> !f.getLangCode().equals(langCode) )
 			.forEach(f -> {
 				try {
-					codes.add(new JSONObject(f.getValueJson()).getString("code"));
+					String value = new JSONObject(f.getValueJson()).getString("code");
+					codes.put(value,f.getLangCode());
 				} catch (JSONException e) {
 					logger.error("Failed to parse field {} value json {}", name, f.getValueJson(), e);
 				}
@@ -96,9 +96,9 @@ public class GenericServiceImpl implements GenericService {
 				}
 			});
 
-			codes.forEach(c -> {
-				list.add(new MissingDataDto(c, name, langCode));
-			});
+			for (Entry<String, String> c : codes.entrySet()) {
+				list.add(new MissingDataDto(c.getKey(), name, c.getValue()));
+			}
 
 		}
 		return list;
