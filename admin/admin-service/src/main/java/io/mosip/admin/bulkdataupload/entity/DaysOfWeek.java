@@ -48,7 +48,5 @@ public class DaysOfWeek extends BaseEntity implements Serializable {
 	@Column(name = "is_global_working", nullable = false)
 	private boolean isGlobalWorking;
 
-	@OneToMany(fetch = FetchType.LAZY)
-	private List<RegWorkingNonWorking> workingDayEntity;
 
 }
