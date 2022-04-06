@@ -46,6 +46,8 @@ public class Holiday extends BaseEntity implements Serializable {
 	private LocalDate holidayDate;
 	private String locationCode;
 	private String langCode;
+	
+	@Column(name = "holiday_name", nullable = false, length = 64)
 	private String holidayName;
 
 	@Column(name = "id", unique = true, nullable = false)
