@@ -98,3 +98,7 @@ ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE master.location ADD CONSTRAINT fk_loc_lochierlst FOREIGN KEY (hierarchy_level,hierarchy_level_name,lang_code)
 REFERENCES master.loc_hierarchy_list (hierarchy_level,hierarchy_level_name,lang_code) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE master.reg_working_nonworking ADD CONSTRAINT fk_rwn_daycode FOREIGN KEY (day_code,lang_code)
+REFERENCES master.daysofweek_list (code,lang_code) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
