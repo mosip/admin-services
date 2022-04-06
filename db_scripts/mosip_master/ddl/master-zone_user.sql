@@ -13,7 +13,7 @@ CREATE TABLE master.zone_user(
 	upd_dtimes 	timestamp,
 	is_deleted 	boolean DEFAULT FALSE,
 	del_dtimes 	timestamp,
-	CONSTRAINT pk_zoneuser PRIMARY KEY (usr_id)
+	CONSTRAINT pk_zoneuser PRIMARY KEY (usr_id,zone_code)
 
 );
 -- ddl-end --

@@ -4,7 +4,7 @@
 CREATE TABLE master.reg_working_nonworking(
 	regcntr_id character varying(10) NOT NULL,
 	day_code character varying(3) NOT NULL,
-	lang_code character varying(3) ,
+	lang_code character varying(3) NOT NULL,
 	is_working boolean NOT NULL,
 	is_active boolean NOT NULL,
 	cr_by character varying(256) NOT NULL,

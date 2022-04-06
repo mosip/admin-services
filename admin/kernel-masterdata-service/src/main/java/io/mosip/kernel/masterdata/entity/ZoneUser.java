@@ -26,6 +26,7 @@ public class ZoneUser extends BaseEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = -8194849518681293756L;
 
+	@Id
 	@Column(name = "zone_code", nullable = false, length = 36)
 	private String zoneCode;
 
