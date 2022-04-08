@@ -53,6 +53,11 @@ ALTER TABLE master.bulkupload_transaction ALTER COLUMN upload_description TYPE c
 
 -----------------------------------------------ALTER FK constraints with lang code -----------------------------------------------------------
 
+ALTER TABLE master.biometric_type DROP CONSTRAINT IF EXISTS pk_bmtyp_code;
+ALTER TABLE master.biometric_type ALTER COLUMN lang_code DROP NOT NULL;
+DELETE FROM master.biometric_type where lang_code != :primary_language_code;
+ALTER TABLE master.biometric_type ADD CONSTRAINT pk_bmtyp_code PRIMARY KEY (code);
+
 ALTER TABLE master.biometric_attribute DROP CONSTRAINT IF EXISTS fk_bmattr_bmtyp CASCADE;
 ALTER TABLE master.biometric_attribute ADD CONSTRAINT fk_bmattr_bmtyp FOREIGN KEY (bmtyp_code)
 REFERENCES master.biometric_type (code) MATCH SIMPLE
@@ -78,7 +83,7 @@ ALTER TABLE master.zone_user DROP CONSTRAINT IF EXISTS fk_zoneuser_zone CASCADE;
 
 --------------------------------------------LANG CODE NULLABLE AND CHANGE PK CONSTRAINTS ---------------------------------
 
-ALTER TABLE master.app_authentication_method DROP CONSTRAINT IF EXISTS pk_appauthm_id;
+ALTER TABLE master.app_authentication_method DROP CONSTRAINT IF EXISTS pk_appauthm_id CASCADE;
 ALTER TABLE master.app_authentication_method ALTER COLUMN lang_code DROP NOT NULL;
 ALTER TABLE master.app_authentication_method ADD CONSTRAINT pk_appauthm_id PRIMARY KEY (app_id,process_id,role_code,auth_method_code);
 
@@ -86,17 +91,6 @@ ALTER TABLE master.app_authentication_method ADD CONSTRAINT pk_appauthm_id PRIMA
 ALTER TABLE master.app_role_priority DROP CONSTRAINT IF EXISTS pk_roleprt_id;
 ALTER TABLE master.app_role_priority ALTER COLUMN lang_code DROP NOT NULL;
 ALTER TABLE master.app_role_priority ADD CONSTRAINT pk_roleprt_id PRIMARY KEY (app_id,process_id,role_code);
-
-
-ALTER TABLE master.authentication_method DROP CONSTRAINT IF EXISTS pk_authm_code;
-ALTER TABLE master.authentication_method ALTER COLUMN lang_code DROP NOT NULL;
-ALTER TABLE master.authentication_method ADD CONSTRAINT pk_authm_code PRIMARY KEY (code);
-
-
-ALTER TABLE master.biometric_type DROP CONSTRAINT IF EXISTS pk_bmtyp_code;
-ALTER TABLE master.biometric_type ALTER COLUMN lang_code DROP NOT NULL;
-DELETE FROM master.biometric_type where lang_code != :primary_language_code;
-ALTER TABLE master.biometric_type ADD CONSTRAINT pk_bmtyp_code PRIMARY KEY (code);
 
 
 ALTER TABLE master.device_master DROP CONSTRAINT IF EXISTS fk_devicem_zone CASCADE;
