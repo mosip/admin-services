@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "zone_user", schema = "master")
+@IdClass(ZoneUserId.class)
 public class ZoneUser extends BaseEntity implements Serializable {
 	/**
 	 * Generated serialVersionUID
