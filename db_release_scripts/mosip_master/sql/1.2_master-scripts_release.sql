@@ -40,7 +40,7 @@ TRUNCATE TABLE master.blocklisted_words cascade ;
 TRUNCATE TABLE master.ui_spec  cascade ;
 
 ---------------------------------------------------------------------------------------------------------------------
-\COPY master.ui_spec (id,version,domain,title,description,type,json_spec,identity_schema_id,identity_schema_version,effective_from,status_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) FROM './dml/master-ui_spec.csv' delimiter ',' HEADER csv;
+\COPY master.ui_spec (id,version,domain,title,description,type,identity_schema_id,identity_schema_version,json_spec,status_code,effective_from,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) FROM './dml/master-ui_spec.csv' delimiter ',' HEADER csv;
 -----------------------------------------------------DATA LOAD FROM IDENTITY SCHEMA TABLE-----------------------------------------------
 INSERT into master.ui_spec (id,version,domain,title,description,type,json_spec,identity_schema_id,identity_schema_version,effective_from,status_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) SELECT id,id_version,'registration-client', title,description,'schema',id_attr_json,id,id_version,effective_from,status_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes FROM master.identity_schema;
 
@@ -53,7 +53,7 @@ ALTER TABLE master.bulkupload_transaction ALTER COLUMN upload_description TYPE c
 
 -----------------------------------------------ALTER FK constraints with lang code -----------------------------------------------------------
 
-ALTER TABLE master.biometric_type DROP CONSTRAINT IF EXISTS pk_bmtyp_code;
+ALTER TABLE master.biometric_type DROP CONSTRAINT IF EXISTS pk_bmtyp_code CASCADE;
 ALTER TABLE master.biometric_type ALTER COLUMN lang_code DROP NOT NULL;
 DELETE FROM master.biometric_type where lang_code != :primary_language_code;
 ALTER TABLE master.biometric_type ADD CONSTRAINT pk_bmtyp_code PRIMARY KEY (code);
@@ -116,7 +116,7 @@ REFERENCES master.device_spec (id) MATCH SIMPLE
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 
-
+DELETE FROM master.device_master_h where lang_code != :primary_language_code;
 ALTER TABLE master.device_master_h DROP CONSTRAINT IF EXISTS pk_devicem_h_id CASCADE;
 ALTER TABLE master.device_master_h ALTER COLUMN lang_code DROP NOT NULL;
 ALTER TABLE master.device_master_h ADD CONSTRAINT pk_devicem_h_id PRIMARY KEY (id,eff_dtimes);
@@ -145,6 +145,7 @@ ALTER TABLE master.machine_master ADD CONSTRAINT fk_machm_mspec FOREIGN KEY (msp
 REFERENCES master.machine_spec (id) MATCH SIMPLE
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 
+DELETE FROM master.machine_master_h where lang_code != :primary_language_code;
 ALTER TABLE master.machine_master_h DROP CONSTRAINT IF EXISTS pk_machm_h_id CASCADE;
 ALTER TABLE master.machine_master_h ALTER COLUMN lang_code DROP NOT NULL;
 ALTER TABLE master.machine_master_h ADD CONSTRAINT pk_machm_h_id PRIMARY KEY (id,eff_dtimes);
@@ -171,7 +172,8 @@ ALTER TABLE master.loc_holiday ADD CONSTRAINT pk_lochol_id PRIMARY KEY (holiday_
 
 
 ALTER TABLE master.batch_job_execution_params ALTER COLUMN string_val TYPE varchar(5000) USING string_val::varchar;
-ALTER TABLE master.blocklisted_words DROP CONSTRAINT IF EXISTS pk_blwrd_code;
+DELETE FROM master.blocklisted_words where lang_code != :primary_language_code;
+ALTER TABLE master.blocklisted_words DROP CONSTRAINT IF EXISTS pk_blwrd_code CASCADE;
 ALTER TABLE master.blocklisted_words ALTER COLUMN lang_code DROP NOT NULL;
 ALTER TABLE master.blocklisted_words ADD CONSTRAINT pk_blwrd_code PRIMARY KEY (word);
 ALTER TABLE master.batch_job_execution_params ALTER COLUMN string_val TYPE varchar(5000) USING string_val::varchar;
