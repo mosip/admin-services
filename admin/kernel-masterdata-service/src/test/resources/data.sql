@@ -254,8 +254,8 @@ INSERT INTO MASTER.user_detail_h(id, name, status_code, regcntr_id, lang_code, l
 
 DELETE FROM MASTER.zone_user;
 INSERT INTO MASTER.zone_user(zone_code, usr_id, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) values
-('NTH', 'global-admin', 'eng', TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
-('RSK', 'zonal-admin', 'eng', TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
+('NTH', 'global-admin', 'eng', TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, false, NULL),
+('RSK', 'zonal-admin', 'eng', TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, false, NULL),
 ('RSK', '4', 'eng', TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
 ('RSK', '41', 'eng', TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
 ('RSK', 'user7', 'eng', TRUE,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL),
