@@ -186,6 +186,8 @@ ALTER TABLE master.user_detail_h DROP COLUMN uin;
 ALTER TABLE master.user_detail_h DROP COLUMN email;
 ALTER TABLE master.user_detail_h DROP COLUMN mobile;
 
+ALTER TABLE master.template DROP CONSTRAINT IF EXISTS fk_tmplt_moddtl CASCADE;
+
 -----------------------------------------------------------------------------------------------------------------------------------------------
 -------------------------------------template,template_type and module_detail----------------------------------------------------------
 
