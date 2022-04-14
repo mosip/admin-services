@@ -167,7 +167,7 @@ public class ZoneUserControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t003updateapUserZoneTest2() throws Exception {
-		zoneUserPutDto.getRequest().setUserId("user7");
+		zoneUserPutDto.getRequest().setUserId("global-admin");
 		//zoneUserPutDto.getRequest().setIsActive(true);
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/zoneuser").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(zoneUserPutDto))).andReturn(),
