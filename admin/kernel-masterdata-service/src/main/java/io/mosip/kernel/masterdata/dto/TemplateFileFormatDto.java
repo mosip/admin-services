@@ -18,8 +18,9 @@ public class TemplateFileFormatDto {
 	@ApiModelProperty(value = "TemplateFileFormat description", required = false, dataType = "java.lang.String")
 	private String description;
 
-
-	@Deprecated
+	@NotNull
+	@StringFormatter(min = 3, max = 3)
+	@ApiModelProperty(value = "Language code", required = true, dataType = "java.lang.String")
 	private String langCode;
 
 	@NotNull
