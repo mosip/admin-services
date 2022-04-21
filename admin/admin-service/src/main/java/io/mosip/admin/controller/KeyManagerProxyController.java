@@ -29,8 +29,8 @@ public class KeyManagerProxyController {
 	@Autowired
 	private AdminProxyService service;
 
-	@Value("${mosip.admin.keymanager.service.version}")
-	private String version;
+	@Value("${mosip.admin.keymanager.service.url}")
+	private String url;
 
 	@RequestMapping(path = "/**", produces = MediaType.APPLICATION_JSON_VALUE, method = { RequestMethod.GET,
 			RequestMethod.POST, RequestMethod.DELETE,RequestMethod.PATCH,RequestMethod.PUT })
@@ -42,6 +42,6 @@ public class KeyManagerProxyController {
 	public ResponseEntity<?> keyManagerProxyController(@RequestBody(required = false) String body,
 													   HttpServletRequest request) {
 		auditUtil.setAuditRequestDto(EventEnum.KEYMANAGER_PROXY_API_CALLED,null);
-		return ResponseEntity.status(HttpStatus.OK).body(service.getResponse(body, request,version));
+		return ResponseEntity.status(HttpStatus.OK).body(service.getResponse(body, request,url));
 	}
 }

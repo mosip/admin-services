@@ -32,8 +32,8 @@ public class MasterdataProxyController {
 	@Autowired
 	private AdminProxyService service;
 
-	@Value("${mosip.admin.masterdata.service.version}")
-	private String version;
+	@Value("${mosip.admin.masterdata.service.url}")
+	private String url;
 
 	@RequestMapping(path = "/**", produces = MediaType.APPLICATION_JSON_VALUE, method = { RequestMethod.GET,
 			RequestMethod.POST, RequestMethod.DELETE,RequestMethod.PATCH,RequestMethod.PUT })
@@ -45,7 +45,7 @@ public class MasterdataProxyController {
 	public ResponseEntity<?> masterDataProxyController(@RequestBody(required = false) String body,
 			HttpServletRequest request) {
 		auditUtil.setAuditRequestDto(EventEnum.MASTERDATA_PROXY_API_CALLED,null);
-		return ResponseEntity.status(HttpStatus.OK).body(service.getResponse(body, request,version));
+		return ResponseEntity.status(HttpStatus.OK).body(service.getResponse(body, request,url));
 	}
 
 }
