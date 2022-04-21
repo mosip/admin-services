@@ -21,10 +21,10 @@ public class AdminProxyService {
 	private static final Logger logger = LoggerFactory.getLogger(AdminProxyService.class);
 
 
-	public Object getResponse(String body, HttpServletRequest request,String version) {
+	public Object getResponse(String body, HttpServletRequest request,String url) {
 		logger.info("In getResponse of AdminProxyService");
 
-		return util.adminRestCall(util.getUrl(request,version), body, util.getHttpMethodType(request));
+		return util.adminRestCall(util.getUrl(request,url), body, util.getHttpMethodType(request));
 	}
 
 }

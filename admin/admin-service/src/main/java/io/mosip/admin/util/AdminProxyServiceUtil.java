@@ -20,9 +20,6 @@ import java.net.URLDecoder;
 @Component
 public class AdminProxyServiceUtil {
 
-	@Value("${mosip.admin.base.url}")
-	private String baseUrl;
-
 	@Autowired
 	private RestTemplate restTemplate;
 
@@ -33,7 +30,7 @@ public class AdminProxyServiceUtil {
 
 
 	@SuppressWarnings("deprecation")
-	public URI getUrl(HttpServletRequest request,String version) {
+	public URI getUrl(HttpServletRequest request,String baseUrl) {
 
 		logger.info("getUrl method of adminProxyServiceUtil");
 
@@ -44,13 +41,11 @@ public class AdminProxyServiceUtil {
 		URI uri = null;
 		if (query != null) {
 			String decodedQuery = URLDecoder.decode(query);
-			url = baseUrl + "/" + version
-					+ requestUrl.replace(request.getContextPath() , "").strip().toString();
+			url = baseUrl + requestUrl.replace(request.getContextPath() , "").strip().toString();
 			uri = UriComponentsBuilder.fromHttpUrl(url).query(decodedQuery).build().toUri();
 			logger.info("Requested Url is: {}" , uri);
 		} else {
-			url = baseUrl + "/" + version
-					+ requestUrl.replace(request.getContextPath(), "").strip().toString();
+			url = baseUrl + requestUrl.replace(request.getContextPath(), "").strip().toString();
 			uri = UriComponentsBuilder.fromHttpUrl(url).build().toUri();
 
 			logger.info("Requested Url is: {}", uri);
