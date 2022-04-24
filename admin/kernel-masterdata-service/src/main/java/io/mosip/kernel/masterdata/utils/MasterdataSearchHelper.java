@@ -313,8 +313,9 @@ public class MasterdataSearchHelper {
 				String replacedValue = value.substring(1);
 				return builder.like(lowerCase, builder.lower(builder.literal(WILD_CARD_CHARACTER + replacedValue)));
 			} else {
+				String replacedValue = (value).substring(0, value.length() - 1);
 				return builder.like(lowerCase,
-						builder.lower(builder.literal(WILD_CARD_CHARACTER + value + WILD_CARD_CHARACTER)));
+						builder.lower(builder.literal(replacedValue + WILD_CARD_CHARACTER)));
 			}
 		}
 		if (FilterTypeEnum.EQUALS.name().equalsIgnoreCase(filterType)) {
