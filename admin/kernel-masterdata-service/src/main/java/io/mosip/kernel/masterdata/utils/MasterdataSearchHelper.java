@@ -312,6 +312,10 @@ public class MasterdataSearchHelper {
 			} else if (value.startsWith("*")) {
 				String replacedValue = value.substring(1);
 				return builder.like(lowerCase, builder.lower(builder.literal(WILD_CARD_CHARACTER + replacedValue)));
+			} else if(value.endsWith("*")){
+				String replacedValue = (value).substring(0, value.length() - 1);
+				return builder.like(lowerCase,
+						builder.lower(builder.literal(replacedValue + WILD_CARD_CHARACTER)));
 			} else {
 				return builder.like(lowerCase,
 						builder.lower(builder.literal(WILD_CARD_CHARACTER + value + WILD_CARD_CHARACTER)));
