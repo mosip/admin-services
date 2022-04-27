@@ -4,10 +4,16 @@ import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -73,6 +79,9 @@ public class AdminControllerTest {
 	@Value("${LOST_RID_API}")
 	String lstRidUrl;
 
+	@Value("${RETRIEVE_IDENTITY_API}")
+	String retrieveIdentityUrl;
+
 	private RequestWrapper<SearchInfo> searchInfoReq = new RequestWrapper<>();
 	SearchInfo info = new SearchInfo();
 
@@ -102,9 +111,8 @@ public class AdminControllerTest {
 	@Test
 	@WithUserDetails(value = "zonal-admin")
 	public void t002lostRidTest() throws Exception {
-		String str = "{\r\n    \"id\": null,\r\n    \"version\": null,\r\n    \"responsetime\": \"2019-12-02T09:45:24.512Z\",\r\n    \"metadata\": null,\r\n    \"response\": [{\"registrationId\":\"1234\",\"registrationDate\":\"2021-12-14 16:29:13,436\"}],\r\n    \"errors\": []\r\n}";
+		String str = "{\"id\":null,\"version\":null,\"responsetime\":\"2019-12-02T09:45:24.512Z\",\"metadata\":null,\"response\":[{\"registrationId\":\"1234\",\"registrationDate\":\"2021-12-14 16:29:13,436\"}],\"errors\":[]}";
 		searchInfoReq.getRequest().setSort(new ArrayList<SortInfo>());
-
 		mockRestServiceServer.expect(requestTo(lstRidUrl))
 				.andRespond(withSuccess().body(str).contentType(MediaType.APPLICATION_JSON));
 
@@ -114,5 +122,33 @@ public class AdminControllerTest {
 				"ADMN-LRID-001");
 
 	}
+	@Test
+	@WithUserDetails(value = "zonal-admin")
+	public void t003GetApplicantDetailsTest() throws Exception {
 
+		String str = new String(Files.readAllBytes(Paths.get(getClass().getResource("/identity.json").toURI())), StandardCharsets.UTF_8);
+		mockRestServiceServer.expect(requestTo(retrieveIdentityUrl+"/10001101910003320220425050433?type=bio"))
+				.andRespond(withSuccess().body(str).contentType(MediaType.APPLICATION_JSON));
+		AdminDataUtil.checkResponse(
+				(mockMvc.perform(MockMvcRequestBuilders.get("/applicantVerficationDetails"+"/10001101910003320220425050433")).andReturn()),
+				null);
+	}
+
+	@Test
+	@WithUserDetails(value = "zonal-admin")
+	public void t004GetApplicantDetailsWithEmptyIdentityJsonTest() throws Exception {
+		String str = new String(Files.readAllBytes(Paths.get(getClass().getResource("/emptyIdentity.json").toURI())), StandardCharsets.UTF_8);
+		mockRestServiceServer.expect(requestTo(retrieveIdentityUrl+"/10001101910003320220425050433?type=bio"))
+				.andRespond(withSuccess().body(str).contentType(MediaType.APPLICATION_JSON));
+		AdminDataUtil.checkResponse(
+				(mockMvc.perform(MockMvcRequestBuilders.get("/applicantVerficationDetails"+"/10001101910003320220425050433")).andReturn()),
+				"ADM-AVD-001");
+	}
+	@Test
+	@WithUserDetails(value = "zonal-admin")
+	public void t005GetApplicantDetailsFailTest() throws Exception {
+		AdminDataUtil.checkErrorResponse(
+				(mockMvc.perform(MockMvcRequestBuilders.get("/applicantVerficationDetails"+"/10001101910003320220425050433")).andReturn()),
+				"KER-MSD-500");
+	}
 }
