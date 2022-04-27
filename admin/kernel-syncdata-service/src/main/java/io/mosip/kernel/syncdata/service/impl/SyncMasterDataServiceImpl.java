@@ -151,19 +151,19 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 			throw new RequestException(MasterDataErrorCode.MACHINE_PUBLIC_KEY_NOT_WHITELISTED.getErrorCode(),
 					MasterDataErrorCode.MACHINE_PUBLIC_KEY_NOT_WHITELISTED.getErrorMessage());
 		
-		if(Arrays.equals(cryptomanagerUtils.decodeBase64Data(dto.getPublicKey()),
-				cryptomanagerUtils.decodeBase64Data(machines.get(0).getPublicKey()))) {
+		if(Arrays.equals(CryptoUtil.decodeBase64(dto.getPublicKey()),
+				CryptoUtil.decodeBase64(machines.get(0).getPublicKey()))) {
 			return new UploadPublicKeyResponseDto(machines.get(0).getKeyIndex());
 		}
 		
 		throw new RequestException(MasterDataErrorCode.MACHINE_PUBLIC_KEY_NOT_WHITELISTED.getErrorCode(),
 				MasterDataErrorCode.MACHINE_PUBLIC_KEY_NOT_WHITELISTED.getErrorMessage());
 	}
-	
+
+
 	@Override
-	public JsonNode getLatestPublishedIdSchema(LocalDateTime lastUpdated, double schemaVersion, String domain,
-			String type) {
-		return identitySchemaHelper.getLatestIdentitySchema(lastUpdated, schemaVersion, domain, type);		
+	public IdSchemaDto getLatestPublishedIdSchema(LocalDateTime lastUpdated, double schemaVersion) {
+		return identitySchemaHelper.getLatestIdentitySchema(lastUpdated, schemaVersion);
 	}
 
 	@Override

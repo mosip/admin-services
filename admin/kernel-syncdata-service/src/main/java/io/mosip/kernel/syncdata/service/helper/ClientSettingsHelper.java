@@ -100,8 +100,8 @@ public class ClientSettingsHelper {
 				hasURLDetails(ReasonList.class, isV2API, deltaSync) ? getURLDetails(ReasonList.class)
 						: serviceHelper.getReasonList(lastUpdated, currentTimestamp));
 		futuresMap.put(Holiday.class, serviceHelper.getHolidays(lastUpdated, machineId, currentTimestamp));
-		futuresMap.put(BlocklistedWords.class,
-				hasURLDetails(BlocklistedWords.class, isV2API, deltaSync) ? getURLDetails(BlocklistedWords.class)
+		futuresMap.put(BlacklistedWords.class,
+				hasURLDetails(BlacklistedWords.class, isV2API, deltaSync) ? getURLDetails(BlacklistedWords.class)
 						: serviceHelper.getBlackListedWords(lastUpdated, currentTimestamp));
 		futuresMap.put(ScreenAuthorization.class,
 				hasURLDetails(ScreenAuthorization.class, isV2API, deltaSync) ? getURLDetails(ScreenAuthorization.class)
@@ -115,10 +115,6 @@ public class ClientSettingsHelper {
 		futuresMap.put(SyncJobDef.class,
 				hasURLDetails(SyncJobDef.class, isV2API, deltaSync) ? getURLDetails(SyncJobDef.class)
 						: serviceHelper.getSyncJobDefDetails(lastUpdated, currentTimestamp));
-		futuresMap.put(PermittedLocalConfig.class,
-				hasURLDetails(PermittedLocalConfig.class, isV2API, deltaSync)
-						? getURLDetails(PermittedLocalConfig.class)
-						: serviceHelper.getPermittedConfig(lastUpdated, currentTimestamp));
 
 		// to handle backward compatibility
 		if (!isV2API) {
@@ -143,9 +139,6 @@ public class ClientSettingsHelper {
 		}
 
 		// invokes master-data-service
-		futuresMap.put(LocationHierarchy.class,
-				hasURLDetails(LocationHierarchy.class, isV2API, deltaSync) ? getURLDetails(LocationHierarchy.class)
-						: serviceHelper.getLocationHierarchyList(lastUpdated));
 		futuresMap.put(DynamicFieldDto.class,
 				hasURLDetails(DynamicFieldDto.class, isV2API, deltaSync) ? getURLDetails(DynamicFieldDto.class)
 						: serviceHelper.getAllDynamicFields(lastUpdated));

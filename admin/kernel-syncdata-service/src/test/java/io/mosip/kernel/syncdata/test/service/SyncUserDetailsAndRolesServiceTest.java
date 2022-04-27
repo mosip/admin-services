@@ -2,9 +2,7 @@ package io.mosip.kernel.syncdata.test.service;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withUnauthorizedRequest;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
@@ -143,7 +142,7 @@ public class SyncUserDetailsAndRolesServiceTest {
 
 	// ------------------------------------------UserDetails--------------------------//
 	@Test
-	public void getAllUserDetail() throws JsonParseException, JsonMappingException, IOException {
+	public void getAllUserDetail()  {
 		String response = "{\"id\":\"SYNCDATA.REQUEST\",\"version\":\"v1.0\",\"responsetime\":\"2019-03-31T10:40:29.935Z\",\"metadata\":null,\"response\":{\"mosipUserDtoList\":[{\"userId\":\"110001\",\"mobile\":\"9663175928\",\"mail\":\"110001@mosip.io\",\"langCode\":null,\"userPassword\":\"e1NTSEE1MTJ9L25EVy9tajdSblBMZFREYjF0dXB6TzdCTmlWczhKVnY1TXJ1aXRSZlBrSCtNVmJDTXVIM2lyb2thcVhsdlR6WkNKYXAwSncrSXc5SFc3aWRYUnpnaHBTQktrNXRSVTA3\",\"name\":\"user\",\"role\":\"REGISTRATION_ADMIN,REGISTRATION_OFFICER\"}]},\"errors\":null}";
 
 		String regId = "10044";
@@ -158,7 +157,7 @@ public class SyncUserDetailsAndRolesServiceTest {
 	}
 
 	@Test
-	public void getAllUserSaltDetail() throws JsonParseException, JsonMappingException, IOException {
+	public void getAllUserSaltDetail()  {
 		String responseSalt = "{\"id\":\"SYNCDATA.REQUEST\",\"version\":\"v1.0\",\"responsetime\":\"2019-03-31T10:40:29.935Z\",\"metadata\":null,\"response\":{\"mosipUserSaltList\":[{\"userId\":\"110001\",\"salt\":\"9663175928\"}]},\"errors\":null}";
 
 		String regId = "10044";
@@ -483,48 +482,5 @@ public class SyncUserDetailsAndRolesServiceTest {
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 		SyncUserDto syncUserDto = syncUserDetailsService.getAllUserDetailsBasedOnKeyIndex(keyIndex);
 		Assert.assertNotNull(syncUserDto);
-	}
-
-	@Test
-	public void getAllUserDetailsV2TestCase() {
-		Machine machine = new Machine();
-		machine.setId("machine_id");
-		machine.setRegCenterId("center_id");
-		machine.setPublicKey("public_key");
-		TpmCryptoResponseDto tpmCryptoResponseDto = new TpmCryptoResponseDto();
-		tpmCryptoResponseDto.setValue("testsetestsetset");
-		when(machineRespository.findOneByKeyIndexIgnoreCase(Mockito.anyString())).thenReturn(machine);
-		when(userDetailsRepository.findByUsersByRegCenterId(Mockito.anyString())).thenReturn(registrationCenterUsers);
-		when(clientCryptoManagerService.csEncrypt(Mockito.any())).thenReturn(tpmCryptoResponseDto);
-
-		SyncUserDto syncUserDto = syncUserDetailsService.getAllUserDetailsBasedOnKeyIndexV2(keyIndex);
-		Assert.assertNotNull(syncUserDto);
-		Assert.assertNotNull(syncUserDto.getUserDetails());
-	}
-
-	@Test(expected = DataNotFoundException.class)
-	public void getAllUserDetailsV2TestCaseException1() {
-		Machine machine = new Machine();
-		machine.setId("machine_id");
-		machine.setRegCenterId("center_id");
-		machine.setPublicKey("public_key");
-		TpmCryptoResponseDto tpmCryptoResponseDto = new TpmCryptoResponseDto();
-		tpmCryptoResponseDto.setValue("testsetestsetset");
-		when(machineRespository.findOneByKeyIndexIgnoreCase(Mockito.anyString())).thenReturn(machine);
-		when(userDetailsRepository.findByUsersByRegCenterId(Mockito.anyString())).thenReturn(Collections.emptyList());
-		syncUserDetailsService.getAllUserDetailsBasedOnKeyIndexV2(keyIndex);
-	}
-
-	@Test(expected = SyncDataServiceException.class)
-	public void getAllUserDetailsV2TestCaseException2() {
-		Machine machine = new Machine();
-		machine.setId("machine_id");
-		machine.setRegCenterId("center_id");
-		machine.setPublicKey("public_key");
-		TpmCryptoResponseDto tpmCryptoResponseDto = new TpmCryptoResponseDto();
-		tpmCryptoResponseDto.setValue("testsetestsetset");
-		when(machineRespository.findOneByKeyIndexIgnoreCase(Mockito.anyString())).thenReturn(machine);
-		when(userDetailsRepository.findByUsersByRegCenterId(Mockito.anyString())).thenThrow(DataAccessLayerException.class);
-		syncUserDetailsService.getAllUserDetailsBasedOnKeyIndexV2(keyIndex);
 	}
 }

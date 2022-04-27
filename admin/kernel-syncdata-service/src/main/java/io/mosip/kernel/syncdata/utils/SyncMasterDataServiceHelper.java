@@ -11,7 +11,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import io.mosip.kernel.clientcrypto.constant.ClientType;
+import io.mosip.kernel.syncdata.entity.*;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
+import io.mosip.kernel.syncdata.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,10 +51,8 @@ import io.mosip.kernel.syncdata.dto.EntityDtimes;
 import io.mosip.kernel.syncdata.dto.HolidayDto;
 import io.mosip.kernel.syncdata.dto.LocationDto;
 import io.mosip.kernel.syncdata.dto.LocationHierarchyDto;
-import io.mosip.kernel.syncdata.dto.LocationHierarchyLevelResponseDto;
 import io.mosip.kernel.syncdata.dto.MachineDto;
 import io.mosip.kernel.syncdata.dto.PageDto;
-import io.mosip.kernel.syncdata.dto.PermittedConfigDto;
 import io.mosip.kernel.syncdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.syncdata.dto.ProcessListDto;
 import io.mosip.kernel.syncdata.dto.ReasonListDto;
@@ -67,76 +67,11 @@ import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
 import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.response.SyncDataBaseDto;
-import io.mosip.kernel.syncdata.entity.AppAuthenticationMethod;
-import io.mosip.kernel.syncdata.entity.AppRolePriority;
-import io.mosip.kernel.syncdata.entity.ApplicantValidDocument;
-import io.mosip.kernel.syncdata.entity.BlocklistedWords;
-import io.mosip.kernel.syncdata.entity.DocumentType;
-import io.mosip.kernel.syncdata.entity.Holiday;
-import io.mosip.kernel.syncdata.entity.Location;
-import io.mosip.kernel.syncdata.entity.Machine;
-import io.mosip.kernel.syncdata.entity.PermittedLocalConfig;
-import io.mosip.kernel.syncdata.entity.ProcessList;
-import io.mosip.kernel.syncdata.entity.ReasonCategory;
-import io.mosip.kernel.syncdata.entity.ReasonList;
-import io.mosip.kernel.syncdata.entity.RegistrationCenter;
-import io.mosip.kernel.syncdata.entity.ScreenAuthorization;
-import io.mosip.kernel.syncdata.entity.ScreenDetail;
-import io.mosip.kernel.syncdata.entity.SyncJobDef;
-import io.mosip.kernel.syncdata.entity.Template;
-import io.mosip.kernel.syncdata.entity.TemplateFileFormat;
-import io.mosip.kernel.syncdata.entity.TemplateType;
-import io.mosip.kernel.syncdata.entity.UserDetails;
-import io.mosip.kernel.syncdata.entity.ValidDocument;
 import io.mosip.kernel.syncdata.exception.AdminServiceException;
 import io.mosip.kernel.syncdata.exception.RequestException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
 import io.mosip.kernel.syncdata.exception.SyncServiceException;
-import io.mosip.kernel.syncdata.repository.AppAuthenticationMethodRepository;
-import io.mosip.kernel.syncdata.repository.AppDetailRepository;
-import io.mosip.kernel.syncdata.repository.AppRolePriorityRepository;
-import io.mosip.kernel.syncdata.repository.ApplicantValidDocumentRespository;
-import io.mosip.kernel.syncdata.repository.ApplicationRepository;
-import io.mosip.kernel.syncdata.repository.BiometricAttributeRepository;
-import io.mosip.kernel.syncdata.repository.BiometricTypeRepository;
-import io.mosip.kernel.syncdata.repository.BlocklistedWordsRepository;
-import io.mosip.kernel.syncdata.repository.DeviceHistoryRepository;
-import io.mosip.kernel.syncdata.repository.DeviceProviderRepository;
-import io.mosip.kernel.syncdata.repository.DeviceRepository;
-import io.mosip.kernel.syncdata.repository.DeviceServiceRepository;
-import io.mosip.kernel.syncdata.repository.DeviceSpecificationRepository;
-import io.mosip.kernel.syncdata.repository.DeviceSubTypeDPMRepository;
-import io.mosip.kernel.syncdata.repository.DeviceTypeDPMRepository;
-import io.mosip.kernel.syncdata.repository.DeviceTypeRepository;
-import io.mosip.kernel.syncdata.repository.DocumentCategoryRepository;
-import io.mosip.kernel.syncdata.repository.DocumentTypeRepository;
-import io.mosip.kernel.syncdata.repository.FoundationalTrustProviderRepository;
-import io.mosip.kernel.syncdata.repository.HolidayRepository;
-import io.mosip.kernel.syncdata.repository.IdTypeRepository;
-import io.mosip.kernel.syncdata.repository.LanguageRepository;
-import io.mosip.kernel.syncdata.repository.LocationRepository;
-import io.mosip.kernel.syncdata.repository.MachineHistoryRepository;
-import io.mosip.kernel.syncdata.repository.MachineRepository;
-import io.mosip.kernel.syncdata.repository.MachineSpecificationRepository;
-import io.mosip.kernel.syncdata.repository.MachineTypeRepository;
-import io.mosip.kernel.syncdata.repository.PermittedLocalConfigRepository;
-import io.mosip.kernel.syncdata.repository.ProcessListRepository;
-import io.mosip.kernel.syncdata.repository.ReasonCategoryRepository;
-import io.mosip.kernel.syncdata.repository.ReasonListRepository;
-import io.mosip.kernel.syncdata.repository.RegisteredDeviceRepository;
-import io.mosip.kernel.syncdata.repository.RegistrationCenterRepository;
-import io.mosip.kernel.syncdata.repository.RegistrationCenterTypeRepository;
-import io.mosip.kernel.syncdata.repository.ScreenAuthorizationRepository;
-import io.mosip.kernel.syncdata.repository.ScreenDetailRepository;
-import io.mosip.kernel.syncdata.repository.SyncJobDefRepository;
-import io.mosip.kernel.syncdata.repository.TemplateFileFormatRepository;
-import io.mosip.kernel.syncdata.repository.TemplateRepository;
-import io.mosip.kernel.syncdata.repository.TemplateTypeRepository;
-import io.mosip.kernel.syncdata.repository.TitleRepository;
-import io.mosip.kernel.syncdata.repository.UserDetailsHistoryRepository;
-import io.mosip.kernel.syncdata.repository.UserDetailsRepository;
-import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
 
 /**
  * Sync handler masterData service helper
@@ -246,9 +181,6 @@ public class SyncMasterDataServiceHelper {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	@Value("${mosip.kernel.masterdata.locationhierarchylevels.uri}")
-	private String locationHirerarchyUrl;
-
 	@Value("${mosip.kernel.syncdata-service-dynamicfield-url}")
 	private String dynamicfieldUrl;
 
@@ -305,7 +237,6 @@ public class SyncMasterDataServiceHelper {
 				responseDto.setName(machine.getName());
 				responseDto.setSerialNum(machine.getSerialNum());
 				responseDto.setValidityDateTime(machine.getValidityDateTime());
-				responseDto.setRegCenterId(machine.getRegCenterId());
 				machineDetailDtoList.add(responseDto);
 			});
 
@@ -313,83 +244,11 @@ public class SyncMasterDataServiceHelper {
 
 		return CompletableFuture.completedFuture(machineDetailDtoList);
 	}
-	
-	/**
-	 * Method to fetch location hierarchy details
-	 * 
-	 * @param lastUpdated      lastUpdated time-stamp
-	 * 
-	 * @return list of {@link LocationHierarchyDto} list of
-	 *         locationHierarchyList dto
-	 */
-	@Async
-	public CompletableFuture<List<LocationHierarchyDto>> getLocationHierarchyList(LocalDateTime lastUpdated) {
-		List<LocationHierarchyDto> locationHierarchyLevelDtos = new ArrayList<LocationHierarchyDto>();
-
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(locationHirerarchyUrl);
-		if(lastUpdated != null) {	builder.queryParam("lastUpdated", DateUtils.formatToISOString(lastUpdated)); }
-		ResponseEntity<String> response = restTemplate.getForEntity(builder.build().toUri(), String.class);
-
-		if (response.getStatusCode().equals(HttpStatus.OK)) {
-			String responseBody = response.getBody();
-			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-			if (!validationErrorsList.isEmpty()) {
-				throw new SyncServiceException(validationErrorsList);
-			}
-
-			try {
-				ResponseWrapper<?> responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
-				LocationHierarchyLevelResponseDto locationHierarchyResponseDto = objectMapper.readValue(
-						objectMapper.writeValueAsString(responseObject.getResponse()),
-						LocationHierarchyLevelResponseDto.class);
-				locationHierarchyLevelDtos = locationHierarchyResponseDto.getLocationHierarchyLevels();
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-				throw new SyncDataServiceException(
-						MasterDataErrorCode.LOCATION_HIERARCHY_DESERIALIZATION_FAILED.getErrorCode(),
-						MasterDataErrorCode.LOCATION_HIERARCHY_DESERIALIZATION_FAILED.getErrorMessage());
-			}
-		}
-		return CompletableFuture.completedFuture(locationHierarchyLevelDtos);
-	}
-
-	@Async
-	public CompletableFuture<List<LocationHierarchyDto>> getLocationHierarchyList(LocalDateTime lastUpdated, RestTemplate restClient) {
-		List<LocationHierarchyDto> locationHierarchyLevelDtos = new ArrayList<LocationHierarchyDto>();
-
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(locationHirerarchyUrl);
-		if(lastUpdated != null) {	builder.queryParam("lastUpdated", DateUtils.formatToISOString(lastUpdated)); }
-		ResponseEntity<String> response = restClient.getForEntity(builder.build().toUri(), String.class);
-
-		if (response.getStatusCode().equals(HttpStatus.OK)) {
-			String responseBody = response.getBody();
-			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-			if (!validationErrorsList.isEmpty()) {
-				throw new SyncServiceException(validationErrorsList);
-			}
-
-			try {
-				ResponseWrapper<?> responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
-				LocationHierarchyLevelResponseDto locationHierarchyResponseDto = objectMapper.readValue(
-						objectMapper.writeValueAsString(responseObject.getResponse()),
-						LocationHierarchyLevelResponseDto.class);
-				locationHierarchyLevelDtos = locationHierarchyResponseDto.getLocationHierarchyLevels();
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-				throw new SyncDataServiceException(
-						MasterDataErrorCode.LOCATION_HIERARCHY_DESERIALIZATION_FAILED.getErrorCode(),
-						MasterDataErrorCode.LOCATION_HIERARCHY_DESERIALIZATION_FAILED.getErrorMessage());
-			}
-		}
-		return CompletableFuture.completedFuture(locationHierarchyLevelDtos);
-	}
-
-
 
 	/**
 	 * Method to fetch registration center detail.
 	 *
-	 * @param machineId        machine id
+	 * @param centerId        center id
 	 * @param lastUpdated      lastUpdated timestamp
 	 * @param currentTimeStamp the current time stamp
 	 * @return list of {@link RegistrationCenterDto}
@@ -693,7 +552,7 @@ public class SyncMasterDataServiceHelper {
 	@Async
 	public CompletableFuture<List<BlacklistedWordsDto>> getBlackListedWords(LocalDateTime lastUpdated,
 			LocalDateTime currentTimeStamp) {
-		List<BlocklistedWords> words = null;
+		List<BlacklistedWords> words = null;
 
 		try {
 			if(!isChangesFound("BlacklistedWords", lastUpdated)) {
@@ -703,7 +562,7 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			words = blocklistedWordsRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+			words = blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage(), e);
@@ -718,7 +577,7 @@ public class SyncMasterDataServiceHelper {
 	 * @param words
 	 * @return
 	 */
-	private List<BlacklistedWordsDto> convertBlocklistedWordsEntityToDto(List<BlocklistedWords> words) {
+	private List<BlacklistedWordsDto> convertBlocklistedWordsEntityToDto(List<BlacklistedWords> words) {
 		if (words != null && !words.isEmpty()) {
 			List<BlacklistedWordsDto> blocklistedWordsDtos = new ArrayList<>();
 			words.stream().forEach(entity -> {
@@ -820,8 +679,12 @@ public class SyncMasterDataServiceHelper {
 		if (locations != null && !locations.isEmpty()) {
 			List<LocationDto> locationDtos = new ArrayList<>();
 			locations.stream().forEach(entity -> {
-				LocationDto entityDTO = new LocationDto(entity.getCode(), entity.getName(), entity.getHierarchyLevel(),
-						entity.getHierarchyName(), entity.getParentLocCode());
+				LocationDto entityDTO = new LocationDto();
+				entityDTO.setCode(entity.getCode());
+				entityDTO.setName(entity.getName());
+				entityDTO.setHierarchyLevel(entity.getHierarchyLevel());
+				entityDTO.setHierarchyName(entity.getHierarchyName());
+				entityDTO.setParentLocCode(entity.getParentLocCode());
 				entityDTO.setIsDeleted(entity.getIsDeleted());
 				entityDTO.setIsActive(entity.getIsActive());
 				entityDTO.setLangCode(entity.getLangCode());
@@ -1055,9 +918,11 @@ public class SyncMasterDataServiceHelper {
 		if (applicantValidDocuments != null && !applicantValidDocuments.isEmpty()) {
 			List<ApplicantValidDocumentDto> applicantValidDocumentseDtos = new ArrayList<>();
 			applicantValidDocuments.stream().forEach(entity -> {
-				ApplicantValidDocumentDto entityDTO = new ApplicantValidDocumentDto(entity.getApplicantValidDocumentId().getAppTypeCode(),
-						entity.getApplicantValidDocumentId().getDocTypeCode(), entity.getApplicantValidDocumentId().getDocCatCode(),
-						entity.getLangCode());
+				ApplicantValidDocumentDto entityDTO = new ApplicantValidDocumentDto();
+				entityDTO.setAppTypeCode(entity.getApplicantValidDocumentId().getAppTypeCode());
+				entityDTO.setDocCatCode(entity.getApplicantValidDocumentId().getDocCatCode());
+				entityDTO.setDocTypeCode(entity.getApplicantValidDocumentId().getDocTypeCode());
+				entityDTO.setLangCode(entity.getLangCode());
 				entityDTO.setIsDeleted(entity.getIsDeleted());
 				entityDTO.setIsActive(entity.getIsActive());
 				applicantValidDocumentseDtos.add(entityDTO);
@@ -1310,7 +1175,11 @@ public class SyncMasterDataServiceHelper {
 		if (screenDetails != null && !screenDetails.isEmpty()) {
 			List<ScreenDetailDto> screenDetailDtos = new ArrayList<>();
 			screenDetails.stream().forEach(entity -> {
-			ScreenDetailDto	entityDTO =	new ScreenDetailDto(entity.getId(), entity.getAppId(), entity.getName(), entity.getDescr());
+			ScreenDetailDto	entityDTO =	new ScreenDetailDto();
+			entityDTO.setId(entity.getId());
+			entityDTO.setDescr(entity.getDescr());
+			entityDTO.setAppId(entity.getAppId());
+			entityDTO.setName(entity.getName());
 			entityDTO.setIsDeleted(entity.getIsDeleted());
 			entityDTO.setIsActive(entity.getIsActive());
 			entityDTO.setLangCode(entity.getLangCode());
@@ -1388,49 +1257,10 @@ public class SyncMasterDataServiceHelper {
 		}
 	}
 
-	@Async
-	public CompletableFuture<List<PermittedConfigDto>> getPermittedConfig(LocalDateTime lastUpdated,
-															 LocalDateTime currentTimeStamp) {
-		List<PermittedLocalConfig> list = null;
-		try {
-			if(!isChangesFound("PermittedLocalConfig", lastUpdated)) {
-				return CompletableFuture.completedFuture(null);
-			}
-			if (lastUpdated == null) {
-				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
-			}
-			list = permittedLocalConfigRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
-
-		} catch (DataAccessException e) {
-			logger.error(e.getMessage(), e);
-			throw new SyncDataServiceException(MasterDataErrorCode.PERMITTED_CONFIG_FETCH_FAILED.getErrorCode(),
-					e.getMessage(), e);
-		}
-		return CompletableFuture.completedFuture(convertPermittedConfigEntityToDto(list));
-	}
-
-	/**
-	 * this method is copy the properties from PermittedLocalConfigEntity to PermittedLocalConfigDTO
-	 * 
-	 * @param PermittedLocalConfigList
-	 * @return
-	 */
-	private List<PermittedConfigDto> convertPermittedConfigEntityToDto(List<PermittedLocalConfig> PermittedLocalConfigList) {
-		if (PermittedLocalConfigList != null && !PermittedLocalConfigList.isEmpty()) {
-			List<PermittedConfigDto> permittedConfigDtos = new ArrayList<>();
-			PermittedLocalConfigList.stream().forEach(entity -> {
-			PermittedConfigDto entityDTO = new PermittedConfigDto(entity.getCode(), entity.getName(), entity.getType());
-			entityDTO.setIsDeleted(entity.getIsDeleted());
-			entityDTO.setIsActive(entity.getIsActive());
-			permittedConfigDtos.add(entityDTO);	
-			});
-			return permittedConfigDtos;
-		}
-		return null;
-	}
 
 	@SuppressWarnings("unchecked")
-	public void getSyncDataBaseDto(String entityName, String entityType, List entities, String publicKey, List result) {
+	public void getSyncDataBaseDto(String entityName, String entityType, List entities,
+								   RegistrationCenterMachineDto registrationCenterMachineDto, List result) {
 		if (null != entities) {
 			List<String> list = Collections.synchronizedList(new ArrayList<String>());
 			entities.parallelStream().filter(Objects::nonNull).forEach(obj -> {
@@ -1447,16 +1277,13 @@ public class SyncMasterDataServiceHelper {
 			try {
 				if (list.size() > 0) {
 					TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
-					tpmCryptoRequestDto
-							.setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(list).getBytes()));
+					tpmCryptoRequestDto.setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(list).getBytes()));
 					tpmCryptoRequestDto.setPublicKey(registrationCenterMachineDto.getPublicKey());
 					tpmCryptoRequestDto.setClientType(registrationCenterMachineDto.getClientType());
 					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService
 							.csEncrypt(tpmCryptoRequestDto);
 
-					//backward compatibility
-					result.add(new SyncDataBaseDto(entityName.equalsIgnoreCase(BlocklistedWords.class.getSimpleName()) ?
-							"BlacklistedWords" : entityName, entityType, tpmCryptoResponseDto.getValue()));
+					result.add(new SyncDataBaseDto(entityName, entityType, tpmCryptoResponseDto.getValue()));
 				}
 			} catch (Exception e) {
 				logger.error("Failed to encrypt {} data to json", entityName, e);
@@ -1582,7 +1409,7 @@ public class SyncMasterDataServiceHelper {
 				result = holidayRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
 				break;
 			case "BlacklistedWords":
-				result = blocklistedWordsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				result = blacklistedWordsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
 				break;
 			case "ScreenAuthorization":
 				result = screenAuthorizationRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();

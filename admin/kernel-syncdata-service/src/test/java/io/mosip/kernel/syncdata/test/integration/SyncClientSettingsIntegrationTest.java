@@ -325,7 +325,7 @@ public class SyncClientSettingsIntegrationTest {
 		applications = new ArrayList<>();
 		applications.add(new Application("101", "ENG", "MOSIP", "MOSIP"));
 		machines = new ArrayList<>();
-		String keyIndex = CryptoUtil.computeFingerPrint(cryptomanagerUtils.decodeBase64Data(encodedTPMPublicKey), null);
+		String keyIndex = CryptoUtil.computeFingerPrint(CryptoUtil.decodeBase64(encodedTPMPublicKey), null);
 		machine = new Machine("1001", "Laptop", "9876427", "172.12.01.128", "21:21:21:12", "1001", "ENG", localdateTime,
 				encodedTPMPublicKey, keyIndex, "ZONE", "10002", null, encodedTPMPublicKey, keyIndex);
 		machines.add(machine);
@@ -596,8 +596,8 @@ public class SyncClientSettingsIntegrationTest {
 		when(holidayRepository.findAllByMachineId(Mockito.anyString())).thenReturn(holidays);
 		when(holidayRepository.findAllLatestCreatedUpdateDeletedByMachineId(Mockito.anyString(), Mockito.any(),
 				Mockito.any())).thenReturn(holidays);
-		when(blocklistedWordsRepository.findAll()).thenReturn(blackListedWords);
-		when(blocklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+		when(blacklistedWordsRepository.findAll()).thenReturn(blackListedWords);
+		when(blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenReturn(blackListedWords);
 		when(registrationCenterRepository.findRegistrationCenterByMachineId(Mockito.anyString()))
 				.thenReturn(registrationCenters);
@@ -735,21 +735,6 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void v2syncSuccess() throws Exception {
-		mockSuccess();
-		MvcResult result = mockMvc.perform(get(v2syncDataUrl)).andExpect(status().isOk()).andReturn();
-		JSONObject jsonObject = null;
-		try {
-			jsonObject = new JSONObject(result.getResponse().getContentAsString());
-
-		} catch (Throwable t) {
-			Assert.fail("Not expected response!");
-		}
-		assertNotNull(jsonObject.get("response"));
-	}
-
-	@Test
-	@WithUserDetails(value = "reg-officer")
 	public void syncSuccessWithOnlyKeyIndex() throws Exception {
 		mockSuccess();
 		MvcResult result = mockMvc.perform(get(syncDataUrlWithOnlyKeyIndex)).andExpect(status().isOk()).andReturn();
@@ -762,40 +747,6 @@ public class SyncClientSettingsIntegrationTest {
 		}
 		assertNotNull(jsonObject.get("response"));
 	}
-
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void v2syncSuccessWithOnlyKeyIndex() throws Exception {
-		mockSuccess();
-		MvcResult result = mockMvc.perform(get(v2syncDataUrlWithOnlyKeyIndex)).andExpect(status().isOk()).andReturn();
-		JSONObject jsonObject = null;
-		try {
-			jsonObject = new JSONObject(result.getResponse().getContentAsString());
-
-		} catch (Throwable t) {
-			Assert.fail("Not expected response!");
-		}
-		assertNotNull(jsonObject.get("response"));
-	}
-
-	/*
-	 * @Test
-	 * 
-	 * @WithUserDetails(value = "reg-officer") public void
-	 * syncSuccessBasedOnRegCenterIdWithKeyIndex() throws Exception { mockSuccess();
-	 * mockMvc.perform(get(syncDataUrlRegCenterIdWithKeyIndex,
-	 * "1001")).andExpect(status().isOk()); }
-	 */
-
-	/*
-	 * @Test
-	 * 
-	 * @WithUserDetails(value = "reg-officer") public void
-	 * syncSuccessBasedOnRegCenterIdWithKeyIndexAndLastUpdated() throws Exception {
-	 * mockSuccess();
-	 * mockMvc.perform(get(syncDataUrlRegCenterIdWithKeyIndexAndLastUpdated,
-	 * "1001")).andExpect(status().isOk()); }
-	 */
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
@@ -813,34 +764,6 @@ public class SyncClientSettingsIntegrationTest {
 		assertEquals(JSONObject.NULL, jsonObject.get("response"));
 	}
 
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void v2syncFailureWithoutAnyInput() throws Exception {
-		mockSuccess();
-		JSONObject jsonObject = null;
-		MvcResult result = mockMvc.perform(get(v2syncDataUrlWithoutInput)).andExpect(status().isInternalServerError())
-				.andReturn();
-		try {
-			jsonObject = new JSONObject(result.getResponse().getContentAsString());
-
-		} catch (Throwable t) {
-			Assert.fail("Not expected response!");
-		}
-		assertEquals(JSONObject.NULL, jsonObject.get("response"));
-	}
-
-	/*
-	 * @Test
-	 * 
-	 * @WithUserDetails(value = "reg-officer") public void
-	 * syncFailureWithOnlyRegCenterId() throws Exception { mockSuccess(); MvcResult
-	 * result = mockMvc.perform(get(syncDataUrlRegCenterId,
-	 * "1001")).andExpect(status().isInternalServerError()).andReturn(); try {
-	 * JSONObject jsonObject = new
-	 * JSONObject(result.getResponse().getContentAsString());
-	 * assertEquals(JSONObject.NULL,jsonObject.get("response")); } catch(Throwable
-	 * t) { Assert.fail("Not expected response!"); } }
-	 */
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
@@ -859,22 +782,6 @@ public class SyncClientSettingsIntegrationTest {
 
 	}
 
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void v2syncWithOnlyUpdatedTime() throws Exception {
-		mockSuccess();
-		JSONObject jsonObject = null;
-		MvcResult result = mockMvc.perform(get(v2syncDataUrlWithOnlyLastUpdated))
-				.andExpect(status().isInternalServerError()).andReturn();
-		try {
-			jsonObject = new JSONObject(result.getResponse().getContentAsString());
-
-		} catch (Throwable t) {
-			Assert.fail("Not expected response!");
-		}
-		assertEquals(JSONObject.NULL, jsonObject.get("response"));
-
-	}
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
@@ -882,13 +789,6 @@ public class SyncClientSettingsIntegrationTest {
 		mockSuccess();
 		testExecution(syncDataUrlWithInvalidTimestamp);
 
-	}
-
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void v2syncFailureWithInvalidTimeStamp() throws Exception {
-		mockSuccess();
-		testExecution(v2syncDataUrlWithInvalidTimestamp);
 	}
 
 	@Test
@@ -901,15 +801,6 @@ public class SyncClientSettingsIntegrationTest {
 		testExecution(syncDataUrl);
 	}
 
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void v2syncApplicationFetchException() throws Exception {
-		mockSuccess();
-		when(applicationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-
-		testExecution(v2syncDataUrl);
-	}
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
@@ -920,14 +811,7 @@ public class SyncClientSettingsIntegrationTest {
 		testExecution(syncDataUrl);
 	}
 
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void v2syncMasterDataMachineFetchException() throws Exception {
-		mockSuccess();
-		when(machineRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		testExecution(v2syncDataUrl);
-	}
+
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
@@ -938,14 +822,6 @@ public class SyncClientSettingsIntegrationTest {
 		testExecution(syncDataUrl);
 	}
 
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void v2syncMasterDataMachineSpecFetchException() throws Exception {
-		mockSuccess();
-		when(machineSpecificationRepository.findLatestByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		testExecution(v2syncDataUrl);
-	}
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
@@ -956,14 +832,6 @@ public class SyncClientSettingsIntegrationTest {
 		testExecution(syncDataUrl);
 	}
 
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void v2syncMasterDataMachineTypeFetchException() throws Exception {
-		mockSuccess();
-		when(machineTypeRepository.findLatestByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		testExecution(v2syncDataUrl);
-	}
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
@@ -974,14 +842,6 @@ public class SyncClientSettingsIntegrationTest {
 		testExecution(syncDataUrl);
 	}
 
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void v2syncMasterDataTemplateFetchException() throws Exception {
-		mockSuccess();
-		when(templateRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		testExecution(v2syncDataUrl);
-	}
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
@@ -992,14 +852,6 @@ public class SyncClientSettingsIntegrationTest {
 		testExecution(syncDataUrl);
 	}
 
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void v2syncMasterDataTemplateFileFormatFetchException() throws Exception {
-		mockSuccess();
-		when(templateFileFormatRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		testExecution(v2syncDataUrl);
-	}
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
@@ -1010,14 +862,6 @@ public class SyncClientSettingsIntegrationTest {
 		testExecution(syncDataUrl);
 	}
 
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void v2syncMasterDataTemplateTypeFetchException() throws Exception {
-		mockSuccess();
-		when(templateTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		testExecution(v2syncDataUrl);
-	}
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
@@ -1100,15 +944,6 @@ public class SyncClientSettingsIntegrationTest {
 		testExecution(syncDataUrl);
 	}
 
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void v2syncMasterDataBlackListedWordFetchException() throws Exception {
-		mockSuccess();
-		when(blocklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
-		testExecution(v2syncDataUrl);
-
-	}
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
@@ -1319,8 +1154,8 @@ public class SyncClientSettingsIntegrationTest {
 		machine.setRegCenterId("1001");
 		machine.setPublicKey("ewerwerwerer");
 
-		when(machineRepository.getRegistrationCenterMachineWithKeyIndexWithoutStatusCheck(Mockito.anyString()))
-				.thenReturn(data);
+		when(machineRepository.findOneByKeyIndexIgnoreCase(Mockito.anyString()))
+				.thenReturn(machine);
 
 		MvcResult result = mockMvc.perform(get(syncDataUrlWithKeyIndexAndRegCenterId)).andExpect(status().isOk())
 				.andReturn();
