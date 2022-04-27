@@ -50,7 +50,7 @@ public class AdminController {
 			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
-	private ResponseWrapper<ApplicantVerficationDto> getApplicantVerficationDetails(@PathVariable("rid") String rid) {
+	private ResponseWrapper<ApplicantVerficationDto> getApplicantVerficationDetails(@PathVariable("rid") String rid) throws Exception {
 		auditUtil.setAuditRequestDto(EventEnum.APPLICANT_VERIFICATION_API_CALLED,null);
 		ResponseWrapper<ApplicantVerficationDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(adminService.getApplicantVerficationDetails(rid));

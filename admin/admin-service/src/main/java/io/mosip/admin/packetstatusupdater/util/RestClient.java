@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -59,7 +60,7 @@ public class RestClient {
 				result = (T) restTemplate.postForObject(builder.toUriString(), setRequestHeader(requestType, mediaType),
 						responseClass);
 			} catch (Exception e) {
-				throw e;
+				throw new ResourceAccessException(e.getMessage());
 			}
 		}
 		return result;
@@ -75,11 +76,10 @@ public class RestClient {
 	 * @param queryParamValue the query param value
 	 * @param responseType    the response type
 	 * @return the api
-	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getApi(ApiName apiName, List<String> pathsegments, String queryParamName, String queryParamValue,
-						Class<?> responseType) throws Exception {
+						Class<?> responseType)  {
 
 		String apiHostIpPort = environment.getProperty(apiName.name());
 		T result = null;
@@ -113,7 +113,7 @@ public class RestClient {
 						.exchange(uriComponents.toUri(), HttpMethod.GET, setRequestHeader(null, null), responseType)
 						.getBody();
 			} catch (Exception e) {
-				throw new Exception(e);
+				throw new ResourceAccessException(e.getMessage());
 			}
 
 		}

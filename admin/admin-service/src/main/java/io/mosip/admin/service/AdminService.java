@@ -9,5 +9,5 @@ public interface AdminService {
 
 	LostRidResponseDto lostRid(SearchInfo searchInfo);
 
-    ApplicantVerficationDto getApplicantVerficationDetails(String rid);
+    ApplicantVerficationDto getApplicantVerficationDetails(String rid) throws Exception;
 }

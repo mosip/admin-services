@@ -10,12 +10,14 @@ import java.util.Map;
 import io.mosip.admin.constant.AdminErrorCode;
 import io.mosip.admin.dto.*;
 import io.mosip.admin.packetstatusupdater.constant.PacketStatusUpdateErrorCode;
+import io.mosip.admin.packetstatusupdater.exception.DataNotFoundException;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.admin.packetstatusupdater.util.EventEnum;
 import io.mosip.admin.util.CbeffToBiometricUtil;
 import io.mosip.biometrics.util.ConvertRequestDto;
 import io.mosip.biometrics.util.face.FaceDecoder;
 import io.mosip.kernel.biometrics.spi.CbeffUtil;
+import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.util.JsonUtils;
 import org.apache.commons.codec.binary.Base64;
@@ -36,6 +38,7 @@ import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import io.mosip.admin.packetstatusupdater.util.RestClient;
 import io.mosip.admin.service.AdminService;
 import io.mosip.kernel.core.util.DateUtils;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -104,7 +107,7 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public ApplicantVerficationDto getApplicantVerficationDetails(String rid) {
+	public ApplicantVerficationDto getApplicantVerficationDetails(String rid) throws Exception {
 		ApplicantVerficationDto applicantVerficationDto=new ApplicantVerficationDto();
 		ConvertRequestDto convertRequestDto = new ConvertRequestDto();
 		List<String> pathsegments=new ArrayList<>();
@@ -137,10 +140,13 @@ public class AdminServiceImpl implements AdminService {
 				throw new RequestException(AdminErrorCode.RID_NOT_FOUND.getErrorCode(),
 						AdminErrorCode.RID_NOT_FOUND.getErrorMessage());
 			}
-		} catch (Exception e) {
+		} catch (ResourceAccessException | JSONException e) {
 			auditUtil.setAuditRequestDto(EventEnum.APPLICANT_VERIFICATION_ERROR,null);
 			throw new RequestException(AdminErrorCode.UNABLE_TO_RETRIEVE_RID.getErrorCode(),
-					AdminErrorCode.UNABLE_TO_RETRIEVE_RID.getErrorMessage());
+					AdminErrorCode.UNABLE_TO_RETRIEVE_RID.getErrorMessage(),e);
+		}catch (InvalidIDException | DataNotFoundException e){
+			auditUtil.setAuditRequestDto(EventEnum.APPLICANT_VERIFICATION_ERROR,null);
+			throw new RequestException(e.getErrorCode(), e.getErrorText());
 		}
 		return applicantVerficationDto;
 	}

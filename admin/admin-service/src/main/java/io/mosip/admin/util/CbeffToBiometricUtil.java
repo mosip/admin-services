@@ -1,10 +1,14 @@
 package io.mosip.admin.util;
 
+import io.mosip.admin.constant.AdminErrorCode;
+import io.mosip.admin.packetstatusupdater.exception.DataNotFoundException;
 import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.biometrics.entities.BIR;
 import io.mosip.kernel.biometrics.spi.CbeffUtil;
 import io.mosip.kernel.biometrics.spi.IBioApi;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
+import io.mosip.kernel.core.bioapi.exception.BiometricException;
+import io.mosip.kernel.core.cbeffutil.exception.CbeffException;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 
 import org.apache.commons.codec.binary.Base64;
@@ -57,15 +61,19 @@ public class CbeffToBiometricUtil {
 	 * @return the photo
 	 * @throws Exception the exception
 	 */
-	public byte[] getImageBytes(String cbeffFileString, String type, List<String> subType) throws Exception {
+	public byte[] getImageBytes(String cbeffFileString, String type, List<String> subType) {
 		logger.debug("CbeffToBiometricUtil::getImageBytes()::entry");
 		byte[] photoBytes = null;
 		if (cbeffFileString != null) {
-			List<BIR> bIRTypeList = getBIRTypeList(cbeffFileString);
-			photoBytes = getPhotoByTypeAndSubType(bIRTypeList, type, subType);
+			List<BIR> bIRTypeList = null;
+			try {
+				bIRTypeList = getBIRTypeList(cbeffFileString);
+				photoBytes = getPhotoByTypeAndSubType(bIRTypeList, type, subType);
+			} catch (Exception e) {
+				throw new DataNotFoundException(AdminErrorCode.DATA_NOT_FOUND.getErrorCode(),AdminErrorCode.DATA_NOT_FOUND.getErrorMessage());
+			}
 		}
 		logger.debug("CbeffToBiometricUtil::getImageBytes()::exit");
-
 		return photoBytes;
 	}
 

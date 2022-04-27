@@ -142,7 +142,7 @@ public class AdminControllerTest {
 				.andRespond(withSuccess().body(str).contentType(MediaType.APPLICATION_JSON));
 		AdminDataUtil.checkResponse(
 				(mockMvc.perform(MockMvcRequestBuilders.get("/applicantVerficationDetails"+"/10001101910003320220425050433")).andReturn()),
-				"ADM-AVD-001");
+				"ADM-AVD-003");
 	}
 	@Test
 	@WithUserDetails(value = "zonal-admin")
@@ -150,5 +150,12 @@ public class AdminControllerTest {
 		AdminDataUtil.checkErrorResponse(
 				(mockMvc.perform(MockMvcRequestBuilders.get("/applicantVerficationDetails"+"/10001101910003320220425050433")).andReturn()),
 				"KER-MSD-500");
+	}
+	@Test
+	@WithUserDetails(value = "zonal-admin")
+	public void t005GetApplicantDetailsWithInvalidRidTest() throws Exception {
+		AdminDataUtil.checkResponse(
+				(mockMvc.perform(MockMvcRequestBuilders.get("/applicantVerficationDetails"+"/100011019100033202")).andReturn()),
+				"KER-IDV-304");
 	}
 }
