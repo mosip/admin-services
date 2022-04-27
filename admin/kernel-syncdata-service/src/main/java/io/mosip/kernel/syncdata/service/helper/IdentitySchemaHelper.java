@@ -1,14 +1,8 @@
 package io.mosip.kernel.syncdata.service.helper;
 
 
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import io.mosip.kernel.core.util.DateUtils;
 import org.slf4j.Logger;
@@ -30,7 +24,6 @@ import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.DynamicFieldDto;
 import io.mosip.kernel.syncdata.dto.IdSchemaDto;
 import io.mosip.kernel.syncdata.dto.PageDto;
-import io.mosip.kernel.syncdata.dto.response.SyncDataBaseDto;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
@@ -56,26 +49,7 @@ public class IdentitySchemaHelper {
 	
 	@Autowired
 	private SyncMasterDataServiceHelper serviceHelper;
-	
-	public void fillRetrievedData(final List<SyncDataBaseDto> list, String publicKey, LocalDateTime lastUpdated)
-			throws InterruptedException, ExecutionException {
-		List<DynamicFieldDto> fields = getAllDynamicFields(lastUpdated);
-				
-		Map<String, List<DynamicFieldDto>> data = new HashMap<String, List<DynamicFieldDto>>();
-		for(DynamicFieldDto dto : fields) {
-			if(!data.containsKey(dto.getName())) {
-				List<DynamicFieldDto> langBasedData = new ArrayList<DynamicFieldDto>();
-				langBasedData.add(dto);
-				data.put(dto.getName(), langBasedData);
-			}
-			else
-				data.get(dto.getName()).add(dto);			
-		}	
-		
-		for(String key : data.keySet()) {
-			serviceHelper.getSyncDataBaseDto(key, "dynamic", data.get(key), publicKey, list);
-		}
-	}
+
 	
 	public IdSchemaDto getLatestIdentitySchema(LocalDateTime lastUpdated, double schemaVersion) {
 		try {
