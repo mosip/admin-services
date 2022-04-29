@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import io.mosip.kernel.masterdata.dto.*;
+import io.mosip.kernel.masterdata.dto.response.*;
 import io.mosip.kernel.masterdata.service.GenericService;
 import io.mosip.kernel.masterdata.utils.*;
 import org.apache.commons.collections4.CollectionUtils;
@@ -43,10 +44,6 @@ import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
-import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
-import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
-import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
 import io.mosip.kernel.masterdata.entity.DaysOfWeek;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.Holiday;
@@ -811,15 +808,16 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), RegistrationCenter.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				List<FilterData> filterValues = masterDataFilterHelper.filterValuesWithCode(RegistrationCenter.class,
+				FilterResult<FilterData> filterResult = masterDataFilterHelper.filterValuesWithCode(RegistrationCenter.class,
 						filterDto, filterValueDto, "id", zoneUtils.getZoneCodes(zones));
-				filterValues.forEach(filterValue -> {
+				filterResult.getFilterData().forEach(filterValue -> {
 					ColumnCodeValue columnValue = new ColumnCodeValue();
 					columnValue.setFieldCode(filterValue.getFieldCode());
 					columnValue.setFieldID(filterDto.getColumnName());
 					columnValue.setFieldValue(filterValue.getFieldValue());
 					columnValueList.add(columnValue);
 				});
+				filterResponseDto.setTotalCount(filterResult.getTotalCount());
 			}
 			filterResponseDto.setFilters(columnValueList);
 		}
@@ -1627,7 +1625,22 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			return MapperUtils.map(regCenterByLangCode, registrationCenterExtnDto);
 
 		}
-		RegistrationCenter clonedObject = (RegistrationCenter) regCenterById.get(0).clone();
+		RegistrationCenter clonedObject =null;
+		try {
+		clonedObject = (RegistrationCenter) regCenterById.get(0).clone();
+		}catch(CloneNotSupportedException ex)
+		{
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, RegCenterPutReqDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterErrorCode.CLONE_NOT_SUPPORTED.getErrorCode(),
+							RegistrationCenterErrorCode.CLONE_NOT_SUPPORTED.getErrorMessage()),
+					"ADM-529");
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.CLONE_NOT_SUPPORTED.getErrorCode(),
+					RegistrationCenterErrorCode.CLONE_NOT_SUPPORTED.getErrorMessage());
+		}
 		clonedObject.setName(dto.getName());
 		clonedObject.setContactPerson(dto.getContactPerson());
 		clonedObject.setAddressLine1(dto.getAddressLine1());

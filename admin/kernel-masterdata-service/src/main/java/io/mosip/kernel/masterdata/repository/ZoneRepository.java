@@ -30,4 +30,7 @@ public interface ZoneRepository extends BaseRepository<Zone, CodeAndLanguageCode
 	
 	@Query("FROM Zone zu WHERE LOWER(zu.name) like (%?1%) AND (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
 	public List<Zone> findListZonesFromZoneName(String zoneName);
+
+	@Query("FROM Zone zu WHERE zu.hierarchyLevel=0 AND zu.langCode=?1 AND zu.isActive=true AND (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
+	public Zone getRootZone(String langCode);
 }

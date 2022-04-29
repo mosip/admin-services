@@ -93,7 +93,8 @@ public enum RegistrationCenterErrorCode {
 	EXP_HOLIDAY_NULL("ADM-fff-eee", "Expectional Holiday request is null"),
 	LOCATION_HIERARCHY_INVALID("ADM-MSD-445", "location hierarchy is invalid"),
 	LOCATION_INVALID("ADM-MSD-446", "Location not found"),
-	CENTER_NOT_FOUND_FOR_LANG("KER-MSD-280","Center Type not found for language");
+	CENTER_NOT_FOUND_FOR_LANG("KER-MSD-280","Center Type not found for language"),
+	CLONE_NOT_SUPPORTED("ADM-MSD-447","Clone not supported");
 
 	private final String errorCode;
 	private final String errorMessage;

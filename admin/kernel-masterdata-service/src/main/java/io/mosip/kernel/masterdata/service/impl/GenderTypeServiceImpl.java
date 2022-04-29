@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import io.mosip.kernel.masterdata.dto.response.FilterResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -353,8 +354,8 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 		ColumnValue columnValue;
 		if (filterColumnValidator.validate(FilterDto.class, request.getFilters(), Gender.class)) {
 			for (FilterDto filterDto : request.getFilters()) {
-				List<String> filterValues = masterDataFilterHelper.filterValues(Gender.class, filterDto, request);
-				for (String filterValue : filterValues) {
+				FilterResult<String> filterResult = masterDataFilterHelper.filterValues(Gender.class, filterDto, request);
+				for (String filterValue : filterResult.getFilterData()) {
 					if (filterValue != null) {
 						columnValue = new ColumnValue();
 						columnValue.setFieldID(filterDto.getColumnName());
@@ -362,6 +363,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 						columnValueList.add(columnValue);
 					}
 				}
+				filterResponseDto.setTotalCount(filterResult.getTotalCount());
 			}
 			filterResponseDto.setFilters(columnValueList);
 		}

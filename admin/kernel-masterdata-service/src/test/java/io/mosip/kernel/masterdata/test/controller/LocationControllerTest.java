@@ -154,6 +154,24 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
+	public void t029getLocationHierarchyByLangCodeTest1() throws Exception {
+
+		MasterDataTest
+				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/BNMR/ara")).andReturn(), null);
+	}
+	
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t029getLocationHierarchyByLangCodeTest2() throws Exception {
+
+		MasterDataTest
+				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/MOGR/eng")).andReturn(), null);
+	}
+	
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t002getLocationHierarchyByLangCodeFailTest() throws Exception {
 
 		MasterDataTest

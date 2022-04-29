@@ -11,6 +11,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import io.mosip.kernel.masterdata.dto.*;
+import io.mosip.kernel.masterdata.dto.response.*;
 import io.mosip.kernel.masterdata.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,13 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
-import io.mosip.kernel.masterdata.dto.DeviceDto;
-import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
-import io.mosip.kernel.masterdata.dto.DevicePutReqDto;
-import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
-import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
-import io.mosip.kernel.masterdata.dto.PageDto;
-import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
@@ -43,10 +38,6 @@ import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
-import io.mosip.kernel.masterdata.dto.response.DeviceSearchDto;
-import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
-import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceHistory;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
@@ -609,12 +600,14 @@ public class DeviceServiceImpl implements DeviceService {
 				fil.add(f);
 		});
 		filterValueDto.setFilters(fil);
+		filterValueDto.setLanguageCode(null);
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Device.class))
 		{
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				masterDataFilterHelper
-						.filterValuesWithCodeWithoutLangCode(Device.class, filterDto, filterValueDto, "id", zoneUtils.getZoneCodes(zones))
-						.forEach(filterValue -> {
+				FilterResult<FilterData> filterResult = masterDataFilterHelper
+						.filterValuesWithCode(Device.class, filterDto, filterValueDto, "id",
+								zoneUtils.getZoneCodes(zones));
+						filterResult.getFilterData().forEach(filterValue -> {
 							if (filterValue != null) {
 								ColumnCodeValue columnValue = new ColumnCodeValue();
 								columnValue.setFieldCode(filterValue.getFieldCode());
@@ -623,9 +616,9 @@ public class DeviceServiceImpl implements DeviceService {
 								columnValueList.add(columnValue);
 							}
 						});
+						filterResponseDto.setTotalCount(filterResult.getTotalCount());
 			}
 			filterResponseDto.setFilters(columnValueList);
-
 		}
 		return filterResponseDto;
 	}
@@ -680,7 +673,7 @@ public class DeviceServiceImpl implements DeviceService {
 		try {
 			// check the device has mapped to any reg-Center
 			for (Device device : devices) {
-				if (device.getRegCenterId() != null) {
+				if (device.getRegCenterId() != null && !device.getRegCenterId().isBlank()) {
 					auditUtil.auditRequest(
 							String.format(MasterDataConstant.FAILURE_DECOMMISSION, DeviceDto.class.getSimpleName()),
 							MasterDataConstant.AUDIT_SYSTEM,

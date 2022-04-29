@@ -124,7 +124,9 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 				path(SLASH).path(fileName);
 		
 		try {
-			 String str=restTemplate.getForObject(uriBuilder.toUriString(), String.class);
+			String str = restTemplate.getForObject(uriBuilder.toUriString(), String.class);
+			if (null == str)
+				throw new RestClientException("Obtained null from the service");
 			return str;
 		} catch (RestClientException e) {
 			LOGGER.error("Failed to getConfigDetailsResponse", e);
@@ -213,8 +215,9 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
 		LOGGER.info("getConfigDetails() started for machine : {} with status {}", keyIndex,  machines.get(0).getIsActive());
 		JSONObject config = new JSONObject();
-		JSONObject globalConfig = parsePropertiesString(getConfigDetailsResponse(globalConfigFileName));
+		JSONObject globalConfig = new JSONObject();
 		JSONObject regConfig = parsePropertiesString(getConfigDetailsResponse(regCenterfileName));
+		//This is not completely removed only for backward compatibility, all the configs will be part of registrationConfiguration
 		config.put("globalConfiguration", getEncryptedData(globalConfig, machines.get(0).getPublicKey()));
 		config.put("registrationConfiguration", getEncryptedData(regConfig, machines.get(0).getPublicKey()));
 		ConfigDto configDto = new ConfigDto();

@@ -119,7 +119,7 @@ public interface LocationService {
 	 * @param locCode - location code
 	 * @return List<Location>
 	 */
-	public List<String> getChildList(String locCode);
+	public List<String> getChildList(String locCode,List<String> childList);
 
 	/**
 	 * Service method to search location
@@ -129,14 +129,6 @@ public interface LocationService {
 	 */
 	public PageResponseDto<LocationSearchDto> searchLocation(SearchDto dto);
 
-	/**
-	 * Service method to filter location values
-	 * 
-	 * @param filterValueDto
-	 * @return names corresponding to the eneted filter dto
-	 */
-	public FilterResponseCodeDto locationFilterValues(FilterValueDto filterValueDto);
-
 	public LocationLevelResponseDto getLocationCodeByLangCode(String langCode);
 
 	public LocationExtnDto getLocationDetailsByLangCode(String locationCode, String langCode);
@@ -144,4 +136,5 @@ public interface LocationService {
 	public StatusResponseDto updateLocationStatus(String code, boolean isActive);
 
 	public FilterResponseCodeDto locFilterValues(FilterValueDto filterValueDto);
+
 }

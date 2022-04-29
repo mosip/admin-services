@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.mosip.kernel.masterdata.dto.FilterData;
+import io.mosip.kernel.masterdata.dto.response.FilterResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -257,9 +259,9 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 		List<ColumnCodeValue> columnValueList = new ArrayList<>();
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), DeviceType.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				masterDataFilterHelper
-						.filterValuesWithCodeWithoutLangCode(DeviceType.class, filterDto, filterValueDto, "code")
-						.forEach(filterValue -> {
+				FilterResult<FilterData> filterResult = masterDataFilterHelper
+						.filterValuesWithCode(DeviceType.class, filterDto, filterValueDto, "code");
+				filterResult.getFilterData().forEach(filterValue -> {
 							if (filterValue != null) {
 								ColumnCodeValue columnValue = new ColumnCodeValue();
 								columnValue.setFieldCode(filterValue.getFieldCode());
@@ -268,6 +270,7 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 								columnValueList.add(columnValue);
 							}
 						});
+				filterResponseDto.setTotalCount(filterResult.getTotalCount());
 			}
 			filterResponseDto.setFilters(columnValueList);
 

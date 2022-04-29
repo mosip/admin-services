@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.mosip.kernel.masterdata.dto.response.FilterResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -182,14 +183,15 @@ public class IndividualTypeServiceImpl implements IndividualTypeService {
 		List<ColumnValue> columnValueList = new ArrayList<>();
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), IndividualType.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				List<?> filterValues = masterDataFilterHelper.filterValues(IndividualType.class, filterDto,
+				FilterResult<String> filterResult = masterDataFilterHelper.filterValues(IndividualType.class, filterDto,
 						filterValueDto);
-				filterValues.forEach(filterValue -> {
+				filterResult.getFilterData().forEach(filterValue -> {
 					ColumnValue columnValue = new ColumnValue();
 					columnValue.setFieldID(filterDto.getColumnName());
-					columnValue.setFieldValue(filterValue.toString());
+					columnValue.setFieldValue(filterValue);
 					columnValueList.add(columnValue);
 				});
+				filterResponseDto.setTotalCount(filterResult.getTotalCount());
 			}
 			filterResponseDto.setFilters(columnValueList);
 		}

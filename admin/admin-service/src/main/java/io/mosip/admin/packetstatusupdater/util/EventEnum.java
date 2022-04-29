@@ -76,10 +76,16 @@ public enum EventEnum {
 	LOST_RID_SUCCESS("ADM-BLK-202", AuditConstant.AUDIT_SYSTEM, "Request for Lost rid API",
 			"successfully return the lost rid", "ADM-LRID", "admin service", "NO_ID", "NO_ID_TYPE",
 			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME),
-	BULKDATA_INVALID_OPERATION("ADM-BLK-411",AuditConstant.AUDIT_SYSTEM,"Request for bulkdata invalid operation based on category","Invalid operation","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME);
+	BULKDATA_INVALID_OPERATION("ADM-BLK-411",AuditConstant.AUDIT_SYSTEM,"Request for bulkdata invalid operation based on category","Invalid operation","ADM-BLK","Bulk data service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	MASTERDATA_PROXY_API_CALLED("ADM-MSD-410", AuditConstant.AUDIT_SYSTEM, "Request for Masterdata proxy API",
+			"API called for Masterdata proxy", "ADM-MSD", "Admin Proxy service", "NO_ID", "NO_ID_TYPE",
+			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME ),
+	ADMIN_PROXY_ERROR("ADM-MSD-411",AuditConstant.AUDIT_SYSTEM,"Request for Admin Proxy","Failed to call Rest api - %s","ADM-MSD","Admin Proxy service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	KEYMANAGER_PROXY_API_CALLED("ADM-MSD-410", AuditConstant.AUDIT_SYSTEM, "Request for KeyManager proxy API",
+			"API called for KeyManager proxy", "ADM-MSD", "Admin Proxy service", "NO_ID", "NO_ID_TYPE",
+								AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME );
 
-
-
+	
 	private final String eventId;
 
 	private final String type;

@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.mosip.kernel.masterdata.utils.OptionalFilter;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -28,5 +29,10 @@ public class FilterValueDto {
 
 	private List<SearchFilter> optionalFilters;
 
+	@ApiModelProperty(value = "Number of records to be fetched", required = false)
 	private int pageFetch;
+
+	@ApiModelProperty(value = "Should be true to get total count based on the provided filters",
+			required = false)
+	private boolean totalCountRequired = false;
 }

@@ -111,7 +111,7 @@ public class WorkingDayControllerTest {
 	@WithUserDetails("global-admin")
 	public void t003getWorkindaysTest1() throws Exception
 	{
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/workingdays/10004/eng"))
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/workingdays/10044/eng"))
 				.andReturn(),null);
 
 	}
