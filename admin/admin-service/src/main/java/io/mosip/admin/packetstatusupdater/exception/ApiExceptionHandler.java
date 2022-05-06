@@ -6,6 +6,7 @@ import java.time.ZoneId;
 
 import javax.servlet.http.HttpServletRequest;
 
+import io.mosip.kernel.authcodeflowproxy.api.exception.AuthRestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -32,7 +33,7 @@ import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 
 /**
- * Rest Controller Advice for Master Data
+ * Rest Controller Advice for Admin
  * 
  * @author Srinivasan
  *
@@ -44,6 +45,14 @@ public class ApiExceptionHandler {
 
 	@Autowired
 	private ObjectMapper objectMapper;
+
+	@ExceptionHandler(value = {AuthRestException.class})
+	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(
+			final HttpServletRequest httpServletRequest, AuthRestException e) throws IOException {
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+		errorResponse.getErrors().addAll(e.getList());
+		return new ResponseEntity<>(errorResponse, e.getHttpStatus());
+	}
 
 	@ExceptionHandler(MasterDataServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataServiceException(
@@ -95,7 +104,6 @@ public class ApiExceptionHandler {
 		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
 	}
-
 
 
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
