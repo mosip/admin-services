@@ -1,7 +1,9 @@
 package io.mosip.admin.bulkdataupload.service.impl;
 
+import java.beans.PropertyEditor;
 import java.io.*;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -22,8 +24,12 @@ import io.mosip.admin.bulkdataupload.batch.PacketUploadTasklet;
 import io.mosip.admin.bulkdataupload.dto.*;
 import io.mosip.admin.bulkdataupload.batch.CustomRecordSeparatorPolicy;
 import io.mosip.admin.bulkdataupload.batch.CustomChunkListener;
+import io.mosip.admin.bulkdataupload.batch.CustomExcelRowMapper;
 import io.mosip.admin.bulkdataupload.service.PacketUploadService;
 import io.mosip.kernel.core.util.*;
+
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.util.LocaleUtil;
 import org.digibooster.spring.batch.security.listener.JobExecutionSecurityContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +40,10 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.extensions.excel.mapping.BeanWrapperRowMapper;
+import org.springframework.batch.extensions.excel.poi.PoiItemReader;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.LineCallbackHandler;
@@ -43,6 +52,7 @@ import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
@@ -213,7 +223,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 		return pageDto2;
 	}
 
-	private BulkDataResponseDto importDataFromCSVFile(String tableName, String operation, String category,
+	private BulkDataResponseDto importDataFromFile(String tableName, String operation, String category,
 			MultipartFile[] files) {
 
 		if(!isValidOperation(operation)) {
@@ -259,11 +269,13 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 							BulkUploadErrorCode.EMPTY_FILE.getErrorMessage());
 				}
 
-				if (!file.getOriginalFilename().endsWith(".csv")) {
+				if (!file.getOriginalFilename().endsWith(".csv") && !file.getOriginalFilename().endsWith(".xls") && !file.getOriginalFilename().endsWith(".xlsx")) {
 					throw new RequestException(BulkUploadErrorCode.INVALID_FILE_FORMAT.getErrorCode(),
 							BulkUploadErrorCode.INVALID_FILE_FORMAT.getErrorMessage());
 				}
-
+				
+				Boolean isCSV = file.getOriginalFilename().endsWith(".csv");
+				
 				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV,
 						operation + " from " + file.getOriginalFilename()),null);
 
@@ -272,7 +284,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 						.addString("username", SecurityContextHolder.getContext().getAuthentication().getName())
 						.addLong("time", System.currentTimeMillis())
 						.toJobParameters();
-				jobLauncher.run(getJob(file,operation, mapper.getRepo(entity), setCreateMetaData(), entity),
+				jobLauncher.run(getJob(file,operation, mapper.getRepo(entity), setCreateMetaData(), entity, isCSV),
 								jobParameters);
 
 				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_JOBDETAILS,
@@ -306,7 +318,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 		switch (category.toLowerCase()) {
 			case "masterdata":
-				return importDataFromCSVFile(tableName, operation, category, files);
+				return importDataFromFile(tableName, operation, category, files);
 
 			case "packet":
 				return uploadPackets(files, operation, category, centerId, source, process, supervisorStatus);
@@ -398,10 +410,11 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	}
 
 	private Job getJob(MultipartFile file, String operation, String repositoryName, String contextUser,
-					   Class<?> entity) throws IOException {
+					   Class<?> entity, Boolean isCSV) throws IOException {
+		
 		Step step = stepBuilderFactory.get("ETL-file-load")
 				.<Object, List<Object>>chunk(100)
-				.reader(itemReader(file, entity))
+				.reader(isCSV?csvItemReader(file, entity):excelItemReader(file, entity))
 				.processor(processor(operation, contextUser))
 				.writer(itemWriterMapper(repositoryName, operationMapper(operation), entity))
 				.listener(customChunkListener)
@@ -450,9 +463,22 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 		return customConversionService;
 	}
+	
+	@StepScope
+	private ItemReader<Object> excelItemReader(MultipartFile file, Class<?> clazz) throws IOException {
+        PoiItemReader<Object> reader = new PoiItemReader<>();
+        reader.setLinesToSkip(1);
+        reader.setResource(new InputStreamResource(file.getInputStream()));
+        reader.setName("Excel-Reader");
+        
+        CustomExcelRowMapper<Object> rowMapper = new CustomExcelRowMapper<>(customConversionService());
+        rowMapper.setTargetType(clazz);
+        reader.setRowMapper(rowMapper);
+        return reader;
+    }
 
 	@StepScope
-	private FlatFileItemReader<Object> itemReader(MultipartFile file, Class<?> clazz) throws IOException {
+	private FlatFileItemReader<Object> csvItemReader(MultipartFile file, Class<?> clazz) throws IOException {
 
 		DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
 		lineTokenizer.setDelimiter(",");
