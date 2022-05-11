@@ -1,6 +1,6 @@
 package io.mosip.admin.util;
 
-import io.mosip.admin.constant.AdminErrorCode;
+import io.mosip.admin.constant.ApplicantDetailErrorCode;
 import io.mosip.admin.packetstatusupdater.exception.DataNotFoundException;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
@@ -9,6 +9,7 @@ import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
  * @author M1048358 Alok
  * @author M1030448 Jyoti
  */
+@Component
 public class CbeffToBiometricUtil {
 
 	/** The print logger. */
@@ -53,7 +55,7 @@ public class CbeffToBiometricUtil {
 				bIRTypeList = getBIRTypeList(cbeffFileString);
 				photoBytes = getPhotoByTypeAndSubType(bIRTypeList, type, subType);
 			} catch (Exception e) {
-				throw new DataNotFoundException(AdminErrorCode.DATA_NOT_FOUND.getErrorCode(),AdminErrorCode.DATA_NOT_FOUND.getErrorMessage());
+				throw new DataNotFoundException(ApplicantDetailErrorCode.DATA_NOT_FOUND.getErrorCode(),ApplicantDetailErrorCode.DATA_NOT_FOUND.getErrorMessage());
 			}
 		}
 		logger.debug("CbeffToBiometricUtil::getImageBytes()::exit");

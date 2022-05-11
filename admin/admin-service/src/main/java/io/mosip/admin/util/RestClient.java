@@ -168,6 +168,34 @@ public class RestClient {
         }
         return result;
     }
+    /**
+     * Gets the Object.
+     *
+     * @param <T>             the generic type
+     * @param url         the url
+     * @param pathsegments    the pathsegments
+     * @param queryParamName  the query param name
+     * @param queryParamValue the query param value
+     * @param responseType    the response type
+     * @return the api
+     * @throws Exception
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getForObject(String url,
+                        Class<?> responseType) throws Exception {
+
+            T result = null;
+            RestTemplate restTemplate;
+
+            try {
+                restTemplate = getRestTemplate();
+                result = (T) restTemplate
+                        .getForObject(url, responseType);
+            } catch (Exception e) {
+                throw new Exception(e);
+            }
+        return result;
+    }
 
     /**
      * Gets the rest template.

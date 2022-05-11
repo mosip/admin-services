@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ApplicantVerficationDto {
+public class ApplicantDetailsDto {
 
     private String applicantPhoto;
 

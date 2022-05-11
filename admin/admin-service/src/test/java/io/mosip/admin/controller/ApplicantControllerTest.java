@@ -3,17 +3,13 @@ package io.mosip.admin.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.admin.TestBootApplication;
-import io.mosip.admin.constant.ApiName;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
-import io.mosip.admin.packetstatusupdater.util.EventEnum;
 import io.mosip.admin.util.AdminDataUtil;
 import io.mosip.admin.util.RestClient;
 import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
-import org.mockito.Mock;
+
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,18 +30,13 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
 @AutoConfigureMockMvc
-public class AdminControllerTest {
+public class ApplicantControllerTest {
 
     @Autowired
     public MockMvc mockMvc;
