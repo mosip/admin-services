@@ -11,9 +11,9 @@ The above files are located in [mosip-config](https://github.com/mosip/mosip-con
 
 
 ## Data Source
-* `mosip.hotlist.datasource.url`= specify url here
-* `mosip.hotlist.datasource.username`= specify username here
-* `mosip.hotlist.datasource.password`= specify password here
+* `mosip.hotlist.datasource.url`= specify datasource url here
+* `mosip.hotlist.datasource.username`= datasource username here
+* `mosip.hotlist.datasource.password`= datasource password here
 
 ## DB
 * `mosip.hotlist.db.url`= specify db url here
