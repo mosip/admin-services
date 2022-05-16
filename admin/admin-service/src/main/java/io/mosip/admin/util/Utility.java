@@ -1,8 +1,9 @@
 package io.mosip.admin.util;
 
 import io.mosip.kernel.core.util.StringUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 @Component
 public class Utility {
@@ -44,12 +47,42 @@ public class Utility {
         logger.info("loadRegProcessorIdentityJson completed successfully");
     }
 
-    public JSONObject getMappingJson() throws Exception {
-        JSONObject regProcessorIdentityJSONObj=null;
+    public String getMappingJson() throws Exception {
         if (StringUtils.isBlank(regProcessorIdentityJson)) {
             regProcessorIdentityJson=restClient.getForObject(configServerFileStorageURL + residentIdentityJson, String.class);
         }
-        regProcessorIdentityJSONObj=new JSONObject(regProcessorIdentityJson);
-        return regProcessorIdentityJSONObj;
+        return regProcessorIdentityJson;
     }
+
+    @SuppressWarnings("unchecked")
+    public JSONObject getJSONObject(JSONObject jsonObject, Object key)  {
+        if(jsonObject == null)
+            return null;
+        LinkedHashMap identity = (LinkedHashMap) jsonObject.get(key);
+        return identity != null ? new JSONObject(identity) : null;
+    }
+    @SuppressWarnings("unchecked")
+    public <T> T getJSONValue(JSONObject jsonObject, Object key)  {
+        T value = (T) jsonObject.get(key);
+        return value;
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public JSONArray getJSONArray(JSONObject jsonObject, Object key) {
+        ArrayList value = (ArrayList) jsonObject.get(key);
+        if (value == null)
+            return null;
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.addAll(value);
+
+        return jsonArray;
+
+    }
+    @SuppressWarnings("rawtypes")
+    public  JSONObject getJSONObjectFromArray(JSONArray jsonObject, int key) {
+        LinkedHashMap identity = (LinkedHashMap) jsonObject.get(key);
+        return identity != null ? new JSONObject(identity) : null;
+    }
+
+
 }
