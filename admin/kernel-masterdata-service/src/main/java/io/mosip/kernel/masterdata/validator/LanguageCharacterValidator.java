@@ -10,10 +10,12 @@ import org.springframework.beans.factory.annotation.Value;
 
 import lombok.Data;
 
-@Data
-public class SpecialCharacterValidator implements ConstraintValidator<CharacterValidator, String> {
+//TODO: - rename this class with a more relevant name
 
-	@Value("${mosip.kernel.masterdata.code.validate.regex}")
+@Data
+public class LanguageCharacterValidator implements ConstraintValidator<AlphabeticValidator, String> {
+	
+	@Value("${mosip.kernel.masterdata.name.validate.regex}")
 	private String allowedCharactersRegex;
 
 	@Override
@@ -26,5 +28,4 @@ public class SpecialCharacterValidator implements ConstraintValidator<CharacterV
 		}
 		return true;
 	}
-
 }
