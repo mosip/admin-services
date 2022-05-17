@@ -1,9 +1,6 @@
 package io.mosip.admin.service.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.admin.constant.ApiName;
 import io.mosip.admin.constant.ApplicantDetailErrorCode;
 import io.mosip.admin.packetstatusupdater.dto.ApplicantDetailsDto;
@@ -19,7 +16,6 @@ import io.mosip.biometrics.util.ConvertRequestDto;
 import io.mosip.biometrics.util.face.FaceDecoder;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
-import io.mosip.kernel.core.util.JsonUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 import org.json.JSONException;
@@ -67,7 +63,7 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
     private static final String VALUE = "value";
     private static final String DOB = "dob";
 
-    @Value("${mosip.admin.applicantDetails}")
+    @Value("${mosip.admin.applicant-details.exposed-identity-fields}")
     private String[] applicantDetails;
 
 
@@ -75,9 +71,7 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
     public ApplicantDetailsDto getApplicantDetails(String rid) throws Exception {
         ApplicantDetailsDto applicantDetailsDto =new ApplicantDetailsDto();
         Map<String,String> applicantDataMap=new HashMap<>();
-        ConvertRequestDto convertRequestDto = new ConvertRequestDto();
         List<String> pathsegments=new ArrayList<>();
-        String dateOfBirth=null;
         String individualBiometrics=null;
         pathsegments.add(rid);
         String imageData=null;
@@ -89,6 +83,9 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
             String response = restClient.getApi(ApiName.RETRIEVE_IDENTITY_API,pathsegments,"type","bio",String.class);
             JSONObject responseObj= objectMapper.readValue(response,JSONObject.class);
             if(response!=null && responseObj.containsKey("response")) {
+                throw new RequestException(ApplicantDetailErrorCode.RID_NOT_FOUND.getErrorCode(),
+                        ApplicantDetailErrorCode.RID_NOT_FOUND.getErrorMessage());
+            }else{
                 JSONObject responseJsonObj=  utility.getJSONObject(responseObj,RESPONSE);
                 JSONObject identityObj=utility.getJSONObject(responseJsonObj,IDENTITY);
                 JSONArray documents=utility.getJSONArray(responseJsonObj,DOCUMENTS);
@@ -96,38 +93,16 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
                 JSONObject idenitityJsonObject=objectMapper.readValue(idenitityJson,JSONObject.class);
                 JSONObject mapperIdentity=utility.getJSONObject(idenitityJsonObject,IDENTITY);
                 List<String> mapperJsonKeys = new ArrayList<>(mapperIdentity.keySet());
-                for (String key: mapperJsonKeys){
-                    for(String valueObj: applicantDetails){
-                        if(valueObj.equalsIgnoreCase(key)){
-                            LinkedHashMap<String, String> jsonObject = utility.getJSONValue(mapperIdentity, key);
-                            String value = jsonObject.get(VALUE);
-                            applicantDataMap.put(value,identityObj.get(value).toString());
-                        }
-
-                    }
-                }
-                for (String applicantDetail: applicantDetails) {
-                    if (applicantDetail.equalsIgnoreCase(ApplicantPhoto)) {
-                        JSONObject documentObj=utility.getJSONObjectFromArray(documents,0);
-                        individualBiometrics = utility.getJSONValue(documentObj, VALUE);
-                        List<String> subtype = new ArrayList<>();
-                        byte[] photoByte = cbeffToBiometricUtil.getImageBytes(individualBiometrics, FACE, subtype);
-                        if (photoByte != null) {
-                            convertRequestDto.setVersion("ISO19794_5_2011");
-                            convertRequestDto.setInputBytes(photoByte);
-                            byte[] data = FaceDecoder.convertFaceISOToImageBytes(convertRequestDto);
-                            String encodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(data, false));
-                            imageData = "data:image/png;base64," + encodedBytes;
-                            applicantDataMap.put(ApplicantPhoto, imageData);
-                        } else {
-                            throw new DataNotFoundException(ApplicantDetailErrorCode.DATA_NOT_FOUND.getErrorCode(), ApplicantDetailErrorCode.DATA_NOT_FOUND.getErrorMessage());
-                        }
+                for(String valueObj: applicantDetails){
+                    if(valueObj!=null && !valueObj.equalsIgnoreCase(ApplicantPhoto)){
+                        LinkedHashMap<String, String> jsonObject = utility.getJSONValue(mapperIdentity, valueObj);
+                        String value = jsonObject.get(VALUE);
+                        applicantDataMap.put(value,identityObj.get(value).toString());
+                    } else if (valueObj.equalsIgnoreCase(ApplicantPhoto)) {
+                        getImageData(documents,applicantDataMap);
                     }
                 }
                 applicantDetailsDto.setApplicantDataMap(applicantDataMap);
-            }else{
-                throw new RequestException(ApplicantDetailErrorCode.RID_NOT_FOUND.getErrorCode(),
-                        ApplicantDetailErrorCode.RID_NOT_FOUND.getErrorMessage());
             }
         } catch (ResourceAccessException | JSONException e) {
             auditUtil.setAuditRequestDto(EventEnum.APPLICANT_VERIFICATION_ERROR);
@@ -138,6 +113,23 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
             throw new RequestException(e.getErrorCode(), e.getErrorText());
         }
         return applicantDetailsDto;
+    }
+    private void getImageData(JSONArray documents, Map<String, String> applicantDataMap) throws Exception {
+        ConvertRequestDto convertRequestDto = new ConvertRequestDto();
+        JSONObject documentObj=utility.getJSONObjectFromArray(documents,0);
+        String individualBiometrics = utility.getJSONValue(documentObj, VALUE);
+        List<String> subtype = new ArrayList<>();
+        byte[] photoByte = cbeffToBiometricUtil.getImageBytes(individualBiometrics, FACE, subtype);
+        if (photoByte != null) {
+            convertRequestDto.setVersion("ISO19794_5_2011");
+            convertRequestDto.setInputBytes(photoByte);
+            byte[] data = FaceDecoder.convertFaceISOToImageBytes(convertRequestDto);
+            String encodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(data, false));
+            String imageData = "data:image/png;base64," + encodedBytes;
+            applicantDataMap.put(ApplicantPhoto, imageData);
+        } else {
+            throw new DataNotFoundException(ApplicantDetailErrorCode.DATA_NOT_FOUND.getErrorCode(), ApplicantDetailErrorCode.DATA_NOT_FOUND.getErrorMessage());
+        }
     }
 
 }
