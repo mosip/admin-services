@@ -82,7 +82,7 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
 			}
             String response = restClient.getApi(ApiName.RETRIEVE_IDENTITY_API,pathsegments,"type","bio",String.class);
             JSONObject responseObj= objectMapper.readValue(response,JSONObject.class);
-            if(response!=null && responseObj.containsKey("response")) {
+            if(response!=null && !responseObj.containsKey("response")) {
                 throw new RequestException(ApplicantDetailErrorCode.RID_NOT_FOUND.getErrorCode(),
                         ApplicantDetailErrorCode.RID_NOT_FOUND.getErrorMessage());
             }else{
