@@ -26,7 +26,7 @@ public class Utility {
     private String configServerFileStorageURL;
 
     @Value("${mosip.admin.identityMappingJson}")
-    private String residentIdentityJson;
+    private String identityJson;
 
     @Autowired
     private RestClient restClient;
@@ -43,13 +43,13 @@ public class Utility {
 
     @PostConstruct
     private void loadRegProcessorIdentityJson() throws Exception {
-        regProcessorIdentityJson = restClient.getForObject(configServerFileStorageURL + residentIdentityJson, String.class);
+        regProcessorIdentityJson = restClient.getForObject(configServerFileStorageURL + identityJson, String.class);
         logger.info("loadRegProcessorIdentityJson completed successfully");
     }
 
     public String getMappingJson() throws Exception {
         if (StringUtils.isBlank(regProcessorIdentityJson)) {
-            regProcessorIdentityJson=restClient.getForObject(configServerFileStorageURL + residentIdentityJson, String.class);
+            regProcessorIdentityJson=restClient.getForObject(configServerFileStorageURL + identityJson, String.class);
         }
         return regProcessorIdentityJson;
     }
