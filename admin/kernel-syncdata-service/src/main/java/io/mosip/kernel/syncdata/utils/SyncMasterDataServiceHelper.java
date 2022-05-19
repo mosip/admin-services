@@ -11,6 +11,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import io.mosip.kernel.clientcrypto.constant.ClientType;
+import io.mosip.kernel.syncdata.dto.*;
+import io.mosip.kernel.syncdata.entity.*;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,55 +41,7 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.constant.AdminServiceErrorCode;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
-import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
-import io.mosip.kernel.syncdata.dto.AppRolePriorityDto;
-import io.mosip.kernel.syncdata.dto.ApplicantValidDocumentDto;
-import io.mosip.kernel.syncdata.dto.BlacklistedWordsDto;
-import io.mosip.kernel.syncdata.dto.DocumentTypeDto;
-import io.mosip.kernel.syncdata.dto.DynamicFieldDto;
-import io.mosip.kernel.syncdata.dto.EntityDtimes;
-import io.mosip.kernel.syncdata.dto.HolidayDto;
-import io.mosip.kernel.syncdata.dto.LocationDto;
-import io.mosip.kernel.syncdata.dto.LocationHierarchyDto;
-import io.mosip.kernel.syncdata.dto.LocationHierarchyLevelResponseDto;
-import io.mosip.kernel.syncdata.dto.MachineDto;
-import io.mosip.kernel.syncdata.dto.PageDto;
-import io.mosip.kernel.syncdata.dto.PermittedConfigDto;
-import io.mosip.kernel.syncdata.dto.PostReasonCategoryDto;
-import io.mosip.kernel.syncdata.dto.ProcessListDto;
-import io.mosip.kernel.syncdata.dto.ReasonListDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
-import io.mosip.kernel.syncdata.dto.ScreenAuthorizationDto;
-import io.mosip.kernel.syncdata.dto.ScreenDetailDto;
-import io.mosip.kernel.syncdata.dto.SyncJobDefDto;
-import io.mosip.kernel.syncdata.dto.TemplateDto;
-import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
-import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
-import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.response.SyncDataBaseDto;
-import io.mosip.kernel.syncdata.entity.AppAuthenticationMethod;
-import io.mosip.kernel.syncdata.entity.AppRolePriority;
-import io.mosip.kernel.syncdata.entity.ApplicantValidDocument;
-import io.mosip.kernel.syncdata.entity.BlocklistedWords;
-import io.mosip.kernel.syncdata.entity.DocumentType;
-import io.mosip.kernel.syncdata.entity.Holiday;
-import io.mosip.kernel.syncdata.entity.Location;
-import io.mosip.kernel.syncdata.entity.Machine;
-import io.mosip.kernel.syncdata.entity.PermittedLocalConfig;
-import io.mosip.kernel.syncdata.entity.ProcessList;
-import io.mosip.kernel.syncdata.entity.ReasonCategory;
-import io.mosip.kernel.syncdata.entity.ReasonList;
-import io.mosip.kernel.syncdata.entity.RegistrationCenter;
-import io.mosip.kernel.syncdata.entity.ScreenAuthorization;
-import io.mosip.kernel.syncdata.entity.ScreenDetail;
-import io.mosip.kernel.syncdata.entity.SyncJobDef;
-import io.mosip.kernel.syncdata.entity.Template;
-import io.mosip.kernel.syncdata.entity.TemplateFileFormat;
-import io.mosip.kernel.syncdata.entity.TemplateType;
-import io.mosip.kernel.syncdata.entity.UserDetails;
-import io.mosip.kernel.syncdata.entity.ValidDocument;
 import io.mosip.kernel.syncdata.exception.AdminServiceException;
 import io.mosip.kernel.syncdata.exception.RequestException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
@@ -1430,6 +1384,40 @@ public class SyncMasterDataServiceHelper {
 		return null;
 	}
 
+	@Async
+	public CompletableFuture<List<LanguageDto>> getLanguageList(LocalDateTime lastUpdatedTime,
+																LocalDateTime currentTimeStamp) {
+		List<Language> list = null;
+		try {
+			if(!isChangesFound("Language", lastUpdatedTime)) {
+				return CompletableFuture.completedFuture(null);
+			}
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			list = languageRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime, currentTimeStamp);
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
+			throw new SyncDataServiceException(MasterDataErrorCode.PROCESS_LIST_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.PROCESS_LIST_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return CompletableFuture.completedFuture(convertLanguageEntityToDto(list));
+	}
+
+	private List<LanguageDto> convertLanguageEntityToDto(List<Language> languageList) {
+		if (languageList != null && !languageList.isEmpty()) {
+			List<LanguageDto> dtoList = new ArrayList<>();
+			languageList.stream().forEach(entity -> {
+				LanguageDto entityDTO = new LanguageDto(entity.getCode(), entity.getName(), entity.getFamily(), entity.getNativeName());
+				entityDTO.setIsDeleted(entity.getIsDeleted());
+				entityDTO.setIsActive(entity.getIsActive());
+				dtoList.add(entityDTO);
+			});
+			return dtoList;
+		}
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
 	public void getSyncDataBaseDto(String entityName, String entityType, List entities, RegistrationCenterMachineDto
 			registrationCenterMachineDto, List result) {
@@ -1609,6 +1597,9 @@ public class SyncMasterDataServiceHelper {
 				break;
 			case "ValidDocument":
 				result = validDocumentRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				break;
+			case "Language":
+				result = languageRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
 				break;
 		}
 		if(result == null) {
