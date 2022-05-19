@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
@@ -121,8 +122,13 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 		BiometricType biometricType;
 		BiometricTypeDto biometricTypeDto;
 		try {
-			biometricType = biometricTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(code,
-					langCode);
+			if(StringUtils.isBlank(langCode)) {
+				biometricType = biometricTypeRepository.findByCodeAndIsDeletedFalseOrIsDeletedIsNull(code);
+			}
+			else {
+				biometricType = biometricTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(code,
+						langCode);
+			}
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorMessage() + " "
