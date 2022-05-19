@@ -67,9 +67,16 @@ public enum EventEnum {
 	QUALITY_CHECK("ADM-PKT-120",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s has quality check done","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 	BIOMETRIC_AUTHENTICATION("ADM-PKT-121",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s has Biometric Authentication done","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 	SECUREZONE_NOTIFICATION("ADM-PKT-122",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s has notification received to securezone","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
-	PRINT("ADM-PKT-123",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s is at print","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME);
-	
-	
+	PRINT("ADM-PKT-123",AuditConstant.AUDIT_SYSTEM,"Request for get packet status","Packet with registration id %s is at print","ADM-PKT","Packet service","%s","RID",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	APPLICANT_VERIFICATION_API_CALLED("ADM-AVD-501", AuditConstant.AUDIT_SYSTEM, "Request for Applicant Verification API",
+			"API called for Applicant Verification request", "ADM-AVD", "Admin service", "NO_ID", "NO_ID_TYPE",
+			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME),
+	APPLICANT_VERIFICATION_SUCCESS("ADM-AVD-502", AuditConstant.AUDIT_SYSTEM, "Request for Applicant Verification API",
+			"successfully return the applicantPhoto and dob", "ADM-AVD", "admin service", "NO_ID", "NO_ID_TYPE",
+			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME),
+	APPLICANT_VERIFICATION_ERROR("ADM-AVD-503",AuditConstant.AUDIT_SYSTEM,"Request for Applicant Verification","Failed to call Rest api - %s","ADM-AVD","Admin service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME);
+
+
 	private final String eventId;
 
 	private final String type;
