@@ -120,6 +120,8 @@ public class ClientSettingsHelper {
 						? getURLDetails(PermittedLocalConfig.class)
 						: serviceHelper.getPermittedConfig(lastUpdated, currentTimestamp));
 
+		futuresMap.put(Language.class, serviceHelper.getLanguageList(lastUpdated, currentTimestamp));
+
 		// to handle backward compatibility
 		if (!isV2API) {
 			// template_file_format & template_type

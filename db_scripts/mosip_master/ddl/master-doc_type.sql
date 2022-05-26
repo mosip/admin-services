@@ -4,7 +4,7 @@
 -- DROP TABLE IF EXISTS master.doc_type CASCADE;
 CREATE TABLE master.doc_type(
 	code character varying(36) NOT NULL,
-	name character varying(128) NOT NULL,
+	name character varying(64) NOT NULL,
 	descr character varying(128),
 	lang_code character varying(3) NOT NULL,
 	is_active boolean NOT NULL,
