@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
+import org.springframework.lang.Nullable;
+
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -51,7 +53,7 @@ public interface BiometricTypeService {
 	 * 
 	 * @throws DataNotFoundException      If given required Biometric Type not found
 	 */
-	public BiometricTypeResponseDto getBiometricTypeByCodeAndLangCode(String code, String langCode);
+	public BiometricTypeResponseDto getBiometricTypeByCodeAndLangCode(String code,@Nullable String langCode);
 
 	/**
 	 * Method to create a Biometric Type
