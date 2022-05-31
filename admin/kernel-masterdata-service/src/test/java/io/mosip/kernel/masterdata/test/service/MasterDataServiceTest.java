@@ -1510,17 +1510,17 @@ public class MasterDataServiceTest {
 	@Test(expected = MasterDataServiceException.class)
 	public void getBiometricTypeByCodeAndLangCodeFetchException() {
 		Mockito.when(biometricTypeRepository
-				.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
+				.findByCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
-		biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(), Mockito.anyString());
+		biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(), null);
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void getBiometricTypeByCodeAndLangCodeNotFoundException() {
 		Mockito.when(biometricTypeRepository
-				.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
+				.findByCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenReturn(null);
-		biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(), Mockito.anyString());
+		biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(),null);
 	}
 
 	@Test
@@ -1566,10 +1566,10 @@ public class MasterDataServiceTest {
 	@Test
 	public void getBioTypeByCodeAndLangCodeSuccess() {
 		Mockito.when(biometricTypeRepository
-				.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
+				.findByCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenReturn(biometricType1);
 		BiometricTypeResponseDto biometricTypeResponseDto = biometricTypeService
-				.getBiometricTypeByCodeAndLangCode(Mockito.anyString(), Mockito.anyString());
+				.getBiometricTypeByCodeAndLangCode(Mockito.anyString(), null);
 		assertEquals(biometricType1.getCode(), biometricTypeResponseDto.getBiometrictypes().get(0).getCode());
 		assertEquals(biometricType1.getName(), biometricTypeResponseDto.getBiometrictypes().get(0).getName());
 	}
