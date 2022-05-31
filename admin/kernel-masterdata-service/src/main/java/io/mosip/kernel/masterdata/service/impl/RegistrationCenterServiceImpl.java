@@ -887,6 +887,18 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				}
 				decommissionedCenters = registrationCenterRepository.decommissionRegCenter(regCenterID,
 						MetaDataUtils.getContextUser(), MetaDataUtils.getCurrentDateTime());
+				for(RegistrationCenter registrationCenter: regCenters) {
+					RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();
+					MapperUtils.map(registrationCenter, registrationCenterHistory);
+					MapperUtils.setBaseFieldValue(registrationCenter, registrationCenterHistory);
+					registrationCenterHistory.setIsActive(false);
+					registrationCenterHistory.setIsDeleted(true);
+					registrationCenterHistory.setUpdatedBy(MetaDataUtils.getContextUser());
+					registrationCenterHistory.setEffectivetimes(LocalDateTime.now(ZoneId.of("UTC")));
+					registrationCenterHistory.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+					registrationCenterHistory.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+					registrationCenterHistoryService.createRegistrationCenterHistory(registrationCenterHistory);
+				}
 			}
 		} catch (DataAccessException | DataAccessLayerException exception) {
 			auditException(RegistrationCenterErrorCode.DECOMMISSION_FAILED.getErrorCode(),

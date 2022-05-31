@@ -90,8 +90,8 @@ public class BiometricTypeControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t3getAllBiometricTypesByLanguageCodeTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes/eng"))
+	public void t3getAllBiometricTypesByCodeTest() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes/PHT"))
 				.andReturn(),null);
 
 	}
