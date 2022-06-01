@@ -176,6 +176,9 @@ DELETE FROM master.blocklisted_words where lang_code != :primary_language_code;
 ALTER TABLE master.blocklisted_words DROP CONSTRAINT IF EXISTS pk_blwrd_code CASCADE;
 ALTER TABLE master.blocklisted_words ALTER COLUMN lang_code DROP NOT NULL;
 ALTER TABLE master.blocklisted_words ADD CONSTRAINT pk_blwrd_code PRIMARY KEY (word);
+
+INSERT into master.blocklisted_words (word,descr,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) SELECT word,descr,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes FROM master.blacklisted_words;
+
 ALTER TABLE master.batch_job_execution_params ALTER COLUMN string_val TYPE varchar(5000) USING string_val::varchar;
 
 ALTER TABLE master.user_detail DROP COLUMN uin;
@@ -187,6 +190,19 @@ ALTER TABLE master.user_detail_h DROP COLUMN email;
 ALTER TABLE master.user_detail_h DROP COLUMN mobile;
 
 ALTER TABLE master.template DROP CONSTRAINT IF EXISTS fk_tmplt_moddtl CASCADE;
+
+SELECT * INTO master.template_copy
+FROM master.template;
+
+DELETE *
+	FROM master.template where template_typ_code not
+like 'reg-%' and module_id='10002';
+
+UPDATE master.template set module_id='10002' where template_typ_code like 'reg-ack%';
+
+UPDATE master.template set module_id='10002' where template_typ_code like 'reg-preview%';
+
+UPDATE master.template set module_id='10002' where template_typ_code like 'reg-dashboard%';
 
 -----------------------------------------------------------------------------------------------------------------------------------------------
 -------------------------------------template,template_type and module_detail----------------------------------------------------------
