@@ -8,6 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import io.mosip.kernel.masterdata.validator.CharacterValidator;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,8 +17,8 @@ import lombok.EqualsAndHashCode;
 public class SchemaDto {
 	
 	@NotBlank
-	@Pattern(regexp = "^[a-zA-Z]+$")
 	@Size(min = 2, max = 20)
+	@CharacterValidator(message = "Id cannot have special characters")
 	private String id;
 	
 	private String description;
