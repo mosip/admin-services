@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.admin.constant.ApiName;
 import io.mosip.admin.constant.ApplicantDetailErrorCode;
 import io.mosip.admin.packetstatusupdater.dto.ApplicantDetailsDto;
+import io.mosip.admin.packetstatusupdater.dto.DigitalCardStatusResponseDto;
 import io.mosip.admin.packetstatusupdater.exception.DataNotFoundException;
 import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
@@ -14,8 +15,10 @@ import io.mosip.admin.util.RestClient;
 import io.mosip.admin.util.Utility;
 import io.mosip.biometrics.util.ConvertRequestDto;
 import io.mosip.biometrics.util.face.FaceDecoder;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
+import io.mosip.kernel.core.util.JsonUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 import org.json.JSONException;
@@ -26,6 +29,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 
+import java.io.IOException;
+import java.net.URI;
 import java.util.*;
 
 @Service
@@ -56,6 +61,8 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
 
     private static final String RESPONSE = "response";
 
+    private static final String AVAILABLE = "available";
+
     private static final String DOCUMENTS="documents";
 
     private static final String ApplicantPhoto = "applicantPhoto";
@@ -85,25 +92,24 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
             if(response!=null && !responseObj.containsKey("response")) {
                 throw new RequestException(ApplicantDetailErrorCode.RID_NOT_FOUND.getErrorCode(),
                         ApplicantDetailErrorCode.RID_NOT_FOUND.getErrorMessage());
-            }else{
-                JSONObject responseJsonObj=  utility.getJSONObject(responseObj,RESPONSE);
-                JSONObject identityObj=utility.getJSONObject(responseJsonObj,IDENTITY);
-                JSONArray documents=utility.getJSONArray(responseJsonObj,DOCUMENTS);
-                String idenitityJson=utility.getMappingJson();
-                JSONObject idenitityJsonObject=objectMapper.readValue(idenitityJson,JSONObject.class);
-                JSONObject mapperIdentity=utility.getJSONObject(idenitityJsonObject,IDENTITY);
-                List<String> mapperJsonKeys = new ArrayList<>(mapperIdentity.keySet());
-                for(String valueObj: applicantDetails){
-                    if(valueObj!=null && !valueObj.equalsIgnoreCase(ApplicantPhoto)){
-                        LinkedHashMap<String, String> jsonObject = utility.getJSONValue(mapperIdentity, valueObj);
-                        String value = jsonObject.get(VALUE);
-                        applicantDataMap.put(value,identityObj.get(value).toString());
-                    } else if (valueObj.equalsIgnoreCase(ApplicantPhoto)) {
-                        getImageData(documents,applicantDataMap);
-                    }
-                }
-                applicantDetailsDto.setApplicantDataMap(applicantDataMap);
             }
+            JSONObject responseJsonObj=  utility.getJSONObject(responseObj,RESPONSE);
+            JSONObject identityObj=utility.getJSONObject(responseJsonObj,IDENTITY);
+            JSONArray documents=utility.getJSONArray(responseJsonObj,DOCUMENTS);
+            String idenitityJson=utility.getMappingJson();
+            JSONObject idenitityJsonObject=objectMapper.readValue(idenitityJson,JSONObject.class);
+            JSONObject mapperIdentity=utility.getJSONObject(idenitityJsonObject,IDENTITY);
+            List<String> mapperJsonKeys = new ArrayList<>(mapperIdentity.keySet());
+            for(String valueObj: applicantDetails){
+                if(valueObj!=null && !valueObj.equalsIgnoreCase(ApplicantPhoto)){
+                    LinkedHashMap<String, String> jsonObject = utility.getJSONValue(mapperIdentity, valueObj);
+                    String value = jsonObject.get(VALUE);
+                    applicantDataMap.put(value,identityObj.get(value).toString());
+                } else if (valueObj.equalsIgnoreCase(ApplicantPhoto)) {
+                    getImageData(documents,applicantDataMap);
+                }
+            }
+            applicantDetailsDto.setApplicantDataMap(applicantDataMap);
         } catch (ResourceAccessException | JSONException e) {
             auditUtil.setAuditRequestDto(EventEnum.APPLICANT_VERIFICATION_ERROR);
             throw new RequestException(ApplicantDetailErrorCode.UNABLE_TO_RETRIEVE_RID_DETAILS.getErrorCode(),
@@ -114,6 +120,36 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
         }
         return applicantDetailsDto;
     }
+
+    @Override
+    public byte[] getRIDDigitalCard(String rid, boolean isAcknowledged) throws Exception {
+        String data=null;
+        DigitalCardStatusResponseDto digitalCardStatusResponseDto = getDigitialCardStatus(rid);
+        if(!isAcknowledged){
+            throw new RequestException(
+                    ApplicantDetailErrorCode.DIGITAL_CARD_NOT_ACKNOWLEDGED.getErrorCode(),
+                    ApplicantDetailErrorCode.DIGITAL_CARD_NOT_ACKNOWLEDGED.getErrorMessage());
+        }
+        if(!digitalCardStatusResponseDto.getStatusCode().equals(AVAILABLE)) {
+            auditUtil.setAuditRequestDto(EventEnum.RID_DIGITAL_CARD_REQ_EXCEPTION);
+            throw new RequestException(
+                    ApplicantDetailErrorCode.DIGITAL_CARD_RID_NOT_FOUND.getErrorCode(),
+                    ApplicantDetailErrorCode.DIGITAL_CARD_RID_NOT_FOUND.getErrorMessage());
+        }
+        data = restClient.getForObject(digitalCardStatusResponseDto.getUrl(), String.class);
+        return data.getBytes();
+    }
+
+    private DigitalCardStatusResponseDto getDigitialCardStatus(String rid)
+            throws Exception {
+        List<String> pathsegments=new ArrayList<>();
+        pathsegments.add(rid);
+        ResponseWrapper<DigitalCardStatusResponseDto> responseDto = restClient.getApi(ApiName.DIGITAL_CARD_STATUS_URL,pathsegments,"","",ResponseWrapper.class);
+        DigitalCardStatusResponseDto digitalCardStatusResponseDto = objectMapper.readValue(
+                objectMapper.writeValueAsString(responseDto.getResponse()), DigitalCardStatusResponseDto.class);
+        return digitalCardStatusResponseDto;
+    }
+
     private void getImageData(JSONArray documents, Map<String, String> applicantDataMap) throws Exception {
         ConvertRequestDto convertRequestDto = new ConvertRequestDto();
         JSONObject documentObj=utility.getJSONObjectFromArray(documents,0);
