@@ -53,6 +53,26 @@ public class BiometricTypeController {
 	}
 
 	/**
+	 * API to fetch all Biometric types details based on language code
+	 * 
+	 * @param langCode The language code
+	 * 
+	 * @return All Biometric type details
+	 */
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_PROCESSOR','REGISTRATION_OFFICER')")
+	@Deprecated
+	@ResponseFilter
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetbiometrictypeslangcode())")
+	@GetMapping("/{langcode}")
+	public ResponseWrapper<BiometricTypeResponseDto> getAllBiometricTypesByLanguageCode(
+			@PathVariable("langcode") String langCode) {
+
+		ResponseWrapper<BiometricTypeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(biometricTypeService.getAllBiometricTypesByLanguageCode(langCode));
+		return responseWrapper;
+	}
+	
+	/**
 	 * API to fetch Biometric type details based on code and language code
 	 * 
 	 * @param code     the code
@@ -62,7 +82,7 @@ public class BiometricTypeController {
 	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_PROCESSOR','REGISTRATION_OFFICER')")
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetbiometrictypescodelangcode())")
-	@GetMapping({"/{code}/{langcode}","/{code}"})
+	@GetMapping({"/{code}/{langcode}","/code/{code}"})
 	public ResponseWrapper<BiometricTypeResponseDto> getBiometricTypeByCodeAndLangCode(
 			@PathVariable("code") String code, @PathVariable(value="langcode",required = false) String langCode) {
 

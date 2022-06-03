@@ -91,14 +91,22 @@ public class BiometricTypeControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t3getAllBiometricTypesByCodeTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes/PHT"))
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes/code/PHT"))
+				.andReturn(),null);
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t3getAllBiometricTypesByLangcodeTest() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes/eng"))
 				.andReturn(),null);
 
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t4getBiometricTypeByCodeAndLangCodeTest() throws Exception {
+	public void t5getBiometricTypeByCodeAndLangCodeTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes/PHT/eng"))
 				.andReturn(),null);
@@ -107,7 +115,7 @@ public class BiometricTypeControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t5createBiometricTypeFailTest() throws Exception {
+	public void t6createBiometricTypeFailTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/biometrictypes").contentType(MediaType.APPLICATION_JSON)
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"version\": \"string\",\n"
 						+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
@@ -121,14 +129,14 @@ public class BiometricTypeControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t6getAllBiometricTypesFailTest() throws Exception {
+	public void t7getAllBiometricTypesFailTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes")).andReturn(),"KER-MSD-006");
 		
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t7getAllBiometricTypesByLanguageCodeFailTest() throws Exception {
+	public void t8getAllBiometricTypesByLanguageCodeFailTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes/eng1"))
 				.andReturn(),"KER-MSD-006");
 
@@ -136,7 +144,7 @@ public class BiometricTypeControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t8getBiometricTypeByCodeAndLangCodeFailTest() throws Exception {
+	public void t9getBiometricTypeByCodeAndLangCodeFailTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes/PHT/eng1"))
 				.andReturn(),"KER-MSD-006");
 	
