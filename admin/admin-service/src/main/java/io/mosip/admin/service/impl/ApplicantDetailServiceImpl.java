@@ -124,12 +124,12 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
     @Override
     public byte[] getRIDDigitalCard(String rid, boolean isAcknowledged) throws Exception {
         String data=null;
-        DigitalCardStatusResponseDto digitalCardStatusResponseDto = getDigitialCardStatus(rid);
         if(!isAcknowledged){
             throw new RequestException(
                     ApplicantDetailErrorCode.DIGITAL_CARD_NOT_ACKNOWLEDGED.getErrorCode(),
                     ApplicantDetailErrorCode.DIGITAL_CARD_NOT_ACKNOWLEDGED.getErrorMessage());
         }
+        DigitalCardStatusResponseDto digitalCardStatusResponseDto = getDigitialCardStatus(rid);
         if(!digitalCardStatusResponseDto.getStatusCode().equals(AVAILABLE)) {
             auditUtil.setAuditRequestDto(EventEnum.RID_DIGITAL_CARD_REQ_EXCEPTION);
             throw new RequestException(
@@ -144,9 +144,15 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
             throws Exception {
         List<String> pathsegments=new ArrayList<>();
         pathsegments.add(rid);
-        ResponseWrapper<DigitalCardStatusResponseDto> responseDto = restClient.getApi(ApiName.DIGITAL_CARD_STATUS_URL,pathsegments,"","",ResponseWrapper.class);
+        String response = restClient.getApi(ApiName.DIGITAL_CARD_STATUS_URL,pathsegments,"","",String.class);
+        JSONObject responseObj= objectMapper.readValue(response,JSONObject.class);
+        if(responseObj.containsKey("response") && responseObj.get("response")==null) {
+            throw new RequestException(ApplicantDetailErrorCode.REQ_ID_NOT_FOUND.getErrorCode(),
+                    ApplicantDetailErrorCode.REQ_ID_NOT_FOUND.getErrorMessage());
+        }
+        JSONObject responseJsonObj=  utility.getJSONObject(responseObj,RESPONSE);
         DigitalCardStatusResponseDto digitalCardStatusResponseDto = objectMapper.readValue(
-                objectMapper.writeValueAsString(responseDto.getResponse()), DigitalCardStatusResponseDto.class);
+                responseJsonObj.toJSONString(), DigitalCardStatusResponseDto.class);
         return digitalCardStatusResponseDto;
     }
 

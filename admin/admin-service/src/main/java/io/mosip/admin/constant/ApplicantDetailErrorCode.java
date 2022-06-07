@@ -7,7 +7,9 @@ public enum ApplicantDetailErrorCode {
     RID_NOT_FOUND("ADM-AVD-003","The card for this request ID is not generated. Please check the status of the ID."),
     DATA_NOT_FOUND("ADM-AVD-004","Applicant Photo Not Found"),
     DIGITAL_CARD_RID_NOT_FOUND("ADM-AVD-005", "Digital card not found for the RID, please try after few days"),
-    DIGITAL_CARD_NOT_ACKNOWLEDGED("ADM-AVD-006", "please acknowledge the details before downloading digital card");
+    DIGITAL_CARD_NOT_ACKNOWLEDGED("ADM-AVD-006", "Please acknowledge the details before downloading digital card"),
+    REQ_ID_NOT_FOUND("ADM-AVD-007","Request id not found");
+
     private final String errorCode;
     private final String errorMessage;
 

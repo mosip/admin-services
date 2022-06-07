@@ -80,7 +80,7 @@ public enum EventEnum {
 			"API called for Digital card", "ADM-AVD", "Admin service", "NO_ID", "NO_ID_TYPE",
 			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME),
 	RID_DIGITAL_CARD_REQ_SUCCESS("ADM-AVD-506", AuditConstant.AUDIT_SYSTEM, "Request for Digital Card",
-			"successfully return the digital card", "ADM-AVD", "admin service", "NO_ID", "NO_ID_TYPE",
+			"successfully returned the digital card", "ADM-AVD", "admin service", "NO_ID", "NO_ID_TYPE",
 			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME);
 
 	private final String eventId;
