@@ -177,7 +177,7 @@ public class MachineSpecificationControllerTest {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.patch("/machinespecifications").param("id","100100").param("isActive", "false")).andReturn(),
-				"KER-MSD-117");
+				null);
 	}
 
 
@@ -196,7 +196,7 @@ public class MachineSpecificationControllerTest {
 		
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.patch("/machinespecifications").param("id","300").param("isActive", "false")).andReturn(),
-				"KER-MSD-117");
+				null);
 	}
 	
 	@Test
@@ -205,7 +205,7 @@ public class MachineSpecificationControllerTest {
 		
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.patch("/machinespecifications").param("id","11").param("isActive", "false")).andReturn(),
-				"KER-MSD-088");
+				null);
 	}
 	
 	@Test

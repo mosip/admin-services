@@ -147,8 +147,7 @@ public class TitleControllerTest extends AbstractTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(mapToJson(requestWrapper));
 		//then
-		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), 
-				TitleErrorCode.TITLE_INSERT_EXCEPTION.getErrorCode());
+		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), null);
 	}
 	
 	@Test
@@ -226,8 +225,7 @@ public class TitleControllerTest extends AbstractTest {
 				.param("sortBy", sortBy)
 				.param("orderBy", orderBy);
 		//then
-		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), 
-				TitleErrorCode.TITLE_NOT_FOUND.getErrorCode());
+		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), null);
 	}
 	
 	@Test

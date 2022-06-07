@@ -77,7 +77,7 @@ public class BiometricTypeControllerTest {
 						+ "    \"isActive\": true,\n" + "    \"langCode\": \"eng\",\n" + "    \"name\": \"Iris\"\n"
 						+ "  }\n" + "}"))
 
-				.andReturn(),"KER-MSD-105");
+				.andReturn(),null);
 
 	}
 
@@ -122,7 +122,7 @@ public class BiometricTypeControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t6getAllBiometricTypesFailTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes")).andReturn(),"KER-MSD-006");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes")).andReturn(),null);
 		
 	}
 

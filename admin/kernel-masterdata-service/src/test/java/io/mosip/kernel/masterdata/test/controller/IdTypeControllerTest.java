@@ -86,7 +86,7 @@ public class IdTypeControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/idtypes").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(idTypeRequestDto))).andReturn(),
-				"KER-MSD-059");
+				null);
 
 	}
 
@@ -107,7 +107,7 @@ public class IdTypeControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/idtypes").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(idTypeRequestDto))).andReturn(),
-				"KER-MSD-059");
+				null);
 
 	}
 

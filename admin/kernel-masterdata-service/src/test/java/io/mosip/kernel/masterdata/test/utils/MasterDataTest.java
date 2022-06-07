@@ -24,21 +24,25 @@ public class MasterDataTest {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			if (rst.getResponse().getContentAsString().isEmpty() && rst.getResponse().getStatus() == 404) {
-				assertEquals(rst.getResponse().getStatus(), 404);
+				assertEquals(404,rst.getResponse().getStatus());
 
 			} else {
 				Map m = mapper.readValue(rst.getResponse().getContentAsString(), Map.class);
-				assertEquals(rst.getResponse().getStatus(), 200);
-				if (m.containsKey("errors") && null != m.get("errors")
-						&& ((List<Map<String, String>>) m.get("errors")).size() > 0) {
-//					assertEquals(((List<Map<String, String>>) m.get("errors")).get(0).get("errorCode"), actualCode);
-					assertEquals(expectedCode, ((List<Map<String, String>>) m.get("errors")).get(0).get("errorCode"));
-				}
+				assertEquals(200,rst.getResponse().getStatus());
+				assertEquals(expectedCode, getErrorCode(m));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
+	}
+	
+	private static String getErrorCode(Map map){
+		if(map.containsKey("errors") && null != map.get("errors")){
+			List<Map<String ,String>> data=(List<Map<String, String>>) map.get("errors");
+			return data.isEmpty()?null:data.get(0).get("errorCode");
+		}
+		return null;
 	}
 
 	public static void checkErrorResponse(MvcResult rst) {

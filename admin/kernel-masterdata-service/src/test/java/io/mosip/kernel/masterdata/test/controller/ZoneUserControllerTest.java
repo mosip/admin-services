@@ -161,7 +161,7 @@ public class ZoneUserControllerTest {
 		zoneUserDto.getRequest().setUserId("100");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/zoneuser").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(zoneUserDto))).andReturn(),
-				"KER-USR-014");
+				null);
 	}
 	
 	@Test

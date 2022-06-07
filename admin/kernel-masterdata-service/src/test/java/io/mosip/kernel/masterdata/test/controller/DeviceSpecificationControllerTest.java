@@ -130,7 +130,7 @@ public class DeviceSpecificationControllerTest {
 	public void t001createDeviceSpecificationFailTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devicespecifications").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(deviceSpecification)))
-				.andReturn(),"KER-MSD-054");
+				.andReturn(),null);
 
 	}
 	
@@ -285,7 +285,7 @@ public class DeviceSpecificationControllerTest {
 
 		 MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/devicespecifications").param("isActive", "true").param("id", "327"))
-				.andReturn(),"KER-MSD-217");
+				.andReturn(),null);
 	}
 
 	@Test
@@ -333,7 +333,7 @@ public class DeviceSpecificationControllerTest {
 	public void t019createDeviceSpecificationFailTest() throws Exception {
 		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devicespecifications")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(deviceSpecification)))
-				.andReturn(),"KER-MSD-054");
+				.andReturn(),null);
 	}
 
 	@Test

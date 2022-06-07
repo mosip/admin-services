@@ -499,7 +499,7 @@ public class LocationControllerTest {
 				.checkResponse(mockMvc
 						.perform(MockMvcRequestBuilders.get("/locations/all").param("pageNumber", "0")
 								.param("pageSize", "10").param("sortBy", "createdDateTime").param("orderBy", "desc"))
-						.andReturn(), "KER-MSD-026");
+						.andReturn(), null);
 	}
 
 	@Test
@@ -578,7 +578,7 @@ public class LocationControllerTest {
 		//searchDtoRq
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/locations/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoRq))).andReturn(),
-				"KER-MSD-026");
+				null);
 
 	}
 
@@ -624,7 +624,7 @@ public class LocationControllerTest {
 				.checkResponse(mockMvc
 						.perform(MockMvcRequestBuilders.post("/locations/filtervalues")
 								.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
-						.andReturn(), "KER-MSD-026");
+						.andReturn(), null);
 	}
 
 	@Test
@@ -635,7 +635,7 @@ public class LocationControllerTest {
 				.checkResponse(mockMvc
 						.perform(MockMvcRequestBuilders.post("/locations/filtervalues")
 								.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
-						.andReturn(), "KER-MSD-026");
+						.andReturn(), null);
 	}
 
 	@Test

@@ -129,7 +129,7 @@ public class ApplicationControllerTest {
 	@WithUserDetails("global-admin")
 	public void t1getAllApplicationFailTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/applicationtypes")).andReturn(),
-				"KER-MSD-002");
+				null);
 	}
 
 	@Test

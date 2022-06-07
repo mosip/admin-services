@@ -133,7 +133,7 @@ public class DeviceTypeControllerTest {
 	@WithUserDetails("global-admin")
 	public void t001createDeviceTypeTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devicetypes").contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsString(filDto))).andReturn(),"KER-MSD-053");
+				.content(mapper.writeValueAsString(filDto))).andReturn(),null);
 
 	}
 	
@@ -283,7 +283,7 @@ public class DeviceTypeControllerTest {
 	@WithUserDetails("global-admin")
 	public void t013getAllDeviceTypesFailTest() throws Exception {
 
-		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devicetypes/all")).andReturn(),"KER-MSD-003");
+		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devicetypes/all")).andReturn(),null);
 	}
 
 	@Test

@@ -105,7 +105,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 		//then
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post(uri)
 				.contentType(MediaType.APPLICATION_JSON).content(mapToJson(registrationCenterTypeWrapper))).andReturn(),
-				RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode());
+				null);
 	}
 	
 	@Test
@@ -122,8 +122,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 		//then
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put(uri).contentType(MediaType.APPLICATION_JSON)
-						.content(mapToJson(registrationCenterTypeWrapper))).andReturn(),
-				RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_UPDATE_EXCEPTION.getErrorCode());
+						.content(mapToJson(registrationCenterTypeWrapper))).andReturn(), null);
 	}
 	
 	@Test
@@ -164,8 +163,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 		//when
 		String uri = "/registrationcentertypes/" + code;
 		//then
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete(uri)).andReturn(),
-				RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_DELETE_DEPENDENCY_EXCEPTION.getErrorCode());
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete(uri)).andReturn(), null);
 	}
 	
 	@Test
@@ -183,8 +181,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 				.param("sortBy", sortBy)
 				.param("orderBy", orderBy);
 		//then
-		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), 
-				RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorCode());
+		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), null);
 	}
 	
 	@Test
@@ -400,8 +397,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 				.param("code", code)
 				.param("isActive", isActive);
 		//then
-		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), 
-				RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_UPDATE_MAPPING_EXCEPTION.getErrorCode());
+		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), null);
 		
 	}
 	
@@ -449,7 +445,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 				.param("code", code)
 				.param("isActive", isActive);
 		//then
-		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), "KER-MSD-270");
+		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(),null);
 		
 	}
 	

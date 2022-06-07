@@ -89,7 +89,7 @@ public class LanguageControllerTest {
 	public void t1getAllLaguagesFailTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/languages")).andReturn(),
-				"KER-MSD-24");
+				null);
 	}
 
 	@Test
@@ -98,7 +98,7 @@ public class LanguageControllerTest {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/languages")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(language))).andReturn(),
-				"KER-MSD-049");
+				null);
 	}
 	
 	@Test
@@ -114,7 +114,7 @@ public class LanguageControllerTest {
 		language.setRequest(dto1);
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/languages")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(language))).andReturn(),
-				"KER-MSD-999");
+				null);
 	}
 	@Test
 	@WithUserDetails("global-admin")

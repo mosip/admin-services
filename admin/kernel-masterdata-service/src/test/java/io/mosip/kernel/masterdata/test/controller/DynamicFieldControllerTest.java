@@ -130,7 +130,7 @@ public class DynamicFieldControllerTest {
 								MockMvcRequestBuilders.post("/dynamicfields").contentType(MediaType.APPLICATION_JSON)
 										.content(mapper.writeValueAsString(dynamicFieldDtoReq)))
 								.andReturn(),
-						"KER-DYN-001");
+						null);
 	}
 	
 	@Test
@@ -262,7 +262,7 @@ public class DynamicFieldControllerTest {
 						MockMvcRequestBuilders.get("/dynamicfields").param("pageNumber", "0").param("pageSize", "10")
 								.param("sortBy", "name").param("orderBy", "desc").param("langCode", "eng"))
 						.andReturn(),
-				"KER-SCH-001");
+				null);
 	}
 
 	@Test

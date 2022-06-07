@@ -329,7 +329,7 @@ public class BlockListedWordsControllerTest {
 						.content("{\n" + "  \"id\": \"string\",\n" + "  \"version\": \"string\",\n"
 								+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
 								+ "   \"blocklistedwords\": [\"dammmmm\"]\n}}"))
-				.andReturn(), "KER-MSD-999");
+				.andReturn(), null);
 
 	}
 

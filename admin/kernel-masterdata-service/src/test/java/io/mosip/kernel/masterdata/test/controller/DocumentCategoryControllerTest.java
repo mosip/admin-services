@@ -192,7 +192,7 @@ public class DocumentCategoryControllerTest {
 	public void t003createDocumentCategoryFailTest() throws Exception {
 
 		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/documentcategories")
-				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(doCatDto))).andReturn(),"KER-MSD-051");
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(doCatDto))).andReturn(),null);
 		}
 
 	
@@ -309,7 +309,7 @@ public class DocumentCategoryControllerTest {
 	@WithUserDetails("global-admin")
 	public void t018getAllDocumentCategoryFailTest() throws Exception {
 
-		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/all")).andReturn(),"KER-MSD-014");
+		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/all")).andReturn(),null);
 
 	}
 
