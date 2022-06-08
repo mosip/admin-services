@@ -194,7 +194,7 @@ ALTER TABLE master.template DROP CONSTRAINT IF EXISTS fk_tmplt_moddtl CASCADE;
 SELECT * INTO master.template_copy
 FROM master.template;
 
-DELETE *
+DELETE 
 	FROM master.template where template_typ_code not
 like 'reg-%' and module_id='10002';
 
