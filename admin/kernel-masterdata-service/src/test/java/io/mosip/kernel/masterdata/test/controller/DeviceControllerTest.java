@@ -217,7 +217,7 @@ public class DeviceControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t004updateDeviceTest() throws Exception {
+	public void t004updateDeviceTest01() throws Exception {
 		
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/devices").contentType(MediaType.APPLICATION_JSON)
@@ -228,7 +228,7 @@ public class DeviceControllerTest {
 
 	@Test
  	@WithUserDetails("global-admin")
-	public void t004updateDeviceFailTest() throws Exception {
+	public void t004updateDeviceTest02() throws Exception {
 		
 		devicePutReqDtoReq.getRequest().setName("updated");
 		MasterDataTest.checkResponse(
@@ -240,7 +240,7 @@ public class DeviceControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t004updateDeviceFailTest1() throws Exception {
+	public void t004updateDeviceTest03() throws Exception {
 		
 		devicePutReqDtoReq.getRequest().setName("updated");
 		MasterDataTest.checkResponse(
@@ -411,7 +411,7 @@ public class DeviceControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t011createDeviceFailTest() throws Exception {
+	public void t011createDeviceTest() throws Exception {
 		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devices")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(deviceDtoReq))).andReturn(),
@@ -421,7 +421,7 @@ public class DeviceControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t012updateDeviceFailTest() throws Exception {
+	public void t012updateDeviceTest() throws Exception {
 		
 		devicePutReqDtoReq.setId("7");
 		MasterDataTest.checkResponse(
@@ -450,7 +450,7 @@ public class DeviceControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t015searchDeviceFailTest() throws Exception {
+	public void t015searchDeviceTest() throws Exception {
 		
 		searchLangCode.getRequest().getFilters().get(0).setType("contains");
 		searchLangCode.getRequest().getFilters().get(0).setValue("abcd");

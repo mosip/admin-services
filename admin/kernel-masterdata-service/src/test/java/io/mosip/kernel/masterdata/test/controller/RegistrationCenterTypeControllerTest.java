@@ -99,7 +99,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void createRegistrationCenterTypeFailure() throws Exception {
+	public void createRegistrationCenterType() throws Exception {
 		//when
 		String uri = "/registrationcentertypes";
 		//then
@@ -110,7 +110,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t1updateRegistrationCenterTypeFailure() throws Exception {
+	public void t1updateRegistrationCenterType() throws Exception {
 		//given
 		String code = "TVM", langCode = "eng", name = "tvmcn update", descr="tvmcenter";
 		boolean isActive = true;
@@ -157,7 +157,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t2deleteRegistrationCenterTypeFailureDependency() throws Exception {
+	public void t2deleteRegistrationCenterTypeDependency() throws Exception {
 		//given
 		String code = "TVM";
 		//when
@@ -168,7 +168,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t00getAllRegistrationCenterTypesFailure() throws Exception {
+	public void t00getAllRegistrationCenterTypes() throws Exception {
 		//given
 		String pageNumber = "0", pageSize = "10", sortBy = "createdDateTime", orderBy = "desc";
 		//when
@@ -186,7 +186,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t0getAllRegistrationCenterTypesFailure() throws Exception {
+	public void t0getAllRegistrationCenterTypes() throws Exception {
 		//given
 		String pageNumber = "0", pageSize = "10", sortBy = "createdDateTime", orderBy = "desc";
 		//when
@@ -223,7 +223,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t5registrationCenterTypeFilterValuesFailureUnique() throws Exception {
+	public void t5registrationCenterTypeFilterValuesUnique() throws Exception {
 		//when
 		String uri = "/registrationcentertypes/filtervalues";
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post(uri)
@@ -235,7 +235,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t5registrationCenterTypeFilterValuesFailureAll() throws Exception {
+	public void t5registrationCenterTypeFilterValuesAll() throws Exception {
 		//given
 		setValueInFilter(FilterColumnEnum.ALL.toString());
 		//when
@@ -249,7 +249,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t5registrationCenterTypeFilterValuesFailureAll1() throws Exception {
+	public void t5registrationCenterTypeFilterValuesAll1() throws Exception {
 		//given
 		setValueInFilter(FilterColumnEnum.ALL.toString());
 		registrationCenterTypeFilterWrapper.getRequest().getFilters().get(0).setColumnName("code");
@@ -281,7 +281,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t6searchRegistrationCenterTypeFailureEquals() throws Exception {
+	public void t6searchRegistrationCenterTypeEquals() throws Exception {
 		//when
 		String uri = "/registrationcentertypes/search";
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post(uri)
@@ -294,7 +294,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t6searchRegistrationCenterTypeFailureContains() throws Exception {
+	public void t6searchRegistrationCenterTypeContains() throws Exception {
 		//given
 		setValueInSearch(FilterTypeEnum.CONTAINS.toString());
 		//when
@@ -309,7 +309,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t6searchRegistrationCenterTypeFailureStartWith() throws Exception {
+	public void t6searchRegistrationCenterTypeStartWith() throws Exception {
 		//given
 		setValueInSearch(FilterTypeEnum.STARTSWITH.toString());
 		//when
@@ -387,7 +387,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t02updateRegistrationCenterTypeStatusFailureMapping() throws Exception {
+	public void t02updateRegistrationCenterTypeStatusMapping() throws Exception {
 		//given
 		String code = "TVM", isActive = "false";
 		//when
@@ -403,7 +403,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t02updateRegistrationCenterTypeStatusFailure() throws Exception {
+	public void t02updateRegistrationCenterTypeStatus() throws Exception {
 		//given
 		String code = "TVM", isActive = "true";
 		//when
@@ -435,7 +435,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t02updateRegistrationCenterTypeStatusFailure3() throws Exception {
+	public void t02updateRegistrationCenterTypeStatus3() throws Exception {
 		//given
 		String code = "REG", isActive = "true";
 		//when
@@ -468,7 +468,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void getMissingRegistrationCentersTypesDetailsFailure() throws Exception {
+	public void getMissingRegistrationCentersTypesDetails() throws Exception {
 		//given
 		String langCode = "eng", fieldName = "name";
 		//when
@@ -536,7 +536,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void updateRegistrationCenterTypeStatusTest1() throws Exception {
+	public void updateRegistrationCenterTypeStatusFailTest1() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.patch("/registrationcentertypes").param("isActive", "false").param("code","REG")).andReturn(),"KER-MSD-270");
 	}
 }

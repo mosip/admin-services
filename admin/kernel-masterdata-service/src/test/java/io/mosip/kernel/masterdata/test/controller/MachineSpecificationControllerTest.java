@@ -183,7 +183,7 @@ public class MachineSpecificationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t006updateMachineSpecificationStatusFailTest() throws Exception {
+	public void t006updateMachineSpecificationStatusTest() throws Exception {
 		
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.patch("/machinespecifications").param("id","3").param("isActive", "false")).andReturn(),
@@ -192,7 +192,7 @@ public class MachineSpecificationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t006updateMachineSpecificationStatusFailTest1() throws Exception {
+	public void t006updateMachineSpecificationStatusTest1() throws Exception {
 		
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.patch("/machinespecifications").param("id","300").param("isActive", "false")).andReturn(),
@@ -201,7 +201,7 @@ public class MachineSpecificationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t006updateMachineSpecificationStatusFailTest2() throws Exception {
+	public void t006updateMachineSpecificationStatusTest2() throws Exception {
 		
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.patch("/machinespecifications").param("id","11").param("isActive", "false")).andReturn(),

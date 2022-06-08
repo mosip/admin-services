@@ -86,7 +86,7 @@ public class LanguageControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t1getAllLaguagesFailTest() throws Exception {
+	public void t1getAllLaguagesTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/languages")).andReturn(),
 				null);
@@ -94,7 +94,7 @@ public class LanguageControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t2saveLanguageFailTest() throws Exception {
+	public void t2saveLanguageTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/languages")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(language))).andReturn(),
@@ -103,7 +103,7 @@ public class LanguageControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t0saveLanguageFailTest() throws Exception {
+	public void t0saveLanguageTest() throws Exception {
 		LanguageDto dto1 = new LanguageDto();
 		dto1.setCode("eng");
 		dto1.setFamily("indo european1");
@@ -118,7 +118,7 @@ public class LanguageControllerTest {
 	}
 	@Test
 	@WithUserDetails("global-admin")
-	public void t0saveLanguageFailTest1() throws Exception {
+	public void t0saveLanguageTest1() throws Exception {
 			MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/languages")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(language))).andReturn(),
 				null);

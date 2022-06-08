@@ -493,7 +493,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t008getLocationsFailTest() throws Exception {
+	public void t008getLocationsTest() throws Exception {
 
 		MasterDataTest
 				.checkResponse(mockMvc
@@ -574,7 +574,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t015searchLocationFailTest() throws Exception {
+	public void t015searchLocationTest() throws Exception {
 		//searchDtoRq
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/locations/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoRq))).andReturn(),
@@ -629,7 +629,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t016locationFilterValuesFailTest() throws Exception {
+	public void t016locationFilterValuesTest() throws Exception {
 
 		MasterDataTest
 				.checkResponse(mockMvc

@@ -256,7 +256,7 @@ public class DynamicFieldControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t019getAllDynamicFieldsFailTest() throws Exception {
+	public void t019getAllDynamicFieldsTest() throws Exception {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(
 						MockMvcRequestBuilders.get("/dynamicfields").param("pageNumber", "0").param("pageSize", "10")
@@ -267,7 +267,7 @@ public class DynamicFieldControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t009getDistinctDynamicFieldsBasedOnLangTest() throws Exception {
+	public void t009getDistinctDynamicFieldsBasedOnLangTest01() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/distinct/eng")).andReturn(), null);
@@ -275,7 +275,7 @@ public class DynamicFieldControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t009getDistinctDynamicFieldsBasedOnLangFailTest() throws Exception {
+	public void t009getDistinctDynamicFieldsBasedOnLangTest02() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/distinct/eng1")).andReturn(), null);

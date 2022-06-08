@@ -127,7 +127,7 @@ public class ApplicationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t1getAllApplicationFailTest() throws Exception {
+	public void t1getAllApplicationTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/applicationtypes")).andReturn(),
 				null);
 	}

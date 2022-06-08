@@ -180,7 +180,7 @@ public class UserDetailControllerTest
 
 	@Test
 	@WithUserDetails("reg-processor")
-	public void t004getUsersFailTest() throws Exception {
+	public void t004getUsersTest() throws Exception {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/users/3/10/cr_dtimes/DESC")).andReturn(), null);
 

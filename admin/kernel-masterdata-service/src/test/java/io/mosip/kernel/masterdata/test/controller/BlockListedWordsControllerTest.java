@@ -322,7 +322,7 @@ public class BlockListedWordsControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t015searchBlockListedWordsFailTest() throws Exception {
+	public void t015searchBlockListedWordsTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.post("/blocklistedwords/words").contentType(MediaType.APPLICATION_JSON)

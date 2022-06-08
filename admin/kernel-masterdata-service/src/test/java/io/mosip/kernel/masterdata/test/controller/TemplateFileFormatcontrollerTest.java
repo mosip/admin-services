@@ -148,7 +148,7 @@ public class TemplateFileFormatcontrollerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t007getTemplateFileFormatCodeandLangCodeFailTest2() throws Exception {
+	public void t007getTemplateFileFormatCodeandLangCodeTest2() throws Exception {
 		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/templatefileformats/json/eng1")).andReturn(), null);
 

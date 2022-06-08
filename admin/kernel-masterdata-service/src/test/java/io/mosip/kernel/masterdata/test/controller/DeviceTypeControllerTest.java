@@ -281,7 +281,7 @@ public class DeviceTypeControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t013getAllDeviceTypesFailTest() throws Exception {
+	public void t013getAllDeviceTypesTest() throws Exception {
 
 		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devicetypes/all")).andReturn(),null);
 	}

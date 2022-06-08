@@ -252,7 +252,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t007updateHolidayStatusFailTest() throws Exception {
+	public void t007updateHolidayStatusTest01() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/holidays").param("holidayId", "2000002").param("isActive", "true"))
@@ -262,7 +262,7 @@ public class HolidayControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t007updateHolidayStatusTest() throws Exception {
+	public void t007updateHolidayStatusTest02() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/holidays").param("holidayId", "2000002").param("isActive", "false"))
@@ -368,7 +368,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t016getAllHolidaysFailTest() throws Exception {
+	public void t016getAllHolidaysTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/holidays")).andReturn(),
 				null);
 
@@ -474,7 +474,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t026getHolidaysFailTest() throws Exception {
+	public void t026getHolidaysTest() throws Exception {
 		MasterDataTest
 				.checkResponse(mockMvc
 						.perform(MockMvcRequestBuilders.get("/holidays").param("pageNumber", "0")

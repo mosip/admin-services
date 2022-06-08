@@ -64,7 +64,7 @@ public class ValidDocumentControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001createValidDocumentTest() throws Exception {
+	public void t001createValidDocumentTest01() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/validdocuments")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(document))).andReturn(),
 				null);
@@ -72,7 +72,7 @@ public class ValidDocumentControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001createValidDocumentFailTest() throws Exception {
+	public void t001createValidDocumentTest02() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/validdocuments")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(document))).andReturn(),
 				null);

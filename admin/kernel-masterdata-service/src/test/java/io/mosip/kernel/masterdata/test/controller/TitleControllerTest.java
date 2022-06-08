@@ -87,7 +87,7 @@ public class TitleControllerTest extends AbstractTest {
 	}
 	
 	@Test
-	public void getAllTitlesFailure() throws Exception {
+	public void getAllTitles() throws Exception {
 		//when
 		String uri = "/title";
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get(uri)
@@ -139,7 +139,7 @@ public class TitleControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t1saveTitleFailureInsert() throws Exception {
+	public void t1saveTitleInsert() throws Exception {
 		//when
 		String uri = "/title";
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post(uri)
@@ -152,7 +152,7 @@ public class TitleControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t1saveTitleFailure() throws Exception {
+	public void t1saveTitle() throws Exception {
 		//when
 		String uri = "/title";
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post(uri)
@@ -212,7 +212,7 @@ public class TitleControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void getAllTitlesWithPaginationFailureNotFound() throws Exception {
+	public void getAllTitlesWithPagination() throws Exception {
 		//given
 		String pageNumber = "0", pageSize = "10", sortBy = "createdDateTime", orderBy = "desc";
 		//when
@@ -277,7 +277,7 @@ public class TitleControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void filterTemplatesFailureUnique() throws Exception {
+	public void filterTemplatesUnique() throws Exception {
 		//given
 		//when
 		String uri = "/title/filtervalues";
@@ -290,7 +290,7 @@ public class TitleControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void filterTemplatesFailureAll() throws Exception {
+	public void filterTemplatesAll() throws Exception {
 		//given
 		setValueInFilter(FilterColumnEnum.ALL.toString());
 		//when
