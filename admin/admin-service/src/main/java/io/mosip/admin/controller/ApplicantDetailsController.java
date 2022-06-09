@@ -6,9 +6,12 @@ import io.mosip.admin.packetstatusupdater.util.EventEnum;
 import io.mosip.admin.service.ApplicantDetailService;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.ByteArrayInputStream;
 
 @RestController
 public class ApplicantDetailsController {
@@ -28,4 +31,16 @@ public class ApplicantDetailsController {
         return responseWrapper;
     }
 
+    @PostMapping("/rid-digital-card")
+    public ResponseEntity<Object> getRIDDigitalCard(
+           @RequestParam("rid") String rid,@RequestParam("isAcknowledged") boolean isAcknowledged) throws Exception {
+        auditUtil.setAuditRequestDto(EventEnum.RID_DIGITAL_CARD_REQ);
+        byte[] pdfBytes = applicantDetailService.getRIDDigitalCard(rid,isAcknowledged);
+        InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(pdfBytes));
+        auditUtil.setAuditRequestDto(EventEnum.RID_DIGITAL_CARD_REQ_SUCCESS);
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/pdf"))
+                .header("Content-Disposition", "attachment; filename=\"" +
+                        rid + ".pdf\"")
+                .body((Object) resource);
+    }
 }
