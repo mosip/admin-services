@@ -261,7 +261,7 @@ ALTER TABLE master.user_detail_h DROP COLUMN mobile;
 SELECT * INTO master.template_copy
 FROM master.template;
 
-DELETE *
+DELETE 
 	FROM master.template where template_typ_code not
 like 'reg-%' and module_id='10002';
 
