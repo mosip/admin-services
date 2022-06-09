@@ -69,7 +69,7 @@ public class BiometricTypeControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t9createBiometricTypeFailTest() throws Exception {
+	public void t9createBiometricTypeTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/biometrictypes").contentType(MediaType.APPLICATION_JSON)
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"version\": \"string\",\n"
 						+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
@@ -77,7 +77,7 @@ public class BiometricTypeControllerTest {
 						+ "    \"isActive\": true,\n" + "    \"langCode\": \"eng\",\n" + "    \"name\": \"Iris\"\n"
 						+ "  }\n" + "}"))
 
-				.andReturn(),"KER-MSD-105");
+				.andReturn(),null);
 
 	}
 
@@ -129,8 +129,8 @@ public class BiometricTypeControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t7getAllBiometricTypesFailTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes")).andReturn(),"KER-MSD-006");
+	public void t7getAllBiometricTypesTest() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes")).andReturn(),null);
 		
 	}
 

@@ -130,7 +130,7 @@ public class DynamicFieldControllerTest {
 								MockMvcRequestBuilders.post("/dynamicfields").contentType(MediaType.APPLICATION_JSON)
 										.content(mapper.writeValueAsString(dynamicFieldDtoReq)))
 								.andReturn(),
-						"KER-DYN-001");
+						null);
 	}
 	
 	@Test
@@ -256,13 +256,13 @@ public class DynamicFieldControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t019getAllDynamicFieldsFailTest() throws Exception {
+	public void t019getAllDynamicFieldsTest() throws Exception {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(
 						MockMvcRequestBuilders.get("/dynamicfields").param("pageNumber", "0").param("pageSize", "10")
 								.param("sortBy", "name").param("orderBy", "desc").param("langCode", "eng"))
 						.andReturn(),
-				"KER-SCH-001");
+				null);
 	}
 
 	@Test

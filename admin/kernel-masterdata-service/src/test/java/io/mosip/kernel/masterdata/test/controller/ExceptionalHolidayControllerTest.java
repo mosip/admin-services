@@ -83,7 +83,7 @@ public class ExceptionalHolidayControllerTest {
 	public void t5getExceptionalHolidaysTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10078"))
-				.andReturn(),"KER-MSD-802");
+				.andReturn(),null);
 	}
 	
 	@Test

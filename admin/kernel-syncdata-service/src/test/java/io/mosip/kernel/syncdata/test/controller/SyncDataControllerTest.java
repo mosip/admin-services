@@ -387,7 +387,7 @@ public class SyncDataControllerTest {
 		SyncDataUtil.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/publickey/REGISTRATION")
 						.param("timeStamp", "2019-09-09T09%3A00%3A00.000Z")).andReturn(),
-				"KER-SNC-003");
+				null);
 
 	}
 
@@ -410,7 +410,7 @@ public class SyncDataControllerTest {
 		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
 		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/tpm/publickey/verify")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(uploadPublicKeyRequestDto)))
-				.andReturn(), "KER-SNC-155");
+				.andReturn(), null);
 
 	}
 	
@@ -449,7 +449,7 @@ public class SyncDataControllerTest {
 			
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
 		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
-		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/latestidschema")).andReturn(), "KER-SNC-166");
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/latestidschema")).andReturn(), null);
 
 	}
 	

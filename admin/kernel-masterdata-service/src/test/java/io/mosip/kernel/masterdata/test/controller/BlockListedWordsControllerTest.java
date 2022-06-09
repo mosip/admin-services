@@ -322,14 +322,14 @@ public class BlockListedWordsControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t015searchBlockListedWordsFailTest() throws Exception {
+	public void t015searchBlockListedWordsTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.post("/blocklistedwords/words").contentType(MediaType.APPLICATION_JSON)
 						.content("{\n" + "  \"id\": \"string\",\n" + "  \"version\": \"string\",\n"
 								+ "  \"requesttime\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
 								+ "   \"blocklistedwords\": [\"dammmmm\"]\n}}"))
-				.andReturn(), "KER-MSD-999");
+				.andReturn(), null);
 
 	}
 

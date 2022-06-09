@@ -191,15 +191,15 @@ public class ZoneControllerTest {
 	}
 	@Test
 	@WithUserDetails("global-admin")
-	public void t010getZoneNameBasedOnUserIDAndLangCodeFailTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID","global-admin").param("langCode","eng")).andReturn(), "KER-MSD-391");
+	public void t010getZoneNameBasedOnUserIDAndLangCodeTest() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID","global-admin").param("langCode","eng")).andReturn(), null);
 
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t010getZoneNameBasedOnUserIDAndLangCodeFailTest4() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID","global-admin").param("langCode","eng")).andReturn(), "KER-MSD-392");
+	public void t010getZoneNameBasedOnUserIDAndLangCodeTest4() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID","global-admin").param("langCode","eng")).andReturn(), null);
 
 	}
 	
@@ -236,14 +236,14 @@ public class ZoneControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t015getZoneNameBasedOnUserIDAndLangCodeTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID","global-admin").param("langCode","eng")).andReturn(), "KER-MSD-391");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID","global-admin").param("langCode","eng")).andReturn(), null);
 
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t016getZoneNameBasedOnUserIDAndLangCodeFailTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID","global-admin").param("langCode","eng")).andReturn(), "KER-MSD-391");
+	public void t016getZoneNameBasedOnUserIDAndLangCodeTest() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID","global-admin").param("langCode","eng")).andReturn(), null);
 
 	}
 	

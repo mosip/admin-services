@@ -145,7 +145,7 @@ public class MachineTypeControllerTest {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/machinetypes").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(machineTypePut))).andReturn(),
-				"KER-MSD-064");
+				null);
 	}
 
 	@Test
