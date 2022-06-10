@@ -8,8 +8,8 @@ public enum ZoneUserErrorCode {
 	DUPLICATE_REQUEST("KER-USR-018", "duplicate request"),
 	USER_MAPPING_PRSENT_IN_DB("KER-USR-021", "The given user already mapped with different zone"),
 	USER_MAPPING_EXIST("KER-USR-011", "User Center mapping must be deleted before remapping user to different zone"),
-	INVALID_ZONE("KER-USR-014", "Admin not authorized to access for this Zone");
-
+	INVALID_ZONE("KER-USR-014", "Admin not authorized to access for this Zone"),
+	USER_MAPPING_EXIST_DELETE("KER-USR-022", "User Center mapping must be deleted before Deleting the User from the zone");
 
 	
 	private final String errorCode;

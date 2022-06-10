@@ -216,7 +216,7 @@ public class ZoneUserControllerTest {
 		
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.delete("/zoneuser/3/CST")).andReturn(),
-				"KER-USR-011");
+				"KER-USR-022");
 	}
 	
 	@Test
