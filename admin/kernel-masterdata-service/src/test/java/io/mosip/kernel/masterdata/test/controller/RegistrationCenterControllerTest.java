@@ -378,7 +378,7 @@ public class RegistrationCenterControllerTest {
 	public void t017deleteRegistrationCenterTest() throws Exception {
 
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.delete("/registrationcenters/10003")).andReturn(),
+				mockMvc.perform(MockMvcRequestBuilders.delete("/registrationcenters/20003")).andReturn(),
 				"KER-MSD-192");
 
 	}
@@ -520,7 +520,7 @@ public class RegistrationCenterControllerTest {
 	public void t023decommissionRegCenterFailTest1() throws Exception {
 
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10003")).andReturn(),
+				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/20003")).andReturn(),
 				"KER-MSD-351");
 
 	}
