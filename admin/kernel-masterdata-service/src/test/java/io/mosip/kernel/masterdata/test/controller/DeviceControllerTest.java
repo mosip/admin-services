@@ -143,7 +143,7 @@ public class DeviceControllerTest {
 	public void t001getDeviceLangTest() throws Exception {
 		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/devices/eng")).andReturn(),
-				"KER-MSD-010");
+				null);
 
 	}
 
@@ -174,7 +174,7 @@ public class DeviceControllerTest {
 		deviceDtoReq.getRequest().setRegCenterId("10003");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devices")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(deviceDtoReq))).andReturn(),
-				"KER-MSD-219");
+				null);
 
 	}
 
@@ -217,7 +217,7 @@ public class DeviceControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t004updateDeviceTest() throws Exception {
+	public void t004updateDeviceTest01() throws Exception {
 		
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/devices").contentType(MediaType.APPLICATION_JSON)
@@ -228,25 +228,25 @@ public class DeviceControllerTest {
 
 	@Test
  	@WithUserDetails("global-admin")
-	public void t004updateDeviceFailTest() throws Exception {
+	public void t004updateDeviceTest02() throws Exception {
 		
 		devicePutReqDtoReq.getRequest().setName("updated");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/devices").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(devicePutReqDtoReq))).andReturn(),
-				"KER-MSD-339");
+				null);
 
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t004updateDeviceFailTest1() throws Exception {
+	public void t004updateDeviceTest03() throws Exception {
 		
 		devicePutReqDtoReq.getRequest().setName("updated");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/devices").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(devicePutReqDtoReq))).andReturn(),
-				"KER-MSD-339");
+				null);
 
 	}
 
@@ -255,7 +255,7 @@ public class DeviceControllerTest {
 	public void t005getDevicesByRegistrationCenterTest() throws Exception {
 		
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/devices/mappeddevices/10001")).andReturn(), "KER-MSD-441");
+				mockMvc.perform(MockMvcRequestBuilders.get("/devices/mappeddevices/10001")).andReturn(), null);
 
 	}
 
@@ -269,7 +269,7 @@ public class DeviceControllerTest {
 								MockMvcRequestBuilders.post("/devices/search").contentType(MediaType.APPLICATION_JSON)
 										.content(mapper.writeValueAsString(searchLangCode)))
 								.andReturn(),
-						"KER-MSD-344");
+						null);
 
 	}
 
@@ -411,23 +411,23 @@ public class DeviceControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t011createDeviceFailTest() throws Exception {
+	public void t011createDeviceTest() throws Exception {
 		
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devices")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(deviceDtoReq))).andReturn(),
-				"KER-MSD-339");
+				null);
 
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t012updateDeviceFailTest() throws Exception {
+	public void t012updateDeviceTest() throws Exception {
 		
 		devicePutReqDtoReq.setId("7");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/devices").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(devicePutReqDtoReq))).andReturn(),
-				"KER-MSD-339");
+				null);
 	}
 
 	@Test
@@ -450,7 +450,7 @@ public class DeviceControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t015searchDeviceFailTest() throws Exception {
+	public void t015searchDeviceTest() throws Exception {
 		
 		searchLangCode.getRequest().getFilters().get(0).setType("contains");
 		searchLangCode.getRequest().getFilters().get(0).setValue("abcd");
@@ -460,7 +460,7 @@ public class DeviceControllerTest {
 								MockMvcRequestBuilders.post("/devices/search").contentType(MediaType.APPLICATION_JSON)
 										.content(mapper.writeValueAsString(searchLangCode)))
 								.andReturn(),
-						"KER-MSD-339");
+						null);
 
 	}
 

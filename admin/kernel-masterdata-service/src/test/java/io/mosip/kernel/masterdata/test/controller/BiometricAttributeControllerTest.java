@@ -62,7 +62,7 @@ public class BiometricAttributeControllerTest {
 						+ "    \"code\": \"RI\",\n" + "    \"description\": \"Print of right Iris\",\n"
 						+ "    \"isActive\": true,\n" + "    \"langCode\": \"eng\",\n"
 						+ "    \"name\": \"Right Iris\",\n" + "   \"biometricTypeCode\":\"IRS\"\n" + "  }\n" + "}"))
-				.andReturn(),"KER-APP-103");
+				.andReturn(),null);
 
 	}
 	

@@ -127,16 +127,16 @@ public class DeviceSpecificationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001createDeviceSpecificationFailTest() throws Exception {
+	public void t001createDeviceSpecificationTest01() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devicespecifications").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(deviceSpecification)))
-				.andReturn(),"KER-MSD-054");
+				.andReturn(),null);
 
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001createDeviceSpecificationTest() throws Exception {
+	public void t001createDeviceSpecificationTest02() throws Exception {
 		deviceSpecification.getRequest().setId("166");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devicespecifications").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(deviceSpecification)))
@@ -281,16 +281,16 @@ public class DeviceSpecificationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t013updateDeviceSpecificationStatusFailTest1() throws Exception {
+	public void t013updateDeviceSpecificationStatusTest1() throws Exception {
 
 		 MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/devicespecifications").param("isActive", "true").param("id", "327"))
-				.andReturn(),"KER-MSD-217");
+				.andReturn(),null);
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t014deviceSpecificationSearchFailTest() throws Exception {
+	public void t014deviceSpecificationSearchTest() throws Exception {
 		searchLangCode.getRequest().getFilters().get(0).setType("contains");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devicespecifications/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchLangCode)))
@@ -330,10 +330,10 @@ public class DeviceSpecificationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t019createDeviceSpecificationFailTest() throws Exception {
+	public void t019createDeviceSpecificationTest() throws Exception {
 		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/devicespecifications")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(deviceSpecification)))
-				.andReturn(),"KER-MSD-054");
+				.andReturn(),null);
 	}
 
 	@Test

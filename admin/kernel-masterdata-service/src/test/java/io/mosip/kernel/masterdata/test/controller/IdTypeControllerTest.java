@@ -86,7 +86,7 @@ public class IdTypeControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/idtypes").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(idTypeRequestDto))).andReturn(),
-				"KER-MSD-059");
+				null);
 
 	}
 
@@ -103,11 +103,11 @@ public class IdTypeControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t4createIdTypeFailTest() throws Exception {
+	public void t4createIdTypeTest() throws Exception {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/idtypes").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(idTypeRequestDto))).andReturn(),
-				"KER-MSD-059");
+				null);
 
 	}
 

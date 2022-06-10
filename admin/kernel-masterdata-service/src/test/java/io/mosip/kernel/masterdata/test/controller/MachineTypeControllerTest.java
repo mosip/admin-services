@@ -131,7 +131,7 @@ public class MachineTypeControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002createMachineTypeFailTest() throws Exception {
+	public void t002createMachineTypeTest() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/machinetypes").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(machineType))).andReturn(),
@@ -145,7 +145,7 @@ public class MachineTypeControllerTest {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/machinetypes").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(machineTypePut))).andReturn(),
-				"KER-MSD-064");
+				null);
 	}
 
 	@Test

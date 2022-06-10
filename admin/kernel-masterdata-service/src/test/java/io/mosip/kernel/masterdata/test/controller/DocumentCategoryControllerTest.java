@@ -189,10 +189,10 @@ public class DocumentCategoryControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t003createDocumentCategoryFailTest() throws Exception {
+	public void t003createDocumentCategoryTest() throws Exception {
 
 		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/documentcategories")
-				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(doCatDto))).andReturn(),"KER-MSD-051");
+				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(doCatDto))).andReturn(),null);
 		}
 
 	
@@ -253,7 +253,7 @@ public class DocumentCategoryControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t008docCategoriesFilterValuesFailTest() throws Exception {
+	public void t008docCategoriesFilterValuesTest() throws Exception {
 		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.EMPTY.toString());
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/documentcategories/filtervalues")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
@@ -263,7 +263,7 @@ public class DocumentCategoryControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t008docCategoriesFilterValuesFailTest1() throws Exception {
+	public void t008docCategoriesFilterValuesTest1() throws Exception {
 		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.UNIQUE.toString());
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/documentcategories/filtervalues")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
@@ -307,9 +307,9 @@ public class DocumentCategoryControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t018getAllDocumentCategoryFailTest() throws Exception {
+	public void t018getAllDocumentCategoryTest() throws Exception {
 
-		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/all")).andReturn(),"KER-MSD-014");
+		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/all")).andReturn(),null);
 
 	}
 

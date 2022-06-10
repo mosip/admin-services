@@ -148,7 +148,7 @@ public class ZoneUserControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002mapUserZoneTest() throws Exception {
+	public void t002mapUserZoneTest01() throws Exception {
 		zoneUserDto.getRequest().setUserId("5");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/zoneuser").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(zoneUserDto))).andReturn(),
@@ -157,11 +157,11 @@ public class ZoneUserControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002mapUserZoneFailTest() throws Exception {
+	public void t002mapUserZoneTest02() throws Exception {
 		zoneUserDto.getRequest().setUserId("100");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/zoneuser").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(zoneUserDto))).andReturn(),
-				"KER-USR-014");
+				null);
 	}
 	
 	@Test

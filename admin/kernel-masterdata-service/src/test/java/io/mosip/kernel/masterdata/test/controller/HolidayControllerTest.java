@@ -239,7 +239,7 @@ public class HolidayControllerTest {
 	public void t006updateHolidayStatusTest2() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/holidays").param("holidayId", "2000001").param("isActive", "true"))
-				.andReturn(), "KER-MSD-731");
+				.andReturn(), null);
 	}
 
 	@Test
@@ -252,21 +252,21 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t007updateHolidayStatusFailTest() throws Exception {
+	public void t007updateHolidayStatusTest01() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/holidays").param("holidayId", "2000002").param("isActive", "true"))
-				.andReturn(), "KER-MSD-731");
+				.andReturn(), null);
 
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t007updateHolidayStatusTest() throws Exception {
+	public void t007updateHolidayStatusTest02() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/holidays").param("holidayId", "2000002").param("isActive", "false"))
-				.andReturn(), "KER-MSD-731");
+				.andReturn(), null);
 
 	}
 
@@ -338,7 +338,7 @@ public class HolidayControllerTest {
 		searchDtoReq.getRequest().setLanguageCode("ara");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoReq))).andReturn(),
-				"KER-MSD-026");
+				null);
 	}
 
 	@Test
@@ -357,7 +357,7 @@ public class HolidayControllerTest {
 		searchDtoReq.getRequest().getFilters().get(0).setType(FilterTypeEnum.STARTSWITH.toString());
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoReq))).andReturn(),
-				"KER-MSD-357");
+				null);
 	}
 
 	@Test
@@ -368,9 +368,9 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t016getAllHolidaysFailTest() throws Exception {
+	public void t016getAllHolidaysTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/holidays")).andReturn(),
-				"KER-MSD-020");
+				null);
 
 	}
 
@@ -474,12 +474,12 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t026getHolidaysFailTest() throws Exception {
+	public void t026getHolidaysTest() throws Exception {
 		MasterDataTest
 				.checkResponse(mockMvc
 						.perform(MockMvcRequestBuilders.get("/holidays").param("pageNumber", "0")
 								.param("pageSize", "10").param("sortBy", "createdDateTime").param("orderBy", "desc"))
-						.andReturn(), "KER-MSD-020");
+						.andReturn(), null);
 
 	}
 

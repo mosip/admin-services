@@ -86,24 +86,24 @@ public class LanguageControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t1getAllLaguagesFailTest() throws Exception {
+	public void t1getAllLaguagesTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/languages")).andReturn(),
-				"KER-MSD-24");
+				null);
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t2saveLanguageFailTest() throws Exception {
+	public void t2saveLanguageTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/languages")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(language))).andReturn(),
-				"KER-MSD-049");
+				null);
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t0saveLanguageFailTest() throws Exception {
+	public void t0saveLanguageTest() throws Exception {
 		LanguageDto dto1 = new LanguageDto();
 		dto1.setCode("eng");
 		dto1.setFamily("indo european1");
@@ -114,11 +114,11 @@ public class LanguageControllerTest {
 		language.setRequest(dto1);
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/languages")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(language))).andReturn(),
-				"KER-MSD-999");
+				null);
 	}
 	@Test
 	@WithUserDetails("global-admin")
-	public void t0saveLanguageFailTest1() throws Exception {
+	public void t0saveLanguageTest1() throws Exception {
 			MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/languages")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(language))).andReturn(),
 				null);
