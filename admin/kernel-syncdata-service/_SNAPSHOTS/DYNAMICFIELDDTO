@@ -1,1 +1,0 @@
-[{"entityName":"test","entityType":"dynamic","data":"[{\"isDeleted\":false,\"langCode\":null,\"isActive\":true,\"id\":\"test\",\"name\":\"test\",\"dataType\":\"string\",\"fieldVal\":[{\"code\":\"v1\",\"value\":\"v1\",\"active\":true},{\"code\":\"v2\",\"value\":\"v2\",\"active\":true},{\"code\":\"v3\",\"value\":\"v3\",\"active\":true}]}]"}]
