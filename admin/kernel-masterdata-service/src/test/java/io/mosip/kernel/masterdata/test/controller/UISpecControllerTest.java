@@ -204,7 +204,7 @@ public class UISpecControllerTest {
 	public void getLatestUISpec1() throws Exception {
 
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/uispec/regclient/latest")).andReturn(), "KER-UIS-004");
+				mockMvc.perform(MockMvcRequestBuilders.get("/uispec/regclient/latest")).andReturn(), null);
 
 	}
 

@@ -82,7 +82,7 @@ public class ValidDocumentControllerTest {
 	@WithUserDetails("global-admin")
 	public void t002deleteValidDocuemntTest() throws Exception {
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.delete("/validdocuments/POI/CIN")).andReturn(), "KER-MSD-016");
+				mockMvc.perform(MockMvcRequestBuilders.delete("/validdocuments/POI/CIN")).andReturn(), null);
 	}
 
 	@Test

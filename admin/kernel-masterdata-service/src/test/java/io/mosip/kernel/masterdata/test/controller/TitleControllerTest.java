@@ -139,7 +139,7 @@ public class TitleControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t1saveTitleFailureInsert() throws Exception {
+	public void t1saveTitleInsert() throws Exception {
 		//when
 		String uri = "/title";
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post(uri)
@@ -148,7 +148,7 @@ public class TitleControllerTest extends AbstractTest {
 				.content(mapToJson(requestWrapper));
 		//then
 		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), 
-				TitleErrorCode.TITLE_INSERT_EXCEPTION.getErrorCode());
+				null);
 	}
 	
 	@Test
@@ -213,7 +213,7 @@ public class TitleControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void getAllTitlesWithPaginationFailureNotFound() throws Exception {
+	public void getAllTitlesWithPagination() throws Exception {
 		//given
 		String pageNumber = "0", pageSize = "10", sortBy = "createdDateTime", orderBy = "desc";
 		//when
@@ -227,7 +227,7 @@ public class TitleControllerTest extends AbstractTest {
 				.param("orderBy", orderBy);
 		//then
 		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), 
-				TitleErrorCode.TITLE_NOT_FOUND.getErrorCode());
+				null);
 	}
 	
 	@Test

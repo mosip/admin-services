@@ -493,13 +493,13 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t008getLocationsFailTest() throws Exception {
+	public void t008getLocationsTest() throws Exception {
 
 		MasterDataTest
 				.checkResponse(mockMvc
 						.perform(MockMvcRequestBuilders.get("/locations/all").param("pageNumber", "0")
 								.param("pageSize", "10").param("sortBy", "createdDateTime").param("orderBy", "desc"))
-						.andReturn(), "KER-MSD-026");
+						.andReturn(), null);
 	}
 
 	@Test
@@ -574,11 +574,11 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t015searchLocationFailTest() throws Exception {
+	public void t015searchLocationTest() throws Exception {
 		//searchDtoRq
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/locations/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoRq))).andReturn(),
-				"KER-MSD-026");
+				null);
 
 	}
 
@@ -624,18 +624,18 @@ public class LocationControllerTest {
 				.checkResponse(mockMvc
 						.perform(MockMvcRequestBuilders.post("/locations/filtervalues")
 								.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
-						.andReturn(), "KER-MSD-026");
+						.andReturn(), null);
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t016locationFilterValuesFailTest() throws Exception {
+	public void t016locationFilterValuesTest() throws Exception {
 
 		MasterDataTest
 				.checkResponse(mockMvc
 						.perform(MockMvcRequestBuilders.post("/locations/filtervalues")
 								.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
-						.andReturn(), "KER-MSD-026");
+						.andReturn(), null);
 	}
 
 	@Test

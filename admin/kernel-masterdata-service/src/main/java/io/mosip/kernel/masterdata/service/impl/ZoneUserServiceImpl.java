@@ -220,8 +220,8 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 
 			UserDetails ud=userDetailsRepo.findByIdAndIsDeletedFalseorIsDeletedIsNullAndIsActive(userId);
 			if(ud!=null) {
-				throw new MasterDataServiceException(ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorCode(),
-						ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorMessage());
+				throw new MasterDataServiceException(ZoneUserErrorCode.USER_MAPPING_EXIST_DELETE.getErrorCode(),
+						ZoneUserErrorCode.USER_MAPPING_EXIST_DELETE.getErrorMessage());
 			}
 			zoneUserRepo.deleteZoneUser(userId,LocalDateTime.now(),MetaDataUtils.getContextUser());
 			ZoneUserHistory udh = new ZoneUserHistory();

@@ -111,7 +111,7 @@ public class AdminControllerTest {
 		AdminDataUtil.checkResponse(
 				(mockMvc.perform(MockMvcRequestBuilders.post("/lostRid").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(searchInfoReq))).andReturn()),
-				"ADMN-LRID-001");
+				null);
 
 	}
 

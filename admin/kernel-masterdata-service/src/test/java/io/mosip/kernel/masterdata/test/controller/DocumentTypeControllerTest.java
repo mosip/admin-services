@@ -147,10 +147,10 @@ public class DocumentTypeControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t004createDocumentCategoryFailTest() throws Exception {
+	public void t004createDocumentCategoryTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/documenttypes").contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsString(documentTypeDtoReq))).andReturn(),"KER-MSD-101");
+				.content(mapper.writeValueAsString(documentTypeDtoReq))).andReturn(),null);
 	}
 	
 	/*@Test

@@ -374,7 +374,7 @@ public class UserDetailControllerTest
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/usercentermapping")
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper))).andReturn(),
-				"KER-USR-012");
+				null);
 
 	}
 
@@ -558,7 +558,7 @@ public class UserDetailControllerTest
 		.andRespond(responseCreator);
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/usersdetails").param("firstName", "a").param("lastName", "a").param("userName", "a")).andReturn(),
-				"KER-USR-009");
+				null);
 
 	}
 	

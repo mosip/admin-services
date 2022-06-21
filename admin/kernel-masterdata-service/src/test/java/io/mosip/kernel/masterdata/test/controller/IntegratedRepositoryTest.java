@@ -827,7 +827,7 @@ public class IntegratedRepositoryTest {
 				Mockito.any(), Mockito.anyString(), Mockito.anyString())).thenThrow(new DataAccessException("...") {
 				});
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/validdocuments/POA1/eng")).andReturn(), "KER-MSD-016");
+				mockMvc.perform(MockMvcRequestBuilders.get("/validdocuments/POA1/eng")).andReturn(), null);
 	}
 
 	@Test
@@ -931,7 +931,7 @@ public class IntegratedRepositoryTest {
 						MockMvcRequestBuilders.get("/dynamicfields").param("pageNumber", "0").param("pageSize", "10")
 								.param("sortBy", "name").param("orderBy", "desc").param("langCode", "eng"))
 						.andReturn(),
-				"KER-SCH-001");
+				null);
 	}
 
 	@Test
@@ -1168,7 +1168,7 @@ public class IntegratedRepositoryTest {
 
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/machinespecifications").param("id", "1001").param("isActive", "true"))
-				.andReturn(), "KER-MSD-088");
+				.andReturn(), null);
 	}
 
 	@Test
@@ -1180,7 +1180,7 @@ public class IntegratedRepositoryTest {
 
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/machinespecifications").param("id", "1001").param("isActive", "true"))
-				.andReturn(), "KER-MSD-117");
+				.andReturn(), null);
 	}
 
 	@Test
@@ -1764,7 +1764,7 @@ public class IntegratedRepositoryTest {
 				.checkResponse(mockMvc
 						.perform(MockMvcRequestBuilders.post("/locations/filtervalues")
 								.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
-						.andReturn(), "KER-MSD-025");
+						.andReturn(), null);
 	}
 
 	/*
