@@ -63,7 +63,7 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(MasterDataServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataServiceException(
 			final HttpServletRequest httpServletRequest, final MasterDataServiceException e) throws IOException {
-		logger.info("exception : {} ",e.toString());
+		logger.info("exception : {} ",e);
 		return getErrorResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR, httpServletRequest);
 	}
 
@@ -116,7 +116,7 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(
 			final HttpServletRequest httpServletRequest, Exception e) throws IOException {
-		logger.info("exception : {} ",e.toString());
+		logger.info("exception : {} ",e);
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(RequestErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), e.getMessage());
 		errorResponse.getErrors().add(error);
