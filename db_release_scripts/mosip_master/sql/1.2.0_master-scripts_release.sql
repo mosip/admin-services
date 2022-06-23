@@ -260,12 +260,9 @@ ALTER TABLE master.user_detail_h DROP COLUMN uin;
 ALTER TABLE master.user_detail_h DROP COLUMN email;
 ALTER TABLE master.user_detail_h DROP COLUMN mobile;
 
-SELECT * INTO master.template_copy
-FROM master.template;
+SELECT * INTO master.template_copy FROM master.template;
 
-DELETE 
-	FROM master.template where template_typ_code not
-like 'reg-%' and module_id='10002';
+UPDATE master.template set module_id='10001' where module_id='10002' and template_typ_code not like 'reg-%';
 
 UPDATE master.template set module_id='10002' where template_typ_code like 'reg-ack%';
 
