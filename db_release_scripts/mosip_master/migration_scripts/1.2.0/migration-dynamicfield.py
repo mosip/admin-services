@@ -3,7 +3,7 @@
 import psycopg2
 import json
 
-conn = psycopg2.connect(database="mosip_master", user = "postgres", password = "mosip123", host = "qa3.mosip.net", port = "30090")
+conn = psycopg2.connect(database="mosip_master", user = "username", password = "password", host = "dev.mosip.net", port = "30090")
 
 print("Opened database successfully")
 

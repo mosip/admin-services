@@ -8,14 +8,14 @@ import requests
 import json
 
 
-authURL='https://qa3.mosip.net/v1/authmanager/authenticate/useridPwd'
-schemaURL='https://qa3.mosip.net/v1/syncdata/latestidschema?schemaVersion=0'
-uispecURL='https://qa3.mosip.net/v1/masterdata/uispec'
-uispecPublishURL='https://qa3.mosip.net/v1/masterdata/uispec/publish'
+authURL='https://dev.mosip.net/v1/authmanager/authenticate/useridPwd'
+schemaURL='https://dev.mosip.net/v1/syncdata/latestidschema?schemaVersion=0'
+uispecURL='https://dev.mosip.net/v1/masterdata/uispec'
+uispecPublishURL='https://dev.mosip.net/v1/masterdata/uispec/publish'
 primaryLang='eng'
 secondaryLang='eng'
-username='110006'
-password='mosip'
+username='userid'
+password='password'
 
 ## Constant
 domain = 'registration-client'
