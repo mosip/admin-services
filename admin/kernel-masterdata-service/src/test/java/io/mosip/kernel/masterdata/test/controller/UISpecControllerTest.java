@@ -135,7 +135,7 @@ public class UISpecControllerTest {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/uispec")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(request))).andReturn(),
-				null);
+				"KER-UIS-010");
 
 	}
 
