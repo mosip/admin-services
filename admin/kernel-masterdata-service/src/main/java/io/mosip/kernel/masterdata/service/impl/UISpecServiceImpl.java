@@ -13,16 +13,12 @@ import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import org.hibernate.JDBCException;
-import org.hibernate.exception.ConstraintViolationException;
-import org.hibernate.exception.JDBCConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -38,7 +34,6 @@ import io.mosip.kernel.masterdata.entity.IdentitySchema;
 import io.mosip.kernel.masterdata.entity.UISpec;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.IdentitySchemaRepository;
 import io.mosip.kernel.masterdata.repository.UISpecRepository;
 import io.mosip.kernel.masterdata.service.UISpecService;
@@ -155,7 +150,7 @@ public class UISpecServiceImpl implements UISpecService {
 		uiSpecEntity.setId(UUID.randomUUID().toString());
 		uiSpecEntity.setIsDeleted(false);
 		uiSpecEntity.setEffectiveFrom(LocalDateTime.now(ZoneId.of(ZoneOffset.UTC.getId())));
-		List<UISpec> uispeclist = uiSpecRepository.findUISpecbyDomainandType(dto.getDomain(), dto.getType());
+		List<UISpec> uispeclist = uiSpecRepository.findUISpecByDomainAndType(dto.getDomain(), dto.getType());
 		if(!uispeclist.isEmpty() || uispeclist.size() !=0) {
 			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_DUPLICATE_ENTRY.getErrorCode(),
 					UISpecErrorCode.UI_SPEC_DUPLICATE_ENTRY.getErrorMessage());

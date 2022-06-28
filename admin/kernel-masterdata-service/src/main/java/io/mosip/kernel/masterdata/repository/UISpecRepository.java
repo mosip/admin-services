@@ -51,7 +51,7 @@ public interface UISpecRepository extends BaseRepository<UISpec, String> {
 	
 	
 	@Query("FROM UISpec WHERE domain = ?1 AND type = ?2 And status='DRAFT'")
-	List<UISpec> findUISpecbyDomainandType(String domain, String type);
+	List<UISpec> findUISpecByDomainAndType(String domain, String type);
 
 	@Modifying
 	@Query("UPDATE UISpec i SET i.jsonSpec=?2, i.isActive=?3 , i.updatedDateTime=?4, i.updatedBy=?5 WHERE i.id =?1 AND i.status='DRAFT' AND (i.isDeleted is null or i.isDeleted =false)")
