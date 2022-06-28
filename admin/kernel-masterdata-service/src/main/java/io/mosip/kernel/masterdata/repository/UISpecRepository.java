@@ -48,6 +48,10 @@ public interface UISpecRepository extends BaseRepository<UISpec, String> {
 	@Query("FROM UISpec WHERE domain = ?1 AND type = ?2 AND isActive = true And status='PUBLISHED' and version = (select max(b.version) from UISpec b where "
 			+ "(b.isDeleted is null OR b.isDeleted = false) AND b.domain = ?1 AND b.type =?2 AND b.isActive = true And b.status='PUBLISHED')")
 	UISpec findLatestVersion(String domain, String type);
+	
+	
+	@Query("FROM UISpec WHERE domain = ?1 AND type = ?2 And status='DRAFT'")
+	List<UISpec> findUISpecByDomainAndType(String domain, String type);
 
 	@Modifying
 	@Query("UPDATE UISpec i SET i.jsonSpec=?2, i.isActive=?3 , i.updatedDateTime=?4, i.updatedBy=?5 WHERE i.id =?1 AND i.status='DRAFT' AND (i.isDeleted is null or i.isDeleted =false)")

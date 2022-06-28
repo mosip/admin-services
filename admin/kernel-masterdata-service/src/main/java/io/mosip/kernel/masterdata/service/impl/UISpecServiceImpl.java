@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -149,6 +150,11 @@ public class UISpecServiceImpl implements UISpecService {
 		uiSpecEntity.setId(UUID.randomUUID().toString());
 		uiSpecEntity.setIsDeleted(false);
 		uiSpecEntity.setEffectiveFrom(LocalDateTime.now(ZoneId.of(ZoneOffset.UTC.getId())));
+		List<UISpec> uispeclist = uiSpecRepository.findUISpecByDomainAndType(dto.getDomain(), dto.getType());
+		if(!uispeclist.isEmpty() || uispeclist.size() !=0) {
+			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_DUPLICATE_ENTRY.getErrorCode(),
+					UISpecErrorCode.UI_SPEC_DUPLICATE_ENTRY.getErrorMessage());
+		}
 		try {
 			uiSpecRepository.save(uiSpecEntity);
 		} catch (DataAccessLayerException | DataAccessException e) {
@@ -156,7 +162,7 @@ public class UISpecServiceImpl implements UISpecService {
 			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_INSERT_EXCEPTION.getErrorCode(),
 					UISpecErrorCode.UI_SPEC_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
-		}
+		} 
 		return prepareResponse(uiSpecEntity);
 	}
 
