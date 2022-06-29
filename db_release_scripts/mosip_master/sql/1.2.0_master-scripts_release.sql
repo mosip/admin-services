@@ -1,6 +1,6 @@
 -- ---------------------------------------------------------------------------------------------------------
 -- Database Name: mosip_master
--- Release Version 	: 1.2
+-- Release Version 	: 1.2.0
 -- Purpose    		: Database Alter scripts for the release for Master DB.       
 -- Create By   		: Ram Bhatt
 -- Created Date		: March-2021
@@ -20,6 +20,12 @@
 \c mosip_master sysadmin
 -----------------------------------------------------------------------------------------------------------------------
 
+
+DROP TABLE IF EXISTS master.identity_schema_migr_bkp;
+CREATE TABLE identity_schema_migr_bkp AS (SELECT * FROM master.identity_schema);
+
+-----------------------------------------------------------------------------------------------------------------------
+
 ALTER TABLE master.template_type ALTER COLUMN code TYPE character varying(64) ;
 ALTER TABLE master.template ALTER COLUMN template_typ_code TYPE character varying(64) ;
 
@@ -35,13 +41,9 @@ TRUNCATE TABLE master.blocklisted_words cascade ;
 
 \COPY master.blocklisted_words (word,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-blocklisted_words.csv' delimiter ',' HEADER  csv;
 
+-------------------------------------------UI SPEC TABLE ----------------------------------------------
+TRUNCATE TABLE master.ui_spec cascade ;
 
---------------------------------------------UI SPEC TABLE CREATION-----------------------------------------------
-TRUNCATE TABLE master.ui_spec  cascade ;
-
----------------------------------------------------------------------------------------------------------------------
-\COPY master.ui_spec (id,version,domain,title,description,type,json_spec,identity_schema_id,identity_schema_version,effective_from,status_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) FROM './dml/master-ui_spec.csv' delimiter ',' HEADER csv;
------------------------------------------------------DATA LOAD FROM IDENTITY SCHEMA TABLE-----------------------------------------------
 INSERT into master.ui_spec (id,version,domain,title,description,type,json_spec,identity_schema_id,identity_schema_version,effective_from,status_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) SELECT id,id_version,'registration-client', title,description,'schema',id_attr_json,id,id_version,effective_from,status_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes FROM master.identity_schema;
 
 -----------------------------------------------------------DROP COLUMN-----------------------------------------------------------------
@@ -258,12 +260,9 @@ ALTER TABLE master.user_detail_h DROP COLUMN uin;
 ALTER TABLE master.user_detail_h DROP COLUMN email;
 ALTER TABLE master.user_detail_h DROP COLUMN mobile;
 
-SELECT * INTO master.template_copy
-FROM master.template;
+SELECT * INTO master.template_copy FROM master.template;
 
-DELETE 
-	FROM master.template where template_typ_code not
-like 'reg-%' and module_id='10002';
+UPDATE master.template set module_id='10001' where module_id='10002' and template_typ_code not like 'reg-%';
 
 UPDATE master.template set module_id='10002' where template_typ_code like 'reg-ack%';
 
