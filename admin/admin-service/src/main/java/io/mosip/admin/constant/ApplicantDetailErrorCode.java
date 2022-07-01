@@ -8,7 +8,10 @@ public enum ApplicantDetailErrorCode {
     DATA_NOT_FOUND("ADM-AVD-004","Applicant Photo Not Found"),
     DIGITAL_CARD_RID_NOT_FOUND("ADM-AVD-005", "Digital card not found for the RID, please try after few days"),
     DIGITAL_CARD_NOT_ACKNOWLEDGED("ADM-AVD-006", "Please acknowledge the details before downloading digital card"),
-    REQ_ID_NOT_FOUND("ADM-AVD-007","Request id not found");
+    REQ_ID_NOT_FOUND("ADM-AVD-007","Request id not found"),
+
+    LIMIT_EXCEEDED("ADM-AVD-008","Your daily limit for search has exceeded. Please retry again tomorrow.");
+
 
     private final String errorCode;
     private final String errorMessage;

@@ -81,6 +81,12 @@ public enum EventEnum {
 			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME),
 	RID_DIGITAL_CARD_REQ_SUCCESS("ADM-AVD-506", AuditConstant.AUDIT_SYSTEM, "Request for Digital Card",
 			"successfully returned the digital card", "ADM-AVD", "admin service", "NO_ID", "NO_ID_TYPE",
+			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME),
+	APPLICANT_LOGIN_DETAILS_API_CALLED("ADM-AVD-507", AuditConstant.AUDIT_SYSTEM, "Request for Applicant Login Details API",
+			"API called for Applicant Login Details", "ADM-AVD", "Admin service", "NO_ID", "NO_ID_TYPE",
+			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME),
+	APPLICANT_LOGIN_DETAILS_SUCCESS("ADM-AVD-508", AuditConstant.AUDIT_SYSTEM, "Request for Applicant Login Details API",
+			"successfully return the login details", "ADM-AVD", "admin service", "NO_ID", "NO_ID_TYPE",
 			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME);
 
 	private final String eventId;
