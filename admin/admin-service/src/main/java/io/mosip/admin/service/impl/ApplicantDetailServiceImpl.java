@@ -1,9 +1,12 @@
 package io.mosip.admin.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.admin.bulkdataupload.entity.ApplicantUserDetailsEntity;
+import io.mosip.admin.bulkdataupload.repositories.ApplicantUserDetailsRepository;
 import io.mosip.admin.constant.ApiName;
 import io.mosip.admin.constant.ApplicantDetailErrorCode;
 import io.mosip.admin.packetstatusupdater.dto.ApplicantDetailsDto;
+import io.mosip.admin.packetstatusupdater.dto.ApplicantUserDetailsDto;
 import io.mosip.admin.packetstatusupdater.dto.DigitalCardStatusResponseDto;
 import io.mosip.admin.packetstatusupdater.exception.DataNotFoundException;
 import io.mosip.admin.packetstatusupdater.exception.RequestException;
@@ -26,11 +29,16 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 
 import java.io.IOException;
 import java.net.URI;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -57,6 +65,9 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
     @Autowired
     Utility utility;
 
+    @Autowired
+    private ApplicantUserDetailsRepository applicantUserDetailsRepository;
+
     private static final String IDENTITY = "identity";
 
     private static final String RESPONSE = "response";
@@ -73,6 +84,9 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
     @Value("${mosip.admin.applicant-details.exposed-identity-fields}")
     private String[] applicantDetails;
 
+    @Value("${mosip.admin.applicant-details.max.login.count:15}")
+    private int maxcount;
+
 
     @Override
     public ApplicantDetailsDto getApplicantDetails(String rid) throws Exception {
@@ -87,6 +101,12 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
 				throw new RequestException(ApplicantDetailErrorCode.RID_INVALID.getErrorCode(),
                         ApplicantDetailErrorCode.RID_INVALID.getErrorMessage());
 			}
+           /* String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+            long count=applicantUserDetailsRepository.countApplicantLoginDetails(userId, LocalDate.now());
+            if((int)count>maxcount){
+                throw new RequestException(ApplicantDetailErrorCode.LIMIT_EXCEEDED.getErrorCode(),
+                        ApplicantDetailErrorCode.LIMIT_EXCEEDED.getErrorMessage());
+            }*/
             String response = restClient.getApi(ApiName.RETRIEVE_IDENTITY_API,pathsegments,"type","bio",String.class);
             JSONObject responseObj= objectMapper.readValue(response,JSONObject.class);
             if(response!=null && !responseObj.containsKey("response")) {
@@ -109,6 +129,7 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
                     getImageData(documents,applicantDataMap);
                 }
             }
+            saveApplicantLoginDetails();
             applicantDetailsDto.setApplicantDataMap(applicantDataMap);
         } catch (ResourceAccessException | JSONException e) {
             auditUtil.setAuditRequestDto(EventEnum.APPLICANT_VERIFICATION_ERROR);
@@ -129,19 +150,32 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
                     ApplicantDetailErrorCode.DIGITAL_CARD_NOT_ACKNOWLEDGED.getErrorCode(),
                     ApplicantDetailErrorCode.DIGITAL_CARD_NOT_ACKNOWLEDGED.getErrorMessage());
         }
-        DigitalCardStatusResponseDto digitalCardStatusResponseDto = getDigitialCardStatus(rid);
+        DigitalCardStatusResponseDto digitalCardStatusResponseDto =null;
+        //getDigitialCardStatus(rid);
         if(!digitalCardStatusResponseDto.getStatusCode().equals(AVAILABLE)) {
             auditUtil.setAuditRequestDto(EventEnum.RID_DIGITAL_CARD_REQ_EXCEPTION);
             throw new RequestException(
                     ApplicantDetailErrorCode.DIGITAL_CARD_RID_NOT_FOUND.getErrorCode(),
                     ApplicantDetailErrorCode.DIGITAL_CARD_RID_NOT_FOUND.getErrorMessage());
         }
-        data = restClient.getForObject(digitalCardStatusResponseDto.getUrl(), String.class);
+      //  data = restClient.getForObject(digitalCardStatusResponseDto.getUrl(), String.class);
         return data.getBytes();
+    }
+
+    @Override
+    public ApplicantUserDetailsDto getApplicantUserDetails() {
+        String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        long count=5;
+        ApplicantUserDetailsDto applicantUserDetailsDto=new ApplicantUserDetailsDto();
+        applicantUserDetailsDto.setMaxCount(maxcount);
+       // long count=applicantUserDetailsRepository.countApplicantLoginDetails(userId, LocalDate.now());
+        applicantUserDetailsDto.setCount((int)count);
+        return applicantUserDetailsDto;
     }
 
     private DigitalCardStatusResponseDto getDigitialCardStatus(String rid)
             throws Exception {
+
         List<String> pathsegments=new ArrayList<>();
         pathsegments.add(rid);
         String response = restClient.getApi(ApiName.DIGITAL_CARD_STATUS_URL,pathsegments,"","",String.class);
@@ -172,6 +206,16 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
         } else {
             throw new DataNotFoundException(ApplicantDetailErrorCode.DATA_NOT_FOUND.getErrorCode(), ApplicantDetailErrorCode.DATA_NOT_FOUND.getErrorMessage());
         }
+    }
+    public void saveApplicantLoginDetails(){
+        String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        ApplicantUserDetailsEntity applicantUserDetailsEntity=new ApplicantUserDetailsEntity();
+        applicantUserDetailsEntity.setUserId(userId);
+        applicantUserDetailsEntity.setLoginDate(LocalDate.now());
+        applicantUserDetailsEntity.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+        applicantUserDetailsEntity.setCreatedDateTime(LocalDateTime.now());
+        applicantUserDetailsEntity.setIsActive(true);
+        applicantUserDetailsRepository.save(applicantUserDetailsEntity);
     }
 
 }
