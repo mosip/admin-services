@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Repository
 public interface ApplicantUserDetailsRepository extends BaseRepository<ApplicantUserDetailsEntity, String> {
 
-    @Query(value = "select count(*) from master.applicant_login_detail where usr_id=?1 and login_date=?2)", nativeQuery = true)
-    long countApplicantLoginDetails(String userId, LocalDate localDate);
+
+    long countByUserIdAndLoginDate(String userId, LocalDate loginDate);
 
 }

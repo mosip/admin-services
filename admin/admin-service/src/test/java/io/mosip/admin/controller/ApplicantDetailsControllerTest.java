@@ -100,6 +100,14 @@ public class ApplicantDetailsControllerTest {
                 (mockMvc.perform(MockMvcRequestBuilders.get("/applicantVerficationDetails"+"/100011019100033202")).andReturn()),
                 "KER-IDV-304");
     }
+
+    @Test
+    @WithUserDetails(value = "global-admin")
+    public void getApplicantLoginDetails() throws Exception {
+        AdminDataUtil.checkResponse(
+                (mockMvc.perform(MockMvcRequestBuilders.get("/applicantDetails/getLoginDetails")).andReturn()),
+                null);
+    }
     @Test
     @WithUserDetails(value = "global-admin")
     public void testGetRIDDigitalCardSuccess() throws Exception {

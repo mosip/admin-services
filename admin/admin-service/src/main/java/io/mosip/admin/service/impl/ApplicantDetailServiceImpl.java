@@ -101,12 +101,12 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
 				throw new RequestException(ApplicantDetailErrorCode.RID_INVALID.getErrorCode(),
                         ApplicantDetailErrorCode.RID_INVALID.getErrorMessage());
 			}
-           /* String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-            long count=applicantUserDetailsRepository.countApplicantLoginDetails(userId, LocalDate.now());
+            String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+            long count=applicantUserDetailsRepository.countByUserIdAndLoginDate(userId, LocalDate.now());
             if((int)count>maxcount){
                 throw new RequestException(ApplicantDetailErrorCode.LIMIT_EXCEEDED.getErrorCode(),
                         ApplicantDetailErrorCode.LIMIT_EXCEEDED.getErrorMessage());
-            }*/
+            }
             String response = restClient.getApi(ApiName.RETRIEVE_IDENTITY_API,pathsegments,"type","bio",String.class);
             JSONObject responseObj= objectMapper.readValue(response,JSONObject.class);
             if(response!=null && !responseObj.containsKey("response")) {
@@ -165,10 +165,9 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
     @Override
     public ApplicantUserDetailsDto getApplicantUserDetails() {
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        long count=5;
         ApplicantUserDetailsDto applicantUserDetailsDto=new ApplicantUserDetailsDto();
         applicantUserDetailsDto.setMaxCount(maxcount);
-       // long count=applicantUserDetailsRepository.countApplicantLoginDetails(userId, LocalDate.now());
+        long count=applicantUserDetailsRepository.countByUserIdAndLoginDate(userId,LocalDate.now());
         applicantUserDetailsDto.setCount((int)count);
         return applicantUserDetailsDto;
     }
