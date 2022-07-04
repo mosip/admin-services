@@ -117,7 +117,7 @@ public class ApplicantDetailsControllerTest {
                                 Mockito.any(Class.class))).thenReturn(str);
         Mockito.when(restClient.getForObject(Mockito.any(),
                 Mockito.any(Class.class))).thenReturn(data);
-        mockMvc.perform(MockMvcRequestBuilders.post("/rid-digital-card").param("rid","11234567897").param("isAcknowledged","true")
+        mockMvc.perform(MockMvcRequestBuilders.get("/rid-digital-card/11234567897").param("isAcknowledged","true")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk()).andExpect(MockMvcResultMatchers.content()
                         .contentType(MediaType.APPLICATION_PDF_VALUE));
@@ -126,7 +126,7 @@ public class ApplicantDetailsControllerTest {
     @WithUserDetails(value = "global-admin")
     public void testGetRIDDigitalCardFailure() throws Exception {
         AdminDataUtil.checkResponse(
-                mockMvc.perform(MockMvcRequestBuilders.post("/rid-digital-card").param("rid","11234567897").param("isAcknowledged","false"))
+                mockMvc.perform(MockMvcRequestBuilders.get("/rid-digital-card/11234567897").param("isAcknowledged","false"))
                         .andReturn(),
                 "ADM-AVD-006");
     }
@@ -137,7 +137,7 @@ public class ApplicantDetailsControllerTest {
         Mockito.when(restClient.getApi(Mockito.any(), Mockito.any(), Mockito.anyString(), Mockito.any(),
                 Mockito.any(Class.class))).thenReturn(str);
         AdminDataUtil.checkResponse(
-                mockMvc.perform(MockMvcRequestBuilders.post("/rid-digital-card").param("rid","11234567897").param("isAcknowledged","true"))
+                mockMvc.perform(MockMvcRequestBuilders.get("/rid-digital-card/11234567897").param("isAcknowledged","true"))
                         .andReturn(),
                 "ADM-AVD-005");
     }
@@ -148,7 +148,7 @@ public class ApplicantDetailsControllerTest {
         Mockito.when(restClient.getApi(Mockito.any(), Mockito.any(), Mockito.anyString(), Mockito.any(),
                 Mockito.any(Class.class))).thenReturn(str);
         AdminDataUtil.checkResponse(
-                mockMvc.perform(MockMvcRequestBuilders.post("/rid-digital-card").param("rid","11234567897").param("isAcknowledged","true"))
+                mockMvc.perform(MockMvcRequestBuilders.get("/rid-digital-card/11234567897").param("isAcknowledged","true"))
                         .andReturn(),
                 "ADM-AVD-007");
     }
