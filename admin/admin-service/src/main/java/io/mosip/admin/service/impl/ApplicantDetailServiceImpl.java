@@ -21,6 +21,7 @@ import io.mosip.biometrics.util.face.FaceDecoder;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.JsonUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
@@ -103,7 +104,7 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
 			}
             String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
             long count=applicantUserDetailsRepository.countByUserIdAndLoginDate(userId, LocalDate.now());
-            if((int)count>maxcount){
+            if((int)count>=maxcount){
                 throw new RequestException(ApplicantDetailErrorCode.LIMIT_EXCEEDED.getErrorCode(),
                         ApplicantDetailErrorCode.LIMIT_EXCEEDED.getErrorMessage());
             }
@@ -144,22 +145,21 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
 
     @Override
     public byte[] getRIDDigitalCard(String rid, boolean isAcknowledged) throws Exception {
-        String data=null;
+        byte[] data=null;
         if(!isAcknowledged){
             throw new RequestException(
                     ApplicantDetailErrorCode.DIGITAL_CARD_NOT_ACKNOWLEDGED.getErrorCode(),
                     ApplicantDetailErrorCode.DIGITAL_CARD_NOT_ACKNOWLEDGED.getErrorMessage());
         }
-        DigitalCardStatusResponseDto digitalCardStatusResponseDto =null;
-        //getDigitialCardStatus(rid);
-        if(!digitalCardStatusResponseDto.getStatusCode().equals(AVAILABLE)) {
+        DigitalCardStatusResponseDto digitalCardStatusResponseDto =getDigitialCardStatus(rid);
+        if(!digitalCardStatusResponseDto.getStatusCode().equalsIgnoreCase(AVAILABLE)) {
             auditUtil.setAuditRequestDto(EventEnum.RID_DIGITAL_CARD_REQ_EXCEPTION);
             throw new RequestException(
                     ApplicantDetailErrorCode.DIGITAL_CARD_RID_NOT_FOUND.getErrorCode(),
                     ApplicantDetailErrorCode.DIGITAL_CARD_RID_NOT_FOUND.getErrorMessage());
         }
-      //  data = restClient.getForObject(digitalCardStatusResponseDto.getUrl(), String.class);
-        return data.getBytes();
+        data = restClient.getForApi(digitalCardStatusResponseDto.getUrl(), byte[].class);
+        return data;
     }
 
     @Override
