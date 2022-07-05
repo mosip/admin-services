@@ -6,16 +6,13 @@ import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.admin.packetstatusupdater.util.EventEnum;
 import io.mosip.admin.service.ApplicantDetailService;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.util.CryptoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
 
 @RestController
 public class ApplicantDetailsController {
