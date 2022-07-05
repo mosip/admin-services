@@ -103,7 +103,7 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
 			}
             String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
             long count=applicantUserDetailsRepository.countByUserIdAndLoginDate(userId, LocalDate.now());
-            if((int)count>maxcount){
+            if((int)count>=maxcount){
                 throw new RequestException(ApplicantDetailErrorCode.LIMIT_EXCEEDED.getErrorCode(),
                         ApplicantDetailErrorCode.LIMIT_EXCEEDED.getErrorMessage());
             }
