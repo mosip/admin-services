@@ -115,8 +115,8 @@ public class ApplicantDetailsControllerTest {
         String str = new String(Files.readAllBytes(Paths.get(getClass().getResource("/digitalCardStatusResponseJson.json").toURI())), StandardCharsets.UTF_8);
         Mockito.when(restClient.getApi(Mockito.any(), Mockito.any(), Mockito.anyString(), Mockito.any(),
                                 Mockito.any(Class.class))).thenReturn(str);
-        Mockito.when(restClient.getForObject(Mockito.any(),
-                Mockito.any(Class.class))).thenReturn(data);
+        Mockito.when(restClient.getForApi(Mockito.any(),
+                Mockito.any(Class.class))).thenReturn(data.getBytes());
         mockMvc.perform(MockMvcRequestBuilders.get("/rid-digital-card/11234567897").param("isAcknowledged","true")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk()).andExpect(MockMvcResultMatchers.content()
