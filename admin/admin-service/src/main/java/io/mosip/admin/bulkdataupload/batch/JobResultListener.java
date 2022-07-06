@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,9 +59,13 @@ public class JobResultListener implements JobExecutionListener {
             List<String> failures = new ArrayList<String>();
             jobExecution.getStepExecutions().forEach(step -> {
                 step.getFailureExceptions().forEach(failure -> {
-                    if (failure instanceof FlatFileParseException) {
+                    if (failure instanceof FlatFileParseException && failure.getCause() instanceof ConstraintViolationException) {
+                        failures.add("Line --> " + ((FlatFileParseException) failure).getLineNumber() +  " --> "+
+                                ((FlatFileParseException) failure).getCause().getMessage());
+                    }
+                    else if(failure instanceof FlatFileParseException){
                         failures.add("Line --> " + ((FlatFileParseException) failure).getLineNumber() +
-                                " --> Datatype mismatch / Failed to write into object");
+                                " --> Datatype mismatch/ Validation error / Failed to write into object");
                     } else
                         failures.add(failure.getCause() != null ? failure.getCause().getMessage() : failure.getMessage());
                 });

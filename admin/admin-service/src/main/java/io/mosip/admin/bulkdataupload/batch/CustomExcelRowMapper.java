@@ -16,6 +16,10 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+
 public class CustomExcelRowMapper<T>  extends DefaultPropertyEditorRegistrar implements RowMapper<T>, BeanFactoryAware, InitializingBean {
     private String name;
     private Class<? extends T> type;
@@ -24,9 +28,11 @@ public class CustomExcelRowMapper<T>  extends DefaultPropertyEditorRegistrar imp
     private int distanceLimit = 5;
     private boolean strict = true;
     private ConversionService conversionService;
+    private Validator validator;
 
-    public CustomExcelRowMapper(ConversionService conversionService) {
+    public CustomExcelRowMapper(ConversionService conversionService,Validator validator ) {
         this.conversionService = conversionService;
+        this.validator = validator;
     }
 
     public void setBeanFactory(BeanFactory beanFactory) {
@@ -55,6 +61,13 @@ public class CustomExcelRowMapper<T>  extends DefaultPropertyEditorRegistrar imp
         DataBinder binder = this.createBinder(copy);
         binder.setConversionService(this.conversionService);
         binder.bind(new MutablePropertyValues(this.getBeanProperties(copy, rs.getProperties())));
+
+	    Set<ConstraintViolation<T>> violations = validator.validate(copy);
+	    if (!violations.isEmpty()) {
+	      throw new ConstraintViolationException(violations);
+	    }
+
+        
         if (binder.getBindingResult().hasErrors()) {
             throw new BindException(binder.getBindingResult());
         } else {

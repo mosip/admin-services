@@ -1,46 +1,33 @@
 package io.mosip.admin.bulkdataupload.service.impl;
 
-import java.beans.PropertyEditor;
-import java.io.*;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-
-import io.mosip.admin.bulkdataupload.batch.CustomLineMapper;
-import io.mosip.admin.bulkdataupload.batch.JobResultListener;
-import io.mosip.admin.bulkdataupload.batch.PacketJobResultListener;
-import io.mosip.admin.bulkdataupload.batch.PacketUploadTasklet;
-import io.mosip.admin.bulkdataupload.dto.*;
-import io.mosip.admin.bulkdataupload.batch.CustomRecordSeparatorPolicy;
-import io.mosip.admin.bulkdataupload.batch.CustomChunkListener;
-import io.mosip.admin.bulkdataupload.batch.CustomExcelRowMapper;
+import io.mosip.admin.bulkdataupload.batch.*;
+import io.mosip.admin.bulkdataupload.constant.BulkUploadErrorCode;
+import io.mosip.admin.bulkdataupload.dto.BulkDataGetExtnDto;
+import io.mosip.admin.bulkdataupload.dto.BulkDataResponseDto;
+import io.mosip.admin.bulkdataupload.dto.PageDto;
+import io.mosip.admin.bulkdataupload.entity.BaseEntity;
+import io.mosip.admin.bulkdataupload.entity.BulkUploadTranscation;
+import io.mosip.admin.bulkdataupload.repositories.BulkUploadTranscationRepository;
+import io.mosip.admin.bulkdataupload.service.BulkDataService;
 import io.mosip.admin.bulkdataupload.service.PacketUploadService;
-import io.mosip.kernel.core.util.*;
-
-import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.util.LocaleUtil;
-import org.digibooster.spring.batch.security.listener.JobExecutionSecurityContextListener;
+import io.mosip.admin.config.Mapper;
+import io.mosip.admin.packetstatusupdater.exception.DataNotFoundException;
+import io.mosip.admin.packetstatusupdater.exception.RequestException;
+import io.mosip.admin.packetstatusupdater.util.AuditUtil;
+import io.mosip.admin.packetstatusupdater.util.EventEnum;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.*;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.batch.extensions.excel.mapping.BeanWrapperRowMapper;
 import org.springframework.batch.extensions.excel.poi.PoiItemReader;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
@@ -52,7 +39,6 @@ import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
@@ -71,18 +57,20 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.admin.bulkdataupload.constant.BulkUploadErrorCode;
-import io.mosip.admin.bulkdataupload.entity.BaseEntity;
-import io.mosip.admin.bulkdataupload.entity.BulkUploadTranscation;
-import io.mosip.admin.bulkdataupload.repositories.BulkUploadTranscationRepository;
-import io.mosip.admin.bulkdataupload.service.BulkDataService;
-import io.mosip.admin.config.Mapper;
-
-import io.mosip.admin.bulkdataupload.batch.RepositoryListItemWriter;
-import io.mosip.admin.packetstatusupdater.exception.DataNotFoundException;
-import io.mosip.admin.packetstatusupdater.exception.RequestException;
-import io.mosip.admin.packetstatusupdater.util.AuditUtil;
-import io.mosip.admin.packetstatusupdater.util.EventEnum;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
+import javax.validation.Validator;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 
 /**
@@ -159,6 +147,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 	@Value("${mosip.optional-languages}")
 	private String optionalLanguages;
+	
+	@Autowired
+	private Validator validator;
 
 	private Map<String, Class> entityMap = new HashMap<String, Class>();
 
@@ -471,7 +462,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
         reader.setResource(new InputStreamResource(file.getInputStream()));
         reader.setName("Excel-Reader");
         
-        CustomExcelRowMapper<Object> rowMapper = new CustomExcelRowMapper<>(customConversionService());
+        CustomExcelRowMapper<Object> rowMapper = new CustomExcelRowMapper<>(customConversionService(),validator);
         rowMapper.setTargetType(clazz);
         reader.setRowMapper(rowMapper);
         return reader;
@@ -500,7 +491,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 		fieldSetMapper.setTargetType(clazz);
 		fieldSetMapper.setConversionService(customConversionService());
 
-		CustomLineMapper<Object> lineMapper = new CustomLineMapper<Object>(setupLanguages(), null);
+		CustomLineMapper<Object> lineMapper = new CustomLineMapper<Object>(setupLanguages(), validator);
 		lineMapper.setLineTokenizer(lineTokenizer);
 		lineMapper.setFieldSetMapper(fieldSetMapper);
 		flatFileItemReader.setLineMapper(lineMapper);
