@@ -16,6 +16,11 @@ public class LanguageCharacterValidator  implements ConstraintValidator<Alphabet
 	@Override
 	public boolean isValid(String value, ConstraintValidatorContext context) {
 		if(allowedCharactersRegex==null) {
+/*         Note: An additional validation was getting triggered by doInvoke() method of 
+ * 				RepositoryListItemWriter class with allowedCharactersRegex equal to null
+ *               which is not desired. This if clause is being used to escape that additional 
+ *               validation step.
+ */
 			return true;
 		}
 		if (null != value && !value.isEmpty()) {
