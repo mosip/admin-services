@@ -65,7 +65,7 @@ public class JobResultListener implements JobExecutionListener {
                     }
                     else if(failure instanceof FlatFileParseException){
                         failures.add("Line --> " + ((FlatFileParseException) failure).getLineNumber() +
-                                " --> Datatype mismatch/ Validation error / Failed to write into object");
+                                " --> Datatype mismatch / Failed to write into object");
                     } else
                         failures.add(failure.getCause() != null ? failure.getCause().getMessage() : failure.getMessage());
                 });
