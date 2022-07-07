@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
@@ -23,8 +25,9 @@ public class ApplicantDetailsController {
     @Autowired
     ApplicantDetailService applicantDetailService;
 
+    @PreAuthorize("hasRole('DIGITALCARD_ADMIN')")
     @GetMapping("/applicantDetails/{rid}")
-    private ResponseWrapper<ApplicantDetailsDto> getApplicantDetails(@PathVariable("rid") String rid) throws Exception {
+    public ResponseWrapper<ApplicantDetailsDto> getApplicantDetails(@PathVariable("rid") String rid) throws Exception {
         auditUtil.setAuditRequestDto(EventEnum.APPLICANT_VERIFICATION_API_CALLED);
         ResponseWrapper<ApplicantDetailsDto> responseWrapper = new ResponseWrapper<>();
         responseWrapper.setResponse(applicantDetailService.getApplicantDetails(rid));
@@ -32,8 +35,9 @@ public class ApplicantDetailsController {
         return responseWrapper;
     }
 
+    @PreAuthorize("hasRole('DIGITALCARD_ADMIN')")
     @GetMapping("/applicantDetails/getLoginDetails")
-    private ResponseWrapper<ApplicantUserDetailsDto> getApplicantUserDetails() throws Exception {
+    public ResponseWrapper<ApplicantUserDetailsDto> getApplicantUserDetails() throws Exception {
         auditUtil.setAuditRequestDto(EventEnum.APPLICANT_LOGIN_DETAILS_API_CALLED);
         ResponseWrapper<ApplicantUserDetailsDto> responseWrapper = new ResponseWrapper<>();
         responseWrapper.setResponse(applicantDetailService.getApplicantUserDetails());
@@ -41,6 +45,7 @@ public class ApplicantDetailsController {
         return responseWrapper;
     }
 
+    @PreAuthorize("hasRole('DIGITALCARD_ADMIN')")
     @GetMapping("/rid-digital-card/{rid}")
     public ResponseEntity<Object> getRIDDigitalCard(
            @PathVariable("rid") String rid,@RequestParam("isAcknowledged") boolean isAcknowledged) throws Exception {

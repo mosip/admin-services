@@ -13,10 +13,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.admin.util.RestClient;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -71,6 +73,9 @@ public class PacketStatusIntegrationTest {
 	
 	@Autowired
 	private MockMvc mockMvc;
+
+	@MockBean
+	RestClient restClient;
 	
 	private String POSITIVE_RESPONSE_REG_PROC="{\r\n  \"id\": \"mosip.registration.transaction\",\r\n  \"version\": \"1.0\",\r\n  \"responsetime\": \"2019-12-11T09:45:45.544Z\",\r\n  \"response\": [\r\n    {\r\n      \"id\": \"60c5f55d-8f22-48d0-8b55-edcd724417bc\",\r\n      \"registrationId\": \"10002100320002420191210085947\",\r\n      \"transactionTypeCode\": \"PACKET_RECEIVER\",\r\n      \"parentTransactionId\": null,\r\n      \"statusCode\": \"SUCCESS\",\r\n      \"statusComment\": \"Packet has reached Packet Receiver\",\r\n      \"createdDateTimes\": \"2019-12-10T09:05:06.709\"\r\n    },\r\n    {\r\n      \"id\": \"7aa593d7-8f1e-413a-abca-34b752caa795\",\r\n      \"registrationId\": \"10002100320002420191210085947\",\r\n      \"transactionTypeCode\": \"PACKET_RECEIVER\",\r\n      \"parentTransactionId\": \"60c5f55d-8f22-48d0-8b55-edcd724417bc\",\r\n      \"statusCode\": \"SUCCESS\",\r\n      \"statusComment\": \"Packet is Uploaded to Landing Zone\",\r\n      \"createdDateTimes\": \"2019-12-10T09:05:08.038\"\r\n    }\r\n  ],\r\n  \"errors\": null\r\n}";
 	
@@ -78,15 +83,16 @@ public class PacketStatusIntegrationTest {
 	
 	private String POSITIVE_RESPONSE_ZONE_VALIATION="{\r\n    \"id\": null,\r\n    \"version\": null,\r\n    \"responsetime\": \"2019-12-02T09:45:24.512Z\",\r\n    \"metadata\": null,\r\n    \"response\": true,\r\n    \"errors\": []\r\n}";
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		mockRestServiceServer=MockRestServiceServer.bindTo(restTemplate).build();
+		String response="{}";
 		ServiceError serviceError= new ServiceError();
 		serviceError.setErrorCode("KER-MSD-403");
 		serviceError.setMessage("Forbidden");
 		validationErrorList= new ArrayList<ServiceError>();
 		validationErrorList.add(serviceError);
 		doNothing().when(auditUtil).setAuditRequestDto(EventEnum.ACCESS_DENIED);
-		
+		Mockito.when(restClient.getForObject( Mockito.anyString(),Mockito.any(Class.class))).thenReturn(response);
 	}
 	
 	@Test

@@ -66,7 +66,7 @@ public class ApplicantDetailsControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "global-admin")
+    @WithUserDetails(value = "digitalcard-admin")
     public void getApplicantDetailsTest() throws Exception {
         String str = new String(Files.readAllBytes(Paths.get(getClass().getResource("/identity.json").toURI())), StandardCharsets.UTF_8);
         mockRestServiceServer.expect(requestTo(retrieveIdentityUrl+"/10001101910003320220425050433?type=bio"))
@@ -77,7 +77,7 @@ public class ApplicantDetailsControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "global-admin")
+    @WithUserDetails(value = "digitalcard-admin")
     public void getApplicantDetailsWithEmptyIdentityJsonTest() throws Exception {
         String str = new String(Files.readAllBytes(Paths.get(getClass().getResource("/emptyIdentity.json").toURI())), StandardCharsets.UTF_8);
         mockRestServiceServer.expect(requestTo(retrieveIdentityUrl+"/10001101910003320220425050433?type=bio"))
@@ -87,14 +87,14 @@ public class ApplicantDetailsControllerTest {
                 "ADM-AVD-003");
     }
     @Test
-    @WithUserDetails(value = "global-admin")
+    @WithUserDetails(value = "digitalcard-admin")
     public void getApplicantDetailsFailTest() throws Exception {
         AdminDataUtil.checkResponse(
                 (mockMvc.perform(MockMvcRequestBuilders.get("/applicantVerficationDetails"+"/10001101910003320220425050433")).andReturn()),
                 "KER-MSD-500");
     }
     @Test
-    @WithUserDetails(value = "global-admin")
+    @WithUserDetails(value = "digitalcard-admin")
     public void getApplicantDetailsWithInvalidRidTest() throws Exception {
         AdminDataUtil.checkResponse(
                 (mockMvc.perform(MockMvcRequestBuilders.get("/applicantVerficationDetails"+"/100011019100033202")).andReturn()),
@@ -102,14 +102,14 @@ public class ApplicantDetailsControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "global-admin")
+    @WithUserDetails(value = "digitalcard-admin")
     public void getApplicantLoginDetails() throws Exception {
         AdminDataUtil.checkResponse(
                 (mockMvc.perform(MockMvcRequestBuilders.get("/applicantDetails/getLoginDetails")).andReturn()),
                 null);
     }
     @Test
-    @WithUserDetails(value = "global-admin")
+    @WithUserDetails(value = "digitalcard-admin")
     public void testGetRIDDigitalCardSuccess() throws Exception {
         String data="dHN0bWFzIGRzYWttZ2FzIGRma3M=";
         String str = new String(Files.readAllBytes(Paths.get(getClass().getResource("/digitalCardStatusResponseJson.json").toURI())), StandardCharsets.UTF_8);
@@ -123,7 +123,7 @@ public class ApplicantDetailsControllerTest {
                         .contentType(MediaType.APPLICATION_PDF_VALUE));
     }
     @Test
-    @WithUserDetails(value = "global-admin")
+    @WithUserDetails(value = "digitalcard-admin")
     public void testGetRIDDigitalCardFailure() throws Exception {
         AdminDataUtil.checkResponse(
                 mockMvc.perform(MockMvcRequestBuilders.get("/rid-digital-card/11234567897").param("isAcknowledged","false"))
@@ -131,7 +131,7 @@ public class ApplicantDetailsControllerTest {
                 "ADM-AVD-006");
     }
     @Test
-    @WithUserDetails(value = "global-admin")
+    @WithUserDetails(value = "digitalcard-admin")
     public void testGetRIDDigitalCardNotFoundFailure() throws Exception {
         String str = new String(Files.readAllBytes(Paths.get(getClass().getResource("/digitalCardStatusUnavailableResponseJson.json").toURI())), StandardCharsets.UTF_8);
         Mockito.when(restClient.getApi(Mockito.any(), Mockito.any(), Mockito.anyString(), Mockito.any(),
@@ -142,7 +142,7 @@ public class ApplicantDetailsControllerTest {
                 "ADM-AVD-005");
     }
     @Test
-    @WithUserDetails(value = "global-admin")
+    @WithUserDetails(value = "digitalcard-admin")
     public void testGetRIDDigitalCardFailureEmptyResponse() throws Exception {
         String str = new String(Files.readAllBytes(Paths.get(getClass().getResource("/emptyResponse.json").toURI())), StandardCharsets.UTF_8);
         Mockito.when(restClient.getApi(Mockito.any(), Mockito.any(), Mockito.anyString(), Mockito.any(),
