@@ -51,9 +51,6 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
     RestClient restClient;
 
     @Autowired
-    private RidValidator<String> ridValidator;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
@@ -98,10 +95,6 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
         pathsegments.add(rid);
         String imageData=null;
         try {
-			if (!ridValidator.validateId(rid)) {
-				throw new RequestException(ApplicantDetailErrorCode.RID_INVALID.getErrorCode(),
-                        ApplicantDetailErrorCode.RID_INVALID.getErrorMessage());
-			}
             String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
             long count=applicantUserDetailsRepository.countByUserIdAndLoginDate(userId, LocalDate.now());
             if((int)count>=maxcount){
