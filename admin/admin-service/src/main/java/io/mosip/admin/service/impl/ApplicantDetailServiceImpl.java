@@ -18,11 +18,7 @@ import io.mosip.admin.util.RestClient;
 import io.mosip.admin.util.Utility;
 import io.mosip.biometrics.util.ConvertRequestDto;
 import io.mosip.biometrics.util.face.FaceDecoder;
-import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.idvalidator.spi.RidValidator;
-import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.JsonUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 import org.json.JSONException;
@@ -34,10 +30,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
-
-import java.io.IOException;
-import java.net.URI;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -49,9 +41,6 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
 
     @Autowired
     RestClient restClient;
-
-    @Autowired
-    private RidValidator<String> ridValidator;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -98,10 +87,6 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
         pathsegments.add(rid);
         String imageData=null;
         try {
-			if (!ridValidator.validateId(rid)) {
-				throw new RequestException(ApplicantDetailErrorCode.RID_INVALID.getErrorCode(),
-                        ApplicantDetailErrorCode.RID_INVALID.getErrorMessage());
-			}
             String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
             long count=applicantUserDetailsRepository.countByUserIdAndLoginDate(userId, LocalDate.now());
             if((int)count>=maxcount){
