@@ -1,16 +1,16 @@
 package io.mosip.admin.bulkdataupload.entity;
 
-import java.io.Serializable;
+import io.mosip.admin.validator.AlphabeticValidator;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import java.io.Serializable;
 
 /**
  * Entity class for blocklisted words.
@@ -37,6 +37,7 @@ public class BlocklistedWords extends BaseEntity implements Serializable {
 	 */
 	@Id
 	@Column(name = "word", length = 128)
+	@AlphabeticValidator(message = "Blocklisted word can only contain Alphabets")
 	private String word;
 
 	/**

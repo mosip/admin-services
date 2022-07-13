@@ -7,20 +7,26 @@ import org.springframework.batch.item.file.transform.LineTokenizer;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class CustomLineMapper <T> implements LineMapper<T>, InitializingBean {
 
     private LineTokenizer tokenizer;
 
     private FieldSetMapper<T> fieldSetMapper;
+    
 
     private List<String> supportedLanguages;
 
     private Validator validator;
+    
+    
 
     public CustomLineMapper(List<String> languages, Validator validator) {
         this.supportedLanguages = languages;
@@ -34,6 +40,10 @@ public class CustomLineMapper <T> implements LineMapper<T>, InitializingBean {
 
         if(Arrays.stream(Objects.requireNonNull(values)).anyMatch( v -> v.isBlank()))
             throw new Exception("Blank values are not allowed");
+	    Set<ConstraintViolation<T>> violations = validator.validate(fieldSetMapper.mapFieldSet(tokenizer.tokenize(line)));
+	    if (!violations.isEmpty()) {
+	      throw new ConstraintViolationException(violations);
+	    }
 
         for(int i = 0; i < fieldSet.getNames().length; i++) {
             String columnName = fieldSet.getNames()[i];

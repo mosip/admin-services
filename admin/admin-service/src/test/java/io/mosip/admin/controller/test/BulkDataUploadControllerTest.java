@@ -311,5 +311,17 @@ public class BulkDataUploadControllerTest {
 		transactionId = jsonResponse.get("transcationId").toString();
 		AdminDataUtil.checkResponse(response,null);
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t0017uploadDataTest() throws Exception {
+		String content="word,description,langCode,isActive,isDeleted\r\n" +
+				"Some Random Words,Test,eng,TRUE,FALSE\r\n";
+		MockMultipartFile blocklisted_words = new MockMultipartFile("data", "filename.csv", "multipart/form-data", content.getBytes());
+		AdminDataUtil.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(blocklisted_words).param("tableName","blocklisted_words").param("operation","insert").param("category","masterdata")).andReturn(),
+				"ADM-BLK-007");
+
+	}
 
 }
