@@ -28,6 +28,7 @@ DROP TABLE IF EXISTS master.template_migr_bkp;
 SELECT * INTO master.template_migr_bkp FROM master.template;
 -- cleanup to map only registration-client related templates with 10002 moduleId and 
 -- other reg email and sms templates mapped to 10002 is remapped to pre-reg moduleId 10001 
+-- This cleanup is performed to avoid un-related templates to get synced in reg-client.
 UPDATE master.template set module_id='10001' where module_id='10002' and template_typ_code not like 'reg-%';
 UPDATE master.template set module_id='10002' where template_typ_code like 'reg-ack%';
 UPDATE master.template set module_id='10002' where template_typ_code like 'reg-preview%';
