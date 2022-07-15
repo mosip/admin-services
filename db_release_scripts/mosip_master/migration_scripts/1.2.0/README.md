@@ -5,7 +5,7 @@ This script should be executed after DB upgrade.
 1. Provide execute permission to `migration-dynamicfield.py`
 2. Run the script with arguments as shown below:
 
-./migration-dynamicfield.py <db-username> <db-password> <db-domain-name> <db-port>
+./migration-dynamicfield.py db-username db-password db-domain-name db-port
 
 	Ex: ./migration-dynamicfield.py postgres mosip1234 dev.mosip.net 30090
 
@@ -17,7 +17,7 @@ This script should be executed after DB upgrade.
 1. Provide execute permission to `revoke-migration-dynamicfield.py`
 2. Run the script with arguments as shown below:
 
-./revoke-migration-dynamicfield.py <db-username> <db-password> <db-domain-name> <db-port>
+./revoke-migration-dynamicfield.py db-username db-password db-domain-name db-port
 
 	Ex: ./revoke-migration-dynamicfield.py postgres mosip1234 dev.mosip.net 30090
 
