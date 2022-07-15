@@ -20,35 +20,40 @@
 \c mosip_master sysadmin
 -----------------------------------------------------------------------------------------------------------------------
 
+ALTER TABLE master.template_type ALTER COLUMN code TYPE character varying(64) ;
+ALTER TABLE master.template ALTER COLUMN template_typ_code TYPE character varying(64) ;
+
+
+DROP TABLE IF EXISTS master.template_migr_bkp;
+SELECT * INTO master.template_migr_bkp FROM master.template;
+-- cleanup to map only registration-client related templates with 10002 moduleId and 
+-- other reg email and sms templates mapped to 10002 is remapped to pre-reg moduleId 10001 
+UPDATE master.template set module_id='10001' where module_id='10002' and template_typ_code not like 'reg-%';
+UPDATE master.template set module_id='10002' where template_typ_code like 'reg-ack%';
+UPDATE master.template set module_id='10002' where template_typ_code like 'reg-preview%';
+UPDATE master.template set module_id='10002' where template_typ_code like 'reg-dashboard%';
+DROP TABLE IF EXISTS master.template_migr_bkp;
+
+--------------------------------------------------------------------------------------------------------------------
+ALTER TABLE master.blacklisted_words DROP CONSTRAINT IF EXISTS pk_blwrd_code CASCADE;
+\ir ../ddl/master-blocklisted_words.sql
+ALTER TABLE master.blocklisted_words DROP CONSTRAINT IF EXISTS pk_blwrd_code CASCADE;
+ALTER TABLE master.blocklisted_words ALTER COLUMN lang_code DROP NOT NULL;
+ALTER TABLE master.blocklisted_words ADD CONSTRAINT pk_blwrd_code PRIMARY KEY (word);
+INSERT into master.blocklisted_words (word,descr,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) SELECT distinct word,descr,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes FROM master.blacklisted_words;
+DROP TABLE IF EXISTS master.blacklisted_words;
+
+-------------------------------------------UI SPEC TABLE ----------------------------------------------
 
 DROP TABLE IF EXISTS master.identity_schema_migr_bkp;
 CREATE TABLE identity_schema_migr_bkp AS (SELECT * FROM master.identity_schema);
 
------------------------------------------------------------------------------------------------------------------------
-
-ALTER TABLE master.template_type ALTER COLUMN code TYPE character varying(64) ;
-ALTER TABLE master.template ALTER COLUMN template_typ_code TYPE character varying(64) ;
-
---------------------------------------------------------------------------------------------------------------------
-ALTER TABLE master.blacklisted_words DROP CONSTRAINT IF EXISTS pk_blwrd_code CASCADE;
--------------------------------------------------------------------------------------------------------------------
 \ir ../ddl/master-ui_spec.sql
-\ir ../ddl/master-blocklisted_words.sql
-
-
------ TRUNCATE master.blocklisted_words TABLE Data and It's reference Data and COPY Data from CSV file -----
-TRUNCATE TABLE master.blocklisted_words cascade ;
-
-\COPY master.blocklisted_words (word,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-blocklisted_words.csv' delimiter ',' HEADER  csv;
-
--------------------------------------------UI SPEC TABLE ----------------------------------------------
-TRUNCATE TABLE master.ui_spec cascade ;
-
+TRUNCATE TABLE master.ui_spec cascade;
 INSERT into master.ui_spec (id,version,domain,title,description,type,json_spec,identity_schema_id,identity_schema_version,effective_from,status_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) SELECT id,id_version,'registration-client', title,description,'schema',id_attr_json,id,id_version,effective_from,status_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes FROM master.identity_schema;
 
------------------------------------------------------------DROP COLUMN-----------------------------------------------------------------
-
 ALTER TABLE master.identity_schema DROP COLUMN id_attr_json;
+DROP TABLE IF EXISTS master.identity_schema_migr_bkp;
 --------------------------------------------------------------------------------------------------------------------------------------
 
 ALTER TABLE master.bulkupload_transaction ALTER COLUMN upload_description TYPE character varying;
@@ -243,13 +248,8 @@ ALTER TABLE master.machine_master ADD CONSTRAINT uq_machm_skey_index UNIQUE (sig
 
 ALTER TABLE master.loc_holiday DROP CONSTRAINT IF EXISTS pk_lochol_id;
 ALTER TABLE master.loc_holiday ADD CONSTRAINT pk_lochol_id PRIMARY KEY (holiday_date, location_code, lang_code);
+
 ALTER TABLE master.batch_job_execution_params ALTER COLUMN string_val TYPE varchar(5000) USING string_val::varchar;
-ALTER TABLE master.blocklisted_words DROP CONSTRAINT IF EXISTS pk_blwrd_code;
-ALTER TABLE master.blocklisted_words ALTER COLUMN lang_code DROP NOT NULL;
-ALTER TABLE master.blocklisted_words ADD CONSTRAINT pk_blwrd_code PRIMARY KEY (word);
-
-INSERT into master.blocklisted_words (word,descr,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) SELECT word,descr,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes FROM master.blacklisted_words;
-
 ALTER TABLE master.batch_job_execution_params ALTER COLUMN string_val TYPE varchar(5000) USING string_val::varchar;
 
 ALTER TABLE master.user_detail DROP COLUMN uin;
@@ -260,18 +260,7 @@ ALTER TABLE master.user_detail_h DROP COLUMN uin;
 ALTER TABLE master.user_detail_h DROP COLUMN email;
 ALTER TABLE master.user_detail_h DROP COLUMN mobile;
 
-SELECT * INTO master.template_copy FROM master.template;
-
-UPDATE master.template set module_id='10001' where module_id='10002' and template_typ_code not like 'reg-%';
-
-UPDATE master.template set module_id='10002' where template_typ_code like 'reg-ack%';
-
-UPDATE master.template set module_id='10002' where template_typ_code like 'reg-preview%';
-
-UPDATE master.template set module_id='10002' where template_typ_code like 'reg-dashboard%';
-
------------------------------------------------------------------------------------------------------------------------------------------------
--------------------------------------template,template_type and module_detail----------------------------------------------------------
+------------------------------------- module_detail----------------------------------------------------------
 
 TRUNCATE TABLE master.module_detail cascade ;
 

@@ -2,8 +2,9 @@
 
 import psycopg2
 import json
+import sys
 
-conn = psycopg2.connect(database="mosip_master", user = "username", password = "password", host = "dev.mosip.net", port = "30090")
+conn = psycopg2.connect(database="mosip_master", user = sys.argv[1], password = sys.argv[2], host = sys.argv[3], port = sys.argv[4])
 
 print("Opened database successfully")
 
@@ -59,5 +60,6 @@ for row in rows:
 
 # Commit and close connection
 conn.commit()
+
 print("Closing the database connection")
 conn.close()
