@@ -2347,3 +2347,75 @@ Merci",10006,Resident Services,RS_CRE_REQ_FAILURE_EMAIL,fra,TRUE,superadmin,now(
 1243,Credential Issuance Failure EMAIL Subject,Credential Issuance Failure EMAIL Subject,txt,velocity,Credential Issuance Failed,10006,Resident Services,RS_CRE_REQ_FAILURE_EMAIL_SUB,eng,TRUE,superadmin,now()
 1243,Credential Issuance Failure EMAIL Subject,Credential Issuance Failure EMAIL Subject,txt,velocity,فشل إصدار بيانات الاعتماد,10006,Resident Services,RS_CRE_REQ_FAILURE_EMAIL_SUB,ara,TRUE,superadmin,now()
 1243,Credential Issuance Failure EMAIL Subject,Credential Issuance Failure EMAIL Subject,txt,velocity,Échec de l'émission des informations d'identification,10006,Resident Services,RS_CRE_REQ_FAILURE_EMAIL_SUB,fra,TRUE,superadmin,now()
+1244,Order a physical card,Order a physical card,txt,velocity,"1. Your chosen data will be shared with the chosen third party (print partner).
+ 2. You are responsible for any and all costs and fees associated with agreements entered into with the third-party provider.
+ 3. The delivery of the printed card will be the sole responsibility of the partner.
+ 4. Under no circumstances will we be liable for loss or misuse of data whatsoever, arising from the usage of data shared with the partner.
+ 5. If a third-party provider ceases to make its service available or requires MOSIP to suspend or terminate the provision of all or any part of its services to you that part of data or services will be terminated immediately without notice or further obligation to you.",10006,Resident Services,tnc-order-a-physical-card,eng,TRUE,superadmin,now()
+1244,Order a physical card,Order a physical card,txt,velocity,"1. ستتم مشاركة البيانات التي اخترتها مع الطرف الثالث المختار (شريك الطباعة).
+ 2. أنت مسؤول عن أي وجميع التكاليف والرسوم المرتبطة بالاتفاقيات المبرمة مع مزود الطرف الثالث.
+ 3. تسليم البطاقة المطبوعة سيكون من مسؤولية الشريك وحده.
+ 4. لن نتحمل تحت أي ظرف من الظروف المسؤولية عن فقدان البيانات أو إساءة استخدامها على الإطلاق ، الناشئة عن استخدام البيانات التي تمت مشاركتها مع الشريك.
+ 5. إذا توقف موفر الطرف الثالث عن إتاحة خدمته أو طلب من MOSIP تعليق أو إنهاء توفير كل أو أي جزء من خدماته لك ، فسيتم إنهاء هذا الجزء من البيانات أو الخدمات على الفور دون إشعار أو التزام آخر تجاهك .",10006,Resident Services,tnc-order-a-physical-card,ara,TRUE,superadmin,now()
+1244,Order a physical card,Order a physical card,txt,velocity,"1. Vos données choisies seront partagées avec le tiers choisi (partenaire d'impression).
+ 2. Vous êtes responsable de tous les coûts et frais associés aux accords conclus avec le fournisseur tiers.
+ 3. La livraison de la carte imprimée sera de la seule responsabilité du partenaire.
+ 4. Nous ne serons en aucun cas responsables de la perte ou de l'utilisation abusive des données, quelle qu'elle soit, résultant de l'utilisation des données partagées avec le partenaire.
+ 5. Si un fournisseur tiers cesse de mettre son service à disposition ou exige que MOSIP suspende ou résilie la fourniture de tout ou partie de ses services, cette partie des données ou des services sera immédiatement résiliée sans préavis ni autre obligation envers vous. .",10006,Resident Services,tnc-order-a-physical-card,fra,TRUE,superadmin,now()
+1244,Order a physical card,Order a physical card,txt,velocity,"1. आपका चुना हुआ डेटा चुने हुए तीसरे पक्ष (प्रिंट पार्टनर) के साथ साझा किया जाएगा।
+ 2. आप तृतीय-पक्ष प्रदाता के साथ किए गए समझौतों से जुड़ी किसी भी और सभी लागतों और शुल्क के लिए जिम्मेदार हैं।
+ 3. मुद्रित कार्ड की सुपुर्दगी की एकमात्र जिम्मेदारी भागीदार की होगी।
+ 4. पार्टनर के साथ साझा किए गए डेटा के उपयोग से उत्पन्न होने वाले डेटा के नुकसान या दुरुपयोग के लिए हम किसी भी परिस्थिति में उत्तरदायी नहीं होंगे।
+ 5. यदि कोई तृतीय-पक्ष प्रदाता अपनी सेवा उपलब्ध कराना बंद कर देता है या MOSIP को आपकी सेवाओं के सभी या किसी भी हिस्से के प्रावधान को निलंबित या समाप्त करने की आवश्यकता होती है, तो डेटा या सेवाओं का वह हिस्सा बिना किसी सूचना या आपके लिए आगे की बाध्यता के तुरंत समाप्त कर दिया जाएगा। ।",10006,Resident Services,tnc-order-a-physical-card,hin,TRUE,superadmin,now()
+1244,Order a physical card,Order a physical card,txt,velocity,"1. ನಿಮ್ಮ ಆಯ್ಕೆಮಾಡಿದ ಡೇಟಾವನ್ನು ಆಯ್ಕೆಮಾಡಿದ ಮೂರನೇ ವ್ಯಕ್ತಿಯೊಂದಿಗೆ ಹಂಚಿಕೊಳ್ಳಲಾಗುತ್ತದೆ (ಮುದ್ರಣ ಪಾಲುದಾರ).
+ 2. ಮೂರನೇ ವ್ಯಕ್ತಿಯ ಪೂರೈಕೆದಾರರೊಂದಿಗೆ ಮಾಡಿಕೊಂಡಿರುವ ಒಪ್ಪಂದಗಳಿಗೆ ಸಂಬಂಧಿಸಿದ ಯಾವುದೇ ಮತ್ತು ಎಲ್ಲಾ ವೆಚ್ಚಗಳು ಮತ್ತು ಶುಲ್ಕಗಳಿಗೆ ನೀವು ಜವಾಬ್ದಾರರಾಗಿರುತ್ತೀರಿ.
+ 3. ಮುದ್ರಿತ ಕಾರ್ಡ್‌ನ ವಿತರಣೆಯು ಪಾಲುದಾರರ ಸಂಪೂರ್ಣ ಜವಾಬ್ದಾರಿಯಾಗಿರುತ್ತದೆ.
+ 4. ಪಾಲುದಾರರೊಂದಿಗೆ ಹಂಚಿಕೊಂಡ ಡೇಟಾದ ಬಳಕೆಯಿಂದ ಉಂಟಾಗುವ ಡೇಟಾದ ನಷ್ಟ ಅಥವಾ ದುರ್ಬಳಕೆಗೆ ನಾವು ಯಾವುದೇ ಸಂದರ್ಭಗಳಲ್ಲಿ ಜವಾಬ್ದಾರರಾಗಿರುವುದಿಲ್ಲ.
+ 5. ಥರ್ಡ್-ಪಾರ್ಟಿ ಪ್ರೊವೈಡರ್ ತನ್ನ ಸೇವೆಯನ್ನು ಲಭ್ಯವಾಗುವಂತೆ ಮಾಡುವುದನ್ನು ನಿಲ್ಲಿಸಿದರೆ ಅಥವಾ MOSIP ನಿಮಗೆ ಅದರ ಎಲ್ಲಾ ಅಥವಾ ಯಾವುದೇ ಭಾಗದ ಸೇವೆಗಳ ನಿಬಂಧನೆಯನ್ನು ಅಮಾನತುಗೊಳಿಸಲು ಅಥವಾ ಅಂತ್ಯಗೊಳಿಸಲು ಅಗತ್ಯವಿದ್ದರೆ ಡೇಟಾ ಅಥವಾ ಸೇವೆಗಳ ಭಾಗವನ್ನು ನಿಮಗೆ ಸೂಚನೆ ಅಥವಾ ಹೆಚ್ಚಿನ ಬಾಧ್ಯತೆ ಇಲ್ಲದೆ ತಕ್ಷಣವೇ ಕೊನೆಗೊಳಿಸಲಾಗುತ್ತದೆ .",10006,Resident Services,tnc-order-a-physical-card,kan,TRUE,superadmin,now()
+1244,Order a physical card,Order a physical card,txt,velocity,"1. நீங்கள் தேர்ந்தெடுத்த தரவு தேர்ந்தெடுக்கப்பட்ட மூன்றாம் தரப்பினருடன் (அச்சு பார்ட்னர்) பகிரப்படும்.
+ 2. மூன்றாம் தரப்பு வழங்குனருடன் செய்துகொள்ளப்பட்ட ஒப்பந்தங்களுடன் தொடர்புடைய அனைத்து செலவுகள் மற்றும் கட்டணங்களுக்கு நீங்கள் பொறுப்பாவீர்கள்.
+ 3. அச்சிடப்பட்ட அட்டையை வழங்குவது பங்குதாரரின் முழுப் பொறுப்பாகும்.
+ 4. கூட்டாளருடன் பகிரப்பட்ட தரவைப் பயன்படுத்துவதால் ஏற்படும் தரவு இழப்பு அல்லது தவறான பயன்பாட்டிற்கு எந்தச் சூழ்நிலையிலும் நாங்கள் பொறுப்பாக மாட்டோம்.
+ 5. ஒரு மூன்றாம் தரப்பு வழங்குநர் தனது சேவையை வழங்குவதை நிறுத்தினால் அல்லது MOSIP ஆனது அதன் அனைத்து அல்லது எந்தப் பகுதியையும் உங்களுக்கு வழங்குவதை இடைநிறுத்தவோ அல்லது நிறுத்தவோ தேவைப்பட்டால், தரவு அல்லது சேவைகளின் ஒரு பகுதி உங்களுக்கு அறிவிப்பு அல்லது கூடுதல் பொறுப்பு இல்லாமல் உடனடியாக நிறுத்தப்படும். .",10006,Resident Services,tnc-order-a-physical-card,tam,TRUE,superadmin,now()
+1245,Share your credential with a partner,Share your credential with a partner,txt,velocity,"1. Your data will be shared with the chosen third party (credential partner)
+ 2. You are responsible for any and all costs and fees associated with agreements entered into with the third-party provider.
+ 3. Under no circumstances will we be liable for loss or misuse of data whatsoever, arising from the usage of data shared with the partner.
+ 4. If a third-party provider ceases to make its service available or requires MOSIP to suspend or terminate the provision of all or any part of its services to you that part of data or services will be terminated immediately without notice or further obligation to you.",10006,Resident Services,tnc-share-cred-with-partner,eng,TRUE,superadmin,now()
+1245,Share your credential with a partner,Share your credential with a partner,txt,velocity,"1. ستتم مشاركة بياناتك مع الطرف الثالث المختار (الشريك المعتمد)
+ 2. أنت مسؤول عن أي وجميع التكاليف والرسوم المرتبطة بالاتفاقيات المبرمة مع مزود الطرف الثالث.
+ 3. لن نتحمل تحت أي ظرف من الظروف المسؤولية عن فقدان البيانات أو إساءة استخدامها على الإطلاق ، الناشئة عن استخدام البيانات التي تمت مشاركتها مع الشريك.
+ 4. إذا توقف موفر الطرف الثالث عن إتاحة خدمته أو طلب من MOSIP تعليق أو إنهاء توفير كل أو أي جزء من خدماته لك ، فسيتم إنهاء هذا الجزء من البيانات أو الخدمات على الفور دون إشعار أو التزام آخر تجاهك .",10006,Resident Services,tnc-share-cred-with-partner,ara,TRUE,superadmin,now()
+1245,Share your credential with a partner,Share your credential with a partner,txt,velocity,"1. Vos données seront partagées avec le tiers choisi (partenaire d'identification)
+ 2. Vous êtes responsable de tous les coûts et frais associés aux accords conclus avec le fournisseur tiers.
+ 3. Nous ne serons en aucun cas responsables de la perte ou de l'utilisation abusive des données, quelle qu'elle soit, résultant de l'utilisation des données partagées avec le partenaire.
+ 4. Si un fournisseur tiers cesse de mettre son service à disposition ou exige que MOSIP suspende ou résilie la fourniture de tout ou partie de ses services, cette partie des données ou des services sera immédiatement résiliée sans préavis ni autre obligation envers vous. .",10006,Resident Services,tnc-share-cred-with-partner,fra,TRUE,superadmin,now()
+1245,Share your credential with a partner,Share your credential with a partner,txt,velocity,"1. आपका डेटा चुने हुए तीसरे पक्ष (क्रेडेंशियल पार्टनर) के साथ साझा किया जाएगा
+ 2. आप तृतीय-पक्ष प्रदाता के साथ किए गए समझौतों से जुड़ी किसी भी और सभी लागतों और शुल्क के लिए जिम्मेदार हैं।
+ 3. पार्टनर के साथ साझा किए गए डेटा के उपयोग से उत्पन्न होने वाले डेटा के नुकसान या दुरुपयोग के लिए हम किसी भी परिस्थिति में उत्तरदायी नहीं होंगे।
+ 4. यदि कोई तृतीय-पक्ष प्रदाता अपनी सेवा उपलब्ध कराना बंद कर देता है या MOSIP को आपकी सेवाओं के सभी या किसी भी हिस्से के प्रावधान को निलंबित या समाप्त करने की आवश्यकता होती है, तो डेटा या सेवाओं का वह हिस्सा बिना किसी सूचना या आपके लिए आगे की बाध्यता के तुरंत समाप्त कर दिया जाएगा। ।",10006,Resident Services,tnc-share-cred-with-partner,hin,TRUE,superadmin,now()
+1245,Share your credential with a partner,Share your credential with a partner,txt,velocity,"1. ನಿಮ್ಮ ಡೇಟಾವನ್ನು ಆಯ್ಕೆ ಮಾಡಿದ ಮೂರನೇ ವ್ಯಕ್ತಿಯೊಂದಿಗೆ ಹಂಚಿಕೊಳ್ಳಲಾಗುತ್ತದೆ (ರುಜುವಾತು ಪಾಲುದಾರ)
+ 2. ಮೂರನೇ ವ್ಯಕ್ತಿಯ ಪೂರೈಕೆದಾರರೊಂದಿಗೆ ಮಾಡಿಕೊಂಡಿರುವ ಒಪ್ಪಂದಗಳಿಗೆ ಸಂಬಂಧಿಸಿದ ಯಾವುದೇ ಮತ್ತು ಎಲ್ಲಾ ವೆಚ್ಚಗಳು ಮತ್ತು ಶುಲ್ಕಗಳಿಗೆ ನೀವು ಜವಾಬ್ದಾರರಾಗಿರುತ್ತೀರಿ.
+ 3. ಪಾಲುದಾರರೊಂದಿಗೆ ಹಂಚಿಕೊಂಡ ಡೇಟಾದ ಬಳಕೆಯಿಂದ ಉಂಟಾಗುವ ಡೇಟಾದ ನಷ್ಟ ಅಥವಾ ದುರುಪಯೋಗಕ್ಕೆ ನಾವು ಯಾವುದೇ ಸಂದರ್ಭಗಳಲ್ಲಿ ಜವಾಬ್ದಾರರಾಗಿರುವುದಿಲ್ಲ.
+ 4. ಥರ್ಡ್-ಪಾರ್ಟಿ ಪ್ರೊವೈಡರ್ ತನ್ನ ಸೇವೆಯನ್ನು ಲಭ್ಯವಾಗುವಂತೆ ಮಾಡುವುದನ್ನು ನಿಲ್ಲಿಸಿದರೆ ಅಥವಾ MOSIP ನಿಮಗೆ ಅದರ ಎಲ್ಲಾ ಅಥವಾ ಯಾವುದೇ ಭಾಗದ ಸೇವೆಗಳ ನಿಬಂಧನೆಯನ್ನು ಅಮಾನತುಗೊಳಿಸಲು ಅಥವಾ ಅಂತ್ಯಗೊಳಿಸಲು ಅಗತ್ಯವಿದ್ದರೆ ಡೇಟಾ ಅಥವಾ ಸೇವೆಗಳ ಭಾಗವನ್ನು ತಕ್ಷಣವೇ ನಿಮಗೆ ಸೂಚನೆ ಅಥವಾ ಹೆಚ್ಚಿನ ಬಾಧ್ಯತೆ ಇಲ್ಲದೆ ಕೊನೆಗೊಳಿಸಲಾಗುತ್ತದೆ .",10006,Resident Services,tnc-share-cred-with-partner,kan,TRUE,superadmin,now()
+1245,Share your credential with a partner,Share your credential with a partner,txt,velocity,"1. உங்கள் தரவு தேர்ந்தெடுக்கப்பட்ட மூன்றாம் தரப்பினருடன் (நற்சான்றிதழ் கூட்டாளர்) பகிரப்படும்
+ 2. மூன்றாம் தரப்பு வழங்குனருடன் செய்துகொள்ளப்பட்ட ஒப்பந்தங்களுடன் தொடர்புடைய அனைத்து செலவுகள் மற்றும் கட்டணங்களுக்கு நீங்கள் பொறுப்பாவீர்கள்.
+ 3. கூட்டாளருடன் பகிரப்பட்ட தரவைப் பயன்படுத்துவதால் ஏற்படும் தரவு இழப்பு அல்லது தவறான பயன்பாட்டிற்கு எந்தச் சூழ்நிலையிலும் நாங்கள் பொறுப்பேற்க மாட்டோம்.
+ 4. ஒரு மூன்றாம் தரப்பு வழங்குநர் தனது சேவையை வழங்குவதை நிறுத்தினால் அல்லது MOSIP ஆனது அதன் அனைத்து அல்லது எந்தப் பகுதியையும் உங்களுக்கு வழங்குவதை இடைநிறுத்தவோ அல்லது நிறுத்தவோ தேவைப்பட்டால், தரவு அல்லது சேவைகளின் ஒரு பகுதி உங்களுக்கு அறிவிப்பு அல்லது கூடுதல் பொறுப்பு இல்லாமல் உடனடியாக நிறுத்தப்படும். .",10006,Resident Services,tnc-share-cred-with-partner,tam,TRUE,superadmin,now()
+1246,Update demographic data,Update demographic data,txt,velocity,"1. The data chosen by you will be updated after the Proof of address or Proof of Identity is duly verified.
+ 2. You are responsible for any and all costs and fees associated with an agreement to update your data.
+ 3. You are responsible for any changes made to your already existing personal data or uploaded document to support the same.",10006,Resident Services,tnc-update-demo,eng,TRUE,superadmin,now()
+1246,Update demographic data,Update demographic data,txt,velocity,"1. سيتم تحديث البيانات التي اخترتها بعد التحقق من إثبات العنوان أو إثبات الهوية على النحو الواجب.
+ 2. أنت مسؤول عن أي وجميع التكاليف والرسوم المرتبطة باتفاقية لتحديث بياناتك.
+ 3. أنت مسؤول عن أي تغييرات يتم إجراؤها على بياناتك الشخصية الموجودة بالفعل أو المستند الذي تم تحميله لدعمها "".",10006,Resident Services,tnc-update-demo,ara,TRUE,superadmin,now()
+1246,Update demographic data,Update demographic data,txt,velocity,"1. Les données que vous avez choisies seront mises à jour après que le justificatif de domicile ou la preuve d'identité aura été dûment vérifié.
+ 2. Vous êtes responsable de tous les coûts et frais associés à un accord de mise à jour de vos données.
+ 3. Vous êtes responsable de toute modification apportée à vos données personnelles déjà existantes ou à un document téléchargé pour les prendre en charge.",10006,Resident Services,tnc-update-demo,fra,TRUE,superadmin,now()
+1246,Update demographic data,Update demographic data,txt,velocity,"1. आपके द्वारा चुने गए डेटा को पते के प्रमाण या पहचान के प्रमाण के विधिवत सत्यापित होने के बाद अपडेट किया जाएगा।
+ 2. आप अपने डेटा को अपडेट करने के लिए एक समझौते से जुड़े किसी भी और सभी लागतों और शुल्क के लिए जिम्मेदार हैं।
+ 3. आप अपने पहले से मौजूद व्यक्तिगत डेटा या उसके समर्थन के लिए अपलोड किए गए दस्तावेज़ में किए गए किसी भी बदलाव के लिए जिम्मेदार हैं।",10006,Resident Services,tnc-update-demo,hin,TRUE,superadmin,now()
+1246,Update demographic data,Update demographic data,txt,velocity,"1. ವಿಳಾಸದ ಪುರಾವೆ ಅಥವಾ ಗುರುತಿನ ಪುರಾವೆಯನ್ನು ಸರಿಯಾಗಿ ಪರಿಶೀಲಿಸಿದ ನಂತರ ನೀವು ಆಯ್ಕೆ ಮಾಡಿದ ಡೇಟಾವನ್ನು ನವೀಕರಿಸಲಾಗುತ್ತದೆ.
+ 2. ನಿಮ್ಮ ಡೇಟಾವನ್ನು ನವೀಕರಿಸಲು ಒಪ್ಪಂದಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಯಾವುದೇ ಮತ್ತು ಎಲ್ಲಾ ವೆಚ್ಚಗಳು ಮತ್ತು ಶುಲ್ಕಗಳಿಗೆ ನೀವು ಜವಾಬ್ದಾರರಾಗಿರುತ್ತೀರಿ.
+ 3. ನಿಮ್ಮ ಈಗಾಗಲೇ ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ವೈಯಕ್ತಿಕ ಡೇಟಾ ಅಥವಾ ಅದನ್ನು ಬೆಂಬಲಿಸಲು ಅಪ್‌ಲೋಡ್ ಮಾಡಿದ ಡಾಕ್ಯುಮೆಂಟ್‌ಗೆ ಮಾಡಿದ ಯಾವುದೇ ಬದಲಾವಣೆಗಳಿಗೆ ನೀವು ಜವಾಬ್ದಾರರಾಗಿರುತ್ತೀರಿ.",10006,Resident Services,tnc-update-demo,kan,TRUE,superadmin,now()
+1246,Update demographic data,Update demographic data,txt,velocity,"1. நீங்கள் தேர்ந்தெடுத்த தரவு முகவரிச் சான்று அல்லது அடையாளச் சான்று முறையாகச் சரிபார்க்கப்பட்ட பிறகு புதுப்பிக்கப்படும்.
+ 2. உங்கள் தரவைப் புதுப்பிப்பதற்கான ஒப்பந்தத்துடன் தொடர்புடைய அனைத்து செலவுகள் மற்றும் கட்டணங்களுக்கு நீங்கள் பொறுப்பாவீர்கள்.
+ 3. ஏற்கனவே உள்ள உங்கள் தனிப்பட்ட தரவு அல்லது பதிவேற்றிய ஆவணத்தில் ஏதேனும் மாற்றங்கள் செய்யப்பட்டால் அதற்கு நீங்களே பொறுப்பு.",10006,Resident Services,tnc-update-demo,tam,TRUE,superadmin,now()
