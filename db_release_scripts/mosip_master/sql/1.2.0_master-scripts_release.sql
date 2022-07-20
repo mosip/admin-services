@@ -26,6 +26,15 @@ ALTER TABLE master.template ALTER COLUMN template_typ_code TYPE character varyin
 
 DROP TABLE IF EXISTS master.template_migr_bkp;
 SELECT * INTO master.template_migr_bkp FROM master.template;
+
+
+ALTER TABLE master.template DROP CONSTRAINT IF EXISTS fk_tmplt_moddtl CASCADE;
+TRUNCATE TABLE master.module_detail cascade ;
+\COPY master.module_detail (id,name,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-module_detail.csv' delimiter ',' HEADER  csv;
+ALTER TABLE master.template ADD CONSTRAINT fk_tmplt_moddtl FOREIGN KEY (module_id,lang_code)
+REFERENCES master.module_detail (id,lang_code) MATCH SIMPLE
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
 -- cleanup to map only registration-client related templates with 10002 moduleId and 
 -- other reg email and sms templates mapped to 10002 is remapped to pre-reg moduleId 10001 
 -- This cleanup is performed to avoid un-related templates to get synced in reg-client.
@@ -87,7 +96,6 @@ ALTER TABLE master.user_detail ALTER COLUMN lang_code DROP NOT NULL;
 
 ALTER TABLE master.user_detail DROP CONSTRAINT IF EXISTS fk_usrdtl_center CASCADE;
 ALTER TABLE master.zone_user DROP CONSTRAINT IF EXISTS fk_zoneuser_zone CASCADE;
-ALTER TABLE master.template DROP CONSTRAINT IF EXISTS fk_tmplt_moddtl CASCADE;
 
 --------------------------------------------LANG CODE NULLABLE AND CHANGE PK CONSTRAINTS ---------------------------------
 
@@ -187,12 +195,6 @@ ALTER TABLE master.user_detail DROP COLUMN mobile;
 ALTER TABLE master.user_detail_h DROP COLUMN uin;
 ALTER TABLE master.user_detail_h DROP COLUMN email;
 ALTER TABLE master.user_detail_h DROP COLUMN mobile;
-
-------------------------------------- module_detail----------------------------------------------------------
-
-TRUNCATE TABLE master.module_detail cascade ;
-
-\COPY master.module_detail (id,name,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-module_detail.csv' delimiter ',' HEADER  csv;
 
 ----------------------------------------------CREATION OF PERMITTED LOCAL CONFIG -------------------------------------------------------------
 
