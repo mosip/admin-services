@@ -130,6 +130,10 @@ SELECT * INTO master.device_type FROM master.device_type_migr_bkp;
 SELECT * INTO master.device_spec FROM master.device_spec_migr_bkp;
 SELECT * INTO master.device_master FROM master.device_master_migr_bkp;
 
+DROP TABLE IF EXISTS master.device_type_migr_bkp;
+DROP TABLE IF EXISTS master.device_spec_migr_bkp;
+DROP TABLE IF EXISTS master.device_master_migr_bkp;
+
 ----------------------------------------------------------
 
 ALTER TABLE master.machine_type ALTER COLUMN lang_code NOT NULL;
@@ -172,3 +176,7 @@ truncate table master.machine_type;
 SELECT * INTO master.machine_type FROM master.machine_type_migr_bkp;
 SELECT * INTO master.machine_spec FROM master.machine_spec_migr_bkp;
 SELECT * INTO master.machine_master FROM master.machine_master_migr_bkp;
+
+DROP TABLE IF EXISTS master.machine_type_migr_bkp;
+DROP TABLE IF EXISTS master.machine_spec_migr_bkp;
+DROP TABLE IF EXISTS master.machine_master_migr_bkp;
