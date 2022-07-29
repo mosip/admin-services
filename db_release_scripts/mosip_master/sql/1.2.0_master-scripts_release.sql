@@ -49,18 +49,18 @@ UPDATE master.template set module_id='10002' where template_typ_code like 'reg-d
 --------------------------------------------------------------------------------------------------------------------
 
 ALTER TABLE master.blacklisted_words DROP CONSTRAINT IF EXISTS pk_blwrd_code CASCADE;
-\ir ../ddl/master-blocklisted_words.sql
+\ir ./ddl/master-blocklisted_words.sql
 ALTER TABLE master.blocklisted_words DROP CONSTRAINT IF EXISTS pk_blwrd_code CASCADE;
 ALTER TABLE master.blocklisted_words ALTER COLUMN lang_code DROP NOT NULL;
 INSERT into master.blocklisted_words (word,descr,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) SELECT distinct word,descr,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes FROM master.blacklisted_words;
-DELETE FROM master.blocklisted_words where lang_code != :primary_language_code;
+DELETE FROM master.blocklisted_words where lang_code!=:'primary_language_code';
 ALTER TABLE master.blocklisted_words ADD CONSTRAINT pk_blwrd_code PRIMARY KEY (word);
 
 -------------------------------------------UI SPEC TABLE ----------------------------------------------
 
 SELECT * INTO master.identity_schema_migr_bkp FROM master.identity_schema;
 
-\ir ../ddl/master-ui_spec.sql
+\ir ./ddl/master-ui_spec.sql
 TRUNCATE TABLE master.ui_spec cascade;
 INSERT into master.ui_spec (id,version,domain,title,description,type,json_spec,identity_schema_id,identity_schema_version,effective_from,status_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) SELECT id,id_version,'registration-client', title,description,'schema',id_attr_json,id,id_version,effective_from,status_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes FROM master.identity_schema;
 
@@ -79,7 +79,7 @@ SELECT * INTO master.biometric_type_migr_bkp FROM master.biometric_type;
 
 ALTER TABLE master.biometric_type DROP CONSTRAINT IF EXISTS pk_bmtyp_code CASCADE;
 ALTER TABLE master.biometric_type ALTER COLUMN lang_code DROP NOT NULL;
-DELETE FROM master.biometric_type where lang_code != :primary_language_code;
+DELETE FROM master.biometric_type where lang_code!=:'primary_language_code';
 ALTER TABLE master.biometric_type ADD CONSTRAINT pk_bmtyp_code PRIMARY KEY (code);
 
 ALTER TABLE master.biometric_attribute DROP CONSTRAINT IF EXISTS fk_bmattr_bmtyp CASCADE;
@@ -91,7 +91,7 @@ SELECT * INTO master.reg_exceptional_holiday_migr_bkp FROM master.reg_exceptiona
 
 ALTER TABLE master.reg_exceptional_holiday DROP CONSTRAINT IF EXISTS fk_regeh_regcntr CASCADE;
 ALTER TABLE master.reg_exceptional_holiday DROP CONSTRAINT IF EXISTS pk_exceptional_hol;
-DELETE FROM master.reg_exceptional_holiday where lang_code != :primary_language_code;
+DELETE FROM master.reg_exceptional_holiday where lang_code!=:'primary_language_code';
 ALTER TABLE master.reg_exceptional_holiday ALTER COLUMN lang_code DROP NOT NULL;
 ALTER TABLE master.reg_exceptional_holiday ADD CONSTRAINT pk_exceptional_hol PRIMARY KEY (regcntr_id,hol_date);
 
@@ -135,21 +135,21 @@ ALTER TABLE master.device_master DROP CONSTRAINT IF EXISTS pk_devicem_id;
 ALTER TABLE master.device_type ALTER COLUMN lang_code DROP NOT NULL;
 ALTER TABLE master.device_spec ALTER COLUMN lang_code DROP NOT NULL;
 ALTER TABLE master.device_master ALTER COLUMN lang_code DROP NOT NULL;
-DELETE FROM master.device_type where lang_code != :primary_language_code;
-DELETE FROM master.device_spec where lang_code != :primary_language_code;
+DELETE FROM master.device_type where lang_code!=:'primary_language_code';
+DELETE FROM master.device_spec where lang_code!=:'primary_language_code';
 ALTER TABLE master.device_type ADD CONSTRAINT pk_dtyp_code PRIMARY KEY (code);
 ALTER TABLE master.device_spec ADD CONSTRAINT pk_dspec_code PRIMARY KEY (id);
 ALTER TABLE master.device_spec ADD CONSTRAINT fk_dspec_dtyp FOREIGN KEY (dtyp_code)
 REFERENCES master.device_type (code) MATCH SIMPLE
 ON DELETE NO ACTION ON UPDATE NO ACTION;
-DELETE FROM master.device_master where lang_code != :primary_language_code;
+DELETE FROM master.device_master where lang_code!=:'primary_language_code';
 ALTER TABLE master.device_master ADD CONSTRAINT pk_devicem_id PRIMARY KEY (id);
 ALTER TABLE master.device_master ADD CONSTRAINT fk_devicem_dspec FOREIGN KEY (dspec_id)
 REFERENCES master.device_spec (id) MATCH SIMPLE
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 
-DELETE FROM master.device_master_h where lang_code != :primary_language_code;
+DELETE FROM master.device_master_h where lang_code!=:'primary_language_code';
 ALTER TABLE master.device_master_h DROP CONSTRAINT IF EXISTS pk_devicem_h_id CASCADE;
 ALTER TABLE master.device_master_h ALTER COLUMN lang_code DROP NOT NULL;
 ALTER TABLE master.device_master_h ADD CONSTRAINT pk_devicem_h_id PRIMARY KEY (id,eff_dtimes);
@@ -170,9 +170,9 @@ ALTER TABLE master.machine_master DROP CONSTRAINT IF EXISTS pk_machm_id;
 ALTER TABLE master.machine_type ALTER COLUMN lang_code DROP NOT NULL;
 ALTER TABLE master.machine_master ALTER COLUMN lang_code DROP NOT NULL;
 ALTER TABLE master.machine_spec ALTER COLUMN lang_code DROP NOT NULL;
-DELETE FROM master.machine_type where lang_code != :primary_language_code;
-DELETE FROM master.machine_spec where lang_code != :primary_language_code;
-DELETE FROM master.machine_master where lang_code != :primary_language_code;
+DELETE FROM master.machine_type where lang_code!=:'primary_language_code';
+DELETE FROM master.machine_spec where lang_code!=:'primary_language_code';
+DELETE FROM master.machine_master where lang_code!=:'primary_language_code';
 ALTER TABLE master.machine_type ADD CONSTRAINT pk_mtyp_code PRIMARY KEY (code);
 ALTER TABLE master.machine_spec ADD CONSTRAINT pk_mspec_code PRIMARY KEY (id);
 ALTER TABLE master.machine_master ADD CONSTRAINT pk_machm_id PRIMARY KEY (id);
@@ -183,7 +183,7 @@ ALTER TABLE master.machine_master ADD CONSTRAINT fk_machm_mspec FOREIGN KEY (msp
 REFERENCES master.machine_spec (id) MATCH SIMPLE
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 
-DELETE FROM master.machine_master_h where lang_code != :primary_language_code;
+DELETE FROM master.machine_master_h where lang_code!=:'primary_language_code';
 ALTER TABLE master.machine_master_h DROP CONSTRAINT IF EXISTS pk_machm_h_id CASCADE;
 ALTER TABLE master.machine_master_h ALTER COLUMN lang_code DROP NOT NULL;
 ALTER TABLE master.machine_master_h ADD CONSTRAINT pk_machm_h_id PRIMARY KEY (id,eff_dtimes);
@@ -192,6 +192,11 @@ ALTER TABLE master.machine_master_h ADD CONSTRAINT pk_machm_h_id PRIMARY KEY (id
 ALTER TABLE master.machine_master DROP CONSTRAINT IF EXISTS uq_machm_name;
 ALTER TABLE master.machine_master DROP CONSTRAINT IF EXISTS uq_machm_key_index;
 ALTER TABLE master.machine_master DROP CONSTRAINT IF EXISTS uq_machm_skey_index;
+
+SELECT * INTO master.machine_master_migr_dupes FROM (SELECT *, count(*) OVER (PARTITION BY name) AS count FROM machine_master) machine_master_count WHERE machine_master_count.count > 1;
+
+DELETE FROM machine_master WHERE id IN (SELECT id FROM (SELECT id, ROW_NUMBER() OVER( PARTITION BY name  ORDER BY  id ) AS row_num FROM machine_master ) t WHERE t.row_num > 1 );
+
 ALTER TABLE master.machine_master ADD CONSTRAINT uq_machm_name UNIQUE (name);
 ALTER TABLE master.machine_master ADD CONSTRAINT uq_machm_key_index UNIQUE (key_index);
 ALTER TABLE master.machine_master ADD CONSTRAINT uq_machm_skey_index UNIQUE (sign_key_index);
@@ -203,9 +208,17 @@ ALTER TABLE master.batch_job_execution_params ALTER COLUMN string_val TYPE varch
 
 ----------------------------------------------CREATION OF PERMITTED LOCAL CONFIG -------------------------------------------------------------
 
-\ir ../ddl/master-permitted_local_config.sql
+\ir ./ddl/master-permitted_local_config.sql
 
 -------------------------------------------------------------------------------------------------------------------------------------------
+SELECT * INTO master.loc_holiday_migr_bkp FROM master.loc_holiday;
 
 ALTER TABLE master.loc_holiday DROP CONSTRAINT IF EXISTS pk_lochol_id;
+
+SELECT * INTO master.loc_holiday_migr_dupes FROM (SELECT *, count(*) OVER (PARTITION BY holiday_date, location_code, lang_code) AS count FROM loc_holiday) loc_holiday_count WHERE loc_holiday_count.count > 1;
+
+DELETE FROM loc_holiday WHERE id IN (SELECT id FROM (SELECT id, ROW_NUMBER() OVER( PARTITION BY holiday_date, location_code, lang_code ORDER BY  id ) AS row_num FROM loc_holiday ) t WHERE t.row_num > 1 );
+
 ALTER TABLE master.loc_holiday ADD CONSTRAINT pk_lochol_id PRIMARY KEY (holiday_date, location_code, lang_code);
+
+-------------------------------------------------------------------------------------------------------------------------------------------
