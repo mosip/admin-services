@@ -3,6 +3,7 @@ package io.mosip.kernel.syncdata.dto;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import io.mosip.kernel.clientcrypto.constant.ClientType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,5 +30,14 @@ public class RegistrationCenterMachineDto extends BaseDto {
 
 	@NotNull
 	private String publicKey;
+
+	@NotNull
+	private String machineSpecId;
+
+	@NotNull
+	private String machineTypeId;
+
+	@NotNull
+	private ClientType clientType;
 
 }

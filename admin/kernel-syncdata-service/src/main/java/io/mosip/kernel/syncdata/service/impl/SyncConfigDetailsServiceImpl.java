@@ -17,6 +17,7 @@ import io.mosip.kernel.syncdata.exception.RequestException;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.service.helper.KeymanagerHelper;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
+import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
@@ -218,8 +218,8 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 		JSONObject globalConfig = new JSONObject();
 		JSONObject regConfig = parsePropertiesString(getConfigDetailsResponse(regCenterfileName));
 		//This is not completely removed only for backward compatibility, all the configs will be part of registrationConfiguration
-		config.put("globalConfiguration", getEncryptedData(globalConfig, machines.get(0).getPublicKey()));
-		config.put("registrationConfiguration", getEncryptedData(regConfig, machines.get(0).getPublicKey()));
+		config.put("globalConfiguration", getEncryptedData(globalConfig, machines.get(0)));
+		config.put("registrationConfiguration", getEncryptedData(regConfig, machines.get(0)));
 		ConfigDto configDto = new ConfigDto();
 		configDto.setConfigDetail(config);
 		LOGGER.info("Get ConfigDetails() {} completed", keyIndex);
@@ -242,14 +242,14 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 				.contentType(MediaType.TEXT_PLAIN)
 				.header("file-signature",
 						keymanagerHelper.getFileSignature(HMACUtils2.digestAsPlainText(content.getBytes(StandardCharsets.UTF_8))))
-				.body(isEncrypted ?	getEncryptedData(content, machines.get(0).getPublicKey()) : content);
+				.body(isEncrypted ?	getEncryptedData(content, machines.get(0)) : content);
 	}
 
 
-	private String getEncryptedData(JSONObject config, String publicKey) {
+	private String getEncryptedData(JSONObject config, Machine machine) {
 		try {
 			String json = mapper.getObjectAsJsonString(config);
-			return getEncryptedData(json, publicKey);
+			return getEncryptedData(json, machine);
 		} catch (Exception e) {
 			LOGGER.error("Failed to convert json to string", e);
 		}
@@ -257,11 +257,12 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 				SyncConfigDetailsErrorCode.SYNC_SERIALIZATION_ERROR.getErrorMessage());
 	}
 
-	private String getEncryptedData(String data, String publicKey) {
+	private String getEncryptedData(String data, Machine machine) {
 		try {
 			TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
 			tpmCryptoRequestDto.setValue(CryptoUtil.encodeToURLSafeBase64(data.getBytes()));
-			tpmCryptoRequestDto.setPublicKey(publicKey);
+			tpmCryptoRequestDto.setPublicKey(machine.getPublicKey());
+			tpmCryptoRequestDto.setClientType(SyncMasterDataServiceHelper.getClientType(machine));
 			TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
 			return tpmCryptoResponseDto.getValue();
 		} catch (Exception e) {

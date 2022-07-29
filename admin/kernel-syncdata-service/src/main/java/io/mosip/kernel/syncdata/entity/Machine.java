@@ -104,7 +104,7 @@ public class Machine extends BaseEntity implements Serializable {
 	@Column(name = "regcntr_id", length = 10)
 	private String regCenterId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "mspec_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private MachineSpecification machineSpecification;
 

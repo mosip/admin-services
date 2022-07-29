@@ -73,7 +73,7 @@ fi
 if [ ${ALTER_SCRIPT_FLAG} == 1 ]
 then
     echo `date "+%m/%d/%Y %H:%M:%S"` ": Deploying Alter scripts for ${MOSIP_DB_NAME} database" | tee -a $LOG 2>&1
-    PGPASSWORD=$SYSADMIN_PWD psql --username=$SYSADMIN_USER --host=$DB_SERVERIP --port=$DB_PORT --dbname=$DEFAULT_DB_NAME -a -b -f $ALTER_SCRIPT_FILENAME_VERSION >> $LOG 2>&1
+    PGPASSWORD=$SYSADMIN_PWD psql --username=$SYSADMIN_USER --host=$DB_SERVERIP --port=$DB_PORT --dbname=$DEFAULT_DB_NAME -v primary_language_code=$PRIMARY_LANGUAGE_CODE -a -b -f $ALTER_SCRIPT_FILENAME_VERSION >> $LOG 2>&1
 else
     echo `date "+%m/%d/%Y %H:%M:%S"` ": There are no alter scripts available for this deployment at ${MOSIP_DB_NAME}" | tee -a $LOG 2>&1
 fi

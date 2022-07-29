@@ -120,6 +120,8 @@ public class ClientSettingsHelper {
 						? getURLDetails(PermittedLocalConfig.class)
 						: serviceHelper.getPermittedConfig(lastUpdated, currentTimestamp));
 
+		futuresMap.put(Language.class, serviceHelper.getLanguageList(lastUpdated, currentTimestamp));
+
 		// to handle backward compatibility
 		if (!isV2API) {
 			// template_file_format & template_type
@@ -135,6 +137,10 @@ public class ClientSettingsHelper {
 					serviceHelper.getRegistrationCenterMachines(regCenterId, lastUpdated, currentTimestamp, machineId));
 			futuresMap.put(RegistrationCenterUser.class,
 					serviceHelper.getRegistrationCenterUsers(regCenterId, lastUpdated, currentTimestamp));
+
+			futuresMap.put(DocumentCategory.class,
+					hasURLDetails(DocumentCategory.class, isV2API, deltaSync) ? getURLDetails(DocumentCategory.class)
+							: serviceHelper.getDocumentCategories(lastUpdated, currentTimestamp));
 
 			// valid_document
 			futuresMap.put(ValidDocument.class,
@@ -153,7 +159,7 @@ public class ClientSettingsHelper {
 		return futuresMap;
 	}
 
-	public List<SyncDataBaseDto> retrieveData(Map<Class, CompletableFuture> futures, String publicKey, boolean isV2API)
+	public List<SyncDataBaseDto> retrieveData(Map<Class, CompletableFuture> futures, RegistrationCenterMachineDto regCenterMachineDto, boolean isV2API)
 			throws RuntimeException {
 		final List<SyncDataBaseDto> list = new ArrayList<>();
 		futures.entrySet().parallelStream().forEach(entry -> {
@@ -167,18 +173,18 @@ public class ClientSettingsHelper {
 					switch (entityType) {
 					case "structured-url":
 					case "dynamic-url":
-						list.add(getEncryptedSyncDataBaseDto(entry.getKey(), publicKey, entityType, result));
+						list.add(getEncryptedSyncDataBaseDto(entry.getKey(), regCenterMachineDto, entityType, result));
 						break;
 					case "dynamic":
-						handleDynamicData((List) result, list, publicKey, isV2API);
+						handleDynamicData((List) result, list, regCenterMachineDto, isV2API);
 						break;
 					case "structured":
 						if (isV2API)
 							serviceHelper.getSyncDataBaseDtoV2(entry.getKey().getSimpleName(), entityType,
-									(List) result, publicKey, list);
+									(List) result, regCenterMachineDto, list);
 						else
 							serviceHelper.getSyncDataBaseDto(entry.getKey().getSimpleName(), entityType, (List) result,
-									publicKey, list);
+									regCenterMachineDto, list);
 						break;
 					}
 				}
@@ -193,7 +199,7 @@ public class ClientSettingsHelper {
 		return list;
 	}
 
-	private void handleDynamicData(List entities, List<SyncDataBaseDto> list, String publicKey, boolean isV2) {
+	private void handleDynamicData(List entities, List<SyncDataBaseDto> list, RegistrationCenterMachineDto registrationCenterMachineDto, boolean isV2) {
 		Map<String, List<DynamicFieldDto>> data = new HashMap<String, List<DynamicFieldDto>>();
 		entities.forEach(dto -> {
 			if (!data.containsKey(((DynamicFieldDto) dto).getName())) {
@@ -206,19 +212,20 @@ public class ClientSettingsHelper {
 
 		for (String key : data.keySet()) {
 			if (isV2)
-				serviceHelper.getSyncDataBaseDtoV2(key, "dynamic", data.get(key), publicKey, list);
+				serviceHelper.getSyncDataBaseDtoV2(key, "dynamic", data.get(key), registrationCenterMachineDto, list);
 			else
-				serviceHelper.getSyncDataBaseDto(key, "dynamic", data.get(key), publicKey, list);
+				serviceHelper.getSyncDataBaseDto(key, "dynamic", data.get(key), registrationCenterMachineDto, list);
 		}
 	}
 
-	private SyncDataBaseDto getEncryptedSyncDataBaseDto(Class clazz, String publicKey, String entityType,
+	private SyncDataBaseDto getEncryptedSyncDataBaseDto(Class clazz, RegistrationCenterMachineDto registrationCenterMachineDto, String entityType,
 			Object urlDetails) {
 		try {
 			TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
 			tpmCryptoRequestDto
 					.setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(urlDetails).getBytes()));
-			tpmCryptoRequestDto.setPublicKey(publicKey);
+			tpmCryptoRequestDto.setPublicKey(registrationCenterMachineDto.getPublicKey());
+			tpmCryptoRequestDto.setClientType(registrationCenterMachineDto.getClientType());
 			TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
 			return new SyncDataBaseDto(clazz.getSimpleName(), entityType, tpmCryptoResponseDto.getValue());
 		} catch (Exception e) {

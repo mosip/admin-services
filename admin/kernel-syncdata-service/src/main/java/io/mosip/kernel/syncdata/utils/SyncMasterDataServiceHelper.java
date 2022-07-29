@@ -10,6 +10,9 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import io.mosip.kernel.clientcrypto.constant.ClientType;
+import io.mosip.kernel.syncdata.dto.*;
+import io.mosip.kernel.syncdata.entity.*;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,55 +41,7 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.constant.AdminServiceErrorCode;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
-import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
-import io.mosip.kernel.syncdata.dto.AppRolePriorityDto;
-import io.mosip.kernel.syncdata.dto.ApplicantValidDocumentDto;
-import io.mosip.kernel.syncdata.dto.BlacklistedWordsDto;
-import io.mosip.kernel.syncdata.dto.DocumentTypeDto;
-import io.mosip.kernel.syncdata.dto.DynamicFieldDto;
-import io.mosip.kernel.syncdata.dto.EntityDtimes;
-import io.mosip.kernel.syncdata.dto.HolidayDto;
-import io.mosip.kernel.syncdata.dto.LocationDto;
-import io.mosip.kernel.syncdata.dto.LocationHierarchyDto;
-import io.mosip.kernel.syncdata.dto.LocationHierarchyLevelResponseDto;
-import io.mosip.kernel.syncdata.dto.MachineDto;
-import io.mosip.kernel.syncdata.dto.PageDto;
-import io.mosip.kernel.syncdata.dto.PermittedConfigDto;
-import io.mosip.kernel.syncdata.dto.PostReasonCategoryDto;
-import io.mosip.kernel.syncdata.dto.ProcessListDto;
-import io.mosip.kernel.syncdata.dto.ReasonListDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
-import io.mosip.kernel.syncdata.dto.ScreenAuthorizationDto;
-import io.mosip.kernel.syncdata.dto.ScreenDetailDto;
-import io.mosip.kernel.syncdata.dto.SyncJobDefDto;
-import io.mosip.kernel.syncdata.dto.TemplateDto;
-import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
-import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
-import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.response.SyncDataBaseDto;
-import io.mosip.kernel.syncdata.entity.AppAuthenticationMethod;
-import io.mosip.kernel.syncdata.entity.AppRolePriority;
-import io.mosip.kernel.syncdata.entity.ApplicantValidDocument;
-import io.mosip.kernel.syncdata.entity.BlocklistedWords;
-import io.mosip.kernel.syncdata.entity.DocumentType;
-import io.mosip.kernel.syncdata.entity.Holiday;
-import io.mosip.kernel.syncdata.entity.Location;
-import io.mosip.kernel.syncdata.entity.Machine;
-import io.mosip.kernel.syncdata.entity.PermittedLocalConfig;
-import io.mosip.kernel.syncdata.entity.ProcessList;
-import io.mosip.kernel.syncdata.entity.ReasonCategory;
-import io.mosip.kernel.syncdata.entity.ReasonList;
-import io.mosip.kernel.syncdata.entity.RegistrationCenter;
-import io.mosip.kernel.syncdata.entity.ScreenAuthorization;
-import io.mosip.kernel.syncdata.entity.ScreenDetail;
-import io.mosip.kernel.syncdata.entity.SyncJobDef;
-import io.mosip.kernel.syncdata.entity.Template;
-import io.mosip.kernel.syncdata.entity.TemplateFileFormat;
-import io.mosip.kernel.syncdata.entity.TemplateType;
-import io.mosip.kernel.syncdata.entity.UserDetails;
-import io.mosip.kernel.syncdata.entity.ValidDocument;
 import io.mosip.kernel.syncdata.exception.AdminServiceException;
 import io.mosip.kernel.syncdata.exception.RequestException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
@@ -252,6 +207,8 @@ public class SyncMasterDataServiceHelper {
 	@Value("${mosip.kernel.syncdata-service-dynamicfield-url}")
 	private String dynamicfieldUrl;
 
+	private static final String ANDROID_MACHINE_TYPE_CODE = "ANDROID";
+
 
 
 	/**
@@ -387,7 +344,7 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch registration center detail.
 	 *
-	 * @param machineId        machine id
+	 * @param centerId        Center Id
 	 * @param lastUpdated      lastUpdated timestamp
 	 * @param currentTimeStamp the current time stamp
 	 * @return list of {@link RegistrationCenterDto}
@@ -775,6 +732,54 @@ public class SyncMasterDataServiceHelper {
 				documentTypeDtos.add(entityDTO);
 			});
 			return documentTypeDtos;
+		}
+		return null;
+	}
+
+	/**
+	 * Method to fetch document type
+	 *
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
+	 * @return list of {@link DocumentTypeDto}
+	 */
+	@Async
+	public CompletableFuture<List<DocumentCategoryDto>> getDocumentCategories(LocalDateTime lastUpdated,
+																	 LocalDateTime currentTimeStamp) {
+		List<DocumentCategory> documentCategories = null;
+		try {
+			if(!isChangesFound("DocumentCategory", lastUpdated)) {
+				return CompletableFuture.completedFuture(null);
+			}
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			documentCategories = documentCategoryRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
+			throw new SyncDataServiceException(MasterDataErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
+					e.getMessage(), e);
+		}
+		return CompletableFuture.completedFuture(convertDocumentCategoryEntityToDto(documentCategories));
+	}
+
+	/**
+	 * copy the documentCategory Entity properties to documentCategoryDTO
+	 * @param documentCategories
+	 * @return
+	 */
+	private List<DocumentCategoryDto> convertDocumentCategoryEntityToDto(List<DocumentCategory> documentCategories) {
+		if (documentCategories != null && !documentCategories.isEmpty()) {
+			List<DocumentCategoryDto> documentCategoryDtos = new ArrayList<>();
+			documentCategories.stream().forEach(entity -> {
+				DocumentCategoryDto entityDTO = new DocumentCategoryDto(entity.getCode(), entity.getName(), entity.getDescription());
+				entityDTO.setIsDeleted(entity.getIsDeleted());
+				entityDTO.setIsActive(entity.getIsActive());
+				entityDTO.setLangCode(entity.getLangCode());
+				documentCategoryDtos.add(entityDTO);
+			});
+			return documentCategoryDtos;
 		}
 		return null;
 	}
@@ -1427,8 +1432,43 @@ public class SyncMasterDataServiceHelper {
 		return null;
 	}
 
+	@Async
+	public CompletableFuture<List<LanguageDto>> getLanguageList(LocalDateTime lastUpdatedTime,
+																LocalDateTime currentTimeStamp) {
+		List<Language> list = null;
+		try {
+			if(!isChangesFound("Language", lastUpdatedTime)) {
+				return CompletableFuture.completedFuture(null);
+			}
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			list = languageRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime, currentTimeStamp);
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
+			throw new SyncDataServiceException(MasterDataErrorCode.PROCESS_LIST_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.PROCESS_LIST_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return CompletableFuture.completedFuture(convertLanguageEntityToDto(list));
+	}
+
+	private List<LanguageDto> convertLanguageEntityToDto(List<Language> languageList) {
+		if (languageList != null && !languageList.isEmpty()) {
+			List<LanguageDto> dtoList = new ArrayList<>();
+			languageList.stream().forEach(entity -> {
+				LanguageDto entityDTO = new LanguageDto(entity.getCode(), entity.getName(), entity.getFamily(), entity.getNativeName());
+				entityDTO.setIsDeleted(entity.getIsDeleted());
+				entityDTO.setIsActive(entity.getIsActive());
+				dtoList.add(entityDTO);
+			});
+			return dtoList;
+		}
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
-	public void getSyncDataBaseDto(String entityName, String entityType, List entities, String publicKey, List result) {
+	public void getSyncDataBaseDto(String entityName, String entityType, List entities, RegistrationCenterMachineDto
+			registrationCenterMachineDto, List result) {
 		if (null != entities) {
 			List<String> list = Collections.synchronizedList(new ArrayList<String>());
 			entities.parallelStream().filter(Objects::nonNull).forEach(obj -> {
@@ -1447,7 +1487,8 @@ public class SyncMasterDataServiceHelper {
 					TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
 					tpmCryptoRequestDto
 							.setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(list).getBytes()));
-					tpmCryptoRequestDto.setPublicKey(publicKey);
+					tpmCryptoRequestDto.setPublicKey(registrationCenterMachineDto.getPublicKey());
+					tpmCryptoRequestDto.setClientType(registrationCenterMachineDto.getClientType());
 					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService
 							.csEncrypt(tpmCryptoRequestDto);
 
@@ -1461,7 +1502,8 @@ public class SyncMasterDataServiceHelper {
 		}
 	}
 
-	public void getSyncDataBaseDtoV2(String entityName, String entityType, List entities, String publicKey, List result) {
+	public void getSyncDataBaseDtoV2(String entityName, String entityType, List entities, RegistrationCenterMachineDto
+			registrationCenterMachineDto, List result) {
 		if (null != entities) {
 			try {
 				entities = (List) entities.parallelStream().filter(Objects::nonNull).collect(Collectors.toList());
@@ -1469,9 +1511,9 @@ public class SyncMasterDataServiceHelper {
 					TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
 					tpmCryptoRequestDto
 							.setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(entities).getBytes()));
-					tpmCryptoRequestDto.setPublicKey(publicKey);
-					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService
-							.csEncrypt(tpmCryptoRequestDto);
+					tpmCryptoRequestDto.setPublicKey(registrationCenterMachineDto.getPublicKey());
+					tpmCryptoRequestDto.setClientType(registrationCenterMachineDto.getClientType());
+					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
 					result.add(new SyncDataBaseDto(entityName, entityType, tpmCryptoResponseDto.getValue()));
 				}
 			} catch (Exception e) {
@@ -1495,16 +1537,15 @@ public class SyncMasterDataServiceHelper {
 	public RegistrationCenterMachineDto getRegistrationCenterMachine(String registrationCenterId, String keyIndex)
 			throws SyncDataServiceException {
 		try {
+			//get the machine entry without status check
+			Machine machine = machineRepository.findOneByKeyIndexIgnoreCase(keyIndex);
 
-			List<Object[]> regCenterMachines = machineRepository
-					.getRegistrationCenterMachineWithKeyIndexWithoutStatusCheck(keyIndex);
-
-			if (regCenterMachines.isEmpty()) {
+			if (machine == null) {
 				throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
 						MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
 			}
 
-			String mappedRegCenterId = (String) ((Object[]) regCenterMachines.get(0))[0];
+			String mappedRegCenterId = machine.getRegCenterId();
 
 			if (mappedRegCenterId == null)
 				throw new RequestException(MasterDataErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
@@ -1514,9 +1555,9 @@ public class SyncMasterDataServiceHelper {
 				throw new RequestException(MasterDataErrorCode.REG_CENTER_UPDATED.getErrorCode(),
 						MasterDataErrorCode.REG_CENTER_UPDATED.getErrorMessage());
 
-			return new RegistrationCenterMachineDto(mappedRegCenterId,
-					(String) ((Object[]) regCenterMachines.get(0))[1],
-					(String) ((Object[]) regCenterMachines.get(0))[2]);
+			return new RegistrationCenterMachineDto(mappedRegCenterId,machine.getId(), machine.getPublicKey(),
+					machine.getMachineSpecId(), machine.getMachineSpecification() != null ?
+					machine.getMachineSpecification().getMachineTypeCode() : null, getClientType(machine));
 
 		} catch (DataAccessException | DataAccessLayerException e) {
 			logger.error("Failed to fetch registrationCenterMachine : ", e);
@@ -1524,6 +1565,16 @@ public class SyncMasterDataServiceHelper {
 
 		throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
 				MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorMessage());
+	}
+
+	public static ClientType getClientType(Machine machine) {
+		if(machine.getMachineSpecification() == null)
+			return null;
+
+		if(ANDROID_MACHINE_TYPE_CODE.equalsIgnoreCase(machine.getMachineSpecification().getMachineTypeCode()))
+			return ClientType.ANDROID;
+
+		return null;
 	}
 
 	private boolean isChangesFound(String entityName, LocalDateTime lastUpdated) {
@@ -1594,6 +1645,12 @@ public class SyncMasterDataServiceHelper {
 				break;
 			case "ValidDocument":
 				result = validDocumentRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				break;
+			case "Language":
+				result = languageRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				break;
+			case "DocumentCategory":
+				result = documentCategoryRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
 				break;
 		}
 		if(result == null) {

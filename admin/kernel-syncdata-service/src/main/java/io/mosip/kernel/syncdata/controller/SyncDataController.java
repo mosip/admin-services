@@ -262,6 +262,7 @@ public class SyncDataController {
 			@RequestParam(value = "version", required = false) String clientVersion)
 			throws Throwable {
 		MDC.put("client_version", clientVersion == null ? "NA": clientVersion);
+		MDC.put("key_index", keyIndex == null ? "NA": keyIndex);
 		LocalDateTime currentTimeStamp = lastUpdated==null ? syncJobHelperService.getFullSyncCurrentTimestamp() :
 				syncJobHelperService.getDeltaSyncCurrentTimestamp();
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
