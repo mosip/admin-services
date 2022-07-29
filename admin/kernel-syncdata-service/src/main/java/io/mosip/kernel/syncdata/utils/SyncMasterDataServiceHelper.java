@@ -737,6 +737,54 @@ public class SyncMasterDataServiceHelper {
 	}
 
 	/**
+	 * Method to fetch document type
+	 *
+	 * @param lastUpdated      lastUpdated timestamp
+	 * @param currentTimeStamp - current time stamp
+	 * @return list of {@link DocumentTypeDto}
+	 */
+	@Async
+	public CompletableFuture<List<DocumentCategoryDto>> getDocumentCategories(LocalDateTime lastUpdated,
+																	 LocalDateTime currentTimeStamp) {
+		List<DocumentCategory> documentCategories = null;
+		try {
+			if(!isChangesFound("DocumentCategory", lastUpdated)) {
+				return CompletableFuture.completedFuture(null);
+			}
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			documentCategories = documentCategoryRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
+			throw new SyncDataServiceException(MasterDataErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
+					e.getMessage(), e);
+		}
+		return CompletableFuture.completedFuture(convertDocumentCategoryEntityToDto(documentCategories));
+	}
+
+	/**
+	 * copy the documentCategory Entity properties to documentCategoryDTO
+	 * @param documentCategories
+	 * @return
+	 */
+	private List<DocumentCategoryDto> convertDocumentCategoryEntityToDto(List<DocumentCategory> documentCategories) {
+		if (documentCategories != null && !documentCategories.isEmpty()) {
+			List<DocumentCategoryDto> documentCategoryDtos = new ArrayList<>();
+			documentCategories.stream().forEach(entity -> {
+				DocumentCategoryDto entityDTO = new DocumentCategoryDto(entity.getCode(), entity.getName(), entity.getDescription());
+				entityDTO.setIsDeleted(entity.getIsDeleted());
+				entityDTO.setIsActive(entity.getIsActive());
+				entityDTO.setLangCode(entity.getLangCode());
+				documentCategoryDtos.add(entityDTO);
+			});
+			return documentCategoryDtos;
+		}
+		return null;
+	}
+
+	/**
 	 * Method to fetch locations
 	 * 
 	 * @param lastUpdated      lastUpdated timestamp

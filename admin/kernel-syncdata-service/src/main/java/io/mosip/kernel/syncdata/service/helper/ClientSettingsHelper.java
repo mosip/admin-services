@@ -138,6 +138,10 @@ public class ClientSettingsHelper {
 			futuresMap.put(RegistrationCenterUser.class,
 					serviceHelper.getRegistrationCenterUsers(regCenterId, lastUpdated, currentTimestamp));
 
+			futuresMap.put(DocumentCategory.class,
+					hasURLDetails(DocumentCategory.class, isV2API, deltaSync) ? getURLDetails(DocumentCategory.class)
+							: serviceHelper.getDocumentCategories(lastUpdated, currentTimestamp));
+
 			// valid_document
 			futuresMap.put(ValidDocument.class,
 					hasURLDetails(ValidDocument.class, isV2API, deltaSync) ? getURLDetails(ValidDocument.class)

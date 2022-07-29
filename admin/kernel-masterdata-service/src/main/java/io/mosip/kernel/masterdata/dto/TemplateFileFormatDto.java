@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.dto;
 import javax.validation.constraints.NotNull;
 
 import io.mosip.kernel.masterdata.validator.StringFormatter;
+import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -18,8 +19,7 @@ public class TemplateFileFormatDto {
 	@ApiModelProperty(value = "TemplateFileFormat description", required = false, dataType = "java.lang.String")
 	private String description;
 
-
-	@Deprecated
+	@ValidLangCode
 	private String langCode;
 
 	@NotNull
