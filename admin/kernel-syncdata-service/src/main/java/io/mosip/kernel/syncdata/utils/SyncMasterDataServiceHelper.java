@@ -1649,6 +1649,9 @@ public class SyncMasterDataServiceHelper {
 			case "Language":
 				result = languageRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
 				break;
+			case "DocumentCategory":
+				result = documentCategoryRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				break;
 		}
 		if(result == null) {
 			logger.info("** No data found in the table : {}", entityName);
