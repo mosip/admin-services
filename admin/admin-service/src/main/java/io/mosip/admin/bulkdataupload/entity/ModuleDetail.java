@@ -5,8 +5,11 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 
+import io.mosip.admin.bulkdataupload.entity.id.CodeAndLanguageCodeID;
+import io.mosip.admin.bulkdataupload.entity.id.IdAndLanguageCodeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,6 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "module_detail", schema = "master")
+@IdClass(IdAndLanguageCodeID.class)
 public class ModuleDetail extends BaseEntity implements Serializable {
 
 	/**
@@ -29,6 +33,7 @@ public class ModuleDetail extends BaseEntity implements Serializable {
 	@Column(name = "id", nullable = false, length = 36)
 	private String id;
 
+	@Id
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
 
