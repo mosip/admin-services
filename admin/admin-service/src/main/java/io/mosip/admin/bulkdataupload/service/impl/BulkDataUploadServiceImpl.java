@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import javax.validation.Validator;
 
 import io.mosip.admin.bulkdataupload.batch.CustomLineMapper;
 import io.mosip.admin.bulkdataupload.batch.JobResultListener;
@@ -108,6 +109,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 	@Autowired
 	private RestTemplate restTemplate;
+	
+	@Autowired
+	private Validator validator;
 
 	@Autowired
 	private BulkUploadTranscationRepository bulkTranscationRepo;
@@ -474,7 +478,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 		fieldSetMapper.setTargetType(clazz);
 		fieldSetMapper.setConversionService(customConversionService());
 
-		CustomLineMapper<Object> lineMapper = new CustomLineMapper<Object>(setupLanguages(), null);
+		CustomLineMapper<Object> lineMapper = new CustomLineMapper<Object>(setupLanguages(), validator);
 		lineMapper.setLineTokenizer(lineTokenizer);
 		lineMapper.setFieldSetMapper(fieldSetMapper);
 		flatFileItemReader.setLineMapper(lineMapper);

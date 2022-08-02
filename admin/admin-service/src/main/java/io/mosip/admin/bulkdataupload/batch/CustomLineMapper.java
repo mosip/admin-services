@@ -7,10 +7,13 @@ import org.springframework.batch.item.file.transform.LineTokenizer;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class CustomLineMapper <T> implements LineMapper<T>, InitializingBean {
 
@@ -41,6 +44,10 @@ public class CustomLineMapper <T> implements LineMapper<T>, InitializingBean {
                 throw new Exception("Invalid language code provided");
             }
         }
+        Set<ConstraintViolation<T>> violations = validator.validate(fieldSetMapper.mapFieldSet(tokenizer.tokenize(line)));
+	    if (!violations.isEmpty()) {
+	      throw new ConstraintViolationException(violations);
+	    }
 
         return fieldSetMapper.mapFieldSet(tokenizer.tokenize(line));
     }

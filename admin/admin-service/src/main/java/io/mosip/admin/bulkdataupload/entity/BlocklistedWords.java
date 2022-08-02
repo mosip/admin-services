@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import io.mosip.admin.validator.AlphabeticValidator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -37,6 +38,7 @@ public class BlocklistedWords extends BaseEntity implements Serializable {
 	 */
 	@Id
 	@Column(name = "word", length = 128)
+	@AlphabeticValidator(message = "Blocklisted word can only contain Alphabets")
 	private String word;
 
 	/**
