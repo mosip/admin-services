@@ -126,6 +126,29 @@ public class BulkDataUploadControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
+	public void BlocklistedWordsConstraintvalidationNegativeTest() throws Exception {
+		String content="word,description,langCode,isActive,isDeleted\r\n" +
+				"Some Random Words,Test,eng,TRUE,FALSE\r\n";
+		MockMultipartFile blocklisted_words = new MockMultipartFile("data", "filename.csv", "multipart/form-data", content.getBytes());
+		AdminDataUtil.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(blocklisted_words).param("tableName","blocklisted_words").param("operation","insert").param("category","masterdata")).andReturn(),
+				"ADM-BLK-007");
+
+	}
+	
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void BlocklistedWordsConstraintvalidationPositiveTest() throws Exception {
+	String content="word,description,langCode,isActive\r\n" +
+			"SomeWord,DDD,eng,TRUE";
+	MockMultipartFile gender = new MockMultipartFile("files", "gender.csv", "multipart/form-data", content.getBytes());
+	AdminDataUtil.checkResponse(
+	mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(gender).param("tableName","blocklisted_words").param("operation","insert").param("category","masterdata")).andReturn(),null);
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
 	public void t001getTranscationDetailTestFail() throws Exception {
 		AdminDataUtil.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/bulkupload/transcation/12")).andReturn(),
