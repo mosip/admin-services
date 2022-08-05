@@ -9,6 +9,7 @@ import io.mosip.admin.packetstatusupdater.dto.ApplicantDetailsDto;
 import io.mosip.admin.packetstatusupdater.dto.ApplicantUserDetailsDto;
 import io.mosip.admin.packetstatusupdater.dto.DigitalCardStatusResponseDto;
 import io.mosip.admin.packetstatusupdater.exception.DataNotFoundException;
+import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
 import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.admin.packetstatusupdater.util.EventEnum;
@@ -132,18 +133,22 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
     public byte[] getRIDDigitalCard(String rid, boolean isAcknowledged) throws Exception {
         byte[] data=null;
         if(!isAcknowledged){
-            throw new RequestException(
+            throw new MasterDataServiceException(
                     ApplicantDetailErrorCode.DIGITAL_CARD_NOT_ACKNOWLEDGED.getErrorCode(),
                     ApplicantDetailErrorCode.DIGITAL_CARD_NOT_ACKNOWLEDGED.getErrorMessage());
         }
         DigitalCardStatusResponseDto digitalCardStatusResponseDto =getDigitialCardStatus(rid);
         if(!digitalCardStatusResponseDto.getStatusCode().equalsIgnoreCase(AVAILABLE)) {
             auditUtil.setAuditRequestDto(EventEnum.RID_DIGITAL_CARD_REQ_EXCEPTION);
-            throw new RequestException(
+            throw new MasterDataServiceException(
                     ApplicantDetailErrorCode.DIGITAL_CARD_RID_NOT_FOUND.getErrorCode(),
                     ApplicantDetailErrorCode.DIGITAL_CARD_RID_NOT_FOUND.getErrorMessage());
         }
         data = restClient.getForApi(digitalCardStatusResponseDto.getUrl(), byte[].class);
+        if(new String(data).contains("errors")) {
+            throw new MasterDataServiceException(ApplicantDetailErrorCode.DATA_SHARE_EXPIRED_EXCEPTION.getErrorCode(),
+                    ApplicantDetailErrorCode.DATA_SHARE_EXPIRED_EXCEPTION.getErrorMessage());
+        }
         return data;
     }
 
@@ -165,7 +170,7 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
         String response = restClient.getApi(ApiName.DIGITAL_CARD_STATUS_URL,pathsegments,"","",String.class);
         JSONObject responseObj= objectMapper.readValue(response,JSONObject.class);
         if(responseObj.containsKey("response") && responseObj.get("response")==null) {
-            throw new RequestException(ApplicantDetailErrorCode.REQ_ID_NOT_FOUND.getErrorCode(),
+            throw new MasterDataServiceException(ApplicantDetailErrorCode.REQ_ID_NOT_FOUND.getErrorCode(),
                     ApplicantDetailErrorCode.REQ_ID_NOT_FOUND.getErrorMessage());
         }
         JSONObject responseJsonObj=  utility.getJSONObject(responseObj,RESPONSE);
