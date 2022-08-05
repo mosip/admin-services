@@ -133,7 +133,6 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
 
     @Override
     public byte[] getRIDDigitalCard(String rid, boolean isAcknowledged) throws Exception {
-        byte[] data=null;
         if(!isAcknowledged){
             throw new MasterDataServiceException(
                     ApplicantDetailErrorCode.DIGITAL_CARD_NOT_ACKNOWLEDGED.getErrorCode(),
@@ -146,12 +145,7 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
                     ApplicantDetailErrorCode.DIGITAL_CARD_RID_NOT_FOUND.getErrorCode(),
                     ApplicantDetailErrorCode.DIGITAL_CARD_RID_NOT_FOUND.getErrorMessage());
         }
-        data = restClient.getApi(digitalCardStatusResponseDto.getUrl(), byte[].class);
-        if(new String(data).contains("errors")) {
-            throw new MasterDataServiceException(ApplicantDetailErrorCode.DATA_SHARE_EXPIRED_EXCEPTION.getErrorCode(),
-                    ApplicantDetailErrorCode.DATA_SHARE_EXPIRED_EXCEPTION.getErrorMessage());
-        }
-        return data;
+        return restClient.getApi(digitalCardStatusResponseDto.getUrl(), byte[].class);
     }
 
     @Override

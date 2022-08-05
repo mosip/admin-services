@@ -4,12 +4,11 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
+import io.mosip.admin.constant.ApplicantDetailErrorCode;
+import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -203,9 +202,13 @@ public class RestClient {
 
 		T result = null;
 		try {
-			result= (T) restTemplate
-					.exchange(url, HttpMethod.GET, setRequestHeader(null, null), responseType)
-					.getBody();
+			ResponseEntity responseEntity= (ResponseEntity) restTemplate
+					.exchange(url, HttpMethod.GET, setRequestHeader(null, null), responseType);
+			if(url.contains("datashare") && responseEntity.getHeaders().getContentType().equals(MediaType.APPLICATION_JSON)){
+				throw new MasterDataServiceException(ApplicantDetailErrorCode.DATA_SHARE_EXPIRED_EXCEPTION.getErrorCode(),
+						ApplicantDetailErrorCode.DATA_SHARE_EXPIRED_EXCEPTION.getErrorMessage());
+			}
+			result= (T) responseEntity.getBody();
 		} catch (Exception e) {
 			throw new Exception(e);
 		}
