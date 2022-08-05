@@ -80,7 +80,9 @@ public class TestSecurityConfig extends WebSecurityConfigurerAdapter {
 		users.add(new User("global-admin", "mosip", Arrays.asList(new SimpleGrantedAuthority("ROLE_GLOBAL_ADMIN"))));
 		users.add(new User("packet-admin", "mosip", Arrays.asList(new SimpleGrantedAuthority("ROLE_GLOBAL_ADMIN"),
 				new SimpleGrantedAuthority("ROLE_DATA_READ"))));
-		
+		users.add(new User("digitalcard-admin", "mosip", Arrays.asList(new SimpleGrantedAuthority("ROLE_DIGITALCARD_ADMIN"))));
+
+
 		return new InMemoryUserDetailsManager(users);
 	}
 }
