@@ -2,9 +2,11 @@ package io.mosip.admin.util;
 
 import com.google.gson.Gson;
 import io.mosip.admin.constant.ApiName;
+import io.mosip.admin.constant.ApplicantDetailErrorCode;
 import io.mosip.admin.packetstatusupdater.dto.Metadata;
 import io.mosip.admin.packetstatusupdater.dto.SecretKeyRequest;
 import io.mosip.admin.packetstatusupdater.dto.TokenRequestDTO;
+import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.core.util.TokenHandlerUtil;
@@ -21,10 +23,7 @@ import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -206,16 +205,19 @@ public class RestClient {
     @SuppressWarnings("unchecked")
     public <T> T getForApi(String url,
                               Class<?> responseType) throws Exception {
-
         T result = null;
         RestTemplate restTemplate;
         try {
             restTemplate = getRestTemplate();
-            result= (T) restTemplate
-                    .exchange(url, HttpMethod.GET, setRequestHeader(null, null), responseType)
-                    .getBody();
+            ResponseEntity responseEntity= (ResponseEntity) restTemplate
+                    .exchange(url, HttpMethod.GET, setRequestHeader(null, null), responseType);
+            if(url.contains("datashare") && responseEntity.getHeaders().getContentType().equals(MediaType.APPLICATION_JSON)){
+                throw new MasterDataServiceException(ApplicantDetailErrorCode.DATA_SHARE_EXPIRED_EXCEPTION.getErrorCode(),
+                        ApplicantDetailErrorCode.DATA_SHARE_EXPIRED_EXCEPTION.getErrorMessage());
+            }
+            result= (T) responseEntity.getBody();
         } catch (Exception e) {
-            throw new Exception(e);
+            throw e;
         }
         return result;
     }
