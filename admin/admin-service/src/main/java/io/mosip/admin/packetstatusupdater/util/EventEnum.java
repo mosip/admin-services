@@ -83,7 +83,27 @@ public enum EventEnum {
 	ADMIN_PROXY_ERROR("ADM-MSD-411",AuditConstant.AUDIT_SYSTEM,"Request for Admin Proxy","Failed to call Rest api - %s","ADM-MSD","Admin Proxy service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
 	KEYMANAGER_PROXY_API_CALLED("ADM-MSD-410", AuditConstant.AUDIT_SYSTEM, "Request for KeyManager proxy API",
 			"API called for KeyManager proxy", "ADM-MSD", "Admin Proxy service", "NO_ID", "NO_ID_TYPE",
-								AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME );
+								AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME ),
+	APPLICANT_VERIFICATION_API_CALLED("ADM-AVD-501", AuditConstant.AUDIT_SYSTEM, "Request for Applicant Verification API",
+			"API called for Applicant Verification request", "ADM-AVD", "Admin service", "NO_ID", "NO_ID_TYPE",
+			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME),
+	APPLICANT_VERIFICATION_SUCCESS("ADM-AVD-502", AuditConstant.AUDIT_SYSTEM, "Request for Applicant Verification API",
+			"successfully return the applicantPhoto and dob", "ADM-AVD", "admin service", "NO_ID", "NO_ID_TYPE",
+			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME),
+	APPLICANT_VERIFICATION_ERROR("ADM-AVD-503",AuditConstant.AUDIT_SYSTEM,"Request for Applicant Verification","Failed to call Rest api - %s","ADM-AVD","admin service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	RID_DIGITAL_CARD_REQ_EXCEPTION("ADM-AVD-504",AuditConstant.AUDIT_SYSTEM,"Request for Digital Card","Downloading digital card based on RID failed - %s","ADM-AVD","admin service","NO_ID","NO_ID_TYPE",AuditConstant.APPLICATION_ID,AuditConstant.APPLICATION_NAME),
+	RID_DIGITAL_CARD_REQ("ADM-AVD-505", AuditConstant.AUDIT_SYSTEM, "Request for Digital Card",
+			"API called for Digital card", "ADM-AVD", "Admin service", "NO_ID", "NO_ID_TYPE",
+			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME),
+	RID_DIGITAL_CARD_REQ_SUCCESS("ADM-AVD-506", AuditConstant.AUDIT_SYSTEM, "Request for Digital Card",
+			"successfully returned the digital card", "ADM-AVD", "admin service", "NO_ID", "NO_ID_TYPE",
+			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME),
+	APPLICANT_LOGIN_DETAILS_API_CALLED("ADM-AVD-507", AuditConstant.AUDIT_SYSTEM, "Request for Applicant Login Details API",
+			"API called for Applicant Login Details", "ADM-AVD", "Admin service", "NO_ID", "NO_ID_TYPE",
+			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME),
+	APPLICANT_LOGIN_DETAILS_SUCCESS("ADM-AVD-508", AuditConstant.AUDIT_SYSTEM, "Request for Applicant Login Details API",
+			"successfully return the login details", "ADM-AVD", "admin service", "NO_ID", "NO_ID_TYPE",
+			AuditConstant.APPLICATION_ID, AuditConstant.APPLICATION_NAME);
 
 	
 	private final String eventId;

@@ -1,0 +1,12 @@
+{
+  "id": "mosip.credential.request.generator",
+  "version": "1.0",
+  "responsetime": "2022-06-07T07:34:48.096Z",
+  "metadata": null,
+  "response": {
+    "id": "9049637953",
+    "statusCode": "ISSUED",
+    "url": "http://datashare.datashare/v1/datashare/get/mpolicy-default-auth/mpartner-default-auth/mpartner-default-authmpolicy-default-auth20220607043432Om5mniQH"
+  },
+  "errors": []
+}
