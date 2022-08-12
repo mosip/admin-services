@@ -305,7 +305,7 @@ public class MasterdataSearchHelper {
 		String filterType = filter.getType();
 		if (FilterTypeEnum.CONTAINS.name().equalsIgnoreCase(filterType)) {
 			Expression<String> lowerCase = builder.lower(root.get(columnName));
-			if (value.startsWith("*") && value.endsWith("*")) {
+			if (value.startsWith("*") && value.endsWith("*") && value.length()>1) {
 				String replacedValue = (value.substring(1)).substring(0, value.length() - 2);
 				return builder.like(lowerCase,
 						builder.lower(builder.literal(WILD_CARD_CHARACTER + replacedValue + WILD_CARD_CHARACTER)));

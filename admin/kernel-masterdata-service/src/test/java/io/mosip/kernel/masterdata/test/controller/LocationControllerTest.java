@@ -22,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -34,6 +35,7 @@ import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
@@ -126,6 +128,61 @@ public class LocationControllerTest {
 		filValDto = new RequestWrapper<>();
 		filValDto.setRequest(f);
 
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void postFilterValuesTestwithNameasAsterisk() throws JsonProcessingException, Exception {
+		FilterValueDto f = new FilterValueDto();
+		FilterDto fdto = new FilterDto();
+		fdto.setColumnName("name");
+		fdto.setText("");
+		fdto.setType("unique");
+		List<FilterDto> lf = new ArrayList<>();
+		lf.add(fdto);
+		f.setLanguageCode("eng");
+		f.setFilters(lf);
+		List<SearchFilter> of = new ArrayList<>();
+		SearchFilter sf = new SearchFilter();
+		sf.setColumnName("name");
+		sf.setValue("*");
+		sf.setType("contains");
+		of.add(sf);
+		f.setOptionalFilters(of);
+		RequestWrapper<FilterValueDto> filDto = new RequestWrapper<>();
+		filDto.setRequest(f);
+		MasterDataTest
+				.checkResponse(mockMvc
+						.perform(MockMvcRequestBuilders.post("/locations/filtervalues")
+								.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filDto)))
+						.andReturn(), null);
+	}
+	@Test
+	@WithUserDetails("global-admin")
+	public void postFilterValuesTest() throws JsonProcessingException, Exception {
+		FilterValueDto f = new FilterValueDto();
+		FilterDto fdto = new FilterDto();
+		fdto.setColumnName("name");
+		fdto.setText("");
+		fdto.setType("unique");
+		List<FilterDto> lf = new ArrayList<>();
+		lf.add(fdto);
+		f.setLanguageCode("eng");
+		f.setFilters(lf);
+		List<SearchFilter> of = new ArrayList<>();
+		SearchFilter sf = new SearchFilter();
+		sf.setColumnName("name");
+		sf.setValue("*S");
+		sf.setType("contains");
+		of.add(sf);
+		f.setOptionalFilters(of);
+		RequestWrapper<FilterValueDto> filDto = new RequestWrapper<>();
+		filDto.setRequest(f);
+		MasterDataTest
+				.checkResponse(mockMvc
+						.perform(MockMvcRequestBuilders.post("/locations/filtervalues")
+								.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
+						.andReturn(), null);
 	}
 
 	@Test
