@@ -7,7 +7,6 @@ import java.util.concurrent.ExecutionException;
 
 import javax.validation.Valid;
 
-import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.*;
 import io.mosip.kernel.syncdata.service.helper.SyncJobHelperService;
@@ -142,7 +141,9 @@ public class SyncDataController {
 	@ResponseFilter
 	@PostMapping(value = "/tpm/publickey/verify", produces = "application/json")
 	public ResponseWrapper<UploadPublicKeyResponseDto> validateKeyMachineMapping(
-			@ApiParam("public key in BASE64 encoded") @RequestBody @Valid RequestWrapper<UploadPublicKeyRequestDto> uploadPublicKeyRequestDto) {
+			@ApiParam("public key in BASE64 encoded") @RequestBody @Valid RequestWrapper<UploadPublicKeyRequestDto> uploadPublicKeyRequestDto,
+			@RequestParam(value = "version", required = false) String clientVersion) {
+		MDC.put("client_version", clientVersion == null ? "NA": clientVersion);
 		ResponseWrapper<UploadPublicKeyResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(masterDataService.validateKeyMachineMapping(uploadPublicKeyRequestDto.getRequest()));
 		return response;
@@ -155,10 +156,18 @@ public class SyncDataController {
 			@RequestParam(value = "lastupdated", required = false) String lastUpdated,
 			@RequestParam(value = "schemaVersion", defaultValue = "0", required = false) double schemaVersion,
 			@RequestParam(name = "domain", required = false) String domain,
-			@RequestParam(name = "type", required = false) String type) {
+			@RequestParam(name = "type", required = false) String type,
+			@RequestParam(value = "version", required = false) String clientVersion) {
+		MDC.put("client_version", clientVersion == null ? "NA": clientVersion);		
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
-		
+		/** If clientVersion, domain and type are null, it is assumed that the request is from regclient version < 1.2.0.*
+		  With this assumption, "domain" is set to "registration-client" and "type" to "schema" for backward compatibility
+		*/
+		if (clientVersion == null && domain == null && type == null) {
+			domain = "registration-client";
+			type = "schema";
+		}
 		ResponseWrapper<JsonNode> response = new ResponseWrapper<>();
 		response.setResponse(masterDataService.getLatestPublishedIdSchema(timestamp, schemaVersion, domain, type));
 		return response;
@@ -169,8 +178,9 @@ public class SyncDataController {
 	@GetMapping(value = "/getCertificate")
 	public ResponseWrapper<KeyPairGenerateResponseDto> getCertificate(
 			@ApiParam("Id of application") @RequestParam("applicationId") String applicationId,
-			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) {
-
+			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId,
+			@RequestParam(value = "version", required = false) String clientVersion) {
+		MDC.put("client_version", clientVersion == null ? "NA": clientVersion);
 		ResponseWrapper<KeyPairGenerateResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(masterDataService.getCertificate(applicationId, referenceId));
 		return response;
@@ -181,7 +191,9 @@ public class SyncDataController {
 	@ResponseFilter
 	@GetMapping(value = "/tpm/publickey/{machineId}", produces = "application/json")
 	public ResponseWrapper<ClientPublicKeyResponseDto> getClientPublicKey(
-			@ApiParam("Machine id") @PathVariable("machineId") String machineId) {
+			@ApiParam("Machine id") @PathVariable("machineId") String machineId,
+			@RequestParam(value = "version", required = false) String clientVersion) {
+		MDC.put("client_version", clientVersion == null ? "NA": clientVersion);
 		ResponseWrapper<ClientPublicKeyResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(masterDataService.getClientPublicKey(machineId));
 		return response;
@@ -196,7 +208,9 @@ public class SyncDataController {
 	@ResponseFilter
 	@ApiOperation(value = "API to sync global config details")
 	@GetMapping(value = "/configs/{keyIndex}")
-	public ResponseWrapper<ConfigDto> getMachineConfigDetails(@PathVariable(value = "keyIndex") String keyIndex) {
+	public ResponseWrapper<ConfigDto> getMachineConfigDetails(@PathVariable(value = "keyIndex") String keyIndex,
+			@RequestParam(value = "version", required = false) String clientVersion) {
+		MDC.put("client_version", clientVersion == null ? "NA": clientVersion);
 		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
 		ConfigDto syncConfigResponse = syncConfigDetailsService.getConfigDetails(keyIndex);
 		syncConfigResponse.setLastSyncTime(currentTimeStamp);
@@ -232,7 +246,8 @@ public class SyncDataController {
 	@ResponseFilter
 	@GetMapping("/getcacertificates")
 	public ResponseWrapper<CACertificates> getCACertificates(@RequestParam(value = "lastupdated",
-			required = false) String lastUpdated) {
+			required = false) String lastUpdated, @RequestParam(value = "version", required = false) String clientVersion) {
+		MDC.put("client_version", clientVersion == null ? "NA": clientVersion);
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		CACertificates caCertificates = masterDataService.getPartnerCACertificates(timestamp, currentTimeStamp);
@@ -278,8 +293,10 @@ public class SyncDataController {
 	@ApiOperation(value = "API to download mvel scripts")
 	@GetMapping(value = "/scripts/{scriptName}")
 	public ResponseEntity downloadScript(@PathVariable(value = "scriptName") String scriptName,
-														   @RequestParam(value = "keyindex", required = true) String keyIndex)
+														   @RequestParam(value = "keyindex", required = true) String keyIndex,
+														   @RequestParam(value = "version", required = false) String clientVersion)
 									throws Exception{
+		MDC.put("client_version", clientVersion == null ? "NA": clientVersion);
 		return syncConfigDetailsService.getScript(scriptName, keyIndex);
 	}
 
@@ -287,8 +304,10 @@ public class SyncDataController {
 	@ApiOperation(value = "API to download data json files")
 	@GetMapping(value = "/clientsettings/{entityIdentifier}")
 	public ResponseEntity downloadEntityData(@PathVariable(value = "entityIdentifier") String entityIdentifier,
-										 @RequestParam(value = "keyindex", required = true) String keyIndex)
+										 @RequestParam(value = "keyindex", required = true) String keyIndex,
+										 @RequestParam(value = "version", required = false) String clientVersion)
 			throws Exception {
+		MDC.put("client_version", clientVersion == null ? "NA": clientVersion);
 		return masterDataService.getClientSettingsJsonFile(entityIdentifier, keyIndex);
 	}
 
@@ -301,7 +320,9 @@ public class SyncDataController {
 	@ResponseFilter
 	@GetMapping("/v2/userdetails")
 	public ResponseWrapper<SyncUserDto> getUserDetailsBasedOnKeyIndexV2(
-			@RequestParam(value = "keyindex", required = true) String keyIndex) {
+			@RequestParam(value = "keyindex", required = true) String keyIndex,
+			@RequestParam(value = "version", required = false) String clientVersion) {
+		MDC.put("client_version", clientVersion == null ? "NA": clientVersion);
 		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
 		SyncUserDto syncUserDto = syncUserDetailsService.getAllUserDetailsBasedOnKeyIndexV2(keyIndex);
 		syncUserDto.setLastSyncTime(currentTimeStamp);

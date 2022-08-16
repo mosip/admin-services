@@ -11,5 +11,5 @@ public class DynamicFieldValueDto {
 	
 	private String code;	
 	private String value;	
-	private boolean isActive;
+	private boolean isActive = true;
 }
