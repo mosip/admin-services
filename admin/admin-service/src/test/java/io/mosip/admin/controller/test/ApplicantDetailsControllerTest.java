@@ -124,7 +124,7 @@ public class ApplicantDetailsControllerTest {
     @Test
     @WithUserDetails(value = "digitalcard-admin")
     public void testGetRIDDigitalCardFailure() throws Exception {
-        AdminDataUtil.checkResponse(
+        AdminDataUtil.checkErrorResponse(
                 mockMvc.perform(MockMvcRequestBuilders.get("/rid-digital-card/11234567897").param("isAcknowledged","false"))
                         .andReturn(),
                 "ADM-AVD-006");
@@ -135,7 +135,7 @@ public class ApplicantDetailsControllerTest {
         String str = new String(Files.readAllBytes(Paths.get(getClass().getResource("/digitalCardStatusUnavailableResponseJson.json").toURI())), StandardCharsets.UTF_8);
         Mockito.when(restClient.getApi(Mockito.any(), Mockito.any(), Mockito.anyString(), Mockito.any(),
                 Mockito.any(Class.class))).thenReturn(str);
-        AdminDataUtil.checkResponse(
+        AdminDataUtil.checkErrorResponse(
                 mockMvc.perform(MockMvcRequestBuilders.get("/rid-digital-card/11234567897").param("isAcknowledged","true"))
                         .andReturn(),
                 "ADM-AVD-005");
@@ -146,7 +146,7 @@ public class ApplicantDetailsControllerTest {
         String str = new String(Files.readAllBytes(Paths.get(getClass().getResource("/emptyResponse.json").toURI())), StandardCharsets.UTF_8);
         Mockito.when(restClient.getApi(Mockito.any(), Mockito.any(), Mockito.anyString(), Mockito.any(),
                 Mockito.any(Class.class))).thenReturn(str);
-        AdminDataUtil.checkResponse(
+        AdminDataUtil.checkErrorResponse(
                 mockMvc.perform(MockMvcRequestBuilders.get("/rid-digital-card/11234567897").param("isAcknowledged","true"))
                         .andReturn(),
                 "ADM-AVD-007");
