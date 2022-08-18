@@ -1,7 +1,10 @@
 package io.mosip.kernel.syncdata.service.helper;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,9 @@ public class IdentitySchemaHelper {
 	@Value("${mosip.kernel.syncdata-service-idschema-url}")
 	private String idSchemaUrl;
 
+	private List<String> responseProperties115 = Arrays.asList("schema", "schemaJson", "id", "idVersion", "effectiveFrom");
+
+
 	public JsonNode getLatestIdentitySchema(LocalDateTime lastUpdated, double schemaVersion, String domain,
 			String type) {
 		try {
@@ -49,12 +55,18 @@ public class IdentitySchemaHelper {
 			}
 			ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().toUri(), String.class);
 
-			ResponseWrapper<JsonNode> resp = objectMapper.readValue(responseEntity.getBody(),
-					new TypeReference<ResponseWrapper<JsonNode>>() {
+			ResponseWrapper<ObjectNode> resp = objectMapper.readValue(responseEntity.getBody(),
+					new TypeReference<ResponseWrapper<ObjectNode>>() {
 					});
 
 			if (resp.getErrors() != null && !resp.getErrors().isEmpty())
 				throw new SyncInvalidArgumentException(resp.getErrors());
+
+			// This if-block is added for backward-compatibility for registration-clients with version < 1.2.0.*
+			if ("schema".equals(type) && "registration-client".equals(domain)) {
+				return resp.getResponse().retain(responseProperties115);
+			}
+
 			return resp.getResponse();
 		} catch (Exception e) {
 			LOGGER.error("Failed to fetch latest schema", e);
