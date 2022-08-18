@@ -28,7 +28,7 @@ ALTER TABLE master.blacklisted_words DROP CONSTRAINT IF EXISTS pk_blwrd_code CAS
 -------------------------------------------------------------------------------------------------------------------
 \ir ../ddl/master-ui_spec.sql
 \ir ../ddl/master-blocklisted_words.sql
-
+\ir ../ddl/master-applicant_login_detail.sql
 
 ----- TRUNCATE master.blocklisted_words TABLE Data and It's reference Data and COPY Data from CSV file -----
 TRUNCATE TABLE master.blocklisted_words cascade ;
