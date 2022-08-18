@@ -3,9 +3,9 @@ Release migration and respective revoke sql scripts.
 
 ## From 1.1.5 to 1.2.0
 
-1. Execute `1.2.0_master-scripts_release.sql` to migrate from 1.1.5 db to 1.2.0 compatible db.
+1. Execute `1.2.0-release.sql` to migrate from 1.1.5 db to 1.2.0 compatible db.
 2. On successful execution, run data migration python scripts under `migration-scripts/1.2.0/*`.
-3. On failure, execute `1.2.0_master-scripts_revoke.sql` to restore to pre-migration point.
+3. On failure, execute `1.2.0-revoke.sql` to restore to pre-migration point.
 
 
 ## Below backups are taken during the migration, Kindly remove them after verifying the migrated database.
