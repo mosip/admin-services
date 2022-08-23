@@ -274,7 +274,8 @@ public class SyncDataController {
 			@RequestParam(value = "keyindex", required = true) String keyIndex,
 			@RequestParam(value = "lastUpdated", required = false) String lastUpdated,
 			@RequestParam(value = "regcenterId", required = false) String regCenterId,
-			@RequestParam(value = "version", required = false) String clientVersion)
+			@RequestParam(value = "version", required = false) String clientVersion,
+			@RequestParam(value = "fullSyncEntities", required = false) String fullSyncEntities)
 			throws Throwable {
 		MDC.put("client_version", clientVersion == null ? "NA": clientVersion);
 		MDC.put("key_index", keyIndex == null ? "NA": keyIndex);
@@ -282,7 +283,7 @@ public class SyncDataController {
 				syncJobHelperService.getDeltaSyncCurrentTimestamp();
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettingsV2(regCenterId, keyIndex,
-				timestamp, currentTimeStamp, clientVersion);
+				timestamp, currentTimeStamp, clientVersion, fullSyncEntities);
 		syncDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
 		ResponseWrapper<SyncDataResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(syncDataResponseDto);
