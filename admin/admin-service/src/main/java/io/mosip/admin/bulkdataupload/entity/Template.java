@@ -71,7 +71,8 @@ public class Template extends BaseEntity implements Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
-			@JoinColumn(name = "module_id", referencedColumnName = "id", insertable = false, updatable = false) })
+			@JoinColumn(name = "module_id", referencedColumnName = "id", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
 	private ModuleDetail moduleDetail;
 
 	@ManyToOne(fetch = FetchType.LAZY)

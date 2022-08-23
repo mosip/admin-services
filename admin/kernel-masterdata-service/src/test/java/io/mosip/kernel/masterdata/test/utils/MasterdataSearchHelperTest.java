@@ -49,6 +49,10 @@ public class MasterdataSearchHelperTest {
 	private SearchFilter wildCardFilter1;
 	private SearchFilter wildCardFilter2;
 	private SearchFilter wildCardFilter3;
+	private SearchFilter wildCardFilter4;
+	private SearchFilter wildCardFilter5;
+	private SearchFilter wildCardFilter6;
+	private SearchFilter wildCardFilter7;
 	private SearchFilter noFilterType;
 	private SearchFilter searchwithDateFilter;
 	private OptionalFilter[] optionalFilterArray;
@@ -97,6 +101,26 @@ public class MasterdataSearchHelperTest {
 		wildCardFilter3.setColumnName("name");
 		wildCardFilter3.setType("contains");
 		wildCardFilter3.setValue("*mosip");
+
+		wildCardFilter4 = new SearchFilter();
+		wildCardFilter4.setColumnName("name");
+		wildCardFilter4.setType("contains");
+		wildCardFilter4.setValue("*");
+
+		wildCardFilter5 = new SearchFilter();
+		wildCardFilter5.setColumnName("name");
+		wildCardFilter5.setType("contains");
+		wildCardFilter5.setValue("**");
+
+		wildCardFilter6 = new SearchFilter();
+		wildCardFilter6.setColumnName("name");
+		wildCardFilter6.setType("contains");
+		wildCardFilter6.setValue("* *");
+
+		wildCardFilter7 = new SearchFilter();
+		wildCardFilter7.setColumnName("name");
+		wildCardFilter7.setType("contains");
+		wildCardFilter7.setValue("* s");
 
 		noColumnSort = new SearchSort();
 		noColumnSort.setSortType("desc");
@@ -222,5 +246,28 @@ public class MasterdataSearchHelperTest {
 		SearchDto searchDto = new SearchDto(Arrays.asList(wildCardFilter3), Arrays.asList(sort), page, "eng");
 		searchHelper.searchMasterdata(RegistrationCenter.class, searchDto, null);
 	}
+	
+	@Test
+	public void searchStartswithWildcardMasterdata01() {
+		SearchDto searchDto = new SearchDto(Arrays.asList(wildCardFilter4), Arrays.asList(sort), page, "eng");
+		searchHelper.searchMasterdata(RegistrationCenter.class, searchDto, null);	
+	}
 
+	@Test
+	public void searchStartswithWildcardMasterdata02() {
+		SearchDto searchDto = new SearchDto(Arrays.asList(wildCardFilter5), Arrays.asList(sort), page, "eng");
+		searchHelper.searchMasterdata(RegistrationCenter.class, searchDto, null);	
+	}
+	
+	@Test
+	public void searchStartswithWildcardMasterdata03() {
+		SearchDto searchDto = new SearchDto(Arrays.asList(wildCardFilter6), Arrays.asList(sort), page, "eng");
+		searchHelper.searchMasterdata(RegistrationCenter.class, searchDto, null);	
+	}
+	
+	@Test
+	public void searchStartswithWildcardMasterdata04() {
+		SearchDto searchDto = new SearchDto(Arrays.asList(wildCardFilter7), Arrays.asList(sort), page, "eng");
+		searchHelper.searchMasterdata(RegistrationCenter.class, searchDto, null);	
+	}
 }
