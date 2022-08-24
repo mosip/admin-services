@@ -87,3 +87,5 @@
 \ir ddl/master-ca_cert_store.sql
 
 \ir ddl/master-permitted_local_config.sql
+
+\ir ddl/master-applicant_login_detail.sql
