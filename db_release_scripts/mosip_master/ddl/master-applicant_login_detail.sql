@@ -17,7 +17,7 @@
 
 -- DROP TABLE master.applicant_login_detail;
 
-CREATE TABLE master.applicant_login_detail (
+CREATE TABLE IF NOT EXISTS master.applicant_login_detail (
 	id varchar(64) NOT NULL,
 	usr_id varchar(64) NOT NULL,
 	login_date timestamp NULL,
