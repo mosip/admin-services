@@ -118,7 +118,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		String registrationCenterId = regCenterMachineDto.getRegCenterId();
 
 		Map<Class, CompletableFuture> futureMap = clientSettingsHelper.getInitiateDataFetch(machineId, registrationCenterId,
-				lastUpdated, currentTimestamp, false, lastUpdated!=null);
+				lastUpdated, currentTimestamp, false, lastUpdated!=null, null);
 
 		CompletableFuture[] array = new CompletableFuture[futureMap.size()];
 		CompletableFuture<Void> future = CompletableFuture.allOf(futureMap.values().toArray(array));
