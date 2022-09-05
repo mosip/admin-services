@@ -42,7 +42,5 @@ COMMENT ON COLUMN hotlist.hotlist.start_timestamp IS E'startTimestamp: Timestamp
 -- ddl-end --
 COMMENT ON COLUMN hotlist.hotlist.expiry_timestamp IS E'expiryTimestamp: Timestamp when respective hotlisted ID will expire.';
 -- ddl-end --
-ALTER TABLE hotlist.hotlist OWNER TO sysadmin;
--- ddl-end --
 
 
