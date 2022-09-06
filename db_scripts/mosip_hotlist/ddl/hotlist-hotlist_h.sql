@@ -40,7 +40,5 @@ COMMENT ON COLUMN hotlist.hotlist_h.status IS E'status: status to denote whether
 -- ddl-end --
 COMMENT ON COLUMN hotlist.hotlist_h.start_timestamp IS E'startTimestamp: Timestamp when respective ID is hotlisted.';
 -- ddl-end --
-ALTER TABLE hotlist.hotlist_h OWNER TO sysadmin;
--- ddl-end --
 
 
