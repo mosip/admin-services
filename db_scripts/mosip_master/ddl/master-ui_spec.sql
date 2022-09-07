@@ -30,5 +30,3 @@ COMMENT ON TABLE master.ui_spec IS E'UI Specifications :  Stores UI Specificatio
 -- ddl-end --
 COMMENT ON CONSTRAINT unq_dmn_type_vrsn_ischmid ON master.ui_spec  IS E'Unique Constraint on domain,title,version,identity_schema_id';
 -- ddl-end --
-ALTER TABLE master.ui_spec OWNER TO sysadmin;
--- ddl-end --

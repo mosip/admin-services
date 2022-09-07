@@ -29,7 +29,5 @@ CREATE TABLE master.ca_cert_store (
 CREATE INDEX pk_cacs_id ON master.ca_cert_store USING btree (cert_id);
 
 -- ddl-end --
-ALTER TABLE master.ca_cert_store OWNER TO sysadmin;
--- ddl-end --
 
 
