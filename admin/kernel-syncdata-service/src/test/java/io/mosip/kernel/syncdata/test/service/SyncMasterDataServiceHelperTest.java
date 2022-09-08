@@ -211,12 +211,12 @@ public class SyncMasterDataServiceHelperTest {
 
         SyncDataResponseDto syncDataResponseDto = syncMasterDataService.syncClientSettingsV2("10001",
                 "41:3a:ed:6d:38:a0:28:36:72:a6:75:08:8a:41:3c:a3:4f:48:72:6f:c8:fb:29:dd:53:bd:6f:12:70:9b:e3:29",
-                null, syncJobHelperService.getDeltaSyncCurrentTimestamp(), "1.2.0");
+                null, syncJobHelperService.getDeltaSyncCurrentTimestamp(), "1.2.0", "");
         Assert.assertNotNull(syncDataResponseDto.getDataToSync());
 
         SyncDataResponseDto syncDataResponseDeltaDto = syncMasterDataService.syncClientSettingsV2("10001",
                 "41:3a:ed:6d:38:a0:28:36:72:a6:75:08:8a:41:3c:a3:4f:48:72:6f:c8:fb:29:dd:53:bd:6f:12:70:9b:e3:29",
-                lastUpdated, syncJobHelperService.getFullSyncCurrentTimestamp(), "1.2.0");
+                lastUpdated, syncJobHelperService.getFullSyncCurrentTimestamp(), "1.2.0", "LocationHierarchy");
         Assert.assertNotNull(syncDataResponseDto.getDataToSync());
 
         Assert.assertEquals(syncDataResponseDto.getDataToSync().size(), syncDataResponseDeltaDto.getDataToSync().size(), 5);

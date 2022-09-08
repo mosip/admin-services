@@ -1,6 +1,5 @@
 package io.mosip.kernel.syncdata.test.controller;
 
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -9,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -30,13 +30,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.syncdata.dto.DynamicFieldDto;
+import io.mosip.kernel.syncdata.dto.PageDto;
 import io.mosip.kernel.syncdata.dto.UploadPublicKeyRequestDto;
 import io.mosip.kernel.syncdata.test.TestBootApplication;
 import io.mosip.kernel.syncdata.test.utils.SyncDataUtil;
@@ -84,7 +89,43 @@ public class SyncDataControllerTest {
 	@Autowired
 	RestTemplate restTemplate;
 	
+	@Autowired
+	private ObjectMapper objectMapper;
+	
 	MockRestServiceServer mockRestServiceServer;
+	
+	private String str1 = "{\n" + 
+			"  \"id\": null,\n" + 
+			"  \"version\": null,\n" + 
+			"  \"responsetime\": \"2022-08-11T15:14:28.976Z\",\n" + 
+			"  \"metadata\": null,\n" + 
+			"  \"response\": {\n" + 
+			"    \"pageNo\": 0,\n" + 
+			"    \"totalPages\": 3,\n" + 
+			"    \"totalItems\": 21,\n" + 
+			"    \"data\": [\n" + 
+			"      {\n" + 
+			"        \"id\": \"1029\",\n" + 
+			"        \"name\": \"bloodType\",\n" + 
+			"        \"langCode\": \"ara\",\n" + 
+			"        \"dataType\": \"string\",\n" + 
+			"        \"description\": \"فصيلة الدم\",\n" + 
+			"        \"fieldVal\": [\n" + 
+			"          {\n" + 
+			"            \"code\": \"101\",\n" + 
+			"            \"value\": \"A\"\n" + 
+			"          }\n" + 
+			"        ],\n" + 
+			"        \"isActive\": true,\n" + 
+			"        \"createdBy\": \"110006\",\n" + 
+			"        \"updatedBy\": null,\n" + 
+			"        \"createdOn\": \"2022-04-25T11:18:43.776Z\",\n" + 
+			"        \"updatedOn\": null\n" + 
+			"      }\n" + 
+			"    ]\n" + 
+			"  },\n" + 
+			"  \"errors\": null\n" + 
+			"}";
 
 	@Before
 	public void setUp() {
@@ -155,60 +196,6 @@ public class SyncDataControllerTest {
 				"  },\r\n" + 
 				"  \"errors\": [\r\n" + 
 
-				"  ]\r\n" + 
-				"}";
-		
-		
-		String str1="{\r\n" + 
-				"  \"id\": \"string\",\r\n" + 
-				"  \"version\": \"string\",\r\n" + 
-				"  \"responsetime\": \"2021-12-10T05:59:29.437Z\",\r\n" + 
-				"  \"metadata\": {},\r\n" + 
-				"  \"response\": {\r\n" + 
-				"    \"pageNo\": 0,\r\n" + 
-				"    \"totalPages\": 0,\r\n" + 
-				"    \"totalItems\": 0,\r\n" + 
-				"    \"data\": [\r\n" + 
-				"      {\r\n" + 
-				"        \"id\": \"string\",\r\n" + 
-				"        \"name\": \"string\",\r\n" + 
-				"        \"langCode\": \"string\",\r\n" + 
-				"        \"dataType\": \"string\",\r\n" + 
-				"        \"description\": \"string\",\r\n" + 
-				"        \"fieldVal\": [\r\n" + 
-				"          {\r\n" + 
-				"            \"array\": true,\r\n" + 
-				"            \"null\": true,\r\n" + 
-				"            \"float\": true,\r\n" + 
-				"            \"number\": true,\r\n" + 
-				"            \"valueNode\": true,\r\n" + 
-				"            \"containerNode\": true,\r\n" + 
-				"            \"missingNode\": true,\r\n" + 
-				"            \"object\": true,\r\n" + 
-				"            \"nodeType\": \"ARRAY\",\r\n" + 
-				"            \"pojo\": true,\r\n" + 
-				"            \"integralNumber\": true,\r\n" + 
-				"            \"floatingPointNumber\": true,\r\n" + 
-				"            \"short\": true,\r\n" + 
-				"            \"int\": true,\r\n" + 
-				"            \"long\": true,\r\n" + 
-				"            \"double\": true,\r\n" + 
-				"            \"bigDecimal\": true,\r\n" + 
-				"            \"bigInteger\": true,\r\n" + 
-				"            \"textual\": true,\r\n" + 
-				"            \"boolean\": true,\r\n" + 
-				"            \"binary\": true\r\n" + 
-				"          }\r\n" + 
-				"        ],\r\n" + 
-				"        \"isActive\": true,\r\n" + 
-				"        \"createdBy\": \"string\",\r\n" + 
-				"        \"updatedBy\": \"string\",\r\n" + 
-				"        \"createdOn\": \"2021-12-10T05:59:29.437Z\",\r\n" + 
-				"        \"updatedOn\": \"2021-12-10T05:59:29.437Z\"\r\n" + 
-				"      }\r\n" + 
-				"    ]\r\n" + 
-				"  },\r\n" + 
-				"  \"errors\": [\r\n" + 
 				"  ]\r\n" + 
 				"}";
 		
@@ -443,7 +430,7 @@ public class SyncDataControllerTest {
 
 				"  ]\r\n" + 
 				"}";
-		mockRestServiceServer.expect(requestTo(idSchemaUrl+"?schemaVersion=0.0"))
+		mockRestServiceServer.expect(requestTo(idSchemaUrl+"?schemaVersion=0.0&domain=registration-client&type=schema"))
 				.andRespond(withSuccess().body(res).contentType(MediaType.APPLICATION_JSON));
 		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}"; 
 			
@@ -472,7 +459,7 @@ public class SyncDataControllerTest {
 				"}";
 		
 		
-		mockRestServiceServer.expect(requestTo(idSchemaUrl+"?schemaVersion=0.0"))
+		mockRestServiceServer.expect(requestTo(idSchemaUrl+"?schemaVersion=0.0&domain=registration-client&type=schema"))
 				.andRespond(withSuccess().body(res).contentType(MediaType.APPLICATION_JSON));
 
 		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}"; 
@@ -480,6 +467,36 @@ public class SyncDataControllerTest {
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
 		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
 		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/latestidschema")).andReturn(), null);
+
+	}
+	
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void getLatestPublishedIdSchemaTestWithClientVersion() throws Exception {
+		String res="{\r\n" + 
+				"  \"id\": \"string\",\r\n" + 
+				"  \"version\": \"string\",\r\n" + 
+				"  \"responsetime\": \"2021-12-07T12:51:29.957Z\",\r\n" + 
+				"  \"metadata\": {},\r\n" + 
+				"  \"response\": {\r\n" + 
+				"    \"additionalProp1\": {},\r\n" + 
+				"    \"additionalProp2\": {},\r\n" + 
+				"    \"additionalProp3\": {}\r\n" + 
+				"  },\r\n" + 
+				"  \"errors\": [\r\n" + 
+
+				"  ]\r\n" + 
+				"}";
+		
+		
+		mockRestServiceServer.expect(requestTo(idSchemaUrl+"?schemaVersion=0.0"))
+				.andRespond(withSuccess().body(res).contentType(MediaType.APPLICATION_JSON));
+
+		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}"; 
+		
+		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
+		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
+		SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/latestidschema?version=1.2.0.1")).andReturn(), null);
 
 	}
 
@@ -961,5 +978,18 @@ public class SyncDataControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.get("/tpm/publickey/10")).andExpect(status().is(500));
 	}
 
+	@Test
+	public void test1155DynamicFieldBackwardCompatibility() {
+		try {
+			ResponseWrapper<PageDto<DynamicFieldDto>> resp = objectMapper.readValue(str1,
+					new TypeReference<ResponseWrapper<PageDto<DynamicFieldDto>>>() {});
+			PageDto<DynamicFieldDto> dynamicFields = resp.getResponse();
+			Assert.assertTrue(dynamicFields.getData().size() == 1);
+			Assert.assertTrue(dynamicFields.getData().get(0).getFieldVal().size() == 1);
+			Assert.assertTrue(dynamicFields.getData().get(0).getFieldVal().get(0).isActive());
+		} catch (JsonProcessingException e) {
+			Assert.fail();
+		}			
+	}
 
 }

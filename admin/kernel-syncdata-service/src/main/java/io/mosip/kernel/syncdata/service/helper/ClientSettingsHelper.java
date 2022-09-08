@@ -64,63 +64,64 @@ public class ClientSettingsHelper {
 	}
 
 	public Map<Class, CompletableFuture> getInitiateDataFetch(String machineId, String regCenterId,
-			LocalDateTime lastUpdated, LocalDateTime currentTimestamp, boolean isV2API, boolean deltaSync) {
-
+			LocalDateTime lastUpdated, LocalDateTime currentTimestamp, boolean isV2API, boolean deltaSync, String fullSyncEntities) {
+		List<String> entities = (fullSyncEntities != null && !fullSyncEntities.isBlank()) ? Arrays.asList(fullSyncEntities.split("\\s*,\\s*")) : new ArrayList<>();
+		
 		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
 		futuresMap.put(AppAuthenticationMethod.class,
 				hasURLDetails(AppAuthenticationMethod.class, isV2API, deltaSync)
 						? getURLDetails(AppAuthenticationMethod.class)
-						: serviceHelper.getAppAuthenticationMethodDetails(lastUpdated, currentTimestamp));
+						: serviceHelper.getAppAuthenticationMethodDetails(getLastUpdatedTimeFromEntity(AppAuthenticationMethod.class, lastUpdated, entities), currentTimestamp));
 		futuresMap.put(AppRolePriority.class,
 				hasURLDetails(AppRolePriority.class, isV2API, deltaSync) ? getURLDetails(AppRolePriority.class)
-						: serviceHelper.getAppRolePriorityDetails(lastUpdated, currentTimestamp));
+						: serviceHelper.getAppRolePriorityDetails(getLastUpdatedTimeFromEntity(AppRolePriority.class, lastUpdated, entities), currentTimestamp));
 
-		futuresMap.put(Machine.class, serviceHelper.getMachines(regCenterId, lastUpdated, currentTimestamp, machineId));
+		futuresMap.put(Machine.class, serviceHelper.getMachines(regCenterId, getLastUpdatedTimeFromEntity(Machine.class, lastUpdated, entities), currentTimestamp, machineId));
 		futuresMap.put(RegistrationCenter.class,
-				serviceHelper.getRegistrationCenter(regCenterId, lastUpdated, currentTimestamp));
+				serviceHelper.getRegistrationCenter(regCenterId, getLastUpdatedTimeFromEntity(RegistrationCenter.class, lastUpdated, entities), currentTimestamp));
 
 		futuresMap.put(Template.class, hasURLDetails(Template.class, isV2API, deltaSync) ? getURLDetails(Template.class)
-				: serviceHelper.getTemplates(regClientModuleId, lastUpdated, currentTimestamp));
+				: serviceHelper.getTemplates(regClientModuleId, getLastUpdatedTimeFromEntity(Template.class, lastUpdated, entities), currentTimestamp));
 
 		futuresMap.put(DocumentType.class,
 				hasURLDetails(DocumentType.class, isV2API, deltaSync) ? getURLDetails(DocumentType.class)
-						: serviceHelper.getDocumentTypes(lastUpdated, currentTimestamp));
+						: serviceHelper.getDocumentTypes(getLastUpdatedTimeFromEntity(DocumentType.class, lastUpdated, entities), currentTimestamp));
 		futuresMap.put(ApplicantValidDocument.class,
 				hasURLDetails(ApplicantValidDocument.class, isV2API, deltaSync)
 						? getURLDetails(ApplicantValidDocument.class)
-						: serviceHelper.getApplicantValidDocument(lastUpdated, currentTimestamp));
+						: serviceHelper.getApplicantValidDocument(getLastUpdatedTimeFromEntity(ApplicantValidDocument.class, lastUpdated, entities), currentTimestamp));
 
 		futuresMap.put(Location.class, hasURLDetails(Location.class, isV2API, deltaSync) ? getURLDetails(Location.class)
-				: serviceHelper.getLocationHierarchy(lastUpdated, currentTimestamp));
+				: serviceHelper.getLocationHierarchy(getLastUpdatedTimeFromEntity(Location.class, lastUpdated, entities), currentTimestamp));
 
 		futuresMap.put(ReasonCategory.class,
 				hasURLDetails(ReasonCategory.class, isV2API, deltaSync) ? getURLDetails(ReasonCategory.class)
-						: serviceHelper.getReasonCategory(lastUpdated, currentTimestamp));
+						: serviceHelper.getReasonCategory(getLastUpdatedTimeFromEntity(ReasonCategory.class, lastUpdated, entities), currentTimestamp));
 		futuresMap.put(ReasonList.class,
 				hasURLDetails(ReasonList.class, isV2API, deltaSync) ? getURLDetails(ReasonList.class)
-						: serviceHelper.getReasonList(lastUpdated, currentTimestamp));
-		futuresMap.put(Holiday.class, serviceHelper.getHolidays(lastUpdated, machineId, currentTimestamp));
+						: serviceHelper.getReasonList(getLastUpdatedTimeFromEntity(ReasonList.class, lastUpdated, entities), currentTimestamp));
+		futuresMap.put(Holiday.class, serviceHelper.getHolidays(getLastUpdatedTimeFromEntity(Holiday.class, lastUpdated, entities), machineId, currentTimestamp));
 		futuresMap.put(BlocklistedWords.class,
 				hasURLDetails(BlocklistedWords.class, isV2API, deltaSync) ? getURLDetails(BlocklistedWords.class)
-						: serviceHelper.getBlackListedWords(lastUpdated, currentTimestamp));
+						: serviceHelper.getBlackListedWords(getLastUpdatedTimeFromEntity(BlocklistedWords.class, lastUpdated, entities), currentTimestamp));
 		futuresMap.put(ScreenAuthorization.class,
 				hasURLDetails(ScreenAuthorization.class, isV2API, deltaSync) ? getURLDetails(ScreenAuthorization.class)
-						: serviceHelper.getScreenAuthorizationDetails(lastUpdated, currentTimestamp));
+						: serviceHelper.getScreenAuthorizationDetails(getLastUpdatedTimeFromEntity(ScreenAuthorization.class, lastUpdated, entities), currentTimestamp));
 		futuresMap.put(ScreenDetail.class,
 				hasURLDetails(ScreenDetail.class, isV2API, deltaSync) ? getURLDetails(ScreenDetail.class)
-						: serviceHelper.getScreenDetails(lastUpdated, currentTimestamp));
+						: serviceHelper.getScreenDetails(getLastUpdatedTimeFromEntity(ScreenDetail.class, lastUpdated, entities), currentTimestamp));
 		futuresMap.put(ProcessList.class,
 				hasURLDetails(ProcessList.class, isV2API, deltaSync) ? getURLDetails(ProcessList.class)
-						: serviceHelper.getProcessList(lastUpdated, currentTimestamp));
+						: serviceHelper.getProcessList(getLastUpdatedTimeFromEntity(ProcessList.class, lastUpdated, entities), currentTimestamp));
 		futuresMap.put(SyncJobDef.class,
 				hasURLDetails(SyncJobDef.class, isV2API, deltaSync) ? getURLDetails(SyncJobDef.class)
-						: serviceHelper.getSyncJobDefDetails(lastUpdated, currentTimestamp));
+						: serviceHelper.getSyncJobDefDetails(getLastUpdatedTimeFromEntity(SyncJobDef.class, lastUpdated, entities), currentTimestamp));
 		futuresMap.put(PermittedLocalConfig.class,
 				hasURLDetails(PermittedLocalConfig.class, isV2API, deltaSync)
 						? getURLDetails(PermittedLocalConfig.class)
-						: serviceHelper.getPermittedConfig(lastUpdated, currentTimestamp));
+						: serviceHelper.getPermittedConfig(getLastUpdatedTimeFromEntity(PermittedLocalConfig.class, lastUpdated, entities), currentTimestamp));
 
-		futuresMap.put(Language.class, serviceHelper.getLanguageList(lastUpdated, currentTimestamp));
+		futuresMap.put(Language.class, serviceHelper.getLanguageList(getLastUpdatedTimeFromEntity(Language.class, lastUpdated, entities), currentTimestamp));
 
 		// to handle backward compatibility
 		if (!isV2API) {
@@ -147,12 +148,16 @@ public class ClientSettingsHelper {
 		// invokes master-data-service
 		futuresMap.put(LocationHierarchy.class,
 				hasURLDetails(LocationHierarchy.class, isV2API, deltaSync) ? getURLDetails(LocationHierarchy.class)
-						: serviceHelper.getLocationHierarchyList(lastUpdated));
+						: serviceHelper.getLocationHierarchyList(getLastUpdatedTimeFromEntity(LocationHierarchy.class, lastUpdated, entities)));
 		futuresMap.put(DynamicFieldDto.class,
 				hasURLDetails(DynamicFieldDto.class, isV2API, deltaSync) ? getURLDetails(DynamicFieldDto.class)
-						: serviceHelper.getAllDynamicFields(lastUpdated));
+						: serviceHelper.getAllDynamicFields(getLastUpdatedTimeFromEntity(DynamicFieldDto.class, lastUpdated, entities)));
 
 		return futuresMap;
+	}
+	
+	private LocalDateTime getLastUpdatedTimeFromEntity(Class clazz, LocalDateTime lastUpdated, List<String> fullSyncEntities) {
+		return fullSyncEntities.contains(clazz.getSimpleName()) ? null : lastUpdated;
 	}
 
 	public List<SyncDataBaseDto> retrieveData(Map<Class, CompletableFuture> futures, RegistrationCenterMachineDto regCenterMachineDto, boolean isV2API)
