@@ -150,7 +150,7 @@ public class UISpecServiceImpl implements UISpecService {
 		uiSpecEntity.setId(UUID.randomUUID().toString());
 		uiSpecEntity.setIsDeleted(false);
 		uiSpecEntity.setEffectiveFrom(LocalDateTime.now(ZoneId.of(ZoneOffset.UTC.getId())));
-		List<UISpec> uispeclist = uiSpecRepository.findUISpecByDomainAndType(dto.getDomain(), dto.getType());
+		List<UISpec> uispeclist = uiSpecRepository.findUISpecByDomainTypeandIdentitySchemaId(dto.getDomain(), dto.getType(), dto.getIdentitySchemaId());
 		if(!uispeclist.isEmpty() || uispeclist.size() !=0) {
 			throw new MasterDataServiceException(UISpecErrorCode.UI_SPEC_DUPLICATE_ENTRY.getErrorCode(),
 					UISpecErrorCode.UI_SPEC_DUPLICATE_ENTRY.getErrorMessage());

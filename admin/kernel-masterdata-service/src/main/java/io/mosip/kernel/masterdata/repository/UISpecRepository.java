@@ -50,8 +50,8 @@ public interface UISpecRepository extends BaseRepository<UISpec, String> {
 	UISpec findLatestVersion(String domain, String type);
 	
 	
-	@Query("FROM UISpec WHERE domain = ?1 AND type = ?2 And status='DRAFT'")
-	List<UISpec> findUISpecByDomainAndType(String domain, String type);
+	@Query("FROM UISpec WHERE domain = ?1 AND type = ?2 and identity_schema_id = ?3 And status='DRAFT'")
+	List<UISpec> findUISpecByDomainTypeandIdentitySchemaId(String domain, String type, String IdentitySchemaId);
 
 	@Modifying
 	@Query("UPDATE UISpec i SET i.jsonSpec=?2, i.isActive=?3 , i.updatedDateTime=?4, i.updatedBy=?5 WHERE i.id =?1 AND i.status='DRAFT' AND (i.isDeleted is null or i.isDeleted =false)")
