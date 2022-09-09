@@ -245,6 +245,29 @@ public class syncAuthServiceTest {
 
         syncAuthTokenService.getAuthToken(String.format("%s.%s.%s", header, payload, signature));
     }
+    
+    @Test(expected = RequestException.class)
+    public void requestWithIncorrectMachineName() throws JsonProcessingException {
+        when(machineRepository.findBySignKeyIndex(Mockito.anyString())).thenReturn(machines);
+        when(clientCryptoFacade.validateSignature(Mockito.any(), Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(true);
+
+        MachineAuthDto machineAuthDto = new MachineAuthDto();
+        machineAuthDto.setAuthType("New");
+        machineAuthDto.setPassword("test");
+        machineAuthDto.setUserId("test");
+        machineAuthDto.setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
+        machineAuthDto.setMachineName("b2ml27210");
+
+        MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
+        mockRestServer.expect(requestTo(newAuthTokenInternalUrl))
+                .andRespond(withSuccess().body(objectMapper.writeValueAsString(responseWrapper)));
+
+        String header = Base64.getUrlEncoder().encodeToString(String.format("{\"kid\":\"%s\"}", keyIndex).getBytes(StandardCharsets.UTF_8));
+        String payload = Base64.getUrlEncoder().encodeToString(objectMapper.writeValueAsString(machineAuthDto).getBytes(StandardCharsets.UTF_8));
+        String signature = Base64.getUrlEncoder().encodeToString("test-signature".getBytes(StandardCharsets.UTF_8));
+
+        syncAuthTokenService.getAuthToken(String.format("%s.%s.%s", header, payload, signature));
+    }
 
     @Test(expected = RequestException.class)
     public void requestWithFutureReqTimestamp() throws JsonProcessingException {
