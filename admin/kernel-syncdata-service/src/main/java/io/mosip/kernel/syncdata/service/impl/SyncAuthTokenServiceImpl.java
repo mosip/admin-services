@@ -132,7 +132,7 @@ public class SyncAuthTokenServiceImpl {
             try {
                 MachineAuthDto machineAuthDto = objectMapper.readValue(payload, MachineAuthDto.class);
                 if (machineAuthDto.getMachineName() != null && !machineAuthDto.getMachineName().equalsIgnoreCase(machine.getId())) {
-                	throw new RuntimeException();
+                	throw new RuntimeException("Invalid machinName found in the request");
                 }
                 validateRequestTimestamp(machineAuthDto.getTimestamp());
                 ResponseWrapper<TokenResponseDto> responseWrapper = getTokenResponseDTO(machineAuthDto);
