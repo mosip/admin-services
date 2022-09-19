@@ -32,12 +32,18 @@ import io.mosip.kernel.core.util.DateUtils;
 
 @Service
 public class AdminServiceImpl implements AdminService {
+	
+	private String LOST_RID_DATE_RANGE_ERROR_CODE = "RPR-RGS-034";
+	private String LOST_RID_DATE_RANGE_ERROR_MSG = "searching between date should be less then %s days";
 
 	@Value("${mosip.registration.processor.lostrid.version:mosip.registration.processor.workflow.search}")
 	private String lostRidReqVersion;
 
 	@Value("${mosip.registration.processor.lostrid.id:mosip.registration.lostrid}")
 	private String lostRidRequestId;
+	
+	@Value("${mosip.registration.processor.lostrid.max-registration-date-filter-interval}")
+	private String max_reg_date_interval;
 
 	@Value("${mosip.admin.lostrid.details.fields:fullName,dateOfBirth}")
 	private String[] fields;
@@ -85,6 +91,14 @@ public class AdminServiceImpl implements AdminService {
 			String response = restClient.postApi(ApiName.LOST_RID_API, MediaType.APPLICATION_JSON,
 					procRequestWrapper, String.class);
 			lostRidResponseDto = objectMapper.readValue(response, LostRidResponseDto.class);
+			if(lostRidResponseDto.getErrors().get(0).getErrorCode().equals(LOST_RID_DATE_RANGE_ERROR_CODE)) {
+				ErrorDTO error = new ErrorDTO();
+				error.setErrorCode(LOST_RID_DATE_RANGE_ERROR_CODE);
+				String msg = String.format(LOST_RID_DATE_RANGE_ERROR_MSG,
+						max_reg_date_interval);
+				error.setErrorMessage(msg);
+				lostRidResponseDto.getErrors().set(0, error);
+			}
 		} catch (Exception e) {
 			throw new RequestException(LostRidErrorCode.UNABLE_TO_RETRIEVE_LOSTRID.getErrorCode(),
 					LostRidErrorCode.UNABLE_TO_RETRIEVE_LOSTRID.getErrorMessage()
