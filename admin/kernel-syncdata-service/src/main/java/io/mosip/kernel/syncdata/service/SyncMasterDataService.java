@@ -81,12 +81,13 @@ public interface SyncMasterDataService {
 	 * @param keyIndex         - registration client TPM EK public key SHA256
 	 * @param lastUpdated      - last updated time stamp
 	 * @param currentTimestamp - current time stamp
+	 * @param fullSyncEntities - comma separated list of Entity names that always requires full sync
 	 * @return {@link SyncDataResponseDto}
 	 * @throws InterruptedException - this method will throw execution exception
 	 * @throws ExecutionException   -this method will throw interrupted exception
 	 */
 	SyncDataResponseDto syncClientSettingsV2(String regCenterId, String keyIndex,
-										   LocalDateTime lastUpdated, LocalDateTime currentTimestamp, String clientVersion)
+										   LocalDateTime lastUpdated, LocalDateTime currentTimestamp, String clientVersion, String fullSyncEntities)
 			throws Throwable;
 
 

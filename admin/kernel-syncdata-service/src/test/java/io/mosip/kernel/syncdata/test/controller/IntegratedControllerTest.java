@@ -77,7 +77,7 @@ public class IntegratedControllerTest {
 
 		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
 		when(clientSettingsHelper.getInitiateDataFetch(Mockito.anyString(), Mockito.anyString(), Mockito.any(),
-				Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn(futuresMap);
+				Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anyString())).thenReturn(futuresMap);
 		String str3 = "{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
 
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
@@ -95,7 +95,7 @@ public class IntegratedControllerTest {
 
 		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
 		when(clientSettingsHelper.getInitiateDataFetch(Mockito.anyString(), Mockito.anyString(), Mockito.any(),
-				Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn(futuresMap);
+				Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anyString())).thenReturn(futuresMap);
 		String str3 = "{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
 
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
@@ -113,7 +113,7 @@ public class IntegratedControllerTest {
 
 		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
 		when(clientSettingsHelper.getInitiateDataFetch(Mockito.anyString(), Mockito.anyString(), Mockito.any(),
-				Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenThrow(new RuntimeException() {
+				Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anyString())).thenThrow(new RuntimeException() {
 				});
 		String str3 = "{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
 
@@ -135,7 +135,7 @@ public class IntegratedControllerTest {
 		c.completeExceptionally(new SyncDataServiceException("", ""));
 		futuresMap.put(Location.class, c);
 		when(clientSettingsHelper.getInitiateDataFetch(Mockito.anyString(), Mockito.anyString(), Mockito.any(),
-				Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn(futuresMap);
+				Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anyString())).thenReturn(futuresMap);
 		String str3 = "{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
 
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
@@ -156,7 +156,7 @@ public class IntegratedControllerTest {
 		futuresMap.put(Location.class, c);
 
 		when(clientSettingsHelper.getInitiateDataFetch(Mockito.anyString(), Mockito.anyString(), Mockito.any(),
-				Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean()))
+				Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anyString()))
 						.thenReturn(futuresMap);
 		String str3 = "{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
 

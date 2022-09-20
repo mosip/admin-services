@@ -118,7 +118,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		String registrationCenterId = regCenterMachineDto.getRegCenterId();
 
 		Map<Class, CompletableFuture> futureMap = clientSettingsHelper.getInitiateDataFetch(machineId, registrationCenterId,
-				lastUpdated, currentTimestamp, false, lastUpdated!=null);
+				lastUpdated, currentTimestamp, false, lastUpdated!=null, null);
 
 		CompletableFuture[] array = new CompletableFuture[futureMap.size()];
 		CompletableFuture<Void> future = CompletableFuture.allOf(futureMap.values().toArray(array));
@@ -221,7 +221,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 
 	@Override
 	public SyncDataResponseDto syncClientSettingsV2(String regCenterId, String keyIndex, LocalDateTime lastUpdated,
-													LocalDateTime currentTimestamp, String clientVersion) {
+													LocalDateTime currentTimestamp, String clientVersion, String fullSyncEntities) {
 		logger.info("syncClientSettingsV2 invoked for timespan from {} to {}", lastUpdated, currentTimestamp);
 		SyncDataResponseDto response = new SyncDataResponseDto();
 		RegistrationCenterMachineDto regCenterMachineDto = serviceHelper.getRegistrationCenterMachine(regCenterId, keyIndex);
@@ -229,7 +229,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		String registrationCenterId = regCenterMachineDto.getRegCenterId();
 
 		Map<Class, CompletableFuture> futureMap = clientSettingsHelper.getInitiateDataFetch(machineId, registrationCenterId,
-				lastUpdated, currentTimestamp, true, lastUpdated!=null);
+				lastUpdated, currentTimestamp, true, lastUpdated!=null, fullSyncEntities);
 
 		CompletableFuture[] array = new CompletableFuture[futureMap.size()];
 		CompletableFuture<Void> future = CompletableFuture.allOf(futureMap.values().toArray(array));
