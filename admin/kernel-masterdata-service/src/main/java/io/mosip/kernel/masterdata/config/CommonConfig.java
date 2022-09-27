@@ -10,8 +10,10 @@ import javax.servlet.Filter;
 
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +30,7 @@ import io.mosip.kernel.masterdata.httpfilter.ReqResFilter;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.DefaultSort;
 
+
 /**
  * Config class with beans for modelmapper and request logging
  * 
@@ -39,6 +42,12 @@ import io.mosip.kernel.masterdata.utils.DefaultSort;
 @Configuration
 @EnableAspectJAutoProxy
 public class CommonConfig {
+	
+	@Value("${admin.masterdata.common.httpclient.connections.max.per.host:20}")
+	private int maxConnectionPerRoute;
+
+	@Value("${admin.masterdata.common.httpclient.connections.max:100}")
+	private int totalMaxConnection;
 
 	/**
 	 * Produce Request Logging bean
@@ -93,17 +102,11 @@ public class CommonConfig {
 	public RestTemplate restTemplateConfig()
 			throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
 
-		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
-
-		SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy)
-				.build();
-
-		SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
-
-		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
+		HttpClientBuilder httpClientBuilder = HttpClients.custom()
+				.setMaxConnPerRoute(maxConnectionPerRoute)
+				.setMaxConnTotal(totalMaxConnection).disableCookieManagement();
 		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-
-		requestFactory.setHttpClient(httpClient);
+		requestFactory.setHttpClient(httpClientBuilder.build());
 		return new RestTemplate(requestFactory);
 	}
 	
