@@ -22,6 +22,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -32,6 +33,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.annotation.PostConstruct;
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.security.KeyManagementException;
@@ -50,12 +52,26 @@ import java.util.List;
 @Component
 public class RestClient {
 
+    @Value("${mosip.admin.service.httpclient.connections.max.per.host:20}")
+    private int maxConnectionPerRoute;
+
+    @Value("${mosip.admin.service.httpclient.connections.max:100}")
+    private int totalMaxConnection;
+
     /** The environment. */
     @Autowired
     private Environment environment;
 
     /** The Constant AUTHORIZATION. */
     private static final String AUTHORIZATION = "Authorization=";
+
+    private RestTemplate localRestTemplate;
+
+    @PostConstruct
+    private void loadRestTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
+        localRestTemplate = getRestTemplate();
+    }
+
 
     /**
      * Post api.
@@ -97,12 +113,8 @@ public class RestClient {
                     builder.queryParam(queryParamNameArr[i], queryParamValueArr[i]);
                 }
             }
-
-            RestTemplate restTemplate;
-
             try {
-                restTemplate = getRestTemplate();
-                result = (T) restTemplate.postForObject(builder.toUriString(), setRequestHeader(requestType, mediaType),
+                result = (T) localRestTemplate.postForObject(builder.toUriString(), setRequestHeader(requestType, mediaType),
                         responseClass);
             } catch (Exception e) {
                 throw new Exception(e);
@@ -153,11 +165,8 @@ public class RestClient {
 
             }
             uriComponents = builder.build(false).encode();
-            RestTemplate restTemplate;
-
             try {
-                restTemplate = getRestTemplate();
-                result = (T) restTemplate
+                result = (T) localRestTemplate
                         .exchange(uriComponents.toUri(), HttpMethod.GET, setRequestHeader(null, null), responseType)
                         .getBody();
             } catch (Exception e) {
@@ -181,11 +190,8 @@ public class RestClient {
                         Class<?> responseType) throws Exception {
 
             T result = null;
-            RestTemplate restTemplate;
-
             try {
-                restTemplate = getRestTemplate();
-                result= (T) restTemplate
+                result= (T) localRestTemplate
                         .getForObject(url, responseType);
             } catch (Exception e) {
                 throw new Exception(e);
@@ -206,10 +212,8 @@ public class RestClient {
     public <T> T getForApi(String url,
                               Class<?> responseType) throws Exception {
         T result = null;
-        RestTemplate restTemplate;
         try {
-            restTemplate = getRestTemplate();
-            ResponseEntity responseEntity= (ResponseEntity) restTemplate
+            ResponseEntity responseEntity= (ResponseEntity) localRestTemplate
                     .exchange(url, HttpMethod.GET, setRequestHeader(null, null), responseType);
             if(url.contains("datashare") && responseEntity.getHeaders().getContentType().equals(MediaType.APPLICATION_JSON)){
                 throw new MasterDataServiceException(ApplicantDetailErrorCode.DATA_SHARE_EXPIRED_EXCEPTION.getErrorCode(),
@@ -231,16 +235,15 @@ public class RestClient {
      * @throws KeyStoreException        the key store exception
      */
     public RestTemplate getRestTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
-        TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
-        SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy)
-                .build();
-        SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
-        CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
-        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-        requestFactory.setHttpClient(httpClient);
-
-        return new RestTemplate(requestFactory);
-
+        if (localRestTemplate == null) {
+            HttpClientBuilder httpClientBuilder = HttpClients.custom()
+                    .setMaxConnPerRoute(maxConnectionPerRoute)
+                    .setMaxConnTotal(totalMaxConnection).disableCookieManagement();
+            HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+            requestFactory.setHttpClient(httpClientBuilder.build());
+            localRestTemplate = new RestTemplate(requestFactory);
+        }
+        return localRestTemplate;
     }
 
     /**
