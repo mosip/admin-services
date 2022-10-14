@@ -4,6 +4,7 @@ import psycopg2
 import json
 import sys
 
+print(sys.argv[2])
 conn = psycopg2.connect(database="mosip_master", user = sys.argv[1], password = sys.argv[2], host = sys.argv[3], port = sys.argv[4])
 
 print("Opened database successfully")

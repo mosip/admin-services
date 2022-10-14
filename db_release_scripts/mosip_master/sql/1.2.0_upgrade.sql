@@ -29,7 +29,7 @@ UPDATE master.template set module_id='10002' where template_typ_code like 'reg-d
 --------------------------------------------------------------------------------------------------------------------
 
 ALTER TABLE master.blacklisted_words DROP CONSTRAINT IF EXISTS pk_blwrd_code CASCADE;
-\ir ./ddl/master-blocklisted_words.sql
+\ir ../ddl/master-blocklisted_words.sql
 ALTER TABLE master.blocklisted_words DROP CONSTRAINT IF EXISTS pk_blwrd_code CASCADE;
 ALTER TABLE master.blocklisted_words ALTER COLUMN lang_code DROP NOT NULL;
 INSERT into master.blocklisted_words (word,descr,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) SELECT distinct word,descr,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes FROM master.blacklisted_words;
@@ -40,7 +40,7 @@ ALTER TABLE master.blocklisted_words ADD CONSTRAINT pk_blwrd_code PRIMARY KEY (w
 
 SELECT * INTO master.identity_schema_migr_bkp FROM master.identity_schema;
 
-\ir ./ddl/master-ui_spec.sql
+\ir ../ddl/master-ui_spec.sql
 TRUNCATE TABLE master.ui_spec cascade;
 INSERT into master.ui_spec (id,version,domain,title,description,type,json_spec,identity_schema_id,identity_schema_version,effective_from,status_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) SELECT id,id_version,'registration-client', title,description,'schema',id_attr_json,id,id_version,effective_from,status_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes FROM master.identity_schema;
 
@@ -188,7 +188,7 @@ ALTER TABLE master.batch_job_execution_params ALTER COLUMN string_val TYPE varch
 
 ----------------------------------------------CREATION OF PERMITTED LOCAL CONFIG -------------------------------------------------------------
 
-\ir ./ddl/master-permitted_local_config.sql
+\ir ../ddl/master-permitted_local_config.sql
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 SELECT * INTO master.loc_holiday_migr_bkp FROM master.loc_holiday;
