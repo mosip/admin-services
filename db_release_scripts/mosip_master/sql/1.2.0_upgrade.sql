@@ -1,24 +1,4 @@
--- ---------------------------------------------------------------------------------------------------------
--- Database Name: mosip_master
--- Release Version 	: 1.2.0
--- Purpose    		: Database Alter scripts for the release for Master DB.       
--- Create By   		: Ram Bhatt
--- Created Date		: March-2021
--- 
--- Modified Date        Modified By         Comments / Remarks
--- -----------------------------------------------------------------------------------------------------------
--- Apr-2021		Ram Bhatt  	   Removed bulk upload transaction size limit
--- Apr-2021		Ram Bhatt	   Lang_code nullable, removed from pk constraints and multiple FK constraint changes	
--- Apr-2021 		Ram Bhatt          Added new rows in template,template_type and module_detail csv
--- Apr-2021 		Ram Bhatt  	   Creation of master.permitted_local_config
--- May-2021		Ram Bhatt	   Changed Precision and size of version and identity_schema_version
--- Jul-2021		Ram Bhatt          Creation of blocklisted table
--- Aug-2021		Ram Bhatt	   Remove primary key constraint from blacklisted table
--- Aug-2021		Ram Bhatt	   Column size increased for template_typ_code and code column
--- ------------------------------------------------------------------------------------------------------------
-
 \c mosip_master sysadmin
------------------------------------------------------------------------------------------------------------------------
 
 ALTER TABLE master.template_type ALTER COLUMN code TYPE character varying(64) ;
 
