@@ -131,23 +131,18 @@ public class PacketUploadServiceTest {
     @Test
     @WithUserDetails("packet-admin")
     public void syncAndUploadPacketTest() throws IOException, JSONException, InterruptedException {
-//        ResponseWrapper<PageDto<List<MachineRegistrationCenterDto>>> responseWrapper = new ResponseWrapper<>();
-//        MachineRegistrationCenterDto machineRegistrationCenterDto = new MachineRegistrationCenterDto();
-//        machineRegistrationCenterDto.setId("10107");
-//        machineRegistrationCenterDto.setRegCentId("10003");
-//        List<MachineRegistrationCenterDto> list = new ArrayList<>();
-//        list.add(machineRegistrationCenterDto);
-//        PageDto pageDto = new PageDto();
-//        pageDto.setPageNo(0);
-//        pageDto.setData(list);
-//        pageDto.setTotalPages(1);
-//        pageDto.setTotalItems(1);
-//        responseWrapper.setResponse(pageDto);
-//        mockRestServiceServer.expect(MockRestRequestMatchers.requestTo(
-//                        MACHINE_GET_API + "10003?pageNumber=0"))
-//                .andRespond(MockRestResponseCreators.withSuccess()
-//                        .body(objectMapper.writeValueAsString(responseWrapper))
-//                        .contentType(MediaType.APPLICATION_JSON_UTF8));
+        ResponseWrapper<PageDto<List<MachineRegistrationCenterDto>>> responseWrapper = new ResponseWrapper<>();
+        MachineRegistrationCenterDto machineRegistrationCenterDto = new MachineRegistrationCenterDto();
+        machineRegistrationCenterDto.setId("10107");
+        machineRegistrationCenterDto.setRegCentId("10003");
+        List<MachineRegistrationCenterDto> list = new ArrayList<>();
+        list.add(machineRegistrationCenterDto);
+        PageDto pageDto = new PageDto();
+        pageDto.setPageNo(0);
+        pageDto.setData(list);
+        pageDto.setTotalPages(1);
+        pageDto.setTotalItems(1);
+        responseWrapper.setResponse(pageDto);
 
         ResponseWrapper<String> syncResponse = new ResponseWrapper<>();
         syncResponse.setResponse("successful rid sync");

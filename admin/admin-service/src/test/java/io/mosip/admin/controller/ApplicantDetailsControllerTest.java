@@ -49,12 +49,9 @@ public class ApplicantDetailsControllerTest {
     @MockBean
     private AuditUtil auditUtil;
     
-    @MockBean
-    @Qualifier("OnlinePacketCryptoServiceImpl")
-    private IPacketCryptoService onlineCrypto;
 
     @MockBean
-    RestClient restClient;
+    private RestClient restClient;
 
     MockRestServiceServer mockRestServiceServer;
 
@@ -68,7 +65,7 @@ public class ApplicantDetailsControllerTest {
     public void setUp() throws Exception {
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
-        mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
+		mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
 
     }
 
