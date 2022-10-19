@@ -101,7 +101,7 @@ public class PacketUploadService {
 
     @PostConstruct
     public void init() throws InterruptedException {
-        File accountLoc = new File(baseLocation + File.separator + account);
+        File accountLoc = new File(baseLocation , account);
         if(!accountLoc.exists()) {
             logger.info("Creating object store location as it doesn't exists", accountLoc);
             accountLoc.mkdirs();
