@@ -41,18 +41,14 @@ public class PacketJobResultListener implements JobExecutionListener {
 
 	    @Override
 	    public void beforeJob(JobExecution jobExecution) {
-	    	System.out.println("before job started");
 	        logger.info("Job started : {}", jobExecution.getJobParameters().getString("transactionId"));
 	        this.jobExecutionSecurityContextListener.fillJobExecutionContext(jobExecution);
 
 	        if(jobExecution.getStepExecutions().isEmpty()) {
-	        	System.out.println("restore context starting");
 	            restoreContext(jobExecution);
-	            System.out.println("restoring context done");
 	        }
 	        else {
 	            for(StepExecution stepExecution : jobExecution.getStepExecutions()) {
-	            	System.out.println("restoring context using step execution");
 	                this.jobExecutionSecurityContextListener.restoreContext(stepExecution);
 	            }
 	        }
