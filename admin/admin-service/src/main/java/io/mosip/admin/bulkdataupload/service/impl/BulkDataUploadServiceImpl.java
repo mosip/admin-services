@@ -147,6 +147,12 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 	@Value("${mosip.optional-languages}")
 	private String optionalLanguages;
+
+	@Value("${mosip.admin.batch.line.delimiter:|}")
+	private String lineDelimiter;
+
+	@Value("${mosip.admin.batch.name.delimiter:\\|}")
+	private String nameDelimiter;
 	
 	@Autowired
 	private Validator validator;
@@ -472,7 +478,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	private FlatFileItemReader<Object> csvItemReader(MultipartFile file, Class<?> clazz) throws IOException {
 
 		DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
-		lineTokenizer.setDelimiter(",");
+		lineTokenizer.setDelimiter(lineDelimiter);
 		lineTokenizer.setStrict(false);
 
 		FlatFileItemReader<Object> flatFileItemReader = new FlatFileItemReader<>();
@@ -484,13 +490,12 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 		flatFileItemReader.setSkippedLinesCallback(new LineCallbackHandler() {
 			@Override
 			public void handleLine(String s) {
-				lineTokenizer.setNames(s.split(","));
+				lineTokenizer.setNames(s.split(nameDelimiter));
 			}
 		});
 		BeanWrapperFieldSetMapper<Object> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
 		fieldSetMapper.setTargetType(clazz);
 		fieldSetMapper.setConversionService(customConversionService());
-
 		CustomLineMapper<Object> lineMapper = new CustomLineMapper<Object>(setupLanguages(), validator);
 		lineMapper.setLineTokenizer(lineTokenizer);
 		lineMapper.setFieldSetMapper(fieldSetMapper);
