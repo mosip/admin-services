@@ -154,6 +154,12 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	@Value("${mosip.optional-languages}")
 	private String optionalLanguages;
 
+	@Value("${mosip.admin.batch.line.delimiter:|}")
+	private String lineDelimiter;
+
+	@Value("${mosip.admin.batch.name.delimiter:\\|}")
+	private String nameDelimiter;
+
 	private Map<String, Class> entityMap = new HashMap<String, Class>();
 
 
@@ -459,7 +465,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	private FlatFileItemReader<Object> itemReader(MultipartFile file, Class<?> clazz) throws IOException {
 
 		DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
-		lineTokenizer.setDelimiter(",");
+		lineTokenizer.setDelimiter(lineDelimiter);
 		lineTokenizer.setStrict(false);
 
 		FlatFileItemReader<Object> flatFileItemReader = new FlatFileItemReader<>();
@@ -471,7 +477,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 		flatFileItemReader.setSkippedLinesCallback(new LineCallbackHandler() {
 			@Override
 			public void handleLine(String s) {
-				lineTokenizer.setNames(s.split(","));
+				lineTokenizer.setNames(s.split(nameDelimiter));
 			}
 		});
 		BeanWrapperFieldSetMapper<Object> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
