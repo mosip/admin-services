@@ -1,10 +1,11 @@
 ## Properties file
 set -e
 properties_file="$1"
-release_version="$2"
+release_version="$3"
+current_version="$2"
      echo "Properties File Name - $properties_file"
-	 echo "DB Upgrade Version - $release_version"
-
+     echo "DB Upgrade Version - $release_version"
+     echo "DB current version - $current_version"
 if [ -f "$properties_file" ]
 then
      echo "Property file \"$properties_file\" found."
@@ -20,6 +21,13 @@ fi
 
 if [ $# -ge 2 ] 
 then
+     echo "DB current version \"$current_version\" found."
+else
+     echo "DB current version not found, Pass current version as argument."
+     exit 0
+fi
+if [ $# -ge 3 ] 
+then
      echo "DB upgrade version \"$release_version\" found."
 else
      echo "DB upgrade version not found, Pass upgrade version as argument."
@@ -34,8 +42,9 @@ CONN=$(PGPASSWORD=$SU_USER_PWD psql -v ON_ERROR_STOP=1 --username=$SU_USER --hos
 echo "Terminated connections"
 
 ## Executing DB Upgrade scripts
-echo "Alter scripts deployment on $MOSIP_DB_NAME database is started....Upgrade Version...$release_version"
-ALTER_SCRIPT_FILE="sql/${release_version}_${ALTER_SCRIPT_FILENAME}"
+echo "Alter scripts deployment on $MOSIP_DB_NAME database from $current_version to $release_version  started...."
+ALTER_SCRIPT_FILE="sql/${current_version}_to_${release_version}_${ALTER_SCRIPT_FILENAME}"
+
 echo "Upgrade script considered for release deployment - $ALTER_SCRIPT_FILE"
 
 ## Checking If Alter scripts are present
