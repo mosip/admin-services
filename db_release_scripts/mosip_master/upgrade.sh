@@ -16,6 +16,7 @@ then
    done < "$properties_file"
 else
      echo "Property file not found, Pass property file name as argument."
+     PRIMARY_LANGUAGE_CODE=eng
 #     exit 0
 fi
 
