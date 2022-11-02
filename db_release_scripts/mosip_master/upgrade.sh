@@ -3,6 +3,7 @@ set -e
 properties_file="$3"
 release_version="$2"
 current_version="$1"
+PRIMARY_LANGUAGE_CODE=eng
      echo "Properties File Name - $properties_file"
      echo "DB Upgrade Version - $release_version"
      echo "DB current version - $current_version"
