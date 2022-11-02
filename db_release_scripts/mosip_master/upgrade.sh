@@ -1,8 +1,8 @@
 ## Properties file
 set -e
-properties_file="$1"
-release_version="$3"
-current_version="$2"
+properties_file="$3"
+release_version="$2"
+current_version="$1"
      echo "Properties File Name - $properties_file"
      echo "DB Upgrade Version - $release_version"
      echo "DB current version - $current_version"
