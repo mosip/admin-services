@@ -16,7 +16,7 @@ then
    done < "$properties_file"
 else
      echo "Property file not found, Pass property file name as argument."
-     exit 0
+#     exit 0
 fi
 
 if [ $# -ge 2 ] 
