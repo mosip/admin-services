@@ -17,6 +17,7 @@ then
 else
      echo "Property file not found, Pass property file name as argument."
      PRIMARY_LANGUAGE_CODE=eng
+     echo $PRIMARY_LANGUAGE_CODE
 #     exit 0
 fi
 
