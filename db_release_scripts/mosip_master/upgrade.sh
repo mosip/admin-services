@@ -43,9 +43,7 @@ echo "Terminated connections"
 
 ## Executing DB Upgrade scripts
 echo "Alter scripts deployment on $MOSIP_DB_NAME database from $current_version to $release_version  started...."
-ALTER_SCRIPT_FILE="sql/${current_version}_to_${release_version}_${ALTER_SCRIPT_FILENAME}"
-
-echo "Upgrade script considered for release deployment - $ALTER_SCRIPT_FILE"
+ALTER_SCRIPT_FILE="sql/${current_version}_to_${release_version}_upgrade.sql"
 
 ## Checking If Alter scripts are present
 echo "Checking if script $ALTER_SCRIPT_FILE is present"
