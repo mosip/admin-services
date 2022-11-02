@@ -19,14 +19,14 @@ else
 #     exit 0
 fi
 
-if [ $# -ge 2 ] 
+if [ $# -ge 1 ] 
 then
      echo "DB current version \"$current_version\" found."
 else
      echo "DB current version not found, Pass current version as argument."
      exit 0
 fi
-if [ $# -ge 3 ] 
+if [ $# -ge 2 ] 
 then
      echo "DB upgrade version \"$release_version\" found."
 else
