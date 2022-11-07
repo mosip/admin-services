@@ -12,7 +12,7 @@ public enum ApplicantDetailErrorCode {
 
     LIMIT_EXCEEDED("ADM-AVD-008","Your daily search limit has exceeded. Please try searching again tomorrow."),
 
-    DATA_SHARE_EXPIRED_EXCEPTION("ADM-AVD-008", "Data share usuage expired");
+    DATA_SHARE_EXPIRED_EXCEPTION("ADM-AVD-009", "Data share usuage expired");
 
     private final String errorCode;
     private final String errorMessage;
