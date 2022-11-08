@@ -120,7 +120,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install libxml2-utils
     - name: Build with Maven
-      run:
+      run: |
         cd admin && mvn -B -U package -s $GITHUB_WORKSPACE/settings.xml --file pom.xml
 
     - name: Publish the maven package
