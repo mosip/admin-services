@@ -33,26 +33,27 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-		    <groupId>org.apache.poi</groupId>
-		    <artifactId>poi-ooxml</artifactId>
-		    <version>5.2.2</version>
-		</dependency>
-		<dependency>
 		    <groupId>commons-io</groupId>
 		    <artifactId>commons-io</artifactId>
 		    <version>2.10.0</version>
 		</dependency>
-		
+
+		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>5.2.2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 		<dependency>
 		  <groupId>org.springframework.batch.extensions</groupId>
 		  <artifactId>spring-batch-excel</artifactId>
 		  <version>0.1.0</version>
-		</dependency>
-		<dependency>
-		    <groupId>com.documents4j</groupId>
-		    <artifactId>documents4j-parent</artifactId>
-		    <version>1.1.9</version>
-		    <type>pom</type>
 		</dependency>
 	
 	    <dependency>
@@ -70,11 +71,6 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-dataaccess-hibernate</artifactId>
 			<version>${kernel.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-config</artifactId>
-			<version>${spring-cloud-config.version}</version>
 		</dependency>
 		<dependency>
 	      <groupId>org.springframework.boot</groupId>
@@ -186,7 +182,6 @@
 			<artifactId>biometrics-util</artifactId>
 			<version>${kernel.version}</version>
 		</dependency>
-
 	</dependencies>
 	<build>
 		<plugins>
