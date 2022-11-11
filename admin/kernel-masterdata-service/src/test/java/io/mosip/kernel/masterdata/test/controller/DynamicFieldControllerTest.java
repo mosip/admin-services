@@ -67,7 +67,6 @@ public class DynamicFieldControllerTest {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
 		dynamicFieldDtoReq = new RequestWrapper<DynamicFieldDto>();
-		// DynamicFieldDto dynamicFieldDto = new DynamicFieldDto();
 		dynamicFieldDto.setDataType("string");
 		dynamicFieldDto.setDescription("Blood Type");
 		dynamicFieldDto.setLangCode("eng");
@@ -132,11 +131,40 @@ public class DynamicFieldControllerTest {
 								.andReturn(),
 						null);
 	}
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void t001createDynamicFieldFailTest() throws Exception {
+		JsonNode fieldVal = mapper.readTree("{\"code\":\"%^%$\",\"value\":\"ooo\"}");
+		dynamicFieldDtoReq.getRequest().setFieldVal(fieldVal);
+		dynamicFieldDtoReq.getRequest().setName("bloodtype");
+		MasterDataTest
+				.checkResponse(
+						mockMvc.perform(
+										MockMvcRequestBuilders.post("/dynamicfields").contentType(MediaType.APPLICATION_JSON)
+												.content(mapper.writeValueAsString(dynamicFieldDtoReq)))
+								.andReturn(),
+						"KER-MSD-999");
+	}
+	@Test
+	@WithUserDetails("global-admin")
+	public void t001createDynamicFieldFailTest1() throws Exception {
+		JsonNode fieldVal = mapper.readTree("{\"code\":\"avj\",\"value\":\"%^%$\"}");
+		dynamicFieldDtoReq.getRequest().setFieldVal(fieldVal);
+		dynamicFieldDtoReq.getRequest().setName("bloodtype");
+		MasterDataTest
+				.checkResponse(
+						mockMvc.perform(
+										MockMvcRequestBuilders.post("/dynamicfields").contentType(MediaType.APPLICATION_JSON)
+												.content(mapper.writeValueAsString(dynamicFieldDtoReq)))
+								.andReturn(),
+						"KER-MSD-999");
+	}
 	
 	@Test
 	@WithUserDetails("global-admin")
 	public void t001createDynamicFieldTest1() throws Exception {
-		JsonNode fieldVal = mapper.readTree("{\"code\":\"10001\",\"value\":\"bloodType1\"}");
+		JsonNode fieldVal = mapper.readTree("{\"code\":\"10001\",\"value\":\"bloodType\"}");
 		dynamicFieldDtoReq.getRequest().setFieldVal(fieldVal);
 		dynamicFieldDtoReq.getRequest().setName("bloodtype");
 		MasterDataTest
@@ -167,7 +195,8 @@ public class DynamicFieldControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t002createDynamicFieldFailTest() throws Exception {
-
+		JsonNode fieldVal = mapper.readTree("{\"code\":\"10004\",\"value\":\"bloodType1\"}");
+		dynamicFieldDtoReq.getRequest().setFieldVal(fieldVal);
 		MasterDataTest
 				.checkResponse(
 						mockMvc.perform(
