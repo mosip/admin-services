@@ -1,8 +1,9 @@
 ## Properties file
 set -e
-properties_file="$1"
-revoke_version="$3"
-current_version="$2"
+properties_file="$3"
+revoke_version="$2"
+current_version="$1"
+PRIMARY_LANGUAGE_CODE=eng
      echo "Properties File Name - $properties_file"
      echo "DB revoke Version - $revoke_version"
      echo "DB current version - $current_version"
@@ -16,25 +17,22 @@ then
    done < "$properties_file"
 else
      echo "Property file not found, Pass property file name as argument."
-     exit 0
 fi
 
-if [ $# -ge 2 ] 
+if [ $# -ge 1 ] 
 then
      echo "DB current version \"$current_version\" found."
 else
      echo "DB current version not found, Pass current version as argument."
      exit 0
 fi
-if [ $# -ge 3 ] 
+if [ $# -ge 2 ] 
 then
      echo "DB revoke version \"$revoke_version\" found."
 else
      echo "DB revoke version not found, Pass revoke version as argument."
      exit 0
 fi
-
-echo $PRIMARY_LANGUAGE_CODE
 
 ## Terminate existing connections
 echo "Terminating active connections" 
@@ -43,7 +41,7 @@ echo "Terminated connections"
 
 ## Executing DB revoke scripts
 echo "Alter scripts deployment on $MOSIP_DB_NAME database from $current_version to $revoke_version  started...."
-ALTER_SCRIPT_FILE="sql/${current_version}_to_${revoke_version}_${REVOKE_SCRIPT_FILENAME}"
+ALTER_SCRIPT_FILE="sql/${current_version}_to_${revoke_version}_revoke.sh"
 
 echo "revoke script considered for release deployment - $ALTER_SCRIPT_FILE"
 
