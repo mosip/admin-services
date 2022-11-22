@@ -313,10 +313,9 @@ public class LocationServiceImpl implements LocationService {
 				throw new RequestException(LocationErrorCode.INVALID_HIERARCY_LEVEL.getErrorCode(),
 						LocationErrorCode.INVALID_HIERARCY_LEVEL.getErrorMessage());
 			}
-			List<Location> list = (null==locationDto.getParentLocCode()  || locationDto.getParentLocCode().isEmpty())? locationRepository.findByNameAndLevelLangCodeNotCode(locationDto.getName(),
-					locationDto.getHierarchyLevel(), locationDto.getLangCode(), locationDto.getCode()):locationRepository.findByNameParentlocCodeAndLevelLangCodeNotCode(locationDto.getName(),
-							locationDto.getHierarchyLevel(), locationDto.getLangCode(), locationDto.getCode(),locationDto.getParentLocCode());
-			
+			List<Location> list =(null!=locationDto.getParentLocCode() && !locationDto.getParentLocCode().isEmpty())?locationRepository.findByNameParentCodeAndLevelLangCode(locationDto.getName(),locationDto.getParentLocCode(),
+					locationDto.getHierarchyLevel(), locationDto.getLangCode()):locationRepository.findByNameAndLevelLangCode(locationDto.getName(),
+							locationDto.getHierarchyLevel(), locationDto.getLangCode());
 			if (list != null && !list.isEmpty()) {
 				auditUtil.auditRequest(
 						String.format(MasterDataConstant.FAILURE_CREATE, LocationDto.class.getSimpleName()),
