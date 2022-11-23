@@ -22,7 +22,9 @@ public interface BulkDataService {
 	 * @return
 
 	 */
-	public BulkDataResponseDto bulkDataOperation(String tableName,String operation,String category,MultipartFile[] files);
+	public BulkDataResponseDto bulkDataOperation(String tableName, String operation, String category,
+            MultipartFile[] files, String centerId, String source, String process,
+			 String supervisorStatus);
 	
 	
 	/**
