@@ -6,12 +6,15 @@ import io.mosip.admin.TestBootApplication;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.admin.util.AdminDataUtil;
 import io.mosip.admin.util.RestClient;
+import io.mosip.commons.packet.spi.IPacketCryptoService;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,9 +48,10 @@ public class ApplicantDetailsControllerTest {
 
     @MockBean
     private AuditUtil auditUtil;
+    
 
     @MockBean
-    RestClient restClient;
+    private RestClient restClient;
 
     MockRestServiceServer mockRestServiceServer;
 
@@ -61,7 +65,7 @@ public class ApplicantDetailsControllerTest {
     public void setUp() throws Exception {
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
-        mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
+		mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
 
     }
 
