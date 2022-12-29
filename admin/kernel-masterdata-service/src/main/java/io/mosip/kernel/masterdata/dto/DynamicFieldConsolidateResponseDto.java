@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.dto;
 
+import java.util.List;
+
 import org.json.JSONArray;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -19,7 +21,6 @@ public class DynamicFieldConsolidateResponseDto {
 	
 	private String description;
 	
-    @JsonIgnore
-	private JSONArray jsonValues;
+	private List<DynamicFieldCodeValueDTO> values; 
 	
 }
