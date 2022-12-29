@@ -32,11 +32,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.SchemaErrorCode;
+import io.mosip.kernel.masterdata.dto.DynamicFieldCodeValueDTO;
 import io.mosip.kernel.masterdata.dto.DynamicFieldConsolidateResponseDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldDefDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
@@ -508,7 +512,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		try {
 			List<DynamicField> lst = dynamicFieldRepository.findAllDynamicFieldByNameLangCodeAndisDeleted(fieldName,
 					langCode);
-			if (null == lst || lst.size() == 0) {
+			if (null == lst || lst.isEmpty()) {
 				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
 
@@ -516,19 +520,18 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 			DynamicFieldConsolidateResponseDto dto = new DynamicFieldConsolidateResponseDto();
 			dto.setDescription(lst.get(0).getDescription());
 			dto.setName(lst.get(0).getName());
-			dto.setJsonValues(null);
 			if (withValue == true) {
-
 				List<JSONObject> l = new ArrayList<>();
 				for (int i = 0; i < lst.size(); i++) {
 					l.add(new JSONObject(lst.get(i).getValueJson()));
 				}
-				dto.setJsonValues(new JSONArray(l));
+				List<DynamicFieldCodeValueDTO> dtolist = objectMapper.readValue(new JSONArray(l).toString(),new TypeReference<List<DynamicFieldCodeValueDTO>>(){});
+				dto.setValues(dtolist);
 			}
 
 			return dto;
 
-		} catch (DataAccessLayerException | DataAccessException | JSONException  e) {
+		} catch (DataAccessLayerException | DataAccessException | JSONException | JsonProcessingException  e) {
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
