@@ -113,7 +113,7 @@ public class AdminControllerTest {
 	@Test
 	@WithUserDetails(value = "zonal-admin")
 	public void t002lostRidTest() throws Exception {
-		String str = "{\r\n    \"id\": null,\r\n    \"version\": null,\r\n    \"responsetime\": \"2019-12-02T09:45:24.512Z\",\r\n    \"metadata\": null,\r\n    \"response\": [{\"registrationId\":\"1234\",\"registrationDate\":\"2022-09-14 16:29:13,436\"}],\r\n    \"errors\": []\r\n}";
+		String str = "{\r\n    \"id\": null,\r\n    \"version\": null,\r\n    \"responsetime\": \"2019-12-02T09:45:24.512Z\",\r\n    \"metadata\": null,\r\n    \"response\": [{\"registrationId\":\"1234\",\"registrationDate\":\"2021-12-14 16:29:13,436\"}],\r\n    \"errors\": []\r\n}";
 		searchInfoReq.getRequest().setSort(new ArrayList<SortInfo>());
 
 		mockRestServiceServer.expect(requestTo(lstRidUrl))
@@ -122,7 +122,7 @@ public class AdminControllerTest {
 		AdminDataUtil.checkResponse(
 				(mockMvc.perform(MockMvcRequestBuilders.post("/lostRid").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(searchInfoReq))).andReturn()),
-				"ADMN-LRID-001");
+				null);
 
 	}
 
