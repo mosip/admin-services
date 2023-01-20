@@ -520,12 +520,13 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 			DynamicFieldConsolidateResponseDto dto = new DynamicFieldConsolidateResponseDto();
 			dto.setDescription(lst.get(0).getDescription());
 			dto.setName(lst.get(0).getName());
+			List<DynamicFieldCodeValueDTO> dtolist = new ArrayList<DynamicFieldCodeValueDTO>();
 			if (withValue == true) {
 				List<JSONObject> l = new ArrayList<>();
 				for (int i = 0; i < lst.size(); i++) {
 					l.add(new JSONObject(lst.get(i).getValueJson()));
+					dtolist.add(objectMapper.readValue(lst.get(i).getValueJson(),DynamicFieldCodeValueDTO.class));
 				}
-				List<DynamicFieldCodeValueDTO> dtolist = objectMapper.readValue(new JSONArray(l).toString(),new TypeReference<List<DynamicFieldCodeValueDTO>>(){});
 				dto.setValues(dtolist);
 			}
 
