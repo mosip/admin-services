@@ -53,4 +53,8 @@ public interface RegistrationCenterRepository extends JpaRepository<Registration
 	@Cacheable(cacheNames = "delta-sync", key = "'registration_center'")
 	@Query(value = "select new io.mosip.kernel.syncdata.dto.EntityDtimes(max(aam.createdDateTime), max(aam.updatedDateTime), max(aam.deletedDateTime)) from RegistrationCenter aam ")
 	EntityDtimes getMaxCreatedDateTimeMaxUpdatedDateTime();
+
+	@Query(value = "FROM RegistrationCenter WHERE id = ?1 AND ((createdDateTime BETWEEN ?2 AND ?3) OR (updatedDateTime BETWEEN ?2 AND ?3) OR (deletedDateTime BETWEEN ?2 AND ?3))")
+	List<RegistrationCenter> findRegistrationCentersById(String regCenterId, LocalDateTime lastUpdated, LocalDateTime currentTimeStamp);
+
 }

@@ -460,7 +460,7 @@ public class SyncDataServiceTest {
 				encodedTPMPublicKey, keyIndex, "ZONE","10002", null,encodedTPMPublicKey, keyIndex);
 		List<Machine> machines = new ArrayList<Machine>();
 		machines.add(machine);			
-		when(machineRespository.findByMachineNameAndIsActive(Mockito.anyString())).thenReturn(machines);
+		when(machineRespository.findByMachineName(Mockito.anyString())).thenReturn(machines);
 		
 		UploadPublicKeyRequestDto dto = new UploadPublicKeyRequestDto("laptop", encodedTPMPublicKey, encodedTPMPublicKey);
 		UploadPublicKeyResponseDto resp = masterDataService.validateKeyMachineMapping(dto);
@@ -470,7 +470,7 @@ public class SyncDataServiceTest {
 	//machine public key mapping test cases
 	@Test(expected = RequestException.class)
 	public void verifyPublicKeyMachineMappingNoMapping() {			
-		when(machineRespository.findByMachineNameAndIsActive(Mockito.anyString())).thenReturn(new ArrayList<Machine>());
+		when(machineRespository.findByMachineName(Mockito.anyString())).thenReturn(new ArrayList<Machine>());
 		
 		UploadPublicKeyRequestDto dto = new UploadPublicKeyRequestDto("laptop", encodedTPMPublicKey, encodedTPMPublicKey);
 		masterDataService.validateKeyMachineMapping(dto);		
@@ -483,7 +483,7 @@ public class SyncDataServiceTest {
 				null, null, "ZONE","10002", null, null, null);
 		List<Machine> machines = new ArrayList<Machine>();
 		machines.add(machine);			
-		when(machineRespository.findByMachineNameAndIsActive(Mockito.anyString())).thenReturn(machines);
+		when(machineRespository.findByMachineName(Mockito.anyString())).thenReturn(machines);
 		
 		UploadPublicKeyRequestDto dto = new UploadPublicKeyRequestDto("laptop", encodedTPMPublicKey,  encodedTPMPublicKey);
 		masterDataService.validateKeyMachineMapping(dto);

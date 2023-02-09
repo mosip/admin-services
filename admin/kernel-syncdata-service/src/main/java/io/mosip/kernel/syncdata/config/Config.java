@@ -1,5 +1,6 @@
 package io.mosip.kernel.syncdata.config;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.Filter;
 
 import io.mosip.kernel.websub.api.filter.MultipleReadRequestBodyFilter;
@@ -12,6 +13,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import io.mosip.kernel.syncdata.httpfilter.CorsFilter;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.concurrent.Executor;
 
@@ -80,5 +82,10 @@ public class Config {
 		requestBodyReader.setFilter(new MultipleReadRequestBodyFilter());
 		requestBodyReader.setOrder(1);
 		return requestBodyReader;
+	}
+
+	@PostConstruct
+	public void enableAuthCtxOnSpawnedThreads() {
+		SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
 	}
 }

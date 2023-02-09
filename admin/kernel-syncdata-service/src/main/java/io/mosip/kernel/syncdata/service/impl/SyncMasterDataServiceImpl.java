@@ -1,53 +1,49 @@
 package io.mosip.kernel.syncdata.service.impl;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.ExecutionException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.kernel.clientcrypto.dto.TpmCryptoRequestDto;
+import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
+import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.FileNotFoundException;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.kernel.core.util.HMACUtils2;
+import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import io.mosip.kernel.keymanagerservice.entity.CACertificateStore;
 import io.mosip.kernel.keymanagerservice.repository.CACertificateStoreRepository;
+import io.mosip.kernel.syncdata.constant.SyncConfigDetailsErrorCode;
 import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.*;
-import io.mosip.kernel.syncdata.entity.AppDetail;
 import io.mosip.kernel.syncdata.exception.*;
-import io.mosip.kernel.syncdata.repository.AppDetailRepository;
-import io.mosip.kernel.syncdata.service.helper.KeymanagerHelper;
+import io.mosip.kernel.syncdata.repository.ModuleDetailRepository;
+import io.mosip.kernel.syncdata.service.helper.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataAccessException;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
-import io.mosip.kernel.syncdata.service.helper.ApplicationDataHelper;
-import io.mosip.kernel.syncdata.service.helper.DeviceDataHelper;
-import io.mosip.kernel.syncdata.service.helper.DocumentDataHelper;
-import io.mosip.kernel.syncdata.service.helper.HistoryDataHelper;
-import io.mosip.kernel.syncdata.service.helper.IdentitySchemaHelper;
-import io.mosip.kernel.syncdata.service.helper.IndividualDataHelper;
-import io.mosip.kernel.syncdata.service.helper.MachineDataHelper;
-import io.mosip.kernel.syncdata.service.helper.MiscellaneousDataHelper;
-import io.mosip.kernel.syncdata.service.helper.RegistrationCenterDataHelper;
-import io.mosip.kernel.syncdata.service.helper.TemplateDataHelper;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import org.springframework.web.client.RestTemplate;
@@ -65,7 +61,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	
-	private Logger logger = LoggerFactory.getLogger(SyncMasterDataServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(SyncMasterDataServiceImpl.class);
 
 	@Autowired
 	private SyncMasterDataServiceHelper serviceHelper;
@@ -95,89 +91,57 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	private CACertificateStoreRepository caCertificateStoreRepository;
 
 	@Autowired
-	private AppDetailRepository appDetailRepository;
+	private ModuleDetailRepository moduleDetailRepository;
 
-	@Value("${mosip.syncdata.regclient.module.id:10002}")
-	private String regClientModuleId;
+	@Autowired
+	private ClientSettingsHelper clientSettingsHelper;
+
+	@Value("${mosip.syncdata.clientsettings.data.dir:./_SNAPSHOTS}")
+	private String clientSettingsDir;
+
+	@Autowired
+	private Environment environment;
+
+	@Autowired
+	private ClientCryptoManagerService clientCryptoManagerService;
+
+	@Autowired
+	private CryptomanagerUtils cryptomanagerUtils;
 
 
 	@Override
 	public SyncDataResponseDto syncClientSettings(String regCenterId, String keyIndex,
-			LocalDateTime lastUpdated, LocalDateTime currentTimestamp) 
-					throws InterruptedException, ExecutionException {
-
+			LocalDateTime lastUpdated, LocalDateTime currentTimestamp) {
 		logger.info("syncClientSettings invoked for timespan from {} to {}", lastUpdated, currentTimestamp);
-				
+		SyncDataResponseDto response = new SyncDataResponseDto();
 		RegistrationCenterMachineDto regCenterMachineDto = serviceHelper.getRegistrationCenterMachine(regCenterId, keyIndex);
-		
 		String machineId = regCenterMachineDto.getMachineId();
 		String registrationCenterId = regCenterMachineDto.getRegCenterId();
 
-		SyncDataResponseDto response = new SyncDataResponseDto();
-		
-		List<CompletableFuture> futures = new ArrayList<CompletableFuture>();
-		
-		ApplicationDataHelper applicationDataHelper = new ApplicationDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		applicationDataHelper.retrieveData(serviceHelper, futures);		
-		
-		MachineDataHelper machineDataHelper = new MachineDataHelper(registrationCenterId, machineId,
-				lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		machineDataHelper.retrieveData(serviceHelper, futures);
+		Map<Class, CompletableFuture> futureMap = clientSettingsHelper.getInitiateDataFetch(machineId, registrationCenterId,
+				lastUpdated, currentTimestamp, false, lastUpdated!=null);
 
-		DeviceDataHelper deviceDataHelper = new DeviceDataHelper(registrationCenterId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		deviceDataHelper.retrieveData(serviceHelper, futures);
-
-		IndividualDataHelper individualDataHelper = new IndividualDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		individualDataHelper.retrieveData(serviceHelper, futures);
-		
-		RegistrationCenterDataHelper RegistrationCenterDataHelper = new RegistrationCenterDataHelper(registrationCenterId, machineId, 
-				lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		RegistrationCenterDataHelper.retrieveData(serviceHelper, futures);
-
-		TemplateDataHelper templateDataHelper = new TemplateDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey(),
-				regClientModuleId);
-		templateDataHelper.retrieveData(serviceHelper, futures);
-		
-		DocumentDataHelper documentDataHelper = new DocumentDataHelper(lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		documentDataHelper.retrieveData(serviceHelper, futures);
-		
-		MiscellaneousDataHelper miscellaneousDataHelper = new MiscellaneousDataHelper(machineId, lastUpdated, currentTimestamp, regCenterMachineDto.getPublicKey());
-		miscellaneousDataHelper.retrieveData(serviceHelper, futures);		
-		
-		CompletableFuture array [] = new CompletableFuture[futures.size()];
-		CompletableFuture<Void> future = CompletableFuture.allOf(futures.toArray(array));		
+		CompletableFuture[] array = new CompletableFuture[futureMap.size()];
+		CompletableFuture<Void> future = CompletableFuture.allOf(futureMap.values().toArray(array));
 
 		try {
 			future.join();
 		} catch (CompletionException e) {
+			logger.error("Failed to fetch data", e);
 			if (e.getCause() instanceof SyncDataServiceException) {
 				throw (SyncDataServiceException) e.getCause();
 			} else {
 				throw (RuntimeException) e.getCause();
 			}
 		}
-		
-		List<SyncDataBaseDto> list = new ArrayList<SyncDataBaseDto>();		
-		applicationDataHelper.fillRetrievedData(serviceHelper, list);
-		machineDataHelper.fillRetrievedData(serviceHelper, list);
-		deviceDataHelper.fillRetrievedData(serviceHelper, list);
-		individualDataHelper.fillRetrievedData(serviceHelper, list);
-		RegistrationCenterDataHelper.fillRetrievedData(serviceHelper, list);
-		templateDataHelper.fillRetrievedData(serviceHelper, list);
-		documentDataHelper.fillRetrievedData(serviceHelper, list);
-		//historyDataHelper.fillRetrievedData(serviceHelper, list);
-		miscellaneousDataHelper.fillRetrievedData(serviceHelper, list);
-		
-		//Fills dynamic field data
-		identitySchemaHelper.fillRetrievedData(list, regCenterMachineDto.getPublicKey(), lastUpdated);
-		
-		response.setDataToSync(list);
+
+		response.setDataToSync(clientSettingsHelper.retrieveData(futureMap, regCenterMachineDto, false));
 		return response;
 	}
 	
 	@Override
 	public UploadPublicKeyResponseDto validateKeyMachineMapping(UploadPublicKeyRequestDto dto) {
-		List<Machine> machines = machineRepo.findByMachineNameAndIsActive(dto.getMachineName());
+		List<Machine> machines = machineRepo.findByMachineName(dto.getMachineName());
 		
 		if(machines == null || machines.isEmpty())
 			throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
@@ -187,7 +151,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 			throw new RequestException(MasterDataErrorCode.MACHINE_PUBLIC_KEY_NOT_WHITELISTED.getErrorCode(),
 					MasterDataErrorCode.MACHINE_PUBLIC_KEY_NOT_WHITELISTED.getErrorMessage());
 		
-		if(Arrays.equals(CryptoUtil.decodeBase64(dto.getPublicKey()), 
+		if(Arrays.equals(CryptoUtil.decodeBase64(dto.getPublicKey()),
 				CryptoUtil.decodeBase64(machines.get(0).getPublicKey()))) {
 			return new UploadPublicKeyResponseDto(machines.get(0).getKeyIndex());
 		}
@@ -195,10 +159,11 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		throw new RequestException(MasterDataErrorCode.MACHINE_PUBLIC_KEY_NOT_WHITELISTED.getErrorCode(),
 				MasterDataErrorCode.MACHINE_PUBLIC_KEY_NOT_WHITELISTED.getErrorMessage());
 	}
-	
+
+
 	@Override
 	public IdSchemaDto getLatestPublishedIdSchema(LocalDateTime lastUpdated, double schemaVersion) {
-		return identitySchemaHelper.getLatestIdentitySchema(lastUpdated, schemaVersion);		
+		return identitySchemaHelper.getLatestIdentitySchema(lastUpdated, schemaVersion);
 	}
 
 	@Override
@@ -260,7 +225,6 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(String.format(machineUrl, machineId));
 			ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().toUri(), String.class);
 
-			objectMapper.registerModule(new JavaTimeModule());
 			ResponseWrapper<MachineResponseDto> resp = objectMapper.readValue(responseEntity.getBody(),
 					new TypeReference<ResponseWrapper<MachineResponseDto>>() {});
 

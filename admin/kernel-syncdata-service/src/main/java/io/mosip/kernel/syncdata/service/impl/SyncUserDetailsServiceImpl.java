@@ -339,7 +339,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 		return syncUserDto;
 	}
 
-	private UserDetailResponseDto getUserDetailsFromAuthServer(List<String> userIds) {
+	public UserDetailResponseDto getUserDetailsFromAuthServer(List<String> userIds) {
 		StringBuilder userDetailsUri = new StringBuilder();
 		userDetailsUri.append(authUserDetailsBaseUri).append(authUserDetailsUri);
 		try {
