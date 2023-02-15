@@ -136,6 +136,11 @@ public class ClientSettingsHelper {
 			futuresMap.put(ValidDocument.class,
 					hasURLDetails(ValidDocument.class, isV2API, deltaSync) ? getURLDetails(ValidDocument.class)
 							: serviceHelper.getValidDocuments(lastUpdated, currentTimestamp));
+
+			// document category
+			futuresMap.put(DocumentCategory.class,
+					hasURLDetails(DocumentCategory.class, isV2API, deltaSync) ? getURLDetails(DocumentCategory.class)
+							: serviceHelper.getDocumentCategories(lastUpdated, currentTimestamp));
 		}
 
 		// invokes master-data-service

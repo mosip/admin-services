@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import io.mosip.kernel.clientcrypto.constant.ClientType;
+import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.entity.*;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
 import io.mosip.kernel.syncdata.repository.*;
@@ -41,31 +42,6 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.constant.AdminServiceErrorCode;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
-import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
-import io.mosip.kernel.syncdata.dto.AppRolePriorityDto;
-import io.mosip.kernel.syncdata.dto.ApplicantValidDocumentDto;
-import io.mosip.kernel.syncdata.dto.BlacklistedWordsDto;
-import io.mosip.kernel.syncdata.dto.DocumentTypeDto;
-import io.mosip.kernel.syncdata.dto.DynamicFieldDto;
-import io.mosip.kernel.syncdata.dto.EntityDtimes;
-import io.mosip.kernel.syncdata.dto.HolidayDto;
-import io.mosip.kernel.syncdata.dto.LocationDto;
-import io.mosip.kernel.syncdata.dto.LocationHierarchyDto;
-import io.mosip.kernel.syncdata.dto.MachineDto;
-import io.mosip.kernel.syncdata.dto.PageDto;
-import io.mosip.kernel.syncdata.dto.PostReasonCategoryDto;
-import io.mosip.kernel.syncdata.dto.ProcessListDto;
-import io.mosip.kernel.syncdata.dto.ReasonListDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
-import io.mosip.kernel.syncdata.dto.ScreenAuthorizationDto;
-import io.mosip.kernel.syncdata.dto.ScreenDetailDto;
-import io.mosip.kernel.syncdata.dto.SyncJobDefDto;
-import io.mosip.kernel.syncdata.dto.TemplateDto;
-import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
-import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
-import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.response.SyncDataBaseDto;
 import io.mosip.kernel.syncdata.exception.AdminServiceException;
 import io.mosip.kernel.syncdata.exception.RequestException;
@@ -1102,6 +1078,42 @@ public class SyncMasterDataServiceHelper {
 		}
 		return null;
 	}
+
+	@Async
+	public CompletableFuture<List<DocumentCategoryDto>> getDocumentCategories(LocalDateTime lastUpdated,
+																		  LocalDateTime currentTimeStamp) {
+		List<DocumentCategory> documentCategories = null;
+		try {
+			if(!isChangesFound("DocumentCategory", lastUpdated)) {
+				return CompletableFuture.completedFuture(null);
+			}
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			documentCategories = documentCategoryRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
+			throw new SyncDataServiceException(MasterDataErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
+					e.getMessage(), e);
+		}
+		return CompletableFuture.completedFuture(convertDocumentCategoryEntityToDto(documentCategories));
+	}
+
+	private List<DocumentCategoryDto> convertDocumentCategoryEntityToDto(List<DocumentCategory> documentCategories) {
+		if (documentCategories != null && !documentCategories.isEmpty()) {
+			List<DocumentCategoryDto> documentCategoryDtos = new ArrayList<>();
+			documentCategories.stream().forEach(entity -> {
+				DocumentCategoryDto entityDTO = new DocumentCategoryDto(entity.getCode(), entity.getName(), entity.getDescription());
+				entityDTO.setLangCode(entity.getLangCode());
+				entityDTO.setIsActive(entity.getIsActive());
+				entityDTO.setIsDeleted(entity.getIsDeleted());
+				documentCategoryDtos.add(entityDTO);
+			});
+			return documentCategoryDtos;
+		}
+		return null;
+	}
 	
 	@Async
 	public CompletableFuture<List<SyncJobDefDto>> getSyncJobDefDetails(LocalDateTime lastUpdatedTime,
@@ -1440,6 +1452,9 @@ public class SyncMasterDataServiceHelper {
 				break;
 			case "DeviceType":
 				result = deviceTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				break;
+			case "DocumentCategory":
+				result = documentCategoryRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
 				break;
 		}
 
