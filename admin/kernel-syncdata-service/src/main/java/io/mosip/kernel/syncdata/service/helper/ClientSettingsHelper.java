@@ -65,7 +65,7 @@ public class ClientSettingsHelper {
 
 	public Map<Class, CompletableFuture> getInitiateDataFetch(String machineId, String regCenterId,
 			LocalDateTime lastUpdated, LocalDateTime currentTimestamp, boolean isV2API, boolean deltaSync, String fullSyncEntities) {
-		List<String> entities = (fullSyncEntities != null && !fullSyncEntities.isBlank()) ? Arrays.asList(fullSyncEntities.split("\\s*,\\s*")) : new ArrayList<>();
+		List<String> entities = (fullSyncEntities != null && !fullSyncEntities.isBlank()) ? Arrays.asList(fullSyncEntities.split("\\s{0,10},\\s{0,10}")) : new ArrayList<>();
 		
 		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
 		futuresMap.put(AppAuthenticationMethod.class,

@@ -114,7 +114,7 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
                     LinkedHashMap<String, String> jsonObject = utility.getJSONValue(mapperIdentity, valueObj);
                     String value = jsonObject.get(VALUE);
                     applicantDataMap.put(value,identityObj.get(value).toString());
-                } else if (valueObj.equalsIgnoreCase(ApplicantPhoto)) {
+                } else if (valueObj!=null && valueObj.equalsIgnoreCase(ApplicantPhoto)) {
                     getImageData(documents,applicantDataMap);
                 }
             }

@@ -48,6 +48,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
+import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.DeviceHistoryService;
 import io.mosip.kernel.masterdata.service.DeviceService;
@@ -80,6 +81,9 @@ public class DeviceServiceImpl implements DeviceService {
 
 	@Autowired
 	RegistrationCenterRepository regCenterRepository;
+	
+	@Autowired
+	DeviceSpecificationRepository deviceSpecificationRepository;
 	/**
 	 * Field to hold Device Service object
 	 */
@@ -827,8 +831,9 @@ public class DeviceServiceImpl implements DeviceService {
 		StatusResponseDto response = new StatusResponseDto();
 		DeviceHistory deviceHistory = new DeviceHistory();
 		List<Device> devices = null;
+		List<DeviceSpecification> deviceSpecificationList = null;
 		try {
-			devices = deviceRepository.findtoUpdateDeviceById(id);
+			devices = deviceRepository.findtoUpdateDeviceById(id);	
 		} catch (DataAccessException | DataAccessLayerException accessException) {
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, DeviceDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
@@ -840,13 +845,7 @@ public class DeviceServiceImpl implements DeviceService {
 					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(accessException));
 		}
-		if (devices != null && !devices.isEmpty()) {
-			masterdataCreationUtil.updateMasterDataStatus(Device.class, id, isActive, "id");
-			MetaDataUtils.setUpdateMetaData(devices.get(0), deviceHistory, true);
-			deviceHistory.setEffectDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-			deviceHistory.setIsActive(isActive);
-			deviceHistoryService.createDeviceHistory(deviceHistory);
-		} else {
+		if (devices == null || devices.isEmpty()) {
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, DeviceDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
@@ -856,6 +855,24 @@ public class DeviceServiceImpl implements DeviceService {
 			throw new DataNotFoundException(DeviceErrorCode.DEVICE_NOT_EXISTS_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_NOT_EXISTS_EXCEPTION.getErrorMessage());
 		}
+		if(isActive) {
+			deviceSpecificationList = deviceSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(devices.get(0).getDeviceSpecId());
+			if(deviceSpecificationList==null || deviceSpecificationList.isEmpty()) {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, DeviceDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DeviceErrorCode.DEVICE_SPECIFICATION_INACTIVE.getErrorCode(),
+							DeviceErrorCode.DEVICE_SPECIFICATION_INACTIVE.getErrorMessage()),
+					"ADM-518");
+			throw new DataNotFoundException(DeviceErrorCode.DEVICE_SPECIFICATION_INACTIVE.getErrorCode(),
+					DeviceErrorCode.DEVICE_SPECIFICATION_INACTIVE.getErrorMessage());
+			}
+		}
+		masterdataCreationUtil.updateMasterDataStatus(Device.class, id, isActive, "id");
+		MetaDataUtils.setUpdateMetaData(devices.get(0), deviceHistory, true);
+		deviceHistory.setEffectDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		deviceHistory.setIsActive(isActive);
+		deviceHistoryService.createDeviceHistory(deviceHistory);
 		response.setStatus("Status updated successfully for Devices");
 		return response;
 	}
