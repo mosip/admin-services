@@ -25,7 +25,7 @@ import io.mosip.admin.bulkdataupload.batch.CustomRecordSeparatorPolicy;
 import io.mosip.admin.bulkdataupload.batch.CustomChunkListener;
 import io.mosip.admin.bulkdataupload.service.PacketUploadService;
 import io.mosip.kernel.core.util.*;
-import org.digibooster.spring.batch.security.listener.JobExecutionSecurityContextListener;
+import org.digibooster.spring.batch.listener.JobExecutionListenerContextSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.*;
@@ -147,6 +147,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	
 	@Autowired
 	private PacketJobResultListener packetJobResultListener;
+
+	@Autowired
+	private JobExecutionListenerContextSupport jobExecutionListenerContextSupport;
 
 	@Value("${mosip.mandatory-languages}")
 	private String mandatoryLanguages;
@@ -412,6 +415,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 				.build();
 
 		return jobBuilderFactory.get("ETL-Load")
+				.listener(jobExecutionListenerContextSupport)
 				.listener(jobResultListener)
 				.incrementer(new RunIdIncrementer())
 				.start(step)
