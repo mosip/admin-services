@@ -5,10 +5,6 @@ import io.mosip.admin.bulkdataupload.batch.JobResultListener;
 import io.mosip.admin.bulkdataupload.batch.PacketJobResultListener;
 import io.mosip.admin.bulkdataupload.repositories.BulkUploadTranscationRepository;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
-import org.digibooster.spring.batch.listener.JobExecutionListenerContextSupport;
-import org.digibooster.spring.batch.security.listener.JobExecutionSecurityContextListener;
-import org.springframework.batch.core.JobExecutionListener;
-import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -63,12 +59,12 @@ public class SpringBatchConfig {
     
     @Bean
     public JobResultListener jobResultListener() {
-        return new JobResultListener(bulkUploadTranscationRepository, auditUtil, new JobExecutionSecurityContextListener());
+        return new JobResultListener(bulkUploadTranscationRepository, auditUtil);
     }
     
     @Bean
     public PacketJobResultListener packetjobResultListener() {
-        return new PacketJobResultListener(bulkUploadTranscationRepository, auditUtil, new JobExecutionSecurityContextListener());
+        return new PacketJobResultListener(bulkUploadTranscationRepository, auditUtil);
     }
 
     @Bean(name = "customStepBuilderFactory")
