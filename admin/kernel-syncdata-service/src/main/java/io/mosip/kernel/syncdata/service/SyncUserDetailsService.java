@@ -3,6 +3,9 @@ package io.mosip.kernel.syncdata.service;
 import io.mosip.kernel.syncdata.dto.SyncUserDetailDto;
 import io.mosip.kernel.syncdata.dto.SyncUserDto;
 import io.mosip.kernel.syncdata.dto.SyncUserSaltDto;
+import io.mosip.kernel.syncdata.dto.response.UserDetailResponseDto;
+
+import java.util.List;
 
 /**
  * This service class handles CRUD opertaion method signature
@@ -37,4 +40,6 @@ public interface SyncUserDetailsService {
 	 * @return
 	 */
 	SyncUserDto getAllUserDetailsBasedOnKeyIndex(String keyIndex);
+
+	UserDetailResponseDto getUserDetailsFromAuthServer(List<String> userIds);
 }

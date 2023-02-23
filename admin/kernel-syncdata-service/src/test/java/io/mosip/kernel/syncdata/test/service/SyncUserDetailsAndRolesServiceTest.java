@@ -2,21 +2,20 @@ package io.mosip.kernel.syncdata.test.service;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withUnauthorizedRequest;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
 import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.syncdata.dto.SyncUserDto;
 import io.mosip.kernel.syncdata.entity.Machine;
+import io.mosip.kernel.syncdata.exception.DataNotFoundException;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import org.junit.Assert;
@@ -38,20 +37,16 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.response.MockRestResponseCreators;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.authmanager.exception.AuthNException;
 import io.mosip.kernel.core.authmanager.exception.AuthZException;
 import io.mosip.kernel.syncdata.entity.UserDetails;
-import io.mosip.kernel.syncdata.exception.DataNotFoundException;
 import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.repository.UserDetailsRepository;
-import io.mosip.kernel.syncdata.service.SyncJobDefService;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
 import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
 
@@ -63,6 +58,7 @@ public class SyncUserDetailsAndRolesServiceTest {
 
 	@MockBean
 	MachineRepository machineRespository;
+
 	@MockBean
 	private UserDetailsRepository userDetailsRepository;
 
@@ -74,6 +70,9 @@ public class SyncUserDetailsAndRolesServiceTest {
 
 	@Autowired
 	RestTemplate restTemplate;
+
+	/*@MockBean
+	private SyncJobDefService registrationCenterUserService;*/
 
 	@Autowired
 	private SyncMasterDataServiceHelper serviceHelper;
@@ -143,7 +142,7 @@ public class SyncUserDetailsAndRolesServiceTest {
 
 	// ------------------------------------------UserDetails--------------------------//
 	@Test
-	public void getAllUserDetail() throws JsonParseException, JsonMappingException, IOException {
+	public void getAllUserDetail()  {
 		String response = "{\"id\":\"SYNCDATA.REQUEST\",\"version\":\"v1.0\",\"responsetime\":\"2019-03-31T10:40:29.935Z\",\"metadata\":null,\"response\":{\"mosipUserDtoList\":[{\"userId\":\"110001\",\"mobile\":\"9663175928\",\"mail\":\"110001@mosip.io\",\"langCode\":null,\"userPassword\":\"e1NTSEE1MTJ9L25EVy9tajdSblBMZFREYjF0dXB6TzdCTmlWczhKVnY1TXJ1aXRSZlBrSCtNVmJDTXVIM2lyb2thcVhsdlR6WkNKYXAwSncrSXc5SFc3aWRYUnpnaHBTQktrNXRSVTA3\",\"name\":\"user\",\"role\":\"REGISTRATION_ADMIN,REGISTRATION_OFFICER\"}]},\"errors\":null}";
 
 		String regId = "10044";
@@ -158,7 +157,7 @@ public class SyncUserDetailsAndRolesServiceTest {
 	}
 
 	@Test
-	public void getAllUserSaltDetail() throws JsonParseException, JsonMappingException, IOException {
+	public void getAllUserSaltDetail()  {
 		String responseSalt = "{\"id\":\"SYNCDATA.REQUEST\",\"version\":\"v1.0\",\"responsetime\":\"2019-03-31T10:40:29.935Z\",\"metadata\":null,\"response\":{\"mosipUserSaltList\":[{\"userId\":\"110001\",\"salt\":\"9663175928\"}]},\"errors\":null}";
 
 		String regId = "10044";
@@ -466,11 +465,14 @@ public class SyncUserDetailsAndRolesServiceTest {
 
 	@Test
 	public void getAllUserDetailEncryptedTestCase() {
-		List<Object[]> queryResult = new ArrayList<>();
-		queryResult.add(new String[] {"regId", "mid", "publickey"});
+		Machine machine = new Machine();
+		machine.setId("mid");
+		machine.setRegCenterId("regId");
+		machine.setPublicKey("publickey");
+
 		TpmCryptoResponseDto tpmCryptoResponseDto = new TpmCryptoResponseDto();
 		tpmCryptoResponseDto.setValue("testsetestsetset");
-		when(machineRespository.getRegistrationCenterMachineWithKeyIndexWithoutStatusCheck(Mockito.anyString())).thenReturn(queryResult);
+		when(machineRespository.findOneByKeyIndexIgnoreCase(Mockito.anyString())).thenReturn(machine);
 		when(userDetailsRepository.findByUsersByRegCenterId(Mockito.anyString())).thenReturn(registrationCenterUsers);
 		when(machineRespository.findByMachineIdAndIsActive(Mockito.anyString())).thenReturn(machines);
 		when(clientCryptoManagerService.csEncrypt(Mockito.any())).thenReturn(tpmCryptoResponseDto);

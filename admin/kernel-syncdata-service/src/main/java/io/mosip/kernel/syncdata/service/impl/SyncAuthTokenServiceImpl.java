@@ -7,7 +7,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.clientcrypto.exception.ClientCryptoException;
 import io.mosip.kernel.clientcrypto.service.impl.ClientCryptoFacade;
@@ -15,18 +14,18 @@ import io.mosip.kernel.core.authmanager.model.*;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.constant.SyncAuthErrorCode;
-import io.mosip.kernel.syncdata.dto.AuthLoginUser;
-import io.mosip.kernel.syncdata.dto.IdSchemaDto;
 import io.mosip.kernel.syncdata.dto.MachineAuthDto;
 import io.mosip.kernel.syncdata.dto.MachineOtpDto;
 import io.mosip.kernel.syncdata.dto.response.TokenResponseDto;
+import io.mosip.kernel.syncdata.dto.response.UserDetailResponseDto;
 import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.exception.RequestException;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
-import net.minidev.json.JSONObject;
+import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
+import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,21 +38,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
 
 
 /**
- * @since 1.1.5.2
+ * @since 1.2.0-SNAPSHOT
  */
 @RefreshScope
 @Service
@@ -101,12 +96,19 @@ public class SyncAuthTokenServiceImpl {
     private MachineRepository machineRepository;
 
     @Autowired
+    private SyncUserDetailsService syncUserDetailsService;
+
+    @Autowired
     private RestTemplate restTemplate;
 
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private CryptomanagerUtils cryptomanagerUtils;
 
-    static  {
-        objectMapper.registerModule(new JavaTimeModule());
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @PostConstruct
+    public void init() {
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
@@ -114,9 +116,9 @@ public class SyncAuthTokenServiceImpl {
     public String getAuthToken(String requestData) {
         String[] parts = requestData.split("\\.");
         if(parts.length == 3) {
-            byte[] header = Base64.getUrlDecoder().decode(parts[0]);
-            byte[] payload = Base64.getUrlDecoder().decode(parts[1]);
-            byte[] signature = Base64.getUrlDecoder().decode(parts[2]);
+            byte[] header = CryptoUtil.decodeURLSafeBase64(parts[0]);
+            byte[] payload = CryptoUtil.decodeURLSafeBase64(parts[1]);
+            byte[] signature = CryptoUtil.decodeURLSafeBase64(parts[2]);
 
             Machine machine = validateRequestData(header, payload, signature);
             try {
@@ -124,7 +126,10 @@ public class SyncAuthTokenServiceImpl {
                 validateRequestTimestamp(machineAuthDto.getTimestamp());
                 ResponseWrapper<TokenResponseDto> responseWrapper = getTokenResponseDTO(machineAuthDto);
                 String token = objectMapper.writeValueAsString(responseWrapper.getResponse());
-                byte[] cipher = clientCryptoFacade.encrypt(CryptoUtil.decodeBase64(machine.getPublicKey()),
+
+                byte[] cipher = clientCryptoFacade.encrypt(
+                        SyncMasterDataServiceHelper.getClientType(machine),
+                        CryptoUtil.decodeBase64(machine.getPublicKey()),
                         token.getBytes());
                 return CryptoUtil.encodeBase64(cipher);
 
@@ -136,12 +141,12 @@ public class SyncAuthTokenServiceImpl {
                 SyncAuthErrorCode.INVALID_REQUEST.getErrorMessage());
     }
 
-    public AuthNResponse sendOTP(String requestData) {
+    public ResponseWrapper<AuthNResponse> sendOTP(String requestData) {
         String[] parts = requestData.split("\\.");
         if(parts.length == 3) {
-            byte[] header = Base64.getUrlDecoder().decode(parts[0]);
-            byte[] payload = Base64.getUrlDecoder().decode(parts[1]);
-            byte[] signature = Base64.getUrlDecoder().decode(parts[2]);
+            byte[] header = CryptoUtil.decodeURLSafeBase64(parts[0]);
+            byte[] payload = CryptoUtil.decodeURLSafeBase64(parts[1]);
+            byte[] signature = CryptoUtil.decodeURLSafeBase64(parts[2]);
 
             validateRequestData(header, payload, signature);
             try {
@@ -156,7 +161,8 @@ public class SyncAuthTokenServiceImpl {
                 ResponseEntity<String> responseEntity = restTemplate.postForEntity(builder.build().toUri(),
                         new HttpEntity<>(requestWrapper), String.class);
 
-                return objectMapper.readValue(responseEntity.getBody(), new TypeReference<AuthNResponse>() {});
+                return objectMapper.readValue(responseEntity.getBody(),
+                        new TypeReference<ResponseWrapper<AuthNResponse>>() {});
             } catch (Exception ex) {
                 logger.error("Failed to send otp", ex);
             }
@@ -167,7 +173,17 @@ public class SyncAuthTokenServiceImpl {
 
     private OtpUser getOtpUser(MachineOtpDto machineOtpDto) {
         OtpUser otpUser = new OtpUser();
-        otpUser.setUserId(machineOtpDto.getUserId());
+
+        UserDetailResponseDto userDetailResponseDto = syncUserDetailsService.getUserDetailsFromAuthServer(Arrays.asList(machineOtpDto.getUserId()));
+        if(userDetailResponseDto != null && userDetailResponseDto.getMosipUserDtoList() != null &&
+                !userDetailResponseDto.getMosipUserDtoList().isEmpty()) {
+           otpUser.setUserId(machineOtpDto.getOtpChannel().contains("email") ?
+                           userDetailResponseDto.getMosipUserDtoList().get(0).getMail() :
+                           userDetailResponseDto.getMosipUserDtoList().get(0).getMobile());
+        }
+        else
+            otpUser.setUserId(machineOtpDto.getUserId());
+
         otpUser.setOtpChannel(machineOtpDto.getOtpChannel());
         otpUser.setAppId(machineOtpDto.getAppId());
         otpUser.setUseridtype(machineOtpDto.getUseridtype());
@@ -190,7 +206,9 @@ public class SyncAuthTokenServiceImpl {
 
             try {
                 logger.info("validateRequestData for machine : {} with status : {}", machines.get(0).getId(), machines.get(0).getIsActive());
-                boolean verified = clientCryptoFacade.validateSignature(CryptoUtil.decodeBase64(machines.get(0).getSignPublicKey()),
+                boolean verified = clientCryptoFacade.validateSignature(
+                        SyncMasterDataServiceHelper.getClientType(machines.get(0)),
+                        CryptoUtil.decodeBase64(machines.get(0).getSignPublicKey()),
                         signature, payload);
                 logger.info("validateRequestData verified : {}", verified);
                 if(verified) {  return machines.get(0); }
@@ -253,7 +271,11 @@ public class SyncAuthTokenServiceImpl {
                 responseEntity = restTemplate.postForEntity(refreshRequestBuilder.build().toUri(), httpEntity, String.class);
                 break;
         }
+		if (null == responseEntity) {
+			throw new RequestException(SyncAuthErrorCode.ERROR_GETTING_TOKEN.getErrorCode(),
+					SyncAuthErrorCode.ERROR_GETTING_TOKEN.getErrorMessage());
 
+		}
         ResponseWrapper<TokenResponseDto> responseWrapper = objectMapper.readValue(responseEntity.getBody(),
                 new TypeReference<ResponseWrapper<TokenResponseDto>>() {});
 
