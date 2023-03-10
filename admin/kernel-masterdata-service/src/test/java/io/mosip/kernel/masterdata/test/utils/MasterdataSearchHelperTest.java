@@ -10,7 +10,6 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -456,9 +455,8 @@ public class MasterdataSearchHelperTest {
 		ReflectionTestUtils.invokeMethod(searchHelper,"setBetweenValue",builder,root,filter);
 	}
 	
-	@SneakyThrows
 	@Test (expected = MissingMethodInvocationException.class)
-	public void parseDataType01(){
+	public void parseDataType01() throws ClassNotFoundException {
 		Root root = mock(Root.class);
 		Path<Object> path = mock(Path.class);
 		Class<? extends Object> type = Class.forName(LocalDateTime.class.getName());
@@ -774,9 +772,8 @@ public class MasterdataSearchHelperTest {
 		ReflectionTestUtils.invokeMethod(searchHelper,"validateFilters",null);
 	}
 	
-	@SneakyThrows
 	@Test (expected = NoSuchFieldException.class)
-	public void getColumnName001(){
+	public void getColumnName001() throws NoSuchFieldException {
 		String fieldName = "dynamic";
 		Entity entity = mock(Entity.class);
 		Field field = entity.getClass().getDeclaredField(fieldName);
