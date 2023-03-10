@@ -373,6 +373,7 @@ public class MasterdataSearchHelperTest {
 		String tableName = null;
 		String langCode = null;
 		searchHelper.getMissingData(tableName,langCode);
+		assertEquals(searchHelper.getMissingData(tableName,langCode),null);
 	}
 	
 	@Test(expected = Exception.class)
