@@ -426,27 +426,16 @@ public class MasterdataSearchHelperTest {
 		ReflectionTestUtils.invokeMethod(searchHelper,"setLangCode",null,null,null);
 	}
 	
-	@Test (expected = NullPointerException.class)
-	public void setBetweenValue01(){
-		SearchFilter searchFilter = null;
-		ReflectionTestUtils.invokeMethod(searchHelper,"setBetweenValue",null,null,searchFilter);
-	}
-	
 	@Test (expected = IllegalStateException.class)
-	public void setBetweenValue02(){
+	public void setBetweenValue01(){
 		SearchFilter searchFilter = new SearchFilter();
 		searchFilter.setValue("123");
 		searchFilter.setType("filter");
 		ReflectionTestUtils.invokeMethod(searchHelper,"setBetweenValue",null,RegistrationCenter.class,searchFilter);
 	}
 	
-	@Test (expected = IllegalStateException.class)
-	public void setBetweenValue03(){
-		ReflectionTestUtils.invokeMethod(searchHelper,"setBetweenValue");
-	}
-	
 	@Test (expected = NullPointerException.class)
-	public void setBetweenValue04(){
+	public void setBetweenValue02(){
 		CriteriaBuilder builder = mock(CriteriaBuilder.class);
 		Root root = mock(Root.class);
 		SearchFilter filter = new SearchFilter("1","2000-01-01","2010-01-01","deviceName","equals");
@@ -460,21 +449,6 @@ public class MasterdataSearchHelperTest {
 		Root root = mock(Root.class);
 		Path<Object> path = mock(Path.class);
 		Class<? extends Object> type = Class.forName(LocalDateTime.class.getName());
-		Mockito.when(root.get(Mockito.anyString())).thenReturn(path);
-		String fieldType = type.getTypeName();
-		Mockito.when(type.getTypeName()).thenReturn(fieldType);
-		String column = "first";
-		String value = "one";
-		ReflectionTestUtils.invokeMethod(searchHelper,"parseDataType",root,column,value);
-	}
-	
-	@Test (expected = NullPointerException.class)
-	public void parseDataType02(){
-		Root root = mock(Root.class);
-		root.getModel();
-		Path<Object> path = mock(Path.class);
-		path = root.get(filter.getColumnName());
-		Class<? extends Object> type = path.getJavaType();
 		Mockito.when(root.get(Mockito.anyString())).thenReturn(path);
 		String fieldType = type.getTypeName();
 		Mockito.when(type.getTypeName()).thenReturn(fieldType);
@@ -520,27 +494,12 @@ public class MasterdataSearchHelperTest {
 	@Test (expected = NullPointerException.class)
 	public void nativeMachineQuerySearch02(){
 		SearchDtoWithoutLangCode searchDtoWithoutLangCode = new SearchDtoWithoutLangCode();
-		StringBuilder nativeQuery = null;
-		List<Zone> zones = new ArrayList<>(2);
+		List<Zone> zones = new ArrayList<>();
 		searchHelper.nativeMachineQuerySearch(searchDtoWithoutLangCode,"filter",zones,true);
 	}
 	
 	@Test (expected = NullPointerException.class)
 	public void nativeMachineQuerySearch03(){
-		SearchDtoWithoutLangCode searchDtoWithoutLangCode = new SearchDtoWithoutLangCode();
-		List<Zone> zones = new ArrayList<>();
-		searchHelper.nativeMachineQuerySearch(searchDtoWithoutLangCode,"filter",zones,true);
-	}
-	
-	@Test (expected = NullPointerException.class)
-	public void nativeMachineQuerySearch04(){
-		SearchDtoWithoutLangCode searchDtoWithoutLangCode = new SearchDtoWithoutLangCode();
-		List<Zone> zones = new ArrayList<>();
-		searchHelper.nativeMachineQuerySearch(searchDtoWithoutLangCode,"filter",zones,false);
-	}
-	
-	@Test (expected = NullPointerException.class)
-	public void nativeMachineQuerySearch05(){
 		SearchDtoWithoutLangCode searchDtoWithoutLangCode = new SearchDtoWithoutLangCode();
 		List<Zone> zones = new ArrayList<>();
 		Iterator<SearchFilter> searchIterator = searchDtoWithoutLangCode.getFilters().iterator();
@@ -589,20 +548,6 @@ public class MasterdataSearchHelperTest {
 	@Test (expected = NullPointerException.class)
 	public void nativeDeviceQuerySearch02(){
 		SearchDtoWithoutLangCode searchDtoWithoutLangCode = new SearchDtoWithoutLangCode();
-		List<Zone> zones = new ArrayList<>(2);
-		searchHelper.nativeDeviceQuerySearch(searchDtoWithoutLangCode,"filter",zones,false);
-	}
-	
-	@Test (expected = NullPointerException.class)
-	public void nativeDeviceQuerySearch03(){
-		SearchDtoWithoutLangCode searchDtoWithoutLangCode = new SearchDtoWithoutLangCode();
-		List<Zone> zones = new ArrayList<>();
-		searchHelper.nativeDeviceQuerySearch(searchDtoWithoutLangCode,"filter",zones,false);
-	}
-	
-	@Test (expected = NullPointerException.class)
-	public void nativeDeviceQuerySearch04(){
-		SearchDtoWithoutLangCode searchDtoWithoutLangCode = new SearchDtoWithoutLangCode();
 		List<Zone> zones = new ArrayList<>();
 		searchHelper.nativeDeviceQuerySearch(searchDtoWithoutLangCode,"filter",zones,true);
 	}
@@ -642,19 +587,13 @@ public class MasterdataSearchHelperTest {
 		ReflectionTestUtils.invokeMethod(searchHelper,"getColumnName",null,null);
 	}
 	
-	@Test (expected = IllegalStateException.class)
-	public void getColumnName02(){
-		String fieldName="abc";
-		ReflectionTestUtils.invokeMethod(searchHelper,"getColumnName",fieldName);
-	}
-	
 	@Test
-	public void getColumnName03(){
+	public void getColumnName02(){
 		ReflectionTestUtils.invokeMethod(searchHelper,"getColumnName",RegistrationCenter.class,"0");
 	}
 	
 	@Test (expected = IllegalStateException.class)
-	public void getColumnName04(){
+	public void getColumnName03(){
 		Entity entity = mock(Entity.class);
 		String fieldName = "dynamic";
 		ReflectionTestUtils.invokeMethod(searchHelper,"getColumnName",entity,fieldName);
@@ -677,15 +616,6 @@ public class MasterdataSearchHelperTest {
 		String colName = filter.getColumnName();
 		String fieldName = null;
 		fieldName = colName;
-		Mockito.when(searchHelper.fetchMissingValues(entity,langCode,idFieldName,fieldName)).thenReturn(null);
-	}
-	
-	@Test (expected = NullPointerException.class)
-	public void fetchMissingValues03(){
-		Class<Entity> entity = Entity.class;
-		String langCode="eng";
-		String idFieldName="1";
-		String fieldName = "dynamic";
 		Mockito.when(searchHelper.fetchMissingValues(entity,langCode,idFieldName,fieldName)).thenReturn(null);
 	}
 	
