@@ -314,7 +314,6 @@ public class SyncMasterDataServiceHelperTest {
 
     @Test
     public void convertTemplateEntityToDtoTest01(){
-
         List<TemplateDto> templateDtos = new ArrayList<>();
         TemplateDto templateDto = new TemplateDto();
         templateDto.setId("1");
@@ -349,7 +348,6 @@ public class SyncMasterDataServiceHelperTest {
 
     @Test
     public void convertTemplateFileFormatEntityToDtoTest01(){
-
         List<TemplateFileFormatDto> templateFileFormatDtos = new ArrayList<>();
         TemplateFileFormatDto templateFileFormatDto = new TemplateFileFormatDto();
         templateFileFormatDto.setCode("code");
@@ -373,7 +371,6 @@ public class SyncMasterDataServiceHelperTest {
 
     @Test
     public void convertPostReasonCategoryEntityToDtoTest01(){
-
         List<PostReasonCategoryDto> postReasonCategoryDtos = new ArrayList<>();
         PostReasonCategoryDto postReasonCategoryDto = new PostReasonCategoryDto();
         postReasonCategoryDto.setCode("code");
@@ -397,7 +394,6 @@ public class SyncMasterDataServiceHelperTest {
 
     @Test
     public void convertReasonListEntityToDtoTest01(){
-
         List<ReasonListDto> reasonListDtos = new ArrayList<>();
         ReasonListDto reasonListDto = new ReasonListDto();
         reasonListDto.setCode("code");
@@ -421,7 +417,6 @@ public class SyncMasterDataServiceHelperTest {
 
     @Test
     public void convertTemplateTypeEntityToDtoTest01(){
-
         List<TemplateTypeDto> templateTypeDtos = new ArrayList<>();
         TemplateTypeDto templateTypeDto = new TemplateTypeDto();
         templateTypeDto.setCode("code");
@@ -441,7 +436,6 @@ public class SyncMasterDataServiceHelperTest {
 
     @Test
     public void convertAppAuthMethodEntityToDtoTest01(){
-
         List<AppAuthenticationMethodDto> appAuthenticationMethodDtos = new ArrayList<>();
         AppAuthenticationMethodDto appAuthenticationMethodDto = new AppAuthenticationMethodDto();
         appAuthenticationMethodDto.setAppId("id");
@@ -471,7 +465,6 @@ public class SyncMasterDataServiceHelperTest {
 
     @Test
     public void convertAppRolePrioritiesToDtoTest01(){
-
         List<AppRolePriorityDto> appAuthenticationMethods = new ArrayList<>();
         AppRolePriorityDto appRolePriorityDto = new AppRolePriorityDto();
         appRolePriorityDto.setAppId("id");
@@ -495,7 +488,6 @@ public class SyncMasterDataServiceHelperTest {
 
     @Test
     public void convertScreenAuthorizationToDtoTest01(){
-
         List<ScreenAuthorizationDto> screenAuthorizationDtos = new ArrayList<>();
         ScreenAuthorizationDto screenAuthorizationDto = new ScreenAuthorizationDto();
         screenAuthorizationDto.setScreenId("id");
@@ -519,7 +511,6 @@ public class SyncMasterDataServiceHelperTest {
 
     @Test
     public void convertprocessListEntityToDtoTest01(){
-
         List<ProcessListDto> processListDtos = new ArrayList<>();
         ProcessListDto processListDto = new ProcessListDto();
         processListDto.setId("id");
@@ -543,7 +534,6 @@ public class SyncMasterDataServiceHelperTest {
 
     @Test
     public void convertSyncJobDefEntityToDtoTest01(){
-
         List<SyncJobDefDto> syncJobDefDtos = new ArrayList<>();
         SyncJobDefDto syncJobDefDto = new SyncJobDefDto();
         syncJobDefDto.setId("id");
@@ -567,7 +557,6 @@ public class SyncMasterDataServiceHelperTest {
 
     @Test
     public void convertScreenDetailToDtoTest01(){
-
         List<ScreenDetailDto> screenDetailDtos = new ArrayList<>();
         ScreenDetailDto screenDetailDto = new ScreenDetailDto();
         screenDetailDto.setAppId("id");
@@ -590,7 +579,6 @@ public class SyncMasterDataServiceHelperTest {
 
     @Test
     public void convertPermittedConfigEntityToDtoTest01(){
-
         List<PermittedConfigDto> permittedConfigDtos = new ArrayList<>();
         PermittedConfigDto permittedConfigDto = new PermittedConfigDto();
         permittedConfigDto.setCode("code");
@@ -613,7 +601,6 @@ public class SyncMasterDataServiceHelperTest {
 
     @Test (expected = RequestException.class)
     public void getRegistrationCenterMachineTest01(){
-
         RegistrationCenterMachineDto registrationCenterMachineDto = new RegistrationCenterMachineDto();
         registrationCenterMachineDto.setMachineId("id");
         registrationCenterMachineDto.setMachineSpecId("spec");
