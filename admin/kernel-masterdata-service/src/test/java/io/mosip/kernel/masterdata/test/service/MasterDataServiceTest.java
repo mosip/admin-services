@@ -3195,23 +3195,16 @@ public class MasterDataServiceTest {
 	}
 
 
-						// ------	TO DO : WE NEED TO CHECK BELOW NULL POINTER EXCEPTION TEST CASES	------ //
+					// ------	TO DO : WE NEED TO CHECK BELOW NULL POINTER EXCEPTION TEST CASES	------ //
 
-	//@Test/* (expected = NullPointerException.class)*/
+	//@Test
 	public void createExpHoliday01(){
 		List<ExceptionalHolidayPutPostDto> reqExceptionalHolidayDtos = new ArrayList<>();
 		ExceptionalHolidayPutPostDto exceptionalHolidayPutPostDto = new ExceptionalHolidayPutPostDto();
 		exceptionalHolidayPutPostDto.setExceptionHolidayDate("2019-07-06");
-		// DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-		// LocalDate localDate =  LocalDate.parse(exceptionalHolidayPutPostDto.getExceptionHolidayDate(), format);
-		//DateTimeFormatter df = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("dd-MMM-yyyy").toFormatter(Locale.ENGLISH);
 		exceptionalHolidayPutPostDto.setExceptionHolidayName("Holy");
 		exceptionalHolidayPutPostDto.setExceptionHolidayReson("festival");
 		reqExceptionalHolidayDtos.add(exceptionalHolidayPutPostDto);
-		/*DateTimeFormatter df = DateTimeFormatter.ofPattern("d-MMM-yyyy");
-		LocalDate  d1 = LocalDate.parse(exceptionalHolidayPutPostDto.getExceptionHolidayDate(), df);*/
-		/*reqExceptionalHolidayDtos.add(exceptionalHolidayPutPostDto.get(0));
-		reqExceptionalHolidayDtos.set(0,exceptionalHolidayPutPostDto.get(0));*/
 
 		String holidayLocationCode = "IND2023";
 		RegistrationCenter registrationCenter = new RegistrationCenter();
@@ -3230,25 +3223,14 @@ public class MasterDataServiceTest {
 		LocalDate someDate = LocalDate.ofEpochDay(2019-07-06);
 		dbHolidayList.add(someDate);
 
-		//HolidayRepository holidayRepository = mock(HolidayRepository.class);
-
 		Mockito.when(holidayRepository.findHolidayByLocationCode1(Mockito.anyString(),Mockito.anyString())).thenReturn(dbHolidayList);
 
-		//Mockito.when(holidayRepository.save(any(Holiday.class))).thenAnswer(AdditionalAnswers.returnsFirstArg());
-
-		//Mockito.when(holidayRepository.save()).thenReturn(dbHolidayList);
-		//doReturn(dbHolidayList).when(holidayRepository).findHolidayByLocationCode1(Mockito.anyString(),Mockito.anyString());
-
 		RegExceptionalHoliday regExceptionalHoliday = new RegExceptionalHoliday();
-
 		regExceptionalHoliday.setRegistrationCenterId(registrationCenter.getId());
-		regExceptionalHoliday
-				.setExceptionHolidayDate(LocalDate.parse(exceptionalHolidayPutPostDto.getExceptionHolidayDate()));
+		regExceptionalHoliday.setExceptionHolidayDate(LocalDate.parse(exceptionalHolidayPutPostDto.getExceptionHolidayDate()));
 		regExceptionalHoliday.setExceptionHolidayName(exceptionalHolidayPutPostDto.getExceptionHolidayName());
 		regExceptionalHoliday.setExceptionHolidayReson(exceptionalHolidayPutPostDto.getExceptionHolidayReson());
 		regExceptionalHoliday.setIsActive(true);
-
-		//RegExceptionalHolidayRepository regExceptionalHolidayRepository = mock(RegExceptionalHolidayRepository.class);
 
 		ReflectionTestUtils.invokeMethod(registrationCenterService,"createExpHoliday",reqExceptionalHolidayDtos,holidayLocationCode,registrationCenter);
 		assertEquals(registrationCenter.getHolidayLocationCode(),holidayLocationCode);
@@ -3259,7 +3241,7 @@ public class MasterDataServiceTest {
 				regExceptionalHoliday.getExceptionHolidayDate())),notNull(),regExceptionalHolidayRepository.update(regExceptionalHoliday));
 	}
 
-	//@Test /*(expected = NullPointerException.class)*/
+	//@Test
 	public void deleteExpHoliday01(){
 		RegistrationCenter updRegistrationCenter = new RegistrationCenter();
 		updRegistrationCenter.setId("id");
@@ -3283,14 +3265,11 @@ public class MasterDataServiceTest {
 
 		Mockito.when(regExceptionalHolidayRepository.findByRegIdAndLangcodeAndExpHoliday(
 				updRegistrationCenter.getId(), updRegistrationCenter.getLangCode(), dbHoliday)).thenReturn(regExceptionalHoliday);
-
-		//doReturn(regExceptionalHoliday).when(regExceptionalHolidayRepository).findByRegIdAndLangcodeAndExpHoliday(Mockito.anyString(),Mockito.anyString(),dbHoliday);
-
+				
 		ReflectionTestUtils.invokeMethod(registrationCenterService,"deleteExpHoliday",updRegistrationCenter,dbHoliday);
-		//assertEquals(regExceptionalHoliday,regExceptionalHolidayRepository.update(regExceptionalHoliday));
 	}
 
-	//@Test /*(expected = NullPointerException.class)*/
+	//@Test
 	public void validateZoneMachineDevice01(){
 		RegistrationCenter regRegistrationCenter = new RegistrationCenter();
 		regRegistrationCenter.setId("id");
@@ -3345,9 +3324,6 @@ public class MasterDataServiceTest {
 		Mockito.when(deviceRepository.findByRegIdAndIsDeletedFalseOrIsDeletedIsNull(regCenterPutReqDto.getId())).thenReturn(regDevice);
 		Mockito.when(zoneUtils.getChildZoneList(deviceZoneIds,regCenterPutReqDto.getZoneCode(),regCenterPutReqDto.getLangCode())).thenReturn(zoneHList);
 
-		/*doReturn(regDevice).when(deviceRepository).findByRegIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString());
-		doReturn(zoneHList).when(zoneUtils).getChildZoneList(Mockito.anyList(),Mockito.anyString(),Mockito.anyString());*/
-
 		ReflectionTestUtils.invokeMethod(registrationCenterService,"validateZoneMachineDevice",regRegistrationCenter,regCenterPutReqDto);
 
 		assertEquals(regRegistrationCenter.getZoneCode(),regCenterPutReqDto.getZoneCode(),true);
@@ -3356,7 +3332,7 @@ public class MasterDataServiceTest {
 		assertEquals(String.valueOf(CollectionUtils.isEmpty(zoneHIdList)),zoneHIdList.contains(deviceZone),false);
 	}
 
-	//@Test /*(expected = NullPointerException.class)*/
+	//@Test
 	public void updateRegistartionCenterHistory01(){
 		List<RegistrationCenter> updRegistrationCenters = new ArrayList<>();
 		RegistrationCenter regCenter = new RegistrationCenter();
@@ -3370,7 +3346,7 @@ public class MasterDataServiceTest {
 		regCenter.setContactPhone("8976512340");
 		regCenter.setHolidayLocationCode("IND2023");
 		regCenter.setZoneCode("zone");
-		//regCenter.setUpdatedDateTime(LocalDateTime.of(2021,1,1,1,1,1));
+		regCenter.setUpdatedDateTime(LocalDateTime.of(2021,1,1,1,1,1));
 		updRegistrationCenters.add(regCenter);
 
 		RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();
