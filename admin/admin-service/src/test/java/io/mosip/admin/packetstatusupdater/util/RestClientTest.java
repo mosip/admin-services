@@ -245,6 +245,16 @@ public class RestClientTest {
         verify(environment).getProperty((String) any());
     }
 
+    @Test (expected = MasterDataServiceException.class)
+    public void testPostApi16() throws Exception {
+        when(environment.getProperty((String) any())).thenReturn("Property");
+        when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
+                .thenThrow(new MasterDataServiceException("An error occurred", "An error occurred"));
+        restClient.postApi(ApiName.LOST_RID_API, null, "Request Type", Object.class);
+        verify(environment).getProperty((String) any());
+        verify(restTemplate).postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
+    }
+
     @Test
     public void testGetApi01() throws Exception {
         ApiName apiName = ApiName.MACHINE_GET_API;
@@ -312,6 +322,19 @@ public class RestClientTest {
         assertNull(restClient.getApi(ApiName.MACHINE_GET_API, stringList, "Query Param Name", "42", Object.class));
         verify(environment).getProperty((String) any());
         verify(restTemplate).exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any());
+    }
+
+    @Test (expected = Exception.class)
+    public void testGetApi07() throws Exception {
+        ResponseEntity<Object> responseEntity = (ResponseEntity<Object>) mock(ResponseEntity.class);
+        when(responseEntity.getBody())
+                .thenThrow(new MasterDataServiceException("An error occurred", "An error occurred"));
+        when(restTemplate.exchange((String) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any(),
+                (Object[]) any())).thenReturn(responseEntity);
+        restClient.getApi("https://dev.mosip.net/", Object.class);
+        verify(restTemplate).exchange((String) any(), (HttpMethod) any(), (HttpEntity<Object>) any(),
+                (Class<Object>) any(), (Object[]) any());
+        verify(responseEntity).getBody();
     }
 
     @Test
