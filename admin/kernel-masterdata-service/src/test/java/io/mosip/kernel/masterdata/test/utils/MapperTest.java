@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.test.utils;
 
 import static io.mosip.kernel.masterdata.utils.MapperUtils.map;
+import static io.mosip.kernel.masterdata.utils.MapperUtils.mapHolidays;
 import static io.mosip.kernel.masterdata.utils.MetaDataUtils.setCreateMetaData;
 import static io.mosip.kernel.masterdata.utils.MetaDataUtils.setUpdateMetaData;
 import static org.junit.Assert.assertFalse;
@@ -8,17 +9,19 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.kernel.masterdata.dto.*;
+import io.mosip.kernel.masterdata.entity.Holiday;
+import io.mosip.kernel.masterdata.entity.RegisteredDevice;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 
@@ -136,6 +139,52 @@ public class MapperTest {
 		assertNotNull(entity.getCreatedDateTime());
 		assertNotNull(entity.getCreatedBy());
 		assertFalse(entity.getIsActive());
+	}
+	@Test
+	public void mapUpdateHolidaysTest001(){
+		List<Holiday> holidays=new ArrayList<>();
+		Holiday holiday=new Holiday();
+		holiday.setHolidayDate(LocalDate.now());
+		holiday.setHolidayId(123);
+		holiday.setLangCode("eng");
+		holiday.setIsActive(true);
+		holidays.add(holiday);
+
+		List<HolidayUpdateDto> holidayDtos = new ArrayList<>();
+		HolidayUpdateDto holidayUpdateDto=new HolidayUpdateDto();
+		holidayUpdateDto.setHolidayName("name");
+		holidayUpdateDto.setHolidayDesc("desc");
+		holidayUpdateDto.setHolidayId(345);
+		holidayUpdateDto.setHolidayDate(LocalDate.now());
+		holidayUpdateDto.setHolidayId(7);
+		holidayUpdateDto.setLangCode("eng");
+		holidayUpdateDto.setLocationCode("location123");
+		holidayDtos.add(holidayUpdateDto);
+
+		MapperUtils.mapUpdateHolidays(holidays);
+	}
+	@Test
+	public void mapRegisteredDeviceDtoTest001(){
+		RegisteredDevicePostReqDto dto=new RegisteredDevicePostReqDto();
+		dto.setDeviceId("device_id");
+		dto.setStatusCode("status_code");
+		dto.setDeviceSubId("device_subid");
+		dto.setPurpose("purpose");
+		dto.setFirmware("firmware");
+		dto.setExpiryDate(LocalDateTime.now());
+		dto.setCertificationLevel("certification_level");
+		dto.setFoundationalTPId("functional_tpid");
+		DigitalIdDeviceRegisterDto digitalIdDto=new DigitalIdDeviceRegisterDto();
+		digitalIdDto.setDp("dp");
+		digitalIdDto.setMake("make");
+		digitalIdDto.setModel("model");
+		digitalIdDto.setDpId("dp_id");
+		digitalIdDto.setDateTime("date_time");
+		digitalIdDto.setDeviceSTypeCode("device_st_type_code");
+		digitalIdDto.setDeviceTypeCode("device_type_code");
+		digitalIdDto.setSerialNo("serial_no");
+		dto.setDigitalIdDto(digitalIdDto);
+		MapperUtils.mapRegisteredDeviceDto(dto,"digital_id_json");
 	}
 
 	
