@@ -989,6 +989,7 @@ public class UserDetailsServiceTest {
 		Mockito.when(masterdataCreationUtil.createMasterData(Mockito.any(),Mockito.any())).thenReturn(userDetailsDto);
 		Mockito.when(userDetailsRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
 		Mockito.when(registrationCenterService.getRegistrationCentersByID(Mockito.anyString())).thenReturn(regCenters);
+		UserDetailsPutDto userDetailsPutDto=userDetailsService.updateUser(userDetailsDto);
 	}
 	@Test(expected = InvalidUseOfMatchersException.class)
 	public void getUsersFromResponseTest001(){
