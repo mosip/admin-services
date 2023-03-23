@@ -629,4 +629,60 @@ public class SyncMasterDataServiceHelperTest {
 
         syncMasterDataServiceHelper.getRegistrationCenterMachine(registrationCenterId,keyIndex);
     }
+
+    @Test
+    public void convertRegistrationCenterToDtoTestNull(){
+        List<RegistrationCenter> list = new ArrayList<>();
+
+        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertRegistrationCenterToDto",list);
+    }
+
+    @Test
+    public void convertEntityToHolidayTestNull(){
+        List<Holiday> holidays = new ArrayList<>();
+
+        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertEntityToHoliday",holidays);
+    }
+
+    @Test
+    public void convertBlocklistedWordsEntityToDtoTestNull(){
+        List<BlocklistedWords> words = new ArrayList<>();
+
+        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertBlocklistedWordsEntityToDto",words);
+    }
+
+    @Test
+    public void convertDocumentTypeEntityToDtoTestNull(){
+        List<DocumentType> documentTypes = new ArrayList<>();
+
+        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertDocumentTypeEntityToDto",documentTypes);
+    }
+
+    @Test
+    public void convertLocationsEntityToDtoTestNull(){
+        List<Location> locations = new ArrayList<>();
+
+        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertLocationsEntityToDto",locations);
+    }
+
+    @Test
+    public void convertValidDocumentEntityToDtoTestNull(){
+        List<ValidDocument> validDocuments = new ArrayList<>();
+
+        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertValidDocumentEntityToDto",validDocuments);
+    }
+
+    @Test
+    public void convertApplicantValidDocumentEntityToDtoTestNull(){
+        List<ApplicantValidDocument> applicantValidDocuments = new ArrayList<>();
+
+        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertApplicantValidDocumentEntityToDto",applicantValidDocuments);
+    }
+
+    @Test
+    public void convertLanguageEntityToDtoTestNull(){
+        List<Language> languageList = new ArrayList<>();
+
+        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertLanguageEntityToDto",languageList);
+    }
 }
