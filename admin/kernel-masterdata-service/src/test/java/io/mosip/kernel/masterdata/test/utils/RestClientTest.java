@@ -132,6 +132,17 @@ public class RestClientTest {
         verify(restTemplate).postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
     }
 
+    @Test (expected = Exception.class)
+    public void testPostApi08() throws Exception {
+        when(environment.getProperty((String) any())).thenReturn("M://dev@2:3{MOSIP}");
+        when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
+                .thenReturn("Post For Object");
+        ArrayList<String> pathsegments = new ArrayList<>();
+        restClient.postApi(ApiName.PACKET_RESUME_API, pathsegments, "Query Param Name", "42", null, "Request Type",
+                Object.class);
+        verify(environment).getProperty((String) any());
+    }
+
     @Test
     public void testGetApi01() throws Exception {
         ApiName apiName = ApiName.PACKET_PAUSE_API;
@@ -214,6 +225,16 @@ public class RestClientTest {
         assertNull(restClient.getApi(ApiName.PACKET_RESUME_API, pathsegments, null, "42", Object.class));
         verify(environment).getProperty((String) any());
         verify(restTemplate).exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any());
+    }
+
+    @Test (expected = Exception.class)
+    public void testGetApi08() throws Exception {
+        when(environment.getProperty((String) any())).thenReturn("dev@1:2:3{Mosip}");
+        when(restTemplate.exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any()))
+                .thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
+        ArrayList<String> pathsegments = new ArrayList<>();
+        restClient.getApi(ApiName.PACKET_RESUME_API, pathsegments, "Query Param Name", "42", Object.class);
+        verify(environment).getProperty((String) any());
     }
 
     @Test
