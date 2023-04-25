@@ -61,7 +61,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import javax.validation.Validator;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -300,6 +302,18 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 				bulkUploadTranscation.setUploadDescription(message);
 				bulkUploadTranscation.setRecordCount(0);
 				updateBulkUploadTransaction(bulkUploadTranscation);
+			}
+			//If delimiter is other than lineDelimiter
+			if (file.getOriginalFilename().endsWith(".csv") && file.getOriginalFilename()!=null){
+				try(BufferedReader br =new BufferedReader(new InputStreamReader(file.getInputStream()))){
+					String line=br.readLine();
+					if (!line.contains(lineDelimiter)){
+						throw new RequestException(BulkUploadErrorCode.DELIMITER_INCORRECT.getErrorCode(),
+								String.format(BulkUploadErrorCode.DELIMITER_INCORRECT.getErrorMessage(),lineDelimiter));
+					}
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
 			}
 
 		});
