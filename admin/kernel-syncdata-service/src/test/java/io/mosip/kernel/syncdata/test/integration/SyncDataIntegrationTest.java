@@ -702,7 +702,7 @@ public class SyncDataIntegrationTest {
 		when(registrationCenterTypeRepository.findLatestRegistrationCenterTypeByMachineId(Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenReturn(registrationCenterType);
 		when(genderTypeRepository.findAll()).thenReturn(genders);
-		when(genderTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any())).thenReturn(genders);
+		when(genderTypeRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any())).thenReturn(genders);
 		when(idTypeRepository.findAll()).thenReturn(idTypes);
 		when(idTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any())).thenReturn(idTypes);
 		when(deviceRepository.findDeviceByMachineId(Mockito.anyString())).thenReturn(devices);
@@ -763,7 +763,7 @@ public class SyncDataIntegrationTest {
 		
 		when(applicantValidDocumentRespository.findAllByTimeStamp(Mockito.any(), Mockito.any()))
 				.thenReturn(applicantValidDocumentList);
-		when(individualTypeRepository.findAllIndvidualTypeByTimeStamp(Mockito.any(), Mockito.any()))
+		when(individualTypeRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenReturn(individualTypeList);
 		when(appAuthenticationMethodRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenReturn(appAuthenticationMethods);

@@ -141,6 +141,10 @@ public class ClientSettingsHelper {
 			futuresMap.put(DocumentCategory.class,
 					hasURLDetails(DocumentCategory.class, isV2API, deltaSync) ? getURLDetails(DocumentCategory.class)
 							: serviceHelper.getDocumentCategories(lastUpdated, currentTimestamp));
+
+			//Required by 1.1.4.* reg-client
+			futuresMap.put(Gender.class, serviceHelper.getGender(lastUpdated, currentTimestamp));
+			futuresMap.put(IndividualType.class, serviceHelper.getIndividualTypes(lastUpdated, currentTimestamp));
 		}
 
 		// invokes master-data-service

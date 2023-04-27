@@ -149,6 +149,10 @@ public class SyncMasterDataServiceHelper {
 	private MachineHistoryRepository machineHistoryRepository;
 	@Autowired
 	private DeviceHistoryRepository deviceHistoryRepository;
+	@Autowired
+	private GenderRepository genderRepository;
+	@Autowired
+	private IndividualTypeRepository individualTypeRepository;
 
 	@Autowired
 	private ClientCryptoManagerService clientCryptoManagerService;
@@ -742,7 +746,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage(), e);
-			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.VALID_DOCUMENT_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
 		return CompletableFuture.completedFuture(convertValidDocumentEntityToDto(validDocuments));
@@ -1201,6 +1205,84 @@ public class SyncMasterDataServiceHelper {
 		}
 		return null;
 	}
+
+	@Async
+	public CompletableFuture<List<GenderDto>> getGender(LocalDateTime lastUpdatedTime,
+																	 LocalDateTime currentTimeStamp) {
+		List<Gender> genderList = null;
+		try {
+			if(!isChangesFound("Gender", lastUpdatedTime)) {
+				return CompletableFuture.completedFuture(null);
+			}
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			genderList = genderRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime,
+					currentTimeStamp);
+
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
+			throw new SyncDataServiceException(MasterDataErrorCode.GENDER_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.GENDER_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return CompletableFuture.completedFuture(convertGenderToDto(genderList));
+	}
+
+	private List<GenderDto> convertGenderToDto(List<Gender> genderList) {
+		if (genderList != null && !genderList.isEmpty()) {
+			List<GenderDto> genderDtoList = new ArrayList<>();
+			genderList.stream().forEach(entity -> {
+				GenderDto genderDto = new GenderDto();
+				genderDto.setCode(entity.getCode());
+				genderDto.setGenderName(entity.getGenderName());
+				genderDto.setIsDeleted(entity.getIsDeleted());
+				genderDto.setIsActive(entity.getIsActive());
+				genderDto.setLangCode(entity.getLangCode());
+				genderDtoList.add(genderDto);
+			});
+			return genderDtoList;
+		}
+		return null;
+	}
+
+	@Async
+	public CompletableFuture<List<IndividualTypeDto>> getIndividualTypes(LocalDateTime lastUpdatedTime,
+														LocalDateTime currentTimeStamp) {
+		List<IndividualType> individualTypes = null;
+		try {
+			if(!isChangesFound("IndividualType", lastUpdatedTime)) {
+				return CompletableFuture.completedFuture(null);
+			}
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			individualTypes = individualTypeRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime,
+					currentTimeStamp);
+
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
+			throw new SyncDataServiceException(MasterDataErrorCode.INDIVIDUAL_TYPE_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.INDIVIDUAL_TYPE_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return CompletableFuture.completedFuture(convertIndividualTypesToDto(individualTypes));
+	}
+
+	private List<IndividualTypeDto> convertIndividualTypesToDto(List<IndividualType> individualTypes) {
+		if (individualTypes != null && !individualTypes.isEmpty()) {
+			List<IndividualTypeDto> individualTypeDtoList = new ArrayList<>();
+			individualTypes.stream().forEach(entity -> {
+				IndividualTypeDto individualTypeDto = new IndividualTypeDto();
+				individualTypeDto.setCode(entity.getCodeAndLanguageCodeId().getCode());
+				individualTypeDto.setName(entity.getName());
+				individualTypeDto.setIsDeleted(entity.getIsDeleted());
+				individualTypeDto.setIsActive(entity.getIsActive());
+				individualTypeDto.setLangCode(entity.getCodeAndLanguageCodeId().getLangCode());
+				individualTypeDtoList.add(individualTypeDto);
+			});
+			return individualTypeDtoList;
+		}
+		return null;
+	}
 	
 
 	@Async
@@ -1236,7 +1318,7 @@ public class SyncMasterDataServiceHelper {
 		}
 	}
 
-	@Async
+	/*@Async
 	public CompletableFuture<List<DynamicFieldDto>> getAllDynamicFields(LocalDateTime lastUpdated, RestTemplate restClient) {
 		List<DynamicFieldDto> result = new ArrayList<>();
 		try {
@@ -1267,7 +1349,7 @@ public class SyncMasterDataServiceHelper {
 					MasterDataErrorCode.DYNAMIC_FIELD_FETCH_FAILED.getErrorMessage() + " : " +
 							ExceptionUtils.buildMessage(e.getMessage(), e.getCause()));
 		}
-	}
+	}*/
 
 
 	@SuppressWarnings("unchecked")
@@ -1455,6 +1537,12 @@ public class SyncMasterDataServiceHelper {
 				break;
 			case "DocumentCategory":
 				result = documentCategoryRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				break;
+			case "Gender":
+				result = genderRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				break;
+			case "IndividualType":
+				result = individualTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
 				break;
 		}
 
