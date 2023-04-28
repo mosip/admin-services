@@ -30,7 +30,7 @@ public interface IndividualTypeRepository extends JpaRepository<IndividualType, 
 	 */
 	@Cacheable(cacheNames = "initial-sync", key = "'individual_type'", condition = "#a0.getYear() <= 1970")
 	@Query("FROM IndividualType it WHERE (createdDateTime BETWEEN ?1 AND ?2) OR (updatedDateTime BETWEEN ?1 AND ?2)  OR (deletedDateTime BETWEEN ?1 AND ?2)")
-	public List<IndividualType> findAllIndvidualTypeByTimeStamp(LocalDateTime lastUpdatedTime,
+	public List<IndividualType> findByLastUpdatedAndCurrentTimeStamp(LocalDateTime lastUpdatedTime,
 			LocalDateTime currentTime);
 
 	@Cacheable(cacheNames = "delta-sync", key = "'individual_type'")
