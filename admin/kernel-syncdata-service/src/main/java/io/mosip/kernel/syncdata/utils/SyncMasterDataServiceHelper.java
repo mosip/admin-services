@@ -1283,6 +1283,133 @@ public class SyncMasterDataServiceHelper {
 		}
 		return null;
 	}
+
+	@Async
+	public CompletableFuture<List<DeviceSpecificationDto>> getDeviceSpecifications(String regCenterId, LocalDateTime lastUpdatedTime,
+																				   LocalDateTime currentTimeStamp) {
+		List<DeviceSpecification> specifications = null;
+		try {
+			if(!isChangesFound("DeviceSpecification", lastUpdatedTime)) {
+				return CompletableFuture.completedFuture(null);
+			}
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			specifications = deviceSpecificationRepository.findLatestDeviceTypeByRegCenterId(regCenterId, lastUpdatedTime,
+					currentTimeStamp);
+
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
+			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_SPECIFICATION_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.DEVICE_SPECIFICATION_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return CompletableFuture.completedFuture(convertDeviceSpecificationToDto(specifications));
+	}
+
+	@Async
+	public CompletableFuture<List<DeviceDto>> getDevices(String regCenterId, LocalDateTime lastUpdatedTime,
+																				   LocalDateTime currentTimeStamp) {
+		List<Device> devices = null;
+		try {
+			if(!isChangesFound("Device", lastUpdatedTime)) {
+				return CompletableFuture.completedFuture(null);
+			}
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			devices = deviceRepository.findLatestDevicesByRegCenterId(regCenterId, lastUpdatedTime,
+					currentTimeStamp);
+
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
+			throw new SyncDataServiceException(MasterDataErrorCode.DEVICES_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.DEVICES_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return CompletableFuture.completedFuture(convertDeviceToDto(devices));
+	}
+
+	@Async
+	public CompletableFuture<List<DeviceTypeDto>> getDeviceTypes(String regCenterId, LocalDateTime lastUpdatedTime,
+														 LocalDateTime currentTimeStamp) {
+		List<DeviceType> deviceTypes = null;
+		try {
+			if(!isChangesFound("DeviceType", lastUpdatedTime)) {
+				return CompletableFuture.completedFuture(null);
+			}
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			deviceTypes = deviceTypeRepository.findLatestDeviceTypeByRegCenterId(regCenterId, lastUpdatedTime,
+					currentTimeStamp);
+
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
+			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return CompletableFuture.completedFuture(convertDeviceTypeToDto(deviceTypes));
+	}
+
+	private List<DeviceTypeDto> convertDeviceTypeToDto(List<DeviceType> deviceTypes) {
+		if (deviceTypes != null && !deviceTypes.isEmpty()) {
+			List<DeviceTypeDto> dtoList = new ArrayList<>();
+			deviceTypes.stream().forEach(entity -> {
+				DeviceTypeDto deviceTypeDto = new DeviceTypeDto();
+				deviceTypeDto.setCode(entity.getCode());
+				deviceTypeDto.setName(entity.getName());
+				deviceTypeDto.setDescription(entity.getDescription());
+				deviceTypeDto.setIsDeleted(entity.getIsDeleted()==null?false:entity.getIsDeleted());
+				deviceTypeDto.setIsActive(entity.getIsActive());
+				deviceTypeDto.setLangCode(entity.getLangCode());
+				dtoList.add(deviceTypeDto);
+			});
+			return dtoList;
+		}
+		return null;
+	}
+
+	private List<DeviceSpecificationDto> convertDeviceSpecificationToDto(List<DeviceSpecification> deviceSpecifications) {
+		if (deviceSpecifications != null && !deviceSpecifications.isEmpty()) {
+			List<DeviceSpecificationDto> dtoList = new ArrayList<>();
+			deviceSpecifications.stream().forEach(entity -> {
+				DeviceSpecificationDto deviceSpecificationDto = new DeviceSpecificationDto();
+				deviceSpecificationDto.setId(entity.getId());
+				deviceSpecificationDto.setName(entity.getName());
+				deviceSpecificationDto.setBrand(entity.getBrand());
+				deviceSpecificationDto.setModel(entity.getModel());
+				deviceSpecificationDto.setDeviceTypeCode(entity.getDeviceTypeCode());
+				deviceSpecificationDto.setDescription(entity.getDescription());
+				deviceSpecificationDto.setIsDeleted(entity.getIsDeleted()==null?false:entity.getIsDeleted());
+				deviceSpecificationDto.setIsActive(entity.getIsActive());
+				deviceSpecificationDto.setLangCode(entity.getLangCode());
+				dtoList.add(deviceSpecificationDto);
+			});
+			return dtoList;
+		}
+		return null;
+	}
+
+	private List<DeviceDto> convertDeviceToDto(List<Device> devices) {
+		if (devices != null && !devices.isEmpty()) {
+			List<DeviceDto> dtoList = new ArrayList<>();
+			devices.stream().forEach(entity -> {
+				DeviceDto deviceDto = new DeviceDto();
+				deviceDto.setId(entity.getId());
+				deviceDto.setName(entity.getName());
+				deviceDto.setDeviceSpecId(entity.getDeviceSpecId());
+				deviceDto.setSerialNum(entity.getSerialNum());
+				deviceDto.setIpAddress(entity.getIpAddress());
+				deviceDto.setValidityDateTime(entity.getValidityDateTime());
+				deviceDto.setMacAddress(entity.getMacAddress());
+				deviceDto.setIsDeleted(entity.getIsDeleted()==null?false:entity.getIsDeleted());
+				deviceDto.setIsActive(entity.getIsActive());
+				deviceDto.setLangCode(entity.getLangCode());
+				dtoList.add(deviceDto);
+			});
+			return dtoList;
+		}
+		return null;
+	}
 	
 
 	@Async
