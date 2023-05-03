@@ -91,12 +91,14 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
             String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
             long count=applicantUserDetailsRepository.countByUserIdAndLoginDate(userId, LocalDate.now());
             if((int)count>=maxcount){
+                auditUtil.setAuditRequestDto(EventEnum.APPLICANT_LIMIT_EXCEEDED,null);
                 throw new RequestException(ApplicantDetailErrorCode.LIMIT_EXCEEDED.getErrorCode(),
                         ApplicantDetailErrorCode.LIMIT_EXCEEDED.getErrorMessage());
             }
             String response = restClient.getApi(ApiName.RETRIEVE_IDENTITY_API,pathsegments,"type","bio",String.class);
             JSONObject responseObj= objectMapper.readValue(response,JSONObject.class);
             if(response!=null && responseObj.get("response")==null) {
+                auditUtil.setAuditRequestDto(EventEnum.APPLICANT_RID_NOT_FOUND,null);
                 throw new RequestException(ApplicantDetailErrorCode.RID_NOT_FOUND.getErrorCode(),
                         ApplicantDetailErrorCode.RID_NOT_FOUND.getErrorMessage());
             }
@@ -123,7 +125,7 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
             throw new RequestException(ApplicantDetailErrorCode.UNABLE_TO_RETRIEVE_RID_DETAILS.getErrorCode(),
                     ApplicantDetailErrorCode.UNABLE_TO_RETRIEVE_RID_DETAILS.getErrorMessage(),e);
         }catch (InvalidIDException | DataNotFoundException e){
-            auditUtil.setAuditRequestDto(EventEnum.APPLICANT_VERIFICATION_ERROR);
+            auditUtil.setAuditRequestDto(EventEnum.APPLICANT_RID_NOT_FOUND,null);
             throw new RequestException(e.getErrorCode(), e.getErrorText());
         }
         return applicantDetailsDto;
@@ -164,6 +166,7 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
         String response = restClient.getApi(ApiName.DIGITAL_CARD_STATUS_URL,pathsegments,"","",String.class);
         JSONObject responseObj= objectMapper.readValue(response,JSONObject.class);
         if(responseObj.containsKey("response") && responseObj.get("response")==null) {
+            auditUtil.setAuditRequestDto(EventEnum.APPLICANT_VERIFICATION_ERROR,null);
             throw new MasterDataServiceException(ApplicantDetailErrorCode.REQ_ID_NOT_FOUND.getErrorCode(),
                     ApplicantDetailErrorCode.REQ_ID_NOT_FOUND.getErrorMessage());
         }
@@ -179,7 +182,7 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
         String individualBiometrics = utility.getJSONValue(documentObj, VALUE);
         List<String> subtype = new ArrayList<>();
         byte[] photoByte = cbeffToBiometricUtil.getImageBytes(individualBiometrics, FACE, subtype);
-        if (photoByte != null) {
+        if (photoByte != null && photoByte.length > 0) {
             convertRequestDto.setVersion("ISO19794_5_2011");
             convertRequestDto.setInputBytes(photoByte);
             byte[] data = FaceDecoder.convertFaceISOToImageBytes(convertRequestDto);
@@ -187,6 +190,7 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
             String imageData = "data:image/png;base64," + encodedBytes;
             applicantDataMap.put(ApplicantPhoto, imageData);
         } else {
+            auditUtil.setAuditRequestDto(EventEnum.APPLICANT_VERIFICATION_ERROR,null);
             throw new DataNotFoundException(ApplicantDetailErrorCode.DATA_NOT_FOUND.getErrorCode(), ApplicantDetailErrorCode.DATA_NOT_FOUND.getErrorMessage());
         }
     }
