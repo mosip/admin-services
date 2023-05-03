@@ -141,7 +141,7 @@ public class MapperTest {
 		assertFalse(entity.getIsActive());
 	}
 	@Test
-	public void updatesHolidayProperties(){
+	public void mapUpdateHolidays_validInputs_returnHolidayDtos(){
 		List<Holiday> holidays=new ArrayList<>();
 		Holiday holiday=new Holiday();
 		holiday.setHolidayDate(LocalDate.now());
@@ -169,7 +169,7 @@ public class MapperTest {
 		assertEquals(holidayUpdateDto.getLangCode(), updatedHoliday.getLangCode());
 	}
 	@Test
-	public void shouldMapRegisteredDeviceDtoToEntity(){
+	public void mapRegisteredDeviceDto_validInputs_returnEntity(){
 		RegisteredDevicePostReqDto dto=new RegisteredDevicePostReqDto();
 		dto.setDeviceId("device_id");
 		dto.setStatusCode("status_code");
