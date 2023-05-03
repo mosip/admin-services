@@ -49,7 +49,7 @@ public class ClientSettingsHelper {
 	@Autowired
 	private ClientCryptoManagerService clientCryptoManagerService;
 
-	@Value("${mosip.syncdata.regclient.support114:true}")
+	@Value("${mosip.syncdata.regclient.support114:false}")
 	private boolean support114Sync;
 
 	private boolean hasURLDetails(Class clazz, boolean isV2API, boolean deltaSync) {
