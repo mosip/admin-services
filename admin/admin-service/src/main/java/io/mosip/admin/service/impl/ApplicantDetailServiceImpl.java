@@ -182,7 +182,7 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
         String individualBiometrics = utility.getJSONValue(documentObj, VALUE);
         List<String> subtype = new ArrayList<>();
         byte[] photoByte = cbeffToBiometricUtil.getImageBytes(individualBiometrics, FACE, subtype);
-        if (photoByte != null) {
+        if (photoByte != null && photoByte.length > 0) {
             convertRequestDto.setVersion("ISO19794_5_2011");
             convertRequestDto.setInputBytes(photoByte);
             byte[] data = FaceDecoder.convertFaceISOToImageBytes(convertRequestDto);
