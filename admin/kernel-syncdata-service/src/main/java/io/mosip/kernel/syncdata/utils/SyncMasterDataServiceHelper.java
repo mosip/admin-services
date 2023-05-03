@@ -1358,7 +1358,7 @@ public class SyncMasterDataServiceHelper {
 				deviceTypeDto.setCode(entity.getCode());
 				deviceTypeDto.setName(entity.getName());
 				deviceTypeDto.setDescription(entity.getDescription());
-				deviceTypeDto.setIsDeleted(entity.getIsDeleted()==null?false:entity.getIsDeleted());
+				deviceTypeDto.setIsDeleted(entity.getIsDeleted());
 				deviceTypeDto.setIsActive(entity.getIsActive());
 				deviceTypeDto.setLangCode(entity.getLangCode());
 				dtoList.add(deviceTypeDto);
@@ -1378,8 +1378,8 @@ public class SyncMasterDataServiceHelper {
 				deviceSpecificationDto.setBrand(entity.getBrand());
 				deviceSpecificationDto.setModel(entity.getModel());
 				deviceSpecificationDto.setDeviceTypeCode(entity.getDeviceTypeCode());
+				//DO NOT add isDeleted setter as it will fail the reg-client sync due to a constraint in 1.1.4 client
 				deviceSpecificationDto.setDescription(entity.getDescription());
-				deviceSpecificationDto.setIsDeleted(entity.getIsDeleted()==null?false:entity.getIsDeleted());
 				deviceSpecificationDto.setIsActive(entity.getIsActive());
 				deviceSpecificationDto.setLangCode(entity.getLangCode());
 				dtoList.add(deviceSpecificationDto);
@@ -1401,7 +1401,7 @@ public class SyncMasterDataServiceHelper {
 				deviceDto.setIpAddress(entity.getIpAddress());
 				deviceDto.setValidityDateTime(entity.getValidityDateTime());
 				deviceDto.setMacAddress(entity.getMacAddress());
-				deviceDto.setIsDeleted(entity.getIsDeleted()==null?false:entity.getIsDeleted());
+				deviceDto.setIsDeleted(entity.getIsDeleted());
 				deviceDto.setIsActive(entity.getIsActive());
 				deviceDto.setLangCode(entity.getLangCode());
 				dtoList.add(deviceDto);
