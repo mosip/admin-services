@@ -1378,8 +1378,9 @@ public class SyncMasterDataServiceHelper {
 				deviceSpecificationDto.setBrand(entity.getBrand());
 				deviceSpecificationDto.setModel(entity.getModel());
 				deviceSpecificationDto.setDeviceTypeCode(entity.getDeviceTypeCode());
-				//DO NOT add isDeleted setter as it will fail the reg-client sync due to a constraint in 1.1.4 client
+				deviceSpecificationDto.setMinDriverversion(entity.getMinDriverversion());
 				deviceSpecificationDto.setDescription(entity.getDescription());
+				//DO NOT add isDeleted setter as it will fail the reg-client sync due to a constraint in 1.1.4 client
 				deviceSpecificationDto.setIsActive(entity.getIsActive());
 				deviceSpecificationDto.setLangCode(entity.getLangCode());
 				dtoList.add(deviceSpecificationDto);
