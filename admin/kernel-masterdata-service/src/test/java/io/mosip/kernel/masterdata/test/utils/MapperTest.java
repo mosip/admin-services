@@ -141,7 +141,7 @@ public class MapperTest {
 		assertFalse(entity.getIsActive());
 	}
 	@Test
-	public void mapUpdateHolidaysTest001(){
+	public void updatesHolidayProperties(){
 		List<Holiday> holidays=new ArrayList<>();
 		Holiday holiday=new Holiday();
 		holiday.setHolidayDate(LocalDate.now());
@@ -161,10 +161,15 @@ public class MapperTest {
 		holidayUpdateDto.setLocationCode("location123");
 		holidayDtos.add(holidayUpdateDto);
 
-		MapperUtils.mapUpdateHolidays(holidays);
+		List<HolidayUpdateDto> holidayUpdateDtos = MapperUtils.mapUpdateHolidays(holidays);
+		assertEquals(holidays.size(),holidayUpdateDtos.size());
+
+		Holiday updatedHoliday = holidays.get(0);
+		assertEquals(holidayUpdateDto.getHolidayDate(), updatedHoliday.getHolidayDate());
+		assertEquals(holidayUpdateDto.getLangCode(), updatedHoliday.getLangCode());
 	}
 	@Test
-	public void mapRegisteredDeviceDtoTest001(){
+	public void shouldMapRegisteredDeviceDtoToEntity(){
 		RegisteredDevicePostReqDto dto=new RegisteredDevicePostReqDto();
 		dto.setDeviceId("device_id");
 		dto.setStatusCode("status_code");
@@ -184,7 +189,24 @@ public class MapperTest {
 		digitalIdDto.setDeviceTypeCode("device_type_code");
 		digitalIdDto.setSerialNo("serial_no");
 		dto.setDigitalIdDto(digitalIdDto);
-		MapperUtils.mapRegisteredDeviceDto(dto,"digital_id_json");
+		RegisteredDevice entity = MapperUtils.mapRegisteredDeviceDto(dto,"digital_id_json");
+
+		assertEquals(dto.getDeviceId(),entity.getDeviceId());
+		assertEquals(dto.getStatusCode(),entity.getStatusCode());
+		assertEquals(dto.getDeviceSubId(),entity.getDeviceSubId());
+		assertEquals(dto.getPurpose(),entity.getPurpose());
+		assertEquals(dto.getFirmware(),entity.getFirmware());
+		assertEquals(dto.getExpiryDate(),entity.getExpiryDate());
+		assertEquals(dto.getCertificationLevel(),entity.getCertificationLevel());
+		assertEquals(dto.getFoundationalTPId(),entity.getFoundationalTPId());
+
+		assertEquals(digitalIdDto.getDp(),entity.getDp());
+		assertEquals(digitalIdDto.getMake(),entity.getMake());
+		assertEquals(digitalIdDto.getModel(),entity.getModel());
+		assertEquals(digitalIdDto.getDpId(),entity.getDpId());
+		assertEquals(digitalIdDto.getDeviceSTypeCode(),entity.getDeviceSTypeCode());
+		assertEquals(digitalIdDto.getDeviceTypeCode(),entity.getDeviceTypeCode());
+		assertEquals(digitalIdDto.getSerialNo(),entity.getSerialNo());
 	}
 
 	
