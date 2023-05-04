@@ -2,7 +2,6 @@ package io.mosip.kernel.syncdata.test.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.clientcrypto.constant.ClientType;
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.FileNotFoundException;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.DateUtils;
@@ -11,7 +10,6 @@ import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.SyncDataResponseDto;
 import io.mosip.kernel.syncdata.entity.*;
 import io.mosip.kernel.syncdata.exception.RequestException;
-import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.service.helper.ClientSettingsHelper;
 import io.mosip.kernel.syncdata.service.helper.SyncJobHelperService;
@@ -22,13 +20,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
@@ -313,7 +309,7 @@ public class SyncMasterDataServiceHelperTest {
     }
 
     @Test
-    public void convertTemplateEntityToDtoTest01(){
+    public void convertTemplateEntityToDto_withValidInput_thenPass(){
         List<TemplateDto> templateDtos = new ArrayList<>();
         TemplateDto templateDto = new TemplateDto();
         templateDto.setId("1");
@@ -347,7 +343,7 @@ public class SyncMasterDataServiceHelperTest {
     }
 
     @Test
-    public void convertTemplateFileFormatEntityToDtoTest01(){
+    public void convertTemplateFileFormatEntityToDto_withValidInput_thenPass(){
         List<TemplateFileFormatDto> templateFileFormatDtos = new ArrayList<>();
         TemplateFileFormatDto templateFileFormatDto = new TemplateFileFormatDto();
         templateFileFormatDto.setCode("code");
@@ -370,7 +366,7 @@ public class SyncMasterDataServiceHelperTest {
     }
 
     @Test
-    public void convertPostReasonCategoryEntityToDtoTest01(){
+    public void convertPostReasonCategoryEntityToDto_withValidInput_thenPass(){
         List<PostReasonCategoryDto> postReasonCategoryDtos = new ArrayList<>();
         PostReasonCategoryDto postReasonCategoryDto = new PostReasonCategoryDto();
         postReasonCategoryDto.setCode("code");
@@ -393,7 +389,7 @@ public class SyncMasterDataServiceHelperTest {
     }
 
     @Test
-    public void convertReasonListEntityToDtoTest01(){
+    public void convertReasonListEntityToDto_withValidInput_thenPass(){
         List<ReasonListDto> reasonListDtos = new ArrayList<>();
         ReasonListDto reasonListDto = new ReasonListDto();
         reasonListDto.setCode("code");
@@ -416,7 +412,7 @@ public class SyncMasterDataServiceHelperTest {
     }
 
     @Test
-    public void convertTemplateTypeEntityToDtoTest01(){
+    public void convertTemplateTypeEntityToDto_withValidInput_thenPass(){
         List<TemplateTypeDto> templateTypeDtos = new ArrayList<>();
         TemplateTypeDto templateTypeDto = new TemplateTypeDto();
         templateTypeDto.setCode("code");
@@ -435,7 +431,7 @@ public class SyncMasterDataServiceHelperTest {
     }
 
     @Test
-    public void convertAppAuthMethodEntityToDtoTest01(){
+    public void convertAppAuthMethodEntityToDto_withValidInput_thenPass(){
         List<AppAuthenticationMethodDto> appAuthenticationMethodDtos = new ArrayList<>();
         AppAuthenticationMethodDto appAuthenticationMethodDto = new AppAuthenticationMethodDto();
         appAuthenticationMethodDto.setAppId("id");
@@ -464,7 +460,7 @@ public class SyncMasterDataServiceHelperTest {
     }
 
     @Test
-    public void convertAppRolePrioritiesToDtoTest01(){
+    public void convertAppRolePrioritiesToDto_withValidInput_thenPass(){
         List<AppRolePriorityDto> appAuthenticationMethods = new ArrayList<>();
         AppRolePriorityDto appRolePriorityDto = new AppRolePriorityDto();
         appRolePriorityDto.setAppId("id");
@@ -487,7 +483,7 @@ public class SyncMasterDataServiceHelperTest {
     }
 
     @Test
-    public void convertScreenAuthorizationToDtoTest01(){
+    public void convertScreenAuthorizationToDto_withValidInput_thenPass(){
         List<ScreenAuthorizationDto> screenAuthorizationDtos = new ArrayList<>();
         ScreenAuthorizationDto screenAuthorizationDto = new ScreenAuthorizationDto();
         screenAuthorizationDto.setScreenId("id");
@@ -510,7 +506,7 @@ public class SyncMasterDataServiceHelperTest {
     }
 
     @Test
-    public void convertprocessListEntityToDtoTest01(){
+    public void convertprocessListEntityToDto_withValidInput_thenPass(){
         List<ProcessListDto> processListDtos = new ArrayList<>();
         ProcessListDto processListDto = new ProcessListDto();
         processListDto.setId("id");
@@ -533,7 +529,7 @@ public class SyncMasterDataServiceHelperTest {
     }
 
     @Test
-    public void convertSyncJobDefEntityToDtoTest01(){
+    public void convertSyncJobDefEntityToDto_withValidInput_thenPass(){
         List<SyncJobDefDto> syncJobDefDtos = new ArrayList<>();
         SyncJobDefDto syncJobDefDto = new SyncJobDefDto();
         syncJobDefDto.setId("id");
@@ -556,7 +552,7 @@ public class SyncMasterDataServiceHelperTest {
     }
 
     @Test
-    public void convertScreenDetailToDtoTest01(){
+    public void convertScreenDetailToDto_withValidInput_thenPass(){
         List<ScreenDetailDto> screenDetailDtos = new ArrayList<>();
         ScreenDetailDto screenDetailDto = new ScreenDetailDto();
         screenDetailDto.setAppId("id");
@@ -578,7 +574,7 @@ public class SyncMasterDataServiceHelperTest {
     }
 
     @Test
-    public void convertPermittedConfigEntityToDtoTest01(){
+    public void convertPermittedConfigEntityToDto_withValidInput_thenPass(){
         List<PermittedConfigDto> permittedConfigDtos = new ArrayList<>();
         PermittedConfigDto permittedConfigDto = new PermittedConfigDto();
         permittedConfigDto.setCode("code");
@@ -600,7 +596,7 @@ public class SyncMasterDataServiceHelperTest {
     }
 
     @Test (expected = RequestException.class)
-    public void getRegistrationCenterMachineTest01(){
+    public void getRegistrationCenterMachine_withInValidInput_returnException(){
         RegistrationCenterMachineDto registrationCenterMachineDto = new RegistrationCenterMachineDto();
         registrationCenterMachineDto.setMachineId("id");
         registrationCenterMachineDto.setMachineSpecId("spec");
@@ -618,56 +614,56 @@ public class SyncMasterDataServiceHelperTest {
     }
 
     @Test
-    public void convertRegistrationCenterToDtoTestNull(){
+    public void convertRegistrationCenterToDto_withEmptyList_thenPass(){
         List<RegistrationCenter> list = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertRegistrationCenterToDto",list);
     }
 
     @Test
-    public void convertEntityToHolidayTestNull(){
+    public void convertEntityToHoliday_withEmptyHoliday_thenPass(){
         List<Holiday> holidays = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertEntityToHoliday",holidays);
     }
 
     @Test
-    public void convertBlocklistedWordsEntityToDtoTestNull(){
+    public void convertBlocklistedWordsEntityToDto_withEmptyBlockListedWords_thenPass(){
         List<BlocklistedWords> words = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertBlocklistedWordsEntityToDto",words);
     }
 
     @Test
-    public void convertDocumentTypeEntityToDtoTestNull(){
+    public void convertDocumentTypeEntityToDto_withEmptyDocumentTypes_thenPass(){
         List<DocumentType> documentTypes = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertDocumentTypeEntityToDto",documentTypes);
     }
 
     @Test
-    public void convertLocationsEntityToDtoTestNull(){
+    public void convertLocationsEntityToDto_withEmptyLocations_thenPass(){
         List<Location> locations = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertLocationsEntityToDto",locations);
     }
 
     @Test
-    public void convertValidDocumentEntityToDtoTestNull(){
+    public void convertValidDocumentEntityToDtowithEmptyValidDocuments_thenPass(){
         List<ValidDocument> validDocuments = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertValidDocumentEntityToDto",validDocuments);
     }
 
     @Test
-    public void convertApplicantValidDocumentEntityToDtoTestNull(){
+    public void convertApplicantValidDocumentEntityToDtowithEmptyApplicantValidDocuments_thenPass(){
         List<ApplicantValidDocument> applicantValidDocuments = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertApplicantValidDocumentEntityToDto",applicantValidDocuments);
     }
 
     @Test
-    public void convertLanguageEntityToDtoTestNull(){
+    public void convertLanguageEntityToDtowithEmptyLanguageList_thenPass(){
         List<Language> languageList = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertLanguageEntityToDto",languageList);

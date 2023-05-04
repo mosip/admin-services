@@ -1,32 +1,26 @@
 package io.mosip.admin.bulkdataupload.batch;
 
-import java.util.HashSet;
-import java.util.Properties;
-import javax.validation.ConstraintViolationException;
-
 import org.junit.Test;
 import org.springframework.batch.core.jsr.configuration.xml.JsrXmlApplicationContext;
 import org.springframework.batch.extensions.excel.support.rowset.RowSet;
-import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.NotReadablePropertyException;
 import org.springframework.beans.NotWritablePropertyException;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.convert.ApplicationConversionService;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.util.Assert;
 import org.springframework.util.StringValueResolver;
 import org.springframework.validation.BindException;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.DefaultBindingErrorProcessor;
 import org.springframework.validation.beanvalidation.CustomValidatorBean;
 
+import javax.validation.ConstraintViolationException;
+import java.util.HashSet;
+import java.util.Properties;
+
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class CustomExcelRowMapperTest {
 
@@ -35,7 +29,7 @@ public class CustomExcelRowMapperTest {
 
 
     @Test(expected = IllegalStateException.class)
-    public void testMapRow01() throws BindException {
+    public void mapRow_withRowSet_returnErrorResponse() throws BindException {
 
         ApplicationConversionService conversionService = new ApplicationConversionService();
 
@@ -48,7 +42,7 @@ public class CustomExcelRowMapperTest {
     }
 
     @Test(expected = NotWritablePropertyException.class)
-    public void testMapRow02() throws BindException {
+    public void mapRow_withProperties_returnErrorResponse() throws BindException {
 
         ApplicationConversionService conversionService = new ApplicationConversionService();
 
@@ -64,7 +58,7 @@ public class CustomExcelRowMapperTest {
     }
 
     @Test(expected = ConstraintViolationException.class)
-    public void testMapRow03() throws BindException {
+    public void mapRow_withConstraint_returnErrorResponse() throws BindException {
         ApplicationConversionService conversionService = new ApplicationConversionService();
 
         CustomExcelRowMapper<Object> customExcelRowMapper = new CustomExcelRowMapper<>(conversionService,
@@ -78,7 +72,7 @@ public class CustomExcelRowMapperTest {
 
 
     @Test
-    public void testCreateBinder01() {
+    public void createBinder_withApplicationConversionService_returnSuccessResponse() {
         ApplicationConversionService conversionService = new ApplicationConversionService();
         DataBinder actualCreateBinderResult = (new CustomExcelRowMapper<>(conversionService, new CustomValidatorBean()))
                 .createBinder("Target");
@@ -93,7 +87,7 @@ public class CustomExcelRowMapperTest {
     }
 
     @Test
-    public void testCreateBinder02() {
+    public void createBinder_withDefaultFormattingConversionService_returnSuccessResponse() {
         DefaultFormattingConversionService conversionService = new DefaultFormattingConversionService(
                 mock(StringValueResolver.class), true);
 
@@ -110,7 +104,7 @@ public class CustomExcelRowMapperTest {
     }
 
     @Test
-    public void testFindPropertyName01() {
+    public void findPropertyName_withValidRequest_thenPass() {
         ApplicationConversionService conversionService = new ApplicationConversionService();
 
         Object bean = "Bean";
@@ -122,7 +116,7 @@ public class CustomExcelRowMapperTest {
     }
 
     @Test
-    public void testFindPropertyName02() {
+    public void findPropertyName_withNullRequest_returnNull() {
         ApplicationConversionService conversionService = new ApplicationConversionService();
 
         ReflectionTestUtils.invokeMethod(new CustomExcelRowMapper<>(conversionService, new CustomValidatorBean()),
@@ -131,7 +125,7 @@ public class CustomExcelRowMapperTest {
     }
 
     @Test
-    public void testFindPropertyName03() {
+    public void findPropertyName_withNullBean_returnNull() {
         ApplicationConversionService conversionService = new ApplicationConversionService();
 
         Object bean = null;
@@ -142,7 +136,7 @@ public class CustomExcelRowMapperTest {
     }
 
     @Test
-    public void testConstructor01() {
+    public void CustomExcelRowMapper_withSetValues_returnSuccessResponse() {
 
         ApplicationConversionService conversionService = new ApplicationConversionService();
         CustomExcelRowMapper<Object> actualCustomExcelRowMapper = new CustomExcelRowMapper<>(conversionService,
@@ -156,7 +150,7 @@ public class CustomExcelRowMapperTest {
     }
 
     @Test
-    public void testConstructor02() {
+    public void CustomExcelRowMapper_withInitBinder_returnSuccessResponse() {
 
         ApplicationConversionService conversionService = new ApplicationConversionService();
         CustomExcelRowMapper<Object> actualCustomExcelRowMapper = new CustomExcelRowMapper<>(conversionService,
@@ -165,7 +159,7 @@ public class CustomExcelRowMapperTest {
     }
 
     @Test(expected = NotReadablePropertyException.class)
-    public void testGetPropertyValue01() {
+    public void getPropertyValue_withApplicationConversionService_returnErrorResponse() {
 
         ApplicationConversionService conversionService = new ApplicationConversionService();
 
@@ -175,7 +169,7 @@ public class CustomExcelRowMapperTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testSwitchPropertyNames01() {
+    public void switchPropertyNames_withApplicationConversionService_returnErrorResponse() {
 
         ApplicationConversionService conversionService = new ApplicationConversionService();
         CustomExcelRowMapper<Object> customExcelRowMapper = new CustomExcelRowMapper<>(conversionService,

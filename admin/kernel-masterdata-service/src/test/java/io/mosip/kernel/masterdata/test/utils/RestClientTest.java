@@ -2,10 +2,7 @@ package io.mosip.kernel.masterdata.test.utils;
 
 import io.mosip.kernel.masterdata.constant.ApiName;
 import io.mosip.kernel.masterdata.utils.RestClient;
-import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -40,7 +37,7 @@ public class RestClientTest {
 
 
     @Test
-    public void testPostApi01() throws Exception {
+    public void postApi_withValidInput_thenPass() throws Exception {
 
         ApiName apiName = ApiName.PACKET_PAUSE_API;
         List<String> pathsegments =List.of("hi","hello","welcome");
@@ -54,7 +51,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void testPostApi02() throws Exception {
+    public void postApi_withProperty_thenPass() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -67,7 +64,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void testPostApi03() throws Exception {
+    public void postApi_withoutProperty_thenPass() throws Exception {
         when(environment.getProperty((String) any())).thenReturn(null);
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -79,7 +76,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void testPostApi04() throws Exception {
+    public void postApi_withPacketPauseApi_thenPass() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -92,7 +89,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void testPostApi05() throws Exception {
+    public void postApi_withPacketResumeApi_thenPass() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -107,7 +104,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void testPostApi06() throws Exception {
+    public void postApi_withPathsegments_thenPass() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -120,7 +117,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void testPostApi07() throws Exception {
+    public void postApi_withoutQueryParamName_thenPass() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -133,7 +130,7 @@ public class RestClientTest {
     }
 
     @Test (expected = Exception.class)
-    public void testPostApi08() throws Exception {
+    public void postApi_withInvalidProperty_thenFail() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("M://dev@2:3{MOSIP}");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -144,7 +141,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void testGetApi01() throws Exception {
+    public void getApi_withValidInput_thenPass() throws Exception {
         ApiName apiName = ApiName.PACKET_PAUSE_API;
         List<String> pathsegments = List.of("hi","hello","welcome");
         String queryParamName = "name";
@@ -155,7 +152,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void testGetApi02() throws Exception {
+    public void getApi_withProperty_thenPass() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any()))
                 .thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
@@ -167,7 +164,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void testGetApi03() throws Exception {
+    public void getApi_withoutProperty_thenPass() throws Exception {
         when(environment.getProperty((String) any())).thenReturn(null);
         when(restTemplate.exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any()))
                 .thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
@@ -178,7 +175,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void testGetApi04() throws Exception {
+    public void getApi_withPathsegments_thenPass() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any()))
                 .thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
@@ -190,7 +187,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void testGetApi05() throws Exception {
+    public void getApi_withoutPathsegments_thenPass() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any()))
                 .thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
@@ -204,7 +201,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void testGetApi06() throws Exception {
+    public void getApi_withEmptyQueryName_thenPass() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any()))
                 .thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
@@ -216,7 +213,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void testGetApi07() throws Exception {
+    public void getApi_withoutQueryName_thenPass() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any()))
                 .thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
@@ -228,7 +225,7 @@ public class RestClientTest {
     }
 
     @Test (expected = Exception.class)
-    public void testGetApi08() throws Exception {
+    public void getApi_withInvalidProperty_thenFail() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("dev@1:2:3{Mosip}");
         when(restTemplate.exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any()))
                 .thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
@@ -238,7 +235,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void testSetRequestHeader01() {
+    public void setRequestHeader_withValidInput_thenPass() {
 
         Object requestType = mock(Object.class);
         MediaType mediaType = mock(MediaType.class);
@@ -247,7 +244,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void testSetRequestHeader02() throws Exception {
+    public void setRequestHeader_withProperty_thenPass() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -261,7 +258,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void testSetRequestHeader03() throws Exception {
+    public void setRequestHeader_withRequestType_thenPass() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -275,7 +272,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void testSetRequestHeader04() throws Exception {
+    public void setRequestHeader_withPathsegments_thenPass() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -288,7 +285,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void testSetRequestHeader05() throws Exception {
+    public void setRequestHeader_withoutMediaType_thenPass() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -307,7 +304,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void testSetRequestHeader06() throws Exception {
+    public void setRequestHeader_withHttpURL_thenPass() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -328,7 +325,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void testSetRequestHeader07() throws Exception {
+    public void setRequestHeader_withURLAndMediaType_thenPass() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
