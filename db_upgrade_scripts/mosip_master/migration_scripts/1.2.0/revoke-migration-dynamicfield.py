@@ -10,6 +10,9 @@ print("Opened database successfully")
 
 cur = conn.cursor()
 
+#DROP existing dynamic_field table
+cur.execute('DROP TABLE IF EXISTS master.dynamic_field;')
+
 #Backup existing dynamic_field table
 cur.execute('ALTER TABLE master.dynamic_field_migr_bkp RENAME TO dynamic_field;')
 
