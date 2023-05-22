@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import io.mosip.kernel.clientcrypto.constant.ClientType;
+import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.entity.*;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
 import io.mosip.kernel.syncdata.repository.*;
@@ -41,31 +42,6 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.constant.AdminServiceErrorCode;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
-import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
-import io.mosip.kernel.syncdata.dto.AppRolePriorityDto;
-import io.mosip.kernel.syncdata.dto.ApplicantValidDocumentDto;
-import io.mosip.kernel.syncdata.dto.BlacklistedWordsDto;
-import io.mosip.kernel.syncdata.dto.DocumentTypeDto;
-import io.mosip.kernel.syncdata.dto.DynamicFieldDto;
-import io.mosip.kernel.syncdata.dto.EntityDtimes;
-import io.mosip.kernel.syncdata.dto.HolidayDto;
-import io.mosip.kernel.syncdata.dto.LocationDto;
-import io.mosip.kernel.syncdata.dto.LocationHierarchyDto;
-import io.mosip.kernel.syncdata.dto.MachineDto;
-import io.mosip.kernel.syncdata.dto.PageDto;
-import io.mosip.kernel.syncdata.dto.PostReasonCategoryDto;
-import io.mosip.kernel.syncdata.dto.ProcessListDto;
-import io.mosip.kernel.syncdata.dto.ReasonListDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
-import io.mosip.kernel.syncdata.dto.ScreenAuthorizationDto;
-import io.mosip.kernel.syncdata.dto.ScreenDetailDto;
-import io.mosip.kernel.syncdata.dto.SyncJobDefDto;
-import io.mosip.kernel.syncdata.dto.TemplateDto;
-import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
-import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
-import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.response.SyncDataBaseDto;
 import io.mosip.kernel.syncdata.exception.AdminServiceException;
 import io.mosip.kernel.syncdata.exception.RequestException;
@@ -173,6 +149,10 @@ public class SyncMasterDataServiceHelper {
 	private MachineHistoryRepository machineHistoryRepository;
 	@Autowired
 	private DeviceHistoryRepository deviceHistoryRepository;
+	@Autowired
+	private GenderRepository genderRepository;
+	@Autowired
+	private IndividualTypeRepository individualTypeRepository;
 
 	@Autowired
 	private ClientCryptoManagerService clientCryptoManagerService;
@@ -766,7 +746,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage(), e);
-			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(MasterDataErrorCode.VALID_DOCUMENT_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
 		return CompletableFuture.completedFuture(convertValidDocumentEntityToDto(validDocuments));
@@ -1102,6 +1082,42 @@ public class SyncMasterDataServiceHelper {
 		}
 		return null;
 	}
+
+	@Async
+	public CompletableFuture<List<DocumentCategoryDto>> getDocumentCategories(LocalDateTime lastUpdated,
+																		  LocalDateTime currentTimeStamp) {
+		List<DocumentCategory> documentCategories = null;
+		try {
+			if(!isChangesFound("DocumentCategory", lastUpdated)) {
+				return CompletableFuture.completedFuture(null);
+			}
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			documentCategories = documentCategoryRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
+			throw new SyncDataServiceException(MasterDataErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
+					e.getMessage(), e);
+		}
+		return CompletableFuture.completedFuture(convertDocumentCategoryEntityToDto(documentCategories));
+	}
+
+	private List<DocumentCategoryDto> convertDocumentCategoryEntityToDto(List<DocumentCategory> documentCategories) {
+		if (documentCategories != null && !documentCategories.isEmpty()) {
+			List<DocumentCategoryDto> documentCategoryDtos = new ArrayList<>();
+			documentCategories.stream().forEach(entity -> {
+				DocumentCategoryDto entityDTO = new DocumentCategoryDto(entity.getCode(), entity.getName(), entity.getDescription());
+				entityDTO.setLangCode(entity.getLangCode());
+				entityDTO.setIsActive(entity.getIsActive());
+				entityDTO.setIsDeleted(entity.getIsDeleted());
+				documentCategoryDtos.add(entityDTO);
+			});
+			return documentCategoryDtos;
+		}
+		return null;
+	}
 	
 	@Async
 	public CompletableFuture<List<SyncJobDefDto>> getSyncJobDefDetails(LocalDateTime lastUpdatedTime,
@@ -1189,6 +1205,212 @@ public class SyncMasterDataServiceHelper {
 		}
 		return null;
 	}
+
+	@Async
+	public CompletableFuture<List<GenderDto>> getGender(LocalDateTime lastUpdatedTime,
+																	 LocalDateTime currentTimeStamp) {
+		List<Gender> genderList = null;
+		try {
+			if(!isChangesFound("Gender", lastUpdatedTime)) {
+				return CompletableFuture.completedFuture(null);
+			}
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			genderList = genderRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime,
+					currentTimeStamp);
+
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
+			throw new SyncDataServiceException(MasterDataErrorCode.GENDER_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.GENDER_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return CompletableFuture.completedFuture(convertGenderToDto(genderList));
+	}
+
+	private List<GenderDto> convertGenderToDto(List<Gender> genderList) {
+		if (genderList != null && !genderList.isEmpty()) {
+			List<GenderDto> genderDtoList = new ArrayList<>();
+			genderList.stream().forEach(entity -> {
+				GenderDto genderDto = new GenderDto();
+				genderDto.setCode(entity.getCode());
+				genderDto.setGenderName(entity.getGenderName());
+				genderDto.setIsDeleted(entity.getIsDeleted());
+				genderDto.setIsActive(entity.getIsActive());
+				genderDto.setLangCode(entity.getLangCode());
+				genderDtoList.add(genderDto);
+			});
+			return genderDtoList;
+		}
+		return null;
+	}
+
+	@Async
+	public CompletableFuture<List<IndividualTypeDto>> getIndividualTypes(LocalDateTime lastUpdatedTime,
+														LocalDateTime currentTimeStamp) {
+		List<IndividualType> individualTypes = null;
+		try {
+			if(!isChangesFound("IndividualType", lastUpdatedTime)) {
+				return CompletableFuture.completedFuture(null);
+			}
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			individualTypes = individualTypeRepository.findByLastUpdatedAndCurrentTimeStamp(lastUpdatedTime,
+					currentTimeStamp);
+
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
+			throw new SyncDataServiceException(MasterDataErrorCode.INDIVIDUAL_TYPE_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.INDIVIDUAL_TYPE_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return CompletableFuture.completedFuture(convertIndividualTypesToDto(individualTypes));
+	}
+
+	private List<IndividualTypeDto> convertIndividualTypesToDto(List<IndividualType> individualTypes) {
+		if (individualTypes != null && !individualTypes.isEmpty()) {
+			List<IndividualTypeDto> individualTypeDtoList = new ArrayList<>();
+			individualTypes.stream().forEach(entity -> {
+				IndividualTypeDto individualTypeDto = new IndividualTypeDto();
+				individualTypeDto.setCode(entity.getCodeAndLanguageCodeId().getCode());
+				individualTypeDto.setName(entity.getName());
+				individualTypeDto.setIsDeleted(entity.getIsDeleted());
+				individualTypeDto.setIsActive(entity.getIsActive());
+				individualTypeDto.setLangCode(entity.getCodeAndLanguageCodeId().getLangCode());
+				individualTypeDtoList.add(individualTypeDto);
+			});
+			return individualTypeDtoList;
+		}
+		return null;
+	}
+
+	@Async
+	public CompletableFuture<List<DeviceSpecificationDto>> getDeviceSpecifications(String regCenterId, LocalDateTime lastUpdatedTime,
+																				   LocalDateTime currentTimeStamp) {
+		List<DeviceSpecification> specifications = null;
+		try {
+			if(!isChangesFound("DeviceSpecification", lastUpdatedTime)) {
+				return CompletableFuture.completedFuture(null);
+			}
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			specifications = deviceSpecificationRepository.findLatestDeviceTypeByRegCenterId(regCenterId, lastUpdatedTime,
+					currentTimeStamp);
+
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
+			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_SPECIFICATION_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.DEVICE_SPECIFICATION_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return CompletableFuture.completedFuture(convertDeviceSpecificationToDto(specifications));
+	}
+
+	@Async
+	public CompletableFuture<List<DeviceDto>> getDevices(String regCenterId, LocalDateTime lastUpdatedTime,
+																				   LocalDateTime currentTimeStamp) {
+		List<Device> devices = null;
+		try {
+			if(!isChangesFound("Device", lastUpdatedTime)) {
+				return CompletableFuture.completedFuture(null);
+			}
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			devices = deviceRepository.findLatestDevicesByRegCenterId(regCenterId, lastUpdatedTime,
+					currentTimeStamp);
+
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
+			throw new SyncDataServiceException(MasterDataErrorCode.DEVICES_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.DEVICES_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return CompletableFuture.completedFuture(convertDeviceToDto(devices));
+	}
+
+	@Async
+	public CompletableFuture<List<DeviceTypeDto>> getDeviceTypes(String regCenterId, LocalDateTime lastUpdatedTime,
+														 LocalDateTime currentTimeStamp) {
+		List<DeviceType> deviceTypes = null;
+		try {
+			if(!isChangesFound("DeviceType", lastUpdatedTime)) {
+				return CompletableFuture.completedFuture(null);
+			}
+			if (lastUpdatedTime == null) {
+				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			deviceTypes = deviceTypeRepository.findLatestDeviceTypeByRegCenterId(regCenterId, lastUpdatedTime,
+					currentTimeStamp);
+
+		} catch (DataAccessException e) {
+			logger.error(e.getMessage(), e);
+			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return CompletableFuture.completedFuture(convertDeviceTypeToDto(deviceTypes));
+	}
+
+	private List<DeviceTypeDto> convertDeviceTypeToDto(List<DeviceType> deviceTypes) {
+		if (deviceTypes != null && !deviceTypes.isEmpty()) {
+			List<DeviceTypeDto> dtoList = new ArrayList<>();
+			deviceTypes.stream().forEach(entity -> {
+				DeviceTypeDto deviceTypeDto = new DeviceTypeDto();
+				deviceTypeDto.setCode(entity.getCode());
+				deviceTypeDto.setName(entity.getName());
+				deviceTypeDto.setDescription(entity.getDescription());
+				deviceTypeDto.setIsDeleted(entity.getIsDeleted());
+				deviceTypeDto.setIsActive(entity.getIsActive());
+				deviceTypeDto.setLangCode(entity.getLangCode());
+				dtoList.add(deviceTypeDto);
+			});
+			return dtoList;
+		}
+		return null;
+	}
+
+	private List<DeviceSpecificationDto> convertDeviceSpecificationToDto(List<DeviceSpecification> deviceSpecifications) {
+		if (deviceSpecifications != null && !deviceSpecifications.isEmpty()) {
+			List<DeviceSpecificationDto> dtoList = new ArrayList<>();
+			deviceSpecifications.stream().forEach(entity -> {
+				DeviceSpecificationDto deviceSpecificationDto = new DeviceSpecificationDto();
+				deviceSpecificationDto.setId(entity.getId());
+				deviceSpecificationDto.setName(entity.getName());
+				deviceSpecificationDto.setBrand(entity.getBrand());
+				deviceSpecificationDto.setModel(entity.getModel());
+				deviceSpecificationDto.setDeviceTypeCode(entity.getDeviceTypeCode());
+				deviceSpecificationDto.setMinDriverversion(entity.getMinDriverversion());
+				deviceSpecificationDto.setDescription(entity.getDescription());
+				//DO NOT add isDeleted setter as it will fail the reg-client sync due to a constraint in 1.1.4 client
+				deviceSpecificationDto.setIsActive(entity.getIsActive());
+				deviceSpecificationDto.setLangCode(entity.getLangCode());
+				dtoList.add(deviceSpecificationDto);
+			});
+			return dtoList;
+		}
+		return null;
+	}
+
+	private List<DeviceDto> convertDeviceToDto(List<Device> devices) {
+		if (devices != null && !devices.isEmpty()) {
+			List<DeviceDto> dtoList = new ArrayList<>();
+			devices.stream().forEach(entity -> {
+				DeviceDto deviceDto = new DeviceDto();
+				deviceDto.setId(entity.getId());
+				deviceDto.setName(entity.getName());
+				deviceDto.setDeviceSpecId(entity.getDeviceSpecId());
+				deviceDto.setSerialNum(entity.getSerialNum());
+				deviceDto.setIpAddress(entity.getIpAddress());
+				deviceDto.setValidityDateTime(entity.getValidityDateTime());
+				deviceDto.setMacAddress(entity.getMacAddress());
+				deviceDto.setIsDeleted(entity.getIsDeleted());
+				deviceDto.setIsActive(entity.getIsActive());
+				deviceDto.setLangCode(entity.getLangCode());
+				dtoList.add(deviceDto);
+			});
+			return dtoList;
+		}
+		return null;
+	}
 	
 
 	@Async
@@ -1224,7 +1446,7 @@ public class SyncMasterDataServiceHelper {
 		}
 	}
 
-	@Async
+	/*@Async
 	public CompletableFuture<List<DynamicFieldDto>> getAllDynamicFields(LocalDateTime lastUpdated, RestTemplate restClient) {
 		List<DynamicFieldDto> result = new ArrayList<>();
 		try {
@@ -1255,7 +1477,7 @@ public class SyncMasterDataServiceHelper {
 					MasterDataErrorCode.DYNAMIC_FIELD_FETCH_FAILED.getErrorMessage() + " : " +
 							ExceptionUtils.buildMessage(e.getMessage(), e.getCause()));
 		}
-	}
+	}*/
 
 
 	@SuppressWarnings("unchecked")
@@ -1440,6 +1662,15 @@ public class SyncMasterDataServiceHelper {
 				break;
 			case "DeviceType":
 				result = deviceTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				break;
+			case "DocumentCategory":
+				result = documentCategoryRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				break;
+			case "Gender":
+				result = genderRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				break;
+			case "IndividualType":
+				result = individualTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
 				break;
 		}
 

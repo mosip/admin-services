@@ -49,6 +49,9 @@ public class ClientSettingsHelper {
 	@Autowired
 	private ClientCryptoManagerService clientCryptoManagerService;
 
+	@Value("${mosip.syncdata.regclient.support114:false}")
+	private boolean support114Sync;
+
 	private boolean hasURLDetails(Class clazz, boolean isV2API, boolean deltaSync) {
 		if (!isV2API)
 			return false;
@@ -136,6 +139,19 @@ public class ClientSettingsHelper {
 			futuresMap.put(ValidDocument.class,
 					hasURLDetails(ValidDocument.class, isV2API, deltaSync) ? getURLDetails(ValidDocument.class)
 							: serviceHelper.getValidDocuments(lastUpdated, currentTimestamp));
+
+			// document category
+			futuresMap.put(DocumentCategory.class,
+					hasURLDetails(DocumentCategory.class, isV2API, deltaSync) ? getURLDetails(DocumentCategory.class)
+							: serviceHelper.getDocumentCategories(lastUpdated, currentTimestamp));
+
+			if(support114Sync) { //Required by 1.1.4.* reg-client
+				futuresMap.put(Gender.class, serviceHelper.getGender(lastUpdated, currentTimestamp));
+				futuresMap.put(IndividualType.class, serviceHelper.getIndividualTypes(lastUpdated, currentTimestamp));
+				futuresMap.put(DeviceType.class, serviceHelper.getDeviceTypes(regCenterId, lastUpdated, currentTimestamp));
+				futuresMap.put(DeviceSpecification.class, serviceHelper.getDeviceSpecifications(regCenterId, lastUpdated, currentTimestamp));
+				futuresMap.put(Device.class, serviceHelper.getDevices(regCenterId, lastUpdated, currentTimestamp));
+			}
 		}
 
 		// invokes master-data-service
