@@ -22,7 +22,7 @@ DROP TABLE IF EXISTS master.ui_spec;
 
 TRUNCATE TABLE master.identity_schema;
 
-ALTER TABLE master.identity_schema ADD COLUMN id_attr_json character varying(20480);
+ALTER TABLE master.identity_schema ADD COLUMN IF NOT EXISTS id_attr_json character varying(20480);
 
 INSERT INTO master.identity_schema(id,id_version,title,description,id_attr_json,schema_json,status_code,add_props,effective_from,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) SELECT id,id_version,title,description,id_attr_json,schema_json,status_code,add_props,effective_from,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes FROM master.identity_schema_migr_bkp;
 
@@ -61,17 +61,17 @@ ALTER TABLE master.user_detail ALTER COLUMN lang_code set  NOT NULL;
 
 ALTER TABLE master.zone_user ALTER COLUMN lang_code set NOT NULL;
 
-ALTER TABLE master.user_detail ADD COLUMN uin character varying(28);
+ALTER TABLE master.user_detail ADD COLUMN IF NOT EXISTS uin character varying(28);
 
-ALTER TABLE master.user_detail ADD COLUMN email character varying(256);
+ALTER TABLE master.user_detail ADD COLUMN IF NOT EXISTS email character varying(256);
 
-ALTER TABLE master.user_detail ADD COLUMN mobile character varying(16);
+ALTER TABLE master.user_detail ADD COLUMN IF NOT EXISTS mobile character varying(16);
 
-ALTER TABLE master.user_detail_h ADD COLUMN uin character varying(28);
+ALTER TABLE master.user_detail_h ADD COLUMN IF NOT EXISTS uin character varying(28);
 
-ALTER TABLE master.user_detail_h ADD COLUMN email character varying(256);
+ALTER TABLE master.user_detail_h ADD COLUMN IF NOT EXISTS email character varying(256);
 
-ALTER TABLE master.user_detail_h ADD COLUMN mobile character varying(16);
+ALTER TABLE master.user_detail_h ADD COLUMN IF NOT EXISTS mobile character varying(16);
 
 ALTER TABLE master.app_authentication_method ALTER COLUMN lang_code set NOT NULL;
 
