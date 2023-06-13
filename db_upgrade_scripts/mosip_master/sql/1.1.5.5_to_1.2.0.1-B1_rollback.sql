@@ -1,5 +1,3 @@
-\c mosip_master sysadmin
-
 TRUNCATE TABLE master.template cascade ;
 
 TRUNCATE TABLE master.module_detail cascade ;

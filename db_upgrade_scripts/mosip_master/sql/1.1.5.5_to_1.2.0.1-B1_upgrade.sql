@@ -1,4 +1,11 @@
-\c mosip_master sysadmin
+ALTER DATABASE mosip_master OWNER TO postgres;
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA master TO postgres;
+
+REVOKE ALL PRIVILEGES ON DATABASE mosip_master FROM masteruser, sysadmin;
+
+GRANT SELECT, INSERT, TRUNCATE, REFERENCES, UPDATE, DELETE ON ALL TABLES IN SCHEMA master TO masteruser;
+
 
 ALTER TABLE master.template_type ALTER COLUMN code TYPE character varying(64) ;
 
