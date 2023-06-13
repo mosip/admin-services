@@ -1,3 +1,5 @@
+\c mosip_master
+
 TRUNCATE TABLE master.template cascade ;
 
 TRUNCATE TABLE master.module_detail cascade ;
