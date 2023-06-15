@@ -1,5 +1,9 @@
 \c mosip_master
 
+REASSIGN OWNED BY postgres TO sysadmin;
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA master TO sysadmin;
+
 TRUNCATE TABLE master.template cascade ;
 
 TRUNCATE TABLE master.module_detail cascade ;
