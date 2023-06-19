@@ -1,4 +1,4 @@
-\c mosip_master sysadmin
+\c mosip_master
 
 TRUNCATE TABLE master.template cascade ;
 
