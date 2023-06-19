@@ -12,7 +12,7 @@ GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA master TO postgres;
 
 ALTER TABLE master.template_type ALTER COLUMN code TYPE character varying(64) ;
 
-ALTER TABLE master.template ALTER COLUMN template_typ_code TYPE character varying(64) ;
+ALTER TABLE master.template ALTER COLUMN template_typ_code TYPE character varying(64)  ;
 
 SELECT * INTO master.template_migr_bkp FROM master.template;
 
@@ -56,6 +56,9 @@ INSERT into master.ui_spec (id,version,domain,title,description,type,json_spec,i
 
 ALTER TABLE master.ui_spec ALTER COLUMN version TYPE numeric(5,3);
 ALTER TABLE master.ui_spec ALTER COLUMN identity_schema_version TYPE numeric(5,3);
+
+ALTER TABLE IF EXISTS master.ui_spec DROP CONSTRAINT IF EXISTS unq_dmn_ttl_vrsn_ischmid;
+ALTER TABLE IF EXISTS master.ui_spec ADD CONSTRAINT unq_dmn_type_vrsn_ischmid UNIQUE (domain, type, version, identity_schema_id);
 
 ALTER TABLE master.identity_schema DROP COLUMN id_attr_json;
 
@@ -105,6 +108,9 @@ ALTER TABLE master.user_detail_h DROP COLUMN mobile;
 
 
 ALTER TABLE master.dynamic_field DROP CONSTRAINT IF EXISTS uk_schfld_name;
+ALTER TABLE master.dynamic_field DROP CONSTRAINT IF EXISTS pk_schfld_id;
+ALTER TABLE master.dynamic_field DROP CONSTRAINT IF EXISTS pk_dynamic_id;
+ALTER TABLE master.dynamic_field ADD CONSTRAINT pk_dynamic_id PRIMARY KEY (id);
 
 ALTER TABLE master.app_authentication_method ALTER COLUMN lang_code DROP NOT NULL;
 
@@ -137,7 +143,7 @@ ALTER TABLE master.device_master ADD CONSTRAINT pk_devicem_id PRIMARY KEY (id);
 ALTER TABLE master.device_master ADD CONSTRAINT fk_devicem_dspec FOREIGN KEY (dspec_id)
 REFERENCES master.device_spec (id) MATCH SIMPLE
 ON DELETE NO ACTION ON UPDATE NO ACTION;
-
+ALTER TABLE IF EXISTS master.device_master DROP CONSTRAINT IF EXISTS fk_devicem_center;
 
 DELETE FROM master.device_master_h where lang_code!=:'primary_language_code';
 ALTER TABLE master.device_master_h DROP CONSTRAINT IF EXISTS pk_devicem_h_id CASCADE;
@@ -212,3 +218,46 @@ DELETE FROM loc_holiday WHERE id IN (SELECT id FROM (SELECT id, ROW_NUMBER() OVE
 ALTER TABLE master.loc_holiday ADD CONSTRAINT pk_lochol_id PRIMARY KEY (holiday_date, location_code, lang_code);
 
 -------------------------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE IF EXISTS master.app_authentication_method DROP CONSTRAINT IF EXISTS fk_appauthm_authmeth;
+
+DELETE FROM master.authentication_method where lang_code!=:'primary_language_code';
+ALTER TABLE master.authentication_method DROP CONSTRAINT IF EXISTS pk_authm_code CASCADE;
+ALTER TABLE master.authentication_method ALTER COLUMN lang_code DROP NOT NULL;
+ALTER TABLE master.authentication_method ADD CONSTRAINT pk_authm_code PRIMARY KEY (code);
+
+CREATE INDEX IF NOT EXISTS idx_location_cr_dtimes ON master.location USING btree (cr_dtimes ASC NULLS LAST) TABLESPACE pg_default;
+CREATE INDEX IF NOT EXISTS idx_mac_master_cr_dtimes ON master.machine_master USING btree (cr_dtimes ASC NULLS LAST) TABLESPACE pg_default;
+CREATE INDEX IF NOT EXISTS idx_mac_master_cntr_id ON master.machine_master USING btree (regcntr_id COLLATE pg_catalog."default" ASC NULLS LAST) TABLESPACE pg_default;
+CREATE INDEX IF NOT EXISTS idx_mac_master_regcntr_id ON master.machine_master USING btree (regcntr_id COLLATE pg_catalog."default" ASC NULLS LAST) TABLESPACE pg_default;
+CREATE INDEX IF NOT EXISTS idx_device_master_cntr_id ON master.device_master USING btree (regcntr_id COLLATE pg_catalog."default" ASC NULLS LAST) TABLESPACE pg_default;
+CREATE INDEX IF NOT EXISTS idx_user_detail_cntr_id ON master.user_detail USING btree (regcntr_id COLLATE pg_catalog."default" ASC NULLS LAST) TABLESPACE pg_default;
+CREATE INDEX IF NOT EXISTS idx_reg_centr_loc_code ON master.registration_center USING btree (holiday_loc_code COLLATE pg_catalog."default" ASC NULLS LAST) TABLESPACE pg_default;
+CREATE INDEX IF NOT EXISTS idx_app_val_doc_cr_dtimes ON master.applicant_valid_document USING btree (cr_dtimes ASC NULLS LAST) TABLESPACE pg_default;
+CREATE INDEX IF NOT EXISTS idx_app_val_doc_upd_dtimes ON master.applicant_valid_document USING btree (upd_dtimes ASC NULLS LAST) TABLESPACE pg_default;
+
+
+ALTER TABLE IF EXISTS master.zone_user DROP CONSTRAINT IF EXISTS pk_zoneuser;
+ALTER TABLE IF EXISTS master.zone_user ALTER COLUMN zone_code DROP NOT NULL;
+ALTER TABLE IF EXISTS master.zone_user ADD CONSTRAINT pk_zoneuser PRIMARY KEY (usr_id);
+
+--- applicant_valid_document is no more in use, just required for backward compatibility
+ALTER TABLE IF EXISTS master.applicant_valid_document ALTER COLUMN lang_code DROP NOT NULL;
+
+ALTER TABLE IF EXISTS master.ca_cert_store DROP COLUMN IF EXISTS signed_cert_data;
+ALTER TABLE IF EXISTS master.ca_cert_store DROP COLUMN IF EXISTS key_usage;
+ALTER TABLE IF EXISTS master.ca_cert_store DROP COLUMN IF EXISTS organization_name;
+
+ALTER TABLE IF EXISTS master.template DROP CONSTRAINT IF EXISTS fk_tmplt_moddtl;
+
+DELETE FROM master.reg_working_nonworking where lang_code!=:'primary_language_code';
+ALTER TABLE master.reg_working_nonworking DROP CONSTRAINT IF EXISTS pk_working_nonworking CASCADE;
+ALTER TABLE master.reg_working_nonworking ALTER COLUMN lang_code DROP NOT NULL;
+ALTER TABLE master.reg_working_nonworking ADD CONSTRAINT pk_working_nonworking PRIMARY KEY (regcntr_id,day_code);
+
+ALTER TABLE master.reg_working_nonworking DROP CONSTRAINT IF EXISTS fk_rwn_daycode;
+ALTER TABLE master.reg_working_nonworking DROP CONSTRAINT IF EXISTS fk_rwn_regcntr;
+
+DELETE FROM master.valid_document where lang_code!=:'primary_language_code';
+ALTER TABLE master.valid_document DROP CONSTRAINT IF EXISTS pk_valdoc_code CASCADE;
+ALTER TABLE master.valid_document ALTER COLUMN lang_code DROP NOT NULL;
+ALTER TABLE master.valid_document ADD CONSTRAINT pk_valdoc_code PRIMARY KEY (doctyp_code,doccat_code);
