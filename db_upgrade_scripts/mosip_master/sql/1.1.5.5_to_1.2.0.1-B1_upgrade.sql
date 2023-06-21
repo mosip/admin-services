@@ -220,6 +220,8 @@ ALTER TABLE master.loc_holiday ADD CONSTRAINT pk_lochol_id PRIMARY KEY (holiday_
 -------------------------------------------------------------------------------------------------------------------------------------------
 ALTER TABLE IF EXISTS master.app_authentication_method DROP CONSTRAINT IF EXISTS fk_appauthm_authmeth;
 
+SELECT * INTO master.authentication_method_migr_bkp FROM master.authentication_method;
+
 DELETE FROM master.authentication_method where lang_code!=:'primary_language_code';
 ALTER TABLE master.authentication_method DROP CONSTRAINT IF EXISTS pk_authm_code CASCADE;
 ALTER TABLE master.authentication_method ALTER COLUMN lang_code DROP NOT NULL;
@@ -249,6 +251,7 @@ ALTER TABLE IF EXISTS master.ca_cert_store DROP COLUMN IF EXISTS organization_na
 
 ALTER TABLE IF EXISTS master.template DROP CONSTRAINT IF EXISTS fk_tmplt_moddtl;
 
+SELECT * INTO master.reg_working_nonworking_migr_bkp FROM master.reg_working_nonworking;
 DELETE FROM master.reg_working_nonworking where lang_code!=:'primary_language_code';
 ALTER TABLE master.reg_working_nonworking DROP CONSTRAINT IF EXISTS pk_working_nonworking CASCADE;
 ALTER TABLE master.reg_working_nonworking ALTER COLUMN lang_code DROP NOT NULL;
@@ -257,6 +260,7 @@ ALTER TABLE master.reg_working_nonworking ADD CONSTRAINT pk_working_nonworking P
 ALTER TABLE master.reg_working_nonworking DROP CONSTRAINT IF EXISTS fk_rwn_daycode;
 ALTER TABLE master.reg_working_nonworking DROP CONSTRAINT IF EXISTS fk_rwn_regcntr;
 
+SELECT * INTO master.valid_document_migr_bkp FROM master.valid_document;
 DELETE FROM master.valid_document where lang_code!=:'primary_language_code';
 ALTER TABLE master.valid_document DROP CONSTRAINT IF EXISTS pk_valdoc_code CASCADE;
 ALTER TABLE master.valid_document ALTER COLUMN lang_code DROP NOT NULL;
