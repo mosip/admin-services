@@ -245,6 +245,7 @@ ALTER TABLE IF EXISTS master.zone_user ADD CONSTRAINT pk_zoneuser PRIMARY KEY (u
 --- applicant_valid_document is no more in use, just required for backward compatibility
 ALTER TABLE IF EXISTS master.applicant_valid_document ALTER COLUMN lang_code DROP NOT NULL;
 
+SELECT * INTO master.ca_cert_store_migr_bkp FROM master.ca_cert_store;
 ALTER TABLE IF EXISTS master.ca_cert_store DROP COLUMN IF EXISTS signed_cert_data;
 ALTER TABLE IF EXISTS master.ca_cert_store DROP COLUMN IF EXISTS key_usage;
 ALTER TABLE IF EXISTS master.ca_cert_store DROP COLUMN IF EXISTS organization_name;
