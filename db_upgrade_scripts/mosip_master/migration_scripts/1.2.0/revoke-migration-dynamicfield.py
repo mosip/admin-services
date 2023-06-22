@@ -10,13 +10,18 @@ print("Opened database successfully")
 
 cur = conn.cursor()
 
+cur.execute('ALTER TABLE master.dynamic_field DROP CONSTRAINT IF EXISTS pk_dynamic_id')
 #DROP existing dynamic_field table
 cur.execute('DROP TABLE IF EXISTS master.dynamic_field;')
 
-#Backup existing dynamic_field table
+#rollback backup table
 cur.execute('ALTER TABLE master.dynamic_field_migr_bkp RENAME TO dynamic_field;')
 
-print("Renamed dynamic_field_migr_bkp to dynamic_field");
+print("Renamed dynamic_field_migr_bkp to dynamic_field")
+
+cur.execute('ALTER TABLE master.dynamic_field_migr_bkp RENAME CONSTRAINT pk_dynamic_id_temp TO pk_dynamic_id;')
+
+print("Renamed dynamic_field primary key constraint")
 
 # Commit and close connection
 conn.commit()

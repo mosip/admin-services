@@ -15,6 +15,11 @@ cur.execute('ALTER TABLE master.dynamic_field RENAME TO dynamic_field_migr_bkp;'
 
 print("Renamed dynamic_field table to dynamic_field_migr_bkp")
 
+#rename primary key constraint name
+cur.execute('ALTER TABLE master.dynamic_field_migr_bkp RENAME CONSTRAINT pk_dynamic_id TO pk_dynamic_id_temp;')
+
+print("Renamed dynamic_field primary key constraint")
+
 #Create dynamic_field table
 cur.execute('''CREATE TABLE master.dynamic_field(
 	id character varying(36) NOT NULL,
