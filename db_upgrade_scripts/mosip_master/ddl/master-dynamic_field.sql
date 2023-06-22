@@ -26,8 +26,7 @@ CREATE TABLE master.dynamic_field(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp,
-	CONSTRAINT pk_schfld_id PRIMARY KEY (id),
-	CONSTRAINT uk_schfld_name UNIQUE (name,lang_code)
+	CONSTRAINT pk_dynamic_id PRIMARY KEY (id)
 
 );
 -- ddl-end --
