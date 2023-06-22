@@ -19,14 +19,14 @@ CREATE TABLE master.ui_spec (
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp,
-	CONSTRAINT unq_dmn_ttl_vrsn_ischmid UNIQUE (domain,type,version,identity_schema_id),
+	CONSTRAINT unq_dmn_type_vrsn_ischmid UNIQUE (domain,type,version,identity_schema_id),
 	CONSTRAINT ui_spec_pk PRIMARY KEY (id)
 
 );
 -- ddl-end --
 COMMENT ON TABLE master.ui_spec IS E'UI Specifications :  Stores UI Specifications with values used in application modules.';
 -- ddl-end --
-COMMENT ON CONSTRAINT unq_dmn_ttl_vrsn_ischmid ON master.ui_spec  IS E'Unique Constraint on domain,title,version,identity_schema_id';
+COMMENT ON CONSTRAINT unq_dmn_type_vrsn_ischmid ON master.ui_spec  IS E'Unique Constraint on domain,title,version,identity_schema_id';
 -- ddl-end --
 ALTER TABLE master.ui_spec OWNER TO sysadmin;
 -- ddl-end --
