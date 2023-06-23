@@ -110,7 +110,6 @@ ALTER TABLE master.user_detail_h DROP COLUMN mobile;
 ALTER TABLE master.dynamic_field DROP CONSTRAINT IF EXISTS uk_schfld_name;
 ALTER TABLE master.dynamic_field DROP CONSTRAINT IF EXISTS pk_schfld_id;
 ALTER TABLE master.dynamic_field DROP CONSTRAINT IF EXISTS pk_dynamic_id;
-ALTER TABLE master.dynamic_field ADD CONSTRAINT pk_dynamic_id PRIMARY KEY (id);
 
 ALTER TABLE master.app_authentication_method ALTER COLUMN lang_code DROP NOT NULL;
 
