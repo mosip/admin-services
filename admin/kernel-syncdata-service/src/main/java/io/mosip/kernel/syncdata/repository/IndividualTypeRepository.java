@@ -19,6 +19,7 @@ import io.mosip.kernel.syncdata.entity.id.CodeAndLanguageCodeID;
  * @author Srinivasan
  *
  */
+@Deprecated //deprecated since 1.2.0.1, but this is only added for backward compatibility
 @Repository
 public interface IndividualTypeRepository extends JpaRepository<IndividualType, CodeAndLanguageCodeID> {
 

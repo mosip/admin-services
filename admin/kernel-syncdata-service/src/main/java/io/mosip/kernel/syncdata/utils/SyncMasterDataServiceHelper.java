@@ -1616,12 +1616,13 @@ public class SyncMasterDataServiceHelper {
 
 				pageDto = resp.getResponse();
 				result.addAll(pageDto.getData());
-				if (is114Sync) {
-					result.removeIf(dynamicFieldDto -> dynamicFieldDto.getName().equalsIgnoreCase("gender")
-							|| dynamicFieldDto.getName().equalsIgnoreCase("individualType"));
-				}
 			} while(pageNo < pageDto.getTotalPages());
-
+			
+			if (is114Sync) {
+				result.removeIf(dynamicFieldDto -> dynamicFieldDto.getName().equalsIgnoreCase("gender")
+						|| dynamicFieldDto.getName().equalsIgnoreCase("individualType"));
+			}
+			
 			return CompletableFuture.completedFuture(result);
 
 		} catch (Exception e) {
@@ -1925,6 +1926,15 @@ public class SyncMasterDataServiceHelper {
 				break;
 			case "DocumentCategory":
 				result = documentCategoryRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				break;
+			case "Device":
+				result = deviceRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				break;
+			case "DeviceSpecification":
+				result = deviceSpecificationRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
+				break;
+			case "DeviceType":
+				result = deviceTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();
 				break;
 			case "Gender":
 				result = genderRepository.getMaxCreatedDateTimeMaxUpdatedDateTime();

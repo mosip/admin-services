@@ -3,10 +3,12 @@ package io.mosip.kernel.syncdata.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import io.mosip.kernel.syncdata.dto.EntityDtimes;
 import io.mosip.kernel.syncdata.entity.DeviceType;
 
 /**
@@ -40,4 +42,8 @@ public interface DeviceTypeRepository extends JpaRepository<DeviceType, String> 
 	@Query(value = "SELECT dt.code, dt.name, dt.descr, dt.lang_code, dt.is_active, dt.cr_by, dt.cr_dtimes, dt.upd_by, dt.upd_dtimes, dt.is_deleted, dt.del_dtimes from master.device_type dt where dt.code in (select distinct ds.dtyp_code from master.device_spec ds where ds.id in (select distinct md.dspec_id from master.device_master md where md.regcntr_id=?1)) and ((dt.cr_dtimes BETWEEN ?2 AND ?3) or (dt.upd_dtimes BETWEEN ?2 AND ?3)  or (dt.del_dtimes BETWEEN ?2 AND ?3 )) ", nativeQuery = true)
 	List<DeviceType> findLatestDeviceTypeByRegCenterId(String regCenterId, LocalDateTime lastUpdated,
 			LocalDateTime currentTimeStamp);
+	
+	@Cacheable(cacheNames = "delta-sync", key = "'device_type'")
+	@Query(value = "select new io.mosip.kernel.syncdata.dto.EntityDtimes(max(aam.createdDateTime), max(aam.updatedDateTime), max(aam.deletedDateTime)) from DeviceType aam ")
+	EntityDtimes getMaxCreatedDateTimeMaxUpdatedDateTime();
 }

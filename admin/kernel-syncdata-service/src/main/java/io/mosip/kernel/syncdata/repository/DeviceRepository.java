@@ -3,10 +3,13 @@ package io.mosip.kernel.syncdata.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import io.mosip.kernel.syncdata.dto.EntityDtimes;
 import io.mosip.kernel.syncdata.entity.Device;
 
 /**
@@ -44,4 +47,8 @@ public interface DeviceRepository extends JpaRepository<Device, String> {
 	@Query(value = "FROM Device rd WHERE rd.regCenterId =?1 AND ((rd.createdDateTime BETWEEN ?2 AND ?3) OR (rd.updatedDateTime BETWEEN ?2 AND ?3) OR (rd.deletedDateTime BETWEEN ?2 AND ?3))")
 	List<Device> findAllLatestByRegistrationCenterCreatedUpdatedDeleted(String regId, LocalDateTime lastUpdated,
 			LocalDateTime currentTimeStamp);
+	
+	@Cacheable(cacheNames = "delta-sync", key = "'device_master'")
+	@Query(value = "select new io.mosip.kernel.syncdata.dto.EntityDtimes(max(aam.createdDateTime), max(aam.updatedDateTime), max(aam.deletedDateTime)) from Device aam ")
+	EntityDtimes getMaxCreatedDateTimeMaxUpdatedDateTime();
 }
