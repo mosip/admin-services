@@ -917,7 +917,7 @@ public class SyncDataControllerTest {
 		
 		SyncMasterDataServiceHelper helper=Mockito.spy(SyncMasterDataServiceHelper.class);
 		
-		Mockito.doReturn(c).when(helper).getAllDynamicFields(Mockito.any());
+		Mockito.doReturn(c).when(helper).getAllDynamicFields(Mockito.any(), Mockito.anyBoolean());
 		
 		SyncDataUtil.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/v2/clientsettings").param("keyindex", "41:3a:ed:6d:38:a0:28:36:72:a6:75:08:8a:41:3c:a3:4f:48:72:6f:c8:fb:29:dd:53:bd:6f:12:70:9b:e3:29").param("regcenterId", "10002")).andReturn(),
