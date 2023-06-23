@@ -18,6 +18,7 @@ import io.mosip.kernel.syncdata.entity.Gender;
  * @since 1.0.0
  *
  */
+@Deprecated //deprecated since 1.2.0.1, but this is only added for backward compatibility
 @Repository
 public interface GenderRepository extends JpaRepository<Gender, String> {
 	/**

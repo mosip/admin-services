@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
  * @author Srinivasan
  *
  */
+@Deprecated //deprecated since 1.2.0.1, but this is only added for backward compatibility
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

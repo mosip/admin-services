@@ -24,6 +24,7 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  *
  */
+@Deprecated //deprecated since 1.2.0.1, but this is only added for backward compatibility
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
