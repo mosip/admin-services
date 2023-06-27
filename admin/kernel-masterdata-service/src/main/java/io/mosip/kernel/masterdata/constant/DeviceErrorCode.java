@@ -34,7 +34,7 @@ public enum DeviceErrorCode {
 	DECOMMISSIONED("KER-MSD-DDD", "Device has been already decommissioned or Device not found"), 
 	INVALID_CENTER_ZONE("KER-MSD-219", "The zone of the  registration center in the request does not match the zone of the device"),
 	INVALID_CENTER("KER-MSD-222", "The registration center in the request is not present in db"),
-	DEVICE_SPECIFICATION_INACTIVE("KER-MSD-346","Device Specification is Inactive");
+	DEVICE_SPECIFICATION_INACTIVE("KER-MSD-365","Device Specification is Inactive");
 	private final String errorCode;
 	private final String errorMessage;
 
