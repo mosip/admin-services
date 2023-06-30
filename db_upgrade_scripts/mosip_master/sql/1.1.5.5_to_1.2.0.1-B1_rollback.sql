@@ -12,6 +12,7 @@ DROP TABLE IF EXISTS master.module_detail_migr_bkp;
 
 DROP TABLE IF EXISTS master.template_migr_bkp;
 
+ALTER TABLE IF EXISTS master.template DROP CONSTRAINT IF EXISTS fk_tmplt_moddtl;
 ALTER TABLE master.template ADD CONSTRAINT fk_tmplt_moddtl FOREIGN KEY (lang_code,module_id)
 REFERENCES master.module_detail (lang_code,id) MATCH SIMPLE
 ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -126,8 +127,6 @@ DROP TABLE IF EXISTS master.permitted_local_config;
 
 ALTER TABLE master.batch_job_execution_params ALTER COLUMN string_val TYPE varchar(250) USING string_val::varchar;
 ------------------------------------------------
-
-ALTER TABLE master.dynamic_field ADD CONSTRAINT uk_schfld_name UNIQUE (name, lang_code);
 
 ALTER TABLE master.device_type ALTER COLUMN lang_code set NOT NULL;
 ALTER TABLE master.device_spec ALTER COLUMN lang_code set NOT NULL;

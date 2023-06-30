@@ -58,6 +58,7 @@ ALTER TABLE master.ui_spec ALTER COLUMN version TYPE numeric(5,3);
 ALTER TABLE master.ui_spec ALTER COLUMN identity_schema_version TYPE numeric(5,3);
 
 ALTER TABLE IF EXISTS master.ui_spec DROP CONSTRAINT IF EXISTS unq_dmn_ttl_vrsn_ischmid;
+ALTER TABLE IF EXISTS master.ui_spec DROP CONSTRAINT IF EXISTS unq_dmn_type_vrsn_ischmid;
 ALTER TABLE IF EXISTS master.ui_spec ADD CONSTRAINT unq_dmn_type_vrsn_ischmid UNIQUE (domain, type, version, identity_schema_id);
 
 ALTER TABLE master.identity_schema DROP COLUMN id_attr_json;
@@ -106,10 +107,6 @@ ALTER TABLE master.user_detail_h DROP COLUMN uin;
 ALTER TABLE master.user_detail_h DROP COLUMN email;
 ALTER TABLE master.user_detail_h DROP COLUMN mobile;
 
-
-ALTER TABLE master.dynamic_field DROP CONSTRAINT IF EXISTS uk_schfld_name;
-ALTER TABLE master.dynamic_field DROP CONSTRAINT IF EXISTS pk_schfld_id;
-ALTER TABLE master.dynamic_field DROP CONSTRAINT IF EXISTS pk_dynamic_id;
 
 ALTER TABLE master.app_authentication_method ALTER COLUMN lang_code DROP NOT NULL;
 
