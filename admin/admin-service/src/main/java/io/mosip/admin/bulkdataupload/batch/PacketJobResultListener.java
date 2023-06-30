@@ -79,7 +79,6 @@ public class PacketJobResultListener implements JobExecutionListener {
 	                            jobId + " --> " + message));
 	            bulkUploadTranscationRepository.updateBulkUploadTransactionPacket(jobId, jobExecution.getExitStatus().getExitCode(), commitCount, message);
 	        } catch (Exception t) {
-	        	t.printStackTrace();
 	            logger.error("Failed  to update job status {}", jobId, t);
 	        } finally {
 	            clearContext();
