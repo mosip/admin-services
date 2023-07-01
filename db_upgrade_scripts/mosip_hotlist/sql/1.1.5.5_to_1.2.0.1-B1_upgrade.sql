@@ -28,14 +28,6 @@ GRANT USAGE
    ON SCHEMA hotlist
    TO hotlistuser;
 
-
-GRANT SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES
-   ON ALL TABLES IN SCHEMA hotlist
-   TO hotlistuser;
-
-ALTER DEFAULT PRIVILEGES IN SCHEMA hotlist
-	GRANT SELECT,INSERT,UPDATE,DELETE,REFERENCES ON TABLES TO hotlistuser;
-
 -- DROP TABLE IF EXISTS hotlist.hotlist CASCADE;
 CREATE TABLE hotlist.hotlist (
 	id_hash character varying(128) NOT NULL,
@@ -96,3 +88,10 @@ COMMENT ON COLUMN hotlist.hotlist_h.status IS E'status: status to denote whether
 -- ddl-end --
 COMMENT ON COLUMN hotlist.hotlist_h.start_timestamp IS E'startTimestamp: Timestamp when respective ID is hotlisted.';
 -- ddl-end --
+
+GRANT SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES
+   ON ALL TABLES IN SCHEMA hotlist
+   TO hotlistuser;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA hotlist
+	GRANT SELECT,INSERT,UPDATE,DELETE,REFERENCES ON TABLES TO hotlistuser;
