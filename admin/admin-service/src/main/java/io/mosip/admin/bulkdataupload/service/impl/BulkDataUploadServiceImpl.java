@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -58,6 +59,7 @@ import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.convert.ConversionService;
@@ -76,6 +78,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -87,6 +90,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.common.io.Files;
 
+import io.mosip.admin.bulkdataupload.batch.PacketJobResultListener;
+import io.mosip.admin.bulkdataupload.batch.PacketUploadTasklet;
 import io.mosip.admin.bulkdataupload.constant.BulkUploadErrorCode;
 import io.mosip.admin.bulkdataupload.dto.BulkDataGetExtnDto;
 import io.mosip.admin.bulkdataupload.dto.BulkDataResponseDto;
@@ -99,6 +104,7 @@ import io.mosip.admin.bulkdataupload.entity.UserDetailsHistory;
 import io.mosip.admin.bulkdataupload.entity.ZoneUserHistory;
 import io.mosip.admin.bulkdataupload.repositories.BulkUploadTranscationRepository;
 import io.mosip.admin.bulkdataupload.service.BulkDataService;
+import io.mosip.admin.bulkdataupload.service.PacketUploadService;
 import io.mosip.admin.config.Mapper;
 import io.mosip.admin.config.MapperUtils;
 import io.mosip.admin.config.RepositoryListItemWriter;
@@ -118,6 +124,9 @@ import io.mosip.kernel.core.util.EmptyCheckUtils;
 @Service
 public class BulkDataUploadServiceImpl implements BulkDataService{
 	
+	private static final String DATA_READ_ROLE = "ROLE_DATA_READ";
+	private static String PKT_UPLOAD_MESSAGE = "FILE: %s, STATUS: %s, MESSAGE: %s";
+	
 	@Autowired
 	ApplicationContext applicationContext;
 	
@@ -127,8 +136,21 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     @Autowired
     JobRepository jobRepository;
     
+	@Autowired
+	private JobBuilderFactory jobBuilderFactory;
+	
+	@Autowired
+	@Qualifier("customStepBuilderFactory")
+	private StepBuilderFactory stepBuilderFactory;
+	
+	@Autowired
+	private PacketJobResultListener packetJobResultListener;
+    
     @Autowired
 	private AuditUtil auditUtil;
+    
+	@Autowired
+	private PacketUploadService packetUploadService;
     
     @Autowired
     Mapper mapper;
@@ -182,7 +204,6 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	@Override
 	public PageDto<BulkDataGetExtnDto> getAllTrascationDetails(int pageNumber, int pageSize, String sortBy,String orderBy, String category) {
 		Page<BulkUploadTranscation> pageData = null;
-		//List<BulkDataGetExtnDto> bulkDataGetExtnDtos=new ArrayList<BulkDataGetExtnDto>();
 		List<BulkDataGetExtnDto> bulkDataGetExtnDtos2=new ArrayList<BulkDataGetExtnDto>();
 		PageDto<BulkDataGetExtnDto> pageDto2=new PageDto<BulkDataGetExtnDto>();
 		try{
@@ -231,7 +252,6 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
         	JobBuilderFactory jobBuilderFactory = new JobBuilderFactory(jobRepository);
         	StepBuilderFactory stepBuilderFactory = new StepBuilderFactory(jobRepository, platformTransactionManager);
         	List<String> failureMessage = new ArrayList<String>();
-        	//Map<String,String> failureMessage=new HashMap<String, String>();
             int[] numArr = {0};
             String[] status= {"PROCESS"};
             Arrays.asList(files).stream().forEach(file -> {
@@ -283,20 +303,22 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     			}
             });
             
-            BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(numArr[0],operation,entity.getSimpleName(),category,failureMessage,status[0]);
+            BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(numArr[0],operation,entity.getSimpleName(),category,failureMessage.toString(),status[0]);
             bulkDataResponseDto=setResponseDetails(bulkUploadTranscation, tableName);
     		return bulkDataResponseDto;
     	}
 
     	@Override
-    	public BulkDataResponseDto bulkDataOperation(String tableName,String operation,String category,MultipartFile[] files) {
+    	public BulkDataResponseDto bulkDataOperation(String tableName, String operation, String category,
+                MultipartFile[] files, String centerId, String source, String process,
+				 String supervisorStatus) {
     		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
     		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CATEGORY,category));
     		if(category.equalsIgnoreCase("masterdata")) {
     			bulkDataResponseDto=insertDataToCSVFile(tableName, operation, category, files);
     		}
     		else if(category.equalsIgnoreCase("packet")) {
-    			bulkDataResponseDto=uploadPackets(files,operation, category);
+    			bulkDataResponseDto=uploadPackets(files, operation, category, centerId, source, process, supervisorStatus);
     		}
     		else {
     			auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_CATEGORY);
@@ -306,89 +328,86 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
     		}
             return bulkDataResponseDto;
      	}
+    	
+    	private void updateBulkUploadTransaction(BulkUploadTranscation bulkUploadTranscation) {
+    		bulkUploadTranscation.setStatusCode("COMPLETED");
+    		bulkUploadTranscation.setUploadedDateTime(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))));
+    		bulkUploadTranscation.setUpdatedBy("JOB");
+    		bulkTranscationRepo.save(bulkUploadTranscation);
+    	}
 
     	
-		private BulkDataResponseDto uploadPackets(MultipartFile[] files, String operation, String category) {
+		private BulkDataResponseDto uploadPackets(MultipartFile[] files, String operation, String category, String centerId,
+				  String source, String process, String supervisorStatus) {
     		
     		if ( files==null ||files.length==0) {
     			auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_ARGUMENT);
-				throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
-						BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage());
+				throw new RequestException(BulkUploadErrorCode.EMPTY_FILE.getErrorCode(),
+						BulkUploadErrorCode.EMPTY_FILE.getErrorMessage());
 			}
     		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD,"{category:'"+category+"',operation:'"+operation+"'}"));
-    		BulkDataResponseDto bulkDataResponseDto=new BulkDataResponseDto();
-    		List<String> fileNames = new ArrayList<>();
-    		int[] numArr = {0};
+    		boolean hasDataReadRole = hasDataReadRole();
     		
-    		//Map<String,String> failureMessage=new HashMap<String, String>();
-    		List<String> failureMessage = new ArrayList<String>();
-    		String[] msgArr= {"FAILED"};
-    	    Arrays.asList(files).stream().forEach(file -> {
-    	    	auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_PACKET_UPLOAD, file.getOriginalFilename()));
-    	    	 HttpHeaders headers = new HttpHeaders();
-    	         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-    	         MultiValueMap<String, String> fileMap = new LinkedMultiValueMap<>();
-    	         ContentDisposition contentDisposition = ContentDisposition
-    	                 .builder("form-data")
-    	                 .name("file")
-    	                 .filename(file.getOriginalFilename())
-    	                 .build();
-    	         fileMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
-    	        	         try {
-    	        	        	 HttpEntity<byte[]> fileEntity = new HttpEntity<>(file.getBytes(), fileMap);
+    		BulkUploadTranscation bulkUploadTranscation = saveTranscationDetails(0,
+    				operation, "", category, hasDataReadRole ? "NOTE: Only after successful RID sync, Packet upload will be attempted" :
+    				"NOTE: Only packet upload is attempted. DATA_READ role is not present to perform RID sync", "PROCESSING");
 
-    	        		         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-    	        		         body.add("file", fileEntity);
+    		Arrays.stream(files).forEach( file -> {
+    			String message = null;
+    			auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_PACKET_UPLOAD, file.getOriginalFilename()));
+    			try {
+    				if (!file.getOriginalFilename().endsWith(".zip")) {
+    					throw new RequestException(BulkUploadErrorCode.INVALID_PCK_FILE_FORMAT.getErrorCode(),
+    							BulkUploadErrorCode.INVALID_PCK_FILE_FORMAT.getErrorMessage());
+    				}
 
-    	        		         HttpEntity<MultiValueMap<String, Object>> requestEntity =
-    	        		                 new HttpEntity<>(body, headers);
+    				if (file.isEmpty()) {
+    					throw new RequestException(BulkUploadErrorCode.EMPTY_FILE.getErrorCode(),
+    							BulkUploadErrorCode.EMPTY_FILE.getErrorMessage());
+    				}
 
-    	             ResponseEntity<String> response = restTemplate.exchange(
-    	                     packetRecieverApiUrl,
-    	                     HttpMethod.POST,
-    	                     requestEntity,
-    	                     String.class);
-    	             JSONObject josnObject=new JSONObject(response.getBody());
-    	             if(!josnObject.get("response").equals(null)) {
-    	            	 numArr[0]++;
-    	            	 msgArr[0]="Success";
-    	            	 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_PACKET_STATUS,"{packetid: '"+file.getOriginalFilename()+"', message: 'success'}"));
-    	            	 
-    	             }else {
-    	            	 String str=josnObject.get("errors").toString();
-    	            	 JSONArray jsonArray=new JSONArray(str);
-    	            	 JSONObject josnObject1=new JSONObject(jsonArray.get(0).toString());
-    	            	 
-    	            	 failureMessage.add(failureMessage.contains(josnObject1.get("message").toString())?null:josnObject1.get("message").toString());
-    	            	// failureMessage.put(file.getOriginalFilename(), josnObject1.get("message").toString());
-    	                auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_PACKET_STATUS_ERROR,"{packetid: '"+file.getOriginalFilename()+"', message: '"+josnObject1.get("message").toString()+"'}"));
-    	             }
-    	         } catch (HttpClientErrorException e) {
-    	        	 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,"{packetid: '"+file.getOriginalFilename()+"',operation:'"+operation+"',error: "+e.getMessage()+"}"));
-    	        	 throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
-    		  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
-    	         } catch (IOException e) {
-    	        	 auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,"{packetid: '"+file.getOriginalFilename()+"',operation:'"+operation+"',error: "+e.getMessage()+"}"));
-    	        	 throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
-    		  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
-    			} catch (JSONException e) {
-    				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_OPERATION_ERROR,"{packetid: '"+file.getOriginalFilename()+"',operation:'"+operation+"',error: "+e.getMessage()+"}"));
-    				throw new MasterDataServiceException(BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorCode(),
-    	  					BulkUploadErrorCode.BULK_OPERATION_ERROR.getErrorMessage(), e);
+    				Job job = jobBuilderFactory.get("ETL-Load")
+    						.listener(packetJobResultListener)
+    						.incrementer(new RunIdIncrementer())
+    						.start(stepBuilderFactory.get("packet-upload")
+    								.tasklet(new PacketUploadTasklet(file.getOriginalFilename(), file.getBytes(),
+    										packetUploadService, centerId, supervisorStatus,
+    										source, process, hasDataReadRole ? "SYNC-UPLOAD" : "UPLOAD"))
+    								.build())
+    						.build();
+
+    				JobParameters jobParameters = new JobParametersBuilder()
+    						.addString("transactionId", bulkUploadTranscation.getId())
+    						.addString("username", SecurityContextHolder.getContext().getAuthentication().getName())
+    						.addLong("time", System.currentTimeMillis())
+    						.toJobParameters();
+
+    				jobLauncher.run(job, jobParameters);
+
+    			} catch (Throwable e) {
+    				message = String.format(PKT_UPLOAD_MESSAGE, file.getOriginalFilename(), "FAILED", e.getMessage());
     			}
-    	         fileNames.add(file.getOriginalFilename());
-    	      });
-    	      BulkUploadTranscation bulkUploadTranscation=saveTranscationDetails(numArr[0],operation,"",category,failureMessage,msgArr[0]);
-    	      bulkDataResponseDto=setResponseDetails(bulkUploadTranscation, "");
-    		return bulkDataResponseDto;
+
+    			if(message != null) {
+    				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_PACKET_STATUS, message));
+    				bulkUploadTranscation.setStatusCode("FAILED");
+    				bulkUploadTranscation.setUploadDescription(message);
+    				updateBulkUploadTransaction(bulkUploadTranscation);
+    			}
+    		});
+    		return setResponseDetails(bulkUploadTranscation, "");    	
     	}
         
+		private boolean hasDataReadRole() {
+			Collection<GrantedAuthority> grantedAuthorities = (Collection<GrantedAuthority>) SecurityContextHolder
+					.getContext().getAuthentication().getAuthorities();
+			return grantedAuthorities.stream().anyMatch( ga -> ga.getAuthority().equalsIgnoreCase(DATA_READ_ROLE));
+		}
 
 		private Job job(JobBuilderFactory jobBuilderFactory,
             StepBuilderFactory stepBuilderFactory,
             ItemReader<Object> itemReader,
-            ItemProcessor itemProcessor, // ItemProcessor<User, User> itemProcessor,
-            //ItemWriter<AbstractPersistable> itemWriter
+            ItemProcessor itemProcessor,
             ItemWriter<List<Object>> itemWriter
 		) {
 		
@@ -436,6 +455,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 
 			return testConversionService;
 		}
+		
 	 @StepScope
 		private FlatFileItemReader<Object> itemReader(InputStream file, Class<?> clazz) throws IOException {
 		 
@@ -670,7 +690,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 			return writer;
 		}
 	    
-	    private BulkUploadTranscation saveTranscationDetails(int count,String operation,String entityName,String category,List<String> failureMessage, String status) {
+	    private BulkUploadTranscation saveTranscationDetails(int count,String operation,String entityName,String category,String failureMessage, String status) {
 	    	auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_TRANSACTION_API_CALLED,"{operation:'"+operation+"',category:'"+operation+"',entity:'"+entityName+"'}"));
 	    	BulkUploadTranscation bulkUploadTranscation=new BulkUploadTranscation();
 	    	LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
@@ -683,9 +703,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService{
 	    	bulkUploadTranscation.setUploadedBy(setCreateMetaData());
 	    	bulkUploadTranscation.setUploadedDateTime(Timestamp.valueOf(now));
 	    	bulkUploadTranscation.setCategory(category);
-	    	if(!failureMessage.isEmpty()) {
-				bulkUploadTranscation.setUploadDescription(failureMessage.toString());
-	    	}
+			bulkUploadTranscation.setUploadDescription(failureMessage);
 	    	bulkUploadTranscation.setUploadOperation(operation);
 	    	bulkUploadTranscation.setRecordCount(count);
 	    	BulkUploadTranscation b=bulkTranscationRepo.save(bulkUploadTranscation);
