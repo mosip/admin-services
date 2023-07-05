@@ -8,7 +8,9 @@ CREATE DATABASE mosip_hotlist
 
 COMMENT ON DATABASE mosip_hotlist IS 'Hotlist data related logs and the data is stored in this database';
 
-\c mosip_hotlist postgres
+\c mosip_hotlist
+
+REASSIGN OWNED BY sysadmin TO postgres;
 
 DROP SCHEMA IF EXISTS hotlist CASCADE;
 CREATE SCHEMA hotlist;
