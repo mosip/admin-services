@@ -39,7 +39,45 @@ UPDATE master.template set module_id='10002' where template_typ_code like 'reg-d
 --------------------------------------------------------------------------------------------------------------------
 
 ALTER TABLE master.blacklisted_words DROP CONSTRAINT IF EXISTS pk_blwrd_code CASCADE;
-\ir ../ddl/master-blocklisted_words.sql
+CREATE TABLE master.blocklisted_words(
+	word character varying(128) NOT NULL,
+	descr character varying(256),
+	lang_code character varying(3),
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean DEFAULT FALSE,
+	del_dtimes timestamp,
+	CONSTRAINT pk_blwrd_code PRIMARY KEY (word)
+
+);
+-- ddl-end --
+COMMENT ON TABLE master.blocklisted_words IS 'Black Listed Words : List of words that are black listed.';
+-- ddl-end --
+COMMENT ON COLUMN master.blocklisted_words.word IS 'Word: Word that is blocklisted by the system';
+-- ddl-end --
+COMMENT ON COLUMN master.blocklisted_words.descr IS 'Description : Description of word blocklisted';
+-- ddl-end --
+COMMENT ON COLUMN master.blocklisted_words.lang_code IS 'Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language. ';
+-- ddl-end --
+COMMENT ON COLUMN master.blocklisted_words.is_active IS 'IS_Active : Flag to mark whether the record is Active or In-active';
+-- ddl-end --
+COMMENT ON COLUMN master.blocklisted_words.cr_by IS 'Created By : ID or name of the user who create / insert record';
+-- ddl-end --
+COMMENT ON COLUMN master.blocklisted_words.cr_dtimes IS 'Created DateTimestamp : Date and Timestamp when the record is created/inserted';
+-- ddl-end --
+COMMENT ON COLUMN master.blocklisted_words.upd_by IS 'Updated By : ID or name of the user who update the record with new values';
+-- ddl-end --
+COMMENT ON COLUMN master.blocklisted_words.upd_dtimes IS 'Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.';
+-- ddl-end --
+COMMENT ON COLUMN master.blocklisted_words.is_deleted IS 'IS_Deleted : Flag to mark whether the record is Soft deleted.';
+-- ddl-end --
+COMMENT ON COLUMN master.blocklisted_words.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
+-- ddl-end --
+GRANT SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES ON master.blocklisted_words TO masteruser;
+
 ALTER TABLE master.blocklisted_words DROP CONSTRAINT IF EXISTS pk_blwrd_code CASCADE;
 ALTER TABLE master.blocklisted_words ALTER COLUMN lang_code DROP NOT NULL;
 INSERT into master.blocklisted_words (word,descr,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) SELECT distinct word,descr,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes FROM master.blacklisted_words;
@@ -50,7 +88,36 @@ ALTER TABLE master.blocklisted_words ADD CONSTRAINT pk_blwrd_code PRIMARY KEY (w
 
 SELECT * INTO master.identity_schema_migr_bkp FROM master.identity_schema;
 
-\ir ../ddl/master-ui_spec.sql
+CREATE TABLE master.ui_spec (
+	id character varying(36) NOT NULL,
+	version numeric(5,3) NOT NULL,
+	domain character varying(36) NOT NULL,
+	title character varying(64) NOT NULL,
+	description character varying(256) NOT NULL,
+	type character varying(36) NOT NULL,
+	json_spec character varying NOT NULL,
+	identity_schema_id character varying(36) NOT NULL,
+	identity_schema_version numeric(5,3) NOT NULL,
+	effective_from timestamp,
+	status_code character varying(36) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
+	CONSTRAINT unq_dmn_type_vrsn_ischmid UNIQUE (domain,type,version,identity_schema_id),
+	CONSTRAINT ui_spec_pk PRIMARY KEY (id)
+
+);
+-- ddl-end --
+COMMENT ON TABLE master.ui_spec IS E'UI Specifications :  Stores UI Specifications with values used in application modules.';
+-- ddl-end --
+COMMENT ON CONSTRAINT unq_dmn_type_vrsn_ischmid ON master.ui_spec  IS E'Unique Constraint on domain,title,version,identity_schema_id';
+-- ddl-end --
+GRANT SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES ON master.ui_spec TO masteruser;
+
 TRUNCATE TABLE master.ui_spec cascade;
 INSERT into master.ui_spec (id,version,domain,title,description,type,json_spec,identity_schema_id,identity_schema_version,effective_from,status_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) SELECT id,id_version,'registration-client', title,description,'schema',id_attr_json,id,id_version,effective_from,status_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes FROM master.identity_schema;
 
@@ -58,6 +125,7 @@ ALTER TABLE master.ui_spec ALTER COLUMN version TYPE numeric(5,3);
 ALTER TABLE master.ui_spec ALTER COLUMN identity_schema_version TYPE numeric(5,3);
 
 ALTER TABLE IF EXISTS master.ui_spec DROP CONSTRAINT IF EXISTS unq_dmn_ttl_vrsn_ischmid;
+ALTER TABLE IF EXISTS master.ui_spec DROP CONSTRAINT IF EXISTS unq_dmn_type_vrsn_ischmid;
 ALTER TABLE IF EXISTS master.ui_spec ADD CONSTRAINT unq_dmn_type_vrsn_ischmid UNIQUE (domain, type, version, identity_schema_id);
 
 ALTER TABLE master.identity_schema DROP COLUMN id_attr_json;
@@ -106,10 +174,6 @@ ALTER TABLE master.user_detail_h DROP COLUMN uin;
 ALTER TABLE master.user_detail_h DROP COLUMN email;
 ALTER TABLE master.user_detail_h DROP COLUMN mobile;
 
-
-ALTER TABLE master.dynamic_field DROP CONSTRAINT IF EXISTS uk_schfld_name;
-ALTER TABLE master.dynamic_field DROP CONSTRAINT IF EXISTS pk_schfld_id;
-ALTER TABLE master.dynamic_field DROP CONSTRAINT IF EXISTS pk_dynamic_id;
 
 ALTER TABLE master.app_authentication_method ALTER COLUMN lang_code DROP NOT NULL;
 
@@ -203,7 +267,20 @@ ALTER TABLE master.batch_job_execution_params ALTER COLUMN string_val TYPE varch
 
 ----------------------------------------------CREATION OF PERMITTED LOCAL CONFIG -------------------------------------------------------------
 
-\ir ../ddl/master-permitted_local_config.sql
+CREATE TABLE master.permitted_local_config (
+	code character varying(128) NOT NULL,
+	name character varying(128) NOT NULL,
+	config_type character varying(128) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(32) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(32),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
+	CONSTRAINT permitted_local_config_pk PRIMARY KEY (code)
+);
+GRANT SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES ON master.permitted_local_config TO masteruser;
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 SELECT * INTO master.loc_holiday_migr_bkp FROM master.loc_holiday;
