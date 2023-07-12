@@ -31,15 +31,15 @@ jobs:
     strategy:
       matrix:
         include:
-        - SERVICE_LOCATION: 'admin/admin-service'
-          SERVICE_NAME: 'admin-service' 'kernel-masterdata-service', 'kernel-syncdata-service']
-          JAR_ZIP_NAME: 'admin'
-        - SERVICE_LOCATION: 'admin/kernel-masterdata-service' 'admin/kernel-syncdata-service']
-          SERVICE_NAME: 'kernel-masterdata-service', 'kernel-syncdata-service']
-          JAR_ZIP_NAME: 'admin'
-        - SERVICE_LOCATION: 'admin/kernel-syncdata-service'
-          SERVICE_NAME: 'kernel-syncdata-service'
-          JAR_ZIP_NAME: 'admin'
+          - SERVICE_LOCATION: 'admin/admin-service'
+            SERVICE_NAME: 'admin-service' 'kernel-masterdata-service', 'kernel-syncdata-service']
+            JAR_ZIP_NAME: 'admin'
+          - SERVICE_LOCATION: 'admin/kernel-masterdata-service' 'admin/kernel-syncdata-service']
+            SERVICE_NAME: 'kernel-masterdata-service', 'kernel-syncdata-service']
+            JAR_ZIP_NAME: 'admin'
+          - SERVICE_LOCATION: 'admin/kernel-syncdata-service'
+            SERVICE_NAME: 'kernel-syncdata-service'
+            JAR_ZIP_NAME: 'admin'
     uses: syedsalman3753/kattu/.github/workflows/docker-build.yml@master
     with:
       SERVICE_LOCATION: ${{ matrix.SERVICE_LOCATION }}
