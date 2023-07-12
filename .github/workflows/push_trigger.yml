@@ -16,7 +16,7 @@ jobs:
       service_name: admin
 
   publish_to_nexus_admin:
-    needs: build
+    needs: build-maven-admin
     uses: syedsalman3753/kattu/.github/workflows/publish_to_nexus.yml@master
     with:
       workdir: ./admin
@@ -28,7 +28,7 @@ jobs:
       ossrh_token: 'xxxxx'
 
   docker-admin-service:
-    needs: build
+    needs: build-maven-admin
 
     runs-on: ubuntu-latest
     env:
@@ -79,7 +79,7 @@ jobs:
           docker push $IMAGE_ID:$VERSION
 
   docker-kernel-masterdata-service:
-    needs: build
+    needs: build-maven-admin
 
     runs-on: ubuntu-latest
     env:
@@ -132,7 +132,7 @@ jobs:
           docker push $IMAGE_ID:$VERSION
 
   docker-kernel-syncdata-service:
-    needs: build
+    needs: build-maven-admin
 
     runs-on: ubuntu-latest
     env:
