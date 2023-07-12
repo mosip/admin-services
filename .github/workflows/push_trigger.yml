@@ -28,6 +28,7 @@ jobs:
       ossrh_token: 'xxxxx'
 
   ReuseableMatrixJobForDeployment:
+    needs: build-maven-admin
     strategy:
       matrix:
         include:
