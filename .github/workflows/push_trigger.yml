@@ -13,6 +13,10 @@ jobs:
     with:
       WORKDIR: ./admin
       SERVICE_NAME: admin
+      OSSRH_USER: 'xxxx'
+      OSSRH_SECRET: 'xxxx'
+      OSSRH_TOKEN: 'xxxxx'
+      GPG_SECRET: 'xxxxx'
 
   publish_to_nexus_admin:
     needs: build-maven-admin
