@@ -56,7 +56,7 @@ jobs:
       RELEASE_DOCKER_HUB: ${{ secrets.RELEASE_DOCKER_HUB }}
 
   sonar_analysis:
-    #needs: build-maven-admin
+    needs: build-maven-admin
     uses: syedsalman3753/kattu/.github/workflows/maven-sonar-analysis.yml@master
     with:
       SERVICE_LOCATION: ./admin
