@@ -67,4 +67,3 @@ jobs:
       OSSRH_SECRET: 'xxxx'
       OSSRH_TOKEN: 'xxxxx'
       GPG_SECRET: 'xxxxx'
-
