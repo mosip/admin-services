@@ -2,20 +2,9 @@
 
 TRUNCATE TABLE master.template cascade ;
 
-TRUNCATE TABLE master.module_detail cascade ;
-
-INSERT INTO master.module_detail SELECT * FROM master.module_detail_migr_bkp;
-
 INSERT INTO master.template SELECT * FROM master.template_migr_bkp;
 
-DROP TABLE IF EXISTS master.module_detail_migr_bkp;
-
 DROP TABLE IF EXISTS master.template_migr_bkp;
-
-ALTER TABLE IF EXISTS master.template DROP CONSTRAINT IF EXISTS fk_tmplt_moddtl;
-ALTER TABLE master.template ADD CONSTRAINT fk_tmplt_moddtl FOREIGN KEY (lang_code,module_id)
-REFERENCES master.module_detail (lang_code,id) MATCH SIMPLE
-ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 ALTER TABLE master.template_type ALTER COLUMN code TYPE character varying(36) ;
 
