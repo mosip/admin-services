@@ -11,7 +11,7 @@ jobs:
   build-maven-admin:
     uses: syedsalman3753/kattu/.github/workflows/maven-build.yml@master
     with:
-      WORKDIR: ./admin
+      SERVICE_LOCATION: ./admin
       SERVICE_NAME: admin
     secrets:
       OSSRH_USER: 'xxxx'
@@ -23,7 +23,7 @@ jobs:
     needs: build-maven-admin
     uses: syedsalman3753/kattu/.github/workflows/publish-to-nexus.yml@master
     with:
-      WORKDIR: ./admin
+      SERVICE_LOCATION: ./admin
     secrets:
       OSSRH_USER: mosip
       OSSRH_SECRET: mosip@123
