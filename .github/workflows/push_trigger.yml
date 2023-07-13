@@ -11,22 +11,22 @@ jobs:
   build-maven-admin:
     uses: syedsalman3753/kattu/.github/workflows/maven-build.yml@master
     with:
-      workdir: ./admin
-      service_name: admin
+      WORKDIR: ./admin
+      SERVICE_NAME: admin
 
   publish_to_nexus_admin:
     needs: build-maven-admin
-    uses: syedsalman3753/kattu/.github/workflows/publish_to_nexus.yml@master
+    uses: syedsalman3753/kattu/.github/workflows/publish-to-nexus.yml@master
     with:
-      workdir: ./admin
-      service_name: admin
+      WORKDIR: ./admin
     secrets:
-      ossrh_user: mosip
-      ossrh_secret: mosip@123
-      ossrh_url: https://oss.sonatype.org/service/local/staging/deploy/maven2
-      ossrh_token: 'xxxxx'
+      OSSRH_USER: mosip
+      OSSRH_SECRET: mosip@123
+      OSSRH_URL: https://oss.sonatype.org/service/local/staging/deploy/maven2
+      OSSRH_TOKEN: 'xxxxx'
+      GPG_SECRET: 'xxxx'
 
-  ReuseableMatrixJobForDeployment:
+  build_dockers:
     needs: build-maven-admin
     strategy:
       matrix:
