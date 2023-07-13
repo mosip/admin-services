@@ -16,25 +16,11 @@ ALTER TABLE master.template ALTER COLUMN template_typ_code TYPE character varyin
 
 SELECT * INTO master.template_migr_bkp FROM master.template;
 
-ALTER TABLE master.template DROP CONSTRAINT IF EXISTS fk_tmplt_moddtl CASCADE;
-
-SELECT * INTO master.module_detail_migr_bkp FROM master.module_detail;
-
-TRUNCATE TABLE master.module_detail cascade ;
-
-\COPY master.module_detail (id,name,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-module_detail.csv' delimiter ',' HEADER  csv;
-
-ALTER TABLE master.template ADD CONSTRAINT fk_tmplt_moddtl FOREIGN KEY (module_id,lang_code)
-REFERENCES master.module_detail (id,lang_code) MATCH SIMPLE
-ON DELETE NO ACTION ON UPDATE NO ACTION;
-
 -- cleanup to map only registration-client related templates with 10002 moduleId and 
 -- other reg email and sms templates mapped to 10002 is remapped to pre-reg moduleId 10001 
 -- This cleanup is performed to avoid un-related templates to get synced in reg-client.
-UPDATE master.template set module_id='10001' where module_id='10002' and template_typ_code not like 'reg-%';
-UPDATE master.template set module_id='10002' where template_typ_code like 'reg-ack%';
-UPDATE master.template set module_id='10002' where template_typ_code like 'reg-preview%';
-UPDATE master.template set module_id='10002' where template_typ_code like 'reg-dashboard%';
+UPDATE master.template set module_id=(select distinct id from module_detail where name='Pre-Registration'),module_name='Pre-Registration',upd_by='superadmin',upd_dtimes=now() where module_id=(select distinct id from module_detail where name='Registration Client');
+UPDATE master.template set module_id=(select distinct id from module_detail where name='Registration Client'),module_name='Registration Client',upd_by='superadmin',upd_dtimes=now() where template_typ_code in ('reg-dashboard-template', 'reg-preview-template-part','reg-ack-template-part','reg-consent-template','reg-android-ack-template-part','reg-android-preview-template-part');
 
 --------------------------------------------------------------------------------------------------------------------
 

@@ -31,8 +31,6 @@ if [ "$ACTION" == "upgrade" ]; then
   if [ -f "$UPGRADE_SCRIPT_FILE" ]; then
     echo "Executing upgrade script $UPGRADE_SCRIPT_FILE"
     PGPASSWORD=$SU_USER_PWD psql -v ON_ERROR_STOP=1 --username=$SU_USER --host=$DB_SERVERIP --port=$DB_PORT --dbname=$DEFAULT_DB_NAME -v primary_language_code=$PRIMARY_LANGUAGE_CODE -a -b -f $UPGRADE_SCRIPT_FILE
-    echo "Migrating data in Dynamic field table."
-    python3 migration_scripts/1.2.0/migration-dynamicfield.py "$SU_USER" "$SU_USER_PWD" "$DB_SERVERIP" "$DB_PORT"
   else
     echo "Upgrade script not found, exiting."
     exit 1
@@ -43,8 +41,6 @@ elif [ "$ACTION" == "rollback" ]; then
   if [ -f "$REVOKE_SCRIPT_FILE" ]; then
     echo "Executing rollback script $REVOKE_SCRIPT_FILE"
     PGPASSWORD=$SU_USER_PWD psql -v ON_ERROR_STOP=1 --username=$SU_USER --host=$DB_SERVERIP --port=$DB_PORT --dbname=$DEFAULT_DB_NAME -v primary_language_code=$PRIMARY_LANGUAGE_CODE -a -b -f $REVOKE_SCRIPT_FILE
-    echo "Revoking Dynamic field data migration."
-    python3 migration_scripts/1.2.0/revoke-migration-dynamicfield.py "$SU_USER" "$SU_USER_PWD" "$DB_SERVERIP" "$DB_PORT"
   else
     echo "rollback script not found, exiting."
     exit 1
