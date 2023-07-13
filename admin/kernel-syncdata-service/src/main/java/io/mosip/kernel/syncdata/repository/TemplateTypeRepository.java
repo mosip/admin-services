@@ -24,6 +24,10 @@ public interface TemplateTypeRepository extends JpaRepository<TemplateType, Stri
 	@Cacheable(cacheNames = "initial-sync", key = "'template_type'", condition = "#a0.getYear() <= 1970")
 	@Query("FROM TemplateType WHERE (createdDateTime BETWEEN ?1 AND ?2) OR (updatedDateTime BETWEEN ?1 AND ?2)  OR (deletedDateTime BETWEEN ?1 AND ?2)")
 	List<TemplateType> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp);
+	
+	@Cacheable(cacheNames = "initial-sync", key = "'template_type'", condition = "#a0.getYear() <= 1970")
+	@Query("FROM TemplateType WHERE (code IN ?3) AND ((createdDateTime BETWEEN ?1 AND ?2) OR (updatedDateTime BETWEEN ?1 AND ?2)  OR (deletedDateTime BETWEEN ?1 AND ?2))")
+	List<TemplateType> findAllLatestCreatedUpdateDeletedTemplateTypeCode(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp, List<String> templateTypeCodes);
 
 	@Cacheable(cacheNames = "delta-sync", key = "'template_type'")
 	@Query(value = "select new io.mosip.kernel.syncdata.dto.EntityDtimes(max(aam.createdDateTime), max(aam.updatedDateTime), max(aam.deletedDateTime)) from TemplateType aam ")
