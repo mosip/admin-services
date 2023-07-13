@@ -13,6 +13,7 @@ jobs:
     with:
       WORKDIR: ./admin
       SERVICE_NAME: admin
+    secrets:
       OSSRH_USER: 'xxxx'
       OSSRH_SECRET: 'xxxx'
       OSSRH_TOKEN: 'xxxxx'
