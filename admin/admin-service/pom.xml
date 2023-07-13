@@ -32,6 +32,11 @@
 			<version>${lombok.version}</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-openid-bridge-api</artifactId>
+			<version>${kernel.version}</version>
+		</dependency>
 	
 	    <dependency>
 			<groupId>io.mosip.kernel</groupId>
