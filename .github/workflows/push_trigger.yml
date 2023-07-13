@@ -19,7 +19,7 @@ jobs:
       OSSRH_TOKEN: 'xxxxx'
       GPG_SECRET: 'xxxxx'
 
-  publish_to_nexus_admin:
+  publish-to-nexus-admin:
     needs: build-maven-admin
     uses: syedsalman3753/kattu/.github/workflows/publish-to-nexus.yml@master
     with:
@@ -31,7 +31,7 @@ jobs:
       OSSRH_TOKEN: 'xxxxx'
       GPG_SECRET: 'xxxx'
 
-  build_dockers:
+  build-dockers:
     needs: build-maven-admin
     strategy:
       matrix:
@@ -55,7 +55,7 @@ jobs:
       ACTOR_DOCKER_HUB: ${{ secrets.ACTOR_DOCKER_HUB }}
       RELEASE_DOCKER_HUB: ${{ secrets.RELEASE_DOCKER_HUB }}
 
-  sonar_analysis:
+  sonar-analysis:
     needs: build-maven-admin
     uses: syedsalman3753/kattu/.github/workflows/maven-sonar-analysis.yml@master
     with:
