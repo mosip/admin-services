@@ -271,6 +271,9 @@ public class SyncMasterDataServiceHelper {
 
 	@Value("${mosip.kernel.syncdata-service-dynamicfield-url}")
 	private String dynamicfieldUrl;
+	
+	@Value("${mosip.syncdata.regclient.module.id:10002}")
+	private String regClientModuleId;
 
 	private static final String ANDROID_MACHINE_TYPE_CODE = "ANDROID";
 
@@ -918,7 +921,8 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			templateTypes = templateTypeRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+			
+			templateTypes = templateTypeRepository.findAllLatestCreatedUpdateDeletedTemplateTypeCode(lastUpdated, currentTimeStamp, regClientModuleId);
 
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage(), e);
