@@ -922,11 +922,7 @@ public class SyncMasterDataServiceHelper {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
 			
-			List<Template> templates = templateRepository.findAllLatestCreatedUpdateDeletedByModule(lastUpdated, currentTimeStamp,
-					regClientModuleId);
-			
-			List<String> templateTypeCodes = templates.stream().map(Template::getTemplateTypeCode).distinct().collect(Collectors.toList());
-			templateTypes = templateTypeRepository.findAllLatestCreatedUpdateDeletedTemplateTypeCode(lastUpdated, currentTimeStamp, templateTypeCodes);
+			templateTypes = templateTypeRepository.findAllLatestCreatedUpdateDeletedTemplateTypeCode(lastUpdated, currentTimeStamp, regClientModuleId);
 
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage(), e);
