@@ -65,6 +65,6 @@ jobs:
       ORG_KEY: 'xxxx'
       OSSRH_USER: 'xxxx'
       OSSRH_SECRET: 'xxxx'
-      OSSRH_URL: 'xxxxx'
       OSSRH_TOKEN: 'xxxxx'
       GPG_SECRET: 'xxxxx'
+
