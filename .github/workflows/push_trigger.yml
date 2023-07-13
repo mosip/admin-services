@@ -56,6 +56,5 @@ jobs:
     with:
       SERVICE_LOCATION: ./admin
     secrets:
-      #GITHUB_TOKEN: 'xxxx'
       SONAR_TOKEN: 'xxxx'
       ORG_KEY: 'xxxx'
