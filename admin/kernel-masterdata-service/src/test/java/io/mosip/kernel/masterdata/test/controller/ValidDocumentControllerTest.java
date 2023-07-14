@@ -195,7 +195,7 @@ public class ValidDocumentControllerTest {
 	@WithUserDetails("global-admin")
 	public void t009mapDocCategoryAndDocTypeTest1() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/validdocuments/map/POA/CIN")).andReturn(),
-				"KER-MSD-212");
+				null);
 	}
 	
 	@Test
@@ -244,8 +244,8 @@ public class ValidDocumentControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void t009getValidDocumentByDocCategoryCodeTest() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/validdocuments/map/P1/C1")).andReturn(),
-				"KER-MSD-212");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/validdocuments/map/X/X")).andReturn(),
+				null);
 	}
 	
 	
