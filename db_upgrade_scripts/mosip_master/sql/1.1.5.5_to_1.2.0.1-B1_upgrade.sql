@@ -304,9 +304,6 @@ ALTER TABLE IF EXISTS master.zone_user DROP CONSTRAINT IF EXISTS pk_zoneuser;
 ALTER TABLE IF EXISTS master.zone_user ALTER COLUMN zone_code DROP NOT NULL;
 ALTER TABLE IF EXISTS master.zone_user ADD CONSTRAINT pk_zoneuser PRIMARY KEY (usr_id);
 
---- applicant_valid_document is no more in use, just required for backward compatibility
-ALTER TABLE IF EXISTS master.applicant_valid_document ALTER COLUMN lang_code DROP NOT NULL;
-
 SELECT * INTO master.ca_cert_store_migr_bkp FROM master.ca_cert_store;
 ALTER TABLE IF EXISTS master.ca_cert_store DROP COLUMN IF EXISTS signed_cert_data;
 ALTER TABLE IF EXISTS master.ca_cert_store DROP COLUMN IF EXISTS key_usage;
@@ -322,9 +319,3 @@ ALTER TABLE master.reg_working_nonworking ADD CONSTRAINT pk_working_nonworking P
 
 ALTER TABLE master.reg_working_nonworking DROP CONSTRAINT IF EXISTS fk_rwn_daycode;
 ALTER TABLE master.reg_working_nonworking DROP CONSTRAINT IF EXISTS fk_rwn_regcntr;
-
-SELECT * INTO master.valid_document_migr_bkp FROM master.valid_document;
-DELETE FROM master.valid_document where lang_code!=:'primary_language_code';
-ALTER TABLE master.valid_document DROP CONSTRAINT IF EXISTS pk_valdoc_code CASCADE;
-ALTER TABLE master.valid_document ALTER COLUMN lang_code DROP NOT NULL;
-ALTER TABLE master.valid_document ADD CONSTRAINT pk_valdoc_code PRIMARY KEY (doctyp_code,doccat_code);
