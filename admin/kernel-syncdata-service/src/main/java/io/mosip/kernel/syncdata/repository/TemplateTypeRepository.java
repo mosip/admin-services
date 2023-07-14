@@ -26,7 +26,7 @@ public interface TemplateTypeRepository extends JpaRepository<TemplateType, Stri
 	List<TemplateType> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp);
 	
 	@Cacheable(cacheNames = "initial-sync", key = "'template_type'", condition = "#a0.getYear() <= 1970")
-	@Query(value = "select * from template_type WHERE (code IN (select distinct template_typ_code from template where module_id=?3)) AND ((cr_dtimes between ?1 AND ?2) OR (upd_dtimes between ?1 AND ?2)  OR (del_dtimes between ?1 AND ?2))", nativeQuery = true)
+	@Query(value = "select * from master.template_type WHERE (code IN (select distinct template_typ_code from master.template where module_id=?3)) AND ((cr_dtimes between ?1 AND ?2) OR (upd_dtimes between ?1 AND ?2)  OR (del_dtimes between ?1 AND ?2))", nativeQuery = true)
 	List<TemplateType> findAllLatestCreatedUpdateDeletedTemplateTypeCode(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp, String regclientModuleId);
 
 	@Cacheable(cacheNames = "delta-sync", key = "'template_type'")
