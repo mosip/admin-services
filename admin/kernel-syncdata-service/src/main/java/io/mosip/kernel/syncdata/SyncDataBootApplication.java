@@ -22,7 +22,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 		"io.mosip.kernel.core", "io.mosip.kernel.crypto",
 		"io.mosip.kernel.signature.service","io.mosip.kernel.clientcrypto.service.impl",
 		"io.mosip.kernel.keymanagerservice.service", "io.mosip.kernel.keymanagerservice.util",
-		"io.mosip.kernel.keymanagerservice.helper", "io.mosip.kernel.keymanager",
+		"io.mosip.kernel.keymanagerservice.helper", "io.mosip.kernel.keymanager.hsm.impl",
 		"io.mosip.kernel.cryptomanager.util", "io.mosip.kernel.partnercertservice.helper",
 		"io.mosip.kernel.partnercertservice.service", "io.mosip.kernel.websub.api.client",
 		"io.mosip.kernel.keygenerator.bouncycastle"})
