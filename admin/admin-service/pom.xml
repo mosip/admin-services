@@ -51,6 +51,16 @@
 			</exclusions>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-to-slf4j</artifactId>
+			<version>2.17.2</version>
+	        </dependency>
+                <dependency>
+	                <groupId>org.apache.logging.log4j</groupId>
+	                <artifactId>log4j-api</artifactId>
+	                <version>2.17.2</version>
+                </dependency>
+		<dependency>
 		  <groupId>org.springframework.batch.extensions</groupId>
 		  <artifactId>spring-batch-excel</artifactId>
 		  <version>0.1.0</version>
