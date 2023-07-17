@@ -30,7 +30,7 @@ if [ "$ACTION" == "upgrade" ]; then
   UPGRADE_SCRIPT_FILE="sql/${CURRENT_VERSION}_to_${UPGRADE_VERSION}_upgrade.sql"
   if [ -f "$UPGRADE_SCRIPT_FILE" ]; then
     echo "Executing upgrade script $UPGRADE_SCRIPT_FILE"
-    PGPASSWORD=$SU_USER_PWD psql -v ON_ERROR_STOP=1 -v dbuserpwd="'${SU_USER_PWD}'" --username=$SU_USER --host=$DB_SERVERIP --port=$DB_PORT --dbname=$DEFAULT_DB_NAME -v primary_language_code=$PRIMARY_LANGUAGE_CODE -a -b -f $UPGRADE_SCRIPT_FILE
+    PGPASSWORD=$SU_USER_PWD psql -v ON_ERROR_STOP=1 -v dbuserpwd="'${DB_USER_PWD}'" --username=$SU_USER --host=$DB_SERVERIP --port=$DB_PORT --dbname=$DEFAULT_DB_NAME -v primary_language_code=$PRIMARY_LANGUAGE_CODE -a -b -f $UPGRADE_SCRIPT_FILE
   else
     echo "Upgrade script not found, exiting."
     exit 1
