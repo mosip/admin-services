@@ -26,7 +26,7 @@ public interface BulkUploadTranscationRepository extends BaseRepository<BulkUplo
 	@Query("FROM BulkUploadTranscation WHERE id =?1 AND (isDeleted is null OR isDeleted = false) AND isActive = true")
 	BulkUploadTranscation findTransactionById(String id);
 	
-	@Query(value = "FROM BulkUploadTranscation WHERE category =?1 AND (isDeleted is null OR isDeleted = false) AND isActive = true",nativeQuery = true)
+//      @Query(value = "FROM BulkUploadTranscation WHERE category =?1 AND (isDeleted is null OR isDeleted = false) AND isActive = true",nativeQuery = true)
 	Page<BulkUploadTranscation> findByCategory(String category, Pageable pageRequest);
 	
 	@Modifying
