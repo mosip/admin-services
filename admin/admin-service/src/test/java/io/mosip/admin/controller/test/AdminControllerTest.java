@@ -4,6 +4,9 @@ import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +76,12 @@ public class AdminControllerTest {
 	@Value("${LOST_RID_API}")
 	String lstRidUrl;
 
+	@Value("${PACKET_MANAGER_SEARCHFIELDS}")
+	String searchFieldsUrl;
+
+	@Value("${PACKET_MANAGER_BIOMETRIC}")
+	String biometricUrl;
+
 	private RequestWrapper<SearchInfo> searchInfoReq = new RequestWrapper<>();
 	SearchInfo info = new SearchInfo();
 
@@ -112,6 +121,25 @@ public class AdminControllerTest {
 				(mockMvc.perform(MockMvcRequestBuilders.post("/lostRid").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(searchInfoReq))).andReturn()),
 				null);
+
+	}
+
+	@Test
+	@WithUserDetails(value = "zonal-admin")
+	public void t003lostRidDetailsTest() throws Exception {
+		String str = "{\"id\":null,\"version\":null,\"responsetime\":\"2023-07-19T05:58:54.874Z\",\"metadata\":null,\"response\":{\"fields\":{\"fullName\":\"[ {\\n  \\\"language\\\" : \\\"eng\\\",\\n  \\\"value\\\" : \\\"test new 2\\\"\\n}, {\\n  \\\"language\\\" : \\\"fra\\\",\\n  \\\"value\\\" : \\\"test new 2\\\"\\n} ]\",\"dateOfBirth\":\"1995/01/01\"}},\"errors\":[]}";
+		String biometricResponse = new String(Files.readAllBytes(Paths.get(getClass().getResource("/biometricApiResponse.json").toURI())), StandardCharsets.UTF_8);
+
+		mockRestServiceServer.expect(requestTo(searchFieldsUrl))
+				.andRespond(withSuccess().body(str).contentType(MediaType.APPLICATION_JSON));
+
+		mockRestServiceServer.expect(requestTo(biometricUrl))
+				.andRespond(withSuccess().body(biometricResponse).contentType(MediaType.APPLICATION_JSON));
+
+		AdminDataUtil.checkResponse(
+				(mockMvc.perform(MockMvcRequestBuilders.get("/lostRid/details/"+"10002100800001020230223050340")).andReturn()),
+				null);
+
 
 	}
 

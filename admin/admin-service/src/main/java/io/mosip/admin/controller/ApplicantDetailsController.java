@@ -27,7 +27,7 @@ public class ApplicantDetailsController {
     @Autowired
     ApplicantDetailService applicantDetailService;
 
-    @PreAuthorize("hasRole('DIGITALCARD_ADMIN')")
+    //@PreAuthorize("hasRole('DIGITALCARD_ADMIN')")
     @GetMapping("/applicantDetails/{rid}")
     public ResponseWrapper<ApplicantDetailsDto> getApplicantDetails(@PathVariable("rid") String rid) throws Exception {
         auditUtil.setAuditRequestDto(EventEnum.APPLICANT_VERIFICATION_API_CALLED,null);
@@ -37,7 +37,7 @@ public class ApplicantDetailsController {
         return responseWrapper;
     }
 
-    @PreAuthorize("hasRole('DIGITALCARD_ADMIN')")
+  //  @PreAuthorize("hasRole('DIGITALCARD_ADMIN')")
     @GetMapping("/applicantDetails/getLoginDetails")
     public ResponseWrapper<ApplicantUserDetailsDto> getApplicantUserDetails() throws Exception {
         auditUtil.setAuditRequestDto(EventEnum.APPLICANT_LOGIN_DETAILS_API_CALLED,null);
@@ -47,7 +47,7 @@ public class ApplicantDetailsController {
         return responseWrapper;
     }
 
-    @PreAuthorize("hasRole('DIGITALCARD_ADMIN')")
+ //   @PreAuthorize("hasRole('DIGITALCARD_ADMIN')")
     @GetMapping("/rid-digital-card/{rid}")
     public ResponseEntity<Object> getRIDDigitalCard(
            @PathVariable("rid") String rid,@RequestParam("isAcknowledged") boolean isAcknowledged) throws Exception {
