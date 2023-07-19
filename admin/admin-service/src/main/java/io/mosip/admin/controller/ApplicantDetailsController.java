@@ -28,6 +28,7 @@ public class ApplicantDetailsController {
     ApplicantDetailService applicantDetailService;
 
     //@PreAuthorize("hasRole('DIGITALCARD_ADMIN')")
+    @PreAuthorize("hasAnyRole(@authorizedRoles.getGetapplicantDetailsrid())")
     @GetMapping("/applicantDetails/{rid}")
     public ResponseWrapper<ApplicantDetailsDto> getApplicantDetails(@PathVariable("rid") String rid) throws Exception {
         auditUtil.setAuditRequestDto(EventEnum.APPLICANT_VERIFICATION_API_CALLED,null);
@@ -38,7 +39,8 @@ public class ApplicantDetailsController {
     }
 
   //  @PreAuthorize("hasRole('DIGITALCARD_ADMIN')")
-    @GetMapping("/applicantDetails/getLoginDetails")
+  @PreAuthorize("hasAnyRole(@authorizedRoles.getGetapplicantDetailsgetLoginDetails())")
+  @GetMapping("/applicantDetails/getLoginDetails")
     public ResponseWrapper<ApplicantUserDetailsDto> getApplicantUserDetails() throws Exception {
         auditUtil.setAuditRequestDto(EventEnum.APPLICANT_LOGIN_DETAILS_API_CALLED,null);
         ResponseWrapper<ApplicantUserDetailsDto> responseWrapper = new ResponseWrapper<>();
@@ -48,6 +50,7 @@ public class ApplicantDetailsController {
     }
 
  //   @PreAuthorize("hasRole('DIGITALCARD_ADMIN')")
+    @PreAuthorize("hasAnyRole(@authorizedRoles.getGetriddigitalcardrid())")
     @GetMapping("/rid-digital-card/{rid}")
     public ResponseEntity<Object> getRIDDigitalCard(
            @PathVariable("rid") String rid,@RequestParam("isAcknowledged") boolean isAcknowledged) throws Exception {

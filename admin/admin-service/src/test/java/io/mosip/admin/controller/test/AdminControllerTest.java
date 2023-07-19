@@ -1,5 +1,7 @@
 package io.mosip.admin.controller.test;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
@@ -89,7 +91,7 @@ public class AdminControllerTest {
 	public void setUp() throws Exception {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-		//doNothing().when(auditUtil).setAuditRequestDto(Mockito.any());
+		//doNothing().when(auditUtil).setAuditRequestDto(Mockito.any(),Mockito.anyString());
 
 		List<FilterInfo> lst = new ArrayList<>();
 		FilterInfo e = new FilterInfo();

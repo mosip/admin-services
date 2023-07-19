@@ -106,7 +106,7 @@ public class AdminServiceImpl implements AdminService {
 
 	}
 
-	public String getBiometric(byte[] isodata) throws Exception {
+	public String getApplicantPhoto(byte[] isodata) throws Exception {
 		    ConvertRequestDto convertRequestDto = new ConvertRequestDto();
 		    convertRequestDto.setVersion("ISO19794_5_2011");
 			convertRequestDto.setInputBytes(isodata);
@@ -117,7 +117,7 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public LostRidDetailsDto lostRidDetails(String rid) {
+	public LostRidDetailsDto getLostRidDetails(String rid) {
 		LostRidDetailsDto lostRidDetailsDto=new LostRidDetailsDto();
 		Map<String,String> lostRidDataMap=new HashMap<>();
 		FieldDtos fieldDtos=new FieldDtos();
@@ -141,7 +141,7 @@ public class AdminServiceImpl implements AdminService {
 					lostRidDataMap.put(field, finalFieldResponseDto.getFields().get(field));
 				}
 			}
-			getBiometric(rid,lostRidDataMap);
+			getApplicantPhoto(rid,lostRidDataMap);
 			lostRidDetailsDto.setLostRidDataMap(lostRidDataMap);
 		} catch (Exception e) {
 			throw new RequestException(LostRidErrorCode.UNABLE_TO_RETRIEVE_LOSTRID_DATA.getErrorCode(),
@@ -151,7 +151,8 @@ public class AdminServiceImpl implements AdminService {
 		return lostRidDetailsDto;
 	}
 
-	private void getBiometric(String rid, Map<String, String> lostRidDataMap){
+
+	private void getApplicantPhoto(String rid, Map<String, String> lostRidDataMap){
 		RequestWrapper<BiometricRequestDto> biometricRequestDtoRequestWrapper=new RequestWrapper<>();
 		BiometricRequestDto biometricRequestDto=new BiometricRequestDto();
 		ConvertRequestDto convertRequestDto = new ConvertRequestDto();
@@ -175,10 +176,13 @@ public class AdminServiceImpl implements AdminService {
 			}
 			lostRidDataMap.put("applicantPhoto",imageData);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new RequestException(LostRidErrorCode.UNABLE_TO_RETRIEVE_APPLICANT_PHOTO.getErrorCode(),
+					LostRidErrorCode.UNABLE_TO_RETRIEVE_APPLICANT_PHOTO.getErrorMessage()
+							+ e);
 		}
-
 	}
+
+
 	private void buildBiometricRequestDto(BiometricRequestDto biometricRequestDto, String rid) {
 		List<String> modalities=new ArrayList<>();
 		biometricRequestDto.setSource(SOURCE);
@@ -188,6 +192,8 @@ public class AdminServiceImpl implements AdminService {
 		modalities.add("Face");
 		biometricRequestDto.setModalities(modalities);
 	}
+
+
 	private void buildSearchFieldsRequestDto(FieldDtos fieldDtos, String rid) {
 		fieldDtos.setSource(SOURCE);
 		fieldDtos.setId(rid);

@@ -9,5 +9,5 @@ public interface AdminService {
 
 	LostRidResponseDto lostRid(SearchInfo searchInfo);
 
-    LostRidDetailsDto lostRidDetails(String rid);
+    LostRidDetailsDto getLostRidDetails(String rid);
 }
