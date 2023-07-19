@@ -7,11 +7,11 @@
 	<parent>
 		<groupId>io.mosip.admin</groupId>
 		<artifactId>admin-parent</artifactId>
-		<version>1.1.5.3</version>
+		<version>1.1.5.3-P2</version>
 	</parent>
 	<artifactId>admin-service</artifactId>
 	<name>admin-service</name>
-	<version>1.1.5.3</version>
+	<version>1.1.5.3-P2</version>
 	<url>http://maven.apache.org</url>
 	<packaging>jar</packaging>
 	<properties>
@@ -91,6 +91,47 @@
 			<artifactId>spring-security-test</artifactId>
 			<version>${spring.security.test.version}</version>
 		</dependency>	
+    <dependency>
+         <groupId>io.mosip.kernel</groupId>
+         <artifactId>kernel-cbeffutil-api</artifactId>
+         <version>1.1.5.3</version>
+      </dependency>
+      <dependency>
+         <groupId>io.mosip.biometric.util</groupId>
+         <artifactId>biometrics-util</artifactId>
+         <version>1.1.5</version>
+      </dependency>
+      <dependency>
+         <groupId>com.googlecode.json-simple</groupId>
+         <artifactId>json-simple</artifactId>
+         <version>1.1.1</version>
+      </dependency>
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>4.12</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.digibooster.spring.batch</groupId>
+         <artifactId>spring-batch-security</artifactId>
+         <version>1.0.0</version>
+      </dependency>
+      <dependency>
+         <groupId>io.mosip.commons</groupId>
+         <artifactId>commons-packet-manager</artifactId>
+         <version>1.1.5.5</version>
+         <exclusions>
+            <exclusion>
+               <groupId>io.mosip.kernel</groupId>
+               <artifactId>kernel-core</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-webflux</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
 	</dependencies>
 	<build>
 		<plugins>
