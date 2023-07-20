@@ -43,6 +43,9 @@ public class AdminServiceImpl implements AdminService {
 	@Value("${mosip.admin.lostrid.details.name.field:fullName}")
 	private String nameField;
 
+	@Value("${mosip.admin.lostrid.details.biometric.name:individualBiometrics}")
+	private String biometricName;
+
 	private static final String PROCESS = "NEW";
 
 	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
@@ -120,25 +123,24 @@ public class AdminServiceImpl implements AdminService {
 	public LostRidDetailsDto getLostRidDetails(String rid) {
 		LostRidDetailsDto lostRidDetailsDto=new LostRidDetailsDto();
 		Map<String,String> lostRidDataMap=new HashMap<>();
-		FieldDtos fieldDtos=new FieldDtos();
-		RequestWrapper<FieldDtos> fieldDtosRequestWrapper=new RequestWrapper<>();
+		SearchFieldDtos fieldDtos=new SearchFieldDtos();
+		RequestWrapper<SearchFieldDtos> fieldDtosRequestWrapper=new RequestWrapper<>();
 		ConvertRequestDto convertRequestDto = new ConvertRequestDto();
 		try {
-			FieldResponseDto fieldResponseDto=new FieldResponseDto();
+			SearchFieldResponseDto fieldResponseDto=new SearchFieldResponseDto();
 			buildSearchFieldsRequestDto(fieldDtos,rid);
 			fieldDtosRequestWrapper.setRequest(fieldDtos);
-			ResponseWrapper<FieldDtos> fieldDtosResponseWrapper = restClient.postApi(ApiName.PACKET_MANAGER_SEARCHFIELDS, MediaType.APPLICATION_JSON,
+			ResponseWrapper<SearchFieldDtos> fieldDtosResponseWrapper = restClient.postApi(ApiName.PACKET_MANAGER_SEARCHFIELDS, MediaType.APPLICATION_JSON,
 					fieldDtosRequestWrapper, ResponseWrapper.class);
-			fieldResponseDto = objectMapper.readValue(objectMapper.writeValueAsString(fieldDtosResponseWrapper.getResponse()), FieldResponseDto.class);
-			FieldResponseDto finalFieldResponseDto = fieldResponseDto;
+			fieldResponseDto = objectMapper.readValue(objectMapper.writeValueAsString(fieldDtosResponseWrapper.getResponse()), SearchFieldResponseDto.class);
 			for (String field: fields) {
-				if (finalFieldResponseDto.getFields().containsKey(field) && field.equalsIgnoreCase(nameField)) {
-					String value = finalFieldResponseDto.getFields().get(field);
+				if (fieldResponseDto.getFields().containsKey(field) && field.equalsIgnoreCase(nameField)) {
+					String value = fieldResponseDto.getFields().get(field);
 					org.json.JSONArray jsonArray = new org.json.JSONArray(value);
 					org.json.JSONObject jsonObject = (org.json.JSONObject) jsonArray.get(0);
 					lostRidDataMap.put(field, jsonObject.getString(VALUE));
 				} else {
-					lostRidDataMap.put(field, finalFieldResponseDto.getFields().get(field));
+					lostRidDataMap.put(field, fieldResponseDto.getFields().get(field));
 				}
 			}
 			getApplicantPhoto(rid,lostRidDataMap);
@@ -188,13 +190,13 @@ public class AdminServiceImpl implements AdminService {
 		biometricRequestDto.setSource(SOURCE);
 		biometricRequestDto.setId(rid);
 		biometricRequestDto.setProcess(PROCESS);
-		biometricRequestDto.setPerson(INDIVIDUAL_BIOMETRICS);
+		biometricRequestDto.setPerson(biometricName);
 		modalities.add("Face");
 		biometricRequestDto.setModalities(modalities);
 	}
 
 
-	private void buildSearchFieldsRequestDto(FieldDtos fieldDtos, String rid) {
+	private void buildSearchFieldsRequestDto(SearchFieldDtos fieldDtos, String rid) {
 		fieldDtos.setSource(SOURCE);
 		fieldDtos.setId(rid);
 		fieldDtos.setProcess(PROCESS);

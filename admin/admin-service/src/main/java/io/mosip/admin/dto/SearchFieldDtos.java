@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode
-public class FieldDtos {
+public class SearchFieldDtos {
 
     private String id;
     private List<String> fields;

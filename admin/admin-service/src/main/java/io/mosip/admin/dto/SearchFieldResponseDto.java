@@ -11,7 +11,7 @@ import java.util.Map;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-public class FieldResponseDto {
+public class SearchFieldResponseDto {
 
     Map<String, String> fields;
 }
