@@ -43,7 +43,7 @@ public interface LocationHierarchyRepository extends BaseRepository<LocationHier
 	 * 
 	 * @return List Location Hierarchy details fetched from database
 	 */
-	@Query("FROM LocationHierarchy l where l.langCode = ?1 and (l.isDeleted is null or l.isDeleted = false) and l.isActive = true")
+	@Query("FROM LocationHierarchy l where l.langCode = ?1 and (l.isDeleted is null or l.isDeleted = false) and l.isActive = true ORDER BY l.hierarchyLevel ASC")
 	List<LocationHierarchy> findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);
 	
 	@Query("FROM LocationHierarchy l WHERE (l.createdDateTime BETWEEN ?1 AND ?2 ) OR (l.updatedDateTime BETWEEN ?1 AND ?2 )  OR (l.deletedDateTime BETWEEN ?1 AND ?2 ) ")
