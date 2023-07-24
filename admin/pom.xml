@@ -152,8 +152,8 @@
 
 	<modules>
  		<module>admin-service</module>
-		<module>kernel-masterdata-service</module>
-        <module>kernel-syncdata-service</module>
+		<!--<module>kernel-masterdata-service</module>
+        	<module>kernel-syncdata-service</module>-->
 	</modules>
 
 	<dependencies>
