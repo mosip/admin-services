@@ -6,7 +6,7 @@
 
 	<groupId>io.mosip.admin</groupId>
 	<artifactId>admin-parent</artifactId>
-	<version>1.1.5.3-P2</version>
+	<version>1.1.5.3-P3</version>
 	<packaging>pom</packaging>
 	
 	<name>admin</name>
@@ -152,8 +152,8 @@
 
 	<modules>
  		<module>admin-service</module>
-		<module>kernel-masterdata-service</module>
-        <module>kernel-syncdata-service</module>
+		<!--<module>kernel-masterdata-service</module>
+        	<module>kernel-syncdata-service</module>-->
 	</modules>
 
 	<dependencies>
