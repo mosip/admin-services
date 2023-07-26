@@ -43,12 +43,10 @@ public class AdminServiceImpl implements AdminService {
 	@Value("${mosip.admin.lostrid.details.name.field:fullName}")
 	private String nameField;
 
-	@Value("${mosip.admin.lostrid.details.biometric.name:individualBiometrics}")
-	private String biometricName;
+	@Value("${mosip.admin.lostrid.details.biometric.field:individualBiometrics}")
+	private String biometricField;
 
 	private static final String PROCESS = "NEW";
-
-	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
 
 	private static final String SOURCE = "REGISTRATION_CLIENT";
 
@@ -190,7 +188,7 @@ public class AdminServiceImpl implements AdminService {
 		biometricRequestDto.setSource(SOURCE);
 		biometricRequestDto.setId(rid);
 		biometricRequestDto.setProcess(PROCESS);
-		biometricRequestDto.setPerson(biometricName);
+		biometricRequestDto.setPerson(biometricField);
 		modalities.add("Face");
 		biometricRequestDto.setModalities(modalities);
 	}
