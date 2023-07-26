@@ -13,6 +13,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -56,6 +58,7 @@ public class AdminServiceImpl implements AdminService {
 
 	private static final String VALUE = "value";
 
+	private static final Logger logger = LoggerFactory.getLogger(AdminServiceImpl.class);
 
 	@Autowired
 	private Utility utility;
@@ -146,7 +149,7 @@ public class AdminServiceImpl implements AdminService {
 		} catch (Exception e) {
 			throw new RequestException(LostRidErrorCode.UNABLE_TO_RETRIEVE_LOSTRID_DATA.getErrorCode(),
 					LostRidErrorCode.UNABLE_TO_RETRIEVE_LOSTRID_DATA.getErrorMessage()
-							+ e);
+							, e);
 		}
 		return lostRidDetailsDto;
 	}
@@ -171,6 +174,7 @@ public class AdminServiceImpl implements AdminService {
 			String encodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(data, false));
 			String imageData = "data:image/png;base64," + encodedBytes;
 			if(response!=null && responseObj.get("response")==null) {
+				logger.info("biometric api response is null :  {}",response);
 				throw new RequestException(ApplicantDetailErrorCode.RID_NOT_FOUND.getErrorCode(),
 						ApplicantDetailErrorCode.RID_NOT_FOUND.getErrorMessage());
 			}
@@ -178,7 +182,7 @@ public class AdminServiceImpl implements AdminService {
 		} catch (Exception e) {
 			throw new RequestException(LostRidErrorCode.UNABLE_TO_RETRIEVE_APPLICANT_PHOTO.getErrorCode(),
 					LostRidErrorCode.UNABLE_TO_RETRIEVE_APPLICANT_PHOTO.getErrorMessage()
-							+ e);
+							,e);
 		}
 	}
 
