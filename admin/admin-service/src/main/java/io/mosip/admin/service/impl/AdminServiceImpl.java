@@ -147,6 +147,7 @@ public class AdminServiceImpl implements AdminService {
 			getApplicantPhoto(rid,lostRidDataMap);
 			lostRidDetailsDto.setLostRidDataMap(lostRidDataMap);
 		} catch (Exception e) {
+			logger.error("error is occured while searching fields",e);
 			throw new RequestException(LostRidErrorCode.UNABLE_TO_RETRIEVE_LOSTRID_DATA.getErrorCode(),
 					LostRidErrorCode.UNABLE_TO_RETRIEVE_LOSTRID_DATA.getErrorMessage()
 							, e);
@@ -180,6 +181,7 @@ public class AdminServiceImpl implements AdminService {
 			}
 			lostRidDataMap.put("applicantPhoto",imageData);
 		} catch (Exception e) {
+			logger.error("error is occured while getting applicantPhoto",e);
 			throw new RequestException(LostRidErrorCode.UNABLE_TO_RETRIEVE_APPLICANT_PHOTO.getErrorCode(),
 					LostRidErrorCode.UNABLE_TO_RETRIEVE_APPLICANT_PHOTO.getErrorMessage()
 							,e);
