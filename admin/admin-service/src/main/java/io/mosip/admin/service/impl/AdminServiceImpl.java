@@ -174,7 +174,7 @@ public class AdminServiceImpl implements AdminService {
 			String encodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(data, false));
 			String imageData = "data:image/png;base64," + encodedBytes;
 			if(response!=null && responseObj.get("response")==null) {
-				logger.info("biometric api response is null :  {}",response);
+				logger.error("biometric api response is null :  {}",response);
 				throw new RequestException(ApplicantDetailErrorCode.RID_NOT_FOUND.getErrorCode(),
 						ApplicantDetailErrorCode.RID_NOT_FOUND.getErrorMessage());
 			}
