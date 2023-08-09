@@ -1,20 +1,19 @@
 package io.mosip.kernel.masterdata.dto;
 
-import java.util.List;
-
 import javax.validation.constraints.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.mosip.kernel.masterdata.validator.AlphabeticValidator;
+import io.mosip.kernel.masterdata.validator.DynamicCodeValidator;
+import io.mosip.kernel.masterdata.validator.DynamicValueValidator;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.json.JSONObject;
 
 
 /**
@@ -46,6 +45,7 @@ public class DynamicFieldDto {
 	
 	@NotBlank
 	private String description;
-
+	@DynamicCodeValidator
+	@DynamicValueValidator
 	private JsonNode fieldVal;
 }
