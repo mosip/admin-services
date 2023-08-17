@@ -245,7 +245,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		}
 
 		List<SyncDataBaseDto> list = clientSettingsHelper.retrieveData(futureMap, regCenterMachineDto, true);
-		list.addAll(clientSettingsHelper.getConfiguredScriptUrlDetail(regCenterMachineDto.getPublicKey()));
+		list.addAll(clientSettingsHelper.getConfiguredScriptUrlDetail(regCenterMachineDto));
 		response.setDataToSync(list);
 		return response;
 	}
