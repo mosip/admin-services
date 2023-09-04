@@ -292,6 +292,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 			} catch (Throwable e) {
 				logger.error("Failed to import data from CSV", e);
 				message = String.format(CSV_UPLOAD_MESSAGE, file.getOriginalFilename(), 0, "FAILED", e.getMessage());
+				updateBulkUploadTransaction(bulkUploadTranscation, "FAILED");
 			}
 
 			//On failure of launching job
@@ -301,7 +302,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 				bulkUploadTranscation.setUploadDescription(message);
 				bulkUploadTranscation.setRecordCount(0);
-				updateBulkUploadTransaction(bulkUploadTranscation);
+				updateBulkUploadTransaction(bulkUploadTranscation,"COMPLETED");
 			}
 			//If delimiter is other than lineDelimiter
 			if (file.getOriginalFilename().endsWith(".csv") && file.getOriginalFilename()!=null){
@@ -341,8 +342,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	}
 
 
-	private void updateBulkUploadTransaction(BulkUploadTranscation bulkUploadTranscation) {
-		bulkUploadTranscation.setStatusCode("COMPLETED");
+	private void updateBulkUploadTransaction(BulkUploadTranscation bulkUploadTranscation,String status) {
+		bulkUploadTranscation.setStatusCode(status);
 		bulkUploadTranscation.setUploadedDateTime(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))));
 		bulkUploadTranscation.setUpdatedBy("JOB");
 		bulkTranscationRepo.save(bulkUploadTranscation);
@@ -402,13 +403,13 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 			} catch (Throwable e) {
 				logger.error("Failed to sync and upload packet", e);
 				message = String.format(PKT_UPLOAD_MESSAGE, file.getOriginalFilename(), "FAILED", e.getMessage());
+				updateBulkUploadTransaction(bulkUploadTranscation, "FAILED");
 			}
 
 			if(message != null) {
 				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_PACKET_STATUS, message),null);
-				bulkUploadTranscation.setStatusCode("FAILED");
 				bulkUploadTranscation.setUploadDescription(message);
-				updateBulkUploadTransaction(bulkUploadTranscation);
+				updateBulkUploadTransaction(bulkUploadTranscation,"FAILED");
 			}
 		});
 		return setResponseDetails(bulkUploadTranscation, "");
