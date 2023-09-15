@@ -93,6 +93,15 @@ public class DynamicFieldController {
 		responseWrapper.setResponse(dynamicFieldService.getDynamicFieldByNameAndLangcode(fieldName,langCode,withValue));
 		return responseWrapper;
 	}
+
+	@ResponseFilter
+	@GetMapping("/all/{fieldName}")
+	@ApiOperation(value = "Service to fetch  dynamic field based on langcode and field name")
+	public ResponseWrapper<DynamicFieldConsolidateResponseDto> getAllDynamicFieldByName(@PathVariable("fieldName") String fieldName, @RequestParam(name = "withValue",defaultValue = "false",required = false) boolean withValue){
+		ResponseWrapper<DynamicFieldConsolidateResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(dynamicFieldService.getAllDynamicFieldByName(fieldName,withValue));
+		return responseWrapper;
+	}
 	
 	
 	@ResponseFilter

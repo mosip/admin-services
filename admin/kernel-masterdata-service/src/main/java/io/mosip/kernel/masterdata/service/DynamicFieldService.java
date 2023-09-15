@@ -83,4 +83,5 @@ public interface DynamicFieldService {
  	public DynamicFieldConsolidateResponseDto getDynamicFieldByNameAndLangcode(String fieldName,String langCode,boolean withValue);
 
 
+    DynamicFieldConsolidateResponseDto getAllDynamicFieldByName(String fieldName, boolean withValue);
 }
