@@ -510,8 +510,13 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	@Override
 	public DynamicFieldConsolidateResponseDto getDynamicFieldByNameAndLangcode(String fieldName, String langCode,boolean withValue) {
 		try {
-			List<DynamicField> lst = dynamicFieldRepository.findAllDynamicFieldByNameLangCodeAndisDeleted(fieldName,
-					langCode);
+			List<DynamicField> lst;
+			if(langCode == null){
+				lst = dynamicFieldRepository.findAllDynamicFieldValuesByName(fieldName);
+			} else {
+				lst = dynamicFieldRepository.findAllDynamicFieldByNameLangCodeAndisDeleted(fieldName,
+						langCode);
+			}
 			if (null == lst || lst.isEmpty()) {
 				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -540,30 +545,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	@Cacheable(value = "dynamic-field", key = "'dynamicfield'.concat('-').concat(#fieldName).concat('-').concat(#withValue)")
 	@Override
 	public DynamicFieldConsolidateResponseDto getAllDynamicFieldByName(String fieldName, boolean withValue) {
-		try {
-			List<DynamicField> lst = dynamicFieldRepository.findAllDynamicFieldValuesByName(fieldName);
-			if (null == lst || lst.isEmpty()) {
-				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
-						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
-			}
-			DynamicFieldConsolidateResponseDto dto = new DynamicFieldConsolidateResponseDto();
-			dto.setDescription(lst.get(0).getDescription());
-			dto.setName(lst.get(0).getName());
-			List<DynamicFieldCodeValueDTO> dtolist = new ArrayList<DynamicFieldCodeValueDTO>();
-			if (withValue == true) {
-				List<JSONObject> l = new ArrayList<>();
-				for (int i = 0; i < lst.size(); i++) {
-					l.add(new JSONObject(lst.get(i).getValueJson()));
-					dtolist.add(objectMapper.readValue(lst.get(i).getValueJson(),DynamicFieldCodeValueDTO.class));
-				}
-				dto.setValues(dtolist);
-			}
-			return dto;
-
-		} catch (DataAccessLayerException | DataAccessException | JSONException | JsonProcessingException  e) {
-			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorCode(),
-					ExceptionUtils.parseException(e));
-		}
+		return getDynamicFieldByNameAndLangcode(fieldName, null, withValue);
 	}
 
 
