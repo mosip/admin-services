@@ -19,12 +19,12 @@ SELECT * INTO master.template_migr_bkp FROM master.template;
 -- cleanup to map only registration-client related templates with 10002 moduleId and 
 -- other reg email and sms templates mapped to 10002 is remapped to pre-reg moduleId 10001 
 -- This cleanup is performed to avoid un-related templates to get synced in reg-client.
-UPDATE master.template set module_id=(select distinct id from module_detail where name='Pre-Registration'),module_name='Pre-Registration',upd_by='superadmin',upd_dtimes=now() where module_id=(select distinct id from module_detail where name='Registration Client');
-UPDATE master.template set module_id=(select distinct id from module_detail where name='Registration Client'),module_name='Registration Client',upd_by='superadmin',upd_dtimes=now() where template_typ_code in ('reg-dashboard-template', 'reg-consent-template');
-UPDATE master.template set module_id=(select distinct id from module_detail where name='Registration Client'),module_name='Registration Client',upd_by='superadmin',upd_dtimes=now() where template_typ_code like 'reg-preview-template-part%';
-UPDATE master.template set module_id=(select distinct id from module_detail where name='Registration Client'),module_name='Registration Client',upd_by='superadmin',upd_dtimes=now() where template_typ_code like 'reg-ack-template-part%';
-UPDATE master.template set module_id=(select distinct id from module_detail where name='Registration Client'),module_name='Registration Client',upd_by='superadmin',upd_dtimes=now() where template_typ_code like 'reg-android-ack-template-part%';
-UPDATE master.template set module_id=(select distinct id from module_detail where name='Registration Client'),module_name='Registration Client',upd_by='superadmin',upd_dtimes=now() where template_typ_code like 'reg-android-preview-template-part%';
+UPDATE master.template set module_id=(select distinct id from module_detail where name='Pre-Registration'),module_name='Pre-Registration',upd_by='superadmin',upd_dtimes=(now() at time zone('utc')) where module_id=(select distinct id from module_detail where name='Registration Client');
+UPDATE master.template set module_id=(select distinct id from module_detail where name='Registration Client'),module_name='Registration Client',upd_by='superadmin',upd_dtimes=(now() at time zone('utc')) where template_typ_code in ('reg-dashboard-template', 'reg-consent-template');
+UPDATE master.template set module_id=(select distinct id from module_detail where name='Registration Client'),module_name='Registration Client',upd_by='superadmin',upd_dtimes=(now() at time zone('utc')) where template_typ_code like 'reg-preview-template-part%';
+UPDATE master.template set module_id=(select distinct id from module_detail where name='Registration Client'),module_name='Registration Client',upd_by='superadmin',upd_dtimes=(now() at time zone('utc')) where template_typ_code like 'reg-ack-template-part%';
+UPDATE master.template set module_id=(select distinct id from module_detail where name='Registration Client'),module_name='Registration Client',upd_by='superadmin',upd_dtimes=(now() at time zone('utc')) where template_typ_code like 'reg-android-ack-template-part%';
+UPDATE master.template set module_id=(select distinct id from module_detail where name='Registration Client'),module_name='Registration Client',upd_by='superadmin',upd_dtimes=(now() at time zone('utc')) where template_typ_code like 'reg-android-preview-template-part%';
 
 --------------------------------------------------------------------------------------------------------------------
 
