@@ -163,7 +163,7 @@ public class SchemaServiceTest {
 	public void testFetchAllDynamicFields() throws Exception {		
 		Mockito.when(dynamicFieldRepository.findAllDynamicFields(pageRequest)).thenReturn(fieldPagedResult);
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
-		dynamicFieldService.getAllDynamicField(0, 10, "cr_dtimes", "desc", null, null, currentTimeStamp);
+		dynamicFieldService.getAllDynamicField(0, 10, "cr_dtimes", "desc", null, null, currentTimeStamp, null);
 	}
 	
 	@Test
@@ -171,7 +171,7 @@ public class SchemaServiceTest {
 	public void testFetchAllDynamicFieldsByLangCode() throws Exception {		
 		Mockito.when(dynamicFieldRepository.findAllDynamicFieldsByLangCode("eng", pageRequest)).thenReturn(fieldPagedResult);
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
-		dynamicFieldService.getAllDynamicField(0, 10, "cr_dtimes", "desc", "eng", null, currentTimeStamp);
+		dynamicFieldService.getAllDynamicField(0, 10, "cr_dtimes", "desc", "eng", null, currentTimeStamp, null);
 	}
 	
 	@Test

@@ -80,7 +80,7 @@ public class DynamicFieldController {
 		//We only sort by name as internally pagination is applied on distinct name, hence sorting is currently
 		// restricted to only name field
 		responseWrapper.setResponse(dynamicFieldService.getAllDynamicField(pageNumber, pageSize, "name", "asc", langCode,
-				timestamp, currentTimeStamp));
+				timestamp, currentTimeStamp, null));
 		return responseWrapper;
 	}
 
@@ -96,10 +96,17 @@ public class DynamicFieldController {
 
 	@ResponseFilter
 	@GetMapping("/all/{fieldName}")
-	@ApiOperation(value = "Service to fetch  dynamic field based on langcode and field name")
-	public ResponseWrapper<DynamicFieldConsolidateResponseDto> getAllDynamicFieldByName(@PathVariable("fieldName") String fieldName, @RequestParam(name = "withValue",defaultValue = "false",required = false) boolean withValue){
-		ResponseWrapper<DynamicFieldConsolidateResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(dynamicFieldService.getAllDynamicFieldByName(fieldName,withValue));
+	@ApiOperation(value = "Service to fetch all dynamic field value for all languages")
+	public ResponseWrapper<PageDto<DynamicFieldExtnDto>> getAllDynamicFieldByName(
+			@PathVariable("fieldName") String fieldName,
+			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page number, sorted based on name", defaultValue = "0") int pageNumber,
+			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size", defaultValue = "10") int pageSize,
+			@RequestParam(name = "lastUpdated", required = false) @ApiParam(value = "last updated rows", required = false) String lastUpdated) {
+		ResponseWrapper<PageDto<DynamicFieldExtnDto>> responseWrapper = new ResponseWrapper<>();
+		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
+		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
+		responseWrapper.setResponse(dynamicFieldService.getAllDynamicFieldByName(pageNumber, pageSize, "name", "asc",
+				timestamp, currentTimeStamp, fieldName));
 		return responseWrapper;
 	}
 	

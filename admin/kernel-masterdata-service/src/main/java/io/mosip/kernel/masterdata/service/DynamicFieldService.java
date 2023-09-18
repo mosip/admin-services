@@ -16,7 +16,6 @@ import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.entity.DynamicField;
 
 /**
  * Methods to create / update / inactivate / addValues dynamic field
@@ -36,7 +35,7 @@ public interface DynamicFieldService {
 	 * @return
 	 */
 	public PageDto<DynamicFieldExtnDto> getAllDynamicField(int pageNumber, int pageSize, String sortBy, String orderBy, String langCode,
-														   LocalDateTime lastUpdated, LocalDateTime currentTimestamp);
+														   LocalDateTime lastUpdated, LocalDateTime currentTimestamp, String fieldName);
 	
 	/**
 	 * create dynamic field
@@ -83,5 +82,6 @@ public interface DynamicFieldService {
  	public DynamicFieldConsolidateResponseDto getDynamicFieldByNameAndLangcode(String fieldName,String langCode,boolean withValue);
 
 
-    DynamicFieldConsolidateResponseDto getAllDynamicFieldByName(String fieldName, boolean withValue);
+	PageDto<DynamicFieldExtnDto> getAllDynamicFieldByName(int pageNumber, int pageSize, String sortBy, String orderBy,
+														  LocalDateTime lastUpdated, LocalDateTime currentTimestamp, String fieldName);
 }

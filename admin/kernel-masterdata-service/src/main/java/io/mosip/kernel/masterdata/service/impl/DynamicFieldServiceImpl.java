@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import io.mosip.kernel.masterdata.dto.response.FilterResult;
 
@@ -31,13 +30,9 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.SchemaErrorCode;
 import io.mosip.kernel.masterdata.dto.DynamicFieldCodeValueDTO;
@@ -116,7 +111,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 			condition="#langCode != null")
 	@Override
 	public PageDto<DynamicFieldExtnDto> getAllDynamicField(int pageNumber, int pageSize, String sortBy, String orderBy, String langCode,
-															   LocalDateTime lastUpdated, LocalDateTime currentTimestamp) {
+															   LocalDateTime lastUpdated, LocalDateTime currentTimestamp, String fieldNameOptional) {
 		Page<Object[]> pagedResult = null;
 
 		if (lastUpdated == null) {
@@ -124,9 +119,13 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		}
 		try {
 			
-			PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy));			
-			pagedResult = langCode == null ? dynamicFieldRepository.findAllLatestDynamicFieldNames(lastUpdated, currentTimestamp, pageRequest) :
-				dynamicFieldRepository.findAllLatestDynamicFieldNamesByLangCode(langCode,lastUpdated, currentTimestamp, pageRequest);
+			PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy));
+			if(fieldNameOptional!=null){
+				pagedResult = dynamicFieldRepository.findAllLatestDynamicFieldNamesAllLang(lastUpdated, currentTimestamp, fieldNameOptional, pageRequest);
+			} else {
+				pagedResult = langCode == null ? dynamicFieldRepository.findAllLatestDynamicFieldNames(lastUpdated, currentTimestamp, pageRequest) :
+						dynamicFieldRepository.findAllLatestDynamicFieldNamesByLangCode(langCode, lastUpdated, currentTimestamp, pageRequest);
+			}
 			
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorCode(),
@@ -510,13 +509,8 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	@Override
 	public DynamicFieldConsolidateResponseDto getDynamicFieldByNameAndLangcode(String fieldName, String langCode,boolean withValue) {
 		try {
-			List<DynamicField> lst;
-			if(langCode == null){
-				lst = dynamicFieldRepository.findAllDynamicFieldValuesByName(fieldName);
-			} else {
-				lst = dynamicFieldRepository.findAllDynamicFieldByNameLangCodeAndisDeleted(fieldName,
+			List<DynamicField> lst = dynamicFieldRepository.findAllDynamicFieldByNameLangCodeAndisDeleted(fieldName,
 						langCode);
-			}
 			if (null == lst || lst.isEmpty()) {
 				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -542,10 +536,12 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 					ExceptionUtils.parseException(e));
 		}
 	}
-	@Cacheable(value = "dynamic-field", key = "'dynamicfield'.concat('-').concat(#fieldName).concat('-').concat(#withValue)")
+	@Cacheable(value = "dynamic-field", key = "'dynamicfield'.concat('-').concat(#pageNumber).concat('-').concat(#pageSize).concat('-').concat(#sortBy).concat('-').concat(#orderBy).concat('-').concat(#fieldName)")
 	@Override
-	public DynamicFieldConsolidateResponseDto getAllDynamicFieldByName(String fieldName, boolean withValue) {
-		return getDynamicFieldByNameAndLangcode(fieldName, null, withValue);
+	public PageDto<DynamicFieldExtnDto> getAllDynamicFieldByName(int pageNumber, int pageSize, String sortBy, String orderBy,
+																 LocalDateTime lastUpdated, LocalDateTime currentTimestamp, String fieldName){
+		return getAllDynamicField(pageNumber, pageSize, "name", "asc", null,
+				lastUpdated, currentTimestamp, fieldName);
 	}
 
 
