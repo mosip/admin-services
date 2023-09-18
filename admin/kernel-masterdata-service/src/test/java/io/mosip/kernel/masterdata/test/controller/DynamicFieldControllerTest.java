@@ -418,4 +418,12 @@ public class DynamicFieldControllerTest {
 				"KER-SCH-003");
 	}
 
+	@Test
+	@WithUserDetails("global-admin")
+	public void t000getAllDynamicFieldByNameTest() throws Exception {
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/all/gender").param("withValue", "true")).andReturn(),
+				null);
+	}
+
 }
