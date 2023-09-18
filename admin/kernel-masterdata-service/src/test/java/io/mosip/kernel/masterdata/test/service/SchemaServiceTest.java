@@ -326,4 +326,13 @@ public class SchemaServiceTest {
 		identitySchemaService.deleteSchema("test-test");
 	}
 
+	@Test
+	@WithUserDetails("reg-officer")
+	public void testFetchAllDynamicFieldsAllLang() throws Exception {
+		Mockito.when(dynamicFieldRepository.findAllDynamicFieldsByLangCode("eng", pageRequest)).thenReturn(fieldPagedResult);
+		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
+		dynamicFieldService.getAllDynamicFieldByName(0, 10, "cr_dtimes", "desc",
+				null, currentTimeStamp, "gender");
+	}
+
 }
