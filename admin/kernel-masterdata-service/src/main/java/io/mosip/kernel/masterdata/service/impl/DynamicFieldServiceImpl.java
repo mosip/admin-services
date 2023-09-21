@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -71,17 +72,17 @@ import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 @Service
 public class DynamicFieldServiceImpl implements DynamicFieldService {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(DynamicFieldServiceImpl.class);
-	
+
 	private final ObjectMapper objectMapper = new ObjectMapper();
-	
+
 	@Autowired
 	private DynamicFieldRepository dynamicFieldRepository;
-	
+
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
-	
+
 	@Autowired
 	private MasterdataSearchHelper masterdataSearchHelper;
 
@@ -99,11 +100,11 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 
 	@Autowired
 	AuditUtil auditUtil;
-	
+
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * io.mosip.kernel.masterdata.service.DynamicFieldService#getAllDynamicField()
 	 */
@@ -112,18 +113,18 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 			condition="#langCode != null")
 	@Override
 	public PageDto<DynamicFieldExtnDto> getAllDynamicField(int pageNumber, int pageSize, String sortBy, String orderBy, String langCode,
-															   LocalDateTime lastUpdated, LocalDateTime currentTimestamp) {
+														   LocalDateTime lastUpdated, LocalDateTime currentTimestamp) {
 		Page<Object[]> pagedResult = null;
 
 		if (lastUpdated == null) {
 			lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 		}
 		try {
-			
-			PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy));			
+
+			PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy));
 			pagedResult = langCode == null ? dynamicFieldRepository.findAllLatestDynamicFieldNames(lastUpdated, currentTimestamp, pageRequest) :
-				dynamicFieldRepository.findAllLatestDynamicFieldNamesByLangCode(langCode,lastUpdated, currentTimestamp, pageRequest);
-			
+					dynamicFieldRepository.findAllLatestDynamicFieldNamesByLangCode(langCode,lastUpdated, currentTimestamp, pageRequest);
+
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorCode(),
 					SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorMessage() + " "
@@ -149,11 +150,11 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 					list.add(getDynamicFieldDto(groupedValues.get(lang)));
 				}
 			});
-			
+
 			pagedFields.setPageNo(pagedResult.getNumber());
 			pagedFields.setTotalPages(pagedResult.getTotalPages());
 			pagedFields.setTotalItems(pagedResult.getTotalElements());
-		}		
+		}
 		return pagedFields;
 	}
 
@@ -204,7 +205,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * io.mosip.kernel.masterdata.service.DynamicFieldService#createDynamicField()
 	 */
@@ -241,7 +242,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * io.mosip.kernel.masterdata.service.DynamicFieldService#updateDynamicField()
 	 */
@@ -254,10 +255,10 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 
 			String valueJson = getValidatedFieldValue(dto.getFieldVal());
 
-			int updatedRows = dynamicFieldRepository.updateDynamicField(id, dto.getDescription(), dto.getLangCode(), 
+			int updatedRows = dynamicFieldRepository.updateDynamicField(id, dto.getDescription(), dto.getLangCode(),
 					dto.getDataType(), MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser(),
 					valueJson);
-			
+
 			if (updatedRows < 1) {
 				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -281,14 +282,14 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 			if(dynamicField == null)
 				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorCode(),
 						SchemaErrorCode.DYNAMIC_FIELD_NOT_FOUND_EXCEPTION.getErrorMessage());
-            if(dynamicField.getValueJson()==null)
-            	throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_VALUE_NOT_FOUND_EXCEPTION.getErrorCode(),
+			if(dynamicField.getValueJson()==null)
+				throw new DataNotFoundException(SchemaErrorCode.DYNAMIC_FIELD_VALUE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						SchemaErrorCode.DYNAMIC_FIELD_VALUE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			JsonNode valueJson =objectMapper.readTree(dynamicField.getValueJson());
 			String code = valueJson.get("code").toString();
-                 
-			
-			
+
+
+
 			int deletedRows = dynamicFieldRepository.deleteDynamicField(dynamicField.getName(), "%"+code+"%",
 					MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser());
 
@@ -534,5 +535,30 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 		}
 	}
 
+
+	@Override
+	@Cacheable(value = "dynamic-field", key = "'dynamicfield'.concat('-').concat(#fieldName)")
+	public List<DynamicFieldExtnDto> getAllDynamicFieldByName(String fieldName) {
+		List<DynamicField> fields = null;
+		try {
+			fields = dynamicFieldRepository.findAllDynamicFieldByName(fieldName);
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorCode(),
+					SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
+		}
+		List<DynamicFieldExtnDto> list = new ArrayList<>();
+				if(fields != null && !fields.isEmpty()) {
+					Map<String, List<DynamicField>> groupedValues = fields
+							.stream()
+							.collect(Collectors.groupingBy(DynamicField::getLangCode));
+					 list = groupedValues.keySet()
+							.stream()
+							.map(lang -> getDynamicFieldDto(groupedValues.get(lang)))
+							.collect(Collectors.toList());
+
+				}
+		return list;
+	}
 
 }
