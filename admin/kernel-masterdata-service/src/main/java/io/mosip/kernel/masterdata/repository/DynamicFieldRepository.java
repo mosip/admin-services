@@ -142,7 +142,6 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 	
 	/**
 	 * update isDeleted as true
-	 * @param id
 	 * @param updatedDateTime
 	 * @param updatedBy
 	 * @return
