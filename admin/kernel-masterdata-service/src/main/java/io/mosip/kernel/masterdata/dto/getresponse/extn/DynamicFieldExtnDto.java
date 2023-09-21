@@ -2,7 +2,6 @@ package io.mosip.kernel.masterdata.dto.getresponse.extn;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
-import org.json.JSONArray;
 
 import java.time.LocalDateTime;
 import java.util.List;
