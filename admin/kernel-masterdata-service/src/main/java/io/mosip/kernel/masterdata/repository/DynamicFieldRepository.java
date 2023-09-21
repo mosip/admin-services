@@ -202,11 +202,6 @@ public interface DynamicFieldRepository extends BaseRepository<DynamicField, Str
 			nativeQuery= true)
 	Page<Object[]> findAllLatestDynamicFieldNames(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp, Pageable pageable);
 
-	@Query(value = "SELECT DISTINCT name, lang_code FROM master.dynamic_field WHERE lower(name) = lower(?3) and ((cr_dtimes BETWEEN ?1 AND ?2) or (upd_dtimes BETWEEN ?1 AND ?2) or (del_dtimes BETWEEN ?1 AND ?2)) ORDER BY name, lang_code",
-			countQuery = "SELECT count(id) FROM master.dynamic_field WHERE lower(name) = lower(?3) and ((cr_dtimes BETWEEN ?1 AND ?2) or (upd_dtimes BETWEEN ?1 AND ?2) or (del_dtimes BETWEEN ?1 AND ?2)) GROUP BY name, lang_code",
-			nativeQuery = true)
-	Page<Object[]> findAllLatestDynamicFieldNamesAllLang(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp, String fieldName, Pageable pageable);
-
 	@Query("FROM DynamicField WHERE lower(name)=lower(?1) and langCode=?2")
 	List<DynamicField> findAllDynamicFieldValuesByNameAndLangCode(String fieldName, String langCode);
 

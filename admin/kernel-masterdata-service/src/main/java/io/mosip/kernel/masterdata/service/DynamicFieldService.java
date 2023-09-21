@@ -35,7 +35,7 @@ public interface DynamicFieldService {
 	 * @return
 	 */
 	public PageDto<DynamicFieldExtnDto> getAllDynamicField(int pageNumber, int pageSize, String sortBy, String orderBy, String langCode,
-														   LocalDateTime lastUpdated, LocalDateTime currentTimestamp, String fieldName);
+														   LocalDateTime lastUpdated, LocalDateTime currentTimestamp);
 	
 	/**
 	 * create dynamic field
@@ -82,6 +82,5 @@ public interface DynamicFieldService {
  	public DynamicFieldConsolidateResponseDto getDynamicFieldByNameAndLangcode(String fieldName,String langCode,boolean withValue);
 
 
-	PageDto<DynamicFieldExtnDto> getAllDynamicFieldByName(int pageNumber, int pageSize, String sortBy, String orderBy,
-														  LocalDateTime lastUpdated, LocalDateTime currentTimestamp, String fieldName);
+	List<DynamicFieldExtnDto> getAllDynamicFieldByName(String fieldName);
 }

@@ -161,7 +161,7 @@ public class SchemaServiceTest {
 	public void testFetchAllDynamicFields() throws Exception {		
 		Mockito.when(dynamicFieldRepository.findAllDynamicFields(pageRequest)).thenReturn(fieldPagedResult);
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
-		dynamicFieldService.getAllDynamicField(0, 10, "cr_dtimes", "desc", null, null, currentTimeStamp, null);
+		dynamicFieldService.getAllDynamicField(0, 10, "cr_dtimes", "desc", null, null, currentTimeStamp);
 	}
 	
 	@Test
@@ -169,7 +169,7 @@ public class SchemaServiceTest {
 	public void testFetchAllDynamicFieldsByLangCode() throws Exception {		
 		Mockito.when(dynamicFieldRepository.findAllDynamicFieldsByLangCode("eng", pageRequest)).thenReturn(fieldPagedResult);
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
-		dynamicFieldService.getAllDynamicField(0, 10, "cr_dtimes", "desc", "eng", null, currentTimeStamp, null);
+		dynamicFieldService.getAllDynamicField(0, 10, "cr_dtimes", "desc", "eng", null, currentTimeStamp);
 	}
 	
 	@Test
@@ -330,9 +330,7 @@ public class SchemaServiceTest {
 	@WithUserDetails("reg-officer")
 	public void testFetchAllDynamicFieldsAllLang() throws Exception {
 		Mockito.when(dynamicFieldRepository.findAllDynamicFieldsByLangCode("eng", pageRequest)).thenReturn(fieldPagedResult);
-		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
-		dynamicFieldService.getAllDynamicFieldByName(0, 10, "cr_dtimes", "desc",
-				null, currentTimeStamp, "gender");
+		dynamicFieldService.getAllDynamicFieldByName("gender");
 	}
 
 }
