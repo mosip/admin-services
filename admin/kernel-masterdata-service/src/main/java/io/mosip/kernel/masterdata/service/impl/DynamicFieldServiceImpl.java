@@ -551,12 +551,13 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 					Map<String, List<DynamicField>> groupedValues = fields
 							.stream()
 							.collect(Collectors.groupingBy(DynamicField::getLangCode));
-					for(String lang:groupedValues.keySet()){
-						list.add(getDynamicFieldDto(groupedValues.get(lang)));
-					}
+					 list = groupedValues.keySet()
+							.stream()
+							.map(lang -> getDynamicFieldDto(groupedValues.get(lang)))
+							.collect(Collectors.toList());
+
 				}
 		return list;
 	}
-
 
 }

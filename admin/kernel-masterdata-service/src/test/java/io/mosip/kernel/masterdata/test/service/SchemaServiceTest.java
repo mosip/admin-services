@@ -93,10 +93,12 @@ public class SchemaServiceTest {
 	private DynamicField mstatusField;	
 	
 	PageRequest pageRequest = null;
+
+	List<DynamicField> list;
 	
 	@Before
 	public void setup() {
-		List<DynamicField> list = new ArrayList<DynamicField>();		
+		list = new ArrayList<DynamicField>();
 		bloodTypeField = new DynamicField();
 		bloodTypeField.setDataType("simpleType");
 		bloodTypeField.setDescription("test");
@@ -329,7 +331,7 @@ public class SchemaServiceTest {
 	@Test
 	@WithUserDetails("reg-officer")
 	public void testFetchAllDynamicFieldsAllLang() throws Exception {
-		Mockito.when(dynamicFieldRepository.findAllDynamicFieldsByLangCode("eng", pageRequest)).thenReturn(fieldPagedResult);
+		Mockito.when(dynamicFieldRepository.findAllDynamicFieldByName(Mockito.anyString())).thenReturn(list);
 		dynamicFieldService.getAllDynamicFieldByName("gender");
 	}
 
