@@ -5,10 +5,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import io.mosip.kernel.masterdata.dto.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -957,5 +955,29 @@ public class LocationServiceImpl implements LocationService {
 			filterResponseDto.setFilters(columnValueList);
 		}
 		return filterResponseDto;
+	}
+
+
+	@Cacheable(value = "locations", key = "'location'.concat('-').concat('immediate').concat('-').concat(#locCode)",
+			condition = "#locCode != null && #langCode != null")
+	@Override
+	public LocationResponseDto getImmediateChildrenByLocCode(String locationCode) {
+		List<Location> locationlist = null;
+		LocationResponseDto locationHierarchyResponseDto = new LocationResponseDto();
+		try {
+			locationlist = locationRepository.findLocationHierarchyByParentLocCode(locationCode);
+
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
+		}
+
+		if (locationlist.isEmpty()) {
+			throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+		List<LocationDto> locationDtoList = MapperUtils.mapAll(locationlist, LocationDto.class);
+		locationHierarchyResponseDto.setLocations(locationDtoList);
+		return locationHierarchyResponseDto;
 	}
 }
