@@ -679,7 +679,7 @@ public class LocationControllerTest {
 	public void t021getImmediateChildrenByLocCode() throws Exception {
 
 		MasterDataTest
-				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/immediatechildren/RSK")).andReturn(), null);
+				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/immediatechildren/RSK?languageCodes=eng,tam")).andReturn(), null);
 	}
 
 }

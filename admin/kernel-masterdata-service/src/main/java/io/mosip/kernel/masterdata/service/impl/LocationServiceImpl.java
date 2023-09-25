@@ -958,14 +958,14 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 
-	@Cacheable(value = "locations", key = "'location'.concat('-').concat('immediate').concat('-').concat(#locCode)",
+	@Cacheable(value = "locations", key = "'location'.concat('-').concat('immediate').concat('-').concat(#locCode).concat('-').concat(#languageCodes)",
 			condition = "#locCode != null && #langCode != null")
 	@Override
-	public LocationResponseDto getImmediateChildrenByLocCode(String locationCode) {
+	public LocationResponseDto getImmediateChildrenByLocCode(String locationCode, List<String> languageCodes) {
 		List<Location> locationlist = null;
 		LocationResponseDto locationHierarchyResponseDto = new LocationResponseDto();
 		try {
-			locationlist = locationRepository.findLocationHierarchyByParentLocCode(locationCode);
+			locationlist = locationRepository.findLocationHierarchyByParentLocCode(locationCode, languageCodes);
 
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),

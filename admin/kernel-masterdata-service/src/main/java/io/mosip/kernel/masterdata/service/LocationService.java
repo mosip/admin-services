@@ -137,5 +137,5 @@ public interface LocationService {
 
 	public FilterResponseCodeDto locFilterValues(FilterValueDto filterValueDto);
 
-    LocationResponseDto getImmediateChildrenByLocCode(String locationCode);
+    LocationResponseDto getImmediateChildrenByLocCode(String locationCode, List<String> languageCodes);
 }

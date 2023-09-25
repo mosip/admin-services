@@ -12,7 +12,6 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import io.mosip.kernel.core.exception.ServiceError;
@@ -3108,25 +3107,25 @@ public class MasterDataServiceTest {
 	@Test
 	public void getImmediateChildrenByLocCodeTest() {
 		Mockito.when(locationHierarchyRepository
-						.findLocationHierarchyByParentLocCode(Mockito.anyString()))
+						.findLocationHierarchyByParentLocCode(Mockito.anyString(), Mockito.anyList()))
 				.thenReturn(locationHierarchies);
-		locationHierarchyService.getImmediateChildrenByLocCode("KAR");
+		locationHierarchyService.getImmediateChildrenByLocCode("KAR", List.of("eng"));
 	}
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getImmediateChildrenByLocCodeTestExceptionTest() {
 		Mockito.when(locationHierarchyRepository
-						.findLocationHierarchyByParentLocCode(Mockito.anyString()))
+						.findLocationHierarchyByParentLocCode(Mockito.anyString(), Mockito.anyList()))
 				.thenThrow(DataRetrievalFailureException.class);
-		locationHierarchyService.getImmediateChildrenByLocCode("KAR");
+		locationHierarchyService.getImmediateChildrenByLocCode("KAR", List.of("eng"));
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void getImmediateChildrenByLocCodeTestDataExceptionTest() {
 		Mockito.when(locationHierarchyRepository
-						.findLocationHierarchyByParentLocCode(Mockito.anyString()))
+						.findLocationHierarchyByParentLocCode(Mockito.anyString(), Mockito.anyList()))
 				.thenReturn(new ArrayList<Location>());
-		locationHierarchyService.getImmediateChildrenByLocCode("KAR");
+		locationHierarchyService.getImmediateChildrenByLocCode("KAR", List.of("eng"));
 	}
 
 }
