@@ -958,7 +958,7 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 
-	@Cacheable(value = "locations", key = "'location'.concat('-').concat('immediate').concat('-').concat(#locCode).concat('-').concat(#languageCodes)",
+	@Cacheable(value = "locations", key = "'location'.concat('-').concat('immediate').concat('-').concat(#locCode)",
 			condition = "#locCode != null && #langCode != null")
 	@Override
 	public LocationResponseDto getImmediateChildrenByLocCode(String locationCode, List<String> languageCodes) {
