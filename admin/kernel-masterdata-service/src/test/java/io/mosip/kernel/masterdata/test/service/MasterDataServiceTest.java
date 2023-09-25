@@ -3105,4 +3105,28 @@ public class MasterDataServiceTest {
 		Assert.assertEquals("KER-MSD-259", serviceErrors.get(4).getErrorCode());
 	}
 
+	@Test
+	public void getImmediateChildrenByLocCodeTest() {
+		Mockito.when(locationHierarchyRepository
+						.findLocationHierarchyByParentLocCode(Mockito.anyString()))
+				.thenReturn(locationHierarchies);
+		locationHierarchyService.getImmediateChildrenByLocCode("KAR");
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void getImmediateChildrenByLocCodeTestExceptionTest() {
+		Mockito.when(locationHierarchyRepository
+						.findLocationHierarchyByParentLocCode(Mockito.anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
+		locationHierarchyService.getImmediateChildrenByLocCode("KAR");
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void getImmediateChildrenByLocCodeTestDataExceptionTest() {
+		Mockito.when(locationHierarchyRepository
+						.findLocationHierarchyByParentLocCode(Mockito.anyString()))
+				.thenReturn(new ArrayList<Location>());
+		locationHierarchyService.getImmediateChildrenByLocCode("KAR");
+	}
+
 }
