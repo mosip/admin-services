@@ -3109,7 +3109,7 @@ public class MasterDataServiceTest {
 		Mockito.when(locationHierarchyRepository
 						.findLocationHierarchyByParentLocCode(Mockito.anyString(), Mockito.anyList()))
 				.thenReturn(locationHierarchies);
-		locationHierarchyService.getImmediateChildrenByLocCode("KAR", List.of("eng"));
+		Assert.assertEquals("IND", locationHierarchyService.getImmediateChildrenByLocCode("KAR", List.of("eng")).getLocations().get(0).getCode());
 	}
 
 	@Test(expected = MasterDataServiceException.class)
