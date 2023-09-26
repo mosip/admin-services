@@ -231,6 +231,23 @@ public class LocationController {
 	}
 
 	/**
+	 *
+	 * @param locationCode location code
+	 * @param languageCodes language codes
+	 * @return list of location hierarchies
+	 */
+	@ResponseFilter
+	@GetMapping(value = "/immediatechildren/{locationcode}")
+	public ResponseWrapper<LocationResponseDto> getImmediateChildrenByLocCode(
+			@PathVariable("locationcode") String locationCode, @RequestParam("languageCodes") List<String> languageCodes) {
+
+		ResponseWrapper<LocationResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper
+				.setResponse(locationHierarchyService.getImmediateChildrenByLocCode(locationCode, languageCodes));
+		return responseWrapper;
+	}
+
+	/**
 	 * checks whether the given location name is valid or not
 	 * 
 	 * @param locationName
