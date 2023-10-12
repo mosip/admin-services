@@ -34,7 +34,7 @@ public class LocationExtnDto extends BaseDto {
 	@JsonDeserialize(using = CustomIntegerDeserializer.class)
 	@Range(min = 0)
 	@ApiModelProperty(value = "hierarchyLevel", required = true, dataType = "java.lang.Integer")
-	private int hierarchyLevel;
+	private short hierarchyLevel;
 
 	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.CONTAINS, FilterTypeEnum.STARTSWITH })
 	@ApiModelProperty(value = "hierarchyName", required = true, dataType = "java.lang.String")
