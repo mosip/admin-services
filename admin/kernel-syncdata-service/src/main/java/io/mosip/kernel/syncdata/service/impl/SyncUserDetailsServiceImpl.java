@@ -329,6 +329,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 					TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
 					tpmCryptoRequestDto.setValue(CryptoUtil.encodeBase64(mapper.getObjectAsJsonString(userDetails).getBytes()));
 					tpmCryptoRequestDto.setPublicKey(regCenterMachineDto.getPublicKey());
+                    tpmCryptoRequestDto.setClientType(regCenterMachineDto.getClientType());
 					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
 					syncUserDto.setUserDetails(tpmCryptoResponseDto.getValue());
 				}
