@@ -5,8 +5,7 @@ on:
     types: [published]
   pull_request:
     types: [opened, reopened, synchronize]
-    paths:
-      - 'db_scripts/**'
+
   workflow_dispatch:
     inputs:
       message:
@@ -22,8 +21,7 @@ on:
       - 1.*
       - develop*
       - MOSIP*
-    paths:
-      - 'db_scripts/**'
+
 
 jobs:
   build-db-test:
