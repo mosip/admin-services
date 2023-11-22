@@ -1,6 +1,5 @@
 name: PostgreSQL Test
 
-
 on:
   release:
     types: [published]
