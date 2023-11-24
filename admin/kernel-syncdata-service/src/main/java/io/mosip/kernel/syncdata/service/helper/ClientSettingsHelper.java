@@ -250,7 +250,7 @@ public class ClientSettingsHelper {
 		return null;
 	}
 
-	public List<SyncDataBaseDto> getConfiguredScriptUrlDetail(String publicKey) {
+	public List<SyncDataBaseDto> getConfiguredScriptUrlDetail(RegistrationCenterMachineDto regCenterMachineDto) {
 		List<SyncDataBaseDto> list = new ArrayList<>();
 		scriptNames.forEach(fileName -> {
 			Map<String, Object> urlDetail = buildUrlDetailMap(fileName);
@@ -258,7 +258,8 @@ public class ClientSettingsHelper {
 				TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
 				tpmCryptoRequestDto
 						.setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(urlDetail).getBytes()));
-				tpmCryptoRequestDto.setPublicKey(publicKey);
+				tpmCryptoRequestDto.setPublicKey(regCenterMachineDto.getPublicKey());
+				tpmCryptoRequestDto.setClientType(regCenterMachineDto.getClientType());
 				TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
 				list.add(new SyncDataBaseDto(fileName, "script", tpmCryptoResponseDto.getValue()));
 			} catch (Exception e) {
