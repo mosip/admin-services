@@ -17,7 +17,7 @@ on:
         default: ''
 
 jobs:
-  tag-branch:
+  dependency-check:
     uses: Rakshitha650/kattu/.github/workflows/dev-check.yml@master
     with:
       MESSAGE: ${{ inputs.MESSAGE }}
