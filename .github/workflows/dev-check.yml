@@ -18,7 +18,7 @@ on:
 
 jobs:
   tag-branch:
-    uses: mosip/kattu/.github/workflows/dev-check.yml@master
+    uses: Rakshitha650/kattu/.github/workflows/dev-check.yml@master
     with:
       MESSAGE: ${{ inputs.MESSAGE }}
       SKIP_DEPENDENCIES: ${{ inputs.SKIP_DEPENDENCIES }}
