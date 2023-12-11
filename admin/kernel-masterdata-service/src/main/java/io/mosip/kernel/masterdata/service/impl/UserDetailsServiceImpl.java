@@ -306,6 +306,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			}
 
 			validateMappingData(userDetailsDto.getId(), regCenters.get(0).getZoneCode(), userDetailsDto.getLangCode());
+			userDetailsDto.setId(userDetailsDto.getId().toLowerCase());
 
 			userDetailsDto = masterdataCreationUtil.createMasterData(UserDetails.class, userDetailsDto);
 			ud = MetaDataUtils.setCreateMetaData(userDetailsDto, UserDetails.class);
@@ -653,7 +654,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 	
 	@Override
-	public PageResponseDto<UserCenterMappingExtnDto> serachUserCenterMappingDetails(SearchDtoWithoutLangCode searchDto) {
+	public PageResponseDto<UserCenterMappingExtnDto> searchUserCenterMappingDetails(SearchDtoWithoutLangCode searchDto) {
 		PageResponseDto<ZoneUserSearchDto> pageDto = new PageResponseDto<>();
 		PageResponseDto<UserCenterMappingExtnDto> userCenterPageDto = new PageResponseDto<>();
 		List<UserCenterMappingExtnDto> userCenterMappingExtnDtos = null;
