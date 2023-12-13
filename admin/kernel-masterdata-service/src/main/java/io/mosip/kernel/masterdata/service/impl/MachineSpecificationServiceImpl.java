@@ -124,7 +124,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 
 
 		try {
-			String uniqueId = generateId();
+			String uniqueId = machineSpecification.getId() != null ? machineSpecification.getId() : generateId();
 			machineSpecification.setId(uniqueId);
 			MachineSpecification entity = MetaDataUtils.setCreateMetaData(machineSpecification,
 					MachineSpecification.class);
@@ -157,9 +157,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	private String generateId() throws DataAccessLayerException , DataAccessException{
 		UUID uuid = UUID.randomUUID();
 		String uniqueId = uuid.toString();
-		
 		List<MachineSpecification> machineSpecification = machineSpecificationRepository.findMachineSpecById(uniqueId);
-			
 		return machineSpecification.isEmpty() ? uniqueId : generateId();
 	}
 
