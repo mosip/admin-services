@@ -4,7 +4,7 @@ on:
   release:
     types: [published]
   pull_request:
-    types: [opened, opened, synchronize]
+    types: [opened]
   workflow_dispatch:
     inputs:
       message:
@@ -35,7 +35,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
   publish_to_nexus:
-    if: "${{ !contains(github.ref, 'master') && github.event_name != 'pull_request' && github.event_name != 'release*'}}"
+    if: "${{ !contains(github.ref, 'master') && github.event_name != 'pull_request' }}"
     needs: build-maven-admin-services
     uses: mosip/kattu/.github/workflows/maven-publish-to-nexus.yml@master
     with:
