@@ -114,7 +114,7 @@
 		<micrometer.registry.prometheus.version>1.4.2</micrometer.registry.prometheus.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<kernel.core.version>1.2.0.1-B2</kernel.core.version>
-		<kernel.auth.adaptor.version>1.2.0.1-B2</kernel.auth.adaptor.version>
+		<kernel.auth.adaptor.version>1.2.0.1-B3</kernel.auth.adaptor.version>
 		<kernel.logger.version>1.2.0.1-B2</kernel.logger.version>
 		<kernel.crypto.version>1.2.0.1-B2</kernel.crypto.version>
 		<kernel.keymanager.version>1.2.0.1-B2</kernel.keymanager.version>
@@ -146,7 +146,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
-			<version>${kernel.core.version}</version>
+			<version>1.2.0.1-B2</version>
 		</dependency>
 			<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -457,7 +457,7 @@
 				<dependency>
 					<groupId>io.mosip.kernel</groupId>
 					<artifactId>kernel-auth-adapter</artifactId>
-					<version>${project.version}</version>
+					<version>1.2.0.1-B3</version>
 				</dependency>
 			</dependencies>
 			<build>
