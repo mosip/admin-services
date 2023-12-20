@@ -6,7 +6,7 @@
 
 	<groupId>io.mosip.admin</groupId>
 	<artifactId>admin-parent</artifactId>
-	<version>1.2.0.1-SNAPSHOT</version>
+	<version>1.2.0.1-B2</version>
 	<packaging>pom</packaging>
 
 	<name>admin</name>
@@ -192,7 +192,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-logger-logback</artifactId>
-			<version>1.2.0.1-SNAPSHOT</version>
+			<version>1.2.0.1-B2</version>
 		</dependency>
 	</dependencies>
 
@@ -233,7 +233,7 @@
 					<dependency>
 						<groupId>io.mosip.kernel</groupId>
 						<artifactId>kernel-auth-adapter</artifactId>
-						<version>${project.version}</version>
+						<version>1.2.0.1-B3</version>
 					</dependency>
 				</dependencies>
 				<build>
