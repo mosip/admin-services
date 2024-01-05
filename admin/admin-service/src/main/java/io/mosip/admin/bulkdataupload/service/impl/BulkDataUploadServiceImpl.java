@@ -87,7 +87,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	private static final Logger logger = LoggerFactory.getLogger(BulkDataUploadServiceImpl.class);
 	private static final String DATA_READ_ROLE = "ROLE_DATA_READ";
 	private static Predicate<String> emptyCheck = String::isBlank;
-	private static String STATUS_MESSAGE = "SUCCESS: %d, FAILED: %d";
+	private static String STATUS_MESSAGE = "FAILED: %d";
 	private static String CSV_UPLOAD_MESSAGE = "FILE: %s, READ: %d, STATUS: %s, MESSAGE: %s";
 	private static String PKT_UPLOAD_MESSAGE = "FILE: %s, STATUS: %s, MESSAGE: %s";
 	
@@ -291,8 +291,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 			} catch (Throwable e) {
 				logger.error("Failed to import data from CSV", e);
-				message = String.format(CSV_UPLOAD_MESSAGE, file.getOriginalFilename(), 0, "FAILED", e.getMessage());
-				updateBulkUploadTransaction(bulkUploadTranscation, "FAILED");
+				message = String.format(CSV_UPLOAD_MESSAGE, file.getOriginalFilename(), 0, STATUS_MESSAGE, e.getMessage());
+				updateBulkUploadTransaction(bulkUploadTranscation, STATUS_MESSAGE);
 			}
 
 			//On failure of launching job
@@ -402,14 +402,14 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 			} catch (Throwable e) {
 				logger.error("Failed to sync and upload packet", e);
-				message = String.format(PKT_UPLOAD_MESSAGE, file.getOriginalFilename(), "FAILED", e.getMessage());
-				updateBulkUploadTransaction(bulkUploadTranscation, "FAILED");
+				message = String.format(PKT_UPLOAD_MESSAGE, file.getOriginalFilename(), STATUS_MESSAGE, e.getMessage());
+				updateBulkUploadTransaction(bulkUploadTranscation, STATUS_MESSAGE);
 			}
 
 			if(message != null) {
 				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_PACKET_STATUS, message),null);
 				bulkUploadTranscation.setUploadDescription(message);
-				updateBulkUploadTransaction(bulkUploadTranscation,"FAILED");
+				updateBulkUploadTransaction(bulkUploadTranscation,STATUS_MESSAGE);
 			}
 		});
 		return setResponseDetails(bulkUploadTranscation, "");
