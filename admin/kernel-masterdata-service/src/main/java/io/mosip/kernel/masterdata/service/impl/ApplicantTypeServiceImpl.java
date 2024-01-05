@@ -33,13 +33,13 @@ public class ApplicantTypeServiceImpl implements ApplicantTypeService {
 
 	@Autowired
 	private ApplicantType applicantCodeService;
-	@Value("${individualTypeCode}")
+	@Value("${mosip.kernel.masterdata.individualTypeCode}")
 	private String individualTypeCode;
 
-	@Value("${genderCode}")
+	@Value("${mosip.kernel.masterdata.genderCode}")
 	private String genderCode;
 
-	@Value("${biometricAvailable}")
+	@Value("${mosip.kernel.masterdata.biometricAvailable}")
 	private String biometricAvailable;
 
 	/*
