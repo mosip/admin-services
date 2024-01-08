@@ -31,7 +31,10 @@ public class AdminServiceImpl implements AdminService {
 
 	@Value("${mosip.registration.processor.lostrid.max-registration-date-filter-interval}")
 	private String max_reg_date_interval;
-
+	
+	@Value("${mosip.registration.processor.lostrid.reg-date-pattern}")
+	private String regDatePattern;
+	
 	@Autowired
 	RestClient restClient;
 
@@ -48,7 +51,6 @@ public class AdminServiceImpl implements AdminService {
 		String dateTime = DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
 		procRequestWrapper.setRequesttime(dateTime);
 		try {
-			String regDatePattern = "yyyy-MM-dd";
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern(regDatePattern);
 			List<FilterInfo> filters=searchInfo.getFilters();
 			LocalDate dateForm = LocalDate.parse(filters.get(0).getFromValue(), dtf);
