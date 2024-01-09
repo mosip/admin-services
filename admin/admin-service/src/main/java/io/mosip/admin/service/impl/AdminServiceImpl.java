@@ -32,8 +32,7 @@ public class AdminServiceImpl implements AdminService {
 	@Value("${mosip.registration.processor.lostrid.max-registration-date-filter-interval}")
 	private String max_reg_date_interval;
 	
-	@Value("${mosip.registration.processor.lostrid.reg-date-pattern}")
-	private String regDatePattern;
+	private final static String regDatePattern="yyyy-MM-dd";
 	
 	@Autowired
 	RestClient restClient;
