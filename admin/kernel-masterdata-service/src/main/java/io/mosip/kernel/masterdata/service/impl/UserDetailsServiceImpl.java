@@ -306,7 +306,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			}
 
 			validateMappingData(userDetailsDto.getId(), regCenters.get(0).getZoneCode(), userDetailsDto.getLangCode());
-			userDetailsDto.setId(userDetailsDto.getId().toLowerCase());
 
 			userDetailsDto = masterdataCreationUtil.createMasterData(UserDetails.class, userDetailsDto);
 			ud = MetaDataUtils.setCreateMetaData(userDetailsDto, UserDetails.class);

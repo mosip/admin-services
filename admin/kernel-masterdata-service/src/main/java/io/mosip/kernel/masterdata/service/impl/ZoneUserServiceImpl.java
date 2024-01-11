@@ -127,7 +127,6 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 
 			// Throws exception if not found
 			zoneservice.getZone(zoneUserDto.getZoneCode(), languageUtils.getDefaultLanguage());
-			zu.setUserId(zu.getUserId().toLowerCase());
 			zu = zoneUserRepo.save(zu);
 			ZoneUserHistory zuh = new ZoneUserHistory();
 			MapperUtils.map(zu, zuh);
