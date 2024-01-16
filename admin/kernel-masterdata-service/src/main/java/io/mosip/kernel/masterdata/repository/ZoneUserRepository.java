@@ -48,7 +48,13 @@ public interface ZoneUserRepository extends BaseRepository<ZoneUser, String> {
 	@Query("FROM ZoneUser zu WHERE LOWER(zu.userId)=LOWER(?1) and zu.isActive=true and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
 	public ZoneUser findZoneByUserIdActiveAndNonDeleted(String userId);
 	
-	@Query("FROM ZoneUser zu WHERE LOWER(zu.zoneCode) like (%?1%)  and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
+	/*
+	 * This is a query used by a deprecated end point /users/search, this should be removed in next release.
+	 * The end point using this query was added in version 1.2.0-rc1 and marked as deprecated in version 1.2.0 
+	 * For security reason, we replaced the 'LIKE' query with equals in where clause.
+	 */
+	
+	@Query("FROM ZoneUser zu WHERE LOWER(zu.zoneCode)=?1  and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
 	public List<ZoneUser> findZoneByZoneCodeActiveAndNonDeleted(String zoneCode);
 	
 	@Modifying
