@@ -35,5 +35,9 @@ public class ZoneUser extends BaseEntity implements Serializable {
 
 	@Column(name = "lang_code", nullable = true, length = 3)
 	private String langCode;
+	
+	public String getUserId() {
+		return this.userId.toLowerCase();
+	}
 
 }
