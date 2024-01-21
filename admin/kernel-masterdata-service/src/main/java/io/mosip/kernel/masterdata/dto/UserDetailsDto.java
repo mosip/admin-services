@@ -37,5 +37,10 @@ public class UserDetailsDto  {
 
 	
 	private String langCode;
+	
+	
+	public String getId() {
+		return this.id.toLowerCase();
+	}
 
 }

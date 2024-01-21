@@ -267,7 +267,7 @@ public class UserDetailsController {
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_USER_DETAILS_API_IS_CALLED + SearchDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.SEARCH_USER_DETAILS_API_IS_CALLED + SearchDto.class.getCanonicalName(),"ADM-922");
-		responseWrapper.setResponse(userDetailsService.serachUserCenterMappingDetails(dto.getRequest()));
+		responseWrapper.setResponse(userDetailsService.searchUserCenterMappingDetails(dto.getRequest()));
 		return responseWrapper;
 	}
 	
