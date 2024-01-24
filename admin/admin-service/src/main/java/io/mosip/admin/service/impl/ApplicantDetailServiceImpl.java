@@ -69,7 +69,7 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
 
     private static final String DOCUMENTS="documents";
 
-    private static final String ApplicantPhoto = "applicantPhoto";
+    private static final String APPLICANT_PHOTO = "applicantPhoto";
 
     private static final String VALUE = "value";
     private static final String DOB = "dob";
@@ -112,11 +112,11 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
             JSONObject mapperIdentity=utility.getJSONObject(idenitityJsonObject,IDENTITY);
             List<String> mapperJsonKeys = new ArrayList<>(mapperIdentity.keySet());
             for(String valueObj: applicantDetails){
-                if(valueObj!=null && !valueObj.equalsIgnoreCase(ApplicantPhoto)){
+                if(valueObj!=null && !valueObj.equalsIgnoreCase(APPLICANT_PHOTO)){
                     LinkedHashMap<String, String> jsonObject = utility.getJSONValue(mapperIdentity, valueObj);
                     String value = jsonObject.get(VALUE);
                     applicantDataMap.put(value,identityObj.get(value).toString());
-                } else if (valueObj!=null && valueObj.equalsIgnoreCase(ApplicantPhoto)) {
+                } else if (APPLICANT_PHOTO.equalsIgnoreCase(valueObj)) {
                     getImageData(documents,applicantDataMap);
                 }
             }
@@ -190,7 +190,7 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
             byte[] data = FaceDecoder.convertFaceISOToImageBytes(convertRequestDto);
             String encodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(data, false));
             String imageData = "data:image/png;base64," + encodedBytes;
-            applicantDataMap.put(ApplicantPhoto, imageData);
+            applicantDataMap.put(APPLICANT_PHOTO, imageData);
         } else {
         	auditUtil.setAuditRequestDto(EventEnum.APPLICANT_VERIFICATION_ERROR,null);
             throw new DataNotFoundException(ApplicantDetailErrorCode.DATA_NOT_FOUND.getErrorCode(), ApplicantDetailErrorCode.DATA_NOT_FOUND.getErrorMessage());

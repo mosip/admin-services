@@ -2,6 +2,9 @@ package io.mosip.admin;
 
 import io.mosip.commons.packet.impl.OnlinePacketCryptoServiceImpl;
 import io.mosip.commons.packet.keeper.PacketKeeper;
+
+import javax.validation.Validator;
+
 import org.mockito.Mockito;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -34,6 +37,11 @@ public class TestBootApplication {
 	@Primary
 	public PacketKeeper packetKeeper() {
 		return Mockito.mock(PacketKeeper.class);
+	}
+	
+	@Bean
+	public Validator validator() {
+		return Mockito.mock(Validator.class);
 	}
 
 }

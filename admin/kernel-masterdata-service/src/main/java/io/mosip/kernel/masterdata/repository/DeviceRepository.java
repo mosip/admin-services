@@ -99,7 +99,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	Device findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNullNoIsActive(String id, String langCode);
 	
 	@Query("FROM Device d where d.id = ?1 AND (d.isDeleted is null or d.isDeleted = false)")
-	List<Device> findtoUpdateDeviceById(String id);
+	List<Device> findbyDeviceIdAndIsDeletedFalseOrIsDeletedNull(String id);
 
 	/**
 	 * This method trigger query to fetch the Device id's those are mapped with the

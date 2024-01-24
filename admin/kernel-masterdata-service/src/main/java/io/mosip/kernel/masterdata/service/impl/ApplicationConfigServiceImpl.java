@@ -21,8 +21,7 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 	private static String SEMICOLON = ";";
 	private static String COLON = ":";
 	private static String COMMA = ",";
-	private static String RTL_ORIENTATION = "rightToLeftOrientation";
-
+	
 	@Value("${aplication.configuration.level.version}")
 	private String version;
 	
@@ -32,9 +31,6 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 	@Value("${mosip.admin.ui.configs}")
 	private String uiConfigs;
 	
-	@Value("${mosip.right_to_left.orientation:#{null}}")
-	private String rtlLanguages;
-
 	@Autowired
 	LanguageUtils languageUtils;
 
@@ -57,7 +53,6 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 	@Override
 	public Map<String,String> getConfigValues(){
 		Map<String, String> response = new HashMap<String, String>();
-		response.put(RTL_ORIENTATION,rtlLanguages);
 		logger.debug("admin.ui.config : {} ",uiConfigs);
 		for (String key : uiConfigs.split(SEMICOLON)) {
 			String[] parts = key.split(COLON, 2);

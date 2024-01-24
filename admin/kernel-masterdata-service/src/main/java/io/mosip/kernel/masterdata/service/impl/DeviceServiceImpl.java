@@ -747,7 +747,7 @@ public class DeviceServiceImpl implements DeviceService {
 				regCenterServiceHelper.validateRegistrationCenterZone(devicePutReqDto.getZoneCode(), devicePutReqDto.getRegCenterId());
 			}
 			// find requested device is there or not in Device Table
-			List<Device> renDevice = deviceRepository.findtoUpdateDeviceById(devicePutReqDto.getId());
+			List<Device> renDevice = deviceRepository.findbyDeviceIdAndIsDeletedFalseOrIsDeletedNull(devicePutReqDto.getId());
 
 			//devicePutReqDto = masterdataCreationUtil.updateMasterData(Device.class, devicePutReqDto);
 
@@ -833,7 +833,7 @@ public class DeviceServiceImpl implements DeviceService {
 		List<Device> devices = null;
 		List<DeviceSpecification> deviceSpecificationList = null;
 		try {
-			devices = deviceRepository.findtoUpdateDeviceById(id);	
+			devices = deviceRepository.findbyDeviceIdAndIsDeletedFalseOrIsDeletedNull(id);	
 		} catch (DataAccessException | DataAccessLayerException accessException) {
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, DeviceDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,

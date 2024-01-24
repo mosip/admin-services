@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Component
 public class ClientSettingsHelper {
@@ -65,8 +66,8 @@ public class ClientSettingsHelper {
 
 	public Map<Class, CompletableFuture> getInitiateDataFetch(String machineId, String regCenterId,
 			LocalDateTime lastUpdated, LocalDateTime currentTimestamp, boolean isV2API, boolean deltaSync, String fullSyncEntities) {
-		List<String> entities = (fullSyncEntities != null && !fullSyncEntities.isBlank()) ? Arrays.asList(fullSyncEntities.split("\\s{0,10},\\s{0,10}")) : new ArrayList<>();
-		
+		List<String> entities = (fullSyncEntities != null && !fullSyncEntities.isBlank()) ? Arrays.asList(fullSyncEntities.split(",")) : new ArrayList<>();
+		entities = entities.stream().map(String::trim).collect(Collectors.toList());
 		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
 		futuresMap.put(AppAuthenticationMethod.class,
 				hasURLDetails(AppAuthenticationMethod.class, isV2API, deltaSync)
