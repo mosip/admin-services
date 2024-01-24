@@ -8,6 +8,7 @@ import javax.validation.Validator;
 import org.mockito.Mockito;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.web.client.RestTemplate;
@@ -44,4 +45,8 @@ public class TestBootApplication {
 		return Mockito.mock(Validator.class);
 	}
 
+	@Bean
+	public Validator validator() {
+		return Mockito.mock(Validator.class);
+	}
 }

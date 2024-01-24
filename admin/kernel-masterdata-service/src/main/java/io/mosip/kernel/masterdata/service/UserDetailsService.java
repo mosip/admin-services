@@ -126,6 +126,6 @@ public interface UserDetailsService {
 
 	public StatusResponseDto updateUserStatus(String id, @Valid boolean isActive);
 
-	public PageResponseDto<UserCenterMappingExtnDto> serachUserCenterMappingDetails(SearchDtoWithoutLangCode request);
+	public PageResponseDto<UserCenterMappingExtnDto> searchUserCenterMappingDetails(SearchDtoWithoutLangCode request);
 
 }
