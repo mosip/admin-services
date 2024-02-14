@@ -1408,7 +1408,7 @@ public class IntegratedRepositoryTest {
 		when(registrationCenterRepository.findByRegId(Mockito.anyString())).thenReturn(rl);
 		when(zoneRepository.findAllNonDeleted()).thenReturn(getZoneLst());
 		when(zoneUserRepo.findZoneByUserIdActiveAndNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
-		when(deviceRepository.findtoUpdateDeviceById(Mockito.anyString())).thenThrow(new DataAccessException("...") {
+		when(deviceRepository.findbyDeviceIdAndIsDeletedFalseOrIsDeletedNull(Mockito.anyString())).thenThrow(new DataAccessException("...") {
 		});
 		when(deviceRepository.update(Mockito.any())).thenThrow(new DataAccessException("...") {
 		});
@@ -1448,7 +1448,7 @@ public class IntegratedRepositoryTest {
 		when(registrationCenterRepository.findByRegId(Mockito.anyString())).thenReturn(rl);
 		when(zoneRepository.findAllNonDeleted()).thenReturn(getZoneLst());
 		when(zoneUserRepo.findZoneByUserIdActiveAndNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
-		when(deviceRepository.findtoUpdateDeviceById(Mockito.anyString())).thenThrow(new DataAccessException("...") {
+		when(deviceRepository.findbyDeviceIdAndIsDeletedFalseOrIsDeletedNull(Mockito.anyString())).thenThrow(new DataAccessException("...") {
 		});
 		when(deviceRepository.update(Mockito.any())).thenThrow(new DataAccessException("...") {
 		});
@@ -1488,7 +1488,7 @@ public class IntegratedRepositoryTest {
 		when(registrationCenterRepository.findByRegId(Mockito.anyString())).thenReturn(rl);
 		when(zoneRepository.findAllNonDeleted()).thenReturn(getZoneLst());
 		when(zoneUserRepo.findZoneByUserIdActiveAndNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
-		when(deviceRepository.findtoUpdateDeviceById(Mockito.anyString())).thenThrow(new DataAccessException("...") {
+		when(deviceRepository.findbyDeviceIdAndIsDeletedFalseOrIsDeletedNull(Mockito.anyString())).thenThrow(new DataAccessException("...") {
 		});
 		when(deviceRepository.update(Mockito.any())).thenThrow(new DataAccessException("...") {
 		});
@@ -1516,7 +1516,7 @@ public class IntegratedRepositoryTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void tst008updateDeviceStatusTest() throws Exception {
-		when(deviceRepository.findtoUpdateDeviceById(Mockito.any())).thenThrow(new DataAccessException("...") {
+		when(deviceRepository.findbyDeviceIdAndIsDeletedFalseOrIsDeletedNull(Mockito.any())).thenThrow(new DataAccessException("...") {
 		});
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.patch("/devices").param("isActive", "true").param("id", "3000038"))

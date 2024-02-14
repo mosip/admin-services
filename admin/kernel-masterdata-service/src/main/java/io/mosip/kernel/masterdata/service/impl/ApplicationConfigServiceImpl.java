@@ -21,7 +21,7 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 	private static String SEMICOLON = ";";
 	private static String COLON = ":";
 	private static String COMMA = ",";
-
+	
 	@Value("${aplication.configuration.level.version}")
 	private String version;
 	
@@ -30,7 +30,7 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 		
 	@Value("${mosip.admin.ui.configs}")
 	private String uiConfigs;
-
+	
 	@Autowired
 	LanguageUtils languageUtils;
 

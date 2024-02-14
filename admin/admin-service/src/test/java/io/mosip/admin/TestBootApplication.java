@@ -39,6 +39,11 @@ public class TestBootApplication {
 	public PacketKeeper packetKeeper() {
 		return Mockito.mock(PacketKeeper.class);
 	}
+	
+	@Bean
+	public Validator validator() {
+		return Mockito.mock(Validator.class);
+	}
 
 	@Bean
 	public Validator validator() {

@@ -195,8 +195,6 @@ public class MasterDataServiceTest {
 
 	List<BlocklistedWords> words;
 
-	@MockBean
-	DeviceSpecificationRepository deviceSpecificationRepository;
 
 	@Autowired
 	DeviceSpecificationService deviceSpecificationService;
@@ -335,6 +333,9 @@ public class MasterDataServiceTest {
 	// -----------------------------DeviceType-------------------------------------------------
 	@MockBean
 	private DeviceTypeRepository deviceTypeRepository;
+	
+	@MockBean
+	private DeviceSpecificationRepository deviceSpecificationRepository;;
 
 	@MockBean
 	private MetaDataUtils metaUtils;
@@ -2938,7 +2939,7 @@ public class MasterDataServiceTest {
 		StatusResponseDto dto = new StatusResponseDto();
 		dto.setStatus("Status updated successfully for Devices");
 		DeviceHistory createdHistory = new DeviceHistory();
-		when(deviceRepository.findtoUpdateDeviceById(Mockito.anyString())).thenReturn(devices);
+		when(deviceRepository.findbyDeviceIdAndIsDeletedFalseOrIsDeletedNull(Mockito.anyString())).thenReturn(devices);
 		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(Device.class), Mockito.anyString(),
 				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
 		when(deviceHistoryRepository.create(Mockito.any())).thenReturn(createdHistory);
@@ -2948,13 +2949,16 @@ public class MasterDataServiceTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	public void updateDeviceStatusFailureTest() {
-		when(deviceRepository.findtoUpdateDeviceById(Mockito.anyString())).thenThrow(MasterDataServiceException.class);
+		when(deviceRepository.findbyDeviceIdAndIsDeletedFalseOrIsDeletedNull(Mockito.anyString())).thenThrow(MasterDataServiceException.class);
 		deviceService.updateDeviceStatus("abc", false);
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void updateDeviceStatusFailureDataNotFoundTest() {
-		when(deviceRepository.findtoUpdateDeviceById(Mockito.anyString())).thenReturn(null);
+		List<DeviceSpecification> emptylist = new ArrayList<DeviceSpecification>();
+		when(deviceRepository.findbyDeviceIdAndIsDeletedFalseOrIsDeletedNull(Mockito.anyString())).thenReturn(null);
+		Mockito.when(deviceSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString()))
+		.thenReturn(emptylist);
 		deviceService.updateDeviceStatus("abc", false);
 	}
 

@@ -4,8 +4,12 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
+import io.mosip.admin.bulkdataupload.service.impl.BulkDataUploadServiceImpl;
 import io.mosip.admin.constant.ApplicantDetailErrorCode;
 import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.*;
@@ -28,6 +32,8 @@ import io.mosip.admin.packetstatusupdater.constant.ApiName;
 @Component
 public class RestClient {
 
+	private static final Logger logger = LoggerFactory.getLogger(RestClient.class);
+	
 	/** The environment. */
 	@Autowired
 	private Environment environment;
@@ -204,12 +210,16 @@ public class RestClient {
 		try {
 			ResponseEntity responseEntity= (ResponseEntity) restTemplate
 					.exchange(url, HttpMethod.GET, setRequestHeader(null, null), responseType);
-			if(url.contains("datashare") && responseEntity.getHeaders().getContentType().equals(MediaType.APPLICATION_JSON)){
-				throw new MasterDataServiceException(ApplicantDetailErrorCode.DATA_SHARE_EXPIRED_EXCEPTION.getErrorCode(),
-						ApplicantDetailErrorCode.DATA_SHARE_EXPIRED_EXCEPTION.getErrorMessage());
+			if(responseEntity.getHeaders().getContentType()!=null) {
+			MediaType contextType = responseEntity.getHeaders().getContentType();
+				if(url.contains("datashare") && contextType!=null && contextType.equals(MediaType.APPLICATION_JSON)){
+					throw new MasterDataServiceException(ApplicantDetailErrorCode.DATA_SHARE_EXPIRED_EXCEPTION.getErrorCode(),
+							ApplicantDetailErrorCode.DATA_SHARE_EXPIRED_EXCEPTION.getErrorMessage());
+				}
 			}
 			result= (T) responseEntity.getBody();
 		} catch (Exception e) {
+			logger.error("Exception occured while connecting to datahsare", e);
 			throw new Exception(e);
 		}
 		return result;
