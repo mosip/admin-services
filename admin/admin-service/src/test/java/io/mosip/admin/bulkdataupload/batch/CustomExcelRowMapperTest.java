@@ -150,7 +150,7 @@ public class CustomExcelRowMapperTest {
     }
 
     @Test
-    public void CustomExcelRowMapper_withInitBinder_returnSuccessResponse() {
+    public void customExcelRowMapper_withInitBinder_returnSuccessResponse() {
 
         ApplicationConversionService conversionService = new ApplicationConversionService();
         CustomExcelRowMapper<Object> actualCustomExcelRowMapper = new CustomExcelRowMapper<>(conversionService,
