@@ -40,12 +40,12 @@ public class KeyManagerProxyController {
 			@ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(hidden = true)))
 	})
-	public ResponseEntity<?> safeKeyManagerProxyController(@RequestParam(name = "body", required = true) String body, HttpServletRequest request) {
+	public ResponseEntity<?> getKeyManagerProxyController(@RequestParam(name = "body", required = true) String body, HttpServletRequest request) {
 		auditUtil.setAuditRequestDto(EventEnum.KEYMANAGER_PROXY_API_CALLED, null);
 		return ResponseEntity.status(HttpStatus.OK).body(service.getResponse(null, request, url));
 	}
 
-	@RequestMapping(path = "/**", produces = MediaType.APPLICATION_JSON_VALUE, method = { RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PATCH, RequestMethod.PUT })
+	@RequestMapping(path = "/**", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
 	@Operation(summary = "KeyManager proxy", description = "KeyManager proxy", tags = "KeyManager-controller")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
@@ -53,8 +53,48 @@ public class KeyManagerProxyController {
 			@ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(hidden = true)))
 	})
-	public ResponseEntity<?> unsafeKeyManagerProxyController(@RequestBody(required = false) String body, HttpServletRequest request) {
+	public ResponseEntity<?> postKeyManagerProxyController(@RequestBody(required = false) String body, HttpServletRequest request) {
 		auditUtil.setAuditRequestDto(EventEnum.MASTERDATA_PROXY_API_CALLED, null);
 		return ResponseEntity.status(HttpStatus.OK).body(service.getResponse(body, request, url));
 	}
+
+	@RequestMapping(path = "/**", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.DELETE)
+	@Operation(summary = "KeyManager proxy", description = "KeyManager proxy", tags = "KeyManager-controller")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "OK"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(hidden = true)))
+	})
+	public ResponseEntity<?> deleteKeyManagerProxyController(HttpServletRequest request) {
+		auditUtil.setAuditRequestDto(EventEnum.MASTERDATA_PROXY_API_CALLED, null);
+		return ResponseEntity.status(HttpStatus.OK).body(service.getResponse(null, request, url));
+	}
+
+	@RequestMapping(path = "/**", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.PUT)
+	@Operation(summary = "KeyManager proxy", description = "KeyManager proxy", tags = "KeyManager-controller")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "OK"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(hidden = true)))
+	})
+	public ResponseEntity<?> putKeyManagerProxyController(@RequestBody(required = false) String body, HttpServletRequest request) {
+		auditUtil.setAuditRequestDto(EventEnum.MASTERDATA_PROXY_API_CALLED, null);
+		return ResponseEntity.status(HttpStatus.OK).body(service.getResponse(body, request, url));
+	}
+
+	@RequestMapping(path = "/**", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.PATCH)
+	@Operation(summary = "KeyManager proxy", description = "KeyManager proxy for PATCH requests", tags = "KeyManager-controller")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "OK"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(hidden = true)))
+	})
+	public ResponseEntity<?> patchKeyManagerProxyController(@RequestBody(required = false) String body, HttpServletRequest request) {
+		auditUtil.setAuditRequestDto(EventEnum.MASTERDATA_PROXY_API_CALLED, null);
+		return ResponseEntity.status(HttpStatus.OK).body(service.getResponse(body, request, url));
+	}
+
 }
