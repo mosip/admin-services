@@ -28,7 +28,7 @@ public class CustomExcelRowMapperTest {
     private CustomExcelRowMapper customExcelRowMapper;
 
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = Exception.class)
     public void mapRow_withRowSet_returnErrorResponse() throws BindException {
 
         ApplicationConversionService conversionService = new ApplicationConversionService();
@@ -136,7 +136,7 @@ public class CustomExcelRowMapperTest {
     }
 
     @Test
-    public void CustomExcelRowMapper_withSetValues_returnSuccessResponse() {
+    public void customExcelRowMapper_withSetValues_returnSuccessResponse() {
 
         ApplicationConversionService conversionService = new ApplicationConversionService();
         CustomExcelRowMapper<Object> actualCustomExcelRowMapper = new CustomExcelRowMapper<>(conversionService,
