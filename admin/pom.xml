@@ -6,7 +6,7 @@
 
 	<groupId>io.mosip.admin</groupId>
 	<artifactId>admin-parent</artifactId>
-	<version>1.2.0.1-B2</version>
+	<version>1.2.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>admin</name>
@@ -166,7 +166,7 @@
 		<byte.buddy.version>1.9.12</byte.buddy.version>
 		<io.jsonwebtoken.jjwt.version>0.6.0</io.jsonwebtoken.jjwt.version>
 		<apache.directory.api.version>2.0.0.AM2</apache.directory.api.version>
-
+		<kernel.version>1.2.0.1-SNAPSHOT</kernel.version>
 		<sonar.coverage.exclusions>**/repositories/**,**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**,**/*Util.java,**/helper/beans/**,**/OptionalFilter.java,**/*Enum.java,**/validator.registereddevice/**,**/DeviceProvider*.java,**/DeviceRegister*.java,**/FoundationalTrustProvider*.java,**/GenderType*.java,**/IndividualType*.java,**/MOSIPDeviceService*.java,**/RegisteredDevice*.java,**/RegistrationCenterDeviceHistoryServiceImpl.java,**/RegistrationCenterMachineUserServiceHistoryImpl.java</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
@@ -192,7 +192,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-logger-logback</artifactId>
-			<version>1.2.0.1-B2</version>
+			<version>${kernel.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -233,7 +233,7 @@
 					<dependency>
 						<groupId>io.mosip.kernel</groupId>
 						<artifactId>kernel-auth-adapter</artifactId>
-						<version>1.2.0.1-B3</version>
+						<version>${kernel.version}</version>
 					</dependency>
 				</dependencies>
 				<build>
