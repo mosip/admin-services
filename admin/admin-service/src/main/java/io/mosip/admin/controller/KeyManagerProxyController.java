@@ -40,7 +40,7 @@ public class KeyManagerProxyController {
 			@ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(hidden = true)))
 	})
-	public ResponseEntity<?> getKeyManagerProxyController(@RequestParam(name = "body", required = true) String body, HttpServletRequest request) {
+	public ResponseEntity<?> getKeyManagerProxyController(@RequestBody(required = false) String body, HttpServletRequest request) {
 		auditUtil.setAuditRequestDto(EventEnum.KEYMANAGER_PROXY_API_CALLED, null);
 		return ResponseEntity.status(HttpStatus.OK).body(service.getResponse(null, request, url));
 	}
@@ -66,7 +66,7 @@ public class KeyManagerProxyController {
 			@ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(hidden = true)))
 	})
-	public ResponseEntity<?> deleteKeyManagerProxyController(HttpServletRequest request) {
+	public ResponseEntity<?> deleteKeyManagerProxyController(@RequestBody(required = false) String body, HttpServletRequest request) {
 		auditUtil.setAuditRequestDto(EventEnum.MASTERDATA_PROXY_API_CALLED, null);
 		return ResponseEntity.status(HttpStatus.OK).body(service.getResponse(null, request, url));
 	}

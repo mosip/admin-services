@@ -40,7 +40,7 @@ public class MasterdataProxyController {
 			@ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(hidden = true)))
 	})
-	public ResponseEntity<?> getMasterDataProxyController(@RequestParam(name = "body", required = true) String body, HttpServletRequest request) {
+	public ResponseEntity<?> getMasterDataProxyController(@RequestBody(required = false) String body, HttpServletRequest request) {
 		auditUtil.setAuditRequestDto(EventEnum.MASTERDATA_PROXY_API_CALLED, null);
 		return ResponseEntity.status(HttpStatus.OK).body(service.getResponse(null, request, url));
 	}
@@ -66,7 +66,7 @@ public class MasterdataProxyController {
 			@ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(hidden = true)))
 	})
-	public ResponseEntity<?> deleteMasterDataProxyController(HttpServletRequest request) {
+	public ResponseEntity<?> deleteMasterDataProxyController(@RequestBody(required = false) String body, HttpServletRequest request) {
 		auditUtil.setAuditRequestDto(EventEnum.MASTERDATA_PROXY_API_CALLED, null);
 		return ResponseEntity.status(HttpStatus.OK).body(service.getResponse(null, request, url));
 	}
