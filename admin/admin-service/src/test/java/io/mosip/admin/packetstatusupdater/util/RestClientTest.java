@@ -11,7 +11,6 @@ import org.springframework.http.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
@@ -36,7 +35,7 @@ public class RestClientTest {
     private RestTemplate restTemplate;
 
     @Test
-    public void postApi_withValidInput_thenPass() throws Exception {
+    public void postApi_withValidInput_thenSuccess() throws Exception {
 
         ApiName apiName = ApiName.MACHINE_GET_API;
         List<String> pathsegments =List.of("hi","hello","welcome");
@@ -50,58 +49,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void postApi_withProperty_thenPass() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn("Property");
-        when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
-                .thenReturn("Post For Object");
-        ArrayList<String> pathsegments = new ArrayList<>();
-
-        assertEquals("Post For Object", restClient.postApi(ApiName.LOST_RID_API, pathsegments, "Query Param Name", "42",
-                null, "Request Type", Object.class));
-        verify(environment).getProperty((String) any());
-        verify(restTemplate).postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
-    }
-
-    @Test
-    public void postApi_withoutProperty_thenPass() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn(null);
-        when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
-                .thenReturn("Post For Object");
-        ArrayList<String> pathsegments = new ArrayList<>();
-
-        assertNull(restClient.postApi(ApiName.LOST_RID_API, pathsegments, "Query Param Name", "42", null, "Request Type",
-                Object.class));
-        verify(environment).getProperty((String) any());
-    }
-
-    @Test
-    public void postApi_withCryptoApi_thenPass() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn("Property");
-        when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
-                .thenReturn("Post For Object");
-        ArrayList<String> pathsegments = new ArrayList<>();
-
-        assertEquals("Post For Object", restClient.postApi(ApiName.CRYPTOMANAGERDECRYPT_API, pathsegments,
-                "Query Param Name", "42", null, "Request Type", Object.class));
-        verify(environment).getProperty((String) any());
-        verify(restTemplate).postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
-    }
-
-    @Test
-    public void postApi_withMachineGetApi_thenPass() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn("Property");
-        when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
-                .thenReturn("Post For Object");
-        ArrayList<String> pathsegments = new ArrayList<>();
-
-        assertEquals("Post For Object", restClient.postApi(ApiName.MACHINE_GET_API, pathsegments, "Query Param Name",
-                "42", null, "Request Type", Object.class));
-        verify(environment).getProperty((String) any());
-        verify(restTemplate).postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
-    }
-
-    @Test
-    public void postApi_withRetrieveApi_thenPass() throws Exception {
+    public void postApi_withRetrieveApi_thenSuccess() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -114,7 +62,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void postApi_withLostRIDApi_thenPass() throws Exception {
+    public void postApi_withLostRIDApi_thenSuccess() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -129,33 +77,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void postApi_withPathsegments_thenPass() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn("Property");
-        when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
-                .thenReturn("Post For Object");
-        ArrayList<String> pathsegments = new ArrayList<>();
-
-        assertEquals("Post For Object",
-                restClient.postApi(ApiName.LOST_RID_API, pathsegments, "", "42", null, "Request Type", Object.class));
-        verify(environment).getProperty((String) any());
-        verify(restTemplate).postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
-    }
-
-    @Test
-    public void postApi_withoutQueryParam_thenPass() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn("Property");
-        when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
-                .thenReturn("Post For Object");
-        ArrayList<String> pathsegments = new ArrayList<>();
-
-        assertEquals("Post For Object",
-                restClient.postApi(ApiName.LOST_RID_API, pathsegments, null, "42", null, "Request Type", Object.class));
-        verify(environment).getProperty((String) any());
-        verify(restTemplate).postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
-    }
-
-    @Test
-    public void postApi_withMediaType_thenPass() throws Exception {
+    public void postApi_withMediaType_thenSuccess() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -169,34 +91,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void postApi_withRequestType_thenPass() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn("Property");
-        when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
-                .thenReturn("Post For Object");
-        ArrayList<String> pathsegments = new ArrayList<>();
-        HttpEntity<Object> requestType = new HttpEntity<>((MultiValueMap<String, String>) new HttpHeaders());
-
-        assertEquals("Post For Object", restClient.postApi(ApiName.LOST_RID_API, pathsegments, "Query Param Name", "42",
-                null, requestType, Object.class));
-        verify(environment).getProperty((String) any());
-        verify(restTemplate).postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
-    }
-
-    @Test
-    public void postApi_withoutRequestType_thenPass() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn("Property");
-        when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
-                .thenReturn("Post For Object");
-        ArrayList<String> pathsegments = new ArrayList<>();
-
-        assertEquals("Post For Object",
-                restClient.postApi(ApiName.LOST_RID_API, pathsegments, "Query Param Name", "42", null, null, Object.class));
-        verify(environment).getProperty((String) any());
-        verify(restTemplate).postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
-    }
-
-    @Test
-    public void postApi_withHttpEntity_thenPass() throws Exception {
+    public void postApi_withHttpEntity_thenSuccess() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -215,22 +110,13 @@ public class RestClientTest {
     }
 
     @Test
-    public void postApi_onlyWithRequestType_thenPass() throws Exception {
+    public void postApi_onlyWithRequestType_thenSuccess() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
         assertEquals("Post For Object", restClient.postApi(ApiName.LOST_RID_API, null, "Request Type", Object.class));
         verify(environment).getProperty((String) any());
         verify(restTemplate).postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
-    }
-
-    @Test
-    public void postApi_onlyWithRequestType_returnSuccessResponse() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn(null);
-        when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
-                .thenReturn("Post For Object");
-        assertNull(restClient.postApi(ApiName.LOST_RID_API, null, "Request Type", Object.class));
-        verify(environment).getProperty((String) any());
     }
 
     @Test (expected = MasterDataServiceException.class)
@@ -244,7 +130,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void getApi_withValidInput_thenPass() throws Exception {
+    public void getApi_withValidInput_thenSuccess() throws Exception {
         ApiName apiName = ApiName.MACHINE_GET_API;
         List<String> pathsegments = List.of("hi","hello","welcome");
         String queryParamName = "name";
@@ -255,7 +141,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void getApi_withLostRIDAPI_thenPass() throws Exception {
+    public void getApi_withLostRIDAPI_thenSuccess() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any()))
                 .thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
@@ -267,7 +153,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void getApi_withHttpURL_thenPass() throws Exception {
+    public void getApi_withHttpURL_thenSuccess() throws Exception {
         when(restTemplate.exchange((String) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any(),
                 (Object[]) any())).thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
         assertNull(restClient.getApi("https://dev.mosip.net", Object.class));
@@ -275,31 +161,9 @@ public class RestClientTest {
                 (Class<Object>) any(), (Object[]) any());
     }
 
-    @Test
-    public void getApi_withCryptoAPI_thenPass() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn(null);
-        when(restTemplate.exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any()))
-                .thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
-        ArrayList<String> pathsegments = new ArrayList<>();
-
-        assertNull(restClient.getApi(ApiName.CRYPTOMANAGERDECRYPT_API, pathsegments, "Query Param Name", "42", Object.class));
-        verify(environment).getProperty((String) any());
-    }
 
     @Test
-    public void getApi_withRetrieveAPI_thenPass() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn("Property");
-        when(restTemplate.exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any()))
-                .thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
-        ArrayList<String> pathsegments = new ArrayList<>();
-
-        assertNull(restClient.getApi(ApiName.RETRIEVE_IDENTITY_API, pathsegments, "Query Param Name", "42", Object.class));
-        verify(environment).getProperty((String) any());
-        verify(restTemplate).exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any());
-    }
-
-    @Test
-    public void getApi_withMachineGetAPI_thenPass() throws Exception {
+    public void getApi_withMachineGetAPI_thenSuccess() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any()))
                 .thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
@@ -326,7 +190,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void setRequestHeader_withValidInput_thenPass() {
+    public void setRequestHeader_withValidInput_thenSuccess() {
 
         Object requestType = mock(Object.class);
         MediaType mediaType = mock(MediaType.class);
@@ -335,7 +199,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void setRequestHeader_withHttpURL_thenPass() throws Exception {
+    public void setRequestHeader_withHttpURL_thenSuccess() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");

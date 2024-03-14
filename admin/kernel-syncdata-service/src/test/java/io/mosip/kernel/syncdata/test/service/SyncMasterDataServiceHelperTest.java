@@ -16,7 +16,6 @@ import io.mosip.kernel.syncdata.service.helper.SyncJobHelperService;
 import io.mosip.kernel.syncdata.service.impl.SyncMasterDataServiceImpl;
 import io.mosip.kernel.syncdata.test.TestBootApplication;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +40,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.Assert.*;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
@@ -156,8 +156,8 @@ public class SyncMasterDataServiceHelperTest {
            }
        }
 
-       Assert.assertTrue(afterburnerPresent);
-       Assert.assertTrue(javaTimeModulePresent);
+       assertTrue(afterburnerPresent);
+       assertTrue(javaTimeModulePresent);
     }
 
     @Test
@@ -185,14 +185,14 @@ public class SyncMasterDataServiceHelperTest {
         SyncDataResponseDto syncDataResponseDto = syncMasterDataService.syncClientSettings("10001",
                 "41:3a:ed:6d:38:a0:28:36:72:a6:75:08:8a:41:3c:a3:4f:48:72:6f:c8:fb:29:dd:53:bd:6f:12:70:9b:e3:29",
                 null, syncJobHelperService.getFullSyncCurrentTimestamp());
-        Assert.assertNotNull(syncDataResponseDto.getDataToSync());
+        assertNotNull(syncDataResponseDto.getDataToSync());
 
         SyncDataResponseDto syncDataResponseDeltaDto = syncMasterDataService.syncClientSettings("10001",
                 "41:3a:ed:6d:38:a0:28:36:72:a6:75:08:8a:41:3c:a3:4f:48:72:6f:c8:fb:29:dd:53:bd:6f:12:70:9b:e3:29",
                 lastUpdated, syncJobHelperService.getDeltaSyncCurrentTimestamp());
-        Assert.assertNotNull(syncDataResponseDeltaDto.getDataToSync());
+        assertNotNull(syncDataResponseDeltaDto.getDataToSync());
 
-        Assert.assertEquals(syncDataResponseDto.getDataToSync().size(), syncDataResponseDeltaDto.getDataToSync().size(), 12);
+        assertEquals(syncDataResponseDto.getDataToSync().size(), syncDataResponseDeltaDto.getDataToSync().size(), 12);
     }
 
     @Test
@@ -220,14 +220,14 @@ public class SyncMasterDataServiceHelperTest {
         SyncDataResponseDto syncDataResponseDto = syncMasterDataService.syncClientSettingsV2("10001",
                 "41:3a:ed:6d:38:a0:28:36:72:a6:75:08:8a:41:3c:a3:4f:48:72:6f:c8:fb:29:dd:53:bd:6f:12:70:9b:e3:29",
                 null, syncJobHelperService.getDeltaSyncCurrentTimestamp(), "1.2.0", "");
-        Assert.assertNotNull(syncDataResponseDto.getDataToSync());
+        assertNotNull(syncDataResponseDto.getDataToSync());
 
         SyncDataResponseDto syncDataResponseDeltaDto = syncMasterDataService.syncClientSettingsV2("10001",
                 "41:3a:ed:6d:38:a0:28:36:72:a6:75:08:8a:41:3c:a3:4f:48:72:6f:c8:fb:29:dd:53:bd:6f:12:70:9b:e3:29",
                 lastUpdated, syncJobHelperService.getFullSyncCurrentTimestamp(), "1.2.0", "LocationHierarchy");
-        Assert.assertNotNull(syncDataResponseDto.getDataToSync());
+        assertNotNull(syncDataResponseDto.getDataToSync());
 
-        Assert.assertEquals(syncDataResponseDto.getDataToSync().size(), syncDataResponseDeltaDto.getDataToSync().size(), 5);
+        assertEquals(syncDataResponseDto.getDataToSync().size(), syncDataResponseDeltaDto.getDataToSync().size(), 5);
     }
 
     @Test
@@ -239,7 +239,7 @@ public class SyncMasterDataServiceHelperTest {
         } catch (FileNotFoundException ex) {
             errorCode = ex.getErrorCode();
         }
-        Assert.assertEquals("KER-SNC-170", errorCode);
+        assertEquals("KER-SNC-170", errorCode);
     }
 
     @Test
@@ -270,9 +270,9 @@ public class SyncMasterDataServiceHelperTest {
 
         ResponseEntity responseEntity = syncMasterDataService.getClientSettingsJsonFile("LOCATION",
                 "41:3a:ed:6d:38:a0:28:36:72:a6:75:08:8a:41:3c:a3:4f:48:72:6f:c8:fb:29:dd:53:bd:6f:12:70:9b:e3:29");
-        Assert.assertNotNull(responseEntity.getBody());
-        Assert.assertNotNull(responseEntity.getHeaders().get("file-signature"));
-        Assert.assertNotNull(responseEntity.getHeaders().get(HttpHeaders.CONTENT_DISPOSITION));
+        assertNotNull(responseEntity.getBody());
+        assertNotNull(responseEntity.getHeaders().get("file-signature"));
+        assertNotNull(responseEntity.getHeaders().get(HttpHeaders.CONTENT_DISPOSITION));
     }
     
     @Test
@@ -303,13 +303,13 @@ public class SyncMasterDataServiceHelperTest {
 
         ResponseEntity responseEntity = syncMasterDataService.getClientSettingsJsonFile("LOCATIONHIERARCHY",
                 "41:3a:ed:6d:38:a0:28:36:72:a6:75:08:8a:41:3c:a3:4f:48:72:6f:c8:fb:29:dd:53:bd:6f:12:70:9b:e3:29");
-        Assert.assertNotNull(responseEntity.getBody());
-        Assert.assertNotNull(responseEntity.getHeaders().get("file-signature"));
-        Assert.assertNotNull(responseEntity.getHeaders().get(HttpHeaders.CONTENT_DISPOSITION));
+        assertNotNull(responseEntity.getBody());
+        assertNotNull(responseEntity.getHeaders().get("file-signature"));
+        assertNotNull(responseEntity.getHeaders().get(HttpHeaders.CONTENT_DISPOSITION));
     }
 
     @Test
-    public void convertTemplateEntityToDto_withValidInput_thenPass(){
+    public void convertTemplateEntityToDto_withValidInput_thenSuccess(){
         List<TemplateDto> templateDtos = new ArrayList<>();
         TemplateDto templateDto = new TemplateDto();
         templateDto.setId("1");
@@ -339,11 +339,13 @@ public class SyncMasterDataServiceHelperTest {
         template.setFileText("text");
         templateList.add(template);
 
-        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertTemplateEntityToDto",templateList);
+        List<TemplateDto> result = (List<TemplateDto>) ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertTemplateEntityToDto",templateList);
+        assertNotNull(result);
+        assertEquals(templateList.size(), result.size());
     }
 
     @Test
-    public void convertTemplateFileFormatEntityToDto_withValidInput_thenPass(){
+    public void convertTemplateFileFormatEntityToDto_withValidInput_thenSuccess(){
         List<TemplateFileFormatDto> templateFileFormatDtos = new ArrayList<>();
         TemplateFileFormatDto templateFileFormatDto = new TemplateFileFormatDto();
         templateFileFormatDto.setCode("code");
@@ -362,11 +364,13 @@ public class SyncMasterDataServiceHelperTest {
         templateFileFormat.setIsDeleted(false);
         templateTypesList.add(templateFileFormat);
 
-        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertTemplateFileFormatEntityToDto",templateTypesList);
+        List<TemplateDto> result = (List<TemplateDto>) ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertTemplateFileFormatEntityToDto",templateTypesList);
+        assertNotNull(result);
+        assertEquals(templateTypesList.size(), result.size());
     }
 
     @Test
-    public void convertPostReasonCategoryEntityToDto_withValidInput_thenPass(){
+    public void convertPostReasonCategoryEntityToDto_withValidInput_thenSuccess(){
         List<PostReasonCategoryDto> postReasonCategoryDtos = new ArrayList<>();
         PostReasonCategoryDto postReasonCategoryDto = new PostReasonCategoryDto();
         postReasonCategoryDto.setCode("code");
@@ -385,11 +389,13 @@ public class SyncMasterDataServiceHelperTest {
         reasonCategory.setIsActive(true);
         reasons.add(reasonCategory);
 
-        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertPostReasonCategoryEntityToDto",reasons);
+        List<PostReasonCategoryDto> result = (List<PostReasonCategoryDto>) ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertPostReasonCategoryEntityToDto",reasons);
+        assertNotNull(result);
+        assertEquals(reasons.size(), result.size());
     }
 
     @Test
-    public void convertReasonListEntityToDto_withValidInput_thenPass(){
+    public void convertReasonListEntityToDto_withValidInput_thenSuccess(){
         List<ReasonListDto> reasonListDtos = new ArrayList<>();
         ReasonListDto reasonListDto = new ReasonListDto();
         reasonListDto.setCode("code");
@@ -408,11 +414,13 @@ public class SyncMasterDataServiceHelperTest {
         reasonList.setRsnCatCode("rsn");
         reasons.add(reasonList);
 
-        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertReasonListEntityToDto",reasons);
+        List<ReasonListDto> result = (List<ReasonListDto>) ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertReasonListEntityToDto",reasons);
+        assertNotNull(result);
+        assertEquals(reasons.size(), result.size());
     }
 
     @Test
-    public void convertTemplateTypeEntityToDto_withValidInput_thenPass(){
+    public void convertTemplateTypeEntityToDto_withValidInput_thenSuccess(){
         List<TemplateTypeDto> templateTypeDtos = new ArrayList<>();
         TemplateTypeDto templateTypeDto = new TemplateTypeDto();
         templateTypeDto.setCode("code");
@@ -427,11 +435,13 @@ public class SyncMasterDataServiceHelperTest {
         templateType.setLangCode("eng");
         templateTypesList.add(templateType);
 
-        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertTemplateTypeEntityToDto",templateTypesList);
+        List<TemplateDto> result = (List<TemplateDto>) ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertTemplateTypeEntityToDto",templateTypesList);
+        assertNotNull(result);
+        assertEquals(templateTypesList.size(), result.size());
     }
 
     @Test
-    public void convertAppAuthMethodEntityToDto_withValidInput_thenPass(){
+    public void convertAppAuthMethodEntityToDto_withValidInput_thenSuccess(){
         List<AppAuthenticationMethodDto> appAuthenticationMethodDtos = new ArrayList<>();
         AppAuthenticationMethodDto appAuthenticationMethodDto = new AppAuthenticationMethodDto();
         appAuthenticationMethodDto.setAppId("id");
@@ -456,11 +466,13 @@ public class SyncMasterDataServiceHelperTest {
         appAuthenticationMethod.setRoleCode("role");
         appAuthenticationMethods.add(appAuthenticationMethod);
 
-        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertAppAuthMethodEntityToDto",appAuthenticationMethods);
+        List<AppAuthenticationMethodDto> result = (List<AppAuthenticationMethodDto>) ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertAppAuthMethodEntityToDto",appAuthenticationMethods);
+        assertNotNull(result);
+        assertEquals(appAuthenticationMethods.size(), result.size());
     }
 
     @Test
-    public void convertAppRolePrioritiesToDto_withValidInput_thenPass(){
+    public void convertAppRolePrioritiesToDto_withValidInput_thenSuccess(){
         List<AppRolePriorityDto> appAuthenticationMethods = new ArrayList<>();
         AppRolePriorityDto appRolePriorityDto = new AppRolePriorityDto();
         appRolePriorityDto.setAppId("id");
@@ -479,11 +491,13 @@ public class SyncMasterDataServiceHelperTest {
         appRolePriority.setRoleCode("code");
         appRolePriorities.add(appRolePriority);
 
-        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertAppRolePrioritiesToDto",appRolePriorities);
+        List<AppRolePriorityDto> result = (List<AppRolePriorityDto>) ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertAppRolePrioritiesToDto",appRolePriorities);
+        assertNotNull(result);
+        assertEquals(appRolePriorities.size(), result.size());
     }
 
     @Test
-    public void convertScreenAuthorizationToDto_withValidInput_thenPass(){
+    public void convertScreenAuthorizationToDto_withValidInput_thenSuccess(){
         List<ScreenAuthorizationDto> screenAuthorizationDtos = new ArrayList<>();
         ScreenAuthorizationDto screenAuthorizationDto = new ScreenAuthorizationDto();
         screenAuthorizationDto.setScreenId("id");
@@ -502,11 +516,13 @@ public class SyncMasterDataServiceHelperTest {
         screenAuthorization.setIsPermitted(true);
         screenAuthorizationList.add(screenAuthorization);
 
-        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertScreenAuthorizationToDto",screenAuthorizationList);
+        List<ScreenAuthorizationDto> result = (List<ScreenAuthorizationDto>) ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertScreenAuthorizationToDto",screenAuthorizationList);
+        assertNotNull(result);
+        assertEquals(screenAuthorizationList.size(), result.size());
     }
 
     @Test
-    public void convertprocessListEntityToDto_withValidInput_thenPass(){
+    public void convertprocessListEntityToDto_withValidInput_thenSuccess(){
         List<ProcessListDto> processListDtos = new ArrayList<>();
         ProcessListDto processListDto = new ProcessListDto();
         processListDto.setId("id");
@@ -525,11 +541,13 @@ public class SyncMasterDataServiceHelperTest {
         processList1.setDescr("description");
         processList.add(processList1);
 
-        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertprocessListEntityToDto",processList);
+        List<ProcessListDto> result = (List<ProcessListDto>) ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertprocessListEntityToDto",processList);
+        assertNotNull(result);
+        assertEquals(processList.size(), result.size());
     }
 
     @Test
-    public void convertSyncJobDefEntityToDto_withValidInput_thenPass(){
+    public void convertSyncJobDefEntityToDto_withValidInput_thenSuccess(){
         List<SyncJobDefDto> syncJobDefDtos = new ArrayList<>();
         SyncJobDefDto syncJobDefDto = new SyncJobDefDto();
         syncJobDefDto.setId("id");
@@ -548,11 +566,13 @@ public class SyncMasterDataServiceHelperTest {
         syncJobDef.setApiName("api");
         syncJobDefs.add(syncJobDef);
 
-        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertSyncJobDefEntityToDto",syncJobDefs);
+        List<SyncJobDefDto> result = (List<SyncJobDefDto>) ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertSyncJobDefEntityToDto",syncJobDefs);
+        assertNotNull(result);
+        assertEquals(syncJobDefs.size(), result.size());
     }
 
     @Test
-    public void convertScreenDetailToDto_withValidInput_thenPass(){
+    public void convertScreenDetailToDto_withValidInput_thenSuccess(){
         List<ScreenDetailDto> screenDetailDtos = new ArrayList<>();
         ScreenDetailDto screenDetailDto = new ScreenDetailDto();
         screenDetailDto.setAppId("id");
@@ -570,11 +590,13 @@ public class SyncMasterDataServiceHelperTest {
         screenDetail.setDescr("description");
         screenDetails.add(screenDetail);
 
-        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertScreenDetailToDto",screenDetails);
+        List<ScreenDetailDto> result = (List<ScreenDetailDto>) ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertScreenDetailToDto",screenDetails);
+        assertNotNull(result);
+        assertEquals(screenDetails.size(), result.size());
     }
 
     @Test
-    public void convertPermittedConfigEntityToDto_withValidInput_thenPass(){
+    public void convertPermittedConfigEntityToDto_withValidInput_thenSuccess(){
         List<PermittedConfigDto> permittedConfigDtos = new ArrayList<>();
         PermittedConfigDto permittedConfigDto = new PermittedConfigDto();
         permittedConfigDto.setCode("code");
@@ -592,7 +614,9 @@ public class SyncMasterDataServiceHelperTest {
         permittedLocalConfig.setIsActive(true);
         PermittedLocalConfigList.add(permittedLocalConfig);
 
-        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertPermittedConfigEntityToDto",PermittedLocalConfigList);
+        List<PermittedConfigDto> result = (List<PermittedConfigDto>) ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertPermittedConfigEntityToDto",PermittedLocalConfigList);
+        assertNotNull(result);
+        assertEquals(PermittedLocalConfigList.size(), result.size());
     }
 
     @Test (expected = RequestException.class)
@@ -614,56 +638,56 @@ public class SyncMasterDataServiceHelperTest {
     }
 
     @Test
-    public void convertRegistrationCenterToDto_withEmptyList_thenPass(){
+    public void convertRegistrationCenterToDto_withEmptyList_thenSuccess(){
         List<RegistrationCenter> list = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertRegistrationCenterToDto",list);
     }
 
     @Test
-    public void convertEntityToHoliday_withEmptyHoliday_thenPass(){
+    public void convertEntityToHoliday_withEmptyHoliday_thenSuccess(){
         List<Holiday> holidays = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertEntityToHoliday",holidays);
     }
 
     @Test
-    public void convertBlocklistedWordsEntityToDto_withEmptyBlockListedWords_thenPass(){
+    public void convertBlocklistedWordsEntityToDto_withEmptyBlockListedWords_thenSuccess(){
         List<BlocklistedWords> words = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertBlocklistedWordsEntityToDto",words);
     }
 
     @Test
-    public void convertDocumentTypeEntityToDto_withEmptyDocumentTypes_thenPass(){
+    public void convertDocumentTypeEntityToDto_withEmptyDocumentTypes_thenSuccess(){
         List<DocumentType> documentTypes = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertDocumentTypeEntityToDto",documentTypes);
     }
 
     @Test
-    public void convertLocationsEntityToDto_withEmptyLocations_thenPass(){
+    public void convertLocationsEntityToDto_withEmptyLocations_thenSuccess(){
         List<Location> locations = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertLocationsEntityToDto",locations);
     }
 
     @Test
-    public void convertValidDocumentEntityToDtowithEmptyValidDocuments_thenPass(){
+    public void convertValidDocumentEntityToDtoWithEmptyValidDocuments_thenSuccess(){
         List<ValidDocument> validDocuments = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertValidDocumentEntityToDto",validDocuments);
     }
 
     @Test
-    public void convertApplicantValidDocumentEntityToDtowithEmptyApplicantValidDocuments_thenPass(){
+    public void convertApplicantValidDocumentEntityToDtoWithEmptyApplicantValidDocuments_thenSuccess(){
         List<ApplicantValidDocument> applicantValidDocuments = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertApplicantValidDocumentEntityToDto",applicantValidDocuments);
     }
 
     @Test
-    public void convertLanguageEntityToDtowithEmptyLanguageList_thenPass(){
+    public void convertLanguageEntityToDtoWithEmptyLanguageList_thenSuccess(){
         List<Language> languageList = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertLanguageEntityToDto",languageList);

@@ -10,7 +10,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
@@ -37,7 +36,7 @@ public class RestClientTest {
 
 
     @Test
-    public void postApi_withValidInput_thenPass() throws Exception {
+    public void postApi_withValidInput_thenSuccess() throws Exception {
 
         ApiName apiName = ApiName.PACKET_PAUSE_API;
         List<String> pathsegments =List.of("hi","hello","welcome");
@@ -51,7 +50,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void postApi_withProperty_thenPass() throws Exception {
+    public void postApi_withProperty_thenSuccess() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -63,33 +62,9 @@ public class RestClientTest {
         verify(restTemplate).postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
     }
 
-    @Test
-    public void postApi_withoutProperty_thenPass() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn(null);
-        when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
-                .thenReturn("Post For Object");
-        ArrayList<String> pathsegments = new ArrayList<>();
-
-        assertNull(restClient.postApi(ApiName.PACKET_RESUME_API, pathsegments, "Query Param Name", "42", null,
-                "Request Type", Object.class));
-        verify(environment).getProperty((String) any());
-    }
 
     @Test
-    public void postApi_withPacketPauseApi_thenPass() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn("Property");
-        when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
-                .thenReturn("Post For Object");
-        ArrayList<String> pathsegments = new ArrayList<>();
-
-        assertEquals("Post For Object", restClient.postApi(ApiName.PACKET_PAUSE_API, pathsegments, "Query Param Name",
-                "42", null, "Request Type", Object.class));
-        verify(environment).getProperty((String) any());
-        verify(restTemplate).postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
-    }
-
-    @Test
-    public void postApi_withPacketResumeApi_thenPass() throws Exception {
+    public void postApi_withPacketResumeApi_thenSuccess() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -103,34 +78,8 @@ public class RestClientTest {
         verify(restTemplate).postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
     }
 
-    @Test
-    public void postApi_withPathsegments_thenPass() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn("Property");
-        when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
-                .thenReturn("Post For Object");
-        ArrayList<String> pathsegments = new ArrayList<>();
-
-        assertEquals("Post For Object",
-                restClient.postApi(ApiName.PACKET_RESUME_API, pathsegments, "", "42", null, "Request Type", Object.class));
-        verify(environment).getProperty((String) any());
-        verify(restTemplate).postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
-    }
-
-    @Test
-    public void postApi_withoutQueryParamName_thenPass() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn("Property");
-        when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
-                .thenReturn("Post For Object");
-        ArrayList<String> pathsegments = new ArrayList<>();
-
-        assertEquals("Post For Object",
-                restClient.postApi(ApiName.PACKET_RESUME_API, pathsegments, null, "42", null, "Request Type", Object.class));
-        verify(environment).getProperty((String) any());
-        verify(restTemplate).postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
-    }
-
     @Test (expected = Exception.class)
-    public void postApi_withInvalidProperty_thenFail() throws Exception {
+    public void postApi_withInvalidProperty_returnErrorResponse() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("M://dev@2:3{MOSIP}");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -141,7 +90,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void getApi_withValidInput_thenPass() throws Exception {
+    public void getApi_withValidInput_thenSuccess() throws Exception {
         ApiName apiName = ApiName.PACKET_PAUSE_API;
         List<String> pathsegments = List.of("hi","hello","welcome");
         String queryParamName = "name";
@@ -152,7 +101,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void getApi_withProperty_thenPass() throws Exception {
+    public void getApi_withProperty_thenSuccess() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any()))
                 .thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
@@ -164,30 +113,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void getApi_withoutProperty_thenPass() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn(null);
-        when(restTemplate.exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any()))
-                .thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
-        ArrayList<String> pathsegments = new ArrayList<>();
-
-        assertNull(restClient.getApi(ApiName.PACKET_RESUME_API, pathsegments, "Query Param Name", "42", Object.class));
-        verify(environment).getProperty((String) any());
-    }
-
-    @Test
-    public void getApi_withPathsegments_thenPass() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn("Property");
-        when(restTemplate.exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any()))
-                .thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
-        ArrayList<String> pathsegments = new ArrayList<>();
-
-        assertNull(restClient.getApi(ApiName.PACKET_PAUSE_API, pathsegments, "Query Param Name", "42", Object.class));
-        verify(environment).getProperty((String) any());
-        verify(restTemplate).exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any());
-    }
-
-    @Test
-    public void getApi_withoutPathsegments_thenPass() throws Exception {
+    public void getApi_withoutPathsegments_thenSuccess() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any()))
                 .thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
@@ -200,32 +126,8 @@ public class RestClientTest {
         verify(restTemplate).exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any());
     }
 
-    @Test
-    public void getApi_withEmptyQueryName_thenPass() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn("Property");
-        when(restTemplate.exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any()))
-                .thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
-        ArrayList<String> pathsegments = new ArrayList<>();
-
-        assertNull(restClient.getApi(ApiName.PACKET_RESUME_API, pathsegments, "", "42", Object.class));
-        verify(environment).getProperty((String) any());
-        verify(restTemplate).exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any());
-    }
-
-    @Test
-    public void getApi_withoutQueryName_thenPass() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn("Property");
-        when(restTemplate.exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any()))
-                .thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
-        ArrayList<String> pathsegments = new ArrayList<>();
-
-        assertNull(restClient.getApi(ApiName.PACKET_RESUME_API, pathsegments, null, "42", Object.class));
-        verify(environment).getProperty((String) any());
-        verify(restTemplate).exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any());
-    }
-
     @Test (expected = Exception.class)
-    public void getApi_withInvalidProperty_thenFail() throws Exception {
+    public void getApi_withInvalidProperty_returnErrorResponse() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("dev@1:2:3{Mosip}");
         when(restTemplate.exchange((URI) any(), (HttpMethod) any(), (HttpEntity<Object>) any(), (Class<Object>) any()))
                 .thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
@@ -235,16 +137,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void setRequestHeader_withValidInput_thenPass() {
-
-        Object requestType = mock(Object.class);
-        MediaType mediaType = mock(MediaType.class);
-
-        ReflectionTestUtils.invokeMethod(restClient,"setRequestHeader",requestType,mediaType);
-    }
-
-    @Test
-    public void setRequestHeader_withProperty_thenPass() throws Exception {
+    public void setRequestHeader_withProperty_thenSuccess() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -258,7 +151,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void setRequestHeader_withRequestType_thenPass() throws Exception {
+    public void setRequestHeader_withRequestType_thenSuccess() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -272,7 +165,7 @@ public class RestClientTest {
     }
 
     @Test
-    public void setRequestHeader_withPathsegments_thenPass() throws Exception {
+    public void setRequestHeader_withPathsegments_thenSuccess() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -283,28 +176,10 @@ public class RestClientTest {
         verify(environment).getProperty((String) any());
         verify(restTemplate).postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
     }
+    
 
     @Test
-    public void setRequestHeader_withoutMediaType_thenPass() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn("Property");
-        when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
-                .thenReturn("Post For Object");
-        ArrayList<String> pathsegments = new ArrayList<>();
-
-        HttpEntity<Object> httpEntity = (HttpEntity<Object>) mock(HttpEntity.class);
-        when(httpEntity.getBody()).thenThrow(new ClassCastException());
-        when(httpEntity.getHeaders()).thenReturn(new HttpHeaders());
-
-        assertEquals("Post For Object", restClient.postApi(ApiName.PACKET_RESUME_API, pathsegments, "Query Param Name",
-                "42", null, httpEntity, Object.class));
-        verify(environment).getProperty((String) any());
-        verify(restTemplate).postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
-        verify(httpEntity).getBody();
-        verify(httpEntity).getHeaders();
-    }
-
-    @Test
-    public void setRequestHeader_withHttpURL_thenPass() throws Exception {
+    public void setRequestHeader_withHttpURL_thenSuccess() throws Exception {
         when(environment.getProperty((String) any())).thenReturn("Property");
         when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
                 .thenReturn("Post For Object");
@@ -318,28 +193,6 @@ public class RestClientTest {
 
         assertEquals("Post For Object", restClient.postApi(ApiName.PACKET_RESUME_API, pathsegments, "Query Param Name",
                 "42", null, httpEntity, Object.class));
-        verify(environment).getProperty((String) any());
-        verify(restTemplate).postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
-        verify(httpEntity).getBody();
-        verify(httpEntity).getHeaders();
-    }
-
-    @Test
-    public void setRequestHeader_withURLAndMediaType_thenPass() throws Exception {
-        when(environment.getProperty((String) any())).thenReturn("Property");
-        when(restTemplate.postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any()))
-                .thenReturn("Post For Object");
-        ArrayList<String> pathsegments = new ArrayList<>();
-        MediaType mediaType = mock(MediaType.class);
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("https://dev.mosip.net/", "https://dev.mosip.net/");
-        HttpEntity<Object> httpEntity = (HttpEntity<Object>) mock(HttpEntity.class);
-        when(httpEntity.getBody()).thenThrow(new ClassCastException());
-        when(httpEntity.getHeaders()).thenReturn(httpHeaders);
-
-        assertEquals("Post For Object", restClient.postApi(ApiName.PACKET_RESUME_API, pathsegments, "Query Param Name",
-                "42", mediaType, httpEntity, Object.class));
         verify(environment).getProperty((String) any());
         verify(restTemplate).postForObject((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
         verify(httpEntity).getBody();

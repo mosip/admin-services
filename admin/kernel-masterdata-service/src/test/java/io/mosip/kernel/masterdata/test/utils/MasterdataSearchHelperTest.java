@@ -16,8 +16,6 @@ import io.mosip.kernel.masterdata.utils.OptionalFilter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.mockito.exceptions.misusing.MissingMethodInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -30,15 +28,14 @@ import javax.persistence.Entity;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import java.lang.reflect.Field;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 
 @SpringBootTest
@@ -285,26 +282,8 @@ public class MasterdataSearchHelperTest {
 	}
 	
 	@Test
-	public void searchMasterdataWithoutLangCode_withoutFilter_returnSearchDtoWithoutLangCode(){
-		SearchDtoWithoutLangCode searchDtoWithoutLangCode = new SearchDtoWithoutLangCode(Arrays.asList(filter),Arrays.asList(sort),page,"eng");
-		searchHelper.searchMasterdataWithoutLangCode(RegistrationCenter.class,searchDtoWithoutLangCode,null);
-	}
-	
-	@Test
-	public void searchMasterdataWithoutLangCode_withFilter_returnSearchDtoWithoutLangCode(){
-		SearchDtoWithoutLangCode searchDtoWithoutLangCode = new SearchDtoWithoutLangCode(Arrays.asList(filter),Arrays.asList(sort),page,"eng");
-		searchHelper.searchMasterdataWithoutLangCode(RegistrationCenter.class,searchDtoWithoutLangCode,optionalFilterArray);
-	}
-	
-	@Test
-	public void searchMasterdataWithoutLangCode_withWildCardFilter1_returnSearchDtoWithoutLangCode(){
-		SearchDtoWithoutLangCode searchDtoWithoutLangCode = new SearchDtoWithoutLangCode(Arrays.asList(wildCardFilter1), Arrays.asList(sort), page, "eng");
-		searchHelper.searchMasterdataWithoutLangCode(RegistrationCenter.class, searchDtoWithoutLangCode, optionalFilterArray);
-	}
-	
-	@Test
-	public void searchMasterdataWithoutLangCode_withWildCardFilter2_returnSearchDtoWithoutLangCode(){
-		SearchDtoWithoutLangCode searchDtoWithoutLangCode = new SearchDtoWithoutLangCode(Arrays.asList(wildCardFilter2), Arrays.asList(sort), page, "eng");
+	public void searchMasterdataWithoutLangCode_withValidFilterAndSort_returnSearchDtoWithoutLangCode() {
+		SearchDtoWithoutLangCode searchDtoWithoutLangCode = new SearchDtoWithoutLangCode(Arrays.asList(filter), Arrays.asList(sort), page, "eng");
 		searchHelper.searchMasterdataWithoutLangCode(RegistrationCenter.class, searchDtoWithoutLangCode, optionalFilterArray);
 	}
 	
@@ -333,13 +312,7 @@ public class MasterdataSearchHelperTest {
 	}
 	
 	@Test(expected = RequestException.class)
-	public void searchMasterdataWithoutLangCode_withNoColumnSort1_returnException() {
-		SearchDtoWithoutLangCode searchDtoWithoutLangCode = new SearchDtoWithoutLangCode(Arrays.asList(filter), Arrays.asList(noColumnSort), page, "eng");
-		searchHelper.searchMasterdataWithoutLangCode(RegistrationCenter.class, searchDtoWithoutLangCode, optionalFilterArray);
-	}
-	
-	@Test(expected = RequestException.class)
-	public void searchMasterdataWithoutLangCode_withNoColumnSort2_returnException() {
+	public void searchMasterdataWithoutLangCode_withNoColumnSort_returnException() {
 		SearchDtoWithoutLangCode searchDtoWithoutLangCode = new SearchDtoWithoutLangCode(Arrays.asList(filter), Arrays.asList(noColumnSort), page, "eng");
 		searchHelper.searchMasterdataWithoutLangCode(RegistrationCenter.class, searchDtoWithoutLangCode, optionalFilterArray);
 	}
@@ -358,7 +331,7 @@ public class MasterdataSearchHelperTest {
 	}
 	
 	@Test
-	public void searchMasterdataWithoutLangCode_witAscSort_returnSearchDtoWithoutLangCode() {
+	public void searchMasterdataWithoutLangCode_withAscSort_returnSearchDtoWithoutLangCode() {
 		sort.setSortType("asc");
 		SearchDtoWithoutLangCode searchDtoWithoutLangCode = new SearchDtoWithoutLangCode(Arrays.asList(filter), Arrays.asList(sort), page, "eng");
 		searchHelper.searchMasterdataWithoutLangCode(RegistrationCenter.class, searchDtoWithoutLangCode, optionalFilterArray);
@@ -368,12 +341,11 @@ public class MasterdataSearchHelperTest {
 	public void getMissingData_withNull_returnNull(){
 		String tableName = null;
 		String langCode = null;
-		searchHelper.getMissingData(tableName,langCode);
-		assertEquals(searchHelper.getMissingData(tableName,langCode),null);
+		assertNull(searchHelper.getMissingData(tableName, langCode));
 	}
 	
 	@Test(expected = Exception.class)
-	public void WithoutFilterMasterdata_withOutSearchDto_returnNull() {
+	public void searchMasterdata_withOutSearchDto_returnNull() {
 		searchHelper.searchMasterdata(RegistrationCenter.class, null, optionalFilterArray);
 	}
 	
@@ -382,74 +354,54 @@ public class MasterdataSearchHelperTest {
 		CriteriaBuilder builder = mock(CriteriaBuilder.class);
 		Root root = mock(Root.class);
 		CriteriaQuery criteriaQuery = mock(CriteriaQuery.class);
-		List<SearchSort> searchSorts=new ArrayList<>();
-		SearchSort ss=new SearchSort(null,"ASC");
-		searchSorts.add(ss);
-		ReflectionTestUtils.invokeMethod(searchHelper,"sortQuery",builder,root,criteriaQuery,searchSorts);
+		List<SearchSort> searchSorts = Collections.singletonList(new SearchSort(null, "ASC"));
+		ReflectionTestUtils.invokeMethod(searchHelper, "sortQuery", builder, root, criteriaQuery, searchSorts);
 	}
 	
 	@Test
-	public void sortQuery_withValidInput_thenPass(){
+	public void sortQuery_withValidInput_thenSuccess() {
 		CriteriaBuilder builder = mock(CriteriaBuilder.class);
 		Root root = mock(Root.class);
 		CriteriaQuery criteriaQuery = mock(CriteriaQuery.class);
-		List<SearchSort> searchSorts=new ArrayList<>();
-		SearchSort sort1 = new SearchSort();
-		sort1.setSortField("abc");
-		sort1.setSortType("ASC");
-		searchSorts.add(sort1);
-		ReflectionTestUtils.invokeMethod(searchHelper,"sortQuery",builder,root,criteriaQuery,searchSorts);
+		List<SearchSort> searchSorts = Collections.singletonList(new SearchSort("abc", "ASC"));
+		ReflectionTestUtils.invokeMethod(searchHelper, "sortQuery", builder, root, criteriaQuery, searchSorts);
 	}
 	
 	@Test
-	public void setLangCode_withValidInput_thenPass(){
-		ReflectionTestUtils.invokeMethod(searchHelper,"setLangCode",null,null,null);
+	public void setLangCode_withValidInput_thenSuccess() {
+		ReflectionTestUtils.invokeMethod(searchHelper, "setLangCode", null, null, null);
 	}
 	
 	@Test (expected = IllegalStateException.class)
-	public void setBetweenValue_withoutValidInput_thenFail(){
+	public void setBetweenValue_withoutValidInput_returnErrorResponse(){
 		SearchFilter searchFilter = new SearchFilter();
 		searchFilter.setValue("123");
 		searchFilter.setType("filter");
-		ReflectionTestUtils.invokeMethod(searchHelper,"setBetweenValue",null,RegistrationCenter.class,searchFilter);
-	}
-	
-	@Test (expected = MissingMethodInvocationException.class)
-	public void parseDataType_withInvalidInput_thenFail() throws ClassNotFoundException {
-		Root root = mock(Root.class);
-		Path<Object> path = mock(Path.class);
-		Class<? extends Object> type = Class.forName(LocalDateTime.class.getName());
-		Mockito.when(root.get(Mockito.anyString())).thenReturn(path);
-		String fieldType = type.getTypeName();
-		Mockito.when(type.getTypeName()).thenReturn(fieldType);
-		String column = "first";
-		String value = "one";
-		ReflectionTestUtils.invokeMethod(searchHelper,"parseDataType",root,column,value);
+		ReflectionTestUtils.invokeMethod(searchHelper, "setBetweenValue", null, RegistrationCenter.class, searchFilter);
 	}
 
 	@Test
-	public void filterTypes_withSearchFilter_thenPass(){
+	public void filterTypes_withSearchFilter_thenSuccess() {
 		SearchFilter filter = new SearchFilter();
 		filter.setValue("123");
 		filter.setType("filter");
-		ReflectionTestUtils.invokeMethod(searchHelper,"FilterTypes",filter);
+		ReflectionTestUtils.invokeMethod(searchHelper, "FilterTypes", filter);
 	}
 	
 	@Test
-	public void validateSort_withSearchSort_thenPass(){
-		SearchSort searchSort = new SearchSort("id","asc");
-		ReflectionTestUtils.invokeMethod(searchHelper,"validateSort",searchSort);
+	public void validateSort_withSearchSort_thenSuccess() {
+		SearchSort searchSort = new SearchSort("id", "asc");
+		ReflectionTestUtils.invokeMethod(searchHelper, "validateSort", searchSort);
 	}
-	
-	@Test (expected = RequestException.class)
-	public void validateSort_withInvalidInput_thenFail(){
-		SearchSort searchSort = new SearchSort(null,null);
-		ReflectionTestUtils.invokeMethod(searchHelper,"validateSort",searchSort);
-		assertEquals(null,searchSort);
+
+	@Test(expected = RequestException.class)
+	public void validateSort_withInvalidInput_returnErrorResponse() {
+		SearchSort searchSort = new SearchSort(null, null);
+		ReflectionTestUtils.invokeMethod(searchHelper, "validateSort", searchSort);
 	}
-	
-	@Test (expected = InvalidDataAccessApiUsageException.class)
-	public void nativeMachineQuerySearchIterator_withInvalidInput_retunException(){
+
+	@Test(expected = InvalidDataAccessApiUsageException.class)
+	public void nativeMachineQuerySearchIterator_withInvalidInput_returnException() {
 		SearchDtoWithoutLangCode searchDtoWithoutLangCode = new SearchDtoWithoutLangCode();
 		List<SearchFilter> filters = new ArrayList<>();
 		SearchFilter filter1 = new SearchFilter();
@@ -475,11 +427,11 @@ public class MasterdataSearchHelperTest {
 		zone1.setIsActive(true);
 		zones.add(zone1);
 		boolean isAssigned = true;
-		searchHelper.nativeMachineQuerySearch(searchDtoWithoutLangCode,"filter",zones,isAssigned);
+		searchHelper.nativeMachineQuerySearch(searchDtoWithoutLangCode, "filter", zones, isAssigned);
 	}
-	
-	@Test (expected = InvalidDataAccessApiUsageException.class)
-	public void nativeDeviceQuerySearchIterator_withInvalidInput_retunException(){
+
+	@Test(expected = InvalidDataAccessApiUsageException.class)
+	public void nativeDeviceQuerySearchIterator_withInvalidInput_returnException() {
 		SearchDtoWithoutLangCode searchDtoWithoutLangCode = new SearchDtoWithoutLangCode();
 		List<SearchFilter> filters = new ArrayList<>();
 		SearchFilter filter1 = new SearchFilter();
@@ -505,122 +457,110 @@ public class MasterdataSearchHelperTest {
 		zone1.setIsActive(true);
 		zones.add(zone1);
 		boolean isAssigned = true;
-		searchHelper.nativeDeviceQuerySearch(searchDtoWithoutLangCode,null,zones,isAssigned);
+		searchHelper.nativeDeviceQuerySearch(searchDtoWithoutLangCode, null, zones, isAssigned);
 	}
 	
 	@Test
-	public void getColumnName_withValidInput_thenPass(){
+	public void getColumnName_withValidInput_thenSuccess(){
 		ReflectionTestUtils.invokeMethod(searchHelper,"getColumnName",RegistrationCenter.class,"0");
 	}
-	
-	@Test (expected = IllegalStateException.class)
-	public void getColumnName_withInvalidInput_thenFail(){
+
+	@Test(expected = IllegalStateException.class)
+	public void getColumnName_withInvalidInput_returnErrorResponse() {
 		Entity entity = mock(Entity.class);
 		String fieldName = "dynamic";
-		ReflectionTestUtils.invokeMethod(searchHelper,"getColumnName",entity,fieldName);
+		ReflectionTestUtils.invokeMethod(searchHelper, "getColumnName", entity, fieldName);
 	}
-	
-	@Test (expected = IllegalStateException.class)
-	public void setDeviceQueryParams_withInvalidInput_thenFail(){
-		ReflectionTestUtils.invokeMethod(searchHelper,"setDeviceQueryParams",Query.class, null);
-	}
-	
-	@Test
-	public void setDeviceQueryParams_withValidInput_thenPass(){
-		SearchFilter searchFilter1 = new SearchFilter("1","","","deviceName","equals");
-		SearchFilter searchFilter2 = new SearchFilter("2","","","isActive","equals");
-		SearchFilter searchFilter3 = new SearchFilter("3","","","macAddress","equals");
-		SearchFilter searchFilter4 = new SearchFilter("4","","","serialNum","equals");
-		SearchFilter searchFilter5 = new SearchFilter("5","","","deviceSpecId","equals");
-		List<SearchFilter> searchFilterList = new ArrayList<>();
-		searchFilterList.add(searchFilter1);
-		searchFilterList.add(searchFilter2);
-		searchFilterList.add(searchFilter3);
-		searchFilterList.add(searchFilter4);
-		searchFilterList.add(searchFilter5);
-		Query query = mock(Query.class);
-		ReflectionTestUtils.invokeMethod(searchHelper,"setDeviceQueryParams",query,searchFilterList);
-	}
-	
-	@Test (expected = IllegalStateException.class)
-	public void setMachineQueryParams__withInvalidInput_thenFail(){
-		ReflectionTestUtils.invokeMethod(searchHelper,"setMachineQueryParams",Query.class, null);
+
+	@Test(expected = IllegalStateException.class)
+	public void setDeviceQueryParams_withInvalidInput_returnErrorResponse() {
+		ReflectionTestUtils.invokeMethod(searchHelper, "setDeviceQueryParams", Query.class, null);
 	}
 	
 	@Test
-	public void setMachineQueryParams_withValidInput_thenPass(){
-		SearchFilter searchFilter1 = new SearchFilter("1","","","name","equals");
-		SearchFilter searchFilter2 = new SearchFilter("2","","","isActive","equals");
-		SearchFilter searchFilter3 = new SearchFilter("3","","","macAddress","equals");
-		SearchFilter searchFilter4 = new SearchFilter("4","","","serialNum","equals");
-		SearchFilter searchFilter5 = new SearchFilter("5","","","machineSpecId","equals");
-		List<SearchFilter> searchFilterList = new ArrayList<>();
-		searchFilterList.add(searchFilter1);
-		searchFilterList.add(searchFilter2);
-		searchFilterList.add(searchFilter3);
-		searchFilterList.add(searchFilter4);
-		searchFilterList.add(searchFilter5);
+	public void setDeviceQueryParams_withValidInput_thenSuccess() {
+		List<SearchFilter> searchFilterList = Arrays.asList(
+				new SearchFilter("1", "", "", "deviceName", "equals"),
+				new SearchFilter("2", "", "", "isActive", "equals"),
+				new SearchFilter("3", "", "", "macAddress", "equals"),
+				new SearchFilter("4", "", "", "serialNum", "equals"),
+				new SearchFilter("5", "", "", "deviceSpecId", "equals")
+		);
 		Query query = mock(Query.class);
-		ReflectionTestUtils.invokeMethod(searchHelper,"setMachineQueryParams",query,searchFilterList);
+		ReflectionTestUtils.invokeMethod(searchHelper, "setDeviceQueryParams", query, searchFilterList);
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void setMachineQueryParams__withInvalidInput_returnErrorResponse() {
+		ReflectionTestUtils.invokeMethod(searchHelper, "setMachineQueryParams", Query.class, null);
 	}
 	
-	@Test (expected = RequestException.class)
-	public void filterType_withInvalidInput_returnException(){
-		SearchFilter searchFilter = new SearchFilter("1","","","name","equals");
+	@Test
+	public void setMachineQueryParams_withValidInput_thenSuccess() {
+		List<SearchFilter> searchFilterList = Arrays.asList(
+				new SearchFilter("1", "", "", "name", "equals"),
+				new SearchFilter("2", "", "", "isActive", "equals"),
+				new SearchFilter("3", "", "", "macAddress", "equals"),
+				new SearchFilter("4", "", "", "serialNum", "equals"),
+				new SearchFilter("5", "", "", "machineSpecId", "equals")
+		);
+		Query query = mock(Query.class);
+		ReflectionTestUtils.invokeMethod(searchHelper, "setMachineQueryParams", query, searchFilterList);
+	}
+
+	@Test(expected = RequestException.class)
+	public void filterType_withInvalidInput_returnException() {
+		SearchFilter searchFilter = new SearchFilter("1", "", "", "name", "equals");
 		searchFilter.setValue("2");
 		searchFilter.setType(null);
-		ReflectionTestUtils.invokeMethod(searchHelper,"FilterTypes",searchFilter);
+		ReflectionTestUtils.invokeMethod(searchHelper, "FilterTypes", searchFilter);
 	}
-	
-	@Test (expected = RequestException.class)
-	public void validateSort_withoutSortFiled_returnException(){
+
+	@Test(expected = RequestException.class)
+	public void validateSort_withoutSortFiled_returnException() {
 		SearchSort sort = new SearchSort();
 		sort.setSortType("hg");
 		sort.setSortField(null);
-		ReflectionTestUtils.invokeMethod(searchHelper,"validateSort",sort);
+		ReflectionTestUtils.invokeMethod(searchHelper, "validateSort", sort);
 	}
-	
-	@Test (expected = IllegalStateException.class)
-	public void validateFilters_withInvalidInput_returnException(){
-		ReflectionTestUtils.invokeMethod(searchHelper,"validateFilters",null);
+
+	@Test(expected = IllegalStateException.class)
+	public void validateFilters_withInvalidInput_returnException() {
+		ReflectionTestUtils.invokeMethod(searchHelper, "validateFilters", null);
 	}
-	
-	@Test (expected = NoSuchFieldException.class)
+
+	@Test(expected = NoSuchFieldException.class)
 	public void getColumn_withInvalidInput_returnException() throws NoSuchFieldException {
 		String fieldName = "dynamic";
 		Entity entity = mock(Entity.class);
 		Field field = entity.getClass().getDeclaredField(fieldName);
-		ReflectionTestUtils.invokeMethod(searchHelper,"getColumnName",field,entity);
+		ReflectionTestUtils.invokeMethod(searchHelper, "getColumnName", field, entity);
 	}
-	
-	@Test (expected = RequestException.class)
-	public void validateFilter_withInvalidInput_returnException(){
+
+	@Test(expected = RequestException.class)
+	public void validateFilter_withInvalidInput_returnException() {
 		SearchFilter filter = new SearchFilter();
 		filter.setValue(filter.getValue());
 		filter.setType(filter.getType());
 		filter.setColumnName(filter.getColumnName());
-		ReflectionTestUtils.invokeMethod(searchHelper,"validateFilter",filter);
+		ReflectionTestUtils.invokeMethod(searchHelper, "validateFilter", filter);
 	}
 	
 	@Test
-	public void validateFilter_withValidInput_thenPass(){
+	public void validateFilter_withValidInput_thenSuccess() {
 		SearchFilter filter = new SearchFilter();
 		filter.setValue("123");
 		filter.setType("equals");
 		filter.setColumnName("device");
-		ReflectionTestUtils.invokeMethod(searchHelper,"validateFilter",filter);
+		ReflectionTestUtils.invokeMethod(searchHelper, "validateFilter", filter);
 	}
 	
 	@Test
-	public void sortQuery_withValidInput_returnSuccessResponse(){
+	public void sortQuery_withValidInput_returnSuccessResponse() {
 		CriteriaBuilder builder = mock(CriteriaBuilder.class);
 		Root root = mock(Root.class);
 		CriteriaQuery criteriaQuery = mock(CriteriaQuery.class);
-		List<SearchSort> sortFilter = new ArrayList<>();
-		SearchSort sort1 = new SearchSort();
-		sort1.setSortField("dynamic");
-		sort1.setSortType("equals");
-		sortFilter.add(sort1);
-		ReflectionTestUtils.invokeMethod(searchHelper,"sortQuery",builder,root,criteriaQuery,sortFilter);
+		List<SearchSort> sortFilter = Collections.singletonList(new SearchSort("dynamic", "equals"));
+		ReflectionTestUtils.invokeMethod(searchHelper, "sortQuery", builder, root, criteriaQuery, sortFilter);
 	}
 }

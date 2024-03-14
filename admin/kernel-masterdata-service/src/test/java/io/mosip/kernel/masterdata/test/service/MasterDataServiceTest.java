@@ -28,7 +28,6 @@ import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.utils.*;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
-import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,18 +45,17 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
 /**
@@ -3061,7 +3059,7 @@ public class MasterDataServiceTest {
 	}
 
 	@Test
-	public void buildZoneFilter_validInput_returnZones(){
+	public void buildZoneFilter_withZoneList_returnSearchFilters() {
 		List<Zone> zones = new ArrayList<>();
 		Zone zone1 = new Zone();
 		zone1.setCode("java");
@@ -3074,28 +3072,24 @@ public class MasterDataServiceTest {
 		zone1.setIsActive(true);
 		zones.add(zone1);
 
-		List<SearchFilter> filters = new ArrayList<>();
-		SearchFilter filter1 = new SearchFilter();
-		filter1.setColumnName("name");
-		filter1.setValue("value");
-		filter1.setType("equals");
-		filters.add(filter1);
-
-		ReflectionTestUtils.invokeMethod(registrationCenterService,"buildZoneFilter",zones);
+		List<SearchFilter> filters = (List<SearchFilter>) ReflectionTestUtils.invokeMethod(registrationCenterService, "buildZoneFilter", zones);
+		assertNotNull(filters);
+		assertEquals(zones.size(), filters.size());
+		ReflectionTestUtils.invokeMethod(registrationCenterService, "buildZoneFilter", zones);
 	}
 
 	@Test
-	public void buildZoneFilter_validInput_returnZoneCode(){
+	public void buildZoneFilter_withZoneCode_returnSearchFilters() {
 		String zoneCode = "zone";
 		SearchFilter filter = new SearchFilter();
 		filter.setColumnName(MasterDataConstant.ZONE_CODE);
 		filter.setType(FilterTypeEnum.EQUALS.name());
 		filter.setValue(zoneCode);
-		ReflectionTestUtils.invokeMethod(registrationCenterService,"buildZoneFilter",zoneCode);
+		ReflectionTestUtils.invokeMethod(registrationCenterService, "buildZoneFilter", zoneCode);
 	}
 
 	@Test
-	public void updateWorkingNonWorking_validInput_returnWorkingNonWorkingDaysDto(){
+	public void updateWorkingNonWorking_withValidData_returnUpdatedWorkingNonWorkingDays() {
 		RegistrationCenter updRegistrationCenter = new RegistrationCenter();
 		updRegistrationCenter.setId("id");
 		updRegistrationCenter.setLangCode("eng");
@@ -3108,19 +3102,18 @@ public class MasterDataServiceTest {
 		updRegistrationCenter.setHolidayLocationCode("IND2023");
 		updRegistrationCenter.setZoneCode("zone");
 
-		Map<String, Boolean> workingNonWorkingDaysDto = new HashMap<>();
-		workingNonWorkingDaysDto.put(updRegistrationCenter.getId(),true);
+		Map<String, Boolean> workingNonWorkingDaysDto = Collections.singletonMap(updRegistrationCenter.getId(), true);
 
 		List<ServiceError> errors = new ArrayList<>();
 		ServiceError serviceError = new ServiceError();
 		serviceError.setErrorCode("errorCode");
 		serviceError.setMessage("message");
 
-		ReflectionTestUtils.invokeMethod(registrationCenterService,"updateWorkingNonWorking", updRegistrationCenter,workingNonWorkingDaysDto,errors);
+		ReflectionTestUtils.invokeMethod(registrationCenterService, "updateWorkingNonWorking", updRegistrationCenter, workingNonWorkingDaysDto, errors);
 	}
 
-	@Test (expected = DataNotFoundException.class)
-	public void findRegistrationCenterByHierarchyLevelandTextAndLanguageCodePaginated_withInvalidInput_returnException(){
+	@Test(expected = DataNotFoundException.class)
+	public void findRegistrationCenterByHierarchyLevelandTextAndLanguageCodePaginated_withInvalidInput_returnException() {
 		String langCode = "eng";
 		Short hierarchyLevel = (short)1;
 		String name = "name";
@@ -3130,200 +3123,26 @@ public class MasterDataServiceTest {
 		String orderBy = "Alphabet";
 
 		registrationCenterService.findRegistrationCenterByHierarchyLevelandTextAndLanguageCodePaginated
-				(langCode,hierarchyLevel,name,pageNumber,pageSize,sortBy,orderBy);
+				(langCode, hierarchyLevel, name, pageNumber, pageSize, sortBy, orderBy);
 	}
 
-	@Test (expected = DataNotFoundException.class)
-	public void updateRegistrationCenter_withEmptyResponse_returnException(){
+	@Test(expected = DataNotFoundException.class)
+	public void updateRegistrationCenter_withEmptyResponse_returnException() {
 		String id = "id";
 		boolean isActive = true;
 		StatusResponseDto response = new StatusResponseDto();
 		response.setStatus("Active");
 
-		registrationCenterService.updateRegistrationCenter(id,isActive);
+		registrationCenterService.updateRegistrationCenter(id, isActive);
 	}
 
-	@Test (expected = DataNotFoundException.class)
-	public void findRegistrationCenterByHierarchyLevelAndListTextAndlangCode_withEmptyNames_returnException(){
+	@Test(expected = DataNotFoundException.class)
+	public void findRegistrationCenterByHierarchyLevelAndListTextAndlangCode_withEmptyNames_returnException() {
 		String langCode = "eng";
 		Short hierarchyLevel = (short)1;
-		List<String> names = new ArrayList<>();
-		names.add("admin");
+		List<String> names = Collections.singletonList("admin");
 
-		registrationCenterService.findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(langCode,hierarchyLevel,names);
-	}
-
-
-					// ------	TO DO : WE NEED TO CHECK BELOW NULL POINTER EXCEPTION TEST CASES	------ //
-
-	//@Test
-	public void createExpHoliday01(){
-		List<ExceptionalHolidayPutPostDto> reqExceptionalHolidayDtos = new ArrayList<>();
-		ExceptionalHolidayPutPostDto exceptionalHolidayPutPostDto = new ExceptionalHolidayPutPostDto();
-		exceptionalHolidayPutPostDto.setExceptionHolidayDate("2019-07-06");
-		exceptionalHolidayPutPostDto.setExceptionHolidayName("Holy");
-		exceptionalHolidayPutPostDto.setExceptionHolidayReson("festival");
-		reqExceptionalHolidayDtos.add(exceptionalHolidayPutPostDto);
-
-		String holidayLocationCode = "IND2023";
-		RegistrationCenter registrationCenter = new RegistrationCenter();
-		registrationCenter.setId("id");
-		registrationCenter.setLangCode("eng");
-		registrationCenter.setName("name");
-		registrationCenter.setCenterTypeCode("centreType_code");
-		registrationCenter.setLatitude("latitude");
-		registrationCenter.setLongitude("longitude");
-		registrationCenter.setLocationCode("location_code");
-		registrationCenter.setContactPhone("8976512340");
-		registrationCenter.setHolidayLocationCode("IND2023");
-		registrationCenter.setZoneCode("zone");
-
-		List<LocalDate> dbHolidayList = new ArrayList<>();
-		LocalDate someDate = LocalDate.ofEpochDay(2019-07-06);
-		dbHolidayList.add(someDate);
-
-		Mockito.when(holidayRepository.findHolidayByLocationCode1(Mockito.anyString(),Mockito.anyString())).thenReturn(dbHolidayList);
-
-		RegExceptionalHoliday regExceptionalHoliday = new RegExceptionalHoliday();
-		regExceptionalHoliday.setRegistrationCenterId(registrationCenter.getId());
-		regExceptionalHoliday.setExceptionHolidayDate(LocalDate.parse(exceptionalHolidayPutPostDto.getExceptionHolidayDate()));
-		regExceptionalHoliday.setExceptionHolidayName(exceptionalHolidayPutPostDto.getExceptionHolidayName());
-		regExceptionalHoliday.setExceptionHolidayReson(exceptionalHolidayPutPostDto.getExceptionHolidayReson());
-		regExceptionalHoliday.setIsActive(true);
-
-		ReflectionTestUtils.invokeMethod(registrationCenterService,"createExpHoliday",reqExceptionalHolidayDtos,holidayLocationCode,registrationCenter);
-		assertEquals(registrationCenter.getHolidayLocationCode(),holidayLocationCode);
-		assertEquals(String.valueOf(!dbHolidayList.isEmpty()),!reqExceptionalHolidayDtos.isEmpty(),reqExceptionalHolidayDtos);
-		assertEquals(String.valueOf(regExceptionalHolidayRepository.findByRegIdAndExpHoliday(regExceptionalHoliday.getRegistrationCenterId(),
-				regExceptionalHoliday.getExceptionHolidayDate())),null,regExceptionalHolidayRepository.create(regExceptionalHoliday));
-		assertEquals(String.valueOf(regExceptionalHolidayRepository.findByRegIdAndExpHoliday(regExceptionalHoliday.getRegistrationCenterId(),
-				regExceptionalHoliday.getExceptionHolidayDate())),notNull(),regExceptionalHolidayRepository.update(regExceptionalHoliday));
-	}
-
-	//@Test
-	public void deleteExpHoliday01(){
-		RegistrationCenter updRegistrationCenter = new RegistrationCenter();
-		updRegistrationCenter.setId("id");
-		updRegistrationCenter.setLangCode("eng");
-		updRegistrationCenter.setName("name");
-		updRegistrationCenter.setCenterTypeCode("centreType_code");
-		updRegistrationCenter.setLatitude("latitude");
-		updRegistrationCenter.setLongitude("longitude");
-		updRegistrationCenter.setLocationCode("location_code");
-		updRegistrationCenter.setContactPhone("8976512340");
-		updRegistrationCenter.setHolidayLocationCode("IND2023");
-		updRegistrationCenter.setZoneCode("zone");
-
-		LocalDate dbHoliday = LocalDate.of(2006,07,06);
-
-		RegExceptionalHoliday regExceptionalHoliday = new RegExceptionalHoliday();
-		regExceptionalHoliday.setExceptionHolidayDate(dbHoliday);
-		regExceptionalHoliday.setExceptionHolidayName("random");
-		regExceptionalHoliday.setExceptionHolidayReson("Reason");
-		regExceptionalHoliday.setRegistrationCenterId("id");
-
-		Mockito.when(regExceptionalHolidayRepository.findByRegIdAndLangcodeAndExpHoliday(
-				updRegistrationCenter.getId(), updRegistrationCenter.getLangCode(), dbHoliday)).thenReturn(regExceptionalHoliday);
-				
-		ReflectionTestUtils.invokeMethod(registrationCenterService,"deleteExpHoliday",updRegistrationCenter,dbHoliday);
-	}
-
-	//@Test
-	public void validateZoneMachineDevice01(){
-		RegistrationCenter regRegistrationCenter = new RegistrationCenter();
-		regRegistrationCenter.setId("id");
-		regRegistrationCenter.setLangCode("eng");
-		regRegistrationCenter.setName("name");
-		regRegistrationCenter.setCenterTypeCode("centreType_code");
-		regRegistrationCenter.setLatitude("latitude");
-		regRegistrationCenter.setLongitude("longitude");
-		regRegistrationCenter.setLocationCode("location_code");
-		regRegistrationCenter.setContactPhone("8976512340");
-		regRegistrationCenter.setHolidayLocationCode("IND2023");
-		regRegistrationCenter.setZoneCode("zone");
-
-		RegCenterPutReqDto regCenterPutReqDto = new RegCenterPutReqDto();
-		regCenterPutReqDto.setId("id");
-		regCenterPutReqDto.setName("name");
-		regCenterPutReqDto.setAddressLine1("Bangalore");
-		regCenterPutReqDto.setLangCode("eng");
-		regCenterPutReqDto.setCenterTypeCode("centreType_code");
-		regCenterPutReqDto.setLatitude("latitude");
-		regCenterPutReqDto.setLongitude("longitude");
-		regCenterPutReqDto.setLocationCode("location_code");
-		regCenterPutReqDto.setContactPhone("8976512340");
-		regCenterPutReqDto.setHolidayLocationCode("IND2023");
-		regCenterPutReqDto.setWorkingHours("8Hrs");
-		regCenterPutReqDto.setPerKioskProcessTime(LocalTime.now());
-		regCenterPutReqDto.setCenterStartTime(LocalTime.of(10,0,0,0));
-		regCenterPutReqDto.setCenterEndTime(LocalTime.of(18,0,0,0));
-		regCenterPutReqDto.setZoneCode("zone");
-
-		List<Device> regDevice = new ArrayList<>();
-		Device device = new Device();
-		device.setId("id");
-		device.setName("name");
-		device.setLangCode("eng");
-		device.setZoneCode("zone");
-		device.setIsActive(true);
-		regDevice.add(device);
-
-		List<String> deviceZoneIds =  regDevice.stream().map(s -> s.getZoneCode()).collect(Collectors.toList());
-		deviceZoneIds.add(regCenterPutReqDto.getId());
-		String deviceZone = String.valueOf(deviceZoneIds);
-		List<Zone> zoneHList = new ArrayList<>();
-		Zone zone = new Zone();
-		zone.setName("name");
-		zone.setIsActive(true);
-		zone.setLangCode("eng");
-		zone.setCode("zone");
-		zoneHList.add(zone);
-		List<String> zoneHIdList = zoneHList.stream().map(z -> z.getCode()).collect(Collectors.toList());
-
-		Mockito.when(deviceRepository.findByRegIdAndIsDeletedFalseOrIsDeletedIsNull(regCenterPutReqDto.getId())).thenReturn(regDevice);
-		Mockito.when(zoneUtils.getChildZoneList(deviceZoneIds,regCenterPutReqDto.getZoneCode(),regCenterPutReqDto.getLangCode())).thenReturn(zoneHList);
-
-		ReflectionTestUtils.invokeMethod(registrationCenterService,"validateZoneMachineDevice",regRegistrationCenter,regCenterPutReqDto);
-
-		assertEquals(regRegistrationCenter.getZoneCode(),regCenterPutReqDto.getZoneCode(),true);
-		assertEquals(String.valueOf(CollectionUtils.isNotEmpty(zoneHIdList)),zoneHIdList.contains(deviceZone),true);
-		assertNotEquals(regRegistrationCenter.getZoneCode(),regCenterPutReqDto.getZoneCode(),false);
-		assertEquals(String.valueOf(CollectionUtils.isEmpty(zoneHIdList)),zoneHIdList.contains(deviceZone),false);
-	}
-
-	//@Test
-	public void updateRegistartionCenterHistory01(){
-		List<RegistrationCenter> updRegistrationCenters = new ArrayList<>();
-		RegistrationCenter regCenter = new RegistrationCenter();
-		regCenter.setId("id");
-		regCenter.setLangCode("eng");
-		regCenter.setName("name");
-		regCenter.setCenterTypeCode("centreType_code");
-		regCenter.setLatitude("latitude");
-		regCenter.setLongitude("longitude");
-		regCenter.setLocationCode("location_code");
-		regCenter.setContactPhone("8976512340");
-		regCenter.setHolidayLocationCode("IND2023");
-		regCenter.setZoneCode("zone");
-		regCenter.setUpdatedDateTime(LocalDateTime.of(2021,1,1,1,1,1));
-		updRegistrationCenters.add(regCenter);
-
-		RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();
-		registrationCenterHistory.setId("id");
-		registrationCenterHistory.setLangCode("eng");
-		registrationCenterHistory.setName("name");
-		registrationCenterHistory.setCenterTypeCode("centreType_code");
-		registrationCenterHistory.setLatitude("latitude");
-		registrationCenterHistory.setLongitude("longitude");
-		registrationCenterHistory.setLocationCode("location_code");
-		registrationCenterHistory.setContactPhone("8976512340");
-		registrationCenterHistory.setHolidayLocationCode("IND2023");
-		registrationCenterHistory.setZoneCode("zone");
-		registrationCenterHistory.setEffectivetimes(LocalDateTime.now());
-		registrationCenterHistory.setUpdatedDateTime(regCenter.getUpdatedDateTime());
-
-		ReflectionTestUtils.invokeMethod(registrationCenterService,"updateRegistartionCenterHistory",updRegistrationCenters);
-		assertEquals(updRegistrationCenters,registrationCenterHistory);
+		registrationCenterService.findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(langCode, hierarchyLevel, names);
 	}
 
 }
