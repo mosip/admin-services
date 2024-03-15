@@ -104,6 +104,9 @@ TRUNCATE TABLE master.template cascade ;
 
 \COPY master.template (id,name,descr,file_format_code,model,file_txt,module_id,module_name,template_typ_code,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-template.csv' delimiter ',' HEADER  csv;
 
+\COPY master.blocklisted_words (word,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-blacklisted_words.csv' delimiter ',' HEADER  csv;
+
+
 -------------- Level 3 data load scripts ------------------------
 
 ----- TRUNCATE master.screen_authorization TABLE Data and It's reference Data and COPY Data from CSV file -----
