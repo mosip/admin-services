@@ -118,9 +118,6 @@ public class UserDetailsServiceTest {
 	@MockBean
 	MasterdataSearchHelper masterDataSearchHelper;
 
-	@MockBean
-	ZoneUtils zoneUtils;
-
 	@Before
 	public void setup() {
 		userDetailsUri = new StringBuilder();
@@ -872,19 +869,6 @@ public class UserDetailsServiceTest {
 		List<UserDetailsExtnDto> pageDetail = userDetailsService.getUsersByRegistrationCenter("",0,1,"name","ASC");
 
 	}
-	@Test(expected = NullPointerException.class)
-	public void validateZoneTest001(){
-		List<Zone> subZones=new ArrayList<>();
-		Zone zone=new Zone();
-		zone.setCode("code");
-		zone.setName("name");
-		subZones.add(zone);
-		ZoneUser zu=new ZoneUser();
-		zu.setLangCode("eng");
-		Mockito.when(zoneUtils.getSubZones(Mockito.anyString())).thenReturn(subZones);
-		Mockito.when(zoneUserRepository.findZoneByUserIdActiveAndNonDeleted(Mockito.anyString())).thenReturn(zu);
-		ReflectionTestUtils.invokeMethod(userDetailsService,"validateZone","445204","eng");
-	}
 
 	@Test(expected = IllegalStateException.class)
 	public void dtoMapperTest001(){
@@ -904,12 +888,6 @@ public class UserDetailsServiceTest {
 		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.anyString(),Mockito.anyString())).thenReturn(regC);
 		Mockito.when(userDetailsRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString())).thenReturn(ud);
 		ReflectionTestUtils.invokeMethod(userDetailsService,"dtoMapper","eng");
-	}
-
-	@Test
-	public void serachUserCenterMappingDetailsTest001(){
-		Mockito.when(userDetailsRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
-
 	}
 
 	@Test
