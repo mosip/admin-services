@@ -29,7 +29,6 @@ import io.mosip.admin.packetstatusupdater.util.RestClient;
 import io.mosip.admin.service.AdminService;
 import io.mosip.kernel.core.util.DateUtils;
 
-
 @Service
 public class AdminServiceImpl implements AdminService {
 
@@ -69,8 +68,6 @@ public class AdminServiceImpl implements AdminService {
 
 	@Autowired
 	ObjectMapper objectMapper;
-
-
 	@Override
 	public LostRidResponseDto lostRid(SearchInfo searchInfo) {
 		LostRidResponseDto lostRidResponseDto = new LostRidResponseDto();
@@ -82,6 +79,16 @@ public class AdminServiceImpl implements AdminService {
 		String dateTime = DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
 		procRequestWrapper.setRequesttime(dateTime);
 		try {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern(regDatePattern);
+			List<FilterInfo> filters=searchInfo.getFilters();
+			LocalDate dateForm = LocalDate.parse(filters.get(0).getFromValue(), dtf);
+			LocalDate dateTo = LocalDate.parse(filters.get(0).getToValue(), dtf);
+			long noOfDaysBetween = ChronoUnit.DAYS.between(dateForm, dateTo);
+			long maxRegDateInterval = Long.parseLong(max_reg_date_interval);
+			if (noOfDaysBetween > maxRegDateInterval) {
+				throw new RequestException(LostRidErrorCode.LOST_RID_DATE_RANGE_EXCEEDED.getErrorCode(),
+						String.format(LostRidErrorCode.LOST_RID_DATE_RANGE_EXCEEDED.getErrorMessage(),maxRegDateInterval));
+			}
 			String response = restClient.postApi(ApiName.LOST_RID_API, MediaType.APPLICATION_JSON,
 					procRequestWrapper, String.class);
 			lostRidResponseDto = objectMapper.readValue(response, LostRidResponseDto.class);
