@@ -1,25 +1,33 @@
 package io.mosip.kernel.masterdata.test.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Month;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.dto.*;
+import io.mosip.kernel.masterdata.dto.getresponse.*;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.RegCenterMachineDeviceHistoryResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.WorkingDaysPutRequestDto;
+import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResult;
 import io.mosip.kernel.masterdata.entity.*;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.*;
+import io.mosip.kernel.masterdata.service.*;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.utils.*;
+import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,79 +43,20 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.orm.hibernate5.HibernateObjectRetrievalFailureException;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.constant.MasterDataConstant;
-import io.mosip.kernel.masterdata.dto.ApplicationDto;
-import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
-import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
-import io.mosip.kernel.masterdata.dto.DayNameAndSeqListDto;
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
-import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
-import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
-import io.mosip.kernel.masterdata.dto.DocumentTypePutReqDto;
-import io.mosip.kernel.masterdata.dto.FilterData;
-import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.LocationDto;
-import io.mosip.kernel.masterdata.dto.LocationHierarchyLevelResponseDto;
-import io.mosip.kernel.masterdata.dto.LocationPutDto;
-import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
-import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceHistoryDto;
-import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
-import io.mosip.kernel.masterdata.dto.TemplateFileFormatPutDto;
-import io.mosip.kernel.masterdata.dto.WorkingDaysResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.BlocklistedWordsResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.LocationCodeResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.WeekDaysDto;
-import io.mosip.kernel.masterdata.dto.getresponse.WorkingDaysDto;
-import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.RegCenterMachineDeviceHistoryResponseDto;
-import io.mosip.kernel.masterdata.dto.request.FilterDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
-import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
-import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
-import io.mosip.kernel.masterdata.exception.DataNotFoundException;
-import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-import io.mosip.kernel.masterdata.exception.RequestException;
-import io.mosip.kernel.masterdata.service.ApplicationService;
-import io.mosip.kernel.masterdata.service.BiometricAttributeService;
-import io.mosip.kernel.masterdata.service.BiometricTypeService;
-import io.mosip.kernel.masterdata.service.BlocklistedWordsService;
-import io.mosip.kernel.masterdata.service.DeviceHistoryService;
-import io.mosip.kernel.masterdata.service.DeviceService;
-import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
-import io.mosip.kernel.masterdata.service.DeviceTypeService;
-import io.mosip.kernel.masterdata.service.DocumentCategoryService;
-import io.mosip.kernel.masterdata.service.DocumentTypeService;
-import io.mosip.kernel.masterdata.service.DynamicFieldService;
-import io.mosip.kernel.masterdata.service.ExceptionalHolidayService;
-import io.mosip.kernel.masterdata.service.LanguageService;
-import io.mosip.kernel.masterdata.service.LocationHierarchyService;
-import io.mosip.kernel.masterdata.service.LocationService;
-import io.mosip.kernel.masterdata.service.MachineHistoryService;
-import io.mosip.kernel.masterdata.service.RegWorkingNonWorkingService;
-import io.mosip.kernel.masterdata.service.RegistrationCenterDeviceHistoryService;
-import io.mosip.kernel.masterdata.service.RegistrationCenterService;
-import io.mosip.kernel.masterdata.service.RegistrationCenterTypeService;
-import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
-import io.mosip.kernel.masterdata.service.TemplateService;
-import io.mosip.kernel.masterdata.service.ZoneService;
-import io.mosip.kernel.masterdata.test.TestBootApplication;
-import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Bal Vikash Sharma
@@ -129,6 +78,11 @@ public class MasterDataServiceTest {
 	@MockBean
 	private ApplicationRepository applicationRepository;
 
+	@MockBean
+	HolidayRepository holidayRepository;
+
+	@MockBean
+	RegExceptionalHolidayRepository regExceptionalHolidayRepository;
 	@Autowired
 	private ApplicationService applicationService;
 
@@ -3127,5 +3081,92 @@ public class MasterDataServiceTest {
 				.thenReturn(new ArrayList<Location>());
 		locationHierarchyService.getImmediateChildrenByLocCode("KAR", List.of("eng"));
 	}
-	
+
+	@Test
+	public void buildZoneFilter_withZoneList_returnSearchFilters() {
+		List<Zone> zones = new ArrayList<>();
+		Zone zone1 = new Zone();
+		zone1.setCode("java");
+		zone1.setLangCode("eng");
+		zone1.setHierarchyPath("hierarchy");
+		zone1.setHierarchyLevel((short)1);
+		zone1.setParentZoneCode("Parent");
+		zone1.setName("name");
+		zone1.setHierarchyName("name");
+		zone1.setIsActive(true);
+		zones.add(zone1);
+
+		List<SearchFilter> filters = (List<SearchFilter>) ReflectionTestUtils.invokeMethod(registrationCenterService, "buildZoneFilter", zones);
+		assertNotNull(filters);
+		assertEquals(zones.size(), filters.size());
+		ReflectionTestUtils.invokeMethod(registrationCenterService, "buildZoneFilter", zones);
+	}
+
+	@Test
+	public void buildZoneFilter_withZoneCode_returnSearchFilters() {
+		String zoneCode = "zone";
+		SearchFilter filter = new SearchFilter();
+		filter.setColumnName(MasterDataConstant.ZONE_CODE);
+		filter.setType(FilterTypeEnum.EQUALS.name());
+		filter.setValue(zoneCode);
+		ReflectionTestUtils.invokeMethod(registrationCenterService, "buildZoneFilter", zoneCode);
+	}
+
+	@Test
+	public void updateWorkingNonWorking_withValidData_returnUpdatedWorkingNonWorkingDays() {
+		RegistrationCenter updRegistrationCenter = new RegistrationCenter();
+		updRegistrationCenter.setId("id");
+		updRegistrationCenter.setLangCode("eng");
+		updRegistrationCenter.setName("name");
+		updRegistrationCenter.setCenterTypeCode("centreType_code");
+		updRegistrationCenter.setLatitude("latitude");
+		updRegistrationCenter.setLongitude("longitude");
+		updRegistrationCenter.setLocationCode("location_code");
+		updRegistrationCenter.setContactPhone("8976512340");
+		updRegistrationCenter.setHolidayLocationCode("IND2023");
+		updRegistrationCenter.setZoneCode("zone");
+
+		Map<String, Boolean> workingNonWorkingDaysDto = Collections.singletonMap(updRegistrationCenter.getId(), true);
+
+		List<ServiceError> errors = new ArrayList<>();
+		ServiceError serviceError = new ServiceError();
+		serviceError.setErrorCode("errorCode");
+		serviceError.setMessage("message");
+
+		ReflectionTestUtils.invokeMethod(registrationCenterService, "updateWorkingNonWorking", updRegistrationCenter, workingNonWorkingDaysDto, errors);
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void findRegistrationCenterByHierarchyLevelandTextAndLanguageCodePaginated_withInvalidInput_returnException() {
+		String langCode = "eng";
+		Short hierarchyLevel = (short)1;
+		String name = "name";
+		int pageNumber = 1;
+		int pageSize = 12;
+		String sortBy = "ASC";
+		String orderBy = "Alphabet";
+
+		registrationCenterService.findRegistrationCenterByHierarchyLevelandTextAndLanguageCodePaginated
+				(langCode, hierarchyLevel, name, pageNumber, pageSize, sortBy, orderBy);
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void updateRegistrationCenter_withEmptyResponse_returnException() {
+		String id = "id";
+		boolean isActive = true;
+		StatusResponseDto response = new StatusResponseDto();
+		response.setStatus("Active");
+
+		registrationCenterService.updateRegistrationCenter(id, isActive);
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void findRegistrationCenterByHierarchyLevelAndListTextAndlangCode_withEmptyNames_returnException() {
+		String langCode = "eng";
+		Short hierarchyLevel = (short)1;
+		List<String> names = Collections.singletonList("admin");
+
+		registrationCenterService.findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(langCode, hierarchyLevel, names);
+	}
+
 }
