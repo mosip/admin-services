@@ -3127,5 +3127,5 @@ public class MasterDataServiceTest {
 				.thenReturn(new ArrayList<Location>());
 		locationHierarchyService.getImmediateChildrenByLocCode("KAR", List.of("eng"));
 	}
-
+	
 }
