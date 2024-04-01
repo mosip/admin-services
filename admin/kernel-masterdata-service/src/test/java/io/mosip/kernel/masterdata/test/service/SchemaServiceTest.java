@@ -306,15 +306,15 @@ public class SchemaServiceTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void deleteIdentitySchema_withValidRid_recordDeleted() throws Exception {
-		String rid="123456789";
-		Mockito.when(identitySchemaRepository.findIdentitySchemaById(rid)).thenReturn(draftSchema);
-		assertEquals(rid,identitySchemaService.deleteSchema(rid));
+	public void deleteIdentitySchema_withValidId_recordDeleted() throws Exception {
+		String id="123456789";
+		Mockito.when(identitySchemaRepository.findIdentitySchemaById(id)).thenReturn(draftSchema);
+		assertEquals(id,identitySchemaService.deleteSchema(id));
 	}
 	
 	@Test(expected = RequestException.class)
 	@WithUserDetails("global-admin")
-	public void deleteIdentitySchema_invalidRid_failedToDelete() throws Exception {
+	public void deleteIdentitySchema_invalidId_failedToDelete() throws Exception {
 		Mockito.when(identitySchemaRepository.deleteIdentitySchema(Mockito.anyString(),  Mockito.any(LocalDateTime.class), 
 				Mockito.anyString())).thenReturn(0);		
 		identitySchemaService.deleteSchema("test-test");
