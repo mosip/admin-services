@@ -28,6 +28,7 @@ import javax.persistence.Entity;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Root;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -369,6 +370,7 @@ public class MasterdataSearchHelperTest {
 		CriteriaQuery criteriaQuery = mock(CriteriaQuery.class);
 		List<SearchSort> searchSorts = Collections.singletonList(new SearchSort("abc", "ASC"));
 		ReflectionTestUtils.invokeMethod(searchHelper, "sortQuery", builder, root, criteriaQuery, searchSorts);
+		verify(criteriaQuery, times(1)).orderBy((List<Order>) any());
 	}
 
 	@Test
@@ -492,6 +494,7 @@ public class MasterdataSearchHelperTest {
 		);
 		Query query = mock(Query.class);
 		ReflectionTestUtils.invokeMethod(searchHelper, "setDeviceQueryParams", query, searchFilterList);
+		verify(query, times(searchFilterList.size())).setParameter(anyString(), anyObject());
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -510,6 +513,7 @@ public class MasterdataSearchHelperTest {
 		);
 		Query query = mock(Query.class);
 		ReflectionTestUtils.invokeMethod(searchHelper, "setMachineQueryParams", query, searchFilterList);
+		verify(query, times(searchFilterList.size())).setParameter(anyString(), anyObject());
 	}
 
 	@Test(expected = RequestException.class)
@@ -566,5 +570,6 @@ public class MasterdataSearchHelperTest {
 		CriteriaQuery criteriaQuery = mock(CriteriaQuery.class);
 		List<SearchSort> sortFilter = Collections.singletonList(new SearchSort("dynamic", "equals"));
 		ReflectionTestUtils.invokeMethod(searchHelper, "sortQuery", builder, root, criteriaQuery, sortFilter);
+		verify(criteriaQuery).orderBy((List<Order>) any());
 	}
 }

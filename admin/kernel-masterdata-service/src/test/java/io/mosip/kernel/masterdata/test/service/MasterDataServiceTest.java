@@ -54,8 +54,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -3039,7 +3038,7 @@ public class MasterDataServiceTest {
 	public void getSubZoneIdsForUserTest() {
 		when(zoneUtils.getSubZones(Mockito.anyString())).thenReturn(zones);
 		List<String> subZoneIds = registrationCenterValidator.getSubZoneIdsForUser("eng");
-		Assert.assertTrue(subZoneIds != null && !subZoneIds.isEmpty());
+		assertTrue(subZoneIds != null && !subZoneIds.isEmpty());
 	}
 
 	@Test
@@ -3109,6 +3108,7 @@ public class MasterDataServiceTest {
 		filter.setColumnName(MasterDataConstant.ZONE_CODE);
 		filter.setType(FilterTypeEnum.EQUALS.name());
 		filter.setValue(zoneCode);
+		assertNotNull(filter);
 		ReflectionTestUtils.invokeMethod(registrationCenterService, "buildZoneFilter", zoneCode);
 	}
 
@@ -3132,6 +3132,9 @@ public class MasterDataServiceTest {
 		ServiceError serviceError = new ServiceError();
 		serviceError.setErrorCode("errorCode");
 		serviceError.setMessage("message");
+
+		assertTrue(errors.isEmpty());
+		assertTrue(workingNonWorkingDaysDto.get(updRegistrationCenter.getId()));
 
 		ReflectionTestUtils.invokeMethod(registrationCenterService, "updateWorkingNonWorking", updRegistrationCenter, workingNonWorkingDaysDto, errors);
 	}

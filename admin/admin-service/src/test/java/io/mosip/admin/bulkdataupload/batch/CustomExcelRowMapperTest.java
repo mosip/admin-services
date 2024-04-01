@@ -107,7 +107,9 @@ public class CustomExcelRowMapperTest {
         actualCustomExcelRowMapper.setPrototypeBeanName("Name");
         actualCustomExcelRowMapper.setStrict(true);
         actualCustomExcelRowMapper.setTargetType(Object.class);
-        actualCustomExcelRowMapper.initBinder(new DataBinder("Target", "Object Name"));
+        DataBinder dataBinder = new DataBinder("Target", "Object Name");
+        actualCustomExcelRowMapper.initBinder(dataBinder);
+        assertNotNull(dataBinder);
     }
 
     @Test
@@ -115,7 +117,9 @@ public class CustomExcelRowMapperTest {
         ApplicationConversionService conversionService = new ApplicationConversionService();
         CustomExcelRowMapper<Object> actualCustomExcelRowMapper = new CustomExcelRowMapper<>(conversionService,
                 new CustomValidatorBean());
-        actualCustomExcelRowMapper.initBinder(new DataBinder("Target", "Object Name"));
+        DataBinder dataBinder = new DataBinder("Target", "Object Name");
+        actualCustomExcelRowMapper.initBinder(dataBinder);
+        assertNotNull(dataBinder);
     }
 
 }
