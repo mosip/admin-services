@@ -306,14 +306,15 @@ public class SchemaServiceTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void testDeleteIdentitySchema() throws Exception {
-		Mockito.when(identitySchemaRepository.findIdentitySchemaById(Mockito.anyString())).thenReturn(draftSchema);
-		identitySchemaService.deleteSchema("test-test");
+	public void deleteIdentitySchema_withValidRid_recordDeleted() throws Exception {
+		String rid="123456789";
+		Mockito.when(identitySchemaRepository.findIdentitySchemaById(rid)).thenReturn(draftSchema);
+		assertEquals(rid,identitySchemaService.deleteSchema(rid));
 	}
 	
 	@Test(expected = RequestException.class)
 	@WithUserDetails("global-admin")
-	public void testDeleteIdentitySchemaFailed() throws Exception {		
+	public void deleteIdentitySchema_invalidRid_failedToDelete() throws Exception {
 		Mockito.when(identitySchemaRepository.deleteIdentitySchema(Mockito.anyString(),  Mockito.any(LocalDateTime.class), 
 				Mockito.anyString())).thenReturn(0);		
 		identitySchemaService.deleteSchema("test-test");
@@ -321,7 +322,7 @@ public class SchemaServiceTest {
 	
 	@Test(expected = MasterDataServiceException.class)
 	@WithUserDetails("global-admin")
-	public void testDeleteIdentitySchemaFailedUpdate() throws Exception {
+	public void deleteIdentitySchema_withDbException_failedToDelete() throws Exception {
 		Mockito.when(identitySchemaRepository.findIdentitySchemaById(
 				Mockito.anyString())).thenThrow(DataAccessLayerException.class);
 		identitySchemaService.deleteSchema("test-test");
@@ -329,7 +330,7 @@ public class SchemaServiceTest {
 
 	@Test(expected = RequestException.class)
 	@WithUserDetails("global-admin")
-	public void testDeletePublishedIdentitySchema() throws Exception {
+	public void deleteIdentitySchema_publishedSchema_Failed() throws Exception {
 		Mockito.when(identitySchemaRepository.findIdentitySchemaById(
 				Mockito.anyString())).thenReturn(publishedSchema);
 		identitySchemaService.deleteSchema("test-test");
