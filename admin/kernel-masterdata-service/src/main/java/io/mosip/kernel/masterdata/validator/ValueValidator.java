@@ -25,6 +25,6 @@ public class ValueValidator implements ConstraintValidator<DynamicValueValidator
         }
         Pattern p = Pattern.compile(allowedCharactersRegex, Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(value.trim());
-        return m.find() ? true : false;
+        return m.find() ? false : true;
     }
 }

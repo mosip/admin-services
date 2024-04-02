@@ -24,6 +24,6 @@ public class CodeValidator implements ConstraintValidator<DynamicCodeValidator, 
         }
         Pattern p = Pattern.compile(allowedCharactersRegex, Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(code.trim());
-        return m.find() ? true : false;
+        return m.find() ? false : true;
     }
 }
