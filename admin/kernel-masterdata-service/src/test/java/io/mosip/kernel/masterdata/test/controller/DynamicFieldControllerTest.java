@@ -134,7 +134,7 @@ public class DynamicFieldControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void createDynamicFieldFailTest() throws Exception {
+	public void createDynamicField_withInValidCode_thenFail() throws Exception {
 		JsonNode fieldVal = mapper.readTree("{\"code\":\"%^%$\",\"value\":\"ooo\"}");
 		dynamicFieldDtoReq.getRequest().setFieldVal(fieldVal);
 		dynamicFieldDtoReq.getRequest().setName("bloodtype");
@@ -149,7 +149,7 @@ public class DynamicFieldControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void createDynamicFieldFailTest1() throws Exception {
+	public void createDynamicField_withInValidValue_thenFail() throws Exception {
 		JsonNode fieldVal = mapper.readTree("{\"code\":\"avj\",\"value\":\"%^%$\"}");
 		dynamicFieldDtoReq.getRequest().setFieldVal(fieldVal);
 		dynamicFieldDtoReq.getRequest().setName("bloodtype");

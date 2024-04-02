@@ -18,13 +18,13 @@ public class ValueValidator implements ConstraintValidator<DynamicValueValidator
 
     @Override
     public boolean isValid(JsonNode jsonValue, ConstraintValidatorContext context) {
-        JsonNode val=jsonValue.get("value");
-        String value= val.asText();
-        if(value!=null && !value.isEmpty()){
-            Pattern p= Pattern.compile(allowedCharactersRegex,Pattern.CASE_INSENSITIVE);
-            Matcher m=p.matcher(value.trim());
-            return !(m.find());
+        JsonNode val = jsonValue.get("value");
+        String value = val.asText();
+        if (value == null && value.isEmpty()) {
+            return false;
         }
-        return true;
+        Pattern p = Pattern.compile(allowedCharactersRegex, Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(value.trim());
+        return m.find() ? true : false;
     }
 }
