@@ -1,17 +1,14 @@
 package io.mosip.kernel.masterdata.test.utils;
 
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,16 +27,14 @@ import io.mosip.kernel.masterdata.repository.ZoneRepository;
 import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.utils.ZoneUtils;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class ZoneUtilTest {
-	
-		@MockBean
-	private PublisherClient<String,EventModel,HttpHeaders> publisher;
-	
+
 	@MockBean
-	private TemplateService templateService;
+	private PublisherClient<String,EventModel,HttpHeaders> publisher;
 
 	@MockBean
 	private ZoneRepository zoneRepository;
@@ -75,7 +70,7 @@ public class ZoneUtilTest {
 
 	@Test
 	@WithUserDetails("zonal-admin")
-	public void testGetZone() {
+	public void testGetZones() {
 		doReturn(zones).when(zoneRepository).findAllNonDeleted();
 		doReturn(zoneUsers).when(zoneUserRepository).findByUserIdNonDeleted(Mockito.anyString());
 		Zone zone = new Zone();
@@ -83,6 +78,7 @@ public class ZoneUtilTest {
 		List<Zone> result = zoneUtils.getZones(zone);
 		assertNotNull(result);
 		assertNotEquals(0, result.size());
+
 	}
 
 	@Test
@@ -105,7 +101,7 @@ public class ZoneUtilTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	@WithUserDetails("zonal-admin")
-	public void testUserZoneUserFailure() {
+	public void  testUserZoneUserFailure() {
 		doReturn(zones).when(zoneRepository).findAllNonDeleted();
 		doThrow(DataRetrievalFailureException.class).when(zoneUserRepository)
 				.findByUserIdNonDeleted(Mockito.anyString());
@@ -150,4 +146,94 @@ public class ZoneUtilTest {
 		zoneUtils.getZones(zones.get(0));
 	}
 
+	@WithUserDetails("zonal-admin")
+	@Test
+	public void getChildZonesTest(){
+		doReturn(zones).when(zoneRepository).findAllNonDeleted();
+		doReturn(zoneUsers).when(zoneUserRepository).findByUserIdNonDeleted(Mockito.anyString());
+		String zoneCode="AAA";
+		List<Zone> result =zoneUtils.getChildZones(zoneCode);
+		assertNotNull(result);
+		assertNotEquals(0, result.size());
+	}
+
+	@WithUserDetails("zonal-admin")
+	@Test(expected = IllegalStateException.class)
+	public void getDescedantsTest_By_Zone(){
+		ReflectionTestUtils.invokeMethod(zoneUtils,"getDescedants","zones","zone");
+	}
+
+	@WithUserDetails("zonal-admin")
+	@Test
+	public void getLeafZonesTest_By_ZoneCode(){
+		doReturn(zones).when(zoneRepository).findAllNonDeleted();
+		zoneUtils.getLeafZones("ENG","AAA");
+	}
+
+	@WithUserDetails("zonal-admin")
+	@Test(expected = ClassCastException.class)
+	public void getLeafZonesTest_By_LangCode(){
+		String userId="AAA";
+		ZoneUser zu=new ZoneUser();
+		zu.setZoneCode("AAA");
+		Mockito.when(zoneUserRepository.findZoneByUserIdActiveAndNonDeleted(Mockito.anyString())).thenReturn(zu);
+		List<Zone> zones= zoneUtils.getLeafZones("ENG");
+	}
+
+	@WithUserDetails("zonal-admin")
+	@Test(expected = MasterDataServiceException.class)
+	public void getUserZonesByUserIdTest_By_UserId(){
+		List<Zone> zones=new ArrayList<>();
+		Zone zone=new Zone();
+		zone.setCode("AAA");
+		zone.setName("name");
+		zones.add(zone);
+		doReturn(zones).when(zoneRepository).findAllNonDeleted();
+		zoneUtils.getUserZonesByUserId(zones,"AAA");
+	}
+
+	@WithUserDetails("zonal-admin")
+	@Test(expected = MasterDataServiceException.class)
+	public void getUserZonesByUserIdTest(){
+		doReturn(zones).when(zoneRepository).findAllNonDeleted();
+		zoneUtils.getUserZonesByUserId("AAA");
+	}
+	@WithUserDetails("zonal-admin")
+	@Test(expected = MasterDataServiceException.class)
+	public void getUserZonesByUserIdTest_Returns_UserZone(){
+		List<ZoneUser> userZone = null;
+		Mockito.when(zoneUserRepository.findByUserIdNonDeleted(Mockito.any())).thenReturn(userZone);
+		zoneUtils.getUserZonesByUserId(zones,"AAA");
+	}
+
+	@WithUserDetails("zonal-admin")
+	@Test
+	public void getChildZoneListTest_By_ZoneCode_And_LangCode(){
+		List<String> zoneIds=new ArrayList<>();
+		List<Zone> zones = null;
+		Zone zone=new Zone();
+		Mockito.when(zoneRepository.findZoneByCodeAndLangCodeNonDeleted(Mockito.anyString(),Mockito.anyString())).thenReturn(zone);
+		zoneUtils.getChildZoneList(zoneIds,"AAA","ENG");
+	}
+
+	@WithUserDetails("zonal-admin")
+	@Test
+	public void getZoneCodesTest(){
+		List<Zone> zones=new ArrayList<>();
+		zoneUtils.getZoneCodes(zones);
+	}
+
+	@WithUserDetails("zonal-admin")
+	@Test
+	public void getSubZonesTest_By_LangCode(){
+		ZoneUser zu=new ZoneUser();
+		doReturn(zu).when(zoneUserRepository).findZoneByUserIdActiveAndNonDeleted(Mockito.anyString());
+		doReturn(zones).when(zoneRepository).findAllNonDeleted();
+		zoneUtils.getSubZones("ENG");
+	}
+
+	@Test
+	public void getSubZonesBasedOnZoneCodeTest(){
+		zoneUtils.getSubZonesBasedOnZoneCode("AAA");
+	}
 }
