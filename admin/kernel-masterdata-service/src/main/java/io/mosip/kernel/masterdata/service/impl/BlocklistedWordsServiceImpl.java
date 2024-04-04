@@ -60,7 +60,7 @@ import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
-
+import org.springframework.beans.factory.annotation.Value;
 /**
  * Service implementation class for {@link BlocklistedWordsService}.
  * 
@@ -70,7 +70,8 @@ import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
  */
 @Service
 public class BlocklistedWordsServiceImpl implements BlocklistedWordsService {
-
+	@Value("${mosip.supported-languages}")
+	private String supportedLanguages;
 	/**
 	 * Autowired reference for {@link BlocklistedWordsRepository}.
 	 */
@@ -119,6 +120,7 @@ public class BlocklistedWordsServiceImpl implements BlocklistedWordsService {
 	@Cacheable(value = "blocklisted-words", key = "'blocklistedword'.concat('-').concat(#langCode)", condition="#langCode != null")
 	@Override
 	public BlocklistedWordsResponseDto getAllBlocklistedWordsBylangCode(String langCode) {
+		validateLangCode(langCode);
 		List<BlocklistedWords> words = null;
 		try {
 			words = blocklistedWordsRepository.findAllByLangCode(langCode);
@@ -134,7 +136,13 @@ public class BlocklistedWordsServiceImpl implements BlocklistedWordsService {
 		throw new DataNotFoundException(BlocklistedWordsErrorCode.NO_BLOCKLISTED_WORDS_FOUND.getErrorCode(),
 					BlocklistedWordsErrorCode.NO_BLOCKLISTED_WORDS_FOUND.getErrorMessage());
 	}
-
+	private void validateLangCode(String langCode) {
+		String[] supportedLanguagesArray = supportedLanguages.split(",");
+		if (!Arrays.asList(supportedLanguagesArray).contains(langCode)) {
+			throw new DataNotFoundException(BlocklistedWordsErrorCode.BLOCKLISTED_WORDS_INVALID_LANGUAGE_CODE.getErrorCode(),
+					BlocklistedWordsErrorCode.BLOCKLISTED_WORDS_INVALID_LANGUAGE_CODE.getErrorMessage());
+		}
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
