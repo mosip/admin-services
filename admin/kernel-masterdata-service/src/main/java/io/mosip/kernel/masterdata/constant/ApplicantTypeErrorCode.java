@@ -2,7 +2,7 @@ package io.mosip.kernel.masterdata.constant;
 
 /**
  * Error code constants
- * 
+ *
  * @author Bal Vikash Sharma
  * @since 1.0.0
  */
@@ -11,8 +11,8 @@ public enum ApplicantTypeErrorCode {
 	NO_APPLICANT_FOUND_EXCEPTION("KER-MSD-147", "Applicant Type data does not exist"),
 	APPLICANT_TYPE_FETCH_EXCEPTION("KER-MSD-149",
 			"Error occurred while fetching Applicant Type-Document Category-Document Type Mapping details"),
-	APPLICANT_TYPE_NOT_FOUND_EXCEPTION("KER-MSD-150", "Document Category- Document Type mapping not found");
-
+	APPLICANT_TYPE_NOT_FOUND_EXCEPTION("KER-MSD-150", "Document Category- Document Type mapping not found"),
+	INVALID_ATTRIBUTE("KER-MSD-200", "Invalid value for attribute ");
 	private final String errorCode;
 	private final String errorMessage;
 

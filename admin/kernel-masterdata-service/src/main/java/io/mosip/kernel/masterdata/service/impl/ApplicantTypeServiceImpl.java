@@ -26,16 +26,25 @@ import io.mosip.kernel.masterdata.dto.response.ResponseDTO;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.service.ApplicantTypeService;
+import org.springframework.beans.factory.annotation.Value;
 
 @Service
 public class ApplicantTypeServiceImpl implements ApplicantTypeService {
 
 	@Autowired
 	private ApplicantType applicantCodeService;
+	@Value("${mosip.kernel.masterdata.individualTypeCode}")
+	private String individualTypeCode;
+
+	@Value("${mosip.kernel.masterdata.genderCode}")
+	private String genderCode;
+
+	@Value("${mosip.kernel.masterdata.biometricAvailable}")
+	private String biometricAvailable;
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * io.mosip.kernel.applicanttype.service.ApplicantTypeService#getApplicantType(
 	 * io.mosip.kernel.applicanttype.dto.RequestDTO)
@@ -47,7 +56,27 @@ public class ApplicantTypeServiceImpl implements ApplicantTypeService {
 		List<KeyValues<String, Object>> list = dto.getAttributes();
 		Map<String, Object> map = new HashMap<>();
 		for (KeyValues<String, Object> keyValues : list) {
-			map.put(keyValues.getAttribute(), keyValues.getValue());
+			String attribute = keyValues.getAttribute();
+			Object value = keyValues.getValue();
+
+			if ("residenceStatus".equals(attribute)) {
+				if (value instanceof String && !individualTypeCode.contains((String) value)) {
+					throw new DataNotFoundException(ApplicantTypeErrorCode.INVALID_ATTRIBUTE.getErrorCode(),
+							ApplicantTypeErrorCode.INVALID_ATTRIBUTE.getErrorMessage()+attribute);
+				}
+			} else if ("gender".equals(attribute)) {
+				if (value instanceof String && !genderCode.contains((String) value)) {
+					throw new DataNotFoundException(ApplicantTypeErrorCode.INVALID_ATTRIBUTE.getErrorCode(),
+							ApplicantTypeErrorCode.INVALID_ATTRIBUTE.getErrorMessage()+attribute);
+				}
+			} else if ("biometricAvailable".equals(attribute)) {
+				if (value instanceof String && !biometricAvailable.contains((String) value)) {
+					throw new DataNotFoundException(ApplicantTypeErrorCode.INVALID_ATTRIBUTE.getErrorCode(),
+							ApplicantTypeErrorCode.INVALID_ATTRIBUTE.getErrorMessage()+attribute);
+				}
+			}
+
+			map.put(attribute, value);
 		}
 
 		ApplicantTypeCodeDTO appDto = new ApplicantTypeCodeDTO();
