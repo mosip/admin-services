@@ -38,7 +38,7 @@ public class PublicKeyResponse<T> {
 	 * Field for public key
 	 */
 	@ApiModelProperty(notes = "Public key in BASE64 encoding format", required = true)
-	private T publicKey;
+	private T certificate;
 
 	/**
 	 * Key creation time

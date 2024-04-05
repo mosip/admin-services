@@ -61,7 +61,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import javax.validation.Validator;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -85,7 +87,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	private static final Logger logger = LoggerFactory.getLogger(BulkDataUploadServiceImpl.class);
 	private static final String DATA_READ_ROLE = "ROLE_DATA_READ";
 	private static Predicate<String> emptyCheck = String::isBlank;
-	private static String STATUS_MESSAGE = "SUCCESS: %d, FAILED: %d";
+	private static String STATUS_MESSAGE = "FAILED: %d";
 	private static String CSV_UPLOAD_MESSAGE = "FILE: %s, READ: %d, STATUS: %s, MESSAGE: %s";
 	private static String PKT_UPLOAD_MESSAGE = "FILE: %s, STATUS: %s, MESSAGE: %s";
 	
@@ -289,7 +291,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 			} catch (Throwable e) {
 				logger.error("Failed to import data from CSV", e);
-				message = String.format(CSV_UPLOAD_MESSAGE, file.getOriginalFilename(), 0, "FAILED", e.getMessage());
+				message = String.format(CSV_UPLOAD_MESSAGE, file.getOriginalFilename(), 0, STATUS_MESSAGE, e.getMessage());
+				updateBulkUploadTransaction(bulkUploadTranscation, STATUS_MESSAGE);
 			}
 
 			//On failure of launching job
@@ -299,7 +302,19 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 				bulkUploadTranscation.setUploadDescription(message);
 				bulkUploadTranscation.setRecordCount(0);
-				updateBulkUploadTransaction(bulkUploadTranscation);
+				updateBulkUploadTransaction(bulkUploadTranscation,"COMPLETED");
+			}
+			//If delimiter is other than lineDelimiter
+			if (file.getOriginalFilename().endsWith(".csv") && file.getOriginalFilename()!=null){
+				try(BufferedReader br =new BufferedReader(new InputStreamReader(file.getInputStream()))){
+					String line=br.readLine();
+					if (!line.contains(lineDelimiter)){
+						throw new RequestException(BulkUploadErrorCode.DELIMITER_INCORRECT.getErrorCode(),
+								String.format(BulkUploadErrorCode.DELIMITER_INCORRECT.getErrorMessage(),lineDelimiter));
+					}
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
 			}
 
 		});
@@ -327,8 +342,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	}
 
 
-	private void updateBulkUploadTransaction(BulkUploadTranscation bulkUploadTranscation) {
-		bulkUploadTranscation.setStatusCode("COMPLETED");
+	private void updateBulkUploadTransaction(BulkUploadTranscation bulkUploadTranscation,String status) {
+		bulkUploadTranscation.setStatusCode(status);
 		bulkUploadTranscation.setUploadedDateTime(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))));
 		bulkUploadTranscation.setUpdatedBy("JOB");
 		bulkTranscationRepo.save(bulkUploadTranscation);
@@ -387,14 +402,14 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 			} catch (Throwable e) {
 				logger.error("Failed to sync and upload packet", e);
-				message = String.format(PKT_UPLOAD_MESSAGE, file.getOriginalFilename(), "FAILED", e.getMessage());
+				message = String.format(PKT_UPLOAD_MESSAGE, file.getOriginalFilename(), STATUS_MESSAGE, e.getMessage());
+				updateBulkUploadTransaction(bulkUploadTranscation, STATUS_MESSAGE);
 			}
 
 			if(message != null) {
 				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_PACKET_STATUS, message),null);
-				bulkUploadTranscation.setStatusCode("FAILED");
 				bulkUploadTranscation.setUploadDescription(message);
-				updateBulkUploadTransaction(bulkUploadTranscation);
+				updateBulkUploadTransaction(bulkUploadTranscation,STATUS_MESSAGE);
 			}
 		});
 		return setResponseDetails(bulkUploadTranscation, "");

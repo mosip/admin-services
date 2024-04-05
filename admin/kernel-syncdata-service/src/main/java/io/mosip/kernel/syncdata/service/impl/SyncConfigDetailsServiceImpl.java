@@ -168,11 +168,11 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 		uriParams.put("applicationId", applicationId);
 		try {
 			// Query parameters
-			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(publicKeyUrl)
+			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(publicKeyUrl).queryParam("applicationId", applicationId)
 					// Add query parameter
 					.queryParam("referenceId", referenceId).queryParam("timeStamp", timeStamp);
 
-			publicKeyResponseEntity = restTemplate.getForEntity(builder.buildAndExpand(uriParams).toUri(),
+			publicKeyResponseEntity = restTemplate.getForEntity(builder.build().toUri(),
 					String.class);
 			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(publicKeyResponseEntity.getBody());
 

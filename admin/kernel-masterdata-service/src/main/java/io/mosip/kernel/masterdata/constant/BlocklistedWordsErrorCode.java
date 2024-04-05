@@ -13,7 +13,8 @@ public enum BlocklistedWordsErrorCode {
 	BLOCKLISTED_WORDS_FETCH_EXCEPTION("KER-MSD-007", "Error occurred while fetching Blocklisted words"),
 	BLOCKLISTED_WORDS_INSERT_EXCEPTION("KER-MSD-070", "Error occurred while inserting Blocklisted words"),
 	BLOCKLISTED_WORDS_UPDATE_EXCEPTION("KER-MSD-105", "Error occurred while updating Blocklisted Word"),
-	BLOCKLISTED_WORDS_DELETE_EXCEPTION("KER-MSD-213", "Error occurred while deleting Blocklisted Word");
+	BLOCKLISTED_WORDS_DELETE_EXCEPTION("KER-MSD-213", "Error occurred while deleting Blocklisted Word"),
+	BLOCKLISTED_WORDS_INVALID_LANGUAGE_CODE("KER-MSD-202", "Invalid language code");
 
 	/**
 	 * The error code.
