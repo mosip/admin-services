@@ -276,14 +276,16 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 	@Transactional
 	public String deleteSchema(String id) {
 		try {
-			int updatedRows = identitySchemaRepository.deleteIdentitySchema(id, MetaDataUtils.getCurrentDateTime(),
-					MetaDataUtils.getContextUser());
-
-			if (updatedRows < 1) {
+			IdentitySchema entity = identitySchemaRepository.findIdentitySchemaById(id);
+			if (entity == null) {
 				throw new RequestException(SchemaErrorCode.SCHEMA_NOT_FOUND_EXCEPTION.getErrorCode(),
 						SchemaErrorCode.SCHEMA_NOT_FOUND_EXCEPTION.getErrorMessage());
+			} else if (STATUS_PUBLISHED.equalsIgnoreCase(entity.getStatus())) {
+				throw new RequestException(SchemaErrorCode.PUBLISHED_SCHEMA_EXCEPTION.getErrorCode(),
+						SchemaErrorCode.PUBLISHED_SCHEMA_EXCEPTION.getErrorMessage());
 			}
-
+			identitySchemaRepository.deleteIdentitySchema(id, MetaDataUtils.getCurrentDateTime(),
+					MetaDataUtils.getContextUser());
 		} catch (DataAccessException | DataAccessLayerException e) {
 			LOGGER.error("Error while deleting identity schema : " , ExceptionUtils.neutralizeParam(id), e);
 			throw new MasterDataServiceException(SchemaErrorCode.SCHEMA_UPDATE_EXCEPTION.getErrorCode(),

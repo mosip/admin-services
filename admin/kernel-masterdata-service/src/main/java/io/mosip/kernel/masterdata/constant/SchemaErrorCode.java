@@ -32,6 +32,9 @@ public enum SchemaErrorCode {
 	SUB_TYPE_REQUIRED_EXCEPTION("KER-SCH-017", "SubType is required for field %s"),
 	BIO_ATTRIBUTES_REQUIRED_EXCEPTION("KER-SCH-018", "BioAttributes are required for field %s"),
 	BIO_ATTRIBUTES_DUPLICATED_EXCEPTION("KER-SCH-019", "Same BioAttributes used in field with same SubType : %s"),
+
+	PUBLISHED_SCHEMA_EXCEPTION("KER-SCH-022", "Published identity schema can't be deleted"),
+
 	DYNAMIC_FIELD_VALUE_JSON_INVALID("KER-DYN-001", "Dynamic field is invalid, must contain code and value keys");
 
 	private final String errorCode;
