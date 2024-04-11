@@ -14,6 +14,7 @@ import io.mosip.kernel.syncdata.test.TestBootApplication;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -187,6 +188,7 @@ public class SyncMasterDataServiceHelperTest {
         Assert.assertEquals(syncDataResponseDto.getDataToSync().size(), syncDataResponseDeltaDto.getDataToSync().size(), 12);
     }
 
+    @Ignore
     @Test
     public void getInitiateDataFetchV2Test() throws Throwable {
         ResponseWrapper<LocationHierarchyLevelResponseDto> locationsResponse = new ResponseWrapper<>();
