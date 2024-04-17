@@ -110,12 +110,16 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
             JSONObject mapperIdentity=utility.getJSONObject(idenitityJsonObject,IDENTITY);
             List<String> mapperJsonKeys = new ArrayList<>(mapperIdentity.keySet());
             for(String valueObj: applicantDetails){
-                if(valueObj!=null && !valueObj.equalsIgnoreCase(ApplicantPhoto)){
-                    LinkedHashMap<String, String> jsonObject = utility.getJSONValue(mapperIdentity, valueObj);
-                    String value = jsonObject.get(VALUE);
-                    applicantDataMap.put(value,identityObj.get(value).toString());
-                } else if (valueObj.equalsIgnoreCase(ApplicantPhoto)) {
-                    getImageData(documents,applicantDataMap);
+                if(valueObj!=null) {
+                    if (!valueObj.equalsIgnoreCase(ApplicantPhoto)) {
+                        LinkedHashMap<String, String> jsonObject = utility.getJSONValue(mapperIdentity, valueObj);
+                        String value = jsonObject.get(VALUE);
+                        applicantDataMap.put(value, identityObj.get(value).toString());
+                    } else {
+                        getImageData(documents, applicantDataMap);
+                    }
+                } else {
+                    throw new NullPointerException("valueObj is null");
                 }
             }
             saveApplicantLoginDetails();
