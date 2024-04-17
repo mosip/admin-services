@@ -871,7 +871,7 @@ public class UserDetailsServiceTest {
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void dtoMappertest(){
+	public void dtoMapper_returnUserCenterMapping(){
 		UserDetails ud=new UserDetails();
 		ud.setId("id");
 		ud.setName("name");
@@ -927,7 +927,7 @@ public class UserDetailsServiceTest {
 	}
 
 	@Test(expected= MasterDataServiceException.class)
-	public void createUserTest(){
+	public void createUser_returnUserdetails(){
 		UserDetailsDto userDetailsDto=new UserDetailsDto();
 		userDetailsDto.setId("id");
 		userDetailsDto.setName("name");
@@ -951,7 +951,7 @@ public class UserDetailsServiceTest {
 		UserDetailsCenterMapping centerMapping = userDetailsService.createUser(userDetailsDto);
 	}
 	@Test(expected = InvalidUseOfMatchersException.class)
-	public void getUsersFromResponseTest(){
+	public void getUsersFromResponse_returnException(){
 		List<ServiceError> validationErrorsList = null;
 		ResponseEntity<String> response =null;
 		Mockito.when(ExceptionUtils.getServiceErrorList(Mockito.anyString())).thenReturn(validationErrorsList);
