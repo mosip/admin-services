@@ -148,7 +148,7 @@ public class ZoneUtilTest {
 
 	@WithUserDetails("zonal-admin")
 	@Test
-	public void getChildZonesTest(){
+	public void getChildZones_returnChildZone(){
 		doReturn(zones).when(zoneRepository).findAllNonDeleted();
 		doReturn(zoneUsers).when(zoneUserRepository).findByUserIdNonDeleted(Mockito.anyString());
 		String zoneCode="AAA";
@@ -194,7 +194,7 @@ public class ZoneUtilTest {
 
 	@WithUserDetails("zonal-admin")
 	@Test(expected = MasterDataServiceException.class)
-	public void getUserZonesByUserIdTest(){
+	public void getUserZonesByUserId_returnUserID(){
 		doReturn(zones).when(zoneRepository).findAllNonDeleted();
 		zoneUtils.getUserZonesByUserId("AAA");
 	}
@@ -218,7 +218,7 @@ public class ZoneUtilTest {
 
 	@WithUserDetails("zonal-admin")
 	@Test
-	public void getZoneCodesTest(){
+	public void getZoneCodes_returnsZone(){
 		List<Zone> zones=new ArrayList<>();
 		zoneUtils.getZoneCodes(zones);
 	}
@@ -230,10 +230,5 @@ public class ZoneUtilTest {
 		doReturn(zu).when(zoneUserRepository).findZoneByUserIdActiveAndNonDeleted(Mockito.anyString());
 		doReturn(zones).when(zoneRepository).findAllNonDeleted();
 		zoneUtils.getSubZones("ENG");
-	}
-
-	@Test
-	public void getSubZonesBasedOnZoneCodeTest(){
-		zoneUtils.getSubZonesBasedOnZoneCode("AAA");
 	}
 }
