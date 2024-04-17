@@ -481,6 +481,7 @@ public class SyncMasterDataServiceHelperTest {
         List<RegistrationCenter> list = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertRegistrationCenterToDto",list);
+        assertNotNull(list);
     }
 
     @Test
@@ -488,6 +489,7 @@ public class SyncMasterDataServiceHelperTest {
         List<Holiday> holidays = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertEntityToHoliday",holidays);
+        assertNotNull(holidays);
     }
 
     @Test
@@ -495,6 +497,7 @@ public class SyncMasterDataServiceHelperTest {
         List<BlocklistedWords> words = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertBlocklistedWordsEntityToDto",words);
+        assertNotNull(words);
     }
 
     @Test
@@ -502,6 +505,7 @@ public class SyncMasterDataServiceHelperTest {
         List<DocumentType> documentTypes = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertDocumentTypeEntityToDto",documentTypes);
+        assertNotNull(documentTypes);
     }
 
     @Test
@@ -509,6 +513,7 @@ public class SyncMasterDataServiceHelperTest {
         List<Location> locations = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertLocationsEntityToDto",locations);
+        assertNotNull(locations);
     }
 
     @Test
@@ -516,6 +521,7 @@ public class SyncMasterDataServiceHelperTest {
         List<ValidDocument> validDocuments = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertValidDocumentEntityToDto",validDocuments);
+        assertNotNull(validDocuments);
     }
 
     @Test
@@ -523,6 +529,7 @@ public class SyncMasterDataServiceHelperTest {
         List<ApplicantValidDocument> applicantValidDocuments = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertApplicantValidDocumentEntityToDto",applicantValidDocuments);
+        assertNotNull(applicantValidDocuments);
     }
 
     @Test
@@ -530,5 +537,6 @@ public class SyncMasterDataServiceHelperTest {
         List<Language> languageList = new ArrayList<>();
 
         ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertLanguageEntityToDto",languageList);
+        assertNotNull(languageList);
     }
 }

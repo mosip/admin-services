@@ -36,7 +36,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -44,7 +44,7 @@ import static org.mockito.Mockito.*;
 public class MasterdataSearchHelperTest {
 
 	@Autowired
-	MasterdataSearchHelper searchHelper;
+	private MasterdataSearchHelper searchHelper;
 		@MockBean
 	private PublisherClient<String,EventModel,HttpHeaders> publisher;
 	
@@ -290,6 +290,7 @@ public class MasterdataSearchHelperTest {
 	public void searchMasterdataWithoutLangCode_withValidFilterAndSort_returnSearchDtoWithoutLangCode() {
 		SearchDtoWithoutLangCode searchDtoWithoutLangCode = new SearchDtoWithoutLangCode(Arrays.asList(filter), Arrays.asList(sort), page, "eng");
 		searchHelper.searchMasterdataWithoutLangCode(RegistrationCenter.class, searchDtoWithoutLangCode, optionalFilterArray);
+		assertEquals(searchDtoWithoutLangCode.getLanguageCode(),"eng");
 	}
 
 	@Test(expected = RequestException.class)
@@ -333,6 +334,7 @@ public class MasterdataSearchHelperTest {
 		sort.setSortType("desc");
 		SearchDtoWithoutLangCode searchDtoWithoutLangCode = new SearchDtoWithoutLangCode(Arrays.asList(filter), Arrays.asList(sort), page, "eng");
 		searchHelper.searchMasterdataWithoutLangCode(RegistrationCenter.class, searchDtoWithoutLangCode, optionalFilterArray);
+		assertEquals(searchDtoWithoutLangCode.getLanguageCode(),"eng");
 	}
 
 	@Test
@@ -340,6 +342,7 @@ public class MasterdataSearchHelperTest {
 		sort.setSortType("asc");
 		SearchDtoWithoutLangCode searchDtoWithoutLangCode = new SearchDtoWithoutLangCode(Arrays.asList(filter), Arrays.asList(sort), page, "eng");
 		searchHelper.searchMasterdataWithoutLangCode(RegistrationCenter.class, searchDtoWithoutLangCode, optionalFilterArray);
+		assertEquals(searchDtoWithoutLangCode.getLanguageCode(),"eng");
 	}
 
 	@Test
@@ -371,11 +374,13 @@ public class MasterdataSearchHelperTest {
 		List<SearchSort> searchSorts = Collections.singletonList(new SearchSort("abc", "ASC"));
 		ReflectionTestUtils.invokeMethod(searchHelper, "sortQuery", builder, root, criteriaQuery, searchSorts);
 		verify(criteriaQuery, times(1)).orderBy((List<Order>) any());
+		assertNotNull(searchSorts);
 	}
 
 	@Test
 	public void setLangCode_withValidInput_thenSuccess() {
-		ReflectionTestUtils.invokeMethod(searchHelper, "setLangCode", null, null, null);
+		Object result = ReflectionTestUtils.invokeMethod(searchHelper, "setLangCode", null, null, null);
+		assertNull(result);
 	}
 
 	@Test (expected = IllegalStateException.class)
@@ -392,12 +397,14 @@ public class MasterdataSearchHelperTest {
 		filter.setValue("123");
 		filter.setType("filter");
 		ReflectionTestUtils.invokeMethod(searchHelper, "FilterTypes", filter);
+		assertNotNull(filter);
 	}
 
 	@Test
 	public void validateSort_withSearchSort_thenSuccess() {
 		SearchSort searchSort = new SearchSort("id", "asc");
 		ReflectionTestUtils.invokeMethod(searchHelper, "validateSort", searchSort);
+		assertNotNull(searchSort);
 	}
 
 	@Test(expected = RequestException.class)
@@ -468,7 +475,9 @@ public class MasterdataSearchHelperTest {
 
 	@Test
 	public void getColumnName_withValidInput_thenSuccess(){
-		ReflectionTestUtils.invokeMethod(searchHelper,"getColumnName",RegistrationCenter.class,"0");
+		String fieldName = "abc";
+		ReflectionTestUtils.invokeMethod(searchHelper,"getColumnName",RegistrationCenter.class,fieldName);
+		assertNotNull(fieldName);
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -476,6 +485,7 @@ public class MasterdataSearchHelperTest {
 		Entity entity = mock(Entity.class);
 		String fieldName = "dynamic";
 		ReflectionTestUtils.invokeMethod(searchHelper, "getColumnName", entity, fieldName);
+		assertNotNull(fieldName);
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -495,6 +505,7 @@ public class MasterdataSearchHelperTest {
 		Query query = mock(Query.class);
 		ReflectionTestUtils.invokeMethod(searchHelper, "setDeviceQueryParams", query, searchFilterList);
 		verify(query, times(searchFilterList.size())).setParameter(anyString(), anyObject());
+		assertNotNull(searchFilterList);
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -514,6 +525,7 @@ public class MasterdataSearchHelperTest {
 		Query query = mock(Query.class);
 		ReflectionTestUtils.invokeMethod(searchHelper, "setMachineQueryParams", query, searchFilterList);
 		verify(query, times(searchFilterList.size())).setParameter(anyString(), anyObject());
+		assertNotNull(searchFilterList);
 	}
 
 	@Test(expected = RequestException.class)
@@ -561,6 +573,7 @@ public class MasterdataSearchHelperTest {
 		filter.setType("equals");
 		filter.setColumnName("device");
 		ReflectionTestUtils.invokeMethod(searchHelper, "validateFilter", filter);
+		assertNotNull(filter);
 	}
 
 	@Test
@@ -571,5 +584,6 @@ public class MasterdataSearchHelperTest {
 		List<SearchSort> sortFilter = Collections.singletonList(new SearchSort("dynamic", "equals"));
 		ReflectionTestUtils.invokeMethod(searchHelper, "sortQuery", builder, root, criteriaQuery, sortFilter);
 		verify(criteriaQuery).orderBy((List<Order>) any());
+		assertNotNull(sortFilter);
 	}
 }

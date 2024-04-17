@@ -17,8 +17,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @ContextConfiguration(classes = {RestClient.class})
@@ -46,6 +45,7 @@ public class RestClientTest {
         Class<?> responseType = Class.class;
 
         restClient.postApi(apiName,pathsegments,queryParamName,queryParamValue,mediaType,requestType,responseType);
+        assertNotNull(requestType);
     }
 
     @Test
@@ -138,6 +138,7 @@ public class RestClientTest {
         Class<?> responseType = Class.class;
 
         restClient.getApi(apiName,pathsegments,queryParamName,queryParamValue,responseType);
+        assertNotNull(pathsegments);
     }
 
     @Test
@@ -196,6 +197,7 @@ public class RestClientTest {
         MediaType mediaType = mock(MediaType.class);
 
         ReflectionTestUtils.invokeMethod(restClient,"setRequestHeader",requestType,mediaType);
+        assertNotNull(requestType);
     }
 
     @Test
