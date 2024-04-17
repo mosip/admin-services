@@ -82,7 +82,6 @@ public class DynamicFieldController {
 		return responseWrapper;
 	}
 
-
 	@ResponseFilter
 	@GetMapping("/{fieldName}/{langCode}")
 	@ApiOperation(value = "Service to fetch  dynamic field based on langcode and field name")
