@@ -5,11 +5,11 @@ import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = ValueValidator.class )
+@Constraint(validatedBy = FieldValidator.class )
 @Target({ ElementType.FIELD, ElementType.TYPE_USE, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DynamicValueValidator {
-    String message() default "Numbers and Special characters not allowed in value field";
+public @interface DynamicFieldValidator {
+    String message() default "Special characters are not allowed in code and value fields";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default{};
 }
