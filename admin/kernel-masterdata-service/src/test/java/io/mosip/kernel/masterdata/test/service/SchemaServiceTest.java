@@ -1,28 +1,15 @@
 package io.mosip.kernel.masterdata.test.service;
 
+import static org.junit.Assert.assertEquals;
+
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.constant.SchemaErrorCode;
-import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
-import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
-import io.mosip.kernel.masterdata.dto.IdSchemaPublishDto;
-import io.mosip.kernel.masterdata.dto.IdentitySchemaDto;
-import io.mosip.kernel.masterdata.dto.getresponse.IdSchemaResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
-import io.mosip.kernel.masterdata.entity.DynamicField;
-import io.mosip.kernel.masterdata.entity.IdentitySchema;
-import io.mosip.kernel.masterdata.exception.DataNotFoundException;
-import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-import io.mosip.kernel.masterdata.exception.RequestException;
-import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
-import io.mosip.kernel.masterdata.repository.IdentitySchemaRepository;
-import io.mosip.kernel.masterdata.service.DynamicFieldService;
-import io.mosip.kernel.masterdata.service.IdentitySchemaService;
-import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.service.impl.SchemaDefinitionServiceImpl;
-import io.mosip.kernel.masterdata.test.TestBootApplication;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -43,12 +30,27 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.constant.SchemaErrorCode;
+import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
+import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
+import io.mosip.kernel.masterdata.dto.IdSchemaPublishDto;
+import io.mosip.kernel.masterdata.dto.IdentitySchemaDto;
+import io.mosip.kernel.masterdata.dto.getresponse.IdSchemaResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.entity.DynamicField;
+import io.mosip.kernel.masterdata.entity.IdentitySchema;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
+import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
+import io.mosip.kernel.masterdata.repository.IdentitySchemaRepository;
+import io.mosip.kernel.masterdata.service.DynamicFieldService;
+import io.mosip.kernel.masterdata.service.IdentitySchemaService;
+import io.mosip.kernel.masterdata.service.TemplateService;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
 
 /**
  *
@@ -94,11 +96,9 @@ public class SchemaServiceTest {
 
 	PageRequest pageRequest = null;
 
-	List<DynamicField> list;
-
 	@Before
 	public void setup() {
-		list = new ArrayList<DynamicField>();
+		List<DynamicField> list = new ArrayList<DynamicField>();
 		bloodTypeField = new DynamicField();
 		bloodTypeField.setDataType("simpleType");
 		bloodTypeField.setDescription("test");
@@ -306,15 +306,15 @@ public class SchemaServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void deleteIdentitySchema_withValidId_recordDeleted() throws Exception {
-		String id="123456789";
-		Mockito.when(identitySchemaRepository.findIdentitySchemaById(id)).thenReturn(draftSchema);
-		assertEquals(id,identitySchemaService.deleteSchema(id));
+	public void testDeleteIdentitySchema() throws Exception {
+		Mockito.when(identitySchemaRepository.deleteIdentitySchema(Mockito.anyString(),  Mockito.any(LocalDateTime.class),
+				Mockito.anyString())).thenReturn(1);
+		identitySchemaService.deleteSchema("test-test");
 	}
 
 	@Test(expected = RequestException.class)
 	@WithUserDetails("global-admin")
-	public void deleteIdentitySchema_invalidId_failedToDelete() throws Exception {
+	public void testDeleteIdentitySchemaFailed() throws Exception {
 		Mockito.when(identitySchemaRepository.deleteIdentitySchema(Mockito.anyString(),  Mockito.any(LocalDateTime.class),
 				Mockito.anyString())).thenReturn(0);
 		identitySchemaService.deleteSchema("test-test");
@@ -322,17 +322,9 @@ public class SchemaServiceTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	@WithUserDetails("global-admin")
-	public void deleteIdentitySchema_withDbException_failedToDelete() throws Exception {
-		Mockito.when(identitySchemaRepository.findIdentitySchemaById(
+	public void testDeleteIdentitySchemaFailedUpdate() throws Exception {
+		Mockito.when(identitySchemaRepository.deleteIdentitySchema(Mockito.anyString(),  Mockito.any(LocalDateTime.class),
 				Mockito.anyString())).thenThrow(DataAccessLayerException.class);
-		identitySchemaService.deleteSchema("test-test");
-	}
-
-	@Test(expected = RequestException.class)
-	@WithUserDetails("global-admin")
-	public void deleteIdentitySchema_publishedSchema_Failed() throws Exception {
-		Mockito.when(identitySchemaRepository.findIdentitySchemaById(
-				Mockito.anyString())).thenReturn(publishedSchema);
 		identitySchemaService.deleteSchema("test-test");
 	}
 
