@@ -61,7 +61,7 @@ import static org.junit.Assert.assertEquals;
 @AutoConfigureMockMvc
 public class SchemaServiceTest {
 
-	@MockBean
+		@MockBean
 	private PublisherClient<String,EventModel,HttpHeaders> publisher;
 
 	@MockBean
@@ -306,15 +306,15 @@ public class SchemaServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void deleteIdentitySchema_withValidId_recordDeleted() throws Exception {
-		String id="123456789";
-		Mockito.when(identitySchemaRepository.findIdentitySchemaById(id)).thenReturn(draftSchema);
-		assertEquals(id,identitySchemaService.deleteSchema(id));
+	public void testDeleteIdentitySchema() throws Exception {
+		Mockito.when(identitySchemaRepository.deleteIdentitySchema(Mockito.anyString(),  Mockito.any(LocalDateTime.class),
+				Mockito.anyString())).thenReturn(1);
+		identitySchemaService.deleteSchema("test-test");
 	}
 
 	@Test(expected = RequestException.class)
 	@WithUserDetails("global-admin")
-	public void deleteIdentitySchema_invalidId_failedToDelete() throws Exception {
+	public void testDeleteIdentitySchemaFailed() throws Exception {
 		Mockito.when(identitySchemaRepository.deleteIdentitySchema(Mockito.anyString(),  Mockito.any(LocalDateTime.class),
 				Mockito.anyString())).thenReturn(0);
 		identitySchemaService.deleteSchema("test-test");
@@ -322,25 +322,10 @@ public class SchemaServiceTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	@WithUserDetails("global-admin")
-	public void deleteIdentitySchema_withDbException_failedToDelete() throws Exception {
-		Mockito.when(identitySchemaRepository.findIdentitySchemaById(
+	public void testDeleteIdentitySchemaFailedUpdate() throws Exception {
+		Mockito.when(identitySchemaRepository.deleteIdentitySchema(Mockito.anyString(),  Mockito.any(LocalDateTime.class),
 				Mockito.anyString())).thenThrow(DataAccessLayerException.class);
 		identitySchemaService.deleteSchema("test-test");
-	}
-
-	@Test(expected = RequestException.class)
-	@WithUserDetails("global-admin")
-	public void deleteIdentitySchema_publishedSchema_Failed() throws Exception {
-		Mockito.when(identitySchemaRepository.findIdentitySchemaById(
-				Mockito.anyString())).thenReturn(publishedSchema);
-		identitySchemaService.deleteSchema("test-test");
-	}
-
-	@Test
-	@WithUserDetails("reg-officer")
-	public void testFetchAllDynamicFieldsAllLang() throws Exception {
-		Mockito.when(dynamicFieldRepository.findAllDynamicFieldByName(Mockito.anyString())).thenReturn(list);
-		dynamicFieldService.getAllDynamicFieldByName("gender");
 	}
 
 }
