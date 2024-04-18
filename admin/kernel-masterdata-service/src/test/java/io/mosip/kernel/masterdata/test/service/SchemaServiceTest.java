@@ -328,11 +328,4 @@ public class SchemaServiceTest {
 		identitySchemaService.deleteSchema("test-test");
 	}
 
-	@Test
-	@WithUserDetails("reg-officer")
-	public void testFetchAllDynamicFieldsAllLang() throws Exception {
-		Mockito.when(dynamicFieldRepository.findAllDynamicFieldByName(Mockito.anyString())).thenReturn(list);
-		dynamicFieldService.getAllDynamicFieldByName("gender");
-	}
-
 }

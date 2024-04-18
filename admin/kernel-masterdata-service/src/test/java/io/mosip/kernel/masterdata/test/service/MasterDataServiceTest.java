@@ -3128,4 +3128,11 @@ public class MasterDataServiceTest {
 		locationHierarchyService.getImmediateChildrenByLocCode("KAR", List.of("eng"));
 	}
 
+	@Test
+	@WithUserDetails("reg-officer")
+	public void testFetchAllDynamicFieldsAllLang() throws Exception {
+		Mockito.when(dynamicFieldRepository.findAllDynamicFieldByName(Mockito.anyString())).thenReturn(dynamicFields);
+		assertEquals(1, dynamicFieldService.getAllDynamicFieldByName("gender").size());
+	}
+
 }
