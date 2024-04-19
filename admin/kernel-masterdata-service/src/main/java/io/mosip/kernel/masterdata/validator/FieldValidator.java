@@ -12,7 +12,19 @@ import java.util.regex.Pattern;
 @Data
 public class FieldValidator implements ConstraintValidator<DynamicFieldValidator, JsonNode> {
     @Value("${mosip.kernel.masterdata.code.validate.regex}")
-    private String allowedCharactersRegex;
+    private  String allowedCodeCharactersRegex;
+
+    @Value("${mosip.kernel.masterdata.value.validate.regex}")
+    private String allowedValueCharactersRegex;
+
+    private Pattern codePattern;
+    private Pattern valuePattern;
+
+    @Override
+    public void initialize(DynamicFieldValidator constraintAnnotation) {
+        codePattern = Pattern.compile(allowedCodeCharactersRegex, Pattern.CASE_INSENSITIVE);
+        valuePattern = Pattern.compile(allowedValueCharactersRegex, Pattern.CASE_INSENSITIVE);
+    }
 
     @Override
     public boolean isValid(JsonNode jsonValue, ConstraintValidatorContext context) {
@@ -23,9 +35,8 @@ public class FieldValidator implements ConstraintValidator<DynamicFieldValidator
         if (value == null || value.isEmpty() || code == null || code.isEmpty()) {
             return false;
         }
-        Pattern p = Pattern.compile(allowedCharactersRegex, Pattern.CASE_INSENSITIVE);
-        Matcher mCode = p.matcher(code.trim());
-        Matcher mValue = p.matcher(value.trim());
+        Matcher mCode = codePattern.matcher(code.trim());
+        Matcher mValue = valuePattern.matcher(value.trim());
         return (mCode.find() || mValue.find()) ? false : true;
     }
 }
