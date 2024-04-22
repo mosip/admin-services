@@ -421,7 +421,7 @@ public class DynamicFieldControllerTest {
 	@WithUserDetails("global-admin")
 	public void t000getAllDynamicFieldByNameTest() throws Exception {
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/all/gender")).andReturn(),
+				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/gender")).andReturn(),
 				null);
 	}
 
