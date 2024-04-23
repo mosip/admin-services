@@ -1,13 +1,22 @@
 package io.mosip.kernel.masterdata.test.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.mosip.kernel.masterdata.dto.request.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
+import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.Pagination;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -24,18 +33,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
-import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
-import io.mosip.kernel.masterdata.test.TestBootApplication;
-import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
@@ -416,6 +415,14 @@ public class DynamicFieldControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/bloodType/eng1")).andReturn(),
 				"KER-SCH-003");
+	}
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void t000getAllDynamicFieldByNameTest() throws Exception {
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/gender")).andReturn(),
+				null);
 	}
 
 }

@@ -12,7 +12,6 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import io.mosip.kernel.core.exception.ServiceError;
@@ -3103,6 +3102,37 @@ public class MasterDataServiceTest {
 		Assert.assertEquals("KER-MSD-308", serviceErrors.get(2).getErrorCode());
 		Assert.assertEquals("KER-MSD-260", serviceErrors.get(3).getErrorCode());
 		Assert.assertEquals("KER-MSD-259", serviceErrors.get(4).getErrorCode());
+	}
+
+	@Test
+	public void getImmediateChildrenByLocCodeTest() {
+		Mockito.when(locationHierarchyRepository
+						.findLocationHierarchyByParentLocCode(Mockito.anyString(), Mockito.anyList()))
+				.thenReturn(locationHierarchies);
+		Assert.assertEquals("IND", locationHierarchyService.getImmediateChildrenByLocCode("KAR", List.of("eng")).getLocations().get(0).getCode());
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void getImmediateChildrenByLocCodeTestExceptionTest() {
+		Mockito.when(locationHierarchyRepository
+						.findLocationHierarchyByParentLocCode(Mockito.anyString(), Mockito.anyList()))
+				.thenThrow(DataRetrievalFailureException.class);
+		locationHierarchyService.getImmediateChildrenByLocCode("KAR", List.of("eng"));
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void getImmediateChildrenByLocCodeTestDataExceptionTest() {
+		Mockito.when(locationHierarchyRepository
+						.findLocationHierarchyByParentLocCode(Mockito.anyString(), Mockito.anyList()))
+				.thenReturn(new ArrayList<Location>());
+		locationHierarchyService.getImmediateChildrenByLocCode("KAR", List.of("eng"));
+	}
+
+	@Test
+	@WithUserDetails("reg-officer")
+	public void testFetchAllDynamicFieldsAllLang() throws Exception {
+		Mockito.when(dynamicFieldRepository.findAllDynamicFieldByName(Mockito.anyString())).thenReturn(dynamicFields);
+		assertEquals(1, dynamicFieldService.getAllDynamicFieldByName("gender").size());
 	}
 
 }
