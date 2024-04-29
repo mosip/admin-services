@@ -1,9 +1,11 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.SchemaErrorCode;
+import io.mosip.kernel.masterdata.dto.DynamicFieldCodeValueDTO;
 import io.mosip.kernel.masterdata.dto.DynamicFieldConsolidateResponseDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldDefDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
@@ -524,7 +526,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 
 			return dto;
 
-		} catch (DataAccessLayerException | DataAccessException | JSONException  e) {
+		} catch (DataAccessLayerException | DataAccessException | JSONException | JsonProcessingException  e) {
 			throw new MasterDataServiceException(SchemaErrorCode.DYNAMIC_FIELD_FETCH_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
