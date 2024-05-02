@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.mosip.kernel.masterdata.validator.AlphabeticValidator;
+import io.mosip.kernel.masterdata.validator.DynamicFieldValidator;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -47,5 +48,6 @@ public class DynamicFieldDto {
 	@NotBlank
 	private String description;
 
+	@DynamicFieldValidator
 	private JsonNode fieldVal;
 }
