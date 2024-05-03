@@ -93,7 +93,7 @@ public class DynamicFieldController {
 	}
 
 	@ResponseFilter
-	@GetMapping("/all/{fieldName}")
+	@GetMapping("/{fieldName}")
 	@ApiOperation(value = " Service to fetch one dynamic field in all the languages")
 	public ResponseWrapper<List<DynamicFieldExtnDto>> getAllDynamicFieldByName(
 			@PathVariable("fieldName") String fieldName){
