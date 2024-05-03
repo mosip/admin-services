@@ -5,9 +5,9 @@
 	<groupId>io.mosip.masterdata</groupId>
 	<artifactId>apitest-masterdata</artifactId>
 	<packaging>jar</packaging>
-	<name>automationtests-masterdata</name>
-	<description>Parent project of MOSIP functional tests</description>
-	<url>https://github.com/mosip/mosip-functional-tests</url>
+	<name>apitest-masterdata</name>
+	<description>Parent project of MOSIP apitest-masterdata</description>
+	<url>https://github.com/mosip/admin-services</url>
 	<version>1.2.0.1-SNAPSHOT</version>
 
 	<licenses>
@@ -20,11 +20,18 @@
 	<scm>
 		<connection>scm:git:git://github.com/mosip/mosip-functional-tests.git</connection>
 		<developerConnection>scm:git:ssh://github.com:mosip/mosip-functional-tests.git</developerConnection>
-		<url>https://github.com/mosip/mosip-functional-tests</url>
+		<url>https://github.com/mosip/admin-services</url>
 		<tag>HEAD</tag>
 	</scm>
 
-
+	<developers>
+		<developer>
+			<name>Mosip</name>
+			<email>mosip.emailnotifier@gmail.com</email>
+			<organization>io.mosip</organization>
+			<organizationUrl>https://github.com/mosip/admin-services</organizationUrl>
+		</developer>
+	</developers>
 
 
 	<properties>
@@ -380,7 +387,7 @@
 
 		<dependency>
 			<groupId>io.mosip.testrig.apirig.automationtests.commons</groupId>
-			<artifactId>automationtests-commons</artifactId>
+			<artifactId>apitest-commons</artifactId>
 			<version>1.2.0.1-SNAPSHOT</version>
 		</dependency>
 		
