@@ -5,7 +5,7 @@
 	<groupId>io.mosip.masterdata</groupId>
 	<artifactId>apitest-masterdata</artifactId>
 	<packaging>jar</packaging>
-	<name>automationtests-masterdata</name>
+	<name>apitest-masterdata</name>
 	<description>Parent project of MOSIP functional tests</description>
 	<url>https://github.com/mosip/mosip-functional-tests</url>
 	<version>1.2.0.1-SNAPSHOT</version>
@@ -171,9 +171,8 @@
 		<zt.zip.version>1.13</zt.zip.version>
 		<fileName>apitests-masterdata-1.2.0.1-SNAPSHOT-jar-with-dependencies</fileName>
 		
-	</properties>
-	
-		<build>
+		</properties>
+	<build>
 		<pluginManagement>
 			<plugins>
 			</plugins>
@@ -374,13 +373,14 @@
 			</plugin>
 		</plugins>
 	</build>
-    
+
+		
 	
 	<dependencies>
 
 		<dependency>
 			<groupId>io.mosip.testrig.apirig.automationtests.commons</groupId>
-			<artifactId>automationtests-commons</artifactId>
+			<artifactId>apitest-commons</artifactId>
 			<version>1.2.0.1-SNAPSHOT</version>
 		</dependency>
 		
