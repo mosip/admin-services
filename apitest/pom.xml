@@ -178,9 +178,8 @@
 		<zt.zip.version>1.13</zt.zip.version>
 		<fileName>apitest-masterdata-1.2.0.1-SNAPSHOT-jar-with-dependencies</fileName>
 		
-	</properties>
-	
-		<build>
+		</properties>
+	<build>
 		<pluginManagement>
 			<plugins>
 			</plugins>
@@ -381,7 +380,8 @@
 			</plugin>
 		</plugins>
 	</build>
-    
+
+		
 	
 	<dependencies>
 
