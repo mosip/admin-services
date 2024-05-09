@@ -6,13 +6,8 @@
 	<artifactId>apitest-masterdata</artifactId>
 	<packaging>jar</packaging>
 	<name>apitest-masterdata</name>
-<<<<<<< HEAD
-	<description>Parent project of MOSIP functional tests</description>
-	<url>https://github.com/mosip/mosip-functional-tests</url>
-=======
-	<description>Parent project of MOSIP apitest-masterdata</description>
+	<description>Parent project of apitest-idrepo</description>
 	<url>https://github.com/mosip/admin-services</url>
->>>>>>> upstream/develop
 	<version>1.2.0.1-SNAPSHOT</version>
 
 	<licenses>
