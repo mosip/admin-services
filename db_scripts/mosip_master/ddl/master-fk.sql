@@ -6,10 +6,6 @@ ALTER TABLE master.app_authentication_method ADD CONSTRAINT fk_appauthm_prclst F
 REFERENCES master.process_list (id,lang_code) MATCH SIMPLE
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 
-ALTER TABLE master.app_authentication_method ADD CONSTRAINT fk_appauthm_rolelst FOREIGN KEY (role_code,lang_code)
-REFERENCES master.role_list (code,lang_code) MATCH SIMPLE
-ON DELETE NO ACTION ON UPDATE NO ACTION;
-
 ALTER TABLE master.app_role_priority ADD CONSTRAINT fk_roleprt_appdtl FOREIGN KEY (app_id,lang_code)
 REFERENCES master.app_detail (id,lang_code) MATCH SIMPLE
 ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -80,10 +76,6 @@ ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 ALTER TABLE master.screen_detail ADD CONSTRAINT fk_scrdtl_appdtl FOREIGN KEY (app_id,lang_code)
 REFERENCES master.app_detail (id,lang_code) MATCH SIMPLE
-ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE master.status_list ADD CONSTRAINT fk_status_sttyp FOREIGN KEY (sttyp_code,lang_code)
-REFERENCES master.status_type (code,lang_code) MATCH SIMPLE
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 
