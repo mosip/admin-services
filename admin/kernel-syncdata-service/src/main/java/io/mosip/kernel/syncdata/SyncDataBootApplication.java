@@ -26,7 +26,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 		"io.mosip.kernel.keymanagerservice.helper", "io.mosip.kernel.keymanager",
 		"io.mosip.kernel.cryptomanager.util", "io.mosip.kernel.partnercertservice.helper",
 		"io.mosip.kernel.partnercertservice.service", "io.mosip.kernel.websub.api.client",
-		"io.mosip.kernel.keygenerator.bouncycastle" },
+		"io.mosip.kernel.keygenerator.bouncycastle", "io.mosip.kernel.websub.api.config"  },
 	excludeFilters  = {@ComponentScan.Filter(
 		type = FilterType.ASPECTJ, pattern = {"io.mosip.kernel.signature.*"})})
 @EnableAsync
