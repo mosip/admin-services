@@ -1,21 +1,5 @@
 package io.mosip.hotlist.controller;
 
-import java.util.Collections;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.mosip.hotlist.constant.AuditEvents;
 import io.mosip.hotlist.constant.AuditModules;
 import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
@@ -29,6 +13,17 @@ import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
 
 /**
  * The Class HotlistController.
@@ -106,7 +101,9 @@ public class HotlistController {
 	 */
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetHotlistStatus())")
 	@GetMapping(path = "/status/{idType}/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseWrapper<HotlistRequestResponseDTO> retrieveHotlist(@PathVariable String id, @PathVariable String idType)
+	public ResponseWrapper<HotlistRequestResponseDTO> retrieveHotlist(
+			@ApiParam("Id") @PathVariable("id") String id,
+			@ApiParam("Id type") @PathVariable("idType") String idType)
 			throws MethodArgumentNotValidException {
 		ResponseWrapper<HotlistRequestResponseDTO> response = new ResponseWrapper<>();
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new HotlistRequestResponseDTO(), "request");

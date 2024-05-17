@@ -1,18 +1,5 @@
 package io.mosip.hotlist.event;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
-
 import io.mosip.hotlist.constant.HotlistErrorConstants;
 import io.mosip.hotlist.exception.HotlistRetryException;
 import io.mosip.hotlist.logger.HotlistLogger;
@@ -23,6 +10,18 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.websub.model.Event;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * @author Manoj SP
@@ -50,7 +49,7 @@ public class HotlistEventHandler {
 	private String appId;
 
 	/** The publisher. */
-	@Autowired
+	@Mock
 	private PublisherClient<String, EventModel, HttpHeaders> publisher;
 
 	/**
