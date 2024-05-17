@@ -1,12 +1,11 @@
 package io.mosip.kernel.syncdata.dto;
 
-import java.time.LocalDateTime;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.time.LocalDateTime;
 
 /**
  * DTO class

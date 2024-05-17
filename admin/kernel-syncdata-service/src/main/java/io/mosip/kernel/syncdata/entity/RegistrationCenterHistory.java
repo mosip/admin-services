@@ -1,28 +1,16 @@
 package io.mosip.kernel.syncdata.entity;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterHistoryID;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * @author Dharmesh Khandelwal

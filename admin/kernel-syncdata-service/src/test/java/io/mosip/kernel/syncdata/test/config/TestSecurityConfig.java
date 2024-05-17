@@ -1,20 +1,12 @@
 package io.mosip.kernel.syncdata.test.config;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
+import jakarta.servlet.Filter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,21 +16,26 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.firewall.HttpFirewall;
 
+import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class TestSecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableMethodSecurity
+public class TestSecurityConfig {
 
 	@Bean
 	public HttpFirewall defaultHttpFirewall() {
 		return new DefaultHttpFirewall();
 	}
 
-	@Override
-	public void configure(WebSecurity webSecurity) throws Exception {
-		webSecurity.ignoring().antMatchers(allowedEndPoints());
-		super.configure(webSecurity);
+	@Bean
+	public Filter configure(WebSecurity webSecurity) throws Exception {
+		webSecurity.ignoring().requestMatchers(allowedEndPoints());
 		webSecurity.httpFirewall(defaultHttpFirewall());
+		return webSecurity.build();
 	}
 
 	private String[] allowedEndPoints() {
@@ -48,13 +45,6 @@ public class TestSecurityConfig extends WebSecurityConfigurerAdapter {
 				"/**/authenticate/**"};
 	}
 
-	@Override
-	protected void configure(final HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.csrf().disable();
-		httpSecurity.httpBasic().and().authorizeRequests().anyRequest().authenticated().and().sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().exceptionHandling()
-				.authenticationEntryPoint(unauthorizedEntryPoint());
-	}
 
 	@Bean
 	public AuthenticationEntryPoint unauthorizedEntryPoint() {

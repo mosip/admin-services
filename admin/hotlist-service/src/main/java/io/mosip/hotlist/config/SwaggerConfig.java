@@ -2,7 +2,6 @@ package io.mosip.hotlist.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springdoc.core.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,11 +48,11 @@ public class SwaggerConfig {
 		return api;
     }
 	
-	@Bean
+	/*@Bean
 	public GroupedOpenApi groupedOpenApi() {
 		return GroupedOpenApi.builder().group(openApiProperties.getGroup().getName())
 				.pathsToMatch(openApiProperties.getGroup().getPaths().stream().toArray(String[]::new))
 				.build();
-	}
+	}*/
 	
 }
