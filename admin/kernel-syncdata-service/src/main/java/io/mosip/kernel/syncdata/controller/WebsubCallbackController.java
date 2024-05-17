@@ -9,7 +9,6 @@ import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.partnercertservice.dto.CACertificateRequestDto;
 import io.mosip.kernel.partnercertservice.service.spi.PartnerCertificateManagerService;
 import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyIntent;
-import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +34,7 @@ public class WebsubCallbackController {
     private static final String CERTIFICATE_DATA_SHARE_URL = "certChainDatashareUrl";
     private static final String PARTNER_DOMAIN = "partnerDomain";
 
-    @Mock
+    @Autowired
     private PartnerCertificateManagerService partnerCertificateManagerService;
 
     @Value("#{'${mosip.syncdata.partner.allowed.domains:FTM,DEVICE}'.split(',')}")

@@ -10,7 +10,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.websub.model.Event;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
-import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -49,7 +49,7 @@ public class HotlistEventHandler {
 	private String appId;
 
 	/** The publisher. */
-	@Mock
+	@Autowired
 	private PublisherClient<String, EventModel, HttpHeaders> publisher;
 
 	/**
