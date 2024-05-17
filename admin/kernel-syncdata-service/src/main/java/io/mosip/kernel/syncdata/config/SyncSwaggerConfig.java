@@ -1,16 +1,16 @@
 package io.mosip.kernel.syncdata.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.servers.Server;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springdoc.core.models.GroupedOpenApi;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * Configuration class for swagger config
@@ -49,11 +49,11 @@ public class SyncSwaggerConfig {
 		return api;
     }
 	
-	/*@Bean
+	@Bean
 	public GroupedOpenApi groupedOpenApi() {
 		return GroupedOpenApi.builder().group(openApiProperties.getGroup().getName())
 				.pathsToMatch(openApiProperties.getGroup().getPaths().stream().toArray(String[]::new))
 				.build();
-	}*/
+	}
 	
 }
