@@ -1,24 +1,18 @@
 package io.mosip.kernel.syncdata.config;
 
-import javax.servlet.Filter;
-
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
+import io.mosip.kernel.syncdata.httpfilter.CorsFilter;
 import io.mosip.kernel.websub.api.filter.MultipleReadRequestBodyFilter;
+import jakarta.servlet.Filter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.filter.CommonsRequestLoggingFilter;
-
-import io.mosip.kernel.syncdata.httpfilter.CorsFilter;
-import io.mosip.kernel.syncdata.httpfilter.ReqResFilter;
 
 import java.util.concurrent.Executor;
 

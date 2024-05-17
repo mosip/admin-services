@@ -1,50 +1,29 @@
 package io.mosip.kernel.syncdata.config;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import io.mosip.kernel.clientcrypto.constant.ClientCryptoErrorConstants;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.signature.dto.JWTSignatureRequestDto;
-import io.mosip.kernel.signature.dto.JWTSignatureResponseDto;
-import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
+import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
-import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
-import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import io.mosip.kernel.syncdata.service.helper.KeymanagerHelper;
 import io.mosip.kernel.syncdata.utils.ExceptionUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.http.ResponseFilter;
-import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
-import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.EmptyCheckUtils;
-import org.springframework.web.util.UriComponentsBuilder;
-
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 @RestControllerAdvice
 public class SyncResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrapper<?>> {

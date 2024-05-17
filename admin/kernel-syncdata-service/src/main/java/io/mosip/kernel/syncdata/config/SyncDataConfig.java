@@ -1,12 +1,10 @@
 package io.mosip.kernel.syncdata.config;
 
-import java.util.HashMap;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import io.mosip.kernel.syncdata.constant.HibernatePersistenceConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +18,9 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-
-import io.mosip.kernel.syncdata.constant.HibernatePersistenceConstant;
-
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 /**
  * SyncDataConfig
  * 
