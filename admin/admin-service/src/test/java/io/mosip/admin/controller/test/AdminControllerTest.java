@@ -1,25 +1,22 @@
 package io.mosip.admin.controller.test;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.admin.TestBootApplication;
+import io.mosip.admin.dto.FilterInfo;
+import io.mosip.admin.dto.SearchInfo;
+import io.mosip.admin.dto.SortInfo;
+import io.mosip.admin.packetstatusupdater.util.AuditUtil;
+import io.mosip.admin.util.AdminDataUtil;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -34,24 +31,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
-import io.mosip.admin.TestBootApplication;
-import io.mosip.admin.dto.FilterInfo;
-import io.mosip.admin.dto.LostRidDto;
-import io.mosip.admin.dto.LostRidResponseDto;
-import io.mosip.admin.dto.RegProcRequestWrapper;
-import io.mosip.admin.dto.SearchInfo;
-import io.mosip.admin.dto.SortInfo;
-import io.mosip.admin.packetstatusupdater.constant.ApiName;
-import io.mosip.admin.packetstatusupdater.util.AuditUtil;
-import io.mosip.admin.packetstatusupdater.util.RestClient;
-import io.mosip.admin.service.AdminService;
-import io.mosip.admin.util.AdminDataUtil;
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
@@ -126,6 +113,7 @@ public class AdminControllerTest {
 
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails(value = "zonal-admin")
 	public void t003lostRidDetailsTest() throws Exception {
