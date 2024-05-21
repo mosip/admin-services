@@ -8,7 +8,6 @@ import io.mosip.kernel.core.websub.spi.PublisherClient;
 import jakarta.annotation.PostConstruct;
 import org.hibernate.Interceptor;
 import org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
@@ -52,7 +51,7 @@ public class HotlistConfig {
 	private String dialect;
 
 	/** The publisher. */
-	@Mock
+	@Autowired
 	private PublisherClient<String, EventModel, HttpHeaders> publisher;
 
 	/** The interceptor. */
