@@ -5,7 +5,7 @@ import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.*;

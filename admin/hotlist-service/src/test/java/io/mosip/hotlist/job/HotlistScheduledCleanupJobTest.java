@@ -1,29 +1,28 @@
 package io.mosip.hotlist.job;
 
-import static org.mockito.Mockito.when;
-
-import java.util.Collections;
-
+import io.mosip.hotlist.config.job.HotlistScheduledCleanupJob;
+import io.mosip.hotlist.repository.HotlistRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.*;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.hotlist.config.job.HotlistScheduledCleanupJob;
-import io.mosip.hotlist.repository.HotlistRepository;
+import java.util.Collections;
+
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Manoj SP
  *
  */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 public class HotlistScheduledCleanupJobTest {
 

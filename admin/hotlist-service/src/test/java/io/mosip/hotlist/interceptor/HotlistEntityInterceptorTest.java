@@ -1,32 +1,31 @@
 package io.mosip.hotlist.interceptor;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.context.WebApplicationContext;
-
 import io.mosip.hotlist.constant.HotlistErrorConstants;
 import io.mosip.hotlist.entity.Hotlist;
 import io.mosip.hotlist.entity.HotlistHistory;
 import io.mosip.hotlist.exception.HotlistAppException;
 import io.mosip.hotlist.exception.HotlistAppUncheckedException;
 import io.mosip.hotlist.security.HotlistSecurityManager;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestContext;
+import org.springframework.web.context.WebApplicationContext;
+
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Manoj SP
  *
  */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 public class HotlistEntityInterceptorTest {
 
@@ -87,7 +86,7 @@ public class HotlistEntityInterceptorTest {
 	@Test
 	public void testOnLoadError() throws HotlistAppException {
 		try {
-			when(securityManager.decrypt(Mockito.any()))
+			Mockito.lenient().when(securityManager.decrypt(Mockito.any()))
 					.thenThrow(new HotlistAppException(HotlistErrorConstants.AUTHENTICATION_FAILED));
 			Hotlist entity = new Hotlist();
 			entity.setIdValue("id");

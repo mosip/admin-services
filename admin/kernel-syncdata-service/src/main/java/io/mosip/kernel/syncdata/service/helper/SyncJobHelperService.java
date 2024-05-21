@@ -8,20 +8,23 @@ import io.mosip.kernel.syncdata.entity.*;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
+import org.apache.logging.log4j.core.util.CronExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.support.CronSequenceGenerator;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -30,9 +33,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
-
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 
 @Component
 @Order(value = Ordered.HIGHEST_PRECEDENCE)
@@ -81,18 +81,23 @@ public class SyncJobHelperService {
     }
 
     public LocalDateTime getDeltaSyncCurrentTimestamp() {
-        CronSequenceGenerator cronSequenceGenerator = new CronSequenceGenerator(deltaCacheEvictCron, TimeZone.getTimeZone(ZoneOffset.UTC));
-        Date nextTrigger1 = cronSequenceGenerator.next(new Date());
-        Date nextTrigger2 = cronSequenceGenerator.next(nextTrigger1);
+        try {
+            CronExpression cronExpression = new CronExpression(deltaCacheEvictCron);
+            Date nextTrigger1 = cronExpression.getNextValidTimeAfter(new Date());
+            Date nextTrigger2 = cronExpression.getNextValidTimeAfter(nextTrigger1);
 
-        long minutes = ChronoUnit.MINUTES.between(nextTrigger1.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime(),
-                nextTrigger2.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime());
+            long minutes = ChronoUnit.MINUTES.between(nextTrigger1.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime(),
+                    nextTrigger2.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime());
 
-        LocalDateTime previousTrigger = nextTrigger1.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime().minus(minutes,
-                ChronoUnit.MINUTES);
+            LocalDateTime previousTrigger = nextTrigger1.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime().minus(minutes,
+                    ChronoUnit.MINUTES);
 
-        logger.debug("Identified previous trigger : {}", previousTrigger);
-        return previousTrigger;
+            logger.debug("Identified previous trigger : {}", previousTrigger);
+            return previousTrigger;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Scheduled(cron = "${syncdata.cache.snapshot.cron}", zone = "UTC")
