@@ -29,9 +29,12 @@ TRUNCATE TABLE master.process_list cascade ;
 
 ----- TRUNCATE master.reason_category TABLE Data and It's reference Data and COPY Data from CSV file -----
 TRUNCATE TABLE master.reason_category cascade ;
-
 \COPY master.reason_category (code,name,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-reason_category.csv' delimiter ',' HEADER  csv;
 
+----- TRUNCATE master.role_list TABLE Data and It's reference Data and COPY Data from CSV file -----
+TRUNCATE TABLE master.role_list cascade ;
+
+\COPY master.role_list (code,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-role_list.csv' delimiter ',' HEADER  csv;
 
 ----- TRUNCATE master.template_file_format TABLE Data and It's reference Data and COPY Data from CSV file -----
 TRUNCATE TABLE master.template_file_format cascade ;

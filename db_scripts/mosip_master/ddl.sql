@@ -32,6 +32,7 @@
 \ir ddl/master-registration_center.sql
 \ir ddl/master-registration_center_h.sql
 \ir ddl/master-reg_center_type.sql
+\ir ddl/master-role_list.sql
 \ir ddl/master-screen_authorization.sql
 \ir ddl/master-screen_detail.sql
 \ir ddl/master-template_type.sql
