@@ -6,14 +6,15 @@ import io.mosip.hotlist.security.HotlistSecurityManager;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
+import jakarta.annotation.Nullable;
 import jakarta.servlet.ServletException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.lang.Nullable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,6 +28,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static io.mosip.hotlist.constant.HotlistErrorConstants.*;
+import static io.mosip.hotlist.constant.HotlistErrorConstants.INVALID_REQUEST;
 
 /**
  * The Class HotlistExceptionHandler.
@@ -111,9 +113,9 @@ public class HotlistExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @param request      the request
 	 * @return the response entity
 	 */
-	//@Override
+	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object errorMessage,
-			HttpHeaders headers, HttpStatus status, WebRequest request) {
+			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 		mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE, HOTLIST_EXCEPTION_HANDLER,
 				"handleExceptionInternal - \n" + (ex instanceof MethodArgumentNotValidException
 						? ((MethodArgumentNotValidException) ex).getBindingResult().getAllErrors()
