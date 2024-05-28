@@ -8,7 +8,6 @@ import io.mosip.kernel.syncdata.entity.*;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
-import org.apache.logging.log4j.core.util.CronExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +18,12 @@ import org.springframework.cache.CacheManager;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.support.CronExpression;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -81,23 +80,17 @@ public class SyncJobHelperService {
     }
 
     public LocalDateTime getDeltaSyncCurrentTimestamp() {
-        try {
-            CronExpression cronExpression = new CronExpression(deltaCacheEvictCron);
-            Date nextTrigger1 = cronExpression.getNextValidTimeAfter(new Date());
-            Date nextTrigger2 = cronExpression.getNextValidTimeAfter(nextTrigger1);
+        CronExpression cronExpression = CronExpression.parse(deltaCacheEvictCron);
+        LocalDateTime nextTrigger1 = cronExpression.next(LocalDateTime.now());
+        LocalDateTime nextTrigger2 = cronExpression.next(nextTrigger1);
 
-            long minutes = ChronoUnit.MINUTES.between(nextTrigger1.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime(),
-                    nextTrigger2.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime());
+        long minutes = ChronoUnit.MINUTES.between(nextTrigger1.toInstant(ZoneOffset.UTC),
+                nextTrigger2.toInstant(ZoneOffset.UTC));
 
-            LocalDateTime previousTrigger = nextTrigger1.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime().minus(minutes,
-                    ChronoUnit.MINUTES);
+        LocalDateTime previousTrigger = nextTrigger1.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime();
 
-            logger.debug("Identified previous trigger : {}", previousTrigger);
-            return previousTrigger;
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+        logger.debug("Identified previous trigger : {}", previousTrigger);
+        return previousTrigger;
     }
 
     @Scheduled(cron = "${syncdata.cache.snapshot.cron}", zone = "UTC")
