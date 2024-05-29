@@ -182,7 +182,7 @@ public class IdentitySchemaControllerTest {
 	@WithUserDetails("global-admin")
 	public void getAllSchema() throws Exception {		
 		Mockito.when(identitySchemaRepository.findAllIdentitySchema(Mockito.anyBoolean(),Mockito.any())).thenThrow(new DataAccessException("...") {});		
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/all")).andReturn(),"KER-SCH-004");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/idschema/all")).andReturn(),"KER-SCH-004");
 	}
 	
 	@Test
@@ -190,7 +190,7 @@ public class IdentitySchemaControllerTest {
 	public void getLatestPublishedSchema() throws Exception {		
 		Mockito.when(uiSpecService.getUISpec(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(lstui);
 		Mockito.when(identitySchemaRepository.findLatestPublishedIdentitySchema()).thenReturn(is);		
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/latest").param("schemaVersion", "0").param("domain", "").param("type","")).andReturn(),null);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/idschema/latest").param("schemaVersion", "0").param("domain", "").param("type","")).andReturn(),null);
 	}
 	
 	@Test
@@ -199,7 +199,7 @@ public class IdentitySchemaControllerTest {
 		IdentitySchema is=null;
 				
 		Mockito.when(identitySchemaRepository.findLatestPublishedIdentitySchema()).thenReturn(is);		
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/latest").param("schemaVersion", "0").param("domain", "").param("type","")).andReturn(),"KER-SCH-007");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/idschema/latest").param("schemaVersion", "0").param("domain", "").param("type","")).andReturn(),"KER-SCH-007");
 	}
 	
 	@Test
@@ -208,7 +208,7 @@ public class IdentitySchemaControllerTest {
 	
 		Mockito.when(uiSpecService.getUISpec(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(lstui);
 		Mockito.when(identitySchemaRepository.findLatestPublishedIdentitySchema()).thenReturn(is);		
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/latest").param("schemaVersion", "0").param("domain", "").param("type","a")).andReturn(),null);
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/idschema/latest").param("schemaVersion", "0").param("domain", "").param("type","a")).andReturn(),null);
 	}
 	
 	@Test

@@ -1,6 +1,6 @@
 package io.mosip.kernel.masterdata.entity;
 
-import javax.persistence.Id;
+import jakarta.persistence.Id;
 
 public class DynamicFieldDefinition {
 

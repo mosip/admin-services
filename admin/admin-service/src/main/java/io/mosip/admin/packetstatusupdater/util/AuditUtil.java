@@ -6,7 +6,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -200,7 +200,7 @@ public class AuditUtil {
 		//if current profile is local or dev donot call this method
 		if(Arrays.stream(env.getActiveProfiles().length == 0 ?
 				env.getDefaultProfiles() : env.getActiveProfiles()).anyMatch(
-				environment -> (environment.equalsIgnoreCase("local") ||
+				environment -> (environment.equalsIgnoreCase("local1") ||
 						environment.equalsIgnoreCase("test")) )) {
 			LOGGER.info("Recieved Audit : {}",auditRequestDto.toString());
 		} else {

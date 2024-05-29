@@ -3,7 +3,7 @@ package io.mosip.admin.bulkdataupload.entity.id;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
+import jakarta.persistence.Column;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

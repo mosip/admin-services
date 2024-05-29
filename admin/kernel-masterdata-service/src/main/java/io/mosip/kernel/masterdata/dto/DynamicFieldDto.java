@@ -2,7 +2,7 @@ package io.mosip.kernel.masterdata.dto;
 
 import java.util.List;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.JsonNode;
