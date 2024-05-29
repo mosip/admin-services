@@ -12,3 +12,4 @@ RSJ_J00014,Registration Packet Sync,registrationPacketSyncJob,NULL,0 0 11 * * ?,
 PVS_J00015,Registration Client Virus Scan,registrationClientVirusScanJob,NULL,0 0 11 * * ?,NULL,eng,TRUE,M1046559,now(),System,now(),FALSE,now(),Scans
 PKS_J00016,Public key Sync service,publicKeySyncJob,NULL,0 0 11 * * ?,NULL,eng,TRUE,SYSTEM,now(),System,now(),FALSE,now(),Sync Activities
 PUJ_J00017,Registration Packet Upload Job,registrationPacketUploadJob,NULL,0 0 11 * * ?,NULL,eng,TRUE,SYSTEM,now(),System,now(),FALSE,now(),Sync Activities
+SCJ_J00018,Sync Certificate Job,syncCertificateJob,NULL,0 0 11 * * ?,NULL,,TRUE,SYSTEM,now(),System,now(),FALSE,now(),Sync Activities
