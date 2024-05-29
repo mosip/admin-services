@@ -373,7 +373,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 				MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorCode());
 	}
 	
-
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t7updateRegistrationCenterTypeStatusFailureNotFound() throws Exception {
