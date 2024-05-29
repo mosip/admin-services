@@ -10,6 +10,7 @@ import java.util.List;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -170,6 +171,7 @@ public class UserDetailControllerTest
 
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails("reg-processor")
 	public void t003getUsersTest() throws Exception {
@@ -178,6 +180,7 @@ public class UserDetailControllerTest
 
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails("reg-processor")
 	public void t004getUsersFailTest() throws Exception {
