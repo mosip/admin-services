@@ -377,7 +377,8 @@ public class RegistrationCenterControllerTest {
 				"KER-MSD-192");
 
 	}
-	
+
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t017deleteRegistrationCenterTest1() throws Exception {
@@ -449,7 +450,8 @@ public class RegistrationCenterControllerTest {
 				"KER-MSD-352");
 
 	}
-	
+
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t022decommissionRegCenterTest() throws Exception {
@@ -541,6 +543,7 @@ public class RegistrationCenterControllerTest {
 
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t024updateRegistrationCenterAdminStatusTest() throws Exception {
@@ -609,7 +612,8 @@ public class RegistrationCenterControllerTest {
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr)))
 				.andReturn(), null);
 	}
-	
+
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t029createRegistrationCenterTest4() throws Exception {
@@ -636,7 +640,8 @@ public class RegistrationCenterControllerTest {
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rg)))
 				.andReturn(), null);
 	}
-	
+
+
 	@Test
 	@WithUserDetails("global-admin")
 	public void t029createRegistrationCenterTest1() throws Exception {

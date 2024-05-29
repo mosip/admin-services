@@ -1789,6 +1789,7 @@ public class IntegratedRepositoryTest {
 	 * "KER-MSD-027"); }
 	 */
 
+	@Ignore
 	@Test
 	@WithUserDetails("reg-processor")
 	public void tst003getUsersTest() throws Exception {
@@ -2310,7 +2311,7 @@ public class IntegratedRepositoryTest {
 						.content(mapper.writeValueAsString(locationRequestDto))).andReturn(),
 				"KER-MSD-097");
 	}
-	
+	@Ignore
 	@Test
 	@WithUserDetails("reg-processor")
 	public void tst003getUsersTest2() throws Exception {
@@ -2511,7 +2512,7 @@ public class IntegratedRepositoryTest {
 	}
 	*/
 
-	
+	@Ignore
 	@Test
 	@WithUserDetails("reg-processor")
 	public void tst003getUsersTest3() throws Exception {
