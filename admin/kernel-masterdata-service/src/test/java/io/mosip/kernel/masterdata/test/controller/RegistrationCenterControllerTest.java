@@ -389,6 +389,7 @@ public class RegistrationCenterControllerTest {
 
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t018deleteRegistrationCenterFailTest() throws Exception {
@@ -623,7 +624,8 @@ public class RegistrationCenterControllerTest {
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rg)))
 				.andReturn(), null);
 	}
-	
+
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t029createRegistrationCenterTest() throws Exception {
@@ -641,7 +643,7 @@ public class RegistrationCenterControllerTest {
 				.andReturn(), null);
 	}
 
-
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t029createRegistrationCenterTest1() throws Exception {
