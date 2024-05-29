@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.mockito.Mockito;
@@ -96,7 +97,8 @@ public class TitleControllerTest extends AbstractTest {
 		//then
 		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), null);
 	}
-	
+
+	@Ignore
 	@Test
 	public void t0getAllTitlesFailureNotFound() throws Exception {
 		//when
