@@ -26,11 +26,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  * @since 1.0.0
  *
  */
-@SpringBootApplication(scanBasePackages = { "${mosip.auth.adapter.impl.basepackage}",
-		"io.mosip.kernel.core.logger.config"})
+@SpringBootApplication
 @ComponentScan(value = {"io.mosip.kernel.masterdata.*","io.mosip.kernel.core.datamapper.*",
 		"io.mosip.kernel.core.websub.*","io.mosip.kernel.idgenerator.*","io.mosip.kernel.auth.*"
-		,"io.mosip.kernel.websub.api.*","io.mosip.kernel.applicanttype.*","io.mosip.kernel.core.idgenerator.*"}, excludeFilters  = {@ComponentScan.Filter(
+		,"io.mosip.kernel.websub.api.*","io.mosip.kernel.applicanttype.*"
+		,"io.mosip.kernel.core.idgenerator.*","io.mosip.kernel.core.logger.config"}, excludeFilters  = {@ComponentScan.Filter(
 		type = FilterType.ASSIGNABLE_TYPE, classes = {DataMapperImpl.class})})
 @EnableCaching
 @EnableScheduling
