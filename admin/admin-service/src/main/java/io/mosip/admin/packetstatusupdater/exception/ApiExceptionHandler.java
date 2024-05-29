@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -43,6 +44,7 @@ import io.mosip.kernel.core.util.EmptyCheckUtils;
  * @since 1.0.0
  */
 @RestControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class ApiExceptionHandler {
 
 	@Autowired
@@ -51,7 +53,7 @@ public class ApiExceptionHandler {
 	private static final Logger logger = LoggerFactory.getLogger(ApiExceptionHandler.class);
 
 
-/*	@ExceptionHandler(value = {AuthCodeProxyExceptionHandler.class})
+	/*@ExceptionHandler(value = {AuthCodeProxyExceptionHandler.class})
 	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(
 			final HttpServletRequest httpServletRequest, AuthCodeProxyExceptionHandler e) throws IOException {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);

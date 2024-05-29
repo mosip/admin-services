@@ -12,7 +12,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @SpringBootApplication
 @EnableAsync
 @ComponentScan(value = {"io.mosip.kernel.auth.*","io.mosip.kernel.dataaccess.*","io.mosip.admin.*","io.mosip.commons.*",
-		"${mosip.auth.adapter.impl.basepackage}", "io.mosip.kernel.idvalidator.rid.*","io.mosip.kernel.authcodeflowproxy.*"})
+		"${mosip.auth.adapter.impl.basepackage}", "io.mosip.kernel.idvalidator.rid.*","io.mosip.kernel.biometrics.*","io.mosip.kernel.authcodeflowproxy.*"})
 public class AdminBootApplication {
 
 	public static void main(String[] args) {
