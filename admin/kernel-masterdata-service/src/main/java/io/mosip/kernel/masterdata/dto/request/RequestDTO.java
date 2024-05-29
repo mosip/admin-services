@@ -2,7 +2,7 @@ package io.mosip.kernel.masterdata.dto.request;
 
 import java.util.List;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import io.mosip.kernel.masterdata.dto.KeyValues;
 import lombok.Data;

@@ -262,7 +262,7 @@ public class RegistrationCenterControllerTest {
 	@WithUserDetails("global-admin")
 	public void t010getAllRegistrationCentersDetailsTest() throws Exception {
 
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("registrationcenters")).andReturn(),
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters")).andReturn(),
 				null);
 
 	}
@@ -615,7 +615,7 @@ public class RegistrationCenterControllerTest {
 	public void t029createRegistrationCenterTest4() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
-				.perform(MockMvcRequestBuilders.post("registrationcenters")
+				.perform(MockMvcRequestBuilders.post("/registrationcenters")
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rg)))
 				.andReturn(), null);
 	}
@@ -632,7 +632,7 @@ public class RegistrationCenterControllerTest {
 		rg.getRequest().setExceptionalHolidayPutPostDto(elst);
 		
 		MasterDataTest.checkResponse(mockMvc
-				.perform(MockMvcRequestBuilders.post("registrationcenters")
+				.perform(MockMvcRequestBuilders.post("/registrationcenters")
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rg)))
 				.andReturn(), null);
 	}
@@ -652,7 +652,7 @@ public class RegistrationCenterControllerTest {
 		m.put("101", true);
 		rg.getRequest().setWorkingNonWorkingDays(m);
 		MasterDataTest.checkResponse(mockMvc
-				.perform(MockMvcRequestBuilders.post("registrationcenters")
+				.perform(MockMvcRequestBuilders.post("/registrationcenters")
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rg)))
 				.andReturn(), null);
 	}

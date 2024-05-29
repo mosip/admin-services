@@ -144,16 +144,25 @@ INSERT INTO master.dynamic_field(id, name, description, data_type,value_json,lan
 
 
 DELETE FROM MASTER.loc_holiday;
-INSERT INTO master.loc_holiday(id, location_code, holiday_date,holiday_name,holiday_desc, lang_code,is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_DELETEd, del_dtimes) VALUES 
-('2000001','KTA',TO_DATE('10-12-2019','dd-MM-yyyy'),'New Year Day', 'National Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
-('2000002','KTA',TO_DATE('12-12-2019','dd-MM-yyyy'),'Anniversary of the Independence Manifesto',' National Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
-('2000004','KTA',TO_DATE('14-12-2019','dd-MM-yyyy'),'Eid','National Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
-('2000005','RBT',TO_DATE('20-12-2019','dd-MM-yyyy'),'Feast of the Throne',' National Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
+
+
+INSERT INTO master.loc_holiday
+(id, location_code, holiday_date, holiday_name, holiday_desc, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES(2000001, 'KTA', '2019-12-10', 'Anniversary of the Independence Manifesto','National Holiday', 'eng', true, 'systemadmin', '2024-03-27 10:07:21.578', NULL, NULL, false, NULL);
+INSERT INTO master.loc_holiday
+(id, location_code, holiday_date, holiday_name, holiday_desc, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES(2000002, 'KTA', '2019-12-12', 'New Year''s Day', 'National Holiday', 'eng', true, 'systemadmin', '2024-03-27 10:07:21.578', NULL, NULL, false, NULL);
+INSERT INTO master.loc_holiday
+(id, location_code, holiday_date, holiday_name, holiday_desc, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES(2000004, 'KTA', '2019-12-14', 'Eid', 'National Holiday', 'eng', true, 'systemadmin', '2024-03-27 10:07:21.578', NULL, NULL, false, NULL);
+INSERT INTO master.loc_holiday
+(id, location_code, holiday_date, holiday_name, holiday_desc, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES(2000005, 'RBT', '2019-12-20', 'Feast of the Throne', 'National Holiday', 'eng', true, 'systemadmin', '2024-03-27 10:07:21.578', NULL, NULL, false, NULL);
 
 DELETE FROM MASTER.reg_exceptional_holiday;
 INSERT INTO master.reg_exceptional_holiday(regcntr_id, hol_date, hol_name,hol_reason, lang_code,is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_DELETEd, del_dtimes) VALUES 
-('10001',TO_DATE('01-12-2019','dd-MM-yyyy'),'Emergency Holiday','Emergency Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
-('10002',TO_DATE('01-12-2019','dd-MM-yyyy'),'Emergency Holiday','Emergency Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
+('10001','2019-01-12','Emergency Holiday','Emergency Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL),
+('10002','2019-01-12','Emergency Holiday','Emergency Holiday','eng',TRUE,'superadmin',TIMESTAMP '2018-12-10 11:42:52.994',NULL,NULL,NULL,NULL);
 
 
 DELETE FROM MASTER.ui_spec;

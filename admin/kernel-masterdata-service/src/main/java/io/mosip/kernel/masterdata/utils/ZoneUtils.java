@@ -384,6 +384,12 @@ public class ZoneUtils {
 		List<Zone> zoneHeirarchyList = getDescedants(zones, zone);
 		return zoneHeirarchyList;
 	}
+	public Zone getZoneBasedOnZoneCodeLanguage(String zoneCode, String langCode) {
+        return zoneRepository.findZoneByCodeAndLangCodeNonDeleted(zoneCode, langCode);
+	}
+	public List<Zone> getZoneListBasedonZoneName(String zoneName) {
+		return zoneRepository.findListZonesFromZoneName(zoneName.toLowerCase());
+	}
 
 	public List<String> getZoneCodes(List<Zone> zones) {
 		if (zones != null && !zones.isEmpty()) {

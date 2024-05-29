@@ -10,19 +10,19 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import  jakarta.persistence.Column;
+import  jakarta.persistence.EntityManager;
+import  jakarta.persistence.PersistenceContext;
+import  jakarta.persistence.Query;
+import  jakarta.persistence.Table;
+import  jakarta.persistence.TypedQuery;
+import  jakarta.persistence.criteria.CriteriaBuilder;
+import  jakarta.persistence.criteria.CriteriaQuery;
+import  jakarta.persistence.criteria.Expression;
+import  jakarta.persistence.criteria.Order;
+import  jakarta.persistence.criteria.Path;
+import  jakarta.persistence.criteria.Predicate;
+import  jakarta.persistence.criteria.Root;
 
 import org.hibernate.HibernateException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -105,19 +105,21 @@ public class MasterdataSearchHelper {
 		long rows = 0l;
 		List<E> result;
 		Objects.requireNonNull(entity, ENTITY_IS_NULL);
-		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<E> selectQuery = criteriaBuilder.createQuery(entity);
-		CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+		CriteriaBuilder selectCriteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaBuilder countCriteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<E> selectQuery = selectCriteriaBuilder.createQuery(entity);
+		CriteriaQuery<Long> countQuery = countCriteriaBuilder.createQuery(Long.class);
 		// root Query
-		Root<E> rootQuery = selectQuery.from(entity);
+		Root<E> rootSelectQuery = selectQuery.from(entity);
+		Root<E> rootCountQuery = countQuery.from(entity);
 		// count query
-		countQuery.select(criteriaBuilder.count(countQuery.from(entity)));
+		countQuery.select(countCriteriaBuilder.count(countQuery.from(entity)));
 		// applying filters
-		filterQuery(criteriaBuilder, rootQuery, selectQuery, countQuery, searchDto.getFilters(),
+		filterQuery(selectCriteriaBuilder, countCriteriaBuilder, rootSelectQuery, rootCountQuery, selectQuery, countQuery, searchDto.getFilters(),
 				searchDto.getLanguageCode(), optionalFilters);
 
 		// applying sorting
-		sortQuery(criteriaBuilder, rootQuery, selectQuery, searchDto.getSort());
+		sortQuery(selectCriteriaBuilder, rootSelectQuery, selectQuery, searchDto.getSort());
 
 		try {
 			// creating executable query from select criteria query
@@ -160,19 +162,21 @@ public class MasterdataSearchHelper {
 		long rows = 0l;
 		List<E> result;
 		Objects.requireNonNull(entity, ENTITY_IS_NULL);
-		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<E> selectQuery = criteriaBuilder.createQuery(entity);
-		CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+		CriteriaBuilder selectQueryCriteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<E> selectQuery = selectQueryCriteriaBuilder.createQuery(entity);
+		CriteriaBuilder countQueryCriteriaBuilder  = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Long> countQuery = countQueryCriteriaBuilder.createQuery(Long.class);
 		// root Query
-		Root<E> rootQuery = selectQuery.from(entity);
+		Root<E> selectRootQuery = selectQuery.from(entity);
+		Root<E> countRootQuery = countQuery.from(entity);
 		// count query
-		countQuery.select(criteriaBuilder.count(countQuery.from(entity)));
+		countQuery.select(countQueryCriteriaBuilder.count(countQuery.from(entity)));
 		// applying filters
-		filterQueryWithoutLang(criteriaBuilder, rootQuery, selectQuery, countQuery, searchDto.getFilters(),
+		filterQueryWithoutLang(selectQueryCriteriaBuilder, countQueryCriteriaBuilder, selectRootQuery, countRootQuery, selectQuery, countQuery, searchDto.getFilters(),
 				optionalFilters);
 
 		// applying sorting
-		sortQuery(criteriaBuilder, rootQuery, selectQuery, searchDto.getSort());
+		sortQuery(selectQueryCriteriaBuilder, selectRootQuery, selectQuery, searchDto.getSort());
 
 		try {
 			// creating executable query from select criteria query
@@ -215,8 +219,16 @@ public class MasterdataSearchHelper {
 	 * @param filters     list of {@link SearchFilter}
 	 * @param langCode    language code if applicable
 	 */
-	private <E> void filterQuery(CriteriaBuilder builder, Root<E> root, CriteriaQuery<E> selectQuery,
+	private <E> void filterQuery(CriteriaBuilder selectQueryBuilder, CriteriaBuilder countQueryBuilder, Root<E> selectRoot, Root<E> countRoot, CriteriaQuery<E> selectQuery,
 			CriteriaQuery<Long> countQuery, List<SearchFilter> filters, String langCode,
+			OptionalFilter[] optionalFilters) {
+		filterQuery(selectQueryBuilder, selectRoot, selectQuery, filters, langCode, optionalFilters);
+		filterQuery(countQueryBuilder, countRoot, countQuery, filters, langCode, optionalFilters);
+
+	}
+
+	private <E> void filterQuery(CriteriaBuilder builder, Root<?> root, CriteriaQuery<E> query,
+			List<SearchFilter> filters, String langCode,
 			OptionalFilter[] optionalFilters) {
 		final List<Predicate> predicates = new ArrayList<>();
 		if (filters != null && !filters.isEmpty()) {
@@ -238,10 +250,8 @@ public class MasterdataSearchHelper {
 		predicates.add(isDeleted);
 		if (!predicates.isEmpty()) {
 			Predicate whereClause = builder.and(predicates.toArray(new Predicate[predicates.size()]));
-			selectQuery.where(whereClause);
-			countQuery.where(whereClause);
+			query.where(whereClause);
 		}
-
 	}
 
 	/**
@@ -254,8 +264,15 @@ public class MasterdataSearchHelper {
 	 * @param filters         list of {@link SearchFilter}
 	 * @param optionalFilters list of {@link SearchFilter}
 	 */
-	private <E> void filterQueryWithoutLang(CriteriaBuilder builder, Root<E> root, CriteriaQuery<E> selectQuery,
+	private <E> void filterQueryWithoutLang(CriteriaBuilder selectQueryCriteriaBuilder, CriteriaBuilder countQueryCriteriaBuilder, Root<E> selectRoot, Root<E> countRoot, CriteriaQuery<E> selectQuery,
 			CriteriaQuery<Long> countQuery, List<SearchFilter> filters, OptionalFilter[] optionalFilters) {
+		filterQueryWithoutLang(selectQueryCriteriaBuilder, selectRoot, selectQuery, filters, optionalFilters);
+		filterQueryWithoutLang(countQueryCriteriaBuilder, countRoot, countQuery, filters, optionalFilters);
+
+	}
+
+	private <E> void filterQueryWithoutLang(CriteriaBuilder builder, Root<E> root,
+			CriteriaQuery<?> query, List<SearchFilter> filters, OptionalFilter[] optionalFilters) {
 		final List<Predicate> predicates = new ArrayList<>();
 		if (filters != null && !filters.isEmpty()) {
 			filters.stream().filter(this::validateFilters).map(i -> buildFilters(builder, root, i))
@@ -272,10 +289,8 @@ public class MasterdataSearchHelper {
 		predicates.add(isDeleted);
 		if (!predicates.isEmpty()) {
 			Predicate whereClause = builder.and(predicates.toArray(new Predicate[predicates.size()]));
-			selectQuery.where(whereClause);
-			countQuery.where(whereClause);
+			query.where(whereClause);
 		}
-
 	}
 
 	private <E> void buildOptionalFilter(CriteriaBuilder builder, Root<E> root, final OptionalFilter optionalFilters,

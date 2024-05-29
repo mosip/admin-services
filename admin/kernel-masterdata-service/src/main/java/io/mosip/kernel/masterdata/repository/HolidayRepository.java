@@ -152,14 +152,14 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	@Query(value = "FROM Holiday where holidayDate = ?1 and holidayName=?2 and(isDeleted = false or isDeleted is null) ")
 	List<Holiday> findHolidayByHolidayDateHolidayName(LocalDate holidayDate,String holidayName);
 	
-	@Query(value = "FROM Holiday where holidayName=?1 and holidayDate = ?2 and location_code = ?3 and lang_code=?4 and (isDeleted = false or isDeleted is null) ")
+	@Query(value = "FROM Holiday where holidayName=?1 and holidayDate = ?2 and locationCode = ?3 and langCode=?4 and (isDeleted = false or isDeleted is null) ")
 	Holiday findHolidayByHolidayNameHolidayDateLocationCodeLangCode(String holidayName, LocalDate holidayDate,
 			String locationCode, String langCode);
 
 	@Query(value = "select max(id) from master.loc_holiday", nativeQuery = true)
 	int findMaxHolidayId();
 
-	@Query(value = "FROM Holiday where holidayDate = ?1 and location_code = ?2 and lang_code=?3 and (isDeleted = false or isDeleted is null) ")
+	@Query(value = "FROM Holiday where holidayDate = ?1 and locationCode = ?2 and langCode=?3 and (isDeleted = false or isDeleted is null) ")
 	Optional<Holiday> findFirstByHolidayByHolidayDateLocationCodeLangCode(LocalDate holidayDate, String locationCode, String langCode);
 
 	/**
