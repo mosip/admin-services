@@ -1,6 +1,6 @@
 package io.mosip.kernel.masterdata.dto.response;
 
-import javax.persistence.Column;
+import jakarta.persistence.Column;
 
 import io.mosip.kernel.masterdata.dto.getresponse.extn.BaseDto;
 import io.swagger.annotations.ApiModelProperty;

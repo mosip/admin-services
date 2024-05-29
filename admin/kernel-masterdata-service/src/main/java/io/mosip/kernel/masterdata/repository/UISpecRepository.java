@@ -50,7 +50,7 @@ public interface UISpecRepository extends BaseRepository<UISpec, String> {
 	UISpec findLatestVersion(String domain, String type);
 	
 	
-	@Query("FROM UISpec WHERE domain = ?1 AND type = ?2 and identity_schema_id = ?3 And status='DRAFT'")
+	@Query("FROM UISpec WHERE domain = ?1 AND type = ?2 and identitySchemaId = ?3 And status='DRAFT'")
 	List<UISpec> findUISpecByDomainTypeandIdentitySchemaId(String domain, String type, String IdentitySchemaId);
 
 	@Modifying

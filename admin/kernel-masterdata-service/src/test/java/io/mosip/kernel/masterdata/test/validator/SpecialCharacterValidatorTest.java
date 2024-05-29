@@ -2,7 +2,7 @@ package io.mosip.kernel.masterdata.test.validator;
 
 import static org.junit.Assert.assertEquals;
 
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidatorContext;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;

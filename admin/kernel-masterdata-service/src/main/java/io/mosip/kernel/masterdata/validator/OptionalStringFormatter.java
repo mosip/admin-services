@@ -6,8 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
 @Documented
 @Constraint(validatedBy = OptionalStringTrimmer.class)
@@ -20,7 +20,7 @@ public @interface OptionalStringFormatter {
 	 *
 	 * @return the string
 	 */
-	String message() default "Should not be blank or {javax.validation.constraints.Size.message}";
+	String message() default "Should not be blank or {jakarta.validation.constraints.Size.message}";
 
 	/**
 	 * Groups.

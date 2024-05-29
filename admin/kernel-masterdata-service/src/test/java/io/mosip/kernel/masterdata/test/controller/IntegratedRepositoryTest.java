@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -761,7 +762,7 @@ public class IntegratedRepositoryTest {
 		when(templateRepository.findAllByTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/templatetypecodes/temp")).andReturn(),
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/templates/templatetypecodes/temp")).andReturn(),
 				"KER-MSD-045");
 	}
 
@@ -2191,6 +2192,7 @@ public class IntegratedRepositoryTest {
 				"KER-MSD-016");
 	}
 
+	@Ignore //Ignoring as it /zone/authorize is commented.
 	@Test
 	@WithUserDetails("global-admin")
 	public void t018authorizeZoneTest() throws Exception {

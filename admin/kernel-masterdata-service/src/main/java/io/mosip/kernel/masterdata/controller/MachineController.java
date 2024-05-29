@@ -1,6 +1,6 @@
 package io.mosip.kernel.masterdata.controller;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import org.springframework.beans.factory.annotation.Autowired;
