@@ -46,14 +46,6 @@ public class TestSecurityConfig  {
 		return httpSecurity.build();
 	}
 
-	/*@Override
-	protected void configure(final HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.csrf().disable();
-		httpSecurity.httpBasic().and().authorizeRequests().anyRequest().authenticated().and().sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().exceptionHandling()
-				.authenticationEntryPoint(unauthorizedEntryPoint());
-	}*/
-
 	@Bean
 	public AuthenticationEntryPoint unauthorizedEntryPoint() {
 		return (request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
