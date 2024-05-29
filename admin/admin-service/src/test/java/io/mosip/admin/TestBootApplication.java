@@ -12,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.*;
 
 @SpringBootApplication
-@ComponentScan(value = {"io.mosip.admin.*","io.mosip.commons.*",
+@ComponentScan(value = {"io.mosip.admin.*","io.mosip.commons.*","io.mosip.kernel.biometrics.*",
 		 "io.mosip.kernel.idvalidator.rid.*","io.mosip.kernel.dataaccess.*"},excludeFilters = @ComponentScan.Filter(type = FilterType.ASPECTJ,
 		pattern = "io.mosip.kernel.lkeymanager.repository.*"))
 public class TestBootApplication {
