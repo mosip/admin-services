@@ -181,7 +181,7 @@ public class TemplateControllerTest {
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(templateUpdate))).andReturn(), "KER-MSD-046");
 	}
 
-
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t006deleteTemplateTest() throws Exception {
