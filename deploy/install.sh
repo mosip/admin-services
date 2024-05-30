@@ -8,6 +8,7 @@ if [ $# -ge 1 ] ; then
 fi
 
 NS=admin
+NS_KERNEL=kernel
 CHART_VERSION=12.1.0
 ADMIN_UI_CHART_VERSION=12.0.1
 
@@ -43,6 +44,12 @@ function installing_admin() {
   echo Installed admin services
 
   echo "Admin portal URL: https://$ADMIN_HOST/admin-ui/"
+
+  echo Installing masterdata and allowing Admin UI to access masterdata services.
+  helm -n $NS_KERNEL install masterdata mosip/masterdata  --set istio.corsPolicy.allowOrigins\[0\].exact=https://$ADMIN_HOST  --version $CHART_VERSION
+
+  echo Installing syncdata
+  helm -n $NS_KERNEL install syncdata mosip/syncdata --version $CHART_VERSION
   return 0
 }
 
