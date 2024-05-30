@@ -130,7 +130,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * @return the number of id deleted.
 	 */
 	@Modifying
-	@Query("UPDATE RegistrationCenter r SET r.isDeleted =true , r.deletedDateTime = ?1, r.updatedBy = ?3 WHERE r.id =?2 and (r.isDeleted is null or r.isDeleted =false)")
+	@Query("UPDATE RegistrationCenter SET isDeleted =true , deletedDateTime = ?1, updatedBy = ?3 WHERE id =?2 and (isDeleted is null or isDeleted =false)")
 	int deleteRegistrationCenter(LocalDateTime deletedDateTime, String id, String updatedBy);
 
 	/**
@@ -164,7 +164,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	@Query("FROM RegistrationCenter WHERE id= ?1 and (isDeleted is null or isDeleted =false)")
 	List<RegistrationCenter> findByRegCenterIdAndIsDeletedFalseOrNull(String id);
 
-	@Query("FROM RegistrationCenter WHERE id= ?1 and lang_code=?2 ")
+	@Query("FROM RegistrationCenter WHERE id= ?1 and langCode=?2 ")
 	List<RegistrationCenter> findByRegIdAndLangCode(String id, String langCode);
 
 	/**
@@ -178,7 +178,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *                               decommissioned.
 	 * @return the number of registration centers decommissioned.
 	 */
-	@Query("UPDATE RegistrationCenter rc SET rc.isDeleted = true, rc.isActive = false, rc.updatedBy = ?2, rc.updatedDateTime = ?3, rc.deletedDateTime = ?3 WHERE rc.id = ?1 and (rc.isDeleted is null or rc.isDeleted =false)")
+	@Query("UPDATE RegistrationCenter SET isDeleted = true, isActive = false, updatedBy = ?2, updatedDateTime = ?3, deletedDateTime = ?3 WHERE id = ?1 and (isDeleted is null or isDeleted =false)")
 	@Modifying
 	int decommissionRegCenter(String regCenterID, String deCommissionedBy, LocalDateTime deCommissionedDateTime);
 

@@ -2,7 +2,7 @@ package io.mosip.kernel.masterdata.service;
 
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;

@@ -22,12 +22,12 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.extensions.excel.poi.PoiItemReader;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
@@ -57,10 +57,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-import javax.validation.Validator;
+import jakarta.validation.Validator;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -122,13 +122,6 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 	@Autowired
 	private JobRepository jobRepository;
-
-	@Autowired
-	private JobBuilderFactory jobBuilderFactory;
-
-	@Autowired
-	@Qualifier("customStepBuilderFactory")
-	private StepBuilderFactory stepBuilderFactory;
 
 	@Autowired
 	private DataSource dataSource;
@@ -367,13 +360,13 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 							BulkUploadErrorCode.EMPTY_FILE.getErrorMessage());
 				}
 
-				Job job = jobBuilderFactory.get("ETL-Load")
+				Job job = new JobBuilder("packetJob",jobRepository)
 						.listener(packetJobResultListener)
 						.incrementer(new RunIdIncrementer())
-						.start(stepBuilderFactory.get("packet-upload")
+						.start(new StepBuilder("packetStep",jobRepository)
 								.tasklet(new PacketUploadTasklet(file.getOriginalFilename(), file.getBytes(),
 										packetUploadService, centerId, supervisorStatus,
-										source, process, hasDataReadRole ? "SYNC-UPLOAD" : "UPLOAD"))
+										source, process, hasDataReadRole ? "SYNC-UPLOAD" : "UPLOAD"),platformTransactionManager)
 								.build())
 						.build();
 
@@ -409,15 +402,14 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	private Job getJob(MultipartFile file, String operation, String repositoryName, String contextUser,
 					   Class<?> entity, Boolean isCSV) throws IOException {
 		
-		Step step = stepBuilderFactory.get("ETL-file-load")
-				.<Object, List<Object>>chunk(100)
+		Step step = new StepBuilder("step",jobRepository)
+				.<Object, List<Object>>chunk(100,platformTransactionManager)
 				.reader(isCSV?csvItemReader(file, entity):excelItemReader(file, entity))
 				.processor(processor(operation, contextUser))
 				.writer(itemWriterMapper(repositoryName, operationMapper(operation), entity))
 				.listener(customChunkListener)
 				.build();
-
-		return jobBuilderFactory.get("ETL-Load")
+		return new JobBuilder("job",jobRepository)
 				.listener(jobResultListener)
 				.incrementer(new RunIdIncrementer())
 				.start(step)

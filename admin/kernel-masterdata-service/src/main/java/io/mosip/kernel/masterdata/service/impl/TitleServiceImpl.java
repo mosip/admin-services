@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 import javax.transaction.Transactional;
 
 import io.mosip.kernel.masterdata.dto.response.FilterResult;

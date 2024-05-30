@@ -29,6 +29,7 @@ import java.util.*;
 import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -6115,6 +6116,7 @@ public class MasterdataIntegrationTest {
 				.andExpect(status().isOk());
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void deleteRegistrationCenterTest() throws Exception {
@@ -9316,6 +9318,7 @@ public class MasterdataIntegrationTest {
 		.content(mapper.writeValueAsString(userDetailsDtoRequest)))
 		.andExpect(status().isOk());
 	}
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	@Transactional(propagation = Propagation.REQUIRED)

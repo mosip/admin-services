@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.validator;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 import lombok.Data;
 
@@ -24,7 +24,7 @@ public class StringTrimmer implements ConstraintValidator<StringFormatter, Strin
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see javax.validation.ConstraintValidator#initialize(java.lang.annotation.
+	 * @see jakarta.validation.ConstraintValidator#initialize(java.lang.annotation.
 	 * Annotation)
 	 */
 	@Override
@@ -36,8 +36,8 @@ public class StringTrimmer implements ConstraintValidator<StringFormatter, Strin
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see javax.validation.ConstraintValidator#isValid(java.lang.Object,
-	 * javax.validation.ConstraintValidatorContext)
+	 * @see jakarta.validation.ConstraintValidator#isValid(java.lang.Object,
+	 * jakarta.validation.ConstraintValidatorContext)
 	 */
 	@Override
 	public boolean isValid(String arg0, ConstraintValidatorContext arg1) {

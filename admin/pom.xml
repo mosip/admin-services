@@ -6,7 +6,7 @@
 
 	<groupId>io.mosip.admin</groupId>
 	<artifactId>admin-parent</artifactId>
-	<version>1.2.1-SNAPSHOT</version>
+	<version>1.2.1-java21-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>admin</name>
@@ -72,25 +72,21 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- maven -->
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.source>21</maven.compiler.source>
+		<maven.compiler.target>21</maven.compiler.target>
 		<maven.compiler.version>3.8.0</maven.compiler.version>
 		<maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
 		<maven.war.plugin.version>3.1.0</maven.war.plugin.version>
 		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
-		<maven.jacoco.version>0.8.5</maven.jacoco.version>
+		<maven.jacoco.version>0.8.11</maven.jacoco.version>
 		<maven.sonar.plugin.version>3.7.0.1746</maven.sonar.plugin.version>
 		<maven.javadoc.version>3.2.0</maven.javadoc.version>
 		<maven-shade-plugin.version>2.3</maven-shade-plugin.version>
 
 		<!-- spring -->
-		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
-		<spring.data.jpa.version>2.0.7.RELEASE</spring.data.jpa.version>
 		<spring.security.test.version>5.0.5.RELEASE</spring.security.test.version>
-		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
 
-		<swagger.core.version>2.0.7</swagger.core.version>
-		<swagger.annotations.version>1.5.20</swagger.annotations.version>
+
 		<springfox.version>2.9.2</springfox.version>
 
 		<vertx.version>3.6.2</vertx.version>
@@ -170,7 +166,18 @@
 		<sonar.coverage.exclusions>**/repositories/**,**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**,**/*Util.java,**/helper/beans/**,**/OptionalFilter.java,**/*Enum.java,**/validator.registereddevice/**,**/DeviceProvider*.java,**/DeviceRegister*.java,**/FoundationalTrustProvider*.java,**/GenderType*.java,**/IndividualType*.java,**/MOSIPDeviceService*.java,**/RegisteredDevice*.java,**/RegistrationCenterDeviceHistoryServiceImpl.java,**/RegistrationCenterMachineUserServiceHistoryImpl.java</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-bom</artifactId>
+				<version>1.2.1-java21-SNAPSHOT</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 
+		</dependencies>
+	</dependencyManagement>
 	<modules>
 		<module>admin-service</module>
 		<module>kernel-masterdata-service</module>
@@ -182,18 +189,19 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jul-to-slf4j</artifactId>
-			<version>${jcl.to.slf4j.version}</version>
+			<version>1.7.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${jcl.to.slf4j.version}</version>
+			<version>1.7.5</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-logger-logback</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<version>1.2.1-java21-SNAPSHOT</version>
 		</dependency>
+
 	</dependencies>
 
 	<profiles>
@@ -213,7 +221,7 @@
 					<plugin>
 						<groupId>org.sonarsource.scanner.maven</groupId>
 						<artifactId>sonar-maven-plugin</artifactId>
-						<version>${maven.sonar.plugin.version}</version>
+						<version>3.11.0.3922</version>
 						<executions>
 							<execution>
 								<phase>verify</phase>
@@ -241,7 +249,6 @@
 						<plugin>
 							<groupId>org.springframework.boot</groupId>
 							<artifactId>spring-boot-maven-plugin</artifactId>
-							<version>${spring.boot.version}</version>
 							<configuration>
 								<executable>true</executable>
 								<layout>ZIP</layout>
@@ -283,7 +290,7 @@
 						<plugin>
 							<groupId>org.springdoc</groupId>
 							<artifactId>springdoc-openapi-maven-plugin</artifactId>
-							<version>0.2</version>
+							<version>1.4</version>
 							<executions>
 								<execution>
 									<id>integration-test</id>
@@ -312,10 +319,14 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${maven.surefire.plugin.version}</version>
 					<configuration>
-						<skipTests>${skipTests}</skipTests>
+						<skipTests>false</skipTests>
 						<skip>false</skip>
 						<argLine>
-							${argLine} --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED --illegal-access=permit
+							${argLine}
+							--add-opens java.xml/jdk.xml.internal=ALL-UNNAMED
+							--add-opens java.base/java.lang=ALL-UNNAMED
+							--illegal-access=debug
+							--enable-preview
 						</argLine>
 					</configuration>
 				</plugin>
@@ -442,13 +453,7 @@
 					<target>${maven.compiler.target}</target>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<aggregate>true</aggregate>
-				</configuration>
-			</plugin>
+
 			<plugin>
     			<groupId>pl.project13.maven</groupId>
 			<artifactId>git-commit-id-plugin</artifactId>
