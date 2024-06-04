@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.json.JSONException;
 import io.mosip.kernel.masterdata.dto.response.FilterResult;
