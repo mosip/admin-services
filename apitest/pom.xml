@@ -8,7 +8,7 @@
 	<name>apitest-masterdata</name>
 	<description>Parent project of MOSIP apitest-masterdata</description>
 	<url>https://github.com/mosip/admin-services</url>
-	<version>1.2.0.1-SNAPSHOT</version>
+	<version>1.2.1-SNAPSHOT</version>
 
 	<licenses>
 		<license>
@@ -386,9 +386,9 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>io.mosip.testrig.apirig.automationtests.commons</groupId>
+			<groupId>io.mosip.testrig.apirig.apitest.commons</groupId>
 			<artifactId>apitest-commons</artifactId>
-			<version>1.2.0.1-SNAPSHOT</version>
+			<version>1.2.1-SNAPSHOT</version>
 		</dependency>
 		
 	</dependencies>
