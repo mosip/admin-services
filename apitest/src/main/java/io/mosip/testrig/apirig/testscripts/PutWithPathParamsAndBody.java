@@ -22,7 +22,6 @@ import org.testng.internal.TestResult;
 
 import io.mosip.testrig.apirig.dto.OutputValidationDto;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
-import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.testrunner.HealthChecker;
 import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
@@ -87,7 +86,7 @@ public class PutWithPathParamsAndBody extends AdminTestUtil implements ITest {
 		}
 
 		testCaseDTO = AdminTestUtil.filterHbs(testCaseDTO);
-		String inputJson = filterInputHbs(testCaseDTO);
+		String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
 
 		if (testCaseDTO.getTemplateFields() != null && templateFields.length > 0) {
 			ArrayList<JSONObject> inputtestCases = AdminTestUtil.getInputTestCase(testCaseDTO);
@@ -108,47 +107,33 @@ public class PutWithPathParamsAndBody extends AdminTestUtil implements ITest {
 			}
 		}
 
-		 else {
+		else {
+			if (testCaseName.contains("ESignet_")) {
+				String tempUrl = ConfigManager.getEsignetBaseUrl();
+				response = putWithPathParamsBodyAndBearerToken(tempUrl + testCaseDTO.getEndPoint(), inputJson,
+						COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName(), pathParams);
+			} else {
 				response = putWithPathParamsBodyAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
 						testCaseDTO.getRole(), testCaseDTO.getTestCaseName(), pathParams);
 			}
 			Map<String, List<OutputValidationDto>> ouputValid = null;
-			
+			if (testCaseName.contains("_StatusCode")) {
+
+				OutputValidationDto customResponse = customStatusCodeResponse(String.valueOf(response.getStatusCode()),
+						testCaseDTO.getOutput());
+
+				ouputValid.put(GlobalConstants.EXPECTED_VS_ACTUAL, List.of(customResponse));
+			} else {
 				ouputValid = OutputValidationUtil.doJsonOutputValidation(response.asString(),
 						getJsonFromTemplate(testCaseDTO.getOutput(), testCaseDTO.getOutputTemplate()), testCaseDTO,
 						response.getStatusCode());
-			
+			}
 			Reporter.log(ReportUtil.getOutputValidationReport(ouputValid));
 
 			if (!OutputValidationUtil.publishOutputResult(ouputValid))
 				throw new AdminTestException("Failed at output validation");
 		}
 
-	
-
-	private String filterOutputHbs(TestCaseDTO testCaseDTO) {
-		String outputJson = getJsonFromTemplate(testCaseDTO.getOutput(), testCaseDTO.getOutputTemplate());
-
-		if (outputJson.contains(GlobalConstants.$1STLANG$))
-			outputJson = outputJson.replace(GlobalConstants.$1STLANG$, BaseTestCase.languageList.get(0));
-		if (outputJson.contains(GlobalConstants.$2STLANG$))
-			outputJson = outputJson.replace(GlobalConstants.$2STLANG$, BaseTestCase.languageList.get(1));
-		if (outputJson.contains(GlobalConstants.$3STLANG$))
-			outputJson = outputJson.replace(GlobalConstants.$3STLANG$, BaseTestCase.languageList.get(2));
-		return outputJson;
-	}
-
-	private String filterInputHbs(TestCaseDTO testCaseDTO) {
-		String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
-
-		if (inputJson.contains(GlobalConstants.$1STLANG$))
-			inputJson = inputJson.replace(GlobalConstants.$1STLANG$, BaseTestCase.languageList.get(0));
-		if (inputJson.contains(GlobalConstants.$2STLANG$))
-			inputJson = inputJson.replace(GlobalConstants.$2STLANG$, BaseTestCase.languageList.get(1));
-		if (inputJson.contains(GlobalConstants.$3STLANG$))
-			inputJson = inputJson.replace(GlobalConstants.$3STLANG$, BaseTestCase.languageList.get(2));
-
-		return inputJson;
 	}
 
 	/**

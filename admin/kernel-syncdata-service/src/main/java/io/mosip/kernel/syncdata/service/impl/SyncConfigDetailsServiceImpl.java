@@ -47,7 +47,7 @@ import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import net.minidev.json.JSONObject;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Implementation class

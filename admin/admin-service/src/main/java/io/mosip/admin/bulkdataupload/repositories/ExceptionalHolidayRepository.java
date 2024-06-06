@@ -16,6 +16,6 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 @Repository
 public interface ExceptionalHolidayRepository extends BaseRepository<ExceptionalHoliday, ExcptionalHolidayId> {
 
-	@Query("From ExceptionalHoliday where regcntr_id=?1 and lang_code=?2 and (isDeleted = false or isDeleted is null) and isActive = true")
+	@Query("From ExceptionalHoliday where registrationCenterId=?1 and langCode=?2 and (isDeleted = false or isDeleted is null) and isActive = true")
 	List<ExceptionalHoliday> findAllNonDeletedExceptionalHoliday(String regCenterId, String langcode);
 }

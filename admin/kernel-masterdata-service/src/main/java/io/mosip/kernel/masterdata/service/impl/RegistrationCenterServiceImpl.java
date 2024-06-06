@@ -8,8 +8,8 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-import javax.validation.Valid;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
 import io.mosip.kernel.masterdata.dto.*;
 import io.mosip.kernel.masterdata.dto.response.*;

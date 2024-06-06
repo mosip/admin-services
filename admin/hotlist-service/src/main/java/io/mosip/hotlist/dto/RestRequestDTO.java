@@ -1,15 +1,13 @@
 package io.mosip.hotlist.dto;
 
-import java.util.Map;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.MultiValueMap;
 
-import lombok.Data;
+import jakarta.validation.constraints.Pattern;
+import java.util.Map;
 
 /**
  * Rest Request Object which is provided as input to RestHelper for HTTP/HTTPS Request

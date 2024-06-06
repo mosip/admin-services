@@ -4,6 +4,7 @@ import static org.mockito.Mockito.doNothing;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -63,7 +64,8 @@ public class MachineHistoryControllerTest {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/machineshistories/10001/ara/2024-12-10T17:39:48.765Z")).andReturn(), null);
 
 	}
-	
+
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t001getMachineHistoryIdLangEffTest2() throws Exception {

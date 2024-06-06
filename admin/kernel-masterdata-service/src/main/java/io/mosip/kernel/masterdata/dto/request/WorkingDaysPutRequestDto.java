@@ -2,9 +2,8 @@ package io.mosip.kernel.masterdata.dto.request;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
+
+import jakarta.validation.constraints.NotNull;
 
 /**
  * DTO class for workingdays.

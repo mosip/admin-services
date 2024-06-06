@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ import io.mosip.kernel.masterdata.utils.ZoneUtils;
 @RunWith(SpringRunner.class)
 public class ZoneUtilTest {
 	
-		@MockBean
+	@MockBean
 	private PublisherClient<String,EventModel,HttpHeaders> publisher;
 	
 	@MockBean
@@ -46,7 +47,6 @@ public class ZoneUtilTest {
 
 	@MockBean
 	private ZoneUserRepository zoneUserRepository;
-
 	@Autowired
 	private ZoneUtils zoneUtils;
 
@@ -116,7 +116,8 @@ public class ZoneUtilTest {
 	@Test(expected = MasterDataServiceException.class)
 	@WithUserDetails("zonal-admin")
 	public void testUserZoneNotFound() {
-		doReturn(zones).when(zoneRepository).findAllNonDeleted();
+		when(zoneRepository.findAllNonDeleted()).thenReturn(zones);
+		//doReturn(zones).when(zoneRepository).findAllNonDeleted();
 		List<Zone> result = zoneUtils.getUserZones();
 		assertNotNull(result);
 		assertNotEquals(0, result.size());
@@ -140,7 +141,8 @@ public class ZoneUtilTest {
 	@WithUserDetails("zonal-admin")
 	@Test
 	public void testZoneLeafNoUserZone() {
-		doReturn(zones).when(zoneRepository).findAllNonDeleted();
+		when(zoneRepository.findAllNonDeleted()).thenReturn(zones);
+	//	doReturn(zones).when(zoneRepository).findAllNonDeleted();
 		zoneUtils.getUserLeafZones("eng");
 	}
 

@@ -126,7 +126,7 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	@Query(value = "FROM Holiday where holidayDate = ?1 and (isDeleted = false or isDeleted is null) ")
 	List<Holiday> findHolidayByHolidayDate(LocalDate holidayDate);
 	
-	@Query(value = "FROM Holiday where holidayDate = ?1 and location_code = ?2 and lang_code=?3 and (isDeleted = false or isDeleted is null) ")
+	@Query(value = "FROM Holiday where holidayDate = ?1 and locationCode = ?2 and langCode=?3 and (isDeleted = false or isDeleted is null) ")
 	Holiday findHolidayByHolidayDateLocationCodeLangCode(LocalDate holidayDate,String locationCode,String langCode);
 
 }

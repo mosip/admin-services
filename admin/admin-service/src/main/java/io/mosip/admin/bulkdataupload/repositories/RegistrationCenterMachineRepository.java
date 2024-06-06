@@ -23,9 +23,9 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 public interface RegistrationCenterMachineRepository
 		extends BaseRepository<RegistrationCenterMachine, RegistrationCenterMachineID> {
 
-	@Query("FROM RegistrationCenterMachine WHERE registrationCenterMachinePk =?1 and (isDeleted is null or isDeleted =false) and isActive = true")
+	/*@Query("FROM RegistrationCenterMachine WHERE registrationCenterMachinePk =?1 and (isDeleted is null or isDeleted =false) and isActive = true")
 	Optional<RegistrationCenterMachine> findAllNondeletedMappings(
-			RegistrationCenterMachineID registrationCenterMachinePk);
+			RegistrationCenterMachineID registrationCenterMachinePk);*/
 
 	@Query("FROM RegistrationCenterMachine rm where rm.registrationCenterMachinePk.machineId = ?1 AND (rm.isDeleted is null or rm.isDeleted=false) ")
 	List<RegistrationCenterMachine> findByMachineIdAndIsDeletedFalseOrIsDeletedIsNull(String machineId);

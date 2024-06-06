@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
 
-import javax.persistence.EmbeddedId;
+import jakarta.persistence.EmbeddedId;
 
 import io.mosip.admin.bulkdataupload.entity.BaseEntity;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;

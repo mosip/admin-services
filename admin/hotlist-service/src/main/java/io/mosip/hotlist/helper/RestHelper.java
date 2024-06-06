@@ -1,31 +1,7 @@
 package io.mosip.hotlist.helper;
 
-import static io.mosip.hotlist.constant.HotlistErrorConstants.CLIENT_ERROR;
-import static io.mosip.hotlist.constant.HotlistErrorConstants.CONNECTION_TIMED_OUT;
-import static io.mosip.hotlist.constant.HotlistErrorConstants.SERVER_ERROR;
-import static io.mosip.hotlist.constant.HotlistErrorConstants.UNKNOWN_ERROR;
-
-import java.io.IOException;
-import java.time.Duration;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.TimeoutException;
-import java.util.function.Supplier;
-
-import javax.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
-import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import io.mosip.hotlist.dto.RestRequestDTO;
 import io.mosip.hotlist.exception.AuthenticationException;
 import io.mosip.hotlist.exception.HotlistRetryException;
@@ -36,8 +12,26 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.retry.WithRetry;
+import jakarta.validation.Valid;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
+import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
+
+import java.io.IOException;
+import java.time.Duration;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeoutException;
+import java.util.function.Supplier;
+
+import static io.mosip.hotlist.constant.HotlistErrorConstants.*;
 
 /**
  * The Class RestHelper - to send/receive HTTP requests and return the response.
