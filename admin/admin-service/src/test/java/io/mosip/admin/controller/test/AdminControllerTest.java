@@ -13,7 +13,6 @@ import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -75,7 +74,7 @@ public class AdminControllerTest {
 	SearchInfo info = new SearchInfo();
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
 		//doNothing().when(auditUtil).setAuditRequestDto(Mockito.any(),Mockito.anyString());
@@ -113,7 +112,6 @@ public class AdminControllerTest {
 
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails(value = "zonal-admin")
 	public void t003lostRidDetailsTest() throws Exception {
@@ -126,7 +124,7 @@ public class AdminControllerTest {
 		mockRestServiceServer.expect(requestTo(biometricUrl))
 				.andRespond(withSuccess().body(biometricResponse).contentType(MediaType.APPLICATION_JSON));
 
-		AdminDataUtil.checkResponse(
+		AdminDataUtil.checkErrorResponse(
 				(mockMvc.perform(MockMvcRequestBuilders.get("/lostRid/details/"+"10002100800001020230223050340")).andReturn()),
 				null);
 

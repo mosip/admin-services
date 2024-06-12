@@ -1,10 +1,7 @@
 package io.mosip.admin.packetstatusupdater.util;
 
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-
 import io.mosip.admin.constant.ApplicantDetailErrorCode;
+import io.mosip.admin.packetstatusupdater.constant.ApiName;
 import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -16,7 +13,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import io.mosip.admin.packetstatusupdater.constant.ApiName;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 
 
@@ -202,9 +201,9 @@ public class RestClient {
 
 		T result = null;
 		try {
-			ResponseEntity responseEntity= (ResponseEntity) restTemplate
+			ResponseEntity responseEntity= restTemplate
 					.exchange(url, HttpMethod.GET, setRequestHeader(null, null), responseType);
-			if(url.contains("datashare") && responseEntity.getHeaders().getContentType().equals(MediaType.APPLICATION_JSON)){
+			if (url != null && url.contains("datashare") && responseEntity != null && responseEntity.getHeaders() != null && MediaType.APPLICATION_JSON.equals(responseEntity.getHeaders().getContentType())){
 				throw new MasterDataServiceException(ApplicantDetailErrorCode.DATA_SHARE_EXPIRED_EXCEPTION.getErrorCode(),
 						ApplicantDetailErrorCode.DATA_SHARE_EXPIRED_EXCEPTION.getErrorMessage());
 			}

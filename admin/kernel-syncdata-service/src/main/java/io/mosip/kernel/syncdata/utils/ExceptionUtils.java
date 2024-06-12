@@ -35,9 +35,12 @@ public final class ExceptionUtils {
 		return " " + cause;
 	}
 	public static Object neutralizeParam(Object param) {
-		if(param != null && param instanceof String)
-			return ((String) param).replaceAll("[\n\r\t]", "_");
-
+		if (param == null) {
+			return null;
+		}
+		if(param instanceof String) {
+			return ((String) param).replaceAll("[^a-zA-Z0-9._-]", "_");
+		}
 		return param;
 	}
 }

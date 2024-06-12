@@ -1,34 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import io.mosip.kernel.masterdata.utils.ExceptionUtils;
-import io.mosip.kernel.masterdata.utils.LanguageUtils;
-
-import org.json.JSONException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.SchemaErrorCode;
 import io.mosip.kernel.masterdata.dto.IdSchemaPublishDto;
@@ -44,7 +17,27 @@ import io.mosip.kernel.masterdata.service.IdentitySchemaService;
 import io.mosip.kernel.masterdata.service.UISpecService;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecKeyValuePair;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.LanguageUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import org.json.JSONException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.*;
 
 @Service
 public class IdentitySchemaServiceImpl implements IdentitySchemaService {
@@ -89,9 +82,8 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 		}
 
 		if (pagedResult != null && pagedResult.getContent() != null) {
-			pagedResult.getContent().forEach(entity -> {
-				list.add(getIdentitySchemaDto(entity));
-			});
+			pagedResult.getContent().forEach(entity ->
+				list.add(getIdentitySchemaDto(entity)));
 
 			pagedSchema.setPageNo(pagedResult.getNumber());
 			pagedSchema.setTotalPages(pagedResult.getTotalPages());
@@ -345,8 +337,7 @@ public class IdentitySchemaServiceImpl implements IdentitySchemaService {
 	 * @return
 	 * @throws JSONException
 	 */
-	private Map<String, Object> populateResponse(IdSchemaResponseDto dto, List<UISpecResponseDto> uiSpecs)
-			throws JSONException {
+	private Map<String, Object> populateResponse(IdSchemaResponseDto dto, List<UISpecResponseDto> uiSpecs) {
 		Map<String, Object> jsonData = new HashMap<>();
 		jsonData.put("id", dto.getId());
 		jsonData.put("idVersion", dto.getIdVersion());

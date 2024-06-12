@@ -19,7 +19,7 @@ public class RoleServiceImpl implements RoleService {
 	public RoleExtnDto getRequiredRoles() {
 		RoleExtnDto roleExtnDto = new RoleExtnDto();
 		String[] requiredRole = requiredRoles.split(",");
-		List<String> listRequiredRoles = new ArrayList<String>();
+		List<String> listRequiredRoles = new ArrayList<>();
 		for (String role : requiredRole) {
 			listRequiredRoles.add(role);
 		}

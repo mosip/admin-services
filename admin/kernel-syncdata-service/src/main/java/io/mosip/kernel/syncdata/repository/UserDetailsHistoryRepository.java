@@ -1,15 +1,13 @@
 package io.mosip.kernel.syncdata.repository;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
+import io.mosip.kernel.syncdata.entity.UserDetailHistoryPk;
+import io.mosip.kernel.syncdata.entity.UserDetailsHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.kernel.syncdata.entity.UserDetailHistoryPk;
-import io.mosip.kernel.syncdata.entity.UserDetailsHistory;
+import java.time.LocalDateTime;
+import java.util.List;
 
 
 /**

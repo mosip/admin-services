@@ -1,13 +1,18 @@
 package io.mosip.admin.packetstatusupdater.exception;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.admin.constant.AuthAdapterErrorCode;
+import io.mosip.admin.packetstatusupdater.constant.RequestErrorCode;
+import io.mosip.kernel.core.authmanager.exception.AuthNException;
+import io.mosip.kernel.core.authmanager.exception.AuthZException;
+import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import jakarta.servlet.http.HttpServletRequest;
-
-import io.mosip.admin.bulkdataupload.service.impl.BulkDataUploadServiceImpl;
-import io.mosip.kernel.authcodeflowproxy.api.exception.AuthCodeProxyExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,22 +23,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-import io.mosip.admin.constant.AuthAdapterErrorCode;
-import io.mosip.admin.packetstatusupdater.constant.RequestErrorCode;
-import io.mosip.kernel.core.authmanager.exception.AuthNException;
-import io.mosip.kernel.core.authmanager.exception.AuthZException;
-import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.util.EmptyCheckUtils;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 
 /**
@@ -138,8 +132,8 @@ public class ApiExceptionHandler {
 		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
 		String requestBody = null;
-		if (httpServletRequest instanceof ContentCachingRequestWrapper) {
-			requestBody = new String(((ContentCachingRequestWrapper) httpServletRequest).getContentAsByteArray());
+		if (httpServletRequest instanceof ContentCachingRequestWrapper contentCachingRequestWrapper) {
+			requestBody = new String((contentCachingRequestWrapper.getContentAsByteArray()));
 		}
 		if (EmptyCheckUtils.isNullEmpty(requestBody)) {
 			return responseWrapper;

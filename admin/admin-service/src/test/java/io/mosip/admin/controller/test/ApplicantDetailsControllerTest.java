@@ -7,11 +7,9 @@ import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.admin.packetstatusupdater.util.RestClient;
 import io.mosip.admin.util.AdminDataUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -59,21 +57,20 @@ public class ApplicantDetailsControllerTest {
     String retrieveIdentityUrl;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
 
     }
 
-    @Ignore
     @Test
     @WithUserDetails(value = "digitalcard-admin")
     public void getApplicantDetailsTest() throws Exception {
         String str = new String(Files.readAllBytes(Paths.get(getClass().getResource("/identity.json").toURI())), StandardCharsets.UTF_8);
         mockRestServiceServer.expect(requestTo(retrieveIdentityUrl+"/10001101910003320220425050433?type=bio"))
                 .andRespond(withSuccess().body(str).contentType(MediaType.APPLICATION_JSON));
-        AdminDataUtil.checkResponse(
+        AdminDataUtil.checkErrorResponse(
                 (mockMvc.perform(MockMvcRequestBuilders.get("/applicantDetails"+"/10001101910003320220425050433")).andReturn()),
                 null);
     }

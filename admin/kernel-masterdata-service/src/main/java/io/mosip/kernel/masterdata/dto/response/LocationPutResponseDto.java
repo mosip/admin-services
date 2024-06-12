@@ -1,12 +1,10 @@
 package io.mosip.kernel.masterdata.dto.response;
 
-import java.time.LocalDateTime;
-
-import jakarta.persistence.Column;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 /**
  * 

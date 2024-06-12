@@ -1,73 +1,10 @@
 package io.mosip.admin.config;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import io.mosip.admin.bulkdataupload.entity.*;
 import org.springframework.stereotype.Component;
 
-import io.mosip.admin.bulkdataupload.entity.ApplicantValidDocument;
-import io.mosip.admin.bulkdataupload.entity.Application;
-import io.mosip.admin.bulkdataupload.entity.BiometricAttribute;
-import io.mosip.admin.bulkdataupload.entity.BiometricType;
-import io.mosip.admin.bulkdataupload.entity.BlocklistedWords;
-import io.mosip.admin.bulkdataupload.entity.DaysOfWeek;
-import io.mosip.admin.bulkdataupload.entity.Device;
-import io.mosip.admin.bulkdataupload.entity.DeviceHistory;
-
-import io.mosip.admin.bulkdataupload.entity.DeviceSpecification;
-import io.mosip.admin.bulkdataupload.entity.DeviceType;
-import io.mosip.admin.bulkdataupload.entity.DocumentCategory;
-import io.mosip.admin.bulkdataupload.entity.DocumentType;
-import io.mosip.admin.bulkdataupload.entity.DynamicField;
-import io.mosip.admin.bulkdataupload.entity.ExceptionalHoliday;
-
-import io.mosip.admin.bulkdataupload.entity.Gender;
-import io.mosip.admin.bulkdataupload.entity.Holiday;
-import io.mosip.admin.bulkdataupload.entity.IdType;
-import io.mosip.admin.bulkdataupload.entity.IdentitySchema;
-import io.mosip.admin.bulkdataupload.entity.IndividualType;
-import io.mosip.admin.bulkdataupload.entity.Language;
-import io.mosip.admin.bulkdataupload.entity.Location;
-import io.mosip.admin.bulkdataupload.entity.LocationHierarchy;
-import io.mosip.admin.bulkdataupload.entity.MOSIPDeviceService;
-import io.mosip.admin.bulkdataupload.entity.MOSIPDeviceServiceHistory;
-import io.mosip.admin.bulkdataupload.entity.Machine;
-import io.mosip.admin.bulkdataupload.entity.MachineHistory;
-import io.mosip.admin.bulkdataupload.entity.MachineSpecification;
-import io.mosip.admin.bulkdataupload.entity.MachineType;
-import io.mosip.admin.bulkdataupload.entity.ModuleDetail;
-import io.mosip.admin.bulkdataupload.entity.ReasonCategory;
-import io.mosip.admin.bulkdataupload.entity.ReasonList;
-import io.mosip.admin.bulkdataupload.entity.RegExceptionalHoliday;
-import io.mosip.admin.bulkdataupload.entity.RegWorkingNonWorking;
-import io.mosip.admin.bulkdataupload.entity.RegisteredDevice;
-import io.mosip.admin.bulkdataupload.entity.RegisteredDeviceHistory;
-import io.mosip.admin.bulkdataupload.entity.RegistrationCenter;
-import io.mosip.admin.bulkdataupload.entity.RegistrationCenterDevice;
-import io.mosip.admin.bulkdataupload.entity.RegistrationCenterDeviceHistory;
-import io.mosip.admin.bulkdataupload.entity.RegistrationCenterHistory;
-import io.mosip.admin.bulkdataupload.entity.RegistrationCenterMachine;
-import io.mosip.admin.bulkdataupload.entity.RegistrationCenterMachineDevice;
-import io.mosip.admin.bulkdataupload.entity.RegistrationCenterMachineDeviceHistory;
-import io.mosip.admin.bulkdataupload.entity.RegistrationCenterMachineHistory;
-import io.mosip.admin.bulkdataupload.entity.RegistrationCenterType;
-import io.mosip.admin.bulkdataupload.entity.RegistrationCenterUser;
-import io.mosip.admin.bulkdataupload.entity.RegistrationCenterUserHistory;
-import io.mosip.admin.bulkdataupload.entity.RegistrationCenterUserMachine;
-import io.mosip.admin.bulkdataupload.entity.RegistrationCenterUserMachineHistory;
-import io.mosip.admin.bulkdataupload.entity.RegistrationDeviceSubType;
-import io.mosip.admin.bulkdataupload.entity.RegistrationDeviceType;
-import io.mosip.admin.bulkdataupload.entity.SchemaDefinition;
-import io.mosip.admin.bulkdataupload.entity.Template;
-import io.mosip.admin.bulkdataupload.entity.TemplateFileFormat;
-import io.mosip.admin.bulkdataupload.entity.TemplateType;
-import io.mosip.admin.bulkdataupload.entity.Title;
-import io.mosip.admin.bulkdataupload.entity.UserDetails;
-import io.mosip.admin.bulkdataupload.entity.UserDetailsHistory;
-import io.mosip.admin.bulkdataupload.entity.ValidDocument;
-import io.mosip.admin.bulkdataupload.entity.Zone;
-import io.mosip.admin.bulkdataupload.entity.ZoneUser;
-import io.mosip.admin.bulkdataupload.entity.ZoneUserHistory;
+import java.util.HashMap;
+import java.util.Map;
 /**
  * This class give the repository based on entity
  * @author dhanendra
@@ -77,9 +14,9 @@ import io.mosip.admin.bulkdataupload.entity.ZoneUserHistory;
 public class Mapper {
 
 
-	private static Map<Class,String> repositoryMap=new HashMap<Class, String>();
+	private static Map<Class,String> repositoryMap=new HashMap<>();
 	
-    private static Map<String,Class> entityMap=new HashMap<String, Class>();
+    private static Map<String,Class> entityMap=new HashMap<>();
 
 	static {
 		loadEntity();

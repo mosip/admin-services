@@ -1,13 +1,16 @@
 package io.mosip.kernel.syncdata.utils;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import io.mosip.kernel.syncdata.dto.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
+import io.mosip.kernel.syncdata.dto.UserDetailDto;
+import io.mosip.kernel.syncdata.dto.UserDetailMapDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 
 /**

@@ -62,7 +62,7 @@ public class BlockListedWordsControllerTest {
 		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 		blocklistedwordsReq = new RequestWrapper<BlocklistedWordListRequestDto>();
 		BlocklistedWordListRequestDto blocklistedWordListRequestDto = new BlocklistedWordListRequestDto();
-		List<String> blockListed = new ArrayList<String>();
+		List<String> blockListed = new ArrayList<>();
 		blockListed.add("damn");
 		blocklistedWordListRequestDto.setBlocklistedwords(blockListed);
 		blocklistedwordsReq.setRequest(blocklistedWordListRequestDto);

@@ -1,14 +1,5 @@
 package io.mosip.kernel.masterdata.utils;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
@@ -16,6 +7,14 @@ import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.exception.RequestException;
+import org.apache.commons.lang3.StringUtils;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * {@link SortUtils} use to sort the list based on the sort criteria this class
@@ -43,9 +42,9 @@ public class SortUtils {
 			List<FieldComparator<T>> comparatorlist = new ArrayList<>();
 			for (int i = 0; i < sortCriteria.size(); i++) {
 				SearchSort sort = sortCriteria.get(i);
-				comparatorlist.add(new FieldComparator<T>(findField(fields, sort.getSortField()), sort));
+				comparatorlist.add(new FieldComparator<>(findField(fields, sort.getSortField()), sort));
 			}
-			return list.parallelStream().sorted(new MultiFieldComparator<T>(comparatorlist))
+			return list.parallelStream().sorted(new MultiFieldComparator<>(comparatorlist))
 					.collect(Collectors.toList());
 		}
 		return list;

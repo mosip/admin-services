@@ -41,7 +41,7 @@ public class ApplicantDetailsController {
   //  @PreAuthorize("hasRole('DIGITALCARD_ADMIN')")
   @PreAuthorize("hasAnyRole(@authorizedRoles.getGetapplicantDetailsgetLoginDetails())")
   @GetMapping("/applicantDetails/getLoginDetails")
-    public ResponseWrapper<ApplicantUserDetailsDto> getApplicantUserDetails() throws Exception {
+    public ResponseWrapper<ApplicantUserDetailsDto> getApplicantUserDetails() {
         auditUtil.setAuditRequestDto(EventEnum.APPLICANT_LOGIN_DETAILS_API_CALLED,null);
         ResponseWrapper<ApplicantUserDetailsDto> responseWrapper = new ResponseWrapper<>();
         responseWrapper.setResponse(applicantDetailService.getApplicantUserDetails());

@@ -1,5 +1,8 @@
 package io.mosip.admin.bulkdataupload.batch;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.springframework.batch.extensions.excel.RowMapper;
 import org.springframework.batch.extensions.excel.support.rowset.RowSet;
 import org.springframework.batch.support.DefaultPropertyEditorRegistrar;
@@ -15,10 +18,6 @@ import org.springframework.validation.DataBinder;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Validator;
 
 public class CustomExcelRowMapper<T>  extends DefaultPropertyEditorRegistrar implements RowMapper<T>, BeanFactoryAware, InitializingBean {
     private String name;
@@ -97,14 +96,14 @@ public class CustomExcelRowMapper<T>  extends DefaultPropertyEditorRegistrar imp
             this.propertiesMatched.putIfAbsent(distanceKey, new ConcurrentHashMap());
         }
 
-        Map<String, String> matches = new HashMap((Map)this.propertiesMatched.get(distanceKey));
+        Map<String, String> matches = new HashMap(this.propertiesMatched.get(distanceKey));
         Set<String> keys = new HashSet(properties.keySet());
         Iterator var7 = keys.iterator();
 
         while(var7.hasNext()) {
             String key = (String)var7.next();
             if (matches.containsKey(key)) {
-                this.switchPropertyNames(properties, key, (String)matches.get(key));
+                this.switchPropertyNames(properties, key, matches.get(key));
             } else {
                 String name = this.findPropertyName(bean, key);
                 if (name != null) {

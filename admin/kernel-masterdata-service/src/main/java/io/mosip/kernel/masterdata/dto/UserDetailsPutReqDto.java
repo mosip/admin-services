@@ -2,8 +2,6 @@ package io.mosip.kernel.masterdata.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
-import jakarta.validation.constraints.Size;
-
 import io.mosip.kernel.masterdata.validator.StringFormatter;
 import lombok.Data;
 

@@ -143,8 +143,8 @@ public class SyncHandlerControllerAdvice {
 	private ResponseWrapper<ServiceError> setErrors(HttpServletRequest httpServletRequest) throws IOException {
 		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();
 		String requestBody = null;
-		if (httpServletRequest instanceof ContentCachingRequestWrapper) {
-			requestBody = new String(((ContentCachingRequestWrapper) httpServletRequest).getContentAsByteArray());
+		if (httpServletRequest instanceof ContentCachingRequestWrapper contentCachingRequestWrapper) {
+			requestBody = new String(contentCachingRequestWrapper.getContentAsByteArray());
 		}
 		if (EmptyCheckUtils.isNullEmpty(requestBody)) {
 			return responseWrapper;

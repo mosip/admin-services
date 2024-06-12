@@ -1,16 +1,12 @@
 package io.mosip.kernel.masterdata.validator;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 
-import lombok.Data;
-
-//TODO: - rename this class with a more relevant name
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Data
 public class LanguageCharacterValidator implements ConstraintValidator<AlphabeticValidator, String> {

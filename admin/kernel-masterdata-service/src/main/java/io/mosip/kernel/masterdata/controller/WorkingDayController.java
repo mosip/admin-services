@@ -2,7 +2,6 @@ package io.mosip.kernel.masterdata.controller;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.WorkingDaysDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.WorkingDaysExtnDto;
 import io.mosip.kernel.masterdata.dto.request.WorkingDaysPutRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;

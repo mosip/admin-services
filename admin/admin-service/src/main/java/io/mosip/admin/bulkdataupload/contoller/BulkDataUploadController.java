@@ -57,7 +57,7 @@ public class BulkDataUploadController {
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetbulkuploadtranscationtranscationid())")
 	@GetMapping("/bulkupload/transcation/{transcationId}")
 	//@PreAuthorize("hasRole('GLOBAL_ADMIN')")
-	public ResponseWrapper<BulkDataGetExtnDto> getTranscationDetail(@PathVariable("transcationId") String transcationId) throws Exception {
+	public ResponseWrapper<BulkDataGetExtnDto> getTranscationDetail(@PathVariable("transcationId") String transcationId) {
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_TRANSACTION,transcationId),null);
 		ResponseWrapper<BulkDataGetExtnDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(bulkDataService.getTrascationDetails(transcationId));
@@ -74,7 +74,7 @@ public class BulkDataUploadController {
 			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "order the requested data based on param", defaultValue = "desc") String orderBy,
 			@RequestParam(name = "category", defaultValue = "masterdata")  String category){
 		auditUtil.setAuditRequestDto(EventEnum.BULKDATA_TRANSACTION_ALL,null);
-		ResponseWrapper<PageDto<BulkDataGetExtnDto>> responseWrapper = new ResponseWrapper<PageDto<BulkDataGetExtnDto>>();
+		ResponseWrapper<PageDto<BulkDataGetExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(bulkDataService.getAllTrascationDetails(pageNumber,pageSize,sortBy,orderBy,category));
 		auditUtil.setAuditRequestDto(EventEnum.BULKDATA_TRANSACTION_ALL_SUCCESS,null);
 		return responseWrapper;

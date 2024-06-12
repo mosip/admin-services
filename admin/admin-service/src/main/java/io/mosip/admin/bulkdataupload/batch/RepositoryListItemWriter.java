@@ -1,16 +1,14 @@
 package io.mosip.admin.bulkdataupload.batch;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
-import java.util.List;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.PersistenceUnitUtil;
-
+import io.mosip.admin.bulkdataupload.constant.BulkUploadErrorCode;
 import io.mosip.admin.bulkdataupload.entity.*;
 import io.mosip.admin.config.Mapper;
 import io.mosip.admin.config.MapperUtils;
+import io.mosip.admin.packetstatusupdater.exception.RequestException;
+import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceUnitUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobExecutionException;
@@ -22,9 +20,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.MethodInvoker;
 
-import io.mosip.admin.bulkdataupload.constant.BulkUploadErrorCode;
-import io.mosip.admin.packetstatusupdater.exception.RequestException;
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This class will write the information in database
@@ -78,9 +76,9 @@ public class RepositoryListItemWriter<T> implements ItemWriter<T> {
     	LOGGER.info("Writing to the repository with " + items.size() + " items.");
         try {
             BaseRepository baseRepository = (BaseRepository) applicationContext.getBean(this.repoBeanName);
-            Iterator i$ = items.iterator();
-            while(i$.hasNext()) {
-                Object object = i$.next();
+            Iterator<? extends T> iterator = items.iterator();
+            while(iterator.hasNext()) {
+                Object object = iterator.next();
                 PersistenceUnitUtil util = emf.getPersistenceUnitUtil();
                 Object identifier = util.getIdentifier(object);
                 T existingRecord = (T) em.find(entity, identifier);
@@ -91,7 +89,7 @@ public class RepositoryListItemWriter<T> implements ItemWriter<T> {
                             throw new RequestException(BulkUploadErrorCode.ENTRY_EXISTS_SAME_IDENTIFIER.getErrorCode(),
                                     "Entry already exists with this id >> " + identifier);
                         }
-                        invoker.setArguments(new Object[]{object});
+                        invoker.setArguments((Object) object);
                         this.doInvoke(invoker);
                         break;
 
@@ -198,8 +196,8 @@ public class RepositoryListItemWriter<T> implements ItemWriter<T> {
         try {
             return invoker.invoke();
         } catch (InvocationTargetException var5) {
-            if(var5.getCause() instanceof Exception) {
-                throw (Exception)var5.getCause();
+            if(var5.getCause() instanceof Exception exception) {
+                throw exception;
             } else {
                 throw new AbstractMethodInvokingDelegator.InvocationTargetThrowableWrapper(var5.getCause());
             }

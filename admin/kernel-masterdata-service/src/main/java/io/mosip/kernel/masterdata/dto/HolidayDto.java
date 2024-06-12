@@ -1,14 +1,10 @@
 package io.mosip.kernel.masterdata.dto;
 
-import java.time.LocalDate;
-
-import jakarta.validation.constraints.NotBlank;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import lombok.Data;
+import java.time.LocalDate;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class HolidayDto {

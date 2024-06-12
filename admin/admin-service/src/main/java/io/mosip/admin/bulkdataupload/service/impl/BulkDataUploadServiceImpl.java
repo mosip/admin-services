@@ -16,6 +16,9 @@ import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.admin.packetstatusupdater.util.EventEnum;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -57,10 +60,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-import jakarta.validation.Validator;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -85,9 +85,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	private static final Logger logger = LoggerFactory.getLogger(BulkDataUploadServiceImpl.class);
 	private static final String DATA_READ_ROLE = "ROLE_DATA_READ";
 	private static Predicate<String> emptyCheck = String::isBlank;
-	private static String STATUS_MESSAGE = "SUCCESS: %d, FAILED: %d";
-	private static String CSV_UPLOAD_MESSAGE = "FILE: %s, READ: %d, STATUS: %s, MESSAGE: %s";
-	private static String PKT_UPLOAD_MESSAGE = "FILE: %s, STATUS: %s, MESSAGE: %s";
+	private static String status_message = "SUCCESS: %d, FAILED: %d";
+	private static String csv_upload_message = "FILE: %s, READ: %d, STATUS: %s, MESSAGE: %s";
+	private static String pkt_upload_message = "FILE: %s, STATUS: %s, MESSAGE: %s";
 	
 	@Autowired
 	ApplicationContext applicationContext;
@@ -147,7 +147,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	@Autowired
 	private Validator validator;
 
-	private Map<String, Class> entityMap = new HashMap<String, Class>();
+	private Map<String, Class> entityMap = new HashMap<>();
 
 
 	@Override
@@ -179,8 +179,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	public PageDto<BulkDataGetExtnDto> getAllTrascationDetails(int pageNumber, int pageSize, String sortBy,
 			String orderBy, String category) {
 		Page<BulkUploadTranscation> pageData = null;
-		List<BulkDataGetExtnDto> bulkDataGetExtnDtos2 = new ArrayList<BulkDataGetExtnDto>();
-		PageDto<BulkDataGetExtnDto> pageDto2 = new PageDto<BulkDataGetExtnDto>();
+		List<BulkDataGetExtnDto> bulkDataGetExtnDtos2 = new ArrayList<>();
+		PageDto<BulkDataGetExtnDto> pageDto2 = new PageDto<>();
 		try {
 			Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy));
 			pageData = bulkTranscationRepo.findByCategory(category, pageable);
@@ -205,7 +205,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 			throw new DataNotFoundException(BulkUploadErrorCode.UNABLE_TO_RETRIEVE_TRANSCATION.getErrorCode(),
 					BulkUploadErrorCode.UNABLE_TO_RETRIEVE_TRANSCATION.getErrorMessage(), e);
 		}
-		pageDto2 = new PageDto<BulkDataGetExtnDto>(pageData.getNumber(), pageData.getTotalPages(),
+		pageDto2 = new PageDto<>(pageData.getNumber(), pageData.getTotalPages(),
 				pageData.getTotalElements(), bulkDataGetExtnDtos2);
 		return pageDto2;
 	}
@@ -238,8 +238,11 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 					BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage() + "TABLENAME");
 		}
 
-		logger.info("category {}, tablename: {} , operation: {}, Uploaded files : {}", AuditUtil.neutralizeParam(category), AuditUtil.neutralizeParam(tableName), AuditUtil.neutralizeParam(operation),
-				AuditUtil.neutralizeParam(files.length));
+		logger.info("category {}, tablename: {} , operation: {}, Uploaded files count: {}",
+				AuditUtil.neutralizeParam(category),
+				AuditUtil.neutralizeParam(tableName),
+				AuditUtil.neutralizeParam(operation),
+				files.length);
 
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD,
 				"{category:'" + category + "',tablename:'" + tableName + "',operation:'" + operation + "'}"),null);
@@ -279,7 +282,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 			} catch (Throwable e) {
 				logger.error("Failed to import data from CSV", e);
-				message = String.format(CSV_UPLOAD_MESSAGE, file.getOriginalFilename(), 0, "FAILED", e.getMessage());
+				message = String.format(csv_upload_message, file.getOriginalFilename(), 0, "FAILED", e.getMessage());
 			}
 
 			//On failure of launching job
@@ -303,13 +306,11 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CATEGORY, category),null);
 
-		switch (category.toLowerCase()) {
-			case "masterdata":
-				return importDataFromFile(tableName, operation, category, files);
-
-			case "packet":
-				return uploadPackets(files, operation, category, centerId, source, process, supervisorStatus);
-		}
+        if (category.equalsIgnoreCase("masterdata")) {
+            return importDataFromFile(tableName, operation, category, files);
+        } else if (category.equalsIgnoreCase("packet")) {
+            return uploadPackets(files, operation, category, centerId, source, process, supervisorStatus);
+        }
 
 		auditUtil.setAuditRequestDto(EventEnum.BULKDATA_INVALID_CATEGORY,null);
 		throw new RequestException(BulkUploadErrorCode.INVALID_ARGUMENT.getErrorCode(),
@@ -377,7 +378,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 			} catch (Throwable e) {
 				logger.error("Failed to sync and upload packet", e);
-				message = String.format(PKT_UPLOAD_MESSAGE, file.getOriginalFilename(), "FAILED", e.getMessage());
+				message = String.format(pkt_upload_message, file.getOriginalFilename(), "FAILED", e.getMessage());
 			}
 
 			if(message != null) {
@@ -398,7 +399,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 	private Job getJob(MultipartFile file, String operation, String repositoryName, String contextUser,
 					   Class<?> entity, Boolean isCSV) throws IOException {
-		
+
 		Step step = new StepBuilder("step",jobRepository)
 				.<Object, List<Object>>chunk(100,platformTransactionManager)
 				.reader(isCSV?csvItemReader(file, entity):excelItemReader(file, entity))
@@ -485,7 +486,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 		BeanWrapperFieldSetMapper<Object> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
 		fieldSetMapper.setTargetType(clazz);
 		fieldSetMapper.setConversionService(customConversionService());
-		CustomLineMapper<Object> lineMapper = new CustomLineMapper<Object>(setupLanguages(), validator);
+		CustomLineMapper<Object> lineMapper = new CustomLineMapper<>(setupLanguages(), validator);
 		lineMapper.setLineTokenizer(lineTokenizer);
 		lineMapper.setFieldSetMapper(fieldSetMapper);
 		flatFileItemReader.setLineMapper(lineMapper);
