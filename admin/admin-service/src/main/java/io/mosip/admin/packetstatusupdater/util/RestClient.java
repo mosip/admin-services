@@ -204,9 +204,14 @@ public class RestClient {
 		try {
 			ResponseEntity responseEntity= (ResponseEntity) restTemplate
 					.exchange(url, HttpMethod.GET, setRequestHeader(null, null), responseType);
-			if(url.contains("datashare") && responseEntity.getHeaders().getContentType().equals(MediaType.APPLICATION_JSON)){
-				throw new MasterDataServiceException(ApplicantDetailErrorCode.DATA_SHARE_EXPIRED_EXCEPTION.getErrorCode(),
-						ApplicantDetailErrorCode.DATA_SHARE_EXPIRED_EXCEPTION.getErrorMessage());
+			MediaType contentType = responseEntity.getHeaders().getContentType();
+			if (url.contains("datashare")) {
+				if (contentType == null) {
+					throw new NullPointerException("Content type is null");
+				} else if (contentType.equals(MediaType.APPLICATION_JSON)) {
+					throw new MasterDataServiceException(ApplicantDetailErrorCode.DATA_SHARE_EXPIRED_EXCEPTION.getErrorCode(),
+							ApplicantDetailErrorCode.DATA_SHARE_EXPIRED_EXCEPTION.getErrorMessage());
+				}
 			}
 			result= (T) responseEntity.getBody();
 		} catch (Exception e) {
