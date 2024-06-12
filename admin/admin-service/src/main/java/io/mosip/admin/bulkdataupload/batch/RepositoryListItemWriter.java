@@ -67,13 +67,14 @@ public class RepositoryListItemWriter<T> implements ItemWriter<T> {
         this.repoBeanName = repoBeanName;
     }
 
-    public void write(List<? extends T> items) throws Exception {
-        if(!CollectionUtils.isEmpty(items)) {
+    @Override
+    public void write(Chunk<? extends T> items) throws Exception {
+        if(!items.isEmpty()) {
             this.doWrite(items);
         }
     }
 
-    protected void doWrite(List<? extends T> items) throws Exception {
+    protected void doWrite(Chunk<? extends T> items) throws Exception {
     	LOGGER.info("Writing to the repository with " + items.size() + " items.");
         try {
             BaseRepository baseRepository = (BaseRepository) applicationContext.getBean(this.repoBeanName);
@@ -214,8 +215,4 @@ public class RepositoryListItemWriter<T> implements ItemWriter<T> {
         return invoker;
     }
 
-    @Override
-    public void write(Chunk<? extends T> chunk) throws Exception {
-
-    }
 }
