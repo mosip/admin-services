@@ -122,9 +122,6 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 	@Autowired
 	private JobRepository jobRepository;
-
-	@Autowired
-	private DataSource dataSource;
 	
 	@Autowired
 	private CustomChunkListener customChunkListener;
