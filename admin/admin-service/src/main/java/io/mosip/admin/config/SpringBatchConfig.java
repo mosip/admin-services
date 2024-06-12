@@ -22,6 +22,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -42,9 +43,6 @@ public class SpringBatchConfig {
 	ApplicationContext applicationContext;
 
     @Autowired
-    private DataSource dataSource;
-    
-    @Autowired
     private BulkUploadTranscationRepository bulkUploadTranscationRepository;
 
     @Autowired
@@ -53,11 +51,6 @@ public class SpringBatchConfig {
     @Bean
     public CustomChunkListener customChunkListener() {
         return new CustomChunkListener(bulkUploadTranscationRepository);
-    }
-
-    @Bean
-    public PlatformTransactionManager platformTransactionManager() {
-        return new DataSourceTransactionManager(dataSource);
     }
 
     @Bean
@@ -103,7 +96,6 @@ public class SpringBatchConfig {
         return jobLauncher;
     }
 
-    
 
 
 }
