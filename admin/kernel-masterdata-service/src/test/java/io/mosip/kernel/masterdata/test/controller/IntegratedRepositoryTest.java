@@ -343,6 +343,7 @@ public class IntegratedRepositoryTest {
 
 		Map m = new HashMap<>();
 		m.put("code", "anbc");
+		m.put("value","gdbd");
 		JsonNode jsonNode = mapper.valueToTree(m);
 
 		// JsonNode node = mapper.valueToTree(fromValue);

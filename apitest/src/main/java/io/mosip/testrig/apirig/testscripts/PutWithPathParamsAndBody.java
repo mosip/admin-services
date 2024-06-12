@@ -23,6 +23,7 @@ import org.testng.internal.TestResult;
 import io.mosip.testrig.apirig.dto.OutputValidationDto;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
+
 import io.mosip.testrig.apirig.testrunner.HealthChecker;
 import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
@@ -117,7 +118,7 @@ public class PutWithPathParamsAndBody extends AdminTestUtil implements ITest {
 				ouputValid = OutputValidationUtil.doJsonOutputValidation(response.asString(),
 						getJsonFromTemplate(testCaseDTO.getOutput(), testCaseDTO.getOutputTemplate()), testCaseDTO,
 						response.getStatusCode());
-			
+		
 			Reporter.log(ReportUtil.getOutputValidationReport(ouputValid));
 
 			if (!OutputValidationUtil.publishOutputResult(ouputValid))
@@ -150,6 +151,7 @@ public class PutWithPathParamsAndBody extends AdminTestUtil implements ITest {
 
 		return inputJson;
 	}
+
 
 	/**
 	 * The method ser current test name to result

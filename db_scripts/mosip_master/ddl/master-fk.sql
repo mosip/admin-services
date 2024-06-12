@@ -82,10 +82,6 @@ ALTER TABLE master.screen_detail ADD CONSTRAINT fk_scrdtl_appdtl FOREIGN KEY (ap
 REFERENCES master.app_detail (id,lang_code) MATCH SIMPLE
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 
-ALTER TABLE master.status_list ADD CONSTRAINT fk_status_sttyp FOREIGN KEY (sttyp_code,lang_code)
-REFERENCES master.status_type (code,lang_code) MATCH SIMPLE
-ON DELETE NO ACTION ON UPDATE NO ACTION;
-
 
 ALTER TABLE master.valid_document ADD CONSTRAINT fk_valdoc_doctyp FOREIGN KEY (doctyp_code,lang_code)
 REFERENCES master.doc_type (code,lang_code) MATCH SIMPLE

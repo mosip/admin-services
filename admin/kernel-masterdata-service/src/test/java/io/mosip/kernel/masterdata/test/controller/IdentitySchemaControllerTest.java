@@ -4,6 +4,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -77,7 +82,12 @@ public class IdentitySchemaControllerTest {
 	
 	@MockBean
 	private UISpecService uiSpecService;
-	
+
+	private ObjectMapper mapper;
+
+	private RequestWrapper<DynamicFieldDto> dynamicFieldDtoReq;
+
+	private DynamicFieldDto dynamicFieldDto = new DynamicFieldDto();
 	private Page<DynamicField> fieldPagedResult;
 	private Page<IdentitySchema> schemaPagedResult;
 	private IdentitySchema publishedSchema;
@@ -89,8 +99,19 @@ public class IdentitySchemaControllerTest {
 	List<UISpecResponseDto> lstui=new ArrayList<UISpecResponseDto>();
 @Before
 	public void setup() {
-		
-		 is=new IdentitySchema();
+		mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
+		dynamicFieldDtoReq = new RequestWrapper<DynamicFieldDto>();
+		dynamicFieldDto.setDataType("string");
+		dynamicFieldDto.setDescription("Blood Type");
+		dynamicFieldDto.setLangCode("eng");
+		dynamicFieldDto.setName("blood type");
+
+		JsonNode jsonNode = null;
+		dynamicFieldDto.setFieldVal(jsonNode);
+
+		dynamicFieldDtoReq.setRequest(dynamicFieldDto);
+		is=new IdentitySchema();
 		is.setAdditionalProperties(false);
 		is.setCreatedBy("superuser");
 		is.setCreatedDateTime(LocalDateTime.now());
@@ -221,16 +242,17 @@ public class IdentitySchemaControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields")
 				.param("langCode", "eng")).andExpect(MockMvcResultMatchers.status().isOk());
 	}
-	
+
 	@Test
 	@WithUserDetails("global-admin")
-	public void createDynamicField() throws Exception {		
-		Mockito.when(dynamicFieldRepository.create(Mockito.any(DynamicField.class))).thenReturn(bloodTypeField);		
+	public void createDynamicField() throws Exception {
+		JsonNode fieldVal = mapper.readTree("{\"code\":\"10004\",\"value\":\"bloodType1\"}");
+		dynamicFieldDtoReq.getRequest().setFieldVal(fieldVal);
+		Mockito.when(dynamicFieldRepository.create(Mockito.any(DynamicField.class))).thenReturn(bloodTypeField);
 		mockMvc.perform(MockMvcRequestBuilders.post("/dynamicfields")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content("{\"id\":\"string\",\"version\":\"string\",\"requesttime\":\"2018-12-17T07:15:06.724Z\",\"request\":"
-						+"{\"name\": \"bloodType\",\"dataType\":\"simpleType\",\"description\":\"test desc\",\"isActive\":true,\"langCode\":\"eng\"}}"))
-		.andExpect(MockMvcResultMatchers.status().isOk());
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(dynamicFieldDtoReq)))
+				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 	
 	@Test
