@@ -7,9 +7,9 @@ import org.springframework.batch.item.file.transform.LineTokenizer;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;

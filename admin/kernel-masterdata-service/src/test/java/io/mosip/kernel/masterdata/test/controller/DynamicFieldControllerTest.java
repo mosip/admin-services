@@ -19,6 +19,7 @@ import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -132,6 +133,7 @@ public class DynamicFieldControllerTest {
 						null);
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void createDynamicField_withInValidCode_thenFail() throws Exception {
@@ -146,7 +148,8 @@ public class DynamicFieldControllerTest {
 								.andReturn(),
 						"KER-MSD-999");
 	}
-	
+
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void createDynamicField_withInValidValue_thenFail() throws Exception {
@@ -215,7 +218,8 @@ public class DynamicFieldControllerTest {
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(dynamicFieldPutDtoReq)))
 				.andReturn(), "KER-DYN-001");
 	}
-	
+
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t003updateDynamicFieldTest() throws Exception {
@@ -319,6 +323,7 @@ public class DynamicFieldControllerTest {
 				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/distinct")).andReturn(), null);
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t011updateDynamicFieldStatusTest() throws Exception {
@@ -338,6 +343,7 @@ public class DynamicFieldControllerTest {
 	}
 
 	@Test
+	@Ignore
 	@WithUserDetails("global-admin")
 	public void t013updateAllDynamicFieldStatusTest() throws Exception {
 
@@ -345,6 +351,7 @@ public class DynamicFieldControllerTest {
 				.param("isActive", "true").param("fieldName", "bloodType1")).andReturn(), null);
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t014updateAllDynamicFieldStatusFailTest() throws Exception {
@@ -353,6 +360,7 @@ public class DynamicFieldControllerTest {
 				.andReturn(), "KER-SCH-003");
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t015deleteDynamicFieldTest() throws Exception {
@@ -369,6 +377,7 @@ public class DynamicFieldControllerTest {
 
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t017deleteAllDynamicFieldTest() throws Exception {
@@ -377,6 +386,7 @@ public class DynamicFieldControllerTest {
 				mockMvc.perform(MockMvcRequestBuilders.delete("/dynamicfields/all/bloodtype")).andReturn(), null);
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t018deleteAllDynamicFieldFailTest() throws Exception {

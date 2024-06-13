@@ -9,13 +9,10 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.item.file.FlatFileParseException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.sql.DataSource;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,14 +36,14 @@ public class PacketJobResultListener implements JobExecutionListener {
 	    @Override
 	    public void beforeJob(JobExecution jobExecution) {
 	        logger.info("Job started : {}", jobExecution.getJobParameters().getString("transactionId"));
-	        this.jobExecutionSecurityContextListener.fillJobExecutionContext(jobExecution);
+	        this.jobExecutionSecurityContextListener.restoreContext(jobExecution);
 
 	        if(jobExecution.getStepExecutions().isEmpty()) {
 	            restoreContext(jobExecution);
 	        }
 	        else {
 	            for(StepExecution stepExecution : jobExecution.getStepExecutions()) {
-	                this.jobExecutionSecurityContextListener.restoreContext(stepExecution);
+	                this.jobExecutionSecurityContextListener.restoreContext(stepExecution.getJobExecution());
 	            }
 	        }
 	    }
@@ -67,22 +64,22 @@ public class PacketJobResultListener implements JobExecutionListener {
 	                });
 	            });
 
-	            Optional<Integer> commitResult = jobExecution.getStepExecutions().stream().map(StepExecution::getCommitCount).findFirst();
-	            Optional<Integer> readResult = jobExecution.getStepExecutions().stream().map(StepExecution::getCommitCount).findFirst();
-	            int readCount = readResult.isPresent() ? readResult.get() : 0;
-	            int commitCount = commitResult.isPresent() ? commitResult.get() : 0;
+	            Optional<Long> commitResult = jobExecution.getStepExecutions().stream().map(StepExecution::getCommitCount).findFirst();
+	            Optional<Long> readResult = jobExecution.getStepExecutions().stream().map(StepExecution::getCommitCount).findFirst();
+	            long readCount = readResult.isPresent() ? readResult.get() : 0;
+	            long commitCount = commitResult.isPresent() ? commitResult.get() : 0;
 	            String message = String.format(STATUS_MESSAGE, commitCount,
 	                    jobExecution.getStatus().toString(), failures.isEmpty() ? "0 Errors" : failures.toString());
 	            auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_COMPLETED,
 	                            jobId + " --> " + message), jobExecution.getJobParameters().getString("username"));
-	            bulkUploadTranscationRepository.updateBulkUploadTransactionPacket(jobId, jobExecution.getExitStatus().getExitCode(), commitCount, message);
+	            bulkUploadTranscationRepository.updateBulkUploadTransactionPacket(jobId, jobExecution.getExitStatus().getExitCode(), Math.toIntExact(commitCount), message);
 	            
 
 	        } catch (Throwable t) {
 	            logger.error("Failed  to update job status {}", jobId, t);
 	        } finally {
 	            clearContext();
-	            this.jobExecutionSecurityContextListener.removeFromJobExecutionContext(jobExecution);
+	            this.jobExecutionSecurityContextListener.clearContext(jobExecution);
 	        }
 	    }
 

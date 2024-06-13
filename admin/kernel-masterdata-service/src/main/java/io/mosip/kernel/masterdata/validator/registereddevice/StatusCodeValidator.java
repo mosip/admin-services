@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.validator.registereddevice;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 import org.springframework.web.client.RestClientException;
 
@@ -34,8 +34,8 @@ public class StatusCodeValidator implements ConstraintValidator<ValidStatusCode,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see javax.validation.ConstraintValidator#isValid(java.lang.Object,
-	 * javax.validation.ConstraintValidatorContext)
+	 * @see jakarta.validation.ConstraintValidator#isValid(java.lang.Object,
+	 * jakarta.validation.ConstraintValidatorContext)
 	 */
 	@Override
 	public boolean isValid(String statusCode, ConstraintValidatorContext context) {

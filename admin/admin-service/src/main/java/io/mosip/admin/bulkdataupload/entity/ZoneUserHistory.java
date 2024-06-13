@@ -3,11 +3,11 @@ package io.mosip.admin.bulkdataupload.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.Column;
+import jakarta.persistence.Table;
 
 import io.mosip.admin.bulkdataupload.entity.id.ZoneUserHistoryId;
 import lombok.AllArgsConstructor;

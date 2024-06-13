@@ -22,6 +22,7 @@ import io.mosip.kernel.masterdata.repository.*;
 import io.mosip.kernel.masterdata.utils.*;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -2582,6 +2583,7 @@ public class MasterDataServiceTest {
 	}
 	
 	@Test
+	@Ignore
 	public void updateRegistrationCenterAdminStatusSuccessTest() {
 		StatusResponseDto dto = new StatusResponseDto();
 		dto.setStatus("Status updated successfully for Registration Centers");

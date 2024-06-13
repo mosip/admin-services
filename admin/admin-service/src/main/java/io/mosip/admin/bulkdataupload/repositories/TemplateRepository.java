@@ -36,8 +36,8 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	 *            the code
 	 * @return All the {@link Template}
 	 */
-	@Query("FROM Template WHERE code =?1 AND (isDeleted is null OR isDeleted = false) and isActive = true")
-	List<Template> findAllByCodeAndIsDeletedFalseOrIsDeletedIsNull(String code);
+	@Query("FROM Template WHERE templateTypeCode =?1 AND (isDeleted is null OR isDeleted = false) and isActive = true")
+	List<Template> findAllByCodeAndIsDeletedFalseOrIsDeletedIsNull(String templateTypeCode);
 
 	/**
 	 * To fetch all the {@link Template} based on language file format code
@@ -108,7 +108,7 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	 */
 
 	@Modifying
-	@Query("UPDATE Template t SET t.updatedBy=?3 , t.isDeleted =true , t.deletedDateTime = ?2 WHERE t.id =?1 and (t.isDeleted is null or t.isDeleted =false)")
+	@Query("UPDATE Template SET updatedBy=?3 , isDeleted =true , deletedDateTime = ?2 WHERE id =?1 and (isDeleted is null or isDeleted =false)")
 	int deleteTemplate(String id, LocalDateTime deletedDateTime, String updatedBy);
 
 	/**

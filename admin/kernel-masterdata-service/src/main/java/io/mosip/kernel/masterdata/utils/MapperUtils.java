@@ -10,8 +10,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
+import  jakarta.persistence.EmbeddedId;
+import  jakarta.persistence.Entity;
 
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.stereotype.Component;

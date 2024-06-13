@@ -1,24 +1,20 @@
 package io.mosip.hotlist.exception;
 
-import static io.mosip.hotlist.constant.HotlistErrorConstants.AUTHORIZATION_FAILED;
-import static io.mosip.hotlist.constant.HotlistErrorConstants.INVALID_INPUT_PARAMETER;
-import static io.mosip.hotlist.constant.HotlistErrorConstants.INVALID_REQUEST;
-import static io.mosip.hotlist.constant.HotlistErrorConstants.UNKNOWN_ERROR;
-
-import java.time.format.DateTimeParseException;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.servlet.ServletException;
-
+import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
+import io.mosip.hotlist.logger.HotlistLogger;
+import io.mosip.hotlist.security.HotlistSecurityManager;
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.logger.spi.Logger;
+import jakarta.annotation.Nullable;
+import jakarta.servlet.ServletException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.lang.Nullable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,12 +22,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
-import io.mosip.hotlist.logger.HotlistLogger;
-import io.mosip.hotlist.security.HotlistSecurityManager;
-import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.logger.spi.Logger;
+import java.time.format.DateTimeParseException;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static io.mosip.hotlist.constant.HotlistErrorConstants.*;
+import static io.mosip.hotlist.constant.HotlistErrorConstants.INVALID_REQUEST;
 
 /**
  * The Class HotlistExceptionHandler.
@@ -118,7 +115,7 @@ public class HotlistExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object errorMessage,
-			HttpHeaders headers, HttpStatus status, WebRequest request) {
+			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 		mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE, HOTLIST_EXCEPTION_HANDLER,
 				"handleExceptionInternal - \n" + (ex instanceof MethodArgumentNotValidException
 						? ((MethodArgumentNotValidException) ex).getBindingResult().getAllErrors()

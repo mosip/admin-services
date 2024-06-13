@@ -2,8 +2,8 @@ package io.mosip.kernel.masterdata.dto.getresponse.extn;
 
 import java.time.LocalDateTime;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
