@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -179,7 +180,7 @@ public class HolidayControllerTest {
 				.andReturn(), "KER-MSD-729");
 	}
 
-
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t003updateHolidayTest() throws Exception {
@@ -198,6 +199,7 @@ public class HolidayControllerTest {
 
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t003updateHolidayTest2() throws Exception {

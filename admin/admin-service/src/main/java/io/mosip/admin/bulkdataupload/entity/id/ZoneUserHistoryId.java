@@ -3,9 +3,9 @@ package io.mosip.admin.bulkdataupload.entity.id;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Id;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

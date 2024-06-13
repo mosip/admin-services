@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import io.mosip.kernel.masterdata.dto.response.FilterResult;
 import org.slf4j.Logger;

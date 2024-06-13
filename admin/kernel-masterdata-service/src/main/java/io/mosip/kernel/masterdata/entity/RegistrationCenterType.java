@@ -3,15 +3,15 @@ package io.mosip.kernel.masterdata.entity;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import lombok.AllArgsConstructor;

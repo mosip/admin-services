@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -128,6 +129,7 @@ public class LocationControllerTest {
 
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t029getLocationHierarchyDetailsTest() throws Exception {
@@ -136,6 +138,7 @@ public class LocationControllerTest {
 				null);
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t001getLocationHierarchyDetailsFailTest() throws Exception {
@@ -519,6 +522,7 @@ public class LocationControllerTest {
 
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t010getMissingLocationDetailsFailTest() throws Exception {

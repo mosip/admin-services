@@ -1,19 +1,16 @@
 package io.mosip.kernel.syncdata.entity;
 
-import java.io.Serializable;
-
-//github.com/mosip/mosip.git
-
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 /**
  * 

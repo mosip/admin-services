@@ -22,8 +22,8 @@ public class CustomChunkListener implements ChunkListener {
 	@Override
 	public void afterChunk(ChunkContext context) {
 		String jobId = (String) context.getStepContext().getJobParameters().get("transactionId");
-		int count =  context.getStepContext().getStepExecution().getWriteCount();
-      bulkUploadTranscationRepository.updateBulkUploadTransactionCount(jobId,count);
+		long count =  context.getStepContext().getStepExecution().getWriteCount();
+      bulkUploadTranscationRepository.updateBulkUploadTransactionCount(jobId, Math.toIntExact(count));
 		
 	}
 

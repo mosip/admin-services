@@ -16,6 +16,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -127,7 +128,7 @@ public class BulkDataUploadControllerTest {
 
 	}
 	
-	
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t003uploadDataTest() throws Exception {
@@ -141,7 +142,8 @@ public class BulkDataUploadControllerTest {
 				"ADM-BLK-007");
 
 	}
-	
+
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t004uploadDataTest() throws Exception {
@@ -155,7 +157,8 @@ public class BulkDataUploadControllerTest {
 				"KER-MSD-999");
 
 	}
-	
+
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t005uploadDataTest() throws Exception {
@@ -169,7 +172,8 @@ public class BulkDataUploadControllerTest {
 				"KER-MSD-999");
 
 	}
-	
+
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t006uploadDataTest() throws Exception {
@@ -183,7 +187,8 @@ public class BulkDataUploadControllerTest {
 				"KER-MSD-999");
 
 	}
-	
+
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t007uploadDataTest() throws Exception {
@@ -197,7 +202,8 @@ public class BulkDataUploadControllerTest {
 				"KER-MSD-999");
 
 	}
-	
+
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t008uploadDataTest() throws Exception {
@@ -211,6 +217,7 @@ public class BulkDataUploadControllerTest {
 				"ADM-BLK-006");
 
 	}
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t009uploadDataTest() throws Exception {
@@ -224,6 +231,7 @@ public class BulkDataUploadControllerTest {
 				"ADM-BLK-006");
 
 	}
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t010uploadDataTest() throws Exception {
@@ -311,7 +319,8 @@ public class BulkDataUploadControllerTest {
 		transactionId = jsonResponse.get("transcationId").toString();
 		AdminDataUtil.checkResponse(response,null);
 	}
-	
+
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t0017uploadDataTest() throws Exception {

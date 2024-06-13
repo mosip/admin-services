@@ -108,9 +108,6 @@ public class DeviceServiceImpl implements DeviceService {
 	private PageUtils pageUtils;
 
 	@Autowired
-	private ZoneService zoneService;
-
-	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
 
 	@Autowired
