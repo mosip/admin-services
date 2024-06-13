@@ -68,25 +68,6 @@ public class SpringBatchConfig {
         return  new StepBuilder("step", jobRepository);
     }
 
-    /*@Bean(name = "asyncJobLauncher")
-    public JobLauncher simpleJobLauncher(JobRepository jobRepository) throws Exception {
-        SimpleJobLauncher jobLauncher = new SimpleJobLauncher();
-        jobLauncher.setJobRepository(jobRepository);
-        jobLauncher.setTaskExecutor(new SimpleAsyncTaskExecutor());
-        jobLauncher.afterPropertiesSet();
-        return jobLauncher;
-    }*/
-   /* @Bean
-    public Job job(JobRepository jobRepository, Step step) {
-        return new JobBuilder("jobBuilder", jobRepository)
-
-                .incrementer(new RunIdIncrementer())
-                .listener(jobResultListener())
-                .listener(packetjobResultListener())
-                .flow(step)
-                .end()
-                .build();
-    }*/
     @Bean(name = "asyncJobLauncher")
     public JobLauncher simpleJobLauncher(JobRepository jobRepository) throws Exception {
         TaskExecutorJobLauncher jobLauncher = new TaskExecutorJobLauncher();

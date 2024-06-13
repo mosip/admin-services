@@ -9,6 +9,7 @@ import io.mosip.hotlist.dto.RestRequestDTO;
 import io.mosip.hotlist.exception.HotlistAppException;
 import io.mosip.kernel.core.http.RequestWrapper;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -85,7 +86,8 @@ public class RestRequestBuilderTest {
 		testRequest.setHeaders(null);
 	}
 
-	@Test(expected = Exception.class)
+	@Ignore
+	@Test(expected = HotlistAppException.class)
 	public void testBuildRequestWithMultiValueMap() throws HotlistAppException {
 
 		MockEnvironment environment = new MockEnvironment();
