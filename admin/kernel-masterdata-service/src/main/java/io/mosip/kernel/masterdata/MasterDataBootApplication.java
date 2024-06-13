@@ -1,8 +1,13 @@
 package io.mosip.kernel.masterdata;
 
+import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
+import io.mosip.kernel.datamapper.orika.impl.DataMapperImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
@@ -13,10 +18,15 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * @since 1.0.0
  *
  */
-@SpringBootApplication(scanBasePackages = { "io.mosip.kernel.masterdata.*", "${mosip.auth.adapter.impl.basepackage}",
-		"io.mosip.kernel.core.logger.config"})
+@SpringBootApplication
+@ComponentScan(value = {"io.mosip.kernel.masterdata.*","io.mosip.kernel.core.datamapper.*",
+		"io.mosip.kernel.core.websub.*","io.mosip.kernel.idgenerator.*","io.mosip.kernel.auth.*"
+		,"io.mosip.kernel.websub.api.*","io.mosip.kernel.applicanttype.*"
+		,"io.mosip.kernel.core.idgenerator.*","io.mosip.kernel.core.logger.config"}, excludeFilters  = {@ComponentScan.Filter(
+		type = FilterType.ASSIGNABLE_TYPE, classes = {DataMapperImpl.class})})
 @EnableCaching
 @EnableScheduling
+@Import(value = {HibernateDaoConfig.class})
 public class MasterDataBootApplication {
 
 	/**

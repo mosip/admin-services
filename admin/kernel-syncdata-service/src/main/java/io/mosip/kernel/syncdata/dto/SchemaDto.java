@@ -1,18 +1,14 @@
 package io.mosip.kernel.syncdata.dto;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
-import io.mosip.kernel.syncdata.dto.RequiredOnDto;
-import io.mosip.kernel.syncdata.dto.SchemaDto;
-import io.mosip.kernel.syncdata.dto.ValidatorDto;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.List;
+import java.util.Map;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

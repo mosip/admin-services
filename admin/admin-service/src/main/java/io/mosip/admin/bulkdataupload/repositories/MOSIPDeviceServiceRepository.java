@@ -74,7 +74,7 @@ public interface MOSIPDeviceServiceRepository extends BaseRepository<MOSIPDevice
 	 * @param id the id of device
 	 * @return the device detail
 	 */
-	@Query("FROM MOSIPDeviceService d where d.id = ?1 AND (d.isDeleted is null or d.isDeleted = false)")
+	@Query("FROM MOSIPDeviceService where id = ?1 AND (isDeleted is null or isDeleted = false)")
 	MOSIPDeviceService findByIdAndIsDeletedFalseOrIsDeletedIsNull(String id);
 
 }

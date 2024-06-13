@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.validator.registereddevice;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 import org.springframework.web.client.RestClientException;
 
@@ -25,8 +25,8 @@ public class FoundationalValidator implements ConstraintValidator<ValidFoundatio
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see javax.validation.ConstraintValidator#isValid(java.lang.Object,
-	 * javax.validation.ConstraintValidatorContext)
+	 * @see jakarta.validation.ConstraintValidator#isValid(java.lang.Object,
+	 * jakarta.validation.ConstraintValidatorContext)
 	 */
 	@Override
 	public boolean isValid(DeviceData deviceData, ConstraintValidatorContext context) {

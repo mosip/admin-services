@@ -2,7 +2,7 @@ package io.mosip.kernel.masterdata.controller;
 
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import org.springframework.beans.factory.annotation.Autowired;

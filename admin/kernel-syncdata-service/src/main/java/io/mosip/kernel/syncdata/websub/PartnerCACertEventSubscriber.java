@@ -1,8 +1,8 @@
 package io.mosip.kernel.syncdata.websub;
 
+import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.core.websub.spi.SubscriptionClient;
-import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
 import io.mosip.kernel.websub.api.model.SubscriptionChangeResponse;
 import io.mosip.kernel.websub.api.model.UnsubscriptionRequest;
@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
