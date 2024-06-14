@@ -84,7 +84,7 @@ public class SyncAuthTokenServiceImpl {
     @Value("${mosip.kernel.auth.sendotp.url}")
     private String sendOTPUrl;
 
-    @Value("${mosip.kernel.syncdata.auth.reqtime.maxlimit:-5}")
+    @Value("${mosip.kernel.syncdata.auth.reqtime.maxlimit:1440}")
     private int maxMinutes;
 
     @Value("${mosip.kernel.syncdata.auth.reqtime.minlimit:5}")
