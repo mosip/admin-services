@@ -1,26 +1,6 @@
 package io.mosip.hotlist.service;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-
-import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.Optional;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.dao.DataAccessException;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.context.WebApplicationContext;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.hotlist.constant.HotlistErrorConstants;
 import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
 import io.mosip.hotlist.entity.Hotlist;
@@ -31,13 +11,31 @@ import io.mosip.hotlist.repository.HotlistRepository;
 import io.mosip.hotlist.service.impl.HotlistServiceImpl;
 import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
 import io.mosip.kernel.core.util.DateUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.dao.DataAccessException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestContext;
+import org.springframework.web.context.WebApplicationContext;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.Optional;
+
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Manoj SP
  *
  */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 public class HotlistServiceTest {
 

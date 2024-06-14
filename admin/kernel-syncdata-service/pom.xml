@@ -12,53 +12,28 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- maven -->
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
-		<maven.compiler.version>3.8.0</maven.compiler.version>
+		<maven.compiler.source>21</maven.compiler.source>
+		<maven.compiler.target>21</maven.compiler.target>
+		<maven.compiler.version>3.9.6</maven.compiler.version>
 		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
 
 		<maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
 		<maven.war.plugin.version>3.1.0</maven.war.plugin.version>
-		<maven.jacoco.version>0.8.5</maven.jacoco.version>
+		<maven.jacoco.version>0.8.11</maven.jacoco.version>
 		<maven.sonar.plugin.version>3.7.0.1746</maven.sonar.plugin.version>
 		<maven.javadoc.version>3.2.0</maven.javadoc.version>
 		<maven-shade-plugin.version>2.3</maven-shade-plugin.version>
 
-		<!-- spring -->
-		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
-		<spring.data.jpa.version>2.0.7.RELEASE</spring.data.jpa.version>
-		<spring.security.test.version>5.0.5.RELEASE</spring.security.test.version>
-		<spring-cloud-config.version>2.0.4.RELEASE</spring-cloud-config.version>
-
-		<!-- swagger -->
-		<springdoc.version>1.5.10</springdoc.version>
-
-		<!-- vertx -->
-		<vertx.version>3.6.2</vertx.version>
-		<vertx.health.check.version>3.7.0</vertx.health.check.version>
-
-
-		<!-- javax -->
-		<javax.interceptor.version>1.2</javax.interceptor.version>
-		<javax.el-api.version>3.0.0</javax.el-api.version>
-		<javax.transaction.api.version>1.3</javax.transaction.api.version>
-		<javax.persistence.api.version>2.2</javax.persistence.api.version>
-		<javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
-		<glassfish.javax.el>2.2.6</glassfish.javax.el>
+		<spring.boot.version>3.2.3</spring.boot.version>
 
 		<!-- data -->
 		<h2.version>1.4.197</h2.version>
 		<mysql.connector.version>5.1.46</mysql.connector.version>
-		<postgresql.version>42.2.2</postgresql.version>
 		<eclipselink.version>2.5.0</eclipselink.version>
-		<hibernate.version>5.2.17.Final</hibernate.version>
-		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
 
 		<!-- test -->
 		<junit.version>4.12</junit.version>
 		<mockito.version>2.23.4</mockito.version>
-		<powermock.version>1.7.4</powermock.version>
-		<powermock.beta.version>2.0.7</powermock.beta.version>
 
 		<!-- logger -->
 		<logback.version>1.2.3</logback.version>
@@ -72,20 +47,14 @@
 		<jackson.databind>2.9.6</jackson.databind>
 		<json.utility.version>20180130</json.utility.version>
 		<json.schema.validator.version>2.2.10</json.schema.validator.version>
-		<json.version>20180813</json.version>
-		<jsonsimple.version>1.1.1</jsonsimple.version>
 
 		<!-- utilities -->
-		<commons-math3>3.6.1</commons-math3>
 		<commons-lang3>3.7</commons-lang3>
-		<commons-io>2.6</commons-io>
 		<commons-codec>1.11</commons-codec>
-		<commons-collections4.version>4.3</commons-collections4.version>
 		<commons.beanutils.version>1.9.2</commons.beanutils.version>
 		<commons.configuration2.version>2.2</commons.configuration2.version>
 		<apache.httpcomponents.version>4.5.6</apache.httpcomponents.version>
 		<guava.version>19.0</guava.version>
-		<lombok.version>1.18.8</lombok.version>
 		<jsch.version>0.1.54</jsch.version>
 		<sshd.version>1.4.0</sshd.version>
 		<itextcore.version>7.1.0</itextcore.version>
@@ -142,6 +111,18 @@
         </repository>
     </repositories>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-bom</artifactId>
+				<version>1.2.1-SNAPSHOT</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
@@ -151,27 +132,27 @@
 			<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<version>${spring.boot.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-			<version>${spring.boot.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
-			<version>${spring.security.test.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
-			<version>${spring.boot.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>${postgresql.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
@@ -180,10 +161,58 @@
 		</dependency>
 
 		<dependency>
+			<groupId>jakarta.persistence</groupId>
+			<artifactId>jakarta.persistence-api</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.xml.bind</groupId>
+			<artifactId>jakarta.xml.bind-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.activation</groupId>
+			<artifactId>jakarta.activation-api</artifactId>
+			<version>2.1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-annotations-api</artifactId>
+		</dependency>
+		<!--<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>-->
+
+		<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-hikaricp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+		<!--<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>${h2.version}</version>
-			<scope>runtime</scope>
+			<scope>test</scope>
+		</dependency>-->
+
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-auth-adapter</artifactId>
+			<version>${kernel.auth.adaptor.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-webflux</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -200,6 +229,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-websubclient-api</artifactId>
 			<version>${kernel-websubclient-api.version}</version>
@@ -208,26 +243,37 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
-			<version>${spring.boot.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>${springdoc.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-webmvc</artifactId>
-				</exclusion>
-			</exclusions>
+		    <groupId>org.springdoc</groupId>
+		    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+		    <version>2.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
-			<version>${spring.boot.version}</version>
+			<optional>true</optional>
 			<scope>provided</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.vintage</groupId>
+			<artifactId>junit-vintage-engine</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>3.11.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
 	</dependencies>
 	
 <distributionManagement>
@@ -247,11 +293,27 @@
 		<artifactId>maven-surefire-plugin</artifactId>
 		<version>${maven.surefire.plugin.version}</version>
 		<configuration>
-			<skipTests>${skipTests}</skipTests>
+			<skipTests>false</skipTests>
 			<skip>false</skip>
+			<useFile>false</useFile>
 			<argLine>
-				${argLine} --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED --illegal-access=permit
+				${argLine}
+				--add-opens java.xml/jdk.xml.internal=ALL-UNNAMED
+				--add-opens java.base/java.lang=ALL-UNNAMED
+				--add-modules=ALL-SYSTEM
+				--illegal-access=debug
+				--enable-preview
 			</argLine>
+		</configuration>
+	</plugin>
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-resources-plugin</artifactId>
+		<version>3.3.1</version>
+		<configuration>
+			<nonFilteredFileExtensions>
+				<nonFilteredFileExtension>properties</nonFilteredFileExtension>
+			</nonFilteredFileExtensions>
 		</configuration>
 	</plugin>
 	<plugin>
@@ -342,7 +404,7 @@
               <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-javadoc-plugin</artifactId>
-                  <version>3.2.0</version>
+                  <version>${maven.javadoc.version}</version>
                   <executions>
                         <execution>
                           <id>attach-javadocs</id>
@@ -453,13 +515,6 @@
 		</profile>
 		<profile>
 			<id>openapi-doc-generate-profile</id>
-			<dependencies>
-				<dependency>
-					<groupId>io.mosip.kernel</groupId>
-					<artifactId>kernel-auth-adapter</artifactId>
-					<version>${project.version}</version>
-				</dependency>
-			</dependencies>
 			<build>
 				<plugins>
 					<plugin>

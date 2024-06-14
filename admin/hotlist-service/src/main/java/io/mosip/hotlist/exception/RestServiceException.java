@@ -1,8 +1,8 @@
 package io.mosip.hotlist.exception;
 
-import java.util.Optional;
-
 import io.mosip.hotlist.constant.HotlistErrorConstants;
+
+import java.util.Optional;
 
 /**
  * Thrown when an exception occurs using Rest exchange.

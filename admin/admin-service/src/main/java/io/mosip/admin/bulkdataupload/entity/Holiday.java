@@ -3,16 +3,16 @@ package io.mosip.admin.bulkdataupload.entity;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 
 //github.com/mosip/mosip.git
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.Table;
 
 import io.mosip.admin.bulkdataupload.entity.id.HolidayID;
 import lombok.AllArgsConstructor;

@@ -17,7 +17,7 @@ import io.mosip.kernel.core.util.RetryUtil;
  * @author Manoj SP
  */
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
-@ComponentScan(basePackages = { "io.mosip.hotlist.*", "${mosip.auth.adapter.impl.basepackage}" })
+@ComponentScan(basePackages = { "io.mosip.hotlist.*", "${mosip.auth.adapter.impl.basepackage}","io.mosip.kernel.websub.api.config"})
 @Import({ RetryConfig.class, RetryUtil.class, RetryListenerImpl.class, RetryAspect.class })
 public class HotlistMainApplication {
 

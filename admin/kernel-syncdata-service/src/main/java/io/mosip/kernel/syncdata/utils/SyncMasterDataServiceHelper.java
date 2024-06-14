@@ -1,35 +1,8 @@
 package io.mosip.kernel.syncdata.utils;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-
-import io.mosip.kernel.clientcrypto.constant.ClientType;
-import io.mosip.kernel.syncdata.dto.*;
-import io.mosip.kernel.syncdata.entity.*;
-import io.mosip.kernel.syncdata.entity.id.HolidayID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataAccessException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
+import io.mosip.kernel.clientcrypto.constant.ClientType;
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoRequestDto;
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
 import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
@@ -41,56 +14,34 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.constant.AdminServiceErrorCode;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
+import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.SyncDataBaseDto;
-import io.mosip.kernel.syncdata.exception.AdminServiceException;
-import io.mosip.kernel.syncdata.exception.RequestException;
-import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
-import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
-import io.mosip.kernel.syncdata.exception.SyncServiceException;
-import io.mosip.kernel.syncdata.repository.AppAuthenticationMethodRepository;
-import io.mosip.kernel.syncdata.repository.AppDetailRepository;
-import io.mosip.kernel.syncdata.repository.AppRolePriorityRepository;
-import io.mosip.kernel.syncdata.repository.ApplicantValidDocumentRespository;
-import io.mosip.kernel.syncdata.repository.ApplicationRepository;
-import io.mosip.kernel.syncdata.repository.BiometricAttributeRepository;
-import io.mosip.kernel.syncdata.repository.BiometricTypeRepository;
-import io.mosip.kernel.syncdata.repository.BlocklistedWordsRepository;
-import io.mosip.kernel.syncdata.repository.DeviceHistoryRepository;
-import io.mosip.kernel.syncdata.repository.DeviceProviderRepository;
-import io.mosip.kernel.syncdata.repository.DeviceRepository;
-import io.mosip.kernel.syncdata.repository.DeviceServiceRepository;
-import io.mosip.kernel.syncdata.repository.DeviceSpecificationRepository;
-import io.mosip.kernel.syncdata.repository.DeviceSubTypeDPMRepository;
-import io.mosip.kernel.syncdata.repository.DeviceTypeDPMRepository;
-import io.mosip.kernel.syncdata.repository.DeviceTypeRepository;
-import io.mosip.kernel.syncdata.repository.DocumentCategoryRepository;
-import io.mosip.kernel.syncdata.repository.DocumentTypeRepository;
-import io.mosip.kernel.syncdata.repository.FoundationalTrustProviderRepository;
-import io.mosip.kernel.syncdata.repository.HolidayRepository;
-import io.mosip.kernel.syncdata.repository.IdTypeRepository;
-import io.mosip.kernel.syncdata.repository.LanguageRepository;
-import io.mosip.kernel.syncdata.repository.LocationRepository;
-import io.mosip.kernel.syncdata.repository.MachineHistoryRepository;
-import io.mosip.kernel.syncdata.repository.MachineRepository;
-import io.mosip.kernel.syncdata.repository.MachineSpecificationRepository;
-import io.mosip.kernel.syncdata.repository.MachineTypeRepository;
-import io.mosip.kernel.syncdata.repository.PermittedLocalConfigRepository;
-import io.mosip.kernel.syncdata.repository.ProcessListRepository;
-import io.mosip.kernel.syncdata.repository.ReasonCategoryRepository;
-import io.mosip.kernel.syncdata.repository.ReasonListRepository;
-import io.mosip.kernel.syncdata.repository.RegisteredDeviceRepository;
-import io.mosip.kernel.syncdata.repository.RegistrationCenterRepository;
-import io.mosip.kernel.syncdata.repository.RegistrationCenterTypeRepository;
-import io.mosip.kernel.syncdata.repository.ScreenAuthorizationRepository;
-import io.mosip.kernel.syncdata.repository.ScreenDetailRepository;
-import io.mosip.kernel.syncdata.repository.SyncJobDefRepository;
-import io.mosip.kernel.syncdata.repository.TemplateFileFormatRepository;
-import io.mosip.kernel.syncdata.repository.TemplateRepository;
-import io.mosip.kernel.syncdata.repository.TemplateTypeRepository;
-import io.mosip.kernel.syncdata.repository.TitleRepository;
-import io.mosip.kernel.syncdata.repository.UserDetailsHistoryRepository;
-import io.mosip.kernel.syncdata.repository.UserDetailsRepository;
-import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
+import io.mosip.kernel.syncdata.entity.*;
+import io.mosip.kernel.syncdata.entity.id.HolidayID;
+import io.mosip.kernel.syncdata.exception.*;
+import io.mosip.kernel.syncdata.repository.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * Sync handler masterData service helper
@@ -197,6 +148,7 @@ public class SyncMasterDataServiceHelper {
 	@Autowired
 	private ClientCryptoManagerService clientCryptoManagerService;
 	@Autowired
+	@Qualifier("selfTokenRestTemplate")
 	private RestTemplate restTemplate;
 	@Autowired
 	private ObjectMapper objectMapper;

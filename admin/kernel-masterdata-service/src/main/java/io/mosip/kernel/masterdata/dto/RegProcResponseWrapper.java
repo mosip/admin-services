@@ -3,7 +3,7 @@ package io.mosip.kernel.masterdata.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

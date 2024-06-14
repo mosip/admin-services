@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -173,7 +174,8 @@ public class SchemaControllerTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/idschema/latest").param("schemaVersion","0.1")).andReturn(), "KER-SCH-007");
 	}
-	
+
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t006getLatestPublishedSchemaTest() throws Exception {

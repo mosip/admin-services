@@ -14,7 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.validation.ConstraintViolationException;
+import jakarta.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,14 +38,14 @@ public class JobResultListener implements JobExecutionListener {
     @Override
     public void beforeJob(JobExecution jobExecution) {
         logger.info("Job started : {}", jobExecution.getJobParameters().getString("transactionId"));
-        this.jobExecutionSecurityContextListener.fillJobExecutionContext(jobExecution);
+        this.jobExecutionSecurityContextListener.restoreContext(jobExecution);
 
         if(jobExecution.getStepExecutions().isEmpty()) {
             restoreContext(jobExecution);
         }
         else {
             for(StepExecution stepExecution : jobExecution.getStepExecutions()) {
-                this.jobExecutionSecurityContextListener.restoreContext(stepExecution);
+                this.jobExecutionSecurityContextListener.restoreContext(stepExecution.getJobExecution());
             }
         }
         
@@ -82,7 +82,7 @@ public class JobResultListener implements JobExecutionListener {
             logger.error("Failed  to update job status {}", jobId, t);
         } finally {
             clearContext();
-            this.jobExecutionSecurityContextListener.removeFromJobExecutionContext(jobExecution);
+            this.jobExecutionSecurityContextListener.clearContext(jobExecution);
         }
     }
 

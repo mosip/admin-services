@@ -2,7 +2,7 @@ package io.mosip.kernel.masterdata.dto.getresponse.extn;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 @Data
 public class WorkingDaysExtnDto {

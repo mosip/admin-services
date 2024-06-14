@@ -5,7 +5,7 @@ package io.mosip.kernel.masterdata.dto.registerdevice;
 
 import java.time.LocalDateTime;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

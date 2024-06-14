@@ -4,9 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnitUtil;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceUnitUtil;
 
 import io.mosip.admin.bulkdataupload.entity.*;
 import io.mosip.admin.config.Mapper;
@@ -14,6 +14,7 @@ import io.mosip.admin.config.MapperUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobExecutionException;
+import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.adapter.AbstractMethodInvokingDelegator;
 import org.springframework.batch.item.adapter.DynamicMethodInvocationException;
@@ -66,13 +67,14 @@ public class RepositoryListItemWriter<T> implements ItemWriter<T> {
         this.repoBeanName = repoBeanName;
     }
 
-    public void write(List<? extends T> items) throws Exception {
-        if(!CollectionUtils.isEmpty(items)) {
+    @Override
+    public void write(Chunk<? extends T> items) throws Exception {
+        if(!items.isEmpty()) {
             this.doWrite(items);
         }
     }
 
-    protected void doWrite(List<? extends T> items) throws Exception {
+    protected void doWrite(Chunk<? extends T> items) throws Exception {
     	LOGGER.info("Writing to the repository with " + items.size() + " items.");
         try {
             BaseRepository baseRepository = (BaseRepository) applicationContext.getBean(this.repoBeanName);
@@ -212,4 +214,5 @@ public class RepositoryListItemWriter<T> implements ItemWriter<T> {
         invoker.setTargetMethod(targetMethod);
         return invoker;
     }
+
 }

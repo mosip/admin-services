@@ -139,8 +139,9 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	@Query("FROM Holiday where locationCode = ?1 and langCode=?2 and (isDeleted = false or isDeleted is null) and isActive = true")
 	List<Holiday> findHolidayByLocationCode(String locationCode, String langCode);
 
-	@Query(value = "select  holiday_date from master.loc_holiday WHERE location_code = ?1 and lang_code = ?2", nativeQuery = true)
-	List<LocalDate> findHolidayByLocationCode1(String locationCode, String langCode);
+	@Query(value = "SELECT holidayDate FROM Holiday WHERE locationCode = ?1 and langCode = ?2")
+	List<LocalDate> findHolidayByLocationCode1
+			(String locationCode, String langCode);
 	
 	@Query(value = "select A.* from (select distinct * from master.loc_holiday) A left join (select distinct holiday_date, lang_code from master.loc_holiday where lang_code=?1) B on A.holiday_date=B.holiday_date where B.holiday_date is null", nativeQuery = true)
 	List<Holiday> findHolidayForMissingData(String langCode);
@@ -152,14 +153,14 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	@Query(value = "FROM Holiday where holidayDate = ?1 and holidayName=?2 and(isDeleted = false or isDeleted is null) ")
 	List<Holiday> findHolidayByHolidayDateHolidayName(LocalDate holidayDate,String holidayName);
 	
-	@Query(value = "FROM Holiday where holidayName=?1 and holidayDate = ?2 and location_code = ?3 and lang_code=?4 and (isDeleted = false or isDeleted is null) ")
+	@Query(value = "FROM Holiday where holidayName=?1 and holidayDate = ?2 and locationCode = ?3 and langCode=?4 and (isDeleted = false or isDeleted is null) ")
 	Holiday findHolidayByHolidayNameHolidayDateLocationCodeLangCode(String holidayName, LocalDate holidayDate,
 			String locationCode, String langCode);
 
 	@Query(value = "select max(id) from master.loc_holiday", nativeQuery = true)
 	int findMaxHolidayId();
 
-	@Query(value = "FROM Holiday where holidayDate = ?1 and location_code = ?2 and lang_code=?3 and (isDeleted = false or isDeleted is null) ")
+	@Query(value = "FROM Holiday where holidayDate = ?1 and locationCode = ?2 and langCode=?3 and (isDeleted = false or isDeleted is null) ")
 	Optional<Holiday> findFirstByHolidayByHolidayDateLocationCodeLangCode(LocalDate holidayDate, String locationCode, String langCode);
 
 	/**
