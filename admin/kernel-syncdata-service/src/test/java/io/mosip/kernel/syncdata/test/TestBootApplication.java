@@ -1,20 +1,11 @@
 package io.mosip.kernel.syncdata.test;
 
-import java.util.concurrent.Executor;
-
-import io.mosip.kernel.websub.api.verifier.AuthenticatedContentVerifier;
-import org.mockito.Mockito;
+import io.mosip.kernel.syncdata.test.config.TestSecurityConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-
-import io.mosip.kernel.syncdata.test.config.TestSecurityConfig;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /**
  * Main class of Sync handler Application.
