@@ -6,9 +6,6 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import io.mosip.kernel.core.authmanager.authadapter.model.AuthUserDetails;
-import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
-import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.utils.*;
@@ -28,7 +25,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +56,6 @@ import io.mosip.kernel.masterdata.dto.UsersDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserExtnDto;
 import io.mosip.kernel.masterdata.dto.ZoneUserSearchDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.ZoneNameResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserCenterMappingExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -80,8 +75,6 @@ import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.service.UserDetailsHistoryService;
 import io.mosip.kernel.masterdata.service.UserDetailsService;
-import io.mosip.kernel.masterdata.service.ZoneService;
-import io.mosip.kernel.masterdata.service.ZoneUserService;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
 /**
@@ -138,9 +131,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	@Autowired
-	ZoneService zoneservice;
-
 	/** Base end point read from property file. */
 	@Value("${mosip.kernel.masterdata.auth-manager-base-uri}")
 	private String authBaseUrl;
@@ -155,9 +145,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Value("${mosip.keycloak.max-no-of-users:100}")
 	private String maxUsers;
-
-	@Autowired
-	ZoneUserService zoneUserService;
 
 	@Autowired
 	ZoneUserRepository zoneUserRepository;
@@ -204,8 +191,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	private List<UserDetailsExtnDto> getZonesForUsers(List<UserDetailsExtnDto> userDetails) {
 		List<UserDetailsExtnDto> mappedUserDetails = new ArrayList<UserDetailsExtnDto>();
-		List<ZoneUser> zoneUsers = zoneUserService
-				.getZoneUsers(userDetails.stream().map(UserDetailsExtnDto::getId).collect(Collectors.toList()));
+		List<ZoneUser> zoneUsers = zoneUserRepository.findByUserIds(userDetails.stream().map(UserDetailsExtnDto::getId).collect(Collectors.toList()));
 		for (UserDetailsExtnDto userDetail : userDetails) {
 			ZoneUser mappedZone = zoneUsers.stream().filter(us -> us.getUserId().equals(userDetail.getId())).findFirst()
 					.orElse(null);
@@ -341,15 +327,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				regCenters.forEach(i -> {
 					if (i.getLangCode().equalsIgnoreCase(langCode)) {
 						uc.setRegCenterName(i.getName());
-						uc.setZoneName(zoneservice.getZone(i.getZoneCode(), langCode).getZoneName());
+						uc.setZoneName(zoneUtils.getZoneBasedOnZoneCodeLanguage(i.getZoneCode(), langCode).getName());
 						uc.setZoneCode(i.getZoneCode());
 
 					}
 				});
 			} else {
 				uc.setRegCenterName(regCenters.get(0).getName());
-				uc.setZoneName(zoneservice.getZone(regCenters.get(0).getZoneCode(), regCenters.get(0).getLangCode())
-						.getZoneName());
+				uc.setZoneName(zoneUtils.getZoneBasedOnZoneCodeLanguage(regCenters.get(0).getZoneCode(), regCenters.get(0).getLangCode())
+						.getName());
 				uc.setZoneCode(regCenters.get(0).getZoneCode());
 			}
 
@@ -416,15 +402,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 					regCenters.forEach(i -> {
 						if (i.getLangCode().equalsIgnoreCase(langCode)) {
 							userDetailsPutDto.setRegCenterName(i.getName());
-							userDetailsPutDto.setZoneName(zoneservice.getZone(i.getZoneCode(), langCode).getZoneName());
+							userDetailsPutDto.setZoneName(zoneUtils.getZoneBasedOnZoneCodeLanguage(i.getZoneCode(), langCode).getName());
 							userDetailsPutDto.setZoneCode(i.getZoneCode());
 
 						}
 					});
 				} else {
 					userDetailsPutDto.setRegCenterName(regCenters.get(0).getName());
-					userDetailsPutDto.setZoneName(zoneservice
-							.getZone(regCenters.get(0).getZoneCode(), regCenters.get(0).getLangCode()).getZoneName());
+					userDetailsPutDto.setZoneName(zoneUtils
+							.getZoneBasedOnZoneCodeLanguage(regCenters.get(0).getZoneCode(), regCenters.get(0).getLangCode()).getName());
 					userDetailsPutDto.setZoneCode(regCenters.get(0).getZoneCode());
 				}
 
@@ -632,7 +618,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 		for (SearchFilter sf : searchDto.getFilters()) {
 			if (sf.getColumnName().equalsIgnoreCase("zoneCode")) {
-				List<ZoneUser> zu = zoneUserService.getZoneUsersBasedOnZoneCode(sf.getValue());
+				List<ZoneUser> zu = zoneUserRepository.findZoneByZoneCodeActiveAndNonDeleted(sf.getValue());
 				String userIds = new String();
 				for (int i = 0; i < zu.size(); i++) {
 					userIds = userIds + zu.get(i).getUserId() + ",";
@@ -717,8 +703,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 						String.format(USERNAME_FORMAT, z.getUserId(), username));
 
 				if (null != z.getZoneCode()) {
-					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(), searchDto.getLanguageCode());
-					dto.setZoneName(null != zn ? zn.getZoneName() : null);
+					Zone zn = zoneUtils.getZoneBasedOnZoneCodeLanguage(z.getZoneCode(), searchDto.getLanguageCode());
+					dto.setZoneName(null != zn ? zn.getName() : null);
 				} else
 					dto.setZoneName(null);
 				zoneSearch.add(dto);
@@ -840,7 +826,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 	
 	private String getZoneCode(String zoneName) {
-		List<Zone> zones = zoneservice.getZoneListBasedonZoneName(zoneName);
+		List<Zone> zones = zoneUtils.getZoneListBasedonZoneName(zoneName);
 		String zoneCodes = new String();
 		for (int i = 0; i < zones.size(); i++) {
 			zoneCodes = zoneCodes + zones.get(i).getCode() + ",";

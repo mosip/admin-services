@@ -1,6 +1,6 @@
 package io.mosip.kernel.syncdata.dto;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 import io.mosip.kernel.syncdata.constant.SyncDataConstant;
 import io.swagger.annotations.ApiModel;

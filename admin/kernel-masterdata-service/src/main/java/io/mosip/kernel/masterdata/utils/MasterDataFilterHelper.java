@@ -8,15 +8,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import jakarta.annotation.PostConstruct;
+import  jakarta.persistence.EntityManager;
+import  jakarta.persistence.PersistenceContext;
+import  jakarta.persistence.TypedQuery;
+import  jakarta.persistence.criteria.CriteriaBuilder;
+import  jakarta.persistence.criteria.CriteriaQuery;
+import  jakarta.persistence.criteria.Path;
+import  jakarta.persistence.criteria.Predicate;
+import  jakarta.persistence.criteria.Root;
 
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.response.FilterResult;
@@ -91,12 +91,13 @@ public class MasterDataFilterHelper {
 		String columnType = filterDto.getType();
 		long totalCount = 0;
 
-		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<String> criteriaQueryByString = criteriaBuilder.createQuery(String.class);
+		CriteriaBuilder criteriaQueryByStringBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<String> criteriaQueryByString = criteriaQueryByStringBuilder.createQuery(String.class);
 		Root<E> root = criteriaQueryByString.from(entity);
 		Path<Object> path = root.get(filterDto.getColumnName());
 
-		CriteriaQuery<T> criteriaQueryByType = criteriaBuilder.createQuery((Class<T>) path.getJavaType());
+		CriteriaBuilder criteriaQueryByTypeBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<T> criteriaQueryByType = criteriaQueryByTypeBuilder.createQuery((Class<T>) path.getJavaType());
 		Root<E> rootType = criteriaQueryByType.from(entity);
 
 		// check if column type is boolean then return true/false
@@ -107,18 +108,19 @@ public class MasterDataFilterHelper {
 		columnTypeValidator(rootType, columnName);
 
 		criteriaQueryByType.select(rootType.get(columnName));
-		criteriaQueryByType.where(getFilterPredicate(criteriaBuilder, rootType, filterDto, filterValueDto, zoneCodes));
-		criteriaQueryByType.orderBy(criteriaBuilder.asc(rootType.get(columnName)));
+		criteriaQueryByType.where(getFilterPredicate(criteriaQueryByTypeBuilder, rootType, filterDto, filterValueDto, zoneCodes));
+		criteriaQueryByType.orderBy(criteriaQueryByTypeBuilder.asc(rootType.get(columnName)));
 		// set true only when filter type is either unique / empty
 		criteriaQueryByType.distinct((columnType.equals(FILTER_VALUE_UNIQUE) || columnType.equals(FILTER_VALUE_EMPTY)));
 
 		if(filterValueDto.isTotalCountRequired()) {
-			CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+			CriteriaBuilder criteriaCountQueryBuilder = entityManager.getCriteriaBuilder();
+			CriteriaQuery<Long> countQuery = criteriaCountQueryBuilder.createQuery(Long.class);
 			Root<E> countRootType = countQuery.from(entity);
 			countQuery.select(columnType.equals(FILTER_VALUE_ALL) ?
-					criteriaBuilder.count(countRootType.get(columnName)) :
-					criteriaBuilder.countDistinct(countRootType.get(columnName)));
-			countQuery.where(getFilterPredicate(criteriaBuilder, countRootType, filterDto, filterValueDto, zoneCodes));
+					criteriaCountQueryBuilder.count(countRootType.get(columnName)) :
+						criteriaCountQueryBuilder.countDistinct(countRootType.get(columnName)));
+			countQuery.where(getFilterPredicate(criteriaCountQueryBuilder, countRootType, filterDto, filterValueDto, zoneCodes));
 			totalCount = entityManager.createQuery(countQuery).getSingleResult();
 		}
 

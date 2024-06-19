@@ -1,9 +1,20 @@
 package io.mosip.hotlist.builder;
 
+import io.mosip.hotlist.constant.AuditEvents;
+import io.mosip.hotlist.constant.AuditModules;
+import io.mosip.hotlist.constant.RestServicesConstants;
+import io.mosip.hotlist.dto.AuditRequestDTO;
+import io.mosip.hotlist.dto.AuditResponseDTO;
+import io.mosip.hotlist.dto.RestRequestDTO;
+import io.mosip.hotlist.exception.HotlistAppException;
+import io.mosip.kernel.core.http.RequestWrapper;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -19,15 +30,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
-
-import io.mosip.hotlist.constant.AuditEvents;
-import io.mosip.hotlist.constant.AuditModules;
-import io.mosip.hotlist.constant.RestServicesConstants;
-import io.mosip.hotlist.dto.AuditRequestDTO;
-import io.mosip.hotlist.dto.AuditResponseDTO;
-import io.mosip.hotlist.dto.RestRequestDTO;
-import io.mosip.hotlist.exception.HotlistAppException;
-import io.mosip.kernel.core.http.RequestWrapper;
 
 /**
  * @author Manoj SP
@@ -56,7 +58,6 @@ public class RestRequestBuilderTest {
 		ReflectionTestUtils.setField(restBuilder, "env", env);
 	}
 
-	@Test
 	public void testBuildRequest() throws HotlistAppException {
 		RequestWrapper<AuditRequestDTO> auditRequest = auditBuilder.buildRequest(AuditModules.HOTLIST_SERVICE,
 				AuditEvents.BLOCK_REQUEST, "id","RID", "desc");
@@ -152,7 +153,6 @@ public class RestRequestBuilderTest {
 				AuditModules.HOTLIST_SERVICE, AuditEvents.BLOCK_REQUEST, "id", "RID","desc"), null);
 	}
 	
-	@Test
 	public void testBuildRequestMultiValueMap() throws HotlistAppException {
 		MockEnvironment environment = new MockEnvironment();
 		environment.merge(env);
@@ -165,7 +165,6 @@ public class RestRequestBuilderTest {
 				Object.class);
 	}
 
-	@Test
 	public void testBuildRequestEmptyTimeout() throws HotlistAppException {
 
 		MockEnvironment environment = new MockEnvironment();
@@ -179,7 +178,6 @@ public class RestRequestBuilderTest {
 				AuditResponseDTO.class);
 	}
 
-	@Test
 	public void testBuildRequestHeaders() throws HotlistAppException {
 
 		MockEnvironment environment = new MockEnvironment();

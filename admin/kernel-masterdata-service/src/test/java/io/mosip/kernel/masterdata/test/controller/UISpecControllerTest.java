@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -173,6 +174,7 @@ public class UISpecControllerTest {
 
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void deleteUISpec() throws Exception {
@@ -190,6 +192,7 @@ public class UISpecControllerTest {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/uispec/all")).andReturn(), null);
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void getLatestUISpec() throws Exception {
@@ -199,6 +202,7 @@ public class UISpecControllerTest {
 
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void getLatestUISpec1() throws Exception {

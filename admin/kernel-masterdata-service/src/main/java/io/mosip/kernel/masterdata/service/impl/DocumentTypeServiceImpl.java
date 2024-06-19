@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import io.mosip.kernel.masterdata.dto.response.FilterResult;
 import org.slf4j.Logger;

@@ -8,9 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
-import io.mosip.kernel.masterdata.dto.ZoneUserDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResult;
-import io.mosip.kernel.masterdata.service.ZoneUserService;
 import io.mosip.kernel.masterdata.utils.LanguageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,9 +67,6 @@ public class ZoneServiceImpl implements ZoneService {
 
 	@Autowired
 	ZoneRepository zoneRepository;
-
-	@Autowired
-	private ZoneUserService zoneUserService;
 
 	@Autowired
 	private RegistrationCenterRepository registrationCenterRepo;

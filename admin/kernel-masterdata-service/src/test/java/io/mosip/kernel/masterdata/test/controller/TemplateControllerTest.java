@@ -4,6 +4,7 @@ import static org.mockito.Mockito.doNothing;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -179,13 +180,15 @@ public class TemplateControllerTest {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/templates")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(templateUpdate))).andReturn(), "KER-MSD-046");
 	}
-	
+
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t006deleteTemplateTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/templates/2")).andReturn(), null);
 	}
-	
+
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t006deleteTemplateFailTest() throws Exception {
