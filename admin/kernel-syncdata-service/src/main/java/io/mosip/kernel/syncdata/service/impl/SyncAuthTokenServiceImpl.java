@@ -84,10 +84,10 @@ public class SyncAuthTokenServiceImpl {
     @Value("${mosip.kernel.auth.sendotp.url}")
     private String sendOTPUrl;
 
-    @Value("${mosip.kernel.syncdata.auth.reqtime.maxlimit:-5}")
+    @Value("${mosip.kernel.syncdata.auth.reqtime.maxlimit:5}")
     private int maxMinutes;
 
-    @Value("${mosip.kernel.syncdata.auth.reqtime.minlimit:5}")
+    @Value("${mosip.kernel.syncdata.auth.reqtime.minlimit:-1440}")
     private int minMinutes;
 
     @Autowired
@@ -225,7 +225,7 @@ public class SyncAuthTokenServiceImpl {
     private void validateRequestTimestamp(LocalDateTime requestTimestamp) {
         Objects.requireNonNull(requestTimestamp);
         long value = requestTimestamp.until(LocalDateTime.now(ZoneOffset.UTC), ChronoUnit.MINUTES);
-        if(value <= minMinutes && value >= maxMinutes)  { return; }
+        if(value >= minMinutes && value <= maxMinutes)  { return; }
 
         logger.error("Request timestamp validation failed : {}", requestTimestamp);
         throw new RequestException(SyncAuthErrorCode.INVALID_REQUEST_TIME.getErrorCode(),
