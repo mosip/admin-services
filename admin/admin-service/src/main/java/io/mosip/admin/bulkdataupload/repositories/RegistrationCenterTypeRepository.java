@@ -1,18 +1,16 @@
 package io.mosip.admin.bulkdataupload.repositories;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
+import io.mosip.admin.bulkdataupload.entity.RegistrationCenterType;
+import io.mosip.admin.bulkdataupload.entity.id.CodeAndLanguageCodeID;
+import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.admin.bulkdataupload.entity.RegistrationCenterType;
-import io.mosip.admin.bulkdataupload.entity.id.CodeAndLanguageCodeID;
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Interface for RegistrationCenterType Repository.

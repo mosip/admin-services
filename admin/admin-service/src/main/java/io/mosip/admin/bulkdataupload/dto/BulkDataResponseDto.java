@@ -1,6 +1,5 @@
 package io.mosip.admin.bulkdataupload.dto;
 
-import java.util.UUID;
 
 import lombok.Data;
 /**

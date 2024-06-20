@@ -1,13 +1,20 @@
 package io.mosip.admin.packetstatusupdater.util;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.List;
-
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.admin.packetstatusupdater.constant.AuditErrorCode;
+import io.mosip.admin.packetstatusupdater.dto.AuditRequestDto;
+import io.mosip.admin.packetstatusupdater.dto.AuditResponseDto;
+import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
+import io.mosip.admin.packetstatusupdater.exception.ValidationException;
+import io.mosip.kernel.core.authmanager.exception.AuthNException;
+import io.mosip.kernel.core.authmanager.exception.AuthZException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.DateUtils;
 import jakarta.annotation.PostConstruct;
-
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,21 +32,11 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.mosip.admin.packetstatusupdater.constant.AuditErrorCode;
-import io.mosip.admin.packetstatusupdater.dto.AuditRequestDto;
-import io.mosip.admin.packetstatusupdater.dto.AuditResponseDto;
-import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
-import io.mosip.admin.packetstatusupdater.exception.ValidationException;
-import io.mosip.kernel.core.authmanager.exception.AuthNException;
-import io.mosip.kernel.core.authmanager.exception.AuthZException;
-import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.util.DateUtils;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * AuditUtil.
@@ -208,8 +205,12 @@ public class AuditUtil {
 		}
 	}
 	public static Object neutralizeParam(Object param) {
-		if(param instanceof String)
-			return ((String) param).replaceAll("[\n\r\t]", "_");
+		if (param == null){
+			return null;
+		}
+		if(param instanceof String) {
+			return ((String) param).replaceAll("[^a-zA-Z0-9._-]", "_");
+		}
 
 		return param;
 	}

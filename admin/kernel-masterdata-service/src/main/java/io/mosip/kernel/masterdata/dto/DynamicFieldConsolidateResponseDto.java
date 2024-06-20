@@ -1,15 +1,11 @@
 package io.mosip.kernel.masterdata.dto;
 
-import java.util.List;
-
-import org.json.JSONArray;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor

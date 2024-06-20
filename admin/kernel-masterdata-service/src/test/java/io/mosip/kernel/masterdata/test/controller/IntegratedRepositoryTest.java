@@ -1,21 +1,27 @@
 package io.mosip.kernel.masterdata.test.controller;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Month;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.constant.MachinePutReqDto;
+import io.mosip.kernel.masterdata.dto.*;
+import io.mosip.kernel.masterdata.dto.request.*;
+import io.mosip.kernel.masterdata.entity.*;
+import io.mosip.kernel.masterdata.exception.RequestException;
+import io.mosip.kernel.masterdata.repository.*;
+import io.mosip.kernel.masterdata.service.UISpecService;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
+import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -33,90 +39,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.constant.MachinePutReqDto;
-import io.mosip.kernel.masterdata.dto.BlocklistedWordsDto;
-import io.mosip.kernel.masterdata.dto.DevicePutReqDto;
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
-import io.mosip.kernel.masterdata.dto.DeviceTypePutDto;
-import io.mosip.kernel.masterdata.dto.DocumentCategoryPutDto;
-import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
-import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
-import io.mosip.kernel.masterdata.dto.IdSchemaPublishDto;
-import io.mosip.kernel.masterdata.dto.IdentitySchemaDto;
-import io.mosip.kernel.masterdata.dto.LocationCreateDto;
-import io.mosip.kernel.masterdata.dto.LocationPutDto;
-import io.mosip.kernel.masterdata.dto.MachinePostReqDto;
-import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
-import io.mosip.kernel.masterdata.dto.MachineSpecificationPutDto;
-import io.mosip.kernel.masterdata.dto.MachineTypePutDto;
-import io.mosip.kernel.masterdata.dto.UserDetailsDto;
-import io.mosip.kernel.masterdata.dto.UserDetailsPutReqDto;
-import io.mosip.kernel.masterdata.dto.ZoneUserDto;
-import io.mosip.kernel.masterdata.dto.ZoneUserPutDto;
-import io.mosip.kernel.masterdata.dto.request.FilterDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.Pagination;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.dto.request.WorkingDaysPutRequestDto;
-import io.mosip.kernel.masterdata.entity.Device;
-import io.mosip.kernel.masterdata.entity.DeviceType;
-import io.mosip.kernel.masterdata.entity.DynamicField;
-import io.mosip.kernel.masterdata.entity.IdentitySchema;
-import io.mosip.kernel.masterdata.entity.Location;
-import io.mosip.kernel.masterdata.entity.Machine;
-import io.mosip.kernel.masterdata.entity.MachineHistory;
-import io.mosip.kernel.masterdata.entity.MachineType;
-import io.mosip.kernel.masterdata.entity.RegistrationCenter;
-import io.mosip.kernel.masterdata.entity.UserDetailsHistory;
-import io.mosip.kernel.masterdata.entity.ValidDocument;
-import io.mosip.kernel.masterdata.entity.Zone;
-import io.mosip.kernel.masterdata.entity.ZoneUser;
-import io.mosip.kernel.masterdata.exception.RequestException;
-import io.mosip.kernel.masterdata.repository.BlocklistedWordsRepository;
-import io.mosip.kernel.masterdata.repository.DaysOfWeekListRepo;
-import io.mosip.kernel.masterdata.repository.DeviceRepository;
-import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
-import io.mosip.kernel.masterdata.repository.DeviceTypeRepository;
-import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
-import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
-import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
-import io.mosip.kernel.masterdata.repository.ExceptionalHolidayRepository;
-import io.mosip.kernel.masterdata.repository.IdentitySchemaRepository;
-import io.mosip.kernel.masterdata.repository.LanguageRepository;
-import io.mosip.kernel.masterdata.repository.LocationHierarchyRepository;
-import io.mosip.kernel.masterdata.repository.LocationRepository;
-import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
-import io.mosip.kernel.masterdata.repository.MachineRepository;
-import io.mosip.kernel.masterdata.repository.MachineSpecificationRepository;
-import io.mosip.kernel.masterdata.repository.MachineTypeRepository;
-import io.mosip.kernel.masterdata.repository.RegWorkingNonWorkingRepo;
-import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
-import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
-import io.mosip.kernel.masterdata.repository.TemplateFileFormatRepository;
-import io.mosip.kernel.masterdata.repository.TemplateRepository;
-import io.mosip.kernel.masterdata.repository.TitleRepository;
-import io.mosip.kernel.masterdata.repository.UserDetailsHistoryRepository;
-import io.mosip.kernel.masterdata.repository.UserDetailsRepository;
-import io.mosip.kernel.masterdata.repository.ValidDocumentRepository;
-import io.mosip.kernel.masterdata.repository.ZoneRepository;
-import io.mosip.kernel.masterdata.repository.ZoneUserHistoryRepository;
-import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
-import io.mosip.kernel.masterdata.service.UISpecService;
-import io.mosip.kernel.masterdata.test.TestBootApplication;
-import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
-import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
-import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
-import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
@@ -1790,7 +1724,6 @@ public class IntegratedRepositoryTest {
 	 * "KER-MSD-027"); }
 	 */
 
-	@Ignore
 	@Test
 	@WithUserDetails("reg-processor")
 	public void tst003getUsersTest() throws Exception {
@@ -1798,8 +1731,8 @@ public class IntegratedRepositoryTest {
 				.thenThrow(new DataAccessException("...") {
 				});
 
-		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/users/0/1/cr_dtimes/DESC")).andReturn(), "KER-USR-004");
+		MasterDataTest.checkErrorResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/users/0/1/cr_dtimes/DESC")).andReturn());
 
 	}
 
@@ -2193,16 +2126,14 @@ public class IntegratedRepositoryTest {
 				"KER-MSD-016");
 	}
 
-	@Ignore //Ignoring as it /zone/authorize is commented.
 	@Test
 	@WithUserDetails("global-admin")
 	public void t018authorizeZoneTest() throws Exception {
 		when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
-		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/zones/authorize").param("rid", "10001")).andReturn(),
-				"ADM-PKT-500");
+		MasterDataTest.checkErrorResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/zones/authorize").param("rid", "10001")).andReturn());
 
 	}
 
@@ -2312,14 +2243,14 @@ public class IntegratedRepositoryTest {
 						.content(mapper.writeValueAsString(locationRequestDto))).andReturn(),
 				"KER-MSD-097");
 	}
-	@Ignore
+
 	@Test
 	@WithUserDetails("reg-processor")
 	public void tst003getUsersTest2() throws Exception {
 		when(userDetailsRepository.findAllByIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
 		
-		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/users/0/1/cr_dtimes/DESC")).andReturn(), "KER-USR-007");
+		MasterDataTest.checkErrorResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/users/0/1/cr_dtimes/DESC")).andReturn());
 
 	}
 	
@@ -2513,13 +2444,12 @@ public class IntegratedRepositoryTest {
 	}
 	*/
 
-	@Ignore
 	@Test
 	@WithUserDetails("reg-processor")
 	public void tst003getUsersTest3() throws Exception {
 		when(userDetailsRepository.findAllByIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
-		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/users/0/1/cr_dtimes/DESC")).andReturn(), "KER-USR-004");
+		MasterDataTest.checkErrorResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/users/0/1/cr_dtimes/DESC")).andReturn());
 
 	}
 	

@@ -1,15 +1,9 @@
 package io.mosip.kernel.masterdata.service;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-
 import io.mosip.kernel.masterdata.dto.DeRegisterDevicePostDto;
-import io.mosip.kernel.masterdata.dto.DeviceDeRegisterResponse;
-import io.mosip.kernel.masterdata.dto.EncodedRegisteredDeviceResponse;
-import io.mosip.kernel.masterdata.dto.RegisteredDevicePostReqDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.RegisteredDeviceExtnDto;
 import io.mosip.kernel.masterdata.dto.registerdevice.RegisteredDevicePostDto;
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * 

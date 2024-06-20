@@ -1,37 +1,5 @@
 package io.mosip.kernel.masterdata.utils;
 
-import java.lang.reflect.Field;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import  jakarta.persistence.Column;
-import  jakarta.persistence.EntityManager;
-import  jakarta.persistence.PersistenceContext;
-import  jakarta.persistence.Query;
-import  jakarta.persistence.Table;
-import  jakarta.persistence.TypedQuery;
-import  jakarta.persistence.criteria.CriteriaBuilder;
-import  jakarta.persistence.criteria.CriteriaQuery;
-import  jakarta.persistence.criteria.Expression;
-import  jakarta.persistence.criteria.Order;
-import  jakarta.persistence.criteria.Path;
-import  jakarta.persistence.criteria.Predicate;
-import  jakarta.persistence.criteria.Root;
-
-import org.hibernate.HibernateException;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
@@ -50,7 +18,22 @@ import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
+import jakarta.persistence.*;
+import jakarta.persistence.criteria.*;
 import lombok.NonNull;
+import org.hibernate.HibernateException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.lang.reflect.Field;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Generating dynamic query for masterdata based on the search filters.
@@ -645,9 +628,8 @@ public class MasterdataSearchHelper {
 	public Page<Machine> nativeMachineQuerySearch(SearchDtoWithoutLangCode searchDto, String typeName, List<Zone> zones,
 			boolean isAssigned) {
 		List<String> zoneCodes = new ArrayList<>();
-		zones.stream().forEach(zone -> {
-			zoneCodes.add(zone.getCode());
-		});
+		zones.stream().forEach(zone ->
+			zoneCodes.add(zone.getCode()));
 		StringBuilder nativeQuery = null;
 		if (isAssigned) {
 			nativeQuery = new StringBuilder()
@@ -693,9 +675,8 @@ public class MasterdataSearchHelper {
 	public Page<Device> nativeDeviceQuerySearch(SearchDtoWithoutLangCode searchDto, String typeName, List<Zone> zones,
 			boolean isAssigned) {
 		List<String> zoneCodes = new ArrayList<>();
-		zones.stream().forEach(zone -> {
-			zoneCodes.add(zone.getCode());
-		});
+		zones.stream().forEach(zone ->
+			zoneCodes.add(zone.getCode()));
 		StringBuilder nativeQuery = null;
 		if (isAssigned) {
 			nativeQuery = new StringBuilder()

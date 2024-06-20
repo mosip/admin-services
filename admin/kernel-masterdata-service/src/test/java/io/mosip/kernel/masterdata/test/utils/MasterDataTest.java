@@ -1,22 +1,16 @@
 package io.mosip.kernel.masterdata.test.utils;
 
-import static org.junit.Assert.assertEquals;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
+import io.mosip.kernel.masterdata.dto.request.*;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.test.web.servlet.MvcResult;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
-import io.mosip.kernel.masterdata.dto.request.FilterDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.Pagination;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import static org.junit.Assert.assertEquals;
 
 public class MasterDataTest {
 
@@ -55,7 +49,7 @@ public class MasterDataTest {
 		SearchDtoWithoutLangCode sc = new SearchDtoWithoutLangCode();
 		List<io.mosip.kernel.masterdata.dto.request.SearchFilter> ls = new ArrayList<>();
 		io.mosip.kernel.masterdata.dto.request.SearchFilter sf = new io.mosip.kernel.masterdata.dto.request.SearchFilter();
-		List<SearchSort> ss = new ArrayList<SearchSort>();
+		List<SearchSort> ss = new ArrayList<>();
 		Pagination pagination = new Pagination(0, 1);
 		SearchSort s = new SearchSort(sortField, seachSort);
 		ss.add(s);
@@ -78,7 +72,7 @@ public class MasterDataTest {
 		SearchDto sc = new SearchDto();
 		List<io.mosip.kernel.masterdata.dto.request.SearchFilter> ls = new ArrayList<>();
 		io.mosip.kernel.masterdata.dto.request.SearchFilter sf = new io.mosip.kernel.masterdata.dto.request.SearchFilter();
-		List<SearchSort> ss = new ArrayList<SearchSort>();
+		List<SearchSort> ss = new ArrayList<>();
 		Pagination pagination = new Pagination(0, 1);
 		SearchSort s = new SearchSort(seachSortField, seachSortFiled);
 		ss.add(s);

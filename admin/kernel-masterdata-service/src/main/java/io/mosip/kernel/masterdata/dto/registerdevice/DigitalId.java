@@ -3,15 +3,12 @@
  */
 package io.mosip.kernel.masterdata.dto.registerdevice;
 
-import java.time.LocalDateTime;
-
-import jakarta.validation.constraints.Size;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import io.mosip.kernel.masterdata.validator.StringFormatter;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 /**
  * @author Ramadurai Pandian

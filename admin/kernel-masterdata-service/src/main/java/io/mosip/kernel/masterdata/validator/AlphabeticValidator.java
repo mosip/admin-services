@@ -1,16 +1,9 @@
 package io.mosip.kernel.masterdata.validator;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
-
-//TODO: - rename this class with a more relevant name
+import java.lang.annotation.*;
 
 @Documented
 @Constraint(validatedBy = LanguageCharacterValidator.class)

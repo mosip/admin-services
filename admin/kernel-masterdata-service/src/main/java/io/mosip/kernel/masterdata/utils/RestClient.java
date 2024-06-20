@@ -1,8 +1,6 @@
 package io.mosip.kernel.masterdata.utils;
 
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
+import io.mosip.kernel.masterdata.constant.ApiName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
@@ -15,7 +13,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-import io.mosip.kernel.masterdata.constant.ApiName;
+
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -152,8 +153,8 @@ public class RestClient {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("unchecked")
-	private HttpEntity<Object> setRequestHeader(Object requestType, MediaType mediaType) throws IOException {
-		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>();
+	private HttpEntity<Object> setRequestHeader(Object requestType, MediaType mediaType) {
+		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
 		if (mediaType != null) {
 			headers.add("Content-Type", mediaType.toString());
 		}
@@ -168,11 +169,11 @@ public class RestClient {
 					if (null!=httpHeaders && !(headers.containsKey("Content-Type") && key.equalsIgnoreCase("Content-Type")))
 						headers.add(key,httpHeaders.get(0));
 				}
-				return new HttpEntity<Object>(httpEntity.getBody(), headers);
+				return new HttpEntity<>(httpEntity.getBody(), headers);
 			} catch (ClassCastException e) {
-				return new HttpEntity<Object>(requestType, headers);
+				return new HttpEntity<>(requestType, headers);
 			}
 		} else
-			return new HttpEntity<Object>(headers);
+			return new HttpEntity<>(headers);
 	}
 }

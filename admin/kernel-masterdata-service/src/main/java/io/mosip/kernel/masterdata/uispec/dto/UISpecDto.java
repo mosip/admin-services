@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.lang.NonNull;
 
 @Data
 @ApiModel(description = "Model representing a ui spec request")

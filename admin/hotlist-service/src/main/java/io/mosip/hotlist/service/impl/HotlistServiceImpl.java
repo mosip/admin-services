@@ -128,14 +128,11 @@ public class HotlistServiceImpl implements HotlistService {
 				Hotlist hotlistedData = hotlistedOptionalData.get();
 				String status = hotlistedData.getStatus();
 				if (Objects.nonNull(isExpired(hotlistedData.getExpiryTimestamp()))) {
-					switch (status) {
-					case HotlistStatus.BLOCKED:
-						status = HotlistStatus.UNBLOCKED;
-						break;
-					case HotlistStatus.UNBLOCKED:
-						status = HotlistStatus.BLOCKED;
-						break;
-					}
+                    if (status.equals(HotlistStatus.BLOCKED)) {
+                        status = HotlistStatus.UNBLOCKED;
+                    } else if (status.equals(HotlistStatus.UNBLOCKED)) {
+                        status = HotlistStatus.BLOCKED;
+                    }
 					return buildResponse(id, idType, status, hotlistedData.getExpiryTimestamp());
 				}
 				return buildResponse(id, idType, status, null);

@@ -1,33 +1,22 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.kernel.masterdata.constant.ApiName;
+import io.mosip.kernel.masterdata.constant.PacketWorkflowErrorCode;
+import io.mosip.kernel.masterdata.dto.*;
+import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.service.PacketWorkflowActionService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.RestClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.mosip.kernel.masterdata.constant.ApiName;
-import io.mosip.kernel.masterdata.constant.PacketWorkflowErrorCode;
-import io.mosip.kernel.masterdata.dto.PacketWorkflowActionRequestDTO;
-import io.mosip.kernel.masterdata.dto.PacketWorkflowActionResponseDTO;
-import io.mosip.kernel.masterdata.dto.PacketWorkflowResumeRequestDto;
-import io.mosip.kernel.masterdata.dto.RegProcRequestWrapper;
-import io.mosip.kernel.masterdata.dto.RegProcResponseWrapper;
-import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
-import io.mosip.kernel.masterdata.dto.SearchRequestDto;
-import io.mosip.kernel.masterdata.dto.SearchRequestFilter;
-import io.mosip.kernel.masterdata.dto.SearchResponseDto;
-import io.mosip.kernel.masterdata.dto.request.SearchFilter;
-import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-import io.mosip.kernel.masterdata.service.PacketWorkflowActionService;
-import io.mosip.kernel.masterdata.utils.ExceptionUtils;
-import io.mosip.kernel.masterdata.utils.RestClient;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class PacketWorkflowActionServiceImpl implements PacketWorkflowActionService {
@@ -96,7 +85,7 @@ public class PacketWorkflowActionServiceImpl implements PacketWorkflowActionServ
 
 	private SearchRequestDto packetPauseRequestMapper(SearchDtoWithoutLangCode searchDto) {
 		SearchRequestDto searchRequestDto=new SearchRequestDto();
-		List<SearchRequestFilter> searchRequestFilters = new ArrayList<SearchRequestFilter>();
+		List<SearchRequestFilter> searchRequestFilters = new ArrayList<>();
 		if (!searchDto.getFilters().isEmpty()) {
 			for (SearchFilter sf : searchDto.getFilters()) {
 				SearchRequestFilter searchRequestFilter = new SearchRequestFilter();
@@ -115,7 +104,7 @@ public class PacketWorkflowActionServiceImpl implements PacketWorkflowActionServ
 	}
 
 	private PacketWorkflowActionRequestDTO packetResumeRequestMapper(PacketWorkflowResumeRequestDto dto) {
-		List<String> workflowIds = new ArrayList<String>();
+		List<String> workflowIds = new ArrayList<>();
 		PacketWorkflowActionRequestDTO packetWorkflowActionRequestDTO = new PacketWorkflowActionRequestDTO();
 		workflowIds.add(dto.getWorkflowId());
 		packetWorkflowActionRequestDTO.setWorkflowAction(dto.getWorkflowAction());

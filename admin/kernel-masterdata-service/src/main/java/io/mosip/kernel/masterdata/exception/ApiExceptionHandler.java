@@ -1,39 +1,11 @@
 package io.mosip.kernel.masterdata.exception;
 
-import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeParseException;
-import java.util.LinkedList;
-import java.util.List;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ConstraintViolationException;
-
-import org.apache.tomcat.util.buf.StringUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.util.ContentCachingRequestWrapper;
-
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -43,6 +15,29 @@ import io.mosip.kernel.masterdata.constant.RegistrationCenterUserMappingHistoryE
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceRegResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegisterResponseDto;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
+import org.apache.tomcat.util.buf.StringUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.util.ContentCachingRequestWrapper;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeParseException;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Rest Controller Advice for Master Data
@@ -127,7 +122,7 @@ public class ApiExceptionHandler {
 
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(
-			final HttpServletRequest httpServletRequest, final HttpMessageNotReadableException e) throws IOException {
+			final HttpServletRequest httpServletRequest, final HttpMessageNotReadableException e) {
 		if (e.getCause() instanceof InvalidFormatException) {
 			JsonMappingException jme = (JsonMappingException) e.getCause();
 			List<JsonMappingException.Reference> references = jme.getPath();
@@ -177,7 +172,7 @@ public class ApiExceptionHandler {
 	
 	@ExceptionHandler(JsonMappingException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> onJsonMappingException(
-			final HttpServletRequest httpServletRequest, final JsonMappingException e) throws IOException {
+			final HttpServletRequest httpServletRequest, final JsonMappingException e) {
 	
 			List<JsonMappingException.Reference> references = e.getPath();
 			List<String> ret = new LinkedList<>();
@@ -254,8 +249,8 @@ public class ApiExceptionHandler {
 		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
 		String requestBody = null;
-		if (httpServletRequest instanceof ContentCachingRequestWrapper) {
-			requestBody = new String(((ContentCachingRequestWrapper) httpServletRequest).getContentAsByteArray());
+		if (httpServletRequest instanceof ContentCachingRequestWrapper contentCachingRequestWrapper) {
+			requestBody = new String(contentCachingRequestWrapper.getContentAsByteArray());
 		}
 		if (EmptyCheckUtils.isNullEmpty(requestBody)) {
 			return responseWrapper;

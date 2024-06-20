@@ -2,7 +2,6 @@ package io.mosip.kernel.syncdata.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

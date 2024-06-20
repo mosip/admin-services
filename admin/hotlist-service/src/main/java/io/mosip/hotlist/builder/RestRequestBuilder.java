@@ -1,11 +1,13 @@
 package io.mosip.hotlist.builder;
 
-import static io.mosip.hotlist.constant.HotlistErrorConstants.INVALID_INPUT_PARAMETER;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
+import io.mosip.hotlist.constant.RestServicesConstants;
+import io.mosip.hotlist.dto.RestRequestDTO;
+import io.mosip.hotlist.exception.HotlistAppException;
+import io.mosip.hotlist.logger.HotlistLogger;
+import io.mosip.hotlist.security.HotlistSecurityManager;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.StringUtils;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
@@ -19,14 +21,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import io.mosip.hotlist.constant.RestServicesConstants;
-import io.mosip.hotlist.dto.RestRequestDTO;
-import io.mosip.hotlist.exception.HotlistAppException;
-import io.mosip.hotlist.logger.HotlistLogger;
-import io.mosip.hotlist.security.HotlistSecurityManager;
-import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.StringUtils;
-import lombok.NoArgsConstructor;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import static io.mosip.hotlist.constant.HotlistErrorConstants.INVALID_INPUT_PARAMETER;
 
 /**
  * A builder for creating and building RestRequest objects from properties.
@@ -157,8 +156,8 @@ public class RestRequestBuilder {
 	private void constructParams(MultiValueMap<String, String> paramMap, Map<String, String> pathVariables,
 			HttpHeaders headers, String serviceName) {
 		((AbstractEnvironment) env).getPropertySources().forEach((PropertySource<?> source) -> {
-			if (source instanceof MapPropertySource) {
-				Map<String, Object> systemProperties = ((MapPropertySource) source).getSource();
+			if (source instanceof MapPropertySource mapPropertySource) {
+				Map<String, Object> systemProperties = (mapPropertySource.getSource());
 
 				systemProperties.keySet().forEach((String property) -> {
 					if (property.startsWith(serviceName.concat(".rest.headers"))) {

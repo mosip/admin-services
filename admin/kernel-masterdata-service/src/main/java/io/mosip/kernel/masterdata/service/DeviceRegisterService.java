@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.DeRegisterDeviceRequestDto;
-import io.mosip.kernel.masterdata.dto.DeviceRegisterDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegisterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
 
