@@ -13,10 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.support.CronSequenceGenerator;
+import org.springframework.scheduling.support.CronExpression;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -30,9 +32,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
-
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 
 @Component
 @Order(value = Ordered.HIGHEST_PRECEDENCE)
@@ -81,15 +80,14 @@ public class SyncJobHelperService {
     }
 
     public LocalDateTime getDeltaSyncCurrentTimestamp() {
-        CronSequenceGenerator cronSequenceGenerator = new CronSequenceGenerator(deltaCacheEvictCron, TimeZone.getTimeZone(ZoneOffset.UTC));
-        Date nextTrigger1 = cronSequenceGenerator.next(new Date());
-        Date nextTrigger2 = cronSequenceGenerator.next(nextTrigger1);
+        CronExpression cronExpression = CronExpression.parse(deltaCacheEvictCron);
+        LocalDateTime nextTrigger1 = cronExpression.next(LocalDateTime.now());
+        LocalDateTime nextTrigger2 = cronExpression.next(nextTrigger1);
 
-        long minutes = ChronoUnit.MINUTES.between(nextTrigger1.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime(),
-                nextTrigger2.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime());
+        long minutes = ChronoUnit.MINUTES.between(nextTrigger1.toInstant(ZoneOffset.UTC),
+                nextTrigger2.toInstant(ZoneOffset.UTC));
 
-        LocalDateTime previousTrigger = nextTrigger1.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime().minus(minutes,
-                ChronoUnit.MINUTES);
+        LocalDateTime previousTrigger = nextTrigger1.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime();
 
         logger.debug("Identified previous trigger : {}", previousTrigger);
         return previousTrigger;

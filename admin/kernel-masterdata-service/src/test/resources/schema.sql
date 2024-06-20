@@ -221,9 +221,7 @@ CREATE MEMORY TABLE if not exists master.valid_document(
 	upd_by character varying(256),
 	upd_dtimes timestamp,
 	is_deleted boolean,
-	del_dtimes timestamp,
-
-
+	del_dtimes timestamp
 );
 
 CREATE MEMORY TABLE if not exists master.dynamic_field(
@@ -258,8 +256,6 @@ CREATE MEMORY TABLE if not exists master.loc_holiday(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp
-
-
 );
 
 

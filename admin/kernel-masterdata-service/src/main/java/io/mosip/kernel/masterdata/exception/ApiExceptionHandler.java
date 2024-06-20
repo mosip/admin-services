@@ -9,8 +9,8 @@ import java.time.format.DateTimeParseException;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolationException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 
 import org.apache.tomcat.util.buf.StringUtils;
 import org.json.JSONException;

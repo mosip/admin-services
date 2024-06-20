@@ -136,7 +136,6 @@ public class PutWithPathParamsAndBody extends AdminTestUtil implements ITest {
 
 	}
 
-
 	/**
 	 * The method ser current test name to result
 	 * 

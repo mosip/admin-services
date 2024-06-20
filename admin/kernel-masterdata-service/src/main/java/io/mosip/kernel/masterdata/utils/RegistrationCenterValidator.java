@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import io.mosip.kernel.masterdata.entity.*;
 import io.mosip.kernel.masterdata.repository.*;

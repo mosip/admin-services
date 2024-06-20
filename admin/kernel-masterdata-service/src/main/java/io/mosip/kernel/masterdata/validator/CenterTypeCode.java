@@ -6,8 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
 /**
  * @author GovindarajV
@@ -39,7 +39,7 @@ public @interface CenterTypeCode {
 	/*
 	 * code length message
 	 */
-	String SIZE_MSG = "{javax.validation.constraints.Size.message}";
+	String SIZE_MSG = "{jakarta.validation.constraints.Size.message}";
 	
 	/*
 	 * Registration center type code having below rules of message
