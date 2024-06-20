@@ -156,7 +156,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t001syncClientSettingsTest4() throws Exception {
+	public void t001syncClientSettingsTest4() {
 		String str3="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
 
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
@@ -181,7 +181,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t001syncClientSettingsTest3() throws Exception {
+	public void t001syncClientSettingsTest3() {
 		String str="{\r\n" +
 				"  \"id\": \"string\",\r\n" +
 				"  \"version\": \"string\",\r\n" +
@@ -204,12 +204,12 @@ public class SyncDataControllerTest {
 
 		String str3="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
 
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(String.format("https://dev.mosip.net/v1/masterdata/locationHierarchyLevels"));
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString("https://dev.mosip.net/v1/masterdata/locationHierarchyLevels");
 
 		mockRestServiceServer.expect(MockRestRequestMatchers.requestTo(builder.build().toString()))
 		.andRespond(withSuccess().body(str).contentType(MediaType.APPLICATION_JSON));
 
-		UriComponentsBuilder builder1 = UriComponentsBuilder.fromUriString(String.format("http://localhost:8086/v1/masterdata/dynamicfields?pageNumber=0"));
+		UriComponentsBuilder builder1 = UriComponentsBuilder.fromUriString("http://localhost:8086/v1/masterdata/dynamicfields?pageNumber=0");
 
 		mockRestServiceServer.expect(MockRestRequestMatchers.requestTo(builder1.build().toString()))
 		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
@@ -222,7 +222,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t001syncClientSettingsTest2() throws Exception {
+	public void t001syncClientSettingsTest2() {
 		String str="{\r\n" +
 				"  \"id\": \"string\",\r\n" +
 				"  \"version\": \"string\",\r\n" +
@@ -299,12 +299,12 @@ public class SyncDataControllerTest {
 
 		String str3="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
 
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(String.format("https://dev.mosip.net/v1/masterdata/locationHierarchyLevels"));
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString("https://dev.mosip.net/v1/masterdata/locationHierarchyLevels");
 
 		mockRestServiceServer.expect(MockRestRequestMatchers.requestTo(builder.build().toString()))
 		.andRespond(withSuccess().body(str).contentType(MediaType.APPLICATION_JSON));
 
-		UriComponentsBuilder builder1 = UriComponentsBuilder.fromUriString(String.format("http://localhost:8086/v1/masterdata/dynamicfields?pageNumber=0"));
+		UriComponentsBuilder builder1 = UriComponentsBuilder.fromUriString("http://localhost:8086/v1/masterdata/dynamicfields?pageNumber=0");
 
 		mockRestServiceServer.expect(MockRestRequestMatchers.requestTo(builder1.build().toString()))
 		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
@@ -428,7 +428,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t007getLatestPublishedIdSchemaTest1() throws Exception {
+	public void t007getLatestPublishedIdSchemaTest1() {
 		String res="{\r\n" +
 				"  \"id\": \"string\",\r\n" +
 				"  \"version\": \"string\",\r\n" +
@@ -457,7 +457,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void getLatestPublishedIdSchemaTestWithClientVersion() throws Exception {
+	public void getLatestPublishedIdSchemaTestWithClientVersion() {
 		String res="{\r\n" +
 				"  \"id\": \"string\",\r\n" +
 				"  \"version\": \"string\",\r\n" +
@@ -486,7 +486,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t008getCertificateTest() throws Exception {
+	public void t008getCertificateTest() {
 
 		String res="{\r\n" +
 				"  \"id\": \"string\",\r\n" +
@@ -597,7 +597,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t011getMachineConfigDetailsTest() throws Exception {
+	public void t011getMachineConfigDetailsTest() {
 		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"responseData\":\"signed\"},\"errors\":[]}";
 
 			mockRestServiceServer.expect(requestTo("/localhost/kernel-syncdata-service/test/0.9.0/registration-test.properties"))
@@ -609,7 +609,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t011getMachineConfigDetailsTest1() throws Exception {
+	public void t011getMachineConfigDetailsTest1() {
 		String str1 = "{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"responseData\":\"signed\"},\"errors\":[]}";
 
 		UriComponentsBuilder uribuilder1 = UriComponentsBuilder
@@ -660,7 +660,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t014getUserDetailsBasedOnKeyIndexTest() throws Exception {
+	public void t014getUserDetailsBasedOnKeyIndexTest() {
 		String res="{\r\n" +
 				"  \"id\": \"string\",\r\n" +
 				"  \"version\": \"string\",\r\n" +
@@ -705,7 +705,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t015getCACertificatesTest() throws Exception {
+	public void t015getCACertificatesTest() {
 		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
 
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
@@ -738,7 +738,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t016getCACertificatesTest2() throws Exception {
+	public void t016getCACertificatesTest2() {
 		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
 
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
@@ -749,7 +749,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t017downloadScriptTest() throws Exception {
+	public void t017downloadScriptTest() {
 		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"responseData\":\"signed\"},\"errors\":[]}";
 
 		mockRestServiceServer.expect(requestTo("/localhost/kernel-syncdata-service/test/0.9.0/abcd"))
@@ -804,7 +804,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t023syncClientSettingsV2Test() throws Exception {
+	public void t023syncClientSettingsV2Test() {
 		String str1="{\r\n" +
 				"  \"id\": \"string\",\r\n" +
 				"  \"version\": \"string\",\r\n" +
@@ -879,7 +879,7 @@ public class SyncDataControllerTest {
 				"  ]\r\n" +
 				"}";
 
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(String.format("https://dev.mosip.net/v1/masterdata/locationHierarchyLevels"));
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString("https://dev.mosip.net/v1/masterdata/locationHierarchyLevels");
 
 		mockRestServiceServer.expect(MockRestRequestMatchers.requestTo(builder.build().toString()))
 		.andRespond(withSuccess().body(str1).contentType(MediaType.APPLICATION_JSON));
@@ -905,7 +905,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t024getV2Userdetails() throws Exception {
+	public void t024getV2Userdetails() {
 		String signResponse = "{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
 
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
@@ -963,9 +963,9 @@ public class SyncDataControllerTest {
 			ResponseWrapper<PageDto<DynamicFieldDto>> resp = objectMapper.readValue(str1,
 					new TypeReference<ResponseWrapper<PageDto<DynamicFieldDto>>>() {});
 			PageDto<DynamicFieldDto> dynamicFields = resp.getResponse();
-			Assert.assertTrue(dynamicFields.getData().size() == 1);
-			Assert.assertTrue(dynamicFields.getData().get(0).getFieldVal().size() == 1);
-			Assert.assertTrue(dynamicFields.getData().get(0).getFieldVal().get(0).isActive());
+            Assert.assertEquals(1, dynamicFields.getData().size());
+            Assert.assertEquals(1, dynamicFields.getData().getFirst().getFieldVal().size());
+            Assert.assertEquals(true, dynamicFields.getData().getFirst().getFieldVal().getFirst().isActive());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
