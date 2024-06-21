@@ -19,7 +19,7 @@ CreateTemplateFileFormat:
    Masterdata_CreateTemplateFileFormat_InputParameter_Description_AboveMaxLen256:
       endPoint: /v1/masterdata/templatefileformats
       role: admin
-      templateFields: ["langCode"]
+      templateFields: ["description"]
       restMethod: post
       inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
       outputTemplate: masterdata/error
@@ -41,7 +41,7 @@ CreateTemplateFileFormat:
    Masterdata_CreateTemplateFileFormat_InputParameter_Description_Missing:
       endPoint: /v1/masterdata/templatefileformats
       role: admin
-      templateFields: ["langCode"]
+      templateFields: ["description"]
       restMethod: post
       inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
       outputTemplate: masterdata/error
@@ -63,7 +63,7 @@ CreateTemplateFileFormat:
    Masterdata_CreateTemplateFileFormat_InputParameter_Description_Empty:
       endPoint: /v1/masterdata/templatefileformats
       role: admin
-      templateFields: ["langCode"]
+      templateFields: ["description"]
       restMethod: post
       inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
       outputTemplate: masterdata/error
@@ -85,7 +85,7 @@ CreateTemplateFileFormat:
    Masterdata_CreateTemplateFileFormat_InputParameter_Code_Missing:
       endPoint: /v1/masterdata/templatefileformats
       role: admin
-      templateFields: ["langCode"]
+      templateFields: ["description"]
       restMethod: post
       inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
       outputTemplate: masterdata/error
@@ -107,7 +107,7 @@ CreateTemplateFileFormat:
    Masterdata_CreateTemplateFileFormat_InputParameter_Code_Empty:
       endPoint: /v1/masterdata/templatefileformats
       role: admin
-      templateFields: ["langCode"]
+      templateFields: ["description"]
       restMethod: post
       inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
       outputTemplate: masterdata/error
@@ -129,7 +129,7 @@ CreateTemplateFileFormat:
    Masterdata_CreateTemplateFileFormat_InputParameter_Code_AboveMaxLen36:
       endPoint: /v1/masterdata/templatefileformats
       role: admin
-      templateFields: ["langCode"]
+      templateFields: ["description"]
       restMethod: post
       inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
       outputTemplate: masterdata/error
@@ -173,7 +173,7 @@ CreateTemplateFileFormat:
    Masterdata_CreateTemplateFileFormat_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/templatefileformats
       role: admin
-      templateFields: ["langCode"]
+      templateFields: ["description"]
       restMethod: post
       inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
       outputTemplate: masterdata/error
