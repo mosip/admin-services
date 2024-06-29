@@ -117,19 +117,19 @@ public class HotlistExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object errorMessage,
 			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 		mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE, HOTLIST_EXCEPTION_HANDLER,
-				"handleExceptionInternal - \n" + (ex instanceof MethodArgumentNotValidException
-						? ((MethodArgumentNotValidException) ex).getBindingResult().getAllErrors()
+				"handleExceptionInternal - \n" + (ex instanceof MethodArgumentNotValidException methodArgumentNotValidException
+						? (methodArgumentNotValidException.getBindingResult().getAllErrors())
 						: ExceptionUtils.getStackTrace(ex)));
-		if (ex instanceof MethodArgumentNotValidException) {
+		if (ex instanceof MethodArgumentNotValidException methodArgumentNotValidException) {
 			ResponseWrapper<HotlistRequestResponseDTO> response = new ResponseWrapper<>();
-			response.setErrors(((MethodArgumentNotValidException) ex).getBindingResult().getAllErrors().stream()
+			response.setErrors((methodArgumentNotValidException.getBindingResult().getAllErrors().stream()
 					.map(objectError -> new ServiceError(objectError.getCode(), objectError.getDefaultMessage()))
-					.collect(Collectors.toList()));
+					.collect(Collectors.toList())));
 			return new ResponseEntity<>(response, HttpStatus.OK);
-		} else if (ex instanceof HttpMessageNotReadableException && Objects.nonNull(ex.getCause())
+		} else if (ex instanceof HttpMessageNotReadableException httpMessageNotReadableException && Objects.nonNull(ex.getCause())
 				&& org.apache.commons.lang3.exception.ExceptionUtils.getRootCause(ex).getClass()
 						.isAssignableFrom(DateTimeParseException.class)) {
-			String expMsg=((HttpMessageNotReadableException) ex).getMessage() ;
+			String expMsg=(httpMessageNotReadableException.getMessage());
 			if (null!=expMsg && expMsg.contains(EXPIRY_TIMESTAMP)) {
 				return new ResponseEntity<>(
 						buildExceptionResponse(INVALID_INPUT_PARAMETER.getErrorCode(),

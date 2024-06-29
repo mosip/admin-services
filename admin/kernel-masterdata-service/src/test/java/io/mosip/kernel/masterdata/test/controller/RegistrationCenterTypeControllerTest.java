@@ -1,13 +1,18 @@
 package io.mosip.kernel.masterdata.test.controller;
 
-import static org.mockito.Mockito.doNothing;
-
-import java.util.Arrays;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
+import io.mosip.kernel.masterdata.constant.RegistrationCenterTypeErrorCode;
+import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
+import io.mosip.kernel.masterdata.dto.request.*;
+import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
+import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.mockito.Mockito;
@@ -16,24 +21,10 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.util.Arrays;
+import java.util.List;
 
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
-import io.mosip.kernel.masterdata.constant.RegistrationCenterTypeErrorCode;
-import io.mosip.kernel.masterdata.constant.RequestErrorCode;
-import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
-import io.mosip.kernel.masterdata.dto.request.FilterDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.Pagination;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.request.SearchFilter;
-import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
-import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
-import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
+import static org.mockito.Mockito.doNothing;
 
 /**
  * @author GOVINDARAJ VELU
@@ -145,7 +136,6 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 				RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorCode());
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t2deleteRegistrationCenterTypeFailureNotFound() throws Exception {
@@ -158,7 +148,6 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 				RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorCode());
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t2deleteRegistrationCenterTypeDependency() throws Exception {
@@ -373,7 +362,6 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 				MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorCode());
 	}
 	
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t7updateRegistrationCenterTypeStatusFailureNotFound() throws Exception {

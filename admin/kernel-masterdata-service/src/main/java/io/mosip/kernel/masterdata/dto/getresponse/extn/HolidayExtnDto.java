@@ -1,11 +1,10 @@
 package io.mosip.kernel.masterdata.dto.getresponse.extn;
 
-import java.time.LocalDate;
-
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.time.LocalDate;
 
 /**
  * DTO class for Holiday Data

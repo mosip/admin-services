@@ -1,19 +1,13 @@
 package io.mosip.kernel.masterdata.config;
 
-import java.io.BufferedReader;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.mosip.kernel.masterdata.constant.MasterDataConstant;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
 
 @Component
 public class AuditInterceptor implements HandlerInterceptor {

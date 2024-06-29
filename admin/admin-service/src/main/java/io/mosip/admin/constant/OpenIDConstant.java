@@ -10,7 +10,7 @@ public class OpenIDConstant {
 	 * Private constructor
 	 */
 	private OpenIDConstant() {
-		// TODO Auto-generated constructor stub
+
 	}
 
 	public static final String REDIRECT_URI = "redirect_uri";

@@ -1,9 +1,5 @@
 package io.mosip.admin.bulkdataupload.repositories;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.admin.bulkdataupload.entity.RegistrationCenterUserMachineHistory;

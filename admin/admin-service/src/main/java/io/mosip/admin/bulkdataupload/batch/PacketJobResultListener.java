@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class PacketJobResultListener implements JobExecutionListener {
-	 private static final Logger logger = LoggerFactory.getLogger(JobResultListener.class);
-	    private static String STATUS_MESSAGE = " <br/> READ: %d, STATUS: %s, MESSAGE: %s";
+	 private static final Logger logger = LoggerFactory.getLogger(PacketJobResultListener.class);
+	    private static String status_message  = " <br/> READ: %d, STATUS: %s, MESSAGE: %s";
 	    private AuditUtil auditUtil;
 	    private JobExecutionSecurityContextListener jobExecutionSecurityContextListener;
 	    private BulkUploadTranscationRepository bulkUploadTranscationRepository;
@@ -53,22 +53,21 @@ public class PacketJobResultListener implements JobExecutionListener {
 	        String jobId = jobExecution.getJobParameters().getString("transactionId");
 	        logger.info("Job completed : {}", jobId);
 	        try {
-	            List<String> failures = new ArrayList<String>();
-	            jobExecution.getStepExecutions().forEach(step -> {
+	            List<String> failures = new ArrayList<>();
+	            jobExecution.getStepExecutions().forEach(step ->
 	                step.getFailureExceptions().forEach(failure -> {
-	                    if (failure instanceof FlatFileParseException) {
-	                        failures.add("Line --> " + ((FlatFileParseException) failure).getLineNumber() +
-	                                " --> Datatype mismatch / Failed to write into object");
+	                    if (failure instanceof FlatFileParseException flatFileParseException) {
+	                        failures.add("Line --> " + (flatFileParseException.getLineNumber() +
+	                                " --> Datatype mismatch / Failed to write into object"));
 	                    } else
 	                        failures.add(failure.getCause() != null ? failure.getCause().getMessage() : failure.getMessage());
-	                });
-	            });
+	                }));
 
 	            Optional<Long> commitResult = jobExecution.getStepExecutions().stream().map(StepExecution::getCommitCount).findFirst();
 	            Optional<Long> readResult = jobExecution.getStepExecutions().stream().map(StepExecution::getCommitCount).findFirst();
 	            long readCount = readResult.isPresent() ? readResult.get() : 0;
 	            long commitCount = commitResult.isPresent() ? commitResult.get() : 0;
-	            String message = String.format(STATUS_MESSAGE, commitCount,
+	            String message = String.format(status_message , commitCount,
 	                    jobExecution.getStatus().toString(), failures.isEmpty() ? "0 Errors" : failures.toString());
 	            auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_COMPLETED,
 	                            jobId + " --> " + message), jobExecution.getJobParameters().getString("username"));

@@ -86,7 +86,7 @@ public class PacketUploadService {
     private String optionalLanguages;
 
     @Value("${MACHINE_GET_API}")
-    private String MACHINE_GET_API;
+    private String machine_get_api;
 
     private String language;
 
@@ -110,7 +110,7 @@ public class PacketUploadService {
             int pageNo = 0;
 
             do {
-                UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(MACHINE_GET_API).pathSegment(centerId);
+                UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(machine_get_api).pathSegment(centerId);
                 builder.queryParam("pageNumber", pageNo++);
 
                 ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().toUri(), String.class);
@@ -155,7 +155,7 @@ public class PacketUploadService {
 
         if(responseEntity != null && responseEntity.hasBody()) {
             JSONObject response = new JSONObject(responseEntity.getBody());
-            if(response.get("response") != null && !(response.get("response") == JSONObject.NULL)) {
+            if(response.get("response") != null && (response.get("response") != JSONObject.NULL)) {
                 logger.info("{} RID Sync is successful with response : {}", fileName, response.get("response"));
                 responseEntity = uploadPacket(fileName, file);
                 if(responseEntity != null && responseEntity.hasBody()) {
@@ -180,11 +180,11 @@ public class PacketUploadService {
 
 
     private PacketUploadStatus getUploadStatus(JSONObject response) throws JSONException {
-        if(!(response.get("errors") == JSONObject.NULL)) {
+        if((response.get("errors") != JSONObject.NULL)) {
             return new PacketUploadStatus(response.getJSONArray("errors").get(0).toString(), true);
         }
 
-        if(!(response.get("response") == JSONObject.NULL))
+        if((response.get("response") != JSONObject.NULL))
             return new PacketUploadStatus(response.get("response").toString(), false);
 
         return new PacketUploadStatus("UNKNOWN ERROR : Empty Response", true);
@@ -243,7 +243,7 @@ public class PacketUploadService {
                 httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
                 httpHeaders.add("timestamp", DateUtils.formatToISOString(LocalDateTime.now()));
                 httpHeaders.add("Center-Machine-RefId", refId);
-                HttpEntity<String> httpEntity = new HttpEntity<String>(javaObjectToJsonString(encodedData), httpHeaders);
+                HttpEntity<String> httpEntity = new HttpEntity<>(javaObjectToJsonString(encodedData), httpHeaders);
                 return restTemplate.exchange(uri, HttpMethod.POST, httpEntity, String.class);
 
             } catch (Throwable t) {

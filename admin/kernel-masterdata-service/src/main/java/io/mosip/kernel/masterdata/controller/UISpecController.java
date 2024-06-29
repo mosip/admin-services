@@ -1,21 +1,5 @@
 package io.mosip.kernel.masterdata.controller;
 
-import java.util.List;
-
-import jakarta.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -28,6 +12,12 @@ import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 
@@ -49,7 +39,7 @@ public class UISpecController {
 	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PRE_REGISTRATION_ADMIN')")
 	@ApiOperation(value = "Service to define ui specification")
 	public ResponseWrapper<UISpecResponseDto> defineUISpec(@Valid @RequestBody RequestWrapper<UISpecDto> request) {
-		ResponseWrapper<UISpecResponseDto> response = new ResponseWrapper<UISpecResponseDto>();
+		ResponseWrapper<UISpecResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(uiSpecService.defineUISpec(request.getRequest()));
 		return response;
 	}
@@ -62,7 +52,7 @@ public class UISpecController {
 	public ResponseWrapper<UISpecResponseDto> updateUISpec(
 			@RequestParam(name = "id", required = true) @ApiParam(value = "uispec id") String id,
 			@Valid @RequestBody RequestWrapper<UISpecDto> request) {
-		ResponseWrapper<UISpecResponseDto> response = new ResponseWrapper<UISpecResponseDto>();
+		ResponseWrapper<UISpecResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(uiSpecService.updateUISpec(id, request.getRequest()));
 		return response;
 	}
@@ -73,7 +63,7 @@ public class UISpecController {
 	//@PreAuthorize("hasAnyRole('GLOBAL_ADMIN','ZONAL_ADMIN','PRE_REGISTRATION_ADMIN')")
 	@ApiOperation(value = "Service to publish draftted ui specification")
 	public ResponseWrapper<String> publishUISpec(@Valid @RequestBody RequestWrapper<UISpecPublishDto> request) {
-		ResponseWrapper<String> response = new ResponseWrapper<String>();
+		ResponseWrapper<String> response = new ResponseWrapper<>();
 		response.setResponse(uiSpecService.publishUISpec(request.getRequest()));
 		return response;
 	}
@@ -85,7 +75,7 @@ public class UISpecController {
 	@ApiOperation(value = "Service to delete draftted ui specification")
 	public ResponseWrapper<String> deleteUISpec(
 			@RequestParam(name = "id", required = true) @ApiParam(value = "uispec id") String id) {
-		ResponseWrapper<String> response = new ResponseWrapper<String>();
+		ResponseWrapper<String> response = new ResponseWrapper<>();
 		response.setResponse(uiSpecService.deleteUISpec(id));
 		return response;
 	}
@@ -113,7 +103,7 @@ public class UISpecController {
 			@RequestParam(name = "version", defaultValue = "0", required = false) @ApiParam(value = "version", defaultValue = "0") double version,
 			@RequestParam(name = "type", required = false) @ApiParam(value = "typeof the ui spec. Supported comma separted values") String type,
 			@RequestParam(name = "identitySchemaVersion", defaultValue = "0", required = false) @ApiParam(value = "version", defaultValue = "0") double identitySchemaVersion) {
-		ResponseWrapper<List<UISpecResponseDto>> response = new ResponseWrapper<List<UISpecResponseDto>>();
+		ResponseWrapper<List<UISpecResponseDto>> response = new ResponseWrapper<>();
 		response.setResponse(uiSpecService.getLatestPublishedUISpec(domain, version, type, identitySchemaVersion));
 		return response;
 	}

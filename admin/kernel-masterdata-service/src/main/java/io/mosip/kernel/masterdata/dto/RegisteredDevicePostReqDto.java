@@ -1,24 +1,18 @@
 package io.mosip.kernel.masterdata.dto;
 
-import java.time.LocalDateTime;
-
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.Range;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import io.mosip.kernel.masterdata.validator.StringFormatter;
 import io.mosip.kernel.masterdata.validator.registereddevice.ValidCertificateLevel;
 import io.mosip.kernel.masterdata.validator.registereddevice.ValidFoundational;
 import io.mosip.kernel.masterdata.validator.registereddevice.ValidPurpose;
 import io.mosip.kernel.masterdata.validator.registereddevice.ValidStatusCode;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 @Data
 //@ApiModel(value = "Device", description = "Device Detail resource")

@@ -33,7 +33,6 @@ import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -414,7 +413,7 @@ public class SyncDataServiceTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void getPublicErrorList() throws IOException {
+	public void getPublicErrorList() {
 		uriParams = new HashMap<>();
 		uriParams.put("applicationId", "REGISTRATION");
 
@@ -432,7 +431,7 @@ public class SyncDataServiceTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void getPublicServiceException() throws IOException {
+	public void getPublicServiceException() {
 		uriParams = new HashMap<>();
 		uriParams.put("applicationId", "REGISTRATION");
 

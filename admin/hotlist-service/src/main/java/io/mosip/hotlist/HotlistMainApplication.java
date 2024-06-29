@@ -27,7 +27,7 @@ public class HotlistMainApplication {
 	 * @param args the arguments
 	 * @throws Exception the exception
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		SpringApplication.run(HotlistMainApplication.class, args);
 	}
 

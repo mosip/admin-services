@@ -81,8 +81,18 @@ public class SyncJobHelperService {
 
     public LocalDateTime getDeltaSyncCurrentTimestamp() {
         CronExpression cronExpression = CronExpression.parse(deltaCacheEvictCron);
+
         LocalDateTime nextTrigger1 = cronExpression.next(LocalDateTime.now());
+        if (nextTrigger1 == null) {
+            logger.error("Cron expression might be invalid or has no upcoming triggers.");
+            return null;
+        }
+
         LocalDateTime nextTrigger2 = cronExpression.next(nextTrigger1);
+        if (nextTrigger2 == null) {
+            logger.error("No upcoming triggers after {}", nextTrigger1);
+            return null;
+        }
 
         long minutes = ChronoUnit.MINUTES.between(nextTrigger1.toInstant(ZoneOffset.UTC),
                 nextTrigger2.toInstant(ZoneOffset.UTC));
@@ -177,10 +187,10 @@ public class SyncJobHelperService {
     }
 
     private void handleDynamicFields(List entities) {
-        Map<String, List<DynamicFieldDto>> data = new HashMap<String, List<DynamicFieldDto>>();
+        Map<String, List<DynamicFieldDto>> data = new HashMap<>();
         entities.forEach(dto -> {
             if(!data.containsKey(((DynamicFieldDto)dto).getName())) {
-                List<DynamicFieldDto> langBasedData = new ArrayList<DynamicFieldDto>();
+                List<DynamicFieldDto> langBasedData = new ArrayList<>();
                 langBasedData.add(((DynamicFieldDto)dto));
                 data.put(((DynamicFieldDto)dto).getName(), langBasedData);
             }

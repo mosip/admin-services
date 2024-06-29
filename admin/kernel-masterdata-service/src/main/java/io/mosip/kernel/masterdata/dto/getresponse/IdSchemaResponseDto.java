@@ -1,10 +1,9 @@
 package io.mosip.kernel.masterdata.dto.getresponse;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Map;
-
-import lombok.Data;
 
 @Data
 public class IdSchemaResponseDto implements Serializable {

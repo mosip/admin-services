@@ -1,13 +1,8 @@
 package io.mosip.kernel.masterdata.dto.getresponse;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import io.mosip.kernel.masterdata.dto.DynamicFieldValueDto;
 import lombok.Data;
-import org.json.JSONObject;
+import java.time.LocalDateTime;
 
 @Data
 public class DynamicFieldResponseDto {

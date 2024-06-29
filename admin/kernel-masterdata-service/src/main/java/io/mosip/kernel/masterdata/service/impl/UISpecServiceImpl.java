@@ -1,32 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import jakarta.transaction.Transactional;
-
 import com.fasterxml.jackson.databind.JsonNode;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.UISpecErrorCode;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
@@ -43,6 +18,27 @@ import io.mosip.kernel.masterdata.uispec.dto.UISpecPublishDto;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * 
@@ -121,9 +117,8 @@ public class UISpecServiceImpl implements UISpecService {
 					UISpecErrorCode.UI_SPEC_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (pagedResult != null && pagedResult.getContent() != null) {
-			pagedResult.getContent().forEach(entity -> {
-				response.add(prepareResponse(entity));
-			});
+			pagedResult.getContent().forEach(entity ->
+				response.add(prepareResponse(entity)));
 			results.setPageNo(pagedResult.getNumber());
 			results.setTotalPages(pagedResult.getTotalPages());
 			results.setTotalItems(pagedResult.getTotalElements());
@@ -200,7 +195,7 @@ public class UISpecServiceImpl implements UISpecService {
 	 */
 	private UISpecResponseDto prepareResponse(UISpec entity) {
 		UISpecResponseDto response = new UISpecResponseDto();
-		List<UISpecKeyValuePair> spec = new ArrayList<UISpecKeyValuePair>();
+		List<UISpecKeyValuePair> spec = new ArrayList<>();
 		response.setId(entity.getId());
 		response.setVersion(entity.getVersion());
 		response.setDomain(entity.getDomain());
@@ -315,7 +310,7 @@ public class UISpecServiceImpl implements UISpecService {
 	 */
 	@Override
 	public List<UISpecResponseDto> getUISpec(double version, String domain, String type) {
-		List<UISpec> specsFromDb = new ArrayList<UISpec>();
+		List<UISpec> specsFromDb = new ArrayList<>();
 		List<String> types = validateAndGetTypes(type);
 		specsFromDb = uiSpecRepository.findPublishedUISpec(version, domain, types);
 		if (specsFromDb.isEmpty()) {
@@ -347,7 +342,7 @@ public class UISpecServiceImpl implements UISpecService {
 	 */
 	private List<String> validateAndGetTypes(String typeInString) {
 		String[] arrayOfTypes = typeInString.split(",");
-		List<String> types = new ArrayList<String>();
+		List<String> types = new ArrayList<>();
 		for (String type : arrayOfTypes) {
 			types.add(type);
 		}

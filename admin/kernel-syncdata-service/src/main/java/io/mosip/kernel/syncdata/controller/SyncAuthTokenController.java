@@ -26,7 +26,7 @@ public class SyncAuthTokenController {
     @ApiOperation(value = "API to get auth token details encrypted based on machine key")
     @PostMapping(value = "/authenticate/useridpwd")
     public ResponseWrapper<String> getTokenWithUserIdPwd(@RequestBody @Valid RequestWrapper<String> requestWrapper) {
-        ResponseWrapper<String> responseWrapper = new ResponseWrapper<String>();
+        ResponseWrapper<String> responseWrapper = new ResponseWrapper<>();
         responseWrapper.setResponse(syncAuthTokenService.getAuthToken(requestWrapper.getRequest()));
         return responseWrapper;
     }

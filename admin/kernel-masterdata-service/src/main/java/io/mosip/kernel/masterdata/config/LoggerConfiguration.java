@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.config;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.logger.logback.appender.ConsoleAppender;
 import io.mosip.kernel.logger.logback.factory.Logfactory;
 
 /**

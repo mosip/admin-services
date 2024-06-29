@@ -1,20 +1,16 @@
 package io.mosip.kernel.masterdata.dto.getresponse.extn;
 
-import java.time.LocalDateTime;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.mosip.kernel.masterdata.dto.DigitalIdDeviceRegisterDto;
+import io.swagger.annotations.ApiModelProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import io.mosip.kernel.masterdata.dto.DigitalIdDeviceRegisterDto;
-import io.mosip.kernel.masterdata.dto.DigitalIdDto;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Data
 @EqualsAndHashCode(callSuper = true)

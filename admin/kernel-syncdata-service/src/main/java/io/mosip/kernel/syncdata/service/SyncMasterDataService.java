@@ -1,18 +1,18 @@
 package io.mosip.kernel.syncdata.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import io.mosip.kernel.core.exception.IOException;
+import io.mosip.kernel.syncdata.dto.UploadPublicKeyRequestDto;
+import io.mosip.kernel.syncdata.dto.UploadPublicKeyResponseDto;
+import io.mosip.kernel.syncdata.dto.response.CACertificates;
+import io.mosip.kernel.syncdata.dto.response.ClientPublicKeyResponseDto;
+import io.mosip.kernel.syncdata.dto.response.KeyPairGenerateResponseDto;
+import io.mosip.kernel.syncdata.dto.response.SyncDataResponseDto;
+import org.springframework.http.ResponseEntity;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import io.mosip.kernel.core.exception.FileNotFoundException;
-import io.mosip.kernel.core.exception.IOException;
-import io.mosip.kernel.syncdata.dto.IdSchemaDto;
-import io.mosip.kernel.syncdata.dto.UploadPublicKeyRequestDto;
-import io.mosip.kernel.syncdata.dto.UploadPublicKeyResponseDto;
-import io.mosip.kernel.syncdata.dto.response.*;
-import org.springframework.http.ResponseEntity;
 
 /**
  * Masterdata sync handler service

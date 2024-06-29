@@ -21,7 +21,7 @@ import java.util.List;
 public class JobResultListener implements JobExecutionListener {
 
     private static final Logger logger = LoggerFactory.getLogger(JobResultListener.class);
-    private static String STATUS_MESSAGE = " <br/> STATUS: %s, MESSAGE: %s";
+    private static String status_message = " <br/> STATUS: %s, MESSAGE: %s";
     private AuditUtil auditUtil;
     private JobExecutionSecurityContextListener jobExecutionSecurityContextListener;
     private BulkUploadTranscationRepository bulkUploadTranscationRepository;
@@ -56,22 +56,22 @@ public class JobResultListener implements JobExecutionListener {
         String jobId = jobExecution.getJobParameters().getString("transactionId");
         logger.info("Job completed : {}", jobId);
         try {
-            List<String> failures = new ArrayList<String>();
+            List<String> failures = new ArrayList<>();
             jobExecution.getStepExecutions().forEach(step -> {
                 step.getFailureExceptions().forEach(failure -> {
-                    if (failure instanceof FlatFileParseException && failure.getCause() instanceof ConstraintViolationException) {
-                        failures.add("Line --> " + ((FlatFileParseException) failure).getLineNumber() +  " --> "+
-                                ((FlatFileParseException) failure).getCause().getMessage());
+                    if (failure instanceof FlatFileParseException flatfileparseexception && failure.getCause() instanceof ConstraintViolationException) {
+                        failures.add("Line --> " + flatfileparseexception.getLineNumber() +  " --> "+
+                                failure.getCause().getMessage());
                     }
-                    else if(failure instanceof FlatFileParseException){
-                        failures.add("Line --> " + ((FlatFileParseException) failure).getLineNumber() +
-                                " --> Datatype mismatch / Failed to write into object");
-                    } else
+                    else if(failure instanceof FlatFileParseException flatFileParseException)
+                        failures.add("Line --> " + (flatFileParseException.getLineNumber() +
+                                " --> Datatype mismatch / Failed to write into object"));
+                    else
                         failures.add(failure.getCause() != null ? failure.getCause().getMessage() : failure.getMessage());
                 });
             });
 
-            String message = String.format(STATUS_MESSAGE,
+            String message = String.format(status_message,
                     jobExecution.getStatus().toString(), failures.isEmpty() ? "0 Errors" : failures.toString());
             auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_COMPLETED,
                             jobId + " --> " + message), jobExecution.getJobParameters().getString("username"));
