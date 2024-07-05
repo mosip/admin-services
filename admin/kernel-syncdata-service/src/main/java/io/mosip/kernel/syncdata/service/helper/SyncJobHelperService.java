@@ -81,13 +81,13 @@ public class SyncJobHelperService {
 
     public LocalDateTime getDeltaSyncCurrentTimestamp() {
         CronExpression cronExpression = CronExpression.parse(deltaCacheEvictCron);
-        LocalDateTime nextTrigger1 = cronExpression.next(LocalDateTime.now());
+        LocalDateTime nextTrigger1 = cronExpression.next(LocalDateTime.now().atZone(ZoneOffset.UTC).toLocalDateTime());
         LocalDateTime nextTrigger2 = cronExpression.next(nextTrigger1);
 
-        long minutes = ChronoUnit.MINUTES.between(nextTrigger1.toInstant(ZoneOffset.UTC),
-                nextTrigger2.toInstant(ZoneOffset.UTC));
+        long minutes = ChronoUnit.MINUTES.between(nextTrigger1.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime(),
+                nextTrigger2.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime());
 
-        LocalDateTime previousTrigger = nextTrigger1.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime();
+        LocalDateTime previousTrigger = nextTrigger1.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime().minus(minutes, ChronoUnit.MINUTES);
 
         logger.debug("Identified previous trigger : {}", previousTrigger);
         return previousTrigger;
