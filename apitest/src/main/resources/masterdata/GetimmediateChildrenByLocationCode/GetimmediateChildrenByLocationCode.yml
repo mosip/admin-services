@@ -7,7 +7,7 @@ GetimmediateChildrenByLocationCode:
       inputTemplate: masterdata/GetimmediateChildrenByLocationCode/getimmediateChildrenByLocationCode
       outputTemplate: masterdata/GetimmediateChildrenByLocationCode/getimmediateChildrenByLocationCodeResult
       input: '{
-      "locationcode":"$LOCATIONCODE$",
+      "locationcode":"$ID:CreateLocationData_All_Valid_Smoke_Sid_code$",
       "langcode":"eng"
 }'
       output: '{
