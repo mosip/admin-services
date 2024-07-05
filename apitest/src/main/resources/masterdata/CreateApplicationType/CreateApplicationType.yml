@@ -3,6 +3,7 @@ CreateApplicationType:
       endPoint: /v1/masterdata/applicationtypes
       role: admin
       templateFields: ["langCode"]
+      description: Create application type with valid data
       restMethod: post
       inputTemplate: masterdata/CreateApplicationType/createApplicationType
       outputTemplate: masterdata/CreateApplicationType/createApplicationTypeResult

@@ -3,6 +3,7 @@ CreateIdType:
       endPoint: /v1/masterdata/idtypes
       role: admin
       templateFields: ["langCode"]
+      description: Create Id type with valid data
       restMethod: post
       inputTemplate: masterdata/CreateIdType/createIdType
       outputTemplate: masterdata/CreateIdType/createIdTypeResult

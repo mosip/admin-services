@@ -3,6 +3,7 @@ CreateBiometricTypes:
       endPoint: /v1/masterdata/biometrictypes
       role: admin
       templateFields: ["langCode"]
+      description: Create BiometricTypes with valid data
       restMethod: post
       inputTemplate: masterdata/CreateBiometricType/createBiometricType
       outputTemplate: masterdata/CreateBiometricType/createBiometricTypeResult
