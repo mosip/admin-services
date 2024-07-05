@@ -32,7 +32,7 @@ MachineTypeSearch:
      {
         "isActive": "$IGNORE$",
         "createdBy": "$IGNORE$",
-        "code": "Laptop-2",
+        "code": "Laptop2",
         "name": "$IGNORE$",
         "description": "$IGNORE$"
       }

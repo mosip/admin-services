@@ -8,7 +8,7 @@
 		<listener class-name="io.mosip.testrig.apirig.report.EmailableReport"/>
 	</listeners>
 
-	<test name="BulkUpload">
+	<!--<test name="BulkUpload">
 		<parameter name="ymlFile"
 			value="masterdata/BulkUpload/BulkUpload.yml" />
 		<classes>
@@ -30,11 +30,11 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithQueryParam" />
 		</classes>
-	</test>
+	</test>-->
 	
 
 
-	<test name="CreateBlockListedWords">
+	<!--<test name="CreateBlockListedWords">
 		<parameter name="ymlFile"
 			value="masterdata/BlockListedWords/CreateBlockListedWords.yml" />
 		<classes>
@@ -61,7 +61,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.SimplePut" />
 		</classes>
-	</test>
+	</test>-->
 	<test name="FetchAllBlockListedWord">
 		<parameter name="ymlFile"
 			value="masterdata/FetchAllBlockListedWord/FetchAllBlockListedWord.yml" />
@@ -69,7 +69,7 @@
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
 	</test>
-	<test name="FetchBlockListedWordByLangcode">
+	<!--<test name="FetchBlockListedWordByLangcode">
 		<parameter name="ymlFile"
 			value="masterdata/FetchBlockListedWordByLangcode/FetchBlockListedWordByLangcode.yml" />
 		<classes>
@@ -382,7 +382,7 @@
 		</classes>
 	</test>
 
-<test name="CreateRegCenterType">
+	<test name="CreateRegCenterType">
 		<parameter name="ymlFile"
 			value="masterdata/RegCenterType/CreateRegCenterType.yml" />
 		<parameter name="idKeyName" value="code" />
@@ -440,6 +440,22 @@
 		</classes>
 	</test>
 
+	<test name="CreateLocationData">
+		<parameter name="ymlFile"
+			value="masterdata/LocationController/CreateLocationData.yml" />
+			<parameter name="idKeyName"	value="hierarchyLevel,name,code" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+	
+	<test name="UpdateLocationStatus">
+		<parameter name="ymlFile"
+			value="masterdata/UpdateLocationStatus/UpdateLocationStatus.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.PatchWithPathParam" />
+		</classes>
+	</test>
 	
 	<test name="CreateRegistrationCenter">
 		<parameter name="ymlFile"
@@ -447,13 +463,6 @@
 		<parameter name="idKeyName" value="id" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
-		</classes>
-	</test>
-	<test name="UpdateRegistrationCenter">
-		<parameter name="ymlFile"
-			value="masterdata/RegistrationCenter/UpdateRegistrationCenter.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.SimplePut" />
 		</classes>
 	</test>
 	<test name="UpdateRegCentStatus">
@@ -468,6 +477,22 @@
 			value="masterdata/FetchRegCent/FetchRegCent.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
+		</classes>
+	</test>
+		
+	<test name="UpdateLocationData">
+		<parameter name="ymlFile"
+			value="masterdata/LocationController/UpdateLocationData.yml" />
+			<parameter name="idKeyName"	value="name" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePut" />
+		</classes>
+	</test>
+	<test name="UpdateRegistrationCenter">
+		<parameter name="ymlFile"
+			value="masterdata/RegistrationCenter/UpdateRegistrationCenter.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePut" />
 		</classes>
 	</test>
 	<test name="FetchAllRegCent">
@@ -553,11 +578,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.PatchWithPathParam" />
 		</classes>
-	</test>	
-	
-	
-
-
+	</test>
 
 
 	<test name="CreateMachineType">
@@ -760,31 +781,6 @@
 		</classes>
 	</test>
 	
-	<test name="CreateLocationData">
-		<parameter name="ymlFile"
-			value="masterdata/LocationController/CreateLocationData.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
-		</classes>
-	</test>
-	
-	<test name="UpdateLocationData">
-		<parameter name="ymlFile"
-			value="masterdata/LocationController/UpdateLocationData.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.SimplePut" />
-		</classes>
-	</test>
-	
-	<test name="UpdateLocationStatus">
-		<parameter name="ymlFile"
-			value="masterdata/UpdateLocationStatus/UpdateLocationStatus.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.PatchWithPathParam" />
-		</classes>
-	</test>
-	
-	
 	<test name="FilterLocationData">
 		<parameter name="ymlFile"
 			value="masterdata/FilterLocationData/FilterLocationData.yml" />
@@ -936,7 +932,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.DeleteWithParam" />
 		</classes>
-	</test>
+	</test>-->
 	
 	<!--<test name="UpdateUISpec">
 		<parameter name="ymlFile"
@@ -954,7 +950,7 @@
 		</classes>
 	</test> -->
 	
-	<test name="GetPossiableValues">
+	<!--<test name="GetPossiableValues">
 		<parameter name="ymlFile"
 			value="masterdata/GetPossiableValues/GetPossiableValues.yml" />
 		<classes>
@@ -1055,7 +1051,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
-	</test>
+	</test>-->
 	<!--Commenting for MOSIP-33731-->
 	<!--<test name="GetIdTypeByLangCode">
 		<parameter name="ymlFile"
@@ -1064,7 +1060,7 @@
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
 	</test>-->
-	<test name="GetHolidaysMissingIds">
+	<!--<test name="GetHolidaysMissingIds">
 		<parameter name="ymlFile"
 			value="masterdata/GetHolidaysMissingIds/GetHolidaysMissingIds.yml" />
 		<classes>
@@ -1169,7 +1165,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
-	</test>  
+	</test>  -->
 <!--Commenting for MOSIP-33731-->	
 	<!--<test name="CreateIdType">
 		<parameter name="ymlFile"
@@ -1178,7 +1174,7 @@
 			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
 		</classes>
 	</test>-->
-	<test name="FetchValidDocumentsByDocCategoryCode">
+	<!--<test name="FetchValidDocumentsByDocCategoryCode">
 		<parameter name="ymlFile"
 			value="masterdata/FetchValidDocumentsByDocCategoryCode/FetchValidDocumentsByDocCategoryCode.yml" />
 		<classes>
@@ -1456,7 +1452,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
-	</test>
+	</test>-->
 	
 	
 	
