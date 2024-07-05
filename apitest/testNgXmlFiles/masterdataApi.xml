@@ -8,7 +8,7 @@
 		<listener class-name="io.mosip.testrig.apirig.report.EmailableReport"/>
 	</listeners>
 
-	<!--<test name="BulkUpload">
+	<test name="BulkUpload">
 		<parameter name="ymlFile"
 			value="masterdata/BulkUpload/BulkUpload.yml" />
 		<classes>
@@ -30,11 +30,11 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithQueryParam" />
 		</classes>
-	</test>-->
+	</test>
 	
 
 
-	<!--<test name="CreateBlockListedWords">
+	<test name="CreateBlockListedWords">
 		<parameter name="ymlFile"
 			value="masterdata/BlockListedWords/CreateBlockListedWords.yml" />
 		<classes>
@@ -61,7 +61,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.SimplePut" />
 		</classes>
-	</test>-->
+	</test>
 	<test name="FetchAllBlockListedWord">
 		<parameter name="ymlFile"
 			value="masterdata/FetchAllBlockListedWord/FetchAllBlockListedWord.yml" />
@@ -69,7 +69,7 @@
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
 	</test>
-	<!--<test name="FetchBlockListedWordByLangcode">
+	<test name="FetchBlockListedWordByLangcode">
 		<parameter name="ymlFile"
 			value="masterdata/FetchBlockListedWordByLangcode/FetchBlockListedWordByLangcode.yml" />
 		<classes>
@@ -932,7 +932,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.DeleteWithParam" />
 		</classes>
-	</test>-->
+	</test>
 	
 	<!--<test name="UpdateUISpec">
 		<parameter name="ymlFile"
@@ -950,7 +950,7 @@
 		</classes>
 	</test> -->
 	
-	<!--<test name="GetPossiableValues">
+	<test name="GetPossiableValues">
 		<parameter name="ymlFile"
 			value="masterdata/GetPossiableValues/GetPossiableValues.yml" />
 		<classes>
@@ -1051,7 +1051,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
-	</test>-->
+	</test>
 	<!--Commenting for MOSIP-33731-->
 	<!--<test name="GetIdTypeByLangCode">
 		<parameter name="ymlFile"
@@ -1060,7 +1060,7 @@
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
 	</test>-->
-	<!--<test name="GetHolidaysMissingIds">
+	<test name="GetHolidaysMissingIds">
 		<parameter name="ymlFile"
 			value="masterdata/GetHolidaysMissingIds/GetHolidaysMissingIds.yml" />
 		<classes>
@@ -1165,7 +1165,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
-	</test>  -->
+	</test>  
 <!--Commenting for MOSIP-33731-->	
 	<!--<test name="CreateIdType">
 		<parameter name="ymlFile"
@@ -1174,7 +1174,7 @@
 			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
 		</classes>
 	</test>-->
-	<!--<test name="FetchValidDocumentsByDocCategoryCode">
+	<test name="FetchValidDocumentsByDocCategoryCode">
 		<parameter name="ymlFile"
 			value="masterdata/FetchValidDocumentsByDocCategoryCode/FetchValidDocumentsByDocCategoryCode.yml" />
 		<classes>
@@ -1452,7 +1452,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
-	</test>-->
+	</test>
 	
 	
 	
