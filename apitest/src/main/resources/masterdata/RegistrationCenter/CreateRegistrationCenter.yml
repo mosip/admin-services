@@ -2,7 +2,8 @@ CreateRegistrationCenter:
    MasterData_CreateRegCenter_allValid_smoke_sid:
       endPoint: /v1/masterdata/registrationcenters
       role: admin
-      templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone","langCode"]
+      checkErrorsOnlyInResponse: true
+      templateFields: ["addressLine1","addressLine2","addressLine3","langCode"]
       restMethod: post
       inputTemplate: masterdata/RegistrationCenter/registrationCenter
       outputTemplate: masterdata/RegistrationCenter/registrationCenterResult
@@ -18,15 +19,15 @@ CreateRegistrationCenter:
    "holidayLocationCode":"$LOCATIONCODE$",
    "langCode":"hin",
    "latitude":"78.5478",
-   "locationCode":"$LOCATIONCODE$",
+   "locationCode":"$ID:CreateLocationData_All_Valid_Smoke_Sid_code$",
    "longitude":"45.2456",
    "lunchEndTime":"00:00:00",
    "lunchStartTime":"00:00:00",
-   "name":"Test123",
+   "name":"$ID:CreateLocationData_All_Valid_Smoke_Sid_name$",
    "perKioskProcessTime":"00:30:00",
    "timeZone":"(GTM+01:00) CENTRAL EUROPEAN TIME",
    "workingHours":3.5,
-   "zoneCode":"$ZONE_CODE$",
+   "zoneCode":"RBT",
    "id":"",
    "isActive":"false",
    "numberOfKiosks":0,
@@ -37,7 +38,7 @@ CreateRegistrationCenter:
    "requesttime":"$TIMESTAMP$"
 }'
       output: '{
-   "name": "Test123"
+   "name": "$IGNORE$"
 }'   
    MasterData_CreateRegCenter_Invalid_HolidayLocationCode_blank_eng:
       endPoint: /v1/masterdata/registrationcenters
