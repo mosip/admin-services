@@ -110,7 +110,7 @@ FetchRegCent:
 }'
    MasterData_FetchRegCent_By_LocationCode_allValid_smoke:
       endPoint: /v1/masterdata/getlocspecificregistrationcenters/{langcode}/{locationcode}
-      role: admin      
+      role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
       description: Retrieve Registration Center details By langcode.
@@ -246,7 +246,7 @@ FetchRegCent:
    
    MasterData_FetchRegCent_By_HierarchyLevel_Text_langCode_allValid_smoke:
       endPoint: /v1/masterdata/registrationcenters/{langcode}/{hierarchylevel}/{name}
-      role: admin      
+      role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
       description: Retrieve Registration Center details By hierarchylevel langcode and name.

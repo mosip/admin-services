@@ -3,7 +3,7 @@ UpdateDocumentType:
       endPoint: /v1/masterdata/documenttypes
       role: admin
       templateFields: ["name","description"]
-      description: Update Document Type with all valid data. 
+      description: Update Document Type with all valid data.
       restMethod: put
       inputTemplate: masterdata/DocumentType/documentType
       outputTemplate: masterdata/DocumentType/documentTypeResult
@@ -26,7 +26,7 @@ UpdateDocumentType:
       endPoint: /v1/masterdata/documenttypes
       role: admin
       templateFields: ["name","description"]
-      description: Update Document Type with invalid Code more than 36 characters. 
+      description: Update Document Type with invalid Code more than 36 characters.
       restMethod: put
       inputTemplate: masterdata/DocumentType/documentType
       outputTemplate: masterdata/error
@@ -50,7 +50,7 @@ UpdateDocumentType:
       endPoint: /v1/masterdata/documenttypes
       role: admin
       templateFields: ["name","description"]
-      description: Update Document Type with invalid Description more than 64 characters. 
+      description: Update Document Type with invalid Description more than 64 characters.
       restMethod: put
       inputTemplate: masterdata/DocumentType/documentType
       outputTemplate: masterdata/error
@@ -75,7 +75,7 @@ UpdateDocumentType:
       role: admin
       restMethod: put
       templateFields: ["name","description"]
-      description: Update Document Type with invalid Description more than 128 characters. 
+      description: Update Document Type with invalid Description more than 128 characters.
       inputTemplate: masterdata/DocumentType/documentType
       outputTemplate: masterdata/error
       input: '{
@@ -99,7 +99,7 @@ UpdateDocumentType:
       endPoint: /v1/masterdata/documenttypes
       role: admin
       templateFields: ["description"]
-      description: Update Document Type with invalid empty Name. 
+      description: Update Document Type with invalid empty Name.
       restMethod: put
       inputTemplate: masterdata/DocumentType/documentType
       outputTemplate: masterdata/error
@@ -123,7 +123,7 @@ UpdateDocumentType:
       endPoint: /v1/masterdata/documenttypes
       role: admin
       templateFields: ["name","description"]
-      description: Update Document Type with invalid empty Code. 
+      description: Update Document Type with invalid empty Code.
       restMethod: put
       inputTemplate: masterdata/DocumentType/documentType
       outputTemplate: masterdata/error

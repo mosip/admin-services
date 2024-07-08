@@ -21,7 +21,7 @@ FetchLocation:
    MasterData_FetchLocation_invalid_langcode:
       endPoint: /v1/masterdata/locations/{langcode}
       role: admin
-      description: Retrieve Location details with invalid langcode.      
+      description: Retrieve Location details with invalid langcode. 
       restMethod: get
       inputTemplate: masterdata/FetchLocation/fetchLocation
       outputTemplate: masterdata/error

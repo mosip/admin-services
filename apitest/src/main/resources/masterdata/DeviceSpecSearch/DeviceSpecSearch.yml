@@ -477,7 +477,7 @@ DeviceSpecSearch:
       endPoint: /v1/masterdata/devicespecifications/search
       role: admin
       templateFields: ["languageCode"]
-      description: Search Device Specification with invalid requesttime.      
+      description: Search Device Specification with invalid requesttime.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearch
       outputTemplate: masterdata/error

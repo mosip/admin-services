@@ -3,7 +3,7 @@ UpdateDynamicField:
       endPoint: /v1/masterdata/dynamicfields?id={id}
       role: admin
       templateFields: ["langCode"]
-      description: Update Dynamic Fields with all valid data. 
+      description: Update Dynamic Fields with all valid data.
       restMethod: put
       inputTemplate: masterdata/DynamicField/dynamicField
       outputTemplate: masterdata/DynamicField/dynamicFieldResult

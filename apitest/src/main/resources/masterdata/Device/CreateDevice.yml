@@ -328,7 +328,7 @@ CreateDevice:
       endPoint: /v1/masterdata/devices
       role: admin
       templateFields: ["name","description"]
-      description: Create Device with ipAddress with morethan 17 characters.      
+      description: Create Device with ipAddress with morethan 16 characters.
       restMethod: post
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error

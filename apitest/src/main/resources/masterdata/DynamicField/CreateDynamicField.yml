@@ -3,7 +3,7 @@ CreateDynamicField:
       endPoint: /v1/masterdata/dynamicfields
       role: admin
       templateFields: ["langCode"]
-      description: Create Dynamic Fields with all valid data. 
+      description: Create Dynamic Fields with all valid data.
       restMethod: post
       inputTemplate: masterdata/DynamicField/dynamicField
       outputTemplate: masterdata/DynamicField/dynamicFieldResult
@@ -26,7 +26,7 @@ CreateDynamicField:
       endPoint: /v1/masterdata/dynamicfields
       role: admin
       templateFields: ["langCode"]
-      description: Create Dynamic Fields By field name with all valid data. 
+      description: Create Dynamic Fields By field name with all valid data.
       restMethod: post
       inputTemplate: masterdata/DynamicField/dynamicField
       outputTemplate: masterdata/DynamicField/dynamicFieldResult

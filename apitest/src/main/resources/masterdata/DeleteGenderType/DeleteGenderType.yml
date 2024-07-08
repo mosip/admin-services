@@ -16,7 +16,7 @@ DeleteGenderType:
       endPoint: /v1/masterdata/gendertypes/{code}
       role: admin
       templateFields: []
-      description: Delete Gender Type with invalid code.      
+      description: Delete Gender Type with invalid code.
       restMethod: delete
       inputTemplate: masterdata/DeleteGenderType/deleteGenderType
       outputTemplate: masterdata/error

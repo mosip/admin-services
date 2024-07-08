@@ -21,7 +21,7 @@ FetchDocumentCategories:
 }'
    MasterData_FetchDocumentCategories_invalid_langcode:
       endPoint: /v1/masterdata/documentcategories/{langcode}
-      role: admin      
+      role: admin
       templateFields: []
       description: Retrieve Document Categories with invalid langcode.
       restMethod: get

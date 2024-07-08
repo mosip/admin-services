@@ -448,7 +448,7 @@ CreateDeviceSpecification:
       endPoint: /v1/masterdata/devicespecifications
       role: admin
       templateFields: ["name","description"]
-      description: Create Device Specification with empty input parameter minDriverversion.      
+      description: Create Device Specification with empty input parameter minDriverversion.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error

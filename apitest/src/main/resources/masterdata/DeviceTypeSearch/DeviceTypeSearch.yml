@@ -3,7 +3,7 @@ DeviceTypeSearch:
       endPoint: /v1/masterdata/devicetypes/search
       role: admin
       templateFields: ["languageCode"]
-      description: Search Device type with columnName name and type equals. 
+      description: Search Device type with columnName name and type equals.
       restMethod: post
       inputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearch
       outputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearchResult
@@ -45,7 +45,7 @@ DeviceTypeSearch:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
-      description: Search Device type with columnName isActive and type Equals. 
+      description: Search Device type with columnName isActive and type Equals.
       restMethod: post
       inputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearch
       outputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearchResult
@@ -84,7 +84,7 @@ DeviceTypeSearch:
       endPoint: /v1/masterdata/devicetypes/search
       role: admin
       templateFields: ["languageCode"]
-      description: Search Device type with columnName name and type contains. 
+      description: Search Device type with columnName name and type contains.
       restMethod: post
       inputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearch
       outputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearchResult
@@ -126,7 +126,7 @@ DeviceTypeSearch:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
-      description: Search Device type with columnName name and type startsWith. 
+      description: Search Device type with columnName name and type startsWith.
       restMethod: post
       inputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearch
       outputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearchResult
@@ -158,7 +158,7 @@ DeviceTypeSearch:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
-      description: Search Device type with invalid columnName name. 
+      description: Search Device type with invalid columnName name.
       restMethod: post
       inputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearch
       outputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearchResult
@@ -189,7 +189,7 @@ DeviceTypeSearch:
       endPoint: /v1/masterdata/devicetypes/search
       role: admin
       templateFields: ["value"]
-      description: Search Device type with invalid columnName. 
+      description: Search Device type with invalid columnName.
       restMethod: post
       inputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearch
       outputTemplate: masterdata/error
