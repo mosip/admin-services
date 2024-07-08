@@ -3,6 +3,7 @@ DeviceSearch:
       endPoint: /v1/masterdata/devices/search
       role: globalAdmin
       templateFields: ["languageCode"]
+      description: Search Devices by columnName name and type startswith.
       restMethod: post
       inputTemplate: masterdata/DeviceSearch/deviceSearch
       outputTemplate: masterdata/DeviceSearch/deviceSearchResult
@@ -45,6 +46,7 @@ DeviceSearch:
       endPoint: /v1/masterdata/devices/search
       role: globalAdmin
       templateFields: ["languageCode"]
+      description: Search Devices by columnName serialNum and type equals.
       restMethod: post
       inputTemplate: masterdata/DeviceSearch/deviceSearch
       outputTemplate: masterdata/DeviceSearch/deviceSearchResult
@@ -87,6 +89,7 @@ DeviceSearch:
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
+      description: Search Devices by columnName macAddress and type equals.
       restMethod: post
       inputTemplate: masterdata/DeviceSearch/deviceSearch
       outputTemplate: masterdata/DeviceSearch/deviceSearchResult
@@ -117,6 +120,7 @@ DeviceSearch:
       endPoint: /v1/masterdata/devices/search
       role: globalAdmin
       templateFields: ["languageCode"]
+      description: Search Devices by columnName name and sortType By ASC.
       restMethod: post
       inputTemplate: masterdata/DeviceSearch/deviceSearch
       outputTemplate: masterdata/DeviceSearch/deviceSearchResult
@@ -160,6 +164,7 @@ DeviceSearch:
       endPoint: /v1/masterdata/devices/search
       role: globalAdmin
       templateFields: ["languageCode"]
+      description: Search Devices by columnName name and sortType By Desc.
       restMethod: post
       inputTemplate: masterdata/DeviceSearch/deviceSearch
       outputTemplate: masterdata/DeviceSearch/deviceSearchResult
@@ -203,6 +208,7 @@ DeviceSearch:
       endPoint: /v1/masterdata/devices/search
       role: globalAdmin
       templateFields: ["value"]
+      description: Search Devices by columnName name and invalid value.
       restMethod: post
       inputTemplate: masterdata/DeviceSearch/deviceSearch
       outputTemplate: masterdata/NilSearchResult
@@ -236,6 +242,7 @@ DeviceSearch:
       endPoint: /v1/masterdata/devices/search
       role: globalAdmin
       templateFields: ["value"]
+      description: Search Devices by columnName name and invalid sortType value.
       restMethod: post
       inputTemplate: masterdata/DeviceSearch/deviceSearch
       outputTemplate: masterdata/error
@@ -272,6 +279,7 @@ DeviceSearch:
       endPoint: /v1/masterdata/devices/search
       role: globalAdmin
       templateFields: ["value"]
+      description: Search Devices by invalid Request Time.
       restMethod: post
       inputTemplate: masterdata/DeviceSearch/deviceSearch
       outputTemplate: masterdata/error

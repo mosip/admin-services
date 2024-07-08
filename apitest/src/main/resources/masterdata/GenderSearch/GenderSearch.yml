@@ -3,6 +3,7 @@ GenderSearch:
       endPoint: /v1/masterdata/gendertypes/search
       role: admin
       templateFields: ["languageCode"]
+      description: Search gender details by all valid data.
       restMethod: post
       inputTemplate: masterdata/GenderSearch/search
       outputTemplate: masterdata/GenderSearch/searchResult
@@ -25,6 +26,7 @@ GenderSearch:
       endPoint: /v1/masterdata/gendertypes/search
       role: admin
       templateFields: ["languageCode"]
+      description: Search gender details by languageCode.
       restMethod: post
       inputTemplate: masterdata/GenderSearch/search
       outputTemplate: masterdata/GenderSearch/searchResult
@@ -53,6 +55,7 @@ GenderSearch:
       endPoint: /v1/masterdata/gendertypes/search
       role: admin
       templateFields: ["languageCode"]
+      description: Search gender details by languageCode eng and sort by sortType ASC order.
       restMethod: post
       inputTemplate: masterdata/GenderSearch/search
       outputTemplate: masterdata/GenderSearch/searchResult
@@ -75,6 +78,7 @@ GenderSearch:
       endPoint: /v1/masterdata/gendertypes/search
       role: admin
       templateFields: ["languageCode"]
+      description: Search gender details by languageCode eng and empty sortField.
       restMethod: post
       inputTemplate: masterdata/GenderSearch/search
       outputTemplate: masterdata/error
@@ -103,6 +107,7 @@ GenderSearch:
       endPoint: /v1/masterdata/gendertypes/search
       role: admin
       templateFields: ["languageCode"]
+      description: Search gender details by languageCode eng and invalid sortField.
       restMethod: post
       inputTemplate: masterdata/GenderSearch/search
       outputTemplate: masterdata/error
@@ -131,6 +136,7 @@ GenderSearch:
       endPoint: /v1/masterdata/gendertypes/search
       role: admin
       templateFields: ["languageCode"]
+      description: Search gender details by languageCode eng and empty sortType.
       restMethod: post
       inputTemplate: masterdata/GenderSearch/search
       outputTemplate: masterdata/error
@@ -160,6 +166,7 @@ GenderSearch:
       endPoint: /v1/masterdata/gendertypes/search
       role: admin
       templateFields: ["languageCode"]
+      description: Search gender details by languageCode eng and empty requesttime.
       restMethod: post
       inputTemplate: masterdata/GenderSearch/search
       outputTemplate: masterdata/error
@@ -188,6 +195,7 @@ GenderSearch:
       endPoint: /v1/masterdata/gendertypes/search
       role: admin
       templateFields: ["languageCode"]
+      description: Search gender details by languageCode eng and code FLE(female).
       restMethod: post
       inputTemplate: masterdata/GenderSearch/search
       outputTemplate: masterdata/GenderSearch/searchResult

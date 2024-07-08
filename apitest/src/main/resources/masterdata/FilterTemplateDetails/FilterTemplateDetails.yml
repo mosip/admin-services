@@ -4,6 +4,7 @@ FilterTemplateDetails:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
+      description: Filter Template details by filter type unique and all valid data.
       restMethod: post
       inputTemplate: masterdata/FilterTemplateDetails/filterTemplateDetails
       outputTemplate: masterdata/FilterTemplateDetails/filterTemplateDetailsResult
@@ -29,6 +30,7 @@ FilterTemplateDetails:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
+      description: Filter Template details by filter type all and valid data.
       restMethod: post
       inputTemplate: masterdata/FilterTemplateDetails/filterTemplateDetails
       outputTemplate: masterdata/FilterTemplateDetails/filterTemplateDetailsResult
@@ -53,6 +55,7 @@ FilterTemplateDetails:
       endPoint: /v1/masterdata/templates/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Template details by invalid filter type value.
       restMethod: post
       inputTemplate: masterdata/FilterTemplateDetails/filterTemplateDetails
       outputTemplate: masterdata/error
@@ -78,6 +81,7 @@ FilterTemplateDetails:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: []
+      description: Filter Template details by invalid filter text value.
       restMethod: post
       inputTemplate: masterdata/FilterTemplateDetails/filterTemplateDetails
       outputTemplate: masterdata/FilterTemplateDetails/filterTemplateDetailsResult
@@ -97,6 +101,7 @@ FilterTemplateDetails:
       endPoint: /v1/masterdata/templates/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Template details by empty filter text value.
       restMethod: post
       inputTemplate: masterdata/FilterTemplateDetails/filterTemplateDetails
       outputTemplate: masterdata/error
@@ -121,6 +126,7 @@ FilterTemplateDetails:
       endPoint: /v1/masterdata/templates/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Template details by empty filter columnName.
       restMethod: post
       inputTemplate: masterdata/FilterTemplateDetails/filterTemplateDetails
       outputTemplate: masterdata/error
@@ -145,6 +151,7 @@ FilterTemplateDetails:
       endPoint: /v1/masterdata/templates/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Template details by invalid filter columnName.
       restMethod: post
       inputTemplate: masterdata/FilterTemplateDetails/filterTemplateDetails
       outputTemplate: masterdata/error

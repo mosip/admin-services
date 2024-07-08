@@ -2,7 +2,7 @@ BulkUpload:
    Masterdata_BulkUpload_Smoke_sid:
       endPoint: /v1/admin/bulkupload
       role: admin
-      description: Bulk Upload with valid data
+      description: Bulk Upload with valid data.
       restMethod: post
       inputTemplate: masterdata/BulkUpload/bulkUpload
       outputTemplate: masterdata/BulkUpload/bulkUploadResult
@@ -19,7 +19,7 @@ BulkUpload:
    Masterdata_BulkUpload_update_gender_name:
       endPoint: /v1/admin/bulkupload
       role: admin
-      description: Update Gender Name from Bilk upload
+      description: Update Gender Name from Bulk upload.
       restMethod: post
       inputTemplate: masterdata/BulkUpload/bulkUpload
       outputTemplate: masterdata/BulkUpload/bulkUploadResult

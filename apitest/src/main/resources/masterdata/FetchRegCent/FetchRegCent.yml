@@ -4,6 +4,7 @@ FetchRegCent:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
+      description: Retrieve Registration Center details with valid data.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchRegCentResult
@@ -28,6 +29,7 @@ FetchRegCent:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
+      description: Retrieve Registration Center details with specific coordinates.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchRegCentResult
@@ -51,6 +53,7 @@ FetchRegCent:
    MasterData_FetchRegCent_coordinate_specific_invalid_latitude:
       endPoint: /v1/masterdata/getcoordinatespecificregistrationcenters/{langcode}/{longitude}/{latitude}/{proximitydistance}
       role: admin
+      description: Retrieve Registration Center details with invalid latitude.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
@@ -79,6 +82,7 @@ FetchRegCent:
    MasterData_FetchRegCent_coordinate_specific_invalid_longitude:
       endPoint: /v1/masterdata/getcoordinatespecificregistrationcenters/{langcode}/{longitude}/{latitude}/{proximitydistance}
       role: admin
+      description: Retrieve Registration Center details with invalid longitude.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
@@ -106,9 +110,10 @@ FetchRegCent:
 }'
    MasterData_FetchRegCent_By_LocationCode_allValid_smoke:
       endPoint: /v1/masterdata/getlocspecificregistrationcenters/{langcode}/{locationcode}
-      role: admin
+      role: admin      
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
+      description: Retrieve Registration Center details By langcode.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchRegCentResult
@@ -131,6 +136,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_LocationCode_invalid_locationcode:
       endPoint: /v1/masterdata/getlocspecificregistrationcenters/{langcode}/{locationcode}
       role: admin
+      description: Retrieve Registration Center details with invalid locationcode.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
@@ -162,6 +168,7 @@ FetchRegCent:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
+      description: Retrieve Registration Center Holiday details By Id Lang Code and Year.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchRegCentHolidayResult
@@ -185,6 +192,7 @@ FetchRegCent:
    MasterData_FetchRegCent_Holidays_invalid_registrationcenterid:
       endPoint: /v1/masterdata/getregistrationcenterholidays/{langcode}/{registrationcenterid}/{year}
       role: admin
+      description: Retrieve Registration Center Holiday details with invalid registrationcenterid.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
@@ -212,9 +220,10 @@ FetchRegCent:
 }'
    MasterData_FetchRegCent_By_id_allValid_smoke:
       endPoint: /v1/masterdata/registrationcenters/{id}/{langcode}
-      role: admin
+      role: admin      
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
+      description: Retrieve Registration Center details By Id and langcode.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchRegCentResult
@@ -237,9 +246,10 @@ FetchRegCent:
    
    MasterData_FetchRegCent_By_HierarchyLevel_Text_langCode_allValid_smoke:
       endPoint: /v1/masterdata/registrationcenters/{langcode}/{hierarchylevel}/{name}
-      role: admin
+      role: admin      
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
+      description: Retrieve Registration Center details By hierarchylevel langcode and name.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchRegCentResult
@@ -264,6 +274,7 @@ FetchRegCent:
       endPoint: /v1/masterdata/registrationcenters/{langcode}/{hierarchylevel}/{name}
       role: admin
       templateFields: ["name"]
+      description: Retrieve Registration Center details By langcode and invalid hierarchylevel.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
@@ -293,6 +304,7 @@ FetchRegCent:
       endPoint: /v1/masterdata/registrationcenters/{langcode}/{hierarchylevel}/{name}
       role: admin
       templateFields: ["name"]
+      description: Retrieve Registration Center details By langcode hierarchylevel and invalid Name.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
@@ -323,6 +335,7 @@ FetchRegCent:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
+      description: Retrieve Registration Center details By langcode hierarchylevel and valid name.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchRegCentResult
@@ -346,6 +359,7 @@ FetchRegCent:
       endPoint: /v1/masterdata/registrationcenters/validate/{id}/{langcode}/{timestamp}
       role: admin
       templateFields: ["langcode"]
+      description: Retrieve Registration Center details By langcode Id and valid timestamp.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchRegCentValidateResult
@@ -370,6 +384,7 @@ FetchRegCent:
    MasterData_FetchRegCent_validateTimestamp_invalid_id:
       endPoint: /v1/masterdata/registrationcenters/validate/{id}/{langcode}/{timestamp}
       role: admin
+      description: Retrieve Registration Center details By langcode, timestamp and invalid Id.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
@@ -398,6 +413,7 @@ FetchRegCent:
    MasterData_FetchRegCent_validateTimestamp_invalid_timestamp:
       endPoint: /v1/masterdata/registrationcenters/validate/{id}/{langcode}/{timestamp}
       role: admin
+      description: Retrieve Registration Center details By langcode, Id and invalid timestamp. 
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
@@ -427,6 +443,7 @@ FetchRegCent:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
+      description: Retrieve Registration Center details By langcode and zonecode.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchRegCentResult
@@ -450,6 +467,7 @@ FetchRegCent:
    MasterData_FetchRegCent_by_langCode_zoneCode_InValid_zonecode:
       endPoint: /v1/masterdata/getzonespecificregistrationcenters/{langcode}/{zonecode}
       role: admin
+      description: Retrieve Registration Center for a Zone By langcode and zonecode.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
@@ -479,6 +497,7 @@ FetchRegCent:
       endPoint: /v1/masterdata/registrationcenters/{langcode}/{hierarchylevel}/{name}
       role: admin
       templateFields: ["name"]
+      description: Retrieve Registration Center By langcode, hierarchylevel and name.
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
@@ -507,6 +526,7 @@ FetchRegCent:
       endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}
       role: admin
       templateFields: ["name"]
+      description: Retrieve Registration Centers Per Page By langcode, hierarchylevel and name.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
@@ -536,6 +556,7 @@ FetchRegCent:
       endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}
       role: admin
       templateFields: ["name"]
+      description: Retrieve Registration Center By Pagination By langcode, hierarchylevel and name.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
@@ -567,6 +588,7 @@ FetchRegCent:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: []
+      description: Retrieve Registration Centers for a Zone By langcode and zonecode.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchAllRegCentResult
@@ -590,6 +612,7 @@ FetchRegCent:
       endPoint: /v1/masterdata/getzonespecificregistrationcenters/{langcode}/{zonecode}
       role: admin
       templateFields: []
+      description: Retrieve Registration Centers for Zone by langcode and invalid zonecode.
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error

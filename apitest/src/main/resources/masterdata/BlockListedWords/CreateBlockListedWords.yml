@@ -3,7 +3,7 @@ CreateBlockListedWords:
       endPoint: /v1/masterdata/blocklistedwords
       role: admin
       templateFields: ["description","word"]
-      description: Create block listed words with valid data
+      description: Create block listed words with valid data.
       restMethod: post
       inputTemplate: masterdata/BlockListedWords/blockListedWords
       outputTemplate: masterdata/BlockListedWords/blockListedWordsResult
@@ -21,7 +21,7 @@ CreateBlockListedWords:
       endPoint: /v1/masterdata/blocklistedwords
       role: admin
       templateFields: ["description","word"]
-      description: Create block listed word with space in word
+      description: Create block listed word with space in word value.
       restMethod: post
       inputTemplate: masterdata/BlockListedWords/blockListedWords
       outputTemplate: masterdata/error
@@ -44,7 +44,7 @@ CreateBlockListedWords:
       endPoint: /v1/masterdata/blocklistedwords
       role: admin
       templateFields: ["description"]
-      description: Create block listed words with invalid length of word more than 128 charectars      
+      description: Create block listed words with invalid length of word more than 128 charectars.     
       restMethod: post
       inputTemplate: masterdata/BlockListedWords/blockListedWords
       outputTemplate: masterdata/error
@@ -67,7 +67,7 @@ CreateBlockListedWords:
       endPoint: /v1/masterdata/blocklistedwords
       role: admin
       templateFields: ["word"]
-      description: Create block listed words with invalid Description of more than 256 charectars       
+      description: Create block listed words with invalid Description of more than 256 charectars.       
       restMethod: post
       inputTemplate: masterdata/BlockListedWords/blockListedWords
       outputTemplate: masterdata/error
@@ -90,7 +90,7 @@ CreateBlockListedWords:
       endPoint: /v1/masterdata/blocklistedwords
       role: admin
       templateFields: ["description"]
-      description: Create block listed words with invalid Empty word     
+      description: Create block listed words with empty word value.     
       restMethod: post
       inputTemplate: masterdata/BlockListedWords/blockListedWords
       outputTemplate: masterdata/error

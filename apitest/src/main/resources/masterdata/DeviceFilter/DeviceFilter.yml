@@ -3,6 +3,7 @@ DeviceFilter:
       endPoint: /v1/masterdata/devices/filtervalues
       role: globalAdmin
       templateFields: ["languageCode"]
+      description: Filter devices by columnName name with type unique .
       restMethod: post
       inputTemplate: masterdata/DeviceFilter/deviceFilter
       outputTemplate: masterdata/DeviceFilter/deviceFilterResult
@@ -27,6 +28,7 @@ DeviceFilter:
       endPoint: /v1/masterdata/devices/filtervalues
       role: globalAdmin
       templateFields: ["languageCode"]
+      description: Filter devices by columnName name and type all.
       restMethod: post
       inputTemplate: masterdata/DeviceFilter/deviceFilter
       outputTemplate: masterdata/DeviceFilter/deviceFilterResult
@@ -52,6 +54,7 @@ DeviceFilter:
       endPoint: /v1/masterdata/devices/filtervalues
       role: globalAdmin
       templateFields: ["languageCode"]
+      description: Filter devices by columnName macAddress and type unique.
       restMethod: post
       inputTemplate: masterdata/DeviceFilter/deviceFilter
       outputTemplate: masterdata/DeviceFilter/deviceFilterResult
@@ -76,6 +79,7 @@ DeviceFilter:
       endPoint: /v1/masterdata/devices/filtervalues
       role: globalAdmin
       templateFields: ["languageCode"]
+      description: Filter devices by macAddress with type all.
       restMethod: post
       inputTemplate: masterdata/DeviceFilter/deviceFilter
       outputTemplate: masterdata/DeviceFilter/deviceFilterResult
@@ -101,6 +105,7 @@ DeviceFilter:
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
+      description: Filter devices by columnName serialNum with type Unique.
       restMethod: post
       inputTemplate: masterdata/DeviceFilter/deviceFilter
       outputTemplate: masterdata/DeviceFilter/deviceFilterResult
@@ -120,6 +125,7 @@ DeviceFilter:
       endPoint: /v1/masterdata/devices/filtervalues
       role: globalAdmin
       templateFields: ["languageCode"]
+      description: Filter devices by invalid Request Time.
       restMethod: post
       inputTemplate: masterdata/DeviceFilter/deviceFilter
       outputTemplate: masterdata/error
@@ -145,6 +151,7 @@ DeviceFilter:
       endPoint: /v1/masterdata/devices/filtervalues
       role: globalAdmin
       templateFields: ["languageCode"]
+      description: Filter devices by invalid columnName.
       restMethod: post
       inputTemplate: masterdata/DeviceFilter/deviceFilter
       outputTemplate: masterdata/error

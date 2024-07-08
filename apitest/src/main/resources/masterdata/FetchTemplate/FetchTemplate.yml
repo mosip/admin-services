@@ -2,6 +2,7 @@ FetchTemplate:
    MasterData_FetchTemplate_allValid_smoke_Get:
       endPoint: /v1/masterdata/templates
       role: admin
+      description: Retrieve Templates with all valid data.
       checkErrorsOnlyInResponse: true 
       restMethod: get
       inputTemplate: masterdata/FetchTemplate/fetchTemplate
@@ -16,6 +17,7 @@ FetchTemplate:
    MasterData_FetchTemplate_allValid_ByLangcode_smoke:
       endPoint: /v1/masterdata/templates/{langcode}
       role: admin
+      description: Retrieve Templates with langcode.
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchTemplate/fetchTemplate
@@ -31,6 +33,7 @@ FetchTemplate:
       endPoint: /v1/masterdata/templates/{langcode}/{templatetypecode}
       role: admin
       templateFields: ["langcode"]
+      description: Retrieve Templates with langcode and templatetypecode.
       restMethod: get
       inputTemplate: masterdata/FetchTemplate/fetchTemplate
       outputTemplate: masterdata/FetchTemplate/fetchTemplateResult
@@ -48,6 +51,7 @@ FetchTemplate:
       endPoint: /v1/masterdata/templates/{langcode}/{templatetypecode}
       role: admin
       templateFields: []
+      description: Retrieve Templates with langcode and nonexisting templatetypecode.
       restMethod: get
       inputTemplate: masterdata/FetchTemplate/fetchTemplate
       outputTemplate: masterdata/error
@@ -68,6 +72,7 @@ FetchTemplate:
       endPoint: /v1/masterdata/templates/templatetypecodes/{code}
       role: admin
       templateFields: []
+      description: Retrieve Templates with invalid code.
       restMethod: get
       inputTemplate: masterdata/FetchTemplate/fetchTemplate
       outputTemplate: masterdata/error

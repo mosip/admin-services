@@ -3,6 +3,7 @@ DeviceSpecFilter:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Device Specification by columnName name with type unique.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilterResult
@@ -27,6 +28,7 @@ DeviceSpecFilter:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Device Specification by columnName name with type all.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilterResult
@@ -51,6 +53,7 @@ DeviceSpecFilter:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Device Specification by columnName brand and type unique.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilterResult
@@ -76,6 +79,7 @@ DeviceSpecFilter:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
+      description: Filter Device Specification by columnName brand and type all.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/NilFilterResult
@@ -95,6 +99,7 @@ DeviceSpecFilter:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Device Specification by columnName model and type unique.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilterResult
@@ -119,6 +124,7 @@ DeviceSpecFilter:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Device Specification by columnName isActive with type unique.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilterResult
@@ -143,6 +149,7 @@ DeviceSpecFilter:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Device Specification by invalid requesttime.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/error
@@ -168,6 +175,7 @@ DeviceSpecFilter:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
+      description: Filter Device Specification by columnName name and invalid text.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilterResult
@@ -186,6 +194,7 @@ DeviceSpecFilter:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Device Specification by columnName name with invalid text.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/error
@@ -210,6 +219,7 @@ DeviceSpecFilter:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Device Specification by columnName name and empty type.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/error
@@ -234,6 +244,7 @@ DeviceSpecFilter:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Device Specification by invalid columnName.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/error

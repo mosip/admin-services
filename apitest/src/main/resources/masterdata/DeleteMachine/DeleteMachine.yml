@@ -1,9 +1,10 @@
 DeleteMachine:
    MasterData_DeleteMachine_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/machines/{id}
-      role: globalAdmin
+      role: globalAdmin      
       checkErrorsOnlyInResponse: true
       templateFields: []
+      description: Delete Machine details with valid data.
       restMethod: delete
       inputTemplate: masterdata/DeleteMachine/deleteMachine
       outputTemplate: masterdata/DeleteMachine/deleteMachineResult
@@ -16,6 +17,7 @@ DeleteMachine:
       endPoint: /v1/masterdata/machines/{id}
       role: admin
       templateFields: []
+      description: Delete Machine with invalid id.
       restMethod: delete
       inputTemplate: masterdata/DeleteMachine/deleteMachine
       outputTemplate: masterdata/error

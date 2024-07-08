@@ -3,6 +3,7 @@ FetchValidDocumentsByDocCategoryCode:
       endPoint: /v1/masterdata/validdocuments/{doccategorycode}/{languagecode}
       role: admin
       templateFields: ["languagecode"]
+      description: Retrieve Valid Documents details By doccategorycode and languagecode.
       restMethod: get
       inputTemplate: masterdata/FetchValidDocumentsByDocCategoryCode/fetchValidDocumentsByDocCategoryCode
       outputTemplate: masterdata/FetchValidDocumentsByDocCategoryCode/fetchValidDocumentsByDocCategoryCodeResult
@@ -20,6 +21,7 @@ FetchValidDocumentsByDocCategoryCode:
    MasterData_FetchValidDocumentsByDocCategoryCode_inValid_DocCategory:
       endPoint: /v1/masterdata/validdocuments/{doccategorycode}/{languagecode}
       role: admin
+      description: Retrieve Valid Documents details with invalid doccategorycode and valid languagecode.
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchValidDocumentsByDocCategoryCode/fetchValidDocumentsByDocCategoryCode

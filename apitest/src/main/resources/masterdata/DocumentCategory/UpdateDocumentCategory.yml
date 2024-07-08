@@ -3,6 +3,7 @@ UpdateDocumentCategory:
       endPoint: /v1/masterdata/documentcategories
       role: admin
       templateFields: ["name","description"]
+      description: Update Document Category with all valid data.
       restMethod: put
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/DocumentCategory/documentCategoryResult
@@ -21,6 +22,7 @@ UpdateDocumentCategory:
       endPoint: /v1/masterdata/documentcategories
       role: admin
       templateFields: ["name","description"]
+      description: Update Document Category with all mandatory data.
       restMethod: put
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/DocumentCategory/documentCategoryResult
@@ -40,6 +42,7 @@ UpdateDocumentCategory:
       endPoint: /v1/masterdata/documentcategories
       role: admin
       templateFields: ["name","description"]
+      description: Update Document Category with missing Code field.
       restMethod: put
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/error
@@ -63,6 +66,7 @@ UpdateDocumentCategory:
       endPoint: /v1/masterdata/documentcategories
       role: admin
       templateFields: ["name","description"]
+      description: Update Document Category with invalid Code value.
       restMethod: put
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/error
@@ -86,6 +90,7 @@ UpdateDocumentCategory:
       endPoint: /v1/masterdata/documentcategories
       role: admin
       templateFields: ["name","description"]
+      description: Update Document Category with Code value more than 36 characters.
       restMethod: put
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/error
@@ -109,6 +114,7 @@ UpdateDocumentCategory:
       endPoint: /v1/masterdata/documentcategories
       role: admin
       templateFields: ["name","description"]
+      description: Update Document Category with Descrpition value more than 128 characters.
       restMethod: put
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/error
@@ -132,6 +138,7 @@ UpdateDocumentCategory:
       endPoint: /v1/masterdata/documentcategories
       role: admin
       templateFields: ["description"]
+      description: Update Document Category with missing Name field.
       restMethod: put
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/error
@@ -155,6 +162,7 @@ UpdateDocumentCategory:
       endPoint: /v1/masterdata/documentcategories
       role: admin
       templateFields: ["description"]
+      description: Update Document Category with empty Name value.
       restMethod: put
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/error
@@ -178,6 +186,7 @@ UpdateDocumentCategory:
       endPoint: /v1/masterdata/documentcategories
       role: admin
       templateFields: ["name","description"]
+      description: Update Document Category with Name more than 64 characters.
       restMethod: put
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/error

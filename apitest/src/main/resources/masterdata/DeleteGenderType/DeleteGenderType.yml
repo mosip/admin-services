@@ -3,6 +3,7 @@ DeleteGenderType:
       endPoint: /v1/masterdata/gendertypes/{code}
       role: admin
       templateFields: []
+      description: Delete Gender Type with valid data.
       restMethod: delete
       inputTemplate: masterdata/DeleteGenderType/deleteGenderType
       outputTemplate: masterdata/DeleteGenderType/deleteGenderTypeResult
@@ -15,6 +16,7 @@ DeleteGenderType:
       endPoint: /v1/masterdata/gendertypes/{code}
       role: admin
       templateFields: []
+      description: Delete Gender Type with invalid code.      
       restMethod: delete
       inputTemplate: masterdata/DeleteGenderType/deleteGenderType
       outputTemplate: masterdata/error

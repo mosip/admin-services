@@ -3,6 +3,7 @@ UpdateGender:
       endPoint: /v1/masterdata/gendertypes
       role: admin
       templateFields: ["langCode"]
+      description: Update Gender details with all valid details.
       restMethod: put
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/Gender/genderResult
@@ -20,6 +21,7 @@ UpdateGender:
       endPoint: /v1/masterdata/gendertypes
       role: admin
       templateFields: ["langCode"]
+      description: Update Gender details with missing code field.
       restMethod: put
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error
@@ -42,6 +44,7 @@ UpdateGender:
       endPoint: /v1/masterdata/gendertypes
       role: admin
       templateFields: ["langCode"]
+      description: Update Gender details with empty code.
       restMethod: put
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error
@@ -64,6 +67,7 @@ UpdateGender:
       endPoint: /v1/masterdata/gendertypes
       role: admin
       templateFields: ["langCode"]
+      description: Update Gender details with missing genderName field.
       restMethod: put
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error
@@ -86,6 +90,7 @@ UpdateGender:
       endPoint: /v1/masterdata/gendertypes
       role: admin
       templateFields: ["langCode"]
+      description: Update Gender details with empty genderName.
       restMethod: put
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error
@@ -108,6 +113,7 @@ UpdateGender:
       endPoint: /v1/masterdata/gendertypes
       role: admin
       templateFields: ["langCode"]
+      description: Update Gender details with genderName more than 64 characters.
       restMethod: put
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error
@@ -130,6 +136,7 @@ UpdateGender:
       endPoint: /v1/masterdata/gendertypes
       role: admin
       templateFields: ["genderName"]
+      description: Update Gender details with missing isActive field.
       restMethod: put
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error

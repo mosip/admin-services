@@ -3,6 +3,7 @@ FilterLocationData:
       endPoint: /v1/masterdata/locations/filtervalues
       role: admin
       templateFields: ["columnName"]
+      description: Filter Location details by all valid data.
       restMethod: post
       inputTemplate: masterdata/FilterLocationData/filterLocationData
       outputTemplate: masterdata/FilterLocationData/filterLocationDataResult
@@ -22,6 +23,7 @@ FilterLocationData:
       endPoint: /v1/masterdata/locations/filtervalues
       role: admin
       templateFields: ["columnName"]
+      description: Filter Location details by invalid filter Type.
       restMethod: post
       inputTemplate: masterdata/FilterLocationData/filterLocationData
       outputTemplate: masterdata/error

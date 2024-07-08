@@ -2,6 +2,7 @@ FetchHolidays:
    MasterData_FetchHolidays_allValid_smoke_get:
       endPoint: /v1/masterdata/holidays
       role: admin
+      description: Retrieve Holiday details with all valid data.
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchHolidays/fetchHoliday
@@ -16,6 +17,7 @@ FetchHolidays:
    MasterData_FetchHolidays_allValid_smoke_with_Id:
       endPoint: /v1/masterdata/holidays/{holidayid}
       role: admin
+      description: Retrieve Holiday details with valid holidayid.
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchHolidays/fetchHoliday
@@ -29,6 +31,7 @@ FetchHolidays:
    MasterData_FetchHolidays_allValid_smoke_with_Id_and_langCode:
       endPoint: /v1/masterdata/holidays/{holidayid}/{langcode}
       role: admin
+      description: Retrieve Holiday details with valid holidayid and langcode.
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchHolidays/fetchHoliday
@@ -42,6 +45,7 @@ FetchHolidays:
    MasterData_FetchHolidays_invalid_holidayid_unexisting:
       endPoint: /v1/masterdata/holidays/{holidayid}
       role: admin
+      description: Retrieve Holiday details with nonexisting holidayid.
       restMethod: get
       inputTemplate: masterdata/FetchHolidays/fetchHoliday
       outputTemplate: masterdata/error
@@ -60,6 +64,7 @@ FetchHolidays:
    MasterData_FetchHolidays_invalid_holidayid_unexisting with langCode:
       endPoint: /v1/masterdata/holidays/{holidayid}/{langcode}
       role: admin
+      description: Retrieve Holiday details with nonexisting holidayid and valid langCode.
       restMethod: get
       inputTemplate: masterdata/FetchHolidays/fetchHoliday
       outputTemplate: masterdata/error
@@ -78,6 +83,7 @@ FetchHolidays:
    MasterData_FetchHolidays_invalid_langcode_unexisting:
       endPoint: /v1/masterdata/holidays/{holidayid}/{langcode}
       role: admin
+      description: Retrieve Holiday details with nonexisting langcode.
       restMethod: get
       inputTemplate: masterdata/FetchHolidays/fetchHoliday
       outputTemplate: masterdata/error

@@ -3,6 +3,7 @@ GetBiometricTypeByCodeAndLangcode:
       endPoint: /v1/masterdata/biometrictypes/{code}/{langCode}
       role: admin
       templateFields: ["langCode"]
+      description: Retrieve Biometric Type details by code and langCode.
       restMethod: get
       inputTemplate: masterdata/GetBiometricTypeByCodeAndLangcode/getBiometricTypeByCodeAndLangcode
       outputTemplate: masterdata/GetBiometricTypeByCodeAndLangcode/getBiometricTypeByCodeAndLangcodeResult
@@ -17,6 +18,7 @@ GetBiometricTypeByCodeAndLangcode:
       endPoint: /v1/masterdata/biometrictypes/{code}/{langCode}
       role: admin
       templateFields: ["langCode"]
+      description: Retrieve Biometric Type details for IRIS by code and langCode.
       restMethod: get
       inputTemplate: masterdata/GetBiometricTypeByCodeAndLangcode/getBiometricTypeByCodeAndLangcode
       outputTemplate: masterdata/GetBiometricTypeByCodeAndLangcode/getBiometricTypeByCodeAndLangcodeResult
@@ -31,6 +33,7 @@ GetBiometricTypeByCodeAndLangcode:
       endPoint: /v1/masterdata/biometrictypes/{code}/{langCode}
       role: admin
       templateFields: ["langCode"]
+      description: Retrieve Biometric Type details by code PHT and langCode.
       restMethod: get
       inputTemplate: masterdata/GetBiometricTypeByCodeAndLangcode/getBiometricTypeByCodeAndLangcode
       outputTemplate: masterdata/GetBiometricTypeByCodeAndLangcode/getBiometricTypeByCodeAndLangcodeResult
@@ -44,6 +47,7 @@ GetBiometricTypeByCodeAndLangcode:
    Masterdata_GetBiometricTypeByCodeAndLangcode_InValid_Code:
       endPoint: /v1/masterdata/biometrictypes/{code}/{langCode}
       role: admin
+      description: Retrieve Biometric Type details by invalid code and valid langCode.
       restMethod: get
       inputTemplate: masterdata/GetBiometricTypeByCodeAndLangcode/getBiometricTypeByCodeAndLangcode
       outputTemplate: masterdata/error
@@ -62,6 +66,7 @@ GetBiometricTypeByCodeAndLangcode:
    Masterdata_GetBiometricTypeByCodeAndLangcode_InValid_langCode:
       endPoint: /v1/masterdata/biometrictypes/{code}/{langCode}
       role: admin
+      description: Retrieve Biometric Type details by valid code and invalid langCode.
       restMethod: get
       inputTemplate: masterdata/GetBiometricTypeByCodeAndLangcode/getBiometricTypeByCodeAndLangcode
       outputTemplate: masterdata/error

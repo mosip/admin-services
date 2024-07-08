@@ -2,6 +2,7 @@ FetchAllMachineType:
    MasterData_FetchAllMachineType_valid_smoke_langcodeandCode:
       endPoint: /v1/masterdata/machinetypes/all
       role: admin
+      description: Retrieve All Machine Type details with valid data.
       checkErrorsOnlyInResponse: true
       templateFields: []
       restMethod: get

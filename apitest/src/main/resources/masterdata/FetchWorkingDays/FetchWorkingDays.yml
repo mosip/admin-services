@@ -4,6 +4,7 @@ FetchWorkingDays:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langCode"]
+      description: Retrieve  Working Day details By registrationCenterID and langCode.
       restMethod: get
       inputTemplate: masterdata/FetchWorkingDays/fetchWorkingDays
       outputTemplate: masterdata/FetchWorkingDays/fetchWorkingDaysResult
@@ -19,6 +20,7 @@ FetchWorkingDays:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langCode"]
+      description: Retrieve  Working Day details By langCode.
       restMethod: get
       inputTemplate: masterdata/FetchWorkingDays/fetchWorkingDays
       outputTemplate: masterdata/FetchWorkingDays/fetchWorkingDaysResult
@@ -31,6 +33,7 @@ FetchWorkingDays:
    MasterData_FetchWorkingDays_InvalidValid_langCode:
       endPoint: /v1/masterdata/workingdays/{registrationCenterID}/{langCode}
       role: admin
+      description: Retrieve  Working Day details By invalid langCode.
       restMethod: get
       inputTemplate: masterdata/FetchWorkingDays/fetchWorkingDays
       outputTemplate: masterdata/error
@@ -50,6 +53,7 @@ FetchWorkingDays:
       endPoint: /v1/masterdata/workingdays/{registrationCenterID}/{langCode}
       role: admin
       templateFields: ["langCode"]
+      description: Retrieve  Working Day details By invalid registrationCenterID and valid langCode.
       restMethod: get
       inputTemplate: masterdata/FetchWorkingDays/fetchWorkingDays
       outputTemplate: masterdata/error

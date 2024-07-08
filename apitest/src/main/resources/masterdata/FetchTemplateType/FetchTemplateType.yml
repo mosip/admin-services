@@ -4,6 +4,7 @@ FetchTemplateType:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
+      description: Retrieve Templates Types with all valid data.
       restMethod: get
       inputTemplate: masterdata/FetchTemplateType/fetchTemplateType
       outputTemplate: masterdata/FetchTemplateType/fetchTemplateTypeResult
@@ -16,6 +17,7 @@ FetchTemplateType:
    MasterData_FetchTemplateType_inValid_code:
       endPoint: /v1/masterdata/templatetypes/{code}/{langcode}
       role: admin
+      description: Retrieve Templates Types with invalid code and Valid langcode.
       restMethod: get
       inputTemplate: masterdata/FetchTemplateType/fetchTemplateType
       outputTemplate: masterdata/error
@@ -37,6 +39,7 @@ FetchTemplateType:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
+      description: Retrieve Templates Types with only langcode.
       restMethod: get
       inputTemplate: masterdata/FetchTemplateType/fetchTemplateType
       outputTemplate: masterdata/FetchTemplateType/fetchTemplateTypeResult

@@ -2,6 +2,7 @@ GetAllTxnDetailBulkUpload:
    Master_GetAllTxnDetailBulkUpload_Smoke:
       endPoint: /v1/admin/bulkupload/getAllTransactions
       role: admin
+      description: Retrieve all transcation details for bulk upload.
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/GetAllTxnDetailBulkUpload/allTxnDetails

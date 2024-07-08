@@ -4,6 +4,7 @@ FetchValidDocuments:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languagecode"]
+      description: Retrieve valid Documents By languagecode with all valid data.
       restMethod: get
       inputTemplate: masterdata/FetchValidDocuments/fetchValidDocuments
       outputTemplate: masterdata/FetchValidDocuments/fetchValidDocumentsResult

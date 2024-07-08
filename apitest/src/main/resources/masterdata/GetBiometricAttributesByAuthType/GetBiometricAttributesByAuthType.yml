@@ -2,6 +2,7 @@ GetBiometricAttributesByAuthType:
    Admin_GetBiometricAttributesByAuthType_allValid_smoke:
       endPoint: /v1/masterdata/getbiometricattributesbyauthtype/{langcode}/{biometrictypecode}
       role: admin
+      description: Retrieve Biometric Attributes By Auth Type by langcode and biometrictypecode.
       restMethod: get
       inputTemplate: masterdata/GetBiometricAttributesByAuthType/getBiometricAttributesByAuthType
       outputTemplate: masterdata/GetBiometricAttributesByAuthType/getBiometricAttributesByAuthTypeResult
@@ -22,6 +23,7 @@ GetBiometricAttributesByAuthType:
    Admin_GetBiometricAttributesByAuthType_InValid_Invalid_langcode:
       endPoint: /v1/masterdata/getbiometricattributesbyauthtype/{langcode}/{biometrictypecode}
       role: admin
+      description: Retrieve Biometric Attributes By Auth Type by invalid langcode and valid biometrictypecode.
       restMethod: get
       inputTemplate: masterdata/GetBiometricAttributesByAuthType/getBiometricAttributesByAuthType
       outputTemplate: masterdata/error
@@ -41,6 +43,7 @@ GetBiometricAttributesByAuthType:
    Admin_GetBiometricAttributesByAuthType_InValid_Invalid_biometrictypecode:
       endPoint: /v1/masterdata/getbiometricattributesbyauthtype/{langcode}/{biometrictypecode}
       role: admin
+      description: Retrieve Biometric Attributes By Auth Type by valid langcode and invalid biometrictypecode.
       restMethod: get
       inputTemplate: masterdata/GetBiometricAttributesByAuthType/getBiometricAttributesByAuthType
       outputTemplate: masterdata/error

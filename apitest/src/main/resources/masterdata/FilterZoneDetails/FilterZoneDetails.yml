@@ -2,6 +2,7 @@ FilterZoneDetails:
    Admin_FilterZoneDetails_Valid_Request_Smoke:
       endPoint: /v1/masterdata/zones/filtervalues
       role: admin
+      description: Filter Zone details by all valid details.
       restMethod: post
       inputTemplate: masterdata/FilterZoneDetails/filterZoneDetails
       outputTemplate: masterdata/FilterZoneDetails/filterZoneDetailsResult
@@ -27,6 +28,7 @@ FilterZoneDetails:
    Admin_FilterZoneDetails_Invalid_EmptyFilterType:
       endPoint: /v1/masterdata/zones/filtervalues
       role: admin
+      description: Filter Zone details by empty filter type.
       restMethod: post
       inputTemplate: masterdata/FilterZoneDetails/filterZoneDetails
       outputTemplate: masterdata/error
@@ -51,6 +53,7 @@ FilterZoneDetails:
    Admin_FilterZoneDetails_Invalid_InvalidFilterType:
       endPoint: /v1/masterdata/zones/filtervalues
       role: admin
+      description: Filter Zone details by invalid filter type.
       restMethod: post
       inputTemplate: masterdata/FilterZoneDetails/filterZoneDetails
       outputTemplate: masterdata/error
@@ -75,6 +78,7 @@ FilterZoneDetails:
    Admin_FilterZoneDetails_Invalid_InvalidcolumnName:
       endPoint: /v1/masterdata/zones/filtervalues
       role: admin
+      description: Filter Zone details by invalid filter columnname.
       restMethod: post
       inputTemplate: masterdata/FilterZoneDetails/filterZoneDetails
       outputTemplate: masterdata/error
@@ -99,6 +103,7 @@ FilterZoneDetails:
    Admin_FilterZoneDetails_Invalid_EmptycolumnName:
       endPoint: /v1/masterdata/zones/filtervalues
       role: admin
+      description: Filter Zone details by empty columnname.
       restMethod: post
       inputTemplate: masterdata/FilterZoneDetails/filterZoneDetails
       outputTemplate: masterdata/error

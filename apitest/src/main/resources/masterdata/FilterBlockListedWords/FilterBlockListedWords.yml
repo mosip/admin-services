@@ -3,6 +3,7 @@ FilterBlockListedWords:
       endPoint: /v1/masterdata/blocklistedwords/filtervalues
       role: admin
       templateFields: ["text","fieldValue"]
+      description: Filter Block Listed Words with valid columnName and type unique.
       restMethod: post
       inputTemplate: masterdata/FilterBlockListedWords/filterBlockListedWords
       outputTemplate: masterdata/FilterBlockListedWords/filterBlockListedWordsResult
@@ -27,6 +28,7 @@ FilterBlockListedWords:
       endPoint: /v1/masterdata/blocklistedwords/filtervalues
       role: admin
       templateFields: ["text","fieldValue"]
+      description: Filter Block Listed Words with valid columnName and type All.
       restMethod: post
       inputTemplate: masterdata/FilterBlockListedWords/filterBlockListedWords
       outputTemplate: masterdata/FilterBlockListedWords/filterBlockListedWordsResult
@@ -51,6 +53,7 @@ FilterBlockListedWords:
       endPoint: /v1/masterdata/blocklistedwords/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Block Listed Words with empty columnName and type All.
       restMethod: post
       inputTemplate: masterdata/FilterBlockListedWords/filterBlockListedWords
       outputTemplate: masterdata/error
@@ -75,6 +78,7 @@ FilterBlockListedWords:
       endPoint: /v1/masterdata/blocklistedwords/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Block Listed Words with empty type.
       restMethod: post
       inputTemplate: masterdata/FilterBlockListedWords/filterBlockListedWords
       outputTemplate: masterdata/error
@@ -99,6 +103,7 @@ FilterBlockListedWords:
       endPoint: /v1/masterdata/blocklistedwords/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Block Listed Words with invalid columnName and type all.
       restMethod: post
       inputTemplate: masterdata/FilterBlockListedWords/filterBlockListedWords
       outputTemplate: masterdata/error
@@ -122,6 +127,7 @@ FilterBlockListedWords:
       endPoint: /v1/masterdata/blocklistedwords/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Block Listed Words with valid columnName and invalid type.
       restMethod: post
       inputTemplate: masterdata/FilterBlockListedWords/filterBlockListedWords
       outputTemplate: masterdata/error

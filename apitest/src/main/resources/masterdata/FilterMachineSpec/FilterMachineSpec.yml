@@ -3,6 +3,7 @@ FilterMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Machine Spec details by all valid data.
       restMethod: post
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
@@ -27,6 +28,7 @@ FilterMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Machine Spec details by type all valid columnName and text.
       restMethod: post
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
@@ -51,6 +53,7 @@ FilterMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Machine Spec details by type all valid columnName and text.
       restMethod: post
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
@@ -75,6 +78,7 @@ FilterMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Machine Spec details by filter type unique valid  columnName and text.
       restMethod: post
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
@@ -99,6 +103,7 @@ FilterMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Machine Spec details by filter type unique valid columnName brand and text.
       restMethod: post
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
@@ -123,6 +128,7 @@ FilterMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Machine Spec details by filter type all valid columnName model and text.
       restMethod: post
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
@@ -148,6 +154,7 @@ FilterMachineSpec:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
+      description: Filter Machine Spec details by filter type unique valid columnName and blank text.
       restMethod: post
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
@@ -166,6 +173,7 @@ FilterMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Machine Spec details by filter type empty valid columnName and text.
       restMethod: post
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/error
@@ -190,6 +198,7 @@ FilterMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Machine Spec details by filter type all blank columnName and valid text.
       restMethod: post
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/error
@@ -214,6 +223,7 @@ FilterMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Machine Spec details by invalid requesttime format.
       restMethod: post
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/error
@@ -238,6 +248,7 @@ FilterMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Machine Spec details by invalid columnName.
       restMethod: post
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/error
@@ -261,6 +272,7 @@ FilterMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Machine Spec details by invalid filter type.
       restMethod: post
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/error
@@ -286,6 +298,7 @@ FilterMachineSpec:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
+      description: Filter Machine Spec details by invalid filter text value.
       restMethod: post
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/NilFilterResult

@@ -3,7 +3,8 @@ FetchMissingDynamicField:
       endPoint: /v1/masterdata/dynamicfields/missingids/{langcode}?fieldName={fieldName}
       role: admin
       checkErrorsOnlyInResponse: true
-      templateFields: ["langcode"]
+      templateFields: ["langcode"]      
+      description: Retrieve Missing Dynamic field details by langcode.
       restMethod: get
       inputTemplate: masterdata/FetchMissingDynamicField/fetchMissingDynamicField
       outputTemplate: masterdata/FetchMissingDynamicField/fetchMissingDynamicFieldResult
@@ -17,7 +18,8 @@ FetchMissingDynamicField:
       endPoint: /v1/masterdata/dynamicfields/missingids/{langcode}?fieldName={fieldName}
       role: admin
       checkErrorsOnlyInResponse: true
-      templateFields: ["langcode"]
+      templateFields: ["langcode"]      
+      description: Retrieve Missing Dynamic field details by langcode and Field Name.
       restMethod: get
       inputTemplate: masterdata/FetchMissingDynamicField/fetchMissingDynamicField
       outputTemplate: masterdata/FetchMissingDynamicField/fetchMissingDynamicFieldResult

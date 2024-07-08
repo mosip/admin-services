@@ -3,6 +3,7 @@ CreateDocumentCategory:
       endPoint: /v1/masterdata/documentcategories
       role: admin
       templateFields: ["name","description"]
+      description: Create Document Category with all valid data.
       restMethod: post
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/DocumentCategory/documentCategoryResult
@@ -21,6 +22,7 @@ CreateDocumentCategory:
       endPoint: /v1/masterdata/documentcategories
       role: admin
       templateFields: ["name"]
+      description: Create Document Category with all mandatory data.
       restMethod: post
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/DocumentCategory/documentCategoryResult
@@ -40,6 +42,7 @@ CreateDocumentCategory:
       endPoint: /v1/masterdata/documentcategories
       role: admin
       templateFields: ["name","description"]
+      description: Create Document Category with missing code field.
       restMethod: post
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/error
@@ -63,6 +66,7 @@ CreateDocumentCategory:
       endPoint: /v1/masterdata/documentcategories
       role: admin
       templateFields: ["name","description"]
+      description: Create Document Category with empty code value.
       restMethod: post
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/error
@@ -86,6 +90,7 @@ CreateDocumentCategory:
       endPoint: /v1/masterdata/documentcategories
       role: admin
       templateFields: ["name","description"]
+      description: Create Document Category with code more than 36 characters.
       restMethod: post
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/error
@@ -109,6 +114,7 @@ CreateDocumentCategory:
       endPoint: /v1/masterdata/documentcategories
       role: admin
       templateFields: ["name","description"]
+      description: Create Document Category with description more than 36 characters.
       restMethod: post
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/error
@@ -132,6 +138,7 @@ CreateDocumentCategory:
       endPoint: /v1/masterdata/documentcategories
       role: admin
       templateFields: ["description"]
+      description: Create Document Category with missing name field.
       restMethod: post
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/error
@@ -155,6 +162,7 @@ CreateDocumentCategory:
       endPoint: /v1/masterdata/documentcategories
       role: admin
       templateFields: ["description"]
+      description: Create Document Category with empty name field.
       restMethod: post
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/error
@@ -178,6 +186,7 @@ CreateDocumentCategory:
       endPoint: /v1/masterdata/documentcategories
       role: admin
       templateFields: ["name","description"]
+      description: Create Document Category with name more than 64 characters.
       restMethod: post
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/error
@@ -202,6 +211,7 @@ CreateDocumentCategory:
       endPoint: /v1/masterdata/documentcategories
       role: admin
       templateFields: ["name","description"]
+      description: Create Document Category with missing isActive field.
       restMethod: post
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/error
@@ -226,6 +236,7 @@ CreateDocumentCategory:
       endPoint: /v1/masterdata/documentcategories
       role: admin
       templateFields: ["name"]
+      description: Create Document Category with special characters in name field.
       restMethod: post
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/error

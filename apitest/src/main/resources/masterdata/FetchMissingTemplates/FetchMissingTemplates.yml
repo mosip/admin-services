@@ -4,6 +4,7 @@ FetchMissingTemplates:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
+      description: Retrieve Missing Template Details by langcode.
       restMethod: get
       inputTemplate: masterdata/FetchMissingTemplates/fetchMissingTemplates
       outputTemplate: masterdata/FetchMissingTemplates/fetchMissingTemplatesResult
@@ -18,6 +19,7 @@ FetchMissingTemplates:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
+      description: Retrieve Missing Template Details by langcode and fieldName.
       restMethod: get
       inputTemplate: masterdata/FetchMissingTemplates/fetchMissingTemplates
       outputTemplate: masterdata/FetchMissingTemplates/fetchMissingTemplatesResult

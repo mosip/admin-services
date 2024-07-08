@@ -2,6 +2,7 @@ FetchDistinctDynamicField:
    Masterdata_FetchDistinctDynamicField_AllValid_smoke:
       endPoint: /v1/masterdata/dynamicfields/distinct
       role: admin
+      description: Retrieve distinct Dynamic field values.
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchDistinctDynamicField/fetchDistinctDynamicField

@@ -4,6 +4,7 @@ FilterDocCategory:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]
+      description: Filter Document Category with all valid details.
       restMethod: post
       inputTemplate: masterdata/FilterDocCategory/filterDocCategory
       outputTemplate: masterdata/FilterDocCategory/filterDocCategoryResult
@@ -23,6 +24,7 @@ FilterDocCategory:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]
+      description: Filter Document Category By type all and all valid details.
       restMethod: post
       inputTemplate: masterdata/FilterDocCategory/filterDocCategory
       outputTemplate: masterdata/FilterDocCategory/filterDocCategoryResult
@@ -42,6 +44,7 @@ FilterDocCategory:
       endPoint: /v1/masterdata/documentcategories/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Document Category By type all and empty columnName.
       restMethod: post
       inputTemplate: masterdata/FilterDocCategory/filterDocCategory
       outputTemplate: masterdata/error
@@ -67,6 +70,7 @@ FilterDocCategory:
       endPoint: /v1/masterdata/documentcategories/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Document Category By type all and invalid requesttime format.
       restMethod: post
       inputTemplate: masterdata/FilterDocCategory/filterDocCategory
       outputTemplate: masterdata/error
@@ -91,6 +95,7 @@ FilterDocCategory:
       endPoint: /v1/masterdata/documentcategories/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Document Category By yype all and invalid columnName.
       restMethod: post
       inputTemplate: masterdata/FilterDocCategory/filterDocCategory
       outputTemplate: masterdata/error
@@ -114,6 +119,7 @@ FilterDocCategory:
       endPoint: /v1/masterdata/documentcategories/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Document Category By invalid type.
       restMethod: post
       inputTemplate: masterdata/FilterDocCategory/filterDocCategory
       outputTemplate: masterdata/error
@@ -139,6 +145,7 @@ FilterDocCategory:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]
+      description: Filter Document Category By type all and empty text.
       restMethod: post
       inputTemplate: masterdata/FilterDocCategory/filterDocCategory
       outputTemplate: masterdata/FilterDocCategory/filterDocCategoryResult

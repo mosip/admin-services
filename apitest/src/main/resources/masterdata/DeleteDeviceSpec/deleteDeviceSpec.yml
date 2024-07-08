@@ -4,6 +4,7 @@ DeleteDeviceSpec:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: []
+      description: Delete Device Spec with valid data.
       restMethod: delete
       inputTemplate: masterdata/DeleteDeviceSpec/deleteDeviceSpec
       outputTemplate: masterdata/DeleteDeviceSpec/deleteDeviceSpecResult
@@ -16,6 +17,7 @@ DeleteDeviceSpec:
       endPoint: /v1/masterdata/devicespecifications/{id}
       role: admin
       templateFields: []
+      description: Delete Device Spec with invalid id.
       restMethod: delete
       inputTemplate: masterdata/DeleteDeviceSpec/deleteDeviceSpec
       outputTemplate: masterdata/error

@@ -3,7 +3,7 @@ BlockListedWordValidation:
       endPoint: /v1/masterdata/blocklistedwords/words
       role: admin
       templateFields: []
-      description: Validate the block listed words
+      description: Validate the Block Listed words.
       restMethod: post
       inputTemplate: masterdata/BlockListedWordValidation/blockListedWordValidation
       outputTemplate: masterdata/BlockListedWordValidation/blockListedWordValidationResult

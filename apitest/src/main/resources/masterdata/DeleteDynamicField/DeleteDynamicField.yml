@@ -2,6 +2,7 @@ DeleteDynamicField:
    MasterData_DeleteDynamicField_All_Valid_Smoke:  
       endPoint: /v1/masterdata/dynamicfields/{id}
       role: admin
+      description: Delete Dynamic Field with valid data.
       restMethod: delete
       inputTemplate: masterdata/DeleteDynamicField/deleteDynamicField
       outputTemplate: masterdata/DeleteDynamicField/deleteDynamicFieldResult
@@ -14,6 +15,7 @@ DeleteDynamicField:
    MasterData_DeleteDynamicField_Invalid_ID: 
       endPoint: /v1/masterdata/dynamicfields/{id}
       role: admin
+      description: Delete Dynamic Field with invalid id.
       restMethod: delete
       inputTemplate: masterdata/DeleteDynamicField/deleteDynamicField
       outputTemplate: masterdata/error
@@ -31,6 +33,7 @@ DeleteDynamicField:
    MasterData_DeleteDynamicField_ByFieldName_allValid_smoke: 
       endPoint: /v1/masterdata/dynamicfields/all/{id}
       role: admin
+      description: Delete all Dynamic Field By id.
       restMethod: delete
       inputTemplate: masterdata/DeleteDynamicField/deleteDynamicField
       outputTemplate: masterdata/DeleteDynamicField/deleteDynamicFieldResult

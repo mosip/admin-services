@@ -2,6 +2,7 @@ GetApplicationTypes:
    Masterdata_GetApplicationTypes_allValid_smoke:
       endPoint: /v1/masterdata/applicationtypes
       role: admin
+      description: Retrieve Application Types with valid data.
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/GetApplicationTypes/getApplicationTypes

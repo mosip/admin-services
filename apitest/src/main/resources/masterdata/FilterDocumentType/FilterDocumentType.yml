@@ -3,6 +3,7 @@ FilterDocumentType:
       endPoint: /v1/masterdata/documenttypes/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Document Type with type unique and all valid data.
       restMethod: post
       inputTemplate: masterdata/FilterDocumentType/filterDocumentType
       outputTemplate: masterdata/FilterDocumentType/filterDocumentTypeResult
@@ -27,6 +28,7 @@ FilterDocumentType:
       endPoint: /v1/masterdata/documenttypes/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Document Type with type all and all valid data.
       restMethod: post
       inputTemplate: masterdata/FilterDocumentType/filterDocumentType
       outputTemplate: masterdata/FilterDocumentType/filterDocumentTypeResult
@@ -52,6 +54,7 @@ FilterDocumentType:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]
+      description: Filter Document Type with type all columnName code and valid text.
       restMethod: post
       inputTemplate: masterdata/FilterDocumentType/filterDocumentType
       outputTemplate: masterdata/FilterDocumentType/filterDocumentTypeResult
@@ -70,6 +73,7 @@ FilterDocumentType:
       endPoint: /v1/masterdata/documenttypes/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Document Type with empty type columnName code and valid text.
       restMethod: post
       inputTemplate: masterdata/FilterDocumentType/filterDocumentType
       outputTemplate: masterdata/error
@@ -95,6 +99,7 @@ FilterDocumentType:
       endPoint: /v1/masterdata/documenttypes/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Document Type with All valid data and invalid requesttime format.
       restMethod: post
       inputTemplate: masterdata/FilterDocumentType/filterDocumentType
       outputTemplate: masterdata/error
@@ -119,6 +124,7 @@ FilterDocumentType:
       endPoint: /v1/masterdata/documenttypes/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Document Type By type All and invalid Column Name.
       restMethod: post
       inputTemplate: masterdata/FilterDocumentType/filterDocumentType
       outputTemplate: masterdata/error
@@ -143,6 +149,7 @@ FilterDocumentType:
       endPoint: /v1/masterdata/documenttypes/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Document Type By invalid type.
       restMethod: post
       inputTemplate: masterdata/FilterDocumentType/filterDocumentType
       outputTemplate: masterdata/error
@@ -166,6 +173,7 @@ FilterDocumentType:
    MasterData_FilterDocumentType_Empty_FilterText_Pos:
       endPoint: /v1/masterdata/documenttypes/filtervalues
       role: admin
+      description: Filter Document Type By type All and empty text.
       checkErrorsOnlyInResponse: true
       restMethod: post
       inputTemplate: masterdata/FilterDocumentType/filterDocumentType

@@ -4,6 +4,7 @@ FilterRegCenterType:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
+      description: Filter Registration Center Type details by all valid data.
       restMethod: post
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType
       outputTemplate: masterdata/FilterRegCenterType/filterRegCenterTypeResult
@@ -23,6 +24,7 @@ FilterRegCenterType:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
+      description: Filter Registration Center Type details by columnName name.
       restMethod: post
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType
       outputTemplate: masterdata/FilterRegCenterType/filterRegCenterTypeResult
@@ -41,6 +43,7 @@ FilterRegCenterType:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Registration Center Type details by empty text.
       restMethod: post
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType
       outputTemplate: masterdata/FilterRegCenterType/filterRegCenterTypeResult
@@ -71,6 +74,7 @@ FilterRegCenterType:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Registration Center Type details by columnName isActive and empty text.
       restMethod: post
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType
       outputTemplate: masterdata/FilterRegCenterType/filterRegCenterTypeResult
@@ -102,6 +106,7 @@ FilterRegCenterType:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
+      description: Filter Registration Center Type details by invalid filter text.
       restMethod: post
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType
       outputTemplate: masterdata/NilFilterResult
@@ -121,6 +126,7 @@ FilterRegCenterType:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Registration Center Type details by empty filter type.
       restMethod: post
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType
       outputTemplate: masterdata/error
@@ -145,6 +151,7 @@ FilterRegCenterType:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Registration Center Type details by empty filter columnname.
       restMethod: post
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType
       outputTemplate: masterdata/error
@@ -170,6 +177,7 @@ FilterRegCenterType:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Registration Center Type details by invalid requesttime format.
       restMethod: post
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType
       outputTemplate: masterdata/error
@@ -194,6 +202,7 @@ FilterRegCenterType:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Registration Center Type details by invalid filter column name.
       restMethod: post
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType
       outputTemplate: masterdata/error
@@ -218,6 +227,7 @@ FilterRegCenterType:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Registration Center Type details by invalid filter type.
       restMethod: post
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType
       outputTemplate: masterdata/error

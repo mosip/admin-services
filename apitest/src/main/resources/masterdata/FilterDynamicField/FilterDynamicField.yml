@@ -3,6 +3,7 @@ FilterDynamicField:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Dynamic Fields By all valid data.
       restMethod: post
       inputTemplate: masterdata/FilterDynamicField/filterDynamicField
       outputTemplate: masterdata/FilterDynamicField/filterDynamicFieldResult
@@ -32,6 +33,7 @@ FilterDynamicField:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Dynamic Fields By invalid requesttime format.
       restMethod: post
       inputTemplate: masterdata/FilterDynamicField/filterDynamicField
       outputTemplate: masterdata/error
@@ -56,6 +58,7 @@ FilterDynamicField:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Dynamic Fields By invalid type.
       restMethod: post
       inputTemplate: masterdata/FilterDynamicField/filterDynamicField
       outputTemplate: masterdata/error
@@ -80,6 +83,7 @@ FilterDynamicField:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Dynamic Fields By empty type.
       restMethod: post
       inputTemplate: masterdata/FilterDynamicField/filterDynamicField
       outputTemplate: masterdata/error
@@ -104,6 +108,7 @@ FilterDynamicField:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Dynamic Fields By empty text.
       restMethod: post
       inputTemplate: masterdata/FilterDynamicField/filterDynamicField
       outputTemplate: masterdata/error

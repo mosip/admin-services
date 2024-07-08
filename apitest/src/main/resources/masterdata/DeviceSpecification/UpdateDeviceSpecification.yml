@@ -4,6 +4,7 @@ UpdateDeviceSpecification:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["name","description"]
+      description: Update Device Specification with all valid data.
       restMethod: put
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/DeviceSpecification/deviceSpecificationResult
@@ -27,6 +28,7 @@ UpdateDeviceSpecification:
       endPoint: /v1/masterdata/devicespecifications
       role: admin
       templateFields: ["description"]
+      description: Update Device Specification with missing input parameter Name.
       restMethod: put
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error
@@ -54,6 +56,7 @@ UpdateDeviceSpecification:
       endPoint: /v1/masterdata/devicespecifications
       role: admin
       templateFields: ["description"]
+      description: Update Device Specification with empty input parameter Name.
       restMethod: put
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error
@@ -81,6 +84,7 @@ UpdateDeviceSpecification:
       endPoint: /v1/masterdata/devicespecifications
       role: admin
       templateFields: ["description"]
+      description: Update Device Specification with Name more than 64 charectars.
       restMethod: put
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error
@@ -108,6 +112,7 @@ UpdateDeviceSpecification:
       endPoint: /v1/masterdata/devicespecifications
       role: admin
       templateFields: ["name","description"]
+      description: Update Device Specification with missing input parameter Brand.
       restMethod: put
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error
@@ -135,6 +140,7 @@ UpdateDeviceSpecification:
       endPoint: /v1/masterdata/devicespecifications
       role: admin
       templateFields: ["name","description"]
+      description: Update Device Specification with empty input parameter Brand.
       restMethod: put
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error
@@ -162,6 +168,7 @@ UpdateDeviceSpecification:
       endPoint: /v1/masterdata/devicespecifications
       role: admin
       templateFields: ["name","description"]
+      description: Update Device Specification with Brand more than 32 charectars.
       restMethod: put
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error
@@ -189,6 +196,7 @@ UpdateDeviceSpecification:
       endPoint: /v1/masterdata/devicespecifications
       role: admin
       templateFields: ["name","description"]
+      description: Update Device Specification with missing input parameter Model.
       restMethod: put
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error
@@ -216,6 +224,7 @@ UpdateDeviceSpecification:
       endPoint: /v1/masterdata/devicespecifications
       role: admin
       templateFields: ["name","description"]
+      description: Update Device Specification with empty input parameter Model.
       restMethod: put
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error
@@ -243,6 +252,7 @@ UpdateDeviceSpecification:
       endPoint: /v1/masterdata/devicespecifications
       role: admin
       templateFields: ["name","description"]
+      description: Update Device Specification with Model more than 16 charectars.
       restMethod: put
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error
@@ -270,6 +280,7 @@ UpdateDeviceSpecification:
       endPoint: /v1/masterdata/devicespecifications
       role: admin
       templateFields: ["name","description"]
+      description: Update Device Specification with missing input parameter Device Type Code.
       restMethod: put
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error
@@ -297,6 +308,7 @@ UpdateDeviceSpecification:
       endPoint: /v1/masterdata/devicespecifications
       role: admin
       templateFields: ["name","description"]
+      description: Update Device Specification with empty input parameter Device Type Code.
       restMethod: put
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error
@@ -324,6 +336,7 @@ UpdateDeviceSpecification:
       endPoint: /v1/masterdata/devicespecifications
       role: admin
       templateFields: ["name","description"]
+      description: Update Device Specification with Device Type Code motre than 36 charectars.
       restMethod: put
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error
@@ -351,6 +364,7 @@ UpdateDeviceSpecification:
       endPoint: /v1/masterdata/devicespecifications
       role: admin
       templateFields: ["name","description"]
+      description: Update Device Specification with invalid input parameter Device Type Code.
       restMethod: put
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error
@@ -378,6 +392,7 @@ UpdateDeviceSpecification:
       endPoint: /v1/masterdata/devicespecifications
       role: admin
       templateFields: ["name","description"]
+      description: Update Device Specification with missing input parameter Minimum Driver Version.
       restMethod: put
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error
@@ -405,6 +420,7 @@ UpdateDeviceSpecification:
       endPoint: /v1/masterdata/devicespecifications
       role: admin
       templateFields: ["name","description"]
+      description: Update Device Specification with empty input parameter Minimum Driver Version.
       restMethod: put
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error
@@ -432,6 +448,7 @@ UpdateDeviceSpecification:
       endPoint: /v1/masterdata/devicespecifications
       role: admin
       templateFields: ["name","description"]
+      description: Update Device Specification with Minimum Driver Version more than 64 charectars.
       restMethod: put
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error
@@ -459,6 +476,7 @@ UpdateDeviceSpecification:
       endPoint: /v1/masterdata/devicespecifications
       role: admin
       templateFields: ["name"]
+      description: Update Device Specification with Description more than 256 charectars.
       restMethod: put
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error

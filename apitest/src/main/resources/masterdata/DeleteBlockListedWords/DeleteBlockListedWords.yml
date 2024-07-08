@@ -3,6 +3,7 @@ DeleteBlockListedWords:
       endPoint: /v1/masterdata/blocklistedwords/{word}
       role: admin
       templateFields: ["word","code"]
+      description: Delete Block Listed words with valid data.
       restMethod: Delete
       inputTemplate: masterdata/DeleteBlockListedWords/deleteBlockListedWords
       outputTemplate: masterdata/DeleteBlockListedWords/deleteBlockListedWordsResult

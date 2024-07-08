@@ -3,6 +3,7 @@ CreateDeviceType:
       endPoint: /v1/masterdata/devicetypes
       role: admin
       templateFields: ["description"]
+      description: Create Device Type with all valid data.
       restMethod: post
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/DeviceType/deviceTypeResult
@@ -22,6 +23,7 @@ CreateDeviceType:
       endPoint: /v1/masterdata/devicetypes
       role: admin
       templateFields: ["description"]
+      description: Create Device Type for deactivated devices.
       restMethod: post
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/DeviceType/deviceTypeResult
@@ -40,6 +42,7 @@ CreateDeviceType:
       endPoint: /v1/masterdata/devicetypes
       role: admin
       templateFields: ["description","name"]
+      description: Create Device Type with all mandatory fields.
       restMethod: post
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/DeviceType/deviceTypeResult
@@ -59,6 +62,7 @@ CreateDeviceType:
       endPoint: /v1/masterdata/devicetypes
       role: admin
       templateFields: ["description"]
+      description: Create Device Type with duplicate data.
       restMethod: post
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error
@@ -82,6 +86,7 @@ CreateDeviceType:
       endPoint: /v1/masterdata/devicetypes
       role: admin
       templateFields: ["description"]
+      description: Create Device Type with missing Input Parameter name.
       restMethod: post
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error
@@ -105,6 +110,7 @@ CreateDeviceType:
       endPoint: /v1/masterdata/devicetypes
       role: admin
       templateFields: ["description"]
+      description: Create Device Type with empty Input Parameter name.
       restMethod: post
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error
@@ -128,6 +134,7 @@ CreateDeviceType:
       endPoint: /v1/masterdata/devicetypes
       role: admin
       templateFields: ["description"]
+      description: Create Device Type with name more than 64 characters.
       restMethod: post
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error
@@ -151,6 +158,7 @@ CreateDeviceType:
       endPoint: /v1/masterdata/devicetypes
       role: admin
       templateFields: ["name"]
+      description: Create Device Type with description more than 128 characters.
       restMethod: post
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error
@@ -173,6 +181,7 @@ CreateDeviceType:
    MasterData_CreateDeviceType_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/devicetypes
       role: admin
+      description: Create Device Type with missing Input Parameter isActive.
       restMethod: post
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error
@@ -197,6 +206,7 @@ CreateDeviceType:
       endPoint: /v1/masterdata/devicetypes
       role: admin
       templateFields: ["description","name"]
+      description: Create Device Type with special characters in code.
       restMethod: post
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error

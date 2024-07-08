@@ -4,6 +4,7 @@ FilterMachineType:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]
+      description: Filter Machine Type details by all valid data.
       restMethod: post
       inputTemplate: masterdata/FilterMachineType/filterMachineType
       outputTemplate: masterdata/FilterMachineType/filterMachineTypeResult
@@ -23,6 +24,7 @@ FilterMachineType:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]
+      description: Filter Machine Type details by filter type all.
       restMethod: post
       inputTemplate: masterdata/FilterMachineType/filterMachineType
       outputTemplate: masterdata/FilterMachineType/filterMachineTypeResult
@@ -42,6 +44,7 @@ FilterMachineType:
       endPoint: /v1/masterdata/machinetypes/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Machine Type details by blank filter type.
       restMethod: post
       inputTemplate: masterdata/FilterMachineType/filterMachineType
       outputTemplate: masterdata/error
@@ -66,6 +69,7 @@ FilterMachineType:
       endPoint: /v1/masterdata/machinetypes/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Machine Type details by blank filter columnName.
       restMethod: post
       inputTemplate: masterdata/FilterMachineType/filterMachineType
       outputTemplate: masterdata/error
@@ -90,6 +94,7 @@ FilterMachineType:
       endPoint: /v1/masterdata/machinetypes/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Machine Type details by invalid requesttime format.
       restMethod: post
       inputTemplate: masterdata/FilterMachineType/filterMachineType
       outputTemplate: masterdata/error
@@ -114,6 +119,7 @@ FilterMachineType:
       endPoint: /v1/masterdata/machinetypes/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Machine Type details by invalid filter columnName.
       restMethod: post
       inputTemplate: masterdata/FilterMachineType/filterMachineType
       outputTemplate: masterdata/error
@@ -137,6 +143,7 @@ FilterMachineType:
       endPoint: /v1/masterdata/machinetypes/filtervalues
       role: admin
       templateFields: ["text"]
+      description: Filter Machine Type details by invalid filter type.
       restMethod: post
       inputTemplate: masterdata/FilterMachineType/filterMachineType
       outputTemplate: masterdata/error
@@ -162,6 +169,7 @@ FilterMachineType:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]
+      description: Filter Machine Type details by invalid filter text.
       restMethod: post
       inputTemplate: masterdata/FilterMachineType/filterMachineType
       outputTemplate: masterdata/NilFilterResult

@@ -3,6 +3,7 @@ UpdateDeviceType:
       endPoint: /v1/masterdata/devicetypes
       role: admin
       templateFields: ["description"]
+      description: Update Device Type with all valid data.
       restMethod: put
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/DeviceType/deviceTypeResult
@@ -21,6 +22,7 @@ UpdateDeviceType:
       endPoint: /v1/masterdata/devicetypes
       role: admin
       templateFields: ["description"]
+      description: Update Device Type with all mandatory fields.
       restMethod: put
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/DeviceType/deviceTypeResult
@@ -39,6 +41,7 @@ UpdateDeviceType:
       endPoint: /v1/masterdata/devicetypes
       role: admin
       templateFields: ["description"]
+      description: Update Device Type with missing input parameter Code.
       restMethod: put
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error
@@ -62,6 +65,7 @@ UpdateDeviceType:
       endPoint: /v1/masterdata/devicetypes
       role: admin
       templateFields: ["description"]
+      description: Update Device Type with empty  input parameter Code.
       restMethod: put
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error
@@ -85,6 +89,7 @@ UpdateDeviceType:
       endPoint: /v1/masterdata/devicetypes
       role: admin
       templateFields: ["description"]
+      description: Update Device Type with Code more than 64 charectars.
       restMethod: put
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error
@@ -108,6 +113,7 @@ UpdateDeviceType:
       endPoint: /v1/masterdata/devicetypes
       role: admin
       templateFields: ["description"]
+      description: Update Device Type with missing input parameter Name.
       restMethod: put
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error
@@ -131,6 +137,7 @@ UpdateDeviceType:
       endPoint: /v1/masterdata/devicetypes
       role: admin
       templateFields: ["description"]
+      description: Update Device Type with empty input parameter Name.
       restMethod: put
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error
@@ -154,6 +161,7 @@ UpdateDeviceType:
       endPoint: /v1/masterdata/devicetypes
       role: admin
       templateFields: ["description"]
+      description: Update Device Type with Name more than 64 characters.     
       restMethod: put
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error
@@ -177,6 +185,7 @@ UpdateDeviceType:
       endPoint: /v1/masterdata/devicetypes
       role: admin
       templateFields: ["name"]
+      description: Update Device Type with Description more than 128 characters.  
       restMethod: put
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error

@@ -3,6 +3,7 @@ CreateGender:
       endPoint: /v1/masterdata/gendertypes
       role: admin
       templateFields: ["genderName"]
+      description: Create Gender details by all valid data.
       restMethod: post
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/Gender/genderResult
@@ -20,6 +21,7 @@ CreateGender:
       endPoint: /v1/masterdata/gendertypes
       role: admin
       templateFields: ["genderName"]
+      description: Create Gender details by missing code field.
       restMethod: post
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error
@@ -42,6 +44,7 @@ CreateGender:
       endPoint: /v1/masterdata/gendertypes
       role: admin
       templateFields: ["genderName"]
+      description: Create Gender details by empty code.
       restMethod: post
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error
@@ -65,6 +68,7 @@ CreateGender:
       endPoint: /v1/masterdata/gendertypes
       role: admin
       templateFields: ["langCode"]
+      description: Create Gender details by invalid code value.
       restMethod: post
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error
@@ -87,6 +91,7 @@ CreateGender:
       endPoint: /v1/masterdata/gendertypes
       role: admin
       templateFields: []
+      description: Create Gender details by name more than 64 characters.
       restMethod: post
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error
@@ -109,6 +114,7 @@ CreateGender:
       endPoint: /v1/masterdata/gendertypes
       role: admin
       templateFields: ["genderName"]
+      description: Create Gender details by missing isActive field.
       restMethod: post
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error

@@ -3,6 +3,7 @@ FilterMachines:
       endPoint: /v1/masterdata/machines/filtervalues
       role: globalAdmin
       templateFields: ["languageCode"]
+      description: Filter Active Machine details by columnName isActive.
       restMethod: post
       inputTemplate: masterdata/FilterMachines/filterMachines
       outputTemplate: masterdata/FilterMachines/filterMachinesResult
@@ -27,6 +28,7 @@ FilterMachines:
       endPoint: /v1/masterdata/machines/filtervalues
       role: globalAdmin
       templateFields: ["languageCode"]
+      description: Filter All Machine details by columnName machineSpecId.
       restMethod: post
       inputTemplate: masterdata/FilterMachines/filterMachines
       outputTemplate: masterdata/FilterMachines/filterMachinesResult
@@ -51,6 +53,7 @@ FilterMachines:
       endPoint: /v1/masterdata/machines/filtervalues
       role: globalAdmin
       templateFields: ["languageCode"]
+      description: Filter Machine details by empty columnName.
       restMethod: post
       inputTemplate: masterdata/FilterMachines/filterMachines
       outputTemplate: masterdata/error
@@ -75,6 +78,7 @@ FilterMachines:
       endPoint: /v1/masterdata/machines/filtervalues
       role: globalAdmin
       templateFields: ["languageCode"]
+      description: Filter Machine details by empty filter type.
       restMethod: post
       inputTemplate: masterdata/FilterMachines/filterMachines
       outputTemplate: masterdata/error
@@ -99,6 +103,7 @@ FilterMachines:
       endPoint: /v1/masterdata/machines/filtervalues
       role: globalAdmin
       templateFields: ["languageCode"]
+      description: Filter Machine details by invalid columnName.
       restMethod: post
       inputTemplate: masterdata/FilterMachines/filterMachines
       outputTemplate: masterdata/error

@@ -2,6 +2,7 @@ FetchTitle:
    MasterData_FetchTitle_all_valid_smoke:
       endPoint: /v1/masterdata/title
       role: admin
+      description: Retrieve Titles with all valid data.
       restMethod: get
       inputTemplate: masterdata/FetchTitle/fetchTitle
       outputTemplate: masterdata/FetchTitle/fetchTitleResult
@@ -17,6 +18,7 @@ FetchTitle:
       endPoint: /v1/masterdata/title/{langcode}
       role: admin
       restMethod: get
+      description: Retrieve Titles By langcode with all valid data.
       inputTemplate: masterdata/FetchTitle/fetchTitle
       outputTemplate: masterdata/FetchTitle/fetchTitleResult
       input: '{
@@ -30,6 +32,7 @@ FetchTitle:
    MasterData_FetchTitle_invalid_langcode:
       endPoint: /v1/masterdata/title/{langcode}
       role: admin
+      description: Retrieve Titles By invalid langcode.
       restMethod: get
       inputTemplate: masterdata/FetchTitle/fetchTitle
       outputTemplate: masterdata/error

@@ -2,6 +2,7 @@ DeleteValidDocument:
    MasterData_DeleteValidDocument_Invalid_ID: 
       endPoint: /v1/masterdata/validdocuments/{doccategorycode}/{doctypecode}
       role: admin
+      description: Delete Valid Document with invalid doccategorycode.
       restMethod: delete
       inputTemplate: masterdata/DeleteValidDocument/deleteValidDocument
       outputTemplate: masterdata/error

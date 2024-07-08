@@ -3,6 +3,7 @@ DeviceTypeFilter:
       endPoint: /v1/masterdata/devicetypes/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Device Type with all valid data.  
       restMethod: post
       inputTemplate: masterdata/DeviceTypeFilter/deviceTypeFilter
       outputTemplate: masterdata/DeviceTypeFilter/deviceTypeFilterResult
@@ -27,6 +28,7 @@ DeviceTypeFilter:
       endPoint: /v1/masterdata/devicetypes/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Device type with columnName code and type all.  
       restMethod: post
       inputTemplate: masterdata/DeviceTypeFilter/deviceTypeFilter
       outputTemplate: masterdata/DeviceTypeFilter/deviceTypeFilterResult
@@ -51,6 +53,7 @@ DeviceTypeFilter:
       endPoint: /v1/masterdata/devicetypes/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Device type with columnName isActive and type unique. 
       restMethod: post
       inputTemplate: masterdata/DeviceTypeFilter/deviceTypeFilter
       outputTemplate: masterdata/DeviceTypeFilter/deviceTypeFilterResult
@@ -75,6 +78,7 @@ DeviceTypeFilter:
       endPoint: /v1/masterdata/devicetypes/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Device type with invalid Request Time. 
       restMethod: post
       inputTemplate: masterdata/DeviceTypeFilter/deviceTypeFilter
       outputTemplate: masterdata/error
@@ -100,6 +104,7 @@ DeviceTypeFilter:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
+      description: Filter Device type with invalid text value. 
       restMethod: post
       inputTemplate: masterdata/DeviceTypeFilter/deviceTypeFilter
       outputTemplate: masterdata/NilFilterResult
@@ -119,6 +124,7 @@ DeviceTypeFilter:
       endPoint: /v1/masterdata/devicetypes/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Device type with invalid type. 
       restMethod: post
       inputTemplate: masterdata/DeviceTypeFilter/deviceTypeFilter
       outputTemplate: masterdata/error
@@ -142,6 +148,7 @@ DeviceTypeFilter:
       endPoint: /v1/masterdata/devicetypes/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Device type with blank filter type. 
       restMethod: post
       inputTemplate: masterdata/DeviceTypeFilter/deviceTypeFilter
       outputTemplate: masterdata/error
@@ -166,6 +173,7 @@ DeviceTypeFilter:
       endPoint: /v1/masterdata/devicetypes/filtervalues
       role: admin
       templateFields: ["languageCode"]
+      description: Filter Device type with invalid columnName. 
       restMethod: post
       inputTemplate: masterdata/DeviceTypeFilter/deviceTypeFilter
       outputTemplate: masterdata/error

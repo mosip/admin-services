@@ -2,6 +2,7 @@ FetchLocationHierarchy:
    MasterData_FetchLocationHierarchy_allValid_smoke:
       endPoint: /v1/masterdata/locationHierarchyLevels/{langcode}
       role: admin
+      description: Retrieve Location Hierarchy details with all valid data.
       restMethod: get
       inputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchy
       outputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchyResult
@@ -17,6 +18,7 @@ FetchLocationHierarchy:
    MasterData_FetchLocationHierarchy_inValid_langcode:
       endPoint: /v1/masterdata/locationHierarchyLevels/{langcode}
       role: admin
+      description: Retrieve Location Hierarchy details with invalid langcode.
       restMethod: get
       inputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchy
       outputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchyResult
@@ -35,6 +37,7 @@ FetchLocationHierarchy:
    MasterData_FetchLocationHierarchy_level_langcode_smoke:
       endPoint: /v1/masterdata/locationHierarchyLevels/{level}/{langcode}
       role: admin
+      description: Retrieve Location Hierarchy details with level and langcode.
       restMethod: get
       inputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchy
       outputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchyResult
@@ -50,6 +53,7 @@ FetchLocationHierarchy:
    MasterData_FetchLocationHierarchy_invalid_level:
       endPoint: /v1/masterdata/locationHierarchyLevels/{level}/{langcode}
       role: admin
+      description: Retrieve Location Hierarchy details with invalid level and valid langcode.
       restMethod: get
       inputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchy
       outputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchyResult
@@ -68,6 +72,7 @@ FetchLocationHierarchy:
    MasterData_FetchLocationHierarchy_invalid_langcode:
       endPoint: /v1/masterdata/locationHierarchyLevels/{level}/{langcode}
       role: admin
+      description: Retrieve Location Hierarchy details with valid level and invalid langcode.
       restMethod: get
       inputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchy
       outputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchyResult

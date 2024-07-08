@@ -4,6 +4,7 @@ DeleteMachineSpec:
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: []
+      description: Delete Machine Spec with valid data.
       restMethod: delete
       inputTemplate: masterdata/DeleteMachineSpec/deleteMachineSpec
       outputTemplate: masterdata/DeleteMachineSpec/deleteMachineSpecResult
@@ -15,6 +16,7 @@ DeleteMachineSpec:
    MasterData_DeleteMachineSpec_Invalid_ID: 
       endPoint: /v1/masterdata/machinespecifications/{id}
       role: admin
+      description: Delete Machine Spec with invalid id.
       restMethod: delete
       inputTemplate: masterdata/DeleteMachine/deleteMachine
       outputTemplate: masterdata/error
