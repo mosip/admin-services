@@ -1,6 +1,7 @@
 DeleteUserCenterMapping:
    MasterData_DeleteUserCenterMapping_All_Valid_Smoke:  
       endPoint: /v1/masterdata/usercentermapping/{id}
+      description: Delete User Center Mapping with all valid data.
       role: admin
       checkErrorsOnlyInResponse: true  
       restMethod: delete
@@ -13,6 +14,7 @@ DeleteUserCenterMapping:
 }'
    MasterData_DeleteUserCenterMapping_in_Valid:  
       endPoint: /v1/masterdata/usercentermapping/{id}
+      description: Delete User Center Mapping with invalid id.
       role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteUserCenterMapping/deleteUserCenterMapping

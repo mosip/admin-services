@@ -1,14 +1,14 @@
 UpdateLocationData:
-   MasterData_UpdateLocationData_All_Valid_Smoke_Sid:
+   MasterData_UpdateLocationData_All_Valid_Smoke:
       endPoint: /v1/masterdata/locations
       role: admin
-      templateFields: ["name"]
+      templateFields: ["hierarchyName"]
       restMethod: put
       inputTemplate: masterdata/LocationController/locationData
       outputTemplate: masterdata/LocationController/locationDataResult
       input: '{
-    "code": "$ID:CreateLocationData_All_Valid_Smoke_Sid_code$",
-    "name": "Test_Loc_A_updated_",
+    "code": "TST12",
+    "name": "Test_Loc_A_updated",
     "hierarchyLevel": "$HIERARCHYLEVEL$",
     "hierarchyName": "$HIERARCHYNAME$",
     "parentLocCode": "$PARENTLOCCODE$",
@@ -19,7 +19,7 @@ UpdateLocationData:
       output: '{
 "isActive": "$IGNORE$",
 "code": "TST12",
-"name": "Test_Loc_A_updated_",
+"name": "Test_Loc_A_updated",
 "hierarchyLevel": "$IGNORE$",
 "hierarchyName": "$IGNORE$",
 "parentLocCode": "$IGNORE$",

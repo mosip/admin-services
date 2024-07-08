@@ -1,6 +1,7 @@
 DeviceSpecSearch:
    MasterData_DeviceSpecSearch_Equals_Name_eng_smoke:
       endPoint: /v1/masterdata/devicespecifications/search
+      description: Search Device Specification by columnName name and type equals.
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -43,6 +44,7 @@ DeviceSpecSearch:
 }'
    MasterData_DeviceSpecSearch_Equals_Brand:
       endPoint: /v1/masterdata/devicespecifications/search
+      description: Search Device Specification by columnName brand and type equals.
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -86,6 +88,7 @@ DeviceSpecSearch:
   
    MasterData_DeviceSpecSearch_Equals_Model:
       endPoint: /v1/masterdata/devicespecifications/search
+      description: Search Device Specification by columnName model and type equals.
       role: admin
       templateFields: ["languageCode"]
       checkErrorsOnlyInResponse: true
@@ -129,6 +132,7 @@ DeviceSpecSearch:
 }'
    MasterData_DeviceSpecSearch_Equals_DeviceTypeName:
       endPoint: /v1/masterdata/devicespecifications/search
+      description: Search Device Specification by columnName deviceTypeName and type equals.
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -171,6 +175,7 @@ DeviceSpecSearch:
 }'
    MasterData_DeviceSpecSearch_Invalid_Value_Name:
       endPoint: /v1/masterdata/devicespecifications/search
+      description: Search Device Specification with columnName name and invalid value.
       role: admin
       templateFields: []
       restMethod: post
@@ -204,6 +209,7 @@ DeviceSpecSearch:
 }'
    MasterData_DeviceSpecSearch_InvalidPageFetch:
       endPoint: /v1/masterdata/devicespecifications/search
+      description: Search Device Specification with columnName name and invalid pageFetch -ve value.
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -239,6 +245,7 @@ DeviceSpecSearch:
 }'
    MasterData_DeviceSpecSearch_InvalidPageStart:
       endPoint: /v1/masterdata/devicespecifications/search
+      description: Search Device Specification with invalid pageStart -ve value.
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -274,6 +281,7 @@ DeviceSpecSearch:
 }'
    MasterData_DeviceSpecSearch_ASC_Name_eng:
       endPoint: /v1/masterdata/devicespecifications/search
+      description: Search Device Specification by columnName name and sortType ASC.
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -316,6 +324,7 @@ DeviceSpecSearch:
 }'
    MasterData_DeviceSpecSearch_DESC_Name_eng:
       endPoint: /v1/masterdata/devicespecifications/search
+      description: Search Device Specification by columnName name and sortType DESC.
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -358,6 +367,7 @@ DeviceSpecSearch:
 }'
    MasterData_DeviceSpecSearch_Invalid_FilterType:
       endPoint: /v1/masterdata/devicespecifications/search
+      description: Search Device Specification with invalid Filter Type.
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -393,6 +403,7 @@ DeviceSpecSearch:
 }'
    MasterData_DeviceSpecSearch_Invalid_SortType:
       endPoint: /v1/masterdata/devicespecifications/search
+      description: Search Device Specification with invalid sortType.
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -428,6 +439,7 @@ DeviceSpecSearch:
 }'
    MasterData_DeviceSpecSearch_Invalid_ColumnName:
       endPoint: /v1/masterdata/devicespecifications/search
+      description: Search Device Specification with invalid columnName.
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -463,6 +475,7 @@ DeviceSpecSearch:
 }'
    MasterData_DeviceSpecSearch_Invalid_RequestTime:
       endPoint: /v1/masterdata/devicespecifications/search
+      description: Search Device Specification with invalid requesttime.
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -499,6 +512,7 @@ DeviceSpecSearch:
 }'
    MasterData_DeviceSpecSearch_Contains_Name_eng:
       endPoint: /v1/masterdata/devicespecifications/search
+      description: Search Device Specification by columnName name and type contains.
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -541,6 +555,7 @@ DeviceSpecSearch:
 }'
    MasterData_DeviceSpecSearch_TwoValueSearch_pos:
       endPoint: /v1/masterdata/devicespecifications/search
+      description: Search Device Specification by 2 values like columnName name and brand.
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -580,6 +595,7 @@ DeviceSpecSearch:
 }'
    MasterData_DeviceSpecSearch_StartsWith_Name_eng:
       endPoint: /v1/masterdata/devicespecifications/search
+      description: Search Device Specification by Name and type Starts with.
       role: admin
       templateFields: ["languageCode"]
       restMethod: post

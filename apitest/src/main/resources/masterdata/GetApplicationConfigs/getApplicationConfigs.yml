@@ -1,6 +1,7 @@
 GetCredentialTypes:
    Master_GetApplicationConfigs_smoke:
       endPoint: /v1/masterdata/applicationconfigs
+      description: Retrieve Application Configs by all valid data.
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

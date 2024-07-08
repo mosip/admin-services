@@ -1,6 +1,7 @@
 FetchDeviceSpec:
    MasterData_FetchDeviceSpec_allValid_smoke_with_lang:
       endPoint: /v1/masterdata/devicespecifications/{langcode}
+      description: Retrieve device specification with valid langcode.
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: []
@@ -15,6 +16,7 @@ FetchDeviceSpec:
 }'
    MasterData_FetchDeviceSpec_allValid_byDeviceTypeCode_smoke:
       endPoint: /v1/masterdata/devicespecifications/devicetypecode/{devicetypecode}
+      description: Retrieve device specification with valid devicetypecode.
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: []
@@ -29,6 +31,7 @@ FetchDeviceSpec:
 }'
    MasterData_FetchDeviceSpec_allValid_smoke_with_lang_and_deviceType:
       endPoint: /v1/masterdata/devicespecifications/{langcode}/{devicetypecode}
+      description: Retrieve device specification with valid devicetypecode and langcode.
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: []
@@ -43,6 +46,7 @@ FetchDeviceSpec:
 }'
    MasterData_FetchDeviceSpec_invalid_devicetypecode_unexisting:
       endPoint: /v1/masterdata/devicespecifications/{langcode}/{devicetypecode}
+      description: Retrieve device specification with non existing devicetypecode.
       role: admin
       templateFields: []
       restMethod: get

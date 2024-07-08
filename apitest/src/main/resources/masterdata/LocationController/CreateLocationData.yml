@@ -1,9 +1,9 @@
 CreateLocationData:
-   MasterData_CreateLocationData_All_Valid_Smoke_Sid:
+   MasterData_CreateLocationData_All_Valid_Smoke:
       endPoint: /v1/masterdata/locations
       role: admin
       checkErrorsOnlyInResponse: true
-      templateFields: ["name","langCode"]
+      templateFields: ["name","hierarchyName"]
       restMethod: post
       inputTemplate: masterdata/LocationController/locationData
       outputTemplate: masterdata/LocationController/locationDataResult
@@ -136,7 +136,7 @@ CreateLocationData:
       input: '{
     "code": "NST",
     "name": "NDATA",
-    "hierarchyLevel":"7",
+    "hierarchyLevel":"$HIERARCHYLEVEL$",
     "hierarchyName":"$HIERARCHYNAME$",
     "parentLocCode":"$PARENTLOCCODE$",    
     "langCode": "eng",

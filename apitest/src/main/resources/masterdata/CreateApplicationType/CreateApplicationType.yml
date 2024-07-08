@@ -1,6 +1,7 @@
 CreateApplicationType:
    Masterdata_CreateApplicationType_All_Valid_Smoke:
       endPoint: /v1/masterdata/applicationtypes
+      description: Create Application Type with valid data.
       role: admin
       templateFields: ["langCode"]
       restMethod: post

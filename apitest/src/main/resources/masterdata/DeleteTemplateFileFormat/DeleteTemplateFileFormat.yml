@@ -1,6 +1,7 @@
 DeleteTemplateFileFormat:
    MasterData_DeleteTemplateFileFormat_All_Valid_Smoke:  
       endPoint: /v1/masterdata/templatefileformats/{code}
+      description: Delete Template File Format with all valid data.
       role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteTemplateFileFormat/deleteTemplateFileFormat
@@ -13,6 +14,7 @@ DeleteTemplateFileFormat:
 }'
    MasterData_DeleteTemplateFileFormat_Invalid_code: 
       endPoint: /v1/masterdata/templatefileformats/{code}
+      description: Delete Template File Format with invalid code.
       role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteTemplateFileFormat/deleteTemplateFileFormat

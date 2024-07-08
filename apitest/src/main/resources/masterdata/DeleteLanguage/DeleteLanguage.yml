@@ -1,6 +1,7 @@
 DeleteLanguage:
    Masterdata_DeleteLanguage_All_Valid_Smoke:
       endPoint: /v1/masterdata/languages/{code}
+      description: Delete Language with valid data.
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: delete

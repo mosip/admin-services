@@ -1,6 +1,7 @@
 FetchRegCentHistory:
    Masterdata_FetchRegCentHistory_allValid_smoke:
       endPoint: /v1/masterdata/registrationcentershistory/{registrationCenterId}/{langCode}/{effectiveDate}
+      description: Retrieve Registration Center History with all valid data.
       role: admin
       templateFields: ["langCode"]
       restMethod: get
@@ -18,6 +19,7 @@ FetchRegCentHistory:
 }'
    Masterdata_FetchRegCentHistory_invalid_registrationCenterId:
       endPoint: /v1/masterdata/registrationcentershistory/{registrationCenterId}/{langCode}/{effectiveDate}
+      description: Retrieve Registration Center History with invalid registrationCenterId.
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchRegCentHistory/fetchRegCentHistory
@@ -37,6 +39,7 @@ FetchRegCentHistory:
 }'
    Masterdata_FetchRegCentHistory_invalid_langcode:
       endPoint: /v1/masterdata/registrationcentershistory/{registrationCenterId}/{langCode}/{effectiveDate}
+      description: Retrieve Registration Center History with invalid langCode.
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchRegCentHistory/fetchRegCentHistory

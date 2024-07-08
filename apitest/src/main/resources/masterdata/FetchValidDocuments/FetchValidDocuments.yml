@@ -1,6 +1,7 @@
 FetchValidDocuments:
    MasterData_FetchValidDocuments_allValid_smoke_with_lang:
       endPoint: /v1/masterdata/validdocuments/{languagecode}
+      description: Retrieve valid Documents By languagecode with all valid data.
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languagecode"]

@@ -1,6 +1,7 @@
 FetchAllUISpec:
    MasterData_FetchAllUISpec_valid_smoke:
       endPoint: /v1/masterdata/uispec/all
+      description: Retrieve All UI Spec details with valid data.
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
