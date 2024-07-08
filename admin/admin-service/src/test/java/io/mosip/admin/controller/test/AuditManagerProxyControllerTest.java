@@ -1,23 +1,18 @@
 package io.mosip.admin.controller.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-
-import java.net.InetAddress;
-import java.net.URI;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.List;
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.admin.TestBootApplication;
+import io.mosip.admin.packetstatusupdater.dto.AuditManagerRequestDto;
+import io.mosip.admin.util.AdminDataUtil;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -34,15 +29,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.List;
+import java.util.Map;
 
-import io.mosip.admin.TestBootApplication;
-import io.mosip.admin.packetstatusupdater.dto.AuditManagerRequestDto;
-import io.mosip.admin.util.AdminDataUtil;
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
+import static org.junit.Assert.assertEquals;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
