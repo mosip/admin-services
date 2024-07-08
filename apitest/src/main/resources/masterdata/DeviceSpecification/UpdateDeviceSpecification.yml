@@ -421,6 +421,7 @@ UpdateDeviceSpecification:
       description: Update Device Specification with empty input parameter Minimum Driver Version.
       role: admin
       templateFields: ["name","description"]
+      restMethod: put
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error
       input: '{

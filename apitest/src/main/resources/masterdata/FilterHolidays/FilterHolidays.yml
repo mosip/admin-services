@@ -24,7 +24,7 @@ FilterHolidays:
       endPoint: /v1/masterdata/holidays/filtervalues
       description: Filter Holidays by invalid filter text.
       role: admin
-      checkErrorsOnlyInResponse: true      
+      checkErrorsOnlyInResponse: true
       restMethod: post
       inputTemplate: masterdata/FilterHolidays/filterHolidays
       outputTemplate: masterdata/NilFilterResult

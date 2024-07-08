@@ -39,7 +39,7 @@ FetchTemplateType:
       description: Retrieve Templates Types with only langcode.
       role: admin
       checkErrorsOnlyInResponse: true
-      templateFields: ["langcode"]      
+      templateFields: ["langcode"]
       restMethod: get
       inputTemplate: masterdata/FetchTemplateType/fetchTemplateType
       outputTemplate: masterdata/FetchTemplateType/fetchTemplateTypeResult

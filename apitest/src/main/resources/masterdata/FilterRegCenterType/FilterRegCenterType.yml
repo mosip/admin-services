@@ -176,7 +176,7 @@ FilterRegCenterType:
    MasterData_FilterRegCenterType_inValid_RequestTime_format:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
       description: Filter Registration Center Type details by invalid requesttime format.
-      role: admi
+      role: admin
       templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType

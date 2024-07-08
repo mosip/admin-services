@@ -3,7 +3,7 @@ UpdateDocumentType:
       endPoint: /v1/masterdata/documenttypes
       description: Update Document Type with all valid data.
       role: admin
-      templateFields: ["name","description"] 
+      templateFields: ["name","description"]
       restMethod: put
       inputTemplate: masterdata/DocumentType/documentType
       outputTemplate: masterdata/DocumentType/documentTypeResult

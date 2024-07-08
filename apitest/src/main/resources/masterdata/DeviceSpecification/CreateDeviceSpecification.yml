@@ -338,7 +338,7 @@ CreateDeviceSpecification:
       role: admin
       templateFields: ["name","description"]
       restMethod: post
-      inputTemplate: masterdata/DeviceSpecification/deviceSpecification      
+      inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error
       input: '{
       "brand": "Techno",

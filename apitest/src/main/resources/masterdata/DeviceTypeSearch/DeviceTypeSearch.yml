@@ -126,7 +126,7 @@ DeviceTypeSearch:
       description: Search Device type with columnName name and type startsWith.
       role: admin
       checkErrorsOnlyInResponse: true
-      templateFields: ["languageCode"]      
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearch
       outputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearchResult
