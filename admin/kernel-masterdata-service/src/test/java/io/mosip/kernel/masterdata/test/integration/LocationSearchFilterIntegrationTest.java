@@ -1,18 +1,22 @@
 package io.mosip.kernel.masterdata.test.integration;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import io.mosip.kernel.masterdata.dto.response.FilterResult;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.masterdata.util.model.Node;
+import io.mosip.kernel.core.masterdata.util.spi.UBtree;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.dto.request.*;
+import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
+import io.mosip.kernel.masterdata.entity.Location;
+import io.mosip.kernel.masterdata.repository.LocationHierarchyRepository;
+import io.mosip.kernel.masterdata.repository.LocationRepository;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
+import io.mosip.kernel.masterdata.utils.PageUtils;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,29 +33,17 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.masterdata.util.model.Node;
-import io.mosip.kernel.core.masterdata.util.spi.UBtree;
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.dto.request.FilterDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.Pagination;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.request.SearchFilter;
-import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
-import io.mosip.kernel.masterdata.entity.Location;
-import io.mosip.kernel.masterdata.repository.LocationHierarchyRepository;
-import io.mosip.kernel.masterdata.repository.LocationRepository;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
-import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
-import io.mosip.kernel.masterdata.utils.PageUtils;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * @author Sidhant Agarwal

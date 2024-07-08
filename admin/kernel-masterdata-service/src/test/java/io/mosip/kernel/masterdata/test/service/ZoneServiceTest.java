@@ -1,16 +1,19 @@
 package io.mosip.kernel.masterdata.test.service;
 
 
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
+import io.mosip.kernel.masterdata.constant.ZoneUserErrorCode;
+import io.mosip.kernel.masterdata.dto.ZoneUserDto;
+import io.mosip.kernel.masterdata.entity.ZoneUser;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
+import io.mosip.kernel.masterdata.service.TemplateService;
+import io.mosip.kernel.masterdata.service.ZoneUserService;
 import io.mosip.kernel.masterdata.service.impl.ZoneServiceImpl;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.LanguageUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -25,17 +28,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.constant.ZoneUserErrorCode;
-import io.mosip.kernel.masterdata.dto.ZoneUserDto;
-import io.mosip.kernel.masterdata.entity.ZoneUser;
-import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
-import io.mosip.kernel.masterdata.service.TemplateService;
-import io.mosip.kernel.masterdata.service.ZoneUserService;
-import io.mosip.kernel.masterdata.test.TestBootApplication;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 /**
  * 
@@ -116,9 +114,9 @@ public class ZoneServiceTest {
 	
 	@Test
 	public void getZoneUsersTest() {
-		List<ZoneUser> zoneMappedUsers = new ArrayList<ZoneUser>();
+		List<ZoneUser> zoneMappedUsers = new ArrayList<>();
 		zoneMappedUsers.add(zoneUser);
-		List<String> userIds = new ArrayList<String>();
+		List<String> userIds = new ArrayList<>();
 		userIds.add("1234");
 		userIds.add("45678");
 		userIds.add("1264");
