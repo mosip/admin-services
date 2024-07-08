@@ -1,23 +1,19 @@
 package io.mosip.hotlist.validator;
 
-import static io.mosip.hotlist.constant.HotlistErrorConstants.ID_TYPE_NOT_ALLOWED;
-import static io.mosip.hotlist.constant.HotlistErrorConstants.INVALID_INPUT_PARAMETER;
-import static io.mosip.hotlist.constant.HotlistErrorConstants.MISSING_INPUT_PARAMETER;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collections;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.validation.BeanPropertyBindingResult;
-
 import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
 import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.util.DateUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+
+import java.util.Collections;
+
+import static io.mosip.hotlist.constant.HotlistErrorConstants.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Manoj SP
@@ -85,7 +81,6 @@ public class HotlistValidatorTest {
 	}
 
 	@Test
-	@Ignore
 	public void testNullStatus() {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new HotlistRequestResponseDTO(), "request");
 		HotlistRequestResponseDTO request = new HotlistRequestResponseDTO();
@@ -117,7 +112,6 @@ public class HotlistValidatorTest {
 	}
 
 	@Test
-	@Ignore
 	public void testValidBlockedStatus() {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new HotlistRequestResponseDTO(), "request");
 		HotlistRequestResponseDTO request = new HotlistRequestResponseDTO();
@@ -133,7 +127,6 @@ public class HotlistValidatorTest {
 	}
 
 	@Test
-	@Ignore
 	public void testValidUnblockedStatus() {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new HotlistRequestResponseDTO(), "request");
 		HotlistRequestResponseDTO request = new HotlistRequestResponseDTO();
