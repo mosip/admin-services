@@ -60,7 +60,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -238,11 +237,11 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 					BulkUploadErrorCode.INVALID_ARGUMENT.getErrorMessage() + "TABLENAME");
 		}
 
-		logger.info("category {}, tablename: {} , operation: {}, Uploaded files count: {}",
+		logger.info("category {}, tablename: {} , operation: {}, Uploaded files : {}",
 				AuditUtil.neutralizeParam(category),
 				AuditUtil.neutralizeParam(tableName),
 				AuditUtil.neutralizeParam(operation),
-				files.length);
+				AuditUtil.neutralizeParam(files.length));
 
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD,
 				"{category:'" + category + "',tablename:'" + tableName + "',operation:'" + operation + "'}"),null);

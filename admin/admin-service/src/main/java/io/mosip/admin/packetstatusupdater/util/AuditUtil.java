@@ -209,7 +209,7 @@ public class AuditUtil {
 			return null;
 		}
 		if(param instanceof String) {
-			return ((String) param).replaceAll("[^a-zA-Z0-9._-]", "_");
+			return ((String) param).replaceAll("[\n\r\t]", "_");
 		}
 
 		return param;
