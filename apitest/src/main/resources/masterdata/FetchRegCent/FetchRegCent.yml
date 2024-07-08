@@ -252,8 +252,8 @@ FetchRegCent:
   "registrationcenterid": "$REMOVE$",
   "year": "$REMOVE$",
   "id": "$REMOVE$",
-  "hierarchylevel": "1",
-  "name": "Rabat Sale Kenitra",
+  "hierarchylevel": "$ID:CreateLocationData_All_Valid_Smoke_Sid_hierarchyLevel$",
+  "name": "$ID:CreateLocationData_All_Valid_Smoke_Sid_name$",
   "zonecode": "$REMOVE$",
   "timestamp": "$REMOVE$"
 }'
@@ -319,7 +319,7 @@ FetchRegCent:
   ]
 }'
    MasterData_FetchRegCent_By_HierarchyLevel__ListText_langCode_allValid_smoke:
-      endPoint: /v1/masterdata/registrationcenters/{langcode}/{hierarchylevel}/names?name=Rabat Sale Kenitra
+      endPoint: /v1/masterdata/registrationcenters/{langcode}/{hierarchylevel}/names?name={name}
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
@@ -335,8 +335,8 @@ FetchRegCent:
   "registrationcenterid": "$REMOVE$",
   "year": "$REMOVE$",
   "id": "$REMOVE$",
-  "hierarchylevel": "1",
-  "name": "$REMOVE$",
+  "hierarchylevel": "$ID:CreateLocationData_All_Valid_Smoke_Sid_hierarchyLevel$",
+  "name": "$ID:CreateLocationData_All_Valid_Smoke_Sid_name$",
   "zonecode": "$REMOVE$",
   "timestamp": "$REMOVE$"
 }'
@@ -478,7 +478,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_Pagenation_HierarchyLevel_Text_langCode_allValid_smoke:
       endPoint: /v1/masterdata/registrationcenters/{langcode}/{hierarchylevel}/{name}
       role: admin
-      templateFields: ["name"]
+      templateFields: ["langcode"]
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
@@ -492,8 +492,8 @@ FetchRegCent:
   "registrationcenterid": "$REMOVE$",
   "year": "$REMOVE$",
   "id": "$REMOVE$",
-  "hierarchylevel": "1",
-  "name": "Rabat Sale Kenitra",
+  "hierarchylevel": "$ID:CreateLocationData_All_Valid_Smoke_Sid_hierarchyLevel$",
+  "name": "$ID:CreateLocationData_All_Valid_Smoke_Sid_name$",
   "zonecode": "$REMOVE$",
   "timestamp": "$REMOVE$"
 }'

@@ -225,7 +225,7 @@ FetchLocation:
       input: '{
       "langcode": "eng",
       "locationname": "$REMOVE$",
-      "locationcode": "$LOCATIONCODE$",
+      "locationcode": "$ID:CreateLocationData_All_Valid_Smoke_Sid_code$",
       "hierarchyname": "$REMOVE$"
       }'
       output: '{
