@@ -1,8 +1,8 @@
 FetchAllTitle:
    MasterData_FetchAllTitle_all_valid_smoke:
       endPoint: /v1/masterdata/title/all
-      role: admin
       description: Retrieve All Title details with valid data.
+      role: admin
       restMethod: get
       checkErrorsOnlyInResponse: true
       inputTemplate: masterdata/FetchAllTitle/fetchAllTitle

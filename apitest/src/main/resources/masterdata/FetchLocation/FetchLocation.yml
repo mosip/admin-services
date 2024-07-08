@@ -1,8 +1,8 @@
 FetchLocation:
    MasterData_FetchLocation_langcode_smoke:
       endPoint: /v1/masterdata/locations/{langcode}
-      role: admin
       description: Retrieve Location details with langcode.
+      role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchLocation/fetchLocation
@@ -20,8 +20,8 @@ FetchLocation:
 }'
    MasterData_FetchLocation_invalid_langcode:
       endPoint: /v1/masterdata/locations/{langcode}
+      description: Retrieve Location details with invalid langcode.
       role: admin
-      description: Retrieve Location details with invalid langcode. 
       restMethod: get
       inputTemplate: masterdata/FetchLocation/fetchLocation
       outputTemplate: masterdata/error
@@ -41,8 +41,8 @@ FetchLocation:
 }'
    MasterData_FetchLocation_langcode_locationcode_smoke:
       endPoint: /v1/masterdata/locations/{locationcode}/{langcode}
-      role: admin
       description: Retrieve Location details with valid langcode and locationcode.
+      role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchLocation/fetchLocation
@@ -60,8 +60,8 @@ FetchLocation:
 }'
    MasterData_FetchLocation_langcode_invalid_locationcode:
       endPoint: /v1/masterdata/locations/{locationcode}/{langcode}
-      role: admin
       description: Retrieve Location details with valid langcode and invalid locationcode.
+      role: admin
       restMethod: get
       inputTemplate: masterdata/FetchLocation/fetchLocation
       outputTemplate: masterdata/error
@@ -81,8 +81,8 @@ FetchLocation:
 }'
    MasterData_FetchLocation_locationcode_invalid_langcode:
       endPoint: /v1/masterdata/locations/{locationcode}/{langcode}
-      role: admin
       description: Retrieve Location details with invalid langcode and valid locationcode.
+      role: admin
       restMethod: get
       inputTemplate: masterdata/FetchLocation/fetchLocation
       outputTemplate: masterdata/error
@@ -102,8 +102,8 @@ FetchLocation:
 }'
    MasterData_FetchLocation_details_by_Langcode_smoke:
       endPoint: /v1/masterdata/locations/info/{locationcode}/{langcode}
-      role: admin
       description: Retrieve Location details with valid langcode and locationcode.
+      role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchLocation/fetchLocation
@@ -119,8 +119,8 @@ FetchLocation:
 }'
    MasterData_FetchLocation_details_by_invalid_LanGcode:
       endPoint: /v1/masterdata/locations/info/{locationcode}/{langcode}
-      role: admin
       description: Retrieve Location details with invalid langcode and valid locationcode.
+      role: admin
       restMethod: get
       inputTemplate: masterdata/FetchLocation/fetchLocation
       outputTemplate: masterdata/error
@@ -140,8 +140,8 @@ FetchLocation:
 }'
    MasterData_FetchLocation_details_by_invalid_locationcode:
       endPoint: /v1/masterdata/locations/info/{locationcode}/{langcode}
-      role: admin
       description: Retrieve Location details with valid langcode and invalid locationcode.
+      role: admin
       restMethod: get
       inputTemplate: masterdata/FetchLocation/fetchLocation
       outputTemplate: masterdata/error
@@ -161,8 +161,8 @@ FetchLocation:
 }'
    MasterData_FetchLocation_details_Langcode_smoke:
       endPoint: /v1/masterdata/locations/level/{langcode}
-      role: admin
       description: Retrieve Location details using level with valid langcode.
+      role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchLocation/fetchLocation
@@ -178,8 +178,8 @@ FetchLocation:
 }'
    MasterData_FetchLocation_details_hierarchyname_smoke:
       endPoint: /v1/masterdata/locations/locationhierarchy/{hierarchyname}
-      role: admin
       description: Retrieve Location details with Location Hierarchy.
+      role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchLocation/fetchLocation
@@ -197,8 +197,8 @@ FetchLocation:
 }'
    MasterData_FetchLocation_details_validate_locationname:
       endPoint: /v1/masterdata/locations/validate/{locationname}
-      role: admin
       description: Retrieve Location details with locationname.
+      role: admin
       restMethod: get
       inputTemplate: masterdata/FetchLocation/fetchLocation
       outputTemplate: masterdata/FetchLocation/fetchLocationValidationResult
@@ -213,8 +213,8 @@ FetchLocation:
 }'
    MasterData_FetchLocation_details_invalid_locationname:
       endPoint: /v1/masterdata/locations/validate/{locationname}
-      role: admin
       description: Retrieve Location details with invalid locationname.
+      role: admin
       restMethod: get
       inputTemplate: masterdata/FetchLocation/fetchLocation
       outputTemplate: masterdata/FetchLocation/fetchLocationValidationResult
@@ -229,8 +229,8 @@ FetchLocation:
 }'
    MasterData_FetchLocation_immediatechildren:
       endPoint: /v1/masterdata/locations/immediatechildren/{locationcode}/{langcode}
-      role: admin
       description: Retrieve Location immediate children details with locationcode and langcode.
+      role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchLocation/fetchLocation
@@ -238,7 +238,7 @@ FetchLocation:
       input: '{
       "langcode": "eng",
       "locationname": "$REMOVE$",
-      "locationcode": "$ID:CreateLocationData_All_Valid_Smoke_Sid_code$",
+      "locationcode": "$LOCATIONCODE$",
       "hierarchyname": "$REMOVE$"
       }'
       output: '{

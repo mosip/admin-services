@@ -1,8 +1,8 @@
 GetApplicantType:
    Masterdata_GetApplicantType_valid_smoke:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types by all valid data.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
@@ -31,8 +31,8 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_MLE_NFR_CHL_True:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types for Male, Non Foreigner and Child.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
@@ -61,8 +61,8 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_MLE_NFR_CHL_False:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types for Male, Non Foreigner and Child.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
@@ -91,9 +91,9 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_MLE_NFR_ADL_True:
       endPoint: /v1/masterdata/getApplicantType
+      description: Retrieve Applicant Types for Male, Non Foreigner and Adult Biometric available.
       role: admin
       restMethod: post
-      description: Retrieve Applicant Types for Male, Non Foreigner and Adult Biometric available.
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
       input: '{
@@ -121,8 +121,8 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_MLE_NFR_ADL_False:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types for Male, Non Foreigner and Adult Biometric not available.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
@@ -151,8 +151,8 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_MLE_FR_CHL_False:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types for Male, Foreigner and and Child Biometric not available.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
@@ -181,8 +181,8 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_MLE_FR_ADL_True:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types for Male, Foreigner and Adult Biometric not available.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
@@ -211,8 +211,8 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_MLE_FR_ADL_False:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types for Male, Foreigner and Adult Biometric not available.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
@@ -241,8 +241,8 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_invalid_residenceStatus:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types for invalid residenceStatus.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
@@ -271,8 +271,8 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_invalid_gender:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types for invalid gender.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
@@ -301,8 +301,8 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_invalid_dateOfBirth:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types for invalid dateOfBirth.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/error
@@ -336,8 +336,8 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_invalid_biometricAvailable:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types for invalid biometricAvailable.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
@@ -367,8 +367,8 @@ GetApplicantType:
 
    Masterdata_GetApplicantType_Future_date_as_DOB:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types with future date for dateOfBirth.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/error
@@ -402,8 +402,8 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_FLE_NFR_CHL_true:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types for Female, Non Foreigner and Child Biometric available.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
@@ -432,8 +432,8 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_FLE_NFR_CHL_False:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types for Female, Non Foreigner and Child Biometric not available.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
@@ -462,8 +462,8 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_FLE_NFR_ADL_true:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types for Female, Non Foreigner and Adult Biometric available.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
@@ -492,8 +492,8 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_FLE_NFR_ADL_False:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types for Female, Non Foreigner and Adult Biometric not available.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
@@ -522,8 +522,8 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_FLE_FR_CHL_True:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types for Female, Foreigner and Child Biometric available.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
@@ -552,8 +552,8 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_FLE_FR_CHL_False:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types for Female, Foreigner and Child Biometric not available.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
@@ -582,8 +582,8 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_FLE_FR_ADL_true:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types for Female, Foreigner and Adult Biometric available.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
@@ -612,8 +612,8 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_FLE_FR_ADL_False:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types for Female, Foreigner and Adult Biometric not available.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
@@ -642,8 +642,8 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_DOB_lessThanAYear:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Retrieve Applicant Types for dateOfBirth lessthan a year.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
@@ -672,8 +672,8 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_response_time:
       endPoint: /v1/masterdata/getApplicantType
-      role: admin
       description: Get response time for retrieving Applicant Types.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
       outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult

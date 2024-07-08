@@ -1,9 +1,9 @@
 FilterDynamicField:
    MasterData_FilterDynamicField_Valid_Smoke:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
+      description: Filter Dynamic Fields By all valid data.
       role: admin
       templateFields: ["languageCode"]
-      description: Filter Dynamic Fields By all valid data.
       restMethod: post
       inputTemplate: masterdata/FilterDynamicField/filterDynamicField
       outputTemplate: masterdata/FilterDynamicField/filterDynamicFieldResult
@@ -31,9 +31,9 @@ FilterDynamicField:
 }'
    MasterData_FilterDynamicField_Invalid_RequestTime:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
+      description: Filter Dynamic Fields By invalid requesttime format.
       role: admin
       templateFields: ["languageCode"]
-      description: Filter Dynamic Fields By invalid requesttime format.
       restMethod: post
       inputTemplate: masterdata/FilterDynamicField/filterDynamicField
       outputTemplate: masterdata/error
@@ -56,9 +56,9 @@ FilterDynamicField:
 }'
    MasterData_FilterDynamicField_InValid_FilterType:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
+      description: Filter Dynamic Fields By invalid type.
       role: admin
       templateFields: ["languageCode"]
-      description: Filter Dynamic Fields By invalid type.
       restMethod: post
       inputTemplate: masterdata/FilterDynamicField/filterDynamicField
       outputTemplate: masterdata/error
@@ -81,9 +81,9 @@ FilterDynamicField:
 }'
    MasterData_FilterDynamicField_Blank_FilterType:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
+      description: Filter Dynamic Fields By empty type.
       role: admin
       templateFields: ["languageCode"]
-      description: Filter Dynamic Fields By empty type.
       restMethod: post
       inputTemplate: masterdata/FilterDynamicField/filterDynamicField
       outputTemplate: masterdata/error
@@ -106,9 +106,9 @@ FilterDynamicField:
 }'
    MasterData_FilterDynamicField_InValid_columnName:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
+      description: Filter Dynamic Fields By empty text.
       role: admin
       templateFields: ["languageCode"]
-      description: Filter Dynamic Fields By empty text.
       restMethod: post
       inputTemplate: masterdata/FilterDynamicField/filterDynamicField
       outputTemplate: masterdata/error

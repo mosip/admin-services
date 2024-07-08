@@ -1,9 +1,9 @@
 UpdateDynamicField:
    MasterData_UpdateDynamicField_All_Valid_Smoke:
       endPoint: /v1/masterdata/dynamicfields?id={id}
+      description: Update Dynamic Fields with all valid data.
       role: admin
       templateFields: ["langCode"]
-      description: Update Dynamic Fields with all valid data.
       restMethod: put
       inputTemplate: masterdata/DynamicField/dynamicField
       outputTemplate: masterdata/DynamicField/dynamicFieldResult

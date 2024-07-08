@@ -1,8 +1,8 @@
 FetchIdSchema:
    MasterData_FetchIdSchema_allValid_smoke_with_lang:
       endPoint: /v1/masterdata/idschema/latest
-      role: admin
       description: Retrieve Id Schema with all valid data.
+      role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchIdSchema/fetchIdSchema

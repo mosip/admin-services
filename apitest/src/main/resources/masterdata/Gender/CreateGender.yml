@@ -1,9 +1,9 @@
 CreateGender:
    Masterdata_CreateGender_Valid_Smoke_sid:
       endPoint: /v1/masterdata/gendertypes
+      description: Create Gender details by all valid data.
       role: admin
       templateFields: ["genderName"]
-      description: Create Gender details by all valid data.
       restMethod: post
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/Gender/genderResult
@@ -19,9 +19,9 @@ CreateGender:
 }'
    Masterdata_CreateGender_Invalid_InputParameter_Code_Missing:
       endPoint: /v1/masterdata/gendertypes
+      description: Create Gender details by missing code field.
       role: admin
       templateFields: ["genderName"]
-      description: Create Gender details by missing code field.
       restMethod: post
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error
@@ -42,9 +42,9 @@ CreateGender:
 }'
    Masterdata_CreateGender_Invalid_InputParameter_Code_Empty:
       endPoint: /v1/masterdata/gendertypes
+      description: Create Gender details by empty code.
       role: admin
       templateFields: ["genderName"]
-      description: Create Gender details by empty code.
       restMethod: post
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error
@@ -66,9 +66,9 @@ CreateGender:
    
    Masterdata_CreateGender_Invalid_InputParameter_GenderName_Empty:
       endPoint: /v1/masterdata/gendertypes
+      description: Create Gender details by invalid code value.
       role: admin
       templateFields: ["langCode"]
-      description: Create Gender details by invalid code value.
       restMethod: post
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error
@@ -89,9 +89,9 @@ CreateGender:
 }'
    Masterdata_CreateGender_Invalid_InputParameter_GenderName_AboveMaxLen64:
       endPoint: /v1/masterdata/gendertypes
+      description: Create Gender details by name more than 64 characters.
       role: admin
       templateFields: []
-      description: Create Gender details by name more than 64 characters.
       restMethod: post
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error
@@ -112,9 +112,9 @@ CreateGender:
 }'
    Masterdata_CreateGender_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/gendertypes
+      description: Create Gender details by missing isActive field.
       role: admin
       templateFields: ["genderName"]
-      description: Create Gender details by missing isActive field.
       restMethod: post
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error

@@ -1,9 +1,9 @@
 DeleteBlockListedWords:
    Masterdata_DeleteBlockListedWords_valid_smoke:
       endPoint: /v1/masterdata/blocklistedwords/{word}
+      description: Delete Block Listed words with valid data.
       role: admin
       templateFields: ["word","code"]
-      description: Delete Block Listed words with valid data.
       restMethod: Delete
       inputTemplate: masterdata/DeleteBlockListedWords/deleteBlockListedWords
       outputTemplate: masterdata/DeleteBlockListedWords/deleteBlockListedWordsResult

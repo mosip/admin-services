@@ -1,9 +1,9 @@
 CreateIdType:
    MasterData_CreateIdType_allValid_smoke:
       endPoint: /v1/masterdata/idtypes
+      description: Create Id Type with valid data.
       role: admin
       templateFields: ["langCode"]
-      description: Create Id Type with valid data.
       restMethod: post
       inputTemplate: masterdata/CreateIdType/createIdType
       outputTemplate: masterdata/CreateIdType/createIdTypeResult
@@ -19,8 +19,8 @@ CreateIdType:
 }'
    MasterData_CreateIdType_Invalid_langCode:
       endPoint: /v1/masterdata/idtypes
-      role: admin
       description: Create Id Type with invalid langcode.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/CreateIdType/createIdType
       outputTemplate: masterdata/error

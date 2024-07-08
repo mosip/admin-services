@@ -1,9 +1,9 @@
 DeviceTypeSearch:
    MasterData_DeviceTypeSearch_Equals_Name_eng_smoke:
       endPoint: /v1/masterdata/devicetypes/search
+      description: Search Device type with columnName name and type equals.
       role: admin
       templateFields: ["languageCode"]
-      description: Search Device type with columnName name and type equals.
       restMethod: post
       inputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearch
       outputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearchResult
@@ -42,10 +42,10 @@ DeviceTypeSearch:
 }'
    MasterData_DeviceTypeSearch_Equals_isActive_eng_smoke:
       endPoint: /v1/masterdata/devicetypes/search
+      description: Search Device type with columnName isActive and type Equals.
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
-      description: Search Device type with columnName isActive and type Equals.
       restMethod: post
       inputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearch
       outputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearchResult
@@ -82,9 +82,9 @@ DeviceTypeSearch:
 }'
    MasterData_DeviceTypeSearch_Contains_Name_eng_smoke:
       endPoint: /v1/masterdata/devicetypes/search
+      description: Search Device type with columnName name and type contains.
       role: admin
       templateFields: ["languageCode"]
-      description: Search Device type with columnName name and type contains.
       restMethod: post
       inputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearch
       outputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearchResult
@@ -123,10 +123,10 @@ DeviceTypeSearch:
 }'
    MasterData_DeviceTypeSearch_startsWith_Name_eng_smoke:
       endPoint: /v1/masterdata/devicetypes/search
+      description: Search Device type with columnName name and type startsWith.
       role: admin
       checkErrorsOnlyInResponse: true
-      templateFields: ["languageCode"]
-      description: Search Device type with columnName name and type startsWith.
+      templateFields: ["languageCode"]      
       restMethod: post
       inputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearch
       outputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearchResult
@@ -155,10 +155,10 @@ DeviceTypeSearch:
 }'
    MasterData_DeviceTypeSearch_Invalid_Value_Name_smoke:
       endPoint: /v1/masterdata/devicetypes/search
+      description: Search Device type with invalid columnName name.
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
-      description: Search Device type with invalid columnName name.
       restMethod: post
       inputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearch
       outputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearchResult
@@ -187,9 +187,9 @@ DeviceTypeSearch:
 }'
    MasterData_DeviceTypeSearch_Invalid_ColumnName_neg:
       endPoint: /v1/masterdata/devicetypes/search
+      description: Search Device type with invalid columnName.
       role: admin
       templateFields: ["value"]
-      description: Search Device type with invalid columnName.
       restMethod: post
       inputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearch
       outputTemplate: masterdata/error

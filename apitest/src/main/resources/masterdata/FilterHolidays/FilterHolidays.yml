@@ -1,10 +1,10 @@
 FilterHolidays:
    MasterData_FilterHolidays_Valid_Smoke:
       endPoint: /v1/masterdata/holidays/filtervalues
+      description: Filter Holidays by all valid data.
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
-      description: Filter Holidays by all valid data.
       restMethod: post
       inputTemplate: masterdata/FilterHolidays/filterHolidays
       outputTemplate: masterdata/FilterHolidays/filterHolidaysResult
@@ -22,9 +22,9 @@ FilterHolidays:
    
    MasterData_FilterHolidays_inValid_filterText:
       endPoint: /v1/masterdata/holidays/filtervalues
-      role: admin
-      checkErrorsOnlyInResponse: true
       description: Filter Holidays by invalid filter text.
+      role: admin
+      checkErrorsOnlyInResponse: true      
       restMethod: post
       inputTemplate: masterdata/FilterHolidays/filterHolidays
       outputTemplate: masterdata/NilFilterResult
@@ -45,9 +45,9 @@ FilterHolidays:
 }'
    MasterData_FilterHolidays_inValid_filterType_blank:
       endPoint: /v1/masterdata/holidays/filtervalues
+      description: Filter Holidays by blank filter type.
       role: admin
       templateFields: ["text"]
-      description: Filter Holidays by blank filter type.
       restMethod: post
       inputTemplate: masterdata/FilterHolidays/filterHolidays
       outputTemplate: masterdata/error
@@ -70,9 +70,9 @@ FilterHolidays:
 }'  
    MasterData_FilterHolidays_inValid_filterColumnName_blank:
       endPoint: /v1/masterdata/holidays/filtervalues
+      description: Filter Holidays by empty filter columnName.
       role: admin
       templateFields: ["text"]
-      description: Filter Holidays by empty filter columnName.
       restMethod: post
       inputTemplate: masterdata/FilterHolidays/filterHolidays
       outputTemplate: masterdata/error
@@ -96,8 +96,8 @@ FilterHolidays:
      
    MasterData_FilterHolidays_inValid_langCode:
       endPoint: /v1/masterdata/holidays/filtervalues
-      role: admin
       description: Filter Holidays by inalid languageCode.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/FilterHolidays/filterHolidays
       outputTemplate: masterdata/error
@@ -120,9 +120,9 @@ FilterHolidays:
 }'  
    MasterData_FilterHolidays_inValid_RequestTime_format:
       endPoint: /v1/masterdata/holidays/filtervalues
+      description: Filter Holidays by inalid requesttime format.
       role: admin
       templateFields: ["text"]
-      description: Filter Holidays by inalid requesttime format.
       restMethod: post
       inputTemplate: masterdata/FilterHolidays/filterHolidays
       outputTemplate: masterdata/error
@@ -145,9 +145,9 @@ FilterHolidays:
 }'  
    MasterData_FilterHolidays_inValid_filterColumnName:
       endPoint: /v1/masterdata/holidays/filtervalues
+      description: Filter Holidays by inalid columnName.
       role: admin
       templateFields: ["text"]
-      description: Filter Holidays by inalid columnName.
       restMethod: post
       inputTemplate: masterdata/FilterHolidays/filterHolidays
       outputTemplate: masterdata/error
@@ -169,9 +169,9 @@ FilterHolidays:
 }'  
    MasterData_FilterHolidays_inValid_filterType:
       endPoint: /v1/masterdata/holidays/filtervalues
+      description: Filter Holidays by inalid filter Type.
       role: admin
       templateFields: ["text"]
-      description: Filter Holidays by inalid filter Type.
       restMethod: post
       inputTemplate: masterdata/FilterHolidays/filterHolidays
       outputTemplate: masterdata/error
@@ -194,10 +194,10 @@ FilterHolidays:
 }'  
    MasterData_FilterHolidays_inValid_FilterText:
       endPoint: /v1/masterdata/holidays/filtervalues
+      description: Filter Holidays by inalid filter text.
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]
-      description: Filter Holidays by inalid filter text.
       restMethod: post
       inputTemplate: masterdata/FilterHolidays/filterHolidays
       outputTemplate: masterdata/NilFilterResult

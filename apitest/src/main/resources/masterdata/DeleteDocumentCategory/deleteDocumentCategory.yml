@@ -1,8 +1,8 @@
 DeleteDocumentCategory:
    MasterData_DeleteDocumentCategory_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/documentcategories/{code}
-      role: admin
       description: Delete Document Categoty with valid data.
+      role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteDocumentCategory/deleteDocumentCategory
       outputTemplate: masterdata/DeleteDocumentCategory/deleteDocumentCategoryResult
@@ -14,8 +14,8 @@ DeleteDocumentCategory:
 }'
    MasterData_DeleteDocumentCategory_Invalid_ID: 
       endPoint: /v1/masterdata/documentcategories/{code}
-      role: admin
       description: Delete Document Categoty with invalid code.
+      role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteDocumentCategory/deleteDocumentCategory
       outputTemplate: masterdata/error

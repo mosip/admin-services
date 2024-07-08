@@ -1,9 +1,9 @@
 DeviceSpecFilter:
    MasterData_DeviceSpecFilter_Unique_Name_eng_smoke:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      description: Filter Device Specification by columnName name with type unique.
       role: admin
       templateFields: ["languageCode"]
-      description: Filter Device Specification by columnName name with type unique.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilterResult
@@ -26,9 +26,9 @@ DeviceSpecFilter:
   }'
    MasterData_DeviceSpecFilter_All_Name_eng_smoke:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      description: Filter Device Specification by columnName name with type all.
       role: admin
       templateFields: ["languageCode"]
-      description: Filter Device Specification by columnName name with type all.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilterResult
@@ -51,9 +51,9 @@ DeviceSpecFilter:
   }'
    MasterData_DeviceSpecFilter_Unique_Brand_eng_smoke:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      description: Filter Device Specification by columnName brand and type unique.
       role: admin
       templateFields: ["languageCode"]
-      description: Filter Device Specification by columnName brand and type unique.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilterResult
@@ -76,10 +76,10 @@ DeviceSpecFilter:
   }'
    MasterData_DeviceSpecFilter_All_Brand_eng_smoke:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      description: Filter Device Specification by columnName brand and type all.
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
-      description: Filter Device Specification by columnName brand and type all.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/NilFilterResult
@@ -97,9 +97,9 @@ DeviceSpecFilter:
 }'
    MasterData_DeviceSpecFilter_Unique_Model_smoke:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      description: Filter Device Specification by columnName model and type unique.
       role: admin
       templateFields: ["languageCode"]
-      description: Filter Device Specification by columnName model and type unique.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilterResult
@@ -122,9 +122,9 @@ DeviceSpecFilter:
   }'
    MasterData_DeviceSpecFilter_Unique_IsActive_smoke:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      description: Filter Device Specification by columnName isActive with type unique.
       role: admin
       templateFields: ["languageCode"]
-      description: Filter Device Specification by columnName isActive with type unique.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilterResult
@@ -147,9 +147,9 @@ DeviceSpecFilter:
   }'
    MasterData_DeviceSpecFilter_Invalid_RequestTime_neg:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      description: Filter Device Specification by invalid requesttime.
       role: admin
       templateFields: ["languageCode"]
-      description: Filter Device Specification by invalid requesttime.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/error
@@ -172,10 +172,10 @@ DeviceSpecFilter:
 }'
    MasterData_DeviceSpecFilter_Invalid_Value_Name_neg:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      description: Filter Device Specification by columnName name and invalid text.
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
-      description: Filter Device Specification by columnName name and invalid text.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilterResult
@@ -192,9 +192,9 @@ DeviceSpecFilter:
   }'
    MasterData_DeviceSpecFilter_Invalid_FilterType_neg:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      description: Filter Device Specification by columnName name with invalid text.
       role: admin
       templateFields: ["languageCode"]
-      description: Filter Device Specification by columnName name with invalid text.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/error
@@ -217,9 +217,9 @@ DeviceSpecFilter:
 }'  
    MasterData_DeviceSpecFilter_inValid_blank_FilterType_neg:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      description: Filter Device Specification by columnName name and empty type.
       role: admin
       templateFields: ["languageCode"]
-      description: Filter Device Specification by columnName name and empty type.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/error
@@ -242,9 +242,9 @@ DeviceSpecFilter:
 }'  
    MasterData_DeviceSpecFilter_inValid_columnName:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      description: Filter Device Specification by invalid columnName.
       role: admin
       templateFields: ["languageCode"]
-      description: Filter Device Specification by invalid columnName.
       restMethod: post
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/error

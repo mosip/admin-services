@@ -1,10 +1,10 @@
 DeleteDeviceSpec:
    MasterData_DeleteDeviceSpec_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/devicespecifications/{id}
+      description: Delete Device Spec with valid data.
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: []
-      description: Delete Device Spec with valid data.
       restMethod: delete
       inputTemplate: masterdata/DeleteDeviceSpec/deleteDeviceSpec
       outputTemplate: masterdata/DeleteDeviceSpec/deleteDeviceSpecResult
@@ -15,9 +15,9 @@ DeleteDeviceSpec:
 }'
    MasterData_DeleteDeviceSpec_Invalid_ID: 
       endPoint: /v1/masterdata/devicespecifications/{id}
+      description: Delete Device Spec with invalid id.
       role: admin
       templateFields: []
-      description: Delete Device Spec with invalid id.
       restMethod: delete
       inputTemplate: masterdata/DeleteDeviceSpec/deleteDeviceSpec
       outputTemplate: masterdata/error

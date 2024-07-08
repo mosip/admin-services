@@ -1,9 +1,9 @@
 FetchDocumentCategories:
    MasterData_FetchDocumentCategories_invalid_code_notpresent:
       endPoint: /v1/masterdata/documentcategories/{code}/{langcode}
+      description: Retrieve Document Categories with invalid code and valid langcode.
       role: admin
       templateFields: []
-      description: Retrieve Document Categories with invalid code and valid langcode.
       restMethod: get
       inputTemplate: masterdata/FetchDocumentCategories/fetchDocumentCategories
       outputTemplate: masterdata/error
@@ -21,9 +21,9 @@ FetchDocumentCategories:
 }'
    MasterData_FetchDocumentCategories_invalid_langcode:
       endPoint: /v1/masterdata/documentcategories/{langcode}
+      description: Retrieve Document Categories with invalid langcode.
       role: admin
       templateFields: []
-      description: Retrieve Document Categories with invalid langcode.
       restMethod: get
       inputTemplate: masterdata/FetchDocumentCategories/fetchDocumentCategories
       outputTemplate: masterdata/error
@@ -41,10 +41,10 @@ FetchDocumentCategories:
 }'
    MasterData_FetchDocumentCategories_valid_smoke_langcode:
       endPoint: /v1/masterdata/documentcategories/{langcode}
+      description: Retrieve Document Categories with valid langcode.
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
-      description: Retrieve Document Categories with valid langcode.
       restMethod: get
       inputTemplate: masterdata/FetchDocumentCategories/fetchDocumentCategories
       outputTemplate: masterdata/FetchDocumentCategories/fetchDocumentCategoriesResult

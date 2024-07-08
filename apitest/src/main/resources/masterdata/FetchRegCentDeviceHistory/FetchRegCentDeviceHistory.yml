@@ -1,8 +1,8 @@
 FetchRegCentDeviceHistory:
    MasterData_FetchRegCentDeviceHistory_valid_smoke:
       endPoint: /v1/masterdata/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}
-      role: admin
       description: Retrieve Registration Center Device History with all valid data.
+      role: admin
       restMethod: get
       inputTemplate: masterdata/FetchRegCentDeviceHistory/fetchRegCentDeviceHistory
       outputTemplate: masterdata/FetchRegCentDeviceHistory/fetchRegCentDeviceHistoryResult
@@ -22,8 +22,8 @@ FetchRegCentDeviceHistory:
 
    MasterData_FetchRegCentDeviceHistory_invalid_invalid_regcenterid:
       endPoint: /v1/masterdata/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}
-      role: admin
       description: Retrieve Registration Center Device History with invalid regcenterid.
+      role: admin
       restMethod: get
       inputTemplate: masterdata/FetchRegCentDeviceHistory/fetchRegCentDeviceHistory
       outputTemplate: masterdata/error
@@ -43,8 +43,8 @@ FetchRegCentDeviceHistory:
 
    MasterData_FetchRegCentDeviceHistory_invalid_invalid_deviceid:
       endPoint: /v1/masterdata/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}
-      role: admin
       description: Retrieve Registration Center Device History with invalid deviceid.
+      role: admin
       restMethod: get
       inputTemplate: masterdata/FetchRegCentDeviceHistory/fetchRegCentDeviceHistory
       outputTemplate: masterdata/error
@@ -64,8 +64,8 @@ FetchRegCentDeviceHistory:
 
    MasterData_FetchRegCentDeviceHistory_invalid_invalid_effdatetimes:
       endPoint: /v1/masterdata/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}
-      role: admin
       description: Retrieve Registration Center Device History with invalid effdatetimes.
+      role: admin
       restMethod: get
       inputTemplate: masterdata/FetchRegCentDeviceHistory/fetchRegCentDeviceHistory
       outputTemplate: masterdata/error

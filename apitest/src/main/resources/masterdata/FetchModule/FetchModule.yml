@@ -1,8 +1,8 @@
 FetchModule:
    MasterData_FetchModule_allValid_smoke_with_lang:
       endPoint: /v1/masterdata/modules/{langcode}
-      role: admin
       description: Retrieve Module Details by langcode.
+      role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchModule/fetchModule
@@ -14,8 +14,8 @@ FetchModule:
 }'       
    MasterData_FetchModule_Invalid_smoke_with_Invalid_langcode:
       endPoint: /v1/masterdata/modules/{langcode}
-      role: admin
       description: Retrieve Module Details by invalid langcode.
+      role: admin
       restMethod: get
       inputTemplate: masterdata/FetchModule/fetchModule
       outputTemplate: masterdata/error

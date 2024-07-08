@@ -1,9 +1,9 @@
 GenderFilter:
    Masterdata_GenderFilter_Valid_col_name_withText:
       endPoint: /v1/masterdata/gendertypes/filtervalues
+      description: Filter gender details with valid data.
       role: admin
       templateFields: ["text"]
-      description: Filter gender details with valid data.
       restMethod: post
       inputTemplate: masterdata/GenderFilter/genderFilter
       outputTemplate: masterdata/GenderFilter/genderFilterResult
@@ -26,9 +26,9 @@ GenderFilter:
   }'
    Masterdata_GenderFilter_ValidColNameAsCodeForAllType_Request_Contains_Smoke:
       endPoint: /v1/masterdata/gendertypes/filtervalues
+      description: Filter gender details valid columnName code,, type all.
       role: admin
       templateFields: ["languageCode"]
-      description: Filter gender details valid columnName code,, type all.
       restMethod: post
       inputTemplate: masterdata/GenderFilter/genderFilter
       outputTemplate: masterdata/GenderFilter/genderFilterResult
@@ -51,9 +51,9 @@ GenderFilter:
   }'
    Masterdata_GenderFilter_ValidColNameAsCodeForUniqueType_Request_Contains_Smoke:
       endPoint: /v1/masterdata/gendertypes/filtervalues
+      description: Filter gender details by valid columnName code, type unique.
       role: admin
       templateFields: ["languageCode"]
-      description: Filter gender details by valid columnName code, type unique.
       restMethod: post
       inputTemplate: masterdata/GenderFilter/genderFilter
       outputTemplate: masterdata/GenderFilter/genderFilterResult
@@ -76,9 +76,9 @@ GenderFilter:
   }'
    Masterdata_GenderFilter_ValidTextAsEmpty_Smoke:
       endPoint: /v1/masterdata/gendertypes/filtervalues
+      description: Filter gender details by empty filter type.
       role: admin
       templateFields: ["text"]
-      description: Filter gender details by empty filter type.
       restMethod: post
       inputTemplate: masterdata/GenderFilter/genderFilter
       outputTemplate: masterdata/error
@@ -101,9 +101,9 @@ GenderFilter:
 }'
    Masterdata_GenderFilter_ValidColNameAsLangCodeForAllType_Request_Contains_Smoke:
       endPoint: /v1/masterdata/gendertypes/filtervalues
+      description: Filter gender details by filter langCode and type all.
       role: admin
       templateFields: ["text"]
-      description: Filter gender details by filter langCode and type all.
       restMethod: post
       inputTemplate: masterdata/GenderFilter/genderFilter
       outputTemplate: masterdata/GenderFilter/genderFilterResult
@@ -121,9 +121,9 @@ GenderFilter:
   }'
    Masterdata_GenderFilter_InValidColumnNameAsEmpty:
       endPoint: /v1/masterdata/gendertypes/filtervalues
+      description: Filter gender details by empty columnName.
       role: admin
       templateFields: ["text"]
-      description: Filter gender details by empty columnName.
       restMethod: post
       inputTemplate: masterdata/GenderFilter/genderFilter
       outputTemplate: masterdata/error
@@ -146,9 +146,9 @@ GenderFilter:
 }'
    Masterdata_GenderFilter_InValidColumnNameAsNonExistingValue:
       endPoint: /v1/masterdata/gendertypes/filtervalues
+      description: Filter gender details by non existing columnName.
       role: admin
       templateFields: ["text"]
-      description: Filter gender details by non existing columnName.
       restMethod: post
       inputTemplate: masterdata/GenderFilter/genderFilter
       outputTemplate: masterdata/error
@@ -171,9 +171,9 @@ GenderFilter:
 }'
    Masterdata_GenderFilter_InValidTypeAsNonExisting:
       endPoint: /v1/masterdata/gendertypes/filtervalues
+      description: Filter gender details by non existing filter type.
       role: admin
       templateFields: ["text"]
-      description: Filter gender details by non existing filter type.
       restMethod: post
       inputTemplate: masterdata/GenderFilter/genderFilter
       outputTemplate: masterdata/error
@@ -196,9 +196,9 @@ GenderFilter:
 }'
    Masterdata_GenderFilter_InValidTextAsNonExisting:
       endPoint: /v1/masterdata/gendertypes/filtervalues
+      description: Filter gender details by non existing filter text.
       role: admin
       templateFields: ["text"]
-      description: Filter gender details by non existing filter text.
       restMethod: post
       inputTemplate: masterdata/GenderFilter/genderFilter
       outputTemplate: masterdata/GenderFilter/genderFilterResult
@@ -216,9 +216,9 @@ GenderFilter:
   }'
    Masterdata_GenderFilter_InValidRequestTimeAsEmpty:
       endPoint: /v1/masterdata/gendertypes/filtervalues
+      description: Filter gender details by invalid requesttime format.
       role: admin
       templateFields: ["text"]
-      description: Filter gender details by invalid requesttime format.
       restMethod: post
       inputTemplate: masterdata/GenderFilter/genderFilter
       outputTemplate: masterdata/error
@@ -241,9 +241,9 @@ GenderFilter:
 }'
    Masterdata_GenderFilter_InValidTypeAsEmpty:
       endPoint: /v1/masterdata/gendertypes/filtervalues
+      description: Filter gender details by empty filter type.
       role: admin
       templateFields: ["text"]
-      description: Filter gender details by empty filter type.
       restMethod: post
       inputTemplate: masterdata/GenderFilter/genderFilter
       outputTemplate: masterdata/error

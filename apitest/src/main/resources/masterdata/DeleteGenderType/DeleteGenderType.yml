@@ -1,9 +1,9 @@
 DeleteGenderType:
    MasterData_DeleteGenderType_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/gendertypes/{code}
+      description: Delete Gender Type with valid data.
       role: admin
       templateFields: []
-      description: Delete Gender Type with valid data.
       restMethod: delete
       inputTemplate: masterdata/DeleteGenderType/deleteGenderType
       outputTemplate: masterdata/DeleteGenderType/deleteGenderTypeResult
@@ -14,9 +14,9 @@ DeleteGenderType:
 }'
    MasterData_DeleteGenderType_Invalid_code: 
       endPoint: /v1/masterdata/gendertypes/{code}
+      description: Delete Gender Type with invalid code.
       role: admin
       templateFields: []
-      description: Delete Gender Type with invalid code.
       restMethod: delete
       inputTemplate: masterdata/DeleteGenderType/deleteGenderType
       outputTemplate: masterdata/error

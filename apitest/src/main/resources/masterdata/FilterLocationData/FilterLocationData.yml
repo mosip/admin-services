@@ -1,9 +1,9 @@
 FilterLocationData:
    MasterData_FilterLocationData_Valid_Smoke:
       endPoint: /v1/masterdata/locations/filtervalues
+      description: Filter Location details by all valid data.
       role: admin
       templateFields: ["columnName"]
-      description: Filter Location details by all valid data.
       restMethod: post
       inputTemplate: masterdata/FilterLocationData/filterLocationData
       outputTemplate: masterdata/FilterLocationData/filterLocationDataResult
@@ -21,9 +21,9 @@ FilterLocationData:
   }'
    MasterData_FilterLocationData_Invalid_EmptyFilterType:
       endPoint: /v1/masterdata/locations/filtervalues
+      description: Filter Location details by invalid filter Type.
       role: admin
       templateFields: ["columnName"]
-      description: Filter Location details by invalid filter Type.
       restMethod: post
       inputTemplate: masterdata/FilterLocationData/filterLocationData
       outputTemplate: masterdata/error

@@ -1,8 +1,8 @@
 FetchAllDocumentTypes:
    MasterData_FetchAllDocumentTypes_valid_smoke_langcodeandCode:
       endPoint: /v1/masterdata/documentcategories/all
-      role: admin
       description: Retrieve All Document Types with all valid data.
+      role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchAllDocumentTypes/fetchAllDocumentTypes

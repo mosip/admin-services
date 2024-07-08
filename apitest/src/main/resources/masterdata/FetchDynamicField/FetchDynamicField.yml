@@ -1,8 +1,8 @@
 FetchDynamicField:
    Masterdata_FetchDynamicField_AllValid_smoke:
       endPoint: /v1/masterdata/dynamicfields
-      role: admin
       description: Retrieve Dynamic Fields with all valid data.
+      role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchDynamicField/fetchDynamicField

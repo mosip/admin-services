@@ -19,9 +19,9 @@ DeleteHoliday:
 
    MasterData_DeleteHoliday_Invalid_requesttime_Neg:  
       endPoint: /v1/masterdata/holidays
+      description: Delete Holiday with invalid requesttime.
       role: admin
       templateFields: []
-      description: Delete Holiday with invalid requesttime.
       restMethod: delete
       inputTemplate: masterdata/DeleteHoliday/deleteHoliday
       outputTemplate: masterdata/error

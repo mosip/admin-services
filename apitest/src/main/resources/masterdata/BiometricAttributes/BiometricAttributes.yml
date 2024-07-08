@@ -1,10 +1,10 @@
 BiometricAttributes:
    MasterData_BiometricAttributes_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/biometricattributes
+      description: Create Biometric Attribute with valid data.
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langCode"]
-      description: Create Biometric Attribute with valid data.
       restMethod: post
       inputTemplate: masterdata/BiometricAttributes/biometricAttributes
       outputTemplate: masterdata/BiometricAttributes/biometricAttributesResult
@@ -23,9 +23,9 @@ BiometricAttributes:
 
    MasterData_BiometricAttributes_Invalid_empty_biometricTypeCode:
       endPoint: /v1/masterdata/biometricattributes
+      description: Create Biometric Attributes with empty Biometric Type code value.
       role: admin
       templateFields: ["langCode"]
-      description: Create Biometric Attributes with empty Biometric Type code value.
       restMethod: post
       inputTemplate: masterdata/BiometricAttributes/biometricAttributes
       outputTemplate: masterdata/error
@@ -49,9 +49,9 @@ BiometricAttributes:
 
    MasterData_BiometricAttributes_Invalid_biometricTypeCode:
       endPoint: /v1/masterdata/biometricattributes
+      description: Create Biometric Attributes with invalid Biometric Type code value.
       role: admin
       templateFields: ["langCode"]
-      description: Create Biometric Attributes with invalid Biometric Type code value.
       restMethod: post
       inputTemplate: masterdata/BiometricAttributes/biometricAttributes
       outputTemplate: masterdata/error
@@ -74,8 +74,8 @@ BiometricAttributes:
 
    MasterData_BiometricAttributes_empty_langCode:
       endPoint: /v1/masterdata/biometricattributes
-      role: admin
       description: Create Biometric Attributes with empty lang code value.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/BiometricAttributes/biometricAttributes
       outputTemplate: masterdata/error
@@ -99,8 +99,8 @@ BiometricAttributes:
 
    MasterData_BiometricAttributes_Invalid_langCode:
       endPoint: /v1/masterdata/biometricattributes
-      role: admin
       description: Create Biometric Attributes with invalid lang code value.
+      role: admin
       restMethod: post
       inputTemplate: masterdata/BiometricAttributes/biometricAttributes
       outputTemplate: masterdata/error
@@ -124,9 +124,9 @@ BiometricAttributes:
 
    MasterData_BiometricAttributes_empty_code:
       endPoint: /v1/masterdata/biometricattributes
+      description: Create Biometric Attributes with empty code value.
       role: admin
       templateFields: ["langCode"]
-      description: Create Biometric Attributes with empty code value.
       restMethod: post
       inputTemplate: masterdata/BiometricAttributes/biometricAttributes
       outputTemplate: masterdata/error
@@ -150,9 +150,9 @@ BiometricAttributes:
 
    MasterData_BiometricAttributes_Invalid_empty_name:
       endPoint: /v1/masterdata/biometricattributes
+      description: Create Biometric Attributes with empty name value.
       role: admin
       templateFields: ["langCode"]
-      description: Create Biometric Attributes with empty name value.
       restMethod: post
       inputTemplate: masterdata/BiometricAttributes/biometricAttributes
       outputTemplate: masterdata/error

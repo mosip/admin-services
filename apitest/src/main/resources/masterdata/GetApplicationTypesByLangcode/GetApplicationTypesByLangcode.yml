@@ -1,10 +1,10 @@
 GetApplicationTypesByLangcode:
    Masterdata_GetApplicationTypesByLangcode_allValid_smoke:
       endPoint: /v1/masterdata/applicationtypes/{langcode}
+      description: Retrieve Application Types By langcode.
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
-      description: Retrieve Application Types By langcode.
       restMethod: get
       inputTemplate: masterdata/GetApplicationTypesByLangcode/getApplicationTypesByLangcode
       outputTemplate: masterdata/GetApplicationTypesByLangcode/getApplicationTypesByLangcodeResult
@@ -16,8 +16,8 @@ GetApplicationTypesByLangcode:
 }'
    Masterdata_GetApplicationTypesByLangcode_InValid_langCode:
       endPoint: /v1/masterdata/applicationtypes/{langcode}
-      role: admin
       description: Retrieve Application Types By invalid langcode.
+      role: admin
       restMethod: get
       inputTemplate: masterdata/GetApplicationTypesByLangcode/getApplicationTypesByLangcode
       outputTemplate: masterdata/error

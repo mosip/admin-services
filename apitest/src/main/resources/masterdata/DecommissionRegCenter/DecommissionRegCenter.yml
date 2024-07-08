@@ -1,8 +1,8 @@
 DecommissionRegCenter:
    MasterData_DecommissionRegCenter_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/registrationcenters/decommission/{regCenterID}
-      role: globalAdmin
       description: Decommission Registration Center with valid data.
+      role: globalAdmin
       checkErrorsOnlyInResponse: true
       restMethod: put
       inputTemplate: masterdata/DecommissionRegCenter/decommissionRegCenter

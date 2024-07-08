@@ -1,9 +1,9 @@
 FetchDocumentTypes:
    MasterData_FetchDocumentTypes_invalid_langcode:
       endPoint: /v1/masterdata/documenttypes/{langcode}
+      description: Retrieve Document Types with invalid langcode.
       role: admin
       templateFields: []
-      description: Retrieve Document Types with invalid langcode.
       restMethod: get
       inputTemplate: masterdata/FetchDocumentTypes/fetchDocumentTypes
       outputTemplate: masterdata/error
@@ -21,9 +21,9 @@ FetchDocumentTypes:
 }'
    MasterData_FetchDocumentTypes_invalid_documentcategorycode_notpresent:
       endPoint: /v1/masterdata/documenttypes/{documentcategorycode}/{langcode}
+      description: Retrieve Document Types with non existing documentcategorycode.
       role: admin
       templateFields: []
-      description: Retrieve Document Types with non existing documentcategorycode.
       restMethod: get
       inputTemplate: masterdata/FetchDocumentTypes/fetchDocumentTypes
       outputTemplate: masterdata/error
@@ -41,9 +41,9 @@ FetchDocumentTypes:
 }'
    MasterData_FetchDocumentTypes_invalid_langcode_notpresent:
       endPoint: /v1/masterdata/documenttypes/{documentcategorycode}/{langcode}
+      description: Retrieve Document Types with invalid langcode.
       role: admin
       templateFields: []
-      description: Retrieve Document Types with invalid langcode.
       restMethod: get
       inputTemplate: masterdata/FetchDocumentTypes/fetchDocumentTypes
       outputTemplate: masterdata/error

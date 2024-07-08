@@ -1,8 +1,8 @@
 FetchGenderType:
    Masterdata_FetchGenderType_allValid_smoke_get:
       endPoint: /v1/masterdata/gendertypes
-      role: admin
       description: Retrieve Gender Types with all valid data.
+      role: admin
       restMethod: get
       inputTemplate: masterdata/FetchGenderType/fetchGenderType
       outputTemplate: masterdata/FetchGenderType/fetchGenderTypeResult
@@ -16,9 +16,9 @@ FetchGenderType:
    
    Masterdata_FetchGenderType_Validate_gender_name_smoke:
       endPoint: /v1/masterdata/gendertypes/validate/{gendername}
+      description: Retrieve Gender Types with valid gendername.
       role: admin
       templateFields: []
-      description: Retrieve Gender Types with valid gendername.
       restMethod: get
       inputTemplate: masterdata/FetchGenderType/fetchGenderType
       outputTemplate: masterdata/FetchGenderType/fetchGenderTypeValidationResult
@@ -30,9 +30,9 @@ FetchGenderType:
 }'
    Masterdata_FetchGenderType_Validate_gender_name_invalid:
       endPoint: /v1/masterdata/gendertypes/validate/{gendername}
+      description: Retrieve Gender Types with invalid gendername.
       role: admin
       templateFields: []
-      description: Retrieve Gender Types with invalid gendername.
       restMethod: get
       inputTemplate: masterdata/FetchGenderType/fetchGenderType
       outputTemplate: masterdata/FetchGenderType/fetchGenderTypeValidationResult
@@ -45,9 +45,9 @@ FetchGenderType:
 }'
    Masterdata_FetchGenderType_invalid_langcode_unexisting:
       endPoint: /v1/masterdata/gendertypes/{langcode}
+      description: Retrieve Gender Types with invalid langcode.
       role: admin
       templateFields: []
-      description: Retrieve Gender Types with invalid langcode.
       restMethod: get
       inputTemplate: masterdata/FetchGenderType/fetchGenderType
       outputTemplate: masterdata/error

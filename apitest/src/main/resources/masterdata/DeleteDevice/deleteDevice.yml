@@ -1,8 +1,8 @@
 DeleteDevice:
    MasterData_DeleteDevice_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/devices/{id}
-      role: admin
       description: Delete Device with valid data.
+      role: admin
       checkErrorsOnlyInResponse: true
       restMethod: delete
       inputTemplate: masterdata/DeleteDevice/deleteDevice

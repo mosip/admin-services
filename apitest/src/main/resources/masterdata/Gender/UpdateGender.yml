@@ -1,9 +1,9 @@
 UpdateGender:
    Masterdata_UpdateGender_Valid_Smoke:
       endPoint: /v1/masterdata/gendertypes
+      description: Update Gender details with all valid details.
       role: admin
       templateFields: ["langCode"]
-      description: Update Gender details with all valid details.
       restMethod: put
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/Gender/genderResult
@@ -19,9 +19,9 @@ UpdateGender:
 }'
    Masterdata_UpdateGender_Invalid_InputParameter_Code_Missing:
       endPoint: /v1/masterdata/gendertypes
+      description: Update Gender details with missing code field.
       role: admin
       templateFields: ["langCode"]
-      description: Update Gender details with missing code field.
       restMethod: put
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error
@@ -42,9 +42,9 @@ UpdateGender:
 }'
    Masterdata_UpdateGender_Invalid_InputParameter_Code_Empty:
       endPoint: /v1/masterdata/gendertypes
+      description: Update Gender details with empty code.
       role: admin
       templateFields: ["langCode"]
-      description: Update Gender details with empty code.
       restMethod: put
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error
@@ -65,9 +65,9 @@ UpdateGender:
 }'
    Masterdata_UpdateGender_Invalid_InputParameter_GenderName_Missing:
       endPoint: /v1/masterdata/gendertypes
+      description: Update Gender details with missing genderName field.
       role: admin
       templateFields: ["langCode"]
-      description: Update Gender details with missing genderName field.
       restMethod: put
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error
@@ -88,9 +88,9 @@ UpdateGender:
 }'
    Masterdata_UpdateGender_Invalid_InputParameter_GenderName_Empty:
       endPoint: /v1/masterdata/gendertypes
+      description: Update Gender details with empty genderName.
       role: admin
       templateFields: ["langCode"]
-      description: Update Gender details with empty genderName.
       restMethod: put
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error
@@ -111,9 +111,9 @@ UpdateGender:
 }'
    Masterdata_UpdateGender_Invalid_InputParameter_GenderName_AboveMaxLen64:
       endPoint: /v1/masterdata/gendertypes
+      description: Update Gender details with genderName more than 64 characters.
       role: admin
       templateFields: ["langCode"]
-      description: Update Gender details with genderName more than 64 characters.
       restMethod: put
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error
@@ -134,9 +134,9 @@ UpdateGender:
 }'
    Masterdata_UpdateGender_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/gendertypes
+      description: Update Gender details with missing isActive field.
       role: admin
       templateFields: ["genderName"]
-      description: Update Gender details with missing isActive field.
       restMethod: put
       inputTemplate: masterdata/Gender/gender
       outputTemplate: masterdata/error

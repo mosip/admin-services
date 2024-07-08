@@ -1,8 +1,8 @@
 FetchDistinctDynamicFieldByLangcode:
    Masterdata_FetchDistinctDynamicFieldByLangcode_AllValid_smoke:
       endPoint: /v1/masterdata/dynamicfields/distinct/{langCode}
-      role: admin
       description: Retrieve distinct Dynamic field values By langCode.
+      role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchDistinctDynamicFieldByLangcode/fetchDistinctDynamicFieldByLangcode

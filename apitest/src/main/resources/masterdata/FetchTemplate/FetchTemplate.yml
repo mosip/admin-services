@@ -1,8 +1,8 @@
 FetchTemplate:
    MasterData_FetchTemplate_allValid_smoke_Get:
       endPoint: /v1/masterdata/templates
-      role: admin
       description: Retrieve Templates with all valid data.
+      role: admin
       checkErrorsOnlyInResponse: true 
       restMethod: get
       inputTemplate: masterdata/FetchTemplate/fetchTemplate
@@ -16,8 +16,8 @@ FetchTemplate:
 }'
    MasterData_FetchTemplate_allValid_ByLangcode_smoke:
       endPoint: /v1/masterdata/templates/{langcode}
-      role: admin
       description: Retrieve Templates with langcode.
+      role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchTemplate/fetchTemplate
@@ -31,9 +31,9 @@ FetchTemplate:
 }'
    MasterData_FetchTemplate_allValid_smoke_with_lang_and_templatetypecode:
       endPoint: /v1/masterdata/templates/{langcode}/{templatetypecode}
+      description: Retrieve Templates with langcode and templatetypecode.
       role: admin
       templateFields: ["langcode"]
-      description: Retrieve Templates with langcode and templatetypecode.
       restMethod: get
       inputTemplate: masterdata/FetchTemplate/fetchTemplate
       outputTemplate: masterdata/FetchTemplate/fetchTemplateResult
@@ -49,9 +49,9 @@ FetchTemplate:
 }'
    MasterData_FetchTemplate_invalid_templatetypecode_unexisting:
       endPoint: /v1/masterdata/templates/{langcode}/{templatetypecode}
+      description: Retrieve Templates with langcode and nonexisting templatetypecode.
       role: admin
       templateFields: []
-      description: Retrieve Templates with langcode and nonexisting templatetypecode.
       restMethod: get
       inputTemplate: masterdata/FetchTemplate/fetchTemplate
       outputTemplate: masterdata/error
@@ -70,9 +70,9 @@ FetchTemplate:
 }'
    MasterData_FetchTemplate_invalid_code:
       endPoint: /v1/masterdata/templates/templatetypecodes/{code}
+      description: Retrieve Templates with invalid code.
       role: admin
       templateFields: []
-      description: Retrieve Templates with invalid code.
       restMethod: get
       inputTemplate: masterdata/FetchTemplate/fetchTemplate
       outputTemplate: masterdata/error

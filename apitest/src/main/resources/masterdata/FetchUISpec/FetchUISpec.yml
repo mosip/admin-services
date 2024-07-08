@@ -1,8 +1,8 @@
 FetchUISpec:
    MasterData_FetchUISpec_allValid_smoke_with_lang:
       endPoint: /v1/masterdata/uispec/{domain}/latest
-      role: admin
       description: Retrieve UI Specs with all valid data.
+      role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchUISpec/fetchUISpec

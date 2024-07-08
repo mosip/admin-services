@@ -1,8 +1,8 @@
 FetchAllRegCent:
    MasterData_FetchAllRegCent_valid_smoke:
       endPoint: /v1/masterdata/registrationcenters/all
-      role: admin
       description: Retrieve All Registration Center details with valid data.
+      role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchAllRegCent/fetchAllRegCent
