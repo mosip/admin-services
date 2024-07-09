@@ -8,7 +8,6 @@ import io.mosip.admin.dto.ApplicantDetailsDto;
 import io.mosip.admin.dto.ApplicantUserDetailsDto;
 import io.mosip.admin.dto.DigitalCardStatusResponseDto;
 import io.mosip.admin.packetstatusupdater.constant.ApiName;
-
 import io.mosip.admin.packetstatusupdater.exception.DataNotFoundException;
 import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
 import io.mosip.admin.packetstatusupdater.exception.RequestException;
@@ -26,6 +25,8 @@ import org.apache.commons.codec.binary.StringUtils;
 import org.json.JSONException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,6 +42,8 @@ import java.util.*;
 public class ApplicantDetailServiceImpl implements ApplicantDetailService {
 
     private static final String FACE = "Face";
+
+    private static final Logger log = LoggerFactory.getLogger(ApplicantDetailServiceImpl.class);
 
     @Autowired
     RestClient restClient;
@@ -109,13 +112,21 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
             JSONObject idenitityJsonObject=objectMapper.readValue(idenitityJson,JSONObject.class);
             JSONObject mapperIdentity=utility.getJSONObject(idenitityJsonObject,IDENTITY);
             List<String> mapperJsonKeys = new ArrayList<>(mapperIdentity.keySet());
-            for(String valueObj: applicantDetails){
-                if(valueObj!=null && !valueObj.equalsIgnoreCase(ApplicantPhoto)){
+            for (String valueObj : applicantDetails) {
+                if (valueObj == null) {
+                    log.warn("Encountered null value in applicantDetails list");
+                    continue;
+                }
+                if (!valueObj.equalsIgnoreCase(ApplicantPhoto)) {
                     LinkedHashMap<String, String> jsonObject = utility.getJSONValue(mapperIdentity, valueObj);
-                    String value = jsonObject.get(VALUE);
-                    applicantDataMap.put(value,identityObj.get(value).toString());
-                } else if (valueObj.equalsIgnoreCase(ApplicantPhoto)) {
-                    getImageData(documents,applicantDataMap);
+                    if (jsonObject != null && jsonObject.containsKey(VALUE)) {
+                        String value = jsonObject.get(VALUE);
+                        applicantDataMap.put(value, identityObj.get(value).toString());
+                    } else {
+                        log.warn("Missing key '" + VALUE + "' or null jsonObject encountered while processing applicant details");
+                    }
+                } else {
+                    getImageData(documents, applicantDataMap);
                 }
             }
             saveApplicantLoginDetails();
