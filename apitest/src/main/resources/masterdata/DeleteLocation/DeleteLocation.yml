@@ -1,6 +1,7 @@
 DeleteLocation:
    MasterData_DeleteLocation_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/locations/{locationcode}
+      description: Delete Location with valid data.
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: delete
@@ -14,6 +15,7 @@ DeleteLocation:
 }'
    MasterData_DeleteLocation_Invalid_ID: 
       endPoint: /v1/masterdata/locations/{locationcode}
+      description: Delete Location with invalid locationcode.
       role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteLocation/deleteLocation

@@ -1,6 +1,7 @@
 GetBiometricTypeByCodeAndLangcode:
    Masterdata_GetBiometricTypeByCodeAndLangcode_allValid_FNR_smoke:
       endPoint: /v1/masterdata/biometrictypes/{code}/{langCode}
+      description: Retrieve Biometric Type details by code and langCode.
       role: admin
       templateFields: ["langCode"]
       restMethod: get
@@ -15,6 +16,7 @@ GetBiometricTypeByCodeAndLangcode:
 }'
    Masterdata_GetBiometricTypeByCodeAndLangcode_allValid_IRS_smoke:
       endPoint: /v1/masterdata/biometrictypes/{code}/{langCode}
+      description: Retrieve Biometric Type details for IRIS by code and langCode.
       role: admin
       templateFields: ["langCode"]
       restMethod: get
@@ -29,6 +31,7 @@ GetBiometricTypeByCodeAndLangcode:
 }'
    Masterdata_GetBiometricTypeByCodeAndLangcode_allValid_PHT_smoke:
       endPoint: /v1/masterdata/biometrictypes/{code}/{langCode}
+      description: Retrieve Biometric Type details by code PHT and langCode.
       role: admin
       templateFields: ["langCode"]
       restMethod: get
@@ -43,6 +46,7 @@ GetBiometricTypeByCodeAndLangcode:
 }'
    Masterdata_GetBiometricTypeByCodeAndLangcode_InValid_Code:
       endPoint: /v1/masterdata/biometrictypes/{code}/{langCode}
+      description: Retrieve Biometric Type details by invalid code and valid langCode.
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetBiometricTypeByCodeAndLangcode/getBiometricTypeByCodeAndLangcode
@@ -61,6 +65,7 @@ GetBiometricTypeByCodeAndLangcode:
 }'
    Masterdata_GetBiometricTypeByCodeAndLangcode_InValid_langCode:
       endPoint: /v1/masterdata/biometrictypes/{code}/{langCode}
+      description: Retrieve Biometric Type details by valid code and invalid langCode.
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetBiometricTypeByCodeAndLangcode/getBiometricTypeByCodeAndLangcode

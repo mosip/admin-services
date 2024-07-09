@@ -1,6 +1,7 @@
 FetchAppConfig:
    MasterData_FetchAppConfig_allValid_smoke:
       endPoint: /v1/masterdata/configs
+      description: Retrieve All App Config details with valid data.
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

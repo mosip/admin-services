@@ -1,6 +1,7 @@
 FilterDynamicField:
    MasterData_FilterDynamicField_Valid_Smoke:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
+      description: Filter Dynamic Fields By all valid data.
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -30,6 +31,7 @@ FilterDynamicField:
 }'
    MasterData_FilterDynamicField_Invalid_RequestTime:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
+      description: Filter Dynamic Fields By invalid requesttime format.
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -54,6 +56,7 @@ FilterDynamicField:
 }'
    MasterData_FilterDynamicField_InValid_FilterType:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
+      description: Filter Dynamic Fields By invalid type.
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -78,6 +81,7 @@ FilterDynamicField:
 }'
    MasterData_FilterDynamicField_Blank_FilterType:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
+      description: Filter Dynamic Fields By empty type.
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -102,6 +106,7 @@ FilterDynamicField:
 }'
    MasterData_FilterDynamicField_InValid_columnName:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
+      description: Filter Dynamic Fields By empty text.
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
