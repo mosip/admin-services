@@ -1,27 +1,22 @@
 package io.mosip.admin.controller.test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.mockito.Mockito.doNothing;
-
-import io.mosip.admin.bulkdataupload.dto.BulkDataGetExtnDto;
-import io.mosip.admin.bulkdataupload.dto.BulkDataResponseDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.admin.TestBootApplication;
 import io.mosip.admin.bulkdataupload.entity.BulkUploadTranscation;
 import io.mosip.admin.bulkdataupload.repositories.BulkUploadTranscationRepository;
-import io.mosip.admin.bulkdataupload.service.BulkDataService;
-import io.mosip.kernel.core.http.ResponseWrapper;
-
+import io.mosip.admin.packetstatusupdater.util.AuditUtil;
+import io.mosip.admin.util.AdminDataUtil;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,16 +30,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-import io.mosip.admin.TestBootApplication;
-import io.mosip.admin.packetstatusupdater.util.AuditUtil;
-import io.mosip.admin.util.AdminDataUtil;
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -128,7 +113,6 @@ public class BulkDataUploadControllerTest {
 
 	}
 	
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t003uploadDataTest() throws Exception {
@@ -137,13 +121,12 @@ public class BulkDataUploadControllerTest {
 				"AAA,AAA,ara,TRUE\r\n" + 
 				"BBB,BBB,eng,TRUE";
 		MockMultipartFile gender = new MockMultipartFile("data", "filename.txt", "multipart/form-data", content.getBytes());
-		AdminDataUtil.checkResponse(
+		AdminDataUtil.checkErrorResponse(
 				mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(gender).param("tableName","gender").param("operation","insert").param("category","masterdata")).andReturn(),
 				"ADM-BLK-007");
 
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t004uploadDataTest() throws Exception {
@@ -152,13 +135,12 @@ public class BulkDataUploadControllerTest {
 				"AAA,AAA,ara,TRUE\r\n" + 
 				"BBB,BBB,eng,TRUE";
 		MockMultipartFile gender = new MockMultipartFile("data", "filename.txt", "text/plain", content.getBytes());
-		AdminDataUtil.checkResponse(
+		AdminDataUtil.checkErrorResponse(
 				mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(gender).param("tableName","gender").param("operation","insert").param("category","masterdataa")).andReturn(),
 				"KER-MSD-999");
 
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t005uploadDataTest() throws Exception {
@@ -167,13 +149,12 @@ public class BulkDataUploadControllerTest {
 				"AAA,AAA,ara,TRUE\r\n" + 
 				"BBB,BBB,eng,TRUE";
 		MockMultipartFile gender = new MockMultipartFile("data", "gender.csv", "text/plain", content.getBytes());
-		AdminDataUtil.checkResponse(
+		AdminDataUtil.checkErrorResponse(
 				mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(gender).param("tableName","gender").param("operation","insertt").param("category","masterdata")).andReturn(),
 				"KER-MSD-999");
 
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t006uploadDataTest() throws Exception {
@@ -182,13 +163,12 @@ public class BulkDataUploadControllerTest {
 				"AAB,AAA,ara,TRUE\r\n" + 
 				"BBC,BBB,eng,TRUE";
 		MockMultipartFile gender = new MockMultipartFile("data", "gender.xlsx", "text/plain", content.getBytes());
-		AdminDataUtil.checkResponse(
+		AdminDataUtil.checkErrorResponse(
 				mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(gender).param("tableName","gender").param("operation","insertt").param("category","masterdata")).andReturn(),
 				"KER-MSD-999");
 
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t007uploadDataTest() throws Exception {
@@ -197,13 +177,12 @@ public class BulkDataUploadControllerTest {
 				"ABX,AAA,ara,TRUE\r\n" + 
 				"BCY,BBB,eng,TRUE";
 		MockMultipartFile gender = new MockMultipartFile("data", "gender.xls", "text/plain", content.getBytes());
-		AdminDataUtil.checkResponse(
+		AdminDataUtil.checkErrorResponse(
 				mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(gender).param("tableName","gender").param("operation","insertt").param("category","masterdata")).andReturn(),
 				"KER-MSD-999");
 
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t008uploadDataTest() throws Exception {
@@ -212,12 +191,12 @@ public class BulkDataUploadControllerTest {
 				"AAA,AAA,ara,TRUE\r\n" + 
 				"BBB,BBB,eng,TRUE";
 		MockMultipartFile gender = new MockMultipartFile("data", "gender.csv", "text/plain", content.getBytes());
-		AdminDataUtil.checkResponse(
+		AdminDataUtil.checkErrorResponse(
 				mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(gender).param("tableName","gender").param("operation","insert").param("category","packet")).andReturn(),
 				"ADM-BLK-006");
 
 	}
-	@Ignore
+
 	@Test
 	@WithUserDetails("global-admin")
 	public void t009uploadDataTest() throws Exception {
@@ -226,12 +205,12 @@ public class BulkDataUploadControllerTest {
 				"AAA,AAA,ara,TRUE\r\n" + 
 				"BBB,BBB,eng,TRUE";
 		MockMultipartFile gender = new MockMultipartFile("data", "gender.xlsx", "text/plain", content.getBytes());
-		AdminDataUtil.checkResponse(
+		AdminDataUtil.checkErrorResponse(
 				mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(gender).param("tableName","gender").param("operation","insert").param("category","packet")).andReturn(),
 				"ADM-BLK-006");
 
 	}
-	@Ignore
+
 	@Test
 	@WithUserDetails("global-admin")
 	public void t010uploadDataTest() throws Exception {
@@ -240,7 +219,7 @@ public class BulkDataUploadControllerTest {
 				"AAA,AAA,ara,TRUE\r\n" + 
 				"BBB,BBB,eng,TRUE";
 		MockMultipartFile gender = new MockMultipartFile("data", "gender.xls", "text/plain", content.getBytes());
-		AdminDataUtil.checkResponse(
+		AdminDataUtil.checkErrorResponse(
 				mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(gender).param("tableName","gender").param("operation","insert").param("category","packet")).andReturn(),
 				"ADM-BLK-006");
 
@@ -320,14 +299,13 @@ public class BulkDataUploadControllerTest {
 		AdminDataUtil.checkResponse(response,null);
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t0017uploadDataTest() throws Exception {
 		String content="word,description,langCode,isActive,isDeleted\r\n" +
 				"Some Random Words,Test,eng,TRUE,FALSE\r\n";
 		MockMultipartFile blocklisted_words = new MockMultipartFile("data", "filename.csv", "multipart/form-data", content.getBytes());
-		AdminDataUtil.checkResponse(
+		AdminDataUtil.checkErrorResponse(
 				mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(blocklisted_words).param("tableName","blocklisted_words").param("operation","insert").param("category","masterdata")).andReturn(),
 				"ADM-BLK-007");
 
