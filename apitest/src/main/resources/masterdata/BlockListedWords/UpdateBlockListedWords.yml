@@ -1,9 +1,9 @@
 UpdateBlockListedWords:
    Masterdata_UpdateBlockListedWords_All_Valid_Smoke:
       endPoint: /v1/masterdata/blocklistedwords
+      description: Update Block Listed Words with valid data.
       role: admin
       templateFields: ["description","word","oldWord"]
-      description: Update Block Listed Words with valid data.
       restMethod: put
       inputTemplate: masterdata/BlockListedWords/updateBlockListedWords
       outputTemplate: masterdata/BlockListedWords/blockListedWordsResult
@@ -20,9 +20,9 @@ UpdateBlockListedWords:
 }'
    Masterdata_UpdateBlockListedWords_with_spaces:
       endPoint: /v1/masterdata/blocklistedwords
+      description: Update Block Listed Words with spaces in word.
       role: admin
       templateFields: ["description","word","oldWord"]
-      description: Update Block Listed Words with spaces in word.
       restMethod: put
       inputTemplate: masterdata/BlockListedWords/updateBlockListedWords
       outputTemplate: masterdata/error
@@ -44,9 +44,9 @@ UpdateBlockListedWords:
 }'
    Masterdata_UpdateBlockListedWords_Valid_WordLength128:
       endPoint: /v1/masterdata/blocklistedwords
+      description: Update Block Listed Words with valid word length of 128 charectars.
       role: admin
       templateFields: ["description"]
-      description: Update Block Listed Words with valid word length of 128 charectars.
       restMethod: put
       inputTemplate: masterdata/BlockListedWords/updateBlockListedWords
       outputTemplate: masterdata/error
@@ -67,9 +67,9 @@ UpdateBlockListedWords:
 }'
    Masterdata_UpdateBlockListedWords_Invalid_BlocklistedWordsLength129:
       endPoint: /v1/masterdata/blocklistedwords
+      description: Update Block Listed Words with invalid length of word more than 128 charectars.
       role: admin
       templateFields: ["description"]
-      description: Update Block Listed Words with invalid length of word more than 128 charectars.
       restMethod: put
       inputTemplate: masterdata/BlockListedWords/updateBlockListedWords
       outputTemplate: masterdata/error
@@ -91,9 +91,9 @@ UpdateBlockListedWords:
 }'
    Masterdata_UpdateBlockListedWords_inValid_descriptionBlank:
       endPoint: /v1/masterdata/blocklistedwords
+      description: Update Block Listed Words with invalid Description empty.
       role: admin
       templateFields: ["word"]
-      description: Update Block Listed Words with invalid Description empty.
       restMethod: put
       inputTemplate: masterdata/BlockListedWords/updateBlockListedWords
       outputTemplate: masterdata/error
@@ -114,9 +114,9 @@ UpdateBlockListedWords:
 }'
    Masterdata_UpdateBlockListedWords_Invalid_DescriptionLength257:
       endPoint: /v1/masterdata/blocklistedwords
+      description: Update Block Listed Words with invalid length of Description more than 256 charectars.
       role: admin
       templateFields: ["word"]
-      description: Update Block Listed Words with invalid length of Description more than 256 charectars.
       restMethod: put
       inputTemplate: masterdata/BlockListedWords/updateBlockListedWords
       outputTemplate: masterdata/error
@@ -138,9 +138,9 @@ UpdateBlockListedWords:
 }'
    Masterdata_UpdateBlockListedWords_Invalid_EmptyWord:
       endPoint: /v1/masterdata/blocklistedwords
+      description: Update Block Listed Words with invalid word empty.
       role: admin
       templateFields: ["description"]
-      description: Update Block Listed Words with invalid word empty.
       restMethod: put
       inputTemplate: masterdata/BlockListedWords/updateBlockListedWords
       outputTemplate: masterdata/error
