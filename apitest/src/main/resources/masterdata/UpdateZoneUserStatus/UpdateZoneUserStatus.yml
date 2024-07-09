@@ -7,7 +7,7 @@ UpdateZoneUserStatus:
       inputTemplate: masterdata/UpdateZoneUserStatus/updateZoneUserStatus
       outputTemplate: masterdata/UpdateZoneUserStatus/updateZoneUserStatusResult
       input: '{
-    "userId": "func_auto_test_user",
+    "userId": "$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$",
     "isActive": "true"
 }'
       output: '{

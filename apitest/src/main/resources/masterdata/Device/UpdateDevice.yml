@@ -20,7 +20,7 @@ UpdateDevice:
 	"requesttime": "$TIMESTAMP$"
 	}'
       output: '{
-    "name": "$IGNORE$",
+    "name": "testDevicedummy updated",
 	"deviceSpecId": "743",
 	"ipAddress": "172.23.174.113",
 	"isActive": "$IGNORE$",
@@ -51,7 +51,7 @@ UpdateDevice:
 	"requesttime": "$TIMESTAMP$"
 	}'
       output: '{
-    "name": "$IGNORE$",
+    "name": "testDevicedummy updated",
 	"deviceSpecId": "736",
 	"ipAddress": "172.23.174.113",
 	"isActive": "$IGNORE$",

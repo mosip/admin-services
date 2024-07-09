@@ -6,7 +6,7 @@ UpdateUserCenterMappingStatus:
       inputTemplate: masterdata/UpdateUserCenterMappingStatus/updateUserCenterMappingStatus
       outputTemplate: masterdata/UpdateUserCenterMappingStatus/updateUserCenterMappingStatusResult
       input: '{
-  "id": "func_auto_test_user",
+  "id": "$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$",
   "isActive": true
 }'
       output: '{

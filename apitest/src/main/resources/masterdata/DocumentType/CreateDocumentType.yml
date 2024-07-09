@@ -23,7 +23,7 @@ CreateDocumentType:
    MasterData_CreateDocumentType_All_Valid_Mandatory_Fields_Eng:
       endPoint: /v1/masterdata/documenttypes
       role: admin
-      templateFields: ["name","description"]
+      templateFields: ["name"]
       restMethod: post
       inputTemplate: masterdata/DocumentType/documentType
       outputTemplate: masterdata/DocumentType/documentTypeResult
