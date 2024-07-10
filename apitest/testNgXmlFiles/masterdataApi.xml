@@ -1330,27 +1330,6 @@
 			<class name="io.mosip.testrig.apirig.testscripts.PatchWithPathParam" />
 		</classes>
 	</test>
-	<test name="CreateZoneUser">
-		<parameter name="ymlFile"
-			value="masterdata/ZoneUser/CreateZoneUser.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
-		</classes>
-	</test>
-	<test name="UpdateZoneUser">
-		<parameter name="ymlFile"
-			value="masterdata/ZoneUser/UpdateZoneUser.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.SimplePut" />
-		</classes>
-	</test>
-	<test name="UpdateZoneUserStatus">
-		<parameter name="ymlFile"
-			value="masterdata/UpdateZoneUserStatus/UpdateZoneUserStatus.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.PatchWithPathParam" />
-		</classes>
-	</test>
 	
 	<test name="GetUserDetails">
 		<parameter name="ymlFile" value="masterdata/GetUserDetails/GetUserDetails.yml"/>  
