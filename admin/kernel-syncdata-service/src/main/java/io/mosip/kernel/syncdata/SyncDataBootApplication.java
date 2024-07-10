@@ -1,5 +1,6 @@
 package io.mosip.kernel.syncdata;
 
+import io.mosip.kernel.keymanagerservice.validator.ECKeyPairGenRequestValidator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,6 +11,7 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -29,6 +31,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 		"io.mosip.kernel.keygenerator.bouncycastle", "io.mosip.kernel.websub.api.config"  },
 	excludeFilters  = {@ComponentScan.Filter(
 		type = FilterType.ASPECTJ, pattern = {"io.mosip.kernel.signature.*"})})
+@Import(value = {ECKeyPairGenRequestValidator.class})
 @EnableAsync
 @EnableScheduling
 @EnableCaching
