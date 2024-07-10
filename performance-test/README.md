@@ -69,6 +69,70 @@
     <version>9.25.6</version>
 </dependency>
 
+	* jackson-databind-2.17.1.jar
+		* <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+<dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>2.17.1</version>
+</dependency>
+
+	* jackson-module-afterburner-2.17.1.jar
+		* <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-afterburner -->
+<dependency>
+    <groupId>com.fasterxml.jackson.module</groupId>
+    <artifactId>jackson-module-afterburner</artifactId>
+    <version>2.17.1</version>
+</dependency>
+
+	* kernel-core-1.2.0.1.jar
+		* <!-- https://mvnrepository.com/artifact/io.mosip.kernel/kernel-core -->
+<dependency>
+    <groupId>io.mosip.kernel</groupId>
+    <artifactId>kernel-core</artifactId>
+    <version>1.2.0.1</version>
+</dependency>
+
+	* kernel-keymanager-service-1.2.0.1-lib.jar
+		* <!-- https://mvnrepository.com/artifact/io.mosip.kernel/kernel-keymanager-service -->
+<dependency>
+    <groupId>io.mosip.kernel</groupId>
+    <artifactId>kernel-keymanager-service</artifactId>
+    <version>1.2.0.1-B4</version>
+</dependency>
+
+	* kernel-logger-logback-1.2.0.1.jar
+		* <!-- https://mvnrepository.com/artifact/io.mosip.kernel/kernel-logger-logback -->
+<dependency>
+    <groupId>io.mosip.kernel</groupId>
+    <artifactId>kernel-logger-logback</artifactId>
+    <version>1.2.0.1-B1</version>
+</dependency>
+
+	* kernel-syncdata-service-1.2.0.1.jar
+		* <!-- https://central.sonatype.com/artifact/io.mosip.kernel/kernel-syncdata-service -->
+<dependency>
+    <groupId>io.mosip.kernel</groupId>
+    <artifactId>kernel-syncdata-service</artifactId>
+    <version>1.2.1.0</version>
+</dependency>
+
+	* spring-context-6.1.9.jar
+		* <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-context</artifactId>
+    <version>6.1.9</version>
+</dependency>
+
+	* TSS.Java-0.3.0.jar
+		* <!-- https://mvnrepository.com/artifact/com.github.microsoft/TSS.Java -->
+<dependency>
+    <groupId>com.github.microsoft</groupId>
+    <artifactId>TSS.Java</artifactId>
+    <version>0.3.0</version>
+</dependency>
+
 
 ### Execution points for eSignet Authentication API's
 
@@ -84,8 +148,6 @@
 	* S06 LatestIdSchema (Execution) : This thread executes Get LatestID Schema usecase.
 	* S07 CaCertificates (Execution) : This thread executes Get CAcertificates usecase.
 	* S08 UserIdPwd (Execution) : This thread executes Get auth token details encrypted based on machine key usecase.
-	
-	
 	
 ### Downloading Plugin manager jar file for the purpose installing other JMeter specific plugins
 
