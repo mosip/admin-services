@@ -7,10 +7,10 @@ UserCenterMapping:
       inputTemplate: masterdata/UserCenterMapping/userCenterMapping
       outputTemplate: masterdata/UserCenterMapping/userCenterMappingResult
       input: '{
-     "id": "masterdata-220005",
+     "id": "$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$",
      "name": "automation",
      "statusCode": "active",
-     "regCenterId": "10005",
+     "regCenterId": "$ID:CreateRegCenter_allValid_smoke_sid_id$",
      "isActive": true,
      "langCode": "eng",
      "requesttime": "$TIMESTAMP$"
