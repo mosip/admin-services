@@ -81,13 +81,23 @@ public class SyncJobHelperService {
 
     public LocalDateTime getDeltaSyncCurrentTimestamp() {
         CronExpression cronExpression = CronExpression.parse(deltaCacheEvictCron);
-        LocalDateTime nextTrigger1 = cronExpression.next(LocalDateTime.now().atZone(ZoneOffset.UTC).toLocalDateTime());
-        LocalDateTime nextTrigger2 = cronExpression.next(nextTrigger1);
 
-        long minutes = ChronoUnit.MINUTES.between(nextTrigger1.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime(),
-                nextTrigger2.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime());
+        LocalDateTime immediateNextTrigger = cronExpression.next(LocalDateTime.now().atZone(ZoneOffset.UTC).toLocalDateTime());
+        if (immediateNextTrigger == null) {
+            logger.error("Cron expression might be invalid or has no upcoming triggers.");
+            return null;
+        }
 
-        LocalDateTime previousTrigger = nextTrigger1.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime().minus(minutes, ChronoUnit.MINUTES);
+        LocalDateTime nextTrigger = cronExpression.next(immediateNextTrigger);
+        if (nextTrigger == null) {
+            logger.error("No upcoming triggers after {}", immediateNextTrigger);
+            return null;
+        }
+
+        long minutes = ChronoUnit.MINUTES.between(immediateNextTrigger.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime(),
+                nextTrigger.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime());
+
+        LocalDateTime previousTrigger = immediateNextTrigger.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime().minus(minutes, ChronoUnit.MINUTES);
 
         logger.debug("Identified previous trigger : {}", previousTrigger);
         return previousTrigger;
@@ -177,10 +187,10 @@ public class SyncJobHelperService {
     }
 
     private void handleDynamicFields(List entities) {
-        Map<String, List<DynamicFieldDto>> data = new HashMap<String, List<DynamicFieldDto>>();
+        Map<String, List<DynamicFieldDto>> data = new HashMap<>();
         entities.forEach(dto -> {
             if(!data.containsKey(((DynamicFieldDto)dto).getName())) {
-                List<DynamicFieldDto> langBasedData = new ArrayList<DynamicFieldDto>();
+                List<DynamicFieldDto> langBasedData = new ArrayList<>();
                 langBasedData.add(((DynamicFieldDto)dto));
                 data.put(((DynamicFieldDto)dto).getName(), langBasedData);
             }
