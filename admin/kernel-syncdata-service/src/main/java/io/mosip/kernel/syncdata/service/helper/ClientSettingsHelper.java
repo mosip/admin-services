@@ -65,7 +65,7 @@ public class ClientSettingsHelper {
 
 	public Map<Class, CompletableFuture> getInitiateDataFetch(String machineId, String regCenterId,
 			LocalDateTime lastUpdated, LocalDateTime currentTimestamp, boolean isV2API, boolean deltaSync, String fullSyncEntities) {
-		List<String> entities = (fullSyncEntities != null && !fullSyncEntities.isBlank()) ? Arrays.asList(fullSyncEntities.split("\\s*,\\s*")) : new ArrayList<>();
+		List<String> entities = (fullSyncEntities != null && !fullSyncEntities.isBlank()) ? Arrays.asList(fullSyncEntities.split("\\s*,\\s*", -1)) : new ArrayList<>();
 		
 		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
 		futuresMap.put(AppAuthenticationMethod.class,
@@ -201,10 +201,10 @@ public class ClientSettingsHelper {
 	}
 
 	private void handleDynamicData(List entities, List<SyncDataBaseDto> list, RegistrationCenterMachineDto registrationCenterMachineDto, boolean isV2) {
-		Map<String, List<DynamicFieldDto>> data = new HashMap<String, List<DynamicFieldDto>>();
+		Map<String, List<DynamicFieldDto>> data = new HashMap<>();
 		entities.forEach(dto -> {
 			if (!data.containsKey(((DynamicFieldDto) dto).getName())) {
-				List<DynamicFieldDto> langBasedData = new ArrayList<DynamicFieldDto>();
+				List<DynamicFieldDto> langBasedData = new ArrayList<>();
 				langBasedData.add(((DynamicFieldDto) dto));
 				data.put(((DynamicFieldDto) dto).getName(), langBasedData);
 			} else

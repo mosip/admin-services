@@ -1,14 +1,11 @@
 package io.mosip.kernel.masterdata.dto;
 
-import java.io.Serializable;
-
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-
 import io.mosip.kernel.masterdata.validator.StringFormatter;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+
+import java.io.Serializable;
 
 @Data
 

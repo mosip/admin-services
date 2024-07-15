@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 import io.mosip.admin.bulkdataupload.entity.RegisteredDevice;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface RegisteredDeviceRepository.
  * 

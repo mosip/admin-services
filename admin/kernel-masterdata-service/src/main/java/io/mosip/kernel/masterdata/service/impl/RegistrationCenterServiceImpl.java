@@ -1,20 +1,40 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeParseException;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.idgenerator.spi.RegistrationCenterIdGenerator;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
+import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceHistoryErrorCode;
+import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
+import io.mosip.kernel.masterdata.dto.*;
+import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.dto.response.*;
+import io.mosip.kernel.masterdata.entity.*;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
+import io.mosip.kernel.masterdata.exception.ValidationException;
+import io.mosip.kernel.masterdata.repository.*;
+import io.mosip.kernel.masterdata.service.GenericService;
+import io.mosip.kernel.masterdata.service.LocationService;
+import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
+import io.mosip.kernel.masterdata.service.RegistrationCenterService;
+import io.mosip.kernel.masterdata.utils.*;
+import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-
-import io.mosip.kernel.masterdata.dto.*;
-import io.mosip.kernel.masterdata.dto.response.*;
-import io.mosip.kernel.masterdata.service.GenericService;
-import io.mosip.kernel.masterdata.utils.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,56 +47,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.core.idgenerator.spi.RegistrationCenterIdGenerator;
-import io.mosip.kernel.core.util.EmptyCheckUtils;
-import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
-import io.mosip.kernel.masterdata.constant.MasterDataConstant;
-import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceHistoryErrorCode;
-import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
-import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
-import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
-import io.mosip.kernel.masterdata.dto.request.FilterDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.request.SearchFilter;
-import io.mosip.kernel.masterdata.entity.DaysOfWeek;
-import io.mosip.kernel.masterdata.entity.Device;
-import io.mosip.kernel.masterdata.entity.Holiday;
-import io.mosip.kernel.masterdata.entity.Location;
-import io.mosip.kernel.masterdata.entity.Machine;
-import io.mosip.kernel.masterdata.entity.RegExceptionalHoliday;
-import io.mosip.kernel.masterdata.entity.RegWorkingNonWorking;
-import io.mosip.kernel.masterdata.entity.RegistrationCenter;
-import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
-import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
-import io.mosip.kernel.masterdata.entity.UserDetails;
-import io.mosip.kernel.masterdata.entity.Zone;
-import io.mosip.kernel.masterdata.exception.DataNotFoundException;
-import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-import io.mosip.kernel.masterdata.exception.RequestException;
-import io.mosip.kernel.masterdata.exception.ValidationException;
-import io.mosip.kernel.masterdata.repository.DaysOfWeekListRepo;
-import io.mosip.kernel.masterdata.repository.DeviceRepository;
-import io.mosip.kernel.masterdata.repository.HolidayRepository;
-import io.mosip.kernel.masterdata.repository.LocationRepository;
-import io.mosip.kernel.masterdata.repository.MachineRepository;
-import io.mosip.kernel.masterdata.repository.RegExceptionalHolidayRepository;
-import io.mosip.kernel.masterdata.repository.RegWorkingNonWorkingRepo;
-import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
-import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
-import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
-import io.mosip.kernel.masterdata.repository.UserDetailsRepository;
-import io.mosip.kernel.masterdata.service.LocationService;
-import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
-import io.mosip.kernel.masterdata.service.RegistrationCenterService;
-import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
-import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
-import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeParseException;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * This service class contains methods that provides registration centers
@@ -696,7 +673,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
 			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
 				registrationCenters = MapperUtils.mapAll(pageData.getContent(), RegistrationCenterExtnDto.class);
-				registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), pageSize, null,
+				registrationCenterPages = new PageDto<>(pageData.getNumber(), pageSize, null,
 						(int) pageData.getTotalElements(), pageData.getTotalPages(), registrationCenters);
 			} else {
 				throw new DataNotFoundException(
@@ -1503,7 +1480,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 						langCode, PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
 				if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
 					registrationCenters = MapperUtils.mapAll(pageData.getContent(), RegistrationCenterExtnDto.class);
-					registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageNumber, pageSize, null,
+					registrationCenterPages = new PageDto<>(pageNumber, pageSize, null,
 							pageData.getTotalElements(), pageData.getTotalPages(), registrationCenters);
 				} else {
 					throw new DataNotFoundException(

@@ -3,11 +3,6 @@
  */
 package io.mosip.admin.bulkdataupload.repositories;
 
-import java.util.List;
-
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.admin.bulkdataupload.entity.ApplicantValidDocument;
 import io.mosip.admin.bulkdataupload.entity.id.ApplicantValidDocumentId;

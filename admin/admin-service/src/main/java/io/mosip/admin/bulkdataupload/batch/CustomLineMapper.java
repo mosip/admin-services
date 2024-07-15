@@ -38,7 +38,7 @@ public class CustomLineMapper <T> implements LineMapper<T>, InitializingBean {
         FieldSet fieldSet = tokenizer.tokenize(line);
         String[] values = fieldSet.getValues();
 
-        if(Arrays.stream(Objects.requireNonNull(values)).anyMatch( v -> v.isBlank()))
+        if(Arrays.stream(Objects.requireNonNull(values)).anyMatch(String::isBlank))
             throw new Exception("Blank values are not allowed");
 	    Set<ConstraintViolation<T>> violations = validator.validate(fieldSetMapper.mapFieldSet(tokenizer.tokenize(line)));
 	    if (!violations.isEmpty()) {

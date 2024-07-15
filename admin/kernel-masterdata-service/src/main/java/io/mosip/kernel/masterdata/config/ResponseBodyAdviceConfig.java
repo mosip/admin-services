@@ -45,11 +45,10 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrap
 		try {
 			HttpServletRequest httpServletRequest = ((ServletServerHttpRequest) request).getServletRequest();
 
-			if (httpServletRequest instanceof ContentCachingRequestWrapper) {
-				requestBody = new String(((ContentCachingRequestWrapper) httpServletRequest).getContentAsByteArray());
-			} else if (httpServletRequest instanceof HttpServletRequestWrapper
-					&& ((HttpServletRequestWrapper) httpServletRequest)
-							.getRequest() instanceof ContentCachingRequestWrapper) {
+			if (httpServletRequest instanceof ContentCachingRequestWrapper contentCachingRequestWrapper) {
+				requestBody = new String(contentCachingRequestWrapper.getContentAsByteArray());
+			} else if (httpServletRequest instanceof HttpServletRequestWrapper httpServletRequestWrapper
+					&& (httpServletRequestWrapper.getRequest() instanceof ContentCachingRequestWrapper)) {
 				requestBody = new String(
 						((ContentCachingRequestWrapper) ((HttpServletRequestWrapper) httpServletRequest).getRequest())
 								.getContentAsByteArray());

@@ -1,6 +1,5 @@
 package io.mosip.kernel.syncdata.service;
 
-import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.syncdata.dto.ConfigDto;
 import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
 import org.springframework.http.ResponseEntity;

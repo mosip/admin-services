@@ -1,8 +1,5 @@
 package io.mosip.hotlist.security;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -58,8 +55,7 @@ public class HotlistSecurityManagerTest {
 	}
 
 	@Test
-	public void testEncrypt()
-			throws JsonParseException, JsonMappingException, JsonProcessingException, IOException, HotlistAppException {
+	public void testEncrypt() throws IOException, HotlistAppException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
 		ResponseWrapper<ObjectNode> response = new ResponseWrapper<>();
@@ -75,7 +71,7 @@ public class HotlistSecurityManagerTest {
 
 	@Test
 	public void testDecrypt()
-			throws JsonParseException, JsonMappingException, JsonProcessingException, IOException, HotlistAppException {
+			throws IOException, HotlistAppException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
 		ResponseWrapper<ObjectNode> response = new ResponseWrapper<>();
@@ -90,8 +86,7 @@ public class HotlistSecurityManagerTest {
 	}
 
 	@Test
-	public void testEncryptError()
-			throws JsonParseException, JsonMappingException, JsonProcessingException, IOException {
+	public void testEncryptError() {
 		try {
 			ResponseWrapper<ObjectNode> response = new ResponseWrapper<>();
 			ObjectNode responseNode = mapper.createObjectNode();
@@ -109,8 +104,7 @@ public class HotlistSecurityManagerTest {
 	}
 
 	@Test
-	public void testDecryptError()
-			throws HotlistAppException, JsonParseException, JsonMappingException, JsonProcessingException, IOException {
+	public void testDecryptError() {
 		try {
 			ResponseWrapper<ObjectNode> response = new ResponseWrapper<>();
 			ObjectNode responseNode = mapper.createObjectNode();
@@ -128,8 +122,7 @@ public class HotlistSecurityManagerTest {
 	}
 
 	@Test
-	public void testDecryptNoResponseData()
-			throws JsonParseException, JsonMappingException, JsonProcessingException, IOException {
+	public void testDecryptNoResponseData() throws IOException {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.registerModule(new JavaTimeModule());

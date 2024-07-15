@@ -297,7 +297,7 @@ public class SyncClientSettingsIntegrationTest {
 		templateTypes = new ArrayList<>();
 		templateTypes.add(new TemplateType("T101", "ENG", "Description"));
 		holidays = new ArrayList<>();
-		Holiday holiday = new Holiday();
+		Holiday holiday;
 		LocalDate date = LocalDate.of(2018, Month.NOVEMBER, 7);
 		holiday = new Holiday();
 		holiday.setHolidayId(new HolidayID("KAR", date, "eng", "Diwali"));
@@ -794,7 +794,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncFailureWithInvalidTimeStamp() throws Exception {
+	public void syncFailureWithInvalidTimeStamp() {
 		mockSuccess();
 		lenient().when(userDetailsHistoryRepository.getByUserIdAndTimestamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -802,7 +802,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void v2syncFailureWithInvalidTimeStamp() throws Exception {
+	public void v2syncFailureWithInvalidTimeStamp() {
 		mockSuccess();
 		lenient().when(machineHistoryRepository.findByIdAndLangCodeAndEffectDateTimeLessThanEqualAndIsDeletedFalse
 				(Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
@@ -810,7 +810,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncApplicationFetchException() throws Exception {
+	public void syncApplicationFetchException() {
 		mockSuccess();
 		lenient().when(applicationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -818,7 +818,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void v2syncApplicationFetchException() throws Exception {
+	public void v2syncApplicationFetchException() {
 		mockSuccess();
 		lenient().when(applicationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -826,7 +826,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataMachineFetchException() throws Exception {
+	public void syncMasterDataMachineFetchException() {
 		mockSuccess();
 		lenient().when(machineRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -834,7 +834,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void v2syncMasterDataMachineFetchException() throws Exception {
+	public void v2syncMasterDataMachineFetchException() {
 		mockSuccess();
 		lenient().when(machineRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -842,7 +842,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataMachineSpecFetchException() throws Exception {
+	public void syncMasterDataMachineSpecFetchException() {
 		mockSuccess();
 		lenient().when(machineSpecificationRepository.findLatestByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -850,7 +850,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void v2syncMasterDataMachineSpecFetchException() throws Exception {
+	public void v2syncMasterDataMachineSpecFetchException() {
 		mockSuccess();
 		lenient().when(machineSpecificationRepository.findLatestByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -858,7 +858,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataMachineTypeFetchException() throws Exception {
+	public void syncMasterDataMachineTypeFetchException() {
 		mockSuccess();
 		lenient().when(machineTypeRepository.findLatestByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -866,7 +866,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void v2syncMasterDataMachineTypeFetchException() throws Exception {
+	public void v2syncMasterDataMachineTypeFetchException() {
 		mockSuccess();
 		lenient().when(machineTypeRepository.findLatestByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -882,7 +882,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void v2syncMasterDataTemplateFetchException() throws Exception {
+	public void v2syncMasterDataTemplateFetchException() {
 		mockSuccess();
 		lenient().when(templateRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -890,7 +890,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataTemplateFileFormatFetchException() throws Exception {
+	public void syncMasterDataTemplateFileFormatFetchException() {
 		mockSuccess();
 		lenient().when(templateFileFormatRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -898,7 +898,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void v2syncMasterDataTemplateFileFormatFetchException() throws Exception {
+	public void v2syncMasterDataTemplateFileFormatFetchException() {
 		mockSuccess();
 		lenient().when(templateFileFormatRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -906,7 +906,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataTemplateTypeFetchException() throws Exception {
+	public void syncMasterDataTemplateTypeFetchException() {
 		mockSuccess();
 		lenient().when(templateTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -914,7 +914,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void v2syncMasterDataTemplateTypeFetchException() throws Exception {
+	public void v2syncMasterDataTemplateTypeFetchException() {
 		mockSuccess();
 		lenient().when(templateTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -922,7 +922,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataHolidayFetchException() throws Exception {
+	public void syncMasterDataHolidayFetchException() {
 		mockSuccess();
 		lenient().when(holidayRepository.findAllLatestCreatedUpdateDeletedByMachineId(Mockito.anyString(), Mockito.any(),
 				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
@@ -930,7 +930,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataDocCategoryFetchException() throws Exception {
+	public void syncMasterDataDocCategoryFetchException() {
 		mockSuccess();
 		lenient().when(documentCategoryRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -938,7 +938,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataDocTypeFetchException() throws Exception {
+	public void syncMasterDataDocTypeFetchException() {
 		mockSuccess();
 		lenient().when(documentTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -946,7 +946,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataLocationFetchException() throws Exception {
+	public void syncMasterDataLocationFetchException() {
 		mockSuccess();
 		lenient().when(locationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -954,7 +954,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataIdTypesFetchException() throws Exception {
+	public void syncMasterDataIdTypesFetchException() {
 		mockSuccess();
 		lenient().when(idTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -962,7 +962,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataRegistrationCenterFetchException() throws Exception {
+	public void syncMasterDataRegistrationCenterFetchException() {
 		mockSuccess();
 		lenient().when(registrationCenterRepository.findLatestRegistrationCenterByMachineId(Mockito.anyString(), Mockito.any(),
 				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
@@ -970,7 +970,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataRegistrationCenterTypeFetchException() throws Exception {
+	public void syncMasterDataRegistrationCenterTypeFetchException() {
 		mockSuccess();
 		lenient().when(registrationCenterTypeRepository.findLatestRegistrationCenterTypeByMachineId(Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
@@ -978,7 +978,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataValidFetchException() throws Exception {
+	public void syncMasterDataValidFetchException() {
 		mockSuccess();
 		lenient().when(registrationCenterTypeRepository.findLatestRegistrationCenterTypeByMachineId(Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
@@ -986,7 +986,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataBlackListedWordFetchException() throws Exception {
+	public void syncMasterDataBlackListedWordFetchException() {
 		mockSuccess();
 		lenient().when(blocklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -994,7 +994,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void v2syncMasterDataBlackListedWordFetchException() throws Exception {
+	public void v2syncMasterDataBlackListedWordFetchException() {
 		mockSuccess();
 		lenient().when(blocklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -1002,7 +1002,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataReasonCatFetchException() throws Exception {
+	public void syncMasterDataReasonCatFetchException() {
 		mockSuccess();
 		lenient().when(reasonCategoryRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -1010,7 +1010,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataReasonListFetchException() throws Exception {
+	public void syncMasterDataReasonListFetchException() {
 		mockSuccess();
 		lenient().when(reasonListRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -1018,7 +1018,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDatavalidDocumentFetchException() throws Exception {
+	public void syncMasterDatavalidDocumentFetchException() {
 		mockSuccess();
 		lenient().when(validDocumentRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -1026,7 +1026,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataRegistrationCenterMachineFetchException() throws Exception {
+	public void syncMasterDataRegistrationCenterMachineFetchException() {
 		mockSuccess();
 		lenient().when(machineRepository.findAllLatestCreatedUpdatedDeleted(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -1034,7 +1034,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataRegistrationCenterDeviceFetchException() throws Exception {
+	public void syncMasterDataRegistrationCenterDeviceFetchException() {
 		mockSuccess();
 		lenient().when(deviceRepository.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(Mockito.anyString(), Mockito.any(),
 				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
@@ -1042,7 +1042,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataRegistrationCenterMachineDeviceFetchException() throws Exception {
+	public void syncMasterDataRegistrationCenterMachineDeviceFetchException() {
 		mockSuccess();
 		lenient().when(machineRepository.findAllLatestCreatedUpdatedDeleted(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -1050,7 +1050,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterDataRegistrationCenterUserMachineFetchException() throws Exception {
+	public void syncMasterDataRegistrationCenterUserMachineFetchException() {
 		mockSuccess();
 		lenient().when(machineRepository.findAllLatestCreatedUpdatedDeleted(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -1058,14 +1058,14 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Ignore
 	@WithUserDetails(value = "reg-officer")
-	public void IsMachineIdPresentServiceExceptionTest() throws Exception {
+	public void IsMachineIdPresentServiceExceptionTest() {
 		lenient().when(machineRepository.findByMachineIdAndIsActive(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 	}
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void findApplicantValidDocServiceExceptionTest() throws Exception {
+	public void findApplicantValidDocServiceExceptionTest() {
 		mockSuccess();
 		lenient().when(applicantValidDocumentRespository.findAllByTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -1073,7 +1073,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void appAuthMethodExceptionTest() throws Exception {
+	public void appAuthMethodExceptionTest() {
 
 		mockSuccess();
 		lenient().when(appAuthenticationMethodRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
@@ -1082,7 +1082,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void registrationCenterTest() throws Exception {
+	public void registrationCenterTest() {
 
 		mockSuccess();
 		lenient().when(registrationCenterRepository.findRegistrationCenterByIdAndIsActiveIsTrue(Mockito.anyString()))
@@ -1091,7 +1091,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void appDetailExceptionTest() throws Exception {
+	public void appDetailExceptionTest() {
 
 		mockSuccess();
 		lenient().when(appDetailRepository.findByLastUpdatedTimeAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
@@ -1101,7 +1101,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void appPriorityExceptionTest() throws Exception {
+	public void appPriorityExceptionTest() {
 		mockSuccess();
 		lenient().when(appRolePriorityRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -1110,7 +1110,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void screenAuthExceptionTest() throws Exception {
+	public void screenAuthExceptionTest() {
 
 		mockSuccess();
 		lenient().when(screenAuthorizationRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
@@ -1119,7 +1119,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void processListExceptionTest() throws Exception {
+	public void processListExceptionTest() {
 
 		mockSuccess();
 		lenient().when(processListRepository.findByLastUpdatedTimeAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
@@ -1128,7 +1128,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void screenDetailException() throws Exception {
+	public void screenDetailException() {
 		mockSuccess();
 		lenient().when(screenDetailRepo.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -1159,7 +1159,7 @@ public class SyncClientSettingsIntegrationTest {
 	}
 
 	@WithUserDetails(value = "reg-officer")
-	public void syncMasterdataWithServiceException() throws Exception {
+	public void syncMasterdataWithServiceException() {
 		mockSuccess();
 		lenient().when(machineRepository.getRegistrationCenterMachineWithKeyIndex(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -1167,7 +1167,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void testwithRuntimeExceptioninAsyncMethod() throws Exception {
+	public void testwithRuntimeExceptioninAsyncMethod() {
 		mockSuccess();
 		lenient().when(machineRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(RuntimeException.class);
@@ -1175,7 +1175,7 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void syncClientSettingsForUpdatedRegCenterId() throws Exception {
+	public void syncClientSettingsForUpdatedRegCenterId() {
 		mockSuccess();
 		Machine machine = new Machine();
 		machine.setId("230030");

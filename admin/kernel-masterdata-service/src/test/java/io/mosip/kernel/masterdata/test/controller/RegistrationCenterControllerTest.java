@@ -15,7 +15,6 @@ import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -367,7 +366,6 @@ public class RegistrationCenterControllerTest {
 
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t017deleteRegistrationCenterTest() throws Exception {
@@ -378,7 +376,6 @@ public class RegistrationCenterControllerTest {
 
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t017deleteRegistrationCenterTest1() throws Exception {
@@ -389,7 +386,6 @@ public class RegistrationCenterControllerTest {
 
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t018deleteRegistrationCenterFailTest() throws Exception {
@@ -452,7 +448,6 @@ public class RegistrationCenterControllerTest {
 
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t022decommissionRegCenterTest() throws Exception {
@@ -513,7 +508,6 @@ public class RegistrationCenterControllerTest {
 
 	}
 	
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t023decommissionRegCenterFailTest1() throws Exception {
@@ -544,7 +538,6 @@ public class RegistrationCenterControllerTest {
 
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t024updateRegistrationCenterAdminStatusTest() throws Exception {
@@ -614,18 +607,16 @@ public class RegistrationCenterControllerTest {
 				.andReturn(), null);
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t029createRegistrationCenterTest4() throws Exception {
 
-		MasterDataTest.checkResponse(mockMvc
+		MasterDataTest.checkErrorResponse(mockMvc
 				.perform(MockMvcRequestBuilders.post("/registrationcenters")
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rg)))
-				.andReturn(), null);
+				.andReturn());
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t029createRegistrationCenterTest() throws Exception {
@@ -637,13 +628,12 @@ public class RegistrationCenterControllerTest {
 		elst.add(e);
 		rg.getRequest().setExceptionalHolidayPutPostDto(elst);
 		
-		MasterDataTest.checkResponse(mockMvc
+		MasterDataTest.checkErrorResponse(mockMvc
 				.perform(MockMvcRequestBuilders.post("/registrationcenters")
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rg)))
-				.andReturn(), null);
+				.andReturn());
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void t029createRegistrationCenterTest1() throws Exception {
@@ -658,10 +648,10 @@ public class RegistrationCenterControllerTest {
 		Map<String,Boolean> m=new HashMap<>();
 		m.put("101", true);
 		rg.getRequest().setWorkingNonWorkingDays(m);
-		MasterDataTest.checkResponse(mockMvc
+		MasterDataTest.checkErrorResponse(mockMvc
 				.perform(MockMvcRequestBuilders.post("/registrationcenters")
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(rg)))
-				.andReturn(), null);
+				.andReturn());
 	}
 	
 	

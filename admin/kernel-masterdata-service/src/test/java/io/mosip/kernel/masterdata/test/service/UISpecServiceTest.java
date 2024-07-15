@@ -1,34 +1,7 @@
 package io.mosip.kernel.masterdata.test.service;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.http.HttpHeaders;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
@@ -47,6 +20,31 @@ import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecDto;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecPublishDto;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * 
@@ -74,7 +72,7 @@ public class UISpecServiceTest {
 
 	@Autowired
 	private UISpecService uiSpecService;
-	List<UISpec> uiSpecs = new ArrayList<UISpec>();
+	List<UISpec> uiSpecs = new ArrayList<>();
 	UISpec draftedUISpec = null;
 	UISpec publishedUISpec = null;
 	private IdentitySchema publishedSchema = null;
@@ -113,7 +111,7 @@ public class UISpecServiceTest {
 		publishedUISpec.setStatus(IdentitySchemaService.STATUS_PUBLISHED);
 		uiSpecs.add(publishedUISpec);
 
-		uiSpecPagedResults = new PageImpl<UISpec>(uiSpecs);
+		uiSpecPagedResults = new PageImpl<>(uiSpecs);
 		pageRequest = PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "cr_dtimes"));
 	}
 
@@ -353,7 +351,7 @@ public class UISpecServiceTest {
 	@WithUserDetails("global-admin")
 	public void getLatestUISpecTest_01() {
 		Mockito.when((uiSpecRepository.findLatestPublishedUISpec(Mockito.anyString())))
-				.thenReturn(new ArrayList<UISpec>());
+				.thenReturn(new ArrayList<>());
 		try {
 			uiSpecService.getLatestUISpec(Mockito.anyString());
 		} catch (DataNotFoundException e) {
@@ -377,7 +375,7 @@ public class UISpecServiceTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void getUISpecTest() {
-		List<UISpec> publishedUISpecs = new ArrayList<UISpec>();
+		List<UISpec> publishedUISpecs = new ArrayList<>();
 		publishedUISpecs.add(publishedUISpec);
 		Mockito.when(uiSpecRepository.findPublishedUISpec(Mockito.anyDouble(), Mockito.anyString()))
 				.thenReturn(publishedUISpecs);

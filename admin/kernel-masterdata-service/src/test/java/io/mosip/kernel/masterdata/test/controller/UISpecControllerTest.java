@@ -1,14 +1,16 @@
 package io.mosip.kernel.masterdata.test.controller;
 
-import static org.mockito.Mockito.doNothing;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
+import io.mosip.kernel.masterdata.uispec.dto.UISpecDto;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -22,25 +24,10 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.io.IOException;
 
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
-import io.mosip.kernel.masterdata.entity.UISpec;
-import io.mosip.kernel.masterdata.repository.UISpecRepository;
-import io.mosip.kernel.masterdata.service.UISpecService;
-import io.mosip.kernel.masterdata.test.TestBootApplication;
-import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
-import io.mosip.kernel.masterdata.uispec.dto.UISpecDto;
-import io.mosip.kernel.masterdata.uispec.dto.UISpecPublishDto;
-import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
+import static org.mockito.Mockito.doNothing;
 
 /**
  * 
@@ -174,7 +161,6 @@ public class UISpecControllerTest {
 
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void deleteUISpec() throws Exception {
@@ -192,7 +178,6 @@ public class UISpecControllerTest {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/uispec/all")).andReturn(), null);
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void getLatestUISpec() throws Exception {
@@ -202,7 +187,6 @@ public class UISpecControllerTest {
 
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void getLatestUISpec1() throws Exception {

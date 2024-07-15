@@ -36,16 +36,13 @@ public class PacketUploadTasklet implements Tasklet, InitializingBean {
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-        PacketUploadStatus status = null;
-        switch (mode) {
-            case "UPLOAD" :
-                status = packetUploadService.onlyUploadPacket(this.fileName, this.file);
-                break;
-            case "SYNC-UPLOAD":
-                status = packetUploadService.syncAndUploadPacket(this.fileName, this.file, centerId, supervisorStatus, source, process,
-                        (String) chunkContext.getStepContext().getJobParameters().get("transactionId"));
-                break;
-        }
+        PacketUploadStatus status = switch (mode) {
+            case "UPLOAD" -> packetUploadService.onlyUploadPacket(this.fileName, this.file);
+            case "SYNC-UPLOAD" ->
+                    packetUploadService.syncAndUploadPacket(this.fileName, this.file, centerId, supervisorStatus, source, process,
+                            (String) chunkContext.getStepContext().getJobParameters().get("transactionId"));
+            default -> null;
+        };
 
         if(null!=status && status.isFailed())
             throw new JobExecutionException(this.fileName + " --> " + status.getMessage());

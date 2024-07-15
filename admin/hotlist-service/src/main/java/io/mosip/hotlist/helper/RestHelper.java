@@ -129,7 +129,7 @@ public class RestHelper {
 				PREFIX_REQUEST + request.getUri());
 		Mono<?> sendRequest = request(request);
 		sendRequest.subscribe();
-		return () -> sendRequest.block();
+		return sendRequest::block;
 	}
 
 	/**

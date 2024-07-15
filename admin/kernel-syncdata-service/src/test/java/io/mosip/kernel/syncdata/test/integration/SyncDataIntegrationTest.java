@@ -13,7 +13,6 @@ import io.mosip.kernel.syncdata.entity.id.ApplicantValidDocumentID;
 import io.mosip.kernel.syncdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
 import io.mosip.kernel.syncdata.repository.*;
-import io.mosip.kernel.syncdata.service.helper.beans.RegistrationCenterDevice;
 import io.mosip.kernel.syncdata.test.TestBootApplication;
 import org.junit.Before;
 import org.junit.Test;
@@ -297,7 +296,7 @@ public class SyncDataIntegrationTest {
 		templateTypes = new ArrayList<>();
 		templateTypes.add(new TemplateType("T101", "ENG", "Description"));
 		holidays = new ArrayList<>();
-		Holiday holiday = new Holiday();
+		Holiday holiday;
 		LocalDate date = LocalDate.of(2018, Month.NOVEMBER, 7);
 		holiday = new Holiday();
 		holiday.setHolidayId(new HolidayID("KAR", date, "eng", "Diwali"));
@@ -364,8 +363,7 @@ public class SyncDataIntegrationTest {
 		registrationCenterMachine.setIsDeleted(false);
 		registrationCenterMachines.add(registrationCenterMachine);
 		registrationCenterDevices = new ArrayList<>();
-		RegistrationCenterDevice registrationCenterDevice = new RegistrationCenterDevice();
-		
+
 		device.setRegCenterId("10002");
 		device.setId("10001");
 		device.setIsActive(true);
@@ -652,7 +650,7 @@ public class SyncDataIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void getRegistrationCenterUserMasterDataNotFoundExcepetion() throws Exception {
+	public void getRegistrationCenterUserMasterDataNotFoundExcepetion() {
 		lenient().when(userDetailsRepository.findByUsersByRegCenterId(Mockito.anyString()))
 				.thenReturn(new ArrayList<UserDetails>());
 

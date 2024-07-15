@@ -1,10 +1,16 @@
 package io.mosip.kernel.masterdata.test.controller;
 
-import static org.mockito.Mockito.doNothing;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -20,16 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
-import io.mosip.kernel.masterdata.test.TestBootApplication;
-import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
+import static org.mockito.Mockito.doNothing;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
@@ -79,7 +76,6 @@ public class ValidDocumentControllerTest {
                 null);
     }
 
-    @Ignore
     @Test
     @WithUserDetails("global-admin")
     public void t002deleteValidDocuemntTest() throws Exception {
@@ -87,7 +83,6 @@ public class ValidDocumentControllerTest {
                 mockMvc.perform(MockMvcRequestBuilders.delete("/validdocuments/POI/CIN")).andReturn(), null);
     }
 
-    @Ignore
     @Test
     @WithUserDetails("global-admin")
     public void t003deleteValidDocuemntFailTest() throws Exception {
@@ -187,7 +182,6 @@ public class ValidDocumentControllerTest {
                 "KER-MSD-317");
     }
 
-    @Ignore
     @Test
     @WithUserDetails("global-admin")
     public void t009mapDocCategoryAndDocTypeTest() throws Exception {
@@ -217,7 +211,6 @@ public class ValidDocumentControllerTest {
                 "KER-MSD-360");
     }
 
-    @Ignore
     @Test
     @WithUserDetails("global-admin")
     public void t008unmapDocCategoryAndDocTypeTest() throws Exception {
@@ -232,7 +225,6 @@ public class ValidDocumentControllerTest {
                 "KER-MSD-361");
     }
 
-    @Ignore
     @Test
     @WithUserDetails("global-admin")
     public void t007unmapDocCategoryAndDocTypeTest() throws Exception {

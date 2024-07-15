@@ -1,17 +1,16 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import io.mosip.kernel.masterdata.dto.getresponse.ApplicationConfigResponseDto;
+import io.mosip.kernel.masterdata.service.ApplicationConfigService;
+import io.mosip.kernel.masterdata.utils.LanguageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.masterdata.dto.getresponse.ApplicationConfigResponseDto;
-import io.mosip.kernel.masterdata.service.ApplicationConfigService;
-import io.mosip.kernel.masterdata.utils.LanguageUtils;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Component
@@ -52,7 +51,7 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
 	 */
 	@Override
 	public Map<String,String> getConfigValues(){
-		Map<String, String> response = new HashMap<String, String>();
+		Map<String, String> response = new HashMap<>();
 		logger.debug("admin.ui.config : {} ",uiConfigs);
 		for (String key : uiConfigs.split(SEMICOLON)) {
 			String[] parts = key.split(COLON, 2);

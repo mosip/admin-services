@@ -283,10 +283,7 @@ public class SyncMasterDataServiceHelperTest {
     }
     
     @Test
-    public void getClientSettingsJsonFileTest3() throws Exception {
-        MockRestServiceServer mockRestServiceServer2 = MockRestServiceServer.bindTo(selfTokenRestTemplate)
-                .ignoreExpectOrder(true)
-                .build();
+    public void getClientSettingsJsonFileTest3() {
         ResponseWrapper<LocationHierarchyLevelResponseDto> locationsResponse = new ResponseWrapper<>();
         locationsResponse.setResponse(locationHierarchyLevelResponseDto);
 

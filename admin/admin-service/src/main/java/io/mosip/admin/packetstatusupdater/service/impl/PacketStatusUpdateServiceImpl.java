@@ -1,24 +1,7 @@
 package io.mosip.admin.packetstatusupdater.service.impl;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Properties;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.admin.packetstatusupdater.constant.PacketStatusUpdateErrorCode;
 import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateDto;
 import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateResponseDto;
@@ -35,6 +18,21 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.logger.logback.factory.Logfactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Packet Status Update service.
@@ -124,9 +122,8 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 				packStautsDto.sort(createdDateTimesResultComparator);
 				setStatusMessage(packStautsDto);
 				regProcPacketStatusRequestDto.setPacketStatusUpdateList(packStautsDto);
-				packStautsDto.stream().forEach(pcksts -> {
-					auditUtil.setAuditRequestDto(EventEnum.getEventEnumBasedOnPAcketStatus(pcksts),null);
-				});
+				packStautsDto.stream().forEach(pcksts ->
+					auditUtil.setAuditRequestDto(EventEnum.getEventEnumBasedOnPAcketStatus(pcksts),null));
 				return regProcPacketStatusRequestDto;
 			}
 		}

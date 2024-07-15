@@ -3,25 +3,13 @@
  */
 package io.mosip.kernel.masterdata.utils;
 
-import java.lang.reflect.Field;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Id;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.CriteriaUpdate;
-import jakarta.persistence.criteria.Path;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
+import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
+import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import jakarta.persistence.*;
+import jakarta.persistence.criteria.*;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -29,11 +17,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.util.EmptyCheckUtils;
-import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
-import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
-import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import java.lang.reflect.Field;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Ramadurai Pandian
@@ -110,8 +98,7 @@ public class MasterdataCreationUtil {
 	}
 
 	private <T, E> T callMethodBasedOnFilters(Class<E> entity, T t, String langCode, String id, String primaryId,
-			boolean activeDto, boolean activePrimary, String primaryKeyCol, Class<?> dtoClass, boolean priSecIdentical)
-			throws NoSuchFieldException, IllegalAccessException {
+			boolean activeDto, boolean activePrimary, String primaryKeyCol, Class<?> dtoClass, boolean priSecIdentical) {
 		if(langCode == null)
 			return t;
 
@@ -134,7 +121,7 @@ public class MasterdataCreationUtil {
 
 	
 	private <E> int updatePrimaryToTrue(Class<E> entityClass, String id, String primaryKeyCol, boolean active) {
-		List<Predicate> predicates = new ArrayList<Predicate>();
+		List<Predicate> predicates = new ArrayList<>();
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaUpdate<E> update = criteriaBuilder.createCriteriaUpdate(entityClass);
 		Root<E> root = update.from(entityClass);
@@ -186,7 +173,7 @@ public class MasterdataCreationUtil {
 		E result = null;
 		try {
 
-			List<Predicate> predicates = new ArrayList<Predicate>();
+			List<Predicate> predicates = new ArrayList<>();
 			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 			CriteriaQuery<E> selectQuery = criteriaBuilder.createQuery(entity);
 			Root<E> rootQuery = selectQuery.from(entity);
@@ -240,7 +227,7 @@ public class MasterdataCreationUtil {
 	}
 
 	public <E> int updateMasterDataDeactivate(Class<E> entity, String code) {
-		List<Predicate> predicates = new ArrayList<Predicate>();
+		List<Predicate> predicates = new ArrayList<>();
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaUpdate<E> update = criteriaBuilder.createCriteriaUpdate(entity);
 		Root<E> root = update.from(entity);
@@ -257,7 +244,7 @@ public class MasterdataCreationUtil {
 		if (!EmptyCheckUtils.isNullEmpty(authN)) {
 			contextUser = authN.getName();
 		}
-		List<Predicate> predicates = new ArrayList<Predicate>();
+		List<Predicate> predicates = new ArrayList<>();
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaUpdate<E> update = criteriaBuilder.createCriteriaUpdate(entity);
 		Root<E> root = update.from(entity);

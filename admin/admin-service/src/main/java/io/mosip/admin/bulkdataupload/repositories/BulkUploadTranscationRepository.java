@@ -1,20 +1,15 @@
 package io.mosip.admin.bulkdataupload.repositories;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
-
+import io.mosip.admin.bulkdataupload.entity.BulkUploadTranscation;
+import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.admin.bulkdataupload.entity.BulkUploadTranscation;
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import java.time.LocalDateTime;
 /**
  * this classs BulkUploadTranscationRepository
  * 

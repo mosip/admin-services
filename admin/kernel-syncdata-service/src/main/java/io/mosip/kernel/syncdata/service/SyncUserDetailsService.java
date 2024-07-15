@@ -1,8 +1,6 @@
 package io.mosip.kernel.syncdata.service;
 
-import io.mosip.kernel.syncdata.dto.SyncUserDetailDto;
 import io.mosip.kernel.syncdata.dto.SyncUserDto;
-import io.mosip.kernel.syncdata.dto.SyncUserSaltDto;
 import io.mosip.kernel.syncdata.dto.response.UserDetailResponseDto;
 
 import java.util.List;

@@ -1,21 +1,16 @@
 package io.mosip.kernel.masterdata.dto;
 
-import java.time.LocalDateTime;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.BaseDto;
+import io.mosip.kernel.masterdata.validator.StringFormatter;
+import io.swagger.annotations.ApiModelProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.Range;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import io.mosip.kernel.masterdata.dto.getresponse.extn.BaseDto;
-import io.mosip.kernel.masterdata.validator.StringFormatter;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.time.LocalDateTime;
 
 /**
  * 

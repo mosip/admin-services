@@ -2,8 +2,6 @@ package io.mosip.kernel.masterdata.dto.getresponse.extn;
 
 import io.mosip.kernel.masterdata.validator.FilterType;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data

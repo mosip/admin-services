@@ -1,21 +1,33 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import jakarta.transaction.Transactional;
-
-import org.json.JSONException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.masterdata.constant.SchemaErrorCode;
+import io.mosip.kernel.masterdata.dto.*;
+import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldSearchResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DynamicFieldExtnDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResult;
-
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.DynamicField;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
+import io.mosip.kernel.masterdata.service.DynamicFieldService;
+import io.mosip.kernel.masterdata.utils.*;
+import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
+import jakarta.transaction.Transactional;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,44 +42,11 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.constant.SchemaErrorCode;
-import io.mosip.kernel.masterdata.dto.DynamicFieldCodeValueDTO;
-import io.mosip.kernel.masterdata.dto.DynamicFieldConsolidateResponseDto;
-import io.mosip.kernel.masterdata.dto.DynamicFieldDefDto;
-import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
-import io.mosip.kernel.masterdata.dto.DynamicFieldNameDto;
-import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
-import io.mosip.kernel.masterdata.dto.FilterData;
-import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.DynamicFieldSearchResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
-import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.DynamicFieldExtnDto;
-import io.mosip.kernel.masterdata.dto.request.FilterDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
-import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
-import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.entity.DynamicField;
-import io.mosip.kernel.masterdata.exception.DataNotFoundException;
-import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
-import io.mosip.kernel.masterdata.service.DynamicFieldService;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
-import io.mosip.kernel.masterdata.utils.ExceptionUtils;
-import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
-import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
-import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
-import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import io.mosip.kernel.masterdata.utils.PageUtils;
-import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
-import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class DynamicFieldServiceImpl implements DynamicFieldService {
@@ -160,7 +139,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	@Cacheable(value = "dynamic-field", key = "'dynamicfield'")
 	@Override
 	public List<String> getDistinctDynamicFields() {
-		List<String> distinctDynamicField = new ArrayList<String>();
+		List<String> distinctDynamicField = new ArrayList<>();
 		try {
 			distinctDynamicField = dynamicFieldRepository.getDistinctDynamicFields();
 
@@ -174,7 +153,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	@Cacheable(value = "dynamic-field", key = "'dynamicfield'.concat(#langCode)")
 	@Override
 	public List<DynamicFieldDefDto> getDistinctDynamicFields(String langCode) {
-		List<DynamicFieldDefDto> dynamicFields = new ArrayList<DynamicFieldDefDto>();
+		List<DynamicFieldDefDto> dynamicFields = new ArrayList<>();
 		try {
 			List<DynamicFieldNameDto> fields = dynamicFieldRepository.getDistinctDynamicFieldsWithDescription();
 
@@ -330,7 +309,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 	@Override
 	public PageResponseDto<DynamicFieldSearchResponseDto> searchDynamicFields(SearchDto dto) {
 		PageResponseDto<DynamicFieldSearchResponseDto> pageDto = new PageResponseDto<>();
-		List<DynamicFieldSearchResponseDto> dynamicFieldExtnDtos = new ArrayList<DynamicFieldSearchResponseDto>();
+		List<DynamicFieldSearchResponseDto> dynamicFieldExtnDtos = new ArrayList<>();
 		Page<DynamicField> page = masterdataSearchHelper.searchMasterdata(DynamicField.class, dto, null);
 		if (page.getContent() != null && !page.getContent().isEmpty()) {
 			for (DynamicField dynamicDto : page.getContent()) {
@@ -516,7 +495,7 @@ public class DynamicFieldServiceImpl implements DynamicFieldService {
 			DynamicFieldConsolidateResponseDto dto = new DynamicFieldConsolidateResponseDto();
 			dto.setDescription(lst.get(0).getDescription());
 			dto.setName(lst.get(0).getName());
-			List<DynamicFieldCodeValueDTO> dtolist = new ArrayList<DynamicFieldCodeValueDTO>();
+			List<DynamicFieldCodeValueDTO> dtolist = new ArrayList<>();
 			if (withValue == true) {
 				List<JSONObject> l = new ArrayList<>();
 				for (int i = 0; i < lst.size(); i++) {

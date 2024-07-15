@@ -72,7 +72,7 @@ public class IntegratedControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void tst001syncClientSettingsTest4() throws Exception {
+	public void tst001syncClientSettingsTest4() {
 
 		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
 		lenient().when(clientSettingsHelper.getInitiateDataFetch(Mockito.anyString(), Mockito.anyString(), Mockito.any(),
@@ -86,7 +86,7 @@ public class IntegratedControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void tst001syncClientSettingsTest2() throws Exception {
+	public void tst001syncClientSettingsTest2() {
 
 		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
 		lenient().when(clientSettingsHelper.getInitiateDataFetch(Mockito.anyString(), Mockito.anyString(), Mockito.any(),
@@ -97,7 +97,6 @@ public class IntegratedControllerTest {
 				.andRespond(withSuccess().body(str3).contentType(MediaType.APPLICATION_JSON));
 	}
 
-	//TODO Mock not working on clientSettingsHelper
 	//@Test
 	//@WithUserDetails(value = "reg-officer")
 	public void tst001syncClientSettingsTest3() throws Exception {
@@ -117,7 +116,6 @@ public class IntegratedControllerTest {
 
 	}
 
-	//TODO Mock not working on clientSettingsHelper
 	//@Test
 	//@WithUserDetails(value = "reg-officer")
 	public void tst001syncClientSettingsTest5() throws Exception {
@@ -139,7 +137,6 @@ public class IntegratedControllerTest {
 
 	}
 	
-	//TODO Mock not working on clientSettingsHelper
 	//@Test
 	//@WithUserDetails(value = "reg-officer")
 	public void tst001syncClientSettingsTest6() throws Exception {

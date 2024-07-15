@@ -3,8 +3,6 @@
  */
 package io.mosip.kernel.masterdata.dto.registerdevice;
 
-import jakarta.validation.constraints.Size;
-
 import io.mosip.kernel.masterdata.validator.StringFormatter;
 import io.mosip.kernel.masterdata.validator.registereddevice.ValidFoundational;
 import io.mosip.kernel.masterdata.validator.registereddevice.ValidPurpose;

@@ -7,7 +7,6 @@ import org.springframework.web.client.RestClientException;
 
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.RegisteredDeviceErrorCode;
-import io.mosip.kernel.masterdata.dto.RegisteredDevicePostReqDto;
 import io.mosip.kernel.masterdata.dto.registerdevice.DeviceData;
 import io.mosip.kernel.masterdata.exception.RequestException;
 

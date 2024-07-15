@@ -1,28 +1,33 @@
 package io.mosip.kernel.masterdata.test.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Month;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.dto.*;
+import io.mosip.kernel.masterdata.dto.getresponse.*;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.RegCenterMachineDeviceHistoryResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.WorkingDaysPutRequestDto;
+import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResult;
 import io.mosip.kernel.masterdata.entity.*;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.*;
+import io.mosip.kernel.masterdata.service.*;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.utils.*;
+import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -37,78 +42,16 @@ import org.springframework.orm.hibernate5.HibernateObjectRetrievalFailureExcepti
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.constant.MasterDataConstant;
-import io.mosip.kernel.masterdata.dto.ApplicationDto;
-import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
-import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
-import io.mosip.kernel.masterdata.dto.DayNameAndSeqListDto;
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
-import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
-import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
-import io.mosip.kernel.masterdata.dto.DocumentTypePutReqDto;
-import io.mosip.kernel.masterdata.dto.FilterData;
-import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.LocationDto;
-import io.mosip.kernel.masterdata.dto.LocationHierarchyLevelResponseDto;
-import io.mosip.kernel.masterdata.dto.LocationPutDto;
-import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
-import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceHistoryDto;
-import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
-import io.mosip.kernel.masterdata.dto.TemplateFileFormatPutDto;
-import io.mosip.kernel.masterdata.dto.WorkingDaysResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.BlocklistedWordsResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.LocationCodeResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.WeekDaysDto;
-import io.mosip.kernel.masterdata.dto.getresponse.WorkingDaysDto;
-import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.RegCenterMachineDeviceHistoryResponseDto;
-import io.mosip.kernel.masterdata.dto.request.FilterDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
-import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
-import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
-import io.mosip.kernel.masterdata.exception.DataNotFoundException;
-import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-import io.mosip.kernel.masterdata.exception.RequestException;
-import io.mosip.kernel.masterdata.service.ApplicationService;
-import io.mosip.kernel.masterdata.service.BiometricAttributeService;
-import io.mosip.kernel.masterdata.service.BiometricTypeService;
-import io.mosip.kernel.masterdata.service.BlocklistedWordsService;
-import io.mosip.kernel.masterdata.service.DeviceHistoryService;
-import io.mosip.kernel.masterdata.service.DeviceService;
-import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
-import io.mosip.kernel.masterdata.service.DeviceTypeService;
-import io.mosip.kernel.masterdata.service.DocumentCategoryService;
-import io.mosip.kernel.masterdata.service.DocumentTypeService;
-import io.mosip.kernel.masterdata.service.DynamicFieldService;
-import io.mosip.kernel.masterdata.service.ExceptionalHolidayService;
-import io.mosip.kernel.masterdata.service.LanguageService;
-import io.mosip.kernel.masterdata.service.LocationHierarchyService;
-import io.mosip.kernel.masterdata.service.LocationService;
-import io.mosip.kernel.masterdata.service.MachineHistoryService;
-import io.mosip.kernel.masterdata.service.RegWorkingNonWorkingService;
-import io.mosip.kernel.masterdata.service.RegistrationCenterDeviceHistoryService;
-import io.mosip.kernel.masterdata.service.RegistrationCenterService;
-import io.mosip.kernel.masterdata.service.RegistrationCenterTypeService;
-import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
-import io.mosip.kernel.masterdata.service.TemplateService;
-import io.mosip.kernel.masterdata.service.ZoneService;
-import io.mosip.kernel.masterdata.test.TestBootApplication;
-import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Bal Vikash Sharma
@@ -2504,7 +2447,7 @@ public class MasterDataServiceTest {
 
 
 	@Test
-	public void getStatusOfWorkingHoursTest() throws Exception {
+	public void getStatusOfWorkingHoursTest() {
 		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
 				.thenReturn(false);
 		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.any(), Mockito.anyString()))
@@ -2522,7 +2465,7 @@ public class MasterDataServiceTest {
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void getStatusOfWorkingHoursServiceExceptionTest() throws Exception {
+	public void getStatusOfWorkingHoursServiceExceptionTest() {
 		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
@@ -2533,7 +2476,7 @@ public class MasterDataServiceTest {
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void getStatusOfWorkingHoursDataNotFoundExceptionTest() throws Exception {
+	public void getStatusOfWorkingHoursDataNotFoundExceptionTest() {
 		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
 				.thenReturn(false);
 		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString())).thenReturn(null);
@@ -2543,7 +2486,7 @@ public class MasterDataServiceTest {
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void getStatusOfWorkingHoursDataNotFoundTest() throws Exception {
+	public void getStatusOfWorkingHoursDataNotFoundTest() {
 		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
 				.thenReturn(false);
 		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
@@ -2554,7 +2497,7 @@ public class MasterDataServiceTest {
 	}
 
 	@Test
-	public void getStatusOfWorkingHoursRejectedWorkingHourTest() throws Exception {
+	public void getStatusOfWorkingHoursRejectedWorkingHourTest() {
 		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
 				.thenReturn(false);
 		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.any(), Mockito.anyString()))
@@ -2572,7 +2515,7 @@ public class MasterDataServiceTest {
 	}
 
 	@Test(expected = RequestException.class)
-	public void invalidDateFormatTest() throws Exception {
+	public void invalidDateFormatTest() {
 		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
 				.thenReturn(false);
 		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
@@ -2583,7 +2526,6 @@ public class MasterDataServiceTest {
 	}
 	
 	@Test
-	@Ignore
 	public void updateRegistrationCenterAdminStatusSuccessTest() {
 		StatusResponseDto dto = new StatusResponseDto();
 		dto.setStatus("Status updated successfully for Registration Centers");
@@ -2845,8 +2787,8 @@ public class MasterDataServiceTest {
 	}
 
 	@Test
-	public void updateWorkingDaysStatusServiceTest() throws NoSuchFieldException, IllegalAccessException {
-		List<DaysOfWeek> globalDaysList = new ArrayList<DaysOfWeek>();
+	public void updateWorkingDaysStatusServiceTest() {
+		List<DaysOfWeek> globalDaysList = new ArrayList<>();
 		StatusResponseDto dto = new StatusResponseDto();
 		dto.setStatus("Status updated successfully for workingDays");
 		DaysOfWeek daysOfWeek = new DaysOfWeek();
@@ -2887,7 +2829,7 @@ public class MasterDataServiceTest {
 	public void zoneFilterValuesTest() {
 
 		FilterValueDto filterValueDto = new FilterValueDto();
-		List<FilterDto> filters = new ArrayList<FilterDto>();
+		List<FilterDto> filters = new ArrayList<>();
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("name");
 		filterDto.setText("SAFi");
@@ -2920,7 +2862,7 @@ public class MasterDataServiceTest {
 	public void zoneFilterValuesFailureTest() {
 
 		FilterValueDto filterValueDto = new FilterValueDto();
-		List<FilterDto> filters = new ArrayList<FilterDto>();
+		List<FilterDto> filters = new ArrayList<>();
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("code");
 		filterDto.setText("SAFi");
@@ -3126,7 +3068,7 @@ public class MasterDataServiceTest {
 	public void getImmediateChildrenByLocCodeTestDataExceptionTest() {
 		Mockito.when(locationHierarchyRepository
 						.findLocationHierarchyByParentLocCode(Mockito.anyString(), Mockito.anyList()))
-				.thenReturn(new ArrayList<Location>());
+				.thenReturn(new ArrayList<>());
 		locationHierarchyService.getImmediateChildrenByLocCode("KAR", List.of("eng"));
 	}
 

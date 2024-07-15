@@ -1,16 +1,14 @@
 package io.mosip.kernel.masterdata.dto.getresponse;
 
-import java.util.Collection;
-
+import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
+import io.mosip.kernel.masterdata.validator.ValidLangCode;
+import io.swagger.annotations.ApiModelProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
-import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
-import io.mosip.kernel.masterdata.validator.ValidLangCode;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.Collection;
 
 /**
  * Response dto for Document Category having list of document type supported.

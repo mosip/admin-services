@@ -1,24 +1,9 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Arrays;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.masterdata.constant.DeviceRegisterErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
-import io.mosip.kernel.masterdata.dto.DeRegisterDeviceRequestDto;
-import io.mosip.kernel.masterdata.dto.DeviceDataDto;
-import io.mosip.kernel.masterdata.dto.DeviceInfoDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegResponseDto;
-import io.mosip.kernel.masterdata.dto.DeviceRegisterDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegisterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
 import io.mosip.kernel.masterdata.entity.DeviceRegister;
@@ -33,6 +18,14 @@ import io.mosip.kernel.masterdata.service.DeviceRegisterService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Arrays;
 
 /**
  * Service class to register and de register Device.

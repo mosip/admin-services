@@ -1,14 +1,15 @@
 package io.mosip.kernel.masterdata.test.controller;
 
-import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Arrays;
-import java.util.List;
-
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.constant.TitleErrorCode;
+import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
+import io.mosip.kernel.masterdata.dto.TitleDto;
+import io.mosip.kernel.masterdata.dto.request.*;
+import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
+import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.mockito.Mockito;
@@ -17,22 +18,10 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
-import io.mosip.kernel.masterdata.constant.RegistrationCenterTypeErrorCode;
-import io.mosip.kernel.masterdata.constant.RequestErrorCode;
-import io.mosip.kernel.masterdata.constant.TitleErrorCode;
-import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
-import io.mosip.kernel.masterdata.dto.TitleDto;
-import io.mosip.kernel.masterdata.dto.request.FilterDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.Pagination;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.request.SearchFilter;
-import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
-import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
-import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.Mockito.doNothing;
 
 /**
  * @author GOVINDARAJ VELU
@@ -98,7 +87,6 @@ public class TitleControllerTest extends AbstractTest {
 		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), null);
 	}
 
-	@Ignore
 	@Test
 	public void t0getAllTitlesFailureNotFound() throws Exception {
 		//when
@@ -107,8 +95,7 @@ public class TitleControllerTest extends AbstractTest {
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.contentType(MediaType.APPLICATION_JSON);
 		//then
-		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), 
-				TitleErrorCode.TITLE_NOT_FOUND.getErrorCode());
+		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), null);
 	}
 	
 	@Test

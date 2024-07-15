@@ -1,14 +1,12 @@
 package io.mosip.admin.bulkdataupload.repositories;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
-
 import io.mosip.admin.bulkdataupload.entity.RegistrationCenterMachine;
 import io.mosip.admin.bulkdataupload.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * Repository to perform CRUD operations on RegistrationCenterMachine.
