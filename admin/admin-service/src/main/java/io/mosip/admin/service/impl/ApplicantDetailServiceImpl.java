@@ -72,7 +72,7 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
 
     private static final String DOCUMENTS="documents";
 
-    private static final String ApplicantPhoto = "applicantPhoto";
+    private static final String APPLICANTPHOTO = "applicantPhoto";
 
     private static final String VALUE = "value";
     private static final String DOB = "dob";
@@ -112,21 +112,19 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
             JSONObject idenitityJsonObject=objectMapper.readValue(idenitityJson,JSONObject.class);
             JSONObject mapperIdentity=utility.getJSONObject(idenitityJsonObject,IDENTITY);
             List<String> mapperJsonKeys = new ArrayList<>(mapperIdentity.keySet());
-            for (String valueObj : applicantDetails) {
+            for(String valueObj: applicantDetails){
                 if (valueObj == null) {
                     log.warn("Encountered null value in applicantDetails list");
                     continue;
                 }
-                if (!valueObj.equalsIgnoreCase(ApplicantPhoto)) {
+                if(!valueObj.equalsIgnoreCase(APPLICANTPHOTO)){
                     LinkedHashMap<String, String> jsonObject = utility.getJSONValue(mapperIdentity, valueObj);
-                    if (jsonObject != null && jsonObject.containsKey(VALUE)) {
+                    if (jsonObject != null && VALUE != null && jsonObject.containsKey(VALUE)) {
                         String value = jsonObject.get(VALUE);
                         applicantDataMap.put(value, identityObj.get(value).toString());
-                    } else {
-                        log.warn("Missing key '" + VALUE + "' or null jsonObject encountered while processing applicant details");
                     }
                 } else {
-                    getImageData(documents, applicantDataMap);
+                    getImageData(documents,applicantDataMap);
                 }
             }
             saveApplicantLoginDetails();
@@ -198,7 +196,7 @@ public class ApplicantDetailServiceImpl implements ApplicantDetailService {
             byte[] data = FaceDecoder.convertFaceISOToImageBytes(convertRequestDto);
             String encodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(data, false));
             String imageData = "data:image/png;base64," + encodedBytes;
-            applicantDataMap.put(ApplicantPhoto, imageData);
+            applicantDataMap.put(APPLICANTPHOTO, imageData);
         } else {
             throw new DataNotFoundException(ApplicantDetailErrorCode.DATA_NOT_FOUND.getErrorCode(), ApplicantDetailErrorCode.DATA_NOT_FOUND.getErrorMessage());
         }

@@ -82,22 +82,22 @@ public class SyncJobHelperService {
     public LocalDateTime getDeltaSyncCurrentTimestamp() {
         CronExpression cronExpression = CronExpression.parse(deltaCacheEvictCron);
 
-        LocalDateTime nextTrigger1 = cronExpression.next(LocalDateTime.now().atZone(ZoneOffset.UTC).toLocalDateTime());
-        if (nextTrigger1 == null) {
+        LocalDateTime immediateNextTrigger1 = cronExpression.next(LocalDateTime.now().atZone(ZoneOffset.UTC).toLocalDateTime());
+        if (immediateNextTrigger1 == null) {
             logger.error("Cron expression might be invalid or has no upcoming triggers.");
             return null;
         }
 
-        LocalDateTime nextTrigger2 = cronExpression.next(nextTrigger1);
-        if (nextTrigger2 == null) {
-            logger.error("No upcoming triggers after {}", nextTrigger1);
+        LocalDateTime nextTrigger = cronExpression.next(immediateNextTrigger1);
+        if (nextTrigger == null) {
+            logger.error("No upcoming triggers after {}", immediateNextTrigger1);
             return null;
         }
 
-        long minutes = ChronoUnit.MINUTES.between(nextTrigger1.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime(),
-                nextTrigger2.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime());
+        long minutes = ChronoUnit.MINUTES.between(immediateNextTrigger1.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime(),
+                nextTrigger.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime());
 
-        LocalDateTime previousTrigger = nextTrigger1.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime().minus(minutes, ChronoUnit.MINUTES);
+        LocalDateTime previousTrigger = immediateNextTrigger1.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime().minus(minutes, ChronoUnit.MINUTES);
 
         logger.debug("Identified previous trigger : {}", previousTrigger);
         return previousTrigger;
