@@ -2,7 +2,7 @@
 ### Contains
 * This folder contains performance Test script of below API endpoint categories.
     01. Auth Token Generation (Setup)
-    02. Request Generation Password (Preparation)
+    02. S08 UserIdPwd (Preparation)
     03. S01 PublicKey (Execution)
 	04. S02 Certificate (Execution)
 	05. S03 User Details (Execution)
@@ -139,7 +139,7 @@
 *Syncdata_Test_Script.jmx
 	
 	* Auth Token Generation (Setup) : This thread conatins Auth manager authentication API which will generate auth token value for Registration client. 
-	* Request Generation Password (Preparation) : This thread generates request tokens for user ID password usecase.
+	* S08 UserIdPwd (Preparation) : This thread generates request tokens for user ID password usecase.
 	* S01 PublicKey (Execution) : This thread executes Public Key Verify usecase.
 	* S02 Certificate (Execution) : This thread executes Get Certificate usecase.
 	* S03 User Details (Execution) : This thread executes Get User Details usecase.
