@@ -12,7 +12,7 @@
 
 		<!-- common properties -->
 		<java.version>11</java.version>
-		<postgresql.version>42.2.2</postgresql.version>
+		<postgresql.version>42.3.3</postgresql.version>
 		<maven.jacoco.version>0.8.11</maven.jacoco.version>
 		<maven.javadoc.version>3.2.0</maven.javadoc.version>
 
@@ -188,7 +188,7 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.5.0</version>
+			<version>2.6.0</version>
 		</dependency>
 	</dependencies>
 	<distributionManagement>
