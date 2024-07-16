@@ -8,9 +8,7 @@ if [ $# -ge 1 ] ; then
 fi
 
 NS=admin
-NS_KERNEL=kernel
-CHART_VERSION=12.1.0
-ADMIN_UI_CHART_VERSION=12.0.1
+CHART_VERSION=12.0.1-develop
 
 echo Create $NS namespace
 kubectl create ns $NS
@@ -30,26 +28,24 @@ function installing_admin() {
   echo Installing Admin-Proxy into Masterdata and Keymanager.
   kubectl -n $NS apply -f admin-proxy.yaml
 
+  ADMIN_HOST=$(kubectl get cm global -o jsonpath={.data.mosip-admin-host})
+  echo Installing masterdata and allowing Admin UI to access masterdata services.
+  helm -n $KNS install masterdata mosip/masterdata  --set istio.corsPolicy.allowOrigins\[0\].exact=https://$ADMIN_HOST  --version $CHART_VERSION
+
+  echo Installing syncdata
+  helm -n $KNS install syncdata mosip/syncdata --version $CHART_VERSION
+
   echo Installing admin hotlist service.
   helm -n $NS install admin-hotlist mosip/admin-hotlist --version $CHART_VERSION
 
   echo Installing admin service. Will wait till service gets installed.
   helm -n $NS install admin-service mosip/admin-service --set istio.corsPolicy.allowOrigins\[0\].prefix=https://$ADMIN_HOST --wait --version $CHART_VERSION
 
-  echo Installing admin-ui
-  helm -n $NS install admin-ui mosip/admin-ui --set admin.apiUrl=https://$API_HOST/v1/ --set istio.hosts\[0\]=$ADMIN_HOST --version $ADMIN_UI_CHART_VERSION
-
   kubectl -n $NS  get deploy -o name |  xargs -n1 -t  kubectl -n $NS rollout status
 
   echo Installed admin services
 
   echo "Admin portal URL: https://$ADMIN_HOST/admin-ui/"
-
-  echo Installing masterdata and allowing Admin UI to access masterdata services.
-  helm -n $NS_KERNEL install masterdata mosip/masterdata  --set istio.corsPolicy.allowOrigins\[0\].exact=https://$ADMIN_HOST  --version $CHART_VERSION
-
-  echo Installing syncdata
-  helm -n $NS_KERNEL install syncdata mosip/syncdata --version $CHART_VERSION
   return 0
 }
 
