@@ -9,7 +9,7 @@ fi
 
 NS=admin
 KNS=kernel
-CHART_VERSION=12.0.1-develop
+CHART_VERSION=0.0.1-develop
 
 echo Create $NS namespace
 kubectl create ns $NS
@@ -41,9 +41,6 @@ function installing_admin() {
 
   echo Installing admin service. Will wait till service gets installed.
   helm -n $NS install admin-service mosip/admin-service --set istio.corsPolicy.allowOrigins\[0\].prefix=https://$ADMIN_HOST --wait --version $CHART_VERSION
-
-  echo Installing admin-ui
-  helm -n $NS install admin-ui mosip/admin-ui --set admin.apiUrl=https://$API_HOST/v1/ --set istio.hosts\[0\]=$ADMIN_HOST --version $CHART_VERSION
 
   kubectl -n $NS  get deploy -o name |  xargs -n1 -t  kubectl -n $NS rollout status
 
