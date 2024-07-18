@@ -2,15 +2,15 @@
 ### Contains
 * This folder contains performance Test script of below API endpoint categories.
     01. Auth Token Generation (Setup)
-    02. S08 UserIdPwd (Preparation)
-    03. S01 PublicKey (Execution)
-	04. S02 Certificate (Execution)
-	05. S03 User Details (Execution)
-	06. S04 Client Settings (Execution)
-	07. S05 Configs (Execution)
-	08. S06 LatestIdSchema (Execution)
-	09. S07 CaCertificates (Execution)
-	10. S08 UserIdPwd (Execution)
+    02. S01 AuthTokenDetailsEncryptedBasedOnMachineKey (Preparation)
+    03. S01 AuthTokenDetailsEncryptedBasedOnMachineKey (Execution)
+	04. S02 PublicKeyVerify (Execution)
+	05. S03 Certificate (Execution)
+	06. S04 UserDetails (Execution)
+	07. S05 ClientSettings (Execution)
+	08. S06 Configs (Execution)
+	09. S07 LatestIdSchema (Execution)
+	10. S08 CaCertificates (Execution)
 
 * Open source Tools used,
     1. [Apache JMeter](https://jmeter.apache.org/)
@@ -139,15 +139,16 @@
 *Syncdata_Test_Script.jmx
 	
 	* Auth Token Generation (Setup) : This thread conatins Auth manager authentication API which will generate auth token value for Registration client. 
-	* S08 UserIdPwd (Preparation) : This thread generates request tokens for user ID password usecase.
-	* S01 PublicKey (Execution) : This thread executes Public Key Verify usecase.
-	* S02 Certificate (Execution) : This thread executes Get Certificate usecase.
-	* S03 User Details (Execution) : This thread executes Get User Details usecase.
-	* S04 Client Settings (Execution) : This thread executes Get Client Settings usecase.
-	* S05 Configs (Execution) : This thread executes Get Configs usecase.
-	* S06 LatestIdSchema (Execution) : This thread executes Get LatestID Schema usecase.
-	* S07 CaCertificates (Execution) : This thread executes Get CAcertificates usecase.
-	* S08 UserIdPwd (Execution) : This thread executes Get auth token details encrypted based on machine key usecase.
+	* S01 AuthTokenDetailsEncryptedBasedOnMachineKey (Preparation) : This thread generates request tokens for user ID password usecase.
+	* S01 AuthTokenDetailsEncryptedBasedOnMachineKey (Execution) : This thread executes Get auth token details encrypted based on machine key usecase.
+	* S02 PublicKey (Execution) : This thread executes Public Key Verify usecase.
+	* S03 Certificate (Execution) : This thread executes Get Certificate usecase.
+	* S04 User Details (Execution) : This thread executes Get User Details usecase.
+	* S05 Client Settings (Execution) : This thread executes Get Client Settings usecase.
+	* S06 Configs (Execution) : This thread executes Get Configs usecase.
+	* S07 LatestIdSchema (Execution) : This thread executes Get LatestID Schema usecase.
+	* S08 CaCertificates (Execution) : This thread executes Get CAcertificates usecase.
+ 
 	
 ### Downloading Plugin manager jar file for the purpose installing other JMeter specific plugins
 
