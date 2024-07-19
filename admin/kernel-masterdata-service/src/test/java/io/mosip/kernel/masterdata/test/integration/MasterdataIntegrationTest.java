@@ -7743,6 +7743,7 @@ public class MasterdataIntegrationTest {
 		regCenterPostReqDto.setTimeZone("UTC");
 		regCenterPostReqDto.setWorkingHours("9");
 		regCenterPostReqDto.setZoneCode("JRD");
+		regCenterPostReqDto.setNumberOfKiosks((short)1);
 
 	}
 
