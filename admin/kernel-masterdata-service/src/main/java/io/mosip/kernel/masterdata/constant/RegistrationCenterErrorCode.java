@@ -94,7 +94,8 @@ public enum RegistrationCenterErrorCode {
 	LOCATION_HIERARCHY_INVALID("ADM-MSD-445", "location hierarchy is invalid"),
 	LOCATION_INVALID("ADM-MSD-446", "Location not found"),
 	CENTER_NOT_FOUND_FOR_LANG("KER-MSD-280","Center Type not found for language"),
-	CLONE_NOT_SUPPORTED("ADM-MSD-447","Clone not supported");
+	CLONE_NOT_SUPPORTED("ADM-MSD-447","Clone not supported"),
+	INVALID_NO_OF_KIOSK("KER-MSD-281","Invalid number of kiosks");
 
 	private final String errorCode;
 	private final String errorMessage;
