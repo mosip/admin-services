@@ -2,14 +2,14 @@
 ### Contains
 * This folder contains performance Test script of below API endpoint categories.
     01. Auth Token Generation (Setup)
-    02. S01 AuthTokenDetailsEncryptedBasedOnMachineKey (Preparation)
-    03. S01 AuthTokenDetailsEncryptedBasedOnMachineKey (Execution)
-	04. S02 PublicKeyVerify (Execution)
+    02. S01 Auth Token Details Encrypted Based On Machine Key (Preparation)
+    03. S01 Auth Token Details Encrypted Based On Machine Key (Execution)
+	04. S02 Public Key Verify (Execution)
 	05. S03 Certificate (Execution)
-	06. S04 UserDetails (Execution)
-	07. S05 ClientSettings (Execution)
+	06. S04 User Details (Execution)
+	07. S05 Client Settings (Execution)
 	08. S06 Configs (Execution)
-	09. S07 LatestIdSchema (Execution)
+	09. S07 LatestId Schema (Execution)
 	10. S08 CaCertificates (Execution)
 
 * Open source Tools used,
@@ -139,14 +139,14 @@
 *Syncdata_Test_Script.jmx
 	
 	* Auth Token Generation (Setup) : This thread conatins Auth manager authentication API which will generate auth token value for Registration client. 
-	* S01 AuthTokenDetailsEncryptedBasedOnMachineKey (Preparation) : This thread generates request tokens for user ID password usecase.
-	* S01 AuthTokenDetailsEncryptedBasedOnMachineKey (Execution) : This thread executes Get auth token details encrypted based on machine key usecase.
-	* S02 PublicKey (Execution) : This thread executes Public Key Verify usecase.
+	* S01 Auth Token Details Encrypted Based On Machine Key (Preparation) : This thread generates request tokens for user ID password usecase.
+	* S01 Auth Token Details Encrypted Based On Machine Key (Execution) : This thread executes Get auth token details encrypted based on machine key usecase.
+	* S02 Public Verify Key (Execution) : This thread executes Public Key Verify usecase.
 	* S03 Certificate (Execution) : This thread executes Get Certificate usecase.
 	* S04 User Details (Execution) : This thread executes Get User Details usecase.
 	* S05 Client Settings (Execution) : This thread executes Get Client Settings usecase.
 	* S06 Configs (Execution) : This thread executes Get Configs usecase.
-	* S07 LatestIdSchema (Execution) : This thread executes Get LatestID Schema usecase.
+	* S07 LatestId Schema (Execution) : This thread executes Get LatestID Schema usecase.
 	* S08 CaCertificates (Execution) : This thread executes Get CAcertificates usecase.
  
 	
