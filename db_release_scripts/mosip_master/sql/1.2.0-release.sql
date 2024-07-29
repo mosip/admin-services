@@ -53,6 +53,14 @@ ALTER TABLE master.bulkupload_transaction ALTER COLUMN upload_description TYPE c
 
 -----------------------------------------------ALTER FK constraints with lang code -----------------------------------------------------------
 
+ALTER TABLE master.app_detail DROP CONSTRAINT IF EXISTS pk_appdtl_id CASCADE;
+ALTER TABLE master.app_detail ALTER COLUMN lang_code DROP NOT NULL;
+ALTER TABLE master.app_detail ADD CONSTRAINT pk_appdtl_id PRIMARY KEY (id);
+
+ALTER TABLE master.biometric_attribute DROP CONSTRAINT IF EXISTS pk_bmattr_code CASCADE;
+ALTER TABLE master.biometric_attribute ALTER COLUMN lang_code DROP NOT NULL;
+ALTER TABLE master.biometric_attribute ADD CONSTRAINT pk_bmattr_code PRIMARY KEY (code);
+
 ALTER TABLE master.biometric_type DROP CONSTRAINT IF EXISTS pk_bmtyp_code CASCADE;
 ALTER TABLE master.biometric_type ALTER COLUMN lang_code DROP NOT NULL;
 DELETE FROM master.biometric_type where lang_code != :primary_language_code;
@@ -63,6 +71,13 @@ ALTER TABLE master.biometric_attribute ADD CONSTRAINT fk_bmattr_bmtyp FOREIGN KE
 REFERENCES master.biometric_type (code) MATCH SIMPLE
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 
+ALTER TABLE master.module_detail DROP CONSTRAINT IF EXISTS pk_moddtl_code CASCADE;
+ALTER TABLE master.module_detail ALTER COLUMN lang_code DROP NOT NULL;
+ALTER TABLE master.module_detail ADD CONSTRAINT pk_moddtl_code PRIMARY KEY (id);
+
+ALTER TABLE template_file_format DROP CONSTRAINT IF EXISTS pk_tffmt_code CASCADE;
+ALTER TABLE template_file_format ALTER COLUMN lang_code DROP NOT NULL;
+ALTER TABLE template_file_format ADD CONSTRAINT pk_tffmt_code PRIMARY KEY (code);
 
 ALTER TABLE master.user_detail_h DROP CONSTRAINT IF EXISTS pk_usrdtl_h_id CASCADE;
 ALTER TABLE master.user_detail_h ALTER COLUMN lang_code DROP NOT NULL;
