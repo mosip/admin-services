@@ -75,9 +75,9 @@ ALTER TABLE master.module_detail DROP CONSTRAINT IF EXISTS pk_moddtl_code CASCAD
 ALTER TABLE master.module_detail ALTER COLUMN lang_code DROP NOT NULL;
 ALTER TABLE master.module_detail ADD CONSTRAINT pk_moddtl_code PRIMARY KEY (id);
 
-ALTER TABLE template_file_format DROP CONSTRAINT IF EXISTS pk_tffmt_code CASCADE;
-ALTER TABLE template_file_format ALTER COLUMN lang_code DROP NOT NULL;
-ALTER TABLE template_file_format ADD CONSTRAINT pk_tffmt_code PRIMARY KEY (code);
+ALTER TABLE master.template_file_format DROP CONSTRAINT IF EXISTS pk_tffmt_code CASCADE;
+ALTER TABLE master.template_file_format ALTER COLUMN lang_code DROP NOT NULL;
+ALTER TABLE master.template_file_format ADD CONSTRAINT pk_tffmt_code PRIMARY KEY (code);
 
 ALTER TABLE master.user_detail_h DROP CONSTRAINT IF EXISTS pk_usrdtl_h_id CASCADE;
 ALTER TABLE master.user_detail_h ALTER COLUMN lang_code DROP NOT NULL;
