@@ -27,10 +27,6 @@ TRUNCATE TABLE master.process_list cascade ;
 
 \COPY master.process_list (id,name,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-process_list.csv' delimiter ',' HEADER  csv;
 
------ TRUNCATE master.reason_category TABLE Data and It's reference Data and COPY Data from CSV file -----
-TRUNCATE TABLE master.reason_category cascade ;
-\COPY master.reason_category (code,name,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-reason_category.csv' delimiter ',' HEADER  csv;
-
 ----- TRUNCATE master.role_list TABLE Data and It's reference Data and COPY Data from CSV file -----
 TRUNCATE TABLE master.role_list cascade ;
 
@@ -40,11 +36,6 @@ TRUNCATE TABLE master.role_list cascade ;
 TRUNCATE TABLE master.template_file_format cascade ;
 
 \COPY master.template_file_format (code,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-template_file_format.csv' delimiter ',' HEADER  csv;
-
------ TRUNCATE master.template_type TABLE Data and It's reference Data and COPY Data from CSV file -----
-TRUNCATE TABLE master.template_type cascade ;
-
-\COPY master.template_type (code,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-template_type.csv' delimiter ',' HEADER  csv;
 
 ----- TRUNCATE master.sync_job_def TABLE Data and It's reference Data and COPY Data from CSV file -----
 TRUNCATE TABLE master.sync_job_def  cascade ;
