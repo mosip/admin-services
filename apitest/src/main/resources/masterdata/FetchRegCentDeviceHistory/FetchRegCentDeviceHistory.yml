@@ -1,7 +1,7 @@
 FetchRegCentDeviceHistory:
    MasterData_FetchRegCentDeviceHistory_valid_smoke:
       endPoint: /v1/masterdata/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}
-      description: Retrieve Registration Center Device History with all valid data.
+      description: Retrieve Registration Center Device History with all valid data
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchRegCentDeviceHistory/fetchRegCentDeviceHistory
@@ -22,7 +22,7 @@ FetchRegCentDeviceHistory:
 
    MasterData_FetchRegCentDeviceHistory_invalid_invalid_regcenterid:
       endPoint: /v1/masterdata/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}
-      description: Retrieve Registration Center Device History with invalid regcenterid.
+      description: Retrieve Registration Center Device History with invalid regcenterid
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchRegCentDeviceHistory/fetchRegCentDeviceHistory
@@ -43,7 +43,7 @@ FetchRegCentDeviceHistory:
 
    MasterData_FetchRegCentDeviceHistory_invalid_invalid_deviceid:
       endPoint: /v1/masterdata/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}
-      description: Retrieve Registration Center Device History with invalid deviceid.
+      description: Retrieve Registration Center Device History with invalid deviceid
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchRegCentDeviceHistory/fetchRegCentDeviceHistory
@@ -64,7 +64,7 @@ FetchRegCentDeviceHistory:
 
    MasterData_FetchRegCentDeviceHistory_invalid_invalid_effdatetimes:
       endPoint: /v1/masterdata/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}
-      description: Retrieve Registration Center Device History with invalid effdatetimes.
+      description: Retrieve Registration Center Device History with invalid effdatetimes
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchRegCentDeviceHistory/fetchRegCentDeviceHistory

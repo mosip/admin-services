@@ -1,7 +1,7 @@
 FetchDevice:
    MasterData_FetchDevice_allValid_smoke_with_lang:
       endPoint: /v1/masterdata/devices/{langCode}
-      description: Retrieve Device details with valid data By langcode.
+      description: Retrieve Device details with valid data By langcode
       role: admin
       templateFields: ["name","description"]
       restMethod: get
@@ -19,7 +19,7 @@ FetchDevice:
 }'       
    MasterData_FetchDevice_allValid_smoke_with_lang_and_deviceType:
       endPoint: /v1/masterdata/devices/{langCode}/{deviceType}
-      description: Retrieve Device details with valid data By langcode and deviceType.
+      description: Retrieve Device details with valid data By langcode and deviceType
       role: admin
       templateFields: ["name","description"]
       restMethod: get
@@ -37,7 +37,7 @@ FetchDevice:
 }'
    MasterData_FetchDevice_allValid_smoke_with_regCentre:
       endPoint: /v1/masterdata/devices/mappeddevices/{regCenterId}
-      description: Retrieve Device details with valid data By regCenterId.
+      description: Retrieve Device details with valid data By regCenterId
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -55,7 +55,7 @@ FetchDevice:
 }'
    MasterData_FetchDevice_invalid_regCentre:
       endPoint: /v1/masterdata/devices/mappeddevices/{regCenterId}
-      description: Retrieve mapped Device details to a regCenterId.
+      description: Retrieve mapped Device details to a regCenterId
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchDevice/fetchDevice
@@ -75,7 +75,7 @@ FetchDevice:
 }'       
    MasterData_FetchDevice_invalid_deviceType_unexisting:
       endPoint: /v1/masterdata/devices/{langCode}/{deviceType}
-      description: Retrieve Device details non existing deviceType.
+      description: Retrieve Device details non existing deviceType
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchDevice/fetchDevice

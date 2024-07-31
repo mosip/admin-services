@@ -1,7 +1,7 @@
 FilterMachineType:
    Masterdata_FilterMachineType_Valid_Smoke:
       endPoint: /v1/masterdata/machinetypes/filtervalues
-      description: Filter Machine Type details by all valid data.
+      description: Filter Machine Type details by all valid data
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]
@@ -21,7 +21,7 @@ FilterMachineType:
   }'
    Masterdata_FilterMachineType_Valid_col_as_name_filterType_all:
       endPoint: /v1/masterdata/machinetypes/filtervalues
-      description: Filter Machine Type details by filter type all.
+      description: Filter Machine Type details by filter type all
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]
@@ -42,7 +42,7 @@ FilterMachineType:
   
    Masterdata_FilterMachineType_inValid_filterType_blank:
       endPoint: /v1/masterdata/machinetypes/filtervalues
-      description: Filter Machine Type details by blank filter type.
+      description: Filter Machine Type details by blank filter type
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -67,7 +67,7 @@ FilterMachineType:
 }'  
    Masterdata_FilterMachineType_inValid_filterColumnName_blank:
       endPoint: /v1/masterdata/machinetypes/filtervalues
-      description: Filter Machine Type details by blank filter columnName.
+      description: Filter Machine Type details by blank filter columnName
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -92,7 +92,7 @@ FilterMachineType:
 }'  
    Masterdata_FilterMachineType_inValid_RequestTime_format:
       endPoint: /v1/masterdata/machinetypes/filtervalues
-      description: Filter Machine Type details by invalid requesttime format.
+      description: Filter Machine Type details by invalid requesttime format
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -117,7 +117,7 @@ FilterMachineType:
 }'
    Masterdata_FilterMachineType_inValid_filterColumnName:
       endPoint: /v1/masterdata/machinetypes/filtervalues
-      description: Filter Machine Type details by invalid filter columnName.
+      description: Filter Machine Type details by invalid filter columnName
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -141,7 +141,7 @@ FilterMachineType:
 }'
    Masterdata_FilterMachineType_inValid_filterType:
       endPoint: /v1/masterdata/machinetypes/filtervalues
-      description: Filter Machine Type details by invalid filter type.
+      description: Filter Machine Type details by invalid filter type
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -166,7 +166,7 @@ FilterMachineType:
 }'
    Masterdata_FilterMachineType_inValid_FilterText:
       endPoint: /v1/masterdata/machinetypes/filtervalues
-      description: Filter Machine Type details by invalid filter text.
+      description: Filter Machine Type details by invalid filter text
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]

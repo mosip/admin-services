@@ -1,7 +1,7 @@
 FetchAllDeviceSpec:
    MasterData_FetchAllDeviceSpec_AllValid_smoke:
       endPoint: /v1/masterdata/devicespecifications/all
-      description: Retrieve All Device Specifications with valid data.
+      description: Retrieve All Device Specifications with valid data
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

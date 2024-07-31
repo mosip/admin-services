@@ -1,7 +1,7 @@
 FilterRegCenterType:
    MasterData_FilterRegCenterType_Valid_Smoke:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
-      description: Filter Registration Center Type details by all valid data.
+      description: Filter Registration Center Type details by all valid data
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -21,7 +21,7 @@ FilterRegCenterType:
   }'
    MasterData_FilterRegCenterType_Valid_col_name_withText:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
-      description: Filter Registration Center Type details by columnName name.
+      description: Filter Registration Center Type details by columnName name
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -41,7 +41,7 @@ FilterRegCenterType:
   }'
    MasterData_FilterRegCenterType_Valid_col_code:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
-      description: Filter Registration Center Type details by empty text.
+      description: Filter Registration Center Type details by empty text
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -72,7 +72,7 @@ FilterRegCenterType:
   }'
    MasterData_FilterRegCenterType_Valid_col_isActive:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
-      description: Filter Registration Center Type details by columnName isActive and empty text.
+      description: Filter Registration Center Type details by columnName isActive and empty text
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -103,7 +103,7 @@ FilterRegCenterType:
   }'
    MasterData_FilterRegCenterType_inValid_filterText:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
-      description: Filter Registration Center Type details by invalid filter text.
+      description: Filter Registration Center Type details by invalid filter text
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -124,7 +124,7 @@ FilterRegCenterType:
 }'
    MasterData_FilterRegCenterType_inValid_filterType_blank:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
-      description: Filter Registration Center Type details by empty filter type.
+      description: Filter Registration Center Type details by empty filter type
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -149,7 +149,7 @@ FilterRegCenterType:
 }'  
    MasterData_FilterRegCenterType_inValid_filterColumnName_blank:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
-      description: Filter Registration Center Type details by empty filter columnname.
+      description: Filter Registration Center Type details by empty filter columnname
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -175,7 +175,7 @@ FilterRegCenterType:
      
    MasterData_FilterRegCenterType_inValid_RequestTime_format:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
-      description: Filter Registration Center Type details by invalid requesttime format.
+      description: Filter Registration Center Type details by invalid requesttime format
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -200,7 +200,7 @@ FilterRegCenterType:
 }'  
    MasterData_FilterRegCenterType_inValid_filterColumnName:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
-      description: Filter Registration Center Type details by invalid filter column name.
+      description: Filter Registration Center Type details by invalid filter column name
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -225,7 +225,7 @@ FilterRegCenterType:
 }'  
    MasterData_FilterRegCenterType_inValid_filterType:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
-      description: Filter Registration Center Type details by invalid filter type.
+      description: Filter Registration Center Type details by invalid filter type
       role: admin
       templateFields: ["languageCode"]
       restMethod: post

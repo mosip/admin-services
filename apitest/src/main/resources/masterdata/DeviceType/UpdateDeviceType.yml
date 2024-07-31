@@ -1,7 +1,7 @@
 UpdateDeviceType:
    MasterData_UpdateDeviceType_All_Valid_Smoke:
       endPoint: /v1/masterdata/devicetypes
-      description: Update Device Type with all valid data.
+      description: Update Device Type with all valid data
       role: admin
       templateFields: ["description"]
       restMethod: put
@@ -20,7 +20,7 @@ UpdateDeviceType:
 }'
    MasterData_UpdateDeviceType_All_Valid_Mandatory_Fields:
       endPoint: /v1/masterdata/devicetypes
-      description: Update Device Type with all mandatory fields.
+      description: Update Device Type with all mandatory fields
       role: admin
       templateFields: ["description"]
       restMethod: put
@@ -39,7 +39,7 @@ UpdateDeviceType:
 }'
    MasterData_UpdateDeviceType_InputParameter_Code_Missing:
       endPoint: /v1/masterdata/devicetypes
-      description: Update Device Type with missing input parameter Code.
+      description: Update Device Type with missing input parameter Code
       role: admin
       templateFields: ["description"]
       restMethod: put
@@ -63,7 +63,7 @@ UpdateDeviceType:
 }'
    MasterData_UpdateDeviceType_InputParameter_Code_Empty:
       endPoint: /v1/masterdata/devicetypes
-      description: Update Device Type with empty  input parameter Code.
+      description: Update Device Type with empty  input parameter Code
       role: admin
       templateFields: ["description"]
       restMethod: put
@@ -87,7 +87,7 @@ UpdateDeviceType:
 }'
    MasterData_UpdateDeviceType_InputParameter_Code_AboveMaxLen36:
       endPoint: /v1/masterdata/devicetypes
-      description: Update Device Type with Code more than 64 charectars.
+      description: Update Device Type with Code more than 64 charectars
       role: admin
       templateFields: ["description"]
       restMethod: put
@@ -111,7 +111,7 @@ UpdateDeviceType:
 }'
    MasterData_UpdateDeviceType_InputParameter_Name_Missing:
       endPoint: /v1/masterdata/devicetypes
-      description: Update Device Type with missing input parameter Name.
+      description: Update Device Type with missing input parameter Name
       role: admin
       templateFields: ["description"]
       restMethod: put
@@ -135,7 +135,7 @@ UpdateDeviceType:
 }'
    MasterData_UpdateDeviceType_InputParameter_Name_Empty:
       endPoint: /v1/masterdata/devicetypes
-      description: Update Device Type with empty input parameter Name.
+      description: Update Device Type with empty input parameter Name
       role: admin
       templateFields: ["description"]
       restMethod: put
@@ -159,7 +159,7 @@ UpdateDeviceType:
 }'
    MasterData_UpdateDeviceType_InputParameter_Name_AboveMaxLen64:
       endPoint: /v1/masterdata/devicetypes
-      description: Update Device Type with Name more than 64 characters.
+      description: Update Device Type with Name more than 64 characters
       role: admin
       templateFields: ["description"]
       restMethod: put
@@ -183,7 +183,7 @@ UpdateDeviceType:
 }'
    MasterData_UpdateDeviceType_InputParameter_Description_AboveMaxLen128:
       endPoint: /v1/masterdata/devicetypes
-      description: Update Device Type with Description more than 128 characters.
+      description: Update Device Type with Description more than 128 characters
       role: admin
       templateFields: ["name"]
       restMethod: put

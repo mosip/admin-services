@@ -1,7 +1,7 @@
 FilterDocumentType:
    MasterData_FilterDocumentType_Valid_Smoke:
       endPoint: /v1/masterdata/documenttypes/filtervalues
-      description: Filter Document Type with type unique and all valid data.
+      description: Filter Document Type with type unique and all valid data
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -26,7 +26,7 @@ FilterDocumentType:
   }'
    MasterData_FilterDocumentType_Valid_TypeAll:
       endPoint: /v1/masterdata/documenttypes/filtervalues
-      description: Filter Document Type with type all and all valid data.
+      description: Filter Document Type with type all and all valid data
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -51,7 +51,7 @@ FilterDocumentType:
   }'
    MasterData_FilterDocumentType_Valid_column_code_filterType_all:
       endPoint: /v1/masterdata/documenttypes/filtervalues
-      description: Filter Document Type with type all columnName code and valid text.
+      description: Filter Document Type with type all columnName code and valid text
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]
@@ -71,7 +71,7 @@ FilterDocumentType:
   }'
    MasterData_FilterDocCatTypMapping_inValid_filterType_blank:
       endPoint: /v1/masterdata/documenttypes/filtervalues
-      description: Filter Document Type with empty type columnName code and valid text.
+      description: Filter Document Type with empty type columnName code and valid text
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -97,7 +97,7 @@ FilterDocumentType:
    
    MasterData_FilterDocumentType_inValid_RequestTime_format:
       endPoint: /v1/masterdata/documenttypes/filtervalues
-      description: Filter Document Type with All valid data and invalid requesttime format.
+      description: Filter Document Type with All valid data and invalid requesttime format
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -122,7 +122,7 @@ FilterDocumentType:
 }'
    MasterData_FilterDocumentType_inValid_filterColumnName:
       endPoint: /v1/masterdata/documenttypes/filtervalues
-      description: Filter Document Type By type All and invalid Column Name.
+      description: Filter Document Type By type All and invalid Column Name
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -147,7 +147,7 @@ FilterDocumentType:
 }'
    MasterData_FilterDocumentType_inValid_filterType:
       endPoint: /v1/masterdata/documenttypes/filtervalues
-      description: Filter Document Type By invalid type.
+      description: Filter Document Type By invalid type
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -172,7 +172,7 @@ FilterDocumentType:
 }'
    MasterData_FilterDocumentType_Empty_FilterText_Pos:
       endPoint: /v1/masterdata/documenttypes/filtervalues
-      description: Filter Document Type By type All and empty text.
+      description: Filter Document Type By type All and empty text
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: post

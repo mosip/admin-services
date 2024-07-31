@@ -1,7 +1,7 @@
 FetchMissingTemplates:
    MasterData_FetchMissingTemplates_valid_smoke:
       endPoint: /v1/masterdata/templates/missingids/{langcode}
-      description: Retrieve Missing Template Details by langcode.
+      description: Retrieve Missing Template Details by langcode
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
@@ -16,7 +16,7 @@ FetchMissingTemplates:
 }'
    MasterData_FetchMissingTemplates_Allvalid_smoke:
       endPoint: /v1/masterdata/templates/missingids/{langcode}?fieldName={fieldName}
-      description: Retrieve Missing Template Details by langcode and fieldName.
+      description: Retrieve Missing Template Details by langcode and fieldName
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]

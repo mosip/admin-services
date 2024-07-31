@@ -1,7 +1,7 @@
 FilterMachineSpec:
    Masterdata_FilterMachineSpec_Valid_Smoke:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
-      description: Filter Machine Spec details by all valid data.
+      description: Filter Machine Spec details by all valid data
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -26,7 +26,7 @@ FilterMachineSpec:
   }'
    Masterdata_FilterMachineSpec_Valid_col_as_name_filterType_all:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
-      description: Filter Machine Spec details by type all valid columnName and text.
+      description: Filter Machine Spec details by type all valid columnName and text
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -51,7 +51,7 @@ FilterMachineSpec:
   }'
    Masterdata_FilterMachineSpec_Valid_name_tro_filterType_all:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
-      description: Filter Machine Spec details by type all valid columnName and text.
+      description: Filter Machine Spec details by type all valid columnName and text
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -76,7 +76,7 @@ FilterMachineSpec:
   }'
    Masterdata_FilterMachineSpec_Valid_name_tro_filterType_unique:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
-      description: Filter Machine Spec details by filter type unique valid  columnName and text.
+      description: Filter Machine Spec details by filter type unique valid  columnName and text
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -101,7 +101,7 @@ FilterMachineSpec:
   }'
    Masterdata_FilterMachineSpec_Valid_col_brand:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
-      description: Filter Machine Spec details by filter type unique valid columnName brand and text.
+      description: Filter Machine Spec details by filter type unique valid columnName brand and text
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -126,7 +126,7 @@ FilterMachineSpec:
   }'
    Masterdata_FilterMachineSpec_Valid_col_model:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
-      description: Filter Machine Spec details by filter type all valid columnName model and text.
+      description: Filter Machine Spec details by filter type all valid columnName model and text
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -151,7 +151,7 @@ FilterMachineSpec:
   }'
    Masterdata_FilterMachineSpec_Valid_filterText_blank:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
-      description: Filter Machine Spec details by filter type unique valid columnName and blank text.
+      description: Filter Machine Spec details by filter type unique valid columnName and blank text
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -171,7 +171,7 @@ FilterMachineSpec:
   }'  
    Masterdata_FilterMachineSpec_inValid_filterType_blank:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
-      description: Filter Machine Spec details by filter type empty valid columnName and text.
+      description: Filter Machine Spec details by filter type empty valid columnName and text
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -196,7 +196,7 @@ FilterMachineSpec:
 }'  
    Masterdata_FilterMachineSpec_inValid_filterColumnName_blank:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
-      description: Filter Machine Spec details by filter type all blank columnName and valid text.
+      description: Filter Machine Spec details by filter type all blank columnName and valid text
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -221,7 +221,7 @@ FilterMachineSpec:
 }'  
    Masterdata_FilterMachineSpec_inValid_RequestTime_format:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
-      description: Filter Machine Spec details by invalid requesttime format.
+      description: Filter Machine Spec details by invalid requesttime format
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -246,7 +246,7 @@ FilterMachineSpec:
 }'
    Masterdata_FilterMachineSpec_inValid_filterColumnName:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
-      description: Filter Machine Spec details by invalid columnName.
+      description: Filter Machine Spec details by invalid columnName
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -270,7 +270,7 @@ FilterMachineSpec:
 }'
    Masterdata_FilterMachineSpec_inValid_filterType:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
-      description: Filter Machine Spec details by invalid filter type.
+      description: Filter Machine Spec details by invalid filter type
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -295,7 +295,7 @@ FilterMachineSpec:
 }'
    Masterdata_FilterMachineSpec_inValid_FilterText:
       endPoint: /v1/masterdata/machinespecifications/filtervalues
-      description: Filter Machine Spec details by invalid filter text value.
+      description: Filter Machine Spec details by invalid filter text value
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]

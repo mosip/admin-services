@@ -1,7 +1,7 @@
 FetchMissingDynamicField:
    MasterData_FetchMissingDynamicField_All_Valid_smoke:
       endPoint: /v1/masterdata/dynamicfields/missingids/{langcode}?fieldName={fieldName}
-      description: Retrieve Missing Dynamic field details by langcode.
+      description: Retrieve Missing Dynamic field details by langcode
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
@@ -16,7 +16,7 @@ FetchMissingDynamicField:
 }'
    MasterData_FetchMissingDynamicField_Allvalid_smoke:
       endPoint: /v1/masterdata/dynamicfields/missingids/{langcode}?fieldName={fieldName}
-      description: Retrieve Missing Dynamic field details by langcode and Field Name.
+      description: Retrieve Missing Dynamic field details by langcode and Field Name
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]

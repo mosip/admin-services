@@ -1,7 +1,7 @@
 UpdateGender:
    Masterdata_UpdateGender_Valid_Smoke:
       endPoint: /v1/masterdata/gendertypes
-      description: Update Gender details with all valid details.
+      description: Update Gender details with all valid details
       role: admin
       templateFields: ["langCode"]
       restMethod: put
@@ -19,7 +19,7 @@ UpdateGender:
 }'
    Masterdata_UpdateGender_Invalid_InputParameter_Code_Missing:
       endPoint: /v1/masterdata/gendertypes
-      description: Update Gender details with missing code field.
+      description: Update Gender details with missing code field
       role: admin
       templateFields: ["langCode"]
       restMethod: put
@@ -42,7 +42,7 @@ UpdateGender:
 }'
    Masterdata_UpdateGender_Invalid_InputParameter_Code_Empty:
       endPoint: /v1/masterdata/gendertypes
-      description: Update Gender details with empty code.
+      description: Update Gender details with empty code
       role: admin
       templateFields: ["langCode"]
       restMethod: put
@@ -65,7 +65,7 @@ UpdateGender:
 }'
    Masterdata_UpdateGender_Invalid_InputParameter_GenderName_Missing:
       endPoint: /v1/masterdata/gendertypes
-      description: Update Gender details with missing genderName field.
+      description: Update Gender details with missing genderName field
       role: admin
       templateFields: ["langCode"]
       restMethod: put
@@ -88,7 +88,7 @@ UpdateGender:
 }'
    Masterdata_UpdateGender_Invalid_InputParameter_GenderName_Empty:
       endPoint: /v1/masterdata/gendertypes
-      description: Update Gender details with empty genderName.
+      description: Update Gender details with empty genderName
       role: admin
       templateFields: ["langCode"]
       restMethod: put
@@ -111,7 +111,7 @@ UpdateGender:
 }'
    Masterdata_UpdateGender_Invalid_InputParameter_GenderName_AboveMaxLen64:
       endPoint: /v1/masterdata/gendertypes
-      description: Update Gender details with genderName more than 64 characters.
+      description: Update Gender details with genderName more than 64 characters
       role: admin
       templateFields: ["langCode"]
       restMethod: put
@@ -134,7 +134,7 @@ UpdateGender:
 }'
    Masterdata_UpdateGender_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/gendertypes
-      description: Update Gender details with missing isActive field.
+      description: Update Gender details with missing isActive field
       role: admin
       templateFields: ["genderName"]
       restMethod: put

@@ -1,7 +1,7 @@
 DecommisionMachine:
    MasterData_DecommisionMachine_Invalid_ID: 
       endPoint: /v1/masterdata/machines/decommission/{id}
-      description: Decommission Machine with invalid id.
+      description: Decommission Machine with invalid id
       role: admin
       templateFields: []
       restMethod: put

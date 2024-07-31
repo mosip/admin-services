@@ -1,7 +1,7 @@
 CreateDevice:
    MasterData_CreateDevice_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/devices
-      description: Create Device with all valid data.
+      description: Create Device with all valid data
       role: globalAdmin
       templateFields: ["name","description"]
       restMethod: post
@@ -33,7 +33,7 @@ CreateDevice:
 }'
    MasterData_CreateDevice_Valid_Smoke_decommison_sid:
       endPoint: /v1/masterdata/devices
-      description: Create Device with valid specification ID.
+      description: Create Device with valid specification ID
       role: globalAdmin
       templateFields: ["name","description"]
       restMethod: post
@@ -65,7 +65,7 @@ CreateDevice:
 }'
    MasterData_CreateDevice_Invalid_InputParameterInvalid_Format:
       endPoint: /v1/masterdata/devices
-      description: Create Device with invalid input parameter format.
+      description: Create Device with invalid input parameter format
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -94,7 +94,7 @@ CreateDevice:
 }'
    MasterData_CreateDevice_Invalid_Device_Zone_notPresentInDB:
       endPoint: /v1/masterdata/devices
-      description: Create Device with invalid Zone which is not present in the DB.
+      description: Create Device with invalid Zone which is not present in the DB
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -123,7 +123,7 @@ CreateDevice:
 }'
    MasterData_CreateDevice_Invalid_Machine_Name_Blank:
       endPoint: /v1/masterdata/devices
-      description: Create Device with blank Machine name.
+      description: Create Device with blank Machine name
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -152,7 +152,7 @@ CreateDevice:
 }'
    MasterData_CreateDevice_Invalid_DeviceName_AboveMaxLen64:
       endPoint: /v1/masterdata/devices
-      description: Create Device with invalid Device Name with morethan 64 characters.
+      description: Create Device with invalid Device Name with morethan 64 characters
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -181,7 +181,7 @@ CreateDevice:
 }'
    MasterData_CreateDevice_Invalid_Zone_Code_Blank:
       endPoint: /v1/masterdata/devices
-      description: Create Device with blank zonecode.
+      description: Create Device with blank zonecode
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -210,7 +210,7 @@ CreateDevice:
 }'
    MasterData_CreateDevice_Invalid_MAC_Address_Blank:
       endPoint: /v1/masterdata/devices
-      description: Create Device with blank macAddress.
+      description: Create Device with blank macAddress
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -239,7 +239,7 @@ CreateDevice:
 }'
    MasterData_CreateDevice_Invalid_MacAddress_AboveMaxLen64:
       endPoint: /v1/masterdata/devices
-      description: Create Device with invalid macAddress with morethan 64 characters.
+      description: Create Device with invalid macAddress with morethan 64 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -268,7 +268,7 @@ CreateDevice:
 }'
    MasterData_CreateDevice_Invalid_Serial_Number_Blank:
       endPoint: /v1/masterdata/devices
-      description: Create Device with empty serialNum.
+      description: Create Device with empty serialNum
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -297,7 +297,7 @@ CreateDevice:
 }'
    MasterData_CreateDevice_Invalid_SerialNumber_AboveMaxLen64:
       endPoint: /v1/masterdata/devices
-      description: Create Device with serialNum with morethan 64 characters.
+      description: Create Device with serialNum with morethan 64 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -326,7 +326,7 @@ CreateDevice:
 }'
    MasterData_CreateDevice_Invalid_IPAddress_AboveMaxLen17:
       endPoint: /v1/masterdata/devices
-      description: Create Device with ipAddress with morethan 16 characters.
+      description: Create Device with ipAddress with morethan 16 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -355,7 +355,7 @@ CreateDevice:
 }'
    MasterData_CreateDevice_Invalid_DSpecID_AboveMaxLen36:
       endPoint: /v1/masterdata/devices
-      description: Create Device with id with morethan 36 characters.
+      description: Create Device with id with morethan 36 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: post

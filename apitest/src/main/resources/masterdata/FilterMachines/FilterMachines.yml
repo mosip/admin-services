@@ -1,7 +1,7 @@
 FilterMachines:
    Masterdata_FilterMachines_Valid_ColumnStatus:
       endPoint: /v1/masterdata/machines/filtervalues
-      description: Filter Active Machine details by columnName isActive.
+      description: Filter Active Machine details by columnName isActive
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -26,7 +26,7 @@ FilterMachines:
   }'
    Masterdata_FilterMachines_Valid_ColumnMachineSpecId:
       endPoint: /v1/masterdata/machines/filtervalues
-      description: Filter All Machine details by columnName machineSpecId.
+      description: Filter All Machine details by columnName machineSpecId
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -51,7 +51,7 @@ FilterMachines:
   }'
    Masterdata_FilterMachines_Invalid_EmptyColumnName:
       endPoint: /v1/masterdata/machines/filtervalues
-      description: Filter Machine details by empty columnName.
+      description: Filter Machine details by empty columnName
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -76,7 +76,7 @@ FilterMachines:
 }'
    Masterdata_FilterMachines_Invalid_EmptyFilterType:
       endPoint: /v1/masterdata/machines/filtervalues
-      description: Filter Machine details by empty filter type.
+      description: Filter Machine details by empty filter type
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -101,7 +101,7 @@ FilterMachines:
 }'
    Masterdata_FilterMachines_Invalid_ColumnName:
       endPoint: /v1/masterdata/machines/filtervalues
-      description: Filter Machine details by invalid columnName.
+      description: Filter Machine details by invalid columnName
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post

@@ -1,7 +1,7 @@
 FetchAllTemplates:
    MasterData_FetchAllTemplates_AllValid_smoke:
       endPoint: /v1/masterdata/templates/all
-      description: Retrieve All Template details with valid data.
+      description: Retrieve All Template details with valid data
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

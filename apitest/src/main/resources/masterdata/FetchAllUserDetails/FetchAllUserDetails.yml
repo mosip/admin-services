@@ -1,7 +1,7 @@
 FetchAllUserDetails:
    MasterData_FetchAllUserDetails_valid_smoke:
       endPoint: /v1/masterdata/usersdetails
-      description: Retrieve All User details with valid data.
+      description: Retrieve All User details with valid data
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

@@ -1,7 +1,7 @@
 FetchAllHoliday:
    MasterData_FetchAllHoliday_valid_smoke:
       endPoint: /v1/masterdata/holidays/all
-      description: Retrieve All Holiday details with valid data.
+      description: Retrieve All Holiday details with valid data
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchAllHoliday/fetchAllHoliday

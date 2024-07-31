@@ -1,7 +1,7 @@
 FetchMachine:
    Masterdata_FetchMachine_allValid_smoke:
       endPoint: /v1/masterdata/machines
-      description: Retrieve Machine details with all valid data.
+      description: Retrieve Machine details with all valid data
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchMachine/fetchMachine
@@ -18,7 +18,7 @@ FetchMachine:
 }'
    Masterdata_FetchMachine_allValid_smoke_with_id:
       endPoint: /v1/masterdata/machines/{id}
-      description: Retrieve Machine details using id with all valid data.
+      description: Retrieve Machine details using id with all valid data
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchMachine/fetchMachine
@@ -35,7 +35,7 @@ FetchMachine:
 }'
    Masterdata_FetchMachine_allValid_smoke_with_regCenterId:
       endPoint: /v1/masterdata/machines/mappedmachines/{regCenterId}
-      description: Retrieve Machine details mapped to a valid regCenterId.
+      description: Retrieve Machine details mapped to a valid regCenterId
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchMachine/fetchMachine
@@ -52,7 +52,7 @@ FetchMachine:
 }'
    Masterdata_FetchMachine_inValid_regCenterId:
       endPoint: /v1/masterdata/machines/mappedmachines/{regCenterId}
-      description: Retrieve Machine details mapped to a invalid regCenterId.
+      description: Retrieve Machine details mapped to a invalid regCenterId
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchMachine/fetchMachine

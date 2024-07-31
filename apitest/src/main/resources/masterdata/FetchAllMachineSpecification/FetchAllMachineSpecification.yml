@@ -1,7 +1,7 @@
 FetchAllDeviceType:
    MasterData_FetchAllDeviceTypes_valid_smoke:
       endPoint: /v1/masterdata/devicetypes/all
-      description: Retrieve All Device Type details with valid data.
+      description: Retrieve All Device Type details with valid data
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: []

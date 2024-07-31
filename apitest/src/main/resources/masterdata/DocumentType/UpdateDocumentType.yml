@@ -1,7 +1,7 @@
 UpdateDocumentType:
    MasterData_UpdateDocumentType_Valid_Smoke:
       endPoint: /v1/masterdata/documenttypes
-      description: Update Document Type with all valid data.
+      description: Update Document Type with all valid data
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -24,7 +24,7 @@ UpdateDocumentType:
    
    MasterData_UpdateDocumentType_Invalid_Code_Char37:
       endPoint: /v1/masterdata/documenttypes
-      description: Update Document Type with invalid Code more than 36 characters.
+      description: Update Document Type with invalid Code more than 36 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -48,7 +48,7 @@ UpdateDocumentType:
 }'
    MasterData_UpdateDocumentType_Invalid_Name_Char65:
       endPoint: /v1/masterdata/documenttypes
-      description: Update Document Type with invalid Description more than 64 characters.
+      description: Update Document Type with invalid Description more than 64 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -72,7 +72,7 @@ UpdateDocumentType:
 }'
    MasterData_UpdateDocumentType_Invalid_Descr_Char129:
       endPoint: /v1/masterdata/documenttypes
-      description: Update Document Type with invalid Description more than 128 characters.
+      description: Update Document Type with invalid Description more than 128 characters
       role: admin
       restMethod: put
       templateFields: ["name","description"]
@@ -97,7 +97,7 @@ UpdateDocumentType:
    
    MasterData_UpdateDocumentType_Invalid_Name_Blank:
       endPoint: /v1/masterdata/documenttypes
-      description: Update Document Type with invalid empty Name.
+      description: Update Document Type with invalid empty Name
       role: admin
       templateFields: ["description"]
       restMethod: put
@@ -121,7 +121,7 @@ UpdateDocumentType:
 }'
    MasterData_UpdateDocumentType_Invalid_Code_Blank:
       endPoint: /v1/masterdata/documenttypes
-      description: Update Document Type with invalid empty Code.
+      description: Update Document Type with invalid empty Code
       role: admin
       templateFields: ["name","description"]
       restMethod: put

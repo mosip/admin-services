@@ -1,7 +1,7 @@
 DeleteRegCenter:
    MasterData_DeleteRegCenter_Invalid_ID: 
       endPoint: /v1/masterdata/registrationcenters/{registrationCenterId}
-      description: Delete Registration Center with invalid registrationCenterId.
+      description: Delete Registration Center with invalid registrationCenterId
       role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteRegCenter/deleteRegCenter

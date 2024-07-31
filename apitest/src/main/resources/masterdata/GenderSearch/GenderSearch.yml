@@ -1,7 +1,7 @@
 GenderSearch:
    Masterdata_GenderSearch_Valid_Smoke:
       endPoint: /v1/masterdata/gendertypes/search
-      description: Search gender details by all valid data.
+      description: Search gender details by all valid data
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -24,7 +24,7 @@ GenderSearch:
 }'
    Masterdata_GenderSearch_valid_lang:
       endPoint: /v1/masterdata/gendertypes/search
-      description: Search gender details by languageCode.
+      description: Search gender details by languageCode
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -53,7 +53,7 @@ GenderSearch:
 }'
    Masterdata_GenderSearch_Valid_langCodeAsEng_sortBy_code:
       endPoint: /v1/masterdata/gendertypes/search
-      description: Search gender details by languageCode eng and sort by sortType ASC order.
+      description: Search gender details by languageCode eng and sort by sortType ASC order
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -76,7 +76,7 @@ GenderSearch:
 }'
    Masterdata_GenderSearch_InvalidSortFieldAsEmpty:
       endPoint: /v1/masterdata/gendertypes/search
-      description: Search gender details by languageCode eng and empty sortField.
+      description: Search gender details by languageCode eng and empty sortField
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -105,7 +105,7 @@ GenderSearch:
 }'
    Masterdata_GenderSearch_InvalidSortFieldAsNonExisting:
       endPoint: /v1/masterdata/gendertypes/search
-      description: Search gender details by languageCode eng and invalid sortField.
+      description: Search gender details by languageCode eng and invalid sortField
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -134,7 +134,7 @@ GenderSearch:
 }'
    Masterdata_GenderSearch_InvalidSortTypeAsEmpty:
       endPoint: /v1/masterdata/gendertypes/search
-      description: Search gender details by languageCode eng and empty sortType.
+      description: Search gender details by languageCode eng and empty sortType
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -164,7 +164,7 @@ GenderSearch:
    
    Masterdata_GenderSearch_InvalidRequestTimeAsEmpty:
       endPoint: /v1/masterdata/gendertypes/search
-      description: Search gender details by languageCode eng and empty requesttime.
+      description: Search gender details by languageCode eng and empty requesttime
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -193,7 +193,7 @@ GenderSearch:
 }'
    Masterdata_GenderSearch_Valid_Searchby_code_FLE:
       endPoint: /v1/masterdata/gendertypes/search
-      description: Search gender details by languageCode eng and code FLE(female).
+      description: Search gender details by languageCode eng and code FLE(female)
       role: admin
       templateFields: ["languageCode"]
       restMethod: post

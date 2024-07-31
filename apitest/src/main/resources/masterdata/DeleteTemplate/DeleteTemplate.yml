@@ -1,7 +1,7 @@
 DeleteTemplate:
    MasterData_DeleteTemplate_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/templates/{id}
-      description: Delete Template with all valid data.
+      description: Delete Template with all valid data
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: []
@@ -15,7 +15,7 @@ DeleteTemplate:
 }'
    MasterData_DeleteTemplate_Invalid_ID: 
       endPoint: /v1/masterdata/templates/{id}
-      description: Delete Template with invalid id.
+      description: Delete Template with invalid id
       role: admin
       templateFields: []
       restMethod: delete

@@ -1,7 +1,7 @@
 FetchTitle:
    MasterData_FetchTitle_all_valid_smoke:
       endPoint: /v1/masterdata/title
-      description: Retrieve Titles with all valid data.
+      description: Retrieve Titles with all valid data
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchTitle/fetchTitle
@@ -16,7 +16,7 @@ FetchTitle:
 }'
    MasterData_FetchTitle_valid_smoke:
       endPoint: /v1/masterdata/title/{langcode}
-      description: Retrieve Titles By langcode with all valid data.
+      description: Retrieve Titles By langcode with all valid data
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchTitle/fetchTitle
@@ -31,7 +31,7 @@ FetchTitle:
 }'
    MasterData_FetchTitle_invalid_langcode:
       endPoint: /v1/masterdata/title/{langcode}
-      description: Retrieve Titles By invalid langcode.
+      description: Retrieve Titles By invalid langcode
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchTitle/fetchTitle

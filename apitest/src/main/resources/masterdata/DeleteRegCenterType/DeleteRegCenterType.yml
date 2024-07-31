@@ -1,7 +1,7 @@
 DeleteRegCenterType:
    MasterData_DeleteRegCenterType_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/registrationcentertypes/{code}
-      description: Delete RegCenter Type with all valid data.
+      description: Delete RegCenter Type with all valid data
       role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteRegCenterType/deleteRegCenterType
@@ -14,7 +14,7 @@ DeleteRegCenterType:
 }'
    MasterData_DeleteRegCenterType_Invalid_CODE: 
       endPoint: /v1/masterdata/registrationcentertypes/{code}
-      description: Delete RegCenter Type with invalid code.
+      description: Delete RegCenter Type with invalid code
       role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteRegCenterType/deleteRegCenterType
