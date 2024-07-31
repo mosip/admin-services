@@ -32,12 +32,13 @@ FetchHolidays:
       endPoint: /v1/masterdata/holidays/{holidayid}/{langcode}
       description: Retrieve Holiday details with valid holidayid and langcode
       role: admin
+      templateFields: ["langcode"]
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchHolidays/fetchHoliday
       outputTemplate: masterdata/FetchHolidays/fetchHolidayResult
       input: '{
-      "holidayid":"2000001",
+      "holidayid":"$ID:CreateHoliday_All_Valid_Smoke_sid_holidayId$",
       "langcode":"eng"
       }'
       output: '{

@@ -1,5 +1,5 @@
 UpdateZoneUser:
-   MasterData_UpdateZoneUser_All_Valid_Smoke:
+   MasterData_UpdateZoneUser_All_Valid_Smoke_Sid:
       endPoint: /v1/masterdata/zoneuser
       role: globalAdmin
       checkErrorsOnlyInResponse: true
@@ -7,8 +7,8 @@ UpdateZoneUser:
       inputTemplate: masterdata/ZoneUser/updateZoneUser
       outputTemplate: masterdata/ZoneUser/zoneUserResult
       input: '{
-    "zoneCode": "$ZONE_CODE$",
-    "userId": "func_auto_test_user",
+    "zoneCode": "$ID:CreateRegCenter_allValid_smoke_sid_zoneCode$",
+    "userId": "$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$",
   "requesttime": "$TIMESTAMP$"
 }'
       output: '{

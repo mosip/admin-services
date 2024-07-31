@@ -460,7 +460,7 @@
 	<test name="CreateRegistrationCenter">
 		<parameter name="ymlFile"
 			value="masterdata/RegistrationCenter/CreateRegistrationCenter.yml" />
-		<parameter name="idKeyName" value="id" />
+		<parameter name="idKeyName" value="id,zoneCode" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
 		</classes>
@@ -556,6 +556,28 @@
 		</classes> 
 	</test>
 	
+	<test name="CreateZoneUser">
+		<parameter name="ymlFile"
+			value="masterdata/ZoneUser/CreateZoneUser.yml" />
+		<parameter name="idKeyName" value="userId" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
+		</classes>
+	</test>
+	<test name="UpdateZoneUser">
+		<parameter name="ymlFile"
+			value="masterdata/ZoneUser/UpdateZoneUser.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePut" />
+		</classes>
+	</test>
+	<test name="UpdateZoneUserStatus">
+		<parameter name="ymlFile"
+			value="masterdata/UpdateZoneUserStatus/UpdateZoneUserStatus.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.PatchWithPathParam" />
+		</classes>
+	</test>
 	
 	<test name="UserCenterMapping">
 		<parameter name="ymlFile"
@@ -564,7 +586,13 @@
 			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
 		</classes>
 	</test>
-	
+	<test name="UpdateUserCenterMappingStatus">
+		<parameter name="ymlFile"
+			value="masterdata/UpdateUserCenterMappingStatus/UpdateUserCenterMappingStatus.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.PatchWithPathParam" />
+		</classes>
+	</test>	
 	<test name="UpdateUserCenterMapping">
 		<parameter name="ymlFile"
 			value="masterdata/UserCenterMapping/UpdateUserCenterMapping.yml" />
@@ -572,13 +600,6 @@
 			<class name="io.mosip.testrig.apirig.testscripts.SimplePut" />
 		</classes>
 	</test>	
-	<test name="UpdateUserCenterMappingStatus">
-		<parameter name="ymlFile"
-			value="masterdata/UpdateUserCenterMappingStatus/UpdateUserCenterMappingStatus.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.PatchWithPathParam" />
-		</classes>
-	</test>
 
 
 	<test name="CreateMachineType">
@@ -1305,27 +1326,6 @@
 	<test name="UpdateWorkingDayStatus">
 		<parameter name="ymlFile"
 			value="masterdata/UpdateWorkingDayStatus/UpdateWorkingDayStatus.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.PatchWithPathParam" />
-		</classes>
-	</test>
-	<test name="CreateZoneUser">
-		<parameter name="ymlFile"
-			value="masterdata/ZoneUser/CreateZoneUser.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
-		</classes>
-	</test>
-	<test name="UpdateZoneUser">
-		<parameter name="ymlFile"
-			value="masterdata/ZoneUser/UpdateZoneUser.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.SimplePut" />
-		</classes>
-	</test>
-	<test name="UpdateZoneUserStatus">
-		<parameter name="ymlFile"
-			value="masterdata/UpdateZoneUserStatus/UpdateZoneUserStatus.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.PatchWithPathParam" />
 		</classes>

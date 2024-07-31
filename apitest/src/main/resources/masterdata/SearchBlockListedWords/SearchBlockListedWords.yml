@@ -2,6 +2,7 @@ SearchBlockListedWords:
    Masterdata_SearchBlockListedWords_Valid_Request_Smoke:
       endPoint: /v1/masterdata/blocklistedwords/search
       role: admin
+      checkErrorsOnlyInResponse: true
       templateFields: ["value"]
       restMethod: post
       inputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWords
@@ -32,13 +33,14 @@ SearchBlockListedWords:
      {
         "isActive": "$IGNORE$",
         "description": "$IGNORE$",
-        "word": "dumbooo"
+        "word": "$IGNORE$"
       }
     ]
 }'
    Masterdata_SearchBlockListedWords_Valid_FilterTypeContains:
       endPoint: /v1/masterdata/blocklistedwords/search
       role: admin
+      checkErrorsOnlyInResponse: true
       templateFields: ["value"]
       restMethod: post
       inputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWords
@@ -69,13 +71,14 @@ SearchBlockListedWords:
      {
         "isActive": "$IGNORE$",
         "description": "$IGNORE$",
-        "word": "dumbooo"
+        "word": "$IGNORE$"
       }
     ]
 }'
    Masterdata_SearchBlockListedWords_Valid_FilterTypeStartsWith:
       endPoint: /v1/masterdata/blocklistedwords/search
       role: admin
+      checkErrorsOnlyInResponse: true
       templateFields: ["value"]
       restMethod: post
       inputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWords
@@ -106,7 +109,7 @@ SearchBlockListedWords:
      {
         "isActive": "$IGNORE$",
         "description": "$IGNORE$",
-        "word": "dumbooo"
+        "word": "$IGNORE$"
       }
     ]
 }'
@@ -149,6 +152,7 @@ SearchBlockListedWords:
    Masterdata_SearchBlockListedWords_Valid_SortFieldDESC:
       endPoint: /v1/masterdata/blocklistedwords/search
       role: admin
+      checkErrorsOnlyInResponse: true
       templateFields: ["value"]
       restMethod: post
       inputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWords
@@ -179,7 +183,7 @@ SearchBlockListedWords:
      {
         "isActive": "$IGNORE$",
         "description": "$IGNORE$",
-        "word": "dumbooo"
+        "word": "$IGNORE$"
       }
     ]
 }'

@@ -151,7 +151,7 @@ CreateTemplateFileFormat:
    Masterdata_CreateTemplateFileFormat_InputParameter_LangCode_AboveMaxLen3:
       endPoint: /v1/masterdata/templatefileformats
       role: admin
-      templateFields: ["description"]
+      templateFields: []
       restMethod: post
       inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
       outputTemplate: masterdata/error

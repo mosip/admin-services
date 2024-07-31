@@ -25,7 +25,7 @@ CreateDocumentType:
       endPoint: /v1/masterdata/documenttypes
       description: Create Document Type with all mandatory data
       role: admin
-      templateFields: ["name","description"]
+      templateFields: ["name"]
       restMethod: post
       inputTemplate: masterdata/DocumentType/documentType
       outputTemplate: masterdata/DocumentType/documentTypeResult
