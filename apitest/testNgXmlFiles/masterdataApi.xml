@@ -955,7 +955,7 @@
 		</classes>
 	</test>
 	
-	<!--<test name="UpdateUISpec">
+	<test name="UpdateUISpec">
 		<parameter name="ymlFile"
 			value="masterdata/UpdateUISpec/UpdateUISpec.yml" />
 		<classes>
@@ -969,7 +969,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.SimplePut" />
 		</classes>
-	</test> -->
+	</test> 
 	
 	<test name="GetPossiableValues">
 		<parameter name="ymlFile"
@@ -1073,14 +1073,14 @@
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
 	</test>
-	<!--Commenting for MOSIP-33731-->
-	<!--<test name="GetIdTypeByLangCode">
+	Commenting for MOSIP-33731
+	<test name="GetIdTypeByLangCode">
 		<parameter name="ymlFile"
 			value="masterdata/GetIdTypeByLangCode/GetIdTypeByLangCode.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
-	</test>-->
+	</test>
 	<test name="GetHolidaysMissingIds">
 		<parameter name="ymlFile"
 			value="masterdata/GetHolidaysMissingIds/GetHolidaysMissingIds.yml" />
@@ -1187,14 +1187,14 @@
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
 	</test>  
-<!--Commenting for MOSIP-33731-->	
-	<!--<test name="CreateIdType">
+Commenting for MOSIP-33731	
+	<test name="CreateIdType">
 		<parameter name="ymlFile"
 			value="masterdata/CreateIdType/CreateIdType.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
 		</classes>
-	</test>-->
+	</test>
 	<test name="FetchValidDocumentsByDocCategoryCode">
 		<parameter name="ymlFile"
 			value="masterdata/FetchValidDocumentsByDocCategoryCode/FetchValidDocumentsByDocCategoryCode.yml" />

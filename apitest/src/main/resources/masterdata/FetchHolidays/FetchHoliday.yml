@@ -29,12 +29,13 @@ FetchHolidays:
    MasterData_FetchHolidays_allValid_smoke_with_Id_and_langCode:
       endPoint: /v1/masterdata/holidays/{holidayid}/{langcode}
       role: admin
+      templateFields: ["langcode"]
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/FetchHolidays/fetchHoliday
       outputTemplate: masterdata/FetchHolidays/fetchHolidayResult
       input: '{
-      "holidayid":"2000001",
+      "holidayid":"$ID:CreateHoliday_All_Valid_Smoke_sid_holidayId$",
       "langcode":"eng"
       }'
       output: '{

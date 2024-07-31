@@ -2,6 +2,7 @@ SearchPacketWorkflow:
    MasterData_SearchPacketWorkflow_Valid_Smoke:
       endPoint: /v1/masterdata/packet/search
       role: admin
+      checkErrorsOnlyInResponse: true
       restMethod: post
       inputTemplate: masterdata/SearchPacketWorkflow/searchPacket
       outputTemplate: masterdata/SearchPacketWorkflow/searchPacketResult
