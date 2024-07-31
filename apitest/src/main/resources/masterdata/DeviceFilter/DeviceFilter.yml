@@ -1,6 +1,7 @@
 DeviceFilter:
    MasterData_DeviceFilter_Name_eng_Unique_smoke:
       endPoint: /v1/masterdata/devices/filtervalues
+      description: Filter devices by columnName name with type unique
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -25,6 +26,7 @@ DeviceFilter:
   }'    
    MasterData_DeviceFilter_Name_eng_All_smoke:
       endPoint: /v1/masterdata/devices/filtervalues
+      description: Filter devices by columnName name and type all
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -50,6 +52,7 @@ DeviceFilter:
        
    MasterData_DeviceFilter_MacAddress_Unique_smoke:
       endPoint: /v1/masterdata/devices/filtervalues
+      description: Filter devices by columnName macAddress and type unique
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -74,6 +77,7 @@ DeviceFilter:
   }'    
    MasterData_DeviceFilter_MacAddress_All_smoke:
       endPoint: /v1/masterdata/devices/filtervalues
+      description: Filter devices by macAddress with type all
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -98,6 +102,7 @@ DeviceFilter:
   }'    
    MasterData_DeviceFilter_SerialNum_Unique_smoke:
       endPoint: /v1/masterdata/devices/filtervalues
+      description: Filter devices by columnName serialNum with type Unique
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -118,6 +123,7 @@ DeviceFilter:
        
    MasterData_DeviceFilter_Invalid_RequestTime:
       endPoint: /v1/masterdata/devices/filtervalues
+      description: Filter devices by invalid Request Time
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -143,6 +149,7 @@ DeviceFilter:
        
    MasterData_DeviceFilter_inValid_columnName:
       endPoint: /v1/masterdata/devices/filtervalues
+      description: Filter devices by invalid columnName
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post

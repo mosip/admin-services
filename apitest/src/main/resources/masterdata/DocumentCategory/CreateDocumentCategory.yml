@@ -1,6 +1,7 @@
 CreateDocumentCategory:
    MasterData_CreateDocumentCategory_Valid_Smoke:
       endPoint: /v1/masterdata/documentcategories
+      description: Create Document Category with all valid data
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -19,6 +20,7 @@ CreateDocumentCategory:
 }'
    MasterData_CreateDocumentCategory_All_Valid_Mandatory_Fields:
       endPoint: /v1/masterdata/documentcategories
+      description: Create Document Category with all mandatory data
       role: admin
       templateFields: ["name"]
       restMethod: post
@@ -38,6 +40,7 @@ CreateDocumentCategory:
    
    MasterData_CreateDocumentCategory_Invalid_InputParameter_Code_Missing:
       endPoint: /v1/masterdata/documentcategories
+      description: Create Document Category with missing code field
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -61,6 +64,7 @@ CreateDocumentCategory:
 }'
    MasterData_CreateDocumentCategory_Invalid_InputParameter_Code_Empty:
       endPoint: /v1/masterdata/documentcategories
+      description: Create Document Category with empty code value
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -84,6 +88,7 @@ CreateDocumentCategory:
 }'
    MasterData_CreateDocumentCategory_Invalid_InputParameter_Code_AboveMaxLen36:
       endPoint: /v1/masterdata/documentcategories
+      description: Create Document Category with code more than 36 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -107,6 +112,7 @@ CreateDocumentCategory:
 }'
    MasterData_CreateDocumentCategory_Invalid_InputParameter_Description_AboveMaxLen128:
       endPoint: /v1/masterdata/documentcategories
+      description: Create Document Category with description more than 36 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -130,6 +136,7 @@ CreateDocumentCategory:
 }'
    MasterData_CreateDocumentCategory_Invalid_InputParameter_Name_Missing:
       endPoint: /v1/masterdata/documentcategories
+      description: Create Document Category with missing name field
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -153,6 +160,7 @@ CreateDocumentCategory:
 }'
    MasterData_CreateDocumentCategory_Invalid_InputParameter_Name_Empty:
       endPoint: /v1/masterdata/documentcategories
+      description: Create Document Category with empty name field
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -176,6 +184,7 @@ CreateDocumentCategory:
 }'
    MasterData_CreateDocumentCategory_Invalid_InputParameter_Name_AboveMaxLen64:
       endPoint: /v1/masterdata/documentcategories
+      description: Create Document Category with name more than 64 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -200,6 +209,7 @@ CreateDocumentCategory:
    
    MasterData_CreateDocumentCategory_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/documentcategories
+      description: Create Document Category with missing isActive field
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -224,6 +234,7 @@ CreateDocumentCategory:
 
    MasterData_CreateDocumentCategory_Spacial_Character_Neg:
       endPoint: /v1/masterdata/documentcategories
+      description: Create Document Category with special characters in name field
       role: admin
       templateFields: ["name"]
       restMethod: post

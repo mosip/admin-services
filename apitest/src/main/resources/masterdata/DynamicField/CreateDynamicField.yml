@@ -1,6 +1,7 @@
 CreateDynamicField:
    MasterData_CreateDynamicField_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/dynamicfields
+      description: Create Dynamic Fields with all valid data
       role: admin
       templateFields: ["langCode"]
       restMethod: post
@@ -23,6 +24,7 @@ CreateDynamicField:
 }'
    MasterData_CreateDynamicField_ByfieldName_All_Valid_Smoke:
       endPoint: /v1/masterdata/dynamicfields
+      description: Create Dynamic Fields By field name with all valid data
       role: admin
       templateFields: ["langCode"]
       restMethod: post

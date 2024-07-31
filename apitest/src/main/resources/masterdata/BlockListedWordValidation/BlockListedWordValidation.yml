@@ -1,6 +1,7 @@
 BlockListedWordValidation:
    Masterdata_BlockListedWordValidation_eng_All_Valid_Smoke:
       endPoint: /v1/masterdata/blocklistedwords/words
+      description: Validate the Block Listed words
       role: admin
       templateFields: []
       restMethod: post

@@ -1,6 +1,7 @@
 FetchAllLocation:
    MasterData_FetchAllLocation_valid_smoke:
       endPoint: /v1/masterdata/locations/all
+      description: Retrieve All Location details with valid data
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

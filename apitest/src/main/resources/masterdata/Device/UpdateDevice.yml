@@ -1,6 +1,7 @@
 UpdateDevice:
    MasterData_UpdateDevice_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/devices
+      description: Update Device with all valid data
       role: globalAdmin
       templateFields: ["name"]
       restMethod: put
@@ -32,6 +33,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Valid_Smoke_decommison_sid:
       endPoint: /v1/masterdata/devices
+      description: Update Device with decommissioned sid
       role: globalAdmin
       templateFields: ["name"]
       restMethod: put
@@ -63,6 +65,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_InputParameterInvalid_Format:
       endPoint: /v1/masterdata/devices
+      description: Update Device with invalid input format
       role: admin
       templateFields: ["name"]
       restMethod: put
@@ -91,6 +94,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_Device_Zone_notPresentInDB:
       endPoint: /v1/masterdata/devices
+      description: Update Device with invalid zoneCode
       role: admin
       templateFields: ["name"]
       restMethod: put
@@ -119,6 +123,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_Machine_Name_Blank:
       endPoint: /v1/masterdata/devices
+      description: Update Device with empty name
       role: admin
       restMethod: put
       inputTemplate: masterdata/Device/createDevice
@@ -146,6 +151,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_DeviceName_AboveMaxLen64:
       endPoint: /v1/masterdata/devices
+      description: Update Device with invalid device name more than 64 characters
       role: admin
       templateFields: ["name"]
       restMethod: put
@@ -174,6 +180,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_Zone_Code_Blank:
       endPoint: /v1/masterdata/devices
+      description: Update Device with empty zoneCode
       role: admin
       templateFields: ["name"]
       restMethod: put
@@ -202,6 +209,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_MAC_Address_Blank:
       endPoint: /v1/masterdata/devices
+      description: Update Device with empty macAddress
       role: admin
       templateFields: ["name"]
       restMethod: put
@@ -230,6 +238,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_MacAddress_AboveMaxLen64:
       endPoint: /v1/masterdata/devices
+      description: Update Device with invalid macAddress more than characters
       role: admin
       templateFields: ["name"]
       restMethod: put
@@ -258,6 +267,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_Serial_Number_Blank:
       endPoint: /v1/masterdata/devices
+      description: Update Device with empty serialNum
       role: admin
       templateFields: ["name"]
       restMethod: put
@@ -286,6 +296,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_SerialNumber_AboveMaxLen64:
       endPoint: /v1/masterdata/devices
+      description: Update Device with invalid serialNum more than 64 characters
       role: admin
       templateFields: ["name"]
       restMethod: put
@@ -314,6 +325,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_IPAddress_AboveMaxLen17:
       endPoint: /v1/masterdata/devices
+      description: Update Device with invalid ipAddress more than 16 characters
       role: admin
       templateFields: ["name"]
       restMethod: put
@@ -342,6 +354,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_DSpecID_AboveMaxLen36:
       endPoint: /v1/masterdata/devices
+      description: Update Device with invalid deviceSpecId more than 36 characters
       role: admin
       templateFields: ["name"]
       restMethod: put

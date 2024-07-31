@@ -1,6 +1,7 @@
 FetchLocationHierarchy:
    MasterData_FetchLocationHierarchy_allValid_smoke:
       endPoint: /v1/masterdata/locationHierarchyLevels/{langcode}
+      description: Retrieve Location Hierarchy details with all valid data
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchy
@@ -16,6 +17,7 @@ FetchLocationHierarchy:
 }'
    MasterData_FetchLocationHierarchy_inValid_langcode:
       endPoint: /v1/masterdata/locationHierarchyLevels/{langcode}
+      description: Retrieve Location Hierarchy details with invalid langcode
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchy
@@ -34,6 +36,7 @@ FetchLocationHierarchy:
 }'
    MasterData_FetchLocationHierarchy_level_langcode_smoke:
       endPoint: /v1/masterdata/locationHierarchyLevels/{level}/{langcode}
+      description: Retrieve Location Hierarchy details with level and langcode
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchy
@@ -49,6 +52,7 @@ FetchLocationHierarchy:
 }'
    MasterData_FetchLocationHierarchy_invalid_level:
       endPoint: /v1/masterdata/locationHierarchyLevels/{level}/{langcode}
+      description: Retrieve Location Hierarchy details with invalid level and valid langcode
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchy
@@ -67,6 +71,7 @@ FetchLocationHierarchy:
 }'
    MasterData_FetchLocationHierarchy_invalid_langcode:
       endPoint: /v1/masterdata/locationHierarchyLevels/{level}/{langcode}
+      description: Retrieve Location Hierarchy details with valid level and invalid langcode
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchy

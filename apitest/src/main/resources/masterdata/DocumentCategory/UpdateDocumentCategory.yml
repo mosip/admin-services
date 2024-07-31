@@ -1,6 +1,7 @@
 UpdateDocumentCategory:
    MasterData_UpdateDocumentCategory_Valid_Smoke:
       endPoint: /v1/masterdata/documentcategories
+      description: Update Document Category with all valid data
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -19,6 +20,7 @@ UpdateDocumentCategory:
 }'
    MasterData_UpdateDocumentCategory_All_Valid_Mandatory_Fields:
       endPoint: /v1/masterdata/documentcategories
+      description: Update Document Category with all mandatory data
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -38,6 +40,7 @@ UpdateDocumentCategory:
    
    MasterData_UpdateDocumentCategory_Invalid_InputParameter_Code_Missing:
       endPoint: /v1/masterdata/documentcategories
+      description: Update Document Category with missing Code field
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -61,6 +64,7 @@ UpdateDocumentCategory:
 }'
    MasterData_UpdateDocumentCategory_Invalid_InputParameter_Code_Empty:
       endPoint: /v1/masterdata/documentcategories
+      description: Update Document Category with invalid Code value
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -84,6 +88,7 @@ UpdateDocumentCategory:
 }'
    MasterData_UpdateDocumentCategory_Invalid_InputParameter_Code_AboveMaxLen36:
       endPoint: /v1/masterdata/documentcategories
+      description: Update Document Category with Code value more than 36 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -107,6 +112,7 @@ UpdateDocumentCategory:
 }'
    MasterData_UpdateDocumentCategory_Invalid_InputParameter_Description_AboveMaxLen128:
       endPoint: /v1/masterdata/documentcategories
+      description: Update Document Category with Descrpition value more than 128 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -130,6 +136,7 @@ UpdateDocumentCategory:
 }'
    MasterData_UpdateDocumentCategory_Invalid_InputParameter_Name_Missing:
       endPoint: /v1/masterdata/documentcategories
+      description: Update Document Category with missing Name field
       role: admin
       templateFields: ["description"]
       restMethod: put
@@ -153,6 +160,7 @@ UpdateDocumentCategory:
 }'
    MasterData_UpdateDocumentCategory_Invalid_InputParameter_Name_Empty:
       endPoint: /v1/masterdata/documentcategories
+      description: Update Document Category with empty Name value
       role: admin
       templateFields: ["description"]
       restMethod: put
@@ -176,6 +184,7 @@ UpdateDocumentCategory:
 }'
    MasterData_UpdateDocumentCategory_Invalid_InputParameter_Name_AboveMaxLen64:
       endPoint: /v1/masterdata/documentcategories
+      description: Update Document Category with Name more than 64 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: put
