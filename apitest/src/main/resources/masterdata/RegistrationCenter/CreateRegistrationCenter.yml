@@ -165,7 +165,7 @@ CreateRegistrationCenter:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-307",
+      "errorCode": "KER-MSD-346",
       "message": "$IGNORE$"
     }
   ]
