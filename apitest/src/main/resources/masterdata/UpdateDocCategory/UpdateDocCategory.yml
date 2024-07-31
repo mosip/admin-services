@@ -31,7 +31,7 @@ UpdateDocCategory:
 }'
 
    MasterData_UpdateDocCategory_Invalid_code:  
-      endPoint: /v1/masterdata/documentcategories?isActive=true&code=ABC
+      endPoint: /v1/masterdata/documentcategories?isActive=true&code=INVALID
       role: admin
       restMethod: patch
       inputTemplate: masterdata/UpdateDocCategory/updateDocCategory

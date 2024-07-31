@@ -20,7 +20,7 @@ GetDocCategoryByLangCode:
       inputTemplate: masterdata/GetDocCategoryByLangCode/getDocCategoryByLangCode
       outputTemplate: masterdata/error
       input: '{
-      "code":"ABC",
+      "code":"INVALID",
       "langcode":"eng"
 }'
       output: '{
