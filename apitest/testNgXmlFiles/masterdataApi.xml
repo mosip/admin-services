@@ -515,13 +515,6 @@
 			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
 		</classes>
 	</test>
-	<test name="RegCenterSearch">
-		<parameter name="ymlFile"
-			value="masterdata/RegCenterSearch/RegCenterSearch.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
-		</classes>
-	</test>	
 	<test name="UpdateRegistrationCenterLang">
 		<parameter name="ymlFile"
 			value="masterdata/UpdateRegistrationCenterLang/UpdateRegistrationCenterLang.yml" />
@@ -592,6 +585,13 @@
 			value="masterdata/UserCenterMapping/UpdateUserCenterMapping.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.SimplePut" />
+		</classes>
+	</test>
+	<test name="RegCenterSearch">
+		<parameter name="ymlFile"
+			value="masterdata/RegCenterSearch/RegCenterSearch.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
 		</classes>
 	</test>	
 
