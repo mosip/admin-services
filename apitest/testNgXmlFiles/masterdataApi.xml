@@ -549,12 +549,6 @@
 			<class name="io.mosip.testrig.apirig.testscripts.PutWithPathParam"/> 
 		</classes> 
 	</test>
-	<test name="DeleteRegCenter"> 
-		<parameter name="ymlFile" value="masterdata/DeleteRegCenter/DeleteRegCenter.yml" /> 
-		<classes> 
-			<class name="io.mosip.testrig.apirig.testscripts.DeleteWithParam" /> 
-		</classes> 
-	</test>
 	
 	<test name="CreateZoneUser">
 		<parameter name="ymlFile"
@@ -1371,6 +1365,12 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.DeleteWithParam" />
 		</classes>
+	</test>
+	<test name="DeleteRegCenter"> 
+		<parameter name="ymlFile" value="masterdata/DeleteRegCenter/DeleteRegCenter.yml" /> 
+		<classes> 
+			<class name="io.mosip.testrig.apirig.testscripts.DeleteWithParam" /> 
+		</classes> 
 	</test>
 	<test name="GetApplicantType">
 		<parameter name="ymlFile" value="masterdata/GetApplicantType/GetApplicantType.yml"/>  
