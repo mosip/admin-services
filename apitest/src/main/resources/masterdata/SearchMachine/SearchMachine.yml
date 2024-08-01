@@ -12,7 +12,7 @@ SearchMachine:
       {
         "columnName": "name",
         "type": "equals",
-        "value": "Mach-Test",
+        "value": "Mach-Test updated",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -43,7 +43,7 @@ SearchMachine:
       {
         "columnName": "name",
         "type": "contains",
-        "value": "Mach-Test",
+        "value": "Mach-Test updated",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -420,7 +420,7 @@ SearchMachine:
       {
         "columnName": "name",
         "type": "equals",
-        "value": "Mach-Test",
+        "value": "Mach-Test updated",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       },
@@ -458,7 +458,7 @@ SearchMachine:
       {
         "columnName": "name",
         "type": "equals",
-        "value": "Mach-Test",
+        "value": "Mach-Test updated",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -488,7 +488,7 @@ SearchMachine:
       {
         "columnName": "name",
         "type": "contains",
-        "value": "Mach-Test",
+        "value": "Mach-Test updated",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -570,7 +570,7 @@ SearchMachine:
       {
         "columnName": "dfadf",
         "type": "equals",
-        "value": "Mach-Test",
+        "value": "Mach-Test updated",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
