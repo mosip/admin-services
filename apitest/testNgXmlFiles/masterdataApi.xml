@@ -786,6 +786,13 @@
 			<class name="io.mosip.testrig.apirig.testscripts.PatchWithPathParam" />
 		</classes>
 	</test>
+	<test name="FetchHolidays">
+		<parameter name="ymlFile"
+			value="masterdata/FetchHolidays/FetchHoliday.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
+		</classes>
+	</test>
 	
 	<test name="FilterHolidays">
 		<parameter name="ymlFile"
@@ -1381,13 +1388,6 @@
 		<parameter name="ymlFile" value="masterdata/ResumePacketWorkflow/ResumePacket.yml"/>  
 		<classes>
 		<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
-		</classes>
-	</test>
-	<test name="FetchHolidays">
-		<parameter name="ymlFile"
-			value="masterdata/FetchHolidays/FetchHoliday.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
 	</test>
 	<test name="FetchTemplateType">
