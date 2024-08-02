@@ -1,6 +1,7 @@
 GetBiometricTypesByLangcode:
    Masterdata_GetBiometricTypesByLangcode_allValid_smoke:
       endPoint: /v1/masterdata/biometrictypes/{langcode}
+      description: Retrieve biometric data in a specific language
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
@@ -15,6 +16,7 @@ GetBiometricTypesByLangcode:
 }'
    Masterdata_GetBiometricTypesByLangcode_InValid_langCode:
       endPoint: /v1/masterdata/biometrictypes/{langcode}
+      description: Retrieve biometric data for an invalid language code
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetBiometricTypesByLangcode/getBiometricTypesByLangcode

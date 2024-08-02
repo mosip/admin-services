@@ -1,6 +1,7 @@
 CreateMachine:
    Masterdata_CreateMachine_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/machines
+      description: Create the machine details with valid data
       role: globalAdmin
       templateFields: ["name"]
       restMethod: post
@@ -34,6 +35,7 @@ CreateMachine:
 }'
    Masterdata_CreateMachine_Invalid_publicKey:
       endPoint: /v1/masterdata/machines
+      description: Create the machine details with invalid publi key
       role: globalAdmin
       templateFields: ["name"]
       restMethod: post
@@ -64,6 +66,7 @@ CreateMachine:
 }'
    Masterdata_CreateMachine_Invalid_validitydate_Format:
       endPoint: /v1/masterdata/machines
+      description: Create the machine details with invalid validity date format
       role: admin
       templateFields: ["name"]
       restMethod: post
@@ -94,6 +97,7 @@ CreateMachine:
 }'
    Masterdata_CreateMachine_Invalid_Machine_Zone:
       endPoint: /v1/masterdata/machines
+      description: Create the machine details with invalid machine zone data
       role: admin
       templateFields: ["name"]
       restMethod: post
@@ -124,6 +128,7 @@ CreateMachine:
 }'
    Masterdata_CreateMachine_Invalid_Machine_Name_Blank:
       endPoint: /v1/masterdata/machines
+      description: Create the machine details with machine name data as empty
       role: admin
       templateFields: ["name"]
       restMethod: post
@@ -154,6 +159,7 @@ CreateMachine:
 }'
    Masterdata_CreateMachine_Invalid_Zone_Code_Blank:
       endPoint: /v1/masterdata/machines
+      description: Create the machine details with machine zone as empty
       role: admin
       templateFields: ["name"]
       restMethod: post
@@ -184,6 +190,7 @@ CreateMachine:
 }'
    Masterdata_CreateMachine_Invalid_Zone_nonAccessable:
       endPoint: /v1/masterdata/machines
+      description: Create the machine details with machine zone that is non accessible
       role: admin
       templateFields: ["name"]
       restMethod: post
@@ -214,6 +221,7 @@ CreateMachine:
 }'
    Masterdata_CreateMachine_Invalid_MAC_Address_Blank:
       endPoint: /v1/masterdata/machines
+      description: Create the machine details with MC address as empty
       role: admin
       templateFields: ["name"]
       restMethod: post
@@ -244,6 +252,7 @@ CreateMachine:
 }'
    Masterdata_CreateMachine_inValid_MachineName_AboveMaxLen64:
       endPoint: /v1/masterdata/machines
+      description: Create the machine details with a machine name exceeding the maximum length of 64 characters
       role: admin
       templateFields: []
       restMethod: post
@@ -274,6 +283,7 @@ CreateMachine:
 }'
    Masterdata_CreateMachine_inValid_MacAddress_AboveMaxLen64:
       endPoint: /v1/masterdata/machines
+      description: Create the machine details with a MAC address exceeding the maximum length of 64 characters
       role: admin
       templateFields: ["name"]
       restMethod: post
@@ -304,6 +314,7 @@ CreateMachine:
 }'
    Masterdata_CreateMachine_inValid_SerialNumber_AboveMaxLen64:
       endPoint: /v1/masterdata/machines
+      description: Create the machine details with a serial number exceeding the maximum length of 64 characters
       role: admin
       templateFields: ["name"]
       restMethod: post
@@ -334,6 +345,7 @@ CreateMachine:
 }'
    Masterdata_CreateMachine_inValid_IPAddress_AboveMaxLen17:
       endPoint: /v1/masterdata/machines
+      description: Create the machine details with a IP address exceeding the maximum length of 17 characters
       role: admin
       templateFields: ["name"]
       restMethod: post
@@ -364,6 +376,7 @@ CreateMachine:
 }'
    Masterdata_CreateMachine_inValid_MSpecID_AboveMaxLen36:
       endPoint: /v1/masterdata/machines
+      description: Create the machine details with a machine spec ID exceeding the maximum length of 64 characters
       role: admin
       templateFields: ["name"]
       restMethod: post

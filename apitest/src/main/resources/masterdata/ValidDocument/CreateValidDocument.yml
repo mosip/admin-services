@@ -1,6 +1,7 @@
 CreateValidDocument:
    MasterData_CreateValidDocument_All_Valid_Smoke:
       endPoint: /v1/masterdata/validdocuments
+      description: Create valid document details with valid data
       role: admin
       restMethod: post
       inputTemplate: masterdata/ValidDocument/validDocument
@@ -18,6 +19,7 @@ CreateValidDocument:
   
    MasterData_CreateValidDocument_Invalid_InputParameter_docTypeCode_Missing:
       endPoint: /v1/masterdata/validdocuments
+      description: Create valid document details with the parameter document type code as missing
       role: admin
       restMethod: post
       inputTemplate: masterdata/ValidDocument/validDocument
@@ -39,6 +41,7 @@ CreateValidDocument:
 
    MasterData_CreateValidDocument_Invalid_InputParameter_docCategoryCode_Missing:
       endPoint: /v1/masterdata/validdocuments
+      description: Create valid document details with the parameter document category code as missing
       role: admin
       restMethod: post
       inputTemplate: masterdata/ValidDocument/validDocument
@@ -60,6 +63,7 @@ CreateValidDocument:
 
    MasterData_CreateValidDocument_Invalid_isActive:
       endPoint: /v1/masterdata/validdocuments
+      description: Create valid document details with parameter is active as invalid
       role: admin
       restMethod: post
       inputTemplate: masterdata/ValidDocument/validDocument

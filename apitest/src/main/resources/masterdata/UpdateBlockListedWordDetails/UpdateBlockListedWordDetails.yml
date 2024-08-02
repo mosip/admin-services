@@ -1,6 +1,7 @@
 UpdateBlockListedWordDetails:
    Masterdata_UpdateBlockListedWordDetails_eng_All_Valid_Smoke:
       endPoint: /v1/masterdata/blocklistedwords/details
+      description: Update block listed word details with valid data and language code as english
       role: admin
       templateFields: ["description","word"]
       restMethod: put
@@ -18,6 +19,7 @@ UpdateBlockListedWordDetails:
 }'
    Masterdata_CreateBlockListedWords_Invalid_BlocklistedWordsLength129:
       endPoint: /v1/masterdata/blocklistedwords/details
+      description: Update blocklisted word details with blocklisted words exceeding the character length of 128
       role: admin
       templateFields: ["description"]
       restMethod: put
@@ -40,6 +42,7 @@ UpdateBlockListedWordDetails:
 }'
    Masterdata_UpdateBlockListedWords_inValid_descriptionBlank:
       endPoint: /v1/masterdata/blocklistedwords/details
+      description: Update blocklisted word details with description as blank
       role: admin
       templateFields: ["word"]
       restMethod: put
@@ -62,6 +65,7 @@ UpdateBlockListedWordDetails:
 }'
    Masterdata_CreateBlockListedWords_Invalid_DescriptionLength257:
       endPoint: /v1/masterdata/blocklistedwords/details
+      description: Update blocklisted word details with description exceeding the character length of 256
       role: admin
       templateFields: ["word"]
       restMethod: put
@@ -84,6 +88,7 @@ UpdateBlockListedWordDetails:
 }'
    Masterdata_CreateBlockListedWords_Invalid_EmptyWord:
       endPoint: /v1/masterdata/blocklistedwords/details
+      description: Update blocklisted word details with word parameter as empty
       role: admin
       templateFields: ["description"]
       restMethod: put

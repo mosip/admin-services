@@ -1,6 +1,7 @@
 CreateHoliday:
    MasterData_CreateHoliday_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/holidays
+      description: Creating the holiday
       role: admin
       templateFields: ["holidayDesc","holidayName"]
       restMethod: post
@@ -24,6 +25,7 @@ CreateHoliday:
     }'
    MasterData_CreateHoliday_Invalid_InputParameter_HolidayDate_Missing:
       endPoint: /v1/masterdata/holidays
+      description: Creating the holiday with invalid input parameter that is holiday date is missing
       role: admin
       templateFields: ["holidayDesc","holidayName"]
       restMethod: post
@@ -49,6 +51,7 @@ CreateHoliday:
 }'
    MasterData_CreateHoliday_Invalid_InputParameter_HolidayDate_Empty:
       endPoint: /v1/masterdata/holidays
+      description: Creating the holiday with holiday date parameter as empty
       role: admin
       templateFields: ["holidayDesc","holidayName"]
       restMethod: post
@@ -74,6 +77,7 @@ CreateHoliday:
 }'
    MasterData_CreateHoliday_Invalid_HolidayDate_Format:
       endPoint: /v1/masterdata/holidays
+      description: Creating the holiday with invalid date format for holiday date parameter
       role: admin
       templateFields: ["holidayDesc","holidayName"]
       restMethod: post
@@ -99,6 +103,7 @@ CreateHoliday:
 }'
    MasterData_CreateHoliday_Invalid_InputParameter_HolidayName_Missing:
       endPoint: /v1/masterdata/holidays
+      description: Creating the holiday with holiday name parameter as missing
       role: admin
       templateFields: ["holidayDesc"]
       restMethod: post
@@ -124,6 +129,7 @@ CreateHoliday:
 }'
    MasterData_CreateHoliday_Invalid_InputParameter_HolidayName_AboveMaxLen64:
       endPoint: /v1/masterdata/holidays
+      description: Creating the holiday with invalid holiday name parameter as above maximum length of 64 character
       role: admin
       templateFields: ["holidayDesc","holidayName"]
       restMethod: post
@@ -149,6 +155,7 @@ CreateHoliday:
 }'
    MasterData_CreateHoliday_Invalid_InputParameter_LocationCode_Missing:
       endPoint: /v1/masterdata/holidays
+      description: Creating the holiday with location code parameter as missing
       role: admin
       templateFields: ["holidayDesc","holidayName"]
       restMethod: post
@@ -174,6 +181,7 @@ CreateHoliday:
 }'
    MasterData_CreateHoliday_Invalid_InputParameter_LocationCode_NotInDB:
       endPoint: /v1/masterdata/holidays
+      description: Creating the holiday with location code which is not available in database
       role: admin
       templateFields: ["holidayDesc","holidayName"]
       restMethod: post
@@ -199,6 +207,7 @@ CreateHoliday:
 }'
    MasterData_CreateHoliday_Invalid_InputParameter_LocationCode_AboveMaxLen128:
       endPoint: /v1/masterdata/holidays
+      description: Creating the holiday with location code with parameter as above maximum length of 128 character
       role: admin
       templateFields: ["holidayDesc","holidayName"]
       restMethod: post
@@ -226,6 +235,7 @@ CreateHoliday:
    
    MasterData_CreateHoliday_Invalid_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/holidays
+      description: Creating the holiday with invalid parameter for isActive as missing
       role: admin
       templateFields: ["holidayDesc","holidayName"]
       restMethod: post

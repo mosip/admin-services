@@ -1,6 +1,7 @@
 UpdateWorkingDay:
    MasterData_UpdateWorkingDay_Invalid_code:  
       endPoint: /v1/masterdata/workingdays
+      description: Update working day details with invalid code
       role: admin
       templateFields: ["langCode", "name"]
       restMethod: put

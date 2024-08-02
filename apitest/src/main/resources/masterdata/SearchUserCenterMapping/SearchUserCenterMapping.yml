@@ -1,6 +1,7 @@
 SearchUserCenterMapping:
    MasterData_SearchUserCenterMapping_All_ValidUser_Smoke:
       endPoint: /v1/masterdata/usercentermapping/search
+      description: Search for user center mapping details with valid user data
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -29,6 +30,7 @@ SearchUserCenterMapping:
 
    MasterData_SearchUserCenterMapping_InValid_ColumnInvalid:
       endPoint: /v1/masterdata/usercentermapping/search
+      description: Search for user center mapping details with invalid column data
       role: admin
       templateFields: ["languageCode"]
       restMethod: post

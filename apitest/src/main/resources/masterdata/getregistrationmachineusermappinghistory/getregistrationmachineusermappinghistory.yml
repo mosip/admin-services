@@ -1,6 +1,7 @@
 getregistrationmachineusermappinghistory:
    Admin_getregistrationmachineusermappinghistory_allValid_smoke:
       endPoint: /v1/masterdata/getregistrationmachineusermappinghistory/{effdtimes}/{registrationcenterid}/{machineid}/{userid}
+      description: Retrieve registration machine user mapping history missing using valid effdtimes, registration center ID, machine ID, user id
       role: admin
       restMethod: get
       inputTemplate: masterdata/getregistrationmachineusermappinghistory/getregistrationmachineusermappinghistory

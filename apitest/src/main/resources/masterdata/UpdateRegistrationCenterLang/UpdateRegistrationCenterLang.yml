@@ -1,6 +1,7 @@
 UpdateRegistrationCenterLang:
    MasterData_UpdateRegistrationCenterLang_Smoke:  
       endPoint: /v1/masterdata/registrationcenters/language
+      description: Update registration center language details with valid data
       role: globalAdmin
       templateFields: ["addressLine1","addressLine2","addressLine3","contactPerson","name"]
       restMethod: put

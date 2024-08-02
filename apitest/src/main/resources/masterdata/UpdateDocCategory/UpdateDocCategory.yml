@@ -1,6 +1,7 @@
 UpdateDocCategory:
    MasterData_UpdateDocCategory_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/documentcategories?isActive=true&code=POA
+      description: Update document category with valid data
       role: admin
       restMethod: patch
       inputTemplate: masterdata/UpdateDocCategory/updateDocCategory
@@ -14,6 +15,7 @@ UpdateDocCategory:
 
    MasterData_UpdateDocCategory_Invalid_status:  
       endPoint: /v1/masterdata/documentcategories?isActive=false&code=POA
+      description: Update document category with invalid status
       role: admin
       restMethod: patch
       inputTemplate: masterdata/UpdateDocCategory/updateDocCategory
@@ -31,7 +33,8 @@ UpdateDocCategory:
 }'
 
    MasterData_UpdateDocCategory_Invalid_code:  
-      endPoint: /v1/masterdata/documentcategories?isActive=true&code=INVALID
+      endPoint: /v1/masterdata/documentcategories?isActive=true&code=ABC
+      description: Update document category with invalid code
       role: admin
       restMethod: patch
       inputTemplate: masterdata/UpdateDocCategory/updateDocCategory

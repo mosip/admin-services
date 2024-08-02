@@ -1,6 +1,7 @@
 RejectionList:
    MasterData_RejectionList_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/packetrejectionreasons/reasonlist
+      description: Create the rejection list with valid details
       role: admin
       templateFields: ["name","description"]
       restMethod: post
