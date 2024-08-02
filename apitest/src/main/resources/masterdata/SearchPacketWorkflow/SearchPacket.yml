@@ -3,6 +3,7 @@ SearchPacketWorkflow:
       endPoint: /v1/masterdata/packet/search
       description: Search for packet work flow details with valid details
       role: admin
+      checkErrorsOnlyInResponse: true
       restMethod: post
       inputTemplate: masterdata/SearchPacketWorkflow/searchPacket
       outputTemplate: masterdata/SearchPacketWorkflow/searchPacketResult

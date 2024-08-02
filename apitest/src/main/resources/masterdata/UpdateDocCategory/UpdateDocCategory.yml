@@ -33,7 +33,7 @@ UpdateDocCategory:
 }'
 
    MasterData_UpdateDocCategory_Invalid_code:  
-      endPoint: /v1/masterdata/documentcategories?isActive=true&code=ABC
+      endPoint: /v1/masterdata/documentcategories?isActive=true&code=INVALID
       description: Update document category with invalid code
       role: admin
       restMethod: patch

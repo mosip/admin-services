@@ -8,7 +8,7 @@ GetMappedMachinesByRegCentID:
       inputTemplate: masterdata/GetMappedMachinesByRegCentID/getMappedMachinesByRegCentID
       outputTemplate: masterdata/GetMappedMachinesByRegCentID/getMappedMachinesByRegCentIDResult
       input: '{
-      "regCenterId":"10005"
+      "regCenterId":"10001"
 }'
       output: '{
 }'

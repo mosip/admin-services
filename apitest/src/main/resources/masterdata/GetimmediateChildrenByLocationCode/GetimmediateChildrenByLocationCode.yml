@@ -8,7 +8,7 @@ GetimmediateChildrenByLocationCode:
       inputTemplate: masterdata/GetimmediateChildrenByLocationCode/getimmediateChildrenByLocationCode
       outputTemplate: masterdata/GetimmediateChildrenByLocationCode/getimmediateChildrenByLocationCodeResult
       input: '{
-      "locationcode":"$ID:CreateLocationData_All_Valid_Smoke_Sid_code$",
+      "locationcode":"BNMR",
       "langcode":"eng"
 }'
       output: '{
