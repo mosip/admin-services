@@ -198,7 +198,7 @@ CreateRegistrationCenter:
    "perKioskProcessTime":"00:30:00",
    "timeZone":"(GTM+01:00) CENTRAL EUROPEAN TIME",
    "workingHours":3.5,
-   "zoneCode":"$ZONE_CODE$",
+   "zoneCode":"RBT",
    "id":"",
    "isActive":"false",
    "numberOfKiosks":null,
@@ -212,7 +212,7 @@ CreateRegistrationCenter:
       output: '{
   "errors": [
     {
-      "errorCode": "KER-MSD-307",
+      "errorCode": "KER-MSD-281",
       "message": "$IGNORE$"
     }
   ]
@@ -245,7 +245,7 @@ CreateRegistrationCenter:
    "perKioskProcessTime":"00:30:00",
    "timeZone":"(GTM+01:00) CENTRAL EUROPEAN TIME",
    "workingHours":3.5,
-   "zoneCode":"$ZONE_CODE$",
+   "zoneCode":"RBT",
    "id":"",
    "isActive":"false",
    "numberOfKiosks":-1,
@@ -258,7 +258,7 @@ CreateRegistrationCenter:
       output: '{
   "errors": [
     {
-      "errorCode": "KER-MSD-307",
+      "errorCode": "KER-MSD-281",
       "message": "$IGNORE$"
     }
   ]

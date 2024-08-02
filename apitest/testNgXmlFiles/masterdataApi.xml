@@ -515,13 +515,6 @@
 			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
 		</classes>
 	</test>
-	<test name="RegCenterSearch">
-		<parameter name="ymlFile"
-			value="masterdata/RegCenterSearch/RegCenterSearch.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
-		</classes>
-	</test>	
 	<test name="UpdateRegistrationCenterLang">
 		<parameter name="ymlFile"
 			value="masterdata/UpdateRegistrationCenterLang/UpdateRegistrationCenterLang.yml" />
@@ -547,12 +540,6 @@
 		<parameter name="ymlFile" value="masterdata/DecommissionRegCenter/DecommissionRegCenter.yml" /> 
 		<classes> 
 			<class name="io.mosip.testrig.apirig.testscripts.PutWithPathParam"/> 
-		</classes> 
-	</test>
-	<test name="DeleteRegCenter"> 
-		<parameter name="ymlFile" value="masterdata/DeleteRegCenter/DeleteRegCenter.yml" /> 
-		<classes> 
-			<class name="io.mosip.testrig.apirig.testscripts.DeleteWithParam" /> 
 		</classes> 
 	</test>
 	
@@ -598,6 +585,13 @@
 			value="masterdata/UserCenterMapping/UpdateUserCenterMapping.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.SimplePut" />
+		</classes>
+	</test>
+	<test name="RegCenterSearch">
+		<parameter name="ymlFile"
+			value="masterdata/RegCenterSearch/RegCenterSearch.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
 		</classes>
 	</test>	
 
@@ -784,6 +778,13 @@
 			value="masterdata/UpdateHolidayStatus/UpdateHolidayStatus.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.PatchWithPathParam" />
+		</classes>
+	</test>
+	<test name="FetchHolidays">
+		<parameter name="ymlFile"
+			value="masterdata/FetchHolidays/FetchHoliday.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
 	</test>
 	
@@ -1365,6 +1366,12 @@
 			<class name="io.mosip.testrig.apirig.testscripts.DeleteWithParam" />
 		</classes>
 	</test>
+	<test name="DeleteRegCenter"> 
+		<parameter name="ymlFile" value="masterdata/DeleteRegCenter/DeleteRegCenter.yml" /> 
+		<classes> 
+			<class name="io.mosip.testrig.apirig.testscripts.DeleteWithParam" /> 
+		</classes> 
+	</test>
 	<test name="GetApplicantType">
 		<parameter name="ymlFile" value="masterdata/GetApplicantType/GetApplicantType.yml"/>  
 		<classes>
@@ -1381,13 +1388,6 @@
 		<parameter name="ymlFile" value="masterdata/ResumePacketWorkflow/ResumePacket.yml"/>  
 		<classes>
 		<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
-		</classes>
-	</test>
-	<test name="FetchHolidays">
-		<parameter name="ymlFile"
-			value="masterdata/FetchHolidays/FetchHoliday.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
 	</test>
 	<test name="FetchTemplateType">
