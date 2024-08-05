@@ -70,7 +70,7 @@ UpdateRegistrationCenter:
     "workingHours": "8:00:00",
     "zoneCode":"$ZONE_CODE$",
     "id": "$ID:CreateRegCenter_allValid_smoke_sid_id$",
-    "numberOfKiosks":12,
+    "numberOfKiosks":"12",
     "exceptionHolidayDate": "2020-11-16",
     "exceptionHolidayName": "TestHoliday",
     "exceptionHolidayReson": "CenterCreation", 
