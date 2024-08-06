@@ -7,8 +7,8 @@ DeleteZoneUser:
       inputTemplate: masterdata/DeleteZoneUser/deleteZoneUser
       outputTemplate: masterdata/DeleteZoneUser/deleteZoneUserResult
       input: '{
-    "userid": "func_auto_test_user",
-    "zonecode": "$ZONE_CODE$"
+    "userid": "masterdata-220005",
+    "zonecode": "$ID:CreateRegCenter_allValid_smoke_sid_zoneCode$"
   }'
       output: '{
 }'

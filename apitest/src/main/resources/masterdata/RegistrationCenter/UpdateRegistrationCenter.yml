@@ -28,7 +28,7 @@ UpdateRegistrationCenter:
     "perKioskProcessTime": "00:15:00",
     "timeZone": "Test Time zone",
     "workingHours": "8:00:00",
-    "zoneCode":"$ZONE_CODE$",
+    "zoneCode":"$ID:CreateRegCenter_allValid_smoke_sid_zoneCode$",
     "id": "$ID:CreateRegCenter_allValid_smoke_sid_id$",
     "exceptionHolidayDate": "2020-11-16",
     "exceptionHolidayName": "TestHoliday",
