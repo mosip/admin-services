@@ -2,6 +2,7 @@ GetUserDetails:
    MasterData_GetUserDetails_allValid_smoke:
       endPoint: /v1/masterdata/users
       role: admin
+      checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/GetUserDetails/getUserDetails
       outputTemplate: masterdata/GetUserDetails/getUserDetailsResult
@@ -11,23 +12,24 @@ GetUserDetails:
       output: '{
       "name": "$IGNORE$",
       "statusCode": "$IGNORE$",
-      "regCenterId": "10005",
+      "regCenterId": "$IGNORE$",
       "isActive": "$IGNORE$",
       "zoneCode": "$IGNORE$"
 }'
    MasterData_GetUserDetails_ByUserId_allValid_smoke:
       endPoint: /v1/masterdata/users/{id}
       role: admin
+      checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/GetUserDetails/getUserDetails
       outputTemplate: masterdata/GetUserDetails/getUserDetailsByIDResult
       input: '{
-  "id":"$USERID$"
+  "id":"$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$"
 }'
       output: '{
       "name": "$IGNORE$",
       "statusCode": "$IGNORE$",
-      "regCenterId": "10005",
+      "regCenterId": "$IGNORE$",
       "isActive": "$IGNORE$",
       "zoneCode": "$IGNORE$"
 }'

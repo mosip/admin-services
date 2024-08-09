@@ -1,5 +1,5 @@
 UserCenterMapping:
-   MasterData_UserCenterMapping_All_Valid_Smoke:
+   MasterData_UserCenterMapping_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/usercentermapping
       role: globalAdmin
       templateFields: ["name"]

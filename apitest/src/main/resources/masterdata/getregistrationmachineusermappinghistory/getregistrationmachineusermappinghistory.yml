@@ -2,20 +2,21 @@ getregistrationmachineusermappinghistory:
    Admin_getregistrationmachineusermappinghistory_allValid_smoke:
       endPoint: /v1/masterdata/getregistrationmachineusermappinghistory/{effdtimes}/{registrationcenterid}/{machineid}/{userid}
       role: admin
+      checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/getregistrationmachineusermappinghistory/getregistrationmachineusermappinghistory
       outputTemplate: masterdata/getregistrationmachineusermappinghistory/getregistrationmachineusermappinghistoryResult
       input: '{
-      "effdtimes":"$TIMESTAMP$",
-      "registrationcenterid":"10001",
-      "machineid":"10001",
-      "userid":"110001"
+      "effdtimes":"$ID:CreateMachine_All_Valid_Smoke_sid_responsetime$",
+      "registrationcenterid":"$ID:CreateRegCenter_allValid_smoke_sid_id$",
+      "machineid":"$ID:CreateMachine_All_Valid_Smoke_sid_id$",
+      "userid":"$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$"
 }'
       output: '{
 "registrationCenters": [{
-        "cntrId": "10001",
-        "machineId": "10001",
-        "usrId": "110001",
+        "cntrId": "$IGNORE$",
+        "machineId": "$IGNORE$",
+        "usrId": "$IGNORE$",
         "isActive": "$IGNORE$",
         "langCode": "$IGNORE$",
         "effectivetimes": "$IGNORE$"

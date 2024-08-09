@@ -18,7 +18,7 @@ UpdateMachine:
     "validityDateTime":"2021-12-24T05:52:46.758Z",
     "publicKey":"$PUBLICKEY$",
     "signPublicKey":"$PUBLICKEY$",
-    "zoneCode":"$ZONE_CODE$",
+    "zoneCode":"$ID:CreateRegCenter_allValid_smoke_sid_zoneCode$",
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{

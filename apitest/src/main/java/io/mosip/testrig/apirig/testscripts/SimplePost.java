@@ -35,7 +35,6 @@ import io.restassured.response.Response;
 public class SimplePost extends AdminTestUtil implements ITest {
 	private static final Logger logger = Logger.getLogger(SimplePost.class);
 	protected String testCaseName = "";
-	public String idKeyName = null;
 	public Response response = null;
 	public boolean auditLogCheck = false;
 
@@ -63,7 +62,6 @@ public class SimplePost extends AdminTestUtil implements ITest {
 	@DataProvider(name = "testcaselist")
 	public Object[] getTestCaseList(ITestContext context) {
 		String ymlFile = context.getCurrentXmlTest().getLocalParameters().get("ymlFile");
-		idKeyName = context.getCurrentXmlTest().getLocalParameters().get("idKeyName");
 		logger.info("Started executing yml: " + ymlFile);
 		return getYmlTestData(ymlFile);
 	}
@@ -111,7 +109,7 @@ public class SimplePost extends AdminTestUtil implements ITest {
 
 		else {
 			response = postWithBodyAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson, auditLogCheck, COOKIENAME,
-					testCaseDTO.getRole(), testCaseDTO.getTestCaseName(), idKeyName);
+					testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
 
 			Map<String, List<OutputValidationDto>> ouputValid = null;
 
