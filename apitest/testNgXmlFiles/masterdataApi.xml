@@ -483,7 +483,6 @@
 	<test name="UpdateLocationData">
 		<parameter name="ymlFile"
 			value="masterdata/LocationController/UpdateLocationData.yml" />
-			<parameter name="idKeyName"	value="name" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.SimplePut" />
 		</classes>
@@ -542,7 +541,7 @@
 			value="masterdata/ZoneUser/CreateZoneUser.yml" />
 		<parameter name="idKeyName" value="userId" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 	<test name="UpdateZoneUser">
@@ -563,8 +562,9 @@
 	<test name="UserCenterMapping">
 		<parameter name="ymlFile"
 			value="masterdata/UserCenterMapping/UserCenterMapping.yml" />
+		<parameter name="idKeyName" value="responsetime" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 	<test name="UpdateUserCenterMappingStatus">
@@ -675,13 +675,6 @@
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
 	</test>
-	<test name="DeleteMachineSpec">
-		<parameter name="ymlFile"
-			value="masterdata/DeleteMachineSpec/DeleteMachineSpec.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.DeleteWithParam" />
-		</classes>
-	</test>
 
 	<test name="CreateMachine">
 		<parameter name="ymlFile"
@@ -724,20 +717,6 @@
 			value="masterdata/FetchMachine/FetchMachine.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
-		</classes>
-	</test>
-	<test name="DeleteMachine">
-		<parameter name="ymlFile"
-			value="masterdata/DeleteMachine/DeleteMachine.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.DeleteWithParam" />
-		</classes>
-	</test>
-	<test name="DecommisionMachine">
-		<parameter name="ymlFile"
-			value="masterdata/DecommisionMachine/DecommisionMachine.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.PutWithPathParam" />
 		</classes>
 	</test>
 	
@@ -1338,19 +1317,41 @@
 		<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
 	</test>
-	<test name="DeleteUserCenterMapping">
-		<parameter name="ymlFile"
-			value="masterdata/DeleteUserCenterMapping/DeleteUserCenterMapping.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.DeleteWithParam" />
-		</classes>
-	</test>
 	
 	<test name="SearchUserCenterMapping">
 		<parameter name="ymlFile"
 			value="masterdata/SearchUserCenterMapping/SearchUserCenterMapping.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
+		</classes>
+	</test>
+	
+	<test name="DecommisionMachine">
+		<parameter name="ymlFile"
+			value="masterdata/DecommisionMachine/DecommisionMachine.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.PutWithPathParam" />
+		</classes>
+	</test>
+	<test name="DeleteMachine">
+		<parameter name="ymlFile"
+			value="masterdata/DeleteMachine/DeleteMachine.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.DeleteWithParam" />
+		</classes>
+	</test>
+	<test name="DeleteMachineSpec">
+		<parameter name="ymlFile"
+			value="masterdata/DeleteMachineSpec/DeleteMachineSpec.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.DeleteWithParam" />
+		</classes>
+	</test>
+	<test name="DeleteUserCenterMapping">
+		<parameter name="ymlFile"
+			value="masterdata/DeleteUserCenterMapping/DeleteUserCenterMapping.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.DeleteWithParam" />
 		</classes>
 	</test>
 	<test name="DeleteZoneUser">

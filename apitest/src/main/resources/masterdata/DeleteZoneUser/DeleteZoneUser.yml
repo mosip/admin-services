@@ -7,7 +7,7 @@ DeleteZoneUser:
       inputTemplate: masterdata/DeleteZoneUser/deleteZoneUser
       outputTemplate: masterdata/DeleteZoneUser/deleteZoneUserResult
       input: '{
-    "userid": "masterdata-220005",
+    "userid": "$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$",
     "zonecode": "$ID:CreateRegCenter_allValid_smoke_sid_zoneCode$"
   }'
       output: '{
