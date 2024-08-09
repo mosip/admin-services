@@ -78,7 +78,7 @@ public class UserDetailsController {
 	@GetMapping(value = "/users")
 	public ResponseWrapper<PageDto<UserDetailsExtnDto>>  getUsers(@RequestParam(value = "pageNumber", defaultValue = "0") @ApiParam(value = "page number for the requested data", defaultValue = "0") int page,
 	@RequestParam(value = "pageSize", defaultValue = "1") @ApiParam(value = "page size for the request data", defaultValue = "1") int size,
-	@RequestParam(value = "orderBy", defaultValue = "cr_dtimes") @ApiParam(value = "sort the requested data based on param value", defaultValue = "createdDateTime") String orderBy,
+	@RequestParam(value = "orderBy", defaultValue = "updatedDateTime") @ApiParam(value = "sort the requested data based on param value", defaultValue = "createdDateTime") String orderBy,
 	@RequestParam(value = "direction", defaultValue = "DESC") @ApiParam(value = "order the requested data based on param", defaultValue = "DESC") String direction) {
 		ResponseWrapper<PageDto<UserDetailsExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(userDetailsService.getUsers(page, size, orderBy, direction));
