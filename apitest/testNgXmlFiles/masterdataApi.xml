@@ -679,7 +679,7 @@
 	<test name="CreateMachine">
 		<parameter name="ymlFile"
 			value="masterdata/Machine/CreateMachine.yml" />
-		<parameter name="idKeyName" value="id" />
+		<parameter name="idKeyName" value="id,createdDateTime" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
 		</classes>
@@ -1062,9 +1062,9 @@
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
 	</test>
-	<test name="getregistrationmachineusermappinghistory">
+	<test name="GetRegistrationMachineUserMappingHistory">
 		<parameter name="ymlFile"
-			value="masterdata/getregistrationmachineusermappinghistory/getregistrationmachineusermappinghistory.yml" />
+			value="masterdata/GetRegistrationMachineUserMappingHistory/GetRegistrationMachineUserMappingHistory.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
