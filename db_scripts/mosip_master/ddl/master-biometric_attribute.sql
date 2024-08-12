@@ -7,7 +7,7 @@ CREATE TABLE master.biometric_attribute(
 	name character varying(64) NOT NULL,
 	descr character varying(128),
 	bmtyp_code character varying(36) NOT NULL,
-	lang_code character varying(3) NOT NULL,
+	lang_code character varying(3),
 	is_active boolean NOT NULL,
 	cr_by character varying(256) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE master.biometric_attribute(
 	upd_dtimes timestamp,
 	is_deleted boolean DEFAULT FALSE,
 	del_dtimes timestamp,
-	CONSTRAINT pk_bmattr_code PRIMARY KEY (code,lang_code)
+	CONSTRAINT pk_bmattr_code PRIMARY KEY (code)
 
 );
 -- ddl-end --
