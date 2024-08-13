@@ -1,5 +1,3 @@
-\echo 'Upgrade Queries not required for transition from $CURRENT_VERSION to $UPGRADE_VERSION'
-
 -- Upgrade script for master.app_detail
 ALTER TABLE master.app_detail DROP CONSTRAINT IF EXISTS pk_appdtl_id CASCADE;
 ALTER TABLE master.app_detail ALTER COLUMN lang_code DROP NOT NULL;
