@@ -7,7 +7,7 @@ GetRegistrationMachineUserMappingHistory:
       inputTemplate: masterdata/GetRegistrationMachineUserMappingHistory/getRegistrationMachineUserMappingHistory
       outputTemplate: masterdata/GetRegistrationMachineUserMappingHistory/getRegistrationMachineUserMappingHistoryResult
       input: '{
-      "effdtimes":"$ID:CreateMachine_All_Valid_Smoke_sid_createdDateTime$",
+      "effdtimes":"$ID:SearchMachine_Valid_Smoke_FullResponse_sid_responsetime$",
       "registrationcenterid":"$ID:CreateRegCenter_allValid_smoke_sid_id$",
       "machineid":"$ID:CreateMachine_All_Valid_Smoke_sid_id$",
       "userid":"$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$"
