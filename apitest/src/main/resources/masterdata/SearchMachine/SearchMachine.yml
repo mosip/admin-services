@@ -1,5 +1,5 @@
 SearchMachine:
-   Masterdata_SearchMachine_Valid_Smoke:
+   Masterdata_SearchMachine_Valid_Smoke_FullResponse_sid:
       endPoint: /v1/masterdata/machines/search
       description: Search machine details with valid data
       role: globalAdmin

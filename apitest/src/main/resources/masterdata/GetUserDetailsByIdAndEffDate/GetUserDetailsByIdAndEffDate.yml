@@ -8,11 +8,11 @@ GetUserDetailsByIdAndEffDate:
       inputTemplate: masterdata/GetUserDetailsByIdAndEffDate/getUserDetailsByIdAndEffDate
       outputTemplate: masterdata/GetUserDetailsByIdAndEffDate/getUserDetailsByIdAndEffDateResult
       input: '{
-  "id":"func_auto_test_user",
-  "effDate":"2023-12-10T08:43:46.614Z"
+  "id":"$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$",
+  "effDate":"$ID:UserCenterMapping_All_Valid_Smoke_FullResponse_sid_responsetime$"
 }'
       output: '{
-   "id": "func_auto_test_user"
+   "id": "masterdata-220005"
 }'
    MasterData_GetUserDetailsByIdAndEffDate_InValid_dateFormat:
       endPoint: /v1/masterdata/users/{id}/{effDate}

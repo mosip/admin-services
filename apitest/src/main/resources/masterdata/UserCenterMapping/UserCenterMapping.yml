@@ -1,5 +1,5 @@
 UserCenterMapping:
-   MasterData_UserCenterMapping_All_Valid_Smoke:
+   MasterData_UserCenterMapping_All_Valid_Smoke_FullResponse_sid:
       endPoint: /v1/masterdata/usercentermapping
       description: Create user center mapping details with valid data
       role: globalAdmin

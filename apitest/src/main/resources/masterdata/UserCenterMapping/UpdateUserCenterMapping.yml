@@ -21,7 +21,7 @@ UpdateUserCenterMapping:
     "regCenterId": "$IGNORE$",
     "zoneCode": "RBT",
     "zoneName": "Rabat",
-    "regCenterName": "Test_Loc_A_"
+    "regCenterName": "HSR Center updated"
     }'
    MasterData_UserCenterMapping_Invalid_InputParameter_regCenterId_Missing:
       endPoint: /v1/masterdata/usercentermapping
