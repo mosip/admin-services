@@ -1,6 +1,7 @@
 MachineTypeSearch:
    Masterdata_MachineTypeSearch_Equals_Name_eng_smoke:
       endPoint: /v1/masterdata/machinetypes/search
+      description: Search for machine type with the condition that the name equals English
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -40,6 +41,7 @@ MachineTypeSearch:
 }'
    Masterdata_MachineTypeSearch_withoutfilterValue_eng:
       endPoint: /v1/masterdata/machinetypes/search
+      description: Search for machine type without filter value as English
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -73,6 +75,7 @@ MachineTypeSearch:
 }'
    Masterdata_MachineTypeSearch_invalid_SortField:
       endPoint: /v1/masterdata/machinetypes/search
+      description: Sort for machine type with invalid values
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -109,6 +112,7 @@ MachineTypeSearch:
 }'
    Masterdata_MachineTypeSearch_invalid_columnName:
       endPoint: /v1/masterdata/machinetypes/search
+      description: Search for machine type with invalid column name
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -145,6 +149,7 @@ MachineTypeSearch:
 }'
    Masterdata_MachineTypeSearch_invalid_empty_sortFieldType:
       endPoint: /v1/masterdata/machinetypes/search
+      description: Sort for machine type with sort field type as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -181,6 +186,7 @@ MachineTypeSearch:
 }'
    Masterdata_MachineTypeSearch_invalid_empty_sortField:
       endPoint: /v1/masterdata/machinetypes/search
+      description: Search for machine type with sort field type as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -217,6 +223,7 @@ MachineTypeSearch:
 }'
    Masterdata_MachineTypeSearch_columnName_empty:
       endPoint: /v1/masterdata/machinetypes/search
+      description: Searcg for machine type column name as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -253,6 +260,7 @@ MachineTypeSearch:
 }'
    Masterdata_MachineTypeSearch_filterType_empty:
       endPoint: /v1/masterdata/machinetypes/search
+      description: Sort for machine type with field type as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -289,6 +297,7 @@ MachineTypeSearch:
 }'
    Masterdata_MachineTypeSearch_invalidPaginationValue:
       endPoint: /v1/masterdata/machinetypes/search
+      description: Search for machine type with invalid pagination value
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -325,6 +334,7 @@ MachineTypeSearch:
 }'
    Masterdata_MachineTypeSearch_inValid_filter_type:
       endPoint: /v1/masterdata/machinetypes/search
+      description: Search for machine type with invalid filter type
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -361,6 +371,7 @@ MachineTypeSearch:
 }'
    Masterdata_MachineTypeSearch_invalid_sortType:
       endPoint: /v1/masterdata/machinetypes/search
+      description: Sort for machine type with invalid sort type
       role: admin
       templateFields: ["value"]
       restMethod: post

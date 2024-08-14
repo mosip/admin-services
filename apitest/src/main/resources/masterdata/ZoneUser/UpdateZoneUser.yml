@@ -1,6 +1,7 @@
 UpdateZoneUser:
    MasterData_UpdateZoneUser_All_Valid_Smoke_Sid:
       endPoint: /v1/masterdata/zoneuser
+      description: Update zone user with valid user data
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       restMethod: put

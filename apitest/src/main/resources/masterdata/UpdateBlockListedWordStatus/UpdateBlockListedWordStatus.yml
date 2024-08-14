@@ -1,6 +1,7 @@
 UpdateBlockListedWordStatus:
    MasterData_UpdateBlockListedWordStatus_All_Valid_Smoke:  
       endPoint: /v1/masterdata/blocklistedwords?isActive={isActive}&word={word}
+      description: Update block listed word status with valid data
       role: admin
       templateFields: ["word"]
       restMethod: patch
@@ -15,6 +16,7 @@ UpdateBlockListedWordStatus:
 }'
    MasterData_UpdateBlockListedWordStatus_Invalid_word:  
       endPoint: /v1/masterdata/blocklistedwords?isActive={isActive}&word={word}
+      description: Update block listed word status with invalid word
       role: admin
       restMethod: patch
       inputTemplate: masterdata/UpdateBlockListedWordStatus/updateBlockListedWordStatus

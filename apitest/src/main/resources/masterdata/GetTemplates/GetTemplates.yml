@@ -1,6 +1,7 @@
 GetTemplates:
    Admin_GetTemplates_allValid_smoke:
       endPoint: /v1/masterdata/templates
+      description: Retrieve all the template details
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetTemplates/getTemplates

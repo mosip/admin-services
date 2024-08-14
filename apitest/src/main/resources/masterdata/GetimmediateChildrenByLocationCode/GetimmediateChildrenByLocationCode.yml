@@ -1,6 +1,7 @@
 GetimmediateChildrenByLocationCode:
    Admin_GetimmediateChildrenByLocationCode_allValid_smoke:
       endPoint: /v1/masterdata/locations/immediatechildren/{locationcode}/{langcode}
+      description: Retrieve immediate children details by valid location and language code
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -23,6 +24,7 @@ GetimmediateChildrenByLocationCode:
 
    Admin_GetimmediateChildrenByLocationCode_Invalid_Invalid_locationcode:
       endPoint: /v1/masterdata/locations/immediatechildren/{locationcode}/{langcode}
+      description: Retrieve immediate children details by invalid location code and valid language code
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetimmediateChildrenByLocationCode/getimmediateChildrenByLocationCode
@@ -42,6 +44,7 @@ GetimmediateChildrenByLocationCode:
 
    Admin_GetimmediateChildrenByLocationCode_Invalid_Invalid_langcode:
       endPoint: /v1/masterdata/locations/immediatechildren/{locationcode}/{langcode}
+      description: Retrieve immediate children details by valid location code and invalid language code
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetimmediateChildrenByLocationCode/getimmediateChildrenByLocationCode
