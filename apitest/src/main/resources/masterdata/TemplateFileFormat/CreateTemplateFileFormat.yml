@@ -41,7 +41,7 @@ CreateTemplateFileFormat:
    Masterdata_CreateTemplateFileFormat_InputParameter_Description_Missing:
       endPoint: /v1/masterdata/templatefileformats
       role: admin
-      templateFields: ["description"]
+      templateFields: ["langCode"]
       restMethod: post
       inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
       outputTemplate: masterdata/error
