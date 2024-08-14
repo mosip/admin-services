@@ -1,6 +1,7 @@
 GetZoneUserWithEffDate:
    admin_GetZoneUserWithEffDate_smoke:
       endPoint: /v1/masterdata/zoneuser/history/{userid}/{eff_dtimes}
+      description: Retrieve zone user with effective date
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetZoneUserWithEffDate/getZoneUserWithEffDate

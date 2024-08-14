@@ -1,6 +1,7 @@
 GetTemplateFileFormat:
    Masterdata_GetTemplateFileFormat_allValid_smoke:
       endPoint: /v1/masterdata/templatefileformats/{code}/{langcode}
+      description: Retrieve template file format with valid language code and code
       role: admin
       templateFields: ["langcode"]
       restMethod: get
@@ -18,6 +19,7 @@ GetTemplateFileFormat:
 }'
    Masterdata_GetTemplateFileFormat_inValid_code:
       endPoint: /v1/masterdata/templatefileformats/{code}/{langcode}
+      description: Retrieve template file format with valid language code and invalid code
       role: admin
       templateFields: ["langcode"]
       restMethod: get
@@ -37,6 +39,7 @@ GetTemplateFileFormat:
 }'
    Masterdata_GetTemplateFileFormat_langcode_allValid_smoke:
       endPoint: /v1/masterdata/templatefileformats/code/{code}
+      description: Retrieve template file format without language code and code
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetTemplateFileFormat/getTemplateFileFormat

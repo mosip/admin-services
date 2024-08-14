@@ -1,6 +1,7 @@
 CreateTemplateFileFormat:
    Masterdata_CreateTemplateFileFormat_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/templatefileformats
+      description: Create template file format with valid details
       role: admin
       templateFields: ["langCode"]
       restMethod: post
@@ -18,6 +19,7 @@ CreateTemplateFileFormat:
 }'
    Masterdata_CreateTemplateFileFormat_InputParameter_Description_AboveMaxLen256:
       endPoint: /v1/masterdata/templatefileformats
+      description: Create a template file format with the input parameter description exceeding the maximum length of 256 characters
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -40,6 +42,7 @@ CreateTemplateFileFormat:
 }'
    Masterdata_CreateTemplateFileFormat_InputParameter_Description_Missing:
       endPoint: /v1/masterdata/templatefileformats
+      description: Create a template file format with the input parameter description as missing
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -62,6 +65,7 @@ CreateTemplateFileFormat:
 }'
    Masterdata_CreateTemplateFileFormat_InputParameter_Description_Empty:
       endPoint: /v1/masterdata/templatefileformats
+      description: Create a template file format with the input parameter description as empty
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -84,6 +88,7 @@ CreateTemplateFileFormat:
 }'
    Masterdata_CreateTemplateFileFormat_InputParameter_Code_Missing:
       endPoint: /v1/masterdata/templatefileformats
+      description: Create a template file format with the input parameter code as missing
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -106,6 +111,7 @@ CreateTemplateFileFormat:
 }'
    Masterdata_CreateTemplateFileFormat_InputParameter_Code_Empty:
       endPoint: /v1/masterdata/templatefileformats
+      description: Create a template file format with the input parameter code as empty
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -128,6 +134,7 @@ CreateTemplateFileFormat:
 }'
    Masterdata_CreateTemplateFileFormat_InputParameter_Code_AboveMaxLen36:
       endPoint: /v1/masterdata/templatefileformats
+      description: Create a template file format with the input parameter code exceeding the maximum length of 36 characters
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -150,6 +157,7 @@ CreateTemplateFileFormat:
 }'
    Masterdata_CreateTemplateFileFormat_InputParameter_LangCode_AboveMaxLen3:
       endPoint: /v1/masterdata/templatefileformats
+      description: Create a template file format with the input parameter language code exceeding the maximum length of 3 characters
       role: admin
       templateFields: []
       restMethod: post
@@ -172,6 +180,7 @@ CreateTemplateFileFormat:
 }'
    Masterdata_CreateTemplateFileFormat_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/templatefileformats
+      description: Create a template file format with the input parameter is active as missing
       role: admin
       templateFields: ["description"]
       restMethod: post

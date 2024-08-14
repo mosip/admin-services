@@ -1,6 +1,7 @@
 CreateMachineType:
    Masterdata_CreateMachineType_All_Valid_Smoke:
       endPoint: /v1/masterdata/machinetypes
+      description: Create machine type details with valid data
       role: admin
       templateFields: ["description","name"]
       restMethod: post
@@ -19,6 +20,7 @@ CreateMachineType:
 }'
    Masterdata_CreateMachineType_Invalid_InputParameter_Code_Missing:
       endPoint: /v1/masterdata/machinetypes
+      description: Create machine type details with code parameter as missing
       role: admin
       templateFields: ["description","name"]
       restMethod: post
@@ -42,6 +44,7 @@ CreateMachineType:
 }'
    Masterdata_CreateMachineType_Invalid_InputParameter_Code_Empty:
       endPoint: /v1/masterdata/machinetypes
+      description: Create machine type details with code parameter as empty
       role: admin
       templateFields: ["description","name"]
       restMethod: post
@@ -65,6 +68,7 @@ CreateMachineType:
 }'
    Masterdata_CreateMachineType_InputParameter_Name_Missing:
       endPoint: /v1/masterdata/machinetypes
+      description: Create machine type details with Name parameter as missing
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -88,6 +92,7 @@ CreateMachineType:
 }'
    Masterdata_CreateMachineType_InputParameter_Name_Empty:
       endPoint: /v1/masterdata/machinetypes
+      description: Create machine type details with Name parameter as empty
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -111,6 +116,7 @@ CreateMachineType:
 }'
    Masterdata_CreateMachineType_InputParameter_Name_AboveMaxLen64:
       endPoint: /v1/masterdata/machinetypes
+      description: Create machine type details with Name parameter characters above maximum length 64
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -134,6 +140,7 @@ CreateMachineType:
 }'
    Masterdata_CreateMachineType_InputParameter_Description_AboveMaxLen128:
       endPoint: /v1/masterdata/machinetypes
+      description: Create machine type details with Name parameter description above maximum length 64
       role: admin
       templateFields: ["name"]
       restMethod: post
@@ -157,6 +164,7 @@ CreateMachineType:
 }'
    Masterdata_CreateMachineType_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/machinetypes
+      description: Create machine type details with is active parameter as missing
       role: admin
       restMethod: post
       inputTemplate: masterdata/MachineType/machineType
@@ -180,6 +188,7 @@ CreateMachineType:
 
    Masterdata_CreateMachineType_With_Spacial_Characters_Neg:
       endPoint: /v1/masterdata/machinetypes
+      description: Create machine type details with special characters added in input
       role: admin
       templateFields: ["description","name"]
       restMethod: post
@@ -203,6 +212,7 @@ CreateMachineType:
 
    Masterdata_CreateMachineType_Dublicate_Neg:
       endPoint: /v1/masterdata/machinetypes
+      description: Create machine type details with duplicate details
       role: admin
       templateFields: ["description","name"]
       restMethod: post

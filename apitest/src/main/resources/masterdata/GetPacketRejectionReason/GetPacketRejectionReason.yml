@@ -1,6 +1,7 @@
 GetPacketRejectionReason:
    Masterdata_GetPacketRejectionReason_allValid_smoke:
       endPoint: /v1/masterdata/packetrejectionreasons/{reasoncategorycode}/{langcode}
+      description: Retrieve the packet rejection reason using a valid language code and reason category code
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
@@ -16,6 +17,7 @@ GetPacketRejectionReason:
 }'  
    Masterdata_GetPacketRejectionReason_with_empty_data:
       endPoint: /v1/masterdata/packetrejectionreasons/{reasoncategorycode}/{langcode}
+      description: Retrieve the packet rejection reason without language code and reason category code
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetPacketRejectionReason/getPacketRejectionReason
@@ -34,6 +36,7 @@ GetPacketRejectionReason:
 }'
    Masterdata_GetPacketRejectionReason_Invalid_reasoncategorycode:
       endPoint: /v1/masterdata/packetrejectionreasons/{reasoncategorycode}/{langcode}
+      description: Retrieve the packet rejection reason using a valid language code and invalid reason category code
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetPacketRejectionReason/getPacketRejectionReason
@@ -53,6 +56,7 @@ GetPacketRejectionReason:
 
    Masterdata_GetPacketRejectionReason_Invalid_langcode:
       endPoint: /v1/masterdata/packetrejectionreasons/{reasoncategorycode}/{langcode}
+      description: Retrieve the packet rejection reason using a invalid language code and valid reason category code
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetPacketRejectionReason/getPacketRejectionReason

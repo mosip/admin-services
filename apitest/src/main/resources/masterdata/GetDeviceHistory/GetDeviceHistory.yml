@@ -1,6 +1,7 @@
 GetDeviceHistory:
    Masterdata_GetDeviceHistory_allValid_smoke:
       endPoint: /v1/masterdata/deviceshistories/{id}/{langcode}/{effdatetimes}
+      description: Retrieve device history details based on ID, language code, and effective times
       role: regproc
       templateFields: ["langCode"]
       restMethod: get
