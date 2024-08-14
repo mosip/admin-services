@@ -88,8 +88,6 @@ public class SimplePostForAutoGenId extends AdminTestUtil implements ITest {
 					GlobalConstants.TARGET_ENV_HEALTH_CHECK_FAILED + HealthChecker.healthCheckFailureMapS);
 		}
 		
-
-		
 		String[] templateFields = testCaseDTO.getTemplateFields();
 		String inputJson = "";
 

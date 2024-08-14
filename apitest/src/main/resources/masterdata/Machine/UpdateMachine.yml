@@ -18,7 +18,8 @@ UpdateMachine:
     "validityDateTime":"2021-12-24T05:52:46.758Z",
     "publicKey":"$PUBLICKEY$",
     "signPublicKey":"$PUBLICKEY$",
-    "zoneCode":"$ZONE_CODE$",
+    "zoneCode":"$ID:CreateRegCenter_allValid_smoke_sid_zoneCode$",
+    "regCenterId":"$ID:CreateRegCenter_allValid_smoke_sid_id$",
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
@@ -53,6 +54,7 @@ UpdateMachine:
     "publicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "signPublicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "zoneCode":"$ZONE_CODE$",
+    "regCenterId":"$ID:CreateRegCenter_allValid_smoke_sid_id$",
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
@@ -83,6 +85,7 @@ UpdateMachine:
     "publicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "signPublicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "zoneCode":"BOM",
+    "regCenterId":"$ID:CreateRegCenter_allValid_smoke_sid_id$",
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
@@ -113,6 +116,7 @@ UpdateMachine:
     "publicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "signPublicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "zoneCode":"$ZONE_CODE$",
+    "regCenterId":"$ID:CreateRegCenter_allValid_smoke_sid_id$",
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
@@ -143,6 +147,7 @@ UpdateMachine:
     "publicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "signPublicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "zoneCode":"",
+    "regCenterId":"$ID:CreateRegCenter_allValid_smoke_sid_id$",
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
@@ -173,6 +178,7 @@ UpdateMachine:
     "publicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "signPublicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "zoneCode":"STH",
+    "regCenterId":"$ID:CreateRegCenter_allValid_smoke_sid_id$",
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
@@ -203,6 +209,7 @@ UpdateMachine:
     "publicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "signPublicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "zoneCode":"$ZONE_CODE$",
+    "regCenterId":"$ID:CreateRegCenter_allValid_smoke_sid_id$",
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
@@ -233,6 +240,7 @@ UpdateMachine:
     "publicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "signPublicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "zoneCode":"$ZONE_CODE$",
+    "regCenterId":"$ID:CreateRegCenter_allValid_smoke_sid_id$",
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
@@ -263,6 +271,7 @@ UpdateMachine:
     "publicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "signPublicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "zoneCode":"$ZONE_CODE$",
+    "regCenterId":"$ID:CreateRegCenter_allValid_smoke_sid_id$",
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
@@ -293,6 +302,7 @@ UpdateMachine:
     "publicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "signPublicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "zoneCode":"$ZONE_CODE$",
+    "regCenterId":"$ID:CreateRegCenter_allValid_smoke_sid_id$",
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
@@ -323,6 +333,7 @@ UpdateMachine:
     "publicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "signPublicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "zoneCode":"$ZONE_CODE$",
+    "regCenterId":"$ID:CreateRegCenter_allValid_smoke_sid_id$",
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
@@ -353,6 +364,7 @@ UpdateMachine:
     "publicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "signPublicKey":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPeK0rYSEqIhX1m4X8fk78zEhO7GTdzKE3spKlRqMc2l3fCDu0QjvC55F9saq+7fM8+oz/RDcLWOvsRl+4tLST5s86mKfsTjqmjnmUZTezSz8lb3/8YDl/K9TxOhpxXbYh9hvQ3J9Is7KECTzj1VAmmqc3HCrw/F8wC2T9wsLaIwIDAQAB",
     "zoneCode":"$ZONE_CODE$",
+    "regCenterId":"$ID:CreateRegCenter_allValid_smoke_sid_id$",
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{

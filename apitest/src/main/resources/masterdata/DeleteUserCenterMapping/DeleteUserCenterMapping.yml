@@ -7,7 +7,7 @@ DeleteUserCenterMapping:
       inputTemplate: masterdata/DeleteUserCenterMapping/deleteUserCenterMapping
       outputTemplate: masterdata/DeleteUserCenterMapping/deleteUserCenterMappingResult
       input: '{
-    "id": "func_auto_test_user"
+    "id": "$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$"
 	}'
       output: '{
 }'
