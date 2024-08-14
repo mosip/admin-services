@@ -679,7 +679,7 @@
 	<test name="CreateMachine">
 		<parameter name="ymlFile"
 			value="masterdata/Machine/CreateMachine.yml" />
-		<parameter name="idKeyName" value="id,createdDateTime" />
+		<parameter name="idKeyName" value="id" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
 		</classes>
@@ -701,8 +701,9 @@
 	<test name="SearchMachine">
 		<parameter name="ymlFile"
 			value="masterdata/SearchMachine/SearchMachine.yml" />
+		<parameter name="idKeyName" value="responsetime" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
+			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 	<test name="FilterMachines">
