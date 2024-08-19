@@ -95,7 +95,7 @@ SearchMachine:
    Masterdata_SearchMachine_Valid_ColumnMacAddressNFilterTypeEquals:
       endPoint: /v1/masterdata/machines/search
       role: globalAdmin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachine/searchMachine
       outputTemplate: masterdata/SearchMachine/searchMachineResult
@@ -138,7 +138,7 @@ SearchMachine:
    Masterdata_SearchMachine_Valid_ColumnMacAddressNTypeContains:
       endPoint: /v1/masterdata/machines/search
       role: globalAdmin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachine/searchMachine
       outputTemplate: masterdata/SearchMachine/searchMachineResult
@@ -181,7 +181,7 @@ SearchMachine:
    Masterdata_SearchMachine_Valid_ColumnMacAddressNTypeStartsWith:
       endPoint: /v1/masterdata/machines/search
       role: globalAdmin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachine/searchMachine
       outputTemplate: masterdata/SearchMachine/searchMachineResult
@@ -479,7 +479,7 @@ SearchMachine:
    Masterdata_SearchMachine_Valid_TwoSortFields_DescNDesc:
       endPoint: /v1/masterdata/machines/search
       role: globalAdmin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachine/searchMachine
       outputTemplate: masterdata/SearchMachine/searchMachineResult
