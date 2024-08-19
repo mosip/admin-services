@@ -1,6 +1,7 @@
 SearchDocumentType:
    MasterData_SearchDocumnetType_Valid_Smoke:
       endPoint: /v1/masterdata/documenttypes/search
+      description: Search document type with valid data
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -40,6 +41,7 @@ SearchDocumentType:
 }'  
    MasterData_SearchDocumnetType_Valid_FilterTypeContains:
       endPoint: /v1/masterdata/documenttypes/search
+      description: Search document type with the condition that the filter type contains specified keywords
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -79,6 +81,7 @@ SearchDocumentType:
 }'
    MasterData_SearchDocumnetType_Valid_FilterTypeStartsWith:
       endPoint: /v1/masterdata/documenttypes/search
+      description: Search document type with the condition that the filter type starts with specified keywords
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -118,6 +121,7 @@ SearchDocumentType:
 }'
    MasterData_SearchDocumentType_inValid_columnName_blank:
       endPoint: /v1/masterdata/documenttypes/search
+      description: Search document type with the column name as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -154,6 +158,7 @@ SearchDocumentType:
 }'
    MasterData_SearchDocumentType_inValid_columnName:
       endPoint: /v1/masterdata/documenttypes/search
+      description: Search document type with the invalid column name
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -190,6 +195,7 @@ SearchDocumentType:
 }'
    MasterData_SearchDocumentType_inValid_filter_value:
       endPoint: /v1/masterdata/documenttypes/search
+      description: Search document type with the invalid filter value
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -221,6 +227,7 @@ SearchDocumentType:
 }'
    MasterData_SearchDocumentType_inValid_filter_value_blank:
       endPoint: /v1/masterdata/documenttypes/search
+      description: Search document type with the filter value as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -258,6 +265,7 @@ SearchDocumentType:
    
    MasterData_SearchDocumentType_inValid_sortField:
       endPoint: /v1/masterdata/documenttypes/search
+      description: Search document type with the invalid sort field
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -294,6 +302,7 @@ SearchDocumentType:
 }'
    MasterData_SearchDocumentType_inValid_sortType:
       endPoint: /v1/masterdata/documenttypes/search
+      description: Search document type with the invalid sort type
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -330,6 +339,7 @@ SearchDocumentType:
 }'
    MasterData_SearchDocumentType_inValid_sortField_blank:
       endPoint: /v1/masterdata/documenttypes/search
+      description: Search document type with the sort field as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -366,6 +376,7 @@ SearchDocumentType:
 }'
    MasterData_SearchDocumentType_inValid_sortType_blank:
       endPoint: /v1/masterdata/documenttypes/search
+      description: Search document type with invalid sort type
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -402,6 +413,7 @@ SearchDocumentType:
 }'
    MasterData_SearchDocumentType_inValid_pagesize:
       endPoint: /v1/masterdata/documenttypes/search
+      description: Search document type with invalid page size
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -438,6 +450,7 @@ SearchDocumentType:
 }'
    MasterData_SearchDocumentType_inValid_filterType_blank:
       endPoint: /v1/masterdata/documenttypes/search
+      description: Search document type with the filter type as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -474,6 +487,7 @@ SearchDocumentType:
 }'
    MasterData_SearchDocumentType_inValid_filterType:
       endPoint: /v1/masterdata/documenttypes/search
+      description: Search document type with invalid filter type
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -510,6 +524,7 @@ SearchDocumentType:
 }'
    MasterData_SearchDocumentType_inValid_requestTime_format:
       endPoint: /v1/masterdata/documenttypes/search
+      description: Search document type with invalid request time
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -546,6 +561,7 @@ SearchDocumentType:
 }'
    MasterData_SearchDocumentType_inValid_typeFilter_contains:
       endPoint: /v1/masterdata/documenttypes/search
+      description: Search document type with an invalid type filter contains
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -582,6 +598,7 @@ SearchDocumentType:
 }'
    MasterData_SearchDocumentType_inValid_typeFilter_startsWith:
       endPoint: /v1/masterdata/documenttypes/search
+      description: Search document type with an invalid type filter starts with
       role: admin
       templateFields: ["value"]
       restMethod: post

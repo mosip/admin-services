@@ -1,6 +1,7 @@
 UserCenterMapping:
    MasterData_UserCenterMapping_All_Valid_Smoke_FullResponse_sid:
       endPoint: /v1/masterdata/usercentermapping
+      description: Create user center mapping details with valid data
       role: globalAdmin
       templateFields: ["name"]
       restMethod: post
@@ -25,6 +26,7 @@ UserCenterMapping:
     }'
    MasterData_UserCenterMapping_Invalid_duplicate_entry:
       endPoint: /v1/masterdata/usercentermapping
+      description: Create user center mapping details with the duplicate entry
       role: admin
       templateFields: ["name"]
       restMethod: post
@@ -49,6 +51,7 @@ UserCenterMapping:
 }'
    MasterData_UserCenterMapping_Invalid_InputParameter_regCenterId_Missing:
       endPoint: /v1/masterdata/usercentermapping
+      description: Create user center mapping details with the parameter registration center ID as missing
       role: admin
       templateFields: ["name"]
       restMethod: post
@@ -73,6 +76,7 @@ UserCenterMapping:
 }'
    MasterData_UserCenterMapping_Invalid_InputParameter_Invalid_regCenterId:
       endPoint: /v1/masterdata/usercentermapping
+      description: Create user center mapping details with the parameter registration center ID as invalid
       role: admin
       templateFields: ["name"]
       restMethod: post

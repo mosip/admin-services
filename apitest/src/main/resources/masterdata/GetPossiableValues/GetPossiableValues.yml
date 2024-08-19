@@ -1,6 +1,7 @@
 GetPossiableValues:
    Admin_GetPossiableValues_allValid_smoke:
       endPoint: /v1/masterdata/possiblevalues/{fieldName}?langCode=eng
+      description: Retrieve possible values with valid field name and language code
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -19,6 +20,7 @@ GetPossiableValues:
 
    Admin_GetPossiableValues_Invalid_Invalid_FieldName:
       endPoint: /v1/masterdata/possiblevalues/{fieldName}?langCode=eng
+      description: Retrieve possible values with invalid field name and valid language code
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -38,6 +40,7 @@ GetPossiableValues:
 
    Admin_GetPossiableValues_Invalid_Invalid_langCode:
       endPoint: /v1/masterdata/possiblevalues/{fieldName}?langCode=abc
+      description: Retrieve possible values with valid field name and invalid language code
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

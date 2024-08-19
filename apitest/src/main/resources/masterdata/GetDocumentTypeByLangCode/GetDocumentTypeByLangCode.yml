@@ -1,6 +1,7 @@
 GetDocumentTypeByLangCode:
    Masterdata_GetDocumentTypeByLangCode_allValid_smoke:
       endPoint: /v1/masterdata/documenttypes/{langcode}
+      description: Retrieve document type by valid language code
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -20,6 +21,7 @@ GetDocumentTypeByLangCode:
 
    Masterdata_GetDocumentTypeByLangCode_InValid_langcode:
       endPoint: /v1/masterdata/documenttypes/{langcode}
+      description: Retrieve document type by invalid language code
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetDocumentTypeByLangCode/getDocumentTypeByLangCode

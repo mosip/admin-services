@@ -1,6 +1,7 @@
 GetLanguage:
    Admin_GetLanguage_allValid_smoke:
       endPoint: /v1/masterdata/languages
+      description: Retrieve all the languages list
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

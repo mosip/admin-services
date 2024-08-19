@@ -1,6 +1,7 @@
 TitleSearch:
    MasterData_TitleSearch_Valid_Smoke:
       endPoint: /v1/masterdata/title/search
+      description: Search the title details by valid data
       role: admin
       restMethod: post
       inputTemplate: masterdata/TitleSearch/titleSearch
@@ -25,6 +26,7 @@ TitleSearch:
 }'
    MasterData_TitleSearch_Valid_lang:
       endPoint: /v1/masterdata/title/search
+      description: Search the title details with valid language code
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -56,6 +58,7 @@ TitleSearch:
 }'
    MasterData_TitleSearch_Equals_Name_eng_smoke:
       endPoint: /v1/masterdata/title/search
+      description: Search the title details where the type equals the language code eng
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -91,6 +94,7 @@ TitleSearch:
 }'
    MasterData_TitleSearch_Equals_Name_ara_smoke:
       endPoint: /v1/masterdata/title/search
+      description: Search the title details where the type equals the language code arabic
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -126,6 +130,7 @@ TitleSearch:
 }'
    MasterData_TitleSearch_Invalid_Value_Name_neg:
       endPoint: /v1/masterdata/title/search
+      description: Search the title details with invalid name parameter
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -155,6 +160,7 @@ TitleSearch:
 }'
    MasterData_TitleSearch_InvalidPageFetch_neg:
       endPoint: /v1/masterdata/title/search
+      description: Search the title details with invalid page fetch parameter
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -189,6 +195,7 @@ TitleSearch:
 }'
    MasterData_TitleSearch_InvalidPageStart_neg:
       endPoint: /v1/masterdata/title/search
+      description: Search the title details with invalid page start parameter
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -223,6 +230,7 @@ TitleSearch:
 }'
    MasterData_TitleSearch_Invalid_FilterType_neg:
       endPoint: /v1/masterdata/title/search
+      description: Search the title details with invalid filter type
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -257,6 +265,7 @@ TitleSearch:
 }'
    MasterData_TitleSearch_Invalid_SortType_neg:
       endPoint: /v1/masterdata/title/search
+      description: Search the title details with invalid sort type
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -291,6 +300,7 @@ TitleSearch:
 }'
    MasterData_TitleSearch_Invalid_SortField_neg:
       endPoint: /v1/masterdata/title/search
+      description: Search the title details with invalid sort field
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -326,6 +336,7 @@ TitleSearch:
    
    MasterData_TitleSearch_Blank_SortField_pos:
       endPoint: /v1/masterdata/title/search
+      description: Search the title details with sort field and blank
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -360,6 +371,7 @@ TitleSearch:
 }'
    MasterData_TitleSearch_Invalid_ColumnName_neg:
       endPoint: /v1/masterdata/title/search
+      description: Search the title details with invalid column name
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -394,6 +406,7 @@ TitleSearch:
 }'
    MasterData_TitleSearch_Invalid_RequestTime_neg:
       endPoint: /v1/masterdata/title/search
+      description: Search the title details with invalid request time
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -428,6 +441,7 @@ TitleSearch:
 }'
    MasterData_TitleSearch_Contains_Name_eng_pos:
       endPoint: /v1/masterdata/title/search
+      description: Search the title details with the parameter name contains with specific keyword and the language code as English
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -463,6 +477,7 @@ TitleSearch:
 }'
    MasterData_TitleSearch_StartsWith_Name_eng_pos:
       endPoint: /v1/masterdata/title/search
+      description: Search the title details with the parameter name starts with specific keyword and the language code as English
       role: admin
       templateFields: ["value"]
       restMethod: post

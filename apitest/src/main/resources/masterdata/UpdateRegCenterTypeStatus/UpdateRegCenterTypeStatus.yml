@@ -1,6 +1,7 @@
 UpdateRegCenterTypeStatus:
    MasterData_UpdateRegCenterTypeStatus_All_Valid_Smoke:  
       endPoint: /v1/masterdata/registrationcentertypes?isActive={isActive}&code={code}
+      description: Update registration center type status details with valid data
       role: admin
       restMethod: patch
       inputTemplate: masterdata/UpdateRegCenterTypeStatus/updateRegCenterTypeStatus

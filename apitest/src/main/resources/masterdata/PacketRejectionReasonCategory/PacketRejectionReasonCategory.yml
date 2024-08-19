@@ -1,6 +1,7 @@
 PacketRejectionReasonCategory:
    MasterData_PacketRejectionReasonCategory_All_Valid_Smoke:
       endPoint: /v1/masterdata/packetrejectionreasons/reasoncategory
+      description: Create packer rejection reason category with valid data
       role: admin
       templateFields: ["langCode"]
       restMethod: post
@@ -20,6 +21,7 @@ PacketRejectionReasonCategory:
 
    MasterData_PacketRejectionReasonCategory_Invalid_langCode:
       endPoint: /v1/masterdata/packetrejectionreasons/reasoncategory
+      description: Create packer rejection reason category with invalid language code
       role: admin
       restMethod: get
       inputTemplate: masterdata/PacketRejectionReasonCategory/packetRejectionReasonCategory
