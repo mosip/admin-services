@@ -6,7 +6,7 @@ CREATE TABLE master.app_detail(
 	id character varying(36) NOT NULL,
 	name character varying(64) NOT NULL,
 	descr character varying(256),
-	lang_code character varying(3) NOT NULL,
+	lang_code character varying(3),
 	is_active boolean NOT NULL,
 	cr_by character varying(256) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE master.app_detail(
 	upd_dtimes timestamp,
 	is_deleted boolean DEFAULT FALSE,
 	del_dtimes timestamp,
-	CONSTRAINT pk_appdtl_id PRIMARY KEY (id,lang_code)
+	CONSTRAINT pk_appdtl_id PRIMARY KEY (id)
 
 );
 
