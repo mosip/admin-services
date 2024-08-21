@@ -1,14 +1,14 @@
 FetchValidDocuments:
    MasterData_FetchValidDocuments_allValid_smoke_with_lang:
-      endPoint: /v1/masterdata/validdocuments/{languagecode}
+      endPoint: /v1/masterdata/validdocuments/{languageCode}
       role: admin
       checkErrorsOnlyInResponse: true
-      templateFields: ["languagecode"]
+      templateFields: ["languageCode"]
       restMethod: get
       inputTemplate: masterdata/FetchValidDocuments/fetchValidDocuments
       outputTemplate: masterdata/FetchValidDocuments/fetchValidDocumentsResult
       input: '{
-  "languagecode": "eng"
+  "languageCode": "eng"
 }'
       output: '{
 "documentcategories": [

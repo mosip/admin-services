@@ -44,7 +44,7 @@ CreateTemplateFileFormat:
       endPoint: /v1/masterdata/templatefileformats
       description: Create a template file format with the input parameter description as missing
       role: admin
-      templateFields: ["description"]
+      templateFields: ["langCode"]
       restMethod: post
       inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
       outputTemplate: masterdata/error

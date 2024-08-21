@@ -3,7 +3,7 @@ SearchMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/search
       description: Search for machine spec details where the name parameter equals the specified condition
       role: admin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
@@ -44,7 +44,7 @@ SearchMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/search
       description: Search for machine spec details sorted in descending order
       role: admin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
@@ -83,7 +83,7 @@ SearchMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/search
       description: Search for machine spec details with condition column as model
       role: admin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
@@ -122,7 +122,7 @@ SearchMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/search
       description: Search for machine spec details with condition column as brand
       role: admin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
@@ -162,7 +162,7 @@ SearchMachineSpec:
       description: Search for machine spec details with condition column as is active
       role: admin
       checkErrorsOnlyInResponse: true
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
@@ -191,7 +191,7 @@ SearchMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/search
       description: Search for machine spec details where the condition column name is name and the filter type is starts with
       role: admin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
@@ -230,7 +230,7 @@ SearchMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/search
       description: Search for machine spec details where the condition column name is name and the filter type is contains
       role: admin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
@@ -549,7 +549,7 @@ SearchMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/search
       description: Search for machine spec details with invalid page size
       role: admin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/error
