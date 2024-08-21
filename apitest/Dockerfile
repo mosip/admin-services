@@ -1,4 +1,4 @@
-FROM openjdk:23-ea-30-jdk-oraclelinux8
+FROM openjdk:11
 
 ARG SOURCE
 ARG COMMIT_HASH
