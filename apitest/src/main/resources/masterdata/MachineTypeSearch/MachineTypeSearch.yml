@@ -3,7 +3,7 @@ MachineTypeSearch:
       endPoint: /v1/masterdata/machinetypes/search
       description: Search for machine type with the condition that the name equals English
       role: admin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/MachineTypeSearch/machineTypeSearch
       outputTemplate: masterdata/MachineTypeSearch/machineTypeSearchResult
