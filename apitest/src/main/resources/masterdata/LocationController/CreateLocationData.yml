@@ -1,10 +1,10 @@
 CreateLocationData:
-   MasterData_CreateLocationData_All_Valid_Smoke_Sid:
+   MasterData_CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid:
       endPoint: /v1/masterdata/locations
       description: Creating location data with valid details
       role: admin
       checkErrorsOnlyInResponse: true
-      templateFields: ["name","langCode"]
+      templateFields: ["name"]
       restMethod: post
       inputTemplate: masterdata/LocationController/locationData
       outputTemplate: masterdata/LocationController/locationDataResult
