@@ -1,6 +1,7 @@
 UpdateTemplateFileFormatStatus:
    MasterData_UpdateTemplateFileFormatStatus_All_Valid_Smoke:  
       endPoint: /v1/masterdata/templatefileformats?isActive={isActive}&code={code}
+      description: Update template file format status details with valid data
       role: admin
       restMethod: patch
       inputTemplate: masterdata/UpdateTemplateFileFormatStatus/updateTemplateFileFormatStatus
@@ -14,6 +15,7 @@ UpdateTemplateFileFormatStatus:
 }'
    MasterData_UpdateTemplateFileFormatStatus_Invalid_word:  
       endPoint: /v1/masterdata/templatefileformats?isActive={isActive}&code={code}
+      description: Update template file format status details with invalid word
       role: admin
       restMethod: patch
       inputTemplate: masterdata/UpdateTemplateFileFormatStatus/updateTemplateFileFormatStatus

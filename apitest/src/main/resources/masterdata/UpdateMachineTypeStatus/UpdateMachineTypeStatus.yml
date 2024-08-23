@@ -1,6 +1,7 @@
 UpdateMachineTypeStatus:
    MasterData_UpdateMachineTypeStatus_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/machinetypes
+      description: Update machine type status details with valid data
       role: admin
       templateFields: []
       restMethod: patch

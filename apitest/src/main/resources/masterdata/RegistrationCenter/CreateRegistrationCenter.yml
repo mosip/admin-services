@@ -1,6 +1,7 @@
 CreateRegistrationCenter:
    MasterData_CreateRegCenter_allValid_smoke_sid:
       endPoint: /v1/masterdata/registrationcenters
+      description: Create registration center with valid details
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["addressLine1","addressLine2","addressLine3","langCode"]
@@ -42,6 +43,7 @@ CreateRegistrationCenter:
 }'   
    MasterData_CreateRegCenter_Invalid_HolidayLocationCode_blank_eng:
       endPoint: /v1/masterdata/registrationcenters
+      description: Create a registration center with holiday location code as empty and language code set to English
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone"]
       restMethod: post
@@ -86,6 +88,7 @@ CreateRegistrationCenter:
    
    MasterData_CreateRegCenter_Invalid_latitude_blank_eng:
       endPoint: /v1/masterdata/registrationcenters
+      description: Create a registration center with latitude as empty and language code set to English
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone"]
       restMethod: post
@@ -129,6 +132,7 @@ CreateRegistrationCenter:
 }'
    MasterData_CreateRegCenter_Invalid_latitude_eng:
       endPoint: /v1/masterdata/registrationcenters
+      description: Create a registration center with invalid latitude and language code set to English
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone"]
       restMethod: post
@@ -173,6 +177,7 @@ CreateRegistrationCenter:
 
    MasterData_CreateRegCenter_Blank_NumberOfKiosks_Neg:
       endPoint: /v1/masterdata/registrationcenters
+      description: Create a registration center with number of kiosks as empty and language code set to English
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone","langCode"]
       restMethod: post
@@ -220,6 +225,7 @@ CreateRegistrationCenter:
 
    MasterData_CreateRegCenter_Negavtive_NumberOfKiosks_Neg:
       endPoint: /v1/masterdata/registrationcenters
+      description: Create a registration center with holiday location code as negative value and language code set to English
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone","langCode"]
       restMethod: post

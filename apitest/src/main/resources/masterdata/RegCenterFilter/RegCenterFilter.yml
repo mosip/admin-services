@@ -1,6 +1,7 @@
 RegCenterFilter:
    MasterData_RegCenterFilter_Name_eng_Unique_smoke:
       endPoint: /v1/masterdata/registrationcenters/filtervalues
+      description: Filter the registration center by name, language set to English, and type as unique
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -20,6 +21,7 @@ RegCenterFilter:
   }'    
    MasterData_RegCenterFilter_Name_eng_All_smoke:
       endPoint: /v1/masterdata/registrationcenters/filtervalues
+      description: Filter the registration center by name, language set to English, and type as all
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -40,6 +42,7 @@ RegCenterFilter:
       
    MasterData_RegCenterFilter_Invalid_RequestTime:
       endPoint: /v1/masterdata/registrationcenters/filtervalues
+      description: Filter the registration center with invalid request time
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -65,6 +68,7 @@ RegCenterFilter:
        
    MasterData_RegCenterFilter_inValid_columnName:
       endPoint: /v1/masterdata/registrationcenters/filtervalues
+      description: Filter the registration center with invalid column name
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]

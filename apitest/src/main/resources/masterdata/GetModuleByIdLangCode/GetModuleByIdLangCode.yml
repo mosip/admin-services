@@ -1,6 +1,7 @@
 GetModuleByIdLangCode:
    Admin_GetModuleByIdLangCode_allValid_smoke:
       endPoint: /v1/masterdata/modules/{id}/{langcode}
+      description: Retrieve module details by by valid ID and language code
       role: admin
       templateFields: ["langcode"]
       restMethod: get
@@ -22,6 +23,7 @@ GetModuleByIdLangCode:
 
    Admin_GetModuleByIdLangCode_Invalid_Invalid_langcode:
       endPoint: /v1/masterdata/modules/{id}/{langcode}
+      description: Retrieve module details by by valid ID and invalid language code
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetModuleByIdLangCode/getModuleByIdLangCode
@@ -41,6 +43,7 @@ GetModuleByIdLangCode:
 
    Admin_GetModuleByIdLangCode_Invalid_Invalid_lD:
       endPoint: /v1/masterdata/modules/{id}/{langcode}
+      description: Retrieve module details by by invalid ID and valid language code
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetModuleByIdLangCode/getModuleByIdLangCode
