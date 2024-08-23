@@ -47,6 +47,7 @@ public class MosipTestRunner {
 
 	public static String jarUrl = MosipTestRunner.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 	public static List<String> languageList = new ArrayList<>();
+	public static List<String> localLanguageList;
 
 	/**
 	 * C Main method to start mosip test execution
@@ -83,7 +84,7 @@ public class MosipTestRunner {
 			KeycloakUserManager.createUsers();
 			KeycloakUserManager.closeKeycloakInstance();
 
-			List<String> localLanguageList = new ArrayList<>(BaseTestCase.getLanguageList());
+			localLanguageList = new ArrayList<>(BaseTestCase.getLanguageList());
 			AdminTestUtil.getLocationData();
 
 			AdminTestUtil.getHierarchyZoneCode();

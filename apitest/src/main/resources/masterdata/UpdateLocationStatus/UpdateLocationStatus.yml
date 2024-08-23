@@ -6,7 +6,7 @@ UpdateLocationStatus:
       inputTemplate: masterdata/UpdateLocationStatus/updateLocationStatus
       outputTemplate: masterdata/UpdateLocationStatus/updateLocationStatusResult
       input: '{
-  "code": "$ID:CreateLocationData_All_Valid_Smoke_Sid_code$",
+  "code": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_code$",
   "isActive": "true"
 }'
       output: '{

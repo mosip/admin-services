@@ -252,8 +252,8 @@ FetchRegCent:
   "registrationcenterid": "$REMOVE$",
   "year": "$REMOVE$",
   "id": "$REMOVE$",
-  "hierarchylevel": "$ID:CreateLocationData_All_Valid_Smoke_Sid_hierarchyLevel$",
-  "name": "$ID:CreateLocationData_All_Valid_Smoke_Sid_name$",
+  "hierarchylevel": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_hierarchyLevel$",
+  "name": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_name$",
   "zonecode": "$REMOVE$",
   "timestamp": "$REMOVE$"
 }'
@@ -335,8 +335,8 @@ FetchRegCent:
   "registrationcenterid": "$REMOVE$",
   "year": "$REMOVE$",
   "id": "$REMOVE$",
-  "hierarchylevel": "$ID:CreateLocationData_All_Valid_Smoke_Sid_hierarchyLevel$",
-  "name": "$ID:CreateLocationData_All_Valid_Smoke_Sid_name$",
+  "hierarchylevel": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_hierarchyLevel$",
+  "name": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_name$",
   "zonecode": "$REMOVE$",
   "timestamp": "$REMOVE$"
 }'
@@ -492,8 +492,8 @@ FetchRegCent:
   "registrationcenterid": "$REMOVE$",
   "year": "$REMOVE$",
   "id": "$REMOVE$",
-  "hierarchylevel": "$ID:CreateLocationData_All_Valid_Smoke_Sid_hierarchyLevel$",
-  "name": "$ID:CreateLocationData_All_Valid_Smoke_Sid_name$",
+  "hierarchylevel": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_hierarchyLevel$",
+  "name": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_name$",
   "zonecode": "$REMOVE$",
   "timestamp": "$REMOVE$"
 }'

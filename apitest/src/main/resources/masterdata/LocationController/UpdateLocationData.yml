@@ -7,7 +7,7 @@ UpdateLocationData:
       inputTemplate: masterdata/LocationController/locationData
       outputTemplate: masterdata/LocationController/locationDataResult
       input: '{
-    "code": "$ID:CreateLocationData_All_Valid_Smoke_Sid_code$",
+    "code": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_code$",
     "name": "Test_Loc_A_updated_",
     "hierarchyLevel": "$HIERARCHYLEVEL$",
     "hierarchyName": "$HIERARCHYNAME$",
