@@ -1,7 +1,9 @@
 SearchBlockListedWords:
    Masterdata_SearchBlockListedWords_Valid_Request_Smoke:
       endPoint: /v1/masterdata/blocklistedwords/search
+      description: Search blocklisted words where the column name word equals dumboo
       role: admin
+      checkErrorsOnlyInResponse: true
       templateFields: ["value"]
       restMethod: post
       inputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWords
@@ -32,13 +34,15 @@ SearchBlockListedWords:
      {
         "isActive": "$IGNORE$",
         "description": "$IGNORE$",
-        "word": "dumbooo"
+        "word": "$IGNORE$"
       }
     ]
 }'
    Masterdata_SearchBlockListedWords_Valid_FilterTypeContains:
       endPoint: /v1/masterdata/blocklistedwords/search
+      description: Search blocklisted words with filter type contains the value as dumboo
       role: admin
+      checkErrorsOnlyInResponse: true
       templateFields: ["value"]
       restMethod: post
       inputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWords
@@ -69,13 +73,15 @@ SearchBlockListedWords:
      {
         "isActive": "$IGNORE$",
         "description": "$IGNORE$",
-        "word": "dumbooo"
+        "word": "$IGNORE$"
       }
     ]
 }'
    Masterdata_SearchBlockListedWords_Valid_FilterTypeStartsWith:
       endPoint: /v1/masterdata/blocklistedwords/search
+      description: Search blocklisted words with filter type starts with the value as dumboo
       role: admin
+      checkErrorsOnlyInResponse: true
       templateFields: ["value"]
       restMethod: post
       inputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWords
@@ -106,12 +112,13 @@ SearchBlockListedWords:
      {
         "isActive": "$IGNORE$",
         "description": "$IGNORE$",
-        "word": "dumbooo"
+        "word": "$IGNORE$"
       }
     ]
 }'
    Masterdata_SearchBlockListedWords_Invalid_ColumnName:
       endPoint: /v1/masterdata/blocklistedwords/search
+      description: Search blocklisted words with invalid column name
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -148,7 +155,9 @@ SearchBlockListedWords:
 }'
    Masterdata_SearchBlockListedWords_Valid_SortFieldDESC:
       endPoint: /v1/masterdata/blocklistedwords/search
+      description: Search blocklisted words with sort field as descending order
       role: admin
+      checkErrorsOnlyInResponse: true
       templateFields: ["value"]
       restMethod: post
       inputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWords
@@ -179,12 +188,13 @@ SearchBlockListedWords:
      {
         "isActive": "$IGNORE$",
         "description": "$IGNORE$",
-        "word": "dumbooo"
+        "word": "$IGNORE$"
       }
     ]
 }'
    Masterdata_SearchBlockListedWords_Invalid_SortField:
       endPoint: /v1/masterdata/blocklistedwords/search
+      description: Search blocklisted words with the sort field set to an invalid descending order
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -221,6 +231,7 @@ SearchBlockListedWords:
 }'
    Masterdata_SearchBlockListedWords_Invalid_EmptyFilterType:
       endPoint: /v1/masterdata/blocklistedwords/search
+      description: Search blocklisted words with the empty filter type
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -257,6 +268,7 @@ SearchBlockListedWords:
 }'
    Masterdata_SearchBlockListedWords_Invalid_EmptyColumn:
       endPoint: /v1/masterdata/blocklistedwords/search
+      description: Search blocklisted words with the empty column
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -293,6 +305,7 @@ SearchBlockListedWords:
 }'
    Masterdata_SearchBlockListedWords_Invalid_PageStart:
       endPoint: /v1/masterdata/blocklistedwords/search
+      description: Search blocklisted words with the invalid page start data
       role: admin
       templateFields: ["value"]
       restMethod: post

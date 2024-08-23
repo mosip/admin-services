@@ -1,6 +1,7 @@
 UpdateRegistrationCenterNonLanguage:
    MasterData_UpdateRegistrationCenterNonLanguage_Smoke:  
       endPoint: /v1/masterdata/registrationcenters/nonlanguage
+      description: Update registration center non language details with valid data
       role: admin
       templateFields: ["contactPerson","name"]
       restMethod: put

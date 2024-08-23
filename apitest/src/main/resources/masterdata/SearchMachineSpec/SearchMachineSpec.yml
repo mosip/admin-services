@@ -1,8 +1,9 @@
 SearchMachineSpec:
    Masterdata_SearchMachineSpec_Equals_Name_eng_smoke:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details where the name parameter equals the specified condition
       role: admin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
@@ -41,8 +42,9 @@ SearchMachineSpec:
 }'
    Masterdata_SearchMachineSpec_Valid_sortType_DESC:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details sorted in descending order
       role: admin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
@@ -79,8 +81,9 @@ SearchMachineSpec:
 }'
    Masterdata_SearchMachineSpec_Valid_col_as_Model:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details with condition column as model
       role: admin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
@@ -117,8 +120,9 @@ SearchMachineSpec:
 }'
    Masterdata_SearchMachineSpec_Valid_col_as_Brand:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details with condition column as brand
       role: admin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
@@ -155,9 +159,10 @@ SearchMachineSpec:
 }'
    Masterdata_SearchMachineSpec_Valid_col_as_isActive:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details with condition column as is active
       role: admin
       checkErrorsOnlyInResponse: true
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
@@ -184,8 +189,9 @@ SearchMachineSpec:
 }'
    Masterdata_SearchMachineSpec_Valid_col_as_Name_FltrTyp_startsWith:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details where the condition column name is name and the filter type is starts with
       role: admin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
@@ -222,8 +228,9 @@ SearchMachineSpec:
 }'
    Masterdata_SearchMachineSpec_Valid_col_as_Name_FltrTyp_contains:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details where the condition column name is name and the filter type is contains
       role: admin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
@@ -260,6 +267,7 @@ SearchMachineSpec:
 }'
    Masterdata_SearchMachineSpec_inValid_columnName_blank:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details with column name as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -294,6 +302,7 @@ SearchMachineSpec:
 }'
    Masterdata_SearchMachineSpec_inValid_columnName:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details with invalid column name
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -328,6 +337,7 @@ SearchMachineSpec:
 }'
    Masterdata_SearchMachineSpec_inValid_filter_value:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details with invalid filter value
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -362,6 +372,7 @@ SearchMachineSpec:
 }'
    Masterdata_SearchMachineSpec_inValid_filter_value_blank:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details with filter value as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -396,6 +407,7 @@ SearchMachineSpec:
 }'
    Masterdata_SearchMachineSpec_inValid_sortField:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details with invalid sort field
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -430,6 +442,7 @@ SearchMachineSpec:
 }'
    Masterdata_SearchMachineSpec_inValid_sortType:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details with invalid sort type
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -464,6 +477,7 @@ SearchMachineSpec:
 }'
    Masterdata_SearchMachineSpec_inValid_sortField_blank:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details with sort field as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -498,6 +512,7 @@ SearchMachineSpec:
 }'
    Masterdata_SearchMachineSpec_inValid_sortType_blank:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details with sort type as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -532,8 +547,9 @@ SearchMachineSpec:
 }'
    Masterdata_SearchMachineSpec_inValid_pagesize:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details with invalid page size
       role: admin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/error
@@ -566,6 +582,7 @@ SearchMachineSpec:
 }'
    Masterdata_SearchMachineSpec_inValid_filterType_blank:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details with filter type as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -600,6 +617,7 @@ SearchMachineSpec:
 }'
    Masterdata_SearchMachineSpec_inValid_filterType:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details with invalid filter type
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -634,6 +652,7 @@ SearchMachineSpec:
 }'
    Masterdata_SearchMachineSpec_inValid_requestTime_format:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details with invalid request time format
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -668,6 +687,7 @@ SearchMachineSpec:
 }'
    Masterdata_SearchMachineSpec_inValid_typeFilter_contains:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details with an invalid condition where the type filter contains specific criteria
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -702,6 +722,7 @@ SearchMachineSpec:
 }'
    Masterdata_SearchMachineSpec_inValid_typeFilter_startsWith:
       endPoint: /v1/masterdata/machinespecifications/search
+      description: Search for machine spec details with an invalid condition where the type filter starts with specific criteria
       role: admin
       templateFields: ["value"]
       restMethod: post

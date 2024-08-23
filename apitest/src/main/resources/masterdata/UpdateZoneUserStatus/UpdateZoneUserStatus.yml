@@ -1,13 +1,14 @@
 UpdateZoneUserStatus:
    MasterData_UpdateZoneUserStatus_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/zoneuser?isActive={isActive}&userId={userId}
+      description: Update zone user status details with valid data
       role: admin
       templateFields: []
       restMethod: patch
       inputTemplate: masterdata/UpdateZoneUserStatus/updateZoneUserStatus
       outputTemplate: masterdata/UpdateZoneUserStatus/updateZoneUserStatusResult
       input: '{
-    "userId": "func_auto_test_user",
+    "userId": "$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$",
     "isActive": "true"
 }'
       output: '{

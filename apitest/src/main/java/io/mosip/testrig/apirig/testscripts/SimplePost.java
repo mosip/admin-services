@@ -87,7 +87,6 @@ public class SimplePost extends AdminTestUtil implements ITest {
 		}
 
 		String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
-		
 
 		if (testCaseDTO.getTemplateFields() != null && templateFields.length > 0) {
 			ArrayList<JSONObject> inputtestCases = AdminTestUtil.getInputTestCase(testCaseDTO);
@@ -108,17 +107,15 @@ public class SimplePost extends AdminTestUtil implements ITest {
 			}
 		}
 
-		
-			else {
-				response = postWithBodyAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson, auditLogCheck,
-						COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
-			}
+		else {
+			response = postWithBodyAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson, auditLogCheck, COOKIENAME,
+					testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
+
 			Map<String, List<OutputValidationDto>> ouputValid = null;
-			
-				ouputValid = OutputValidationUtil.doJsonOutputValidation(response.asString(),
-						getJsonFromTemplate(testCaseDTO.getOutput(), testCaseDTO.getOutputTemplate()), testCaseDTO,
-						response.getStatusCode());
-			
+
+			ouputValid = OutputValidationUtil.doJsonOutputValidation(response.asString(),
+					getJsonFromTemplate(testCaseDTO.getOutput(), testCaseDTO.getOutputTemplate()), testCaseDTO,
+					response.getStatusCode());
 
 			Reporter.log(ReportUtil.getOutputValidationReport(ouputValid));
 
@@ -130,8 +127,7 @@ public class SimplePost extends AdminTestUtil implements ITest {
 					throw new AdminTestException("Failed at otp output validation");
 			}
 		}
-
-	
+	}
 
 	/**
 	 * The method ser current test name to result

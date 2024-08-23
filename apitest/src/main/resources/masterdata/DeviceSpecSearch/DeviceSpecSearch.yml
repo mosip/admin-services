@@ -218,9 +218,9 @@ DeviceSpecSearch:
       input: '{
     "filters": [
       {
-        "columnName": "name",
+        "columnName": "isActive",
         "type": "equals",
-        "value": "Camera",
+        "value": "true",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }

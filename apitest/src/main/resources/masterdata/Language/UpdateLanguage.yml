@@ -1,6 +1,7 @@
 UpdateLanguage:
    Masterdata_UpdateLanguage_All_Valid_Smoke:
       endPoint: /v1/masterdata/languages
+      description: Update the language with valid details
       role: admin
       restMethod: put
       inputTemplate: masterdata/Language/Updatelanguage

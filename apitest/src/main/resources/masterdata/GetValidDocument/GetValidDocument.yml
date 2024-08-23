@@ -1,6 +1,7 @@
 GetValidDocument:
    MasterData_GetValidDocument_allValid_smoke:
       endPoint: /v1/masterdata/validdocuments/{docCategoryCode}/{langCode}
+      description: Retrieve valid document details by document category code and valid language code
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

@@ -1,6 +1,7 @@
 ValidDocumentUnMap:
    MasterData_ValidDocumentUnMap_allValid_smoke:
       endPoint: /v1/masterdata/validdocuments/unmap/{doccategorycode}/{doctypecode}
+      description: Update the document Map details with valid document category code and document type code
       role: admin
       restMethod: put
       inputTemplate: masterdata/ValidDocumentUnMap/validDocumentUnMap
@@ -16,6 +17,7 @@ ValidDocumentUnMap:
 
    MasterData_ValidDocumentUnMap_Invalid_InputParameter_docCategoryCode:
       endPoint: /v1/masterdata/validdocuments/unmap/{doccategorycode}/{doctypecode}
+      description: Update the document Map details with invalid document category code and valid document type code
       role: admin
       restMethod: put
       inputTemplate: masterdata/ValidDocumentUnMap/validDocumentUnMap
@@ -35,6 +37,7 @@ ValidDocumentUnMap:
 
    MasterData_ValidDocumentUnMap_Invalid_InputParameter_doctypecode:
       endPoint: /v1/masterdata/validdocuments/unmap/{doccategorycode}/{doctypecode}
+      description: Update the document Map details with valid document category code and invalid document type code
       role: admin
       restMethod: put
       inputTemplate: masterdata/ValidDocumentUnMap/validDocumentUnMap

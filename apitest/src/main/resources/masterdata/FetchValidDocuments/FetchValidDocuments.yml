@@ -4,12 +4,12 @@ FetchValidDocuments:
       description: Retrieve valid Documents By languagecode with all valid data
       role: admin
       checkErrorsOnlyInResponse: true
-      templateFields: ["languagecode"]
+      templateFields: ["languageCode"]
       restMethod: get
       inputTemplate: masterdata/FetchValidDocuments/fetchValidDocuments
       outputTemplate: masterdata/FetchValidDocuments/fetchValidDocumentsResult
       input: '{
-  "languagecode": "eng"
+  "languageCode": "eng"
 }'
       output: '{
 "documentcategories": [
