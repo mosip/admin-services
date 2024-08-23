@@ -1,6 +1,7 @@
 GetApplicationTypeByCodeAndLangcode:
    Masterdata_GetApplicationTypeByCodeAndLangcode_allValid_AAA_smoke:
       endPoint: /v1/masterdata/applicationtypes/{code}/{langCode}
+      description: Retrieve Application Types By valid code and langcode
       role: admin
       templateFields: ["langCode"]
       restMethod: get
@@ -15,6 +16,7 @@ GetApplicationTypeByCodeAndLangcode:
 }'
    Masterdata_GetApplicationTypeByCodeAndLangcode_InValid_Code:
       endPoint: /v1/masterdata/applicationtypes/{code}/{langCode}
+      description: Retrieve Application Types By invalid code and valid langcode
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetApplicationTypeByCodeAndLangcode/getApplicationTypeByCodeAndLangcode
@@ -33,6 +35,7 @@ GetApplicationTypeByCodeAndLangcode:
 }'
    Masterdata_GetApplicationTypeByCodeAndLangcode_InValid_langCode:
       endPoint: /v1/masterdata/applicationtypes/{code}/{langCode}
+      description: Retrieve Application Types By valid code and invalid langcode
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetApplicationTypeByCodeAndLangcode/getApplicationTypeByCodeAndLangcode

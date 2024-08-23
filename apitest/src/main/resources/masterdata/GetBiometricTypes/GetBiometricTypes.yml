@@ -1,7 +1,7 @@
 GetBiometricTypes:
    Masterdata_GetBiometricTypes_allValid_smoke:
       endPoint: /v1/masterdata/biometrictypes
-      description: Retrieve all the biometric data
+      description: Fetch Biometric Types with all valid data 
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

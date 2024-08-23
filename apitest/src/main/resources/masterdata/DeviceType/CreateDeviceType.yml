@@ -1,6 +1,7 @@
 CreateDeviceType:
    MasterData_CreateDeviceType_All_Valid_Smoke:
       endPoint: /v1/masterdata/devicetypes
+      description: Create Device Type with all valid data
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -20,6 +21,7 @@ CreateDeviceType:
 
    MasterData_CreateDeviceType_TO_verify_Deactivation:
       endPoint: /v1/masterdata/devicetypes
+      description: Create Device Type for deactivated devices
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -38,6 +40,7 @@ CreateDeviceType:
 }'
    MasterData_CreateDeviceType_All_Valid_Mandatory_Fields:
       endPoint: /v1/masterdata/devicetypes
+      description: Create Device Type with all mandatory fields
       role: admin
       templateFields: ["description","name"]
       restMethod: post
@@ -57,6 +60,7 @@ CreateDeviceType:
 
    MasterData_CreateDeviceType_Dublicate_Device_Neg:
       endPoint: /v1/masterdata/devicetypes
+      description: Create Device Type with duplicate data
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -80,6 +84,7 @@ CreateDeviceType:
 }'
    MasterData_CreateDeviceType_InputParameter_Name_Missing:
       endPoint: /v1/masterdata/devicetypes
+      description: Create Device Type with missing Input Parameter name
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -103,6 +108,7 @@ CreateDeviceType:
 }'
    MasterData_CreateDeviceType_InputParameter_Name_Empty:
       endPoint: /v1/masterdata/devicetypes
+      description: Create Device Type with empty Input Parameter name
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -126,6 +132,7 @@ CreateDeviceType:
 }'
    MasterData_CreateDeviceType_InputParameter_Name_AboveMaxLen64:
       endPoint: /v1/masterdata/devicetypes
+      description: Create Device Type with name more than 64 characters
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -149,6 +156,7 @@ CreateDeviceType:
 }'
    MasterData_CreateDeviceType_InputParameter_Description_AboveMaxLen128:
       endPoint: /v1/masterdata/devicetypes
+      description: Create Device Type with description more than 128 characters
       role: admin
       templateFields: ["name"]
       restMethod: post
@@ -172,6 +180,7 @@ CreateDeviceType:
 }'
    MasterData_CreateDeviceType_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/devicetypes
+      description: Create Device Type with missing Input Parameter isActive
       role: admin
       restMethod: post
       inputTemplate: masterdata/DeviceType/deviceType
@@ -195,6 +204,7 @@ CreateDeviceType:
 
    MasterData_CreateDeviceType_Spacial_Character_Neg:
       endPoint: /v1/masterdata/devicetypes
+      description: Create Device Type with special characters in code
       role: admin
       templateFields: ["description","name"]
       restMethod: post
