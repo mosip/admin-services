@@ -1,6 +1,7 @@
 FetchAllValidDocuments:
    MasterData_FetchAllValidDocuments_valid_smoke:
       endPoint: /v1/masterdata/validdocuments/all
+      description: Retrieve All Valid Document details with valid data
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

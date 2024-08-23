@@ -1,6 +1,7 @@
 DeleteMachineSpec:
    MasterData_DeleteMachineSpec_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/machinespecifications/{id}
+      description: Delete Machine Spec with valid data
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: []
@@ -14,6 +15,7 @@ DeleteMachineSpec:
 }'
    MasterData_DeleteMachineSpec_Invalid_ID: 
       endPoint: /v1/masterdata/machinespecifications/{id}
+      description: Delete Machine Spec with invalid id
       role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteMachine/deleteMachine

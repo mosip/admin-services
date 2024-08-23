@@ -1,6 +1,7 @@
 FilterLocationData:
    MasterData_FilterLocationData_Valid_Smoke:
       endPoint: /v1/masterdata/locations/filtervalues
+      description: Filter Location details by all valid data
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -21,6 +22,7 @@ FilterLocationData:
   }'
    MasterData_FilterLocationData_Invalid_EmptyFilterType:
       endPoint: /v1/masterdata/locations/filtervalues
+      description: Filter Location details by invalid filter Type
       role: admin
       templateFields: ["columnName"]
       restMethod: post

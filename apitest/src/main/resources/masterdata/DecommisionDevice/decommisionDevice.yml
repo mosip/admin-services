@@ -1,6 +1,7 @@
 DecommisionDevice:
    MasterData_DecommisionDevice_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/devices/decommission/{deviceId}
+      description: Decommission Device with all valid data
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       restMethod: put
@@ -13,6 +14,7 @@ DecommisionDevice:
 }'
    MasterData_DecommisionDevice_Invalid_ID: 
       endPoint: /v1/masterdata/devices/decommission/{deviceId}
+      description: Decommission Device with invalid deviceId
       role: admin
       restMethod: put
       inputTemplate: masterdata/DecommisionDevice/decommisionDevice

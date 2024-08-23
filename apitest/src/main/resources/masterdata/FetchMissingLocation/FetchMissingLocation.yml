@@ -1,6 +1,7 @@
 FetchMissingLocation:
    MasterData_FetchMissingLocation_valid_smoke:
       endPoint: /v1/masterdata/locations/missingids/{langcode}
+      description: Retrieve Missing Location details by langcode
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
