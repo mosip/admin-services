@@ -34,8 +34,8 @@ FetchRegCent:
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchRegCentResult
       input: '{
-  "longitude": "-6.453275",
-  "latitude": "34.52117",
+  "longitude": "45.2456",
+  "latitude": "78.5478",
   "langcode": "eng",
   "proximitydistance": "21",
   "locationcode": "$REMOVE$",
@@ -122,7 +122,7 @@ FetchRegCent:
   "latitude": "$REMOVE$",
   "langcode": "eng",
   "proximitydistance": "$REMOVE$",
-  "locationcode": "14022",
+  "locationcode": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_code$",
   "registrationcenterid": "$REMOVE$",
   "year": "$REMOVE$",
   "id": "$REMOVE$",
@@ -235,7 +235,7 @@ FetchRegCent:
   "locationcode": "$REMOVE$",
   "registrationcenterid": "$REMOVE$",
   "year": "$REMOVE$",
-  "id": "10001",
+  "id": "$ID:CreateRegCenter_allValid_smoke_sid_id$",
   "hierarchylevel": "$REMOVE$",
   "name": "$REMOVE$",
   "zonecode": "$REMOVE$",
@@ -371,11 +371,11 @@ FetchRegCent:
   "locationcode": "$REMOVE$",
   "registrationcenterid": "$REMOVE$",
   "year": "$REMOVE$",
-  "id": "10001",
+  "id": "$ID:CreateRegCenter_allValid_smoke_sid_id$",
   "hierarchylevel": "$REMOVE$",
   "name": "$REMOVE$",
   "zonecode": "$REMOVE$",
-  "timestamp": "2021-01-20T06:22:07.797Z"
+  "timestamp": "$TIMESTAMP$"
 }'
       output: '{
   "status":"Valid"

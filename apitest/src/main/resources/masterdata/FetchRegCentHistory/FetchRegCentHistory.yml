@@ -8,7 +8,7 @@ FetchRegCentHistory:
       inputTemplate: masterdata/FetchRegCentHistory/fetchRegCentHistory
       outputTemplate: masterdata/FetchRegCentHistory/fetchRegCentHistoryResult
       input: '{
-  "registrationCenterId": "10001",
+  "registrationCenterId": "$ID:CreateRegCenter_allValid_smoke_sid_id$",
   "effectiveDate": "$TIMESTAMP$",
   "langCode": "eng"
 }'
