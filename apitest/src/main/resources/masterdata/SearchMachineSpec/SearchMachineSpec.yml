@@ -3,7 +3,7 @@ SearchMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/search
       description: Search for machine spec details where the name parameter equals the specified condition
       role: admin
-      templateFields: ["languageCode"]
+      templateFields: ["description"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
@@ -44,7 +44,7 @@ SearchMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/search
       description: Search for machine spec details sorted in descending order
       role: admin
-      templateFields: ["languageCode"]
+      templateFields: ["description"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
@@ -83,7 +83,7 @@ SearchMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/search
       description: Search for machine spec details with condition column as model
       role: admin
-      templateFields: ["languageCode"]
+      templateFields: ["description"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
@@ -191,7 +191,7 @@ SearchMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/search
       description: Search for machine spec details where the condition column name is name and the filter type is starts with
       role: admin
-      templateFields: ["languageCode"]
+      templateFields: ["description"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
@@ -230,7 +230,7 @@ SearchMachineSpec:
       endPoint: /v1/masterdata/machinespecifications/search
       description: Search for machine spec details where the condition column name is name and the filter type is contains
       role: admin
-      templateFields: ["languageCode"]
+      templateFields: ["description"]
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
