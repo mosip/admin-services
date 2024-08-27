@@ -3,7 +3,7 @@ RegCenterSearch:
       endPoint: /v1/masterdata/registrationcenters/search
       description: Search the registration center with the condition that the name column is equal to English
       role: admin
-      templateFields: ["name"]
+      templateFields: ["name","value"]
       restMethod: post
       inputTemplate: masterdata/RegCenterSearch/regCenterSearch
       outputTemplate: masterdata/RegCenterSearch/regCenterSearchResult

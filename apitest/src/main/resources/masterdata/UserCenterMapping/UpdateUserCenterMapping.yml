@@ -3,7 +3,7 @@ UpdateUserCenterMapping:
       endPoint: /v1/masterdata/usercentermapping
       description: Update user center mapping details with valid data
       role: globalAdmin
-      templateFields: ["langCode"]
+      templateFields: ["zoneName","regCenterName"]
       restMethod: put
       inputTemplate: masterdata/UserCenterMapping/updateUserCenterMapping
       outputTemplate: masterdata/UserCenterMapping/userCenterMappingResult

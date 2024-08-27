@@ -17,7 +17,7 @@ UserCenterMapping:
      "requesttime": "$TIMESTAMP$"
 }'
       output: '{
-    "name": "$IGNORE$",
+    "name": "automation",
     "statusCode": "active",
     "regCenterId": "$IGNORE$",
     "zoneCode": "$IGNORE$",
