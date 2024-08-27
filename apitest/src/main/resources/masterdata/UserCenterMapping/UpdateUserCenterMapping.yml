@@ -3,7 +3,7 @@ UpdateUserCenterMapping:
       endPoint: /v1/masterdata/usercentermapping
       description: Update user center mapping details with valid data
       role: globalAdmin
-      templateFields: ["zoneName","regCenterName"]
+      templateFields: ["regCenterName"]
       restMethod: put
       inputTemplate: masterdata/UserCenterMapping/updateUserCenterMapping
       outputTemplate: masterdata/UserCenterMapping/userCenterMappingResult
@@ -20,7 +20,7 @@ UpdateUserCenterMapping:
     "statusCode": "active",
     "regCenterId": "$IGNORE$",
     "zoneCode": "RBT",
-    "zoneName": "Rabat",
+    "zoneName": "$IGNORE$",
     "regCenterName": "HSR Center updated"
     }'
    MasterData_UserCenterMapping_Invalid_InputParameter_regCenterId_Missing:
