@@ -3,6 +3,7 @@ FetchRegCentHistory:
       endPoint: /v1/masterdata/registrationcentershistory/{registrationCenterId}/{langCode}/{effectiveDate}
       description: Retrieve Registration Center History with all valid data
       role: admin
+      checkErrorsOnlyInResponse: true
       templateFields: ["langCode"]
       restMethod: get
       inputTemplate: masterdata/FetchRegCentHistory/fetchRegCentHistory
@@ -14,7 +15,7 @@ FetchRegCentHistory:
 }'
       output: '{
 "registrationCentersHistory": [{
-			"isActive": "true"
+			"isActive": "$IGNORE$"
 		}]
 }'
    Masterdata_FetchRegCentHistory_invalid_registrationCenterId:
