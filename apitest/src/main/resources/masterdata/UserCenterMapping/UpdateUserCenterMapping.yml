@@ -19,7 +19,7 @@ UpdateUserCenterMapping:
     "name": "automationUpdated",
     "statusCode": "active",
     "regCenterId": "$IGNORE$",
-    "zoneCode": "RBT",
+    "zoneCode": "$IGNORE$",
     "zoneName": "$IGNORE$",
     "regCenterName": "HSR Center updated"
     }'
