@@ -84,3 +84,6 @@ delete from master.identity_schema where title='test-schema';
 delete from master.biometric_attribute where code='TST';
 delete from master.biometric_type where code='dumbo6';
 delete from master.dynamic_field where name in ('TestAutomationField','TestAPL');
+delete from master.blocklisted_words where cr_by='dumboo';
+delete from master.device_type where cr_by='masterdata-220005';
+delete from master.device_spec where brand ='hogwarts';
