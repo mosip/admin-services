@@ -59,7 +59,7 @@ The project requires JDK 1.11.
    ```
 ### Delete
   ```
-    $ cd ./apitest/deploy/masterdata-apitetsrig
+    $ cd ./apitest/deploy/masterdata-apitestrig
     $ ./delete.sh
    ```
 
