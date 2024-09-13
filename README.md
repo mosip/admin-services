@@ -43,21 +43,39 @@ This is to maintain compatibility with existing ANT-style path patterns.
     $ docker build -f Dockerfile
     ```
 
-### Add auth-adapter in a class-path to run a services
+## Deployment in K8 cluster with other MOSIP services:
+### Pre-requisites
+* Set KUBECONFIG variable to point to existing K8 cluster kubeconfig file:
+    ```
+    export KUBECONFIG=~/.kube/<k8s-cluster.config>
+    ```
+### Install
+  ```
+    $ cd deploy
+    $ ./install.sh
    ```
-   <dependency>
-       <groupId>io.mosip.kernel</groupId>
-       <artifactId>kernel-auth-adapter</artifactId>
-       <version>${kernel.auth.adapter.version}</version>
-   </dependency>
+### Delete
+  ```
+    $ cd deploy
+    $ ./delete.sh
+   ```
+### Restart
+  ```
+    $ cd deploy
+    $ ./restart.sh
    ```
 
-## Configuration
-[Configuration-Admin](https://github.com/mosip/mosip-config/blob/develop/admin-default.properties) and
-[Configuration-Application](https://github.com/mosip/mosip-config/blob/develop/application-default.properties) defined here.
-
-## Deploy
-To deploy Admin on Kubernetes cluster using Dockers refer to [Sandbox Deployment](https://docs.mosip.io/1.2.0/deployment/sandbox-deployment).
+## To deploy masterdata apitestrig within k8s cluster:
+### Install
+  ```
+    $ cd ./apitest/deploy/masterdata-apitestrig
+    $ ./install.sh
+   ```
+### Delete
+  ```
+    $ cd ./apitest/deploy/masterdata-apitetsrig
+    $ ./delete.sh
+   ```
 
 ## Test
 Automated functional tests available in [Functional Tests repo](https://github.com/mosip/mosip-functional-tests).
