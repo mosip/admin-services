@@ -103,6 +103,8 @@ public class MosipTestRunner {
 				BaseTestCase.setReportName("masterdata-" + localLanguageList.get(i));
 				startTestRunner();
 			}
+			
+			DBManager.clearMasterDbData();
 		} catch (Exception e) {
 			LOGGER.error("Exception " + e.getMessage());
 		}
