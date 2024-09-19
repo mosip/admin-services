@@ -51,18 +51,6 @@ The project requires JDK 1.11.
     $ ./restart.sh
    ```
 
-## To deploy masterdata apitestrig within k8s cluster:
-### Install
-  ```
-    $ cd ./apitest/deploy/masterdata-apitestrig
-    $ ./install.sh
-   ```
-### Delete
-  ```
-    $ cd ./apitest/deploy/masterdata-apitetsrig
-    $ ./delete.sh
-   ```
-
 ## Test
 Automated functional tests available in [Functional Tests repo](https://github.com/mosip/mosip-functional-tests).
 
