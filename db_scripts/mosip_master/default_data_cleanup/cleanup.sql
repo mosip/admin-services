@@ -16,6 +16,7 @@ WHERE lang_code !='eng';
 DELETE FROM master.module_detail
 WHERE lang_code !='eng';
 
+
 drop table master.admin_param;
 drop table master.appl_form_type;
 drop table master.message_list;
@@ -27,8 +28,6 @@ drop table master.individual_type;
 drop table master.introducer_type;
 drop table master.status_list;
 drop table master.status_type;
-
-
 
 
 
