@@ -36,6 +36,7 @@ SearchDocCategories:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
+   "totalRecord": "$IGNORE$"
 }'
    MasterData_SearchDocCategories_Valid_sortBy_code:
       endPoint: /v1/masterdata/documentcategories/search
@@ -67,6 +68,7 @@ SearchDocCategories:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
+   "totalRecord": "$IGNORE$",
    "data": [
      {
         "isActive": "$IGNORE$",
@@ -108,6 +110,7 @@ SearchDocCategories:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
+   "totalRecord": "$IGNORE$",
    "data": [
      {
         "isActive": "$IGNORE$",
@@ -196,11 +199,10 @@ SearchDocCategories:
       endPoint: /v1/masterdata/documentcategories/search
       description: Search document categories with invalid filter value
       role: admin
-      checkErrorsOnlyInResponse: true
       templateFields: ["value"]
       restMethod: post
       inputTemplate: masterdata/SearchDocCategories/searchDocCategories
-      outputTemplate: masterdata/error
+      outputTemplate: masterdata/SearchDocCategories/searchDocCategoriesResult
       input: '{
     "filters": [
       {
@@ -223,7 +225,7 @@ SearchDocCategories:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-   "data": []
+   "totalRecord": "0"
 }'
    MasterData_SearchDocCategories_inValid_filter_value_blank:
       endPoint: /v1/masterdata/documentcategories/search

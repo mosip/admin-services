@@ -29,6 +29,7 @@ SearchDocumentType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
+   "totalRecord": "$IGNORE$",
    "data": [
      {
         "isActive": "$IGNORE$",
@@ -69,6 +70,7 @@ SearchDocumentType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
+   "totalRecord": "$IGNORE$",
    "data": [
      {
         "isActive": "$IGNORE$",
@@ -109,6 +111,7 @@ SearchDocumentType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
+   "totalRecord": "$IGNORE$",
    "data": [
      {
         "isActive": "$IGNORE$",
@@ -201,7 +204,7 @@ SearchDocumentType:
       templateFields: ["value"]
       restMethod: post
       inputTemplate: masterdata/SearchDocumentType/searchDocumentType
-      outputTemplate: masterdata/error
+      outputTemplate: masterdata/SearchDocumentType/searchDocumentTypeResult
       input: '{
     "filters": [
       {
@@ -224,7 +227,7 @@ SearchDocumentType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-   "data": []
+   "totalRecord": "0"
 }'
    MasterData_SearchDocumentType_inValid_filter_value_blank:
       endPoint: /v1/masterdata/documenttypes/search
