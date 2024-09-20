@@ -28,7 +28,7 @@ SearchTemplateDetails:
   "requesttime": "$TIMESTAMP$"
 }'
       output: '{
-   "data": []
+   "totalRecord": "$IGNORE$"
 }'
    MasterData_SearchTemplateDetails_ColumnName_Name_LangCode_eng_filterType_contain:
       endPoint: /v1/masterdata/templates/search
@@ -59,7 +59,7 @@ SearchTemplateDetails:
   "requesttime": "$TIMESTAMP$"
 }'
       output: '{
-   "data": []
+   "totalRecord": "$IGNORE$"
 }'
    MasterData_SearchTemplateDetails_ColumnName_Name_LangCode_eng_filterType_equals_filterValue_null:
       endPoint: /v1/masterdata/templates/search
@@ -160,7 +160,7 @@ SearchTemplateDetails:
   "requesttime": "$TIMESTAMP$"
 }'
       output: '{
-   "data": []
+   "totalRecord": "0"
 }'
    MasterData_SearchTemplateDetails_ColumnName_Name_LangCode_eng_filterType_equals_filterValue_invalid:
       endPoint: /v1/masterdata/templates/search
@@ -191,7 +191,7 @@ SearchTemplateDetails:
   "requesttime": "$TIMESTAMP$"
 }'
       output: '{
-   "data": []
+   "totalRecord": "0"
 }'
    MasterData_SearchTemplateDetails_ColumnName_Name_LangCode_eng_filterType_contains_filterValue_invalid:
       endPoint: /v1/masterdata/templates/search
@@ -222,7 +222,7 @@ SearchTemplateDetails:
   "requesttime": "$TIMESTAMP$"
 }'
       output: '{
-   "data": []
+   "totalRecord": "0"
 }'
    MasterData_SearchTemplateDetails_inavlid_Empty_FilterType:
       endPoint: /v1/masterdata/templates/search

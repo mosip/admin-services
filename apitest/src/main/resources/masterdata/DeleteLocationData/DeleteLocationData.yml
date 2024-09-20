@@ -1,0 +1,14 @@
+DeleteLocationData:
+   MasterData_DeleteLocationData_All_Valid_Smoke: 
+      endPoint: /v1/masterdata/locations/{locationCode}
+      description: Delete Location Data with valid Location Code
+      role: admin
+      checkErrorsOnlyInResponse: true
+      restMethod: delete
+      inputTemplate: masterdata/DeleteLocationData/DeleteLocationData
+      outputTemplate: masterdata/DeleteLocationData/DeleteLocationDataResult
+      input: '{
+      "locationCode": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_code$"
+	}'
+      output: '{
+}'
