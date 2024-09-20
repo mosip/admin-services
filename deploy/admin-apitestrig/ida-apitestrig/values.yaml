@@ -1,0 +1,7 @@
+modules:
+  masterdata:
+    enabled: true
+    image:
+      repository: mosipqa/apitest-masterdata
+      tag: develop
+      pullPolicy: Always
