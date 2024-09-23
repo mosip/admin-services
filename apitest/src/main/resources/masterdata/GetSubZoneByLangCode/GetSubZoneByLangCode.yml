@@ -1,6 +1,7 @@
 GetSubZoneByLangCode:
    MasterData_GetSubZoneByLangCode_allValid_smoke:
       endPoint: /v1/masterdata/zones/subzone/{langCode}
+      description: Retrieve sub zone with an valid language code
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetSubZoneByLangCode/getSubZoneByLangCode
@@ -12,6 +13,7 @@ GetSubZoneByLangCode:
 }'
    MasterData_GetSubZoneByLangCode_inValid_code:
       endPoint: /v1/masterdata/zones/subzone/{langCode}
+      description: Retrieve sub zone with an invalid language code
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetSubZoneByLangCode/getSubZoneByLangCode

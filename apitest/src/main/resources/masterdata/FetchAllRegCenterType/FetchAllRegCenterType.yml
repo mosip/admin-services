@@ -1,6 +1,7 @@
 FetchAllRegCenterType:
    MasterData_FetchAllRegCenterType_valid_smoke:
       endPoint: /v1/masterdata/registrationcentertypes/all
+      description: Retrieve All Registration Center Type details with valid data
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

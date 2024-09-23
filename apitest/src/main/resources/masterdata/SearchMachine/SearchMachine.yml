@@ -1,6 +1,7 @@
 SearchMachine:
-   Masterdata_SearchMachine_Valid_Smoke:
+   Masterdata_SearchMachine_Valid_Smoke_FullResponse_sid:
       endPoint: /v1/masterdata/machines/search
+      description: Search machine details with valid data
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -12,7 +13,7 @@ SearchMachine:
       {
         "columnName": "name",
         "type": "equals",
-        "value": "Mach-Test",
+        "value": "Mach-Test updated",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -32,6 +33,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_FilterTypeContains:
       endPoint: /v1/masterdata/machines/search
+      description: Search machine details with the condition that the filter type contains specified keywords
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -43,7 +45,7 @@ SearchMachine:
       {
         "columnName": "name",
         "type": "contains",
-        "value": "Mach-Test",
+        "value": "Mach-Test updated",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -63,6 +65,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_FilterTypeStartsWith:
       endPoint: /v1/masterdata/machines/search
+      description: Search machine details with the condition that the filter type starts with specified keywords
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -94,8 +97,9 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_ColumnMacAddressNFilterTypeEquals:
       endPoint: /v1/masterdata/machines/search
+      description: Search for machine details with the condition that the column MacAdress equals the specified filter type
       role: globalAdmin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachine/searchMachine
       outputTemplate: masterdata/SearchMachine/searchMachineResult
@@ -137,8 +141,9 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_ColumnMacAddressNTypeContains:
       endPoint: /v1/masterdata/machines/search
+      description: Search for machine details with the condition that the column MacAddress contains the specified type
       role: globalAdmin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachine/searchMachine
       outputTemplate: masterdata/SearchMachine/searchMachineResult
@@ -180,8 +185,9 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_ColumnMacAddressNTypeStartsWith:
       endPoint: /v1/masterdata/machines/search
+      description: Search for machine details with the condition that the column MacAddress starts with the specified type
       role: globalAdmin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachine/searchMachine
       outputTemplate: masterdata/SearchMachine/searchMachineResult
@@ -223,6 +229,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_ColumnSerialNumberNTypeEquals:
       endPoint: /v1/masterdata/machines/search
+      description: Search for machine details with the condition that the column serialNumber equals the specified type
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -254,6 +261,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_ColumnSerialNumberNTypeContains:
       endPoint: /v1/masterdata/machines/search
+      description: Search for machine details with the condition that the column serialNumber contains the specified type
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -285,6 +293,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_ColumnSerialNumberNTypeStartsWith:
       endPoint: /v1/masterdata/machines/search
+      description: Search for machine details with the condition that the column serialNumber starts with the specified type
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -316,6 +325,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_ColumnMachineSpecIdNTypeEquals:
       endPoint: /v1/masterdata/machines/search
+      description: Search for machine details with the condition that the column machineSpec equals the specified type
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -347,6 +357,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_ColumnMachineSpecIdNTypeContains:
       endPoint: /v1/masterdata/machines/search
+      description: Search for machine details with the condition that the column MachineSpec contains the specified type
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -378,6 +389,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_ColumnMachineSpecIdNTypeStartsWith:
       endPoint: /v1/masterdata/machines/search
+      description: Search for machine details with the condition that the column MachineSpec starts with the specified type
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -409,6 +421,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_TwoFilterValues_TypeEqualsNEquals:
       endPoint: /v1/masterdata/machines/search
+      description: Search for machine details with two filter values where type equals one value and another equals a different value
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -420,7 +433,7 @@ SearchMachine:
       {
         "columnName": "name",
         "type": "equals",
-        "value": "Mach-Test",
+        "value": "Mach-Test updated",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       },
@@ -447,6 +460,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_SortFieldDESC:
       endPoint: /v1/masterdata/machines/search
+      description: Search for machine details and sort field with descending order
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -458,7 +472,7 @@ SearchMachine:
       {
         "columnName": "name",
         "type": "equals",
-        "value": "Mach-Test",
+        "value": "Mach-Test updated",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -478,8 +492,9 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_TwoSortFields_DescNDesc:
       endPoint: /v1/masterdata/machines/search
+      description: Search for machine details with two sort fields and two descending orders
       role: globalAdmin
-      templateFields: ["value"]
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/SearchMachine/searchMachine
       outputTemplate: masterdata/SearchMachine/searchMachineResult
@@ -488,7 +503,7 @@ SearchMachine:
       {
         "columnName": "name",
         "type": "contains",
-        "value": "Mach-Test",
+        "value": "Mach-Test updated",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -525,6 +540,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_TwoSortFields_AscNDesc:
       endPoint: /v1/masterdata/machines/search
+      description: Search for machine details with two sort fields, one in ascending order and one in descending order
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -560,6 +576,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Invalid_ColumnName:
       endPoint: /v1/masterdata/machines/search
+      description: Search for machine details with invalid column name
       role: globalAdmin
       templateFields: ["value"]
       restMethod: post
@@ -570,7 +587,7 @@ SearchMachine:
       {
         "columnName": "dfadf",
         "type": "equals",
-        "value": "Mach-Test",
+        "value": "Mach-Test updated",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -596,6 +613,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Invalid_SortField:
       endPoint: /v1/masterdata/machines/search
+      description: Search for machine details with invalid sort field
       role: globalAdmin
       templateFields: ["value"]
       restMethod: post
@@ -632,6 +650,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Invalid_EmptyFilterType:
       endPoint: /v1/masterdata/machines/search
+      description: Search for machine details with empty filter type
       role: globalAdmin
       templateFields: ["value"]
       restMethod: post
@@ -668,6 +687,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Invalid_EmptySortField:
       endPoint: /v1/masterdata/machines/search
+      description: Search for machine details with sort field as empty
       role: globalAdmin
       templateFields: ["value"]
       restMethod: post

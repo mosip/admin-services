@@ -1,6 +1,7 @@
 ValidDocumentMap:
    MasterData_ValidDocumentMap_allValid_smoke:
       endPoint: /v1/masterdata/validdocuments/map/{doccategorycode}/{doctypecode}
+      description: Create document map details with valid data
       role: admin
       restMethod: put
       inputTemplate: masterdata/ValidDocumentMap/validDocumentMap

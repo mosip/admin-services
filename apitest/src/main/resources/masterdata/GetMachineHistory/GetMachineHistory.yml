@@ -1,6 +1,7 @@
 GetMachineHistory:
    Admin_GetMachineHistory_allValid_smoke:
       endPoint: /v1/masterdata/machineshistories/{id}/{langcode}/{effdatetimes}
+      description: Retrieve machine history details using valid ID, language code and effective date
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -28,6 +29,7 @@ GetMachineHistory:
 
    Admin_GetMachineHistory_Invalid_Invalid_lD:
       endPoint: /v1/masterdata/machineshistories/{id}/{langcode}/{effdatetimes}
+      description: Retrieve machine history details using an invalid ID, valid language code, and valid effective date
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetMachineHistory/getMachineHistory
@@ -48,6 +50,7 @@ GetMachineHistory:
 
    Admin_GetMachineHistory_Invalid_Invalid_effdatetimes:
       endPoint: /v1/masterdata/machineshistories/{id}/{langcode}/{effdatetimes}
+      description: Retrieve machine history details using an valid ID, valid language code, and invalid effective date
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetMachineHistory/getMachineHistory
@@ -68,6 +71,7 @@ GetMachineHistory:
 
    Admin_GetMachineHistory_Invalid_Invalid_langCode:
       endPoint: /v1/masterdata/machineshistories/{id}/{langcode}/{effdatetimes}
+      description: Retrieve machine history details using an valid ID, invalid language code, and valid effective date
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetMachineHistory/getMachineHistory

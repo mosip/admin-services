@@ -1,6 +1,7 @@
 SearchRegCenterType:
    MasterData_SearchRegCenterType_allValid_somke:
       endPoint: /v1/masterdata/registrationcentertypes/search
+      description: Search for registration center type details with valid data
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -31,6 +32,7 @@ SearchRegCenterType:
    
    MasterData_SearchRegCenterType_valid_col_isActive_true:
       endPoint: /v1/masterdata/registrationcentertypes/search
+      description: Search for registration center type details with condition column name is active as true
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -68,6 +70,7 @@ SearchRegCenterType:
 }'
    MasterData_SearchRegCenterType_valid_typeFilter_contains:
       endPoint: /v1/masterdata/registrationcentertypes/search
+      description: Search for registration center type details with condition filter type contains specific keywords
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -97,6 +100,7 @@ SearchRegCenterType:
 }'
    MasterData_SearchRegCenterType_valid_typeFilter_startsWith:
       endPoint: /v1/masterdata/registrationcentertypes/search
+      description: Search for registration center type details with condition filter type starts with specific keywords
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -126,6 +130,7 @@ SearchRegCenterType:
 }'
    MasterData_SearchRegCenterType_inValid_columnName_blank:
       endPoint: /v1/masterdata/registrationcentertypes/search
+      description: Search for registration center type details with column name as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -160,6 +165,7 @@ SearchRegCenterType:
 }'
    MasterData_SearchRegCenterType_inValid_columnName:
       endPoint: /v1/masterdata/registrationcentertypes/search
+      description: Search for registration center type details with invalid column name
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -194,6 +200,7 @@ SearchRegCenterType:
 }'
    MasterData_SearchRegCenterType_inValid_filter_value:
       endPoint: /v1/masterdata/registrationcentertypes/search
+      description: Search for registration center type details with invalid filter data
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -225,6 +232,7 @@ SearchRegCenterType:
 }'
    MasterData_SearchRegCenterType_inValid_filter_value_blank:
       endPoint: /v1/masterdata/registrationcentertypes/search
+      description: Search for registration center type details with filter as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -260,6 +268,7 @@ SearchRegCenterType:
    
    MasterData_SearchRegCenterType_inValid_sortField:
       endPoint: /v1/masterdata/registrationcentertypes/search
+      description: Search for registration center type details with invalid sort field
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -294,6 +303,7 @@ SearchRegCenterType:
 }'
    MasterData_SearchRegCenterType_inValid_sortType:
       endPoint: /v1/masterdata/registrationcentertypes/search
+      description: Search for registration center type details with invalid sort type
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -328,6 +338,7 @@ SearchRegCenterType:
 }'
    MasterData_SearchRegCenterType_inValid_sortField_blank:
       endPoint: /v1/masterdata/registrationcentertypes/search
+      description: Search for registration center type details with sort field as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -362,6 +373,7 @@ SearchRegCenterType:
 }'
    MasterData_SearchRegCenterType_inValid_sortType_blank:
       endPoint: /v1/masterdata/registrationcentertypes/search
+      description: Search for registration center type details with sort type as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -396,6 +408,7 @@ SearchRegCenterType:
 }'
    MasterData_SearchRegCenterType_inValid_filterType_blank:
       endPoint: /v1/masterdata/registrationcentertypes/search
+      description: Search for registration center type details with filter type as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -430,6 +443,7 @@ SearchRegCenterType:
 }'
    MasterData_SearchRegCenterType_inValid_filterType:
       endPoint: /v1/masterdata/registrationcentertypes/search
+      description: Search for registration center type details with invalid filter type
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -464,6 +478,7 @@ SearchRegCenterType:
 }'
    MasterData_SearchRegCenterType_inValid_requestTime_format:
       endPoint: /v1/masterdata/registrationcentertypes/search
+      description: Search for registration center type details with invalid request time format
       role: admin
       templateFields: ["value"]
       restMethod: post

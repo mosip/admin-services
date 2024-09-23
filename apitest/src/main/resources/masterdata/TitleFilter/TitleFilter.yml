@@ -1,6 +1,7 @@
 TitleFilter:
    MasterData_TitleFilter_Unique_Name_eng_smoke:
       endPoint: /v1/masterdata/title/filtervalues
+      description: Filter the title details by unique name and language code set to English
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -26,6 +27,7 @@ TitleFilter:
    
    MasterData_TitleFilter_isActive__eng_smoke:
       endPoint: /v1/masterdata/title/filtervalues
+      description: Filter the title details by is active, type is unique and language code set to English
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -50,6 +52,7 @@ TitleFilter:
   }'
    MasterData_TitleFilter_Invalid_RequestTime_neg:
       endPoint: /v1/masterdata/title/filtervalues
+      description: Filter the title details with invalid request time
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -74,6 +77,7 @@ TitleFilter:
 }'
    MasterData_TitleFilter_Invalid_Value_Name_neg:
       endPoint: /v1/masterdata/title/filtervalues
+      description: Filter the title details with invalid name
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -93,6 +97,7 @@ TitleFilter:
   }'
    MasterData_TitleFilter_isActive__eng_smoke:
       endPoint: /v1/masterdata/title/filtervalues
+      description: Filter the title details by is active, type is between and language code set to English
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -118,6 +123,7 @@ TitleFilter:
    
    MasterData_TitleFilter_inValid_FilterType_blank:
       endPoint: /v1/masterdata/title/filtervalues
+      description: Filter the title details with invalid filter type
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -142,6 +148,7 @@ TitleFilter:
 }'
    MasterData_TitleFilter_inValid_columnName:
       endPoint: /v1/masterdata/title/filtervalues
+      description: Filter the title details with invalid column name
       role: admin
       templateFields: ["text"]
       restMethod: post

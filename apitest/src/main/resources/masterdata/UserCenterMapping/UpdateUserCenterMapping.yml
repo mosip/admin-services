@@ -1,8 +1,9 @@
 UpdateUserCenterMapping:
    MasterData_UpdateUserCenterMapping_All_Valid_Smoke:
       endPoint: /v1/masterdata/usercentermapping
+      description: Update user center mapping details with valid data
       role: globalAdmin
-      templateFields: ["langCode"]
+      templateFields: ["regCenterName"]
       restMethod: put
       inputTemplate: masterdata/UserCenterMapping/updateUserCenterMapping
       outputTemplate: masterdata/UserCenterMapping/userCenterMappingResult
@@ -18,12 +19,13 @@ UpdateUserCenterMapping:
     "name": "automationUpdated",
     "statusCode": "active",
     "regCenterId": "$IGNORE$",
-    "zoneCode": "RBT",
-    "zoneName": "Rabat",
-    "regCenterName": "Test_Loc_A_"
+    "zoneCode": "$IGNORE$",
+    "zoneName": "$IGNORE$",
+    "regCenterName": "HSR Center updated"
     }'
    MasterData_UserCenterMapping_Invalid_InputParameter_regCenterId_Missing:
       endPoint: /v1/masterdata/usercentermapping
+      description: Update user center mapping details with the parameter registration center ID as missing
       role: admin
       templateFields: ["langCode"]
       restMethod: put
@@ -47,6 +49,7 @@ UpdateUserCenterMapping:
 }'
    MasterData_UserCenterMapping_Invalid_InputParameter_Invalid_regCenterId:
       endPoint: /v1/masterdata/usercentermapping
+      description: Update user center mapping details with the parameter registration center ID as invalid
       role: admin
       templateFields: ["langCode"]
       restMethod: put

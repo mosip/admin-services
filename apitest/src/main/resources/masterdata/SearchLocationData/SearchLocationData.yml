@@ -1,6 +1,7 @@
 SearchLocationData:
    MasterData_SearchLocationData_Valid_Smoke:
       endPoint: /v1/masterdata/locations/search
+      description: Search location data with valid details
       role: admin
       templateFields: ["languageCode"]
       restMethod: post

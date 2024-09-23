@@ -1,6 +1,7 @@
 CreateDocumentType:
    MasterData_CreateDocumentType_Valid_Smoke:
       endPoint: /v1/masterdata/documenttypes
+      description: Create Document Type with valid data
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -22,6 +23,7 @@ CreateDocumentType:
 }'
    MasterData_CreateDocumentType_All_Valid_Mandatory_Fields_Eng:
       endPoint: /v1/masterdata/documenttypes
+      description: Create Document Type with all mandatory data
       role: admin
       templateFields: ["name"]
       restMethod: post
@@ -44,6 +46,7 @@ CreateDocumentType:
    
    MasterData_CreateDocumentType_Invalid_Code_Char37:
       endPoint: /v1/masterdata/documenttypes
+      description: Create Document Type with code more than 36 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -67,6 +70,7 @@ CreateDocumentType:
 }'
    MasterData_CreateDocumentType_Invalid_Name_Char65:
       endPoint: /v1/masterdata/documenttypes
+      description: Create Document Type with name more than 64 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -90,6 +94,7 @@ CreateDocumentType:
 }'
    MasterData_CreateDocumentType_Invalid_Descr_Char129:
       endPoint: /v1/masterdata/documenttypes
+      description: Create Document Type with description more than 128 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -114,6 +119,7 @@ CreateDocumentType:
    
    MasterData_CreateDocumentType_Invalid_Name_Blank:
       endPoint: /v1/masterdata/documenttypes
+      description: Create Document Type with empty name
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -137,6 +143,7 @@ CreateDocumentType:
 }'
    MasterData_CreateDocumentType_Invalid_Code_Blank:
       endPoint: /v1/masterdata/documenttypes
+      description: Create Document Type with empty code
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -160,6 +167,7 @@ CreateDocumentType:
 }'
    MasterData_CreateDocumentType_Invalid_IsActive_Blank:
       endPoint: /v1/masterdata/documenttypes
+      description: Create Document Type with empty isActive
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -184,6 +192,7 @@ CreateDocumentType:
 
    MasterData_CreateDocumentType_Spacial_Character_Neg:
       endPoint: /v1/masterdata/documenttypes
+      description: Create Document Type with invalid special characters in code
       role: admin
       templateFields: ["name","description"]
       restMethod: post
