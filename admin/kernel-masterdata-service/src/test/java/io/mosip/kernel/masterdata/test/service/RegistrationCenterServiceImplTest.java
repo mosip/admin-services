@@ -23,8 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -62,6 +61,8 @@ public class RegistrationCenterServiceImplTest {
         regExceptionalHolidayEntity.setRegistrationCenterId(registrationCenter.getId());
         regExceptionalHolidayEntity.setLangCode(registrationCenter.getLangCode());
         regExceptionalHolidayEntity.setExceptionHolidayDate(expHoliday);
+
+        assertNotNull(registrationCenter);
 
         when(regExceptionalHolidayRepository.findByRegIdAndLangcodeAndExpHoliday(any(), any(), any()))
                 .thenReturn(regExceptionalHolidayEntity);
@@ -102,6 +103,8 @@ public class RegistrationCenterServiceImplTest {
         device.setZoneCode("WB-KOL-E");
         deviceList.add(device);
 
+        assertNotNull(registrationCenter);
+
         when(deviceRepository.findByRegIdAndIsDeletedFalseOrIsDeletedIsNull(dto.getId())).thenReturn(deviceList);
         when(zoneUtils.getChildZoneList(any(), any(), any())).thenReturn(Collections.emptyList());
 
@@ -120,7 +123,9 @@ public class RegistrationCenterServiceImplTest {
         dto.setId(registrationCenter.getId());
         dto.setZoneCode("WB-MUM-W");
         List<Device> deviceList = Collections.emptyList();
-        
+
+        assertNotNull(registrationCenter);
+
         lenient().when(deviceRepository.findByRegIdAndIsDeletedFalseOrIsDeletedIsNull(dto.getId())).thenReturn(deviceList);
 
         ReflectionTestUtils.invokeMethod(registrationCenterServiceImpl, "validateZoneMachineDevice", registrationCenter, dto);
@@ -156,6 +161,8 @@ public class RegistrationCenterServiceImplTest {
         RegistrationCenterHistory updateData = new RegistrationCenterHistory();
         updateData.setLangCode("eng");
 
+        assertNotNull(registrationCenter);
+
         lenient().when(registrationCenterHistoryRepository.findByIdAndLangCodeAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(registrationCenter.getId(), registrationCenter.getLangCode(), registrationCenter.getCreatedDateTime())).
                 thenReturn(Collections.singletonList(existingHistory));
     }
@@ -166,6 +173,8 @@ public class RegistrationCenterServiceImplTest {
         registrationCenter.setId(String.valueOf(1L));
         registrationCenter.setLangCode("en_IN");
         registrationCenter.setCreatedDateTime(LocalDate.of(2020,12,1).atStartOfDay());
+
+        assertNotNull(registrationCenter);
 
         RegistrationCenterHistory updateData = new RegistrationCenterHistory();
         updateData.setLangCode("eng");

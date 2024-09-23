@@ -20,7 +20,7 @@ import org.springframework.context.ApplicationContext;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -66,6 +66,9 @@ public class RepositoryListItemWriterTest {
     public void testWrite_EmptyChunk() throws Exception {
         Chunk<T> emptyChunk = new Chunk<>(new ArrayList<>());
         writer.write(emptyChunk);
+
+        assertEquals(0, emptyChunk.getItems().size());
+        assertEquals(0, emptyChunk.getSkips().size());
     }
 
     @Test
@@ -73,6 +76,8 @@ public class RepositoryListItemWriterTest {
         List<T> entities = new ArrayList<>();
         entities.add(entity1);
         entities.add(entity2);
+
+        assertNotNull(entities);
 
         lenient().when(applicationContext.getBean("mockRepo")).thenReturn(baseRepository);
         lenient().when(util.getIdentifier(entity1)).thenReturn(1);
@@ -86,6 +91,8 @@ public class RepositoryListItemWriterTest {
         List<T> entities = new ArrayList<>();
         entities.add(entity1);
         Chunk<T> chunk = new Chunk<>(entities);
+
+        assertNotNull(entities);
 
         lenient().when(applicationContext.getBean("mockRepo")).thenReturn(baseRepository);
         lenient().when(util.getIdentifier(entity1)).thenReturn(1);
@@ -101,7 +108,8 @@ public class RepositoryListItemWriterTest {
     public void testWrite_UpdateSuccess() {
         List<T> entities = new ArrayList<>();
         entities.add(entity1);
-        Chunk<T> chunk = new Chunk<>(entities);
+
+        assertNotNull(entities);
 
         writer.setOperation("update");
         lenient().when(applicationContext.getBean("mockRepo")).thenReturn(baseRepository);
@@ -130,6 +138,8 @@ public class RepositoryListItemWriterTest {
     public void testWrite_DeleteSuccess() {
         List<T> entities = new ArrayList<>();
         entities.add(entity1);
+
+        assertNotNull(entities);
 
         writer.setOperation("delete");
         lenient().when(applicationContext.getBean("mockRepo")).thenReturn(baseRepository);

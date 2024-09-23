@@ -2245,7 +2245,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("reg-processor")
-	public void tst003getUsersTest2() throws Exception {
+	public void tst003getUsersTest_withDeletionIsNull() throws Exception {
 		when(userDetailsRepository.findAllByIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
 		
 		MasterDataTest.checkErrorResponse(
@@ -2444,7 +2444,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("reg-processor")
-	public void tst003getUsersTest3() throws Exception {
+	public void tst003getUsersTest_withDeletionIsAny() throws Exception {
 		when(userDetailsRepository.findAllByIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
 		MasterDataTest.checkErrorResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/users/0/1/cr_dtimes/DESC")).andReturn());

@@ -150,7 +150,7 @@ public class SchemaServiceTest {
 	}
 
 	@Test
-	public void getAllDefinitionsTest() throws JSONException {
+	public void getAllDefinitionsTest_Success() throws JSONException {
 		JSONObject jsonObject = schemaDefinitionService.getAllSchemaDefinitions();
 		Assert.assertNotNull(jsonObject.getJSONObject("definitions"));
 		Assert.assertNotNull(jsonObject.getJSONObject("definitions").getJSONObject("simpleType"));
@@ -160,7 +160,7 @@ public class SchemaServiceTest {
 	
 	@Test
 	@WithUserDetails("reg-officer")
-	public void testFetchAllDynamicFields() {
+	public void testFetchAllDynamicFields_Success() {
 		Mockito.when(dynamicFieldRepository.findAllDynamicFields(pageRequest)).thenReturn(fieldPagedResult);
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		dynamicFieldService.getAllDynamicField(0, 10, "cr_dtimes", "desc", null, null, currentTimeStamp);
@@ -168,7 +168,7 @@ public class SchemaServiceTest {
 	
 	@Test
 	@WithUserDetails("reg-officer")
-	public void testFetchAllDynamicFieldsByLangCode() {
+	public void testFetchAllDynamicFieldsByLangCode_Success() {
 		Mockito.when(dynamicFieldRepository.findAllDynamicFieldsByLangCode("eng", pageRequest)).thenReturn(fieldPagedResult);
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		dynamicFieldService.getAllDynamicField(0, 10, "cr_dtimes", "desc", "eng", null, currentTimeStamp);
@@ -176,7 +176,7 @@ public class SchemaServiceTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void testCreateDynamicField() throws Exception {		
+	public void testCreateDynamicField_Success() throws Exception {
 		Mockito.when(dynamicFieldRepository.create(Mockito.any(DynamicField.class))).thenReturn(bloodTypeField);
 		
 		DynamicFieldDto dto = new DynamicFieldDto();
@@ -190,7 +190,7 @@ public class SchemaServiceTest {
 	
 	@Test(expected = DataNotFoundException.class)
 	@WithUserDetails("global-admin")
-	public void testUpdateDynamicField() throws Exception {		
+	public void testUpdateDynamicFieldWithException() throws Exception {
 		Mockito.when(dynamicFieldRepository.updateDynamicField(Mockito.anyString(), Mockito.anyString(),  Mockito.anyString(), 
 				Mockito.anyString(), Mockito.any(LocalDateTime.class), Mockito.anyString(), Mockito.anyString())).thenReturn(0);
 		
@@ -208,7 +208,7 @@ public class SchemaServiceTest {
 	
 	@Test
 	@WithUserDetails("reg-officer")
-	public void testFetchAllIdentitySchema() {
+	public void testFetchAllIdentitySchema_Success() {
 		Mockito.when(identitySchemaRepository.findAllIdentitySchema(true, pageRequest)).thenReturn(schemaPagedResult);		
 		PageDto<IdSchemaResponseDto> resp = identitySchemaService.getAllSchema(0, 10, "cr_dtimes", "desc");
 		assertEquals(2, resp.getTotalItems());
@@ -216,7 +216,7 @@ public class SchemaServiceTest {
 	
 	@Test
 	@WithUserDetails("reg-officer")
-	public void testFetchLatestIdentitySchema() {
+	public void testFetchLatestIdentitySchema_Success() {
 		Mockito.when(identitySchemaRepository.findLatestPublishedIdentitySchema()).thenReturn(publishedSchema);		
 		IdSchemaResponseDto resp = identitySchemaService.getLatestSchema();
 		assertEquals("PUBLISHED", resp.getStatus());
@@ -224,7 +224,7 @@ public class SchemaServiceTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void testCreateIdentitySchema() {
+	public void testCreateIdentitySchema_Success() {
 		Mockito.when(identitySchemaRepository.create(Mockito.any(IdentitySchema.class))).thenReturn(draftSchema);
 		IdentitySchemaDto dto = new IdentitySchemaDto();
 		dto.setTitle("test");
@@ -239,7 +239,7 @@ public class SchemaServiceTest {
 		
 	@Test
 	@WithUserDetails("global-admin")
-	public void testUpdateIdentitySchema() {
+	public void testUpdateIdentitySchema_Success() {
 //		Mockito.when(identitySchemaRepository.updateIdentitySchema(Mockito.anyString(), Mockito.anyString(), 
 //				Mockito.anyBoolean(), Mockito.any(LocalDateTime.class), Mockito.anyString())).thenReturn(1);
 		Mockito.when(identitySchemaRepository.findIdentitySchemaById(Mockito.anyString())).thenReturn(draftSchema);
@@ -254,7 +254,7 @@ public class SchemaServiceTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void testPublishIdentitySchema() {
+	public void testPublishIdentitySchema_Success() {
 		Mockito.when(identitySchemaRepository.publishIdentitySchema(Mockito.anyString(), Mockito.anyString(), 
 				Mockito.any(LocalDateTime.class), Mockito.any(LocalDateTime.class), Mockito.anyString(), Mockito.anyDouble())).thenReturn(1);
 		
@@ -268,7 +268,7 @@ public class SchemaServiceTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void testPublishAlreadyPublishedIdentitySchema() {
+	public void testPublishAlreadyPublishedIdentitySchema_Success() {
 		Mockito.when(identitySchemaRepository.publishIdentitySchema(Mockito.anyString(), Mockito.anyString(), 
 				Mockito.any(LocalDateTime.class), Mockito.any(LocalDateTime.class), Mockito.anyString(), Mockito.anyDouble())).thenReturn(1);
 		
@@ -338,7 +338,7 @@ public class SchemaServiceTest {
 
 	@Test
 	@WithUserDetails("reg-officer")
-	public void testFetchAllDynamicFieldsAllLang() {
+	public void testFetchAllDynamicFieldsAllLang_Success() {
 		Mockito.when(dynamicFieldRepository.findAllDynamicFieldByName(Mockito.anyString())).thenReturn(list);
 		dynamicFieldService.getAllDynamicFieldByName("gender");
 	}
