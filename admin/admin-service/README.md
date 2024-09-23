@@ -22,12 +22,18 @@ This is for better compatibility with future PostgreSQL versions.
    ```
 This is to maintain compatibility with existing ANT-style path patterns.
 
-### Add auth-adapter in a class-path to run a admin-service
+### Add auth-adapter with an exclusion of webflux in a class-path to run an admin-service
    ```
    <dependency>
        <groupId>io.mosip.kernel</groupId>
        <artifactId>kernel-auth-adapter</artifactId>
        <version>${kernel.auth.adapter.version}</version>
+       <exclusions>
+         <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+		 </exclusion>
+	   </exclusions>
    </dependency>
    ```
 
