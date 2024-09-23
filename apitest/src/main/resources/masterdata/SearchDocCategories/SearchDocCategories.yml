@@ -1,6 +1,7 @@
 SearchDocCategories:
    MasterData_SearchDocCategories_Valid_Request_Smoke:
       endPoint: /v1/masterdata/documentcategories/search
+      description: Search document categories where the column name code equals to
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -35,9 +36,11 @@ SearchDocCategories:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
+   "totalRecord": "$IGNORE$"
 }'
    MasterData_SearchDocCategories_Valid_sortBy_code:
       endPoint: /v1/masterdata/documentcategories/search
+      description: Search document categories and sort by code
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -65,6 +68,7 @@ SearchDocCategories:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
+   "totalRecord": "$IGNORE$",
    "data": [
      {
         "isActive": "$IGNORE$",
@@ -77,6 +81,7 @@ SearchDocCategories:
 }'
    MasterData_SearchDocCategories_Valid_sortType_DESC:
       endPoint: /v1/masterdata/documentcategories/search
+      description: Search document categories with sort type as descending order
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -105,6 +110,7 @@ SearchDocCategories:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
+   "totalRecord": "$IGNORE$",
    "data": [
      {
         "isActive": "$IGNORE$",
@@ -117,6 +123,7 @@ SearchDocCategories:
 }'
    MasterData_SearchDocCategories_inValid_columnName_blank:
       endPoint: /v1/masterdata/documentcategories/search
+      description: Search document categories with column name as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -153,6 +160,7 @@ SearchDocCategories:
 }'
    MasterData_SearchDocCategories_inValid_columnName:
       endPoint: /v1/masterdata/documentcategories/search
+      description: Search document categories with invalid column name
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -189,12 +197,12 @@ SearchDocCategories:
 }'
    MasterData_SearchDocCategories_inValid_filter_value:
       endPoint: /v1/masterdata/documentcategories/search
+      description: Search document categories with invalid filter value
       role: admin
-      checkErrorsOnlyInResponse: true
       templateFields: ["value"]
       restMethod: post
       inputTemplate: masterdata/SearchDocCategories/searchDocCategories
-      outputTemplate: masterdata/error
+      outputTemplate: masterdata/SearchDocCategories/searchDocCategoriesResult
       input: '{
     "filters": [
       {
@@ -217,10 +225,11 @@ SearchDocCategories:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-   "data": []
+   "totalRecord": "0"
 }'
    MasterData_SearchDocCategories_inValid_filter_value_blank:
       endPoint: /v1/masterdata/documentcategories/search
+      description: Search document categories with filter value as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -258,6 +267,7 @@ SearchDocCategories:
    
    MasterData_SearchDocCategories_inValid_sortField:
       endPoint: /v1/masterdata/documentcategories/search
+      description: Search document categories with invalid sort field
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -294,6 +304,7 @@ SearchDocCategories:
 }'
    MasterData_SearchDocCategories_inValid_sortType:
       endPoint: /v1/masterdata/documentcategories/search
+      description: Search document categories with invalid sort type
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -330,6 +341,7 @@ SearchDocCategories:
 }'
    MasterData_SearchDocCategories_inValid_sortField_blank:
       endPoint: /v1/masterdata/documentcategories/search
+      description: Search document categories with sort field as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -366,6 +378,7 @@ SearchDocCategories:
 }'
    MasterData_SearchDocCategories_inValid_sortType_blank:
       endPoint: /v1/masterdata/documentcategories/search
+      description: Search document categories with sort type as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -402,6 +415,7 @@ SearchDocCategories:
 }'
    MasterData_SearchDocCategories_inValid_pagesize:
       endPoint: /v1/masterdata/documentcategories/search
+      description: Search document categories with invalid page size
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -438,6 +452,7 @@ SearchDocCategories:
 }'
    MasterData_SearchDocCategories_inValid_filterType_blank:
       endPoint: /v1/masterdata/documentcategories/search
+      description: Search document categories with filter type as empty
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -474,6 +489,7 @@ SearchDocCategories:
 }'
    MasterData_SearchDocCategories_inValid_filterType:
       endPoint: /v1/masterdata/documentcategories/search
+      description: Search document categories with invalid filter type
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -510,6 +526,7 @@ SearchDocCategories:
 }'
    MasterData_SearchDocCategories_inValid_requestTime_format:
       endPoint: /v1/masterdata/documentcategories/search
+      description: Search document categories with invalid request time
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -546,6 +563,7 @@ SearchDocCategories:
 }'
    MasterData_SearchDocCategories_inValid_typeFilter_contains:
       endPoint: /v1/masterdata/documentcategories/search
+      description: Search document categories with invalid type filter
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -582,6 +600,7 @@ SearchDocCategories:
 }'
    MasterData_SearchDocCategories_inValid_typeFilter_startsWith:
       endPoint: /v1/masterdata/documentcategories/search
+      description: Search document categories with invalid type filter starts with
       role: admin
       templateFields: ["value"]
       restMethod: post

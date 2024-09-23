@@ -1,6 +1,7 @@
 CreateIdSchema:
    MasterData_CreateIdSchema_Valid_Smoke_sid:
       endPoint: /v1/masterdata/idschema
+      description: Create ID schema with valid details
       role: admin
       restMethod: post
       inputTemplate: masterdata/IdSchema/createIdSchema

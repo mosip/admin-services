@@ -1,7 +1,7 @@
 DeleteDocumentType:
    MasterData_DeleteDocumentType_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/documenttypes/{code}
-
+      description: Delete Document Type with valid data
       role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteDocumentType/deleteDocumentType
@@ -14,6 +14,7 @@ DeleteDocumentType:
 }'
    MasterData_DeleteDocumentType_Invalid_ID: 
       endPoint: /v1/masterdata/documenttypes/{code}
+      description: Delete Document Type with invalid code
       role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteDocumentType/deleteDocumentType

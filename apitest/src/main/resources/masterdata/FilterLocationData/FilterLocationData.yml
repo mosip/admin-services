@@ -1,14 +1,16 @@
 FilterLocationData:
    MasterData_FilterLocationData_Valid_Smoke:
       endPoint: /v1/masterdata/locations/filtervalues
+      description: Filter Location details by all valid data
       role: admin
-      templateFields: ["columnName"]
+      checkErrorsOnlyInResponse: true
+      templateFields: ["languageCode"]
       restMethod: post
       inputTemplate: masterdata/FilterLocationData/filterLocationData
       outputTemplate: masterdata/FilterLocationData/filterLocationDataResult
       input: '{
 	"filters": [{
-		"columnName": "Zone",
+		"columnName": "code",
 		"type": "unique",
 		"text": "$ZONE_CODE$"
 	}],
@@ -20,6 +22,7 @@ FilterLocationData:
   }'
    MasterData_FilterLocationData_Invalid_EmptyFilterType:
       endPoint: /v1/masterdata/locations/filtervalues
+      description: Filter Location details by invalid filter Type
       role: admin
       templateFields: ["columnName"]
       restMethod: post

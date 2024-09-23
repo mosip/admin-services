@@ -1,36 +1,38 @@
 UpdateUserCenterMapping:
    MasterData_UpdateUserCenterMapping_All_Valid_Smoke:
       endPoint: /v1/masterdata/usercentermapping
+      description: Update user center mapping details with valid data
       role: globalAdmin
-      templateFields: ["langCode"]
+      templateFields: ["regCenterName"]
       restMethod: put
       inputTemplate: masterdata/UserCenterMapping/updateUserCenterMapping
       outputTemplate: masterdata/UserCenterMapping/userCenterMappingResult
       input: '{
-     "id": "func_auto_test_user",
+     "id": "$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$",
      "name": "automationUpdated",
      "statusCode": "active",
-     "regCenterId": "10005",
+     "regCenterId": "$ID:CreateRegCenter_allValid_smoke_sid_id$",
      "langCode": "eng",
      "requesttime": "$TIMESTAMP$"
 }'
       output: '{
     "name": "automationUpdated",
     "statusCode": "active",
-    "regCenterId": "10005",
-    "zoneCode": "BSN",
-    "zoneName": "Benslimane",
-    "regCenterName": "Center Mehdia"
+    "regCenterId": "$IGNORE$",
+    "zoneCode": "$IGNORE$",
+    "zoneName": "$IGNORE$",
+    "regCenterName": "HSR Center updated"
     }'
    MasterData_UserCenterMapping_Invalid_InputParameter_regCenterId_Missing:
       endPoint: /v1/masterdata/usercentermapping
+      description: Update user center mapping details with the parameter registration center ID as missing
       role: admin
       templateFields: ["langCode"]
       restMethod: put
       inputTemplate: masterdata/UserCenterMapping/updateUserCenterMapping
       outputTemplate: masterdata/error
       input: '{
-     "id": "func_auto_test_user",
+     "id": "$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$",
      "name": "automation",
      "statusCode": "active",
      "regCenterId": "",
@@ -47,13 +49,14 @@ UpdateUserCenterMapping:
 }'
    MasterData_UserCenterMapping_Invalid_InputParameter_Invalid_regCenterId:
       endPoint: /v1/masterdata/usercentermapping
+      description: Update user center mapping details with the parameter registration center ID as invalid
       role: admin
       templateFields: ["langCode"]
       restMethod: put
       inputTemplate: masterdata/UserCenterMapping/updateUserCenterMapping
       outputTemplate: masterdata/error
       input: '{
-     "id": "func_auto_test_user",
+     "id": "$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$",
      "name": "automation",
      "statusCode": "active",
      "regCenterId": "124213",

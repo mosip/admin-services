@@ -1,12 +1,13 @@
 UpdateUserCenterMappingStatus:
    MasterData_UpdateUserCenterMappingStatus_All_Valid_Smoke:  
       endPoint: /v1/masterdata/usercentermapping?isActive={isActive}&id={id}
+      description: Update user center mapping status details with valid data
       role: globalAdmin
       restMethod: patch
       inputTemplate: masterdata/UpdateUserCenterMappingStatus/updateUserCenterMappingStatus
       outputTemplate: masterdata/UpdateUserCenterMappingStatus/updateUserCenterMappingStatusResult
       input: '{
-  "id": "func_auto_test_user",
+  "id": "$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$",
   "isActive": true
 }'
       output: '{
@@ -14,6 +15,7 @@ UpdateUserCenterMappingStatus:
 }'
    MasterData_UpdateUserCenterMappingStatus_Invalid_Id:  
       endPoint: /v1/masterdata/usercentermapping?isActive={isActive}&id={id}
+      description: Update user center mapping status details with invalid ID
       role: globalAdmin
       restMethod: patch
       inputTemplate: masterdata/UpdateUserCenterMappingStatus/updateUserCenterMappingStatus
@@ -30,7 +32,3 @@ UpdateUserCenterMappingStatus:
         }
     ]
 }'
-
-
-
-

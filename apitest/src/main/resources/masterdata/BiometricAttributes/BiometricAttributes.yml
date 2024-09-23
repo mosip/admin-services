@@ -1,6 +1,7 @@
 BiometricAttributes:
    MasterData_BiometricAttributes_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/biometricattributes
+      description: Create Biometric Attribute with valid data
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langCode"]
@@ -22,6 +23,7 @@ BiometricAttributes:
 
    MasterData_BiometricAttributes_Invalid_empty_biometricTypeCode:
       endPoint: /v1/masterdata/biometricattributes
+      description: Create Biometric Attributes with empty Biometric Type code value
       role: admin
       templateFields: ["langCode"]
       restMethod: post
@@ -47,6 +49,7 @@ BiometricAttributes:
 
    MasterData_BiometricAttributes_Invalid_biometricTypeCode:
       endPoint: /v1/masterdata/biometricattributes
+      description: Create Biometric Attributes with invalid Biometric Type code value
       role: admin
       templateFields: ["langCode"]
       restMethod: post
@@ -71,6 +74,7 @@ BiometricAttributes:
 
    MasterData_BiometricAttributes_empty_langCode:
       endPoint: /v1/masterdata/biometricattributes
+      description: Create Biometric Attributes with empty lang code value
       role: admin
       restMethod: post
       inputTemplate: masterdata/BiometricAttributes/biometricAttributes
@@ -95,6 +99,7 @@ BiometricAttributes:
 
    MasterData_BiometricAttributes_Invalid_langCode:
       endPoint: /v1/masterdata/biometricattributes
+      description: Create Biometric Attributes with invalid lang code value
       role: admin
       restMethod: post
       inputTemplate: masterdata/BiometricAttributes/biometricAttributes
@@ -119,6 +124,7 @@ BiometricAttributes:
 
    MasterData_BiometricAttributes_empty_code:
       endPoint: /v1/masterdata/biometricattributes
+      description: Create Biometric Attributes with empty code value
       role: admin
       templateFields: ["langCode"]
       restMethod: post
@@ -144,6 +150,7 @@ BiometricAttributes:
 
    MasterData_BiometricAttributes_Invalid_empty_name:
       endPoint: /v1/masterdata/biometricattributes
+      description: Create Biometric Attributes with empty name value
       role: admin
       templateFields: ["langCode"]
       restMethod: post

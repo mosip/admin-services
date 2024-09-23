@@ -22,7 +22,7 @@ CREATE TABLE master.template(
 	del_dtimes timestamp,
 	CONSTRAINT pk_tmplt_id PRIMARY KEY (id,lang_code),
 	CONSTRAINT fk_tmplt_tmpltyp FOREIGN KEY (template_typ_code, lang_code) REFERENCES master.template_type (code, lang_code),
-	CONSTRAINT fk_tmplt_tffmt FOREIGN KEY (file_format_code,lang_code) REFERENCES master.template_file_format (code,lang_code)
+	CONSTRAINT fk_tmplt_tffmt FOREIGN KEY (file_format_code) REFERENCES master.template_file_format (code)
 );
 -- ddl-end --
 COMMENT ON TABLE master.template IS 'Template : Templates are defined to standardize the communication process within the system. For ex., notications, alerts, etc.';

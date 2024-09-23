@@ -998,8 +998,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				if (registrationCenterEntity != null) {
 
 					registrationCenterEntity.setId(registrationCenterIdGenerator.generateRegistrationCenterId());
-					if (registrationCenterEntity.getNumberOfKiosks() == null) {
-						registrationCenterEntity.setNumberOfKiosks((short) 0);
+					if (registrationCenterEntity.getNumberOfKiosks() == null || registrationCenterEntity.getNumberOfKiosks()<=0) {
+						throw new MasterDataServiceException(RegistrationCenterErrorCode.INVALID_NO_OF_KIOSK.getErrorCode(),RegistrationCenterErrorCode.INVALID_NO_OF_KIOSK.getErrorMessage());
 					}
 
 					// registrationCenterEntity.setIsActive(false);

@@ -34,6 +34,7 @@ import io.mosip.testrig.apirig.utils.KeycloakUserManager;
 import io.mosip.testrig.apirig.utils.MispPartnerAndLicenseKeyGeneration;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.PartnerRegistration;
+import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
 
 /**
  * Class to initiate mosip api test execution
@@ -47,6 +48,7 @@ public class MosipTestRunner {
 
 	public static String jarUrl = MosipTestRunner.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 	public static List<String> languageList = new ArrayList<>();
+	public static List<String> localLanguageList;
 
 	/**
 	 * C Main method to start mosip test execution
@@ -70,8 +72,8 @@ public class MosipTestRunner {
 			}
 			ConfigManager.init();
 			BaseTestCase.suiteSetup();
+			SkipTestCaseHandler.loadTestcaseToBeSkippedList("testCaseSkippedList.txt");
 			setLogLevels();
-			AdminTestUtil.encryptDecryptUtil = new EncryptionDecrptionUtil();
 
 			// For now we are not doing health check for qa-115.
 			if (BaseTestCase.isTargetEnvLTS()) {
@@ -84,58 +86,27 @@ public class MosipTestRunner {
 			KeycloakUserManager.createUsers();
 			KeycloakUserManager.closeKeycloakInstance();
 
-			List<String> localLanguageList = new ArrayList<>(BaseTestCase.getLanguageList());
+			localLanguageList = new ArrayList<>(BaseTestCase.getLanguageList());
 			AdminTestUtil.getLocationData();
 
-			String partnerKeyURL = "";
-			String updatedPartnerKeyURL = "";
-			String ekycPartnerKeyURL = "";
+			AdminTestUtil.getHierarchyZoneCode();
+			BaseTestCase.mapUserToZone();
+			BaseTestCase.mapZone();
+			AdminTestUtil.getLocationLevelData();
+			AdminTestUtil.getLocationData();
+			AdminTestUtil.getZoneName();
 
-			if (BaseTestCase.listOfModules.contains("auth")
-					|| BaseTestCase.listOfModules.contains(GlobalConstants.ESIGNET)) {
-				PartnerRegistration.deleteCertificates();
-				CertificateGenerationUtil.getThumbprints();
-				AdminTestUtil.createAndPublishPolicy();
-				AdminTestUtil.createEditAndPublishPolicy();
-				partnerKeyURL = PartnerRegistration.generateAndGetPartnerKeyUrl();
-				updatedPartnerKeyURL = PartnerRegistration.generateAndGetUpdatedPartnerKeyUrl();
-				
-				AdminTestUtil.createAndPublishPolicyForKyc();
-				ekycPartnerKeyURL = PartnerRegistration.generateAndGetEkycPartnerKeyUrl();
+			for (int i = 0; i < localLanguageList.size(); i++) {
+				BaseTestCase.languageList.clear();
+				BaseTestCase.languageList.add(localLanguageList.get(i));
 
-			}
-
-			if (BaseTestCase.listOfModules.contains(GlobalConstants.MASTERDATA)) {
-				AdminTestUtil.getHierarchyZoneCode();
-				BaseTestCase.mapUserToZone();
-				BaseTestCase.mapZone();
-				AdminTestUtil.getLocationLevelData();
-				AdminTestUtil.getLocationData();
-				AdminTestUtil.getZoneName();
-				
-				
-
-				for (int i = 0; i < localLanguageList.size(); i++) {
-					BaseTestCase.languageList.clear();
-					BaseTestCase.languageList.add(localLanguageList.get(i));
-
-					DBManager.clearMasterDbData();
-					BaseTestCase.currentModule = GlobalConstants.MASTERDATA;
-					BaseTestCase.setReportName("masterdata-" + localLanguageList.get(i));
-					startTestRunner();
-
-				}
-
-			} else if (BaseTestCase.listOfModules.contains("auth")
-					|| BaseTestCase.listOfModules.contains(GlobalConstants.ESIGNET)) {
-				if (partnerKeyURL.isEmpty())
-				//	if (partnerKeyURL.isEmpty() || ekycPartnerKeyURL.isEmpty())
-					LOGGER.error("partnerKeyURL is null");
-				else
-					startTestRunner();
-			} else {
+				DBManager.clearMasterDbData();
+				BaseTestCase.currentModule = GlobalConstants.MASTERDATA;
+				BaseTestCase.setReportName("masterdata-" + localLanguageList.get(i));
 				startTestRunner();
 			}
+			
+			DBManager.clearMasterDbData();
 		} catch (Exception e) {
 			LOGGER.error("Exception " + e.getMessage());
 		}

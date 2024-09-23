@@ -1,6 +1,7 @@
 SearchZoneUser:
    MasterData_SearchZoneUser_Valid_Smoke:
       endPoint: /v1/masterdata/zoneuser/search
+      description: Search for zone user details with valid data
       role: admin
       restMethod: post
       inputTemplate: masterdata/SearchZoneUser/searchZoneUser
@@ -40,6 +41,7 @@ SearchZoneUser:
       
    MasterData_SearchZoneUser_Empty_Value:
       endPoint: /v1/masterdata/zoneuser/search
+      description: Search for zone user details with value as empty
       role: admin
       restMethod: post
       inputTemplate: masterdata/SearchZoneUser/searchZoneUser
@@ -76,6 +78,7 @@ SearchZoneUser:
 
    MasterData_SearchZoneUser_Empty_ColumnName:
       endPoint: /v1/masterdata/zoneuser/search
+      description: Search for zone user details with column name as empty
       role: admin
       restMethod: post
       inputTemplate: masterdata/SearchZoneUser/searchZoneUser
@@ -112,6 +115,7 @@ SearchZoneUser:
 
    MasterData_SearchZoneUser_Invalid_Pagination:
       endPoint: /v1/masterdata/zoneuser/search
+      description: Search for zone user details with invalid pagination
       role: admin
       restMethod: post
       inputTemplate: masterdata/SearchZoneUser/searchZoneUser

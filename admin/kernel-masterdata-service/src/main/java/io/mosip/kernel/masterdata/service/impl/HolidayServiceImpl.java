@@ -89,7 +89,7 @@ public class HolidayServiceImpl implements HolidayService {
 	@Autowired
 	private AuditUtil auditUtil;
 
-	private static final String UPDATE_HOLIDAY_QUERY = "UPDATE Holiday h SET h.updatedBy = :updatedBy , h.updatedDateTime = :updatedDateTime, h.holidayDesc = :holidayDesc,h.holidayId.holidayDate=:holidayDate,h.holidayId.holidayName = :holidayName   WHERE h.holidayId.locationCode = :locationCode  and h.holidayId.holidayId = :holidayId and h.holidayId.langCode = :langCode and (h.isDeleted is null or h.isDeleted = false)";
+	private static final String UPDATE_HOLIDAY_QUERY = "UPDATE Holiday h SET h.updatedBy = :updatedBy , h.updatedDateTime = :updatedDateTime, h.holidayDesc = :holidayDesc, h.holidayDate= :holidayDate, h.holidayName = :holidayName   WHERE h.locationCode = :locationCode and h.holidayId = :holidayId and h.langCode = :langCode and (h.isDeleted is null or h.isDeleted = false)";
 	private static final int DEFAULT_HOLIDAY_ID = 2000001;
 
 	/*

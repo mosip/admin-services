@@ -1,6 +1,7 @@
 GetTxnDetailBulkUpload:
    master_GetTxnDetailBulkUpload_Smoke:
       endPoint: /v1/admin/bulkupload/transcation/{transcationId}
+      description: Retrieve transaction detail bulk upload details using an transaction code
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetTxnDetailBulkUpload/txnDetail
