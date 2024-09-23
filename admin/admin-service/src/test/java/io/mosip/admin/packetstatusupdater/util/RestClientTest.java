@@ -191,7 +191,6 @@ public class RestClientTest {
 
     @Test
     public void setRequestHeader_withValidInput_thenSuccess() {
-
         Object requestType = mock(Object.class);
         MediaType mediaType = mock(MediaType.class);
 

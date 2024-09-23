@@ -49,13 +49,13 @@ public class HotlistSecurityManagerTest {
 	private HotlistSecurityManager securityManager;
 
 	@Test
-	public void testHash() {
+	public void testHash_Success() {
 		assertEquals("88D4266FD4E6338D13B845FCF289579D209C897823B9217DA3E161936F031589",
 				HotlistSecurityManager.hash("abcd".getBytes()));
 	}
 
 	@Test
-	public void testEncrypt() throws IOException, HotlistAppException {
+	public void testEncrypt_Success() throws IOException, HotlistAppException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
 		ResponseWrapper<ObjectNode> response = new ResponseWrapper<>();
@@ -70,7 +70,7 @@ public class HotlistSecurityManagerTest {
 	}
 
 	@Test
-	public void testDecrypt() throws IOException, HotlistAppException {
+	public void testDecrypt_Success() throws IOException, HotlistAppException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
 		ResponseWrapper<ObjectNode> response = new ResponseWrapper<>();

@@ -159,6 +159,8 @@ public class AdminControllerTest {
 		convertRequestDto.setOnlyImageInformation(0);
 		convertRequestDto.setCompressionRatio(95);
 
+		assertNotNull(convertRequestDto);
+
 		when(adminServiceImpl.getApplicantPhoto(inputBytes)).thenCallRealMethod();
 	}
 

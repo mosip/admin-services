@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 @SpringBootTest
 @RunWith(MockitoJUnitRunner.class)
 public class RegistrationCenterValidatorTest {
@@ -56,6 +59,11 @@ public class RegistrationCenterValidatorTest {
         reqDto.setZoneCode("zoneCode123");
         reqDto.setWorkingNonWorkingDays(Collections.singletonMap("MONDAY", true));
         reqDto.setExceptionalHolidayPutPostDto(Collections.emptyList());
+
+        assertEquals("eng", registrationCenter.getLangCode());
+        assertEquals("Center124", reqDto.getName());
+        assertNotNull(reqDto);
+        assertNotNull(registrationCenter);
 
         registrationCenterValidator.createRegCenterPut(newregistrationCenterList, registrationCenter, reqDto);
     }
