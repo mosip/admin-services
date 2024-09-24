@@ -146,3 +146,22 @@ VALUES('3496', 'Authentication positive purpose', 'Authentication positive purpo
 INSERT INTO master."template"
 (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
 VALUES('3495', 'Authentication positive purpose', 'Authentication positive purpose', 'txt', 'velocity', 'Your request to authentication is successful.', '10006', 'Resident Services', 'authentication-request-positive-purpose', 'eng', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+
+INSERT INTO master."template"
+(id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('1394', 'Success summary to generate or revoke VIDs', 'Success summary to generate or revoke VIDs', 'txt', 'velocity', '$vidType VID $maskedVID was $actionPerformed successfully', '10006', 'Resident Services', 'gen-or-revoke-vid-success-summary', 'eng', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+INSERT INTO master."template"
+(id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('1394', 'Success summary to generate or revoke VIDs', 'Success summary to generate or revoke VIDs', 'txt', 'velocity', '$vidType VID $maskedVID a été $actionPerformed avec succès', '10006', 'Resident Services', 'gen-or-revoke-vid-success-summary', 'fra', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+INSERT INTO master."template"
+(id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('1394', 'Success summary to generate or revoke VIDs', 'Success summary to generate or revoke VIDs', 'txt', 'velocity', 'تم بنجاح $vidType VID $maskedVID بـ $actionPerformed', '10006', 'Resident Services', 'gen-or-revoke-vid-success-summary', 'ara', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+INSERT INTO master."template"
+(id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('1394', 'Success summary to generate or revoke VIDs', 'Success summary to generate or revoke VIDs', 'txt', 'velocity', '$vidType VID $maskedVID $actionPerformed सफलतापूर्वक हो गया', '10006', 'Resident Services', 'gen-or-revoke-vid-success-summary', 'hin', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+INSERT INTO master."template"
+(id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('1394', 'Success summary to generate or revoke VIDs', 'Success summary to generate or revoke VIDs', 'txt', 'velocity', '$vidType VID $maskedVID ಯಶಸ್ವಿಯಾಗಿ $actionPerformed ಆಗಿತ್ತು', '10006', 'Resident Services', 'gen-or-revoke-vid-success-summary', 'kan', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+INSERT INTO master."template"
+(id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('1394', 'Success summary to generate or revoke VIDs', 'Success summary to generate or revoke VIDs', 'txt', 'velocity', '$vidType VID $maskedVID வெற்றிகரமாக $actionPerformed ஆனது', '10006', 'Resident Services', 'gen-or-revoke-vid-success-summary', 'tam', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);

@@ -62,6 +62,19 @@ WHERE id='3496' AND lang_code='spa';
 DELETE FROM master."template"
 WHERE id='3495' AND lang_code='eng';
 
+DELETE FROM master."template"
+WHERE id='1394' AND lang_code='eng';
+DELETE FROM master."template"
+WHERE id='1394' AND lang_code='fra';
+DELETE FROM master."template"
+WHERE id='ara' AND lang_code='fra';
+DELETE FROM master."template"
+WHERE id='ara' AND lang_code='hin';
+DELETE FROM master."template"
+WHERE id='ara' AND lang_code='kan';
+DELETE FROM master."template"
+WHERE id='ara' AND lang_code='tam';
+
 DELETE FROM master.template_type
 WHERE code='authentication-request-positive-purpose' AND lang_code='eng';
 DELETE FROM master.template_type
