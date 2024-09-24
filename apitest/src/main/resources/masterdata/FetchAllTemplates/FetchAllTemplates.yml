@@ -1,6 +1,7 @@
 FetchAllTemplates:
    MasterData_FetchAllTemplates_AllValid_smoke:
       endPoint: /v1/masterdata/templates/all
+      uniqueIdentifier: TC_Masterdata_FetchAllTemplates_01
       description: Retrieve All Template details with valid data
       role: admin
       checkErrorsOnlyInResponse: true

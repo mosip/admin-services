@@ -1,6 +1,7 @@
 FetchAllUserDetails:
    MasterData_FetchAllUserDetails_valid_smoke:
       endPoint: /v1/masterdata/usersdetails
+      uniqueIdentifier: TC_Masterdata_FetchAllUserDetails_01
       description: Retrieve All User details with valid data
       role: admin
       checkErrorsOnlyInResponse: true

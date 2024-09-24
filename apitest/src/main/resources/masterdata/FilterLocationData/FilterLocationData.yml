@@ -1,6 +1,7 @@
 FilterLocationData:
    MasterData_FilterLocationData_Valid_Smoke:
       endPoint: /v1/masterdata/locations/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterLocationData_01
       description: Filter Location details by all valid data
       role: admin
       checkErrorsOnlyInResponse: true
@@ -22,6 +23,7 @@ FilterLocationData:
   }'
    MasterData_FilterLocationData_Invalid_EmptyFilterType:
       endPoint: /v1/masterdata/locations/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterLocationData_02
       description: Filter Location details by invalid filter Type
       role: admin
       templateFields: ["columnName"]
