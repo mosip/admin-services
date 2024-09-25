@@ -20,7 +20,7 @@ on:
       - 1.*
       - develop*
       - MOSIP*
-
+      - DSD*
 jobs:
   build-maven-admin-services:
     uses: mosip/kattu/.github/workflows/maven-build.yml@master-java21
