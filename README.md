@@ -3,7 +3,7 @@
 
 
 # Admin
-
+## Note: This branch is created to host updated testrig code for CRE checks.
 ## Overview
 This repository contains the source code MOSIP Admin module. For an overview refer [here](https://docs.mosip.io/1.2.0/modules/administration). The module exposes API endpoints. For a reference front-end UI implementation refer to [Admin UI github repo](https://github.com/mosip/admin-ui/)
 
