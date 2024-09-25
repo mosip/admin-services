@@ -1,6 +1,7 @@
 FetchHolidays:
    MasterData_FetchHolidays_allValid_smoke_get:
       endPoint: /v1/masterdata/holidays
+      uniqueIdentifier: TC_Masterdata_FetchHolidays_01
       description: Retrieve Holiday details with all valid data
       role: admin
       checkErrorsOnlyInResponse: true
@@ -16,6 +17,7 @@ FetchHolidays:
   
    MasterData_FetchHolidays_allValid_smoke_with_Id:
       endPoint: /v1/masterdata/holidays/{holidayid}
+      uniqueIdentifier: TC_Masterdata_FetchHolidays_02
       description: Retrieve Holiday details with valid holidayid
       role: admin
       checkErrorsOnlyInResponse: true
@@ -30,6 +32,7 @@ FetchHolidays:
 }'        
    MasterData_FetchHolidays_allValid_smoke_with_Id_and_langCode:
       endPoint: /v1/masterdata/holidays/{holidayid}/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchHolidays_03
       description: Retrieve Holiday details with valid holidayid and langcode
       role: admin
       templateFields: ["langcode"]
@@ -45,6 +48,7 @@ FetchHolidays:
   }'        
    MasterData_FetchHolidays_invalid_holidayid_unexisting:
       endPoint: /v1/masterdata/holidays/{holidayid}
+      uniqueIdentifier: TC_Masterdata_FetchHolidays_04
       description: Retrieve Holiday details with nonexisting holidayid
       role: admin
       restMethod: get
@@ -64,6 +68,7 @@ FetchHolidays:
 }'        
    MasterData_FetchHolidays_invalid_holidayid_unexisting with langCode:
       endPoint: /v1/masterdata/holidays/{holidayid}/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchHolidays_05
       description: Retrieve Holiday details with nonexisting holidayid and valid langCode
       role: admin
       restMethod: get
@@ -83,6 +88,7 @@ FetchHolidays:
 }'        
    MasterData_FetchHolidays_invalid_langcode_unexisting:
       endPoint: /v1/masterdata/holidays/{holidayid}/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchHolidays_06
       description: Retrieve Holiday details with nonexisting langcode
       role: admin
       restMethod: get

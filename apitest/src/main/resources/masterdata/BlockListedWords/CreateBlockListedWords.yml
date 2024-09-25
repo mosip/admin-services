@@ -1,6 +1,7 @@
 CreateBlockListedWords:
    Masterdata_CreateBlockListedWords_All_Valid_Smoke:
       endPoint: /v1/masterdata/blocklistedwords
+      uniqueIdentifier: TC_Masterdata_CreateBlockListedWords_01
       description: Create block listed words with valid data
       role: admin
       templateFields: ["description","word"]
@@ -19,6 +20,7 @@ CreateBlockListedWords:
 }'
    Masterdata_CreateBlockListedWords_space_in_word:
       endPoint: /v1/masterdata/blocklistedwords
+      uniqueIdentifier: TC_Masterdata_CreateBlockListedWords_02
       description: Create block listed word with space in word value
       role: admin
       templateFields: ["description","word"]
@@ -42,6 +44,7 @@ CreateBlockListedWords:
 }'
    Masterdata_CreateBlockListedWords_Invalid_BlocklistedWordsLength129:
       endPoint: /v1/masterdata/blocklistedwords
+      uniqueIdentifier: TC_Masterdata_CreateBlockListedWords_03
       description: Create block listed words with invalid length of word more than 128 charectars
       role: admin
       templateFields: ["description"]
@@ -65,6 +68,7 @@ CreateBlockListedWords:
 }'
    Masterdata_CreateBlockListedWords_Invalid_DescriptionLength257:
       endPoint: /v1/masterdata/blocklistedwords
+      uniqueIdentifier: TC_Masterdata_CreateBlockListedWords_04
       description: Create block listed words with invalid Description of more than 256 charectars
       role: admin
       templateFields: ["word"]
@@ -88,6 +92,7 @@ CreateBlockListedWords:
 }'
    Masterdata_CreateBlockListedWords_Invalid_EmptyWord:
       endPoint: /v1/masterdata/blocklistedwords
+      uniqueIdentifier: TC_Masterdata_CreateBlockListedWords_05
       description: Create block listed words with empty word value
       role: admin
       templateFields: ["description"]

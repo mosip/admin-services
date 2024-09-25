@@ -1,6 +1,7 @@
 CreateApplicationType:
    Masterdata_CreateApplicationType_All_Valid_Smoke:
       endPoint: /v1/masterdata/applicationtypes
+      uniqueIdentifier: TC_Masterdata_CreateApplicationType_01
       description: Create Application Type with valid data
       role: admin
       templateFields: ["langCode"]

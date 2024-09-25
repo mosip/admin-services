@@ -1,6 +1,7 @@
 DeleteDeviceSpec:
    MasterData_DeleteDeviceSpec_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/devicespecifications/{id}
+      uniqueIdentifier: TC_Masterdata_DeleteDeviceSpec_01
       description: Delete Device Spec with valid data
       role: admin
       checkErrorsOnlyInResponse: true
@@ -15,6 +16,7 @@ DeleteDeviceSpec:
 }'
    MasterData_DeleteDeviceSpec_Invalid_ID: 
       endPoint: /v1/masterdata/devicespecifications/{id}
+      uniqueIdentifier: TC_Masterdata_DeleteDeviceSpec_02
       description: Delete Device Spec with invalid id
       role: admin
       templateFields: []

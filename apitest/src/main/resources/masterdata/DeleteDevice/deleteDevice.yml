@@ -1,6 +1,7 @@
 DeleteDevice:
    MasterData_DeleteDevice_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/devices/{id}
+      uniqueIdentifier: TC_Masterdata_DeleteDevice_01
       description: Delete Device with valid data
       role: admin
       checkErrorsOnlyInResponse: true
