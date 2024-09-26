@@ -1,0 +1,25 @@
+GetRegistrationMachineUserMappingHistory:
+   MasterData_GetRegistrationMachineUserMappingHistory_allValid_smoke:
+      endPoint: /v1/masterdata/getregistrationmachineusermappinghistory/{effdtimes}/{registrationcenterid}/{machineid}/{userid}
+      description: Retrieve registration machine user mapping history missing using valid effdtimes, registration center ID, machine ID, user id
+      role: admin
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: masterdata/GetRegistrationMachineUserMappingHistory/getRegistrationMachineUserMappingHistory
+      outputTemplate: masterdata/GetRegistrationMachineUserMappingHistory/getRegistrationMachineUserMappingHistoryResult
+      input: '{
+      "effdtimes":"$ID:SearchMachine_Valid_Smoke_FullResponse_sid_responsetime$",
+      "registrationcenterid":"$ID:CreateRegCenter_allValid_smoke_sid_id$",
+      "machineid":"$ID:CreateMachine_All_Valid_Smoke_sid_id$",
+      "userid":"$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$"
+}'
+      output: '{
+   "registrationCenters": [{
+        "cntrId": "$ID:CreateRegCenter_allValid_smoke_sid_id$",
+        "machineId": "$ID:CreateMachine_All_Valid_Smoke_sid_id$",
+        "usrId": "masterdata-220005",
+        "isActive": "$IGNORE$",
+        "langCode": "$IGNORE$",
+        "effectivetimes": "$IGNORE$"
+    }]
+}'
