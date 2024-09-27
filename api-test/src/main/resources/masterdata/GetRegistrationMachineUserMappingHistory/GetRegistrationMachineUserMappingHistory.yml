@@ -22,4 +22,4 @@ GetRegistrationMachineUserMappingHistory:
         "langCode": "$IGNORE$",
         "effectivetimes": "$IGNORE$"
     }]
-}'  
+}'
