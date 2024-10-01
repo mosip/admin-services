@@ -1,6 +1,7 @@
 UpdateDeviceSpecification:
    MasterData_UpdateDeviceSpecification_All_Valid_Smoke:
       endPoint: /v1/masterdata/devicespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_01
       description: Update Device Specification with all valid data
       role: admin
       checkErrorsOnlyInResponse: true
@@ -26,6 +27,7 @@ UpdateDeviceSpecification:
       
    MasterData_UpdateDeviceSpecification_InputParameter_Name_Missing:
       endPoint: /v1/masterdata/devicespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_02
       description: Update Device Specification with missing input parameter Name
       role: admin
       templateFields: ["description"]
@@ -54,6 +56,7 @@ UpdateDeviceSpecification:
 }'
    MasterData_UpdateDeviceSpecification_InputParameter_Name_Empty:
       endPoint: /v1/masterdata/devicespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_03
       description: Update Device Specification with empty input parameter Name
       role: admin
       templateFields: ["description"]
@@ -82,6 +85,7 @@ UpdateDeviceSpecification:
 }'
    MasterData_UpdateDeviceSpecification_InputParameter_Name_AboveMaxLen64:
       endPoint: /v1/masterdata/devicespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_04
       description: Update Device Specification with Name more than 64 charectars
       role: admin
       templateFields: ["description"]
@@ -110,6 +114,7 @@ UpdateDeviceSpecification:
 }'
    MasterData_UpdateDeviceSpecification_InputParameter_Brand_Missing:
       endPoint: /v1/masterdata/devicespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_05
       description: Update Device Specification with missing input parameter Brand
       role: admin
       templateFields: ["name","description"]
@@ -138,6 +143,7 @@ UpdateDeviceSpecification:
 }'
    MasterData_UpdateDeviceSpecification_InputParameter_Brand_Empty:
       endPoint: /v1/masterdata/devicespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_06
       description: Update Device Specification with empty input parameter Brand
       role: admin
       templateFields: ["name","description"]
@@ -166,6 +172,7 @@ UpdateDeviceSpecification:
 }'
    MasterData_UpdateDeviceSpecification_InputParameter_Brand_AboveMaxLen32:
       endPoint: /v1/masterdata/devicespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_07
       description: Update Device Specification with Brand more than 32 charectars
       role: admin
       templateFields: ["name","description"]
@@ -194,6 +201,7 @@ UpdateDeviceSpecification:
 }'
    MasterData_UpdateDeviceSpecification_InputParameter_Model_Missing:
       endPoint: /v1/masterdata/devicespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_08
       description: Update Device Specification with missing input parameter Model
       role: admin
       templateFields: ["name","description"]
@@ -222,6 +230,7 @@ UpdateDeviceSpecification:
 }'
    MasterData_UpdateDeviceSpecification_InputParameter_Model_Empty:
       endPoint: /v1/masterdata/devicespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_09
       description: Update Device Specification with empty input parameter Model
       role: admin
       templateFields: ["name","description"]
@@ -250,6 +259,7 @@ UpdateDeviceSpecification:
 }'
    MasterData_UpdateDeviceSpecification_InputParameter_Model_AboveMaxLen16:
       endPoint: /v1/masterdata/devicespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_10
       description: Update Device Specification with Model more than 16 charectars
       role: admin
       templateFields: ["name","description"]
@@ -278,6 +288,7 @@ UpdateDeviceSpecification:
 }'
    MasterData_UpdateDeviceSpecification_InputParameter_DeviceTypeCode_Missing:
       endPoint: /v1/masterdata/devicespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_11
       description: Update Device Specification with missing input parameter Device Type Code
       role: admin
       templateFields: ["name","description"]
@@ -306,6 +317,7 @@ UpdateDeviceSpecification:
 }'
    MasterData_UpdateDeviceSpecification_InputParameter_DeviceTypeCode_Empty:
       endPoint: /v1/masterdata/devicespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_12
       description: Update Device Specification with empty input parameter Device Type Code
       role: admin
       templateFields: ["name","description"]
@@ -334,6 +346,7 @@ UpdateDeviceSpecification:
 }'
    MasterData_UpdateDeviceSpecification_InputParameter_DeviceTypeCode_AboveMaxLen36:
       endPoint: /v1/masterdata/devicespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_13
       description: Update Device Specification with Device Type Code motre than 36 charectars
       role: admin
       templateFields: ["name","description"]
@@ -362,6 +375,7 @@ UpdateDeviceSpecification:
 }'
    MasterData_UpdateDeviceSpecification_InputParameter_Invalid_DeviceTypeCode:
       endPoint: /v1/masterdata/devicespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_14
       description: Update Device Specification with invalid input parameter Device Type Code
       role: admin
       templateFields: ["name","description"]
@@ -390,6 +404,7 @@ UpdateDeviceSpecification:
 }'
    MasterData_UpdateDeviceSpecification_InputParameter_MinDriverversion_Missing:
       endPoint: /v1/masterdata/devicespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_15
       description: Update Device Specification with missing input parameter Minimum Driver Version
       role: admin
       templateFields: ["name","description"]
@@ -418,6 +433,7 @@ UpdateDeviceSpecification:
 }'
    MasterData_UpdateDeviceSpecification_InputParameter_MinDriverversion_Empty:
       endPoint: /v1/masterdata/devicespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_16
       description: Update Device Specification with empty input parameter Minimum Driver Version
       role: admin
       templateFields: ["name","description"]
@@ -446,6 +462,7 @@ UpdateDeviceSpecification:
 }'
    MasterData_UpdateDeviceSpecification_InputParameter_MinDriverversion_AboveMaxLen16:
       endPoint: /v1/masterdata/devicespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_17
       role: admin
       templateFields: ["name","description"]
       description: Update Device Specification with Minimum Driver Version more than 64 charectars
@@ -474,6 +491,7 @@ UpdateDeviceSpecification:
 }'
    MasterData_UpdateDeviceSpecification_InputParameter_Description_AboveMaxLen256:
       endPoint: /v1/masterdata/devicespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_18
       description: Update Device Specification with Description more than 256 charectars
       role: admin
       templateFields: ["name"]

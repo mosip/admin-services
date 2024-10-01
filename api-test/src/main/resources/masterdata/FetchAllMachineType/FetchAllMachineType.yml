@@ -1,6 +1,7 @@
 FetchAllMachineType:
    MasterData_FetchAllMachineType_valid_smoke_langcodeandCode:
       endPoint: /v1/masterdata/machinetypes/all
+      uniqueIdentifier: TC_Masterdata_FetchAllMachineType_01
       description: Retrieve All Machine Type details with valid data
       role: admin
       checkErrorsOnlyInResponse: true

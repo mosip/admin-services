@@ -1,6 +1,7 @@
 FetchDevice:
    MasterData_FetchDevice_allValid_smoke_with_lang:
       endPoint: /v1/masterdata/devices/{langCode}
+      uniqueIdentifier: TC_Masterdata_FetchDevice_01
       description: Retrieve Device details with valid data By langcode
       role: admin
       templateFields: ["name","description"]
@@ -19,6 +20,7 @@ FetchDevice:
 }'       
    MasterData_FetchDevice_allValid_smoke_with_lang_and_deviceType:
       endPoint: /v1/masterdata/devices/{langCode}/{deviceType}
+      uniqueIdentifier: TC_Masterdata_FetchDevice_02
       description: Retrieve Device details with valid data By langcode and deviceType
       role: admin
       templateFields: ["name","description"]
@@ -37,6 +39,7 @@ FetchDevice:
 }'
    MasterData_FetchDevice_allValid_smoke_with_regCentre:
       endPoint: /v1/masterdata/devices/mappeddevices/{regCenterId}
+      uniqueIdentifier: TC_Masterdata_FetchDevice_03
       description: Retrieve Device details with valid data By regCenterId
       role: admin
       checkErrorsOnlyInResponse: true
@@ -55,6 +58,7 @@ FetchDevice:
 }'
    MasterData_FetchDevice_invalid_regCentre:
       endPoint: /v1/masterdata/devices/mappeddevices/{regCenterId}
+      uniqueIdentifier: TC_Masterdata_FetchDevice_04
       description: Retrieve mapped Device details to a regCenterId
       role: admin
       restMethod: get
@@ -75,6 +79,7 @@ FetchDevice:
 }'       
    MasterData_FetchDevice_invalid_deviceType_unexisting:
       endPoint: /v1/masterdata/devices/{langCode}/{deviceType}
+      uniqueIdentifier: TC_Masterdata_FetchDevice_05
       description: Retrieve Device details non existing deviceType
       role: admin
       restMethod: get

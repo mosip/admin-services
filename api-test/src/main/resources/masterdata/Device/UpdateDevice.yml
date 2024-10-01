@@ -1,6 +1,7 @@
 UpdateDevice:
    MasterData_UpdateDevice_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/devices
+      uniqueIdentifier: TC_Masterdata_UpdateDevice_01
       description: Update Device with all valid data
       role: globalAdmin
       templateFields: ["name"]
@@ -27,12 +28,13 @@ UpdateDevice:
 	"isActive": "$IGNORE$",
 	"macAddress": "D4-3D-7E-C0-8C-4A",
 	"zoneCode": "$IGNORE$",
-	"validityDateTime": "$IGNORE$",
+	"validityDateTime": "$TIMESTAMP$",
 	"serialNum": "ceec5f62-77b7-46f3-816b-3e734305a9c8",
 	"requesttime": "$TIMESTAMP$"
 }'
    MasterData_UpdateDevice_Valid_Smoke_decommison_sid:
       endPoint: /v1/masterdata/devices
+      uniqueIdentifier: TC_Masterdata_UpdateDevice_02
       description: Update Device with decommissioned sid
       role: globalAdmin
       templateFields: ["name"]
@@ -59,12 +61,13 @@ UpdateDevice:
 	"isActive": "$IGNORE$",
 	"macAddress": "D4-3D-7E-C0-8C-4A",
 	"zoneCode": "$IGNORE$",
-	"validityDateTime": "$IGNORE$",
+	"validityDateTime": "$TIMESTAMP$",
 	"serialNum": "ceec5f62-77b7-46f3-816b-3e734305a9c8",
 	"requesttime": "$TIMESTAMP$"
 }'
    MasterData_UpdateDevice_Invalid_InputParameterInvalid_Format:
       endPoint: /v1/masterdata/devices
+      uniqueIdentifier: TC_Masterdata_UpdateDevice_03
       description: Update Device with invalid input format
       role: admin
       templateFields: ["name"]
@@ -94,6 +97,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_Device_Zone_notPresentInDB:
       endPoint: /v1/masterdata/devices
+      uniqueIdentifier: TC_Masterdata_UpdateDevice_04
       description: Update Device with invalid zoneCode
       role: admin
       templateFields: ["name"]
@@ -123,6 +127,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_Machine_Name_Blank:
       endPoint: /v1/masterdata/devices
+      uniqueIdentifier: TC_Masterdata_UpdateDevice_05
       description: Update Device with empty name
       role: admin
       restMethod: put
@@ -151,6 +156,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_DeviceName_AboveMaxLen64:
       endPoint: /v1/masterdata/devices
+      uniqueIdentifier: TC_Masterdata_UpdateDevice_06
       description: Update Device with invalid device name more than 64 characters
       role: admin
       templateFields: ["name"]
@@ -180,6 +186,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_Zone_Code_Blank:
       endPoint: /v1/masterdata/devices
+      uniqueIdentifier: TC_Masterdata_UpdateDevice_07
       description: Update Device with empty zoneCode
       role: admin
       templateFields: ["name"]
@@ -209,6 +216,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_MAC_Address_Blank:
       endPoint: /v1/masterdata/devices
+      uniqueIdentifier: TC_Masterdata_UpdateDevice_08
       description: Update Device with empty macAddress
       role: admin
       templateFields: ["name"]
@@ -238,6 +246,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_MacAddress_AboveMaxLen64:
       endPoint: /v1/masterdata/devices
+      uniqueIdentifier: TC_Masterdata_UpdateDevice_09
       description: Update Device with invalid macAddress more than characters
       role: admin
       templateFields: ["name"]
@@ -267,6 +276,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_Serial_Number_Blank:
       endPoint: /v1/masterdata/devices
+      uniqueIdentifier: TC_Masterdata_UpdateDevice_10
       description: Update Device with empty serialNum
       role: admin
       templateFields: ["name"]
@@ -296,6 +306,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_SerialNumber_AboveMaxLen64:
       endPoint: /v1/masterdata/devices
+      uniqueIdentifier: TC_Masterdata_UpdateDevice_11
       description: Update Device with invalid serialNum more than 64 characters
       role: admin
       templateFields: ["name"]
@@ -325,6 +336,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_IPAddress_AboveMaxLen17:
       endPoint: /v1/masterdata/devices
+      uniqueIdentifier: TC_Masterdata_UpdateDevice_12
       description: Update Device with invalid ipAddress more than 16 characters
       role: admin
       templateFields: ["name"]
@@ -354,6 +366,7 @@ UpdateDevice:
 }'
    MasterData_UpdateDevice_Invalid_DSpecID_AboveMaxLen36:
       endPoint: /v1/masterdata/devices
+      uniqueIdentifier: TC_Masterdata_UpdateDevice_13
       description: Update Device with invalid deviceSpecId more than 36 characters
       role: admin
       templateFields: ["name"]

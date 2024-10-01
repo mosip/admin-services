@@ -1,6 +1,7 @@
 DeleteMachine:
    MasterData_DeleteMachine_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/machines/{id}
+      uniqueIdentifier: TC_Masterdata_DeleteMachine_01
       description: Delete Machine details with valid data
       role: globalAdmin
       checkErrorsOnlyInResponse: true
@@ -15,6 +16,7 @@ DeleteMachine:
 }'
    MasterData_DeleteMachine_Invalid_ID: 
       endPoint: /v1/masterdata/machines/{id}
+      uniqueIdentifier: TC_Masterdata_DeleteMachine_02
       description: Delete Machine with invalid id
       role: admin
       templateFields: []

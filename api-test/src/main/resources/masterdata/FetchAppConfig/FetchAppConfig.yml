@@ -1,6 +1,7 @@
 FetchAppConfig:
    MasterData_FetchAppConfig_allValid_smoke:
       endPoint: /v1/masterdata/configs
+      uniqueIdentifier: TC_Masterdata_FetchAppConfig_01
       description: Retrieve All App Config details with valid data
       role: admin
       checkErrorsOnlyInResponse: true

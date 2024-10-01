@@ -1,6 +1,7 @@
 DeviceSpecFilter:
    MasterData_DeviceSpecFilter_Unique_Name_eng_smoke:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_01
       description: Filter Device Specification by columnName name with type unique
       role: admin
       templateFields: ["languageCode"]
@@ -26,6 +27,7 @@ DeviceSpecFilter:
   }'
    MasterData_DeviceSpecFilter_All_Name_eng_smoke:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_02
       description: Filter Device Specification by columnName name with type all
       role: admin
       templateFields: ["languageCode"]
@@ -51,6 +53,7 @@ DeviceSpecFilter:
   }'
    MasterData_DeviceSpecFilter_Unique_Brand_eng_smoke:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_03
       description: Filter Device Specification by columnName brand and type unique
       role: admin
       templateFields: ["languageCode"]
@@ -76,6 +79,7 @@ DeviceSpecFilter:
   }'
    MasterData_DeviceSpecFilter_All_Brand_eng_smoke:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_04
       description: Filter Device Specification by columnName brand and type all
       role: admin
       checkErrorsOnlyInResponse: true
@@ -97,6 +101,7 @@ DeviceSpecFilter:
 }'
    MasterData_DeviceSpecFilter_Unique_Model_smoke:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_05
       description: Filter Device Specification by columnName model and type unique
       role: admin
       templateFields: ["languageCode"]
@@ -122,6 +127,7 @@ DeviceSpecFilter:
   }'
    MasterData_DeviceSpecFilter_Unique_IsActive_smoke:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_06
       description: Filter Device Specification by columnName isActive with type unique
       role: admin
       templateFields: ["languageCode"]
@@ -147,6 +153,7 @@ DeviceSpecFilter:
   }'
    MasterData_DeviceSpecFilter_Invalid_RequestTime_neg:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_07
       description: Filter Device Specification by invalid requesttime
       role: admin
       templateFields: ["languageCode"]
@@ -172,6 +179,7 @@ DeviceSpecFilter:
 }'
    MasterData_DeviceSpecFilter_Invalid_Value_Name_neg:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_08
       description: Filter Device Specification by columnName name and invalid text
       role: admin
       checkErrorsOnlyInResponse: true
@@ -192,6 +200,7 @@ DeviceSpecFilter:
   }'
    MasterData_DeviceSpecFilter_Invalid_FilterType_neg:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_09
       description: Filter Device Specification by columnName name with invalid text
       role: admin
       templateFields: ["languageCode"]
@@ -217,6 +226,7 @@ DeviceSpecFilter:
 }'  
    MasterData_DeviceSpecFilter_inValid_blank_FilterType_neg:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_10
       description: Filter Device Specification by columnName name and empty type
       role: admin
       templateFields: ["languageCode"]
@@ -242,6 +252,7 @@ DeviceSpecFilter:
 }'  
    MasterData_DeviceSpecFilter_inValid_columnName:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
+      uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_11
       description: Filter Device Specification by invalid columnName
       role: admin
       templateFields: ["languageCode"]
