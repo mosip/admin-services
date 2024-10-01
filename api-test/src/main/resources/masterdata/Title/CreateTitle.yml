@@ -1,6 +1,7 @@
 CreateTitle:
    MasterData_CreateTitle_All_Valid_Smoke:
       endPoint: /v1/masterdata/title
+      uniqueIdentifier: TC_Masterdata_CreateTitle_01
       description: Create title details with valid data
       role: admin
       templateFields: ["titleName","titleDescription"]
@@ -22,6 +23,7 @@ CreateTitle:
    
    MasterData_CreateTitle_Invalid_InputParameter_TitleName_Missing:
       endPoint: /v1/masterdata/title
+      uniqueIdentifier: TC_Masterdata_CreateTitle_02
       description: Create title details with input parameter title name as missing
       role: admin
       templateFields: ["titleDescription"]
@@ -46,6 +48,7 @@ CreateTitle:
 }'
    MasterData_CreateTitle_Invalid_InputParameter_TitleName_Empty:
       endPoint: /v1/masterdata/title
+      uniqueIdentifier: TC_Masterdata_CreateTitle_03
       description: Create title details with input parameter title name as empty
       role: admin
       templateFields: ["titleDescription"]
@@ -70,6 +73,7 @@ CreateTitle:
 }'
    MasterData_CreateTitle_Invalid_InputParameter_TitleName_AboveMaxLen64:
       endPoint: /v1/masterdata/title
+      uniqueIdentifier: TC_Masterdata_CreateTitle_04
       description: Create title details with input parameter title name exceeding the maximum length of 64 characters
       role: admin
       templateFields: ["titleDescription"]
@@ -94,6 +98,7 @@ CreateTitle:
 }'
    MasterData_CreateTitle_Invalid_InputParameter_TitleDescription_AboveMaxLen128:
       endPoint: /v1/masterdata/title
+      uniqueIdentifier: TC_Masterdata_CreateTitle_05
       description: Create title details with input parameter title description exceeding the maximum length of 128 characters
       role: admin
       templateFields: ["titleName"]
@@ -118,6 +123,7 @@ CreateTitle:
 }'
    MasterData_CreateTitle_Invalid_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/title
+      uniqueIdentifier: TC_Masterdata_CreateTitle_06
       description: Create title details with input parameter is active as missing
       role: admin
       templateFields: ["titleName","titleDescription"]

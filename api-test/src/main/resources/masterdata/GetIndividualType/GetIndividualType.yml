@@ -1,6 +1,7 @@
 GetIndividualType:
    MasterData_GetIndividualType_allValid_smoke:
       endPoint: /v1/masterdata/individualtypes/all
+      uniqueIdentifier: TC_Masterdata_GetIndividualType_01
       description: Retrieve individual type details
       role: admin
       restMethod: get

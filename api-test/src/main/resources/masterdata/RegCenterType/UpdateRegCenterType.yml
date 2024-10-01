@@ -1,6 +1,7 @@
 UpdateRegCenterType:
    MasterData_UpdateRegCenterType_All_Valid_Smoke:
       endPoint: /v1/masterdata/registrationcentertypes
+      uniqueIdentifier: TC_Masterdata_UpdateRegCenterType_01
       description: Update registration centre type with valid data
       role: admin
       templateFields: ["name","descr","langCode"]
@@ -21,6 +22,7 @@ UpdateRegCenterType:
    
    MasterData_UpdateRegCenterType_InputParameter_Name_Missing:
       endPoint: /v1/masterdata/registrationcentertypes
+      uniqueIdentifier: TC_Masterdata_UpdateRegCenterType_02
       description: Update a registration center type with the name parameter as missing
       role: admin
       templateFields: ["descr"]
@@ -45,6 +47,7 @@ UpdateRegCenterType:
 }'
    MasterData_UpdateRegCenterType_InputParameter_Name_Empty:
       endPoint: /v1/masterdata/registrationcentertypes
+      uniqueIdentifier: TC_Masterdata_UpdateRegCenterType_03
       description: Update a registration center type with the name parameter as empty
       role: admin
       templateFields: ["descr"]
@@ -69,6 +72,7 @@ UpdateRegCenterType:
 }'
    MasterData_UpdateRegCenterType_InputParameter_Name_AboveMaxLen64:
       endPoint: /v1/masterdata/registrationcentertypes
+      uniqueIdentifier: TC_Masterdata_UpdateRegCenterType_04
       description: Update a registration center type with the name parameter exceeding the maximum length of 64 characters
       role: admin
       templateFields: ["name","descr"]
@@ -93,6 +97,7 @@ UpdateRegCenterType:
 }'
    MasterData_UpdateRegCenterType_InputParameter_Description_AboveMaxLen256:
       endPoint: /v1/masterdata/registrationcentertypes
+      uniqueIdentifier: TC_Masterdata_UpdateRegCenterType_05
       description: Update a registration center type with the description parameter exceeding the maximum length of 256 characters
       role: admin
       templateFields: ["name","descr"]

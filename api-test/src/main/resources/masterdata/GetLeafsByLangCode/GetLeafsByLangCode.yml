@@ -1,6 +1,7 @@
 GetLeafsByLangCode:
    MasterData_GetLeafsByLangCode_allValid_smoke:
       endPoint: /v1/masterdata/zones/leafs/{langCode}
+      uniqueIdentifier: TC_Masterdata_GetLeafsByLangCode_01
       description: Retrieve leafs details by valid language code
       role: admin
       checkErrorsOnlyInResponse: true
@@ -14,7 +15,8 @@ GetLeafsByLangCode:
 }'
    MasterData_GetLeafsByLangCode_inValid_code:
       endPoint: /v1/masterdata/zones/leafs/{langCode}
-      description: Retrieve leafs details by invalid language code
+      uniqueIdentifier: TC_Masterdata_GetLeafsByLangCode_02
+	  description: Retrieve leafs details by invalid language code
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetLeafsByLangCode/getLeafsByLangCode

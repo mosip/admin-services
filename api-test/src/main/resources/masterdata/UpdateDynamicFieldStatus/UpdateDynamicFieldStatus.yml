@@ -1,6 +1,7 @@
 UpdateDynamicFieldStatus:
    MasterData_UpdateDynamicFieldStatus_All_Valid_Smoke:  
       endPoint: /v1/masterdata/dynamicfields?isActive={isActive}&id={id}
+      uniqueIdentifier: TC_Masterdata_UpdateDynamicFieldStatus_01
       description: Update dynamic field status with valid data
       role: admin
       restMethod: patch
@@ -15,6 +16,7 @@ UpdateDynamicFieldStatus:
 }'
    MasterData_UpdateDynamicFieldStatus_Invalid_id:  
       endPoint: /v1/masterdata/dynamicfields?isActive={isActive}&id={id}
+      uniqueIdentifier: TC_Masterdata_UpdateDynamicFieldStatus_02
       description: Update dynamic field status with invalid ID
       role: admin
       restMethod: patch
@@ -34,6 +36,7 @@ UpdateDynamicFieldStatus:
 }'
    MasterData_UpdateDynamicFieldStatus_ByFieldName_All_Valid_Smoke:  
       endPoint: /v1/masterdata/dynamicfields/all?isActive={isActive}&fieldName={id}
+      uniqueIdentifier: TC_Masterdata_UpdateDynamicFieldStatus_03
       description: Update dynamic field status by field name
       role: admin
       restMethod: patch

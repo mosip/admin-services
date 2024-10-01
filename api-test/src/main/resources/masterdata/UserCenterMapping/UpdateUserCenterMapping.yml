@@ -1,6 +1,7 @@
 UpdateUserCenterMapping:
    MasterData_UpdateUserCenterMapping_All_Valid_Smoke:
       endPoint: /v1/masterdata/usercentermapping
+      uniqueIdentifier: TC_Masterdata_UpdateUserCenterMapping_01
       description: Update user center mapping details with valid data
       role: globalAdmin
       templateFields: ["regCenterName"]
@@ -25,6 +26,7 @@ UpdateUserCenterMapping:
     }'
    MasterData_UserCenterMapping_Invalid_InputParameter_regCenterId_Missing:
       endPoint: /v1/masterdata/usercentermapping
+      uniqueIdentifier: TC_Masterdata_UpdateUserCenterMapping_02
       description: Update user center mapping details with the parameter registration center ID as missing
       role: admin
       templateFields: ["langCode"]
@@ -49,6 +51,7 @@ UpdateUserCenterMapping:
 }'
    MasterData_UserCenterMapping_Invalid_InputParameter_Invalid_regCenterId:
       endPoint: /v1/masterdata/usercentermapping
+      uniqueIdentifier: TC_Masterdata_UpdateUserCenterMapping_03
       description: Update user center mapping details with the parameter registration center ID as invalid
       role: admin
       templateFields: ["langCode"]

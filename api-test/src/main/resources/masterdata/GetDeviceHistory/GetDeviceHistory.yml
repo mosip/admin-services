@@ -1,6 +1,7 @@
 GetDeviceHistory:
    Masterdata_GetDeviceHistory_allValid_smoke:
       endPoint: /v1/masterdata/deviceshistories/{id}/{langcode}/{effdatetimes}
+      uniqueIdentifier: TC_Masterdata_GetDeviceHistory_01
       description: Retrieve device history details based on ID, language code, and effective times
       role: admin
       templateFields: ["langCode"]

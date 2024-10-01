@@ -1,6 +1,7 @@
 UpdateTemplate:
    MasterData_UpdateTemplate_All_Valid_Smoke:
       endPoint: /v1/masterdata/templates
+      uniqueIdentifier: TC_Masterdata_UpdateTemplate_01
       description: Update template with valid details
       role: admin
       checkErrorsOnlyInResponse: true
@@ -27,6 +28,7 @@ UpdateTemplate:
 }'
    MasterData_UpdateTemplate_InputParameter_Name_Missing:
       endPoint: /v1/masterdata/templates
+      uniqueIdentifier: TC_Masterdata_UpdateTemplate_02
       description: Update template with input paramater name as missing
       role: admin
       templateFields: ["description"]
@@ -57,6 +59,7 @@ UpdateTemplate:
 }'
    MasterData_UpdateTemplate_InputParameter_Name_Empty:
       endPoint: /v1/masterdata/templates
+      uniqueIdentifier: TC_Masterdata_UpdateTemplate_03
       description: Update template with input paramater name as empty
       role: admin
       templateFields: ["description"]
@@ -87,6 +90,7 @@ UpdateTemplate:
 }'
    MasterData_UpdateTemplate_InputParameter_Name_AboveMaxLen128:
       endPoint: /v1/masterdata/templates
+      uniqueIdentifier: TC_Masterdata_UpdateTemplate_04
       description: Update a template with the input parameter name exceeding the maximum length of 128 characters
       role: admin
       templateFields: ["description"]
@@ -117,6 +121,7 @@ UpdateTemplate:
 }'
    MasterData_UpdateTemplate_InputParameter_FileFormatCode_Missing:
       endPoint: /v1/masterdata/templates
+      uniqueIdentifier: TC_Masterdata_UpdateTemplate_05
       description: Update template with the input parameter file format code as missing
       role: admin
       templateFields: ["description","name"]
@@ -147,6 +152,7 @@ UpdateTemplate:
 }'
    MasterData_UpdateTemplate_InputParameter_FileFormatCode_Empty:
       endPoint: /v1/masterdata/templates
+      uniqueIdentifier: TC_Masterdata_UpdateTemplate_06
       description: Update a template with the input parameter file format code as empty
       role: admin
       templateFields: ["description","name"]
@@ -177,6 +183,7 @@ UpdateTemplate:
 }'
    MasterData_UpdateTemplate_InputParameter_FileFormatCode_AboveMaxLen36:
       endPoint: /v1/masterdata/templates
+      uniqueIdentifier: TC_Masterdata_UpdateTemplate_07
       description: Update a template with the input parameter file format code exceeding the maximum length of 36 characters
       role: admin
       templateFields: ["description","name"]
@@ -207,6 +214,7 @@ UpdateTemplate:
 }'
    MasterData_UpdateTemplate_InputParameter_ModuleName_AboveMaxLen128:
       endPoint: /v1/masterdata/templates
+      uniqueIdentifier: TC_Masterdata_UpdateTemplate_08
       description: Update a template with the input parameter module name exceeding the maximum length of 128 characters
       role: admin
       templateFields: ["description","name"]
@@ -237,6 +245,7 @@ UpdateTemplate:
 }'
    MasterData_UpdateTemplate_InputParameter_TemplateTypeCode_Missing:
       endPoint: /v1/masterdata/templates
+      uniqueIdentifier: TC_Masterdata_UpdateTemplate_09
       description: Update a template with the input parameter template type code as missing
       role: admin
       templateFields: ["description","name"]
@@ -267,6 +276,7 @@ UpdateTemplate:
 }'
    MasterData_UpdateTemplate_InputParameter_TemplateTypeCode_Empty:
       endPoint: /v1/masterdata/templates
+      uniqueIdentifier: TC_Masterdata_UpdateTemplate_10
       description: Update a template with the input parameter template type code as empty
       role: admin
       templateFields: ["description","name"]
@@ -296,8 +306,9 @@ UpdateTemplate:
   ]
 }'
    MasterData_UpdateTemplate_InputParameter_TemplateTypeCode_AboveMaxLen36:
-      description: Update a template with the input parameter template type code exceeding the maximum length of 36 characters
       endPoint: /v1/masterdata/templates
+      uniqueIdentifier: TC_Masterdata_UpdateTemplate_11
+      description: Update a template with the input parameter template type code exceeding the maximum length of 36 characters
       role: admin
       templateFields: ["description","name"]
       restMethod: put

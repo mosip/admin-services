@@ -1,6 +1,7 @@
 GetBiometricTypesByLangcode:
    Masterdata_GetBiometricTypesByLangcode_allValid_smoke:
       endPoint: /v1/masterdata/biometrictypes/{langcode}
+      uniqueIdentifier: TC_Masterdata_GetBiometricTypesByLangcode_01
       description: Retrieve biometric data in a specific language
       role: admin
       checkErrorsOnlyInResponse: true
@@ -16,6 +17,7 @@ GetBiometricTypesByLangcode:
 }'
    Masterdata_GetBiometricTypesByLangcode_InValid_langCode:
       endPoint: /v1/masterdata/biometrictypes/{langcode}
+      uniqueIdentifier: TC_Masterdata_GetBiometricTypesByLangcode_02
       description: Retrieve biometric data for an invalid language code
       role: admin
       restMethod: get

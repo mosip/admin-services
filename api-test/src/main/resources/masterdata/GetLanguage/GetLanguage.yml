@@ -1,6 +1,7 @@
 GetLanguage:
    Admin_GetLanguage_allValid_smoke:
       endPoint: /v1/masterdata/languages
+      uniqueIdentifier: TC_Masterdata_GetLanguage_01
       description: Retrieve all the languages list
       role: admin
       checkErrorsOnlyInResponse: true

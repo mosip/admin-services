@@ -1,6 +1,7 @@
 UpdateUISpec:
    MasterData_Invalid_UpdateUISpec_older_date_Smoke:  
       endPoint: /v1/masterdata/uispec/publish
+      uniqueIdentifier: TC_Masterdata_UpdateUISpec_01
       description: Update UI specification details with valid data
       role: admin
       restMethod: put
@@ -22,6 +23,7 @@ UpdateUISpec:
 
    MasterData_Invalid_UpdateUISpec_Already_exists:  
       endPoint: /v1/masterdata/uispec/publish
+      uniqueIdentifier: TC_Masterdata_UpdateUISpec_02
       description: Update UI specification details which already exists
       role: admin
       restMethod: put

@@ -1,6 +1,7 @@
 SearchTemplateDetails:
    MasterData_SearchTemplateDetails_ColumnName_Name_LangCode_eng_smoke:
       endPoint: /v1/masterdata/templates/search
+      uniqueIdentifier: TC_Masterdata_SearchTemplateDetails_01
       description: Search for template details with the condition as column name and language code as english
       role: admin
       checkErrorsOnlyInResponse: true
@@ -32,6 +33,7 @@ SearchTemplateDetails:
 }'
    MasterData_SearchTemplateDetails_ColumnName_Name_LangCode_eng_filterType_contain:
       endPoint: /v1/masterdata/templates/search
+      uniqueIdentifier: TC_Masterdata_SearchTemplateDetails_02
       description: Search for template details where the column name is specified, the language code is English, and the filter type contains specific keywords
       role: admin
       checkErrorsOnlyInResponse: true
@@ -63,6 +65,7 @@ SearchTemplateDetails:
 }'
    MasterData_SearchTemplateDetails_ColumnName_Name_LangCode_eng_filterType_equals_filterValue_null:
       endPoint: /v1/masterdata/templates/search
+      uniqueIdentifier: TC_Masterdata_SearchTemplateDetails_03
       description: Search for template details where the column name is specified, the language code is English, filter type equals to and filter value null
       role: admin
       templateFields: ["value"]
@@ -98,6 +101,7 @@ SearchTemplateDetails:
 }'
    MasterData_SearchTemplateDetails_ColumnName_Name_LangCode_eng_filterType_startsWith_filterValue_null:
       endPoint: /v1/masterdata/templates/search
+      uniqueIdentifier: TC_Masterdata_SearchTemplateDetails_04
       description: Search for template details where the column name is specified, the language code is English, filter type starts with and filter value null
       role: admin
       templateFields: ["value"]
@@ -133,6 +137,7 @@ SearchTemplateDetails:
 }'
    MasterData_SearchTemplateDetails_ColumnName_Name_LangCode_eng_filterType_startsWith_filterValue_invalid:
       endPoint: /v1/masterdata/templates/search
+      uniqueIdentifier: TC_Masterdata_SearchTemplateDetails_05
       description: Search for template details where the column name is specified, the language code is English, filter type equals to and filter value invalid
       role: admin
       checkErrorsOnlyInResponse: true
@@ -164,6 +169,7 @@ SearchTemplateDetails:
 }'
    MasterData_SearchTemplateDetails_ColumnName_Name_LangCode_eng_filterType_equals_filterValue_invalid:
       endPoint: /v1/masterdata/templates/search
+      uniqueIdentifier: TC_Masterdata_SearchTemplateDetails_06
       description: Search for template details where the column name is specified, the language code is English, filter type equals to and filter value invalid
       role: admin
       checkErrorsOnlyInResponse: true
@@ -195,6 +201,7 @@ SearchTemplateDetails:
 }'
    MasterData_SearchTemplateDetails_ColumnName_Name_LangCode_eng_filterType_contains_filterValue_invalid:
       endPoint: /v1/masterdata/templates/search
+      uniqueIdentifier: TC_Masterdata_SearchTemplateDetails_07
       description: Search for template details where the column name is specified, the language code is English, filter type contains and filter value invalid
       role: admin
       checkErrorsOnlyInResponse: true
@@ -226,6 +233,7 @@ SearchTemplateDetails:
 }'
    MasterData_SearchTemplateDetails_inavlid_Empty_FilterType:
       endPoint: /v1/masterdata/templates/search
+      uniqueIdentifier: TC_Masterdata_SearchTemplateDetails_08
       description: Search for template details with filter type as empty
       role: admin
       templateFields: ["value"]
@@ -261,6 +269,7 @@ SearchTemplateDetails:
 }'
    MasterData_SearchTemplateDetails_inavlid_Empty_ColumnName:
       endPoint: /v1/masterdata/templates/search
+      uniqueIdentifier: TC_Masterdata_SearchTemplateDetails_09
       description: Search for template details with column name as empty
       role: admin
       templateFields: ["value"]
@@ -296,6 +305,7 @@ SearchTemplateDetails:
 }'
    MasterData_SearchTemplateDetails_inavlid_Empty_FilterValue:
       endPoint: /v1/masterdata/templates/search
+      uniqueIdentifier: TC_Masterdata_SearchTemplateDetails_10
       description: Search for template details with filter value as empty
       role: admin
       templateFields: ["languageCode"]
@@ -331,6 +341,7 @@ SearchTemplateDetails:
 }'
    MasterData_SearchTemplateDetails_inavlid_columnName:
       endPoint: /v1/masterdata/templates/search
+      uniqueIdentifier: TC_Masterdata_SearchTemplateDetails_11
       description: Search for template details with invalid column name
       role: admin
       templateFields: ["value"]
@@ -366,6 +377,7 @@ SearchTemplateDetails:
 }'
    MasterData_SearchTemplateDetails_inavlid_pageFetch_lessThan1:
       endPoint: /v1/masterdata/templates/search
+      uniqueIdentifier: TC_Masterdata_SearchTemplateDetails_12
       description: Search for template details with invalid page fetch and the value less than 1
       role: admin
       templateFields: ["languageCode"]
@@ -401,6 +413,7 @@ SearchTemplateDetails:
 }'
    MasterData_SearchTemplateDetails_inavlid_paginationValue:
       endPoint: /v1/masterdata/templates/search
+      uniqueIdentifier: TC_Masterdata_SearchTemplateDetails_13
       description: Search for template details with invalid pagination value
       role: admin
       templateFields: ["value"]

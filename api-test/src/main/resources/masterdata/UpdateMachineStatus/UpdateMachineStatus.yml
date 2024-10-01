@@ -1,6 +1,7 @@
 UpdateMachineStatus:
    MasterData_UpdateMachineStatus_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/machines
+      uniqueIdentifier: TC_Masterdata_UpdateMachineStatus_01
       description: Update machine status details with valid data
       role: globalAdmin
       templateFields: []

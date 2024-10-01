@@ -1,6 +1,7 @@
 CreateRegistrationCenter:
    MasterData_CreateRegCenter_allValid_smoke_sid:
       endPoint: /v1/masterdata/registrationcenters
+      uniqueIdentifier: TC_Masterdata_CreateRegCenter_01
       description: Create registration center with valid details
       role: admin
       checkErrorsOnlyInResponse: true
@@ -43,6 +44,7 @@ CreateRegistrationCenter:
 }'   
    MasterData_CreateRegCenter_Invalid_HolidayLocationCode_blank_eng:
       endPoint: /v1/masterdata/registrationcenters
+      uniqueIdentifier: TC_Masterdata_CreateRegCenter_02
       description: Create a registration center with holiday location code as empty and language code set to English
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone"]
@@ -88,6 +90,7 @@ CreateRegistrationCenter:
    
    MasterData_CreateRegCenter_Invalid_latitude_blank_eng:
       endPoint: /v1/masterdata/registrationcenters
+      uniqueIdentifier: TC_Masterdata_CreateRegCenter_03
       description: Create a registration center with latitude as empty and language code set to English
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone"]
@@ -132,6 +135,7 @@ CreateRegistrationCenter:
 }'
    MasterData_CreateRegCenter_Invalid_latitude_eng:
       endPoint: /v1/masterdata/registrationcenters
+      uniqueIdentifier: TC_Masterdata_CreateRegCenter_04
       description: Create a registration center with invalid latitude and language code set to English
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone"]
@@ -177,6 +181,7 @@ CreateRegistrationCenter:
 
    MasterData_CreateRegCenter_Blank_NumberOfKiosks_Neg:
       endPoint: /v1/masterdata/registrationcenters
+      uniqueIdentifier: TC_Masterdata_CreateRegCenter_05
       description: Create a registration center with number of kiosks as empty and language code set to English
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone","langCode"]
@@ -225,6 +230,7 @@ CreateRegistrationCenter:
 
    MasterData_CreateRegCenter_Negavtive_NumberOfKiosks_Neg:
       endPoint: /v1/masterdata/registrationcenters
+      uniqueIdentifier: TC_Masterdata_CreateRegCenter_06
       description: Create a registration center with holiday location code as negative value and language code set to English
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone","langCode"]

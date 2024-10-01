@@ -1,6 +1,7 @@
 ValidDocumentFilter:
    MasterData_ValidDocumentFilter_Valid_Smoke:
       endPoint: /v1/masterdata/validdocuments/filtervalues
+      uniqueIdentifier: TC_Masterdata_ValidDocumentFilter_01
       description: Filter the valid document details with valid data
       role: admin
       templateFields: ["languageCode"]
@@ -31,6 +32,7 @@ ValidDocumentFilter:
 }'
    MasterData_ValidDocumentFilter_Invalid_RequestTime:
       endPoint: /v1/masterdata/validdocuments/filtervalues
+      uniqueIdentifier: TC_Masterdata_ValidDocumentFilter_02
       description: Filter the valid document details with invalid request time
       role: admin
       templateFields: ["languageCode"]
@@ -56,6 +58,7 @@ ValidDocumentFilter:
 }'
    MasterData_ValidDocumentFilter_InValid_FilterType:
       endPoint: /v1/masterdata/validdocuments/filtervalues
+      uniqueIdentifier: TC_Masterdata_ValidDocumentFilter_03
       description: Filter the valid document details with invalid filter type
       role: admin
       templateFields: ["languageCode"]
@@ -81,6 +84,7 @@ ValidDocumentFilter:
 }'
    MasterData_ValidDocumentFilter_Blank_FilterType:
       endPoint: /v1/masterdata/validdocuments/filtervalues
+      uniqueIdentifier: TC_Masterdata_ValidDocumentFilter_04
       description: Filter the valid document details with filter type as blank
       role: admin
       templateFields: ["languageCode"]
@@ -106,6 +110,7 @@ ValidDocumentFilter:
 }'
    MasterData_ValidDocumentFilter_InValid_columnName:
       endPoint: /v1/masterdata/validdocuments/filtervalues
+      uniqueIdentifier: TC_Masterdata_ValidDocumentFilter_05
       description: Filter the valid document details with invalid column name
       role: admin
       templateFields: ["languageCode"]
