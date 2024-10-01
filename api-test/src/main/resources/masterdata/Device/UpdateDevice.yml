@@ -1,15 +1,15 @@
-CreateDevice:
-   MasterData_CreateDevice_All_Valid_Smoke_sid:
+UpdateDevice:
+   MasterData_UpdateDevice_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/devices
-      description: Create Device with all valid data
+      description: Update Device with all valid data
       role: globalAdmin
-      templateFields: ["name","description"]
-      restMethod: post
+      templateFields: ["name"]
+      restMethod: put
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/Device/createDeviceResult
       input: '{
-    "name": "testDevicedummy",
-    "description": "testDevicedummy",
+     "id": "$ID:CreateDevice_All_Valid_Smoke_sid_id$",
+    "name": "testDevicedummy updated",
 	"deviceSpecId": "743",
 	"ipAddress": "172.23.174.113",
 	"isActive": true,
@@ -21,27 +21,27 @@ CreateDevice:
 	"requesttime": "$TIMESTAMP$"
 	}'
       output: '{
-    "name": "testDevicedummy",
+    "name": "testDevicedummy updated",
 	"deviceSpecId": "743",
 	"ipAddress": "172.23.174.113",
-	"isActive": false,
+	"isActive": "$IGNORE$",
 	"macAddress": "D4-3D-7E-C0-8C-4A",
 	"zoneCode": "$IGNORE$",
-	"validityDateTime": "$TIMESTAMP$",
+	"validityDateTime": "$IGNORE$",
 	"serialNum": "ceec5f62-77b7-46f3-816b-3e734305a9c8",
 	"requesttime": "$TIMESTAMP$"
 }'
-   MasterData_CreateDevice_Valid_Smoke_decommison_sid:
+   MasterData_UpdateDevice_Valid_Smoke_decommison_sid:
       endPoint: /v1/masterdata/devices
-      description: Create Device with valid specification ID
+      description: Update Device with decommissioned sid
       role: globalAdmin
-      templateFields: ["name","description"]
-      restMethod: post
+      templateFields: ["name"]
+      restMethod: put
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/Device/createDeviceResult
       input: '{
-    "name": "testDevicedummy",
-    "description": "testDevicedummy",
+     "id": "$ID:CreateDevice_Valid_Smoke_decommison_sid_id$",
+    "name": "testDevicedummy updated",
 	"deviceSpecId": "736",
 	"ipAddress": "172.23.174.113",
 	"isActive": true,
@@ -53,22 +53,22 @@ CreateDevice:
 	"requesttime": "$TIMESTAMP$"
 	}'
       output: '{
-    "name": "testDevicedummy",
+    "name": "testDevicedummy updated",
 	"deviceSpecId": "736",
 	"ipAddress": "172.23.174.113",
-	"isActive": false,
+	"isActive": "$IGNORE$",
 	"macAddress": "D4-3D-7E-C0-8C-4A",
 	"zoneCode": "$IGNORE$",
-	"validityDateTime": "$TIMESTAMP$",
+	"validityDateTime": "$IGNORE$",
 	"serialNum": "ceec5f62-77b7-46f3-816b-3e734305a9c8",
 	"requesttime": "$TIMESTAMP$"
 }'
-   MasterData_CreateDevice_Invalid_InputParameterInvalid_Format:
+   MasterData_UpdateDevice_Invalid_InputParameterInvalid_Format:
       endPoint: /v1/masterdata/devices
-      description: Create Device with invalid input parameter format
+      description: Update Device with invalid input format
       role: admin
-      templateFields: ["name","description"]
-      restMethod: post
+      templateFields: ["name"]
+      restMethod: put
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -77,7 +77,7 @@ CreateDevice:
 	"deviceSpecId": "736",
 	"ipAddress": "172.23.174.113",
 	"isActive": true,
-	"langCode": "ara",
+	"langCode": "eng",
 	"macAddress": "D4-3D-7E-C0-8C-4A",
 	"zoneCode": "$ZONE_CODE$",
 	"validityDateTime": "2018-12-24T05",
@@ -92,12 +92,12 @@ CreateDevice:
     }
   ]
 }'
-   MasterData_CreateDevice_Invalid_Device_Zone_notPresentInDB:
+   MasterData_UpdateDevice_Invalid_Device_Zone_notPresentInDB:
       endPoint: /v1/masterdata/devices
-      description: Create Device with invalid Zone which is not present in the DB
+      description: Update Device with invalid zoneCode
       role: admin
-      templateFields: ["name","description"]
-      restMethod: post
+      templateFields: ["name"]
+      restMethod: put
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -106,7 +106,7 @@ CreateDevice:
 	"deviceSpecId": "736",
 	"ipAddress": "172.23.174.113",
 	"isActive": true,
-	"langCode": "ara",
+	"langCode": "eng",
 	"macAddress": "D4-3D-7E-C0-8C-4A",
 	"zoneCode": "BOM",
 	"validityDateTime": "$TIMESTAMP$",
@@ -121,12 +121,11 @@ CreateDevice:
     }
   ]
 }'
-   MasterData_CreateDevice_Invalid_Machine_Name_Blank:
+   MasterData_UpdateDevice_Invalid_Machine_Name_Blank:
       endPoint: /v1/masterdata/devices
-      description: Create Device with blank Machine name
+      description: Update Device with empty name
       role: admin
-      templateFields: ["name","description"]
-      restMethod: post
+      restMethod: put
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -150,12 +149,12 @@ CreateDevice:
     }
   ]
 }'
-   MasterData_CreateDevice_Invalid_DeviceName_AboveMaxLen64:
+   MasterData_UpdateDevice_Invalid_DeviceName_AboveMaxLen64:
       endPoint: /v1/masterdata/devices
-      description: Create Device with invalid Device Name with morethan 64 characters
+      description: Update Device with invalid device name more than 64 characters
       role: admin
-      templateFields: ["description"]
-      restMethod: post
+      templateFields: ["name"]
+      restMethod: put
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -179,12 +178,12 @@ CreateDevice:
     }
   ]
 }'
-   MasterData_CreateDevice_Invalid_Zone_Code_Blank:
+   MasterData_UpdateDevice_Invalid_Zone_Code_Blank:
       endPoint: /v1/masterdata/devices
-      description: Create Device with blank zonecode
+      description: Update Device with empty zoneCode
       role: admin
-      templateFields: ["name","description"]
-      restMethod: post
+      templateFields: ["name"]
+      restMethod: put
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -204,16 +203,16 @@ CreateDevice:
    "errors": [
     {
       "errorCode": "KER-MSD-999",
-      "message": "request.zoneCode: Should not be blank or size must be between 0 and 36"
+      "message": "request.zoneCode: Should not be blank or size must be between 1 and 36"
     }
   ]
 }'
-   MasterData_CreateDevice_Invalid_MAC_Address_Blank:
+   MasterData_UpdateDevice_Invalid_MAC_Address_Blank:
       endPoint: /v1/masterdata/devices
-      description: Create Device with blank macAddress
+      description: Update Device with empty macAddress
       role: admin
-      templateFields: ["name","description"]
-      restMethod: post
+      templateFields: ["name"]
+      restMethod: put
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -237,12 +236,12 @@ CreateDevice:
     }
   ]
 }'
-   MasterData_CreateDevice_Invalid_MacAddress_AboveMaxLen64:
+   MasterData_UpdateDevice_Invalid_MacAddress_AboveMaxLen64:
       endPoint: /v1/masterdata/devices
-      description: Create Device with invalid macAddress with morethan 64 characters
+      description: Update Device with invalid macAddress more than characters
       role: admin
-      templateFields: ["name","description"]
-      restMethod: post
+      templateFields: ["name"]
+      restMethod: put
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -266,12 +265,12 @@ CreateDevice:
     }
   ]
 }'
-   MasterData_CreateDevice_Invalid_Serial_Number_Blank:
+   MasterData_UpdateDevice_Invalid_Serial_Number_Blank:
       endPoint: /v1/masterdata/devices
-      description: Create Device with empty serialNum
+      description: Update Device with empty serialNum
       role: admin
-      templateFields: ["name","description"]
-      restMethod: post
+      templateFields: ["name"]
+      restMethod: put
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -295,12 +294,12 @@ CreateDevice:
     }
   ]
 }'
-   MasterData_CreateDevice_Invalid_SerialNumber_AboveMaxLen64:
+   MasterData_UpdateDevice_Invalid_SerialNumber_AboveMaxLen64:
       endPoint: /v1/masterdata/devices
-      description: Create Device with serialNum with morethan 64 characters
+      description: Update Device with invalid serialNum more than 64 characters
       role: admin
-      templateFields: ["name","description"]
-      restMethod: post
+      templateFields: ["name"]
+      restMethod: put
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -324,12 +323,12 @@ CreateDevice:
     }
   ]
 }'
-   MasterData_CreateDevice_Invalid_IPAddress_AboveMaxLen17:
+   MasterData_UpdateDevice_Invalid_IPAddress_AboveMaxLen17:
       endPoint: /v1/masterdata/devices
-      description: Create Device with ipAddress with morethan 16 characters
+      description: Update Device with invalid ipAddress more than 16 characters
       role: admin
-      templateFields: ["name","description"]
-      restMethod: post
+      templateFields: ["name"]
+      restMethod: put
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -353,12 +352,12 @@ CreateDevice:
     }
   ]
 }'
-   MasterData_CreateDevice_Invalid_DSpecID_AboveMaxLen36:
+   MasterData_UpdateDevice_Invalid_DSpecID_AboveMaxLen36:
       endPoint: /v1/masterdata/devices
-      description: Create Device with id with morethan 36 characters
+      description: Update Device with invalid deviceSpecId more than 36 characters
       role: admin
-      templateFields: ["name","description"]
-      restMethod: post
+      templateFields: ["name"]
+      restMethod: put
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
