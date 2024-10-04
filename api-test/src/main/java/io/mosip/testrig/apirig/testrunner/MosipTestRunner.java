@@ -101,9 +101,8 @@ public class MosipTestRunner {
 				BaseTestCase.languageList.clear();
 				BaseTestCase.languageList.add(localLanguageList.get(i));
 
-				DBManager.executeDBQueries(MasterDataConfigManager.getMASTERDbUrl(),
-						MasterDataConfigManager.getMasterDbUser(), MasterDataConfigManager.getMasterDbPass(),
-						MasterDataConfigManager.getMasterDbSchema(),
+				DBManager.executeDBQueries(MasterDataConfigManager.getMASTERDbUrl(), MasterDataConfigManager.getMasterDbUser(),
+						MasterDataConfigManager.getMasterDbPass(), MasterDataConfigManager.getMasterDbSchema(),
 						getGlobalResourcePath() + "/" + "config/masterDataDeleteQueries.txt");
 				BaseTestCase.currentModule = GlobalConstants.MASTERDATA;
 				BaseTestCase.setReportName("masterdata-" + localLanguageList.get(i));
