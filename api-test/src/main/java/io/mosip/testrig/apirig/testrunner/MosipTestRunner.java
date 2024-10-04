@@ -69,8 +69,7 @@ public class MosipTestRunner {
 				ExtractResource.extractCommonResourceFromJar();
 			} else {
 				ExtractResource.copyCommonResources();
-			}
-			
+			}	
 			AdminTestUtil.init();
 			MasterDataConfigManager.init();
 			BaseTestCase.suiteSetup(getRunType());
