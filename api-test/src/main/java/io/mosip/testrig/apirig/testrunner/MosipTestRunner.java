@@ -108,9 +108,9 @@ public class MosipTestRunner {
 				startTestRunner();
 			}
 			
-			DBManager.executeDBQueries(ConfigManager.getMASTERDbUrl(), ConfigManager.getMasterDbUser(),
-					ConfigManager.getMasterDbPass(), ConfigManager.getMasterDbSchema(),
-					getGlobalResourcePath() + "/" + "config/masterDataDeleteQueries.txt");
+			DBManager.executeDBQueries(MasterDataConfigManager.getMASTERDbUrl(), MasterDataConfigManager.getMasterDbUser(),
+						MasterDataConfigManager.getMasterDbPass(), MasterDataConfigManager.getMasterDbSchema(),
+						getGlobalResourcePath() + "/" + "config/masterDataDeleteQueries.txt");
 		} catch (Exception e) {
 			LOGGER.error("Exception " + e.getMessage());
 		}
