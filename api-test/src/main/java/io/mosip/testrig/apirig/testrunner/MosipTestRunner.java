@@ -68,7 +68,8 @@ public class MosipTestRunner {
 				ExtractResource.extractCommonResourceFromJar();
 			} else {
 				ExtractResource.copyCommonResources();
-			}
+			}	
+			AdminTestUtil.init();
 			MasterDataConfigManager.init();
 			BaseTestCase.suiteSetup(getRunType());
 			SkipTestCaseHandler.loadTestcaseToBeSkippedList("testCaseSkippedList.txt");
@@ -99,13 +100,17 @@ public class MosipTestRunner {
 				BaseTestCase.languageList.clear();
 				BaseTestCase.languageList.add(localLanguageList.get(i));
 
-				DBManager.clearMasterDbData();
+				DBManager.executeDBQueries(MasterDataConfigManager.getMASTERDbUrl(), MasterDataConfigManager.getMasterDbUser(),
+						MasterDataConfigManager.getMasterDbPass(), MasterDataConfigManager.getMasterDbSchema(),
+						getGlobalResourcePath() + "/" + "config/masterDataDeleteQueries.txt");
 				BaseTestCase.currentModule = GlobalConstants.MASTERDATA;
 				BaseTestCase.setReportName("masterdata-" + localLanguageList.get(i));
 				startTestRunner();
 			}
 			
-			DBManager.clearMasterDbData();
+			DBManager.executeDBQueries(MasterDataConfigManager.getMASTERDbUrl(), MasterDataConfigManager.getMasterDbUser(),
+						MasterDataConfigManager.getMasterDbPass(), MasterDataConfigManager.getMasterDbSchema(),
+						getGlobalResourcePath() + "/" + "config/masterDataDeleteQueries.txt");
 		} catch (Exception e) {
 			LOGGER.error("Exception " + e.getMessage());
 		}
