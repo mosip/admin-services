@@ -32,10 +32,6 @@ git sparse-checkout init --cone && git sparse-checkout set deploy/apitestrig
 find . -type f ! -path "./deploy/*" -exec rm -f {} \;
 
 cd deploy/apitestrig || { echo "apitestrig directory not found."; exit 1; }
-chmod +x install.sh
-chmod +x copy_cm.sh
-chmod +x copy_secrets.sh
-
 cp $VALUES_FILE values.yaml
 
 # Check if the install script exists and is executable
