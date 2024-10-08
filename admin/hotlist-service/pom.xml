@@ -28,6 +28,7 @@
 
 		<!-- kernel properties -->
 		<kernel-core.version>1.3.0-beta.1</kernel-core.version>
+		<kernel.bom.version>1.3.0-beta.1</kernel.bom.version>
 		<kernel-websubclient-api.version>1.3.0-beta.1</kernel-websubclient-api.version>
 		<kernel-logger-logback.version>1.3.0-beta.1</kernel-logger-logback.version>
 		<kernel.auth.adaptor.version>1.3.0-SNAPSHOT</kernel.auth.adaptor.version>
@@ -59,7 +60,7 @@
 			<dependency>
 				<groupId>io.mosip.kernel</groupId>
 				<artifactId>kernel-bom</artifactId>
-				<version>1.3.0-beta.1</version>
+				<version>${kernel.bom.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
