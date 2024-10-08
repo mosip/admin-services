@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.testng.TestNG;
@@ -23,6 +24,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 
 import io.mosip.testrig.apirig.dbaccess.DBManager;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
+import io.mosip.testrig.apirig.utils.AuthTestsUtil;
 import io.mosip.testrig.apirig.utils.CertsUtil;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
@@ -68,10 +70,10 @@ public class MosipTestRunner {
 				ExtractResource.extractCommonResourceFromJar();
 			} else {
 				ExtractResource.copyCommonResources();
-			}	
+			}
 			AdminTestUtil.init();
 			MasterDataConfigManager.init();
-			BaseTestCase.suiteSetup(getRunType());
+			suiteSetup(getRunType());
 			SkipTestCaseHandler.loadTestcaseToBeSkippedList("testCaseSkippedList.txt");
 			setLogLevels();
 
@@ -100,17 +102,14 @@ public class MosipTestRunner {
 				BaseTestCase.languageList.clear();
 				BaseTestCase.languageList.add(localLanguageList.get(i));
 
-				DBManager.executeDBQueries(MasterDataConfigManager.getMASTERDbUrl(), MasterDataConfigManager.getMasterDbUser(),
-						MasterDataConfigManager.getMasterDbPass(), MasterDataConfigManager.getMasterDbSchema(),
+				DBManager.executeDBQueries(MasterDataConfigManager.getMASTERDbUrl(),
+						MasterDataConfigManager.getMasterDbUser(), MasterDataConfigManager.getMasterDbPass(),
+						MasterDataConfigManager.getMasterDbSchema(),
 						getGlobalResourcePath() + "/" + "config/masterDataDeleteQueries.txt");
 				BaseTestCase.currentModule = GlobalConstants.MASTERDATA;
 				BaseTestCase.setReportName("masterdata-" + localLanguageList.get(i));
 				startTestRunner();
 			}
-			
-			DBManager.executeDBQueries(MasterDataConfigManager.getMASTERDbUrl(), MasterDataConfigManager.getMasterDbUser(),
-						MasterDataConfigManager.getMasterDbPass(), MasterDataConfigManager.getMasterDbSchema(),
-						getGlobalResourcePath() + "/" + "config/masterDataDeleteQueries.txt");
 		} catch (Exception e) {
 			LOGGER.error("Exception " + e.getMessage());
 		}
@@ -123,6 +122,29 @@ public class MosipTestRunner {
 		System.exit(0);
 
 	}
+	
+	public static void suiteSetup(String runType) {
+		if (MasterDataConfigManager.IsDebugEnabled())
+			LOGGER.setLevel(Level.ALL);
+		else
+			LOGGER.info("Test Framework for Mosip api Initialized");
+		BaseTestCase.initialize();
+		LOGGER.info("Done with BeforeSuite and test case setup! su TEST EXECUTION!\n\n");
+
+		if (!runType.equalsIgnoreCase("JAR")) {
+			AuthTestsUtil.removeOldMosipTempTestResource();
+		}
+		DBManager.executeDBQueries(MasterDataConfigManager.getMASTERDbUrl(), MasterDataConfigManager.getMasterDbUser(),
+				MasterDataConfigManager.getMasterDbPass(), MasterDataConfigManager.getMasterDbSchema(),
+				getGlobalResourcePath() + "/" + "config/masterDataDeleteQueries.txt");
+		BaseTestCase.currentModule = GlobalConstants.MASTERDATA;
+		BaseTestCase.setReportName(GlobalConstants.MASTERDATA);
+		AdminTestUtil.initiateMasterDataTest();
+		BaseTestCase.otpListener = new OTPListener();
+		BaseTestCase.otpListener.run();
+	}
+	
+	
 
 	private static void setLogLevels() {
 		AdminTestUtil.setLogLevel();
@@ -143,7 +165,6 @@ public class MosipTestRunner {
 		File homeDir = null;
 		TestNG runner = new TestNG();
 		List<String> suitefiles = new ArrayList<>();
-		List<String> modulesToRun = BaseTestCase.listOfModules;
 		String os = System.getProperty("os.name");
 		LOGGER.info(os);
 		if (getRunType().contains("IDE") || os.toLowerCase().contains("windows")) {
@@ -155,12 +176,8 @@ public class MosipTestRunner {
 			LOGGER.info("ELSE :" + homeDir);
 		}
 		for (File file : homeDir.listFiles()) {
-			for (String fileName : modulesToRun) {
-				if (file.getName().toLowerCase().contains(fileName)) {
-					suitefiles.add(file.getAbsolutePath());
-				} else if (fileName.equals("all") && file.getName().toLowerCase().contains("testng")) {
-					suitefiles.add(file.getAbsolutePath());
-				}
+			if (file.getName().toLowerCase().contains(GlobalConstants.MASTERDATA)) {
+				suitefiles.add(file.getAbsolutePath());
 			}
 		}
 		runner.setTestSuites(suitefiles);
