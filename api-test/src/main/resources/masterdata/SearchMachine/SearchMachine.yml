@@ -494,7 +494,7 @@ SearchMachine:
       endPoint: /v1/masterdata/machines/search
       description: Search for machine details with two sort fields and two descending orders
       role: globalAdmin
-      templateFields: ["languageCode"]
+      templateFields: ["value"]
       restMethod: post
       inputTemplate: masterdata/SearchMachine/searchMachine
       outputTemplate: masterdata/SearchMachine/searchMachineResult
