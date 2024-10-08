@@ -1,6 +1,7 @@
 SearchDynamicField:
    MasterData_SearchDynamicField_Valid_Smoke:
       endPoint: /v1/masterdata/dynamicfields/search
+      uniqueIdentifier: TC_Masterdata_SearchDynamicField_01
       description: Search dynamic field with valid data
       role: admin
       checkErrorsOnlyInResponse: true
@@ -24,6 +25,7 @@ SearchDynamicField:
 }'
    MasterData_SearchDynamicField_Valid_Filter_Name:
       endPoint: /v1/masterdata/dynamicfields/search
+      uniqueIdentifier: TC_Masterdata_SearchDynamicField_02
       description: Search dynamic field with valid filter name value
       role: admin
       checkErrorsOnlyInResponse: true
@@ -51,6 +53,7 @@ SearchDynamicField:
 }'
    MasterData_SearchDynamicField_Invalid_NegPageFetch:
       endPoint: /v1/masterdata/dynamicfields/search
+      uniqueIdentifier: TC_Masterdata_SearchDynamicField_03
       description: Search dynamic field with invalid negative page fetch value
       role: admin
       templateFields: ["languageCode"]
@@ -82,6 +85,7 @@ SearchDynamicField:
 }'
    MasterData_SearchDynamicField_Invalid_NegPageStart:
       endPoint: /v1/masterdata/dynamicfields/search
+      uniqueIdentifier: TC_Masterdata_SearchDynamicField_04
       description: Search dynamic field with invalid negative page start
       role: admin
       templateFields: ["languageCode"]
@@ -113,6 +117,7 @@ SearchDynamicField:
 }'
    MasterData_SearchDynamicField_Invalid_SortType_neg:
       endPoint: /v1/masterdata/dynamicfields/search
+      uniqueIdentifier: TC_Masterdata_SearchDynamicField_05
       description: Search dynamic field with invalid sort type value
       role: admin
       templateFields: ["languageCode"]
@@ -144,6 +149,7 @@ SearchDynamicField:
 }'
    MasterData_SearchDynamicField_Invalid_SortField_neg:
       endPoint: /v1/masterdata/dynamicfields/search
+      uniqueIdentifier: TC_Masterdata_SearchDynamicField_06
       description: Search dynamic field with invalid sort field value
       role: admin
       templateFields: ["languageCode"]
@@ -176,6 +182,7 @@ SearchDynamicField:
    
    MasterData_SearchDynamicField_Blank_SortField:
       endPoint: /v1/masterdata/dynamicfields/search
+      uniqueIdentifier: TC_Masterdata_SearchDynamicField_07
       description: Search dynamic field with sort field value as empty
       role: admin
       templateFields: ["languageCode"]
@@ -207,6 +214,7 @@ SearchDynamicField:
 }'
    MasterData_SearchDynamicField_Invalid_RequestTime:
       endPoint: /v1/masterdata/dynamicfields/search
+      uniqueIdentifier: TC_Masterdata_SearchDynamicField_08
       description: Search dynamic field with invalid request time
       role: admin
       templateFields: ["languageCode"]

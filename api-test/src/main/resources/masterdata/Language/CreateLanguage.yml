@@ -1,6 +1,7 @@
 CreateLanguage:
    Masterdata_CreateLanguage_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/languages
+      uniqueIdentifier: TC_Masterdata_CreateLanguage_01
       description: Create the language with valid details
       role: admin
       restMethod: post

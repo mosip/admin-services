@@ -1,6 +1,7 @@
 GetMissingDocumentCategoryByLangcode:
    Masterdata_GetMissingDocumentCategoryByLangcode_allValid_smoke:
       endPoint: /v1/masterdata/documentcategories/missingids/{langcode}
+      uniqueIdentifier: TC_Masterdata_GetMissingDocumentCategoryByLangcode_01
       description: Retrieve missing document category by valid language code
       role: admin
       checkErrorsOnlyInResponse: true
@@ -16,6 +17,7 @@ GetMissingDocumentCategoryByLangcode:
 }'
    Masterdata_GetDocumentTypeByLangCode_InValid_langcode:
       endPoint: /v1/masterdata/documentcategories/missingids/{langcode}
+      uniqueIdentifier: TC_Masterdata_GetMissingDocumentCategoryByLangcode_02
       description: Retrieve missing document category by invalid language code
       role: admin
       restMethod: get

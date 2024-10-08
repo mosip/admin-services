@@ -1,6 +1,7 @@
 UpdateIdSchema:
    MasterData_Invalid_UpdateIdSchema_older_date_Smoke:  
       endPoint: /v1/masterdata/idschema/publish
+      uniqueIdentifier: TC_Masterdata_UpdateIdSchema_01
       description: Update ID schema details with older date
       role: admin
       restMethod: put
@@ -22,6 +23,7 @@ UpdateIdSchema:
 
    MasterData_Invalid_UpdateIdSchemac_Already_exists:  
       endPoint: /v1/masterdata/idschema/publish
+      uniqueIdentifier: TC_Masterdata_UpdateIdSchema_02
       description: Update ID schema details which already exists
       role: admin
       restMethod: put

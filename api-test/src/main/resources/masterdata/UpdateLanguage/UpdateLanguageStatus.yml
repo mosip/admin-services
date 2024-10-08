@@ -1,6 +1,7 @@
 UpdateLanguageStatus:
    MasterData_UpdateLanguageStatus_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/languages?code=alt&isActive=true
+      uniqueIdentifier: TC_Masterdata_UpdateLanguageStatus_01
       description: Update language status details with valid data
       role: admin
       restMethod: patch

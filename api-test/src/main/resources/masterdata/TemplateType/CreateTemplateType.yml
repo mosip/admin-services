@@ -1,6 +1,7 @@
 CreateTemplateType:
    MasterData_CreateTemplateType_All_Valid_Smoke:
       endPoint: /v1/masterdata/templatetypes
+      uniqueIdentifier: TC_Masterdata_CreateTemplateType_01
       description: Create template type with valid details
       role: admin
       templateFields: ["description"]
@@ -21,6 +22,7 @@ CreateTemplateType:
    
    MasterData_CreateTemplateType_InputParameter_Code_Missing:
       endPoint: /v1/masterdata/templatetypes
+      uniqueIdentifier: TC_Masterdata_CreateTemplateType_02
       description: Create template type with input parameter code as missing
       role: admin
       templateFields: ["description"]
@@ -44,6 +46,7 @@ CreateTemplateType:
 }'
    MasterData_CreateTemplateType_InputParameter_Code_AboveMaxLen36:
       endPoint: /v1/masterdata/templatetypes
+      uniqueIdentifier: TC_Masterdata_CreateTemplateType_03
       description: Create template type with input parameter code exceeding the maximum length of 36 characters
       role: admin
       templateFields: ["description"]
@@ -69,6 +72,7 @@ CreateTemplateType:
 
    MasterData_CreateTemplateType_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/templatetypes
+      uniqueIdentifier: TC_Masterdata_CreateTemplateType_04
       description: Create template type with input parameter is active as missing
       role: admin
       templateFields: ["description"]

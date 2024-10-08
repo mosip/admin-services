@@ -1,6 +1,7 @@
 CreateRegCenterType:
    MasterData_CreateRegCenterType_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/registrationcentertypes
+      uniqueIdentifier: TC_Masterdata_CreateRegCenterType_01
       description: Create registration centre type with valid data
       role: admin
       templateFields: ["name","descr"]
@@ -22,6 +23,7 @@ CreateRegCenterType:
 
    MasterData_CreateRegCenterType_Dublicate_Centertype_Neg:
       endPoint: /v1/masterdata/registrationcentertypes
+      uniqueIdentifier: TC_Masterdata_CreateRegCenterType_02
       description: Create a registration center type with a duplicate center type
       role: admin
       templateFields: ["name","descr"]
@@ -47,6 +49,7 @@ CreateRegCenterType:
    
    MasterData_CreateRegCenterType_InputParameter_Name_Missing:
       endPoint: /v1/masterdata/registrationcentertypes
+      uniqueIdentifier: TC_Masterdata_CreateRegCenterType_03
       description: Create a registration center type with the name parameter as missing
       role: admin
       templateFields: ["descr"]
@@ -71,6 +74,7 @@ CreateRegCenterType:
 }'
    MasterData_CreateRegCenterType_InputParameter_Name_Empty:
       endPoint: /v1/masterdata/registrationcentertypes
+      uniqueIdentifier: TC_Masterdata_CreateRegCenterType_04
       description: Create a registration center type with the name parameter as empty
       role: admin
       templateFields: ["descr"]
@@ -95,6 +99,7 @@ CreateRegCenterType:
 }'
    MasterData_CreateRegCenterType_InputParameter_Name_AboveMaxLen64:
       endPoint: /v1/masterdata/registrationcentertypes
+      uniqueIdentifier: TC_Masterdata_CreateRegCenterType_05
       description: Create a registration center type with the name parameter exceeding the maximum length of 64 characters
       role: admin
       templateFields: ["name","descr"]
@@ -119,6 +124,7 @@ CreateRegCenterType:
 }'
    MasterData_CreateRegCenterType_InputParameter_Description_AboveMaxLen256:
       endPoint: /v1/masterdata/registrationcentertypes
+      uniqueIdentifier: TC_Masterdata_CreateRegCenterType_06
       description: Create a registration center type with the description parameter exceeding the maximum length of 64 characters
       role: admin
       templateFields: ["name","descr"]
@@ -145,6 +151,7 @@ CreateRegCenterType:
    
    MasterData_CreateRegCenterType_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/registrationcentertypes
+      uniqueIdentifier: TC_Masterdata_CreateRegCenterType_07
       description: Create a registration center type with the is active parameter missing
       role: admin
       templateFields: ["name","descr"]
@@ -170,6 +177,7 @@ CreateRegCenterType:
 
    MasterData_CreateRegCenterType_SpacialCharacter_Neg:
       endPoint: /v1/masterdata/registrationcentertypes
+      uniqueIdentifier: TC_Masterdata_CreateRegCenterType_08
       description: Create a registration center type with the special character
       role: admin
       templateFields: ["name","descr"]

@@ -1,6 +1,7 @@
 GetTemplates:
    Admin_GetTemplates_allValid_smoke:
       endPoint: /v1/masterdata/templates
+      uniqueIdentifier: TC_Masterdata_GetTemplates_01
       description: Retrieve all the template details
       role: admin
       restMethod: get
