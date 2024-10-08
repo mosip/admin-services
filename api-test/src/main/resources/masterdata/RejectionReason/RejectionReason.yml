@@ -1,6 +1,7 @@
 RejectionReason:
    MasterData_RejectionReason_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/packetrejectionreasons/reasoncategory
+      uniqueIdentifier: TC_Masterdata_RejectionReason_01
       description: Create rejection reason with valid details
       role: admin
       templateFields: ["langCode","description"]

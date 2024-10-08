@@ -1,6 +1,7 @@
 CreateLocationData:
    MasterData_CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_CreateLocationData_01
       description: Creating location data with valid details
       role: admin
       checkErrorsOnlyInResponse: true
@@ -29,6 +30,7 @@ CreateLocationData:
 }'
    MasterData_CreateLocationData_Invalid_EmptyCode_SecondaryLang_eng:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_CreateLocationData_02
       description: Creating location data with code as empty for secondary language english
       role: admin
       templateFields: ["hierarchyName"]
@@ -55,6 +57,7 @@ CreateLocationData:
 }'
    MasterData_CreateLocationData_Invalid_NameLength129:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_CreateLocationData_03
       description: Creating location data with an invalid name length of 129 characters
       role: admin
       templateFields: ["hierarchyName"]
@@ -81,6 +84,7 @@ CreateLocationData:
 }'
    MasterData_CreateLocationData_Invalid_EmptyName:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_CreateLocationData_04
       description: Creating location data with an name parameter as empty
       role: admin
       templateFields: ["hierarchyName"]
@@ -107,6 +111,7 @@ CreateLocationData:
 }'
    MasterData_CreateLocationData_Invalid_HierarchyLevel_LongInt:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_CreateLocationData_05
       description: Creating location data with the hierarchy level parameter as a long integer
       role: admin
       templateFields: ["hierarchyName"]
@@ -133,6 +138,7 @@ CreateLocationData:
 }'
    MasterData_CreateLocationData_inValid_hierLevel_locHierCombo:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_CreateLocationData_06
       description: Creating location data with the hierarchy level parameter using invalid data for the location and hierarchy combination
       role: admin
       templateFields: ["hierarchyName"]
@@ -159,6 +165,7 @@ CreateLocationData:
 }'
    MasterData_CreateLocationData_inValid_HierarchyName65:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_CreateLocationData_07
       description: Creating location data with the hierarchy name parameter set to 65 characters
       role: admin
       templateFields: ["hierarchyName"]
@@ -185,6 +192,7 @@ CreateLocationData:
 }'
    MasterData_CreateLocationData_Invalid_EmptyHierarchyName:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_CreateLocationData_08
       description: Creating location data with the hierarchy name parameter as empty
       role: admin
       templateFields: ["hierarchyName"]
@@ -211,6 +219,7 @@ CreateLocationData:
 }'
    MasterData_CreateLocationData_inValid_parentLocCode_nonExisting_inDB:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_CreateLocationData_09
       description: Creating location data with a parent location code parameter that is not available in the database
       role: admin
       templateFields: ["hierarchyName"]
@@ -239,6 +248,7 @@ CreateLocationData:
    
    MasterData_CreateLocationData_Invalid_requestTime_format:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_CreateLocationData_10
       description: Creating location data with invalid request time format
       role: admin
       templateFields: ["hierarchyName"]

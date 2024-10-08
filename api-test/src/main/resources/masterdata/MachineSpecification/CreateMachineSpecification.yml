@@ -1,6 +1,7 @@
 CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_01
       description: Create machine specification details with valid details
       role: admin
       checkErrorsOnlyInResponse: true
@@ -25,6 +26,7 @@ CreateMachineSpecification:
 }'
    Masterdata_CreateMachineSpecification_InputParameter_Name_Missing:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_02
       description: Create machine specification details with parameter name as missing
       role: admin
       templateFields: ["description"]
@@ -53,6 +55,7 @@ CreateMachineSpecification:
 }'
    Masterdata_CreateMachineSpecification_InputParameter_Name_Empty:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_03
       description: Create machine specification details with parameter name as empty
       role: admin
       templateFields: ["description"]
@@ -81,6 +84,7 @@ CreateMachineSpecification:
 }'
    Masterdata_CreateMachineSpecification_InputParameter_Name_AboveMaxLen64:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_04
       description: Create machine specification details with parameter name characters above maximum level 64
       role: admin
       templateFields: ["description"]
@@ -109,6 +113,7 @@ CreateMachineSpecification:
 }'
    Masterdata_CreateMachineSpecification_InputParameter_Brand_Missing:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_05
       description: Create machine specification details with parameter brand as missing
       role: admin
       templateFields: ["description"]
@@ -137,6 +142,7 @@ CreateMachineSpecification:
 }'
    Masterdata_CreateMachineSpecification_InputParameter_Brand_Empty:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_06
       description: Create machine specification details with parameter brand as empty
       role: admin
       templateFields: ["description"]
@@ -165,6 +171,7 @@ CreateMachineSpecification:
 }'
    Masterdata_CreateMachineSpecification_InputParameter_Brand_AboveMaxLen32:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_07
       description: Create machine specification details with parameter brand characters above maximum length 32
       role: admin
       templateFields: ["description"]
@@ -193,6 +200,7 @@ CreateMachineSpecification:
 }'
    Masterdata_CreateMachineSpecification_InputParameter_Model_Missing:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_08
       description: Create machine specification details with parameter model as missing
       role: admin
       templateFields: ["description"]
@@ -221,6 +229,7 @@ CreateMachineSpecification:
 }'
    Masterdata_CreateMachineSpecification_InputParameter_Model_Empty:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_09
       description: Create machine specification details with parameter model as empty
       role: admin
       templateFields: ["description"]
@@ -249,6 +258,7 @@ CreateMachineSpecification:
 }'
    Masterdata_CreateMachineSpecification_InputParameter_Model_AboveMaxLen16:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_10
       description: Create machine specification details with parameter model characters above maximum length 16
       role: admin
       templateFields: ["description"]
@@ -277,6 +287,7 @@ CreateMachineSpecification:
 }'
    Masterdata_CreateMachineSpecification_InputParameter_machineTypeCode_Missing:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_11
       description: Create machine specification details with parameter machine type code as missing
       role: admin
       templateFields: ["description"]
@@ -305,6 +316,7 @@ CreateMachineSpecification:
 }'
    Masterdata_CreateMachineSpecification_InputParameter_machineTypeCode_Empty:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_12
       description: Create machine specification details with parameter machine type code as empty
       role: admin
       templateFields: ["description"]
@@ -333,6 +345,7 @@ CreateMachineSpecification:
 }'
    Masterdata_CreateMachineSpecification_InputParameter_machineTypeCode_AboveMaxLen36:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_13
       description: Create machine specification details with parameter machine type code characters above maximum length 36
       role: admin
       templateFields: ["description"]
@@ -361,6 +374,7 @@ CreateMachineSpecification:
 }'
    Masterdata_CreateMachineSpecification_InputParameter_Invalid_machineTypeCode:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_14
       description: Create machine specification details with invalid machine type code
       role: admin
       templateFields: ["description"]
@@ -389,6 +403,7 @@ CreateMachineSpecification:
 }'
    Masterdata_CreateMachineSpecification_InputParameter_MinDriverversion_Missing:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_15
       description: Create machine specification details with invalid min driver version as missing
       role: admin
       templateFields: ["description"]
@@ -417,6 +432,7 @@ CreateMachineSpecification:
 }'
    Masterdata_CreateMachineSpecification_InputParameter_MinDriverversion_Empty:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_16
       description: Create machine specification details with invalid min driver version as empty
       role: admin
       templateFields: ["description"]
@@ -445,6 +461,7 @@ CreateMachineSpecification:
 }'
    Masterdata_CreateMachineSpecification_InputParameter_MinDriverversion_AboveMaxLen16:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_17
       description: Create machine specification details with invalid min driver version characters above maximum length 16
       role: admin
       templateFields: ["description"]
@@ -473,6 +490,7 @@ CreateMachineSpecification:
 }'
    Masterdata_CreateMachineSpecification_InputParameter_Description_AboveMaxLen256:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_18
       description: Create machine specification details with invalid description characters above maximum length 256
       role: admin
       templateFields: ["description"]
@@ -501,6 +519,7 @@ CreateMachineSpecification:
 }'
    Masterdata_CreateMachineSpecification_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_19
       description: Create machine specification details with ia active parameter as missing
       role: admin
       templateFields: ["description"]
@@ -530,6 +549,7 @@ CreateMachineSpecification:
 
    Masterdata_CreateMachineSpecification_Duplicate_Neg:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_20
       description: Create machine specification details duplicate details
       role: admin
       templateFields: ["description"]

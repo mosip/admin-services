@@ -1,6 +1,7 @@
 UpdateMachineSpecification:
    Masterdata_UpdateMachineSpecification_All_Valid_Smoke:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateMachineSpecification_01
       description: Update machine specification details with valid details
       role: admin
       checkErrorsOnlyInResponse: true
@@ -25,6 +26,7 @@ UpdateMachineSpecification:
 }'
    Masterdata_UpdateMachineSpecification_InputParameter_Name_Missing:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateMachineSpecification_02
       description: Update machine specification details with parameter name as missing
       role: admin
       templateFields: []
@@ -53,6 +55,7 @@ UpdateMachineSpecification:
 }'
    Masterdata_UpdateMachineSpecification_InputParameter_Name_Empty:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateMachineSpecification_03
       description: Update machine specification details with parameter name as empty
       role: admin
       templateFields: []
@@ -81,6 +84,7 @@ UpdateMachineSpecification:
 }'
    Masterdata_UpdateMachineSpecification_InputParameter_Name_AboveMaxLen64:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateMachineSpecification_04
       description: Update machine specification details with parameter name characters above maximum level 64
       role: admin
       templateFields: []
@@ -109,6 +113,7 @@ UpdateMachineSpecification:
 }'
    Masterdata_UpdateMachineSpecification_InputParameter_Brand_Missing:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateMachineSpecification_05
       description: Update machine specification details with parameter brand as missing
       role: admin
       templateFields: ["name"]
@@ -137,6 +142,7 @@ UpdateMachineSpecification:
 }'
    Masterdata_UpdateMachineSpecification_InputParameter_Brand_Empty:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateMachineSpecification_06
       description: Update machine specification details with parameter brand as empty
       role: admin
       templateFields: ["name"]
@@ -165,6 +171,7 @@ UpdateMachineSpecification:
 }'
    Masterdata_UpdateMachineSpecification_InputParameter_Brand_AboveMaxLen32:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateMachineSpecification_07
       description: Update machine specification details with parameter brand characters above maximum length 32
       role: admin
       templateFields: ["name"]
@@ -193,6 +200,7 @@ UpdateMachineSpecification:
 }'
    Masterdata_UpdateMachineSpecification_InputParameter_Model_Missing:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateMachineSpecification_08
       description: Update machine specification details with parameter model as missing
       role: admin
       templateFields: ["name"]
@@ -221,6 +229,7 @@ UpdateMachineSpecification:
 }'
    Masterdata_UpdateMachineSpecification_InputParameter_Model_Empty:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateMachineSpecification_09
       description: Update machine specification details with parameter model as empty
       role: admin
       templateFields: ["name"]
@@ -249,6 +258,7 @@ UpdateMachineSpecification:
 }'
    Masterdata_UpdateMachineSpecification_InputParameter_Model_AboveMaxLen16:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateMachineSpecification_10
       description: Update machine specification details with parameter model characters above maximum length 16
       role: admin
       templateFields: ["name"]
@@ -277,6 +287,7 @@ UpdateMachineSpecification:
 }'
    Masterdata_UpdateMachineSpecification_InputParameter_machineTypeCode_Missing:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateMachineSpecification_11
       description: Update machine specification details with parameter machine type code as missing
       role: admin
       templateFields: ["name"]
@@ -305,6 +316,7 @@ UpdateMachineSpecification:
 }'
    Masterdata_UpdateMachineSpecification_InputParameter_machineTypeCode_Empty:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateMachineSpecification_12
       description: Update machine specification details with parameter machine type code as empty
       role: admin
       templateFields: ["name"]
@@ -333,6 +345,7 @@ UpdateMachineSpecification:
 }'
    Masterdata_UpdateMachineSpecification_InputParameter_machineTypeCode_AboveMaxLen36:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateMachineSpecification_13
       description: Update machine specification details with parameter machine type code characters above maximum length 36
       role: admin
       templateFields: ["name"]
@@ -361,6 +374,7 @@ UpdateMachineSpecification:
 }'
    Masterdata_UpdateMachineSpecification_InputParameter_Invalid_machineTypeCode:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateMachineSpecification_14
       description: Update machine specification details with invalid machine type code
       role: admin
       templateFields: ["name"]
@@ -389,6 +403,7 @@ UpdateMachineSpecification:
 }'
    Masterdata_UpdateMachineSpecification_InputParameter_MinDriverversion_Missing:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateMachineSpecification_15
       description: Update machine specification details with invalid min driver version as missing
       role: admin
       templateFields: ["name"]
@@ -417,6 +432,7 @@ UpdateMachineSpecification:
 }'
    Masterdata_UpdateMachineSpecification_InputParameter_MinDriverversion_Empty:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateMachineSpecification_16
       description: Update machine specification details with invalid min driver version as empty
       role: admin
       templateFields: ["name"]
@@ -445,6 +461,7 @@ UpdateMachineSpecification:
 }'
    Masterdata_UpdateMachineSpecification_InputParameter_MinDriverversion_AboveMaxLen16:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateMachineSpecification_17
       description: Update machine specification details with invalid min driver version characters above maximum length 16
       role: admin
       templateFields: ["name"]
@@ -473,6 +490,7 @@ UpdateMachineSpecification:
 }'
    Masterdata_UpdateMachineSpecification_InputParameter_Description_AboveMaxLen256:
       endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateMachineSpecification_18
       description: Update machine specification details with invalid description characters above maximum length 256
       role: admin
       templateFields: ["name"]

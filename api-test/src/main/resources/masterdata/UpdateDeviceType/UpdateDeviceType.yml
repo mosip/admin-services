@@ -1,6 +1,7 @@
 UpdateDeviceType:
    MasterData_UpdateDeviceType_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/devicetypes?isActive=true&code=FRS
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceType_01
       description: Update device type with valid data
       role: admin
       restMethod: patch
@@ -15,6 +16,7 @@ UpdateDeviceType:
 
    MasterData_UpdateDeviceType_Invalid_status:  
       endPoint: /v1/masterdata/devicetypes?isActive=false&code=FRS
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceType_02
       description: Update device type with invalid status
       role: admin
       restMethod: patch
@@ -34,6 +36,7 @@ UpdateDeviceType:
 
    MasterData_UpdateDeviceType_Invalid_code:  
       endPoint: /v1/masterdata/devicetypes?isActive=true&code=ABC
+      uniqueIdentifier: TC_Masterdata_UpdateDeviceType_03
       description: Update device type with invalid code
       role: admin
       restMethod: patch

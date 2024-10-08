@@ -1,6 +1,7 @@
 UpdateMachine:
    Masterdata_UpdateMachine_All_Valid_Smoke:
       endPoint: /v1/masterdata/machines
+      uniqueIdentifier: TC_Masterdata_UpdateMachine_01
       description: Update the machine details with valid data
       role: globalAdmin
       templateFields: ["name"]
@@ -37,6 +38,7 @@ UpdateMachine:
 }'
    Masterdata_UpdateMachine_Invalid_validitydate_Format:
       endPoint: /v1/masterdata/machines
+      uniqueIdentifier: TC_Masterdata_UpdateMachine_02
       description: Update the machine details with invalid validity date format
       role: admin
       templateFields: ["name"]
@@ -69,6 +71,7 @@ UpdateMachine:
 }'
    Masterdata_UpdateMachine_Invalid_Machine_Zone:
       endPoint: /v1/masterdata/machines
+      uniqueIdentifier: TC_Masterdata_UpdateMachine_03
       description: Update the machine details with invalid machine zone data
       role: admin
       templateFields: ["name"]
@@ -101,6 +104,7 @@ UpdateMachine:
 }'
    Masterdata_UpdateMachine_Invalid_Machine_Name_Blank:
       endPoint: /v1/masterdata/machines
+      uniqueIdentifier: TC_Masterdata_UpdateMachine_04
       description: Update the machine details with machine name as empty
       role: admin
       templateFields: ["name"]
@@ -133,6 +137,7 @@ UpdateMachine:
 }'
    Masterdata_UpdateMachine_Invalid_Zone_Code_Blank:
       endPoint: /v1/masterdata/machines
+      uniqueIdentifier: TC_Masterdata_UpdateMachine_05
       description: Update the machine details with machine zone as empty
       role: admin
       templateFields: ["name"]
@@ -165,6 +170,7 @@ UpdateMachine:
 }'
    Masterdata_UpdateMachine_Invalid_Zone_nonAccessable:
       endPoint: /v1/masterdata/machines
+      uniqueIdentifier: TC_Masterdata_UpdateMachine_06
       description: Update the machine details with machine zone that is non accessible
       role: admin
       templateFields: ["name"]
@@ -197,6 +203,7 @@ UpdateMachine:
 }'
    Masterdata_UpdateMachine_Invalid_MAC_Address_Blank:
       endPoint: /v1/masterdata/machines
+      uniqueIdentifier: TC_Masterdata_UpdateMachine_07
       description: Update the machine details with MC address as empty
       role: admin
       templateFields: ["name"]
@@ -229,6 +236,7 @@ UpdateMachine:
 }'
    Masterdata_UpdateMachine_inValid_MachineName_AboveMaxLen64:
       endPoint: /v1/masterdata/machines
+      uniqueIdentifier: TC_Masterdata_UpdateMachine_08
       description: Update the machine details with a machine name exceeding the maximum length of 64 characters
       role: admin
       templateFields: ["name"]
@@ -261,6 +269,7 @@ UpdateMachine:
 }'
    Masterdata_UpdateMachine_inValid_MacAddress_AboveMaxLen64:
       endPoint: /v1/masterdata/machines
+      uniqueIdentifier: TC_Masterdata_UpdateMachine_09
       description: Update the machine details with a MAC address exceeding the maximum length of 64 characters
       role: admin
       templateFields: ["name"]
@@ -293,6 +302,7 @@ UpdateMachine:
 }'
    Masterdata_UpdateMachine_inValid_SerialNumber_AboveMaxLen64:
       endPoint: /v1/masterdata/machines
+      uniqueIdentifier: TC_Masterdata_UpdateMachine_10
       description: Update the machine details with a serial number exceeding the maximum length of 64 characters
       role: admin
       templateFields: ["name"]
@@ -325,6 +335,7 @@ UpdateMachine:
 }'
    Masterdata_UpdateMachine_inValid_IPAddress_AboveMaxLen17:
       endPoint: /v1/masterdata/machines
+      uniqueIdentifier: TC_Masterdata_UpdateMachine_11
       description: Update the machine details with a IP address exceeding the maximum length of 17 characters
       role: admin
       templateFields: ["name"]
@@ -357,6 +368,7 @@ UpdateMachine:
 }'
    Masterdata_UpdateMachine_inValid_MSpecID_AboveMaxLen36:
       endPoint: /v1/masterdata/machines
+      uniqueIdentifier: TC_Masterdata_UpdateMachine_12
       description: Update the machine details with a machine spec ID exceeding the maximum length of 64 characters
       role: admin
       templateFields: ["name"]

@@ -1,6 +1,7 @@
 GetTemplatesByCode:
    MasterData_GetTemplatesByCode_allValid_smoke:
       endPoint: /v1/masterdata/templates/templatetypecodes/{code}
+      uniqueIdentifier: TC_Masterdata_GetTemplatesByCode_01
       description: Retrieve template details by valid code
       role: admin
       restMethod: get
@@ -17,6 +18,7 @@ GetTemplatesByCode:
 }'
    MasterData_GetTemplatesByCode_InValid_InvalidTemplateCode:
       endPoint: /v1/masterdata/templates/templatetypecodes/{code}
+      uniqueIdentifier: TC_Masterdata_GetTemplatesByCode_02
       description: Retrieve template details by invalid code
       role: admin
       restMethod: get

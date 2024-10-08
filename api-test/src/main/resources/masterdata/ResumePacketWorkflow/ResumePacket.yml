@@ -1,6 +1,7 @@
 ResumePacketWorkflow:
    MasterData_ResumePacketWorkflow_inValid_workFlowId:
       endPoint: /v1/masterdata/packet/resume
+      uniqueIdentifier: TC_Masterdata_ResumePacketWorkflow_01
       description: Resume packet workflow with invalid work flow data
       role: admin
       restMethod: post
@@ -21,6 +22,7 @@ ResumePacketWorkflow:
 }'
    MasterData_ResumePacketWorkflow_inValid_requesttime:
       endPoint: /v1/masterdata/packet/resume
+      uniqueIdentifier: TC_Masterdata_ResumePacketWorkflow_01
       description: Resume packet workflow with invalid request time data
       role: admin
       restMethod: post

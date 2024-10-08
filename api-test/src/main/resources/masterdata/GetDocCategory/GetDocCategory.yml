@@ -1,6 +1,7 @@
 GetDocCategory:
    Admin_GetDocCategory_allValid_smoke:
       endPoint: /v1/masterdata/documentcategories
+      uniqueIdentifier: TC_Masterdata_GetDocCategory_01
       description: Retrieve all the document categories
       role: admin
       checkErrorsOnlyInResponse: true
