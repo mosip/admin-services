@@ -1,6 +1,7 @@
 DeviceTypeSearch:
    MasterData_DeviceTypeSearch_Equals_Name_eng_smoke:
       endPoint: /v1/masterdata/devicetypes/search
+      uniqueIdentifier: TC_Masterdata_DeviceTypeSearch_01
       description: Search Device type with columnName name and type equals
       role: admin
       templateFields: ["languageCode"]
@@ -42,6 +43,7 @@ DeviceTypeSearch:
 }'
    MasterData_DeviceTypeSearch_Equals_isActive_eng_smoke:
       endPoint: /v1/masterdata/devicetypes/search
+      uniqueIdentifier: TC_Masterdata_DeviceTypeSearch_02
       description: Search Device type with columnName isActive and type Equals
       role: admin
       checkErrorsOnlyInResponse: true
@@ -82,6 +84,7 @@ DeviceTypeSearch:
 }'
    MasterData_DeviceTypeSearch_Contains_Name_eng_smoke:
       endPoint: /v1/masterdata/devicetypes/search
+      uniqueIdentifier: TC_Masterdata_DeviceTypeSearch_03
       description: Search Device type with columnName name and type contains
       role: admin
       templateFields: ["languageCode"]
@@ -123,6 +126,7 @@ DeviceTypeSearch:
 }'
    MasterData_DeviceTypeSearch_startsWith_Name_eng_smoke:
       endPoint: /v1/masterdata/devicetypes/search
+      uniqueIdentifier: TC_Masterdata_DeviceTypeSearch_04
       description: Search Device type with columnName name and type startsWith
       role: admin
       checkErrorsOnlyInResponse: true
@@ -155,6 +159,7 @@ DeviceTypeSearch:
 }'
    MasterData_DeviceTypeSearch_Invalid_Value_Name_smoke:
       endPoint: /v1/masterdata/devicetypes/search
+      uniqueIdentifier: TC_Masterdata_DeviceTypeSearch_05
       description: Search Device type with invalid columnName name
       role: admin
       checkErrorsOnlyInResponse: true
@@ -187,6 +192,7 @@ DeviceTypeSearch:
 }'
    MasterData_DeviceTypeSearch_Invalid_ColumnName_neg:
       endPoint: /v1/masterdata/devicetypes/search
+      uniqueIdentifier: TC_Masterdata_DeviceTypeSearch_06
       description: Search Device type with invalid columnName
       role: admin
       templateFields: ["value"]

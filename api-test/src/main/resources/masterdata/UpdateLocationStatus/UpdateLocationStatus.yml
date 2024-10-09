@@ -1,6 +1,7 @@
 UpdateLocationStatus:
    MasterData_UpdateLocationStatus_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/locations?code={code}&isActive={isActive}
+      uniqueIdentifier: TC_Masterdata_UpdateLocationStatus_01
       description: Update location status details with valid data
       role: admin
       restMethod: patch

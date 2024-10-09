@@ -1,6 +1,7 @@
 UpdateDocumentType:
    MasterData_UpdateDocumentType_Valid_Smoke:
       endPoint: /v1/masterdata/documenttypes
+      uniqueIdentifier: TC_Masterdata_UpdateDocumentType_01
       description: Update Document Type with all valid data
       role: admin
       templateFields: ["name","description"]
@@ -24,6 +25,7 @@ UpdateDocumentType:
    
    MasterData_UpdateDocumentType_Invalid_Code_Char37:
       endPoint: /v1/masterdata/documenttypes
+      uniqueIdentifier: TC_Masterdata_UpdateDocumentType_02
       description: Update Document Type with invalid Code more than 36 characters
       role: admin
       templateFields: ["name","description"]
@@ -48,6 +50,7 @@ UpdateDocumentType:
 }'
    MasterData_UpdateDocumentType_Invalid_Name_Char65:
       endPoint: /v1/masterdata/documenttypes
+      uniqueIdentifier: TC_Masterdata_UpdateDocumentType_03
       description: Update Document Type with invalid Description more than 64 characters
       role: admin
       templateFields: ["name","description"]
@@ -72,6 +75,7 @@ UpdateDocumentType:
 }'
    MasterData_UpdateDocumentType_Invalid_Descr_Char129:
       endPoint: /v1/masterdata/documenttypes
+      uniqueIdentifier: TC_Masterdata_UpdateDocumentType_04
       description: Update Document Type with invalid Description more than 128 characters
       role: admin
       restMethod: put
@@ -97,6 +101,7 @@ UpdateDocumentType:
    
    MasterData_UpdateDocumentType_Invalid_Name_Blank:
       endPoint: /v1/masterdata/documenttypes
+      uniqueIdentifier: TC_Masterdata_UpdateDocumentType_05
       description: Update Document Type with invalid empty Name
       role: admin
       templateFields: ["description"]
@@ -121,6 +126,7 @@ UpdateDocumentType:
 }'
    MasterData_UpdateDocumentType_Invalid_Code_Blank:
       endPoint: /v1/masterdata/documenttypes
+      uniqueIdentifier: TC_Masterdata_UpdateDocumentType_06
       description: Update Document Type with invalid empty Code
       role: admin
       templateFields: ["name","description"]

@@ -1,6 +1,7 @@
 GetApplicantType:
    Masterdata_GetApplicantType_valid_smoke:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_01
       description: Retrieve Applicant Types by all valid data
       role: admin
       restMethod: post
@@ -31,6 +32,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_MLE_NFR_CHL_True:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_02
       description: Retrieve Applicant Types for Male, Non Foreigner and Child
       role: admin
       restMethod: post
@@ -61,6 +63,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_MLE_NFR_CHL_False:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_03
       description: Retrieve Applicant Types for Male, Non Foreigner and Child
       role: admin
       restMethod: post
@@ -91,6 +94,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_MLE_NFR_ADL_True:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_04
       description: Retrieve Applicant Types for Male, Non Foreigner and Adult Biometric available
       role: admin
       restMethod: post
@@ -121,6 +125,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_MLE_NFR_ADL_False:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_05
       description: Retrieve Applicant Types for Male, Non Foreigner and Adult Biometric not available
       role: admin
       restMethod: post
@@ -151,6 +156,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_MLE_FR_CHL_False:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_06
       description: Retrieve Applicant Types for Male, Foreigner and and Child Biometric not available
       role: admin
       restMethod: post
@@ -181,6 +187,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_MLE_FR_ADL_True:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_07
       description: Retrieve Applicant Types for Male, Foreigner and Adult Biometric not available
       role: admin
       restMethod: post
@@ -211,6 +218,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_MLE_FR_ADL_False:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_08
       description: Retrieve Applicant Types for Male, Foreigner and Adult Biometric not available
       role: admin
       restMethod: post
@@ -241,6 +249,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_invalid_residenceStatus:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_09
       description: Retrieve Applicant Types for invalid residenceStatus
       role: admin
       restMethod: post
@@ -271,6 +280,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_invalid_gender:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_10
       description: Retrieve Applicant Types for invalid gender
       role: admin
       restMethod: post
@@ -301,6 +311,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_invalid_dateOfBirth:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_11
       description: Retrieve Applicant Types for invalid dateOfBirth
       role: admin
       restMethod: post
@@ -336,6 +347,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_invalid_biometricAvailable:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_12
       description: Retrieve Applicant Types for invalid biometricAvailable
       role: admin
       restMethod: post
@@ -367,6 +379,7 @@ GetApplicantType:
 
    Masterdata_GetApplicantType_Future_date_as_DOB:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_13
       description: Retrieve Applicant Types with future date for dateOfBirth
       role: admin
       restMethod: post
@@ -402,6 +415,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_FLE_NFR_CHL_true:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_14
       description: Retrieve Applicant Types for Female, Non Foreigner and Child Biometric available
       role: admin
       restMethod: post
@@ -432,6 +446,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_FLE_NFR_CHL_False:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_15
       description: Retrieve Applicant Types for Female, Non Foreigner and Child Biometric not available
       role: admin
       restMethod: post
@@ -462,6 +477,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_FLE_NFR_ADL_true:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_16
       description: Retrieve Applicant Types for Female, Non Foreigner and Adult Biometric available
       role: admin
       restMethod: post
@@ -492,6 +508,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_FLE_NFR_ADL_False:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_17
       description: Retrieve Applicant Types for Female, Non Foreigner and Adult Biometric not available
       role: admin
       restMethod: post
@@ -522,6 +539,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_FLE_FR_CHL_True:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_18
       description: Retrieve Applicant Types for Female, Foreigner and Child Biometric available
       role: admin
       restMethod: post
@@ -552,6 +570,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_FLE_FR_CHL_False:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_19
       description: Retrieve Applicant Types for Female, Foreigner and Child Biometric not available
       role: admin
       restMethod: post
@@ -582,6 +601,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_FLE_FR_ADL_true:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_20
       description: Retrieve Applicant Types for Female, Foreigner and Adult Biometric available
       role: admin
       restMethod: post
@@ -612,6 +632,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_FLE_FR_ADL_False:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_21
       description: Retrieve Applicant Types for Female, Foreigner and Adult Biometric not available
       role: admin
       restMethod: post
@@ -642,6 +663,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_DOB_lessThanAYear:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_22
       description: Retrieve Applicant Types for dateOfBirth lessthan a year
       role: admin
       restMethod: post
@@ -672,6 +694,7 @@ GetApplicantType:
 }'
    Masterdata_GetApplicantType_response_time:
       endPoint: /v1/masterdata/getApplicantType
+      uniqueIdentifier: TC_Masterdata_GetApplicantType_23
       description: Get response time for retrieving Applicant Types
       role: admin
       restMethod: post

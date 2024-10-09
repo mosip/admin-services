@@ -1,6 +1,7 @@
 GetLocations:
    Admin_GetLocations_allValid_smoke:
       endPoint: /v1/masterdata/locations/all
+      uniqueIdentifier: TC_Masterdata_GetLocations_01
       description: Retrieve location details
       role: admin
       checkErrorsOnlyInResponse: true

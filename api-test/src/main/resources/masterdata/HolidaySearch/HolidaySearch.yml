@@ -1,6 +1,7 @@
 HolidaySearch:
    MasterData_HolidaySearch_equals_holidayName_eng_pos:
       endPoint: /v1/masterdata/holidays/search
+      uniqueIdentifier: TC_Masterdata_HolidaySearch_01
       description: Search holiday details with the condition that it matches the holiday name and the page position for the English language
       role: admin
       checkErrorsOnlyInResponse: true
@@ -33,6 +34,7 @@ HolidaySearch:
 }'
    MasterData_HolidaySearch_equals_holidayName_ara_pos:
       endPoint: /v1/masterdata/holidays/search
+      uniqueIdentifier: TC_Masterdata_HolidaySearch_02
       description: Search holiday details with the condition that it matches the holiday name and the page position for the Arabic language
       role: admin
       checkErrorsOnlyInResponse: true
@@ -65,6 +67,7 @@ HolidaySearch:
 }'
    MasterData_HolidaySearch_startsWith_holidayName_eng_pos:
       endPoint: /v1/masterdata/holidays/search
+      uniqueIdentifier: TC_Masterdata_HolidaySearch_03
       description: Search holiday details with the condition that it starts with the holiday name and the page position for the English language
       role: admin
       checkErrorsOnlyInResponse: true
@@ -97,6 +100,7 @@ HolidaySearch:
 }'
    MasterData_HolidaySearch_startsWith_holidayName_ara_pos:
       endPoint: /v1/masterdata/holidays/search
+      uniqueIdentifier: TC_Masterdata_HolidaySearch_04
       description: Search holiday details with the condition that it starts with the holiday name and the page position for the Arabic language
       role: admin
       checkErrorsOnlyInResponse: true
@@ -129,6 +133,7 @@ HolidaySearch:
 }'
    MasterData_HolidaySearch_contains_holidayName_eng_pos:
       endPoint: /v1/masterdata/holidays/search
+      uniqueIdentifier: TC_Masterdata_HolidaySearch_05
       description: Search holiday details with the condition that it contains the holiday name and the page position for the English language
       role: admin
       checkErrorsOnlyInResponse: true
@@ -163,6 +168,7 @@ HolidaySearch:
    
    MasterData_HolidaySearch_Invalid_FilterType_neg:
       endPoint: /v1/masterdata/holidays/search
+      uniqueIdentifier: TC_Masterdata_HolidaySearch_06
       description: Search holiday details with invalid filter type
       role: admin
       templateFields: ["value"]
@@ -202,6 +208,7 @@ HolidaySearch:
    
    MasterData_HolidaySearch_Invalid_SortType_neg:
       endPoint: /v1/masterdata/holidays/search
+      uniqueIdentifier: TC_Masterdata_HolidaySearch_07
       description: Search holiday details with invalid sort type
       role: admin
       templateFields: ["value"]
@@ -239,6 +246,7 @@ HolidaySearch:
 }'
    MasterData_HolidaySearch_Invalid_SortField_neg:
       endPoint: /v1/masterdata/holidays/search
+      uniqueIdentifier: TC_Masterdata_HolidaySearch_08
       description: Search holiday details with invalid sort field
       role: admin
       templateFields: ["value"]
@@ -276,6 +284,7 @@ HolidaySearch:
 }'
    MasterData_HolidaySearch_Invalid_RequestTime_neg:
       endPoint: /v1/masterdata/holidays/search
+      uniqueIdentifier: TC_Masterdata_HolidaySearch_09
       description: Search holiday details with invalid request time
       role: admin
       templateFields: ["value"]

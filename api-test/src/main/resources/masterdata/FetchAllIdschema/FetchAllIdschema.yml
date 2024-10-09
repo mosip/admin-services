@@ -1,6 +1,7 @@
 FetchAllIdschema:
    MasterData_FetchAllIdschema_valid_smoke:
       endPoint: /v1/masterdata/idschema/all
+      uniqueIdentifier: TC_Masterdata_FetchAllIdschema_01
       description: Retrieve All ID Schema details with valid data
       role: admin
       checkErrorsOnlyInResponse: true

@@ -1,6 +1,7 @@
 DeviceSearch:
    MasterData_DeviceSearch_Equals_Name_eng_smoke:
       endPoint: /v1/masterdata/devices/search
+      uniqueIdentifier: TC_Masterdata_DeviceSearch_01
       description: Search Devices by columnName name and type startswith
       role: globalAdmin
       templateFields: ["languageCode"]
@@ -44,6 +45,7 @@ DeviceSearch:
    
    MasterData_DeviceSearch_Equals_SerialNo_smoke:
       endPoint: /v1/masterdata/devices/search
+      uniqueIdentifier: TC_Masterdata_DeviceSearch_02
       description: Search Devices by columnName serialNum and type equals
       role: globalAdmin
       templateFields: ["languageCode"]
@@ -86,6 +88,7 @@ DeviceSearch:
 }'
    MasterData_DeviceSearch_Equals_MacAddress_smoke:
       endPoint: /v1/masterdata/devices/search
+      uniqueIdentifier: TC_Masterdata_DeviceSearch_03
       description: Search Devices by columnName macAddress and type equals
       role: globalAdmin
       checkErrorsOnlyInResponse: true
@@ -118,6 +121,7 @@ DeviceSearch:
 }'
    MasterData_DeviceSearch_ASC_Name_eng_pos:
       endPoint: /v1/masterdata/devices/search
+      uniqueIdentifier: TC_Masterdata_DeviceSearch_04
       description: Search Devices by columnName name and sortType By ASC
       role: globalAdmin
       templateFields: ["languageCode"]
@@ -162,6 +166,7 @@ DeviceSearch:
    
    MasterData_DeviceSearch_DESC_Name_eng_pos:
       endPoint: /v1/masterdata/devices/search
+      uniqueIdentifier: TC_Masterdata_DeviceSearch_05
       description: Search Devices by columnName name and sortType By Desc
       role: globalAdmin
       templateFields: ["languageCode"]
@@ -206,6 +211,7 @@ DeviceSearch:
    
    MasterData_DeviceSearch_Invalid_Value_Name_smoke:
       endPoint: /v1/masterdata/devices/search
+      uniqueIdentifier: TC_Masterdata_DeviceSearch_06
       description: Search Devices by columnName name and invalid value
       role: globalAdmin
       templateFields: ["value"]
@@ -240,6 +246,7 @@ DeviceSearch:
 }'
    MasterData_DeviceSearch_Invalid_SortType_neg:
       endPoint: /v1/masterdata/devices/search
+      uniqueIdentifier: TC_Masterdata_DeviceSearch_07
       description: Search Devices by columnName name and invalid sortType value
       role: globalAdmin
       templateFields: ["value"]
@@ -277,6 +284,7 @@ DeviceSearch:
 }'
    MasterData_DeviceSearch_Invalid_RequestTime_neg:
       endPoint: /v1/masterdata/devices/search
+      uniqueIdentifier: TC_Masterdata_DeviceSearch_08
       description: Search Devices by invalid Request Time
       role: globalAdmin
       templateFields: ["value"]

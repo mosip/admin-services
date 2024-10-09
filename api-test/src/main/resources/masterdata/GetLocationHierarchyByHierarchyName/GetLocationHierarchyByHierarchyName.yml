@@ -1,6 +1,7 @@
 GetLocationHierarchyByHierarchyName:
    Admin_GetLocationHierarchyByHierarchyName_allValid_smoke:
       endPoint: /v1/masterdata/locations/locationhierarchy/{hierarchyname}
+      uniqueIdentifier: TC_Masterdata_GetLocationHierarchyByHierarchyName_01
       description: Retrieve location hierarchy details by valid hierarchy name
       role: admin
       restMethod: get
@@ -22,6 +23,7 @@ GetLocationHierarchyByHierarchyName:
 
    Admin_GetLocationHierarchyByHierarchyName_Invalid_Invalid_hierarchyname:
       endPoint: /v1/masterdata/locations/locationhierarchy/{hierarchyname}
+      uniqueIdentifier: TC_Masterdata_GetLocationHierarchyByHierarchyName_02
       description: Retrieve location hierarchy details by invalid hierarchy name
       role: admin
       restMethod: get

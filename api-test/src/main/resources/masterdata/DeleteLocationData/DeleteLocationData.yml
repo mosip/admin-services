@@ -1,6 +1,7 @@
 DeleteLocationData:
    MasterData_DeleteLocationData_All_Valid_Smoke: 
       endPoint: /v1/masterdata/locations/{locationCode}
+      uniqueIdentifier: TC_MasterData_DeleteLocationData_01
       description: Delete Location Data with valid Location Code
       role: admin
       checkErrorsOnlyInResponse: true

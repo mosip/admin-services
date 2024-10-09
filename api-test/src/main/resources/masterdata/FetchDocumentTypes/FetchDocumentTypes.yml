@@ -1,6 +1,7 @@
 FetchDocumentTypes:
    MasterData_FetchDocumentTypes_invalid_langcode:
       endPoint: /v1/masterdata/documenttypes/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchDocumentTypes_01
       description: Retrieve Document Types with invalid langcode
       role: admin
       templateFields: []
@@ -21,6 +22,7 @@ FetchDocumentTypes:
 }'
    MasterData_FetchDocumentTypes_invalid_documentcategorycode_notpresent:
       endPoint: /v1/masterdata/documenttypes/{documentcategorycode}/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchDocumentTypes_02
       description: Retrieve Document Types with non existing documentcategorycode
       role: admin
       templateFields: []
@@ -41,6 +43,7 @@ FetchDocumentTypes:
 }'
    MasterData_FetchDocumentTypes_invalid_langcode_notpresent:
       endPoint: /v1/masterdata/documenttypes/{documentcategorycode}/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchDocumentTypes_03
       description: Retrieve Document Types with invalid langcode
       role: admin
       templateFields: []

@@ -1,6 +1,7 @@
 RegistrationCenter:
    Masterdata_RegistrationCenter_Valid_Smoke_sid:
       endPoint: /v1/masterdata/registrationcenters
+      uniqueIdentifier: TC_Masterdata_RegistrationCenter_01
       description: Create registration center with valid details
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone"]
@@ -37,6 +38,7 @@ RegistrationCenter:
 }'
    MasterData_RegistrationCenter_Invalid_HolidayLocationCode_blank_eng:
       endPoint: /v1/masterdata/registrationcenters
+      uniqueIdentifier: TC_Masterdata_RegistrationCenter_02
       description: Create a registration center with holiday location code as empty and language code set to English
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone"]
@@ -91,6 +93,7 @@ RegistrationCenter:
    
    MasterData_RegistrationCenter_Invalid_latitude_blank_eng:
       endPoint: /v1/masterdata/registrationcenters
+      uniqueIdentifier: TC_Masterdata_RegistrationCenter_03
       description: Create a registration center with latitude as empty and language code set to English
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone"]
@@ -144,6 +147,7 @@ RegistrationCenter:
 }'
    MasterData_RegistrationCenter_Invalid_latitude_eng:
       endPoint: /v1/masterdata/registrationcenters
+      uniqueIdentifier: TC_Masterdata_RegistrationCenter_04
       description: Create a registration center with invalid latitude and language code set to English
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone"]

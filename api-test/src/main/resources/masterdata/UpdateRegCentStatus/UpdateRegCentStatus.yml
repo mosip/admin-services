@@ -1,6 +1,7 @@
 UpdateRegCentStatus:
    MasterData_UpdateRegCentStatus_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/registrationcenters?isActive={isActive}&id={id}
+      uniqueIdentifier: TC_Masterdata_UpdateRegCentStatus_01
       description: Update registration center status details with valid data
       role: globalAdmin
       restMethod: patch

@@ -1,6 +1,7 @@
 FetchRegCentHistory:
    Masterdata_FetchRegCentHistory_allValid_smoke:
       endPoint: /v1/masterdata/registrationcentershistory/{registrationCenterId}/{langCode}/{effectiveDate}
+      uniqueIdentifier: TC_Masterdata_FetchRegCentHistory_01
       description: Retrieve Registration Center History with all valid data
       role: admin
       checkErrorsOnlyInResponse: true
@@ -20,6 +21,7 @@ FetchRegCentHistory:
 }'
    Masterdata_FetchRegCentHistory_invalid_registrationCenterId:
       endPoint: /v1/masterdata/registrationcentershistory/{registrationCenterId}/{langCode}/{effectiveDate}
+      uniqueIdentifier: TC_Masterdata_FetchRegCentHistory_02
       description: Retrieve Registration Center History with invalid registrationCenterId
       role: admin
       restMethod: get
@@ -40,6 +42,7 @@ FetchRegCentHistory:
 }'
    Masterdata_FetchRegCentHistory_invalid_langcode:
       endPoint: /v1/masterdata/registrationcentershistory/{registrationCenterId}/{langCode}/{effectiveDate}
+      uniqueIdentifier: TC_Masterdata_FetchRegCentHistory_03
       description: Retrieve Registration Center History with invalid langCode
       role: admin
       restMethod: get
