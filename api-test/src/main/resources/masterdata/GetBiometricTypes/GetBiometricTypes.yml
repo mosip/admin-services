@@ -1,0 +1,15 @@
+GetBiometricTypes:
+   Masterdata_GetBiometricTypes_allValid_smoke:
+      endPoint: /v1/masterdata/biometrictypes
+      uniqueIdentifier: TC_Masterdata_GetBiometricTypes_01
+      description: Fetch Biometric Types with all valid data
+      role: admin
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: masterdata/GetBiometricTypes/getBiometricTypes
+      outputTemplate: masterdata/GetBiometricTypes/getBiometricTypesResult
+      input: '{
+      
+}'
+      output: '{
+}'

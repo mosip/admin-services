@@ -1,0 +1,221 @@
+UpdateRegistrationCenter:
+   MasterData_UpdateRegistrationCenter_allValid_smoke:
+      endPoint: /v1/masterdata/registrationcenters
+      uniqueIdentifier: TC_Masterdata_UpdateRegistrationCenter_01
+      description: Update registration center with valid details
+      role: admin
+      checkErrorsOnlyInResponse: true
+      templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone","langCode"]
+      restMethod: put
+      inputTemplate: masterdata/RegistrationCenter/registrationCenter
+      outputTemplate: masterdata/RegistrationCenter/registrationCenterResult
+      input: '{
+    "addressLine1": "HSR",
+    "addressLine2": "Venkatapura",
+    "addressLine3": "kormangla",
+    "centerEndTime": "17:00:00",
+    "centerStartTime": "09:00:00",
+    "centerTypeCode": "REG",
+    "contactPerson": "Venkat TestPerson",
+    "contactPhone": "9663089998",
+    "holidayLocationCode": "$LOCATIONCODE$",
+    "isActive": true,
+    "langCode": "eng",
+    "latitude":"78.5478",
+    "locationCode":"$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_code$",
+    "longitude":"45.2456",
+    "lunchEndTime":"00:00:00",
+    "lunchStartTime":"00:00:00",
+    "name": "HSR Center updated",
+    "perKioskProcessTime": "00:15:00",
+    "timeZone": "Test Time zone",
+    "workingHours": "8:00:00",
+    "zoneCode":"$ID:CreateRegCenter_allValid_smoke_sid_zoneCode$",
+    "id": "$ID:CreateRegCenter_allValid_smoke_sid_id$",
+    "exceptionHolidayDate": "2020-11-16",
+    "exceptionHolidayName": "TestHoliday",
+    "exceptionHolidayReson": "CenterCreation", 
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+   "name": "HSR Center updated"
+}'
+
+   MasterData_UpdateRegistrationCenter_numberOfKiosks_smoke:
+      endPoint: /v1/masterdata/registrationcenters
+      uniqueIdentifier: TC_Masterdata_UpdateRegistrationCenter_02
+      description: Update a registration center with number of kiosks as empty and language code set to English
+      role: admin
+      checkErrorsOnlyInResponse: true
+      templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone","langCode"]
+      restMethod: put
+      inputTemplate: masterdata/RegistrationCenter/registrationCenter
+      outputTemplate: masterdata/RegistrationCenter/registrationCenterResult
+      input: '{
+    "addressLine1": "HSR",
+    "addressLine2": "Venkatapura",
+    "addressLine3": "kormangla",
+    "centerEndTime": "17:00:00",
+    "centerStartTime": "09:00:00",
+    "centerTypeCode": "REG",
+    "contactPerson": "Venkat TestPerson",
+    "contactPhone": "9663089998",
+    "holidayLocationCode": "$LOCATIONCODE$",
+    "isActive": true,
+    "langCode": "eng",
+    "latitude":"78.5478",
+    "locationCode":"$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_code$",
+    "longitude":"45.2456",
+    "lunchEndTime":"00:00:00",
+    "lunchStartTime":"00:00:00",
+    "name": "HSR Center updated",
+    "perKioskProcessTime": "00:15:00",
+    "timeZone": "Test Time zone",
+    "workingHours": "8:00:00",
+    "zoneCode":"$ID:CreateRegCenter_allValid_smoke_sid_zoneCode$",
+    "id": "$ID:CreateRegCenter_allValid_smoke_sid_id$",
+    "numberOfKiosks":"12",
+    "exceptionHolidayDate": "2020-11-16",
+    "exceptionHolidayName": "TestHoliday",
+    "exceptionHolidayReson": "CenterCreation", 
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+   "name": "HSR Center updated"
+}'
+   MasterData_CreateRegCenter_Invalid_HolidayLocationCode_blank_eng:
+      endPoint: /v1/masterdata/registrationcenters
+      uniqueIdentifier: TC_Masterdata_UpdateRegistrationCenter_03
+      description: Update a registration center with holiday location code as empty and language code set to English
+      role: admin
+      templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone"]
+      restMethod: put
+      inputTemplate: masterdata/RegistrationCenter/registrationCenter
+      outputTemplate: masterdata/error
+      input: '{
+    "addressLine1": "HSR",
+    "addressLine2": "Venkatapura",
+    "addressLine3": "kormangla",
+    "centerEndTime": "17:00:00",
+    "centerStartTime": "09:00:00",
+    "centerTypeCode": "REG",
+    "contactPerson": "Venkat TestPerson",
+    "contactPhone": "9663089998",
+    "holidayLocationCode": "",
+    "isActive": true,
+    "langCode": "eng",
+    "latitude": "33.995612",
+    "locationCode": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_code$",
+    "longitude": "-6.815281",
+    "lunchEndTime": "14:00:00",
+    "lunchStartTime": "13:00:00",
+    "name": "BTM Center updated",
+    "perKioskProcessTime": "00:15:00",
+    "timeZone": "Test Time zone",
+    "workingHours": "8:00:00",
+    "zoneCode":"$ZONE_CODE$",
+    "id": "123414",
+    "exceptionHolidayDate": "2020-11-16",
+    "exceptionHolidayName": "TestHoliday",
+    "exceptionHolidayReson": "CenterCreation", 
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "request.holidayLocationCode: must not be blank"
+    }
+  ]
+}'
+   
+   MasterData_CreateRegCenter_Invalid_latitude_blank_eng:
+      endPoint: /v1/masterdata/registrationcenters
+      uniqueIdentifier: TC_Masterdata_UpdateRegistrationCenter_04
+      description: Update a registration center with latitude as empty and language code set to English
+      role: admin
+      templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone"]
+      restMethod: put
+      inputTemplate: masterdata/RegistrationCenter/registrationCenter
+      outputTemplate: masterdata/error
+      input: '{
+    "addressLine1": "WhiteField",
+    "addressLine2": "whiteBoard",
+    "addressLine3": "kormangla",
+    "centerEndTime": "17:00:00",
+    "centerStartTime": "09:00:00",
+    "centerTypeCode": "REG",
+    "contactPerson": "Venkat TestPerson",
+    "contactPhone": "9663089998",
+    "holidayLocationCode": "$LOCATIONCODE$",
+    "isActive": true,
+    "langCode": "eng",
+    "latitude": "",
+    "locationCode": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_code$",
+    "longitude": "-6.815281",
+    "lunchEndTime": "14:00:00",
+    "lunchStartTime": "13:00:00",
+    "name": "WhiteField Center updated",
+    "perKioskProcessTime": "00:15:00",
+    "timeZone": "Test Time zone",
+    "workingHours": "8:00:00",
+    "zoneCode":"$ZONE_CODE$",
+    "id": "96874",
+    "exceptionHolidayDate": "2020-11-16",
+    "exceptionHolidayName": "TestHoliday",
+    "exceptionHolidayReson": "CenterCreation", 
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "request.latitude: Should not be blank or size must be between 1 and 32"
+    }
+  ]
+}'
+   MasterData_CreateRegCenter_Invalid_latitude_eng:
+      endPoint: /v1/masterdata/registrationcenters
+      uniqueIdentifier: TC_Masterdata_UpdateRegistrationCenter_05
+      description: Update a registration center with invalid latitude and language code set to English
+      role: admin
+      templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone"]
+      restMethod: put
+      inputTemplate: masterdata/RegistrationCenter/registrationCenter
+      outputTemplate: masterdata/error
+      input: '{
+    "addressLine1": "WhiteField",
+    "addressLine2": "whiteBoard",
+    "addressLine3": "kormangla",
+    "centerEndTime": "17:00:00",
+    "centerStartTime": "09:00:00",
+    "centerTypeCode": "REG",
+    "contactPerson": "Venkat TestPerson",
+    "contactPhone": "9663089998",
+    "holidayLocationCode": "$LOCATIONCODE$",
+    "isActive": true,
+    "langCode": "eng",
+    "latitude": "fbheafg",
+    "locationCode": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_code$",
+    "longitude": "-6.815281",
+    "lunchEndTime": "14:00:00",
+    "lunchStartTime": "13:00:00",
+    "name": "WhiteField Center updated",
+    "perKioskProcessTime": "00:15:00",
+    "timeZone": "Test Time zone",
+    "workingHours": "8:00:00",
+    "zoneCode":"$ZONE_CODE$",
+    "id": "96874",
+    "exceptionHolidayDate": "2020-11-16",
+    "exceptionHolidayName": "TestHoliday",
+    "exceptionHolidayReson": "CenterCreation", 
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-307",
+      "message": "Latitude or Longitude must have maximum 2 digits before and minimum 4 digits after decimal"
+    }
+  ]
+}'
