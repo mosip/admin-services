@@ -1,6 +1,7 @@
 FilterDynamicField:
    MasterData_FilterDynamicField_Valid_Smoke:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterDynamicField_01
       description: Filter Dynamic Fields By all valid data
       role: admin
       templateFields: ["languageCode"]
@@ -31,6 +32,7 @@ FilterDynamicField:
 }'
    MasterData_FilterDynamicField_Invalid_RequestTime:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterDynamicField_02
       description: Filter Dynamic Fields By invalid requesttime format
       role: admin
       templateFields: ["languageCode"]
@@ -56,6 +58,7 @@ FilterDynamicField:
 }'
    MasterData_FilterDynamicField_InValid_FilterType:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterDynamicField_03
       description: Filter Dynamic Fields By invalid type
       role: admin
       templateFields: ["languageCode"]
@@ -81,6 +84,7 @@ FilterDynamicField:
 }'
    MasterData_FilterDynamicField_Blank_FilterType:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterDynamicField_04
       description: Filter Dynamic Fields By empty type
       role: admin
       templateFields: ["languageCode"]
@@ -106,6 +110,7 @@ FilterDynamicField:
 }'
    MasterData_FilterDynamicField_InValid_columnName:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterDynamicField_05
       description: Filter Dynamic Fields By empty text
       role: admin
       templateFields: ["languageCode"]

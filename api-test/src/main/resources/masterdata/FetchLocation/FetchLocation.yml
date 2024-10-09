@@ -1,6 +1,7 @@
 FetchLocation:
    MasterData_FetchLocation_langcode_smoke:
       endPoint: /v1/masterdata/locations/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchLocation_01
       description: Retrieve Location details with langcode
       role: admin
       checkErrorsOnlyInResponse: true
@@ -20,6 +21,7 @@ FetchLocation:
 }'
    MasterData_FetchLocation_invalid_langcode:
       endPoint: /v1/masterdata/locations/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchLocation_02
       description: Retrieve Location details with invalid langcode
       role: admin
       restMethod: get
@@ -41,6 +43,7 @@ FetchLocation:
 }'
    MasterData_FetchLocation_langcode_locationcode_smoke:
       endPoint: /v1/masterdata/locations/{locationcode}/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchLocation_03
       description: Retrieve Location details with valid langcode and locationcode
       role: admin
       checkErrorsOnlyInResponse: true
@@ -60,6 +63,7 @@ FetchLocation:
 }'
    MasterData_FetchLocation_langcode_invalid_locationcode:
       endPoint: /v1/masterdata/locations/{locationcode}/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchLocation_04
       description: Retrieve Location details with valid langcode and invalid locationcode
       role: admin
       restMethod: get
@@ -81,6 +85,7 @@ FetchLocation:
 }'
    MasterData_FetchLocation_locationcode_invalid_langcode:
       endPoint: /v1/masterdata/locations/{locationcode}/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchLocation_05
       description: Retrieve Location details with invalid langcode and valid locationcode
       role: admin
       restMethod: get
@@ -102,6 +107,7 @@ FetchLocation:
 }'
    MasterData_FetchLocation_details_by_Langcode_smoke:
       endPoint: /v1/masterdata/locations/info/{locationcode}/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchLocation_06
       description: Retrieve Location details with valid langcode and locationcode
       role: admin
       checkErrorsOnlyInResponse: true
@@ -119,6 +125,7 @@ FetchLocation:
 }'
    MasterData_FetchLocation_details_by_invalid_LanGcode:
       endPoint: /v1/masterdata/locations/info/{locationcode}/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchLocation_07
       description: Retrieve Location details with invalid langcode and valid locationcode
       role: admin
       restMethod: get
@@ -140,6 +147,7 @@ FetchLocation:
 }'
    MasterData_FetchLocation_details_by_invalid_locationcode:
       endPoint: /v1/masterdata/locations/info/{locationcode}/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchLocation_08
       description: Retrieve Location details with valid langcode and invalid locationcode
       role: admin
       restMethod: get
@@ -161,6 +169,7 @@ FetchLocation:
 }'
    MasterData_FetchLocation_details_Langcode_smoke:
       endPoint: /v1/masterdata/locations/level/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchLocation_09
       description: Retrieve Location details using level with valid langcode
       role: admin
       checkErrorsOnlyInResponse: true
@@ -178,6 +187,7 @@ FetchLocation:
 }'
    MasterData_FetchLocation_details_hierarchyname_smoke:
       endPoint: /v1/masterdata/locations/locationhierarchy/{hierarchyname}
+      uniqueIdentifier: TC_Masterdata_FetchLocation_10
       description: Retrieve Location details with Location Hierarchy
       role: admin
       checkErrorsOnlyInResponse: true
@@ -197,6 +207,7 @@ FetchLocation:
 }'
    MasterData_FetchLocation_details_validate_locationname:
       endPoint: /v1/masterdata/locations/validate/{locationname}
+      uniqueIdentifier: TC_Masterdata_FetchLocation_11
       description: Retrieve Location details with locationname
       role: admin
       restMethod: get
@@ -213,6 +224,7 @@ FetchLocation:
 }'
    MasterData_FetchLocation_details_invalid_locationname:
       endPoint: /v1/masterdata/locations/validate/{locationname}
+      uniqueIdentifier: TC_Masterdata_FetchLocation_12
       description: Retrieve Location details with invalid locationname
       role: admin
       restMethod: get
@@ -229,6 +241,7 @@ FetchLocation:
 }'
    MasterData_FetchLocation_immediatechildren:
       endPoint: /v1/masterdata/locations/immediatechildren/{locationcode}/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchLocation_13
       description: Retrieve Location immediate children details with locationcode and langcode
       role: admin
       checkErrorsOnlyInResponse: true

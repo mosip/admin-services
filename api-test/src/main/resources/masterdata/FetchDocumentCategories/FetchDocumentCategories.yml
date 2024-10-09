@@ -1,6 +1,7 @@
 FetchDocumentCategories:
    MasterData_FetchDocumentCategories_invalid_code_notpresent:
       endPoint: /v1/masterdata/documentcategories/{code}/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchDocumentCategories_01
       description: Retrieve Document Categories with invalid code and valid langcode
       role: admin
       templateFields: []
@@ -21,6 +22,7 @@ FetchDocumentCategories:
 }'
    MasterData_FetchDocumentCategories_invalid_langcode:
       endPoint: /v1/masterdata/documentcategories/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchDocumentCategories_02
       description: Retrieve Document Categories with invalid langcode
       role: admin
       templateFields: []
@@ -41,6 +43,7 @@ FetchDocumentCategories:
 }'
    MasterData_FetchDocumentCategories_valid_smoke_langcode:
       endPoint: /v1/masterdata/documentcategories/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchDocumentCategories_03
       description: Retrieve Document Categories with valid langcode
       role: admin
       checkErrorsOnlyInResponse: true

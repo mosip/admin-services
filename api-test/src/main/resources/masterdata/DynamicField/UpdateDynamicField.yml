@@ -1,6 +1,7 @@
 UpdateDynamicField:
    MasterData_UpdateDynamicField_All_Valid_Smoke:
       endPoint: /v1/masterdata/dynamicfields?id={id}
+      uniqueIdentifier: TC_Masterdata_UpdateDynamicField_01
       role: admin
       templateFields: ["langCode"]
       restMethod: put

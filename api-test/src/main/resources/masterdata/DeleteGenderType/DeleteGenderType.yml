@@ -1,6 +1,7 @@
 DeleteGenderType:
    MasterData_DeleteGenderType_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/gendertypes/{code}
+      uniqueIdentifier: TC_Masterdata_DeleteGenderType_01
       description: Delete Gender Type with valid data
       role: admin
       templateFields: []
@@ -14,6 +15,7 @@ DeleteGenderType:
 }'
    MasterData_DeleteGenderType_Invalid_code: 
       endPoint: /v1/masterdata/gendertypes/{code}
+      uniqueIdentifier: TC_Masterdata_DeleteGenderType_02
       description: Delete Gender Type with invalid code
       role: admin
       templateFields: []

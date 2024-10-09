@@ -1,6 +1,7 @@
 DeleteBlockListedWords:
    Masterdata_DeleteBlockListedWords_valid_smoke:
       endPoint: /v1/masterdata/blocklistedwords/{word}
+      uniqueIdentifier: TC_Masterdata_DeleteBlockListedWords_01
       description: Delete Block Listed words with valid data
       role: admin
       templateFields: ["word","code"]
