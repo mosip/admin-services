@@ -1,6 +1,7 @@
 FetchValidDocumentsByDocCategoryCode:
    MasterData_FetchValidDocumentsByDocCategoryCode_allValid_smoke_with_lang:
       endPoint: /v1/masterdata/validdocuments/{doccategorycode}/{languagecode}
+      uniqueIdentifier: TC_Masterdata_FetchValidDocumentsByDocCategoryCode_01
       description: Retrieve Valid Documents details By doccategorycode and languagecode
       role: admin
       templateFields: ["languagecode"]
@@ -20,6 +21,7 @@ FetchValidDocumentsByDocCategoryCode:
 }'  
    MasterData_FetchValidDocumentsByDocCategoryCode_inValid_DocCategory:
       endPoint: /v1/masterdata/validdocuments/{doccategorycode}/{languagecode}
+      uniqueIdentifier: TC_Masterdata_FetchValidDocumentsByDocCategoryCode_02
       description: Retrieve Valid Documents details with invalid doccategorycode and valid languagecode
       role: admin
       checkErrorsOnlyInResponse: true

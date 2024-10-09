@@ -1,6 +1,7 @@
 FilterRegCenterType:
    MasterData_FilterRegCenterType_Valid_Smoke:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterRegCenterType_01
       description: Filter Registration Center Type details by all valid data
       role: admin
       checkErrorsOnlyInResponse: true
@@ -21,6 +22,7 @@ FilterRegCenterType:
   }'
    MasterData_FilterRegCenterType_Valid_col_name_withText:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterRegCenterType_02
       description: Filter Registration Center Type details by columnName name
       role: admin
       checkErrorsOnlyInResponse: true
@@ -41,6 +43,7 @@ FilterRegCenterType:
   }'
    MasterData_FilterRegCenterType_Valid_col_code:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterRegCenterType_03
       description: Filter Registration Center Type details by empty text
       role: admin
       templateFields: ["languageCode"]
@@ -72,6 +75,7 @@ FilterRegCenterType:
   }'
    MasterData_FilterRegCenterType_Valid_col_isActive:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterRegCenterType_04
       description: Filter Registration Center Type details by columnName isActive and empty text
       role: admin
       templateFields: ["languageCode"]
@@ -103,6 +107,7 @@ FilterRegCenterType:
   }'
    MasterData_FilterRegCenterType_inValid_filterText:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterRegCenterType_05
       description: Filter Registration Center Type details by invalid filter text
       role: admin
       checkErrorsOnlyInResponse: true
@@ -124,6 +129,7 @@ FilterRegCenterType:
 }'
    MasterData_FilterRegCenterType_inValid_filterType_blank:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterRegCenterType_06
       description: Filter Registration Center Type details by empty filter type
       role: admin
       templateFields: ["languageCode"]
@@ -149,6 +155,7 @@ FilterRegCenterType:
 }'  
    MasterData_FilterRegCenterType_inValid_filterColumnName_blank:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterRegCenterType_07
       description: Filter Registration Center Type details by empty filter columnname
       role: admin
       templateFields: ["languageCode"]
@@ -175,6 +182,7 @@ FilterRegCenterType:
      
    MasterData_FilterRegCenterType_inValid_RequestTime_format:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterRegCenterType_08
       description: Filter Registration Center Type details by invalid requesttime format
       role: admin
       templateFields: ["languageCode"]
@@ -200,6 +208,7 @@ FilterRegCenterType:
 }'  
    MasterData_FilterRegCenterType_inValid_filterColumnName:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterRegCenterType_09
       description: Filter Registration Center Type details by invalid filter column name
       role: admin
       templateFields: ["languageCode"]
@@ -225,6 +234,7 @@ FilterRegCenterType:
 }'  
    MasterData_FilterRegCenterType_inValid_filterType:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterRegCenterType_10
       description: Filter Registration Center Type details by invalid filter type
       role: admin
       templateFields: ["languageCode"]

@@ -1,6 +1,7 @@
 FetchDynamicField:
    Masterdata_FetchDynamicField_AllValid_smoke:
       endPoint: /v1/masterdata/dynamicfields
+      uniqueIdentifier: TC_Masterdata_FetchDynamicField_01
       description: Retrieve Dynamic Fields with all valid data
       role: admin
       checkErrorsOnlyInResponse: true

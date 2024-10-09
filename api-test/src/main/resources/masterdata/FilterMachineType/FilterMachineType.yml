@@ -1,6 +1,7 @@
 FilterMachineType:
    Masterdata_FilterMachineType_Valid_Smoke:
       endPoint: /v1/masterdata/machinetypes/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterMachineType_01
       description: Filter Machine Type details by all valid data
       role: admin
       checkErrorsOnlyInResponse: true
@@ -21,6 +22,7 @@ FilterMachineType:
   }'
    Masterdata_FilterMachineType_Valid_col_as_name_filterType_all:
       endPoint: /v1/masterdata/machinetypes/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterMachineType_02
       description: Filter Machine Type details by filter type all
       role: admin
       checkErrorsOnlyInResponse: true
@@ -42,6 +44,7 @@ FilterMachineType:
   
    Masterdata_FilterMachineType_inValid_filterType_blank:
       endPoint: /v1/masterdata/machinetypes/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterMachineType_03
       description: Filter Machine Type details by blank filter type
       role: admin
       templateFields: ["text"]
@@ -67,6 +70,7 @@ FilterMachineType:
 }'  
    Masterdata_FilterMachineType_inValid_filterColumnName_blank:
       endPoint: /v1/masterdata/machinetypes/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterMachineType_04
       description: Filter Machine Type details by blank filter columnName
       role: admin
       templateFields: ["text"]
@@ -92,6 +96,7 @@ FilterMachineType:
 }'  
    Masterdata_FilterMachineType_inValid_RequestTime_format:
       endPoint: /v1/masterdata/machinetypes/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterMachineType_05
       description: Filter Machine Type details by invalid requesttime format
       role: admin
       templateFields: ["text"]
@@ -117,6 +122,7 @@ FilterMachineType:
 }'
    Masterdata_FilterMachineType_inValid_filterColumnName:
       endPoint: /v1/masterdata/machinetypes/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterMachineType_06
       description: Filter Machine Type details by invalid filter columnName
       role: admin
       templateFields: ["text"]
@@ -141,6 +147,7 @@ FilterMachineType:
 }'
    Masterdata_FilterMachineType_inValid_filterType:
       endPoint: /v1/masterdata/machinetypes/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterMachineType_07
       description: Filter Machine Type details by invalid filter type
       role: admin
       templateFields: ["text"]
@@ -166,6 +173,7 @@ FilterMachineType:
 }'
    Masterdata_FilterMachineType_inValid_FilterText:
       endPoint: /v1/masterdata/machinetypes/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterMachineType_08
       description: Filter Machine Type details by invalid filter text
       role: admin
       checkErrorsOnlyInResponse: true

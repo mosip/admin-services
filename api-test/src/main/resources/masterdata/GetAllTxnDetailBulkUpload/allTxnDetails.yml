@@ -1,6 +1,7 @@
 GetAllTxnDetailBulkUpload:
    Master_GetAllTxnDetailBulkUpload_Smoke:
       endPoint: /v1/admin/bulkupload/getAllTransactions
+      uniqueIdentifier: TC_Masterdata_GetAllTxnDetailBulkUpload_01
       description: Retrieve all transcation details for bulk upload
       role: admin
       checkErrorsOnlyInResponse: true

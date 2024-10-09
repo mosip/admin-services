@@ -1,6 +1,7 @@
 DeleteTemplate:
    MasterData_DeleteTemplate_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/templates/{id}
+      uniqueIdentifier: TC_Masterdata_DeleteTemplate_01
       description: Delete Template with all valid data
       role: admin
       checkErrorsOnlyInResponse: true
@@ -15,6 +16,7 @@ DeleteTemplate:
 }'
    MasterData_DeleteTemplate_Invalid_ID: 
       endPoint: /v1/masterdata/templates/{id}
+      uniqueIdentifier: TC_Masterdata_DeleteTemplate_02
       description: Delete Template with invalid id
       role: admin
       templateFields: []

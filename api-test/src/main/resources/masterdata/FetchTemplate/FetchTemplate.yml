@@ -1,6 +1,7 @@
 FetchTemplate:
    MasterData_FetchTemplate_allValid_smoke_Get:
       endPoint: /v1/masterdata/templates
+      uniqueIdentifier: TC_Masterdata_FetchTemplate_01
       description: Retrieve Templates with all valid data
       role: admin
       checkErrorsOnlyInResponse: true 
@@ -16,6 +17,7 @@ FetchTemplate:
 }'
    MasterData_FetchTemplate_allValid_ByLangcode_smoke:
       endPoint: /v1/masterdata/templates/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchTemplate_02
       description: Retrieve Templates with langcode
       role: admin
       checkErrorsOnlyInResponse: true
@@ -31,6 +33,7 @@ FetchTemplate:
 }'
    MasterData_FetchTemplate_allValid_smoke_with_lang_and_templatetypecode:
       endPoint: /v1/masterdata/templates/{langcode}/{templatetypecode}
+      uniqueIdentifier: TC_Masterdata_FetchTemplate_03
       description: Retrieve Templates with langcode and templatetypecode
       role: admin
       templateFields: ["langcode"]
@@ -49,6 +52,7 @@ FetchTemplate:
 }'
    MasterData_FetchTemplate_invalid_templatetypecode_unexisting:
       endPoint: /v1/masterdata/templates/{langcode}/{templatetypecode}
+      uniqueIdentifier: TC_Masterdata_FetchTemplate_04
       description: Retrieve Templates with langcode and nonexisting templatetypecode
       role: admin
       templateFields: []
@@ -70,6 +74,7 @@ FetchTemplate:
 }'
    MasterData_FetchTemplate_invalid_code:
       endPoint: /v1/masterdata/templates/templatetypecodes/{code}
+      uniqueIdentifier: TC_Masterdata_FetchTemplate_05
       description: Retrieve Templates with invalid code
       role: admin
       templateFields: []

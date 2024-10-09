@@ -1,6 +1,7 @@
 GenderSearch:
    Masterdata_GenderSearch_Valid_Smoke:
       endPoint: /v1/masterdata/gendertypes/search
+      uniqueIdentifier: TC_Masterdata_GenderSearch_01
       description: Search gender details by all valid data
       role: admin
       templateFields: ["languageCode"]
@@ -24,6 +25,7 @@ GenderSearch:
 }'
    Masterdata_GenderSearch_valid_lang:
       endPoint: /v1/masterdata/gendertypes/search
+      uniqueIdentifier: TC_Masterdata_GenderSearch_02
       description: Search gender details by languageCode
       role: admin
       templateFields: ["languageCode"]
@@ -53,6 +55,7 @@ GenderSearch:
 }'
    Masterdata_GenderSearch_Valid_langCodeAsEng_sortBy_code:
       endPoint: /v1/masterdata/gendertypes/search
+      uniqueIdentifier: TC_Masterdata_GenderSearch_03
       description: Search gender details by languageCode eng and sort by sortType ASC order
       role: admin
       templateFields: ["languageCode"]
@@ -76,6 +79,7 @@ GenderSearch:
 }'
    Masterdata_GenderSearch_InvalidSortFieldAsEmpty:
       endPoint: /v1/masterdata/gendertypes/search
+      uniqueIdentifier: TC_Masterdata_GenderSearch_04
       description: Search gender details by languageCode eng and empty sortField
       role: admin
       templateFields: ["languageCode"]
@@ -105,6 +109,7 @@ GenderSearch:
 }'
    Masterdata_GenderSearch_InvalidSortFieldAsNonExisting:
       endPoint: /v1/masterdata/gendertypes/search
+      uniqueIdentifier: TC_Masterdata_GenderSearch_05
       description: Search gender details by languageCode eng and invalid sortField
       role: admin
       templateFields: ["languageCode"]
@@ -134,6 +139,7 @@ GenderSearch:
 }'
    Masterdata_GenderSearch_InvalidSortTypeAsEmpty:
       endPoint: /v1/masterdata/gendertypes/search
+      uniqueIdentifier: TC_Masterdata_GenderSearch_06
       description: Search gender details by languageCode eng and empty sortType
       role: admin
       templateFields: ["languageCode"]
@@ -164,6 +170,7 @@ GenderSearch:
    
    Masterdata_GenderSearch_InvalidRequestTimeAsEmpty:
       endPoint: /v1/masterdata/gendertypes/search
+      uniqueIdentifier: TC_Masterdata_GenderSearch_07
       description: Search gender details by languageCode eng and empty requesttime
       role: admin
       templateFields: ["languageCode"]
@@ -193,6 +200,7 @@ GenderSearch:
 }'
    Masterdata_GenderSearch_Valid_Searchby_code_FLE:
       endPoint: /v1/masterdata/gendertypes/search
+      uniqueIdentifier: TC_Masterdata_GenderSearch_08
       description: Search gender details by languageCode eng and code FLE(female)
       role: admin
       templateFields: ["languageCode"]

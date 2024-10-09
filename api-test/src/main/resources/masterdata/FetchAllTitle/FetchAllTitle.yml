@@ -1,6 +1,7 @@
 FetchAllTitle:
    MasterData_FetchAllTitle_all_valid_smoke:
       endPoint: /v1/masterdata/title/all
+      uniqueIdentifier: TC_Masterdata_FetchAllTitle_01
       description: Retrieve All Title details with valid data
       role: admin
       restMethod: get

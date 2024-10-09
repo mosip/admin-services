@@ -1,6 +1,7 @@
 FilterDocCategory:
    MasterData_FilterDocCategory_Valid_Request_Smoke:
       endPoint: /v1/masterdata/documentcategories/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterDocCategory_01
       description: Filter Document Category with all valid details
       role: admin
       checkErrorsOnlyInResponse: true
@@ -21,6 +22,7 @@ FilterDocCategory:
   }'
    MasterData_FilterDocCategory_Valid_column_code_filterType_all:
       endPoint: /v1/masterdata/documentcategories/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterDocCategory_02
       description: Filter Document Category By type all and all valid details
       role: admin
       checkErrorsOnlyInResponse: true
@@ -42,6 +44,7 @@ FilterDocCategory:
    
    MasterData_FilterDocCategory_inValid_filterColumnName_blank:
       endPoint: /v1/masterdata/documentcategories/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterDocCategory_03
       description: Filter Document Category By type all and empty columnName
       role: admin
       templateFields: ["text"]
@@ -68,6 +71,7 @@ FilterDocCategory:
    
    MasterData_FilterDocCategory_inValid_RequestTime_format:
       endPoint: /v1/masterdata/documentcategories/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterDocCategory_04
       description: Filter Document Category By type all and invalid requesttime format
       role: admin
       templateFields: ["text"]
@@ -93,6 +97,7 @@ FilterDocCategory:
 }'
    MasterData_FilterDocCategory_inValid_filterColumnName:
       endPoint: /v1/masterdata/documentcategories/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterDocCategory_05
       description: Filter Document Category By yype all and invalid columnName
       role: admin
       templateFields: ["text"]
@@ -117,6 +122,7 @@ FilterDocCategory:
 }'
    MasterData_FilterDocCategory_inValid_filterType:
       endPoint: /v1/masterdata/documentcategories/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterDocCategory_06
       description: Filter Document Category By invalid type
       role: admin
       templateFields: ["text"]
@@ -142,6 +148,7 @@ FilterDocCategory:
 }'
    MasterData_FilterDocCategory_Empty_FilterText_Pos:
       endPoint: /v1/masterdata/documentcategories/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterDocCategory_07
       description: Filter Document Category By type all and empty text
       role: admin
       checkErrorsOnlyInResponse: true
