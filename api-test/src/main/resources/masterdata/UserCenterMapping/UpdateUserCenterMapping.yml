@@ -1,0 +1,76 @@
+UpdateUserCenterMapping:
+   MasterData_UpdateUserCenterMapping_All_Valid_Smoke:
+      endPoint: /v1/masterdata/usercentermapping
+      uniqueIdentifier: TC_Masterdata_UpdateUserCenterMapping_01
+      description: Update user center mapping details with valid data
+      role: globalAdmin
+      templateFields: ["regCenterName"]
+      restMethod: put
+      inputTemplate: masterdata/UserCenterMapping/updateUserCenterMapping
+      outputTemplate: masterdata/UserCenterMapping/userCenterMappingResult
+      input: '{
+     "id": "$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$",
+     "name": "automationUpdated",
+     "statusCode": "active",
+     "regCenterId": "$ID:CreateRegCenter_allValid_smoke_sid_id$",
+     "langCode": "eng",
+     "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+    "name": "automationUpdated",
+    "statusCode": "active",
+    "regCenterId": "$IGNORE$",
+    "zoneCode": "$IGNORE$",
+    "zoneName": "$IGNORE$",
+    "regCenterName": "HSR Center updated"
+    }'
+   MasterData_UserCenterMapping_Invalid_InputParameter_regCenterId_Missing:
+      endPoint: /v1/masterdata/usercentermapping
+      uniqueIdentifier: TC_Masterdata_UpdateUserCenterMapping_02
+      description: Update user center mapping details with the parameter registration center ID as missing
+      role: admin
+      templateFields: ["langCode"]
+      restMethod: put
+      inputTemplate: masterdata/UserCenterMapping/updateUserCenterMapping
+      outputTemplate: masterdata/error
+      input: '{
+     "id": "$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$",
+     "name": "automation",
+     "statusCode": "active",
+     "regCenterId": "",
+     "langCode": "eng",
+     "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-215",
+      "message": "Registration Center not found"
+    }
+  ]
+}'
+   MasterData_UserCenterMapping_Invalid_InputParameter_Invalid_regCenterId:
+      endPoint: /v1/masterdata/usercentermapping
+      uniqueIdentifier: TC_Masterdata_UpdateUserCenterMapping_03
+      description: Update user center mapping details with the parameter registration center ID as invalid
+      role: admin
+      templateFields: ["langCode"]
+      restMethod: put
+      inputTemplate: masterdata/UserCenterMapping/updateUserCenterMapping
+      outputTemplate: masterdata/error
+      input: '{
+     "id": "$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$",
+     "name": "automation",
+     "statusCode": "active",
+     "regCenterId": "124213",
+     "langCode": "eng",
+     "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-215",
+      "message": "Registration Center not found"
+    }
+  ]
+}'

@@ -1,0 +1,15 @@
+DecommissionRegCenter:
+   MasterData_DecommissionRegCenter_All_Valid_Smoke_sid:  
+      endPoint: /v1/masterdata/registrationcenters/decommission/{regCenterID}
+      uniqueIdentifier: TC_Masterdata_DecommissionRegCenter_01
+      description: Decommission Registration Center with valid data
+      role: globalAdmin
+      checkErrorsOnlyInResponse: true
+      restMethod: put
+      inputTemplate: masterdata/DecommissionRegCenter/decommissionRegCenter
+      outputTemplate: masterdata/DecommissionRegCenter/decommissionRegCenterResult
+      input: '{
+    "regCenterID": "$ID:CreateRegCenter_allValid_smoke_sid_id$"
+	}'
+      output: '{
+}'
