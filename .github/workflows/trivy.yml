@@ -1,48 +1,62 @@
-name: Trivy Scan
+name: Build and Scan Docker Images
 
 on:
   push:
     branches:
-      - main
-      - 'release-1*'
       - develop
-      - '1.2.*'
-      - master
-      - MOSIP-35889
   pull_request:
     branches:
-      - main
-      - 'release-1*'
       - develop
-      - '1.2.*'
-      - master
-      - MOSIP-35889
 
 jobs:
-  trivy-scan:
-    runs-on: ubuntu-latest
-    env:
-      NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
-      SERVICE_NAME: admin-services
-      VERSION: latest  # Modify this as needed or set dynamically based on your versioning scheme
+  build-dockers:
+    strategy:
+      matrix:
+        include:
+          - SERVICE_LOCATION: 'admin/admin-service'
+            SERVICE_NAME: 'admin-service'
+            BUILD_ARTIFACT: 'admin'
+          - SERVICE_LOCATION: 'admin/hotlist-service'
+            SERVICE_NAME: 'hotlist-service'
+            BUILD_ARTIFACT: 'admin'
+          - SERVICE_LOCATION: 'admin/kernel-masterdata-service'
+            SERVICE_NAME: 'kernel-masterdata-service'
+            BUILD_ARTIFACT: 'admin'
+          - SERVICE_LOCATION: 'admin/kernel-syncdata-service'
+            SERVICE_NAME: 'kernel-syncdata-service'
+            BUILD_ARTIFACT: 'admin'
+      fail-fast: false
+    name: ${{ matrix.SERVICE_NAME }}
+    uses: mosip/kattu/.github/workflows/docker-build.yml@master
+    with:
+      SERVICE_LOCATION: ${{ matrix.SERVICE_LOCATION }}
+      SERVICE_NAME: ${{ matrix.SERVICE_NAME }}
+      BUILD_ARTIFACT: ${{ matrix.BUILD_ARTIFACT }}
+    secrets:
+      DEV_NAMESPACE_DOCKER_HUB: ${{ secrets.DEV_NAMESPACE_DOCKER_HUB }}
 
+  scan-dockers:
+    needs: build-dockers
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - SERVICE_NAME: 'admin-service'
+          - SERVICE_NAME: 'hotlist-service'
+          - SERVICE_NAME: 'kernel-masterdata-service'
+          - SERVICE_NAME: 'kernel-syncdata-service'
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build Docker image
+      - name: Install Trivy
         run: |
-          cd admin/admin-service
-          docker build . --file Dockerfile --tag ${{ env.SERVICE_NAME }}:${{ env.VERSION }}
+          sudo apt-get update
+          sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install -y trivy
 
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.20.0
-        with:
-          image-ref: 'docker.io/${{ env.SERVICE_NAME }}:${{ env.VERSION }}'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: 'trivy-results.sarif'
+      - name: Scan Docker image
+        run: trivy image ${{ secrets.DEV_NAMESPACE_DOCKER_HUB }}/${{ matrix.SERVICE_NAME }}:latest
