@@ -157,21 +157,21 @@ public class UserDetailControllerTest
 
 	@Test
 	@WithUserDetails("reg-processor")
-	public void t006getUserByIdTest() throws Exception {
+	public void getUserByIdTest_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/users/2")).andReturn(), null);
 
 	}
 
 	@Test
 	@WithUserDetails("reg-processor")
-	public void t005getUserByIdFailTest() throws Exception {
+	public void getUserByIdFailTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/users/20")).andReturn(), "KER-USR-007");
 
 	}
 
 	@Test
 	@WithUserDetails("reg-processor")
-	public void t003getUsersTest() throws Exception {
+	public void getUsersTest_Success() throws Exception {
 		MasterDataTest.checkErrorResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/users/0/1/cr_dtimes/DESC")).andReturn());
 
@@ -179,7 +179,7 @@ public class UserDetailControllerTest
 
 	@Test
 	@WithUserDetails("reg-processor")
-	public void t004getUsersFailTest() throws Exception {
+	public void getUsersTest_FailWithInvalidId() throws Exception {
 		MasterDataTest.checkErrorResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/users/3/10/cr_dtimes/DESC")).andReturn());
 
@@ -187,7 +187,7 @@ public class UserDetailControllerTest
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002mapUserRegCenterFailTest() throws Exception {
+	public void mapUserRegCenterFailTest() throws Exception {
 		RequestWrapper<UserDetailsDto> requestWrapper = new RequestWrapper<>();
 		UserDetailsDto detailsDto = new UserDetailsDto();
 		detailsDto.setId("7");
@@ -206,7 +206,7 @@ public class UserDetailControllerTest
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001mapUserRegCenterTest() throws Exception {
+	public void mapUserRegCenterTest_Success() throws Exception {
 		RequestWrapper<UserDetailsDto> requestWrapper = new RequestWrapper<>();
 		UserDetailsDto detailsDto = new UserDetailsDto();
 		detailsDto.setId("7");
@@ -225,7 +225,7 @@ public class UserDetailControllerTest
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002mapUserRegCenterTest() throws Exception {
+	public void mapUserRegCenterTest_FailWithUserAlreadyExists() throws Exception {
 		RequestWrapper<UserDetailsDto> requestWrapper = new RequestWrapper<>();
 		UserDetailsDto detailsDto = new UserDetailsDto();
 		detailsDto.setId("7");
@@ -244,7 +244,7 @@ public class UserDetailControllerTest
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001mapUserRegCenterTest1() throws Exception {
+	public void mapUserRegCenterTest_FailWithInActiveZone() throws Exception {
 		RequestWrapper<UserDetailsDto> requestWrapper = new RequestWrapper<>();
 		UserDetailsDto detailsDto = new UserDetailsDto();
 		detailsDto.setId("79");
@@ -263,7 +263,7 @@ public class UserDetailControllerTest
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t007mapUserRegCenterFailTest1() throws Exception {
+	public void mapUserRegCenterFailTest_WithUserAlreadyExists() throws Exception {
 		RequestWrapper<UserDetailsDto> requestWrapper = new RequestWrapper<>();
 		UserDetailsDto detailsDto = new UserDetailsDto();
 		detailsDto.setId("7");
@@ -282,7 +282,7 @@ public class UserDetailControllerTest
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t008updateUserRegCenterTest() throws Exception {
+	public void updateUserRegCenterTest_Success() throws Exception {
 		RequestWrapper<UserDetailsPutReqDto> requestWrapper = new RequestWrapper<UserDetailsPutReqDto>();
 		UserDetailsPutReqDto detailsPutReqDto = new UserDetailsPutReqDto();
 		detailsPutReqDto.setId("7");
@@ -301,7 +301,7 @@ public class UserDetailControllerTest
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t008updateUserRegCenterTest2() throws Exception {
+	public void updateUserRegCenterTest_FailWithInActiveZone() throws Exception {
 		RequestWrapper<UserDetailsPutReqDto> requestWrapper = new RequestWrapper<UserDetailsPutReqDto>();
 		UserDetailsPutReqDto detailsPutReqDto = new UserDetailsPutReqDto();
 		detailsPutReqDto.setId("109");
@@ -320,7 +320,7 @@ public class UserDetailControllerTest
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t008updateUserRegCenterTest4() throws Exception {
+	public void updateUserRegCenter_Success() throws Exception {
 		RequestWrapper<UserDetailsPutReqDto> requestWrapper = new RequestWrapper<UserDetailsPutReqDto>();
 		UserDetailsPutReqDto detailsPutReqDto = new UserDetailsPutReqDto();
 		detailsPutReqDto.setId("7");
@@ -339,7 +339,7 @@ public class UserDetailControllerTest
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t008updateUserRegCenterTest3() throws Exception {
+	public void updateUserRegCenterTest_FailWithInvalidZone() throws Exception {
 		RequestWrapper<UserDetailsPutReqDto> requestWrapper = new RequestWrapper<UserDetailsPutReqDto>();
 		UserDetailsPutReqDto detailsPutReqDto = new UserDetailsPutReqDto();
 		detailsPutReqDto.setId("3");
@@ -359,7 +359,7 @@ public class UserDetailControllerTest
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t008updateUserRegCenterTest5() throws Exception {
+	public void updateUserRegCenterTest_PassWithValidInput() throws Exception {
 		RequestWrapper<UserDetailsPutReqDto> requestWrapper = new RequestWrapper<UserDetailsPutReqDto>();
 		UserDetailsPutReqDto detailsPutReqDto = new UserDetailsPutReqDto();
 		detailsPutReqDto.setId("3");
@@ -379,7 +379,7 @@ public class UserDetailControllerTest
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t009updateUserRegCenterFailTest() throws Exception {
+	public void updateUserRegCenter_FailWithInValidZone() throws Exception {
 		RequestWrapper<UserDetailsPutReqDto> requestWrapper = new RequestWrapper<UserDetailsPutReqDto>();
 		UserDetailsPutReqDto detailsPutReqDto = new UserDetailsPutReqDto();
 		detailsPutReqDto.setId("200");
@@ -398,7 +398,7 @@ public class UserDetailControllerTest
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t010updateUserRegCenterStatusTest() throws Exception {
+	public void updateUserRegCenterStatusTest_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.patch("/usercentermapping").param("isActive", "true").param("id", "41"))
 				.andReturn(), null);
@@ -407,7 +407,7 @@ public class UserDetailControllerTest
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t010updateUserRegCenterStatusTest1() throws Exception {
+	public void updateUserRegCenterStatusTest_FailAtUserZoneMapping() throws Exception {
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.patch("/usercentermapping").param("isActive", "true").param("id", "109"))
 				.andReturn(), "KER-USR-025");
@@ -416,7 +416,7 @@ public class UserDetailControllerTest
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t011updateUserRegCenterStatusFailTest() throws Exception {
+	public void updateUserRegCenterStatus_FailWithUnMappedZone() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.patch("/usercentermapping").param("isActive", "true").param("id", "6"))
@@ -426,7 +426,7 @@ public class UserDetailControllerTest
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t012deleteUserRegCenterMappingTest() throws Exception {
+	public void deleteUserRegCenterMappingTest_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/usercentermapping/2")).andReturn(),
 				null);
 
@@ -434,7 +434,7 @@ public class UserDetailControllerTest
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t013deleteUserRegCenterMappingFailTest() throws Exception {
+	public void deleteUserRegCenterMapping_FailWithCenterMappingNotFound() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.delete("/usercentermapping/20")).andReturn(), "KER-USR-007");
@@ -442,7 +442,7 @@ public class UserDetailControllerTest
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t014getUsersDetailsTest() throws Exception {
+	public void getUsersDetailsTest_Success() throws Exception {
 		mockRestServiceServer.expect(requestTo(userDetailsUri + "/admin?pageStart=0&pageFetch=100"))
 		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 
@@ -453,7 +453,7 @@ public class UserDetailControllerTest
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t014getUsersDetailsTest7() throws Exception {
+	public void  getUsersDetails_InvalidSearch_Fail() throws Exception {
 		String rs=response = "{\r\n" +
 				"  \"id\": null,\r\n" +
 				"  \"version\": null,\r\n" +
@@ -489,7 +489,7 @@ public class UserDetailControllerTest
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t014getUsersDetailsTest1() throws Exception {
+	public void getUsersDetailsTest_Succes() throws Exception {
 		 DefaultResponseCreator responseCreator = withStatus(HttpStatus.UNAUTHORIZED).body(response).contentType(MediaType.APPLICATION_JSON_UTF8);
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin?firstName=a&lastName=a&userName=a&pageStart=0&pageFetch=100"))
 		.andRespond(responseCreator);
@@ -501,7 +501,7 @@ public class UserDetailControllerTest
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t014getUsersDetailsTest2() throws Exception {
+	public void getUsersDetails_ValidSearch_ExpectUnauthorized_Test() throws Exception {
 		String res = "{\r\n" +
 				"  \"id\": null,\r\n" +
 				"  \"version\": null,\r\n" +
@@ -538,7 +538,7 @@ public class UserDetailControllerTest
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t014getUsersDetailsTest9() throws Exception {
+	public void getUsersDetails_ValidSearch_EmptyResponse_Test() throws Exception {
 		String res = "{\r\n" +
 				"  \"id\": null,\r\n" +
 				"  \"version\": null,\r\n" +
@@ -563,7 +563,7 @@ public class UserDetailControllerTest
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t014getUsersDetailsTest8() throws Exception {
+	public void getUsersDetails_ValidSearch_ValidResponse_Test() throws Exception {
 		String res = "{\r\n" +
 				"  \"id\": null,\r\n" +
 				"  \"version\": null,\r\n" +
@@ -600,19 +600,19 @@ public class UserDetailControllerTest
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t014getUsersDetailsTest3() throws Exception {
+	public void getUsersDetails_ValidSearch_ExpectForbidden_Test() throws Exception {
 		 DefaultResponseCreator responseCreator = withStatus(HttpStatus.FORBIDDEN).body(response).contentType(MediaType.APPLICATION_JSON_UTF8);
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin?firstName=a&lastName=a&userName=a&pageStart=0&pageFetch=100"))
 		.andRespond(responseCreator);
 
 		MasterDataTest.checkErrorResponse(mockMvc.perform(MockMvcRequestBuilders.get("/usersdetails").param("firstName", "a").param("lastName", "a").param("userName", "a")).andReturn());
-				
+
 
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t014getUsersDetailsTest4() throws Exception {
+	public void getUsersDetails_ValidSearch_ExpectForbiddenWithError_Test() throws Exception {
 		String res = "{\r\n" +
 				"  \"id\": null,\r\n" +
 				"  \"version\": null,\r\n" +
@@ -649,7 +649,7 @@ public class UserDetailControllerTest
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t014getUsersDetailsTest5() throws Exception {
+	public void getUsersDetailsTest_WithInternalServerError() throws Exception {
 		 DefaultResponseCreator responseCreator = withStatus(HttpStatus.INTERNAL_SERVER_ERROR).body(response).contentType(MediaType.APPLICATION_JSON_UTF8);
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin?firstName=a&lastName=a&userName=a&pageStart=0&pageFetch=100"))
 		.andRespond(responseCreator);
@@ -661,7 +661,7 @@ public class UserDetailControllerTest
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t015getUsersDetailsFailTest() throws Exception {
+	public void getUsersDetails_ServerFailure_Test() throws Exception {
 		
 	
 			mockMvc.perform(MockMvcRequestBuilders.get("/usersdetails")).andExpect(status().is5xxServerError());
@@ -669,7 +669,7 @@ public class UserDetailControllerTest
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t016searchUserCenterMappingDetailsTest() throws Exception {
+	public void searchUserCenterMappingDetailsTest_Success() throws Exception {
 		
 		MockRestServiceServer mockRestServiceServer1 = MockRestServiceServer.bindTo(restTemplate).build();
 		
@@ -680,9 +680,10 @@ public class UserDetailControllerTest
 				null);
 
 	}
+
 	@Test
 	@WithUserDetails("global-admin")
-	public void t016searchUserCenterMappingDetailsTest1() throws Exception {
+	public void searchUserCenterMappingDetails_FilterByZoneCode_Success() throws Exception {
 		//MockRestServiceServer mockRestServiceServer1 = MockRestServiceServer.bindTo(restTemplate).build();
 		
 		//mockRestServiceServer1.expect(requestTo(userDetailsUri + "/admin?search=abcd"))
@@ -695,7 +696,7 @@ public class UserDetailControllerTest
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t016searchUserCenterMappingDetailsTest2() throws Exception {
+	public void searchUserCenterMappingDetails_FilterByZoneName_Success() throws Exception {
 		
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin"))
 		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
@@ -708,7 +709,7 @@ public class UserDetailControllerTest
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t016searchUserCenterMappingDetailsTest3() throws Exception {
+	public void searchUserCenterMappingDetails_FilterByRegistrationCenterName_Success() throws Exception {
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin"))
 		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 			sr.getRequest().getFilters().get(0).setColumnName("regCenterName");
@@ -720,7 +721,7 @@ public class UserDetailControllerTest
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t016searchUserCenterMappingDetailsTest4() throws Exception {
+	public void searchUserCenterMappingDetails_FilterByUserName_Success() throws Exception {
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/authmanager/userdetails/admin?search=test"))
 		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 		
@@ -734,7 +735,7 @@ public class UserDetailControllerTest
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t017searchUserCenterMappingDetailsFailTest() throws Exception {
+	public void searchUserCenterMappingDetails_InvalidFilter_Fail() throws Exception {
 		sr.getRequest().getFilters().get(0).setColumnName("isActive");
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(sr))).andReturn(), "KER-MSD-390");

@@ -85,7 +85,7 @@ public class HotlistSecurityManagerTest {
 	}
 
 	@Test
-	public void testEncryptError() {
+	public void testEncryptError_withHotlistAppException() {
 		try {
 			ResponseWrapper<ObjectNode> response = new ResponseWrapper<>();
 			ObjectNode responseNode = mapper.createObjectNode();
@@ -103,7 +103,7 @@ public class HotlistSecurityManagerTest {
 	}
 
 	@Test
-	public void testDecryptError() {
+	public void testDecryptError_withHotlistAppException() {
 		try {
 			ResponseWrapper<ObjectNode> response = new ResponseWrapper<>();
 			ObjectNode responseNode = mapper.createObjectNode();
@@ -121,7 +121,7 @@ public class HotlistSecurityManagerTest {
 	}
 
 	@Test
-	public void testDecryptNoResponseData() throws IOException {
+	public void testDecryptNoResponseData_withHotlistAppException() throws IOException {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.registerModule(new JavaTimeModule());

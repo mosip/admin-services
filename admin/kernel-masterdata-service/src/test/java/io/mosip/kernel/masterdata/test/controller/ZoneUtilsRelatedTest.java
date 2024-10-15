@@ -121,7 +121,7 @@ public class ZoneUtilsRelatedTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001updateRegistrationCenterNonLanguageSpecifiFailTest() throws Exception {
+	public void updateRegistrationCenterNonLanguageSpecificFailTest() throws Exception {
 		rl.getRequest().setId("2");
 		rl.getRequest().setHolidayLocationCode("14022");
 		MasterDataTest.checkResponse(mockMvc
@@ -132,14 +132,14 @@ public class ZoneUtilsRelatedTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002getSubZonesTest() throws Exception {
+	public void getSubZonesTest_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/leafzones/eng")).andReturn(), null);
 
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t004createRegistrationCenterTest() throws Exception {
+	public void createRegistrationCenterTest_Success() throws Exception {
 		rg.getRequest().setZoneCode("RBT");
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.post("/registrationcenters")
@@ -149,7 +149,7 @@ public class ZoneUtilsRelatedTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t003createRegistrationCenterFailTest() throws Exception {
+	public void createRegistrationCenterFailTest_WithLeafZone() throws Exception {
 		
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.post("/registrationcenters")
@@ -159,14 +159,14 @@ public class ZoneUtilsRelatedTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t013getLeafZonesBasedOnZoneCodeTest() throws Exception {
+	public void getLeafZonesBasedOnZoneCodeTest_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/leafzones/eng")).andReturn(), null);
 
 	}
 	
     @Test
     @WithUserDetails("global-admin")
-    public void t001getAllValuesOfFieldTest() throws Exception {
+    public void getAllValuesOfFieldTest_Success() throws Exception {
       
         mockMvc.perform(MockMvcRequestBuilders.get("/possiblevalues/Country?langCode=eng")).andExpect(MockMvcResultMatchers.status().isOk());
     }

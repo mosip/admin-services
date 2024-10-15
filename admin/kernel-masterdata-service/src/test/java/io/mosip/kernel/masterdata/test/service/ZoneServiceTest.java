@@ -81,21 +81,21 @@ public class ZoneServiceTest {
 	}
 	
 	@Test
-	public void getZoneUserTest() {
+	public void testGetZoneUser_validId_shouldReturnUser() {
 		Mockito.when(zoneUserRepo.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),Mockito.anyString())).thenReturn(zoneUser);
 		ZoneUser response = zoneUserService.getZoneUser("110124",  "NTH");
 		assertEquals("eng", response.getLangCode());
 	}
 	
 	@Test
-	public void getZoneUserTest_01() {
+	public void testGetZoneUser_invalidId_shouldReturnNull() {
 		Mockito.when(zoneUserRepo.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),Mockito.anyString())).thenReturn(null);
 		ZoneUser response = zoneUserService.getZoneUser("110124", "NTH");
 		assertEquals(null, response);
 	}
 	
 	@Test(expected = NullPointerException.class)
-	public void zoneUserMappingTest() {
+	public void testZoneUserMapping_nullPointerException_throwsException() {
 		Mockito.when(zoneUserRepo.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(),Mockito.anyString())).thenReturn(null);
 		Mockito.when(zoneUserRepo.findByUserId(Mockito.anyString())).thenReturn(zoneUser);
 		Mockito.when(zoneUserRepo.findZoneByUserIdActiveAndNonDeleted(Mockito.anyString())).thenReturn(null);
@@ -113,7 +113,7 @@ public class ZoneServiceTest {
 	}
 	
 	@Test
-	public void getZoneUsersTest() {
+	public void testGetZoneUsers_shouldRetrieveMultipleUsers() {
 		List<ZoneUser> zoneMappedUsers = new ArrayList<>();
 		zoneMappedUsers.add(zoneUser);
 		List<String> userIds = new ArrayList<>();
@@ -129,7 +129,7 @@ public class ZoneServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void firstUserTestInvalidUserId() {
+	public void testGetZoneNameBasedOnLangCodeAndUserID_invalidUserId_throwsException() {
 		try {
 			zoneServiceImpl.getZoneNameBasedOnLangCodeAndUserID("test", "eng");
 			Assert.fail();
@@ -141,7 +141,7 @@ public class ZoneServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void firstUserTestValidUserId() {
+	public void testGetZoneNameBasedOnLangCodeAndUserID_validUserId_returnsZoneName () {
 		when(zoneUserRepo.count()).thenReturn(0L);
 		ZoneUser zoneUser = new ZoneUser();
 		zoneUser.setUserId("global-admin");

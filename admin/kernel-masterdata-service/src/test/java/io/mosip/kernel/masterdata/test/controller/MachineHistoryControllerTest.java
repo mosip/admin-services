@@ -50,21 +50,21 @@ public class MachineHistoryControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001getMachineHistoryIdLangEffTest() throws Exception {
+	public void getMachineHistoryIdLangEffTest_WithEngLangCode() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/machineshistories/10001/eng/2024-12-10T17:39:48.765Z")).andReturn(), null);
 
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001getMachineHistoryIdLangEffTest1() throws Exception {
+	public void getMachineHistoryIdLangEffTest_WithAraLangCode() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/machineshistories/10001/ara/2024-12-10T17:39:48.765Z")).andReturn(), null);
 
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001getMachineHistoryIdLangEffTest2() throws Exception {
+	public void getMachineHistoryIdLangEffTest_WithOutLangCode() throws Exception {
 		MasterDataTest.checkErrorResponse(mockMvc.perform(MockMvcRequestBuilders.get("/machines/10001/2011-12-10T17:39:48.765Z")).andReturn());
 	}
 	

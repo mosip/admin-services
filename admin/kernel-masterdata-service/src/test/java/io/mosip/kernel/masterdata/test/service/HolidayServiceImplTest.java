@@ -48,7 +48,7 @@ public class HolidayServiceImplTest {
     }
 
     @Test
-    public void testBindDtoToMap() {
+    public void testBindDtoToMap_Success() {
         Map<String, Object> expectedMap = new HashMap<>();
         expectedMap.put("holidayId", 1L);
         expectedMap.put("holidayDesc", "Test Description");
@@ -62,7 +62,7 @@ public class HolidayServiceImplTest {
     }
 
     @Test
-    public void testMapToHolidayIdDto() {
+    public void testMapToHolidayIdDto_Success() {
         HolidayIDDto expectedDto = new HolidayIDDto();
         expectedDto.setHolidayId(1);
         expectedDto.setHolidayName("Test Holiday");
@@ -89,7 +89,7 @@ public class HolidayServiceImplTest {
     public void testBuildLocationSearchFilter_ValidList() {
         List<Location> locations = new ArrayList<>();
         locations.add(location);
-        List<SearchFilter> expectedFilters = Collections.singletonList(buildExpectedSearchFilter());
+        List<SearchFilter> expectedFilters = Collections.singletonList(buildExpectedSearchFilter_Success());
 
         List<SearchFilter> filters = ReflectionTestUtils.invokeMethod(holidayService, "buildLocationSearchFilter", locations);
 
@@ -98,7 +98,7 @@ public class HolidayServiceImplTest {
     }
 
     @Test
-    public void testSetMetaData() {
+    public void testSetMetaData_Success() {
         List<HolidayExtnDto> holidays = new ArrayList<>();
         List<Location> locations = new ArrayList<>();
         locations.add(location);
@@ -117,7 +117,7 @@ public class HolidayServiceImplTest {
         assertNotNull(locations);
     }
 
-    private SearchFilter buildExpectedSearchFilter() {
+    private SearchFilter buildExpectedSearchFilter_Success() {
         SearchFilter filter = new SearchFilter();
         filter.setColumnName("locationCode");
         filter.setType(FilterTypeEnum.EQUALS.name());

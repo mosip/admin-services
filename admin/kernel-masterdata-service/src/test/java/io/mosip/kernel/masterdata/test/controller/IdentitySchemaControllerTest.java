@@ -215,7 +215,7 @@ public class IdentitySchemaControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLatestPublishedSchema1() throws Exception {		
+	public void getLatestPublishedSchema_WithoutValue() throws Exception {
 		IdentitySchema is=null;
 				
 		Mockito.when(identitySchemaRepository.findLatestPublishedIdentitySchema()).thenReturn(is);		
@@ -224,7 +224,7 @@ public class IdentitySchemaControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLatestPublishedSchema2() throws Exception {		
+	public void getLatestPublishedSchema_WithValue() throws Exception {
 	
 		Mockito.when(uiSpecService.getUISpec(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(lstui);
 		Mockito.when(identitySchemaRepository.findLatestPublishedIdentitySchema()).thenReturn(is);		

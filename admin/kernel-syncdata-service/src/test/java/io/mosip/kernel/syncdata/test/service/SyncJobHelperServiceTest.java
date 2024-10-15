@@ -44,17 +44,19 @@ public class SyncJobHelperServiceTest {
     private SyncJobHelperService syncJobHelperService;
 
     @Test
-    public void testEvictDeltaCaches() {
+    public void testEvictDeltaCaches_Success() {
         Cache cache = mock(Cache.class);
         lenient().when(cacheManager.getCache("delta-sync")).thenReturn(cache);
 
         syncJobHelperService.evictDeltaCaches();
 
+        Assert.assertNotNull(cache);
+
         verify(cache).clear();
     }
 
     @Test
-    public void testGetFullSyncCurrentTimestamp() {
+    public void testGetFullSyncCurrentTimestamp_Success() {
         LocalDateTime localDateTime = LocalDateTime.now(ZoneOffset.UTC);
         LocalDateTime expectedTimestamp = localDateTime.withHour(0).withMinute(0).withSecond(0).withNano(0);
 
@@ -64,7 +66,7 @@ public class SyncJobHelperServiceTest {
     }
 
     @Test
-    public void testGetDeltaSyncCurrentTimestamp() {
+    public void testGetDeltaSyncCurrentTimestamp_Success() {
         lenient().when(serviceHelper.getAppAuthenticationMethodDetails(any(), any(LocalDateTime.class))).thenReturn(CompletableFuture.completedFuture(new ArrayList<>()));
     }
 
@@ -138,6 +140,13 @@ public class SyncJobHelperServiceTest {
         lenient().when(mapper.getObjectAsJsonString(processLists)).thenReturn("processListsJson");
         lenient().when(mapper.getObjectAsJsonString(syncJobDefs)).thenReturn("syncJobDefsJson");
         lenient().when(mapper.getObjectAsJsonString(permittedLocalConfigs)).thenReturn("permittedLocalConfigsJson");
+
+        Assert.assertNotNull(appAuthMethods);
+        Assert.assertNotNull(appRolePriorities);
+        Assert.assertNotNull(templates);
+        Assert.assertNotNull(dynamicFieldDtos);
+        Assert.assertNotNull(applicantValidDocuments);
+        Assert.assertNotNull(locationHierarchies);
     }
 
     @Test

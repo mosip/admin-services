@@ -109,15 +109,16 @@ public class DocumentCategoryControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001createDocumentCategoryTest() throws Exception {
+	public void createDocumentCategory_ValidData_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/documentcategories").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(doCatDto))).andReturn(),null);
 
 	}
+
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001createDocumentCategoryTest1() throws Exception {
+	public void createDocumentCategory_InvalidCode_Error() throws Exception {
 		doCatDto.getRequest().setCode("a$%bc%");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/documentcategories").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(doCatDto))).andReturn(),"KER-MSD-999");
@@ -126,7 +127,7 @@ public class DocumentCategoryControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001createDocumentCategoryTest2() throws Exception {
+	public void createDocumentCategory_EmptyCode_Error() throws Exception {
 		doCatDto.getRequest().setCode("");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/documentcategories").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(doCatDto))).andReturn(),"KER-MSD-999");
@@ -136,7 +137,7 @@ public class DocumentCategoryControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002updateDocumentCategoryTest() throws Exception {
+	public void updateDocumentCategory_withValidCode() throws Exception {
 		doPutCatDto.getRequest().setCode("POA");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/documentcategories").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(doPutCatDto))).andReturn(),"KER-MSD-999");
@@ -145,7 +146,7 @@ public class DocumentCategoryControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002updateDocumentCategoryTest2() throws Exception {
+	public void updateDocumentCategory_InvalidCode_Error() throws Exception {
 		doPutCatDto.getRequest().setCode("#$fdgf");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/documentcategories").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(doPutCatDto))).andReturn(),"KER-MSD-999");
@@ -155,7 +156,7 @@ public class DocumentCategoryControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002updateDocumentCategoryFailTest1() throws Exception {
+	public void testUpdateDocumentCategory_InvalidData_Error() throws Exception {
 		
 		doPutCatDto.getRequest().setCode("POA");
 		doPutCatDto.getRequest().setDescription("Address Proof updated");
@@ -169,7 +170,7 @@ public class DocumentCategoryControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002updateDocumentCategoryTest1() throws Exception {
+	public void testUpdateDocumentCategory_Success() throws Exception {
 		
 		doPutCatDto.getRequest().setCode("POI");
 		doPutCatDto.getRequest().setDescription("Address Proof updated");
@@ -183,7 +184,7 @@ public class DocumentCategoryControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t003createDocumentCategoryTest() throws Exception {
+	public void testCreateDocumentCategory_ValidData_Success () throws Exception {
 
 		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/documentcategories")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(doCatDto))).andReturn(),null);
@@ -192,7 +193,7 @@ public class DocumentCategoryControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t004updateDocumentCategoryFailTest() throws Exception {
+	public void testUpdateDocumentCategory_InvalidCode_Error() throws Exception {
 		doPutCatDto.getRequest().setCode("POAZ");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/documentcategories").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(doPutCatDto))).andReturn(),"KER-MSD-999");
@@ -200,7 +201,7 @@ public class DocumentCategoryControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t005getAllDocumentCategoryTest() throws Exception {
+	public void testGetAllDocumentCategories_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/all"))
 				.andReturn(),null);
@@ -209,25 +210,27 @@ public class DocumentCategoryControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t006searchDocCategoriesTest() throws Exception {
+	public void testSearchDocumentCategories_ValidCriteria_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/documentcategories/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoRq)))
 				.andReturn(),null);
 
 	}
+
 	@Test
 	@WithUserDetails("global-admin")
-	public void t006searchDocCategoriesTest1() throws Exception {
+	public void testSearchDocumentCategories_InvalidFilterType_Error() throws Exception {
 		searchDtoRq.getRequest().getFilters().get(0).setType(FilterTypeEnum.CONTAINS.toString());
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/documentcategories/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoRq)))
 				.andReturn(),"KER-MSD-318");
 
 	}
+
 	@Test
 	@WithUserDetails("global-admin")
-	public void t006searchDocCategoriesTest2() throws Exception {
+	public void testSearchDocumentCategories_InvalidFilterType_Fail() throws Exception {
 		searchDtoRq.getRequest().getFilters().get(0).setType(FilterTypeEnum.STARTSWITH.toString());
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/documentcategories/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoRq)))
@@ -237,7 +240,7 @@ public class DocumentCategoryControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t007docCategoriesFilterValuesTest() throws Exception {
+	public void testGetDocumentCategoryFilterValues_Success() throws Exception {
 		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.ALL.toString());
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/documentcategories/filtervalues")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
@@ -247,7 +250,7 @@ public class DocumentCategoryControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t008docCategoriesFilterValuesFailTest() throws Exception {
+	public void testGetDocumentCategoryFilterValues_InvalidColumn_Error() throws Exception {
 		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.EMPTY.toString());
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/documentcategories/filtervalues")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
@@ -257,16 +260,17 @@ public class DocumentCategoryControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t008docCategoriesFilterValuesFailTest1() throws Exception {
+	public void testGetDocumentCategoryFilterValues_UnsupportedColumn_Error() throws Exception {
 		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.UNIQUE.toString());
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/documentcategories/filtervalues")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(filValDto)))
 				.andReturn(),null);
 
 	}
+
 	@Test
 	@WithUserDetails("global-admin")
-	public void t009searchDocCategoriesFailTest() throws Exception {
+	public void testSearchDocumentCategories_EmptyFilterType_Error() throws Exception {
 		searchDtoRq.getRequest().getFilters().get(0).setType("");
 		MasterDataTest.checkResponse( mockMvc
 				.perform(MockMvcRequestBuilders.post("/documentcategories/search")
@@ -276,7 +280,7 @@ public class DocumentCategoryControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t010getAllDocumentCategoryByLaguageCodeTest() throws Exception {
+	public void testGetAllDocumentCategoriesByLanguageCode_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/eng"))
 				.andReturn(),null);
@@ -285,7 +289,7 @@ public class DocumentCategoryControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t011getDocumentCategoryByCodeAndLangCodeTest() throws Exception {
+	public void testGetDocumentCategoryByCodeAndLanguageCode_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/POI/eng"))
 				.andReturn(),null);
@@ -294,14 +298,14 @@ public class DocumentCategoryControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t012getDocumentCategoryByCodeAndLangCodeFailTest() throws Exception {
+	public void testGetDocumentCategoryByCodeAndLanguageCode_NotFound_Error() throws Exception {
 
 		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/POAz/eng")).andReturn(), "KER-MSD-014");
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t018getAllDocumentCategoryTest() throws Exception {
+	public void getAllDocumentCategories_Success() throws Exception {
 
 		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/all")).andReturn(),null);
 
@@ -309,14 +313,14 @@ public class DocumentCategoryControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t013getAllDocumentCategoryByLaguageCodeFailTest() throws Exception {
+	public void testGetAllDocumentCategoriesByLanguageCode_InvalidLanguage_Error() throws Exception {
 
 		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/eng1")).andReturn(),"KER-MSD-014");
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t014updateDocumentCategoryStatusFailTest() throws Exception {
+	public void testUpdateDocumentCategoryStatus_NonexistentCategory_Error() throws Exception {
 
 		 MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/documentcategories").param("isActive", "false").param("code", "POAZ"))
@@ -326,7 +330,7 @@ public class DocumentCategoryControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t015updateDocumentCategoryStatusTest() throws Exception {
+	public void testUpdateDocumentCategoryStatus_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/documentcategories").param("isActive", "true").param("code", "POI"))
@@ -336,7 +340,7 @@ public class DocumentCategoryControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t015updateDocumentCategoryStatusTest1() throws Exception {
+	public void testUpdateDocumentCategoryStatus_Inactive_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/documentcategories").param("isActive", "false").param("code", "POI"))
@@ -346,7 +350,7 @@ public class DocumentCategoryControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t016deleteDocumentCategoryFailTest() throws Exception {
+	public void testDeleteDocumentCategory_NonexistentCategory_Error() throws Exception {
 
 		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/documentcategories/POAZ")).andReturn(),"KER-MSD-014");
 	
@@ -354,7 +358,7 @@ public class DocumentCategoryControllerTest {
 
 	@Test()
 	@WithUserDetails("global-admin")
-	public void t017deleteDocumentCategoryFailTest() throws Exception {
+	public void deleteDocumentCategory_NonexistentCategory_Error() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/documentcategories/POE"))
 				.andReturn(),"KER-MSD-014");
@@ -363,7 +367,7 @@ public class DocumentCategoryControllerTest {
 
 	@Test()
 	@WithUserDetails("global-admin")
-	public void t017deleteDocumentCategoryTest() throws Exception {
+	public void deleteDocumentCategory_withNonexistentCategory_Error() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/documentcategories/POI"))
 				.andReturn(),"KER-MSD-123");
@@ -372,7 +376,7 @@ public class DocumentCategoryControllerTest {
 	
 	@Test()
 	@WithUserDetails("global-admin")
-	public void t017deleteDocumentCategoryTest1() throws Exception {
+	public void testDeleteDocumentCategory_withNonexistentCategory_Error() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/documentcategories/POA"))
 				.andReturn(),"KER-MSD-123");
@@ -381,7 +385,7 @@ public class DocumentCategoryControllerTest {
 	
 	@Test()
 	@WithUserDetails("global-admin")
-	public void t018getMissingDocumentCategoryDetailsTest() throws Exception {
+	public void getMissingDocumentCategoryDetails_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/missingids/fra"))
 				.andReturn(),null);

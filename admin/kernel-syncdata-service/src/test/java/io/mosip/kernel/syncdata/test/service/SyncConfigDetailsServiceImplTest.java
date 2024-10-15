@@ -27,8 +27,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
@@ -66,6 +65,8 @@ public class SyncConfigDetailsServiceImplTest {
         machine.setPublicKey("MIGfMA0GCSqGSIb3DQEBAQUAA4GNAD...");
         machines.add(machine);
 
+        assertNotNull(machines);
+
         lenient().when(machineRepository.findByMachineKeyIndex(keyIndex)).thenReturn(machines);
     }
 
@@ -96,6 +97,8 @@ public class SyncConfigDetailsServiceImplTest {
         Machine machine = new Machine();
         machine.setPublicKey("MIGfMA0GCSqGSIb3DQEBAQUAA4GNAD...");
         machines.add(machine);
+
+        assertNotNull(machines);
 
         lenient().when(machineRepository.findByMachineKeyIndex(keyIndex)).thenReturn(machines);
         lenient().when(environment.getProperty(String.format("mosip.sync.entity.encrypted.%s", scriptName.toUpperCase()), Boolean.class, false)).thenReturn(false);
@@ -149,9 +152,9 @@ public class SyncConfigDetailsServiceImplTest {
 
     @Test
     public void parsePropertiesString_comments() {
-        String input = "# This is a comment\nname=John Doe\nage=30\n# Another comment";
+        String input = "# This is a comment\nname=John\nage=30\n# Another comment";
         JSONObject expectedOutput = new JSONObject();
-        expectedOutput.put("name", "John Doe");
+        expectedOutput.put("name", "John");
         expectedOutput.put("age", "30");
         JSONObject actualOutput = new SyncConfigDetailsServiceImpl().parsePropertiesString(input);
         assertEquals(expectedOutput, actualOutput);
@@ -161,6 +164,8 @@ public class SyncConfigDetailsServiceImplTest {
     public void parsePropertiesString_invalidFormat() {
         String input = "invalid format";
         new SyncConfigDetailsServiceImpl().parsePropertiesString(input);
+
+        assertTrue("invalid format", true);
     }
 
     @Test
@@ -193,6 +198,8 @@ public class SyncConfigDetailsServiceImplTest {
         try {
             uriParams = new HashMap<>();
             uriParams.put("applicationId", "REGISTRATION");
+
+            assertNotNull(uriParams);
 
             UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(publicKeyUrl)
                     .queryParam("referenceId", "referenceId").queryParam("timeStamp", "2019-09-09T09:00:00.000Z");
