@@ -1,6 +1,7 @@
 GetUserDetailsByIdAndEffDate:
    MasterData_GetUserDetailsByIdAndEffDate_allValid_smoke:
       endPoint: /v1/masterdata/users/{id}/{effDate}
+      uniqueIdentifier: TC_Masterdata_GetUserDetailsByIdAndEffDate_01
       description: Retrieve user details by valid ID and effective date
       role: admin
       templateFields: ["langCode"]
@@ -16,6 +17,7 @@ GetUserDetailsByIdAndEffDate:
 }'
    MasterData_GetUserDetailsByIdAndEffDate_InValid_dateFormat:
       endPoint: /v1/masterdata/users/{id}/{effDate}
+      uniqueIdentifier: TC_Masterdata_GetUserDetailsByIdAndEffDate_02
       description: Retrieve user details using a valid ID and an invalid date format for the effective date
       role: admin
       restMethod: get
@@ -35,6 +37,7 @@ GetUserDetailsByIdAndEffDate:
 }'
    MasterData_GetUserDetailsByIsAndEffDate_InValid_effDate:
       endPoint: /v1/masterdata/users/{id}/{effDate}
+      uniqueIdentifier: TC_Masterdata_GetUserDetailsByIdAndEffDate_03
       description: Retrieve user details using a valid ID and an invalid for the invalid effective date
       role: admin
       restMethod: get
@@ -54,6 +57,7 @@ GetUserDetailsByIdAndEffDate:
 }'
    MasterData_GetUserDetailsByIdAndEffDate_InValid_UserID:
       endPoint: /v1/masterdata/users/{id}/{effDate}
+      uniqueIdentifier: TC_Masterdata_GetUserDetailsByIdAndEffDate_04
       description: Retrieve user details using a invalid ID
       role: admin
       restMethod: get

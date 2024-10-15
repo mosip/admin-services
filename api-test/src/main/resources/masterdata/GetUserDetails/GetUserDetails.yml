@@ -1,6 +1,7 @@
 GetUserDetails:
    MasterData_GetUserDetails_allValid_smoke:
       endPoint: /v1/masterdata/users
+      uniqueIdentifier: TC_Masterdata_GetUserDetails_01
       description: Retrieve all the user details
       role: admin
       checkErrorsOnlyInResponse: true
@@ -19,6 +20,7 @@ GetUserDetails:
 }'
    MasterData_GetUserDetails_ByUserId_allValid_smoke:
       endPoint: /v1/masterdata/users/{id}
+      uniqueIdentifier: TC_Masterdata_GetUserDetails_02
       description: Retrieve all the user details by valid user ID
       role: admin
       checkErrorsOnlyInResponse: true
@@ -37,6 +39,7 @@ GetUserDetails:
 }'
    MasterData_GetUserDetails_InValid_InvalidUserID:
       endPoint: /v1/masterdata/users/{id}
+      uniqueIdentifier: TC_Masterdata_GetUserDetails_03
       description: Retrieve all the user details by invalid user ID
       role: admin
       restMethod: get

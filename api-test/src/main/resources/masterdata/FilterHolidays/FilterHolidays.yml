@@ -1,6 +1,7 @@
 FilterHolidays:
    MasterData_FilterHolidays_Valid_Smoke:
       endPoint: /v1/masterdata/holidays/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterHolidays_01
       description: Filter Holidays by all valid data
       role: admin
       checkErrorsOnlyInResponse: true
@@ -22,6 +23,7 @@ FilterHolidays:
    
    MasterData_FilterHolidays_inValid_filterText:
       endPoint: /v1/masterdata/holidays/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterHolidays_02
       description: Filter Holidays by invalid filter text
       role: admin
       checkErrorsOnlyInResponse: true
@@ -45,6 +47,7 @@ FilterHolidays:
 }'
    MasterData_FilterHolidays_inValid_filterType_blank:
       endPoint: /v1/masterdata/holidays/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterHolidays_03
       description: Filter Holidays by blank filter type
       role: admin
       templateFields: ["text"]
@@ -70,6 +73,7 @@ FilterHolidays:
 }'  
    MasterData_FilterHolidays_inValid_filterColumnName_blank:
       endPoint: /v1/masterdata/holidays/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterHolidays_04
       description: Filter Holidays by empty filter columnName
       role: admin
       templateFields: ["text"]
@@ -96,6 +100,7 @@ FilterHolidays:
      
    MasterData_FilterHolidays_inValid_langCode:
       endPoint: /v1/masterdata/holidays/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterHolidays_05
       description: Filter Holidays by inalid languageCode
       role: admin
       restMethod: post
@@ -120,6 +125,7 @@ FilterHolidays:
 }'  
    MasterData_FilterHolidays_inValid_RequestTime_format:
       endPoint: /v1/masterdata/holidays/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterHolidays_06
       description: Filter Holidays by inalid requesttime format
       role: admin
       templateFields: ["text"]
@@ -145,6 +151,7 @@ FilterHolidays:
 }'  
    MasterData_FilterHolidays_inValid_filterColumnName:
       endPoint: /v1/masterdata/holidays/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterHolidays_07
       description: Filter Holidays by inalid columnName
       role: admin
       templateFields: ["text"]
@@ -169,6 +176,7 @@ FilterHolidays:
 }'  
    MasterData_FilterHolidays_inValid_filterType:
       endPoint: /v1/masterdata/holidays/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterHolidays_08
       description: Filter Holidays by inalid filter Type
       role: admin
       templateFields: ["text"]
@@ -194,6 +202,7 @@ FilterHolidays:
 }'  
    MasterData_FilterHolidays_inValid_FilterText:
       endPoint: /v1/masterdata/holidays/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterHolidays_09
       description: Filter Holidays by inalid filter text
       role: admin
       checkErrorsOnlyInResponse: true

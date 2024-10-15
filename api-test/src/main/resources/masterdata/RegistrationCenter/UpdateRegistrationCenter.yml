@@ -1,6 +1,7 @@
 UpdateRegistrationCenter:
    MasterData_UpdateRegistrationCenter_allValid_smoke:
       endPoint: /v1/masterdata/registrationcenters
+      uniqueIdentifier: TC_Masterdata_UpdateRegistrationCenter_01
       description: Update registration center with valid details
       role: admin
       checkErrorsOnlyInResponse: true
@@ -42,6 +43,7 @@ UpdateRegistrationCenter:
 
    MasterData_UpdateRegistrationCenter_numberOfKiosks_smoke:
       endPoint: /v1/masterdata/registrationcenters
+      uniqueIdentifier: TC_Masterdata_UpdateRegistrationCenter_02
       description: Update a registration center with number of kiosks as empty and language code set to English
       role: admin
       checkErrorsOnlyInResponse: true
@@ -83,6 +85,7 @@ UpdateRegistrationCenter:
 }'
    MasterData_CreateRegCenter_Invalid_HolidayLocationCode_blank_eng:
       endPoint: /v1/masterdata/registrationcenters
+      uniqueIdentifier: TC_Masterdata_UpdateRegistrationCenter_03
       description: Update a registration center with holiday location code as empty and language code set to English
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone"]
@@ -128,6 +131,7 @@ UpdateRegistrationCenter:
    
    MasterData_CreateRegCenter_Invalid_latitude_blank_eng:
       endPoint: /v1/masterdata/registrationcenters
+      uniqueIdentifier: TC_Masterdata_UpdateRegistrationCenter_04
       description: Update a registration center with latitude as empty and language code set to English
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone"]
@@ -172,6 +176,7 @@ UpdateRegistrationCenter:
 }'
    MasterData_CreateRegCenter_Invalid_latitude_eng:
       endPoint: /v1/masterdata/registrationcenters
+      uniqueIdentifier: TC_Masterdata_UpdateRegistrationCenter_05
       description: Update a registration center with invalid latitude and language code set to English
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone"]

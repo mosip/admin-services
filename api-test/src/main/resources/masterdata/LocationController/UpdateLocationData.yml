@@ -1,6 +1,7 @@
 UpdateLocationData:
    MasterData_UpdateLocationData_All_Valid_Smoke_Sid:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_UpdateLocationData_01
       description: Updating location data with valid details
       role: admin
       templateFields: ["name"]
@@ -28,6 +29,7 @@ UpdateLocationData:
 }'
    MasterData_UpdateLocationData_Invalid_code_for_primaryLang_eng:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_UpdateLocationData_02
       description: Updating location data with invalid code as for primary language english
       role: admin
       templateFields: ["langCode"]
@@ -54,6 +56,7 @@ UpdateLocationData:
 }'
    MasterData_UpdateLocationData_Invalid_EmptyCode_PrimaryLang_eng:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_UpdateLocationData_03
       description: Updating location data with code as empty for primary language english
       role: admin
       templateFields: ["langCode"]
@@ -80,6 +83,7 @@ UpdateLocationData:
 }'
    MasterData_UpdateLocationData_Invalid_NameLength129:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_UpdateLocationData_04
       description: Updating location data with an invalid name length of 129 characters
       role: admin
       templateFields: ["hierarchyName"]
@@ -106,6 +110,7 @@ UpdateLocationData:
 }'
    MasterData_UpdateLocationData_Invalid_EmptyName:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_UpdateLocationData_05
       description: Updating location data with an name parameter as empty
       role: admin
       templateFields: ["hierarchyName"]
@@ -132,6 +137,7 @@ UpdateLocationData:
 }'
    MasterData_UpdateLocationData_Invalid_HierarchyLevel_LongInt:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_UpdateLocationData_06
       description: Updating location data with the hierarchy level parameter as a long integer
       role: admin
       templateFields: ["hierarchyName"]
@@ -158,6 +164,7 @@ UpdateLocationData:
 }'
    MasterData_UpdateLocationData_inValid_hierLevel_locHierCombo:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_UpdateLocationData_07
       description: Updating location data with the hierarchy level parameter using invalid data for the location and hierarchy combination
       role: admin
       templateFields: ["hierarchyName"]
@@ -184,6 +191,7 @@ UpdateLocationData:
 }'
    MasterData_UpdateLocationData_inValid_HierarchyName65:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_UpdateLocationData_08
       description: Updating location data with the hierarchy name parameter set to 65 characters
       role: admin
       templateFields: ["hierarchyName"]
@@ -210,6 +218,7 @@ UpdateLocationData:
 }'
    MasterData_UpdateLocationData_Invalid_EmptyHierarchyName:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_UpdateLocationData_09
       description: Updating location data with the hierarchy name parameter as empty
       role: admin
       templateFields: ["hierarchyName"]
@@ -236,6 +245,7 @@ UpdateLocationData:
 }'
    MasterData_UpdateLocationData_inValid_parentLocCode_nonExisting_inDB:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_UpdateLocationData_10
       description: Updating location data with a parent location code parameter that is not available in the database
       role: admin
       templateFields: ["hierarchyName"]
@@ -264,6 +274,7 @@ UpdateLocationData:
    
    MasterData_UpdateLocationData_Invalid_requestTime_format:
       endPoint: /v1/masterdata/locations
+      uniqueIdentifier: TC_Masterdata_UpdateLocationData_11
       description: Updating location data with invalid request time format
       role: admin
       templateFields: ["hierarchyName"]

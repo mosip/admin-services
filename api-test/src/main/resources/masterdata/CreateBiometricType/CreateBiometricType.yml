@@ -1,6 +1,7 @@
 CreateBiometricTypes:
    Masterdata_CreateBiometricTypes_All_Valid_Smoke:
       endPoint: /v1/masterdata/biometrictypes
+      uniqueIdentifier: TC_Masterdata_CreateBiometricTypes_01
       description: Create Biometric Types with valid data
       role: admin
       templateFields: ["langCode"]

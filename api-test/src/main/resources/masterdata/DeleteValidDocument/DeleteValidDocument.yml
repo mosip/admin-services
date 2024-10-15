@@ -1,6 +1,7 @@
 DeleteValidDocument:
    MasterData_DeleteValidDocument_Invalid_ID: 
       endPoint: /v1/masterdata/validdocuments/{doccategorycode}/{doctypecode}
+      uniqueIdentifier: TC_Masterdata_DeleteValidDocument_01
       description: Delete Valid Document with invalid doccategorycode
       role: admin
       restMethod: delete

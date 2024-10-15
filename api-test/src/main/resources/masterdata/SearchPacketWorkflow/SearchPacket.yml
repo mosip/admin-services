@@ -1,6 +1,7 @@
 SearchPacketWorkflow:
    MasterData_SearchPacketWorkflow_Valid_Smoke:
       endPoint: /v1/masterdata/packet/search
+      uniqueIdentifier: TC_Masterdata_SearchPacketWorkflow_01
       description: Search for packet work flow details with valid details
       role: admin
       checkErrorsOnlyInResponse: true
@@ -30,6 +31,7 @@ SearchPacketWorkflow:
 }'
    MasterData_SearchPacketWorkflow_Empty_ColumnName:
       endPoint: /v1/masterdata/packet/search
+      uniqueIdentifier: TC_Masterdata_SearchPacketWorkflow_02
       description: Search for packet work flow details with with column name as empty
       role: admin
       restMethod: post
@@ -63,6 +65,7 @@ SearchPacketWorkflow:
 }'
    MasterData_SearchPacketWorkflow_Invalid_Pagination:
       endPoint: /v1/masterdata/packet/search
+      uniqueIdentifier: TC_Masterdata_SearchPacketWorkflow_03
       description: Search for packet work flow details with with invalid pagination data
       role: admin
       restMethod: post

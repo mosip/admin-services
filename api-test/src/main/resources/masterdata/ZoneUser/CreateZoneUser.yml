@@ -1,6 +1,7 @@
 CreateZoneUser:
    MasterData_CreateZoneUser_All_Valid_Smoke_Sid:
       endPoint: /v1/masterdata/zoneuser
+      uniqueIdentifier: TC_Masterdata_CreateZoneUser_01
       description: Create zone user with valid user data
       role: globalAdmin
       checkErrorsOnlyInResponse: true
@@ -20,6 +21,7 @@ CreateZoneUser:
     
    MasterData_CreateZoneUser__Empty_UserID_Valid:
       endPoint: /v1/masterdata/zoneuser
+      uniqueIdentifier: TC_Masterdata_CreateZoneUser_02
       description: Create zone user with user ID as empty
       role: admin
       restMethod: post
@@ -43,6 +45,7 @@ CreateZoneUser:
 
    MasterData_CreateZoneUser__Empty_zoneCode_Valid:
       endPoint: /v1/masterdata/zoneuser
+      uniqueIdentifier: TC_Masterdata_CreateZoneUser_03
       description: Create zone user with the parameter zone code as empty
       role: admin
       restMethod: post
@@ -66,6 +69,7 @@ CreateZoneUser:
 
    MasterData_CreateZoneUser__Invalid_zoneCode_Valid:
       endPoint: /v1/masterdata/zoneuser
+      uniqueIdentifier: TC_Masterdata_CreateZoneUser_04
       description: Create zone user with the parameter zone code as invalid
       role: admin
       restMethod: post

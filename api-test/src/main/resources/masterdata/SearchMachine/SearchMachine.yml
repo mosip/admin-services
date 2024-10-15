@@ -1,6 +1,7 @@
 SearchMachine:
    Masterdata_SearchMachine_Valid_Smoke_FullResponse_sid:
       endPoint: /v1/masterdata/machines/search
+      uniqueIdentifier: TC_Masterdata_SearchMachine_01
       description: Search machine details with valid data
       role: globalAdmin
       checkErrorsOnlyInResponse: true
@@ -33,6 +34,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_FilterTypeContains:
       endPoint: /v1/masterdata/machines/search
+      uniqueIdentifier: TC_Masterdata_SearchMachine_02
       description: Search machine details with the condition that the filter type contains specified keywords
       role: globalAdmin
       checkErrorsOnlyInResponse: true
@@ -65,6 +67,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_FilterTypeStartsWith:
       endPoint: /v1/masterdata/machines/search
+      uniqueIdentifier: TC_Masterdata_SearchMachine_03
       description: Search machine details with the condition that the filter type starts with specified keywords
       role: globalAdmin
       checkErrorsOnlyInResponse: true
@@ -97,6 +100,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_ColumnMacAddressNFilterTypeEquals:
       endPoint: /v1/masterdata/machines/search
+      uniqueIdentifier: TC_Masterdata_SearchMachine_04
       description: Search for machine details with the condition that the column MacAdress equals the specified filter type
       role: globalAdmin
       templateFields: ["languageCode"]
@@ -141,6 +145,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_ColumnMacAddressNTypeContains:
       endPoint: /v1/masterdata/machines/search
+      uniqueIdentifier: TC_Masterdata_SearchMachine_05
       description: Search for machine details with the condition that the column MacAddress contains the specified type
       role: globalAdmin
       templateFields: ["languageCode"]
@@ -185,6 +190,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_ColumnMacAddressNTypeStartsWith:
       endPoint: /v1/masterdata/machines/search
+      uniqueIdentifier: TC_Masterdata_SearchMachine_06
       description: Search for machine details with the condition that the column MacAddress starts with the specified type
       role: globalAdmin
       templateFields: ["languageCode"]
@@ -229,6 +235,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_ColumnSerialNumberNTypeEquals:
       endPoint: /v1/masterdata/machines/search
+      uniqueIdentifier: TC_Masterdata_SearchMachine_07
       description: Search for machine details with the condition that the column serialNumber equals the specified type
       role: globalAdmin
       checkErrorsOnlyInResponse: true
@@ -261,6 +268,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_ColumnSerialNumberNTypeContains:
       endPoint: /v1/masterdata/machines/search
+      uniqueIdentifier: TC_Masterdata_SearchMachine_08
       description: Search for machine details with the condition that the column serialNumber contains the specified type
       role: globalAdmin
       checkErrorsOnlyInResponse: true
@@ -293,6 +301,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_ColumnSerialNumberNTypeStartsWith:
       endPoint: /v1/masterdata/machines/search
+      uniqueIdentifier: TC_Masterdata_SearchMachine_09
       description: Search for machine details with the condition that the column serialNumber starts with the specified type
       role: globalAdmin
       checkErrorsOnlyInResponse: true
@@ -325,6 +334,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_ColumnMachineSpecIdNTypeEquals:
       endPoint: /v1/masterdata/machines/search
+      uniqueIdentifier: TC_Masterdata_SearchMachine_10
       description: Search for machine details with the condition that the column machineSpec equals the specified type
       role: globalAdmin
       checkErrorsOnlyInResponse: true
@@ -357,6 +367,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_ColumnMachineSpecIdNTypeContains:
       endPoint: /v1/masterdata/machines/search
+      uniqueIdentifier: TC_Masterdata_SearchMachine_11
       description: Search for machine details with the condition that the column MachineSpec contains the specified type
       role: globalAdmin
       checkErrorsOnlyInResponse: true
@@ -389,6 +400,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_ColumnMachineSpecIdNTypeStartsWith:
       endPoint: /v1/masterdata/machines/search
+      uniqueIdentifier: TC_Masterdata_SearchMachine_12
       description: Search for machine details with the condition that the column MachineSpec starts with the specified type
       role: globalAdmin
       checkErrorsOnlyInResponse: true
@@ -421,6 +433,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_TwoFilterValues_TypeEqualsNEquals:
       endPoint: /v1/masterdata/machines/search
+      uniqueIdentifier: TC_Masterdata_SearchMachine_13
       description: Search for machine details with two filter values where type equals one value and another equals a different value
       role: globalAdmin
       checkErrorsOnlyInResponse: true
@@ -460,6 +473,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_SortFieldDESC:
       endPoint: /v1/masterdata/machines/search
+      uniqueIdentifier: TC_Masterdata_SearchMachine_14
       description: Search for machine details and sort field with descending order
       role: globalAdmin
       checkErrorsOnlyInResponse: true
@@ -492,9 +506,10 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_TwoSortFields_DescNDesc:
       endPoint: /v1/masterdata/machines/search
+      uniqueIdentifier: TC_Masterdata_SearchMachine_15
       description: Search for machine details with two sort fields and two descending orders
       role: globalAdmin
-      templateFields: ["languageCode"]
+      templateFields: ["value"]
       restMethod: post
       inputTemplate: masterdata/SearchMachine/searchMachine
       outputTemplate: masterdata/SearchMachine/searchMachineResult
@@ -540,6 +555,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Valid_TwoSortFields_AscNDesc:
       endPoint: /v1/masterdata/machines/search
+      uniqueIdentifier: TC_Masterdata_SearchMachine_16
       description: Search for machine details with two sort fields, one in ascending order and one in descending order
       role: globalAdmin
       checkErrorsOnlyInResponse: true
@@ -576,6 +592,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Invalid_ColumnName:
       endPoint: /v1/masterdata/machines/search
+      uniqueIdentifier: TC_Masterdata_SearchMachine_17
       description: Search for machine details with invalid column name
       role: globalAdmin
       templateFields: ["value"]
@@ -613,6 +630,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Invalid_SortField:
       endPoint: /v1/masterdata/machines/search
+      uniqueIdentifier: TC_Masterdata_SearchMachine_18
       description: Search for machine details with invalid sort field
       role: globalAdmin
       templateFields: ["value"]
@@ -650,6 +668,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Invalid_EmptyFilterType:
       endPoint: /v1/masterdata/machines/search
+      uniqueIdentifier: TC_Masterdata_SearchMachine_19
       description: Search for machine details with empty filter type
       role: globalAdmin
       templateFields: ["value"]
@@ -687,6 +706,7 @@ SearchMachine:
 }'
    Masterdata_SearchMachine_Invalid_EmptySortField:
       endPoint: /v1/masterdata/machines/search
+      uniqueIdentifier: TC_Masterdata_SearchMachine_20
       description: Search for machine details with sort field as empty
       role: globalAdmin
       templateFields: ["value"]

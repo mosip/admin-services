@@ -1,6 +1,7 @@
 DeviceFilter:
    MasterData_DeviceFilter_Name_eng_Unique_smoke:
       endPoint: /v1/masterdata/devices/filtervalues
+      uniqueIdentifier: TC_Masterdata_DeviceFilter_01
       description: Filter devices by columnName name with type unique
       role: globalAdmin
       templateFields: ["languageCode"]
@@ -26,6 +27,7 @@ DeviceFilter:
   }'    
    MasterData_DeviceFilter_Name_eng_All_smoke:
       endPoint: /v1/masterdata/devices/filtervalues
+      uniqueIdentifier: TC_Masterdata_DeviceFilter_02
       description: Filter devices by columnName name and type all
       role: globalAdmin
       templateFields: ["languageCode"]
@@ -52,6 +54,7 @@ DeviceFilter:
        
    MasterData_DeviceFilter_MacAddress_Unique_smoke:
       endPoint: /v1/masterdata/devices/filtervalues
+      uniqueIdentifier: TC_Masterdata_DeviceFilter_03
       description: Filter devices by columnName macAddress and type unique
       role: globalAdmin
       templateFields: ["languageCode"]
@@ -77,6 +80,7 @@ DeviceFilter:
   }'    
    MasterData_DeviceFilter_MacAddress_All_smoke:
       endPoint: /v1/masterdata/devices/filtervalues
+      uniqueIdentifier: TC_Masterdata_DeviceFilter_04
       description: Filter devices by macAddress with type all
       role: globalAdmin
       templateFields: ["languageCode"]
@@ -102,6 +106,7 @@ DeviceFilter:
   }'    
    MasterData_DeviceFilter_SerialNum_Unique_smoke:
       endPoint: /v1/masterdata/devices/filtervalues
+      uniqueIdentifier: TC_Masterdata_DeviceFilter_05
       description: Filter devices by columnName serialNum with type Unique
       role: globalAdmin
       checkErrorsOnlyInResponse: true
@@ -123,6 +128,7 @@ DeviceFilter:
        
    MasterData_DeviceFilter_Invalid_RequestTime:
       endPoint: /v1/masterdata/devices/filtervalues
+      uniqueIdentifier: TC_Masterdata_DeviceFilter_06
       description: Filter devices by invalid Request Time
       role: globalAdmin
       templateFields: ["languageCode"]
@@ -149,6 +155,7 @@ DeviceFilter:
        
    MasterData_DeviceFilter_inValid_columnName:
       endPoint: /v1/masterdata/devices/filtervalues
+      uniqueIdentifier: TC_Masterdata_DeviceFilter_07
       description: Filter devices by invalid columnName
       role: globalAdmin
       templateFields: ["languageCode"]

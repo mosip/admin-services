@@ -1,6 +1,7 @@
 FilterBlockListedWords:
    Masterdata_FilterBlockListedWords_Valid_Request_Smoke:
       endPoint: /v1/masterdata/blocklistedwords/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterBlockListedWords_01
       description: Filter Block Listed Words with valid columnName and type unique
       role: admin
       templateFields: ["text","fieldValue"]
@@ -26,6 +27,7 @@ FilterBlockListedWords:
   }'
    Masterdata_FilterBlockListedWords_Valid_TypeAll:
       endPoint: /v1/masterdata/blocklistedwords/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterBlockListedWords_02
       description: Filter Block Listed Words with valid columnName and type All
       role: admin
       templateFields: ["text","fieldValue"]
@@ -51,6 +53,7 @@ FilterBlockListedWords:
   }'
    Masterdata_FilterBlockListedWords_Invalid_EmptyColumnName:
       endPoint: /v1/masterdata/blocklistedwords/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterBlockListedWords_03
       description: Filter Block Listed Words with empty columnName and type All
       role: admin
       templateFields: ["text"]
@@ -76,6 +79,7 @@ FilterBlockListedWords:
 }'  
    Masterdata_FilterBlockListedWords_Invalid_EmptyFilterType:
       endPoint: /v1/masterdata/blocklistedwords/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterBlockListedWords_04
       description: Filter Block Listed Words with empty type
       role: admin
       templateFields: ["text"]
@@ -101,6 +105,7 @@ FilterBlockListedWords:
 }'  
    Masterdata_FilterBlockListedWords_Invalid_ColumnName:
       endPoint: /v1/masterdata/blocklistedwords/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterBlockListedWords_05
       description: Filter Block Listed Words with invalid columnName and type all
       role: admin
       templateFields: ["text"]
@@ -125,6 +130,7 @@ FilterBlockListedWords:
 }'  
    Masterdata_FilterBlockListedWords_Invalid_FilterType:
       endPoint: /v1/masterdata/blocklistedwords/filtervalues
+      uniqueIdentifier: TC_Masterdata_FilterBlockListedWords_06
       description: Filter Block Listed Words with valid columnName and invalid type
       role: admin
       templateFields: ["text"]

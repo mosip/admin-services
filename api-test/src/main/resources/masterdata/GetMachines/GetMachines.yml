@@ -1,6 +1,7 @@
 GetMachines:
    Admin_GetMachines_allValid_smoke:
       endPoint: /v1/masterdata/machines
+      uniqueIdentifier: TC_Masterdata_GetMachines_01
       description: Retrieve machine details
       role: admin
       checkErrorsOnlyInResponse: true

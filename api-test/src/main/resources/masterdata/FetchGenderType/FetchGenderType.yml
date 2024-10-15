@@ -1,6 +1,7 @@
 FetchGenderType:
    Masterdata_FetchGenderType_allValid_smoke_get:
       endPoint: /v1/masterdata/gendertypes
+      uniqueIdentifier: TC_Masterdata_FetchGenderType_01
       description: Retrieve Gender Types with all valid data
       role: admin
       restMethod: get
@@ -16,6 +17,7 @@ FetchGenderType:
    
    Masterdata_FetchGenderType_Validate_gender_name_smoke:
       endPoint: /v1/masterdata/gendertypes/validate/{gendername}
+      uniqueIdentifier: TC_Masterdata_FetchGenderType_02
       description: Retrieve Gender Types with valid gendername
       role: admin
       templateFields: []
@@ -30,6 +32,7 @@ FetchGenderType:
 }'
    Masterdata_FetchGenderType_Validate_gender_name_invalid:
       endPoint: /v1/masterdata/gendertypes/validate/{gendername}
+      uniqueIdentifier: TC_Masterdata_FetchGenderType_03
       description: Retrieve Gender Types with invalid gendername
       role: admin
       templateFields: []
@@ -45,6 +48,7 @@ FetchGenderType:
 }'
    Masterdata_FetchGenderType_invalid_langcode_unexisting:
       endPoint: /v1/masterdata/gendertypes/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchGenderType_04
       description: Retrieve Gender Types with invalid langcode
       role: admin
       templateFields: []

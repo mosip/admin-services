@@ -1,6 +1,7 @@
 RejectionList:
    MasterData_RejectionList_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/packetrejectionreasons/reasonlist
+      uniqueIdentifier: TC_Masterdata_RejectionList_01
       description: Create the rejection list with valid details
       role: admin
       templateFields: ["name","description"]
