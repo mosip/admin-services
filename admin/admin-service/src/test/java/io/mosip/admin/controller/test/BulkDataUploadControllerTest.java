@@ -87,7 +87,7 @@ public class BulkDataUploadControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001getTranscationDetailTest() throws Exception {
+	public void shouldGetTransactionDetailsForId() throws Exception {
 		AdminDataUtil.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/bulkupload/transcation/1234")).andReturn(),
 				null);
@@ -96,7 +96,7 @@ public class BulkDataUploadControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001getTranscationDetailTestFail() throws Exception {
+	public void testGetTransactionDetailFail() throws Exception {
 		AdminDataUtil.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/bulkupload/transcation/12")).andReturn(),
 				"ADMN-BLK-TRNSCTNS-001");
@@ -106,7 +106,7 @@ public class BulkDataUploadControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002getTranscationDetailTest() throws Exception {
+	public void testGetTransactionDetailSuccess() throws Exception {
 		AdminDataUtil.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/bulkupload/getAllTransactions")).andReturn(),
 				null);
@@ -115,7 +115,7 @@ public class BulkDataUploadControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t003uploadDataTest() throws Exception {
+	public void bulkUploadData_InvalidDataError() throws Exception {
 		String content="code,genderName,langCode,isActive\r\n" + 
 				"MLO,Test,eng,FALSE\r\n" + 
 				"AAA,AAA,ara,TRUE\r\n" + 
@@ -129,7 +129,7 @@ public class BulkDataUploadControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t004uploadDataTest() throws Exception {
+	public void testUploadDataError_InvalidCategory() throws Exception {
 		String content="code,genderName,langCode,isActive\r\n" + 
 				"MLO,Test,eng,FALSE\r\n" + 
 				"AAA,AAA,ara,TRUE\r\n" + 
@@ -143,7 +143,7 @@ public class BulkDataUploadControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t005uploadDataTest() throws Exception {
+	public void testUploadDataError_InvalidOperation() throws Exception {
 		String content="code,genderName,langCode,isActive\r\n" + 
 				"MLO,Test,eng,FALSE\r\n" + 
 				"AAA,AAA,ara,TRUE\r\n" + 
@@ -157,7 +157,7 @@ public class BulkDataUploadControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t006uploadDataTest() throws Exception {
+	public void checkUploadDataError_IncorrectDataFormat() throws Exception {
 		String content="code,genderName,langCode,isActive\r\n" + 
 				"MLx,Test,eng,FALSE\r\n" + 
 				"AAB,AAA,ara,TRUE\r\n" + 
@@ -171,7 +171,7 @@ public class BulkDataUploadControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t007uploadDataTest() throws Exception {
+	public void bulkUploadData_UnsupportedFileFormat() throws Exception {
 		String content="code,genderName,langCode,isActive\r\n" + 
 				"MLP,Test,eng,FALSE\r\n" + 
 				"ABX,AAA,ara,TRUE\r\n" + 
@@ -185,7 +185,7 @@ public class BulkDataUploadControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t008uploadDataTest() throws Exception {
+	public void bulkUploadData_CategoryNotSupported() throws Exception {
 		String content="code,genderName,langCode,isActive\r\n" + 
 				"MLO,Test,eng,FALSE\r\n" + 
 				"AAA,AAA,ara,TRUE\r\n" + 
@@ -199,7 +199,7 @@ public class BulkDataUploadControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t009uploadDataTest() throws Exception {
+	public void checkUploadDataError_IncorrectCategory() throws Exception {
 		String content="code,genderName,langCode,isActive\r\n" + 
 				"MLO,Test,eng,FALSE\r\n" + 
 				"AAA,AAA,ara,TRUE\r\n" + 
@@ -213,7 +213,7 @@ public class BulkDataUploadControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t010uploadDataTest() throws Exception {
+	public void bulkUploadData_CategoryNotSupported_Fail() throws Exception {
 		String content="code,genderName,langCode,isActive\r\n" + 
 				"MLO,Test,eng,FALSE\r\n" + 
 				"AAA,AAA,ara,TRUE\r\n" + 
@@ -224,9 +224,10 @@ public class BulkDataUploadControllerTest {
 				"ADM-BLK-006");
 
 	}
+
 	@Test
 	@WithUserDetails("global-admin")
-	public void t011uploadDataTest() throws Exception {
+	public void checkUploadDataSuccess() throws Exception {
 		String content="code,genderName,langCode,isActive\r\n" +
 				"MLO,Test,eng,FALSE\r\n" +
 				"AAA,AAA,ara,TRUE\r\n" +
@@ -237,9 +238,10 @@ public class BulkDataUploadControllerTest {
 				null);
 
 	}
+
 	@Test
 	@WithUserDetails("global-admin")
-	public void t012uploadDataTest() throws Exception {
+	public void bulkUploadData_Update_Success() throws Exception {
 		String content="code,genderName,langCode,isActive\r\n" +
 				"TST,Test1,eng,TRUE\r\n" +
 				"BBB,AAA,ara,TRUE";
@@ -249,9 +251,10 @@ public class BulkDataUploadControllerTest {
 				null);
 
 	}
+
 	@Test
 	@WithUserDetails("global-admin")
-	public void t013uploadDataTest() throws Exception {
+	public void bulkUploadData_Delete_Success() throws Exception {
 		String content="code,genderName,langCode,isActive\r\n" +
 				"TST,Test1,eng,TRUE\r\n" +
 				"BBB,AAA,ara,TRUE";
@@ -263,14 +266,15 @@ public class BulkDataUploadControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t014getTranscationDetailTest() throws Exception {
+	public void getBulkUploadAllTransactions_Success() throws Exception {
 		AdminDataUtil.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/bulkupload/getAllTransactions")).andReturn(), null);
 
 	}
+
 	@Test
 	@WithUserDetails("global-admin")
-	public void t015uploadDataTest() throws Exception {
+	public void testUploadDataError_InvalidFileFormat() throws Exception {
 		String content="code,genderName,langCode,isActive\r\n" +
 				"TST,Test1,eng,TRUE\r\n" +
 				"BBB,AAA,ara,TRUE";
@@ -284,7 +288,7 @@ public class BulkDataUploadControllerTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	@WithUserDetails("global-admin")
-	public void t016checkCountUpload() throws Exception {
+	public void validateBulkUploadTransactionCount_Success() throws Exception {
 		String content="code,genderName,langCode,isActive\r\n" +
 				"MLIO,Test,eng,FALSE\r\n" +
 				"AABA,AAA,ara,TRUE\r\n" +
@@ -301,7 +305,7 @@ public class BulkDataUploadControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t0017uploadDataTest() throws Exception {
+	public void bulkUploadBlocklistedWordsError() throws Exception {
 		String content="word,description,langCode,isActive,isDeleted\r\n" +
 				"Some Random Words,Test,eng,TRUE,FALSE\r\n";
 		MockMultipartFile blocklisted_words = new MockMultipartFile("data", "filename.csv", "multipart/form-data", content.getBytes());

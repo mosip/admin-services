@@ -158,7 +158,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001getRegistrationCenterDetailsByLocationCodeTest() throws Exception {
+	public void getRegistrationCenterDetails_ByLocationCodeTest_Success() throws Exception {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/getlocspecificregistrationcenters/eng/14022")).andReturn(),
 				null);
@@ -166,7 +166,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002getRegistrationCenterDetailsByLocationCodeFailTest() throws Exception {
+	public void getRegistrationCenterDetails_ByInvalidLangCode_Test() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/getlocspecificregistrationcenters/eng1/KBT")).andReturn(),
@@ -179,7 +179,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t003getgetRegistrationCenterHolidaysTest() throws Exception {
+	public void getRegistrationCenterHolidaysTest_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.get("/getregistrationcenterholidays/eng/10001/2019")).andReturn(),
@@ -189,7 +189,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t004getgetRegistrationCenterHolidaysTest1() throws Exception {
+	public void getRegistrationCenterHolidaysTest_Pass() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.get("/getregistrationcenterholidays/eng/10002/2000")).andReturn(),
@@ -199,7 +199,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t004getgetRegistrationCenterHolidaysTest2() throws Exception {
+	public void getAllRegistrationCenterHolidaysTest_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.get("/getregistrationcenterholidays/all/10002/2000")).andReturn(),
@@ -209,7 +209,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t004getRegistrationCenterHolidaysFailTest1() throws Exception {
+	public void getRegistrationCenterHolidays_WithInValidId_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.get("/getregistrationcenterholidays/eng/10002/00000")).andReturn(),
@@ -219,7 +219,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t005getCoordinateSpecificRegistrationCentersTest() throws Exception {
+	public void getCoordinateSpecificRegistrationCentersTest_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.get("/getcoordinatespecificregistrationcenters/eng/23/34/50"))
@@ -229,7 +229,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t006getCoordinateSpecificRegistrationCentersFailTest() throws Exception {
+	public void getCoordinateSpecificRegistrationCentersFail_WithInvalidRequest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.get("/getcoordinatespecificregistrationcenters/eng/23.3454/4.5434/6"))
@@ -240,7 +240,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t008getSpecificRegistrationCenterByIdTest() throws Exception {
+	public void getSpecificRegistrationCenter_ByValidId_Test() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/10001/eng")).andReturn(),
@@ -250,7 +250,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t009getSpecificRegistrationCenterByIdFailTest() throws Exception {
+	public void getSpecificRegistrationCenter_ByInValidId_Test() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/100/eng")).andReturn(), "KER-MSD-215");
@@ -259,7 +259,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t010getAllRegistrationCentersDetailsTest() throws Exception {
+	public void getAllRegistrationCentersDetailsTest_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters")).andReturn(),
 				null);
@@ -268,7 +268,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t011getRegistrationCenterByHierarchyLevelAndTextAndlangCodeTest() throws Exception {
+	public void getRegistrationCenter_WithInvalidLocation_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/eng/6/14022")).andReturn(),
@@ -278,7 +278,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t011getRegistrationCenterByHierarchyLevelAndTextAndlangCodeTest2() throws Exception {
+	public void getRegistrationCenter_WithInvalidRegCenter_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/eng/5/33")).andReturn(),
@@ -288,7 +288,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t011getRegistrationCenterByHierarchyLevelAndTextAndlangCodeTest1() throws Exception {
+	public void getRegistrationCenter_ByHierarchyLevelAndTextAndLangCode_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/eng/0/14022")).andReturn(),
@@ -298,7 +298,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t011getRegistrationCenterByHierarchyLevelAndTextAndlangCodeTest5() throws Exception {
+	public void getRegistrationCenter_ByHierarchyLevelAndTextAndLangCodeAra_withInvalidRegCenter() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/ara/4/abc")).andReturn(),
@@ -308,7 +308,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t012getRegistrationCenterByHierarchyLevelAndTextAndlangCodeFailTest() throws Exception {
+	public void getRegistrationCenter_ByHierarchyLevelAndTextAndLangCodeEng_withInvalidRegCenter() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/eng/5/abc")).andReturn(),
@@ -318,7 +318,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t013getRegistrationCenterByHierarchyLevelAndTextAndlangCodePaginatedTest() throws Exception {
+	public void getRegistrationCenter_ByHierarchyLevelAndTextAndLangCodePaginated_Success() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/page/eng/5/14022")).andReturn(),
@@ -328,7 +328,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t014getRegistrationCenterByHierarchyLevelAndTextAndlangCodePaginatedTest() throws Exception {
+	public void getRegistrationCenter_ByHierarchyLevelAndTextAndLangCodePaginated_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/page/eng/3/14022")).andReturn(),
@@ -338,7 +338,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t015validateTimestampTest() throws Exception {
+	public void validateTimestampTest_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.get("/registrationcenters/validate/10001/eng/2021-11-23T13:09:19.695Z")).andReturn(),
@@ -348,7 +348,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t015validateTimestampTest1() throws Exception {
+	public void validateTimestampTest_Pass() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.get("/registrationcenters/validate/10001/eng/2019-12-10T13:09:19.695Z")).andReturn(),
@@ -358,7 +358,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t016validateTimestampFailTest() throws Exception {
+	public void validateTimestampTest_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.get("/registrationcenters/validate/100/eng/2021-11-23T13:09:19.695Z")).andReturn(),
@@ -368,7 +368,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t017deleteRegistrationCenterTest() throws Exception {
+	public void deleteRegistrationCenterTest_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.delete("/registrationcenters/10003")).andReturn(),
@@ -378,7 +378,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t017deleteRegistrationCenterTest1() throws Exception {
+	public void deleteRegistrationCenterTest_Success() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.delete("/registrationcenters/11113")).andReturn(),
@@ -388,7 +388,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t018deleteRegistrationCenterFailTest() throws Exception {
+	public void deleteRegistrationCenter_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.delete("/registrationcenters/11113")).andReturn(),
@@ -398,7 +398,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t019getRegistrationCenterByHierarchyLevelAndListTextAndlangCodeTest() throws Exception {
+	public void getRegistrationCenter_ByHierarchyLevelAndListTextAndLangCode_WithInvalidLocation() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/eng1/5/names?name=MyCountry&name=kenitra")).andReturn(),
@@ -408,7 +408,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t019getRegistrationCenterByHierarchyLevelAndListTextAndlangCodeTest1() throws Exception {
+	public void getRegistrationCenter_ByHierarchyLevelAndListTextAndLangCode_WithInvalidRegCenter() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/eng/2/names?name=MyCountry")).andReturn(),
@@ -419,7 +419,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t019getRegistrationCenterByHierarchyLevelAndListTextAndlangCodeTestFail() throws Exception {
+	public void getRegistrationCenter_FailWithInvalidLocation() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/eng1/6/names?name=MyCountry")).andReturn(),
@@ -431,7 +431,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t021getAllExistingRegistrationCentersDetailsTest() throws Exception {
+	public void getAllExistingRegistrationCentersDetailsTest_Success() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/all")).andReturn(), null);
@@ -440,7 +440,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t022decommissionRegCenterFailTest2() throws Exception {
+	public void decommissionRegCenterTest_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10002")).andReturn(),
@@ -450,7 +450,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t022decommissionRegCenterTest() throws Exception {
+	public void decommissionRegCenterTest_Success() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10004")).andReturn(),
@@ -460,7 +460,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t022decommissionRegCenterTest1() throws Exception {
+	public void decommissionRegCenter_WithNotAuthorizedZone_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10103")).andReturn(),
@@ -470,7 +470,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t022decommissionRegCenterTest3() throws Exception {
+	public void decommissionRegCenter_WithMappedCenter_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10002")).andReturn(),
@@ -480,7 +480,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t022decommissionRegCenterTest4() throws Exception {
+	public void decommissionRegCenter_WithInvalidId_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/100")).andReturn(),
@@ -490,7 +490,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t022decommissionRegCenterTest5() throws Exception {
+	public void decommissionRegCenter_WithInvalidLengthId_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/100031")).andReturn(),
@@ -500,7 +500,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t023decommissionRegCenterFailTest() throws Exception {
+	public void decommissionRegCenter_WithDuplicateId_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/1009")).andReturn(),
@@ -510,7 +510,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t023decommissionRegCenterFailTest1() throws Exception {
+	public void decommissionRegCenterFail_WithMappedRegCenter() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10003")).andReturn(),
@@ -520,7 +520,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t023decommissionRegCenterFailTest2() throws Exception {
+	public void decommissionRegCenterFail_WithMappedToDevice() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10077")).andReturn(),
@@ -530,7 +530,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t023decommissionRegCenterFailTest3() throws Exception {
+	public void decommissionRegCenterFail_WithInvalidRegCenter() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10103")).andReturn(),
@@ -540,7 +540,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t024updateRegistrationCenterAdminStatusTest() throws Exception {
+	public void updateRegistrationCenterAdminStatusTest_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/registrationcenters").param("isActive", "false").param("id", "10002"))
@@ -550,7 +550,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t025updateRegistrationCenterAdminStatusFailTest() throws Exception {
+	public void updateRegistrationCenterAdminStatusFail_WithInvalidRegCenter() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/registrationcenters").param("isActive", "true").param("id", "100"))
@@ -560,7 +560,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t026getMissingRegistrationCentersDetailsTest() throws Exception {
+	public void getMissingRegistrationCentersDetailsTest_Success() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/missingids/ara")).andReturn(),
@@ -570,7 +570,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t027getMissingRegistrationCentersDetailsFailTest() throws Exception {
+	public void t027getMissingRegistrationCentersDetailsFail_WithInvalidLangCode() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/registrationcenters/missingids/eng1")).andReturn(),
@@ -579,7 +579,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t028getCenterSpecificToZoneTest() throws Exception {
+	public void getCenterSpecificToZoneTest_Success() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/getzonespecificregistrationcenters/eng/NTH")).andReturn(),
@@ -589,7 +589,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t028getCenterSpecificToZoneTest1() throws Exception {
+	public void getCenterSpecificToZone_WithInvalidRegCenter() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/getzonespecificregistrationcenters/eng/KT")).andReturn(),
@@ -599,7 +599,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t029searchRegistrationCenterTest() throws Exception {
+	public void searchRegistrationCenterTest_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.post("/registrationcenters/search")
@@ -609,7 +609,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t029createRegistrationCenterTest4() throws Exception {
+	public void createRegistrationCenterTest_Success() throws Exception {
 
 		MasterDataTest.checkErrorResponse(mockMvc
 				.perform(MockMvcRequestBuilders.post("/registrationcenters")
@@ -619,7 +619,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t029createRegistrationCenterTest() throws Exception {
+	public void createRegistrationCenter_WithExceptionalHoliday_Test() throws Exception {
 		List<ExceptionalHolidayPutPostDto> elst=new ArrayList<>();
 		ExceptionalHolidayPutPostDto e=new ExceptionalHolidayPutPostDto();
 		e.setExceptionHolidayDate(LocalDate.now().toString());
@@ -636,7 +636,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t029createRegistrationCenterTest1() throws Exception {
+	public void createRegistrationCenter_WithWorkingDays_Test() throws Exception {
 		List<ExceptionalHolidayPutPostDto> elst=new ArrayList<>();
 		ExceptionalHolidayPutPostDto e=new ExceptionalHolidayPutPostDto();
 		e.setExceptionHolidayDate(LocalDate.now().toString());
@@ -657,7 +657,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t029searchRegistrationCenterTest5() throws Exception {
+	public void searchRegistrationCenter_Success() throws Exception {
 		sr.getRequest().getFilters().get(0).setType("");
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.post("/registrationcenters/search")
@@ -667,7 +667,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t030searchRegistrationCenterFailTest() throws Exception {
+	public void searchRegistrationCenter_Fail() throws Exception {
 		sr.getRequest().getFilters().get(0).setColumnName("namee");
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.post("/registrationcenters/search")
@@ -677,7 +677,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t029searchRegistrationCenterTest1() throws Exception {
+	public void searchRegistrationCenter_WithEqualType_Success() throws Exception {
 		sr.getRequest().getFilters().get(0).setType("equals");
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.post("/registrationcenters/search")
@@ -687,7 +687,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t029searchRegistrationCenterTest2() throws Exception {
+	public void searchRegistrationCenter_WithStartsWithType_Success() throws Exception {
 		sr.getRequest().getFilters().get(0).setType("startsWith");
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.post("/registrationcenters/search")
@@ -697,7 +697,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t029searchRegistrationCenterFailTest3() throws Exception {
+	public void searchRegistrationCenter_WithEndsWithType_Fail() throws Exception {
 		sr.getRequest().getFilters().get(0).setType("endsWith");
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.post("/registrationcenters/search")
@@ -707,7 +707,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t031registrationCenterFilterValuesTest1() throws Exception {
+	public void registrationCenterFilterValuesTest_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.post("/registrationcenters/filtervalues")
@@ -717,7 +717,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t031registrationCenterFilterValuesTest2() throws Exception {
+	public void registrationCenterFilterValues_WithUniqueType_Success() throws Exception {
 		fv.getRequest().getFilters().get(0).setType("unique");
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.post("/registrationcenters/filtervalues")
@@ -727,7 +727,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t031registrationCenterFilterValuesFailTest() throws Exception {
+	public void registrationCenterFilterValues_WithInvalidColumnName_Fail() throws Exception {
 		fv.getRequest().getFilters().get(0).setColumnName("namee");
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.post("/registrationcenters/filtervalues")
@@ -739,7 +739,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t034updateRegistrationCenterAdminTest() throws Exception {
+	public void updateRegistrationCenterAdminTest_Success() throws Exception {
 		
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.put("/registrationcenters/language")
@@ -749,7 +749,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t035updateRegistrationCenterAdminFailTest() throws Exception {
+	public void updateRegistrationCenterAdminFail_WithInvalidId() throws Exception {
 		rp.getRequest().setId("2");
 		
 		MasterDataTest.checkResponse(mockMvc
@@ -760,7 +760,7 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t036updateRegistrationCenterNonLanguageSpecifiTest1() throws Exception {
+	public void updateRegistrationCenterNonLanguageSpecificTest_FailWithInvalidInput() throws Exception {
 		
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.put("/registrationcenters/nonlanguage")
@@ -771,7 +771,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t036updateRegistrationCenterNonLanguageSpecifiTestFail1() throws Exception {
+	public void updateRegistrationCenterNonLanguageSpecificTest_FailWithInvalidCenter() throws Exception {
 		rl.getRequest().setCenterTypeCode("REG1");
 		
 		MasterDataTest.checkResponse(mockMvc

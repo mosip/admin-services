@@ -114,8 +114,8 @@ public class AdminControllerTest {
 
 	@Test
 	@WithUserDetails(value = "zonal-admin")
-	public void lostRid_withValidInput_thenFail() throws Exception {
-		String str = "{\r\n    \"id\": null,\r\n    \"version\": null,\r\n    \"responsetime\": \"2019-12-02T09:45:24.512Z\",\r\n    \"metadata\": null,\r\n    \"response\": [{\"registrationId\":\"1234\",\"registrationDate\":\"2022-09-14 16:29:13,436\"}],\r\n    \"errors\": []\r\n}";
+	public void testLostRidSearch_withValidRequest_returnsResults() throws Exception {
+		String str = "{\r\n    \"id\": null,\r\n    \"version\": null,\r\n    \"responsetime\": \"2019-12-02T09:45:24.512Z\",\r\n    \"metadata\": null,\r\n    \"response\": [{\"registrationId\":\"1234\",\"registrationDate\":\"2021-12-14 16:29:13,436\"}],\r\n    \"errors\": []\r\n}";
 		searchInfoReq.getRequest().setSort(new ArrayList<SortInfo>());
 
 		mockRestServiceServer.expect(requestTo(lstRidUrl))
@@ -130,7 +130,7 @@ public class AdminControllerTest {
 
 	@Test
 	@WithUserDetails(value = "zonal-admin")
-	public void lostRid_withValidInput_thenPass() throws Exception {
+	public void testLostRidDetails_withValidId_returnsDetails() throws Exception {
 		String str = "{\"id\":null,\"version\":null,\"responsetime\":\"2023-07-19T05:58:54.874Z\",\"metadata\":null,\"response\":{\"fields\":{\"fullName\":\"[ {\\n  \\\"language\\\" : \\\"eng\\\",\\n  \\\"value\\\" : \\\"test new 2\\\"\\n}, {\\n  \\\"language\\\" : \\\"fra\\\",\\n  \\\"value\\\" : \\\"test new 2\\\"\\n} ]\",\"dateOfBirth\":\"1995/01/01\"}},\"errors\":[]}";
 		String biometricResponse = new String(Files.readAllBytes(Paths.get(getClass().getResource("/biometricApiResponse.json").toURI())), StandardCharsets.UTF_8);
 
@@ -192,7 +192,7 @@ public class AdminControllerTest {
 	}
 
 	@Test
-	public void testBuildBiometricRequestDto() {
+	public void testBuildBiometricRequestDto_Success() {
 		String rid = "1234567890";
 		BiometricRequestDto biometricRequestDto = new BiometricRequestDto();
 		biometricRequestDto.setSource(SOURCE);

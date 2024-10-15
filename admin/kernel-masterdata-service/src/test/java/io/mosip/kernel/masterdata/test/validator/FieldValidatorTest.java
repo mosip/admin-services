@@ -32,7 +32,7 @@ public class FieldValidatorTest {
     }
 
     @Test
-    public void testIsValidValidInput() {
+    public void testValidator_withValidInput_Success() {
         validator.setAllowedCodeCharactersRegex("[a-zA-Z0-9_]");
         validator.setAllowedValueCharactersRegex("[a-zA-Z0-9.,!@#$%^&*()]");
         validator.initialize(null);
@@ -44,7 +44,7 @@ public class FieldValidatorTest {
     }
 
     @Test
-    public void testIsValidEmptyValueOrCode() {
+    public void testValidator_withEmptyValueOrCode_Success() {
         validator.setAllowedCodeCharactersRegex("[a-zA-Z0-9_]");
         validator.setAllowedValueCharactersRegex("[a-zA-Z0-9.,!@#$%^&*()]");
         validator.initialize(null);
@@ -61,7 +61,7 @@ public class FieldValidatorTest {
     }
 
     @Test
-    public void testIsValidInvalidCharactersCode() {
+    public void testValidator_withInvalidCharactersCode_Success() {
         validator.setAllowedCodeCharactersRegex("[a-zA-Z0-9_]");
         validator.setAllowedValueCharactersRegex("[a-zA-Z0-9.,!@#$%^&*()]");
         validator.initialize(null);
@@ -73,7 +73,7 @@ public class FieldValidatorTest {
     }
 
     @Test
-    public void testIsValidInvalidCharactersValue() {
+    public void testValidator_withInvalidCharactersValue_Success() {
         validator.setAllowedCodeCharactersRegex("[a-zA-Z0-9_]");
         validator.setAllowedValueCharactersRegex("[a-zA-Z0-9.,!@#$%^&*()]");
         validator.initialize(null);

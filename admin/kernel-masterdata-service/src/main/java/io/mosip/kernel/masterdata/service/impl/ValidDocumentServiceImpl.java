@@ -1,54 +1,18 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import jakarta.transaction.Transactional;
-
-import io.mosip.kernel.masterdata.dto.response.FilterResult;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Service;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
-import io.mosip.kernel.masterdata.constant.TemplateTypeErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidDocumentErrorCode;
-import io.mosip.kernel.masterdata.dto.DocCategoryAndTypeMappingResponseDto;
-import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
-import io.mosip.kernel.masterdata.dto.ValidDocCategoryAndDocTypeResponseDto;
-import io.mosip.kernel.masterdata.dto.ValidDocCategoryDto;
-import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
+import io.mosip.kernel.masterdata.dto.*;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentMapDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentCategoryExtnDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentCategoryTypeMappingExtnDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentCategoryTypeMappingFilterDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.ValidDocumentExtnDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.*;
 import io.mosip.kernel.masterdata.dto.postresponse.DocCategoryAndTypeResponseDto;
-import io.mosip.kernel.masterdata.dto.request.FilterDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.Pagination;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.request.SearchFilter;
-import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.dto.request.*;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResult;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.DocumentType;
@@ -61,15 +25,25 @@ import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.repository.ValidDocumentRepository;
 import io.mosip.kernel.masterdata.service.ValidDocumentService;
-import io.mosip.kernel.masterdata.utils.MapperUtils;
-import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
-import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
-import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import io.mosip.kernel.masterdata.utils.OptionalFilter;
-import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.utils.*;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This service class contains methods that create and delete valid document.
@@ -112,6 +86,9 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	private PageUtils pageUtils;
 
 	@Autowired
+	private LanguageUtils languageUtils;
+
+	@Autowired
 	private FilterTypeValidator filterTypeValidator;
 	
   /*
@@ -127,6 +104,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 
 		ValidDocument validDocument = MetaDataUtils.setCreateMetaData(document, ValidDocument.class);
 		validDocument.setIsActive(true);
+		validDocument.setLangCode(languageUtils.getDefaultLanguage());
 		try {
 			validDocument = documentRepository.create(validDocument);
 		} catch (DataAccessLayerException | DataAccessException e) {

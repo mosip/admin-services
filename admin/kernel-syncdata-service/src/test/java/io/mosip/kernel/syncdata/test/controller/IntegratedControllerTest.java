@@ -69,7 +69,7 @@ public class IntegratedControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void tst001syncClientSettingsTest4() {
+	public void syncClientSettingsTest_dataFetchSucceeds() {
 
 		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
 		lenient().when(clientSettingsHelper.getInitiateDataFetch(Mockito.anyString(), Mockito.anyString(), Mockito.any(),
@@ -83,7 +83,7 @@ public class IntegratedControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void tst001syncClientSettingsTest2() {
+	public void syncClientSettingsTest_dataFetchFails() {
 
 		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
 		lenient().when(clientSettingsHelper.getInitiateDataFetch(Mockito.anyString(), Mockito.anyString(), Mockito.any(),
@@ -97,7 +97,7 @@ public class IntegratedControllerTest {
 	//TODO Mock not working on clientSettingsHelper
 	@Test
 	//@WithUserDetails(value = "reg-officer")
-	public void tst001syncClientSettingsTest3() {
+	public void testGetClientSettings_withSuccessfulDataFetch() {
 
 		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
 		lenient().when(clientSettingsHelper.getInitiateDataFetch(Mockito.anyString(), Mockito.anyString(), Mockito.any(),
@@ -117,7 +117,7 @@ public class IntegratedControllerTest {
 	//TODO Mock not working on clientSettingsHelper
 	@Test
 	//@WithUserDetails(value = "reg-officer")
-	public void tst001syncClientSettingsTest5() {
+	public void testGetClientSettings_withFailedDataFetch_throwsException() {
 
 		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
 		CompletableFuture c = new CompletableFuture<>();
@@ -139,7 +139,7 @@ public class IntegratedControllerTest {
 	//TODO Mock not working on clientSettingsHelper
 	@Test
 	//@WithUserDetails(value = "reg-officer")
-	public void tst001syncClientSettingsTest6() {
+	public void syncClientSettingsTest_withCompletionException() {
 
 		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
 		CompletableFuture c=new CompletableFuture<>();

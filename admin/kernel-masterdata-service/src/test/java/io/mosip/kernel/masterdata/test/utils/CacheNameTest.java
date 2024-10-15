@@ -17,29 +17,29 @@ import static org.junit.Assert.*;
 public class CacheNameTest {
 
     @Test
-    public void testGetName() {
+    public void testGetName_Success() {
         assertEquals("blocklisted-words", CacheName.BLOCK_LISTED_WORDS.getName());
         assertEquals("document-category", CacheName.DOCUMENT_CATEGORY.getName());
     }
 
     @Test
-    public void testCacheNameByNameValidInput() {
+    public void testCacheNameByNameValidInput_Success() {
         assertEquals(CacheName.BLOCK_LISTED_WORDS, CacheName.cacheNameByName("blocklisted-words"));
         assertEquals(CacheName.DOCUMENT_CATEGORY, CacheName.cacheNameByName("document-category"));
     }
 
     @Test
-    public void testCacheNameByNameInvalidInputCaseSensitivity() {
+    public void testCacheNameByNameInvalidInputCaseSensitivity_Success() {
         assertNull(CacheName.cacheNameByName("BLOCKLISTED-WORDS"));
     }
 
     @Test
-    public void testCacheNameByNameInvalidInputNonExistentName() {
+    public void testCacheNameByNameInvalidInputNonExistentName_Success() {
         assertNull(CacheName.cacheNameByName("invalid-name"));
     }
 
     @Test
-    public void testAllEnumValuesPresent() {
+    public void testAllEnumValuesPresent_Success() {
         List<String> expectedValues = Arrays.asList("blocklisted-words", "document-category", "document-type", "dynamic-field", "exceptional-holiday", "gender-type", "id-type",
                 "individual-type", "languages", "locations", "location-hierarchy", "templates", "template-type", "titles", "ui-spec", "valid-document", "working-day", "zones");
         List<String> actualValues = Stream.of(CacheName.values()).map(CacheName::getName).toList();
