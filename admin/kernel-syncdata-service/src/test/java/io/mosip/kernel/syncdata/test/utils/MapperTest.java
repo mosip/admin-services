@@ -1,7 +1,6 @@
 package io.mosip.kernel.syncdata.test.utils;
 
-import io.mosip.kernel.syncdata.dto.ApplicationDto;
-import io.mosip.kernel.syncdata.dto.MachineDto;
+import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.entity.RegistrationCenter;
 import io.mosip.kernel.syncdata.utils.ExceptionUtils;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
@@ -15,9 +14,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 /**
@@ -122,4 +123,86 @@ public class MapperTest {
 		String exception = ExceptionUtils.parseException(new NullPointerException(message));
 		Assert.assertEquals(message.trim(), exception.trim());
 	}
+
+	@Test
+	public void testMapUserDetailsToUserDetailMapValidInput() {
+		List<UserDetailDto> userDetails = new ArrayList<>();
+		UserDetailDto userDetailDto = new UserDetailDto();
+		userDetailDto.setUserId("userId1");
+		userDetailDto.setName("Tester");
+		userDetailDto.setMail("syncdata@gamil.com");
+		userDetailDto.setMobile("9080706050");
+		userDetailDto.setRole("Admin");
+		userDetails.add(userDetailDto);
+
+		List<RegistrationCenterUserDto> usersFromDB = new ArrayList<>();
+		RegistrationCenterUserDto registrationCenterUserDto = new RegistrationCenterUserDto();
+		registrationCenterUserDto.setUserId("UserId1");
+		registrationCenterUserDto.setRegCenterId("Center");
+		registrationCenterUserDto.setIsActive(true);
+		registrationCenterUserDto.setLangCode("eng");
+		registrationCenterUserDto.setIsDeleted(false);
+		usersFromDB.add(registrationCenterUserDto);
+
+		List<UserDetailMapDto> mappedList = MapperUtils.mapUserDetailsToUserDetailMap(userDetails, usersFromDB);
+
+		assertNotNull(mappedList);
+		assertEquals(userDetails.size(), mappedList.size());
+
+		for (int i = 0; i < mappedList.size(); i++) {
+			UserDetailMapDto mappedDto = mappedList.get(i);
+			UserDetailDto userDetail = userDetails.get(i);
+			RegistrationCenterUserDto userFromDB = usersFromDB.stream()
+					.filter(u -> u.getUserId().equalsIgnoreCase(userDetail.getUserId()))
+					.findFirst().get();
+
+			assertEquals(userDetail.getUserId(), mappedDto.getUserName());
+			assertEquals(userDetail.getMail(), mappedDto.getMail());
+			assertEquals(userDetail.getMobile(), mappedDto.getMobile());
+			assertEquals(userFromDB.getLangCode(), mappedDto.getLangCode());
+			assertEquals(userDetail.getName(), mappedDto.getName());
+			assertNull(mappedDto.getUserPassword());
+			assertEquals(userFromDB.getIsActive(), mappedDto.getIsActive());
+			assertEquals(userFromDB.getIsDeleted(), mappedDto.getIsDeleted());
+			assertEquals(userFromDB.getRegCenterId(), mappedDto.getRegCenterId());
+			assertEquals(Arrays.asList(userDetail.getRole().split(",")), mappedDto.getRoles());
+		}
+	}
+
+	@Test
+	public void testMapUserDetailsToUserDetailMapEmptyInput() {
+		List<UserDetailDto> userDetails = new ArrayList<>();
+		List<RegistrationCenterUserDto> usersFromDB = new ArrayList<>();
+
+		List<UserDetailMapDto> mappedList = MapperUtils.mapUserDetailsToUserDetailMap(userDetails, usersFromDB);
+
+		assertNotNull(mappedList);
+		assertTrue(mappedList.isEmpty());
+	}
+
+	@Test
+	public void testMapUserDetailsToUserDetailMapUserNotFound() {
+		List<UserDetailDto> userDetails = new ArrayList<>();
+		UserDetailDto userDetailDto = new UserDetailDto();
+		userDetailDto.setUserId("userId1");
+		userDetailDto.setName("Tester");
+		userDetailDto.setMail("syncdata@gamil.com");
+		userDetailDto.setMobile("9080706050");
+		userDetailDto.setRole("Admin");
+		userDetails.add(userDetailDto);
+
+		List<RegistrationCenterUserDto> usersFromDB = new ArrayList<>();
+		RegistrationCenterUserDto registrationCenterUserDto = new RegistrationCenterUserDto();
+		registrationCenterUserDto.setUserId("UserId1");
+		registrationCenterUserDto.setRegCenterId("Center");
+		registrationCenterUserDto.setIsActive(true);
+		registrationCenterUserDto.setLangCode("eng");
+		registrationCenterUserDto.setIsDeleted(false);
+		usersFromDB.add(registrationCenterUserDto);
+
+		List<UserDetailMapDto> mappedList = MapperUtils.mapUserDetailsToUserDetailMap(userDetails, usersFromDB);
+
+		assertFalse(mappedList.isEmpty());
+	}
+
 }
