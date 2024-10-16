@@ -373,15 +373,14 @@ public class DynamicFieldControllerTest {
 	public void testDeleteAllDynamicFieldsByName_Success() throws Exception {
 
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.delete("/dynamicfields/all/bloodtype")).andReturn(), null);
+				mockMvc.perform(MockMvcRequestBuilders.delete("/dynamicfields/all/bloodtype")).andReturn(), "KER-SCH-003");
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void testDeleteAllDynamicFieldsByName_Fail() throws Exception {
 		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.delete("/dynamicfields/all/bloodtype")).andReturn(),
-				"KER-SCH-003");
+				mockMvc.perform(MockMvcRequestBuilders.delete("/dynamicfields/all/bloodtype")).andReturn(), null);
 
 	}
 

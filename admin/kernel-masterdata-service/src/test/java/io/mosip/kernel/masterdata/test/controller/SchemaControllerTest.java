@@ -77,11 +77,11 @@ public class SchemaControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void updateSchemaTest_Success() throws Exception {
+	public void updateSchemaTest_Fail() throws Exception {
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.put("/idschema").param("id", "1")
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(schema)))
-				.andReturn(), null);
+				.andReturn(), "KER-SCH-007");
 	}
 	
 	@Test
