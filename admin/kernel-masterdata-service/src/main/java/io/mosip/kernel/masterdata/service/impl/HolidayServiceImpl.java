@@ -1,41 +1,17 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import io.mosip.kernel.masterdata.dto.response.*;
-import io.mosip.kernel.masterdata.service.LocationService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Service;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
-import io.mosip.kernel.masterdata.dto.HolidayDto;
-import io.mosip.kernel.masterdata.dto.HolidayIDDto;
-import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
-import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
-import io.mosip.kernel.masterdata.dto.LocationDto;
+import io.mosip.kernel.masterdata.dto.*;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.HolidayExtnDto;
-import io.mosip.kernel.masterdata.dto.request.FilterDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.Pagination;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.request.SearchFilter;
-import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.dto.request.*;
+import io.mosip.kernel.masterdata.dto.response.*;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -44,18 +20,23 @@ import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.service.HolidayService;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
-import io.mosip.kernel.masterdata.utils.ExceptionUtils;
-import io.mosip.kernel.masterdata.utils.MapperUtils;
-import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
-import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
-import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
-import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import io.mosip.kernel.masterdata.utils.OptionalFilter;
-import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.service.LocationService;
+import io.mosip.kernel.masterdata.utils.*;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Service Impl class for Holiday Data
@@ -89,7 +70,7 @@ public class HolidayServiceImpl implements HolidayService {
 	@Autowired
 	private AuditUtil auditUtil;
 
-	private static final String UPDATE_HOLIDAY_QUERY = "UPDATE Holiday h SET h.updatedBy = :updatedBy , h.updatedDateTime = :updatedDateTime, h.holidayDesc = :holidayDesc,h.holidayId.holidayDate=:holidayDate,h.holidayId.holidayName = :holidayName   WHERE h.holidayId.locationCode = :locationCode  and h.holidayId.holidayId = :holidayId and h.holidayId.langCode = :langCode and (h.isDeleted is null or h.isDeleted = false)";
+	private static final String UPDATE_HOLIDAY_QUERY = "UPDATE Holiday h SET h.updatedBy = :updatedBy , h.updatedDateTime = :updatedDateTime, h.holidayDesc = :holidayDesc, h.holidayDate= :holidayDate, h.holidayName = :holidayName WHERE h.locationCode = :locationCode and h.holidayId = :holidayId and h.langCode = :langCode and (h.isDeleted is null or h.isDeleted = false)";
 	private static final int DEFAULT_HOLIDAY_ID = 2000001;
 
 	/*
