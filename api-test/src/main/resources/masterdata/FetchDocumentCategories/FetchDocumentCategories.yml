@@ -1,0 +1,59 @@
+FetchDocumentCategories:
+   MasterData_FetchDocumentCategories_invalid_code_notpresent:
+      endPoint: /v1/masterdata/documentcategories/{code}/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchDocumentCategories_01
+      description: Retrieve Document Categories with invalid code and valid langcode
+      role: admin
+      templateFields: []
+      restMethod: get
+      inputTemplate: masterdata/FetchDocumentCategories/fetchDocumentCategories
+      outputTemplate: masterdata/error
+      input: '{
+  "code":"notInDB",
+  "langcode":"eng"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-014",
+      "message": "Document Category not found"
+    }
+  ]
+}'
+   MasterData_FetchDocumentCategories_invalid_langcode:
+      endPoint: /v1/masterdata/documentcategories/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchDocumentCategories_02
+      description: Retrieve Document Categories with invalid langcode
+      role: admin
+      templateFields: []
+      restMethod: get
+      inputTemplate: masterdata/FetchDocumentCategories/fetchDocumentCategories
+      outputTemplate: masterdata/error
+      input: '{
+  "code":"$REMOVE$",
+  "langcode":"java"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-014",
+      "message": "Document Category not found"
+    }
+  ]
+}'
+   MasterData_FetchDocumentCategories_valid_smoke_langcode:
+      endPoint: /v1/masterdata/documentcategories/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchDocumentCategories_03
+      description: Retrieve Document Categories with valid langcode
+      role: admin
+      checkErrorsOnlyInResponse: true
+      templateFields: ["langcode"]
+      restMethod: get
+      inputTemplate: masterdata/FetchDocumentCategories/fetchDocumentCategories
+      outputTemplate: masterdata/FetchDocumentCategories/fetchDocumentCategoriesResult
+      input: '{
+  "code":"$REMOVE$",
+  "langcode":"eng"
+}'
+      output: '{
+}'

@@ -1,0 +1,15 @@
+FetchAllDeviceSpec:
+   MasterData_FetchAllDeviceSpec_AllValid_smoke:
+      endPoint: /v1/masterdata/devicespecifications/all
+      uniqueIdentifier: TC_Masterdata_FetchAllDeviceSpec_01
+      description: Retrieve All Device Specifications with valid data
+      role: admin
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: masterdata/FetchAllDeviceSpec/fetchAllDeviceSpec
+      outputTemplate: masterdata/FetchAllDeviceSpec/fetchAllDeviceSpecResult
+      input: '{
+  
+}'
+      output: '{
+}'

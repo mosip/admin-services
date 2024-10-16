@@ -1,0 +1,17 @@
+UpdateMachineStatus:
+   MasterData_UpdateMachineStatus_All_Valid_Smoke_sid:  
+      endPoint: /v1/masterdata/machines
+      uniqueIdentifier: TC_Masterdata_UpdateMachineStatus_01
+      description: Update machine status details with valid data
+      role: globalAdmin
+      templateFields: []
+      restMethod: patch
+      inputTemplate: masterdata/UpdateMachineStatus/updateMachineStatus
+      outputTemplate: masterdata/UpdateMachineStatus/updateteMachineStatusResult
+      input: '{
+    "id": "$ID:CreateMachine_All_Valid_Smoke_sid_id$",
+    "isActive": "true"
+}'
+      output: '{
+    "status": "Status updated successfully for machine"
+}'

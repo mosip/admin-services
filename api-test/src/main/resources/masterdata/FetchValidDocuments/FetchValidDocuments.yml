@@ -1,0 +1,19 @@
+FetchValidDocuments:
+   MasterData_FetchValidDocuments_allValid_smoke_with_lang:
+      endPoint: /v1/masterdata/validdocuments/{languageCode}
+      uniqueIdentifier: TC_Masterdata_FetchValidDocuments_01
+      description: Retrieve valid Documents By languagecode with all valid data
+      role: admin
+      checkErrorsOnlyInResponse: true
+      templateFields: ["languageCode"]
+      restMethod: get
+      inputTemplate: masterdata/FetchValidDocuments/fetchValidDocuments
+      outputTemplate: masterdata/FetchValidDocuments/fetchValidDocumentsResult
+      input: '{
+  "languageCode": "eng"
+}'
+      output: '{
+"documentcategories": [
+			
+		]
+}'       
