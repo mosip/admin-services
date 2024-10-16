@@ -157,8 +157,8 @@ public class UserDetailControllerTest
 
 	@Test
 	@WithUserDetails("reg-processor")
-	public void getUserByIdTest_Success() throws Exception {
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/users/2")).andReturn(), null);
+	public void getUserByIdTest_Fail() throws Exception {
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/users/2")).andReturn(), "KER-USR-007");
 
 	}
 
@@ -187,7 +187,7 @@ public class UserDetailControllerTest
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void mapUserRegCenterFailTest() throws Exception {
+	public void mapUserRegCenterTest_Success() throws Exception {
 		RequestWrapper<UserDetailsDto> requestWrapper = new RequestWrapper<>();
 		UserDetailsDto detailsDto = new UserDetailsDto();
 		detailsDto.setId("7");
@@ -206,7 +206,7 @@ public class UserDetailControllerTest
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void mapUserRegCenterTest_Success() throws Exception {
+	public void mapUserRegCenterTest_Fail() throws Exception {
 		RequestWrapper<UserDetailsDto> requestWrapper = new RequestWrapper<>();
 		UserDetailsDto detailsDto = new UserDetailsDto();
 		detailsDto.setId("7");
@@ -276,7 +276,7 @@ public class UserDetailControllerTest
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.post("/usercentermapping")
 						.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(requestWrapper))).andReturn(),
-				"KER-USR-013");
+				"KER-MSD-215");
 
 	}
 

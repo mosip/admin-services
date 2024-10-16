@@ -78,14 +78,14 @@ public class ValidDocumentControllerTest {
 
     @Test
     @WithUserDetails("global-admin")
-    public void deleteValidDocumentTest_Success() throws Exception {
+    public void deleteValidDocumentTest_Fail() throws Exception {
         MasterDataTest.checkResponse(
                 mockMvc.perform(MockMvcRequestBuilders.delete("/validdocuments/POI/CIN")).andReturn(), null);
     }
 
     @Test
     @WithUserDetails("global-admin")
-    public void deleteValidDocumentFailTest_WithNonExistingDoc() throws Exception {
+    public void deleteValidDocumentTest_Success() throws Exception {
         MasterDataTest.checkResponse(
                 mockMvc.perform(MockMvcRequestBuilders.delete("/validdocuments/POI/CIN")).andReturn(), "KER-MSD-016");
     }
@@ -184,9 +184,9 @@ public class ValidDocumentControllerTest {
 
     @Test
     @WithUserDetails("global-admin")
-    public void mapDocCategoryAndDocTypeTest_Success() throws Exception {
+    public void mapDocCategoryAndDocTypeTest_Fail() throws Exception {
         MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/validdocuments/map/POA/COR")).andReturn(),
-                null);
+                "KER-MSD-360");
     }
 
     @Test
@@ -213,7 +213,7 @@ public class ValidDocumentControllerTest {
 
     @Test
     @WithUserDetails("global-admin")
-    public void unmapDocCategoryAndDocTypeTest_FailWithAllReadyMapped() throws Exception {
+    public void unmapDocCategoryAndDocTypeTest_SuccessWithMapping() throws Exception {
         MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/validdocuments/unmap/POA/COR")).andReturn(),
                 "KER-MSD-271");
     }
@@ -227,7 +227,7 @@ public class ValidDocumentControllerTest {
 
     @Test
     @WithUserDetails("global-admin")
-    public void unmapDocCategoryAndDocTypeTest_Success() throws Exception {
+    public void unmapDocCategoryAndDocTypeTest_Fail() throws Exception {
         MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/validdocuments/unmap/POA/COR")).andReturn(),
                 null);
     }

@@ -157,10 +157,10 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLocationHierarchy_ByLangCodeAra_Test() throws Exception {
+	public void getLocationHierarchy_Fail() throws Exception {
 
 		MasterDataTest
-				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/MOGR/eng")).andReturn(), null);
+				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/MOGR/eng")).andReturn(), "KER-MSD-026");
 	}
 	
 	

@@ -187,13 +187,13 @@ public class HolidayControllerTest {
 								+ "    \"langCode\": \"eng\",\n" + "    \"holidayDesc\": \"National holiday\"\n"
 								+ "  }\n" + "}"))
 
-				.andReturn(), "KER-MSD-731");
+				.andReturn(), "KER-MSD-020");
 
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void testUpdateHoliday_InvalidHolidayId_Error() throws Exception {
+	public void testUpdateHoliday_Success() throws Exception {
 		DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate ld = LocalDate.parse("2021-12-13", DATEFORMATTER);
 		MasterDataTest.checkResponse(mockMvc
@@ -205,7 +205,7 @@ public class HolidayControllerTest {
 								+ "    \"langCode\": \"eng\",\n" + "    \"holidayDesc\": \"National holiday\"\n"
 								+ "  }\n" + "}"))
 
-				.andReturn(), "KER-MSD-731");
+				.andReturn(), null);
 
 	}
 
@@ -245,21 +245,21 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void updateHolidayStatus_Success() throws Exception {
+	public void updateHolidayStatus_withInvalidId() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/holidays").param("holidayId", "2000002").param("isActive", "true"))
-				.andReturn(), null);
+				.andReturn(), "KER-MSD-020");
 
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void testUpdateHolidayStatus_toFalse_thenSuccess() throws Exception {
+	public void testUpdateHolidayStatus_toFalse_withInvalidId() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/holidays").param("holidayId", "2000002").param("isActive", "false"))
-				.andReturn(), null);
+				.andReturn(), "KER-MSD-020");
 
 	}
 

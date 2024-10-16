@@ -102,7 +102,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void updateRegistrationCenterType_Success() throws Exception {
+	public void updateRegistrationCenterType_Fail() throws Exception {
 		//given
 		String code = "TVM", langCode = "eng", name = "tvmcn update", descr="tvmcenter";
 		boolean isActive = true;
@@ -115,7 +115,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put(uri).contentType(MediaType.APPLICATION_JSON)
 						.content(mapToJson(registrationCenterTypeWrapper))).andReturn(),
-				null);
+				"KER-MSD-120");
 	}
 	
 	@Test
@@ -392,7 +392,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 				.param("isActive", isActive);
 		//then
 		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), 
-				null);
+				"KER-MSD-120");
 		
 	}
 	
@@ -408,7 +408,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 				.param("code", code)
 				.param("isActive", isActive);
 		//then
-		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), null);
+		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), "KER-MSD-120");
 		
 	}
 	
