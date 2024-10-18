@@ -1,34 +1,7 @@
 package io.mosip.kernel.masterdata.test.service;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.http.HttpHeaders;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
@@ -47,6 +20,31 @@ import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecDto;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecPublishDto;
 import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * 
@@ -74,7 +72,7 @@ public class UISpecServiceTest {
 
 	@Autowired
 	private UISpecService uiSpecService;
-	List<UISpec> uiSpecs = new ArrayList<UISpec>();
+	List<UISpec> uiSpecs = new ArrayList<>();
 	UISpec draftedUISpec = null;
 	UISpec publishedUISpec = null;
 	private IdentitySchema publishedSchema = null;
@@ -113,12 +111,12 @@ public class UISpecServiceTest {
 		publishedUISpec.setStatus(IdentitySchemaService.STATUS_PUBLISHED);
 		uiSpecs.add(publishedUISpec);
 
-		uiSpecPagedResults = new PageImpl<UISpec>(uiSpecs);
+		uiSpecPagedResults = new PageImpl<>(uiSpecs);
 		pageRequest = PageRequest.of(0, 10, Sort.by(Direction.fromString("desc"), "cr_dtimes"));
 	}
 
 	@Test
-	public void defidneUISpecTest() {
+	public void testDefineUISpec_validRequest_shouldCreateDraft() {
 		Mockito.when(identitySchemaRepository.findPublishedIdentitySchema("12")).thenReturn(publishedSchema);
 		Mockito.when(uiSpecRepository.create(Mockito.any(UISpec.class))).thenReturn(draftedUISpec);
 		UISpecDto request = new UISpecDto();
@@ -133,7 +131,7 @@ public class UISpecServiceTest {
 	}
 
 	@Test
-	public void defidneUISpecTest001() {
+	public void testDefineUISpec_emptyJsonSpec_shouldReturnError() {
 		Mockito.when(identitySchemaRepository.findPublishedIdentitySchema("12")).thenReturn(publishedSchema);
 		Mockito.when(uiSpecRepository.create(Mockito.any(UISpec.class))).thenReturn(draftedUISpec);
 		UISpecDto request = new UISpecDto();
@@ -150,7 +148,7 @@ public class UISpecServiceTest {
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void defidneUISpecTest_01() {
+	public void testDefineUISpec_invalidIdentitySchemaId_shouldThrowException() {
 		Mockito.when(identitySchemaRepository.findPublishedIdentitySchema("13")).thenReturn(publishedSchema);
 		Mockito.when(uiSpecRepository.save(Mockito.any(UISpec.class))).thenReturn(draftedUISpec);
 		UISpecDto request = new UISpecDto();
@@ -164,7 +162,7 @@ public class UISpecServiceTest {
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void defidneUISpecTest_02() {
+	public void testDefineUISpec_saveFails_shouldThrowException() {
 		Mockito.when(identitySchemaRepository.findPublishedIdentitySchema("12")).thenReturn(publishedSchema);
 		Mockito.when(uiSpecRepository.save(Mockito.any(UISpec.class))).thenThrow(DataAccessLayerException.class);
 		UISpecDto request = new UISpecDto();
@@ -179,7 +177,7 @@ public class UISpecServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void updateUISpecTest() {
+	public void testUpdateUISpec_validRequest_shouldUpdateDetails() {
 		Mockito.when(identitySchemaRepository.findPublishedIdentitySchema("12")).thenReturn(publishedSchema);
 		Mockito.when(uiSpecRepository.save(Mockito.any(UISpec.class))).thenReturn(draftedUISpec);
 		Mockito.when(uiSpecRepository.findUISpecById(Mockito.anyString())).thenReturn(draftedUISpec);
@@ -195,7 +193,7 @@ public class UISpecServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void updateUISpecTest01() {
+	public void testUpdateUISpec_publishedSpec_throwsException() {
 		Mockito.when(identitySchemaRepository.findPublishedIdentitySchema("12")).thenReturn(publishedSchema);
 		Mockito.when(uiSpecRepository.save(Mockito.any(UISpec.class))).thenReturn(draftedUISpec);
 		Mockito.when(uiSpecRepository.findUISpecById(Mockito.anyString())).thenReturn(publishedUISpec);
@@ -214,7 +212,7 @@ public class UISpecServiceTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	@WithUserDetails("global-admin")
-	public void updateUISpecTest_01() {
+	public void testUpdateUISpec_notFound_shouldThrowException() {
 		Mockito.when(identitySchemaRepository.findPublishedIdentitySchema("12")).thenReturn(publishedSchema);
 		Mockito.when(uiSpecRepository.save(Mockito.any(UISpec.class))).thenReturn(draftedUISpec);
 		// Mockito.when(uiSpecRepository.findUISpecById(Mockito.anyString())).thenReturn(draftedUISpec);
@@ -230,7 +228,7 @@ public class UISpecServiceTest {
 
 	@Test(expected = DataNotFoundException.class)
 	@WithUserDetails("global-admin")
-	public void updateUISpecTest_02() {
+	public void testUpdateUISpec_invalidIdentitySchemaId_shouldThrowException() {
 		Mockito.when(identitySchemaRepository.findPublishedIdentitySchema("12")).thenReturn(publishedSchema);
 		Mockito.when(uiSpecRepository.findUISpecById(Mockito.anyString())).thenReturn(draftedUISpec);
 		UISpecDto request = new UISpecDto();
@@ -245,7 +243,7 @@ public class UISpecServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void publishUISpecTest() {
+	public void testPublishUISpec_nonExistentSpec_shouldThrowException() {
 		UISpecPublishDto request = new UISpecPublishDto();
 		request.setEffectiveFrom(LocalDateTime.now().minusDays(1));
 		try {
@@ -257,7 +255,7 @@ public class UISpecServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void publishUISpecTest_01() {
+	public void testPublishUISpec_invalidEffectiveFrom_shouldThrowException() {
 		UISpecPublishDto request = new UISpecPublishDto();
 		request.setEffectiveFrom(LocalDateTime.now(ZoneId.of(ZoneOffset.UTC.getId())).plusHours(5));
 		try {
@@ -269,7 +267,7 @@ public class UISpecServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void publishUISpecTest_02() {
+	public void testPublishUISpec_alreadyPublished_throwsException() {
 		Mockito.when(uiSpecRepository.findUISpecById("13")).thenReturn(publishedUISpec);
 		UISpecPublishDto request = new UISpecPublishDto();
 		request.setEffectiveFrom(LocalDateTime.now(ZoneId.of(ZoneOffset.UTC.getId())).plusHours(5));
@@ -283,7 +281,7 @@ public class UISpecServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void publishUISpecTest_03() {
+	public void testPublishUISpec_successfulPublish_updatesSpec() {
 		Mockito.when(uiSpecRepository.findUISpecById("11")).thenReturn(draftedUISpec);
 		UISpecPublishDto request = new UISpecPublishDto();
 		request.setEffectiveFrom(LocalDateTime.now(ZoneId.of(ZoneOffset.UTC.getId())).plusHours(5));
@@ -294,7 +292,7 @@ public class UISpecServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void publishUISpecTest_04() {
+	public void testPublishUISpec_successfulPublish_updatesSpec_Success() {
 		Mockito.when(uiSpecRepository.findUISpecById("11")).thenReturn(draftedUISpec);
 		Mockito.when(uiSpecRepository.findLatestPublishedUISpec(Mockito.anyString())).thenReturn(uiSpecs);
 		UISpecPublishDto request = new UISpecPublishDto();
@@ -306,7 +304,7 @@ public class UISpecServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void publishUISpecTest_05() {
+	public void testPublishUISpec_noPreviousVersion_updatesSpec() {
 		Mockito.when(uiSpecRepository.findUISpecById("11")).thenReturn(draftedUISpec);
 		Mockito.when(uiSpecRepository.findLatestPublishedUISpec(Mockito.anyString())).thenReturn(null);
 		UISpecPublishDto request = new UISpecPublishDto();
@@ -318,7 +316,7 @@ public class UISpecServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void deleteUISpecTest() {
+	public void testDeleteUISpec_shouldDeleteSuccessfully() {
 		Mockito.when(uiSpecRepository.deleteUISpec(Mockito.anyString(), Mockito.any(LocalDateTime.class),
 				Mockito.anyString())).thenReturn(1);
 		String id = uiSpecService.deleteUISpec("1");
@@ -327,7 +325,7 @@ public class UISpecServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void deleteUISpecTest_01() {
+	public void testDeleteUISpec_nonExistentSpec_throwsException() {
 		Mockito.when(uiSpecRepository.deleteUISpec(Mockito.anyString(), Mockito.any(LocalDateTime.class),
 				Mockito.anyString())).thenReturn(0);
 		try {
@@ -339,7 +337,7 @@ public class UISpecServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void deleteUISpecTest_02() {
+	public void testDeleteUISpec_dataAccessError_shouldThrowException() {
 		Mockito.when(uiSpecRepository.deleteUISpec(Mockito.anyString(), Mockito.any(LocalDateTime.class),
 				Mockito.anyString())).thenThrow(DataAccessLayerException.class);
 		try {
@@ -351,9 +349,9 @@ public class UISpecServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLatestUISpecTest_01() {
+	public void testGetLatestUISpec_noPublishedSpec_throwsException() {
 		Mockito.when((uiSpecRepository.findLatestPublishedUISpec(Mockito.anyString())))
-				.thenReturn(new ArrayList<UISpec>());
+				.thenReturn(new ArrayList<>());
 		try {
 			uiSpecService.getLatestUISpec(Mockito.anyString());
 		} catch (DataNotFoundException e) {
@@ -364,7 +362,7 @@ public class UISpecServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLatestUISpecTest_02() {
+	public void testGetLatestUISpec_dataAccessError_throwsException() {
 		Mockito.when((uiSpecRepository.findLatestPublishedUISpec(Mockito.anyString())))
 				.thenThrow(DataAccessLayerException.class);
 		try {
@@ -376,8 +374,8 @@ public class UISpecServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void getUISpecTest() {
-		List<UISpec> publishedUISpecs = new ArrayList<UISpec>();
+	public void testGetUISpec_shouldRetrievePublishedSpecs() {
+		List<UISpec> publishedUISpecs = new ArrayList<>();
 		publishedUISpecs.add(publishedUISpec);
 		Mockito.when(uiSpecRepository.findPublishedUISpec(Mockito.anyDouble(), Mockito.anyString()))
 				.thenReturn(publishedUISpecs);
@@ -387,7 +385,7 @@ public class UISpecServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void getUISpecTest_01() {
+	public void testGetUISpec_noPublishedSpecs_throwsException() {
 		Mockito.when(uiSpecRepository.findPublishedUISpec(Mockito.anyDouble(), Mockito.anyString())).thenReturn(null);
 		try {
 			uiSpecService.getUISpec(Mockito.anyDouble(), Mockito.anyString());
@@ -398,7 +396,7 @@ public class UISpecServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void getAllUISpecsTest() {
+	public void testGetUISpecs_shouldRetrieveMultipleSpecs() {
 		Mockito.when(uiSpecRepository.findAllUISpecs(true, pageRequest)).thenReturn(uiSpecPagedResults);
 		PageDto<UISpecResponseDto> resp = uiSpecService.getAllUISpecs(0, 10, "cr_dtimes", "desc");
 		assertEquals(2, resp.getTotalItems());
@@ -406,7 +404,7 @@ public class UISpecServiceTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void getAllUISpecsTest_01() {
+	public void testGetUISpecs_dataAccessError_throwsException() {
 		Mockito.when(uiSpecRepository.findAllUISpecs(true, pageRequest)).thenThrow(DataAccessLayerException.class);
 		try {
 			uiSpecService.getAllUISpecs(0, 10, "cr_dtimes", "desc");

@@ -6,6 +6,10 @@ import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
 import io.mosip.kernel.core.authmanager.exception.AuthNException;
 import io.mosip.kernel.core.authmanager.exception.AuthZException;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.syncdata.dto.RoleDto;
+import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
 import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.entity.UserDetails;
 import io.mosip.kernel.syncdata.exception.DataNotFoundException;
@@ -27,21 +31,17 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.response.MockRestResponseCreators;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -65,7 +65,7 @@ public class SyncUserDetailsAndRolesServiceTest {
 	@Mock
 	private SyncRolesService syncRolesService;
 
-	@Autowired
+	@Mock
 	ObjectMapper objectMapper;
 
 	@Mock
@@ -326,4 +326,106 @@ public class SyncUserDetailsAndRolesServiceTest {
 			e.printStackTrace();
 		}
 	}
+
+	@Test
+	public void getAllRoles_success() throws Exception {
+		String expectedUri = authBaseUri + authAllRolesUri + "/registrationclient";
+		String responseBody = "{\"response\": {\"roles\": [{\"roleId\": 1, \"roleName\": \"Admin\"}]}}";
+
+		ResponseEntity<String> response = new ResponseEntity<>(responseBody, HttpStatus.OK);
+		lenient().when(restTemplate.exchange(expectedUri, HttpMethod.GET, new HttpEntity<>(null), String.class))
+				.thenReturn(response);
+
+		lenient().when(objectMapper.readValue(responseBody, ResponseWrapper.class)).thenReturn(new ResponseWrapper<>());
+		lenient().when(objectMapper.readValue(responseBody, RolesResponseDto.class)).thenReturn(new RolesResponseDto());
+
+		RolesResponseDto roles = new RolesResponseDto();
+		List<RoleDto> roleDtos = new ArrayList<>();
+		roles.setRoles(roleDtos);
+		lenient().when(syncRolesService.getAllRoles()).thenReturn(roles);
+
+		RolesResponseDto actualRoles  = syncRolesService.getAllRoles();
+
+		assertNotNull(actualRoles);
+	}
+
+	@Test(expected = SyncDataServiceException.class)
+	public void getAllRoles_serviceError() {
+		String expectedUri = authBaseUri + authAllRolesUri + "/registrationclient";
+		String responseBody = "{\"error\": {\"errorCode\": \"KER-AUTH-101\", \"errorMessage\": \"Invalid request\"}}";
+
+		ResponseEntity<String> response = new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+		lenient().when(restTemplate.exchange(expectedUri, HttpMethod.GET, new HttpEntity<>(null), String.class))
+				.thenReturn(response);
+
+		lenient().when(syncRolesService.getAllRoles()).thenThrow(new SyncDataServiceException("KER-AUTH-101","Invalid request"));
+
+		syncRolesService.getAllRoles();
+	}
+
+	@Test(expected = AuthNException.class)
+	public void getAllRoles_unauthorized_401_noErrors() {
+		String expectedUri = authBaseUri + authAllRolesUri + "/registrationclient";
+
+		lenient().when(restTemplate.exchange(expectedUri, HttpMethod.GET, new HttpEntity<>(null), String.class))
+				.thenThrow(new HttpServerErrorException(HttpStatus.UNAUTHORIZED));
+
+		List<ServiceError> error = new ArrayList<>();
+
+		lenient().when(syncRolesService.getAllRoles()).thenThrow(new AuthNException(error));
+
+		syncRolesService.getAllRoles();
+	}
+
+	@Test(expected = AuthZException.class)
+	public void getAllRoles_forbidden_403_noErrors() {
+		String expectedUri = authBaseUri + authAllRolesUri + "/registrationclient";
+
+		lenient().when(restTemplate.exchange(expectedUri, HttpMethod.GET, new HttpEntity<>(null), String.class))
+				.thenThrow(new HttpServerErrorException(HttpStatus.FORBIDDEN));
+
+		List<ServiceError> error = new ArrayList<>();
+
+		lenient().when(syncRolesService.getAllRoles()).thenThrow(new AuthZException(error));
+
+		syncRolesService.getAllRoles();
+	}
+
+	@Test(expected = SyncDataServiceException.class)
+	public void getAllRoles_clientError() {
+		String expectedUri = authBaseUri + authAllRolesUri + "/registrationclient";
+
+		lenient().when(restTemplate.exchange(expectedUri, HttpMethod.GET, new HttpEntity<>(null),
+				String.class)).thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
+
+		lenient().when(syncRolesService.getAllRoles()).thenThrow(new SyncDataServiceException("KER-SNC-401", "Error occurred while fetching roles"));
+
+		syncRolesService.getAllRoles();
+	}
+
+	@Test(expected = ParseResponseException.class)
+	public void getAllRoles_parseError() {
+		String expectedUri = authBaseUri + authAllRolesUri + "/registrationclient";
+		String responseBody = "Invalid JSON";
+
+		lenient().when(restTemplate.exchange(expectedUri, HttpMethod.GET, new HttpEntity<>(null),
+				String.class)).thenReturn(ResponseEntity.ok(responseBody));
+
+		lenient().when(syncRolesService.getAllRoles()).thenThrow(new ParseResponseException("KER-SNC-401", "Error occurred while fetching roles"));
+
+		syncRolesService.getAllRoles();
+	}
+
+	@Test
+	public void testGetUsersBasedOnRegistrationCenterId_Success(){
+		List<UserDetails> mockUsers = Arrays.asList(
+				new UserDetails("user1","eng","hello","active",LocalDateTime.now().toLocalTime(),"last_login","regCenterId1"),
+				new UserDetails("user2", "hin", "hi","inactive", LocalDateTime.now().toLocalTime(),"last_login", "regCenterId1")
+		);
+		UserDetailsRepository mockRepository = Mockito.mock(UserDetailsRepository.class);
+		lenient().when(mockRepository.findByUsersByRegCenterId("regCenterId1")).thenReturn(mockUsers);
+
+		assertNotNull(mockUsers);
+	}
+
 }

@@ -1,23 +1,30 @@
 package io.mosip.admin.controller.test;
 
-import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.admin.TestBootApplication;
+import io.mosip.admin.bulkdataupload.dto.BulkDataResponseDto;
 import io.mosip.admin.bulkdataupload.entity.BulkUploadTranscation;
 import io.mosip.admin.bulkdataupload.repositories.BulkUploadTranscationRepository;
+import io.mosip.admin.bulkdataupload.service.BulkDataService;
+import io.mosip.admin.dto.*;
+import io.mosip.admin.packetstatusupdater.dto.AuditManagerRequestDto;
+import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateDto;
+import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateResponseDto;
+import io.mosip.admin.packetstatusupdater.service.AuditManagerProxyService;
+import io.mosip.admin.packetstatusupdater.service.PacketStatusUpdateService;
+import io.mosip.admin.packetstatusupdater.util.AuditUtil;
+import io.mosip.admin.packetstatusupdater.util.RestClient;
+import io.mosip.admin.util.AdminDataUtil;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,37 +38,16 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-import io.mosip.admin.TestBootApplication;
-import io.mosip.admin.bulkdataupload.dto.BulkDataResponseDto;
-import io.mosip.admin.bulkdataupload.service.BulkDataService;
-import io.mosip.admin.dto.ErrorDTO;
-import io.mosip.admin.dto.FilterInfo;
-import io.mosip.admin.dto.LostRidDto;
-import io.mosip.admin.dto.LostRidResponseDto;
-import io.mosip.admin.dto.SearchInfo;
-import io.mosip.admin.dto.SortInfo;
-import io.mosip.admin.packetstatusupdater.dto.AuditManagerRequestDto;
-import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateDto;
-import io.mosip.admin.packetstatusupdater.dto.PacketStatusUpdateResponseDto;
-import io.mosip.admin.packetstatusupdater.service.AuditManagerProxyService;
-import io.mosip.admin.packetstatusupdater.service.PacketStatusUpdateService;
-import io.mosip.admin.packetstatusupdater.util.AuditUtil;
-import io.mosip.admin.packetstatusupdater.util.RestClient;
-import io.mosip.admin.service.AdminService;
-import io.mosip.admin.util.AdminDataUtil;
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.client.RestTemplate;
 
-import static org.mockito.Mockito.when;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)

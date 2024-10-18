@@ -1,14 +1,16 @@
 package io.mosip.kernel.masterdata.test.controller;
 
-import static org.mockito.Mockito.doNothing;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
+import io.mosip.kernel.masterdata.uispec.dto.UISpecDto;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -22,25 +24,10 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.io.IOException;
 
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
-import io.mosip.kernel.masterdata.entity.UISpec;
-import io.mosip.kernel.masterdata.repository.UISpecRepository;
-import io.mosip.kernel.masterdata.service.UISpecService;
-import io.mosip.kernel.masterdata.test.TestBootApplication;
-import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
-import io.mosip.kernel.masterdata.uispec.dto.UISpecDto;
-import io.mosip.kernel.masterdata.uispec.dto.UISpecPublishDto;
-import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
+import static org.mockito.Mockito.doNothing;
 
 /**
  * 
@@ -95,7 +82,7 @@ public class UISpecControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001defineUISpecTest() throws Exception {
+	public void defineUISpecTest_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/uispec")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(request))).andReturn(),
 				null);
@@ -103,7 +90,7 @@ public class UISpecControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002updateUISpecTest() throws Exception {
+	public void updateUISpecTest_FailWithAlreadyPublishedSpec() throws Exception {
 		MasterDataTest
 				.checkResponse(
 						mockMvc.perform(MockMvcRequestBuilders.put("/uispec").contentType(MediaType.APPLICATION_JSON)
@@ -113,7 +100,7 @@ public class UISpecControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002updateUISpecTest2() throws Exception {
+	public void updateUISpecTest_FailWithInvalidUISpec() throws Exception {
 		MasterDataTest
 				.checkResponse(
 						mockMvc.perform(MockMvcRequestBuilders.put("/uispec").contentType(MediaType.APPLICATION_JSON)
@@ -123,7 +110,7 @@ public class UISpecControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002updateUISpecTest3() throws Exception {
+	public void updateUISpecTest_Success() throws Exception {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/uispec").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(request)).param("id", "4")).andReturn(),
@@ -132,7 +119,7 @@ public class UISpecControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void defineUISpecTest() throws Exception {
+	public void defineUISpecTest_FailWithAlreadyExistingSpec() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/uispec")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(request))).andReturn(),
@@ -142,7 +129,7 @@ public class UISpecControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void updateUISpec() throws Exception {
+	public void updateUISpec_FailWithInvalidUISpec() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.put("/uispec").param("id", "test-test-test-test")
@@ -153,7 +140,7 @@ public class UISpecControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void updateUISpec1() throws Exception {
+	public void updateUISpec_Success() throws Exception {
 
 		MasterDataTest
 				.checkResponse(mockMvc
@@ -165,7 +152,7 @@ public class UISpecControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void publishUISpec() throws Exception {
+	public void publishUISpec_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.put("/uispec/publish").contentType(MediaType.APPLICATION_JSON).content(
 						"{\"id\":\"string\",\"version\":\"string\",\"requesttime\":\"2018-12-17T07:15:06.724Z\",\"request\":"
@@ -174,10 +161,9 @@ public class UISpecControllerTest {
 
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
-	public void deleteUISpec() throws Exception {
+	public void deleteUISpec_FailWithInvalidUISpec() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/uispec")
 				.param("id", "test-test-test-test").contentType(MediaType.APPLICATION_JSON)).andReturn(),
@@ -187,25 +173,23 @@ public class UISpecControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void fetchAllUISpec() throws Exception {
+	public void fetchAllUISpec_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/uispec/all")).andReturn(), null);
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLatestUISpec() throws Exception {
+	public void getLatestUISpecTest_Success() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/uispec/REGCLIENT/latest")).andReturn(), null);
 
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLatestUISpec1() throws Exception {
+	public void getLatestUISpec_Success() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/uispec/regclient/latest")).andReturn(), null);
@@ -214,7 +198,7 @@ public class UISpecControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLatestPublishedSchema1() throws Exception {
+	public void getLatestPublishedSchema_Success() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/uispec/REG/latest").param("version", "1.0")).andReturn(),
@@ -223,7 +207,7 @@ public class UISpecControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLatestPublishedSchema2() throws Exception {
+	public void getLatestPublishedSchema_FailWithInvalidUISpec() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/uispec/reg/latest").param("version", "0.1")).andReturn(),
@@ -232,7 +216,7 @@ public class UISpecControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLatestPublishedSchema7() throws Exception {
+	public void getLatestPublishedSchema_SuccessWithValidInput() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.get("/uispec/REG-CLIENT/latest").param("version", "0.1")).andReturn(),
@@ -241,7 +225,7 @@ public class UISpecControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLatestPublishedSchema8() throws Exception {
+	public void getLatestPublishedSchemaForReg_Success() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/uispec/REG/latest").param("version", "1.0")).andReturn(),
@@ -250,7 +234,7 @@ public class UISpecControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLatestPublishedSchema9() throws Exception {
+	public void getLatestPublishedSchema_WithScreenType_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.get("/uispec/REG/latest").param("version", "1.0").param("type", "screens"))
@@ -259,7 +243,7 @@ public class UISpecControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLatestPublishedSchema10() throws Exception {
+	public void getLatestPublishedSchemaForRegClient_WithScreenType_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/uispec/REG-CLIENT/latest")
 				.param("version", "0.100").param("type", "screens")).andReturn(), null);
@@ -267,7 +251,7 @@ public class UISpecControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLatestPublishedSchema5() throws Exception {
+	public void getLatestPublishedSchemaForRegClient_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.get("/uispec/REGCLIENT/latest").param("version", "1.0")).andReturn(),
@@ -276,7 +260,7 @@ public class UISpecControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLatestPublishedSchema6() throws Exception {
+	public void getLatestPublishedSchema_SuccessWithType() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.get("/uispec/REG/latest").param("version", "1.0").param("type", "screens"))
 				.andReturn(), null);
@@ -284,7 +268,7 @@ public class UISpecControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLatestPublishedSchema3() throws Exception {
+	public void getLatestPublishedSchemaTest_FailWithInvalidUISpec() throws Exception {
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.get("/uispec/reg/latest").param("version", "1.0").param("type", "dom"))
 				.andReturn(), "KER-UIS-004");
@@ -292,7 +276,7 @@ public class UISpecControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLatestPublishedSchema4() throws Exception {
+	public void getLatestPublishedSchema_FailWithInvalidType() throws Exception {
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.get("/uispec/reg/latest").param("version", "0.1").param("type", "dom"))
 				.andReturn(), "KER-UIS-004");
