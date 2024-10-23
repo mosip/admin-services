@@ -44,7 +44,7 @@ public class PossibleValuesServiceImpl implements PossibleValuesService {
             return result;
 
         for(String lang : langCodes) {
-            LOGGER.debug("Identified field name as default field", fieldName.replaceAll("[^a-zA-Z0-9_]", "_"));
+            LOGGER.debug("Identified field name as default field", fieldName.replaceAll("[\n\r]", "_"));
             List<Location> locations = locationRepository.getAllLocationsByLangCodeWithHierarchyLevel(lang, level.shortValue());
             if(locations == null || locations.isEmpty())
                 continue;
@@ -71,7 +71,7 @@ public class PossibleValuesServiceImpl implements PossibleValuesService {
                 continue;
 
             List<PossibleValueDto> valueDtos = new ArrayList<>();
-            LOGGER.debug("Identified field name as dynamic field", fieldName.replaceAll("[^a-zA-Z0-9_]", "_"));
+            LOGGER.debug("Identified field name as dynamic field", fieldName.replaceAll("[\n\r]", "_"));
             list.forEach(e -> {
                     PossibleValueDto possibleValueDto = new PossibleValueDto();
                     try {

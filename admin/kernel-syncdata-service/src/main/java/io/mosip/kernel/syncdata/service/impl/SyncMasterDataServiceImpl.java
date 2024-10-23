@@ -264,7 +264,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 					MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
 
 		Boolean isEncrypted = environment.getProperty(String.format("mosip.sync.entity.encrypted.%s",
-				entityIdentifier.toUpperCase().replaceAll("[^a-zA-Z0-9_]", "_")), Boolean.class, false);
+				entityIdentifier.toUpperCase().replaceAll("[\n\r]", "_")), Boolean.class, false);
 
 		Path path = getEntityResource(entityIdentifier);
 		String content = FileUtils.readFileToString(path.toFile(),	StandardCharsets.UTF_8);

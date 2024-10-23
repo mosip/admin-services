@@ -201,7 +201,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
 	@Override
 	public ConfigDto getConfigDetails(String keyIndex) {
-		LOGGER.debug("getConfigDetails() started for machine keyIndex >>> {}", keyIndex.replaceAll("[^a-zA-Z0-9_]", "_"));
+		LOGGER.debug("getConfigDetails() started for machine keyIndex >>> {}", keyIndex.replaceAll("[\n\r]", "_"));
 		List<Machine> machines = machineRepo.findByMachineKeyIndex(keyIndex);
 		if(machines == null || machines.isEmpty())
 			machines = machineRepo.findByMachineName(keyIndex); //This is just for backward compatibility, since LTS
@@ -210,7 +210,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 			throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
 					MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
 
-		LOGGER.info("getConfigDetails() started for machine : {} with status {}", keyIndex.replaceAll("[^a-zA-Z0-9_]", "_"),  machines.get(0).getIsActive());
+		LOGGER.info("getConfigDetails() started for machine : {} with status {}", keyIndex.replaceAll("[\n\r]", "_"),  machines.get(0).getIsActive());
 		JSONObject config = new JSONObject();
 		JSONObject globalConfig = new JSONObject();
 		JSONObject regConfig = parsePropertiesString(getConfigDetailsResponse(regCenterfileName));
@@ -219,7 +219,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 		config.put("registrationConfiguration", getEncryptedData(regConfig, machines.get(0)));
 		ConfigDto configDto = new ConfigDto();
 		configDto.setConfigDetail(config);
-		LOGGER.info("Get ConfigDetails() {} completed", keyIndex.replaceAll("[^a-zA-Z0-9_]", "_"));
+		LOGGER.info("Get ConfigDetails() {} completed", keyIndex.replaceAll("[\n\r]", "_"));
 		return configDto;
 	}
 
@@ -232,7 +232,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 					MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
 
 		Boolean isEncrypted = environment.getProperty(String.format("mosip.sync.entity.encrypted.%s",
-				scriptName.toUpperCase().replaceAll("[^a-zA-Z0-9_]", "_")), Boolean.class, false);
+				scriptName.toUpperCase().replaceAll("[\n\r]", "_")), Boolean.class, false);
 		String content = getConfigDetailsResponse(scriptName);
 
 		return ResponseEntity.ok()
