@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/mosip/admin-services.svg)](https://travis-ci.org/mosip/admin-services)  [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mosip_admin-services&id=mosip_admin-services&metric=alert_status)](https://sonarcloud.io/dashboard?id=mosip_admin-services)
 
-# Admin
+# Adminyy
 Admin module can be accessed only by the privileged group of admin personnel and enables default configurations and seed data to be setup when the MOSIP platform gets initialized.
 
 ## Configuration files
