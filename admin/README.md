@@ -3,7 +3,7 @@
 # Adminyy
 Admin module can be accessed only by the privileged group of admin personnel and enables default configurations and seed data to be setup when the MOSIP platform gets initialized.
 
-## Configuration files
+## Configuration fileskk
 admin module uses the following configuration files:
 ```
 application-default.properties
