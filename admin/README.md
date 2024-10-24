@@ -6,7 +6,7 @@ Admin module can be accessed only by the privileged group of admin personnel and
 ## Configuration fileskk
 admin module uses the following configuration files:
 ```
-application-default.properties
+application-default.propertieshhh
 admin-default.properties
 kernel-default.properties
 syncdata-default.properties
