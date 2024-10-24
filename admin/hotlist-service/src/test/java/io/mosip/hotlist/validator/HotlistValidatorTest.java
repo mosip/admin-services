@@ -1,23 +1,20 @@
 package io.mosip.hotlist.validator;
 
-import static io.mosip.hotlist.constant.HotlistErrorConstants.ID_TYPE_NOT_ALLOWED;
-import static io.mosip.hotlist.constant.HotlistErrorConstants.INVALID_INPUT_PARAMETER;
-import static io.mosip.hotlist.constant.HotlistErrorConstants.MISSING_INPUT_PARAMETER;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collections;
-
+import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
+import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.util.DateUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 
-import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
-import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.util.DateUtils;
+import java.util.Collections;
+
+import static io.mosip.hotlist.constant.HotlistErrorConstants.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Manoj SP
@@ -33,7 +30,7 @@ public class HotlistValidatorTest {
 	}
 
 	@Test
-	public void testNullId() {
+	public void testNullId_withMissingInputParameter() {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new HotlistRequestResponseDTO(), "request");
 		validator.validateId(null, errors);
 		assertTrue(errors.getAllErrors().get(0).getCode().contentEquals(MISSING_INPUT_PARAMETER.getErrorCode()));
@@ -42,7 +39,7 @@ public class HotlistValidatorTest {
 	}
 
 	@Test
-	public void testInvalidId() {
+	public void testInvalidId_withInvalidInputParameter() {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new HotlistRequestResponseDTO(), "request");
 		validator.validateId(" ", errors);
 		assertTrue(errors.getAllErrors().get(0).getCode().contentEquals(INVALID_INPUT_PARAMETER.getErrorCode()));
@@ -51,7 +48,7 @@ public class HotlistValidatorTest {
 	}
 
 	@Test
-	public void testNullIdType() {
+	public void testNullIdType_withMissingInputParameter() {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new HotlistRequestResponseDTO(), "request");
 		validator.validateIdType(null, errors);
 		assertTrue(errors.getAllErrors().get(0).getCode().contentEquals(MISSING_INPUT_PARAMETER.getErrorCode()));
@@ -60,7 +57,7 @@ public class HotlistValidatorTest {
 	}
 
 	@Test
-	public void testInvalidIdType() {
+	public void testInvalidIdType_withInvalidInputParameter() {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new HotlistRequestResponseDTO(), "request");
 		validator.validateIdType(" ", errors);
 		assertTrue(errors.getAllErrors().get(0).getCode().contentEquals(INVALID_INPUT_PARAMETER.getErrorCode()));
@@ -69,7 +66,7 @@ public class HotlistValidatorTest {
 	}
 
 	@Test
-	public void testIdTypeNotAllowed() {
+	public void testIdTypeNotAllowed_Success() {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new HotlistRequestResponseDTO(), "request");
 		validator.validateIdType("1234", errors);
 		assertTrue(errors.getAllErrors().get(0).getCode().contentEquals(ID_TYPE_NOT_ALLOWED.getErrorCode()));
@@ -78,15 +75,14 @@ public class HotlistValidatorTest {
 	}
 
 	@Test
-	public void testIdTypeAllowed() {
+	public void testIdTypeAllowed_Success() {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new HotlistRequestResponseDTO(), "request");
 		validator.validateIdType("idType", errors);
 		assertFalse(errors.hasErrors());
 	}
 
 	@Test
-	@Ignore
-	public void testNullStatus() {
+	public void testNullStatus_Success() {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new HotlistRequestResponseDTO(), "request");
 		HotlistRequestResponseDTO request = new HotlistRequestResponseDTO();
 		request.setId("id");
@@ -101,7 +97,7 @@ public class HotlistValidatorTest {
 	}
 
 	@Test
-	public void testInvalidStatus() {
+	public void testInvalidStatus_withInvalidInputParameter() {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new HotlistRequestResponseDTO(), "request");
 		HotlistRequestResponseDTO request = new HotlistRequestResponseDTO();
 		request.setId("id");
@@ -116,9 +112,9 @@ public class HotlistValidatorTest {
 				.contentEquals(String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), "status")));
 	}
 
-	@Test
 	@Ignore
-	public void testValidBlockedStatus() {
+	@Test
+	public void testValidBlockedStatus_Success() {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new HotlistRequestResponseDTO(), "request");
 		HotlistRequestResponseDTO request = new HotlistRequestResponseDTO();
 		request.setId("id");
@@ -132,9 +128,9 @@ public class HotlistValidatorTest {
 		assertFalse(errors.hasErrors());
 	}
 
-	@Test
 	@Ignore
-	public void testValidUnblockedStatus() {
+	@Test
+	public void testValidUnblockedStatus_Success() {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new HotlistRequestResponseDTO(), "request");
 		HotlistRequestResponseDTO request = new HotlistRequestResponseDTO();
 		request.setId("id");
@@ -149,7 +145,7 @@ public class HotlistValidatorTest {
 	}
 
 	@Test
-	public void testNullExpiryTimestamp() {
+	public void testNullExpiryTimestamp_Success() {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new HotlistRequestResponseDTO(), "request");
 		HotlistRequestResponseDTO request = new HotlistRequestResponseDTO();
 		request.setId("id");
@@ -163,7 +159,7 @@ public class HotlistValidatorTest {
 	}
 
 	@Test
-	public void testPastDatedExpiryTimestamp() {
+	public void testPastDatedExpiryTimestamp_withInvalidInputParameter() {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new HotlistRequestResponseDTO(), "request");
 		HotlistRequestResponseDTO request = new HotlistRequestResponseDTO();
 		request.setId("id");
@@ -179,7 +175,7 @@ public class HotlistValidatorTest {
 	}
 
 	@Test
-	public void testFutureDatedExpiryTimestamp() {
+	public void testFutureDatedExpiryTimestamp_Success() {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new HotlistRequestResponseDTO(), "request");
 		HotlistRequestResponseDTO request = new HotlistRequestResponseDTO();
 		request.setId("id");
