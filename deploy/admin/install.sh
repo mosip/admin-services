@@ -10,6 +10,7 @@ fi
 NS=admin
 KNS=kernel
 CHART_VERSION=0.0.1-develop
+COPY_UTIL=../copy_cm_func.sh
 
 echo Create $NS namespace
 kubectl create ns $NS
@@ -19,9 +20,15 @@ function installing_admin() {
   kubectl label ns $NS istio-injection=enabled --overwrite
   helm repo update
 
-  echo Copy configmaps
-  sed -i 's/\r$//' copy_cm.sh
-  ./copy_cm.sh
+  echo Copy configmaps for kernel
+  $COPY_UTIL configmap global default $KNS
+  $COPY_UTIL configmap artifactory-share artifactory $KNS
+  $COPY_UTIL configmap config-server-share config-server $KNS
+
+  echo Copy configmaps for admin
+  $COPY_UTIL configmap global default $NS
+  $COPY_UTIL configmap artifactory-share artifactory $NS
+  $COPY_UTIL configmap config-server-share config-server $NS
 
   ADMIN_HOST=$(kubectl get cm global -o jsonpath={.data.mosip-admin-host})
   echo Installing masterdata and allowing Admin UI to access masterdata services.
