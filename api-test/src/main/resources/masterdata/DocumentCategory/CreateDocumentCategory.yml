@@ -1,0 +1,268 @@
+CreateDocumentCategory:
+   MasterData_CreateDocumentCategory_Valid_Smoke:
+      endPoint: /v1/masterdata/documentcategories
+      uniqueIdentifier: TC_Masterdata_CreateDocumentCategory_01
+      description: Create Document Category with all valid data
+      role: admin
+      templateFields: ["name","description"]
+      restMethod: post
+      inputTemplate: masterdata/DocumentCategory/documentCategory
+      outputTemplate: masterdata/DocumentCategory/documentCategoryResult
+      input: '{
+     "code": "DocTestCode123",
+    "description": "Testing positive Doc",
+    "isActive": true,
+    "langCode": "eng",
+    "name": "DocCat",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+	"code": "DocTestCode123"
+}'
+   MasterData_CreateDocumentCategory_All_Valid_Mandatory_Fields:
+      endPoint: /v1/masterdata/documentcategories
+      uniqueIdentifier: TC_Masterdata_CreateDocumentCategory_02
+      description: Create Document Category with all mandatory data
+      role: admin
+      templateFields: ["name"]
+      restMethod: post
+      inputTemplate: masterdata/DocumentCategory/documentCategory
+      outputTemplate: masterdata/DocumentCategory/documentCategoryResult
+      input: '{
+     "code": "DocTestCode321",
+    "description": "$REMOVE$",
+    "isActive": true,
+    "langCode": "eng",
+    "name": "DocCat",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+	"code": "DocTestCode321"
+}'
+   
+   MasterData_CreateDocumentCategory_Invalid_InputParameter_Code_Missing:
+      endPoint: /v1/masterdata/documentcategories
+      uniqueIdentifier: TC_Masterdata_CreateDocumentCategory_03
+      description: Create Document Category with missing code field
+      role: admin
+      templateFields: ["name","description"]
+      restMethod: post
+      inputTemplate: masterdata/DocumentCategory/documentCategory
+      outputTemplate: masterdata/error
+      input: '{
+     "code": "$REMOVE$",
+    "description": "Testing positive Doc",
+    "isActive": false,
+    "langCode": "eng",
+    "name": "DocCat",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "request.code: must not be null"
+    }
+  ]
+}'
+   MasterData_CreateDocumentCategory_Invalid_InputParameter_Code_Empty:
+      endPoint: /v1/masterdata/documentcategories
+      uniqueIdentifier: TC_Masterdata_CreateDocumentCategory_04
+      description: Create Document Category with empty code value
+      role: admin
+      templateFields: ["name","description"]
+      restMethod: post
+      inputTemplate: masterdata/DocumentCategory/documentCategory
+      outputTemplate: masterdata/error
+      input: '{
+     "code": "",
+    "description": "Testing positive Doc",
+    "isActive": false,
+    "langCode": "eng",
+    "name": "DocCat",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "request.code: Should not be blank or size must be between 1 and 36"
+    }
+  ]
+}'
+   MasterData_CreateDocumentCategory_Invalid_InputParameter_Code_AboveMaxLen36:
+      endPoint: /v1/masterdata/documentcategories
+      uniqueIdentifier: TC_Masterdata_CreateDocumentCategory_05
+      description: Create Document Category with code more than 36 characters
+      role: admin
+      templateFields: ["name","description"]
+      restMethod: post
+      inputTemplate: masterdata/DocumentCategory/documentCategory
+      outputTemplate: masterdata/error
+      input: '{
+     "code": "abcdefghijklmnopqrstuvwxyzabcdefghijk",
+    "description": "Testing positive Doc",
+    "isActive": false,
+    "langCode": "eng",
+    "name": "DocCat",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "request.code: Should not be blank or size must be between 1 and 36"
+    }
+  ]
+}'
+   MasterData_CreateDocumentCategory_Invalid_InputParameter_Description_AboveMaxLen128:
+      endPoint: /v1/masterdata/documentcategories
+      uniqueIdentifier: TC_Masterdata_CreateDocumentCategory_06
+      description: Create Document Category with description more than 36 characters
+      role: admin
+      templateFields: ["name","description"]
+      restMethod: post
+      inputTemplate: masterdata/DocumentCategory/documentCategory
+      outputTemplate: masterdata/error
+      input: '{
+     "code": "DocTestCode01",
+    "description": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxy",
+    "isActive": false,
+    "langCode": "eng",
+    "name": "DocCat",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "request.description: size must be between 0 and 128"
+    }
+  ]
+}'
+   MasterData_CreateDocumentCategory_Invalid_InputParameter_Name_Missing:
+      endPoint: /v1/masterdata/documentcategories
+      uniqueIdentifier: TC_Masterdata_CreateDocumentCategory_07
+      description: Create Document Category with missing name field
+      role: admin
+      templateFields: ["description"]
+      restMethod: post
+      inputTemplate: masterdata/DocumentCategory/documentCategory
+      outputTemplate: masterdata/error
+      input: '{
+     "code": "DocTestCode01",
+    "description": "Testing positive Doc",
+    "isActive": false,
+    "langCode": "eng",
+    "name": "$REMOVE$",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "request.name: must not be null"
+    }
+  ]
+}'
+   MasterData_CreateDocumentCategory_Invalid_InputParameter_Name_Empty:
+      endPoint: /v1/masterdata/documentcategories
+      uniqueIdentifier: TC_Masterdata_CreateDocumentCategory_08
+      description: Create Document Category with empty name field
+      role: admin
+      templateFields: ["description"]
+      restMethod: post
+      inputTemplate: masterdata/DocumentCategory/documentCategory
+      outputTemplate: masterdata/error
+      input: '{
+     "code": "DocTestCode01",
+    "description": "Testing positive Doc",
+    "isActive": false,
+    "langCode": "eng",
+    "name": "",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "request.name: Should not be blank or size must be between 1 and 64"
+    }
+  ]
+}'
+   MasterData_CreateDocumentCategory_Invalid_InputParameter_Name_AboveMaxLen64:
+      endPoint: /v1/masterdata/documentcategories
+      uniqueIdentifier: TC_Masterdata_CreateDocumentCategory_09
+      description: Create Document Category with name more than 64 characters
+      role: admin
+      templateFields: ["name","description"]
+      restMethod: post
+      inputTemplate: masterdata/DocumentCategory/documentCategory
+      outputTemplate: masterdata/error
+      input: '{
+     "code": "DocTestCode01",
+    "description": "Testing positive Doc",
+    "isActive": false,
+    "langCode": "eng",
+    "name": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklm",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "request.name: Should not be blank or size must be between 1 and 64"
+    }
+  ]
+}'
+   
+   MasterData_CreateDocumentCategory_InputParameter_isActive_Missing:
+      endPoint: /v1/masterdata/documentcategories
+      uniqueIdentifier: TC_Masterdata_CreateDocumentCategory_10
+      description: Create Document Category with missing isActive field
+      role: admin
+      templateFields: ["name","description"]
+      restMethod: post
+      inputTemplate: masterdata/DocumentCategory/documentCategory
+      outputTemplate: masterdata/error
+      input: '{
+     "code": "DocTestCode01",
+    "description": "Testing positive Doc",
+    "isActive": "$REMOVE$",
+    "langCode": "eng",
+    "name": "DocCat",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "request.isActive: must not be null"
+    }
+  ]
+}'
+
+   MasterData_CreateDocumentCategory_Spacial_Character_Neg:
+      endPoint: /v1/masterdata/documentcategories
+      uniqueIdentifier: TC_Masterdata_CreateDocumentCategory_11
+      description: Create Document Category with special characters in name field
+      role: admin
+      templateFields: ["name"]
+      restMethod: post
+      inputTemplate: masterdata/DocumentCategory/documentCategory
+      outputTemplate: masterdata/error
+      input: '{
+     "code": "DocTestC@ode321",
+    "description": "$REMOVE$",
+    "isActive": true,
+    "langCode": "eng",
+    "name": "D@ocC$at",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+	"errors": [
+    {
+      "errorCode": "KER-MSD-999"
+    }
+  ]
+}'

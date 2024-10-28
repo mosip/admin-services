@@ -1,0 +1,654 @@
+DeviceSpecSearch:
+   MasterData_DeviceSpecSearch_Equals_Name_eng_smoke:
+      endPoint: /v1/masterdata/devicespecifications/search
+      uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_01
+      description: Search Device Specification by columnName name and type equals
+      role: admin
+      templateFields: ["languageCode"]
+      restMethod: post
+      inputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearch
+      outputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearchResult
+      input: '{
+    "filters": [
+      {
+        "columnName": "name",
+        "type": "equals",
+        "value": "Webcam",
+        "fromValue": "$REMOVE$",
+        "toValue": "$REMOVE$"
+      }
+    ],
+    "sort": [
+      {
+        "sortField": "name",
+        "sortType": "ASC"
+      }
+    ],
+      "pageStart": 0,
+      "pageFetch": 1,
+    "languageCode": "eng",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+	"data": [{
+	"id": "$IGNORE$",
+	"name": "Webcam",
+	"brand": "Logitech",
+	"model": "$IGNORE$",
+	"deviceTypeCode": "CMR",
+	"minDriverversion": "$IGNORE$",
+	"description": "$IGNORE$",
+	"langCode": "$IGNORE$",
+	"isActive": "$IGNORE$",
+	"deviceTypeName": "$IGNORE$"
+	}]
+}'
+   MasterData_DeviceSpecSearch_Equals_Brand:
+      endPoint: /v1/masterdata/devicespecifications/search
+      uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_02
+      description: Search Device Specification by columnName brand and type equals
+      role: admin
+      templateFields: ["languageCode"]
+      restMethod: post
+      inputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearch
+      outputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearchResult
+      input: '{
+    "filters": [
+      {
+        "columnName": "brand",
+        "type": "equals",
+        "value": "Logitech",
+        "fromValue": "$REMOVE$",
+        "toValue": "$REMOVE$"
+      }
+    ],
+    "sort": [
+      {
+        "sortField": "brand",
+        "sortType": "ASC"
+      }
+    ],
+      "pageStart": 0,
+      "pageFetch": 1,
+    "languageCode": "eng",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+  "data": [{
+  "id": "$IGNORE$",
+  "name": "$IGNORE$",
+  "brand": "Logitech",
+  "model": "$IGNORE$",
+  "deviceTypeCode": "$IGNORE$",
+  "minDriverversion": "$IGNORE$",
+  "description": "$IGNORE$",
+  "langCode": "$IGNORE$",
+  "isActive": "$IGNORE$",
+  "deviceTypeName": "$IGNORE$"
+  }]
+}'
+  
+   MasterData_DeviceSpecSearch_Equals_Model:
+      endPoint: /v1/masterdata/devicespecifications/search
+      uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_03
+      description: Search Device Specification by columnName model and type equals
+      role: admin
+      templateFields: ["languageCode"]
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearch
+      outputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearchResult
+      input: '{
+    "filters": [
+      {
+        "columnName": "model",
+        "type": "equals",
+        "value": "C270",
+        "fromValue": "$REMOVE$",
+        "toValue": "$REMOVE$"
+      }
+    ],
+    "sort": [
+      {
+        "sortField": "model",
+        "sortType": "ASC"
+      }
+    ],
+      "pageStart": 0,
+      "pageFetch": 1,
+    "languageCode": "eng",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+  "data": [{
+  "id": "$IGNORE$",
+  "name": "$IGNORE$",
+  "brand": "$IGNORE$",
+  "model": "$IGNORE$",
+  "deviceTypeCode": "$IGNORE$",
+  "minDriverversion": "$IGNORE$",
+  "description": "$IGNORE$",
+  "langCode": "$IGNORE$",
+  "isActive": "$IGNORE$",
+  "deviceTypeName": "$IGNORE$"
+  }]
+}'
+   MasterData_DeviceSpecSearch_Equals_DeviceTypeName:
+      endPoint: /v1/masterdata/devicespecifications/search
+      uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_04
+      description: Search Device Specification by columnName deviceTypeName and type equals
+      role: admin
+      templateFields: ["languageCode"]
+      restMethod: post
+      inputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearch
+      outputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearchResult
+      input: '{
+    "filters": [
+      {
+        "columnName": "deviceTypeName",
+        "type": "equals",
+        "value": "Camera",
+        "fromValue": "$REMOVE$",
+        "toValue": "$REMOVE$"
+      }
+    ],
+    "sort": [
+      {
+        "sortField": "name",
+        "sortType": "ASC"
+      }
+    ],
+      "pageStart": 0,
+      "pageFetch": 1,
+    "languageCode": "eng",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+  "data": [{
+  "id": "$IGNORE$",
+  "name": "$IGNORE$",
+  "brand": "$IGNORE$",
+  "model": "$IGNORE$",
+  "deviceTypeCode": "$IGNORE$",
+  "minDriverversion": "$IGNORE$",
+  "description": "$IGNORE$",
+  "langCode": "$IGNORE$",
+  "isActive": "$IGNORE$",
+  "deviceTypeName": "Camera"
+  }]
+}'
+   MasterData_DeviceSpecSearch_Invalid_Value_Name:
+      endPoint: /v1/masterdata/devicespecifications/search
+      uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_05
+      description: Search Device Specification with columnName name and invalid value
+      role: admin
+      templateFields: []
+      restMethod: post
+      inputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearch
+      outputTemplate: masterdata/NilSearchResult
+      input: '{
+    "filters": [
+      {
+        "columnName": "name",
+        "type": "equals",
+        "value": "Language",
+        "fromValue": "$REMOVE$",
+        "toValue": "$REMOVE$"
+      }
+    ],
+    "sort": [
+      {
+        "sortField": "name",
+        "sortType": "ASC"
+      }
+    ],
+      "pageStart": 0,
+      "pageFetch": 1,
+    "languageCode": "eng",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+    "fromRecord": "0",
+    "toRecord": "0",
+    "totalRecord": "0"
+}'
+   MasterData_DeviceSpecSearch_InvalidPageFetch:
+      endPoint: /v1/masterdata/devicespecifications/search
+      uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_06
+      description: Search Device Specification with columnName name and invalid pageFetch -ve value
+      role: admin
+      templateFields: ["languageCode"]
+      restMethod: post
+      inputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearch
+      outputTemplate: masterdata/error
+      input: '{
+    "filters": [
+      {
+        "columnName": "isActive",
+        "type": "equals",
+        "value": "true",
+        "fromValue": "$REMOVE$",
+        "toValue": "$REMOVE$"
+      }
+    ],
+    "sort": [
+      {
+        "sortField": "name",
+        "sortType": "ASC"
+      }
+    ],
+      "pageStart": 0,
+      "pageFetch": -1,
+    "languageCode": "eng",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+  "errors": [
+    {
+      "errorCode": "KER-MSD-313"
+    }
+  ]
+}'
+   MasterData_DeviceSpecSearch_InvalidPageStart:
+      endPoint: /v1/masterdata/devicespecifications/search
+      uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_07
+      description: Search Device Specification with invalid pageStart -ve value
+      role: admin
+      templateFields: ["languageCode"]
+      restMethod: post
+      inputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearch
+      outputTemplate: masterdata/error
+      input: '{
+    "filters": [
+      {
+        "columnName": "name",
+        "type": "equals",
+        "value": "Webcam",
+        "fromValue": "$REMOVE$",
+        "toValue": "$REMOVE$"
+      }
+    ],
+    "sort": [
+      {
+        "sortField": "name",
+        "sortType": "ASC"
+      }
+    ],
+      "pageStart": -1,
+      "pageFetch": 1,
+    "languageCode": "eng",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-313"
+    }
+  ]
+}'
+   MasterData_DeviceSpecSearch_ASC_Name_eng:
+      endPoint: /v1/masterdata/devicespecifications/search
+      uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_08
+      description: Search Device Specification by columnName name and sortType ASC
+      role: admin
+      templateFields: ["languageCode"]
+      restMethod: post
+      inputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearch
+      outputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearchResult
+      input: '{
+    "filters": [
+      {
+        "columnName": "name",
+        "type": "contains",
+        "value": "Webcam",
+        "fromValue": "$REMOVE$",
+        "toValue": "$REMOVE$"
+      }
+    ],
+    "sort": [
+      {
+        "sortField": "name",
+        "sortType": "ASC"
+      }
+    ],
+      "pageStart": 0,
+      "pageFetch": 1,
+    "languageCode": "eng",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+  "data": [{
+  "id": "$IGNORE$",
+  "name": "Webcam",
+  "brand": "Logitech",
+  "model": "$IGNORE$",
+  "deviceTypeCode": "CMR",
+  "minDriverversion": "$IGNORE$",
+  "description": "$IGNORE$",
+  "langCode": "$IGNORE$",
+  "isActive": "$IGNORE$",
+  "deviceTypeName": "$IGNORE$"
+  }]
+}'
+   MasterData_DeviceSpecSearch_DESC_Name_eng:
+      endPoint: /v1/masterdata/devicespecifications/search
+      uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_09
+      description: Search Device Specification by columnName name and sortType DESC
+      role: admin
+      templateFields: ["languageCode"]
+      restMethod: post
+      inputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearch
+      outputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearchResult
+      input: '{
+    "filters": [
+      {
+        "columnName": "name",
+        "type": "contains",
+        "value": "Webcam",
+        "fromValue": "$REMOVE$",
+        "toValue": "$REMOVE$"
+      }
+    ],
+    "sort": [
+      {
+        "sortField": "name",
+        "sortType": "DESC"
+      }
+    ],
+      "pageStart": 0,
+      "pageFetch": 1,
+    "languageCode": "eng",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+  "data": [{
+  "id": "$IGNORE$",
+  "name": "Webcam",
+  "brand": "$IGNORE$",
+  "model": "$IGNORE$",
+  "deviceTypeCode": "$IGNORE$",
+  "minDriverversion": "$IGNORE$",
+  "description": "$IGNORE$",
+  "langCode": "$IGNORE$",
+  "isActive": "$IGNORE$",
+  "deviceTypeName": "$IGNORE$"
+  }]
+}'
+   MasterData_DeviceSpecSearch_Invalid_FilterType:
+      endPoint: /v1/masterdata/devicespecifications/search
+      uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_10
+      description: Search Device Specification with invalid Filter Type
+      role: admin
+      templateFields: ["languageCode"]
+      restMethod: post
+      inputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearch
+      outputTemplate: masterdata/error
+      input: '{
+    "filters": [
+      {
+        "columnName": "name",
+        "type": "equal",
+        "value": "Camera",
+        "fromValue": "$REMOVE$",
+        "toValue": "$REMOVE$"
+      }
+    ],
+    "sort": [
+      {
+        "sortField": "name",
+        "sortType": "ASC"
+      }
+    ],
+      "pageStart": 0,
+      "pageFetch": 1,
+    "languageCode": "eng",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-318"
+    }
+  ]
+}'
+   MasterData_DeviceSpecSearch_Invalid_SortType:
+      endPoint: /v1/masterdata/devicespecifications/search
+      uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_11
+      description: Search Device Specification with invalid sortType
+      role: admin
+      templateFields: ["languageCode"]
+      restMethod: post
+      inputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearch
+      outputTemplate: masterdata/error
+      input: '{
+    "filters": [
+      {
+        "columnName": "name",
+        "type": "equal",
+        "value": "Camera",
+        "fromValue": "$REMOVE$",
+        "toValue": "$REMOVE$"
+      }
+    ],
+    "sort": [
+      {
+        "sortField": "name",
+        "sortType": "AESCENDING"
+      }
+    ],
+      "pageStart": 0,
+      "pageFetch": 1,
+    "languageCode": "eng",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-318"
+    }
+  ]
+}'
+   MasterData_DeviceSpecSearch_Invalid_ColumnName:
+      endPoint: /v1/masterdata/devicespecifications/search
+      uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_12
+      description: Search Device Specification with invalid columnName
+      role: admin
+      templateFields: ["languageCode"]
+      restMethod: post
+      inputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearch
+      outputTemplate: masterdata/error
+      input: '{
+    "filters": [
+      {
+        "columnName": "dfadf",
+        "type": "equal",
+        "value": "Camera",
+        "fromValue": "$REMOVE$",
+        "toValue": "$REMOVE$"
+      }
+    ],
+    "sort": [
+      {
+        "sortField": "name",
+        "sortType": "ASC"
+      }
+    ],
+      "pageStart": 0,
+      "pageFetch": 1,
+    "languageCode": "",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-317"
+    }
+  ]
+}'
+   MasterData_DeviceSpecSearch_Invalid_RequestTime:
+      endPoint: /v1/masterdata/devicespecifications/search
+      uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_13
+      description: Search Device Specification with invalid requesttime
+      role: admin
+      templateFields: ["languageCode"]
+      restMethod: post
+      inputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearch
+      outputTemplate: masterdata/error
+      input: '{
+    "filters": [
+      {
+        "columnName": "name",
+        "type": "equal",
+        "value": "Camera",
+        "fromValue": "$REMOVE$",
+        "toValue": "$REMOVE$"
+      }
+    ],
+    "sort": [
+      {
+        "sortField": "name",
+        "sortType": "ASC"
+      }
+    ],
+      "pageStart": 0,
+      "pageFetch": 1,
+    "languageCode": "",
+    "requesttime": "2019-7-3T05:22:35.845"
+  }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "Invalid Format in field : requesttime"
+    }
+  ]
+}'
+   MasterData_DeviceSpecSearch_Contains_Name_eng:
+      endPoint: /v1/masterdata/devicespecifications/search
+      uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_14
+      description: Search Device Specification by columnName name and type contains
+      role: admin
+      templateFields: ["languageCode"]
+      restMethod: post
+      inputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearch
+      outputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearchResult
+      input: '{
+    "filters": [
+      {
+        "columnName": "name",
+        "type": "contains",
+        "value": "Webcam",
+        "fromValue": "$REMOVE$",
+        "toValue": "$REMOVE$"
+      }
+    ],
+    "sort": [
+      {
+        "sortField": "name",
+        "sortType": "ASC"
+      }
+    ],
+      "pageStart": 0,
+      "pageFetch": 1,
+    "languageCode": "eng",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+  "data": [{
+  "id": "$IGNORE$",
+  "name": "Webcam",
+  "brand": "Logitech",
+  "model": "$IGNORE$",
+  "deviceTypeCode": "CMR",
+  "minDriverversion": "$IGNORE$",
+  "description": "$IGNORE$",
+  "langCode": "$IGNORE$",
+  "isActive": "$IGNORE$",
+  "deviceTypeName": "$IGNORE$"
+  }]
+}'
+   MasterData_DeviceSpecSearch_TwoValueSearch_pos:
+      endPoint: /v1/masterdata/devicespecifications/search
+      uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_15
+      description: Search Device Specification by 2 values like columnName name and brand
+      role: admin
+      checkErrorsOnlyInResponse: true
+      templateFields: ["languageCode"]
+      restMethod: post
+      inputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearch
+      outputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearchResult
+      input: '{
+    "filters": [
+      {
+        "columnName": "name",
+        "type": "contains",
+        "value": "Webcam",
+        "fromValue": "$REMOVE$",
+        "toValue": "$REMOVE$"
+      },
+      {
+        "columnName": "brand",
+        "type": "contains",
+        "value": "hogwarts",
+        "fromValue": "$REMOVE$",
+        "toValue": "$REMOVE$"
+      }
+    ],
+    "sort": [
+      {
+        "sortField": "name",
+        "sortType": "ASC"
+      }
+    ],
+      "pageStart": 0,
+      "pageFetch": 1,
+    "languageCode": "eng",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+
+}'
+   MasterData_DeviceSpecSearch_StartsWith_Name_eng:
+      endPoint: /v1/masterdata/devicespecifications/search
+      uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_16
+      description: Search Device Specification by Name and type Starts with
+      role: admin
+      templateFields: ["languageCode"]
+      restMethod: post
+      inputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearch
+      outputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearchResult
+      input: '{
+    "filters": [
+      {
+        "columnName": "name",
+        "type": "startsWith",
+        "value": "Webcam",
+        "fromValue": "$REMOVE$",
+        "toValue": "$REMOVE$"
+      }
+    ],
+    "sort": [
+      {
+        "sortField": "name",
+        "sortType": "ASC"
+      }
+    ],
+      "pageStart": 0,
+      "pageFetch": 1,
+    "languageCode": "eng",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+  "data": [{
+  "id": "$IGNORE$",
+  "name": "Webcam",
+  "brand": "$IGNORE$",
+  "model": "$IGNORE$",
+  "deviceTypeCode": "$IGNORE$",
+  "minDriverversion": "$IGNORE$",
+  "description": "$IGNORE$",
+  "langCode": "$IGNORE$",
+  "isActive": "$IGNORE$",
+  "deviceTypeName": "$IGNORE$"
+  }]
+}'
