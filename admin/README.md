@@ -4,7 +4,7 @@
 Admin module can be accessed only by the privileged group of admin personnel and enables default configurations and seed data to be setup when the MOSIP platform gets initialized.
 
 ## Configuration files
-admin module uses the following configuration files:
+admin module uses the following configuration files:bvnbvnb 
 ```
 application-default.properties
 admin-default.properties
