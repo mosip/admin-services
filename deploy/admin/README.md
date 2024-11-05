@@ -4,6 +4,17 @@
 ```
 ./install.sh
 ```
+
+## Restart
+```
+./restart.sh
+```
+
+## Delete
+```sh
+./delete.sh
+```
+
 ## Admin proxy
 Admin service accesses other services like Materdata and Keymanager and currently there is only one URL that is used to connect to both these services. This will get fixed in future versions, but as a an interim solution, Admin Proxy docker has been created, which is basically an Nginx proxy connecting to the above services with these URLs: 
 ```
