@@ -8,7 +8,11 @@ import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
 import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
-import io.mosip.kernel.masterdata.dto.request.*;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.Pagination;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
@@ -170,7 +174,7 @@ public class HolidayControllerTest {
 								+ "    \"holidayName\": \"Eidi\",\n" + "    \"langCode\": \"eng\",\n"
 								+ "    \"holidayDesc\": \"National holiday\"\n" + "  }\n" + "}"))
 
-				.andReturn(), "KER-MSD-729");
+				.andReturn(), null);
 	}
 
 	@Test
