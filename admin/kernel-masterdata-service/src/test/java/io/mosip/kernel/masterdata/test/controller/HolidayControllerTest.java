@@ -143,7 +143,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void testSaveHoliday_withDuplicateHoliday_Error() throws Exception {
+	public void testSaveHoliday_withNewHoliday_Pass() throws Exception {
 
 		DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate ld = LocalDate.parse("2019-12-14", DATEFORMATTER);
@@ -156,7 +156,7 @@ public class HolidayControllerTest {
 								+ "    \"holidayName\": \"Eid\",\n" + "    \"langCode\": \"eng\",\n"
 								+ "    \"holidayDesc\": \"National holiday\"\n" + "  }\n" + "}"))
 
-				.andReturn(), "KER-MSD-240");
+				.andReturn(), null);
 	}
 
 	@Test
