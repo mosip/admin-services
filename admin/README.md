@@ -16,10 +16,11 @@ hotlist-default.properties
 Refer [Module Configuration](https://docs.mosip.io/1.2.0/modules/module-configuration) for location of these files.
 
 ## Databases
-Refer to [SQL scripts](db_scripts).
+Refer to [SQL scripts](https://github.com/mosip/admin-services/tree/release-1.3.x/db_scripts).
 
 ## Build & run (for developers)
-The project requires JDK 1.11.
+The project requires JDK 21.0
+and mvn version - 3.9.6
 1. Build and install:
     ```
     $ cd kernel
@@ -32,13 +33,12 @@ The project requires JDK 1.11.
     ```
 
 ## Deploy
-To deploy Commons services on Kubernetes cluster using Dockers refer to [Sandbox Deployment](https://docs.mosip.io/1.2.0/deployment/sandbox-deployment).
-
+To deploy Commons services on Kubernetes cluster using Dockers refer to [Sandbox Deployment](https://docs.mosip.io/1.2.0/deploymentnew/v3-installation).
 ## Test
-Automated functaionl tests available in [Functional Tests repo](https://github.com/mosip/mosip-functional-tests).
+Automated functaionl tests available in [Functional Tests repo](https://github.com/mosip/admin-services/tree/release-1.3.x/api-test).
 
 ## APIs
 API documentation is available [here](https://mosip.github.io/documentation/).
 
 ## License
-This project is licensed under the terms of [Mozilla Public License 2.0](LICENSE).
+This project is licensed under the terms of [Mozilla Public License 2.0](https://github.com/mosip/admin-services/blob/release-1.3.x/LICENSE).
