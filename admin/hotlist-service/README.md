@@ -16,14 +16,8 @@ and mvn version - 3.9.6
 ## Configuration files
 Hotlist Service uses the following configuration files that are accessible in this [repository](https://github.com/mosip/mosip-config/tree/master).
 Please refer to the required released tagged version for configuration.
-```
-application-default.properties
-hotlist-default.properties
-```
-
-## Configuration
-[Configuration-Hotlist](https://github.com/mosip/mosip-config/blob/master/hotlist-default.properties) and
-[Configuration-Application](https://github.com/mosip/mosip-config/blob/master/application-default.properties) defined here.
+1. [Configuration-Hotlist](https://github.com/mosip/mosip-config/blob/master/hotlist-default.properties)
+2. [Configuration-Application](https://github.com/mosip/mosip-config/blob/master/application-default.properties)
 
 ## APIs
 API documentation is available [here](https://mosip.github.io/documentation/1.2.0/hotlist-service.html).

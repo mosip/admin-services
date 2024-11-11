@@ -13,17 +13,11 @@ and mvn version - 3.9.6
 ## Configuration files
 Sync Data Service uses the following configuration files that are accessible in this [repository](https://github.com/mosip/mosip-config/tree/master).
 Please refer to the required released tagged version for configuration.
-```
-application-default.properties
-kernel-default.properties
-syncdata-default.properties
-```
-Need to run the config-server along with the files mentioned above in order to run the sync-data service.
+1. [Configuration-Application](https://github.com/mosip/mosip-config/blob/master/application-default.properties)
+2. [Configuration-Kernel](https://github.com/mosip/mosip-config/blob/master/kernel-default.properties)
+3. [Configuration-Sync](https://github.com/mosip/mosip-config/blob/master/syncdata-default.properties)
 
-## Configuration
-[Configuration-Application](https://github.com/mosip/mosip-config/blob/master/application-default.properties),
-[Configuration-Kernel](https://github.com/mosip/mosip-config/blob/master/kernel-default.properties) and
-[Configuration-Sync](https://github.com/mosip/mosip-config/blob/master/syncdata-default.properties) defined here.
+Need to run the config-server along with the files mentioned above in order to run the sync-data service.
 
 ## APIs
 API documentation is available [here](https://mosip.github.io/documentation/1.2.0/kernel-syncdata-service.html).
