@@ -32,6 +32,7 @@ and mvn version - 3.9.6
     ```
 
 ## Configuration
+admin module uses the following configuration files that are accessible in this [repository](https://github.com/mosip/mosip-config/tree/master).
 [Configuration-Admin](https://github.com/mosip/mosip-config/blob/master/admin-default.properties) and
 [Configuration-Application](https://github.com/mosip/mosip-config/blob/master/application-default.properties) defined here.
 
