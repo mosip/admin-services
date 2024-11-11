@@ -10,7 +10,7 @@ and mvn version - 3.9.6
     $ mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true
     ```
 
-## Configuration files
+## Configuration
 Admin Service uses the following configuration files that are accessible in this [repository](https://github.com/mosip/mosip-config/tree/master).
 Please refer to the required released tagged version for configuration.
 1. [Configuration-Admin](https://github.com/mosip/mosip-config/blob/master/admin-default.properties)

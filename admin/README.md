@@ -3,7 +3,7 @@
 # Admin
 Admin module can be accessed only by the privileged group of admin personnel and enables default configurations and seed data to be setup when the MOSIP platform gets initialized.
 
-## Configuration files
+## Configuration
 admin module uses the following configuration files that are accessible in this [repository](https://github.com/mosip/mosip-config/tree/master).
 Please refer to the required released tagged version for configuration.
 ```
