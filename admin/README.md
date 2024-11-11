@@ -4,7 +4,7 @@
 Admin module can be accessed only by the privileged group of admin personnel and enables default configurations and seed data to be setup when the MOSIP platform gets initialized.
 
 ## Configuration files
-admin module uses the following configuration files:
+admin module uses the following configuration files that are accessible in this [repository](https://github.com/mosip/mosip-config/tree/master).
 ```
 application-default.properties
 admin-default.properties
@@ -19,14 +19,14 @@ Refer [Module Configuration](https://docs.mosip.io/1.2.0/modules/module-configur
 Refer to [SQL scripts](https://github.com/mosip/admin-services/tree/release-1.3.x/db_scripts).
 
 ## Build & run (for developers)
-The project requires JDK 21.0
+The project requires JDK 21.0.3
 and mvn version - 3.9.6
 1. Build and install:
     ```
     $ cd kernel
     $ mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true
     ```
-1. Build Docker for a service:
+2. Build Docker for a service:
     ```
     $ cd <service folder>
     $ docker build -f Dockerfile
@@ -35,10 +35,10 @@ and mvn version - 3.9.6
 ## Deploy
 To deploy Commons services on Kubernetes cluster using Dockers refer to [Sandbox Deployment](https://docs.mosip.io/1.2.0/deploymentnew/v3-installation).
 ## Test
-Automated functaionl tests available in [Functional Tests repo](https://github.com/mosip/admin-services/tree/release-1.3.x/api-test).
+Automated functional tests available in [Functional Tests repo](https://github.com/mosip/admin-services/tree/release-1.3.x/api-test).
 
 ## APIs
-API documentation is available [here](https://mosip.github.io/documentation/).
+API documentation is available [here](https://mosip.github.io/documentation/1.2.0).
 
 ## License
 This project is licensed under the terms of [Mozilla Public License 2.0](https://github.com/mosip/admin-services/blob/release-1.3.x/LICENSE).
