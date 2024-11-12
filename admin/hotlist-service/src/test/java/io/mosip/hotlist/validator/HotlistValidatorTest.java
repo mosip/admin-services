@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 import static io.mosip.hotlist.constant.HotlistErrorConstants.*;
@@ -88,7 +89,9 @@ public class HotlistValidatorTest {
 		request.setId("id");
 		request.setIdType("idType");
 		request.setStatus(null);
-		request.setExpiryTimestamp(DateUtils.getUTCCurrentDateTime());
+		DateUtils.getUTCCurrentDateTime();
+		var expiryTimestamp = LocalDateTime.now().withYear(2024);
+		request.setExpiryTimestamp(expiryTimestamp);
 		RequestWrapper<Object> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setRequest(request);
 		validator.validate(requestWrapper, errors);
