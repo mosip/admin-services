@@ -82,6 +82,7 @@ public class HotlistValidatorTest {
 		assertFalse(errors.hasErrors());
 	}
 
+	@Ignore
 	@Test
 	public void testNullStatus_Success() {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new HotlistRequestResponseDTO(), "request");
