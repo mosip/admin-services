@@ -1,0 +1,59 @@
+GetUserDetails:
+   MasterData_GetUserDetails_allValid_smoke:
+      endPoint: /v1/masterdata/users
+      uniqueIdentifier: TC_Masterdata_GetUserDetails_01
+      description: Retrieve all the user details
+      role: admin
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: masterdata/GetUserDetails/getUserDetails
+      outputTemplate: masterdata/GetUserDetails/getUserDetailsResult
+      input: '{
+  "id":"$REMOVE$"
+}'
+      output: '{
+      "name": "$IGNORE$",
+      "statusCode": "$IGNORE$",
+      "regCenterId": "$IGNORE$",
+      "isActive": "$IGNORE$",
+      "zoneCode": "$IGNORE$"
+}'
+   MasterData_GetUserDetails_ByUserId_allValid_smoke:
+      endPoint: /v1/masterdata/users/{id}
+      uniqueIdentifier: TC_Masterdata_GetUserDetails_02
+      description: Retrieve all the user details by valid user ID
+      role: admin
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: masterdata/GetUserDetails/getUserDetails
+      outputTemplate: masterdata/GetUserDetails/getUserDetailsByIDResult
+      input: '{
+  "id":"$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$"
+}'
+      output: '{
+      "name": "$IGNORE$",
+      "statusCode": "$IGNORE$",
+      "regCenterId": "$IGNORE$",
+      "isActive": "$IGNORE$",
+      "zoneCode": "$IGNORE$"
+}'
+   MasterData_GetUserDetails_InValid_InvalidUserID:
+      endPoint: /v1/masterdata/users/{id}
+      uniqueIdentifier: TC_Masterdata_GetUserDetails_03
+      description: Retrieve all the user details by invalid user ID
+      role: admin
+      restMethod: get
+      inputTemplate: masterdata/GetUserDetails/getUserDetails
+      outputTemplate: masterdata/error
+      input: '{
+  "id":"abc"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-USR-007",
+      "message": "User Center mapping not found"
+    }
+  ]
+}'
+   

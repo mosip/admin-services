@@ -1,0 +1,18 @@
+FetchAllDocumentCategories:
+   MasterData_FetchAllDocumentCategories_valid_smoke_langcodeandCode:
+      endPoint: /v1/masterdata/documentcategories/all
+      uniqueIdentifier: TC_Masterdata_FetchAllDocumentCategories_01
+      description: Retrieve All Document Categories with valid data
+      role: admin
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: masterdata/FetchAllDocumentCategories/fetchAllDocumentCategories
+      outputTemplate: masterdata/FetchAllDocumentCategories/fetchAllDocumentCategoriesResult
+      input: '{
+  
+}'
+      output: '{
+"data": [{
+       
+      }]
+}'

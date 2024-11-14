@@ -1,0 +1,21 @@
+DecommisionMachine:
+   MasterData_DecommisionMachine_Invalid_ID: 
+      endPoint: /v1/masterdata/machines/decommission/{id}
+      uniqueIdentifier: TC_Masterdata_DecommisionMachine_01
+      description: Decommission Machine with invalid id
+      role: admin
+      templateFields: []
+      restMethod: put
+      inputTemplate: masterdata/DecommisionMachine/decommisionMachine
+      outputTemplate: masterdata/error
+      input: '{
+      "id": "1022dddw3456778432wsd"
+	}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-214",
+      "message": "Machine ID 1022dddw3456778432wsd does not exist"
+    }
+  ]
+}'
