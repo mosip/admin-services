@@ -144,7 +144,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t001syncClientSettingsTest() {
+	public void givenNoKeyIndex_whenSyncClientSettings_thenErrorResponse() {
 		try {
 			SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/clientsettings").param("keyindex",
 							"B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:48")
@@ -156,7 +156,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t001syncClientSettingsTest4() throws Exception {
+	public void testSyncClientSettings_successfulJwtSigning() {
 		String str3="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
 
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
@@ -169,7 +169,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t001syncClientSettingsTest1() {
+	public void testSyncClientSettings_withKeyIndex() {
 		try {
 			SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/clientsettings").param("keyindex",
 							"B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:49")
@@ -181,7 +181,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t001syncClientSettingsTest3() throws Exception {
+	public void testSyncClientSettings_successfulDataRetrieval_shouldProcessData() {
 		String str="{\r\n" +
 				"  \"id\": \"string\",\r\n" +
 				"  \"version\": \"string\",\r\n" +
@@ -222,7 +222,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t001syncClientSettingsTest2() throws Exception {
+	public void testSyncClientSettings_successfulDataRetrieval_withDynamicFields_shouldProcessData() {
 		String str="{\r\n" +
 				"  \"id\": \"string\",\r\n" +
 				"  \"version\": \"string\",\r\n" +
@@ -316,7 +316,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t002syncClientSettingsTest() {
+	public void testSyncClientSettings_invalidKeyIndex_shouldReturnError() {
 		try {
 			SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/clientsettings").param("keyindex",
 							"abcd")
@@ -328,7 +328,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t003getPublicKeyTest() throws Exception {
+	public void testSyncClientSettings_successfulPublicKeyRetrieval_shouldProcessData() {
 
 		String str="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"lastSyncTime\":null,\"publicKey\":\"B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:48\",\"issuedAt\":null,\"expiryAt\":null,\"profile\":\"local\"},\"errors\":[]}";
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.io/v1/keymanager/publickey/REGISTRATION?referenceId=10001&timeStamp=2019-09-09T09%253A00%253A00.000Z"))
@@ -342,7 +342,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t003getPublicKeyTest1() throws Exception {
+	public void testSyncClientSettings_getPublicKey_missingReferenceId_shouldHandleError() {
 
 		String str="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"lastSyncTime\":null,\"publicKey\":\"B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:48\",\"issuedAt\":null,\"expiryAt\":null,\"profile\":\"local\"},\"errors\":[]}";
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.io/v1/keymanager/publickey/REGISTRATION?referenceId&timeStamp=2019-09-09T09%253A00%253A00.000Z"))
@@ -356,7 +356,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t004validateKeyMachineMappingTest() {
+	public void testValidateKeyMachineMapping_invalidMachineName_shouldReturnError() {
 		try {
 			uploadPublicKeyRequestDto.getRequest().setMachineName("abc");
 			SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/tpm/publickey/verify")
@@ -369,7 +369,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t004validateKeyMachineMappingTest1() {
+	public void testValidateKeyMachineMapping_successfulJwtSigning_shouldVerifyMapping() {
 		try {
 			String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
 
@@ -387,7 +387,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t006validateKeyMachineMappingTest() {
+	public void testValidateKeyMachineMapping_missingPublicKey_shouldReturnError() {
 		try {
 			uploadPublicKeyRequestDto.getRequest().setPublicKey(null);
 			SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/tpm/publickey/verify")
@@ -402,7 +402,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t007getLatestPublishedIdSchemaTest() {
+	public void testGetLatestPublishedIdSchema_successfulRetrieval_shouldProcessData() {
 		String res="{\r\n" +
 				"  \"id\": \"string\",\r\n" +
 				"  \"version\": \"string\",\r\n" +
@@ -428,7 +428,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t007getLatestPublishedIdSchemaTest1() throws Exception {
+	public void testGetLatestPublishedIdSchema_invalidSchemaResponse_shouldHandleError() {
 		String res="{\r\n" +
 				"  \"id\": \"string\",\r\n" +
 				"  \"version\": \"string\",\r\n" +
@@ -457,7 +457,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void getLatestPublishedIdSchemaTestWithClientVersion() throws Exception {
+	public void testGetLatestPublishedIdSchema_withoutDomainAndType_shouldUseClientVersion() {
 		String res="{\r\n" +
 				"  \"id\": \"string\",\r\n" +
 				"  \"version\": \"string\",\r\n" +
@@ -486,7 +486,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t008getCertificateTest() throws Exception {
+	public void testGetCertificate_successfulRetrieval_shouldContainExpectedFields() {
 
 		String res="{\r\n" +
 				"  \"id\": \"string\",\r\n" +
@@ -515,7 +515,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t009getClientPublicKeyTest() {
+	public void testGetClientPublicKey_successfulRetrieval_shouldContainPublicKey() {
 		String bd="{\r\n" +
 				"  \"id\": \"string\",\r\n" +
 				"  \"version\": \"string\",\r\n" +
@@ -558,7 +558,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t010getClientPublicKeyTest() {
+	public void testGetClientPublicKey_invalidMachineId_shouldReturnError() {
 		String bd="{\r\n" +
 				"  \"id\": \"string\",\r\n" +
 				"  \"version\": \"string\",\r\n" +
@@ -597,7 +597,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t011getMachineConfigDetailsTest() throws Exception {
+	public void testGetMachineConfigDetails_shouldRetrieveRegistrationAndApplicationProperties() {
 		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"responseData\":\"signed\"},\"errors\":[]}";
 
 			mockRestServiceServer.expect(requestTo("/localhost/kernel-syncdata-service/test/0.9.0/registration-test.properties"))
@@ -609,7 +609,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t011getMachineConfigDetailsTest1() throws Exception {
+	public void testGetMachineConfigDetails_shouldRetrieveProperties_withoutJwtSigning() {
 		String str1 = "{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"responseData\":\"signed\"},\"errors\":[]}";
 
 		UriComponentsBuilder uribuilder1 = UriComponentsBuilder
@@ -633,7 +633,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t012getMachineConfigDetailsTest() {
+	public void testGetMachineConfigDetails_invalidResponse_shouldReturnError() {
 		try {
 			String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"responseData\":\"signed\"},\"errors\":[]}";
 
@@ -648,7 +648,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t013getUserDetailsBasedOnKeyIndexTest() {
+	public void testGetUserDetailsBasedOnKeyIndex_invalidKeyIndex_shouldReturnError() {
 		try {
 			SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get(
 							"/userdetails").param("keyindex","B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:48"))
@@ -660,7 +660,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t014getUserDetailsBasedOnKeyIndexTest() throws Exception {
+	public void testGetUserDetailsBasedOnKeyIndex_validKeyIndex_shouldReturnUserDetails() {
 		String res="{\r\n" +
 				"  \"id\": \"string\",\r\n" +
 				"  \"version\": \"string\",\r\n" +
@@ -695,7 +695,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t014getUserDetailsBasedOnKeyIndexTest1() {
+	public void testGetUserDetailsBasedOnKeyIndex_invalidKeyIndex_thenReturnError() {
 		try {
 			SyncDataUtil.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/userdetails").param("keyindex", "B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:50")).andReturn(),"KER-SNC-303");
 		} catch (Exception e){
@@ -705,7 +705,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t015getCACertificatesTest() throws Exception {
+	public void testGetCACertificates_shouldRetrieveCertificates() {
 		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
 
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
@@ -714,7 +714,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t016getCACertificatesTest() {
+	public void testGetCACertificates_invalidLastUpdated_shouldReturnError() {
 		try {
 			SyncDataUtil.checkResponse(mockMvc.perform(
 							MockMvcRequestBuilders.get("/getcacertificates").param("lastupdated", "2018-12-12 11:42:52.994"))
@@ -726,7 +726,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t016getCACertificatesTest1() {
+	public void testGetCACertificates_invalidLastUpdated_futureDate_shouldReturnError() {
 		try {
 			SyncDataUtil.checkResponse(mockMvc.perform(
 							MockMvcRequestBuilders.get("/getcacertificates").param("lastupdated", "2050-12-29T13:03:44.719Z"))
@@ -738,7 +738,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t016getCACertificatesTest2() throws Exception {
+	public void getCACertificates_shouldRetrieveCertificates() {
 		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
 
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
@@ -749,7 +749,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t017downloadScriptTest() throws Exception {
+	public void testDownloadScript_shouldDownloadScript() {
 		String str1="{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"responseData\":\"signed\"},\"errors\":[]}";
 
 		mockRestServiceServer.expect(requestTo("/localhost/kernel-syncdata-service/test/0.9.0/abcd"))
@@ -764,7 +764,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t018downloadScriptTest() {
+	public void testDownloadScript_invalidKeyIndex_shouldReturnError() {
 		try {
 			SyncDataUtil.checkResponse(mockMvc
 							.perform(MockMvcRequestBuilders.get("/scripts/testscript").param("keyindex", "abcd")).andReturn(),
@@ -778,7 +778,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t020downloadEntityDataTest() {
+	public void testDownloadEntityData_invalidKeyIndex_shouldReturnError() {
 		try {
 			mockMvc.perform(MockMvcRequestBuilders.get("/clientsettings/abcd").param("keyindex",
 							"B5:70:23:28:D4:C1:E2:C4:1C:C1:2A:E8:62:A9:18:3F:28:93:F9:3D:EB:AE:F7:56:FA:0B:9D:D0:3E:87:25:48"))
@@ -791,7 +791,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t022downloadEntityDataTest() {
+	public void testDownloadEntityData_invalidEntityId_shouldReturnError() {
 		try {
 			SyncDataUtil.checkResponse(
 					mockMvc.perform(MockMvcRequestBuilders.get("/clientsettings/1").param("keyindex", "abcd")).andReturn(),
@@ -804,7 +804,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t023syncClientSettingsV2Test() throws Exception {
+	public void testSyncClientSettingsV2_shouldSyncData() {
 		String str1="{\r\n" +
 				"  \"id\": \"string\",\r\n" +
 				"  \"version\": \"string\",\r\n" +
@@ -905,7 +905,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t024getV2Userdetails() throws Exception {
+	public void testV2GetUserDetails_shouldRetrieveDetails() {
 		String signResponse = "{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
 
 		mockRestServiceServer.expect(requestTo("https://dev.mosip.net/v1/keymanager/jwtSign"))
@@ -916,7 +916,7 @@ public class SyncDataControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t009getClientPublicKeyTest1() {
+	public void testGetClientPublicKey_shouldReturnErrorForInvalidMachineId() {
 		String bd="{\r\n" +
 				"  \"id\": \"string\",\r\n" +
 				"  \"version\": \"string\",\r\n" +
@@ -958,14 +958,14 @@ public class SyncDataControllerTest {
 	}
 
 	@Test
-	public void test1155DynamicFieldBackwardCompatibility() {
+	public void testDynamicField_shouldReturnValidData() {
 		try {
 			ResponseWrapper<PageDto<DynamicFieldDto>> resp = objectMapper.readValue(str1,
-					new TypeReference<ResponseWrapper<PageDto<DynamicFieldDto>>>() {});
+					new TypeReference<>() {});
 			PageDto<DynamicFieldDto> dynamicFields = resp.getResponse();
 			Assert.assertTrue(dynamicFields.getData().size() == 1);
-			Assert.assertTrue(dynamicFields.getData().get(0).getFieldVal().size() == 1);
-			Assert.assertTrue(dynamicFields.getData().get(0).getFieldVal().get(0).isActive());
+			Assert.assertTrue(dynamicFields.getData().getFirst().getFieldVal().size() == 1);
+			Assert.assertTrue(dynamicFields.getData().getFirst().getFieldVal().getFirst().isActive());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
