@@ -127,11 +127,10 @@ public class BlocklistedWordsServiceImpl implements BlocklistedWordsService {
 	@Cacheable(value = "blocklisted-words", key = "'blocklistedword'.concat('-').concat(#langCode)", condition="#langCode != null")
 	@Override
 	public BlocklistedWordsResponseDto getAllBlocklistedWordsBylangCode(String langCode) {
-		String lowercaseLangCode = langCode.toLowerCase();
-		validateLangCode(lowercaseLangCode);
+		validateLangCode(langCode.toLowerCase());
 		List<BlocklistedWords> words = null;
 		try {
-			words = blocklistedWordsRepository.findAllByLangCode(lowercaseLangCode);
+			words = blocklistedWordsRepository.findAllByLangCode(langCode.toLowerCase());
 		} catch (DataAccessException accessException) {
 			throw new MasterDataServiceException(
 					BlocklistedWordsErrorCode.BLOCKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
