@@ -12,7 +12,12 @@ import io.mosip.kernel.masterdata.dto.getresponse.BlocklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.BlocklistedWordsExtnDto;
-import io.mosip.kernel.masterdata.dto.request.*;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.Pagination;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResult;
@@ -24,7 +29,14 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.BlocklistedWordsRepository;
 import io.mosip.kernel.masterdata.service.BlocklistedWordsService;
-import io.mosip.kernel.masterdata.utils.*;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
+import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 import jakarta.persistence.EntityManager;
@@ -45,7 +57,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Collections;
 
 /**
  * Service implementation class for {@link BlocklistedWordsService}.
