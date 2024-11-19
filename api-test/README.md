@@ -1,8 +1,8 @@
-# masterdata API Test Rig
+# Masterdata API Test Rig
 
 ## Overview
 
-The **masterdata API Test Rig** is designed for the execution of module-wise automation API tests for the admin services. This test rig utilizes **Java REST Assured** and **TestNG** frameworks to automate testing of the masterdata(admin-services) API functionalities. The key focus is to validate the device creation, registration center creation, zone creation, machine creation and related functionalities provided by the admin service module.
+The **Masterdata API Test Rig** is designed for the execution of module-wise automation API tests for the admin services. This test rig utilizes **Java REST Assured** and **TestNG** frameworks to automate testing of the masterdata(admin-services) API functionalities. The key focus is to validate the device creation, registration center creation, zone creation, machine creation and related functionalities provided by the admin service module.
 
 ## Test Categories
 
