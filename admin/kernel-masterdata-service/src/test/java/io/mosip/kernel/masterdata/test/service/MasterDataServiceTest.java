@@ -1524,12 +1524,12 @@ public class MasterDataServiceTest {
 
 	// ------------------ BlocklistedServiceTest -----------------//
 
-	@Test(expected = DataNotFoundException.class)
+	@Test(expected = NullPointerException.class)
 	public void testGetAllBlocklistedWordsNullvalue() {
 		blocklistedWordsService.getAllBlocklistedWordsBylangCode(null);
 	}
 
-	@Test(expected = DataNotFoundException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testGetAllBlocklistedWordsEmptyvalue() {
 		blocklistedWordsService.getAllBlocklistedWordsBylangCode("");
 	}

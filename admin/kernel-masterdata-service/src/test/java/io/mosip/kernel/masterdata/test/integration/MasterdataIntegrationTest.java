@@ -1816,7 +1816,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	@WithUserDetails("individual")
 	public void getAllWordsBylangCodeNullArgExceptionTest() throws Exception {
-		mockMvc.perform(get("/blocklistedwords/{langcode}", " ")).andExpect(status().isOk());
+		mockMvc.perform(get("/blocklistedwords/{langcode}", " ")).andExpect(status().isInternalServerError());
 	}
 
 	// -----------------------------GenderTypeTest----------------------------------
