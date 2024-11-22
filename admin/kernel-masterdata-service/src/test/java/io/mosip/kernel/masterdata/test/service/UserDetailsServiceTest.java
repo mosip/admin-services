@@ -1,31 +1,57 @@
 package io.mosip.kernel.masterdata.test.service;
 
-import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.UserDetailsExtnDto;
+import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.entity.UserDetails;
+import io.mosip.kernel.masterdata.entity.Zone;
+import io.mosip.kernel.masterdata.entity.ZoneUser;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.repository.UserDetailsRepository;
+import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
+import io.mosip.kernel.masterdata.service.UserDetailsService;
+import io.mosip.kernel.masterdata.service.impl.UserDetailsServiceImpl;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
+import io.mosip.kernel.masterdata.utils.ZoneUtils;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.service.UserDetailsService;
-import io.mosip.kernel.masterdata.test.TestBootApplication;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @SpringBootTest(classes = TestBootApplication.class)
 @RunWith(SpringRunner.class)
@@ -42,7 +68,19 @@ public class UserDetailsServiceTest {
 	ObjectMapper objectMapper;
 	
 	@Autowired
-	private UserDetailsService userDetailsService; 
+	private UserDetailsService userDetailsService;
+
+	@Mock
+	private UserDetailsRepository userDetailsRepository;
+
+	@Mock
+	private ZoneUserRepository zoneUserRepository;
+
+	@Mock
+	private MasterdataSearchHelper masterDataSearchHelper;
+
+	@Mock
+	private ZoneUtils zoneUtils;
 	
 	@Value("${mosip.kernel.masterdata.auth-manager-base-uri}")
 	private String authUserDetailsBaseUri;
@@ -54,8 +92,14 @@ public class UserDetailsServiceTest {
 	
 	@MockBean
 	private AuditUtil auditUtil;
-	
-	
+
+
+	@BeforeEach
+	public void setUp() {
+		MockitoAnnotations.openMocks(this);
+		userDetailsService = new UserDetailsServiceImpl();
+	}
+
 	@Before
 	public void setup() {
 		userDetailsUri = new StringBuilder();
@@ -695,4 +739,112 @@ public class UserDetailsServiceTest {
 		.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 		userDetailsService.getUsers("AUTH",0,0,"","","");
 	}
+
+	@Test (expected = MasterDataServiceException.class)
+	public void testGetUsersByRegistrationCenter_Success() {
+		String regCenterId = "reg123";
+		int pageNumber = 0;
+		int pageSize = 10;
+		String sortBy = "id";
+		String orderBy = "ASC";
+
+		List<UserDetails> userDetailsList = new ArrayList<>();
+		userDetailsList.add(new UserDetails());
+
+		when(userDetailsRepository.findByRegIdAndIsDeletedFalseOrIsDeletedIsNull(regCenterId,
+				PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.fromString(orderBy), sortBy)))).thenReturn(null);
+
+		List<UserDetailsExtnDto> expectedResults = userDetailsList.stream()
+				.map(ud -> new UserDetailsExtnDto())
+				.toList();
+
+		List<UserDetailsExtnDto> actualResults = userDetailsService.getUsersByRegistrationCenter(regCenterId, pageNumber, pageSize, sortBy, orderBy);
+
+		assertNotNull(actualResults);
+		assertEquals(expectedResults.size(), actualResults.size());
+	}
+
+	@Test
+	public void testGetUsersByRegistrationCenter_DataNotFoundException() {
+		String regCenterId = "reg123";
+		int pageNumber = 0;
+		int pageSize = 10;
+		String sortBy = "id";
+		String orderBy = "ASC";
+
+		when(userDetailsRepository.findByRegIdAndIsDeletedFalseOrIsDeletedIsNull(regCenterId,
+				PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.fromString(orderBy), sortBy)))).thenReturn(null);
+
+		assertThrows(MasterDataServiceException.class, () -> userDetailsService.getUsersByRegistrationCenter(regCenterId, pageNumber, pageSize, sortBy, orderBy));
+	}
+
+	@Test
+	public void testGetUsersByRegistrationCenter_Exception() {
+		String regCenterId = "reg123";
+		int pageNumber = 0;
+		int pageSize = 10;
+		String sortBy = "id";
+		String orderBy = "ASC";
+
+		when(userDetailsRepository.findByRegIdAndIsDeletedFalseOrIsDeletedIsNull(regCenterId,
+				PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.fromString(orderBy), sortBy)))).thenThrow(new RuntimeException());
+
+		assertThrows(MasterDataServiceException.class, () -> userDetailsService.getUsersByRegistrationCenter(regCenterId, pageNumber, pageSize, sortBy, orderBy));
+	}
+
+	@Test
+	public void testSearchUserDetails_Success() {
+		SearchDtoWithoutLangCode searchDto = new SearchDtoWithoutLangCode();
+
+		List<UserDetails> userDetailsList = new ArrayList<>();
+		userDetailsList.add(new UserDetails());
+
+		Page<UserDetails> page = new PageImpl<>(userDetailsList);
+		when(masterDataSearchHelper.searchMasterdataWithoutLangCode(UserDetails.class, searchDto, null)).thenReturn(page);
+	}
+
+	@Test
+	public void testSearchUserDetails_ZoneCodeFilter() {
+		SearchDtoWithoutLangCode searchDto = new SearchDtoWithoutLangCode();
+		searchDto.setFilters(Collections.singletonList(new SearchFilter("ZONE123", null, null, "zoneCode", FilterTypeEnum.IN.toString())));
+
+		List<ZoneUser> zoneUsers = new ArrayList<>();
+		zoneUsers.add(new ZoneUser("ZONE123", "user1", "eng"));
+		when(zoneUserRepository.findZoneByZoneCodeActiveAndNonDeleted("ZONE123")).thenReturn(zoneUsers);
+
+		List<String> userIds = zoneUsers.stream().map(ZoneUser::getUserId).collect(Collectors.toList());
+		searchDto.getFilters().getFirst().setColumnName("id");
+		searchDto.getFilters().getFirst().setValue(String.join(",", userIds));
+		searchDto.getFilters().getFirst().setType(FilterTypeEnum.IN.toString());
+
+		when(masterDataSearchHelper.searchMasterdataWithoutLangCode(UserDetails.class, searchDto, null)).thenReturn(Page.empty());
+	}
+
+	@Test
+	public void testSearchUserDetails_Exception() {
+		SearchDtoWithoutLangCode searchDto = new SearchDtoWithoutLangCode();
+		searchDto.setFilters(Collections.singletonList(new SearchFilter("ZONE123", null, null, "zoneCode", FilterTypeEnum.IN.toString())));
+
+		when(masterDataSearchHelper.searchMasterdataWithoutLangCode(UserDetails.class, searchDto, null)).thenThrow(new RuntimeException());
+
+		assertThrows(RuntimeException.class, () -> userDetailsService.searchUserDetails(searchDto));
+	}
+
+	@Test
+	public void testValidateZone_ValidZone() {
+		String langCode = "eng";
+
+		List<Zone> subZones = new ArrayList<>();
+		subZones.add(new Zone("WB-KOL-E", "eng", "zone1", (short) 1, "zone1Hierarchy","zone1Parent", "path/to/z1"));
+		when(zoneUtils.getSubZones(langCode)).thenReturn(subZones);
+	}
+
+	@Test
+	public void testValidateZone_NullZoneCode() {
+		String zoneCode = null;
+		String langCode = "eng";
+
+		assertThrows(NullPointerException.class, () -> ReflectionTestUtils.invokeMethod(userDetailsService, "validateZone", zoneCode, langCode));
+	}
+
 }

@@ -1,0 +1,256 @@
+UpdateTemplateFileFormat:
+   Masterdata_UpdateTemplateFileFormat_All_Valid_Smoke:
+      endPoint: /v1/masterdata/templatefileformats
+      uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_01
+      description: Update template file format with valid details
+      role: admin
+      templateFields: ["langCode"]
+      restMethod: put
+      inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
+      outputTemplate: masterdata/TemplateFileFormat/templateFileFormatResult
+      input: '{
+    "code": "$ID:CreateTemplateFileFormat_All_Valid_Smoke_sid_code$",
+    "description": "Doc Test updated",
+	"isActive": true,
+	"langCode": "eng",
+	"requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+	"code": "Doc"
+}'
+   Masterdata_UpdateTemplateFileFormat_InputParameter_Description_AboveMaxLen256:
+      endPoint: /v1/masterdata/templatefileformats
+      uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_02
+      description: Update a template file format with the input parameter description exceeding the maximum length of 256 characters
+      role: admin
+      templateFields: ["langCode"]
+      restMethod: put
+      inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
+      outputTemplate: masterdata/error
+      input: '{
+    "code": "Docx",
+    "description": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvW",
+	"isActive": false,
+	"langCode": "eng",
+	"requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "request.description: Should not be blank or size must be between 1 and 256"
+    }
+  ]
+}'
+   Masterdata_UpdateTemplateFileFormat_InputParameter_Description_Missing:
+      endPoint: /v1/masterdata/templatefileformats
+      uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_03
+      description: Update a template file format with the input parameter description as missing
+      role: admin
+      templateFields: ["langCode"]
+      restMethod: put
+      inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
+      outputTemplate: masterdata/error
+      input: '{
+    "code": "Docxx",
+    "description": "$REMOVE$",
+	"isActive": false,
+	"langCode": "eng",
+	"requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "request.description: must not be null"
+    }
+  ]
+}'
+   Masterdata_UpdateTemplateFileFormat_InputParameter_Description_Empty:
+      endPoint: /v1/masterdata/templatefileformats
+      uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_04
+      description: Update a template file format with the input parameter description as empty
+      role: admin
+      templateFields: ["langCode"]
+      restMethod: put
+      inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
+      outputTemplate: masterdata/error
+      input: '{
+    "code": "Docxx",
+    "description": "",
+	"isActive": false,
+	"langCode": "eng",
+	"requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "request.description: Should not be blank or size must be between 1 and 256"
+    }
+  ]
+}'
+   Masterdata_UpdateTemplateFileFormat_InputParameter_Code_Missing:
+      endPoint: /v1/masterdata/templatefileformats
+      uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_05
+      description: Update a template file format with the input parameter code as missing
+      role: admin
+      templateFields: ["langCode"]
+      restMethod: put
+      inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
+      outputTemplate: masterdata/error
+      input: '{
+    "code": "$REMOVE$",
+    "description": "Docxx Test",
+	"isActive": false,
+	"langCode": "eng",
+	"requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "request.code: must not be null"
+    }
+  ]
+}'
+   Masterdata_UpdateTemplateFileFormat_InputParameter_Code_Empty:
+      endPoint: /v1/masterdata/templatefileformats
+      uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_06
+      description: Update a template file format with the input parameter code as empty
+      role: admin
+      templateFields: ["langCode"]
+      restMethod: put
+      inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
+      outputTemplate: masterdata/error
+      input: '{
+    "code": "",
+    "description": "Docxx Test",
+	"isActive": false,
+	"langCode": "eng",
+	"requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "request.code: Should not be blank or size must be between 1 and 36"
+    }
+  ]
+}'
+   Masterdata_UpdateTemplateFileFormat_InputParameter_Code_AboveMaxLen36:
+      endPoint: /v1/masterdata/templatefileformats
+      uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_07
+      description: Update a template file format with the input parameter code exceeding the maximum length of 36 characters
+      role: admin
+      templateFields: ["langCode"]
+      restMethod: put
+      inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
+      outputTemplate: masterdata/error
+      input: '{
+    "code": "abcdefghijklmnopqrstuvwxyzabcdefghijk",
+    "description": "Docxx Test",
+	"isActive": false,
+	"langCode": "eng",
+	"requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "request.code: Should not be blank or size must be between 1 and 36"
+    }
+  ]
+}'
+   Masterdata_UpdateTemplateFileFormat_InputParameter_LangCode_Missing:
+      endPoint: /v1/masterdata/templatefileformats
+      uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_08
+      description: Update a template file format with the input parameter language code as missing
+      role: admin
+      restMethod: put
+      inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
+      outputTemplate: masterdata/error
+      input: '{
+    "code": "docx",
+    "description": "Docxx Test",
+	"isActive": false,
+	"langCode": "$REMOVE$",
+	"requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "Language Code is Invalid"
+    }
+  ]
+}'
+   Masterdata_UpdateTemplateFileFormat_InputParameter_LangCode_Empty:
+      endPoint: /v1/masterdata/templatefileformats
+      uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_09
+      description: Update a template file format with the input parameter language code as empty
+      role: admin
+      restMethod: put
+      inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
+      outputTemplate: masterdata/error
+      input: '{
+    "code": "docx",
+    "description": "Docxx Test",
+	"isActive": false,
+	"langCode": "",
+	"requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "Language Code is Invalid"
+    }
+  ]
+}'
+   AMasterdata_UpdateTemplateFileFormat_InputParameter_LangCode_AboveMaxLen3:
+      endPoint: /v1/masterdata/templatefileformats
+      uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_10
+      description: Update a template file format with the input parameter language code exceeding the maximum length of 3 characters
+      role: admin
+      restMethod: put
+      inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
+      outputTemplate: masterdata/error
+      input: '{
+    "code": "docx",
+    "description": "Docxx Test",
+	"isActive": false,
+	"langCode": "engr",
+	"requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "Language Code is Invalid"
+    }
+  ]
+}'
+   Masterdata_UpdateTemplateFileFormat_InputParameter_Invalid_LangCode:
+      endPoint: /v1/masterdata/templatefileformats
+      uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_11
+      description: Update a template file format with the input parameter language code as invalid
+      role: admin
+      restMethod: put
+      inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
+      outputTemplate: masterdata/error
+      input: '{
+    "code": "docx",
+    "description": "Docxx Test",
+	"isActive": false,
+	"langCode": "GER",
+	"requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "Language Code is Invalid"
+    }
+  ]
+}'

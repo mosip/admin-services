@@ -1,0 +1,17 @@
+UpdateMachineSpecificationStatus:
+   MasterData_UpdateMachineSpecification_All_Valid_Smoke_sid:  
+      endPoint: /v1/masterdata/machinespecifications
+      uniqueIdentifier: TC_Masterdata_UpdateMachineSpecification_01
+      description: Update machine specification status details with valid data
+      role: admin
+      templateFields: []
+      restMethod: patch
+      inputTemplate: masterdata/UpdateMachineSpecificationStatus/updateMachineSpecificationStatus
+      outputTemplate: masterdata/UpdateMachineSpecificationStatus/updateteMachineSpecificationStatusResult
+      input: '{
+	"id": "$ID:CreateMachineSpecification_All_Valid_Smoke_sid_id$",
+	"isActive": "true"
+}'
+      output: '{
+    "status": "Status updated successfully for MachineSpecification"
+}'

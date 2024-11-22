@@ -1,0 +1,20 @@
+GetDeviceHistory:
+   Masterdata_GetDeviceHistory_allValid_smoke:
+      endPoint: /v1/masterdata/deviceshistories/{id}/{langcode}/{effdatetimes}
+      uniqueIdentifier: TC_Masterdata_GetDeviceHistory_01
+      description: Retrieve device history details based on ID, language code, and effective times
+      role: admin
+      templateFields: ["langCode"]
+      restMethod: get
+      inputTemplate: masterdata/GetDeviceHistory/getDeviceHistory
+      outputTemplate: masterdata/GetDeviceHistory/getDeviceHistoryResult
+      input: '{
+  "id":"$ID:CreateDevice_All_Valid_Smoke_sid_id$",
+  "langcode":"eng",
+  "effdatetimes":"$TIMESTAMP$"
+}'
+      output: '{
+"deviceHistoryDetails": [{
+        "isActive": true
+      }]
+}'

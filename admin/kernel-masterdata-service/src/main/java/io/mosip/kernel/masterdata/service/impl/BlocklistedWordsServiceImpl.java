@@ -1,26 +1,5 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.*;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-
-import io.mosip.kernel.masterdata.dto.response.FilterResult;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.BlocklistedWordsErrorCode;
@@ -41,6 +20,7 @@ import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResult;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.BlocklistedWords;
 import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
@@ -58,8 +38,33 @@ import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
-import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Collections;
 
 /**
  * Service implementation class for {@link BlocklistedWordsService}.
@@ -100,6 +105,9 @@ public class BlocklistedWordsServiceImpl implements BlocklistedWordsService {
 
 	@Autowired
 	private AuditUtil auditUtil;
+
+	@Value("${mosip.supported-languages}")
+	private String supportedLanguages;
 	
 	/**
 	 * Autowired reference for {@link DataMapper}
@@ -119,9 +127,10 @@ public class BlocklistedWordsServiceImpl implements BlocklistedWordsService {
 	@Cacheable(value = "blocklisted-words", key = "'blocklistedword'.concat('-').concat(#langCode)", condition="#langCode != null")
 	@Override
 	public BlocklistedWordsResponseDto getAllBlocklistedWordsBylangCode(String langCode) {
+		validateLangCode(langCode.toLowerCase());
 		List<BlocklistedWords> words = null;
 		try {
-			words = blocklistedWordsRepository.findAllByLangCode(langCode);
+			words = blocklistedWordsRepository.findAllByLangCode(langCode.toLowerCase());
 		} catch (DataAccessException accessException) {
 			throw new MasterDataServiceException(
 					BlocklistedWordsErrorCode.BLOCKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
@@ -133,6 +142,17 @@ public class BlocklistedWordsServiceImpl implements BlocklistedWordsService {
 		}
 		throw new DataNotFoundException(BlocklistedWordsErrorCode.NO_BLOCKLISTED_WORDS_FOUND.getErrorCode(),
 					BlocklistedWordsErrorCode.NO_BLOCKLISTED_WORDS_FOUND.getErrorMessage());
+	}
+
+	private void validateLangCode(String langCode) {
+		if (langCode == null || langCode.trim().isEmpty()) {
+			throw new IllegalArgumentException("Language code cannot be null or empty");
+		}
+		Set<String> supportedLanguagesSet = new HashSet<>(Arrays.asList(supportedLanguages.split(",")));
+		if (!supportedLanguagesSet.contains(langCode)){
+			throw new DataNotFoundException(BlocklistedWordsErrorCode.BLOCKLISTED_WORDS_INVALID_LANGUAGE_CODE.getErrorCode(),
+					BlocklistedWordsErrorCode.BLOCKLISTED_WORDS_INVALID_LANGUAGE_CODE.getErrorMessage());
+		}
 	}
 
 	/*
