@@ -187,7 +187,8 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 
 	private void validateLangCode(String langCode) {
 		if (langCode == null || langCode.trim().isEmpty()) {
-			throw new IllegalArgumentException("Language code cannot be null or empty");
+			throw new DataNotFoundException(LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorCode(),
+					LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorMessage());
 		}
 		Set<String> supportedLanguagesSet = new HashSet<>(Arrays.asList(supportedLanguages.split(",")));
 		if (!supportedLanguagesSet.contains(langCode)){

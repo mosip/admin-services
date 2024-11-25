@@ -1529,7 +1529,7 @@ public class MasterDataServiceTest {
 		blocklistedWordsService.getAllBlocklistedWordsBylangCode(null);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void testGetAllBlocklistedWordsEmptyvalue() {
 		blocklistedWordsService.getAllBlocklistedWordsBylangCode("");
 	}
