@@ -10516,3 +10516,101 @@ UPDATE master.template_type
 SET code='mosip.unlocked.template.property', descr='Unlocked status', lang_code='eng', is_active=true, cr_by='admin', cr_dtimes='2024-09-03 08:41:51.844', upd_by=NULL, upd_dtimes=NULL, is_deleted=false, del_dtimes=NULL;
 UPDATE master.template_type
 SET code='mosip.locked.template.property', descr='Locked status', lang_code='eng', is_active=true, cr_by='admin', cr_dtimes='2024-09-03 08:41:51.844', upd_by=NULL, upd_dtimes=NULL, is_deleted=false, del_dtimes=NULL;
+DELETE FROM master."template"
+WHERE id='3515' AND lang_code='ara';
+DELETE FROM master."template"
+WHERE id='3514' AND lang_code='fra';
+DELETE FROM master."template"
+WHERE id='3513' AND lang_code='hin';
+DELETE FROM master."template"
+WHERE id='3512' AND lang_code='tam';
+DELETE FROM master."template"
+WHERE id='3511' AND lang_code='kan';
+DELETE FROM master."template"
+WHERE id='3510' AND lang_code='spa';
+DELETE FROM master."template"
+WHERE id='3509' AND lang_code='eng';
+DELETE FROM master."template"
+WHERE id='3508' AND lang_code='ara';
+DELETE FROM master."template"
+WHERE id='3507' AND lang_code='fra';
+DELETE FROM master."template"
+WHERE id='3506' AND lang_code='hin';
+DELETE FROM master."template"
+WHERE id='3505' AND lang_code='tam';
+DELETE FROM master."template"
+WHERE id='3504' AND lang_code='kan';
+DELETE FROM master."template"
+WHERE id='3503' AND lang_code='spa';
+DELETE FROM master."template"
+WHERE id='3502' AND lang_code='eng';
+DELETE FROM master."template"
+WHERE id='3501' AND lang_code='ara';
+DELETE FROM master."template"
+WHERE id='3500' AND lang_code='fra';
+DELETE FROM master."template"
+WHERE id='3499' AND lang_code='hin';
+DELETE FROM master."template"
+WHERE id='3498' AND lang_code='tam';
+DELETE FROM master."template"
+WHERE id='3497' AND lang_code='kan';
+DELETE FROM master."template"
+WHERE id='3496' AND lang_code='spa';
+DELETE FROM master."template"
+WHERE id='3495' AND lang_code='eng';
+
+DELETE FROM master."template"
+WHERE id='1394' AND lang_code='eng';
+DELETE FROM master."template"
+WHERE id='1394' AND lang_code='fra';
+DELETE FROM master."template"
+WHERE id='ara' AND lang_code='fra';
+DELETE FROM master."template"
+WHERE id='ara' AND lang_code='hin';
+DELETE FROM master."template"
+WHERE id='ara' AND lang_code='kan';
+DELETE FROM master."template"
+WHERE id='ara' AND lang_code='tam';
+
+DELETE FROM master.template_type
+WHERE code='authentication-request-positive-purpose' AND lang_code='eng';
+DELETE FROM master.template_type
+WHERE code='authentication-request-positive-purpose' AND lang_code='spa';
+DELETE FROM master.template_type
+WHERE code='authentication-request-positive-purpose' AND lang_code='kan';
+DELETE FROM master.template_type
+WHERE code='authentication-request-positive-purpose' AND lang_code='tam';
+DELETE FROM master.template_type
+WHERE code='authentication-request-positive-purpose' AND lang_code='hin';
+DELETE FROM master.template_type
+WHERE code='authentication-request-positive-purpose' AND lang_code='fra';
+DELETE FROM master.template_type
+WHERE code='authentication-request-positive-purpose' AND lang_code='ara';
+DELETE FROM master.template_type
+WHERE code='authentication-request-negative-purpose' AND lang_code='eng';
+DELETE FROM master.template_type
+WHERE code='authentication-request-negative-purpose' AND lang_code='spa';
+DELETE FROM master.template_type
+WHERE code='authentication-request-negative-purpose' AND lang_code='kan';
+DELETE FROM master.template_type
+WHERE code='authentication-request-negative-purpose' AND lang_code='tam';
+DELETE FROM master.template_type
+WHERE code='authentication-request-negative-purpose' AND lang_code='hin';
+DELETE FROM master.template_type
+WHERE code='authentication-request-negative-purpose' AND lang_code='fra';
+DELETE FROM master.template_type
+WHERE code='authentication-request-negative-purpose' AND lang_code='ara';
+DELETE FROM master.template_type
+WHERE code='authentication-request-positive-summary' AND lang_code='eng';
+DELETE FROM master.template_type
+WHERE code='authentication-request-positive-summary' AND lang_code='spa';
+DELETE FROM master.template_type
+WHERE code='authentication-request-positive-summary' AND lang_code='kan';
+DELETE FROM master.template_type
+WHERE code='authentication-request-positive-summary' AND lang_code='tam';
+DELETE FROM master.template_type
+WHERE code='authentication-request-positive-summary' AND lang_code='hin';
+DELETE FROM master.template_type
+WHERE code='authentication-request-positive-summary' AND lang_code='fra';
+DELETE FROM master.template_type
+WHERE code='authentication-request-positive-summary' AND lang_code='ara';

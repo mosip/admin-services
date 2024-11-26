@@ -23931,3 +23931,150 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
      UPDATE master.template_type
      SET descr='Receive OTP', is_active=true, cr_by='admin', cr_dtimes='2024-09-13 07:14:20.069', upd_by=NULL, upd_dtimes=NULL, is_deleted=false, del_dtimes=NULL
      WHERE code='receive-otp' AND lang_code='tam';
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-positive-purpose', 'Authentication positive purpose', 'eng', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-positive-purpose', 'Authentication positive purpose', 'spa', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-positive-purpose', 'Authentication positive purpose', 'kan', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-positive-purpose', 'Authentication positive purpose', 'tam', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-positive-purpose', 'Authentication positive purpose', 'hin', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-positive-purpose', 'Authentication positive purpose', 'fra', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-positive-purpose', 'Authentication positive purpose', 'ara', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-negative-purpose', 'Authentication negative purpose', 'eng', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-negative-purpose', 'Authentication negative purpose', 'spa', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-negative-purpose', 'Authentication negative purpose', 'kan', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-negative-purpose', 'Authentication negative purpose', 'tam', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-negative-purpose', 'Authentication negative purpose', 'hin', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-negative-purpose', 'Authentication negative purpose', 'fra', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-negative-purpose', 'Authentication negative purpose', 'ara', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-positive-summary', 'Authentication positive summary', 'eng', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-positive-summary', 'Authentication positive summary', 'spa', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-positive-summary', 'Authentication positive summary', 'kan', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-positive-summary', 'Authentication positive summary', 'tam', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-positive-summary', 'Authentication positive summary', 'hin', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-positive-summary', 'Authentication positive summary', 'fra', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+     INSERT INTO master.template_type
+     (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('authentication-request-positive-summary', 'Authentication positive summary', 'ara', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3515', 'Authentication positive summary', 'Authentication positive summary', 'txt', 'velocity', 'تم تنفيذ طلبك للمصادقة بنجاح.', '10006', 'Resident Services', 'authentication-request-positive-summary', 'ara', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3514', 'Authentication positive summary', 'Authentication positive summary', 'txt', 'velocity', 'Votre demande d''authentification a réussi.', '10006', 'Resident Services', 'authentication-request-positive-summary', 'fra', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3513', 'Authentication positive summary', 'Authentication positive summary', 'txt', 'velocity', 'प्रमाणीकरण हेतु आपका अनुरोध सफल हुआ।', '10006', 'Resident Services', 'authentication-request-positive-summary', 'hin', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3512', 'Authentication positive summary', 'Authentication positive summary', 'txt', 'velocity', 'அங்கீகாரத்திற்கான உங்கள் கோரிக்கை வெற்றிகரமாக உள்ளது.', '10006', 'Resident Services', 'authentication-request-positive-summary', 'tam', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3511', 'Authentication positive summary', 'Authentication positive summary', 'txt', 'velocity', 'ದೃಢೀಕರಣಕ್ಕಾಗಿ ನಿಮ್ಮ ವಿನಂತಿಯು ಯಶಸ್ವಿಯಾಗಿದೆ.', '10006', 'Resident Services', 'authentication-request-positive-summary', 'kan', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3510', 'Authentication positive summary', 'Authentication positive summary', 'txt', 'velocity', 'Su solicitud de autenticación es exitosa.', '10006', 'Resident Services', 'authentication-request-positive-summary', 'spa', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3509', 'Authentication positive summary', 'Authentication positive summary', 'txt', 'velocity', 'Your request to authentication is successful.', '10006', 'Resident Services', 'authentication-request-positive-summary', 'eng', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3508', 'Authentication negative purpose', 'Authentication negative purpose', 'txt', 'velocity', 'لقد فشل طلب المصادقة الخاص بك.', '10006', 'Resident Services', 'authentication-request-negative-purpose', 'ara', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3507', 'Authentication negative purpose', 'Authentication negative purpose', 'txt', 'velocity', 'Votre demande d''authentification a échoué.', '10006', 'Resident Services', 'authentication-request-negative-purpose', 'fra', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3506', 'Authentication negative purpose', 'Authentication negative purpose', 'txt', 'velocity', 'प्रमाणीकरण हेतु आपका अनुरोध विफल हो गया है.', '10006', 'Resident Services', 'authentication-request-negative-purpose', 'hin', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3505', 'Authentication negative purpose', 'Authentication negative purpose', 'txt', 'velocity', 'அங்கீகாரத்திற்கான உங்கள் கோரிக்கை தோல்வியடைந்தது.', '10006', 'Resident Services', 'authentication-request-negative-purpose', 'tam', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3504', 'Authentication negative purpose', 'Authentication negative purpose', 'txt', 'velocity', 'ದೃಢೀಕರಣಕ್ಕಾಗಿ ನಿಮ್ಮ ವಿನಂತಿಯು ವಿಫಲವಾಗಿದೆ.', '10006', 'Resident Services', 'authentication-request-negative-purpose', 'kan', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3503', 'Authentication negative purpose', 'Authentication negative purpose', 'txt', 'velocity', 'Su solicitud de autenticación ha fallado.', '10006', 'Resident Services', 'authentication-request-negative-purpose', 'spa', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3502', 'Authentication negative purpose', 'Authentication negative purpose', 'txt', 'velocity', 'Your request to authentication is failed.', '10006', 'Resident Services', 'authentication-request-negative-purpose', 'eng', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3501', 'Authentication positive purpose', 'Authentication positive purpose', 'txt', 'velocity', 'تم تنفيذ طلبك للمصادقة بنجاح.', '10006', 'Resident Services', 'authentication-request-positive-purpose', 'ara', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3500', 'Authentication positive purpose', 'Authentication positive purpose', 'txt', 'velocity', 'Votre demande d''authentification a réussi.', '10006', 'Resident Services', 'authentication-request-positive-purpose', 'fra', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3499', 'Authentication positive purpose', 'Authentication positive purpose', 'txt', 'velocity', 'प्रमाणीकरण हेतु आपका अनुरोध सफल हुआ।', '10006', 'Resident Services', 'authentication-request-positive-purpose', 'hin', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3498', 'Authentication positive purpose', 'Authentication positive purpose', 'txt', 'velocity', 'அங்கீகாரத்திற்கான உங்கள் கோரிக்கை வெற்றிகரமாக உள்ளது.', '10006', 'Resident Services', 'authentication-request-positive-purpose', 'tam', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3497', 'Authentication positive purpose', 'Authentication positive purpose', 'txt', 'velocity', 'ದೃಢೀಕರಣಕ್ಕಾಗಿ ನಿಮ್ಮ ವಿನಂತಿಯು ಯಶಸ್ವಿಯಾಗಿದೆ.', '10006', 'Resident Services', 'authentication-request-positive-purpose', 'kan', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3496', 'Authentication positive purpose', 'Authentication positive purpose', 'txt', 'velocity', 'Su solicitud de autenticación es exitosa.', '10006', 'Resident Services', 'authentication-request-positive-purpose', 'spa', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('3495', 'Authentication positive purpose', 'Authentication positive purpose', 'txt', 'velocity', 'Your request to authentication is successful.', '10006', 'Resident Services', 'authentication-request-positive-purpose', 'eng', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('1394', 'Success summary to generate or revoke VIDs', 'Success summary to generate or revoke VIDs', 'txt', 'velocity', '$vidType VID $maskedVID was $actionPerformed successfully', '10006', 'Resident Services', 'gen-or-revoke-vid-success-summary', 'eng', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('1394', 'Success summary to generate or revoke VIDs', 'Success summary to generate or revoke VIDs', 'txt', 'velocity', '$vidType VID $maskedVID a été $actionPerformed avec succès', '10006', 'Resident Services', 'gen-or-revoke-vid-success-summary', 'fra', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('1394', 'Success summary to generate or revoke VIDs', 'Success summary to generate or revoke VIDs', 'txt', 'velocity', 'تم بنجاح $vidType VID $maskedVID بـ $actionPerformed', '10006', 'Resident Services', 'gen-or-revoke-vid-success-summary', 'ara', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('1394', 'Success summary to generate or revoke VIDs', 'Success summary to generate or revoke VIDs', 'txt', 'velocity', '$vidType VID $maskedVID $actionPerformed सफलतापूर्वक हो गया', '10006', 'Resident Services', 'gen-or-revoke-vid-success-summary', 'hin', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('1394', 'Success summary to generate or revoke VIDs', 'Success summary to generate or revoke VIDs', 'txt', 'velocity', '$vidType VID $maskedVID ಯಶಸ್ವಿಯಾಗಿ $actionPerformed ಆಗಿತ್ತು', '10006', 'Resident Services', 'gen-or-revoke-vid-success-summary', 'kan', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+     INSERT INTO master."template"
+     (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+     VALUES('1394', 'Success summary to generate or revoke VIDs', 'Success summary to generate or revoke VIDs', 'txt', 'velocity', '$vidType VID $maskedVID வெற்றிகரமாக $actionPerformed ஆனது', '10006', 'Resident Services', 'gen-or-revoke-vid-success-summary', 'tam', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
+
