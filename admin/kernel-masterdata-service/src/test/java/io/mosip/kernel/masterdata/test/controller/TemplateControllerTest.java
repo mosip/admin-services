@@ -1,10 +1,17 @@
 package io.mosip.kernel.masterdata.test.controller;
 
-import static org.mockito.Mockito.doNothing;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.TemplatePutDto;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -20,17 +27,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.dto.TemplateDto;
-import io.mosip.kernel.masterdata.dto.TemplatePutDto;
-import io.mosip.kernel.masterdata.test.TestBootApplication;
-import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
+import static org.mockito.Mockito.doNothing;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
@@ -90,51 +87,51 @@ public class TemplateControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001getAllTemplateTest() throws Exception {
+	public void getAllTemplateTest_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/templates")).andReturn(), null);
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002getAllTemplateBylangCodeTest() throws Exception {
+	public void getAllTemplateByLangCodeTest_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/templates/eng")).andReturn(), null);
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002getAllTemplateBylangCodeFailTest() throws Exception {
+	public void getAllTemplateByLangCodeFailTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/templates/eng1")).andReturn(), "KER-MSD-045");
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t003getAllTemplateBylangCodeAndTemplateTypeCodeTest() throws Exception {
+	public void getAllTemplateByLangCodeAndTemplateTypeCodeTest_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/templates/eng/EMAIL")).andReturn(), null);
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t003getAllTemplateBylangCodeAndTemplateTypeCodeFailTest() throws Exception {
+	public void getAllTemplateByLangCodeAndTemplateTypeCodeFailTest() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/templates/eng1/EMAIL")).andReturn(), "KER-MSD-045");
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t003getAllTemplateBylangCodeAndTemplateTypeCodeFailTest1() throws Exception {
+	public void getAllTemplateByLangCodeAndTemplateTypeCodeFailTest_WithInvalidTemplate() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/templates/eng/txt")).andReturn(), "KER-MSD-046");
 	}
 	
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t004createTemplateTest() throws Exception {
+	public void createTemplateTest_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/templates")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(template))).andReturn(), null);
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t004createTemplateTest1() throws Exception {
+	public void createTemplateTest_SuccessWithId() throws Exception {
 		template.getRequest().setId("");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/templates")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(template))).andReturn(), null);
@@ -142,7 +139,7 @@ public class TemplateControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t004createTemplateFailTest() throws Exception {
+	public void createTemplateFailTest_WithInvalidId() throws Exception {
 		template.getRequest().setId("1");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/templates")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(template))).andReturn(), null);
@@ -150,7 +147,7 @@ public class TemplateControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t005updateTemplateTest() throws Exception {
+	public void updateTemplateTest_Fail() throws Exception {
 		templateUpdate.getRequest().setId("1");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/templates")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(templateUpdate))).andReturn(), "KER-MSD-095");
@@ -158,7 +155,7 @@ public class TemplateControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t005updateTemplateTest2() throws Exception {
+	public void updateTemplateTest_Success() throws Exception {
 		templateUpdate.getRequest().setId("4");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/templates")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(templateUpdate))).andReturn(), null);
@@ -166,7 +163,7 @@ public class TemplateControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t005updateTemplateTest3() throws Exception {
+	public void updateTemplateTest_WithModuleId_Success() throws Exception {
 		templateUpdate.getRequest().setId("4");
 		templateUpdate.getRequest().setModuleId("10004");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/templates")
@@ -175,117 +172,117 @@ public class TemplateControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t005updateTemplateFailTest() throws Exception {
+	public void updateTemplateFailTest_WithInvalidTemplate() throws Exception {
 		templateUpdate.getRequest().setId("8");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/templates")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(templateUpdate))).andReturn(), "KER-MSD-046");
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
-	public void t006deleteTemplateTest() throws Exception {
+	public void deleteTemplateTest_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/templates/2")).andReturn(), null);
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
-	public void t006deleteTemplateFailTest() throws Exception {
+	public void deleteTemplateFailTest_WithInvalidTemplate() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/templates/9")).andReturn(), "KER-MSD-046");
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t007getAllTemplateByTemplateTypeCodeTest() throws Exception {
+	public void getAllTemplateByTemplateTypeCodeTest_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/templates/templatetypecodes/EMAIL")).andReturn(), null);
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t007getAllTemplateByTemplateTypeCodeFailTest() throws Exception {
+	public void getAllTemplateByTemplateTypeCodeFailTest_WithInvalidTemplate() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/templates/templatetypecodes/EM")).andReturn(), "KER-MSD-046");
 	}
 
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t008getTemplatesTest() throws Exception {
+	public void getTemplatesTest_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/templates/all")).andReturn(), null);
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t009getAllTemplateBylangCodeTest() throws Exception {
+	public void searchTemplateByLangCodeTest_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/templates/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(MasterDataTest.commonSearchDto("createdDateTime","ASC","templateTypeCode","EMAIL","equals")))).andReturn(), null);
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t009getAllTemplateBylangCodeTest1() throws Exception {
+	public void searchAllTemplateByLangCodeTest_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/templates/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(MasterDataTest.commonSearchDto("createdDateTime","ASC","templateTypeCode","EMAIL","contains")))).andReturn(), null);
 	}
 	@Test
 	@WithUserDetails("global-admin")
-	public void t009getAllTemplateBylangCodeFailTest1() throws Exception {
+	public void getAllTemplateByLangCodeFailTest_WithInvalidColumn() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/templates/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(MasterDataTest.commonSearchDto("createdDateTime","ASC","templateTypeCodee","EMAIL","contains")))).andReturn(), "KER-MSD-317");
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t010filterTemplatesTest() throws Exception {
+	public void filterTemplatesTest_Success_WithAllFilterTypes() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/templates/filtervalues").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(MasterDataTest.commonFilterValueDto("templateTypeCode","EMAIL","all")))).andReturn(), null);
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t010filterTemplatesFailTest() throws Exception {
+	public void filterTemplatesTest_PassWithUniqueFilterType() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/templates/filtervalues").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(MasterDataTest.commonFilterValueDto("templateTypeCode","EMAIL","unique")))).andReturn(), null);
 	}
+
 	@Test
 	@WithUserDetails("global-admin")
-	public void t010filterTemplatesFailTest1() throws Exception {
+	public void filterTemplatesFail_WithInvalidFilterType() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/templates/filtervalues").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(MasterDataTest.commonFilterValueDto("templateTypeCodee","EMAIL","")))).andReturn(), "KER-MSD-322");
 	}
 
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t011updateTemplateStatusTest() throws Exception {
+	public void updateTemplateStatusTest_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.patch("/templates").param("isActive", "true").param("id","3")).andReturn(), null);
 	}
 	@Test
 	@WithUserDetails("global-admin")
-	public void t011updateTemplateStatusFailTest() throws Exception {
+	public void updateTemplateStatusFail_WithInvalidTemplate() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.patch("/templates").param("isActive", "false").param("id","9")).andReturn(), "KER-MSD-046");
 	}
 	
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t012getMissingTemplateDetailsTest() throws Exception {
+	public void getMissingTemplateDetailsTest_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/templates/missingids/ara")).andReturn(), null);
 	}
 	@Test
 	@WithUserDetails("global-admin")
-	public void t012getMissingTemplateDetailsFailTest() throws Exception {
+	public void getMissingTemplateDetailsFail_WithInvalidLangCode() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/templates/missingids/eng1")).andReturn(), "KER-LANG-ERR");
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t013getMissingTemplateDetailsTest1() throws Exception {
+	public void getMissingTemplateDetailsTest_PassWithValidLangCode() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/templates/missingids/ara").param("fieldName", "name")).andReturn(), null);
 	}
+
 	@Test
 	@WithUserDetails("global-admin")
-	public void t013getMissingTemplateDetailsFailTest1() throws Exception {
+	public void getMissingTemplateDetailsFail_WithInvalidLang() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/templates/missingids/eng1").param("fieldName","name")).andReturn(), "KER-LANG-ERR");
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t013getMissingTemplateDetailsFailTest2() throws Exception {
+	public void getMissingTemplateDetailsFail_WithInvalidFieldName() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/templates/missingids/ara").param("fieldName", "namee")).andReturn(), "KER-MSD-317");
 	}
 	

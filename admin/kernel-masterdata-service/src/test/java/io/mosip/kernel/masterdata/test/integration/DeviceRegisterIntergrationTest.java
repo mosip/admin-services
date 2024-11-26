@@ -1,12 +1,13 @@
 package io.mosip.kernel.masterdata.test.integration;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.time.LocalDateTime;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.dto.*;
+import io.mosip.kernel.masterdata.entity.DeviceRegister;
+import io.mosip.kernel.masterdata.repository.DeviceRegisterHistoryRepository;
+import io.mosip.kernel.masterdata.repository.DeviceRegisterRepository;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,20 +25,12 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDateTime;
 
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.dto.DeRegisterDeviceRequestDto;
-import io.mosip.kernel.masterdata.dto.DeviceDataDto;
-import io.mosip.kernel.masterdata.dto.DeviceDeRegDto;
-import io.mosip.kernel.masterdata.dto.DeviceInfoDto;
-import io.mosip.kernel.masterdata.dto.DeviceRegisterDto;
-import io.mosip.kernel.masterdata.entity.DeviceRegister;
-import io.mosip.kernel.masterdata.repository.DeviceRegisterHistoryRepository;
-import io.mosip.kernel.masterdata.repository.DeviceRegisterRepository;
-import io.mosip.kernel.masterdata.test.TestBootApplication;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = TestBootApplication.class)
 @RunWith(SpringRunner.class)
@@ -109,7 +102,7 @@ public class DeviceRegisterIntergrationTest {
 
 	@Test
 	@WithUserDetails("zonal-admin")
-	public void updateDevicesTest() throws JsonProcessingException, Exception {
+	public void updateDevicesTest() throws Exception {
 		successTest();
 		mockMvc.perform(put("/device/update/status").param("devicecode", "10001").param("statuscode", "Registered")
 				.content(objectMapper.writeValueAsString(deRegisterDeviceRequestDto))
@@ -118,7 +111,7 @@ public class DeviceRegisterIntergrationTest {
 
 	@Test
 	@WithUserDetails("zonal-admin")
-	public void updateDevicesInvalidStatusTest() throws JsonProcessingException, Exception {
+	public void updateDevicesInvalidStatusTest() throws Exception {
 		successTest();
 		mockMvc.perform(put("/device/update/status").param("devicecode", "10001").param("statuscode", "Registereds")
 				.content(objectMapper.writeValueAsString(deRegisterDeviceRequestDto))
@@ -127,7 +120,7 @@ public class DeviceRegisterIntergrationTest {
 
 	@Test
 	@WithUserDetails("zonal-admin")
-	public void updateDevicesInvalidStatusDbExceptionTest() throws JsonProcessingException, Exception {
+	public void updateDevicesInvalidStatusDbExceptionTest() throws Exception {
 		successTest();
 		when(deviceRegisterRepository.findById(Mockito.any(), Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -139,7 +132,7 @@ public class DeviceRegisterIntergrationTest {
 
 	@Test
 	@WithUserDetails("zonal-admin")
-	public void updateDevicesInvalidStatusDataNotFoundTest() throws JsonProcessingException, Exception {
+	public void updateDevicesInvalidStatusDataNotFoundTest() throws Exception {
 		successTest();
 		when(deviceRegisterRepository.findById(Mockito.any(), Mockito.anyString())).thenReturn(null);
 		mockMvc.perform(put("/device/update/status").param("devicecode", "10001").param("statuscode", "Registered")
@@ -149,7 +142,7 @@ public class DeviceRegisterIntergrationTest {
 
 	@Test
 	@WithUserDetails("zonal-admin")
-	public void updateDevicesInvalidStatusDbUpdateExceptionTest() throws JsonProcessingException, Exception {
+	public void updateDevicesInvalidStatusDbUpdateExceptionTest() throws Exception {
 		successTest();
 		when(deviceRegisterRepository.update(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(put("/device/update/status").param("devicecode", "10001").param("statuscode", "Registered")
@@ -160,7 +153,7 @@ public class DeviceRegisterIntergrationTest {
 
 	@Test
 	@WithUserDetails("zonal-admin")
-	public void updateDevicesInvalidStatusDbCreateExceptionTest() throws JsonProcessingException, Exception {
+	public void updateDevicesInvalidStatusDbCreateExceptionTest() throws Exception {
 		successTest();
 		when(deviceRegisterHistoryRepository.create(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(put("/device/update/status").param("devicecode", "10001").param("statuscode", "Registered")

@@ -17,7 +17,7 @@ Admin module contains following services:
 Refer to [SQL scripts](db_scripts).
 
 ## Build & run (for developers)
-The project requires JDK 1.21. 
+The project requires JDK 21.0.3
 and mvn version - 3.9.6
 1. Build and install:
     ```
@@ -25,19 +25,7 @@ and mvn version - 3.9.6
     $ mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true
     ```
 
-### Remove the version-specific suffix (PostgreSQL95Dialect) from the Hibernate dialect configuration
-   ```
-   hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-   ```
-This is for better compatibility with future PostgreSQL versions.
-
-### Configure ANT Path Matcher for Spring Boot 3.x compatibility.
-   ```
-   spring.mvc.pathmatch.matching-strategy=ANT_PATH_MATCHER
-   ```
-This is to maintain compatibility with existing ANT-style path patterns.
-
-1. Build Docker for a service:
+2. Build Docker for a service:
     ```
     $ cd <service folder>
     $ docker build -f Dockerfile
@@ -64,28 +52,21 @@ This is to maintain compatibility with existing ANT-style path patterns.
     $ cd deploy
     $ ./restart.sh
    ```
-   
-### Add auth-adapter in a class-path to run a services
-   ```
-   <dependency>
-       <groupId>io.mosip.kernel</groupId>
-       <artifactId>kernel-auth-adapter</artifactId>
-       <version>${kernel.auth.adapter.version}</version>
-   </dependency>
-   ```
 
 ## Configuration
-[Configuration-Admin](https://github.com/mosip/mosip-config/blob/develop/admin-default.properties) and
-[Configuration-Application](https://github.com/mosip/mosip-config/blob/develop/application-default.properties) defined here.
+admin module uses the following configuration files that are accessible in this [repository](https://github.com/mosip/mosip-config/tree/master).
+Please refer to the required released tagged version for configuration.
+[Configuration-Admin](https://github.com/mosip/mosip-config/blob/master/admin-default.properties) and
+[Configuration-Application](https://github.com/mosip/mosip-config/blob/master/application-default.properties) defined here.
 
 ## Deploy
-To deploy Admin on Kubernetes cluster using Dockers refer to [Sandbox Deployment](https://docs.mosip.io/1.2.0/deployment/sandbox-deployment).
+To deploy Admin on Kubernetes cluster using Dockers refer to [Sandbox Deployment](https://docs.mosip.io/1.2.0/deploymentnew/v3-installation).
 
 ## Test
-Automated functional tests available in [Functional Tests repo](https://github.com/mosip/mosip-functional-tests).
+Automated functional tests available in [Functional Tests repo](api-test).
 
 ## APIs
-API documentation is available [here](https://mosip.github.io/documentation/).
+API documentation is available [here](https://mosip.github.io/documentation/1.2.0/1.2.0.html).
 
 ## License
 This project is licensed under the terms of [Mozilla Public License 2.0](LICENSE).
