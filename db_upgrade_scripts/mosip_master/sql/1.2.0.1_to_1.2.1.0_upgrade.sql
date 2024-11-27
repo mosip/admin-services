@@ -146,6 +146,7 @@ VALUES('mosip.auth-type-code.OTP-REQUEST', 'OTP Request', 'eng', true, 'admin', 
 INSERT INTO master.template_type
 (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
 VALUES('mosip.auth-type-code.OTP-AUTH', 'OTP Authentication', 'eng', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+
 INSERT INTO master.template_type
 (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
 VALUES('mosip.auth-type-code.DEMO-AUTH', 'Demo Authentication', 'eng', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
@@ -299,6 +300,7 @@ VALUES('vid-card-download-failure-email-content', 'Failure email to download my 
 INSERT INTO master.template_type
 (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
 VALUES('vid-card-download-request-received_SMS', 'Request received sms to download my VID card', 'fra', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+
 INSERT INTO master.template_type
 (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
 VALUES('vid-card-download-success_SMS', 'Success sms to download my VID card', 'fra', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
@@ -2846,6 +2848,7 @@ VALUES('update-demo-data-regproc-success-purpose', 'Success email subject to sel
 INSERT INTO master.template_type
 (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
 VALUES('update-demo-data-regproc-success-purpose', 'Success email subject to self update demographic data', 'spa', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
+
 INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,module_id,module_name,template_typ_code,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) VALUES
 	 ('2002','Request received email subject to customize and download my card','Request received email subject to customize and download my card','txt','velocity','Reconocimiento: $eventDetails | ID del evento: $eventId | Estado: $status','10006','Resident Services','cust-and-down-my-card-request-received-email-subject','spa',true,'superadmin','2024-09-13 07:15:15.394114',NULL,NULL,false,NULL),
 	 ('2003','Success email subject to customize and download my card','Success email subject to customize and download my card','txt','velocity','Reconocimiento: $eventDetails | ID del evento: $eventId | Estado: $status','10006','Resident Services','cust-and-down-my-card-success-email-subject','spa',true,'superadmin','2024-09-13 07:15:15.394114',NULL,NULL,false,NULL),
@@ -23916,6 +23919,7 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
      UPDATE master.template_type
      SET descr='Receive OTP', is_active=true, cr_by='admin', cr_dtimes='2024-09-13 07:14:20.069', upd_by=NULL, upd_dtimes=NULL, is_deleted=false, del_dtimes=NULL
      WHERE code='receive-otp' AND lang_code='tam';
+
      INSERT INTO master.template_type
      (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
      VALUES('authentication-request-positive-purpose', 'Authentication positive purpose', 'eng', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
@@ -23980,6 +23984,7 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
      (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
      VALUES('authentication-request-positive-summary', 'Authentication positive summary', 'ara', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
 
+///
      INSERT INTO master."template"
      (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
      VALUES('3515', 'Authentication positive summary', 'Authentication positive summary', 'txt', 'velocity', 'تم تنفيذ طلبك للمصادقة بنجاح.', '10006', 'Resident Services', 'authentication-request-positive-summary', 'ara', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);
