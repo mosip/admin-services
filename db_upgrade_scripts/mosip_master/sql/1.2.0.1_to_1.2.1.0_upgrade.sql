@@ -23984,7 +23984,6 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
      (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
      VALUES('authentication-request-positive-summary', 'Authentication positive summary', 'ara', true, 'admin', '2024-09-13 07:14:20.069', NULL, NULL, false, NULL);
 
-///
      INSERT INTO master."template"
      (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
      VALUES('3515', 'Authentication positive summary', 'Authentication positive summary', 'txt', 'velocity', 'تم تنفيذ طلبك للمصادقة بنجاح.', '10006', 'Resident Services', 'authentication-request-positive-summary', 'ara', true, 'superadmin', '2024-09-13 07:15:15.394', NULL, NULL, false, NULL);

@@ -7783,3 +7783,77 @@ WHERE code='authentication-request-positive-summary' AND lang_code='fra';
 DELETE FROM master.template_type
 WHERE code='authentication-request-positive-summary' AND lang_code='ara';
 
+DELETE FROM master."template"
+WHERE template_typ_code = 'authentication-request-positive-summary' AND lang_code = 'ara';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'authentication-request-positive-summary' AND lang_code = 'fra';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'authentication-request-positive-summary' AND lang_code = 'hin';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'authentication-request-positive-summary' AND lang_code = 'tam';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'authentication-request-positive-summary' AND lang_code = 'kan';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'authentication-request-positive-summary' AND lang_code = 'spa';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'authentication-request-negative-purpose' AND lang_code = 'ara';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'authentication-request-negative-purpose' AND lang_code = 'fra';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'authentication-request-negative-purpose' AND lang_code = 'hin';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'authentication-request-negative-purpose' AND lang_code = 'tam';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'authentication-request-negative-purpose' AND lang_code = 'kan';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'authentication-request-negative-purpose' AND lang_code = 'spa';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'authentication-request-positive-purpose' AND lang_code = 'ara';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'authentication-request-positive-purpose' AND lang_code = 'fra';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'authentication-request-positive-purpose' AND lang_code = 'hin';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'authentication-request-positive-purpose' AND lang_code = 'tam';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'authentication-request-positive-purpose' AND lang_code = 'kan';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'authentication-request-positive-purpose' AND lang_code = 'spa';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'authentication-request-positive-purpose' AND lang_code = 'eng';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'gen-or-revoke-vid-success-summary' AND lang_code = 'eng';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'gen-or-revoke-vid-success-summary' AND lang_code = 'fra';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'gen-or-revoke-vid-success-summary' AND lang_code = 'ara';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'gen-or-revoke-vid-success-summary' AND lang_code = 'hin';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'gen-or-revoke-vid-success-summary' AND lang_code = 'kan';
+
+DELETE FROM master."template"
+WHERE template_typ_code = 'gen-or-revoke-vid-success-summary' AND lang_code = 'tam';
