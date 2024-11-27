@@ -1,10 +1,21 @@
 package io.mosip.kernel.masterdata.test.controller;
 
-import static org.mockito.Mockito.doNothing;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
+import io.mosip.kernel.masterdata.dto.DocumentTypePutReqDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.Pagination;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -22,23 +33,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.util.ArrayList;
+import java.util.List;
 
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
-import io.mosip.kernel.masterdata.dto.DocumentTypePutReqDto;
-import io.mosip.kernel.masterdata.dto.request.FilterDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.Pagination;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.test.TestBootApplication;
-import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
-import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
+import static org.mockito.Mockito.doNothing;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
@@ -194,7 +192,7 @@ public class DocumentTypeControllerTest {
 	public void t019deleteDocumentTypeFailTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/documenttypes/CINN"))
-		.andReturn(),"KER-MSD-118");
+		.andReturn(),"KER-MSD-023");
 	}
 	
 	@Test
@@ -282,7 +280,7 @@ public class DocumentTypeControllerTest {
 	public void t015getAllDocumentTypeByLaguageCodeFailTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/documenttypes/eng1"))
-		.andReturn(),"KER-MSD-118");
+		.andReturn(),"KER-MSD-023");
 	}
 	
 	@Test

@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service.impl;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.BlocklistedWordsErrorCode;
+import io.mosip.kernel.masterdata.constant.LanguageErrorCode;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.UpdateQueryConstants;
@@ -146,12 +147,13 @@ public class BlocklistedWordsServiceImpl implements BlocklistedWordsService {
 
 	private void validateLangCode(String langCode) {
 		if (langCode == null || langCode.trim().isEmpty()) {
-			throw new IllegalArgumentException("Language code cannot be null or empty");
+			throw new DataNotFoundException(LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorCode(),
+					LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorMessage());
 		}
 		Set<String> supportedLanguagesSet = new HashSet<>(Arrays.asList(supportedLanguages.split(",")));
 		if (!supportedLanguagesSet.contains(langCode)){
-			throw new DataNotFoundException(BlocklistedWordsErrorCode.BLOCKLISTED_WORDS_INVALID_LANGUAGE_CODE.getErrorCode(),
-					BlocklistedWordsErrorCode.BLOCKLISTED_WORDS_INVALID_LANGUAGE_CODE.getErrorMessage());
+			throw new DataNotFoundException(LanguageErrorCode.INVALID_LANGUAGE_CODE.getErrorCode(),
+					LanguageErrorCode.INVALID_LANGUAGE_CODE.getErrorMessage());
 		}
 	}
 
