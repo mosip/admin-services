@@ -9,7 +9,6 @@ package io.mosip.kernel.masterdata.constant;
  */
 public enum BlocklistedWordsErrorCode {
 	NO_BLOCKLISTED_WORDS_FOUND("KER-MSD-008", "Blocklisted word not found"),
-	BLOCKLISTED_WORDS_INVALID_LANGUAGE_CODE("KER-MSD-023", "Invalid language code"),
 	DUPLICATE_BLOCKLISTED_WORDS_FOUND("KER-MSD-071", "Duplicate Blocklisted word request"),
 	BLOCKLISTED_WORDS_FETCH_EXCEPTION("KER-MSD-007", "Error occurred while fetching Blocklisted words"),
 	BLOCKLISTED_WORDS_INSERT_EXCEPTION("KER-MSD-070", "Error occurred while inserting Blocklisted words"),

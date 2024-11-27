@@ -315,7 +315,7 @@ public class DocumentCategoryControllerTest {
 	@WithUserDetails("global-admin")
 	public void testGetAllDocumentCategoriesByLanguageCode_InvalidLanguage_Error() throws Exception {
 
-		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/eng1")).andReturn(),"KER-MSD-014");
+		 MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/eng1")).andReturn(),"KER-MSD-023");
 	}
 
 	@Test
