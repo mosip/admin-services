@@ -1,3 +1,35 @@
+-- Rollback script for master.app_detail
+INSERT INTO master.app_detail SELECT * FROM master.app_detail_bkp;
+ALTER TABLE master.app_detail ALTER COLUMN lang_code SET NOT NULL;
+ALTER TABLE master.app_detail DROP CONSTRAINT pk_appdtl_id;
+ALTER TABLE master.app_detail ADD CONSTRAINT pk_appdtl_id PRIMARY KEY (id, lang_code);
+DROP TABLE IF EXISTS master.app_detail_bkp;
+
+-- Rollback script for master.biometric_attribute
+INSERT INTO master.biometric_attribute SELECT * FROM master.biometric_attribute_bkp;
+ALTER TABLE master.biometric_attribute ALTER COLUMN lang_code SET NOT NULL;
+ALTER TABLE master.biometric_attribute DROP CONSTRAINT pk_bmattr_code;
+ALTER TABLE master.biometric_attribute ADD CONSTRAINT pk_bmattr_code PRIMARY KEY (code, lang_code);
+DROP TABLE IF EXISTS master.biometric_attribute_bkp;
+
+-- Rollback script for master.module_detail
+INSERT INTO master.module_detail SELECT * FROM master.module_detail_bkp;
+ALTER TABLE master.module_detail ALTER COLUMN lang_code SET NOT NULL;
+ALTER TABLE master.module_detail DROP CONSTRAINT pk_moddtl_code;
+ALTER TABLE master.module_detail ADD CONSTRAINT pk_moddtl_code PRIMARY KEY (id, lang_code);
+DROP TABLE IF EXISTS master.module_detail;
+
+-- Rollback script for master.template_file_format
+INSERT INTO master.template_file_format SELECT * FROM master.template_file_format_bkp;
+ALTER TABLE master.template DROP CONSTRAINT IF EXISTS fk_tmplt_tffmt CASCADE;
+ALTER TABLE master.template_file_format ALTER COLUMN lang_code SET NOT NULL;
+ALTER TABLE master.template_file_format DROP CONSTRAINT pk_tffmt_code;
+ALTER TABLE master.template_file_format ADD CONSTRAINT pk_tffmt_code PRIMARY KEY (code, lang_code);
+DROP TABLE IF EXISTS master.template_file_format;
+
+-- Rollback script for master.template
+ALTER TABLE master.template ADD CONSTRAINT fk_tmplt_tffmt FOREIGN KEY (file_format_code, lang_code) REFERENCES master.template_file_format (code, lang_code);
+
 -- ------------------------------------------------------------------------------------------
 -- Rollback script for Migrating Spring batch version to 5.0 as part of Java 21 Migration.
 -- ------------------------------------------------------------------------------------------
