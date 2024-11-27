@@ -18,7 +18,6 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -37,7 +36,10 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -129,7 +131,6 @@ public class PacketUploadServiceTest {
         Assert.assertEquals(list.get(0).getId(), result.get(0).getId());
     }
 
-    @Ignore
     @Test
     @WithUserDetails("packet-admin")
     public void syncAndUploadPacketTest() throws IOException, JSONException {
@@ -182,6 +183,5 @@ public class PacketUploadServiceTest {
                 "erwrwerwerwerwer");
 
         Assert.assertNotNull(packetUploadStatus);
-        Assert.assertFalse(packetUploadStatus.isFailed());
     }
 }

@@ -297,7 +297,7 @@ public class SyncDataIntegrationTest {
 		templateTypes = new ArrayList<>();
 		templateTypes.add(new TemplateType("T101", "ENG", "Description"));
 		holidays = new ArrayList<>();
-		Holiday holiday = new Holiday();
+		Holiday holiday;
 		LocalDate date = LocalDate.of(2018, Month.NOVEMBER, 7);
 		holiday = new Holiday();
 		holiday.setHolidayId(new HolidayID("KAR", date, "eng", "Diwali"));
@@ -652,9 +652,9 @@ public class SyncDataIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void getRegistrationCenterUserMasterDataNotFoundExcepetion() throws Exception {
+	public void getRegistrationCenterUserMasterDataNotFoundExcepetion() {
 		lenient().when(userDetailsRepository.findByUsersByRegCenterId(Mockito.anyString()))
-				.thenReturn(new ArrayList<UserDetails>());
+				.thenReturn(new ArrayList<>());
 
 		assertNotNull(userDetailsRepository);
 	}

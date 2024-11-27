@@ -86,7 +86,7 @@ public class WebsubCallbackControllerTest {
 	
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t001handleCACertificateTest() throws Exception {
+	public void testHandleCACertificate_shouldUploadCertificate() {
 
 		Map<String, Object> data = new HashMap<>();
 		data.put(PARTNER_DOMAIN, "DEVICE");
@@ -115,7 +115,7 @@ public class WebsubCallbackControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t002handleCACertificateTest() throws Exception {
+	public void testHandleCACertificate_shouldHandleError() throws Exception {
 
 		Map<String, Object> data = new HashMap<>();
 		data.put(PARTNER_DOMAIN, "DEVICE");
@@ -147,7 +147,7 @@ public class WebsubCallbackControllerTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void t003handleCACertificateTest() throws Exception {
+	public void testHandleCACertificate_shouldUploadCACertificate() {
 
 		Map<String, Object> data = new HashMap<>();
 		data.put(PARTNER_DOMAIN, "DEVICE");
