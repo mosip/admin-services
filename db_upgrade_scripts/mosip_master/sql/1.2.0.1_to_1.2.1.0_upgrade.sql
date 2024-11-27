@@ -2,10 +2,6 @@
 ALTER TABLE master.template DROP CONSTRAINT IF EXISTS fk_tmplt_tffmt CASCADE;
 ALTER TABLE master.template_file_format DROP CONSTRAINT IF EXISTS pk_tffmt_code CASCADE;
 ALTER TABLE master.template_file_format ALTER COLUMN lang_code DROP NOT NULL;
-ALTER TABLE master.template_file_format ADD CONSTRAINT pk_tffmt_code PRIMARY KEY (code);
-
--- Upgrade script for master.template
-ALTER TABLE master.template ADD CONSTRAINT fk_tmplt_tffmt FOREIGN KEY (file_format_code) REFERENCES master.template_file_format (code);
 
 INSERT INTO master.language
 (code, "name", "family", native_name, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)

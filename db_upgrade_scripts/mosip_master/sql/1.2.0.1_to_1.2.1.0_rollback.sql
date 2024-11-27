@@ -5,9 +5,6 @@ ALTER TABLE master.template DROP CONSTRAINT IF EXISTS fk_tmplt_tffmt;
 -- Restore the NOT NULL constraint on lang_code
 ALTER TABLE master.template_file_format ALTER COLUMN lang_code SET NOT NULL;
 
--- Drop and restore the original primary key constraint
-ALTER TABLE master.template_file_format DROP CONSTRAINT IF EXISTS pk_tffmt_code CASCADE;
-
 -- Re-add the original primary key constraint if needed
 -- Assuming the original primary key was on (code, lang_code)
 ALTER TABLE master.template_file_format ADD CONSTRAINT pk_tffmt_code PRIMARY KEY (code, lang_code);
