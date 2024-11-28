@@ -315,7 +315,7 @@ public class BlockListedWordsControllerTest {
 	public void t014getAllBlockListedWordByLangCodeFailTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/blocklistedwords/eng1")).andReturn(),
-				"KER-MSD-008");
+				"KER-MSD-023");
 	}
 
 	@Test
