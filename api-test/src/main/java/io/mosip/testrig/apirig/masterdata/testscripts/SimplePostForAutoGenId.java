@@ -91,6 +91,10 @@ public class SimplePostForAutoGenId extends AdminTestUtil implements ITest {
 					GlobalConstants.TARGET_ENV_HEALTH_CHECK_FAILED + HealthChecker.healthCheckFailureMapS);
 		}
 		
+		if (testCaseName.contains("UserCenterMapping_")) {
+			System.out.print("Done");
+		}
+		
 		String[] templateFields = testCaseDTO.getTemplateFields();
 		String inputJson = "";
 
