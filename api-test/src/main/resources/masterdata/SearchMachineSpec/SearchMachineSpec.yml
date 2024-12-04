@@ -112,12 +112,11 @@ SearchMachineSpec:
       output: '{
 	"data": [{
 	"id": "$IGNORE$",
-	"name": "HP",
+	"name": "$IGNORE$",
 	"brand": "HP",
 	"model": "1234",
 	"machineTypeCode": "$IGNORE$",
 	"minDriverversion": "3.2",
-	"description": "HP brand",
 	"isActive": "$IGNORE$"
 	}]
 }'

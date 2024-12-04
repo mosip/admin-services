@@ -99,8 +99,8 @@ public class MosipTestRunner {
 			BaseTestCase.mapUserToZone();
 			BaseTestCase.mapZone();
 			AdminTestUtil.getLocationLevelData();
-			AdminTestUtil.getLocationData();
 			AdminTestUtil.getZoneName();
+			AdminTestUtil.getLeafZone();
 
 			for (int i = 0; i < localLanguageList.size(); i++) {
 				BaseTestCase.languageList.clear();
@@ -117,8 +117,6 @@ public class MosipTestRunner {
 		} catch (Exception e) {
 			LOGGER.error("Exception " + e.getMessage());
 		}
-
-		OTPListener.bTerminate = true;
 
 		if (BaseTestCase.isTargetEnvLTS())
 			HealthChecker.bTerminate = true;
@@ -144,8 +142,6 @@ public class MosipTestRunner {
 		BaseTestCase.currentModule = GlobalConstants.MASTERDATA;
 		BaseTestCase.setReportName(GlobalConstants.MASTERDATA);
 		AdminTestUtil.initiateMasterDataTest();
-		BaseTestCase.otpListener = new OTPListener();
-		BaseTestCase.otpListener.run();
 	}
 	
 	
