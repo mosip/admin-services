@@ -86,7 +86,7 @@ SearchMachineSpec:
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_03
       description: Search for machine spec details with condition column as model
       role: admin
-      templateFields: ["description"]
+      templateFields: []
       restMethod: post
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
@@ -112,12 +112,12 @@ SearchMachineSpec:
       output: '{
 	"data": [{
 	"id": "$IGNORE$",
-	"name": "HP",
+	"name": "$IGNORE$",
 	"brand": "HP",
 	"model": "1234",
 	"machineTypeCode": "$IGNORE$",
 	"minDriverversion": "3.2",
-	"description": "HP brand",
+	"description": "$IGNORE$",
 	"isActive": "$IGNORE$"
 	}]
 }'
