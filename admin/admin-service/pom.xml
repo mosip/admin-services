@@ -7,17 +7,18 @@
 	<parent>
 		<groupId>io.mosip.admin</groupId>
 		<artifactId>admin-parent</artifactId>
-		<version>1.3.0-SNAPSHOT</version>
+		<version>1.3.0-beta.1</version>
 	</parent>
 	<artifactId>admin-service</artifactId>
 	<name>admin-service</name>
-	<version>1.3.0-SNAPSHOT</version>
+	<version>1.3.0-beta.1</version>
 	<url>http://maven.apache.org</url>
 	<packaging>jar</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<springdoc.version>1.8.0</springdoc.version>
-		<kernel.version>1.3.0-SNAPSHOT</kernel.version>
+		<mosip.commons.packetmanager.version>1.3.0-beta.1</mosip.commons.packetmanager.version>
+		<kernel.core.version>1.3.0-beta.1</kernel.core.version>
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
 		<maven.compiler.version>3.8.0</maven.compiler.version>
@@ -28,13 +29,15 @@
 		<maven.sonar.plugin.version>3.7.0.1746</maven.sonar.plugin.version>
 		<maven-shade-plugin.version>2.3</maven-shade-plugin.version>
 		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
+		<mosip.biometric.util.version>1.3.0-beta.1</mosip.biometric.util.version>
+		<mosip.openid.bridge.version>1.3.0-beta.1</mosip.openid.bridge.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>io.mosip.kernel</groupId>
 				<artifactId>kernel-bom</artifactId>
-				<version>1.3.0-SNAPSHOT</version>
+				<version>${kernel.core.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -50,7 +53,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
-			<version>${kernel.version}</version>
+			<version>${kernel.core.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.logging.log4j</groupId>
@@ -87,7 +90,7 @@
 	    <dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-authcodeflowproxy-api</artifactId>
-			<version>${kernel.version}</version>
+			<version>${mosip.openid.bridge.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>io.mosip.kernel</groupId>
@@ -98,7 +101,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-dataaccess-hibernate</artifactId>
-			<version>${kernel.version}</version>
+			<version>${kernel.core.version}</version>
 		</dependency>
 		<dependency>
 	      <groupId>org.springframework.boot</groupId>
@@ -135,7 +138,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idvalidator-rid</artifactId>
-			<version>${kernel.version}</version>
+			<version>${kernel.core.version}</version>
    		</dependency>
 		<dependency>
 			<groupId>org.springdoc</groupId>
@@ -145,7 +148,7 @@
 		<dependency>
 			<groupId>io.mosip.commons</groupId>
 			<artifactId>commons-packet-manager</artifactId>
-			<version>${kernel.version}</version>
+			<version>${mosip.commons.packetmanager.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.cloud</groupId>
@@ -191,12 +194,12 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-cbeffutil-api</artifactId>
-			<version>${kernel.version}</version>
+			<version>${mosip.biometric.util.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.biometric.util</groupId>
 			<artifactId>biometrics-util</artifactId>
-			<version>${kernel.version}</version>
+			<version>${mosip.biometric.util.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -298,7 +301,7 @@
 	<dependency>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-auth-adapter</artifactId>
-		<version>${project.version}</version>
+		<version>${mosip.openid.bridge.version}</version>
 	</dependency>
 	<dependency>
 		<groupId>io.netty</groupId>

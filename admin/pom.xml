@@ -6,7 +6,7 @@
 
 	<groupId>io.mosip.admin</groupId>
 	<artifactId>admin-parent</artifactId>
-	<version>1.3.0-SNAPSHOT</version>
+	<version>1.3.0-beta.1</version>
 	<packaging>pom</packaging>
 
 	<name>admin</name>
@@ -162,6 +162,8 @@
 		<byte.buddy.version>1.9.12</byte.buddy.version>
 		<io.jsonwebtoken.jjwt.version>0.6.0</io.jsonwebtoken.jjwt.version>
 		<apache.directory.api.version>2.0.0.AM2</apache.directory.api.version>
+		<kernel.core.version>1.3.0-beta.1</kernel.core.version>
+		<mosip.openid.bridge.version>1.3.0-beta.1</mosip.openid.bridge.version>
 
 		<sonar.coverage.exclusions>**/repositories/**,**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**,**/*Util.java,**/helper/beans/**,**/OptionalFilter.java,**/*Enum.java,**/validator.registereddevice/**,**/DeviceProvider*.java,**/DeviceRegister*.java,**/FoundationalTrustProvider*.java,**/GenderType*.java,**/IndividualType*.java,**/MOSIPDeviceService*.java,**/RegisteredDevice*.java,**/RegistrationCenterDeviceHistoryServiceImpl.java,**/RegistrationCenterMachineUserServiceHistoryImpl.java</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
@@ -171,7 +173,7 @@
 			<dependency>
 				<groupId>io.mosip.kernel</groupId>
 				<artifactId>kernel-bom</artifactId>
-				<version>1.3.0-SNAPSHOT</version>
+				<version>${kernel.core.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -199,7 +201,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-logger-logback</artifactId>
-			<version>1.3.0-SNAPSHOT</version>
+			<version>${kernel.core.version}</version>
 		</dependency>
 
 	</dependencies>
@@ -241,7 +243,7 @@
 					<dependency>
 						<groupId>io.mosip.kernel</groupId>
 						<artifactId>kernel-auth-adapter</artifactId>
-						<version>${project.version}</version>
+						<version>${mosip.openid.bridge.version}</version>
 					</dependency>
 				</dependencies>
 				<build>
