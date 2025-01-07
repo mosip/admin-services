@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import io.mosip.admin.bulkdataupload.entity.id.ValidDocumentID;
 import io.mosip.admin.validator.DocCatCode;
 import io.mosip.admin.validator.DocTypeCode;
+import io.mosip.admin.bulkdataupload.constant.ErrorConstants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -46,12 +47,12 @@ public class ValidDocument extends BaseEntity implements Serializable {
 
 	@Id
     @Column(name = "doctyp_code", nullable = false, length = 36)
-	@DocTypeCode(message = "docType is Invalid")
+	@DocTypeCode(message = ErrorConstants.INVALID_DOC_TYPE_CODE)
 	private String docTypeCode;
 
 	@Id
 	@Column(name = "doccat_code", nullable = false, length = 36)
-	@DocCatCode(message = "docCategory is Invalid")
+	@DocCatCode(message = ErrorConstants.INVALID_DOC_CAT_CODE)
 	private String docCategoryCode;
 
 	@ManyToOne(fetch = FetchType.LAZY)
