@@ -5,6 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import io.mosip.admin.bulkdataupload.constant.ErrorConstants;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -15,7 +16,7 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DocCatCode {
 
-	String message() default "docCategory is Invalid";
+	String message() default ErrorConstants.INVALID_DOC_CAT_CODE;
 	
 	Class<?>[] groups() default {};
 

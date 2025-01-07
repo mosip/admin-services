@@ -9,6 +9,8 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
+import io.mosip.admin.bulkdataupload.constant.ErrorConstants;
+
 
 
 
@@ -18,7 +20,7 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DocTypeCode {
 
-	String message() default "docType is Invalid";
+	String message() default ErrorConstants.INVALID_DOC_TYPE_CODE;
 	
 	Class<?>[] groups() default {};
 
