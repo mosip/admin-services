@@ -112,7 +112,7 @@ public class AdminControllerTest {
 
 	@Test
 	@WithUserDetails(value = "zonal-admin")
-	public void t002lostRidTest() throws Exception {
+	public void lostRid_withValidInput_thenFail() throws Exception {
 		String str = "{\r\n    \"id\": null,\r\n    \"version\": null,\r\n    \"responsetime\": \"2019-12-02T09:45:24.512Z\",\r\n    \"metadata\": null,\r\n    \"response\": [{\"registrationId\":\"1234\",\"registrationDate\":\"2022-09-14 16:29:13,436\"}],\r\n    \"errors\": []\r\n}";
 		searchInfoReq.getRequest().setSort(new ArrayList<SortInfo>());
 
@@ -128,7 +128,7 @@ public class AdminControllerTest {
 
 	@Test
 	@WithUserDetails(value = "zonal-admin")
-	public void t003lostRidDetailsTest() throws Exception {
+	public void lostRid_withValidInput_thenPass() throws Exception {
 		String str = "{\"id\":null,\"version\":null,\"responsetime\":\"2023-07-19T05:58:54.874Z\",\"metadata\":null,\"response\":{\"fields\":{\"fullName\":\"[ {\\n  \\\"language\\\" : \\\"eng\\\",\\n  \\\"value\\\" : \\\"test new 2\\\"\\n}, {\\n  \\\"language\\\" : \\\"fra\\\",\\n  \\\"value\\\" : \\\"test new 2\\\"\\n} ]\",\"dateOfBirth\":\"1995/01/01\"}},\"errors\":[]}";
 		String biometricResponse = new String(Files.readAllBytes(Paths.get(getClass().getResource("/biometricApiResponse.json").toURI())), StandardCharsets.UTF_8);
 
