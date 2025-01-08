@@ -1,9 +1,13 @@
 package io.mosip.kernel.masterdata.test;
 
-import io.mosip.kernel.masterdata.test.config.TestConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
+
+import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
+import io.mosip.kernel.masterdata.test.config.TestConfig;
+import io.mosip.kernel.masterdata.test.config.TestSecurityConfig;
 
 /**
  * Main class of Sync handler Application.
@@ -12,10 +16,17 @@ import org.springframework.context.annotation.Import;
  * @since 1.0.0
  */
 
-@SpringBootApplication(scanBasePackages = "io.mosip.kernel.masterdata.*")
-@Import(TestConfig.class)
+@SpringBootApplication
+@ComponentScan(basePackages = {"io.mosip.kernel.masterdata.*","io.mosip.kernel.core.datamapper.*",
+		"io.mosip.kernel.core.websub.*","io.mosip.kernel.idgenerator.*"
+		,"io.mosip.kernel.websub.api.*","io.mosip.kernel.applicanttype.*","io.mosip.kernel.core.idgenerator.*"}
+//,excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {HibernateDaoConfig.class})
+)
+@Import(value = {TestConfig.class, TestSecurityConfig.class, HibernateDaoConfig.class})
 //@Profile("test")
 //@Import(TestSecurityConfig.class)
+//@EnableJpaRepositories(basePackages = {"io.mosip.kernel.masterdata.repository"})
+//@EntityScan(basePackages = {"io.mosip.kernel.masterdata.entity"})
 public class TestBootApplication {
 
 	/**

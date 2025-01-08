@@ -1,33 +1,14 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.*;
-
-import javax.transaction.Transactional;
-
-import io.mosip.kernel.masterdata.dto.response.FilterResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Service;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.DocumentTypeErrorCode;
+import io.mosip.kernel.masterdata.constant.LanguageErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypePutReqDto;
-import io.mosip.kernel.masterdata.dto.MissingCodeDataDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
@@ -42,6 +23,7 @@ import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResult;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.DocumentType;
@@ -62,6 +44,32 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
+import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.Collections;
+import java.util.Objects;
 
 /**
  * This class have methods to fetch list of valid document type, create document
@@ -111,6 +119,9 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
 	@Autowired
 	private AuditUtil auditUtil;
+
+	@Value("${mosip.supported-languages}")
+	private String supportedLanguages;
 	
 	/*
 	 * (non-Javadoc)
@@ -403,6 +414,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	@Cacheable(value = "document-type", key = "'documenttype'.concat('-').concat(#langCode)", condition = "#langCode != null")
 	@Override
 	public DocumentTypeResponseDto getAllDocumentTypeByLaguageCode(String langCode) {
+		validateLangCode(langCode.toLowerCase());
 		DocumentTypeResponseDto documentTypeResponseDto = new DocumentTypeResponseDto();
 		List<DocumentTypeDto> documentTypeDtoList = new ArrayList<>();
 		List<DocumentType> documentTypesList = null;
@@ -426,6 +438,18 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		}
 		documentTypeResponseDto.setDocumenttypes(documentTypeDtoList);
 		return documentTypeResponseDto;
+	}
+
+	private void validateLangCode(String langCode) {
+		if (langCode == null || langCode.trim().isEmpty()) {
+			throw new DataNotFoundException(LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorCode(),
+					LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorMessage());
+		}
+		Set<String> supportedLanguagesSet = new HashSet<>(Arrays.asList(supportedLanguages.split(",")));
+		if (!supportedLanguagesSet.contains(langCode)){
+			throw new DataNotFoundException(LanguageErrorCode.INVALID_LANGUAGE_CODE.getErrorCode(),
+					LanguageErrorCode.INVALID_LANGUAGE_CODE.getErrorMessage());
+		}
 	}
 
 	@CacheEvict(value = "document-type", allEntries = true)

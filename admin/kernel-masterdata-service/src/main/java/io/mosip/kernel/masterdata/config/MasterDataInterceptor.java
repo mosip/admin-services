@@ -3,9 +3,9 @@ package io.mosip.kernel.masterdata.config;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 
-import javax.persistence.Embeddable;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;

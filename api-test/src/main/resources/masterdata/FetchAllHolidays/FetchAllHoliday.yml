@@ -1,0 +1,16 @@
+FetchAllHoliday:
+   MasterData_FetchAllHoliday_valid_smoke:
+      endPoint: /v1/masterdata/holidays/all
+      uniqueIdentifier: TC_Masterdata_FetchAllHoliday_01
+      description: Retrieve All Holiday details with valid data
+      role: admin
+      restMethod: get
+      inputTemplate: masterdata/FetchAllHoliday/fetchAllHoliday
+      outputTemplate: masterdata/FetchAllHoliday/fetchAllHolidayResult
+      input: '{
+}'
+      output: '{
+"data": [{
+        
+      }]
+}'

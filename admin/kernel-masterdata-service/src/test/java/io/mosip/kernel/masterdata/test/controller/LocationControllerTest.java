@@ -1,10 +1,17 @@
 package io.mosip.kernel.masterdata.test.controller;
 
-import static org.mockito.Mockito.doNothing;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.dto.LocationCreateDto;
+import io.mosip.kernel.masterdata.dto.LocationPutDto;
+import io.mosip.kernel.masterdata.dto.request.*;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -22,23 +29,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.util.ArrayList;
+import java.util.List;
 
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.dto.LocationCreateDto;
-import io.mosip.kernel.masterdata.dto.LocationPutDto;
-import io.mosip.kernel.masterdata.dto.request.FilterDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.Pagination;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.test.TestBootApplication;
-import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
-import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
+import static org.mockito.Mockito.doNothing;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
@@ -130,23 +124,23 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t029getLocationHierarchyDetailsTest() throws Exception {
+	public void getLocationHierarchyDetailsTest_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/eng")).andReturn(),
-				null);
+				"KER-MSD-025");
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001getLocationHierarchyDetailsFailTest() throws Exception {
+	public void getLocationHierarchyDetailsFailTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/eng1")).andReturn(),
-				"KER-MSD-026");
+				"KER-MSD-025");
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t029getLocationHierarchyByLangCodeTest() throws Exception {
+	public void getLocationHierarchyByLangCodeTest() throws Exception {
 
 		MasterDataTest
 				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/14022/eng")).andReturn(), null);
@@ -154,7 +148,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t029getLocationHierarchyByLangCodeTest1() throws Exception {
+	public void getLocationHierarchy_ByLangCodeEng_Test() throws Exception {
 
 		MasterDataTest
 				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/BNMR/ara")).andReturn(), null);
@@ -163,16 +157,16 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t029getLocationHierarchyByLangCodeTest2() throws Exception {
+	public void getLocationHierarchy_Fail() throws Exception {
 
 		MasterDataTest
-				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/MOGR/eng")).andReturn(), null);
+				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/MOGR/eng")).andReturn(), "KER-MSD-026");
 	}
 	
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002getLocationHierarchyByLangCodeFailTest() throws Exception {
+	public void getLocationHierarchy_ByInvalidLangCode_Test() throws Exception {
 
 		MasterDataTest
 				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/10000/eng1")).andReturn(), "KER-MSD-026");
@@ -180,7 +174,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t003getLocationHierarchyByLangCodeFailTest1() throws Exception {
+	public void getLocationHierarchyByLangCodeFailTest() throws Exception {
 
 		MasterDataTest
 				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/10600/eng")).andReturn(), "KER-MSD-026");
@@ -188,7 +182,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t028getLocationDetailsByLangCodeTest() throws Exception {
+	public void getLocationDetailsByLangCodeTest() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/locations/info/KTA/eng")).andReturn(), null);
@@ -196,7 +190,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t027getLocationDetailsByLangCodeTest() throws Exception {
+	public void getLocationDetails_ByInvalidLangCode_Test() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/locations/info/11111/eng1")).andReturn(), "KER-MSD-026");
@@ -204,7 +198,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t026getLocationDetailsByLangCodeFailTest1() throws Exception {
+	public void getLocationDetailsByLangCodeFailTest() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/locations/info/10600/eng")).andReturn(), "KER-MSD-026");
@@ -212,7 +206,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t025getLocationDataByHierarchyNameTest() throws Exception {
+	public void getLocationDataByHierarchyNameTest() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/locations/locationhierarchy/Region")).andReturn(), null);
@@ -220,7 +214,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t004getLocationDataByHierarchyNameFailTest() throws Exception {
+	public void getLocationDataByHierarchyNameFailTest() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/locations/locationhierarchy/aa")).andReturn(), "KER-MSD-026");
@@ -228,7 +222,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t024updateLocationStatusTest() throws Exception {
+	public void updateLocationStatusTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.patch("/locations").param("code", "KNT").param("isActive", "true"))
@@ -237,7 +231,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t023updateLocationHierarchyDetailsTest() throws Exception {
+	public void updateLocationHierarchyDetails_WithoutLangCode_Test() throws Exception {
 		locationRequestDto.getRequest().setCode("MOR");
 		locationRequestDto.getRequest().setName("MyCountry");
 		MasterDataTest.checkResponse(
@@ -248,7 +242,7 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t027updateLocationHierarchyDetailsTest() throws Exception {
+	public void updateLocationHierarchyDetails_WithLangCode_Test() throws Exception {
 		locationRequestDto.getRequest().setCode("MOR");
 		locationRequestDto.getRequest().setName("MyCountry");
 		locationRequestDto.getRequest().setHierarchyLevel((short)0);
@@ -262,7 +256,7 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t023updateLocationHierarchyDetailsTest1() throws Exception {
+	public void updateLocationHierarchyDetailsTest() throws Exception {
 		locationRequestDto.getRequest().setCode("MOR1");
 		locationRequestDto.getRequest().setName("MyCountry1");
 		locationRequestDto.getRequest().setParentLocCode("MOR");
@@ -274,7 +268,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t022updateLocationHierarchyDetailsFailTest() throws Exception {
+	public void updateLocationHierarchyDetailsFail_WithoutHierarchyLevel_Test() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/locations").contentType(MediaType.APPLICATION_JSON)
@@ -286,7 +280,7 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t022updateLocationHierarchyDetailsFailTest1() throws Exception {
+	public void updateLocationHierarchyDetailsFail_WithHierarchyLevel_Test() throws Exception {
 		locationRequestDto.getRequest().setHierarchyLevel((short)8);
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/locations").contentType(MediaType.APPLICATION_JSON)
@@ -298,7 +292,7 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t005createLocationHierarchyDetailsFailTest1() throws Exception {
+	public void createLocationHierarchyDetailsFailTest() throws Exception {
 		locationCreateDtoReq.getRequest().setCode("00009");
 		locationCreateDtoReq.getRequest().setHierarchyLevel((short)9);
 		locationCreateDtoReq.getRequest().setHierarchyName("check");
@@ -311,7 +305,7 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t023updateLocationHierarchyDetailsTest2() throws Exception {
+	public void updateLocationHierarchyDetails_WithHierarchyLevel_Test() throws Exception {
 		locationRequestDto.getRequest().setCode("MOR1");
 		locationRequestDto.getRequest().setName("MyCountry1");
 		locationRequestDto.getRequest().setParentLocCode("MOR");
@@ -325,7 +319,7 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t023updateLocationHierarchyDetailsTest3() throws Exception {
+	public void updateLocationHierarchyDetails_WithHierarchyName_Test() throws Exception {
 		locationRequestDto.getRequest().setCode("RSK");
 		locationRequestDto.getRequest().setName("Rabat Sale Kenitra");
 		locationRequestDto.getRequest().setParentLocCode("MOR");
@@ -339,7 +333,7 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t005createLocationHierarchyDetailsTest() throws Exception {
+	public void createLocationHierarchyDetailsTest() throws Exception {
 		LocationCreateDto createDto = new LocationCreateDto();
 		createDto.setCode("11111");
 		createDto.setHierarchyLevel((short) 0);
@@ -358,7 +352,7 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t005createLocationHierarchyDetailsTest4() throws Exception {
+	public void createLocationHierarchy_WithDuplicateDetails_Test() throws Exception {
 		LocationCreateDto createDto = new LocationCreateDto();
 		createDto.setCode("11111");
 		createDto.setHierarchyLevel((short) 0);
@@ -377,7 +371,7 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t005createLocationHierarchyDetailsTest1() throws Exception {
+	public void createLocationHierarchyDetailsTest_WithHierarchyLevel() throws Exception {
 		LocationCreateDto createDto = new LocationCreateDto();
 		createDto.setCode("11112");
 		createDto.setHierarchyLevel((short) 1);
@@ -396,7 +390,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t006createLocationHierarchyDetailsFailTest() throws Exception {
+	public void createLocationHierarchyDetailsFail_Test() throws Exception {
 		locationCreateDtoReq.getRequest().setParentLocCode("qa");
 		MasterDataTest
 				.checkResponse(
@@ -409,7 +403,7 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t006createLocationHierarchyDetailsFailTest1() throws Exception {
+	public void createLocationHierarchyDetailsFail_WithInvalidInput_Test() throws Exception {
 		
 		MasterDataTest
 				.checkResponse(
@@ -422,7 +416,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t007createLocationHierarchyDetailsFailTest2() throws Exception {
+	public void createLocationHierarchyDetailsFail_WithCodeAndName_Test() throws Exception {
 		locationCreateDtoReq.getRequest().setHierarchyLevel((short) 1 );
 		locationCreateDtoReq.getRequest().setCode("20000");
 		locationCreateDtoReq.getRequest().setName("20000");
@@ -434,7 +428,7 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t007createLocationHierarchyDetailsTest() throws Exception {
+	public void createLocationHierarchyDetails_WithLangCode_Test() throws Exception {
 		locationCreateDtoReq.getRequest().setHierarchyLevel((short) 0 );
 		locationCreateDtoReq.getRequest().setHierarchyName("Country");
 		locationCreateDtoReq.getRequest().setLangCode("eng");
@@ -446,7 +440,7 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t007createLocationHierarchyDetailsTest1() throws Exception {
+	public void createLocationHierarchyDetails_WithZoneCode_Test() throws Exception {
 		locationCreateDtoReq.getRequest().setHierarchyLevel((short) 1 );
 		locationCreateDtoReq.getRequest().setHierarchyName("Region");
 		locationCreateDtoReq.getRequest().setLangCode("eng");
@@ -460,7 +454,7 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t007createLocationHierarchyDetailsFailTest3() throws Exception {
+	public void createLocationHierarchyDetailsFail_withInvalidZone_Test() throws Exception {
 		locationCreateDtoReq.getRequest().setHierarchyLevel((short) 1 );
 		locationCreateDtoReq.getRequest().setCode("RSK");
 		locationCreateDtoReq.getRequest().setName("RSK");
@@ -471,7 +465,7 @@ public class LocationControllerTest {
 	}
 	@Test
 	@WithUserDetails("global-admin")
-	public void t019getLocationsTest() throws Exception {
+	public void getLocationsTest_Success() throws Exception {
 
 		MasterDataTest
 				.checkResponse(mockMvc
@@ -482,7 +476,7 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t019getLocationsFailTest() throws Exception {
+	public void getLocationsTest_Fail() throws Exception {
 
 		MasterDataTest
 				.checkResponse(mockMvc
@@ -493,7 +487,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t008getLocationsTest() throws Exception {
+	public void getAllLocationsTest_Success() throws Exception {
 
 		MasterDataTest
 				.checkResponse(mockMvc
@@ -504,7 +498,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t018getLocationCodeByLangCodeTest() throws Exception {
+	public void getLocationCodeByLangCodeTest_Success() throws Exception {
 
 		MasterDataTest
 				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/level/eng")).andReturn(), null);
@@ -512,7 +506,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t009getLocationCodeByLangCodeFailTest() throws Exception {
+	public void getLocationCodeByLangCodeTest_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/locations/level/eng1")).andReturn(), "KER-MSD-026");
@@ -521,17 +515,17 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t010getMissingLocationDetailsFailTest() throws Exception {
+	public void getMissingLocationDetailsTest_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.get("/locations/missingids").param("langcode", "eng1").param("fieldName", "name"))
-				.andReturn(), "KER-MSD-026");
+				.andReturn(), "KER-MSD-025");
 	}
 	
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t010getMissingLocationDetailsTest() throws Exception {
+	public void getMissingLocationDetailsTest_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.get("/locations/missingids/eng").param("fieldName", "name"))
@@ -540,7 +534,7 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t011validateLocationNameTest() throws Exception {
+	public void validateLocationNameTest_Success() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/locations/validate/10000")).andReturn(), null);
@@ -548,7 +542,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t012getImmediateChildrenByLocCodeAndLangCodeTest() throws Exception {
+	public void getImmediateChildrenByLocCodeAndLangCodeTest_Success() throws Exception {
 
 		MasterDataTest
 				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/RSK/eng")).andReturn(), null);
@@ -556,7 +550,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t013getImmediateChildrenByLocCodeAndLangCodeFailTest() throws Exception {
+	public void getImmediateChildrenByLocCodeAndLangCodeTest_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/1001/eng")).andReturn(),
 				"KER-MSD-026");
@@ -565,7 +559,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t014searchLocationTest() throws Exception {
+	public void searchLocationTest_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/locations/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoRq))).andReturn(),
@@ -574,7 +568,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t015searchLocationTest() throws Exception {
+	public void searchLocationTest() throws Exception {
 		//searchDtoRq
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/locations/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoRq))).andReturn(),
@@ -584,7 +578,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t017locationFilterValuesTest() throws Exception {
+	public void locationFilterValuesTest_Success() throws Exception {
 		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.ALL.toString());
 		MasterDataTest
 				.checkResponse(mockMvc
@@ -595,7 +589,7 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t017locationFilterValuesTest3() throws Exception {
+	public void locationFilterValuesTest() throws Exception {
 		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.ALL.toString());
 		MasterDataTest
 				.checkResponse(mockMvc
@@ -606,7 +600,7 @@ public class LocationControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t017locationFilterValuesTest1() throws Exception {
+	public void locationFilterValuesTest_Fail() throws Exception {
 		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.EMPTY.toString());
 		MasterDataTest
 				.checkResponse(mockMvc
@@ -618,7 +612,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t017locationFilterValuesTest2() throws Exception {
+	public void locationFilterValuesTest_WithUniqueFilter() throws Exception {
 		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.UNIQUE.toString());
 		MasterDataTest
 				.checkResponse(mockMvc
@@ -629,7 +623,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t016locationFilterValuesTest() throws Exception {
+	public void locationFilterValuesTest_WithFieldDto() throws Exception {
 
 		MasterDataTest
 				.checkResponse(mockMvc
@@ -640,7 +634,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t031deleteLocationHierarchyDetailsTest() throws Exception {
+	public void deleteLocationHierarchyDetailsTest_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/locations/MOGR")).andReturn(),
 				null);
@@ -648,7 +642,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t031deleteLocationHierarchyDetailsFailTest() throws Exception {
+	public void deleteLocationHierarchyDetailsTest_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/locations/10090")).andReturn(),
 				"KER-MSD-026");
@@ -657,7 +651,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t20getMissingLocationDetailsFailTest() throws Exception {
+	public void getMissingLocationDetailsTest_WithInvalidLangCode() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/missingids/eng1")
 				.param("fieldName", "1")).andReturn(), "KER-LANG-ERR");
@@ -666,7 +660,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t021updateLocationStatusFailTest() throws Exception {
+	public void updateLocationStatusTest_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.patch("/locations").param("code", "10099").param("isActive", "false"))
@@ -676,7 +670,7 @@ public class LocationControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t021getImmediateChildrenByLocCode() throws Exception {
+	public void getImmediateChildrenByLocCode_Success() throws Exception {
 
 		MasterDataTest
 				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/immediatechildren/RSK?languageCodes=eng,tam")).andReturn(), null);

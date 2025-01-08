@@ -1,0 +1,42 @@
+GetLocationHierarchyByHierarchyName:
+   Admin_GetLocationHierarchyByHierarchyName_allValid_smoke:
+      endPoint: /v1/masterdata/locations/locationhierarchy/{hierarchyname}
+      uniqueIdentifier: TC_Masterdata_GetLocationHierarchyByHierarchyName_01
+      description: Retrieve location hierarchy details by valid hierarchy name
+      role: admin
+      restMethod: get
+      inputTemplate: masterdata/GetLocationHierarchyByHierarchyName/getLocationHierarchyByHierarchyName
+      outputTemplate: masterdata/GetLocationHierarchyByHierarchyName/getLocationHierarchyByHierarchyNameResult
+      input: '{
+      "hierarchyname":"City"
+}'
+      output: '{
+"locations": [{
+       "code": "$IGNORE$",
+        "name": "$IGNORE$",
+        "hierarchyLevel": "$IGNORE$",
+        "hierarchyName": "City",
+        "parentLocCode": "$IGNORE$",
+        "isActive": "$IGNORE$"
+    }]
+}'
+
+   Admin_GetLocationHierarchyByHierarchyName_Invalid_Invalid_hierarchyname:
+      endPoint: /v1/masterdata/locations/locationhierarchy/{hierarchyname}
+      uniqueIdentifier: TC_Masterdata_GetLocationHierarchyByHierarchyName_02
+      description: Retrieve location hierarchy details by invalid hierarchy name
+      role: admin
+      restMethod: get
+      inputTemplate: masterdata/GetLocationHierarchyByHierarchyName/getLocationHierarchyByHierarchyName
+      outputTemplate: masterdata/error
+      input: '{
+      "hierarchyname":"abc"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-026",
+      "message": "Location not found"
+    }
+  ]
+}'  

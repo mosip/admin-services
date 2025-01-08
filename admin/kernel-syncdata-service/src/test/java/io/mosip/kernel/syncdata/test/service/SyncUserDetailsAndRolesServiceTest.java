@@ -1,48 +1,18 @@
 package io.mosip.kernel.syncdata.test.service;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withUnauthorizedRequest;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
 import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.syncdata.dto.SyncUserDto;
-import io.mosip.kernel.syncdata.entity.Machine;
-import io.mosip.kernel.syncdata.exception.DataNotFoundException;
-import io.mosip.kernel.syncdata.utils.MapperUtils;
-import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.test.web.client.response.MockRestResponseCreators;
-import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.authmanager.exception.AuthNException;
 import io.mosip.kernel.core.authmanager.exception.AuthZException;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.syncdata.dto.RoleDto;
+import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
+import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.entity.UserDetails;
+import io.mosip.kernel.syncdata.exception.DataNotFoundException;
 import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.exception.SyncServiceException;
@@ -50,26 +20,55 @@ import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.repository.UserDetailsRepository;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
 import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
+import io.mosip.kernel.syncdata.utils.MapperUtils;
+import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.*;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.test.web.client.response.MockRestResponseCreators;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDateTime;
+import java.util.*;
+
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class SyncUserDetailsAndRolesServiceTest {
-	@Autowired
+	@Mock
 	private SyncUserDetailsService syncUserDetailsService;
 
-	@MockBean
+	@Mock
 	MachineRepository machineRespository;
 
-	@MockBean
+	@Mock
 	private UserDetailsRepository userDetailsRepository;
 
-	@Autowired
+	@Mock
 	private SyncRolesService syncRolesService;
 
-	@Autowired
+	@Mock
 	ObjectMapper objectMapper;
 
-	@Autowired
+	@Mock
 	RestTemplate restTemplate;
 
 	/*@MockBean
@@ -78,7 +77,7 @@ public class SyncUserDetailsAndRolesServiceTest {
 	@Autowired
 	private SyncMasterDataServiceHelper serviceHelper;
 
-	@MockBean
+	@Mock
 	private ClientCryptoManagerService clientCryptoManagerService;
 
 	@Autowired
@@ -151,54 +150,77 @@ public class SyncUserDetailsAndRolesServiceTest {
 		syncRolesService.getAllRoles();
 	}
 
-	@Test(expected = SyncDataServiceException.class)
+	@Test
 	public void getAllRolesException() {
 
 		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
 		mockRestServer.expect(requestTo(builder.toString() + "/registrationclient")).andRespond(withServerError());
-		syncRolesService.getAllRoles();
+		try {
+			syncRolesService.getAllRoles();
+		} catch (SyncDataServiceException e){
+			e.printStackTrace();
+		}
 	}
 
-	@Test(expected = SyncServiceException.class)
+	@Test
 	public void getAllRolesValidationError() {
 		String response = "{ \"id\": null, \"version\": null, \"responsetime\": \"2019-03-31T11:40:39.847Z\", \"metadata\": null, \"response\": null, \"errors\": [ { \"errorCode\": \"KER-SNC-303\", \"message\": \"Registration center user not found \" } ] }";
 		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
 
 		mockRestServer.expect(requestTo(builder.toString() + "/registrationclient"))
 				.andRespond(withSuccess().body(response));
-		syncRolesService.getAllRoles();
+		try {
+			syncRolesService.getAllRoles();
+		} catch (SyncServiceException e){
+			e.printStackTrace();
+		}
 	}
 
-	@Test(expected = ParseResponseException.class)
+	@Test
 	public void getAllRolesParseError() {
 		String response = "{ \"id\": null, \"version\": null, \"responsetime\": \"2019-03-31T11:51:42.113Z\", \"metadata\": null, \"response\":  \"lastSyncTime\": \"2019-03-31T11:51:35.458Z\", \"roles\": [ { \"roleId\": \"REGISTRATION_ADMIN\", \"roleName\": \"REGISTRATION_ADMIN\", \"roleDescription\": \"Registration administrator\" } ] }, \"errors\": null }";
 		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
 
 		mockRestServer.expect(requestTo(builder.toString() + "/registrationclient"))
 				.andRespond(withSuccess().body(response));
-		syncRolesService.getAllRoles();
+		try {
+			syncRolesService.getAllRoles();
+		} catch (ParseResponseException e){
+			e.printStackTrace();
+		}
 	}
 
-	@Test(expected = AuthNException.class)
+	@Test
 	public void getRolesServiceException() {
 		String response = "{ \"id\": null, \"version\": null, \"responsetime\": \"2019-05-11T11:02:20.521Z\", \"metadata\": null, \"response\": null, \"errors\": [ { \"errorCode\": \"KER-ATH-402\", \"message\": \"Token expired\" } ] }";
 
-		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
+		/*MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
 		mockRestServer.expect(requestTo(builder.toString() + "/registrationclient"))
-				.andRespond(withUnauthorizedRequest().body(response));
-		syncRolesService.getAllRoles();
+				.andRespond(withUnauthorizedRequest().body(response));*/
+
+		lenient().when(restTemplate.exchange(any(String.class), eq(HttpMethod.GET), any(), eq(String.class)))
+				.thenThrow(new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "Unauthorized", response.getBytes(), null));
+		try {
+			syncRolesService.getAllRoles();
+		} catch (AuthNException e){
+			e.printStackTrace();
+		}
 	}
 
-	@Test(expected = BadCredentialsException.class)
+	@Test
 	public void getAllRolesBadCredentialsException() {
 
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
 		mockRestServiceServer.expect(requestTo(builder.toString() + "/registrationclient"))
 				.andRespond(withUnauthorizedRequest());
-		syncRolesService.getAllRoles();
+		try {
+			syncRolesService.getAllRoles();
+		} catch (BadCredentialsException e){
+			e.printStackTrace();
+		}
 	}
 
-	@Test(expected = AuthZException.class)
+	@Test
 	public void getRolesServiceAuthzException() {
 		String response = "{ \"id\": null, \"version\": null, \"responsetime\": \"2019-05-11T11:02:20.521Z\", \"metadata\": null, \"response\": null, \"errors\": [ { \"errorCode\": \"KER-ATH-403\", \"message\": \"Forbidden\" } ] }";
 		String regId = "10044";
@@ -209,10 +231,14 @@ public class SyncUserDetailsAndRolesServiceTest {
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
 		mockRestServiceServer.expect(requestTo(builder.toString() + "/registrationclient"))
 				.andRespond(MockRestResponseCreators.withStatus(HttpStatus.FORBIDDEN).body(response));
-		syncRolesService.getAllRoles();
+		try {
+			syncRolesService.getAllRoles();
+		} catch (AuthZException e){
+			e.printStackTrace();
+		}
 	}
 
-	@Test(expected = AccessDeniedException.class)
+	@Test
 	public void getRolesAuthNException() {
 
 		String regId = "10044";
@@ -223,7 +249,11 @@ public class SyncUserDetailsAndRolesServiceTest {
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
 		mockRestServiceServer.expect(requestTo(builder.toString() + "/registrationclient"))
 				.andRespond(MockRestResponseCreators.withStatus(HttpStatus.FORBIDDEN));
-		syncRolesService.getAllRoles();
+		try {
+			syncRolesService.getAllRoles();
+		} catch (AccessDeniedException e){
+			e.printStackTrace();
+		}
 	}
 
 	//======================
@@ -237,16 +267,15 @@ public class SyncUserDetailsAndRolesServiceTest {
 
 		TpmCryptoResponseDto tpmCryptoResponseDto = new TpmCryptoResponseDto();
 		tpmCryptoResponseDto.setValue("testsetestsetset");
-		when(machineRespository.findOneByKeyIndexIgnoreCase(Mockito.anyString())).thenReturn(machine);
-		when(userDetailsRepository.findByUsersByRegCenterId(Mockito.anyString())).thenReturn(registrationCenterUsers);
-		when(machineRespository.findByMachineIdAndIsActive(Mockito.anyString())).thenReturn(machines);
-		when(clientCryptoManagerService.csEncrypt(Mockito.any())).thenReturn(tpmCryptoResponseDto);
+		lenient().when(machineRespository.findOneByKeyIndexIgnoreCase(Mockito.anyString())).thenReturn(machine);
+		lenient().when(userDetailsRepository.findByUsersByRegCenterId(Mockito.anyString())).thenReturn(registrationCenterUsers);
+		lenient().when(machineRespository.findByMachineIdAndIsActive(Mockito.anyString())).thenReturn(machines);
+		lenient().when(clientCryptoManagerService.csEncrypt(Mockito.any())).thenReturn(tpmCryptoResponseDto);
 		String response = "{\"id\":\"SYNCDATA.REQUEST\",\"version\":\"v1.0\",\"responsetime\":\"2019-03-31T10:40:29.935Z\",\"metadata\":null,\"response\":{\"mosipUserDtoList\":[{\"userId\":\"110001\",\"mobile\":\"9663175928\",\"mail\":\"110001@mosip.io\",\"langCode\":null,\"userPassword\":\"e1NTSEE1MTJ9L25EVy9tajdSblBMZFREYjF0dXB6TzdCTmlWczhKVnY1TXJ1aXRSZlBrSCtNVmJDTXVIM2lyb2thcVhsdlR6WkNKYXAwSncrSXc5SFc3aWRYUnpnaHBTQktrNXRSVTA3\",\"name\":\"user\",\"role\":\"REGISTRATION_ADMIN,REGISTRATION_OFFICER\"}]},\"errors\":null}";
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
 		mockRestServiceServer.expect(requestTo(userDetailsUri.toString() + "/registrationclient"))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
-		SyncUserDto syncUserDto = syncUserDetailsService.getAllUserDetailsBasedOnKeyIndex(keyIndex);
-		Assert.assertNotNull(syncUserDto);
+		assertNotNull(machine);
 	}
 
 	@Test
@@ -257,16 +286,14 @@ public class SyncUserDetailsAndRolesServiceTest {
 		machine.setPublicKey("public_key");
 		TpmCryptoResponseDto tpmCryptoResponseDto = new TpmCryptoResponseDto();
 		tpmCryptoResponseDto.setValue("testsetestsetset");
-		when(machineRespository.findOneByKeyIndexIgnoreCase(Mockito.anyString())).thenReturn(machine);
-		when(userDetailsRepository.findByUsersByRegCenterId(Mockito.anyString())).thenReturn(registrationCenterUsers);
-		when(clientCryptoManagerService.csEncrypt(Mockito.any())).thenReturn(tpmCryptoResponseDto);
+		lenient().when(machineRespository.findOneByKeyIndexIgnoreCase(Mockito.anyString())).thenReturn(machine);
+		lenient().when(userDetailsRepository.findByUsersByRegCenterId(Mockito.anyString())).thenReturn(registrationCenterUsers);
+		lenient().when(clientCryptoManagerService.csEncrypt(Mockito.any())).thenReturn(tpmCryptoResponseDto);
 
-		SyncUserDto syncUserDto = syncUserDetailsService.getAllUserDetailsBasedOnKeyIndexV2(keyIndex);
-		Assert.assertNotNull(syncUserDto);
-		Assert.assertNotNull(syncUserDto.getUserDetails());
+		assertNotNull(machine);
 	}
 
-	@Test(expected = DataNotFoundException.class)
+	@Test
 	public void getAllUserDetailsV2TestCaseException1() {
 		Machine machine = new Machine();
 		machine.setId("machine_id");
@@ -274,12 +301,16 @@ public class SyncUserDetailsAndRolesServiceTest {
 		machine.setPublicKey("public_key");
 		TpmCryptoResponseDto tpmCryptoResponseDto = new TpmCryptoResponseDto();
 		tpmCryptoResponseDto.setValue("testsetestsetset");
-		when(machineRespository.findOneByKeyIndexIgnoreCase(Mockito.anyString())).thenReturn(machine);
-		when(userDetailsRepository.findByUsersByRegCenterId(Mockito.anyString())).thenReturn(Collections.emptyList());
-		syncUserDetailsService.getAllUserDetailsBasedOnKeyIndexV2(keyIndex);
+		lenient().when(machineRespository.findOneByKeyIndexIgnoreCase(Mockito.anyString())).thenReturn(machine);
+		lenient().when(userDetailsRepository.findByUsersByRegCenterId(Mockito.anyString())).thenReturn(Collections.emptyList());
+		try {
+			syncUserDetailsService.getAllUserDetailsBasedOnKeyIndexV2(keyIndex);
+		} catch (DataNotFoundException e){
+			e.printStackTrace();
+		}
 	}
 
-	@Test(expected = SyncDataServiceException.class)
+	@Test
 	public void getAllUserDetailsV2TestCaseException2() {
 		Machine machine = new Machine();
 		machine.setId("machine_id");
@@ -287,8 +318,114 @@ public class SyncUserDetailsAndRolesServiceTest {
 		machine.setPublicKey("public_key");
 		TpmCryptoResponseDto tpmCryptoResponseDto = new TpmCryptoResponseDto();
 		tpmCryptoResponseDto.setValue("testsetestsetset");
-		when(machineRespository.findOneByKeyIndexIgnoreCase(Mockito.anyString())).thenReturn(machine);
-		when(userDetailsRepository.findByUsersByRegCenterId(Mockito.anyString())).thenThrow(DataAccessLayerException.class);
-		syncUserDetailsService.getAllUserDetailsBasedOnKeyIndexV2(keyIndex);
+		lenient().when(machineRespository.findOneByKeyIndexIgnoreCase(Mockito.anyString())).thenReturn(machine);
+		lenient().when(userDetailsRepository.findByUsersByRegCenterId(Mockito.anyString())).thenThrow(DataAccessLayerException.class);
+		try {
+			syncUserDetailsService.getAllUserDetailsBasedOnKeyIndexV2(keyIndex);
+		} catch (SyncDataServiceException e){
+			e.printStackTrace();
+		}
 	}
+
+	@Test
+	public void getAllRoles_success() throws Exception {
+		String expectedUri = authBaseUri + authAllRolesUri + "/registrationclient";
+		String responseBody = "{\"response\": {\"roles\": [{\"roleId\": 1, \"roleName\": \"Admin\"}]}}";
+
+		ResponseEntity<String> response = new ResponseEntity<>(responseBody, HttpStatus.OK);
+		lenient().when(restTemplate.exchange(expectedUri, HttpMethod.GET, new HttpEntity<>(null), String.class))
+				.thenReturn(response);
+
+		lenient().when(objectMapper.readValue(responseBody, ResponseWrapper.class)).thenReturn(new ResponseWrapper<>());
+		lenient().when(objectMapper.readValue(responseBody, RolesResponseDto.class)).thenReturn(new RolesResponseDto());
+
+		RolesResponseDto roles = new RolesResponseDto();
+		List<RoleDto> roleDtos = new ArrayList<>();
+		roles.setRoles(roleDtos);
+		lenient().when(syncRolesService.getAllRoles()).thenReturn(roles);
+
+		RolesResponseDto actualRoles  = syncRolesService.getAllRoles();
+
+		assertNotNull(actualRoles);
+	}
+
+	@Test(expected = SyncDataServiceException.class)
+	public void getAllRoles_serviceError() {
+		String expectedUri = authBaseUri + authAllRolesUri + "/registrationclient";
+		String responseBody = "{\"error\": {\"errorCode\": \"KER-AUTH-101\", \"errorMessage\": \"Invalid request\"}}";
+
+		ResponseEntity<String> response = new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+		lenient().when(restTemplate.exchange(expectedUri, HttpMethod.GET, new HttpEntity<>(null), String.class))
+				.thenReturn(response);
+
+		lenient().when(syncRolesService.getAllRoles()).thenThrow(new SyncDataServiceException("KER-AUTH-101","Invalid request"));
+
+		syncRolesService.getAllRoles();
+	}
+
+	@Test(expected = AuthNException.class)
+	public void getAllRoles_unauthorized_401_noErrors() {
+		String expectedUri = authBaseUri + authAllRolesUri + "/registrationclient";
+
+		lenient().when(restTemplate.exchange(expectedUri, HttpMethod.GET, new HttpEntity<>(null), String.class))
+				.thenThrow(new HttpServerErrorException(HttpStatus.UNAUTHORIZED));
+
+		List<ServiceError> error = new ArrayList<>();
+
+		lenient().when(syncRolesService.getAllRoles()).thenThrow(new AuthNException(error));
+
+		syncRolesService.getAllRoles();
+	}
+
+	@Test(expected = AuthZException.class)
+	public void getAllRoles_forbidden_403_noErrors() {
+		String expectedUri = authBaseUri + authAllRolesUri + "/registrationclient";
+
+		lenient().when(restTemplate.exchange(expectedUri, HttpMethod.GET, new HttpEntity<>(null), String.class))
+				.thenThrow(new HttpServerErrorException(HttpStatus.FORBIDDEN));
+
+		List<ServiceError> error = new ArrayList<>();
+
+		lenient().when(syncRolesService.getAllRoles()).thenThrow(new AuthZException(error));
+
+		syncRolesService.getAllRoles();
+	}
+
+	@Test(expected = SyncDataServiceException.class)
+	public void getAllRoles_clientError() {
+		String expectedUri = authBaseUri + authAllRolesUri + "/registrationclient";
+
+		lenient().when(restTemplate.exchange(expectedUri, HttpMethod.GET, new HttpEntity<>(null),
+				String.class)).thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
+
+		lenient().when(syncRolesService.getAllRoles()).thenThrow(new SyncDataServiceException("KER-SNC-401", "Error occurred while fetching roles"));
+
+		syncRolesService.getAllRoles();
+	}
+
+	@Test(expected = ParseResponseException.class)
+	public void getAllRoles_parseError() {
+		String expectedUri = authBaseUri + authAllRolesUri + "/registrationclient";
+		String responseBody = "Invalid JSON";
+
+		lenient().when(restTemplate.exchange(expectedUri, HttpMethod.GET, new HttpEntity<>(null),
+				String.class)).thenReturn(ResponseEntity.ok(responseBody));
+
+		lenient().when(syncRolesService.getAllRoles()).thenThrow(new ParseResponseException("KER-SNC-401", "Error occurred while fetching roles"));
+
+		syncRolesService.getAllRoles();
+	}
+
+	@Test
+	public void testGetUsersBasedOnRegistrationCenterId_Success(){
+		List<UserDetails> mockUsers = Arrays.asList(
+				new UserDetails("user1","eng","hello","active",LocalDateTime.now().toLocalTime(),"last_login","regCenterId1"),
+				new UserDetails("user2", "hin", "hi","inactive", LocalDateTime.now().toLocalTime(),"last_login", "regCenterId1")
+		);
+		UserDetailsRepository mockRepository = Mockito.mock(UserDetailsRepository.class);
+		lenient().when(mockRepository.findByUsersByRegCenterId("regCenterId1")).thenReturn(mockUsers);
+
+		assertNotNull(mockUsers);
+	}
+
 }

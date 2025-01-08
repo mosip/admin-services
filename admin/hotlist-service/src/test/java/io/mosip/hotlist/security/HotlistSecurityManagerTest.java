@@ -1,28 +1,8 @@
 package io.mosip.hotlist.security;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.context.WebApplicationContext;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.hotlist.builder.RestRequestBuilder;
 import io.mosip.hotlist.constant.HotlistErrorConstants;
 import io.mosip.hotlist.dto.RestRequestDTO;
@@ -30,13 +10,28 @@ import io.mosip.hotlist.exception.HotlistAppException;
 import io.mosip.hotlist.exception.RestServiceException;
 import io.mosip.hotlist.helper.RestHelper;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestContext;
+import org.springframework.web.context.WebApplicationContext;
+
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Manoj SP
  *
  */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 public class HotlistSecurityManagerTest {
 
@@ -47,21 +42,22 @@ public class HotlistSecurityManagerTest {
 	@Mock
 	private RestHelper restHelper;
 
-	@Autowired
+	@InjectMocks
 	private ObjectMapper mapper;
 
 	@InjectMocks
 	private HotlistSecurityManager securityManager;
 
 	@Test
-	public void testHash() {
+	public void testHash_Success() {
 		assertEquals("88D4266FD4E6338D13B845FCF289579D209C897823B9217DA3E161936F031589",
 				HotlistSecurityManager.hash("abcd".getBytes()));
 	}
 
 	@Test
-	public void testEncrypt()
-			throws JsonParseException, JsonMappingException, JsonProcessingException, IOException, HotlistAppException {
+	public void testEncrypt_Success() throws IOException, HotlistAppException {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
 		ResponseWrapper<ObjectNode> response = new ResponseWrapper<>();
 		ObjectNode responseNode = mapper.createObjectNode();
 		responseNode.put("data", "data");
@@ -74,8 +70,9 @@ public class HotlistSecurityManagerTest {
 	}
 
 	@Test
-	public void testDecrypt()
-			throws JsonParseException, JsonMappingException, JsonProcessingException, IOException, HotlistAppException {
+	public void testDecrypt_Success() throws IOException, HotlistAppException {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
 		ResponseWrapper<ObjectNode> response = new ResponseWrapper<>();
 		ObjectNode responseNode = mapper.createObjectNode();
 		responseNode.put("data", "ZGF0YQ==");
@@ -88,8 +85,7 @@ public class HotlistSecurityManagerTest {
 	}
 
 	@Test
-	public void testEncryptError()
-			throws JsonParseException, JsonMappingException, JsonProcessingException, IOException {
+	public void testEncryptError_withHotlistAppException() {
 		try {
 			ResponseWrapper<ObjectNode> response = new ResponseWrapper<>();
 			ObjectNode responseNode = mapper.createObjectNode();
@@ -107,8 +103,7 @@ public class HotlistSecurityManagerTest {
 	}
 
 	@Test
-	public void testDecryptError()
-			throws HotlistAppException, JsonParseException, JsonMappingException, JsonProcessingException, IOException {
+	public void testDecryptError_withHotlistAppException() {
 		try {
 			ResponseWrapper<ObjectNode> response = new ResponseWrapper<>();
 			ObjectNode responseNode = mapper.createObjectNode();
@@ -126,9 +121,10 @@ public class HotlistSecurityManagerTest {
 	}
 
 	@Test
-	public void testDecryptNoResponseData()
-			throws JsonParseException, JsonMappingException, JsonProcessingException, IOException {
+	public void testDecryptNoResponseData_withHotlistAppException() throws IOException {
 		try {
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.registerModule(new JavaTimeModule());
 			ResponseWrapper<ObjectNode> response = new ResponseWrapper<>();
 			ObjectNode responseNode = mapper.createObjectNode();
 			response.setResponse(responseNode);

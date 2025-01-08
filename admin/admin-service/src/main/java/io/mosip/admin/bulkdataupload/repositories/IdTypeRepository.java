@@ -22,6 +22,6 @@ public interface IdTypeRepository extends BaseRepository<IdType, String> {
 	 * @param languageCode the language code.
 	 * @return the list of id types.
 	 */
-	@Query("FROM IdType WHERE lang_code = ?1 and (isDeleted is null or isDeleted =false) AND isActive = true")
+	@Query("FROM IdType WHERE langCode = ?1 and (isDeleted is null or isDeleted =false) AND isActive = true")
 	List<IdType> findByLangCode(String languageCode);
 }

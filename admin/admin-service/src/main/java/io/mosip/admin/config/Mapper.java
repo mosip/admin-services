@@ -13,17 +13,14 @@ import io.mosip.admin.bulkdataupload.entity.BlocklistedWords;
 import io.mosip.admin.bulkdataupload.entity.DaysOfWeek;
 import io.mosip.admin.bulkdataupload.entity.Device;
 import io.mosip.admin.bulkdataupload.entity.DeviceHistory;
-import io.mosip.admin.bulkdataupload.entity.DeviceProviderHistory;
-import io.mosip.admin.bulkdataupload.entity.DeviceRegister;
-import io.mosip.admin.bulkdataupload.entity.DeviceRegisterHistory;
+
 import io.mosip.admin.bulkdataupload.entity.DeviceSpecification;
 import io.mosip.admin.bulkdataupload.entity.DeviceType;
 import io.mosip.admin.bulkdataupload.entity.DocumentCategory;
 import io.mosip.admin.bulkdataupload.entity.DocumentType;
 import io.mosip.admin.bulkdataupload.entity.DynamicField;
 import io.mosip.admin.bulkdataupload.entity.ExceptionalHoliday;
-import io.mosip.admin.bulkdataupload.entity.FoundationalTrustProvider;
-import io.mosip.admin.bulkdataupload.entity.FoundationalTrustProviderHistory;
+
 import io.mosip.admin.bulkdataupload.entity.Gender;
 import io.mosip.admin.bulkdataupload.entity.Holiday;
 import io.mosip.admin.bulkdataupload.entity.IdType;

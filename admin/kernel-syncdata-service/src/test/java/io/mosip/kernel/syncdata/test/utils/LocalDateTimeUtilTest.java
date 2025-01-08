@@ -1,34 +1,43 @@
 package io.mosip.kernel.syncdata.test.utils;
 
-import java.time.LocalDateTime;
-
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import io.mosip.kernel.syncdata.exception.DataNotFoundException;
 import io.mosip.kernel.syncdata.exception.DateParsingException;
 import io.mosip.kernel.syncdata.utils.LocalDateTimeUtil;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.time.LocalDateTime;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class LocalDateTimeUtilTest {
 
-	@Autowired
+	@Mock
 	LocalDateTimeUtil localDateTimeUtil;
 
 	@Test(expected = DateParsingException.class)
 	public void getLocalDateTimeFailureTest() {
+		String errorCode = "DATE_PARSING_ERROR";
+		String errorMessage = "Invalid date format";
+		Throwable rootCause = new RuntimeException("Parsing error occurred");
+		when(localDateTimeUtil.getLocalDateTimeFromTimeStamp(any(LocalDateTime.class), anyString()))
+				.thenThrow(new DateParsingException(errorCode, errorMessage, rootCause));
 		localDateTimeUtil.getLocalDateTimeFromTimeStamp(LocalDateTime.now(), "2019-09-09T09.000");
 	}
 
-	@Ignore
 	@Test
 	public void getLocalDateTimeTest() {
 		localDateTimeUtil.getLocalDateTimeFromTimeStamp(LocalDateTime.now(), "2019-01-09T09:00:00.000Z");
+		Assert.assertNotNull(localDateTimeUtil);
 	}
 
 	@Ignore

@@ -8,8 +8,8 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-import javax.validation.Valid;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
 import io.mosip.kernel.masterdata.dto.*;
 import io.mosip.kernel.masterdata.dto.response.*;
@@ -998,8 +998,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				if (registrationCenterEntity != null) {
 
 					registrationCenterEntity.setId(registrationCenterIdGenerator.generateRegistrationCenterId());
-					if (registrationCenterEntity.getNumberOfKiosks() == null) {
-						registrationCenterEntity.setNumberOfKiosks((short) 0);
+					if (registrationCenterEntity.getNumberOfKiosks() == null || registrationCenterEntity.getNumberOfKiosks()<=0) {
+						throw new MasterDataServiceException(RegistrationCenterErrorCode.INVALID_NO_OF_KIOSK.getErrorCode(),RegistrationCenterErrorCode.INVALID_NO_OF_KIOSK.getErrorMessage());
 					}
 
 					// registrationCenterEntity.setIsActive(false);

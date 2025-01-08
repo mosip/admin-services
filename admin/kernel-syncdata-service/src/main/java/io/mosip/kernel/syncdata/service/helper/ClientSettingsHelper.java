@@ -4,7 +4,8 @@ import io.mosip.kernel.clientcrypto.dto.TpmCryptoRequestDto;
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
 import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.syncdata.dto.*;
+import io.mosip.kernel.syncdata.dto.DynamicFieldDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.syncdata.dto.response.SyncDataBaseDto;
 import io.mosip.kernel.syncdata.entity.*;
 import io.mosip.kernel.syncdata.repository.ModuleDetailRepository;
@@ -12,6 +13,7 @@ import io.mosip.kernel.syncdata.service.helper.beans.RegistrationCenterMachine;
 import io.mosip.kernel.syncdata.service.helper.beans.RegistrationCenterUser;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
+import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +67,7 @@ public class ClientSettingsHelper {
 
 	public Map<Class, CompletableFuture> getInitiateDataFetch(String machineId, String regCenterId,
 			LocalDateTime lastUpdated, LocalDateTime currentTimestamp, boolean isV2API, boolean deltaSync, String fullSyncEntities) {
-		List<String> entities = (fullSyncEntities != null && !fullSyncEntities.isBlank()) ? Arrays.asList(fullSyncEntities.split("\\s*,\\s*")) : new ArrayList<>();
+		List<String> entities = (fullSyncEntities != null && !fullSyncEntities.isBlank()) ? List.of(StringUtils.split(fullSyncEntities, ",")) : new ArrayList<>();
 		
 		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
 		futuresMap.put(AppAuthenticationMethod.class,
@@ -201,10 +203,10 @@ public class ClientSettingsHelper {
 	}
 
 	private void handleDynamicData(List entities, List<SyncDataBaseDto> list, RegistrationCenterMachineDto registrationCenterMachineDto, boolean isV2) {
-		Map<String, List<DynamicFieldDto>> data = new HashMap<String, List<DynamicFieldDto>>();
+		Map<String, List<DynamicFieldDto>> data = new HashMap<>();
 		entities.forEach(dto -> {
 			if (!data.containsKey(((DynamicFieldDto) dto).getName())) {
-				List<DynamicFieldDto> langBasedData = new ArrayList<DynamicFieldDto>();
+				List<DynamicFieldDto> langBasedData = new ArrayList<>();
 				langBasedData.add(((DynamicFieldDto) dto));
 				data.put(((DynamicFieldDto) dto).getName(), langBasedData);
 			} else

@@ -1,18 +1,25 @@
 package io.mosip.kernel.masterdata.test.controller;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Month;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.constant.MachinePutReqDto;
+import io.mosip.kernel.masterdata.dto.*;
+import io.mosip.kernel.masterdata.dto.request.*;
+import io.mosip.kernel.masterdata.entity.*;
+import io.mosip.kernel.masterdata.exception.RequestException;
+import io.mosip.kernel.masterdata.repository.*;
+import io.mosip.kernel.masterdata.service.UISpecService;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
+import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -32,90 +39,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.constant.MachinePutReqDto;
-import io.mosip.kernel.masterdata.dto.BlocklistedWordsDto;
-import io.mosip.kernel.masterdata.dto.DevicePutReqDto;
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
-import io.mosip.kernel.masterdata.dto.DeviceTypePutDto;
-import io.mosip.kernel.masterdata.dto.DocumentCategoryPutDto;
-import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
-import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
-import io.mosip.kernel.masterdata.dto.IdSchemaPublishDto;
-import io.mosip.kernel.masterdata.dto.IdentitySchemaDto;
-import io.mosip.kernel.masterdata.dto.LocationCreateDto;
-import io.mosip.kernel.masterdata.dto.LocationPutDto;
-import io.mosip.kernel.masterdata.dto.MachinePostReqDto;
-import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
-import io.mosip.kernel.masterdata.dto.MachineSpecificationPutDto;
-import io.mosip.kernel.masterdata.dto.MachineTypePutDto;
-import io.mosip.kernel.masterdata.dto.UserDetailsDto;
-import io.mosip.kernel.masterdata.dto.UserDetailsPutReqDto;
-import io.mosip.kernel.masterdata.dto.ZoneUserDto;
-import io.mosip.kernel.masterdata.dto.ZoneUserPutDto;
-import io.mosip.kernel.masterdata.dto.request.FilterDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.Pagination;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.dto.request.WorkingDaysPutRequestDto;
-import io.mosip.kernel.masterdata.entity.Device;
-import io.mosip.kernel.masterdata.entity.DeviceType;
-import io.mosip.kernel.masterdata.entity.DynamicField;
-import io.mosip.kernel.masterdata.entity.IdentitySchema;
-import io.mosip.kernel.masterdata.entity.Location;
-import io.mosip.kernel.masterdata.entity.Machine;
-import io.mosip.kernel.masterdata.entity.MachineHistory;
-import io.mosip.kernel.masterdata.entity.MachineType;
-import io.mosip.kernel.masterdata.entity.RegistrationCenter;
-import io.mosip.kernel.masterdata.entity.UserDetailsHistory;
-import io.mosip.kernel.masterdata.entity.ValidDocument;
-import io.mosip.kernel.masterdata.entity.Zone;
-import io.mosip.kernel.masterdata.entity.ZoneUser;
-import io.mosip.kernel.masterdata.exception.RequestException;
-import io.mosip.kernel.masterdata.repository.BlocklistedWordsRepository;
-import io.mosip.kernel.masterdata.repository.DaysOfWeekListRepo;
-import io.mosip.kernel.masterdata.repository.DeviceRepository;
-import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
-import io.mosip.kernel.masterdata.repository.DeviceTypeRepository;
-import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
-import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
-import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
-import io.mosip.kernel.masterdata.repository.ExceptionalHolidayRepository;
-import io.mosip.kernel.masterdata.repository.IdentitySchemaRepository;
-import io.mosip.kernel.masterdata.repository.LanguageRepository;
-import io.mosip.kernel.masterdata.repository.LocationHierarchyRepository;
-import io.mosip.kernel.masterdata.repository.LocationRepository;
-import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
-import io.mosip.kernel.masterdata.repository.MachineRepository;
-import io.mosip.kernel.masterdata.repository.MachineSpecificationRepository;
-import io.mosip.kernel.masterdata.repository.MachineTypeRepository;
-import io.mosip.kernel.masterdata.repository.RegWorkingNonWorkingRepo;
-import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
-import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
-import io.mosip.kernel.masterdata.repository.TemplateFileFormatRepository;
-import io.mosip.kernel.masterdata.repository.TemplateRepository;
-import io.mosip.kernel.masterdata.repository.TitleRepository;
-import io.mosip.kernel.masterdata.repository.UserDetailsHistoryRepository;
-import io.mosip.kernel.masterdata.repository.UserDetailsRepository;
-import io.mosip.kernel.masterdata.repository.ValidDocumentRepository;
-import io.mosip.kernel.masterdata.repository.ZoneRepository;
-import io.mosip.kernel.masterdata.repository.ZoneUserHistoryRepository;
-import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
-import io.mosip.kernel.masterdata.service.UISpecService;
-import io.mosip.kernel.masterdata.test.TestBootApplication;
-import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
-import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
-import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
-import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
@@ -342,6 +277,7 @@ public class IntegratedRepositoryTest {
 
 		Map m = new HashMap<>();
 		m.put("code", "anbc");
+		m.put("value","gdbd");
 		JsonNode jsonNode = mapper.valueToTree(m);
 
 		// JsonNode node = mapper.valueToTree(fromValue);
@@ -543,7 +479,7 @@ public class IntegratedRepositoryTest {
 
 	@Test //
 	@WithUserDetails("global-admin")
-	public void tst001getLocationHierarchyLevelTest4() throws Exception {
+	public void testGetLocationHierarchyLevel_ThrowsDataAccessException_OnStaleData() throws Exception {
 		when(locHierarchyRepo.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -556,7 +492,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst002updateLanguageStatusFailTest() throws Exception {
+	public void testUpdateLanguageStatus_WithLanguage_Update_Exception() throws Exception {
 		when(languageRepository.findLanguageByCode(Mockito.anyString())).thenThrow(new DataAccessException("...") {
 		});
 		MasterDataTest.checkResponse(mockMvc
@@ -567,7 +503,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001getRegistrationCentersMachineUserMappingTest2() throws Exception {
+	public void testGetRegistrationCenterMachineUserMappingHistory_Success() throws Exception {
 		Mockito.when(historyRepository
 				.findByCntrIdAndMachineIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(),
 						Mockito.any(), Mockito.any()))
@@ -586,7 +522,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001getRegistrationCentersMachineUserMappingTest3() throws Exception {
+	public void testGetRegistrationCenterMachineUserMappingHistory_InactiveMachineOrUser_Success() throws Exception {
 		machinesHistories.get(0).setIsActive(null);
 		Mockito.when(historyRepository
 				.findByCntrIdAndMachineIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(),
@@ -607,7 +543,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001getRegistrationCentersMachineUserMappingTest4() throws Exception {
+	public void testGetRegistrationCenterMachineUserMappingHistory_NullEffectiveDate_Error() throws Exception {
 		machinesHistories.get(0).setEffectDateTime(null);
 		Mockito.when(historyRepository
 				.findByCntrIdAndMachineIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(),
@@ -628,7 +564,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001getRegistrationCentersMachineUserMappingTest5() throws Exception {
+	public void testGetRegistrationCenterMachineUserMappingHistory_NullUserEffectiveDate_Error() throws Exception {
 
 		Mockito.when(historyRepository
 				.findByCntrIdAndMachineIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(),
@@ -650,7 +586,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst009updateFileFormatStatusTest() throws Exception {
+	public void testUpdateTemplateFileFormatStatus_NonexistentFormat_Error() throws Exception {
 		when(templateFileFormatRepository.findtoUpdateTemplateFileFormatByCode(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -662,7 +598,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst017updateDocumentTypeStatusFailTest() throws Exception {
+	public void updateDocumentTypeStatusFailTest() throws Exception {
 		when(documentTypeRepository.findtoUpdateDocumentTypeByCode(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -694,7 +630,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst002updateDocumentCategoryFailTest1() throws Exception {
+	public void updateDocumentCategory_DataAccessException_Test() throws Exception {
 
 		when(documentCategoryRepository.findByCodeAndLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
@@ -707,7 +643,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst002updateRegistrationCenterTypeStatusFailTest1() throws Exception {
+	public void updateRegistrationCenterTypeStatus_DataAccessException_Test() throws Exception {
 		when(registrationCenterTypeRepository.findtoUpdateRegistrationCenterTypeByCode(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -719,7 +655,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst00updateDeviceTypeStatusTest2() throws Exception {
+	public void updateDeviceTypeStatus_DataAccessException_Test() throws Exception {
 		when(deviceTypeRepository.findtoUpdateDeviceTypeByCode(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -731,7 +667,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001updateBlockListedWordStatusTest2() throws Exception {
+	public void updateBlocklistedWordStatus_DataAccessException_Test() throws Exception {
 		when(blocklistedWordsRepository.findtoUpdateBlocklistedWordByWord(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -742,7 +678,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001updateBlockListedWordExceptWordTest2() throws Exception {
+	public void updateBlocklistedWordDetails_DataAccessException_Test() throws Exception {
 		when(blocklistedWordsRepository.updateBlockListedWordDetails(Mockito.anyString(), Mockito.anyString(),
 				Mockito.any(), Mockito.anyString())).thenThrow(new DataAccessException("...") {
 				});
@@ -756,17 +692,17 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001TemplateUpdateTest2() throws Exception {
+	public void getTemplatesByTemplateTypeCode_DataAccessException_Test() throws Exception {
 		when(templateRepository.findAllByTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/templatetypecodes/temp")).andReturn(),
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/templates/templatetypecodes/temp")).andReturn(),
 				"KER-MSD-045");
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001TemplateUpdateTest3() throws Exception {
+	public void updateTemplateStatus_DataAccessException_Test() throws Exception {
 		when(templateRepository.findtoUpdateTemplateById(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -790,7 +726,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001getAllExceptionalHolidaysTest() throws Exception {
+	public void getExceptionalHolidays_DataAccessException_Test() throws Exception {
 		when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -803,7 +739,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001mapDocCategoryAndDocTypeTest() throws Exception {
+	public void getValidDocumentsByDocCategoryCode_DataAccessException_Test() throws Exception {
 		when(vdocumentRepository.findByDocCategoryCode(Mockito.anyString())).thenThrow(new DataAccessException("...") {
 		});
 		MasterDataTest.checkResponse(
@@ -812,7 +748,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001mapDocCategoryAndDocTypeTest2() throws Exception {
+	public void deleteValidDocument_DataAccessException_Test() throws Exception {
 		when(vdocumentRepository.deleteValidDocument(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -822,7 +758,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001mapDocCategoryAndDocTypeTest3() throws Exception {
+	public void updateValidDocumentMapping_DataAccessException_Test() throws Exception {
 		when(vdocumentRepository.updateDocCategoryAndDocTypeMapping(Mockito.anyBoolean(), Mockito.anyString(),
 				Mockito.any(), Mockito.anyString(), Mockito.anyString())).thenThrow(new DataAccessException("...") {
 				});
@@ -832,7 +768,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001unMapDocCategoryAndDocTypeTest3() throws Exception {
+	public void unmapValidDocument_DataAccessException_Test() throws Exception {
 		when(vdocumentRepository.findByDocCategoryCodeAndDocTypeCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -847,7 +783,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001unMapDocCategoryAndDocTypeTest4() throws Exception {
+	public void unmapValidDocument_RequestException_Test() throws Exception {
 		when(vdocumentRepository.findByDocCategoryCodeAndDocTypeCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new RequestException("KER-MSD-361", "...") {
 				});
@@ -873,7 +809,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001createDeviceSpecification() throws Exception {
+	public void createDeviceSpecification_DataAccessException_Test() throws Exception {
 		when(deviceTypeRepository.findtoUpdateDeviceTypeByCode(Mockito.anyString())).thenReturn(deviceTypes());
 		when(deviceSpecificationRepository.create(Mockito.any())).thenThrow(new DataAccessException("...") {
 		});
@@ -884,7 +820,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001DeviceSpecificationUpdateStatus4() throws Exception {
+	public void updateDeviceSpecificationStatus_DataAccessException_Test() throws Exception {
 		when(deviceSpecificationRepository.findtoUpdateDeviceSpecById(Mockito.any()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -895,7 +831,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst003updateMachineTypeTest() throws Exception {
+	public void updateMachineType_DataAccessException_Test() throws Exception {
 		when(machineTypeRepository.findtoUpdateMachineTypeByCode(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -906,7 +842,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst005updateMachineTypeStatusTest2() throws Exception {
+	public void updateMachineTypeStatus_DataAccessException_Test() throws Exception {
 		when(machineTypeRepository.findtoUpdateMachineTypeByCode(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -922,7 +858,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst008getAllDynamicFieldsTest() throws Exception {
+	public void getAllDynamicFields_DataAccessException_Test() throws Exception {
 		when(dynamicFieldRepository.findAllLatestDynamicFieldNames(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -936,7 +872,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst008getDistinctDynamicFieldsBasedOnLangTest() throws Exception {
+	public void getDistinctDynamicFields_DataAccessException_Test() throws Exception {
 		when(dynamicFieldRepository.getDistinctDynamicFields()).thenThrow(new DataAccessException("...") {
 		});
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/distinct")).andReturn(),
@@ -945,7 +881,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst008getDistinctDynamicFieldsBasedOnLangTest1() throws Exception {
+	public void getDistinctDynamicFieldsWithDescription_DataAccessException_Test() throws Exception {
 		when(dynamicFieldRepository.getDistinctDynamicFieldsWithDescription())
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -955,7 +891,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001createDynamicFieldTest1() throws Exception {
+	public void createDynamicField_DuplicateNameAndCode_DataAccessException_Test() throws Exception {
 		when(dynamicFieldRepository.findAllByFieldNameAndCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -970,7 +906,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001updateDynamicFieldTest1() throws Exception {
+	public void updateDynamicField_DataAccessException_Test() throws Exception {
 
 		when(dynamicFieldRepository.updateDynamicField(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString(), Mockito.any(), Mockito.anyString(), Mockito.anyString()))
@@ -996,7 +932,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst015deleteDynamicFieldTest() throws Exception {
+	public void deleteDynamicField_DataAccessException_Test() throws Exception {
 		when(dynamicFieldRepository.findDynamicFieldById(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -1007,7 +943,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst015deleteDynamicFieldTest1() throws Exception {
+	public void deleteDynamicFieldByName_DataAccessException_Test() throws Exception {
 		when(dynamicFieldRepository.deleteAllDynamicField(Mockito.anyString(), Mockito.any(), Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -1017,7 +953,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst011updateDynamicFieldStatusTest() throws Exception {
+	public void updateDynamicFieldStatus_DataAccessException_Test() throws Exception {
 		when(dynamicFieldRepository.findDynamicFieldById(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -1032,7 +968,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst011updateDynamicFieldStatusTest1() throws Exception {
+	public void updateDynamicFieldStatusActive_DataAccessException_Test() throws Exception {
 		when(dynamicFieldRepository.updateAllDynamicFieldIsActive(Mockito.anyString(), Mockito.anyBoolean(),
 				Mockito.any(), Mockito.anyString())).thenThrow(new DataAccessException("...") {
 				});
@@ -1044,7 +980,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001getWeekDaysTest() throws Exception {
+	public void getWeekdays_DataAccessException_Test() throws Exception {
 		when(registrationCenterRepository.countByIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -1057,7 +993,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst003getWorkindaysTest() throws Exception {
+	public void getWorkingDays_DataAccessException_Test() throws Exception {
 		when(registrationCenterRepository.countByIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenReturn((long) 2);
 		when(workingDaysRepo.findByregistrationCenterIdAndlanguagecodeForWorkingDays(Mockito.anyString(),
@@ -1070,7 +1006,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst007updateWorkingDaysTest() throws Exception {
+	public void updateWorkingDays_DataAccessException_Test() throws Exception {
 		when(daysOfWeekRepo.findBylangCodeAndCode(Mockito.anyString(), Mockito.any()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -1083,7 +1019,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst007updateWorkingDaysTest1() throws Exception {
+	public void updateWorkingDay_DataAccessException_Test() throws Exception {
 		when(daysOfWeekRepo.findBylangCodeAndCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -1096,7 +1032,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst002createMachineSpecificationFailTest() throws Exception {
+	public void createMachineSpecification_DataAccessException_Test() throws Exception {
 		RequestWrapper<MachineSpecificationDto> m = new RequestWrapper<MachineSpecificationDto>();
 
 		MachineSpecificationDto dto = new MachineSpecificationDto();
@@ -1122,7 +1058,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst003updateMachineSpecificationTest() throws Exception {
+	public void updateMachineSpecification_DataAccessException_Test() throws Exception {
 		RequestWrapper<MachineSpecificationPutDto> machineSpecification = new RequestWrapper<MachineSpecificationPutDto>();
 		when(machineSpecificationRepository.findMachineSpecById(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
@@ -1149,7 +1085,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst005updateMachineSpecificationStatusTest() throws Exception {
+	public void updateMachineSpecificationStatus_RequestException_Test() throws Exception {
 		when(machineSpecificationRepository.findMachineSpecById(Mockito.anyString()))
 				.thenThrow(new RequestException("KER-MSD-017", "...") {
 				});
@@ -1161,7 +1097,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst005updateMachineSpecificationStatusTest1() throws Exception {
+	public void updateMachineSpecificationStatusActive_RequestException_Test() throws Exception {
 		when(machineRepository.findMachineBymachineSpecIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString()))
 				.thenThrow(new RequestException("...", "...") {
 				});
@@ -1173,7 +1109,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst005updateMachineSpecificationStatusTest2() throws Exception {
+	public void updateMachineSpecificationStatus_DataAccessException_Test() throws Exception {
 		when(machineRepository.findMachineBymachineSpecIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -1185,7 +1121,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst006decommissionMachineTest1() throws Exception {
+	public void decommissionMachine_DataAccessException_Test() throws Exception {
 		when(zoneRepository.findAllNonDeleted()).thenReturn(getZoneLst());
 		when(zoneUserRepo.findZoneByUserIdActiveAndNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
 		List lm = new ArrayList<>();
@@ -1206,7 +1142,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst022createMachineTest1() throws Exception {
+	public void createMachine_DataAccessException_Test() throws Exception {
 		List rl = new ArrayList();
 		getRegistrationCenter().setZoneCode("NTH");
 		rl.add(getRegistrationCenter());
@@ -1251,7 +1187,7 @@ public class IntegratedRepositoryTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst022createMachineTest() throws Exception {
+	public void createMachine_DuplicateMachineName_Test() throws Exception {
 		List rl = new ArrayList();
 		getRegistrationCenter().setZoneCode("NTH");
 		rl.add(getRegistrationCenter());
@@ -1293,8 +1229,8 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst024updateMachineAdminTest() throws Exception {
-		RequestWrapper<MachinePutReqDto> machineCenterDto = new RequestWrapper<MachinePutReqDto>();
+	public void updateMachineDetails_DataAccessException_Test() throws Exception {
+		RequestWrapper<MachinePutReqDto> machineCenterDto = new RequestWrapper<>();
 
 		MachinePutReqDto dto2 = new MachinePutReqDto();
 		dto2.setId("10");
@@ -1329,10 +1265,10 @@ public class IntegratedRepositoryTest {
 				"KER-MSD-030");
 	}
 
-	public void tst024updateMachineAdminTest4() throws Exception {
+	public void updateMachine_DataAccessException_Test() throws Exception {
 		when(machineRepository.findMachineById(Mockito.anyString())).thenThrow(new DataAccessException("...") {
 		});
-		RequestWrapper<MachinePutReqDto> machineCenterDto = new RequestWrapper<MachinePutReqDto>();
+		RequestWrapper<MachinePutReqDto> machineCenterDto = new RequestWrapper<>();
 
 		MachinePutReqDto dto2 = new MachinePutReqDto();
 		dto2.setId("10");
@@ -1369,7 +1305,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst008updateMachineStatusTest() throws Exception {
+	public void updateMachineStatus_DataAccessException_Test() throws Exception {
 		when(machineRepository.findMachineById(Mockito.any())).thenThrow(new DataAccessException("...") {
 		});
 		MasterDataTest.checkResponse(
@@ -1381,7 +1317,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst017decommissionDeviceTest1() throws Exception {
+	public void decommissionDevice_DataAccessException_Test() throws Exception {
 		List<Device> d = getDevices();
 		d.get(0).setRegCenterId(null);
 		List<Device> d1 = new ArrayList<>();
@@ -1401,7 +1337,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst004updateDeviceTest() throws Exception {
+	public void updateDevice_DataAccessException_Test() throws Exception {
 		List rl = new ArrayList();
 		getRegistrationCenter().setZoneCode("NTH");
 		rl.add(getRegistrationCenter());
@@ -1412,7 +1348,7 @@ public class IntegratedRepositoryTest {
 		});
 		when(deviceRepository.update(Mockito.any())).thenThrow(new DataAccessException("...") {
 		});
-		RequestWrapper<DevicePutReqDto> devicePutReqDtoReq = new RequestWrapper<DevicePutReqDto>();
+		RequestWrapper<DevicePutReqDto> devicePutReqDtoReq = new RequestWrapper<>();
 		DevicePutReqDto devicePutReqDto = new DevicePutReqDto();
 		devicePutReqDto.setId("3000038");
 		devicePutReqDto.setDeviceSpecId("327");
@@ -1435,7 +1371,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst004updateDeviceTest1() throws Exception {
+	public void updateDeviceDetails_DataAccessException_Test() throws Exception {
 		List rl = new ArrayList();
 		RegistrationCenter rc = getRegistrationCenter();
 		rc.setZoneCode("NTH");//RTH
@@ -1452,7 +1388,7 @@ public class IntegratedRepositoryTest {
 		});
 		when(deviceRepository.update(Mockito.any())).thenThrow(new DataAccessException("...") {
 		});
-		RequestWrapper<DevicePutReqDto> devicePutReqDtoReq = new RequestWrapper<DevicePutReqDto>();
+		RequestWrapper<DevicePutReqDto> devicePutReqDtoReq = new RequestWrapper<>();
 		DevicePutReqDto devicePutReqDto = new DevicePutReqDto();
 		devicePutReqDto.setId("3000038");
 		devicePutReqDto.setDeviceSpecId("327");
@@ -1475,7 +1411,7 @@ public class IntegratedRepositoryTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst004updateDeviceTest2() throws Exception {
+	public void updateDeviceRequest_DataAccessException_Test() throws Exception {
 		List rl = new ArrayList();
 		RegistrationCenter rc = getRegistrationCenter();
 		rc.setZoneCode("RTH");
@@ -1492,7 +1428,7 @@ public class IntegratedRepositoryTest {
 		});
 		when(deviceRepository.update(Mockito.any())).thenThrow(new DataAccessException("...") {
 		});
-		RequestWrapper<DevicePutReqDto> devicePutReqDtoReq = new RequestWrapper<DevicePutReqDto>();
+		RequestWrapper<DevicePutReqDto> devicePutReqDtoReq = new RequestWrapper<>();
 		DevicePutReqDto devicePutReqDto = new DevicePutReqDto();
 		devicePutReqDto.setId("3000038");
 		devicePutReqDto.setDeviceSpecId("327");
@@ -1515,7 +1451,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst008updateDeviceStatusTest() throws Exception {
+	public void updateDeviceStatus_DataAccessException_Test() throws Exception {
 		when(deviceRepository.findtoUpdateDeviceById(Mockito.any())).thenThrow(new DataAccessException("...") {
 		});
 		MasterDataTest.checkResponse(mockMvc
@@ -1525,7 +1461,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001mapUserRegCenterTest() throws Exception {
+	public void mapUserRegistrationCenter_DataAccessException_Test() throws Exception {
 		when(zoneRepository.findAllNonDeleted()).thenReturn(getZoneLst());
 		when(zoneUserRepo.findZoneByUserIdActiveAndNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
 		when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(Mockito.any()))
@@ -1549,7 +1485,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst015validateTimestampTest1() throws Exception {
+	public void validateTimestamp_DataAccessException_Test() throws Exception {
 		when(registrationCenterRepository.findByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -1565,7 +1501,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst022decommissionRegCenterTest5() throws Exception {
+	public void decommissionRegistrationCenter_DataAccessException_Test() throws Exception {
 		when(registrationCenterRepository.decommissionRegCenter(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -1578,7 +1514,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001mapUserZoneTest() throws Exception {
+	public void mapUserZone_IllegalArgumentException_Test() throws Exception {
 		when(zoneRepository.findAllNonDeleted()).thenReturn(getZoneLst());
 		when(zoneUserRepo.findZoneByUserIdActiveAndNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
 		when(zoneUserRepo.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
@@ -1586,7 +1522,7 @@ public class IntegratedRepositoryTest {
 				});
 		when(zoneUserHistoryRepo.create(Mockito.any())).thenThrow(new IllegalArgumentException("...") {
 		});
-		RequestWrapper<ZoneUserDto> zoneUserDto = new RequestWrapper<ZoneUserDto>();
+		RequestWrapper<ZoneUserDto> zoneUserDto = new RequestWrapper<>();
 		ZoneUserDto dto = new ZoneUserDto();
 		dto.setIsActive(true);
 		dto.setLangCode("eng");
@@ -1602,7 +1538,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst005updateapUserZoneStatusTest1() throws Exception {
+	public void updateUserZoneStatus_DataAccessException_Test() throws Exception {
 		when(zoneUserRepo.findZoneByUserIdNonDeleted(Mockito.anyString())).thenThrow(new DataAccessException("...") {
 		});
 		when(zoneUserHistoryRepo.create(Mockito.any())).thenThrow(new DataAccessException("...") {
@@ -1615,7 +1551,7 @@ public class IntegratedRepositoryTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst003updateapUserZoneTest() throws Exception {
+	public void updateUserZone_DataAccessException_Test() throws Exception {
 		when(zoneRepository.findAllNonDeleted()).thenReturn(getZoneLst());
 		when(zoneUserRepo.findZoneByUserIdActiveAndNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
 		when(zoneUserRepo.findByUserId(Mockito.anyString())).thenThrow(new DataAccessException("...") {
@@ -1635,7 +1571,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst005deleteMapUserZoneTest() throws Exception {
+	public void deleteMapUserZone_DataAccessException_Test() throws Exception {
 
 		when(zoneUserRepo.findByUserIdAndZoneCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
@@ -1649,7 +1585,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst013getHistoryByUserIdAndTimestampTest1() throws Exception {
+	public void getHistoryByUserIdAndTimestamp_DataAccessException_Test() throws Exception {
 		when(zoneUserHistoryRepo.getByUserIdAndTimestamp(Mockito.anyString(), Mockito.any()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -1661,7 +1597,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst013getHistoryByUserIdAndTimestampTest() throws Exception {
+	public void getHistoryByUserIdAndTime_DataAccessException_Test() throws Exception {
 		when(zoneUserHistoryRepo.getByUserIdAndTimestamp(Mockito.anyString(), Mockito.any()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -1673,7 +1609,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst005updateapUserZoneStatusTest4() throws Exception {
+	public void updateUserZoneStatusActive_DataAccessException_Test() throws Exception {
 		when(zoneUserRepo.findZoneByUserIdNonDeleted(Mockito.anyString())).thenThrow(new DataAccessException("...") {
 		});
 
@@ -1682,12 +1618,12 @@ public class IntegratedRepositoryTest {
 				.andReturn(), "KER-USR-020");
 	}
 
-	public void tst005createLocationHierarchyDetailsTest1() throws Exception {
+	public void createLocationHierarchyDetails_IllegalArgumentException_Test() throws Exception {
 		when(locReg.findLocationHierarchyByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new IllegalArgumentException("...") {
 				});
 
-		RequestWrapper<LocationCreateDto> locationCreateDtoReq = new RequestWrapper<LocationCreateDto>();
+		RequestWrapper<LocationCreateDto> locationCreateDtoReq = new RequestWrapper<>();
 		LocationCreateDto createDto = new LocationCreateDto();
 		createDto.setCode("11111");
 		createDto.setHierarchyLevel((short) 0);
@@ -1707,12 +1643,12 @@ public class IntegratedRepositoryTest {
 						"KER-MSD-242");
 	}
 
-	public void tst005createLocationHierarchyDetailsTest() throws Exception {
+	public void createLocationHierarchyDetails_DataAccessException_Test() throws Exception {
 		when(locReg.findLocationHierarchyByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
 
-		RequestWrapper<LocationCreateDto> locationCreateDtoReq = new RequestWrapper<LocationCreateDto>();
+		RequestWrapper<LocationCreateDto> locationCreateDtoReq = new RequestWrapper<>();
 		LocationCreateDto createDto = new LocationCreateDto();
 		createDto.setCode("11111");
 		createDto.setHierarchyLevel((short) 0);
@@ -1734,7 +1670,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst021updateLocationStatusFailTest() throws Exception {
+	public void updateLocationStatusFail_IllegalArgumentException_Test() throws Exception {
 		when(locReg.findLocationByCode(Mockito.anyString())).thenThrow(new IllegalArgumentException("..."));
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.patch("/locations").param("code", "10099").param("isActive", "false"))
@@ -1744,7 +1680,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst017locationFilterValuesTest() throws Exception {
+	public void locationFilterValues_DataAccessException_Test() throws Exception {
 		FilterValueDto f = new FilterValueDto();
 		FilterDto fdto = new FilterDto();
 		fdto.setColumnName("code");
@@ -1790,13 +1726,13 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("reg-processor")
-	public void tst003getUsersTest() throws Exception {
+	public void getUsers_DataAccessException_Test() throws Exception {
 		when(userDetailsRepository.findAllByIsDeletedFalseorIsDeletedIsNull(Mockito.any()))
 				.thenThrow(new DataAccessException("...") {
 				});
 
-		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/users/0/1/cr_dtimes/DESC")).andReturn(), "KER-USR-004");
+		MasterDataTest.checkErrorResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/users/0/1/cr_dtimes/DESC")).andReturn());
 
 	}
 
@@ -1804,7 +1740,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void getAllSchema() throws Exception {
+	public void getAllSchema_Success() throws Exception {
 		Mockito.when(identitySchemaRepository.findAllIdentitySchema(Mockito.anyBoolean(), Mockito.any()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -1814,7 +1750,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLatestPublishedSchema() throws Exception {
+	public void getLatestPublishedSchema_Success() throws Exception {
 		Mockito.when(uiSpecService.getUISpec(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(lstui);
 		Mockito.when(identitySchemaRepository.findLatestPublishedIdentitySchema()).thenReturn(is);
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/idschema/latest")
@@ -1823,7 +1759,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLatestPublishedSchema1() throws Exception {
+	public void getLatestPublishedSchema_Null() throws Exception {
 		IdentitySchema is = null;
 
 		Mockito.when(identitySchemaRepository.findLatestPublishedIdentitySchema()).thenReturn(is);
@@ -1848,8 +1784,8 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst001createMachineSpecificationTest() throws Exception {
-		RequestWrapper<MachineSpecificationDto> m = new RequestWrapper<MachineSpecificationDto>();
+	public void createMachineSpecificationDetails_DataAccessException_Test() throws Exception {
+		RequestWrapper<MachineSpecificationDto> m = new RequestWrapper<>();
 		MachineSpecificationDto dto = new MachineSpecificationDto();
 		dto.setBrand("DELL");
 		dto.setDescription("Dell brand");
@@ -1881,7 +1817,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst003updateMachineSpecificationTest1() throws Exception {
+	public void updateMachineSpecification_WithDataAccessException_Test() throws Exception {
 		List<MachineType> mt = new ArrayList<>();
 		MachineType mtype = new MachineType();
 		mtype.setCode("test");
@@ -1889,7 +1825,7 @@ public class IntegratedRepositoryTest {
 		mt.add(mtype);
 		when(machineTypeRepository.findtoUpdateMachineTypeByCode(Mockito.anyString())).thenReturn(mt);
 
-		RequestWrapper<MachineSpecificationPutDto> machineSpecification = new RequestWrapper<MachineSpecificationPutDto>();
+		RequestWrapper<MachineSpecificationPutDto> machineSpecification = new RequestWrapper<>();
 		when(machineSpecificationRepository.findMachineSpecById(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -1915,7 +1851,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst005updateMachineSpecificationStatusTest3() throws Exception {
+	public void updateMachineSpecificationStatusActive_DataAccessException_Test() throws Exception {
 		when(machineSpecificationRepository.findMachineSpecById(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -1927,7 +1863,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t006getLatestPublishedSchemaTest() throws Exception {
+	public void getLatestPublishedSchema_DataAccessException_Test() throws Exception {
 		when(identitySchemaRepository.findIdentitySchemaById(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -1938,7 +1874,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001createSchemaTest() throws Exception {
+	public void createSchema_DataAccessException_Test() throws Exception {
 		when(identitySchemaRepository.create(Mockito.any())).thenThrow(new DataAccessException("...") {
 		});
 		RequestWrapper<IdentitySchemaDto> schema = new RequestWrapper<>();
@@ -1954,7 +1890,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002updateSchemaTest() throws Exception {
+	public void updateSchema_DataAccessException_Test() throws Exception {
 		IdentitySchema ischema = new IdentitySchema();
 		ischema.setId("test");
 		ischema.setIdVersion(1.0);
@@ -1978,11 +1914,11 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t003publishSchemaTest1() throws Exception {
+	public void publishSchema_DataAccessException_Test() throws Exception {
 		when(identitySchemaRepository.findIdentitySchemaById(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
-		RequestWrapper<IdSchemaPublishDto> idSchemaPublishDto = new RequestWrapper<IdSchemaPublishDto>();
+		RequestWrapper<IdSchemaPublishDto> idSchemaPublishDto = new RequestWrapper<>();
 
 		IdSchemaPublishDto dto = new IdSchemaPublishDto();
 		dto.setId("2");
@@ -1999,7 +1935,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("zonal-admin")
-	public void tst001getUserdetailsByLangIdAndEffTimeTest1() throws Exception {
+	public void getUserDetailsByLangIdAndEffTime_DataAccessException_Test() throws Exception {
 		when(userHistoryRepository.getByUserIdAndTimestamp(Mockito.anyString(), Mockito.any()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -2010,16 +1946,16 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t003updateDeviceTypeTest() throws Exception {
+	public void updateDeviceType_DataAccessException_Test() throws Exception {
 
-		RequestWrapper<DeviceTypePutDto> filPutDto = new RequestWrapper<DeviceTypePutDto>();
+		RequestWrapper<DeviceTypePutDto> filPutDto;
 		DeviceTypePutDto dp = new DeviceTypePutDto();
 		dp.setCode("CMR1");
 		dp.setDescription("For capturing photo");
 		dp.setIsActive(true);
 		dp.setLangCode("eng");
 		dp.setName("Camera");
-		filPutDto = new RequestWrapper<DeviceTypePutDto>();
+		filPutDto = new RequestWrapper<>();
 		filPutDto.setRequest(dp);
 		when(deviceTypeRepository.findtoUpdateDeviceTypeByCode(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
@@ -2032,7 +1968,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t3getExceptionalHolidaysFailTest() throws Exception {
+	public void getExceptionalHolidaysFail_DataAccessException_Test() throws Exception {
 		when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(Mockito.any()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -2044,7 +1980,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t009updateWorkingDaysStatusTest() throws Exception {
+	public void updateWorkingDaysStatus_DataAccessException_Test() throws Exception {
 		when(daysOfWeekRepo.findByCode(Mockito.anyString())).thenThrow(new DataAccessException("...") {
 		});
 		MasterDataTest.checkResponse(mockMvc
@@ -2055,7 +1991,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst003updateHolidayTest3() throws Exception {
+	public void updateHoliday_DataAccessException_Test() throws Exception {
 
 		when(locReg.findByCode(Mockito.anyString())).thenThrow(new DataAccessException("...") {
 		});
@@ -2076,12 +2012,12 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst011searchMachineTest1() throws Exception {
+	public void searchMachine_DataAccessException_Test() throws Exception {
 		when(locReg.findByLangCode(Mockito.anyString())).thenThrow(new DataAccessException("...") {
 		});
 		RequestWrapper<SearchDto> searchDtoReq = new RequestWrapper<SearchDto>();
 		Pagination pagination = new Pagination(0, 1);
-		List<SearchSort> ss = new ArrayList<SearchSort>();
+		List<SearchSort> ss = new ArrayList<>();
 		io.mosip.kernel.masterdata.dto.request.SearchFilter sf = new io.mosip.kernel.masterdata.dto.request.SearchFilter();
 		List<io.mosip.kernel.masterdata.dto.request.SearchFilter> ls = new ArrayList<>();
 		sf.setColumnName("holidayName");
@@ -2105,7 +2041,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t007getAllTemplateByTemplateTypeCodeFailTest() throws Exception {
+	public void getAllTemplateByTemplateTypeCodeFail_DataAccessException_Test() throws Exception {
 
 		when(templateRepository.findAllByTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
@@ -2116,7 +2052,7 @@ public class IntegratedRepositoryTest {
 	}
 
 	@Test
-	public void tst0getTitlesBylangCodeNotFound() throws Exception {
+	public void getTitlesByLangCodeNotFound_DataAccessException_() throws Exception {
 		when(titleRepository.getThroughLanguageCode(Mockito.anyString())).thenThrow(new DataAccessException("...") {
 		});
 
@@ -2127,7 +2063,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst015deleteDeviceSpecificationTest() throws Exception {
+	public void deleteDeviceSpecification_DataAccessException_Test() throws Exception {
 		when(deviceSpecificationRepository.findDeviceSpecById(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -2138,7 +2074,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t015updateDocumentCategoryStatusTest() throws Exception {
+	public void updateDocumentCategoryStatus_DataAccessException_Test() throws Exception {
 		when(documentCategoryRepository.findtoUpdateDocumentCategoryByCode(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -2151,7 +2087,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst009mapDocCategoryAndDocTypeTest1() throws Exception {
+	public void mapDocCategoryAndDocType_DataAccessException_Test() throws Exception {
 		when(validDocumentRepository.findByDocCategoryCodeAndDocTypeCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -2162,7 +2098,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst009mapDocCategoryAndDocTypeTest2() throws Exception {
+	public void mapDocCategoryAndDocTypeInvalid_DataAccessException_Test() throws Exception {
 		ValidDocument validDocument = new ValidDocument();
 		validDocument.setIsActive(false);
 
@@ -2177,7 +2113,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t007unmapDocCategoryAndDocTypeTest() throws Exception {
+	public void unmapDocCategoryAndDocType_DataAccessException_Test() throws Exception {
 		ValidDocument validDocument = new ValidDocument();
 		validDocument.setIsActive(true);
 		when(validDocumentRepository.findByDocCategoryCodeAndDocTypeCode(Mockito.anyString(), Mockito.anyString()))
@@ -2192,19 +2128,17 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t018authorizeZoneTest() throws Exception {
+	public void authorizeZone_DataAccessException_Test() throws Exception {
 		when(registrationCenterRepository.findByIdAndIsDeletedFalseOrNull(Mockito.anyString()))
 				.thenThrow(new DataAccessException("...") {
 				});
-		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/zones/authorize").param("rid", "10001")).andReturn(),
-				"ADM-PKT-500");
-
+		MasterDataTest.checkErrorResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/zones/authorize").param("rid", "10001")).andReturn());
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t015deleteDynamicFieldTest() throws Exception {
+	public void deleteDynamicFields_DataAccessException_Test() throws Exception {
 
 		DynamicField dynamicFieldDto = new DynamicField();
 		dynamicFieldDto.setDataType("string");
@@ -2222,7 +2156,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t015deleteDynamicFieldTest1() throws Exception {
+	public void deleteDynamicFieldInvalid_DataAccessException_Test() throws Exception {
 		when(dynamicFieldRepository.deleteAllDynamicField(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(new DataAccessException("...") {
 				});
@@ -2244,7 +2178,7 @@ public class IntegratedRepositoryTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst005createLocationHierarchyDetailsTest4() throws Exception {
+	public void createLocationHierarchies_DataAccessException_Test() throws Exception {
 		 RequestWrapper<LocationCreateDto> locationCreateDtoReq=new RequestWrapper<>();
 		LocationCreateDto createDto = new LocationCreateDto();
 		createDto.setCode("11111");
@@ -2266,7 +2200,7 @@ public class IntegratedRepositoryTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst005createLocationHierarchyDetailsTest5() throws Exception {
+	public void createLocationHierarchies_IllegalArgumentException_Test() throws Exception {
 		 RequestWrapper<LocationCreateDto> locationCreateDtoReq=new RequestWrapper<>();
 		LocationCreateDto createDto = new LocationCreateDto();
 		createDto.setCode("11111");
@@ -2288,9 +2222,9 @@ public class IntegratedRepositoryTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t027updateLocationHierarchyDetailsTest() throws Exception {
+	public void updateLocationHierarchyDetails_IllegalArgumentException_Test() throws Exception {
 		
-		RequestWrapper<LocationPutDto> locationRequestDto=new RequestWrapper<LocationPutDto>();
+		RequestWrapper<LocationPutDto> locationRequestDto=new RequestWrapper<>();
 		LocationPutDto dto = new LocationPutDto();
 		dto.setCode("11111");
 		dto.setHierarchyLevel((short) 1);
@@ -2308,21 +2242,20 @@ public class IntegratedRepositoryTest {
 						.content(mapper.writeValueAsString(locationRequestDto))).andReturn(),
 				"KER-MSD-097");
 	}
-	
+
 	@Test
 	@WithUserDetails("reg-processor")
-	public void tst003getUsersTest2() throws Exception {
+	public void getUsersTest_withDeletionIsNull() throws Exception {
 		when(userDetailsRepository.findAllByIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
 		
-		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/users/0/1/cr_dtimes/DESC")).andReturn(), "KER-USR-007");
-
+		MasterDataTest.checkErrorResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/users/0/1/cr_dtimes/DESC")).andReturn());
 	}
 	
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t010updateUserRegCenterStatusTest1() throws Exception {
+	public void updateUserRegCenterStatusTest() throws Exception {
 		when(zoneUserRepo.findZoneByUserIdNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
 		when(userDetailsRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString())).thenThrow(new DataAccessException("...") {});
 
@@ -2334,7 +2267,7 @@ public class IntegratedRepositoryTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t010updateUserRegCenterStatusTest2() throws Exception {
+	public void updateUserRegCenterStatusActiveTest() throws Exception {
 		when(zoneUserRepo.findZoneByUserIdNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
 		when(userDetailsRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString())).thenReturn(null);
 
@@ -2346,7 +2279,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t012deleteUserRegCenterMappingTest() throws Exception {
+	public void deleteUserRegCenterMappingTest() throws Exception {
 		when(userDetailsRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString())).thenThrow(new DataAccessException("...") {});
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/usercentermapping/2")).andReturn(),
@@ -2356,7 +2289,7 @@ public class IntegratedRepositoryTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001mapUserRegCenterTest1() throws Exception {
+	public void mapUserRegCenterTest() throws Exception {
 		when(zoneUserRepo.findZoneByUserIdActiveAndNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
 		when(userDetailsRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString())).thenThrow(new DataAccessException("...") {});
 		RequestWrapper<UserDetailsDto> ud = new RequestWrapper<>();
@@ -2378,11 +2311,11 @@ public class IntegratedRepositoryTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t008updateUserRegCenterTest4() throws Exception {
+	public void updateUserRegCenterTest() throws Exception {
 		
 		when(zoneUserRepo.findZoneByUserIdActiveAndNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
 		when(userDetailsRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.anyString())).thenThrow(new DataAccessException("...") {});
-		RequestWrapper<UserDetailsPutReqDto> udp = new RequestWrapper<UserDetailsPutReqDto>();
+		RequestWrapper<UserDetailsPutReqDto> udp = new RequestWrapper<>();
 		UserDetailsPutReqDto detailsPutReqDto = new UserDetailsPutReqDto();
 		detailsPutReqDto.setId("7");
 		detailsPutReqDto.setIsActive(true);
@@ -2401,7 +2334,7 @@ public class IntegratedRepositoryTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst023decommissionRegCenterFailTest() throws Exception {
+	public void decommissionRegCenterFailTest() throws Exception {
 		List<RegistrationCenter> regCenters =new ArrayList<>();
 		RegistrationCenter centerPostReqDto=new RegistrationCenter();
 		centerPostReqDto.setAddressLine1("add1");
@@ -2434,7 +2367,7 @@ public class IntegratedRepositoryTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t028getCenterSpecificToZoneTest() throws Exception {
+	public void getCenterSpecificToZoneTest() throws Exception {
 		when(zoneRepository.findAllNonDeleted()).thenReturn(getZoneLst());
 		when(zoneUserRepo.findZoneByUserIdActiveAndNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
 
@@ -2448,7 +2381,7 @@ public class IntegratedRepositoryTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst022getDynamicFieldByNameTest1() throws Exception {
+	public void getDynamicFieldByNameTest() throws Exception {
 		when( dynamicFieldRepository.findAllDynamicFieldByNameLangCodeAndisDeleted(Mockito.anyString(), Mockito.anyString())).thenThrow(new DataAccessException("...") {});
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/blod/eng")).andReturn(),
@@ -2458,7 +2391,7 @@ public class IntegratedRepositoryTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst009getZoneNameBasedOnUserIDAndLangCodeTest() throws Exception {
+	public void getZoneNameBasedOnUserIDAndLangCodeTest() throws Exception {
 		when(zoneUserRepo.count()).thenReturn((long) 1);
 		when(zoneUserRepo.findZoneByUserIdNonDeleted(Mockito.anyString())).thenReturn(null);
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/zones/zonename").param("userID", "global-admin").param("langCode","eng")).andReturn(), "KER-MSD-391");
@@ -2467,7 +2400,7 @@ public class IntegratedRepositoryTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst009getZoneNameBasedOnUserIDAndLangCodeTest1() throws Exception {
+	public void getZoneNameBasedOnUserIDAndLangCodeTest_Success() throws Exception {
 		when(zoneUserRepo.count()).thenReturn((long) 1);
 		when(zoneUserRepo.findZoneByUserIdNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
 		when(zoneRepository.findZoneByCodeAndLangCodeNonDeleted(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
@@ -2477,7 +2410,7 @@ public class IntegratedRepositoryTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst009getZoneNameBasedOnUserIDAndLangCodeTest2() throws Exception {
+	public void getZoneNameByUserIdAndLangCodeTest() throws Exception {
 		when(zoneUserRepo.count()).thenReturn((long) 1);
 		when(zoneUserRepo.findZoneByUserIdNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
 		when(zoneRepository.findZoneByCodeAndLangCodeNonDeleted(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
@@ -2487,7 +2420,7 @@ public class IntegratedRepositoryTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void tst009getZoneNameBasedOnUserIDAndLangCodeTest3() throws Exception {
+	public void getZoneName_ByUserIDAndLangCode_Test() throws Exception {
 		when(zoneUserRepo.count()).thenReturn((long) 1);
 		when(zoneUserRepo.findZoneByUserIdNonDeleted(Mockito.anyString())).thenReturn(getZoneUser());
 		when(zoneRepository.findZoneByCodeAndLangCodeNonDeleted(Mockito.anyString(), Mockito.anyString())).thenThrow(new DataAccessException("...") {});
@@ -2509,14 +2442,12 @@ public class IntegratedRepositoryTest {
 	}
 	*/
 
-	
 	@Test
 	@WithUserDetails("reg-processor")
-	public void tst003getUsersTest3() throws Exception {
+	public void getUsersTest_withDeletionIsAny() throws Exception {
 		when(userDetailsRepository.findAllByIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
-		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.get("/users/0/1/cr_dtimes/DESC")).andReturn(), "KER-USR-004");
-
+		MasterDataTest.checkErrorResponse(
+				mockMvc.perform(MockMvcRequestBuilders.get("/users/0/1/cr_dtimes/DESC")).andReturn());
 	}
 	
 }

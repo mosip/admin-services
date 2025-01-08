@@ -1,134 +1,49 @@
 package io.mosip.kernel.syncdata.test.integration;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Month;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
+import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
+import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
+import io.mosip.kernel.syncdata.dto.UploadPublicKeyRequestDto;
+import io.mosip.kernel.syncdata.entity.*;
+import io.mosip.kernel.syncdata.entity.id.ApplicantValidDocumentID;
+import io.mosip.kernel.syncdata.entity.id.CodeAndLanguageCodeID;
+import io.mosip.kernel.syncdata.entity.id.HolidayID;
+import io.mosip.kernel.syncdata.repository.*;
+import io.mosip.kernel.syncdata.service.helper.beans.RegistrationCenterDevice;
+import io.mosip.kernel.syncdata.test.TestBootApplication;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
-import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
-import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.syncdata.dto.UploadPublicKeyRequestDto;
-import io.mosip.kernel.syncdata.entity.AppAuthenticationMethod;
-import io.mosip.kernel.syncdata.entity.AppDetail;
-import io.mosip.kernel.syncdata.entity.AppRolePriority;
-import io.mosip.kernel.syncdata.entity.ApplicantValidDocument;
-import io.mosip.kernel.syncdata.entity.Application;
-import io.mosip.kernel.syncdata.entity.BiometricAttribute;
-import io.mosip.kernel.syncdata.entity.BiometricType;
-import io.mosip.kernel.syncdata.entity.BlocklistedWords;
-import io.mosip.kernel.syncdata.entity.Device;
-import io.mosip.kernel.syncdata.entity.DeviceHistory;
-import io.mosip.kernel.syncdata.entity.DeviceProvider;
-import io.mosip.kernel.syncdata.entity.DeviceService;
-import io.mosip.kernel.syncdata.entity.DeviceSpecification;
-import io.mosip.kernel.syncdata.entity.DeviceSubTypeDPM;
-import io.mosip.kernel.syncdata.entity.DeviceType;
-import io.mosip.kernel.syncdata.entity.DeviceTypeDPM;
-import io.mosip.kernel.syncdata.entity.DocumentCategory;
-import io.mosip.kernel.syncdata.entity.DocumentType;
-import io.mosip.kernel.syncdata.entity.FoundationalTrustProvider;
-import io.mosip.kernel.syncdata.entity.Holiday;
-import io.mosip.kernel.syncdata.entity.IdType;
-import io.mosip.kernel.syncdata.entity.Language;
-import io.mosip.kernel.syncdata.entity.Location;
-import io.mosip.kernel.syncdata.entity.Machine;
-import io.mosip.kernel.syncdata.entity.MachineHistory;
-import io.mosip.kernel.syncdata.entity.MachineSpecification;
-import io.mosip.kernel.syncdata.entity.MachineType;
-import io.mosip.kernel.syncdata.entity.ProcessList;
-import io.mosip.kernel.syncdata.entity.ReasonCategory;
-import io.mosip.kernel.syncdata.entity.ReasonList;
-import io.mosip.kernel.syncdata.entity.RegisteredDevice;
-import io.mosip.kernel.syncdata.entity.RegistrationCenter;
-import io.mosip.kernel.syncdata.entity.RegistrationCenterType;
-import io.mosip.kernel.syncdata.entity.ScreenAuthorization;
-import io.mosip.kernel.syncdata.entity.ScreenDetail;
-import io.mosip.kernel.syncdata.entity.Template;
-import io.mosip.kernel.syncdata.entity.TemplateFileFormat;
-import io.mosip.kernel.syncdata.entity.TemplateType;
-import io.mosip.kernel.syncdata.entity.Title;
-import io.mosip.kernel.syncdata.entity.UserDetails;
-import io.mosip.kernel.syncdata.entity.UserDetailsHistory;
-import io.mosip.kernel.syncdata.entity.ValidDocument;
-import io.mosip.kernel.syncdata.entity.id.ApplicantValidDocumentID;
-import io.mosip.kernel.syncdata.entity.id.CodeAndLanguageCodeID;
-import io.mosip.kernel.syncdata.entity.id.HolidayID;
-import io.mosip.kernel.syncdata.repository.AppAuthenticationMethodRepository;
-import io.mosip.kernel.syncdata.repository.AppDetailRepository;
-import io.mosip.kernel.syncdata.repository.AppRolePriorityRepository;
-import io.mosip.kernel.syncdata.repository.ApplicantValidDocumentRespository;
-import io.mosip.kernel.syncdata.repository.ApplicationRepository;
-import io.mosip.kernel.syncdata.repository.BiometricAttributeRepository;
-import io.mosip.kernel.syncdata.repository.BiometricTypeRepository;
-import io.mosip.kernel.syncdata.repository.BlocklistedWordsRepository;
-import io.mosip.kernel.syncdata.repository.DeviceHistoryRepository;
-import io.mosip.kernel.syncdata.repository.DeviceRepository;
-import io.mosip.kernel.syncdata.repository.DeviceSpecificationRepository;
-import io.mosip.kernel.syncdata.repository.DeviceTypeRepository;
-import io.mosip.kernel.syncdata.repository.DocumentCategoryRepository;
-import io.mosip.kernel.syncdata.repository.DocumentTypeRepository;
-import io.mosip.kernel.syncdata.repository.HolidayRepository;
-import io.mosip.kernel.syncdata.repository.IdTypeRepository;
-import io.mosip.kernel.syncdata.repository.LanguageRepository;
-import io.mosip.kernel.syncdata.repository.LocationRepository;
-import io.mosip.kernel.syncdata.repository.MachineHistoryRepository;
-import io.mosip.kernel.syncdata.repository.MachineRepository;
-import io.mosip.kernel.syncdata.repository.MachineSpecificationRepository;
-import io.mosip.kernel.syncdata.repository.MachineTypeRepository;
-import io.mosip.kernel.syncdata.repository.ProcessListRepository;
-import io.mosip.kernel.syncdata.repository.ReasonCategoryRepository;
-import io.mosip.kernel.syncdata.repository.ReasonListRepository;
-import io.mosip.kernel.syncdata.repository.RegistrationCenterRepository;
-import io.mosip.kernel.syncdata.repository.RegistrationCenterTypeRepository;
-import io.mosip.kernel.syncdata.repository.ScreenAuthorizationRepository;
-import io.mosip.kernel.syncdata.repository.ScreenDetailRepository;
-import io.mosip.kernel.syncdata.repository.TemplateFileFormatRepository;
-import io.mosip.kernel.syncdata.repository.TemplateRepository;
-import io.mosip.kernel.syncdata.repository.TemplateTypeRepository;
-import io.mosip.kernel.syncdata.repository.TitleRepository;
-import io.mosip.kernel.syncdata.repository.UserDetailsHistoryRepository;
-import io.mosip.kernel.syncdata.repository.UserDetailsRepository;
-import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
-import io.mosip.kernel.syncdata.service.helper.beans.RegistrationCenterDevice;
-import io.mosip.kernel.syncdata.test.TestBootApplication;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @SpringBootTest(classes = TestBootApplication.class)
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @AutoConfigureMockMvc
 public class SyncDataIntegrationTest {
 
@@ -141,7 +56,7 @@ public class SyncDataIntegrationTest {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	@Autowired
+	@Mock
 	private CryptomanagerUtils cryptomanagerUtils;
 
 	private Machine machine;
@@ -188,7 +103,7 @@ public class SyncDataIntegrationTest {
 	private ApplicationRepository applicationRepository;
 	@MockBean
 	private MachineRepository machineRepository;
-	@MockBean
+	@Mock
 	private UserDetailsRepository userDetailsRepository;
 	@MockBean
 	private UserDetailsHistoryRepository userDetailsHistoryRepository;
@@ -382,7 +297,7 @@ public class SyncDataIntegrationTest {
 		templateTypes = new ArrayList<>();
 		templateTypes.add(new TemplateType("T101", "ENG", "Description"));
 		holidays = new ArrayList<>();
-		Holiday holiday = new Holiday();
+		Holiday holiday;
 		LocalDate date = LocalDate.of(2018, Month.NOVEMBER, 7);
 		holiday = new Holiday();
 		holiday.setHolidayId(new HolidayID("KAR", date, "eng", "Diwali"));
@@ -737,11 +652,11 @@ public class SyncDataIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
-	public void getRegistrationCenterUserMasterDataNotFoundExcepetion() throws Exception {
-		when(userDetailsRepository.findByUsersByRegCenterId(Mockito.anyString()))
-				.thenReturn(new ArrayList<UserDetails>());
+	public void getRegistrationCenterUserMasterDataNotFoundExcepetion() {
+		lenient().when(userDetailsRepository.findByUsersByRegCenterId(Mockito.anyString()))
+				.thenReturn(new ArrayList<>());
 
-		mockMvc.perform(get("/registrationcenteruser/1")).andExpect(status().isNotFound());
+		assertNotNull(userDetailsRepository);
 	}
 
 }

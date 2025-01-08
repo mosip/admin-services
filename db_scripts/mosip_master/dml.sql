@@ -17,16 +17,6 @@ TRUNCATE TABLE master.biometric_type cascade ;
 
 \COPY master.biometric_type (code,name,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-biometric_type.csv' delimiter ',' HEADER  csv;
 
------ TRUNCATE master.doc_category TABLE Data and It's reference Data and COPY Data from CSV file -----
-TRUNCATE TABLE master.doc_category cascade ;
-
-\COPY master.doc_category (code,name,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-doc_category.csv' delimiter ',' HEADER  csv;
-
------ TRUNCATE master.gender TABLE Data and It's reference Data and COPY Data from CSV file -----
-TRUNCATE TABLE master.gender cascade ;
-
-\COPY master.gender (code,name,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-gender.csv' delimiter ',' HEADER  csv;
-
 ----- TRUNCATE master.module_detail TABLE Data and It's reference Data and COPY Data from CSV file -----
 TRUNCATE TABLE master.module_detail cascade ;
 
@@ -37,35 +27,15 @@ TRUNCATE TABLE master.process_list cascade ;
 
 \COPY master.process_list (id,name,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-process_list.csv' delimiter ',' HEADER  csv;
 
------ TRUNCATE master.reason_category TABLE Data and It's reference Data and COPY Data from CSV file -----
-TRUNCATE TABLE master.reason_category cascade ;
-
-\COPY master.reason_category (code,name,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-reason_category.csv' delimiter ',' HEADER  csv;
-
 ----- TRUNCATE master.role_list TABLE Data and It's reference Data and COPY Data from CSV file -----
 TRUNCATE TABLE master.role_list cascade ;
 
 \COPY master.role_list (code,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-role_list.csv' delimiter ',' HEADER  csv;
 
------ TRUNCATE master.status_type TABLE Data and It's reference Data and COPY Data from CSV file -----
-TRUNCATE TABLE master.status_type cascade ;
-
-\COPY master.status_type (code,name,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-status_type.csv' delimiter ',' HEADER  csv;
-
 ----- TRUNCATE master.template_file_format TABLE Data and It's reference Data and COPY Data from CSV file -----
 TRUNCATE TABLE master.template_file_format cascade ;
 
 \COPY master.template_file_format (code,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-template_file_format.csv' delimiter ',' HEADER  csv;
-
------ TRUNCATE master.template_type TABLE Data and It's reference Data and COPY Data from CSV file -----
-TRUNCATE TABLE master.template_type cascade ;
-
-\COPY master.template_type (code,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-template_type.csv' delimiter ',' HEADER  csv;
-
------ TRUNCATE master.daysofweek_list TABLE Data and It's reference Data and COPY Data from CSV file -----
-TRUNCATE TABLE master.daysofweek_list cascade ;
-
-\COPY master.daysofweek_list (code,name,day_seq,is_global_working,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-daysofweek_list.csv' delimiter ',' HEADER  csv;
 
 ----- TRUNCATE master.sync_job_def TABLE Data and It's reference Data and COPY Data from CSV file -----
 TRUNCATE TABLE master.sync_job_def  cascade ;
@@ -93,16 +63,6 @@ TRUNCATE TABLE master.biometric_attribute cascade ;
 TRUNCATE TABLE master.screen_detail cascade ;
 
 \COPY master.screen_detail (id,app_id,name,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-screen_detail.csv' delimiter ',' HEADER  csv;
-
------ TRUNCATE master.status_list TABLE Data and It's reference Data and COPY Data from CSV file -----
-TRUNCATE TABLE master.status_list cascade ;
-
-\COPY master.status_list (code,descr,sttyp_code,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-status_list.csv' delimiter ',' HEADER  csv;
-
------ TRUNCATE master.template TABLE Data and It's reference Data and COPY Data from CSV file -----
-TRUNCATE TABLE master.template cascade ;
-
-\COPY master.template (id,name,descr,file_format_code,model,file_txt,module_id,module_name,template_typ_code,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-template.csv' delimiter ',' HEADER  csv;
 
 -------------- Level 3 data load scripts ------------------------
 

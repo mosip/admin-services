@@ -1,29 +1,10 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import javax.transaction.Transactional;
-
-import io.mosip.kernel.masterdata.dto.response.FilterResult;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Service;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.DeviceTypeErrorCode;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
+import io.mosip.kernel.masterdata.constant.LanguageErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryPutDto;
@@ -39,6 +20,7 @@ import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResult;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
@@ -60,6 +42,29 @@ import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.Collections;
 
 /**
  * This class have methods to fetch list of valid document category, create
@@ -107,6 +112,9 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
 
+	@Value("${mosip.supported-languages}")
+	private String supportedLanguages;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -151,10 +159,11 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	@Cacheable(value = "document-category", key = "'documentcategory'.concat('-').concat(#langCode)", condition="#langCode != null")
 	@Override
 	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(String langCode) {
+		validateLangCode(langCode.toLowerCase());
 		List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
 		try {
 			documentCategoryList = documentCategoryRepository
-					.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
+					.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode.toLowerCase());
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
@@ -174,6 +183,18 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		}
 		documentCategoryResponseDto.setDocumentcategories(documentCategoryDtoList);
 		return documentCategoryResponseDto;
+	}
+
+	private void validateLangCode(String langCode) {
+		if (langCode == null || langCode.trim().isEmpty()) {
+			throw new DataNotFoundException(LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorCode(),
+					LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorMessage());
+		}
+		Set<String> supportedLanguagesSet = new HashSet<>(Arrays.asList(supportedLanguages.split(",")));
+		if (!supportedLanguagesSet.contains(langCode)){
+			throw new DataNotFoundException(LanguageErrorCode.INVALID_LANGUAGE_CODE.getErrorCode(),
+					LanguageErrorCode.INVALID_LANGUAGE_CODE.getErrorMessage());
+		}
 	}
 
 	/*

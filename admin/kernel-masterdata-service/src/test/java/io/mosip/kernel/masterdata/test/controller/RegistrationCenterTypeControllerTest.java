@@ -1,10 +1,16 @@
 package io.mosip.kernel.masterdata.test.controller;
 
-import static org.mockito.Mockito.doNothing;
-
-import java.util.Arrays;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
+import io.mosip.kernel.masterdata.constant.RegistrationCenterTypeErrorCode;
+import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
+import io.mosip.kernel.masterdata.dto.request.*;
+import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
+import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -15,24 +21,10 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.util.Arrays;
+import java.util.List;
 
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
-import io.mosip.kernel.masterdata.constant.RegistrationCenterTypeErrorCode;
-import io.mosip.kernel.masterdata.constant.RequestErrorCode;
-import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
-import io.mosip.kernel.masterdata.dto.request.FilterDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.Pagination;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.request.SearchFilter;
-import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
-import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
-import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
+import static org.mockito.Mockito.doNothing;
 
 /**
  * @author GOVINDARAJ VELU
@@ -99,7 +91,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void createRegistrationCenterType() throws Exception {
+	public void createRegistrationCenterType_Success() throws Exception {
 		//when
 		String uri = "/registrationcentertypes";
 		//then
@@ -110,7 +102,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t1updateRegistrationCenterType() throws Exception {
+	public void updateRegistrationCenterType_Fail() throws Exception {
 		//given
 		String code = "TVM", langCode = "eng", name = "tvmcn update", descr="tvmcenter";
 		boolean isActive = true;
@@ -123,12 +115,12 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put(uri).contentType(MediaType.APPLICATION_JSON)
 						.content(mapToJson(registrationCenterTypeWrapper))).andReturn(),
-				null);
+				"KER-MSD-120");
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t1updateRegistrationCenterTypeFailureNotFound() throws Exception {
+	public void updateRegistrationCenterTypeFailureNotFound() throws Exception {
 		//given
 		String code = "TVM-01", langCode = "eng", name = "tvmcn", descr="tvm center";
 		boolean isActive = true;
@@ -143,10 +135,10 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 						.content(mapToJson(registrationCenterTypeWrapper))).andReturn(),
 				RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorCode());
 	}
-	
+
 	@Test
 	@WithUserDetails("global-admin")
-	public void t2deleteRegistrationCenterTypeFailureNotFound() throws Exception {
+	public void deleteRegistrationCenterTypeFailureNotFound() throws Exception {
 		//given
 		String code = "TVM-01";
 		//when
@@ -155,10 +147,10 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete(uri)).andReturn(),
 				RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorCode());
 	}
-	
+
 	@Test
 	@WithUserDetails("global-admin")
-	public void t2deleteRegistrationCenterTypeDependency() throws Exception {
+	public void deleteRegistrationCenterTypeDependency_Success() throws Exception {
 		//given
 		String code = "TVM";
 		//when
@@ -170,7 +162,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t00getAllRegistrationCenterTypes() throws Exception {
+	public void getAllRegistrationCenterTypes_Success() throws Exception {
 		//given
 		String pageNumber = "0", pageSize = "10", sortBy = "createdDateTime", orderBy = "desc";
 		//when
@@ -189,7 +181,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t0getAllRegistrationCenterTypesFailure() throws Exception {
+	public void getAllRegistrationCenterTypesFailure() throws Exception {
 		//given
 		String pageNumber = "0", pageSize = "10", sortBy = "createdDateTime", orderBy = "desc";
 		//when
@@ -207,7 +199,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t000getAllRegistrationCenterTypesFailure() throws Exception {
+	public void getAllRegistrationCenterTypesFailure_WithInvalidRegCenter() throws Exception {
 		//given
 		String pageNumber = "0", pageSize = "10", sortBy = "createdDateTimes", orderBy = "desc";
 		//when
@@ -226,7 +218,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t5registrationCenterTypeFilterValuesFailureUnique() throws Exception {
+	public void registrationCenterTypeFilterValuesFailureUnique() throws Exception {
 		//when
 		String uri = "/registrationcentertypes/filtervalues";
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post(uri)
@@ -238,7 +230,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t5registrationCenterTypeFilterValuesFailureAll() throws Exception {
+	public void registrationCenterTypeFilterValuesFailureAll() throws Exception {
 		//given
 		setValueInFilter(FilterColumnEnum.ALL.toString());
 		//when
@@ -252,7 +244,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t5registrationCenterTypeFilterValuesFailureAll1() throws Exception {
+	public void registrationCenterTypeFilterValuesFailureAll1() throws Exception {
 		//given
 		setValueInFilter(FilterColumnEnum.ALL.toString());
 		registrationCenterTypeFilterWrapper.getRequest().getFilters().get(0).setColumnName("code");
@@ -269,7 +261,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t5registrationCenterTypeFilterValuesFailureEmpty() throws Exception {
+	public void registrationCenterTypeFilterValuesFailureEmpty() throws Exception {
 		//given
 		setValueInFilter(FilterColumnEnum.EMPTY.toString());
 		//when
@@ -284,7 +276,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t6searchRegistrationCenterTypeFailureEquals() throws Exception {
+	public void searchRegistrationCenterTypeFailureEquals() throws Exception {
 		//when
 		String uri = "/registrationcentertypes/search";
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post(uri)
@@ -297,7 +289,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t6searchRegistrationCenterTypeFailureContains() throws Exception {
+	public void searchRegistrationCenterTypeFailureContains() throws Exception {
 		//given
 		setValueInSearch(FilterTypeEnum.CONTAINS.toString());
 		//when
@@ -312,7 +304,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t6searchRegistrationCenterTypeFailureStartWith() throws Exception {
+	public void searchRegistrationCenterTypeFailureStartWith() throws Exception {
 		//given
 		setValueInSearch(FilterTypeEnum.STARTSWITH.toString());
 		//when
@@ -327,7 +319,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t6searchRegistrationCenterTypeFailureBetween() throws Exception {
+	public void searchRegistrationCenterTypeFailureBetween() throws Exception {
 		//given
 		setValueInSearch(FilterTypeEnum.BETWEEN.toString());
 		//when
@@ -342,7 +334,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t6searchRegistrationCenterTypeFailureIn() throws Exception {
+	public void searchRegistrationCenterTypeFailureIn() throws Exception {
 		//given
 		setValueInSearch(FilterTypeEnum.IN.toString());
 		//when
@@ -357,7 +349,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t6searchRegistrationCenterTypeFailureEmpty() throws Exception {
+	public void searchRegistrationCenterTypeFailureEmpty() throws Exception {
 		//given
 		setValueInSearch("");
 		//when
@@ -370,10 +362,9 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 				MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorCode());
 	}
 	
-	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t7updateRegistrationCenterTypeStatusFailureNotFound() throws Exception {
+	public void updateRegistrationCenterTypeStatusFailureNotFound() throws Exception {
 		//given
 		String code = "TVM", isActive = "true";
 		//when
@@ -390,7 +381,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t02updateRegistrationCenterTypeStatusMapping() throws Exception {
+	public void updateRegistrationCenterTypeStatusMapping() throws Exception {
 		//given
 		String code = "TVM", isActive = "false";
 		//when
@@ -401,13 +392,13 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 				.param("isActive", isActive);
 		//then
 		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), 
-				null);
+				"KER-MSD-120");
 		
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t02updateRegistrationCenterTypeStatusFailure() throws Exception {
+	public void updateRegistrationCenterTypeStatusFailure() throws Exception {
 		//given
 		String code = "TVM", isActive = "true";
 		//when
@@ -417,13 +408,13 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 				.param("code", code)
 				.param("isActive", isActive);
 		//then
-		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), null);
+		MasterDataTest.checkResponse(mockMvc.perform(requestBuilder).andReturn(), "KER-MSD-120");
 		
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t02updateRegistrationCenterTypeStatusFailure1() throws Exception {
+	public void updateRegistrationCenterTypeStatusFailure_WithInvalidCode() throws Exception {
 		//given
 		String code = "TVzzzzzzzzzzzzzzzzzzz", isActive = "true";
 		//when
@@ -439,7 +430,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t02updateRegistrationCenterTypeStatus3() throws Exception {
+	public void updateRegistrationCenterTypeStatus() throws Exception {
 		//given
 		String code = "REG", isActive = "true";
 		//when
@@ -455,7 +446,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t02updateRegistrationCenterTypeStatusFailure2() throws Exception {
+	public void updateRegistrationCenterTypeStatusFailure_WithInvalidInput() throws Exception {
 		//given
 		String code = "TV?M&", isActive = "true";
 		//when
@@ -523,7 +514,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void registrationCenterFilterValuesTest() throws Exception {
+	public void registrationCenterFilterValuesTest_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/registrationcenters/filtervalues").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(MasterDataTest.commonFilterValueDto("name", "Regular", "unique")))).andReturn(),null);
 	}
@@ -531,7 +522,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void registrationCenterFilterValuesTest1() throws Exception {
+	public void registrationCenterTest_WithAllFilterValues_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/registrationcenters/filtervalues").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(MasterDataTest.commonFilterValueDto("name", "Regular", "all")))).andReturn(),null);
 	}
@@ -540,7 +531,7 @@ public class RegistrationCenterTypeControllerTest extends AbstractTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void updateRegistrationCenterTypeStatusTest1() throws Exception {
+	public void updateRegistrationCenterTypeStatusTest_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.patch("/registrationcentertypes").param("isActive", "false").param("code","REG")).andReturn(),"KER-MSD-270");
 	}
 }

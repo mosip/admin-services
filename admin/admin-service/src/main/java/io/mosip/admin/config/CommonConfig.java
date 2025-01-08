@@ -1,6 +1,6 @@
 package io.mosip.admin.config;
 
-import javax.servlet.Filter;
+import jakarta.servlet.Filter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Scheduled;
+
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 import io.mosip.admin.bulkdataupload.repositories.DocumentCategoryRepository;

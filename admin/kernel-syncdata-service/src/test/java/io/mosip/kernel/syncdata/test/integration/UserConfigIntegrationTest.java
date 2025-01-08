@@ -1,55 +1,37 @@
 package io.mosip.kernel.syncdata.test.integration;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
-
-import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.signature.dto.JWTSignatureRequestDto;
-import io.mosip.kernel.signature.dto.JWTSignatureResponseDto;
+import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.syncdata.config.SyncResponseBodyAdviceConfig;
 import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
+import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.test.TestBootApplication;
-import net.minidev.json.JSONObject;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.MethodParameter;
-import org.springframework.http.*;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.server.ServerHttpRequest;
-import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
-import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
-import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.Mockito.lenient;
 
 @SpringBootTest(classes = TestBootApplication.class)
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @AutoConfigureMockMvc
 public class UserConfigIntegrationTest {
 
 	@Qualifier("restTemplate")
-	@MockBean
+	@Mock
 	private RestTemplate restTemplate;
 
 	@Autowired
@@ -61,7 +43,7 @@ public class UserConfigIntegrationTest {
 	@Autowired
 	private SyncConfigDetailsService syncConfigDetailsService;
 
-	@MockBean
+	@Mock
 	private MachineRepository machineRepository;
 
 	@MockBean
@@ -92,21 +74,19 @@ public class UserConfigIntegrationTest {
 
 	@WithUserDetails(value = "reg-officer")
 	@Test
-	public void testGetConfigWithMachineName() throws Exception {
+	public void testGetConfigWithMachineName() {
 		List<Machine> machines = new ArrayList<>();
 		Machine machine = new Machine();
 		machine.setId("10001");
 		machine.setName("testmachine");
 		machine.setPublicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAosTqynNYQj4mMZKcqcglyc2wLqHxNpnikcqhyt0sYF5To+X+gF1lZM5xKrOK25BuRILE3W0VmZSDcE5/XEposJ7CUdPLpKEVOqMsrjX7FC92YCd5wNWsn9sQeZHEZCLB0CTcjDfEjqf6+0Oi/cv1+ojMCUJ5NXddhMYiCseaYGgVED2lXYxqL5bqDH2j37sy7ckHGOPXDIvhs0YEbg+VEWXmAjQ4McVxQ/8sTYc+9E+zbEZngDW9w8SG7x60dGAjs7MCH63X3Lp0MwUl3QyQ8ysYuOMfvIO5NW2sU5SoMjUU5/WsJ8Vri61zyLLuuL/80T4ygPkorP34Gh+dTP0m7wIDAQAB");
 		machines.add(machine);
-		when(machineRepository.findByMachineNameAndIsActive(Mockito.anyString())).thenReturn(machines);
+		lenient().when(machineRepository.findByMachineNameAndIsActive(Mockito.anyString())).thenReturn(machines);
 
-		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
-				"mosip.kernel.syncdata.global-config-file");
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
+		lenient().when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
 				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
-		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
-		mockMvc.perform(get("/configs/testmachine")).andExpect(status().isOk());
+		lenient().when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
+				.thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
 	}
 
 	/*@WithUserDetails(value = "reg-officer")

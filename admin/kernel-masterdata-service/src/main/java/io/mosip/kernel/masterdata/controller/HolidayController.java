@@ -2,7 +2,7 @@ package io.mosip.kernel.masterdata.controller;
 
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -287,7 +287,7 @@ public class HolidayController {
 	public ResponseWrapper<List<MissingDataDto>> getMissingHolidayDetails(
 			@PathVariable("langcode") String langCode, @RequestParam(required = false) String fieldName) {
 		ResponseWrapper<List<MissingDataDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(genericService.getMissingData(Holiday.class, langCode, "holidayDate", fieldName));
+		responseWrapper.setResponse(genericService.getMissingData(Holiday.class, langCode, "holidayId", fieldName));
 		return responseWrapper;
 	}
 
