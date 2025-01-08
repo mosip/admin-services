@@ -294,7 +294,7 @@ public class DocumentTypeControllerTest {
 	}
 	
 
-	
+	//this test case is ignored to resolve the build issue after the build issue is resolved it should be removed
 	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
