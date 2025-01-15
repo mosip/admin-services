@@ -921,7 +921,7 @@ VALUES('update-demo-data-regproc-success-email-content', 'Success email to self 
 INSERT INTO master.template_type
 (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
 VALUES('update-demo-data-regproc-success-email-content', 'Success email to self update demographic data', 'fra', true, 'admin', now(), NULL, NULL, false, NULL);
-INTO master.template_type
+INSERT INTO master.template_type
 (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
 VALUES('update-demo-data-regproc-failure-email-subject', 'Failure email subject to self update demographic data', 'fra', true, 'admin', now(), NULL, NULL, false, NULL);
 INSERT INTO master.template_type
@@ -980,6 +980,9 @@ INSERT INTO master.template_type
 VALUES('update-demo-data-cancelled-purpose', 'Cancelled summary to self update demographic data', 'eng', true, 'admin', now(), NULL, NULL, false, NULL);
 INSERT INTO master.template_type
 (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('mosip.event.status.cancelled.template', 'Cancelled event status', 'eng', true, 'admin', '2024-10-09 11:58:08.338', NULL, NULL, false, NULL);
+INSERT INTO master.template_type
+(code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
 VALUES('mosip.event.status.cancelled.template', 'Cancelled event status', 'fra', true, 'admin', now(), NULL, NULL, false, NULL);
 INSERT INTO master.template_type
 (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
@@ -1008,6 +1011,52 @@ VALUES('update-demo-data-regproc-success-purpose', 'Success email subject to sel
 INSERT INTO master.template_type
 (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
 VALUES('update-demo-data-regproc-success-purpose', 'Success email subject to self update demographic data', 'fra', true, 'admin', now(), NULL, NULL, false, NULL);
+
+INSERT INTO master."template"
+(id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('2024', 'Success summary to self update demographic data', 'Success summary to self update demographic data', 'txt', 'velocity', 'Data was updated successfully', '10006', 'Resident Services', 'update-demo-data-success-summary', 'eng', true, 'admin', now(), NULL, NULL, false, NULL);
+INSERT INTO master."template"
+(id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('2232', 'Success summary to self update demographic data', 'Success summary to self update demographic data', 'txt', 'velocity', 'Les données ont été mises à jour avec succès', '10006', 'Resident Services', 'update-demo-data-success-summary', 'fra', true, 'admin', now(), NULL, NULL, false, NULL);
+INSERT INTO master."template"
+(id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('2440', 'Success summary to self update demographic data', 'Success summary to self update demographic data', 'txt', 'velocity', 'تم تحديث البيانات بنجاح', '10006', 'Resident Services', 'update-demo-data-success-summary', 'ara', true, 'admin', now(), NULL, NULL, false, NULL);
+
+INSERT INTO master."template"
+(id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('2023', 'Success summary to lock/unlock various authentication types', 'Success summary to lock/unlock various authentication types', 'txt', 'velocity', '$authType authentication is $status', '10006', 'Resident Services', 'lock-unlock-auth-success-summary', 'eng', true, 'admin', now(), NULL, NULL, false, NULL);
+INSERT INTO master."template"
+(id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('2231', 'Success summary to lock/unlock various authentication types', 'Success summary to lock/unlock various authentication types', 'txt', 'velocity', 'L''authentification $authType est $status', '10006', 'Resident Services', 'lock-unlock-auth-success-summary', 'fra', true, 'admin', now(), NULL, NULL, false, NULL);
+INSERT INTO master."template"
+(id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('2439', 'Success summary to lock/unlock various authentication types', 'Success summary to lock/unlock various authentication types', 'txt', 'velocity', '$authType التحقق هو $status', '10006', 'Resident Services', 'lock-unlock-auth-success-summary', 'ara', true, 'admin', now(), NULL, NULL, false, NULL);
+
+INSERT INTO master."template"
+(id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('2027', 'Success summary to verify my phone and email', 'Success summary to verify my phone and email', 'txt', 'velocity', 'Your $channel was successfully verified', '10006', 'Resident Services', 'verify-my-phone-email-success-summary', 'eng', true, 'admin', now(), NULL, NULL, false, NULL);
+INSERT INTO master."template"
+(id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('2235', 'Success summary to verify my phone and email', 'Success summary to verify my phone and email', 'txt', 'velocity', 'Votre $channel a été vérifié avec succès', '10006', 'Resident Services', 'verify-my-phone-email-success-summary', 'fra', true, 'admin', now(), NULL, NULL, false, NULL);
+INSERT INTO master."template"
+(id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('2443', 'Success summary to verify my phone and email', 'Success summary to verify my phone and email', 'txt', 'velocity', 'تم التحقق من $channel بنجاح', '10006', 'Resident Services', 'verify-my-phone-email-success-summary', 'ara', true, 'admin', now(), NULL, NULL, false, NULL);
+INSERT INTO master."template"
+(id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('2026', 'Success summary to get my UIN card', 'Success summary to get my UIN card', 'txt', 'velocity', 'UIN card was downloaded successfully', '10006', 'Resident Services', 'get-my-uin-card-success-summary', 'eng', true, 'admin', now(), NULL, NULL, false, NULL);
+INSERT INTO master."template"
+(id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('2234', 'Success summary to get my UIN card', 'Success summary to get my UIN card', 'txt', 'velocity', 'La carte UIN a été téléchargée avec succès', '10006', 'Resident Services', 'get-my-uin-card-success-summary', 'fra', true, 'admin', now(), NULL, NULL, false, NULL);
+INSERT INTO master."template"
+(id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('2442', 'Success summary to get my UIN card', 'Success summary to get my UIN card', 'txt', 'velocity', 'تم تنزيل بطاقة UIN بنجاح', '10006', 'Resident Services', 'get-my-uin-card-success-summary', 'ara', true, 'admin', now(), NULL, NULL, false, NULL);
+
+INSERT INTO master.template_type
+(code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('update-demo-data-cancelled-summary', 'Cancelled summary to self update demographic data', 'ara', true, 'admin', now(), NULL, NULL, false, NULL);
+INSERT INTO master."template"
+(id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+VALUES('3469', 'Cancelled summary to self update demographic data', 'Cancelled summary to self update demographic data', 'txt', 'velocity', 'تم إلغاء طلب تحديث بياناتك بنجاح', '10006', 'Resident Services', 'update-demo-data-cancelled-summary', 'ara', true, 'admin', now(), NULL, NULL, false, NULL);
 
 INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,module_id,module_name,template_typ_code,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) VALUES
 	 ('2103','Vid Card Download Positive Purpose','Vid Card Download Positive Purpose','txt','velocity','La carte VID est disponible en téléchargement','10006','Resident Services','vid-card-download-positive-purpose','fra',true,'superadmin',now(),NULL,NULL,false,NULL),
@@ -1159,7 +1208,7 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
 	 ('2402','Static Pin Store Request Failed','Static Pin Store Request Failed','txt','velocity','فشل طلب تخزين الرقم السري الثابت','10006','Resident Services','mosip.ida.auth-request.STATIC-PIN-STORAGE.N.descr','ara',true,'superadmin',now(),NULL,NULL,false,NULL),
 	 ('2403','Static Pin Store Request Failed','Static Pin Store Request Failed','txt','velocity','Static Pin Store Request Failed','10006','Resident Services','mosip.ida.auth-request.STATIC-PIN-STORAGE.N.descr','eng',true,'superadmin',now(),NULL,NULL,false,NULL),
 	 ('2406','Static Pin Store Request Failed','Static Pin Store Request Failed','txt','velocity','Échec de la demande de stockage de code PIN statique','10006','Resident Services','mosip.ida.auth-request.STATIC-PIN-STORAGE.N.descr','fra',true,'superadmin',now(),NULL,NULL,false,NULL),
-	 ('2410','EKYC Authentication Request Failed','EKYC Authentication Request Failed','txt','velocity','فشل مصادقة EKYC','10006','Resident Services','mosip.ida.auth-request.EKYC-AUTH.N.descr','ara',true,'superadmin',now(),NULL,NULL,false,NULL),
+	 ('2410','EKYC Authentication Request Failed','EKYC Authentication Request Failed','txt','velocity','فشل مصادقة EKYC','10006','Resident Services','mosip.ida.auth-request.EKYC-AUTH.N.descr','ara',true,'superadmin',now(),NULL,NULL,false,NULL);
 INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,module_id,module_name,template_typ_code,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) VALUES
 	 ('2412','EKYC Authentication Request Failed','EKYC Authentication Request Failed','txt','velocity','EKYC Authentication Request Failed','10006','Resident Services','mosip.ida.auth-request.EKYC-AUTH.N.descr','eng',true,'superadmin',now(),NULL,NULL,false,NULL),
 	 ('2414','EKYC Authentication Request Failed','EKYC Authentication Request Failed','txt','velocity','Échec de l''authentification EKYC','10006','Resident Services','mosip.ida.auth-request.EKYC-AUTH.N.descr','fra',true,'superadmin',now(),NULL,NULL,false,NULL),
@@ -1243,8 +1292,8 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
 INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,module_id,module_name,template_typ_code,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) VALUES
 	 ('2565','PWD','PWD','txt','velocity','PWD','10006','Resident Services','mosip.auth-type-code.PWD','eng',true,'superadmin',now(),NULL,NULL,false,NULL),
 	 ('2567','PWD','PWD','txt','velocity','PWD','10006','Resident Services','mosip.auth-type-code.PWD','ara',true,'superadmin',now(),NULL,NULL,false,NULL),
-	 ('2568','PWD','PWD','txt','velocity','PWD','10006','Resident Services','mosip.auth-type-code.PWD','fra',true,'superadmin',now(),NULL,NULL,false,NULL);
-	 ('2570','PIN','PIN','txt','velocity','رمز ال PIN','10006','Resident Services','mosip.auth-type-code.PIN','ara',true,'superadmin',now(),NULL,NULL,false,NULL),
+	 ('2568','PWD','PWD','txt','velocity','PWD','10006','Resident Services','mosip.auth-type-code.PWD','fra',true,'superadmin',now(),NULL,NULL,false,NULL),
+	 ('2570','PIN','PIN','txt','velocity','رمز ال PIN','10006','Resident Services','mosip.auth-type-code.PIN','ara',true,'superadmin',now(),NULL,NULL,false,NULL);
 INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,module_id,module_name,template_typ_code,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) VALUES
 	 ('2573','PIN','PIN','txt','velocity','PIN','10006','Resident Services','mosip.auth-type-code.PIN','fra',true,'superadmin',now(),NULL,NULL,false,NULL),
 	 ('2575','PIN','PIN','txt','velocity','PIN','10006','Resident Services','mosip.auth-type-code.PIN','eng',true,'superadmin',now(),NULL,NULL,false,NULL),
@@ -1254,7 +1303,7 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
 	 ('2582','OTP','OTP','txt','velocity','رمز OTP','10006','Resident Services','mosip.auth-type-code.OTP','ara',true,'superadmin',now(),NULL,NULL,false,NULL),
 	 ('2584','Wallet','Wallet','txt','velocity','Wallet','10006','Resident Services','mosip.auth-type-code.Wallet','eng',true,'superadmin',now(),NULL,NULL,false,NULL),
 	 ('2587','Wallet','Wallet','txt','velocity','Portefeuille','10006','Resident Services','mosip.auth-type-code.Wallet','fra',true,'superadmin',now(),NULL,NULL,false,NULL),
-	 ('2588','Wallet','Wallet','txt','velocity','المحفظة','10006','Resident Services','mosip.auth-type-code.Wallet','ara',true,'superadmin',now(),NULL,NULL,false,NULL),
+	 ('2588','Wallet','Wallet','txt','velocity','المحفظة','10006','Resident Services','mosip.auth-type-code.Wallet','ara',true,'superadmin',now(),NULL,NULL,false,NULL);
 INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,module_id,module_name,template_typ_code,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) VALUES
 	 ('2592','L1-bio-device','L1-bio-device','txt','velocity','L1-bio-device','10006','Resident Services','mosip.auth-type-code.L1-bio-device','eng',true,'superadmin',now(),NULL,NULL,false,NULL),
 	 ('2593','L1-bio-device','L1-bio-device','txt','velocity','L1-bio-dispositif','10006','Resident Services','mosip.auth-type-code.L1-bio-device','fra',true,'superadmin',now(),NULL,NULL,false,NULL),
@@ -5165,7 +5214,7 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
 	 ('2834','Generated','Generated','txt','velocity','ولدت','10006','Resident Services','mosip.generated.template.property','ara',true,'superadmin',now(),NULL,NULL,false,NULL),
 	 ('2837','Revoked','Revoked','txt','velocity','إلغاء - فسخ','10006','Resident Services','mosip.revoked.template.property','ara',true,'superadmin',now(),NULL,NULL,false,NULL),
 	 ('2839','Revoked','Revoked','txt','velocity','revoked','10006','Resident Services','mosip.revoked.template.property','eng',true,'superadmin',now(),NULL,NULL,false,NULL),
-	 ('2840','Revoked','Revoked','txt','velocity','révoqué','10006','Resident Services','mosip.revoked.template.property','fra',true,'superadmin',now(),NULL,NULL,false,NULL)
+	 ('2840','Revoked','Revoked','txt','velocity','révoqué','10006','Resident Services','mosip.revoked.template.property','fra',true,'superadmin',now(),NULL,NULL,false,NULL);
 INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,module_id,module_name,template_typ_code,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) VALUES
 	 ('2842','Success email subject to self update demographic data','Success email subject to self update demographic data','txt','velocity','Acknowledgement: $eventDetails | event ID: $eventId | Status: $status','10006','Resident Services','update-demo-data-regproc-success-email-subject','eng',true,'superadmin',now(),NULL,NULL,false,NULL),
 	 ('2843','Success email to self update demographic data','Success email to self update demographic data','txt','velocity','Dear $name, </br>
@@ -5182,7 +5231,7 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
  Log in to the official website $trackServiceRequestLink for further details. <br>','10006','Resident Services','update-demo-data-regproc-success_SMS','eng',true,'superadmin',now(),NULL,NULL,false,NULL),
 	 ('2847','Failure sms to self update demographic data','Failure sms to self update demographic data','txt','velocity','Dear $name, <br>
  Update identity request failed for the event ID: #$eventId. <br>
- Log in to the official website $trackServiceRequestLink for further details. <br>','10006','Resident Services','update-demo-data-regproc-failure_SMS','eng',true,'superadmin',now(),NULL,NULL,false,NULL),
+ Log in to the official website $trackServiceRequestLink for further details. <br>','10006','Resident Services','update-demo-data-regproc-failure_SMS','eng',true,'superadmin',now(),NULL,NULL,false,NULL);
 INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,module_id,module_name,template_typ_code,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) VALUES
 	 ('2852','Success email subject to self update demographic data','Success email subject to self update demographic data','txt','velocity','Accusé de réception : $eventDetails | ID d''événement : $eventId | Statut : $status','10006','Resident Services','update-demo-data-regproc-success-email-subject','fra',true,'superadmin',now(),NULL,NULL,false,NULL),
 	 ('2853','Success email subject to self update demographic data','Success email subject to self update demographic data','txt','velocity','شكر وتقدير: $eventDetails | معرف الحدث: $eventId | الحالة: $status','10006','Resident Services','update-demo-data-regproc-success-email-subject','ara',true,'superadmin',now(),NULL,NULL,false,NULL),
@@ -5193,7 +5242,7 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
 	 ('2857','Success email to self update demographic data','Success email to self update demographic data','txt','velocity','Cher $name, <br>
   Votre demande de mise à jour des données a abouti par rapport à l''ID d''événement : #$eventId. <br>
   Vous serez informé en outre lorsque la carte sera prête à être téléchargée. <br>
-  Connectez-vous au site officiel $trackServiceRequestLink pour plus de détails. <br>','10006','Resident Services','update-demo-data-regproc-success-email-content','fra',true,'superadmin',now(),NULL,NULL,false,NULL),
+  Connectez-vous au site officiel $trackServiceRequestLink pour plus de détails. <br>','10006','Resident Services','update-demo-data-regproc-success-email-content','fra',true,'superadmin',now(),NULL,NULL,false,NULL);
 INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,module_id,module_name,template_typ_code,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) VALUES
 	 ('2862','Failure email subject to self update demographic data','Failure email subject to self update demographic data','txt','velocity','شكر وتقدير: $eventDetails | معرف الحدث: $eventId | الحالة: الحالة $status','10006','Resident Services','update-demo-data-regproc-failure-email-subject','ara',true,'superadmin',now(),NULL,NULL,false,NULL),
 	 ('2863','Failure email subject to self update demographic data','Failure email subject to self update demographic data','txt','velocity','Accusé de réception : $eventDetails | ID d''événement : $eventId | Statut : $status','10006','Resident Services','update-demo-data-regproc-failure-email-subject','fra',true,'superadmin',now(),NULL,NULL,false,NULL),
@@ -5214,7 +5263,7 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
   Connectez-vous au site officiel $trackServiceRequestLink pour plus de détails. <br>','10006','Resident Services','update-demo-data-regproc-success_SMS','fra',true,'superadmin',now(),NULL,NULL,false,NULL),
 	 ('2880','Failure sms to self update demographic data','Failure sms to self update demographic data','txt','velocity','Cher $name, <br>
   La demande de mise à jour de l''identité a échoué pour l''ID d''événement : #$eventId. <br>
-  Connectez-vous au site officiel $trackServiceRequestLink pour plus de détails. <br>','10006','Resident Services','update-demo-data-regproc-failure_SMS','fra',true,'superadmin',now(),NULL,NULL,false,NULL),
+  Connectez-vous au site officiel $trackServiceRequestLink pour plus de détails. <br>','10006','Resident Services','update-demo-data-regproc-failure_SMS','fra',true,'superadmin',now(),NULL,NULL,false,NULL);
 INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,module_id,module_name,template_typ_code,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) VALUES
 	('2883','Failure sms to self update demographic data','Failure sms to self update demographic data','txt','velocity','عزيزي $name، <br>
   فشل طلب هوية التحديث لمعرف الحدث: #$eventId. <ر>
@@ -5229,12 +5278,12 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
 	 ('2896','Failure  SMS to self update demographic data','Failure  SMS to self update demographic data','txt','velocity','Cher $name, <br> Votre demande d''annulation de la demande de mise à jour des données a abouti par rapport à l''ID d''événement : #$eventId. <br> Vous pouvez maintenant demander une autre demande de mise à jour des données. <br>','10006','Resident Services','update-demo-data-discarded-SMS','fra',true,'superadmin',now(),NULL,NULL,false,NULL);
 INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,module_id,module_name,template_typ_code,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) VALUES
 	 ('2903','Failure email subject to self update demographic data','Failure email subject to self update demographic data','txt','velocity','Accusé de réception : $eventDetails | ID d''événement : $eventId | Statut : $status','10006','Resident Services','update-demo-data-discarded-email-subject','fra',true,'superadmin',now(),NULL,NULL,false,NULL),
-	 ('2904','Failure email subject to self update demographic data','Failure email subject to self update demographic data','txt','velocity','شكر وتقدير: $eventDetails | معرف الحدث: $eventId | الحالة: $status','10006','Resident Services','update-demo-data-discarded-email-subject','ara',true,'superadmin',now(),NULL,NULL,false,NULL);
+	 ('2904','Failure email subject to self update demographic data','Failure email subject to self update demographic data','txt','velocity','شكر وتقدير: $eventDetails | معرف الحدث: $eventId | الحالة: $status','10006','Resident Services','update-demo-data-discarded-email-subject','ara',true,'superadmin',now(),NULL,NULL,false,NULL),
 	 ('2905','Cancelled event status','Cancelled event status','txt','velocity','Cancelled','10006','Resident Services','mosip.event.status.cancelled.template','eng',true,'superadmin',now(),NULL,NULL,false,NULL),
 	 ('2906','Cancelled summary to self update demographic data','Cancelled summary to self update demographic data','txt','velocity','Request to Update your data cancelled successfully','10006','Resident Services','update-demo-data-cancelled-summary','eng',true,'superadmin',now(),NULL,NULL,false,NULL),
-	 ('2907','Cancelled summary to self update demographic data','Cancelled summary to self update demographic data','txt','velocity','Request to Update your data cancelled successfully','10006','Resident Services','update-demo-data-cancelled-purpose','eng',true,'superadmin',now(),NULL,NULL,false,NULL);
+	 ('2907','Cancelled summary to self update demographic data','Cancelled summary to self update demographic data','txt','velocity','Request to Update your data cancelled successfully','10006','Resident Services','update-demo-data-cancelled-purpose','eng',true,'superadmin',now(),NULL,NULL,false,NULL),
 	 ('2908','Cancelled event status','Cancelled event status','txt','velocity','Annulé','10006','Resident Services','mosip.event.status.cancelled.template','fra',true,'superadmin',now(),NULL,NULL,false,NULL),
-	 ('2909','Cancelled event status','Cancelled event status','txt','velocity','ألغيت','10006','Resident Services','mosip.event.status.cancelled.template','ara',true,'superadmin',now(),NULL,NULL,false,NULL),
+	 ('2909','Cancelled event status','Cancelled event status','txt','velocity','ألغيت','10006','Resident Services','mosip.event.status.cancelled.template','ara',true,'superadmin',now(),NULL,NULL,false,NULL);
 INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,module_id,module_name,template_typ_code,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) VALUES
 	 ('2914','Cancelled summary to self update demographic data','Cancelled summary to self update demographic data','txt','velocity','Demande de mise à jour de vos données annulée avec succès','10006','Resident Services','update-demo-data-cancelled-summary','fra',true,'superadmin',now(),NULL,NULL,false,NULL),
 	 ('2919','Cancelled summary to self update demographic data','Cancelled summary to self update demographic data','txt','velocity','Demande de mise à jour de vos données annulée avec succès','10006','Resident Services','update-demo-data-cancelled-purpose','fra',true,'superadmin',now(),NULL,NULL,false,NULL);
