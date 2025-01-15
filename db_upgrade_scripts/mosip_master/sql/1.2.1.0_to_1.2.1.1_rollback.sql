@@ -3438,3 +3438,9 @@ WHERE template_typ_code = 'gen-or-revoke-vid-success-summary' AND lang_code = 'e
 
 DELETE FROM master."template"
 WHERE template_typ_code = 'gen-or-revoke-vid-success-summary' AND lang_code = 'fra';
+
+DELETE FROM master."template"
+WHERE id IN ('2024', '2232', '2440', '2023', '2231', '2439', '2027', '2235', '2443', '2026', '2234', '2442', '3469');
+
+DELETE FROM master.template_type
+WHERE code = 'update-demo-data-cancelled-summary';
