@@ -1014,49 +1014,49 @@ VALUES('update-demo-data-regproc-success-purpose', 'Success email subject to sel
 
 INSERT INTO master."template"
 (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
-VALUES('2024', 'Success summary to self update demographic data', 'Success summary to self update demographic data', 'txt', 'velocity', 'Data was updated successfully', '10006', 'Resident Services', 'update-demo-data-success-summary', 'eng', true, 'admin', '2024-10-09 11:58:27.979', NULL, NULL, false, NULL);
+VALUES('2024', 'Success summary to self update demographic data', 'Success summary to self update demographic data', 'txt', 'velocity', 'Data was updated successfully', '10006', 'Resident Services', 'update-demo-data-success-summary', 'eng', true, 'admin', now(), NULL, NULL, false, NULL);
 INSERT INTO master."template"
 (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
-VALUES('2232', 'Success summary to self update demographic data', 'Success summary to self update demographic data', 'txt', 'velocity', 'Les données ont été mises à jour avec succès', '10006', 'Resident Services', 'update-demo-data-success-summary', 'fra', true, 'admin', '2024-10-09 11:58:27.979', NULL, NULL, false, NULL);
+VALUES('2232', 'Success summary to self update demographic data', 'Success summary to self update demographic data', 'txt', 'velocity', 'Les données ont été mises à jour avec succès', '10006', 'Resident Services', 'update-demo-data-success-summary', 'fra', true, 'admin', now(), NULL, NULL, false, NULL);
 INSERT INTO master."template"
 (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
-VALUES('2440', 'Success summary to self update demographic data', 'Success summary to self update demographic data', 'txt', 'velocity', 'تم تحديث البيانات بنجاح', '10006', 'Resident Services', 'update-demo-data-success-summary', 'ara', true, 'admin', '2024-10-09 11:58:27.979', NULL, NULL, false, NULL);
+VALUES('2440', 'Success summary to self update demographic data', 'Success summary to self update demographic data', 'txt', 'velocity', 'تم تحديث البيانات بنجاح', '10006', 'Resident Services', 'update-demo-data-success-summary', 'ara', true, 'admin', now(), NULL, NULL, false, NULL);
 
 INSERT INTO master."template"
 (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
-VALUES('2023', 'Success summary to lock/unlock various authentication types', 'Success summary to lock/unlock various authentication types', 'txt', 'velocity', '$authType authentication is $status', '10006', 'Resident Services', 'lock-unlock-auth-success-summary', 'eng', true, 'admin', '2024-10-09 11:58:27.979', NULL, NULL, false, NULL);
+VALUES('2023', 'Success summary to lock/unlock various authentication types', 'Success summary to lock/unlock various authentication types', 'txt', 'velocity', '$authType authentication is $status', '10006', 'Resident Services', 'lock-unlock-auth-success-summary', 'eng', true, 'admin', now(), NULL, NULL, false, NULL);
 INSERT INTO master."template"
 (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
-VALUES('2231', 'Success summary to lock/unlock various authentication types', 'Success summary to lock/unlock various authentication types', 'txt', 'velocity', 'L''authentification $authType est $status', '10006', 'Resident Services', 'lock-unlock-auth-success-summary', 'fra', true, 'admin', '2024-10-09 11:58:27.979', NULL, NULL, false, NULL);
+VALUES('2231', 'Success summary to lock/unlock various authentication types', 'Success summary to lock/unlock various authentication types', 'txt', 'velocity', 'L''authentification $authType est $status', '10006', 'Resident Services', 'lock-unlock-auth-success-summary', 'fra', true, 'admin', now(), NULL, NULL, false, NULL);
 INSERT INTO master."template"
 (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
-VALUES('2439', 'Success summary to lock/unlock various authentication types', 'Success summary to lock/unlock various authentication types', 'txt', 'velocity', '$authType التحقق هو $status', '10006', 'Resident Services', 'lock-unlock-auth-success-summary', 'ara', true, 'admin', '2024-10-09 11:58:27.979', NULL, NULL, false, NULL);
+VALUES('2439', 'Success summary to lock/unlock various authentication types', 'Success summary to lock/unlock various authentication types', 'txt', 'velocity', '$authType التحقق هو $status', '10006', 'Resident Services', 'lock-unlock-auth-success-summary', 'ara', true, 'admin', now(), NULL, NULL, false, NULL);
 
 INSERT INTO master."template"
 (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
-VALUES('2027', 'Success summary to verify my phone and email', 'Success summary to verify my phone and email', 'txt', 'velocity', 'Your $channel was successfully verified', '10006', 'Resident Services', 'verify-my-phone-email-success-summary', 'eng', true, 'admin', '2024-10-09 11:58:27.979', NULL, NULL, false, NULL);
+VALUES('2027', 'Success summary to verify my phone and email', 'Success summary to verify my phone and email', 'txt', 'velocity', 'Your $channel was successfully verified', '10006', 'Resident Services', 'verify-my-phone-email-success-summary', 'eng', true, 'admin', now(), NULL, NULL, false, NULL);
 INSERT INTO master."template"
 (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
-VALUES('2235', 'Success summary to verify my phone and email', 'Success summary to verify my phone and email', 'txt', 'velocity', 'Votre $channel a été vérifié avec succès', '10006', 'Resident Services', 'verify-my-phone-email-success-summary', 'fra', true, 'admin', '2024-10-09 11:58:27.979', NULL, NULL, false, NULL);
+VALUES('2235', 'Success summary to verify my phone and email', 'Success summary to verify my phone and email', 'txt', 'velocity', 'Votre $channel a été vérifié avec succès', '10006', 'Resident Services', 'verify-my-phone-email-success-summary', 'fra', true, 'admin', now(), NULL, NULL, false, NULL);
 INSERT INTO master."template"
 (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
-VALUES('2443', 'Success summary to verify my phone and email', 'Success summary to verify my phone and email', 'txt', 'velocity', 'تم التحقق من $channel بنجاح', '10006', 'Resident Services', 'verify-my-phone-email-success-summary', 'ara', true, 'admin', '2024-10-09 11:58:27.979', NULL, NULL, false, NULL);
+VALUES('2443', 'Success summary to verify my phone and email', 'Success summary to verify my phone and email', 'txt', 'velocity', 'تم التحقق من $channel بنجاح', '10006', 'Resident Services', 'verify-my-phone-email-success-summary', 'ara', true, 'admin', now(), NULL, NULL, false, NULL);
 INSERT INTO master."template"
 (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
-VALUES('2026', 'Success summary to get my UIN card', 'Success summary to get my UIN card', 'txt', 'velocity', 'UIN card was downloaded successfully', '10006', 'Resident Services', 'get-my-uin-card-success-summary', 'eng', true, 'admin', '2024-10-09 11:58:27.979', NULL, NULL, false, NULL);
+VALUES('2026', 'Success summary to get my UIN card', 'Success summary to get my UIN card', 'txt', 'velocity', 'UIN card was downloaded successfully', '10006', 'Resident Services', 'get-my-uin-card-success-summary', 'eng', true, 'admin', now(), NULL, NULL, false, NULL);
 INSERT INTO master."template"
 (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
-VALUES('2234', 'Success summary to get my UIN card', 'Success summary to get my UIN card', 'txt', 'velocity', 'La carte UIN a été téléchargée avec succès', '10006', 'Resident Services', 'get-my-uin-card-success-summary', 'fra', true, 'admin', '2024-10-09 11:58:27.979', NULL, NULL, false, NULL);
+VALUES('2234', 'Success summary to get my UIN card', 'Success summary to get my UIN card', 'txt', 'velocity', 'La carte UIN a été téléchargée avec succès', '10006', 'Resident Services', 'get-my-uin-card-success-summary', 'fra', true, 'admin', now(), NULL, NULL, false, NULL);
 INSERT INTO master."template"
 (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
-VALUES('2442', 'Success summary to get my UIN card', 'Success summary to get my UIN card', 'txt', 'velocity', 'تم تنزيل بطاقة UIN بنجاح', '10006', 'Resident Services', 'get-my-uin-card-success-summary', 'ara', true, 'admin', '2024-10-09 11:58:27.979', NULL, NULL, false, NULL);
+VALUES('2442', 'Success summary to get my UIN card', 'Success summary to get my UIN card', 'txt', 'velocity', 'تم تنزيل بطاقة UIN بنجاح', '10006', 'Resident Services', 'get-my-uin-card-success-summary', 'ara', true, 'admin', now(), NULL, NULL, false, NULL);
 
 INSERT INTO master.template_type
 (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
-VALUES('update-demo-data-cancelled-summary', 'Cancelled summary to self update demographic data', 'ara', true, 'admin', '2024-10-09 11:58:08.338', NULL, NULL, false, NULL);
+VALUES('update-demo-data-cancelled-summary', 'Cancelled summary to self update demographic data', 'ara', true, 'admin', now(), NULL, NULL, false, NULL);
 INSERT INTO master."template"
 (id, "name", descr, file_format_code, model, file_txt, module_id, module_name, template_typ_code, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
-VALUES('3469', 'Cancelled summary to self update demographic data', 'Cancelled summary to self update demographic data', 'txt', 'velocity', 'تم إلغاء طلب تحديث بياناتك بنجاح', '10006', 'Resident Services', 'update-demo-data-cancelled-summary', 'ara', true, 'admin', '2024-10-09 11:58:27.979', NULL, NULL, false, NULL);
+VALUES('3469', 'Cancelled summary to self update demographic data', 'Cancelled summary to self update demographic data', 'txt', 'velocity', 'تم إلغاء طلب تحديث بياناتك بنجاح', '10006', 'Resident Services', 'update-demo-data-cancelled-summary', 'ara', true, 'admin', now(), NULL, NULL, false, NULL);
 
 INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,module_id,module_name,template_typ_code,lang_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) VALUES
 	 ('2103','Vid Card Download Positive Purpose','Vid Card Download Positive Purpose','txt','velocity','La carte VID est disponible en téléchargement','10006','Resident Services','vid-card-download-positive-purpose','fra',true,'superadmin',now(),NULL,NULL,false,NULL),
