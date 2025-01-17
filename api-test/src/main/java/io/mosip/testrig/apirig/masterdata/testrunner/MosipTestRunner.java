@@ -178,7 +178,6 @@ public class MosipTestRunner {
 				TestNG runner = new TestNG();
 				List<String> suitefiles = new ArrayList<>();
 				if (file.getName().toLowerCase().contains("mastertestsuite")) {
-					//BaseTestCase.setReportName(GlobalConstants.MASTERDATA);
 					suitefiles.add(file.getAbsolutePath());
 					runner.setTestSuites(suitefiles);
 					System.getProperties().setProperty("testng.outpur.dir", "testng-report");
