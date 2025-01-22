@@ -5,7 +5,6 @@ import java.time.ZoneOffset;
 import java.util.List;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,7 +38,6 @@ import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.entity.DynamicField;
 import io.mosip.kernel.masterdata.service.DynamicFieldService;
 import io.mosip.kernel.masterdata.service.GenericService;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
@@ -91,6 +89,16 @@ public class DynamicFieldController {
 	public ResponseWrapper<DynamicFieldConsolidateResponseDto> getDynamicFieldByName(@PathVariable("fieldName") String fieldName,@PathVariable("langCode") String langCode,@RequestParam(name = "withValue",defaultValue = "false",required = false) boolean withValue){
 		ResponseWrapper<DynamicFieldConsolidateResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(dynamicFieldService.getDynamicFieldByNameAndLangcode(fieldName,langCode,withValue));
+		return responseWrapper;
+	}
+
+	@ResponseFilter
+	@GetMapping("/{fieldName}")
+	@ApiOperation(value = " Service to fetch one dynamic field in all the languages")
+	public ResponseWrapper<List<DynamicFieldExtnDto>> getAllDynamicFieldByName(
+			@PathVariable("fieldName") String fieldName){
+		ResponseWrapper<List<DynamicFieldExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(dynamicFieldService.getAllDynamicFieldByName(fieldName));
 		return responseWrapper;
 	}
 	

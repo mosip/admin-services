@@ -674,4 +674,12 @@ public class LocationControllerTest {
 
 	}
 
+	@Test
+	@WithUserDetails("global-admin")
+	public void t021getImmediateChildrenByLocCode() throws Exception {
+
+		MasterDataTest
+				.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/locations/immediatechildren/RSK?languageCodes=eng,tam")).andReturn(), null);
+	}
+
 }

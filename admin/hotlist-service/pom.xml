@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.mosip.hotlist</groupId>
 	<artifactId>hotlist-service</artifactId>
-	<version>1.2.0.1-B1</version>
+	<version>1.2.1.0</version>
 	<name>Hotlist Service</name>
 	<description>Service to block/unblock ids in MOSIP</description>
      <url>https://github.com/mosip/admin-services</url>
@@ -30,9 +30,10 @@
 		<spring-webflux.version>5.0.6.RELEASE</spring-webflux.version>
 
 		<!-- kernel properties -->
-		<kernel-core.version>1.2.0.1-B1</kernel-core.version>
-		<kernel-websubclient-api.version>1.2.0.1-B1</kernel-websubclient-api.version>
-		<kernel-logger-logback.version>1.2.0.1-B1</kernel-logger-logback.version>
+		<kernel-core.version>1.2.0.1</kernel-core.version>
+		<kernel-websubclient-api.version>1.2.0.1</kernel-websubclient-api.version>
+		<kernel-logger-logback.version>1.2.0.1</kernel-logger-logback.version>
+		<kernel.version>1.2.0.1</kernel.version>
 	</properties>
 
 	<repositories>
@@ -133,6 +134,16 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 	<build>
 		<plugins>
 			<plugin>
@@ -351,7 +362,7 @@
 				<dependency>
 					<groupId>io.mosip.kernel</groupId>
 					<artifactId>kernel-auth-adapter</artifactId>
-					<version>${project.version}</version>
+					<version>${kernel-auth-adapter.version}</version>
 				</dependency>
 			</dependencies>
 			<build>

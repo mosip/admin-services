@@ -6,7 +6,7 @@ import java.time.ZoneId;
 
 import javax.servlet.http.HttpServletRequest;
 
-import io.mosip.kernel.authcodeflowproxy.api.exception.AuthRestException;
+import io.mosip.kernel.openid.bridge.api.exception.AuthRestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

@@ -1,12 +1,9 @@
 package io.mosip.kernel.syncdata.test.integration;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
@@ -18,7 +15,6 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +38,7 @@ import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import io.mosip.kernel.syncdata.dto.UploadPublicKeyRequestDto;
 import io.mosip.kernel.syncdata.entity.AppAuthenticationMethod;
 import io.mosip.kernel.syncdata.entity.AppDetail;
@@ -62,8 +59,10 @@ import io.mosip.kernel.syncdata.entity.DeviceTypeDPM;
 import io.mosip.kernel.syncdata.entity.DocumentCategory;
 import io.mosip.kernel.syncdata.entity.DocumentType;
 import io.mosip.kernel.syncdata.entity.FoundationalTrustProvider;
+import io.mosip.kernel.syncdata.entity.Gender;
 import io.mosip.kernel.syncdata.entity.Holiday;
 import io.mosip.kernel.syncdata.entity.IdType;
+import io.mosip.kernel.syncdata.entity.IndividualType;
 import io.mosip.kernel.syncdata.entity.Language;
 import io.mosip.kernel.syncdata.entity.Location;
 import io.mosip.kernel.syncdata.entity.Machine;
@@ -102,8 +101,10 @@ import io.mosip.kernel.syncdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.syncdata.repository.DeviceTypeRepository;
 import io.mosip.kernel.syncdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.syncdata.repository.DocumentTypeRepository;
+import io.mosip.kernel.syncdata.repository.GenderRepository;
 import io.mosip.kernel.syncdata.repository.HolidayRepository;
 import io.mosip.kernel.syncdata.repository.IdTypeRepository;
+import io.mosip.kernel.syncdata.repository.IndividualTypeRepository;
 import io.mosip.kernel.syncdata.repository.LanguageRepository;
 import io.mosip.kernel.syncdata.repository.LocationRepository;
 import io.mosip.kernel.syncdata.repository.MachineHistoryRepository;
@@ -157,6 +158,7 @@ public class SyncDataIntegrationTest {
 	private List<Holiday> holidays;
 	private List<BlocklistedWords> blackListedWords;
 	private List<Title> titles;
+	private List<Gender> genders;
 	private List<Language> languages;
 	private List<Template> templates;
 	private List<TemplateFileFormat> templateFileFormats;
@@ -177,6 +179,7 @@ public class SyncDataIntegrationTest {
 	private List<DeviceHistory> registrationCenterDeviceHistory;
 	private List<UserDetailsHistory> registrationCenterUserHistory;
 	private List<ApplicantValidDocument> applicantValidDocumentList;
+	private List<IndividualType> individualTypeList;
 	private List<Object[]> objectArrayList;
 	private List<AppAuthenticationMethod> appAuthenticationMethods = null;
 	private List<AppDetail> appDetails = null;
@@ -200,6 +203,10 @@ public class SyncDataIntegrationTest {
 	private RegistrationCenterRepository registrationCenterRepository;
 	@MockBean
 	private RegistrationCenterTypeRepository registrationCenterTypeRepository;
+	@MockBean
+	private GenderRepository genderRepository;
+	@MockBean
+	private IndividualTypeRepository individualTypeRepository;
 	@MockBean
 	private TemplateRepository templateRepository;
 	@MockBean
@@ -406,6 +413,8 @@ public class SyncDataIntegrationTest {
 		blackListedWords.add(new BlocklistedWords("ABC", "ENG", "description"));
 		titles = new ArrayList<>();
 		titles.add(new Title(new CodeAndLanguageCodeID("1011", "ENG"), "title", "titleDescription"));
+		genders = new ArrayList<>();
+		genders.add(new Gender("G1011", "MALE", "description"));
 		languages = new ArrayList<>();
 		languages.add(new Language("ENG", "english", "family", "native name"));
 		idTypes = new ArrayList<>();
@@ -503,6 +512,15 @@ public class SyncDataIntegrationTest {
 		registrationCenterUserHistory
 				.add(userDetailsHistory);
 
+		IndividualType individualType = new IndividualType();
+		CodeAndLanguageCodeID codeLangCode = new CodeAndLanguageCodeID();
+		codeLangCode.setCode("FR");
+		codeLangCode.setLangCode("ENG");
+		individualType.setName("Foreigner");
+		individualType.setCodeAndLanguageCodeId(codeLangCode);
+		individualTypeList = new ArrayList<>();
+		individualTypeList.add(individualType);
+		
 		ApplicantValidDocument applicantValidDoc = new ApplicantValidDocument();
 		ApplicantValidDocumentID appId = new ApplicantValidDocumentID();
 		appId.setAppTypeCode("001");
@@ -652,6 +670,9 @@ public class SyncDataIntegrationTest {
 				.thenReturn(registrationCenterType);
 		when(registrationCenterTypeRepository.findLatestRegistrationCenterTypeByMachineId(Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenReturn(registrationCenterType);
+		when(genderRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any())).thenReturn(genders);
+		when(individualTypeRepository.findByLastUpdatedAndCurrentTimeStamp(Mockito.any(), Mockito.any()))
+		.thenReturn(individualTypeList);
 		when(idTypeRepository.findAll()).thenReturn(idTypes);
 		when(idTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any())).thenReturn(idTypes);
 		when(deviceRepository.findDeviceByMachineId(Mockito.anyString())).thenReturn(devices);

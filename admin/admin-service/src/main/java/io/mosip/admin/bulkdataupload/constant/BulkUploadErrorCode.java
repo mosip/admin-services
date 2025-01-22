@@ -12,7 +12,7 @@ public enum BulkUploadErrorCode {
 	BULK_UPDATE_OPERATION_ERROR("ADM-BLK-001", "Data is not exist in db"),
 	INVALID_ARGUMENT("KER-MSD-999", "Invalid value : "),
 	DUPLICATE_RECORD("ADM-BLK-003", "Duplicate Record"),
-	INVALID_FILE_FORMAT("ADM-BLK-004", "Supported format are only csv file"),
+	INVALID_FILE_FORMAT("ADM-BLK-004", "Supported formats are xls, xlsx and csv files"),
 	INVALID_PCK_FILE_FORMAT("ADM-BLK-005", "Supported format is only zip file"),
 	EMPTY_FILE("ADM-BLK-006", "Empty file is not acceptable please provide valid file"),
 	NO_FILE("ADM-BLK-007", "No file uploaded"),

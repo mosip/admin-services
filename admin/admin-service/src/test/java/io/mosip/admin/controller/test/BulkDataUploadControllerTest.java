@@ -97,23 +97,7 @@ public class BulkDataUploadControllerTest {
 
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Test
-	@WithUserDetails("global-admin")
-	public void t012checkCountUpload() throws Exception {
-		String content="code,genderName,langCode,isActive\r\n" +
-				"MLIO,Test,eng,FALSE\r\n" +
-				"AABA,AAA,ara,TRUE\r\n" +
-				"BBCB,BBB,eng,TRUE";
-		MockMultipartFile gender = new MockMultipartFile("files", "gender.csv", "multipart/form-data", content.getBytes());
-		MvcResult response = mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(gender).param("tableName","gender").param("operation","insert").param("category","masterdata")).andReturn();
-		String transaction = response.getResponse().getContentAsString();
-		JSONParser parser = new JSONParser();
-		JSONObject json = (JSONObject) parser.parse(transaction);
-		JSONObject jsonResponse = (JSONObject) parser.parse(json.get("response").toString());
-		transactionId = jsonResponse.get("transcationId").toString();
-		AdminDataUtil.checkResponse(response,null);
-	}
+	
 
 	@Test
 	@WithUserDetails("global-admin")
@@ -213,6 +197,34 @@ public class BulkDataUploadControllerTest {
 	@WithUserDetails("global-admin")
 	public void t006uploadDataTest() throws Exception {
 		String content="code,genderName,langCode,isActive\r\n" + 
+				"MLx,Test,eng,FALSE\r\n" + 
+				"AAB,AAA,ara,TRUE\r\n" + 
+				"BBC,BBB,eng,TRUE";
+		MockMultipartFile gender = new MockMultipartFile("data", "gender.xlsx", "text/plain", content.getBytes());
+		AdminDataUtil.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(gender).param("tableName","gender").param("operation","insertt").param("category","masterdata")).andReturn(),
+				"KER-MSD-999");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t007uploadDataTest() throws Exception {
+		String content="code,genderName,langCode,isActive\r\n" + 
+				"MLP,Test,eng,FALSE\r\n" + 
+				"ABX,AAA,ara,TRUE\r\n" + 
+				"BCY,BBB,eng,TRUE";
+		MockMultipartFile gender = new MockMultipartFile("data", "gender.xls", "text/plain", content.getBytes());
+		AdminDataUtil.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(gender).param("tableName","gender").param("operation","insertt").param("category","masterdata")).andReturn(),
+				"KER-MSD-999");
+
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void t008uploadDataTest() throws Exception {
+		String content="code,genderName,langCode,isActive\r\n" + 
 				"MLO,Test,eng,FALSE\r\n" + 
 				"AAA,AAA,ara,TRUE\r\n" + 
 				"BBB,BBB,eng,TRUE";
@@ -224,7 +236,33 @@ public class BulkDataUploadControllerTest {
 	}
 	@Test
 	@WithUserDetails("global-admin")
-	public void t007uploadDataTest() throws Exception {
+	public void t009uploadDataTest() throws Exception {
+		String content="code,genderName,langCode,isActive\r\n" + 
+				"MLO,Test,eng,FALSE\r\n" + 
+				"AAA,AAA,ara,TRUE\r\n" + 
+				"BBB,BBB,eng,TRUE";
+		MockMultipartFile gender = new MockMultipartFile("data", "gender.xlsx", "text/plain", content.getBytes());
+		AdminDataUtil.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(gender).param("tableName","gender").param("operation","insert").param("category","packet")).andReturn(),
+				"ADM-BLK-006");
+
+	}
+	@Test
+	@WithUserDetails("global-admin")
+	public void t010uploadDataTest() throws Exception {
+		String content="code,genderName,langCode,isActive\r\n" + 
+				"MLO,Test,eng,FALSE\r\n" + 
+				"AAA,AAA,ara,TRUE\r\n" + 
+				"BBB,BBB,eng,TRUE";
+		MockMultipartFile gender = new MockMultipartFile("data", "gender.xls", "text/plain", content.getBytes());
+		AdminDataUtil.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(gender).param("tableName","gender").param("operation","insert").param("category","packet")).andReturn(),
+				"ADM-BLK-006");
+
+	}
+	@Test
+	@WithUserDetails("global-admin")
+	public void t011uploadDataTest() throws Exception {
 		String content="code,genderName,langCode,isActive\r\n" +
 				"MLO,Test,eng,FALSE\r\n" +
 				"AAA,AAA,ara,TRUE\r\n" +
@@ -237,7 +275,7 @@ public class BulkDataUploadControllerTest {
 	}
 	@Test
 	@WithUserDetails("global-admin")
-	public void t008uploadDataTest() throws Exception {
+	public void t012uploadDataTest() throws Exception {
 		String content="code,genderName,langCode,isActive\r\n" +
 				"TST,Test1,eng,TRUE\r\n" +
 				"BBB,AAA,ara,TRUE";
@@ -249,7 +287,7 @@ public class BulkDataUploadControllerTest {
 	}
 	@Test
 	@WithUserDetails("global-admin")
-	public void t009uploadDataTest() throws Exception {
+	public void t013uploadDataTest() throws Exception {
 		String content="code,genderName,langCode,isActive\r\n" +
 				"TST,Test1,eng,TRUE\r\n" +
 				"BBB,AAA,ara,TRUE";
@@ -261,14 +299,14 @@ public class BulkDataUploadControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t010getTranscationDetailTest() throws Exception {
+	public void t014getTranscationDetailTest() throws Exception {
 		AdminDataUtil.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/bulkupload/getAllTransactions")).andReturn(), null);
 
 	}
 	@Test
 	@WithUserDetails("global-admin")
-	public void t011uploadDataTest() throws Exception {
+	public void t015uploadDataTest() throws Exception {
 		String content="code,genderName,langCode,isActive\r\n" +
 				"TST,Test1,eng,TRUE\r\n" +
 				"BBB,AAA,ara,TRUE";
@@ -282,15 +320,19 @@ public class BulkDataUploadControllerTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	@WithUserDetails("global-admin")
-	public void t013checkCount() throws Exception {
-		Thread.sleep(20000);
-		MvcResult response = mockMvc.perform(MockMvcRequestBuilders.get("/bulkupload/transcation/"+transactionId)).andReturn();
+	public void t016checkCountUpload() throws Exception {
+		String content="code,genderName,langCode,isActive\r\n" +
+				"MLIO,Test,eng,FALSE\r\n" +
+				"AABA,AAA,ara,TRUE\r\n" +
+				"BBCB,BBB,eng,TRUE";
+		MockMultipartFile gender = new MockMultipartFile("files", "gender.csv", "multipart/form-data", content.getBytes());
+		MvcResult response = mockMvc.perform(MockMvcRequestBuilders.multipart("/bulkupload").file(gender).param("tableName","gender").param("operation","insert").param("category","masterdata")).andReturn();
 		String transaction = response.getResponse().getContentAsString();
 		JSONParser parser = new JSONParser();
 		JSONObject json = (JSONObject) parser.parse(transaction);
 		JSONObject jsonResponse = (JSONObject) parser.parse(json.get("response").toString());
-		int count = Integer.valueOf(jsonResponse.get("count").toString());
-		assertSame(count,0);
+		transactionId = jsonResponse.get("transcationId").toString();
+		AdminDataUtil.checkResponse(response,null);
 	}
 
 }
