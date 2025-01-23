@@ -228,7 +228,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
 	@Override
 	public ResponseEntity getScript(String scriptName, String keyIndex) throws Exception {
-		LOGGER.info("getScripts({}) started for machine : {}", io.mosip.kernel.syncdata.utils.ExceptionUtils.neutralizeParam(scriptName), io.mosip.kernel.syncdata.utils.ExceptionUtils.neutralizeParam(keyIndex));
+		LOGGER.info("getScripts({}) started for machine : {}", io.mosip.kernel.syncdata.utils.ExceptionUtils.neutralizeParam(scriptName.replaceAll("[\n\r]", "_")), io.mosip.kernel.syncdata.utils.ExceptionUtils.neutralizeParam(keyIndex.replaceAll("[\n\r]", "_")));
 		List<Machine> machines = machineRepo.findByMachineKeyIndex(keyIndex);
 		if(machines == null || machines.isEmpty())
 			throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
