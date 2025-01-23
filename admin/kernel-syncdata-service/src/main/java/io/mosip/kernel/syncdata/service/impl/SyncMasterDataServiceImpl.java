@@ -1,13 +1,5 @@
 package io.mosip.kernel.syncdata.service.impl;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,17 +9,28 @@ import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.FileNotFoundException;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import io.mosip.kernel.keymanagerservice.entity.CACertificateStore;
 import io.mosip.kernel.keymanagerservice.repository.CACertificateStoreRepository;
+import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.constant.SyncConfigDetailsErrorCode;
 import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.*;
-import io.mosip.kernel.syncdata.exception.*;
+import io.mosip.kernel.syncdata.entity.Machine;
+import io.mosip.kernel.syncdata.exception.RequestException;
+import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
+import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
+import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.repository.ModuleDetailRepository;
-import io.mosip.kernel.syncdata.service.helper.*;
+import io.mosip.kernel.syncdata.service.SyncMasterDataService;
+import io.mosip.kernel.syncdata.service.helper.ClientSettingsHelper;
+import io.mosip.kernel.syncdata.service.helper.IdentitySchemaHelper;
+import io.mosip.kernel.syncdata.service.helper.KeymanagerHelper;
+import io.mosip.kernel.syncdata.utils.MapperUtils;
+import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,16 +40,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
-import io.mosip.kernel.syncdata.entity.Machine;
-import io.mosip.kernel.syncdata.repository.MachineRepository;
-import io.mosip.kernel.syncdata.service.SyncMasterDataService;
-import io.mosip.kernel.syncdata.utils.MapperUtils;
-import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 /**
  * Masterdata sync handler service impl
@@ -261,7 +264,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 					MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
 
 		Boolean isEncrypted = environment.getProperty(String.format("mosip.sync.entity.encrypted.%s",
-				entityIdentifier.toUpperCase()), Boolean.class, false);
+				entityIdentifier.toUpperCase().replaceAll("[\n\r]", "_")), Boolean.class, false);
 
 		Path path = getEntityResource(entityIdentifier);
 		String content = FileUtils.readFileToString(path.toFile(),	StandardCharsets.UTF_8);
