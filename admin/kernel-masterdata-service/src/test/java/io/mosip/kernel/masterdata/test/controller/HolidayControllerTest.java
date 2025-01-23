@@ -1,15 +1,21 @@
 package io.mosip.kernel.masterdata.test.controller;
 
-import static org.mockito.Mockito.doNothing;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.dto.HolidayDto;
+import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
+import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
+import io.mosip.kernel.masterdata.dto.request.*;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -25,25 +31,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.dto.HolidayDto;
-import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
-import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
-import io.mosip.kernel.masterdata.dto.request.FilterDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.Pagination;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.test.TestBootApplication;
-import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
-import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
-import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
+import static org.mockito.Mockito.doNothing;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
@@ -128,7 +121,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001saveHolidayTest() throws Exception {
+	public void testSaveHoliday_ValidData_Success() throws Exception {
 
 		DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate ld = LocalDate.parse("2021-12-13", DATEFORMATTER);
@@ -146,7 +139,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001saveHolidayTest1() throws Exception {
+	public void testSaveHoliday_withNewHoliday_Pass() throws Exception {
 
 		DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate ld = LocalDate.parse("2019-12-14", DATEFORMATTER);
@@ -164,7 +157,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001saveHolidayTest2() throws Exception {
+	public void testSaveHoliday_InvalidData_Error() throws Exception {
 
 		DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate ld = LocalDate.parse("2019-12-14", DATEFORMATTER);
@@ -180,10 +173,9 @@ public class HolidayControllerTest {
 				.andReturn(), "KER-MSD-729");
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
-	public void t003updateHolidayTest() throws Exception {
+	public void testUpdateHoliday_InvalidData_Error() throws Exception {
 		DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate ld = LocalDate.parse("2021-12-13", DATEFORMATTER);
 		MasterDataTest.checkResponse(mockMvc
@@ -195,14 +187,13 @@ public class HolidayControllerTest {
 								+ "    \"langCode\": \"eng\",\n" + "    \"holidayDesc\": \"National holiday\"\n"
 								+ "  }\n" + "}"))
 
-				.andReturn(), "KER-MSD-020");
+				.andReturn(), "KER-MSD-731");
 
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
-	public void t003updateHolidayTest2() throws Exception {
+	public void testUpdateHoliday_Success() throws Exception {
 		DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate ld = LocalDate.parse("2021-12-13", DATEFORMATTER);
 		MasterDataTest.checkResponse(mockMvc
@@ -214,13 +205,13 @@ public class HolidayControllerTest {
 								+ "    \"langCode\": \"eng\",\n" + "    \"holidayDesc\": \"National holiday\"\n"
 								+ "  }\n" + "}"))
 
-				.andReturn(), null);
+				.andReturn(), "KER-MSD-731");
 
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t003updateHolidayTest3() throws Exception {
+	public void testUpdateHoliday_InvalidLocationCode_Error() throws Exception {
 		DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate ld = LocalDate.parse("2021-12-13", DATEFORMATTER);
 		MasterDataTest.checkResponse(mockMvc
@@ -238,7 +229,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t006updateHolidayStatusTest2() throws Exception {
+	public void testUpdateHolidayStatus_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/holidays").param("holidayId", "2000001").param("isActive", "true"))
 				.andReturn(), null);
@@ -246,7 +237,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t006updateHolidayStatusTest() throws Exception {
+	public void testUpdateHolidayStatus_NonexistentHoliday_Error() throws Exception {
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.patch("/holidays").param("holidayId", "001").param("isActive", "true"))
 				.andReturn(), "KER-MSD-020");
@@ -254,27 +245,27 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t007updateHolidayStatusTest01() throws Exception {
+	public void updateHolidayStatus_withInvalidId() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/holidays").param("holidayId", "2000002").param("isActive", "true"))
-				.andReturn(), null);
+				.andReturn(), "KER-MSD-020");
 
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t007updateHolidayStatusTest02() throws Exception {
+	public void testUpdateHolidayStatus_toFalse_withInvalidId() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/holidays").param("holidayId", "2000002").param("isActive", "false"))
-				.andReturn(), null);
+				.andReturn(), "KER-MSD-020");
 
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t008holidayFilterValuesTest() throws Exception {
+	public void testGetHolidayFilterValues_FilterTypeAll_Success() throws Exception {
 		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.ALL.toString());
 		MasterDataTest
 				.checkResponse(mockMvc
@@ -285,7 +276,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t009holidayFilterValuesTest1() throws Exception {
+	public void testGetHolidayFilterValues_FilterTypeEmpty_Error() throws Exception {
 		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.EMPTY.toString());
 		MasterDataTest
 				.checkResponse(mockMvc
@@ -296,7 +287,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t009holidayFilterValuesTest2() throws Exception {
+	public void testGetHolidayFilterValues_FilterTypeUnique_Success() throws Exception {
 		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.UNIQUE.toString());
 		MasterDataTest
 				.checkResponse(mockMvc
@@ -307,7 +298,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t010searchMachineTest() throws Exception {
+	public void testSearchHolidays_ValidCriteria_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoReq))).andReturn(),
 				null);
@@ -315,7 +306,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t011searchMachineTest1() throws Exception {
+	public void testSearchHolidays_FilterTypeContains_Success() throws Exception {
 		searchDtoReq.getRequest().getFilters().get(0).setType(FilterTypeEnum.CONTAINS.toString());
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoReq))).andReturn(),
@@ -324,7 +315,7 @@ public class HolidayControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t011searchMachineTest6() throws Exception {
+	public void testSearchHolidays_FilterContainsHolidayName_Success() throws Exception {
 		searchDtoReq.getRequest().getFilters().get(0).setType(FilterTypeEnum.CONTAINS.toString());
 		searchDtoReq.getRequest().getFilters().get(0).setToValue("Year");
 		searchDtoReq.getRequest().getFilters().get(0).setColumnName("holidayName");
@@ -335,7 +326,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t011searchMachineTest3() throws Exception {
+	public void testSearchHolidays_FilterTypeContains_ArabicLanguage_Success() throws Exception {
 		searchDtoReq.getRequest().getFilters().get(0).setType(FilterTypeEnum.CONTAINS.toString());
 		searchDtoReq.getRequest().setLanguageCode("ara");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays/search")
@@ -345,7 +336,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t011searchMachineTest2() throws Exception {
+	public void testSearchHolidays_FilterContainsName_Success() throws Exception {
 		searchDtoReq.getRequest().getFilters().get(0).setColumnName("name");
 		searchDtoReq.getRequest().getFilters().get(0).setType(FilterTypeEnum.CONTAINS.toString());
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays/search")
@@ -355,7 +346,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t013searchMachineTest2() throws Exception {
+	public void testSearchHolidays_FilterTypeStartsWith_Success() throws Exception {
 		searchDtoReq.getRequest().getFilters().get(0).setType(FilterTypeEnum.STARTSWITH.toString());
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/holidays/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoReq))).andReturn(),
@@ -364,13 +355,13 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t015getAllHolidaysTest() throws Exception {
+	public void testGetAllHolidays_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/holidays")).andReturn(), null);
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t016getAllHolidaysTest() throws Exception {
+	public void getAllHolidays_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/holidays")).andReturn(),
 				null);
 
@@ -378,28 +369,28 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t017getAllHolidayByIdTest() throws Exception {
+	public void getAllHolidayById_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/holidays/2000001")).andReturn(),
 				null);
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t018getAllHolidayByIdFailTest() throws Exception {
+	public void getAllHolidayByInvalidId_Error() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/holidays/10")).andReturn(),
 				"KER-MSD-020");
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t019getAllHolidayByIdAndLangCodeTest() throws Exception {
+	public void getAllHolidayByIdAndLang_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/holidays/2000001/eng")).andReturn(),
 				null);
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t020getAllHolidayByIdAndLangCodeFailTest() throws Exception {
+	public void getAllHoliday_WithInvalidIdAndLang_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/holidays/10/eng")).andReturn(),
 				"KER-MSD-020");
 
@@ -407,7 +398,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t021getHolidaysTest() throws Exception {
+	public void testGetAllHolidays_WithPaginationAndSorting_Success() throws Exception {
 		MasterDataTest
 				.checkResponse(mockMvc
 						.perform(MockMvcRequestBuilders.get("/holidays").param("pageNumber", "0")
@@ -417,7 +408,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t022getMissingHolidayDetailsTest() throws Exception {
+	public void testGetMissingHolidayDetails_InvalidFieldName_Error() throws Exception {
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.get("/holidays/missingids/eng").param("fieldName", "holiday_name"))
 				.andReturn(), "KER-MSD-317");
@@ -425,7 +416,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t023getMissingHolidayDetailsFailTest() throws Exception {
+	public void testGetMissingHolidayDetails_InvalidLanguage_Error() throws Exception {
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.get("/holidays/missingids/eng1").param("fieldName", "holiday_name"))
 				.andReturn(), "KER-LANG-ERR");
@@ -433,7 +424,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t023getMissingHolidayDetailTest() throws Exception {
+	public void testGetMissingHolidayDetails_ValidLanguage_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.get("/holidays/missingids/eng").param("fieldName", "holidayName"))
 				.andReturn(), null);
@@ -442,7 +433,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t024deleteHolidayTest1() throws Exception {
+	public void testDeleteHoliday_Success() throws Exception {
 
 		DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate ld = LocalDate.parse("2019-12-12", DATEFORMATTER);
@@ -459,7 +450,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t024deleteHolidayTest2() throws Exception {
+	public void testDeleteHoliday_Error() throws Exception {
 
 		DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate ld = LocalDate.parse("2019-12-13", DATEFORMATTER);
@@ -476,7 +467,7 @@ public class HolidayControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t026getHolidaysTest() throws Exception {
+	public void getHolidaysTest_Success() throws Exception {
 		MasterDataTest
 				.checkResponse(mockMvc
 						.perform(MockMvcRequestBuilders.get("/holidays").param("pageNumber", "0")
