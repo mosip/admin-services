@@ -246,7 +246,7 @@ public class HolidayServiceImpl implements HolidayService {
 					entity.setHolidayId(holidayRepository.findMaxHolidayId()+1);
 				}
 			
-			holiday = holidayRepository.create(entity);
+			holiday = holidayRepository.save(entity);
 			/*
 			 * if (holiday.getIsActive() == true &&
 			 * supportedLang.contains(holiday.getLangCode())) { Holiday
