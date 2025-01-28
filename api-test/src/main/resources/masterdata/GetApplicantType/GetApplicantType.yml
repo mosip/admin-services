@@ -45,7 +45,7 @@ GetApplicantType:
       },
       {
         "attribute": "dateOfBirth",
-        "value": "2019/01/01"
+        "value": "$INFANT$"
       },
       {
         "attribute": "gender",
@@ -76,7 +76,7 @@ GetApplicantType:
       },
       {
         "attribute": "dateOfBirth",
-        "value": "2019/01/01"
+        "value": "$INFANT$"
       },
       {
         "attribute": "gender",
@@ -169,7 +169,7 @@ GetApplicantType:
       },
       {
         "attribute": "dateOfBirth",
-        "value": "2019/01/01"
+        "value": "$INFANT$"
       },
       {
         "attribute": "gender",
@@ -428,7 +428,7 @@ GetApplicantType:
       },
       {
         "attribute": "dateOfBirth",
-        "value": "2019/01/01"
+        "value": "$INFANT$"
       },
       {
         "attribute": "gender",
@@ -459,7 +459,7 @@ GetApplicantType:
       },
       {
         "attribute": "dateOfBirth",
-        "value": "2019/01/01"
+        "value": "$INFANT$"
       },
       {
         "attribute": "gender",
@@ -552,7 +552,7 @@ GetApplicantType:
       },
       {
         "attribute": "dateOfBirth",
-        "value": "2019/01/01"
+        "value": "$INFANT$"
       },
       {
         "attribute": "gender",
@@ -583,7 +583,7 @@ GetApplicantType:
       },
       {
         "attribute": "dateOfBirth",
-        "value": "2019/01/01"
+        "value": "$INFANT$"
       },
       {
         "attribute": "gender",
