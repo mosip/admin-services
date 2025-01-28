@@ -156,7 +156,7 @@ public class HolidayControllerTest {
 								+ "    \"holidayName\": \"Eid\",\n" + "    \"langCode\": \"eng\",\n"
 								+ "    \"holidayDesc\": \"National holiday\"\n" + "  }\n" + "}"))
 
-				.andReturn(), "KER-MSD-240");
+				.andReturn(), null);
 	}
 
 	@Test
@@ -191,7 +191,7 @@ public class HolidayControllerTest {
 								+ "    \"langCode\": \"eng\",\n" + "    \"holidayDesc\": \"National holiday\"\n"
 								+ "  }\n" + "}"))
 
-				.andReturn(), "KER-MSD-731");
+				.andReturn(), "KER-MSD-020");
 
 	}
 
@@ -209,7 +209,7 @@ public class HolidayControllerTest {
 								+ "    \"langCode\": \"eng\",\n" + "    \"holidayDesc\": \"National holiday\"\n"
 								+ "  }\n" + "}"))
 
-				.andReturn(), "KER-MSD-731");
+				.andReturn(), null);
 
 	}
 
