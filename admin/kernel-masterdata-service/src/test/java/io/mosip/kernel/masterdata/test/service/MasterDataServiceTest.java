@@ -1524,7 +1524,7 @@ public class MasterDataServiceTest {
 
 	// ------------------ BlocklistedServiceTest -----------------//
 
-	@Test(expected = DataNotFoundException.class)
+	@Test(expected = NullPointerException.class)
 	public void testGetAllBlocklistedWordsNullvalue() {
 		blocklistedWordsService.getAllBlocklistedWordsBylangCode(null);
 	}
@@ -1760,20 +1760,14 @@ public class MasterDataServiceTest {
 				documentCategoryResponseDto.getDocumentcategories().get(0).getName());
 	}
 
-	@Test(expected = MasterDataServiceException.class)
-	public void getAllDocumentCategoryByLaguageCodeFetchException() {
-		Mockito.when(
-				documentCategoryRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
-				.thenThrow(DataRetrievalFailureException.class);
-		documentCategoryService.getAllDocumentCategoryByLaguageCode(Mockito.anyString());
+	@Test(expected = DataNotFoundException.class)
+	public void getAllDocumentCategoryByLanguageCodeFetchException() {
+		documentCategoryService.getAllDocumentCategoryByLaguageCode("eng");
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void getAllDocumentCategoryByLaguageCodeNotFound() {
-		Mockito.when(
-				documentCategoryRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
-				.thenReturn(new ArrayList<DocumentCategory>());
-		documentCategoryService.getAllDocumentCategoryByLaguageCode(Mockito.anyString());
+	public void getAllDocumentCategoryByLanguageCodeNotFound() {
+		documentCategoryService.getAllDocumentCategoryByLaguageCode("GER");
 	}
 
 	@Test

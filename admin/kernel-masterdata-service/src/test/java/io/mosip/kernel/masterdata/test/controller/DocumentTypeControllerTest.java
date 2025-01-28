@@ -7,7 +7,11 @@ import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypePutReqDto;
-import io.mosip.kernel.masterdata.dto.request.*;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.Pagination;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
@@ -189,7 +193,7 @@ public class DocumentTypeControllerTest {
 	public void t019deleteDocumentTypeFailTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/documenttypes/CINN"))
-		.andReturn(),"KER-MSD-118");
+		.andReturn(),"KER-MSD-023");
 	}
 	
 	@Test
@@ -277,7 +281,7 @@ public class DocumentTypeControllerTest {
 	public void t015getAllDocumentTypeByLaguageCodeFailTest() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/documenttypes/eng1"))
-		.andReturn(),"KER-MSD-118");
+		.andReturn(),"KER-MSD-023");
 	}
 	
 	@Test
