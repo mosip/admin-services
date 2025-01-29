@@ -74,7 +74,7 @@ public class UserConfigIntegrationTest {
 
 	@WithUserDetails(value = "reg-officer")
 	@Test
-	public void testGetConfigWithMachineName() throws Exception {
+	public void testGetConfigWithMachineName() {
 		List<Machine> machines = new ArrayList<>();
 		Machine machine = new Machine();
 		machine.setId("10001");
