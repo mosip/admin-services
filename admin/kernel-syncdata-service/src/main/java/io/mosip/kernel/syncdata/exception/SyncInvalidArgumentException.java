@@ -1,9 +1,11 @@
 package io.mosip.kernel.syncdata.exception;
 
-import java.util.List;
-
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ServiceError;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class SyncInvalidArgumentException extends BaseUncheckedException {
 
@@ -20,6 +22,7 @@ public class SyncInvalidArgumentException extends BaseUncheckedException {
 	 * @param list The error list.
 	 */
 	public SyncInvalidArgumentException(List<ServiceError> list) {
+		super(constructMessage(list));
 		this.list = list;
 	}
 
@@ -30,6 +33,13 @@ public class SyncInvalidArgumentException extends BaseUncheckedException {
 	 */
 	public List<ServiceError> getList() {
 		return list;
+	}
+
+	private static String constructMessage(List<ServiceError> list) {
+		return list.stream()
+				.map(ServiceError::getMessage)
+				.filter(Objects::nonNull)
+				.collect(Collectors.joining(", "));
 	}
 
 }
