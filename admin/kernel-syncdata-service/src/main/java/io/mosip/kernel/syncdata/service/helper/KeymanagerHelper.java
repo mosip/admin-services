@@ -66,7 +66,8 @@ public class KeymanagerHelper {
 
             return resp.getResponse();
         } catch (SyncInvalidArgumentException e) {
-            throw e;
+            LOGGER.warn("Validation error while fetching Certificate: {}", e.getMessage());
+            throw new SyncDataServiceException(AdminServiceErrorCode.VALIDATION_ERROR.getErrorCode(), e.getMessage(), e);
         } catch (Exception e) {
             LOGGER.error("Failed to fetch Certificate from keymanager", e);
             throw new SyncDataServiceException(AdminServiceErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
