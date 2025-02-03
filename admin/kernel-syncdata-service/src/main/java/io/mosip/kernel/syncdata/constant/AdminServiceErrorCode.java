@@ -7,7 +7,8 @@ public enum AdminServiceErrorCode {
 	INVALID_TIMESTAMP_EXCEPTION("KER-ADM-102", "Timestamp cannot be future date"),
 	LAST_UPDATED_PARSE_EXCEPTION("KER-ADM-103", "Error occurred while parsing lastUpdated timestamp"),
 	SYNC_JOB_DEF_FETCH_EXCEPTION("KER-ADM-104", "Error while fetching sync job def details"),
-	DATA_NOT_FOUND_EXCEPTION("KER-ADM-105", "data not found for sync job def");
+	DATA_NOT_FOUND_EXCEPTION("KER-ADM-105", "data not found for sync job def"),
+	VALIDATION_ERROR ("KER-ADM-106", "Validation error while fetching Certificate");
 
 	private final String errorCode;
 	private final String errorMessage;
