@@ -8,7 +8,7 @@ if [ $# -ge 1 ] ; then
 fi
 
 NS=admin
-CHART_VERSION=12.1.1
+CHART_VERSION=12.1.1-develop
 
 echo Create $NS namespace
 kubectl create ns $NS
