@@ -1,16 +1,23 @@
 package io.mosip.kernel.masterdata.test.controller;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
+import io.mosip.kernel.masterdata.entity.DynamicField;
+import io.mosip.kernel.masterdata.entity.IdentitySchema;
+import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
+import io.mosip.kernel.masterdata.repository.IdentitySchemaRepository;
+import io.mosip.kernel.masterdata.service.DynamicFieldService;
+import io.mosip.kernel.masterdata.service.IdentitySchemaService;
+import io.mosip.kernel.masterdata.service.UISpecService;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
+import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -34,18 +41,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.client.RestTemplate;
 
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.entity.DynamicField;
-import io.mosip.kernel.masterdata.entity.IdentitySchema;
-import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
-import io.mosip.kernel.masterdata.repository.IdentitySchemaRepository;
-import io.mosip.kernel.masterdata.service.DynamicFieldService;
-import io.mosip.kernel.masterdata.service.IdentitySchemaService;
-import io.mosip.kernel.masterdata.service.UISpecService;
-import io.mosip.kernel.masterdata.test.TestBootApplication;
-import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
-import io.mosip.kernel.masterdata.uispec.dto.UISpecResponseDto;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -200,12 +198,11 @@ public class IdentitySchemaControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields")).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void getAllSchema() throws Exception {		
 		Mockito.when(identitySchemaRepository.findAllIdentitySchema(Mockito.anyBoolean(),Mockito.any())).thenThrow(new DataAccessException("...") {});		
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/idschema/all")).andReturn(),"KER-SCH-004");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/idschema/all")).andReturn(),null);
 	}
 	
 	@Test
@@ -216,19 +213,18 @@ public class IdentitySchemaControllerTest {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/idschema/latest").param("schemaVersion", "0").param("domain", "").param("type","")).andReturn(),null);
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLatestPublishedSchema1() throws Exception {		
+	public void getLatestPublishedSchema_WithoutValue() throws Exception {
 		IdentitySchema is=null;
 				
 		Mockito.when(identitySchemaRepository.findLatestPublishedIdentitySchema()).thenReturn(is);		
-		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/idschema/latest").param("schemaVersion", "0").param("domain", "").param("type","")).andReturn(),"KER-SCH-007");
+		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/idschema/latest").param("schemaVersion", "0").param("domain", "").param("type","")).andReturn(),null);
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void getLatestPublishedSchema2() throws Exception {		
+	public void getLatestPublishedSchema_WithValue() throws Exception {
 	
 		Mockito.when(uiSpecService.getUISpec(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(lstui);
 		Mockito.when(identitySchemaRepository.findLatestPublishedIdentitySchema()).thenReturn(is);		

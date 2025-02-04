@@ -8,11 +8,7 @@ import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.dto.DynamicFieldDto;
 import io.mosip.kernel.masterdata.dto.DynamicFieldPutDto;
-import io.mosip.kernel.masterdata.dto.request.FilterDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.Pagination;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.dto.request.*;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
@@ -120,7 +116,7 @@ public class DynamicFieldControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001createDynamicFieldTest() throws Exception {
+	public void createDynamicFieldTest_Success() throws Exception {
 		JsonNode fieldVal = mapper.readTree("{\"code\":\"oo\",\"value\":\"ooo\"}");
 		dynamicFieldDtoReq.getRequest().setFieldVal(fieldVal);
 		dynamicFieldDtoReq.getRequest().setName("bloodtype");
@@ -167,7 +163,7 @@ public class DynamicFieldControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001createDynamicFieldTest1() throws Exception {
+	public void createDynamicFieldRequest_Success() throws Exception {
 		JsonNode fieldVal = mapper.readTree("{\"code\":\"10001\",\"value\":\"bloodType\"}");
 		dynamicFieldDtoReq.getRequest().setFieldVal(fieldVal);
 		dynamicFieldDtoReq.getRequest().setName("bloodtype");
@@ -182,7 +178,7 @@ public class DynamicFieldControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t001createDynamicFieldTest3() throws Exception {
+	public void testCreateDynamicField_InvalidName_Error() throws Exception {
 		JsonNode fieldVal = mapper.readTree("{\"code\":\"10004\",\"value\":\"bloodType1\"}");
 		dynamicFieldDtoReq.getRequest().setFieldVal(fieldVal);
 		dynamicFieldDtoReq.getRequest().setName("blooddtype1");
@@ -198,7 +194,7 @@ public class DynamicFieldControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t002createDynamicFieldFailTest() throws Exception {
+	public void testCreateDynamicField_MissingName_Error() throws Exception {
 		JsonNode fieldVal = mapper.readTree("{\"code\":\"10004\",\"value\":\"bloodType1\"}");
 		dynamicFieldDtoReq.getRequest().setFieldVal(fieldVal);
 		MasterDataTest
@@ -212,28 +208,27 @@ public class DynamicFieldControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t003updateDynamicFieldFailTest() throws Exception {
+	public void updateDynamicFieldRequest_Fail() throws Exception {
 		dynamicFieldPutDtoReq.getRequest().setName("bld");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/dynamicfields").param("id", "10001")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(dynamicFieldPutDtoReq)))
 				.andReturn(), "KER-DYN-001");
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
-	public void t003updateDynamicFieldTest() throws Exception {
+	public void testUpdateDynamicField_Fail() throws Exception {
 		String val="{\"code\":\"8888\",\"value\":\"99999\"}";
 		JsonNode jsonNode=mapper.readTree(val); 
 		dynamicFieldPutDtoReq.getRequest().setFieldVal(jsonNode);
 				MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/dynamicfields").param("id", "10001")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(dynamicFieldPutDtoReq)))
-				.andReturn(), null);
+				.andReturn(), "KER-SCH-003");
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t004updateDynamicFieldFailTest() throws Exception {
+	public void testUpdateDynamicFieldRequest_Fail() throws Exception {
 		dynamicFieldPutDtoReq.getRequest().setName("");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/dynamicfields").param("id", "2")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(dynamicFieldPutDtoReq)))
@@ -242,7 +237,7 @@ public class DynamicFieldControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t005searchDynamicFieldsTest1() throws Exception {
+	public void testSearchDynamicFields_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/dynamicfields/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoRq))).andReturn(),
@@ -251,7 +246,7 @@ public class DynamicFieldControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t006searchDynamicFieldsTest2() throws Exception {
+	public void testSearchDynamicFields_StartsWithFilter_Success() throws Exception {
 		searchDtoRq.getRequest().getFilters().get(0).setType("startsWith");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/dynamicfields/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoRq))).andReturn(),
@@ -260,7 +255,7 @@ public class DynamicFieldControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t006searchDynamicFieldsTest3() throws Exception {
+	public void testSearchDynamicFields_EndsWithFilter_Success() throws Exception {
 		searchDtoRq.getRequest().getFilters().get(0).setType("endsWith");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/dynamicfields/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoRq))).andReturn(),
@@ -269,7 +264,7 @@ public class DynamicFieldControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t007searchDynamicFieldsTest4() throws Exception {
+	public void testSearchDynamicFields_ContainsFilter_Success() throws Exception {
 		searchDtoRq.getRequest().getFilters().get(0).setType("contains");
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/dynamicfields/search")
 				.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(searchDtoRq))).andReturn(),
@@ -278,7 +273,7 @@ public class DynamicFieldControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t008getAllDynamicFieldsTest() throws Exception {
+	public void testGetAllDynamicFields_WithPaginationAndSorting_Success() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(
@@ -290,7 +285,7 @@ public class DynamicFieldControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t019getAllDynamicFieldsTest() throws Exception {
+	public void getAllDynamicFields_WithPaginationAndSorting_Success() throws Exception {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(
 						MockMvcRequestBuilders.get("/dynamicfields").param("pageNumber", "0").param("pageSize", "10")
@@ -301,7 +296,7 @@ public class DynamicFieldControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t009getDistinctDynamicFieldsBasedOnLangTest() throws Exception {
+	public void testGetDistinctDynamicFieldsByLanguageCode_Success() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/distinct/eng")).andReturn(), null);
@@ -309,7 +304,7 @@ public class DynamicFieldControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t009getDistinctDynamicFieldsBasedOnLangFailTest() throws Exception {
+	public void testGetDistinctDynamicFieldsByLanguageCode_InvalidLanguage_Error() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/distinct/eng1")).andReturn(), null);
@@ -317,25 +312,24 @@ public class DynamicFieldControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t009getDistinctDynamicFieldsTest() throws Exception {
+	public void testGetDistinctDynamicFields_Success() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/distinct")).andReturn(), null);
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
-	public void t011updateDynamicFieldStatusTest() throws Exception {
+	public void testUpdateDynamicFieldStatus_Inactive_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.patch("/dynamicfields").param("isActive", "false").param("id", "10001"))
-				.andReturn(), null);
+				.andReturn(), "KER-SCH-003");
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t012updateDynamicFieldStatusFailTest() throws Exception {
+	public void testUpdateDynamicFieldStatus_NonexistentField_Error() throws Exception {
 		MasterDataTest.checkResponse(mockMvc
 				.perform(MockMvcRequestBuilders.patch("/dynamicfields").param("isActive", "true").param("id", "110"))
 				.andReturn(), "KER-SCH-003");
@@ -343,27 +337,24 @@ public class DynamicFieldControllerTest {
 	}
 
 	@Test
-	@Ignore
 	@WithUserDetails("global-admin")
-	public void t013updateAllDynamicFieldStatusTest() throws Exception {
+	public void testUpdateAllDynamicFieldsStatusByName_Fail() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.patch("/dynamicfields/all")
-				.param("isActive", "true").param("fieldName", "bloodType1")).andReturn(), null);
+				.param("isActive", "true").param("fieldName", "bloodType1")).andReturn(), "KER-SCH-003");
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
-	public void t014updateAllDynamicFieldStatusFailTest() throws Exception {
+	public void testUpdateAllDynamicFieldsStatus_InvalidFieldName_Error() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(
 				MockMvcRequestBuilders.patch("/dynamicfields/all").param("isActive", "true").param("fieldName", "110"))
 				.andReturn(), "KER-SCH-003");
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
-	public void t015deleteDynamicFieldTest() throws Exception {
+	public void testDeleteDynamicField_Success() throws Exception {
 
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/dynamicfields/10001")).andReturn(),
 				null);
@@ -371,33 +362,31 @@ public class DynamicFieldControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t016deleteDynamicFieldFailTest() throws Exception {
+	public void testDeleteDynamicField_NonexistentField_Fail() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.delete("/dynamicfields/1111")).andReturn(),
 				"KER-SCH-003");
 
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
-	public void t017deleteAllDynamicFieldTest() throws Exception {
+	public void testDeleteAllDynamicFieldsByName_Success() throws Exception {
 
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.delete("/dynamicfields/all/bloodtype")).andReturn(), "KER-SCH-003");
+	}
+
+	@Test
+	@WithUserDetails("global-admin")
+	public void testDeleteAllDynamicFieldsByName_Fail() throws Exception {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.delete("/dynamicfields/all/bloodtype")).andReturn(), null);
-	}
-
-	@Ignore
-	@Test
-	@WithUserDetails("global-admin")
-	public void t018deleteAllDynamicFieldFailTest() throws Exception {
-		MasterDataTest.checkResponse(
-				mockMvc.perform(MockMvcRequestBuilders.delete("/dynamicfields/all/bloodtype")).andReturn(),
-				"KER-SCH-003");
 
 	}
+
 	@Test
 	@WithUserDetails("global-admin")
-	public void t019dynamicFiledFilterValuesTest() throws Exception {
+	public void testGetDynamicFieldFilterValues_UniqueValues_Success() throws Exception {
 		filValDto.getRequest().getFilters().get(0).setType(FilterColumnEnum.UNIQUE.toString());
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.post("/dynamicfields/filtervalues").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(filValDto))).andReturn(),null);
@@ -406,21 +395,21 @@ public class DynamicFieldControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t020getMissingDynamicFieldsFailTest() throws Exception {
+	public void testGetMissingDynamicFields_InvalidLanguage_Error() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/missingids/ara1")).andReturn(), "KER-LANG-ERR");
 
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t020getMissingDynamicFieldsTest() throws Exception {
+	public void testGetMissingDynamicFields_withValidLanguage_Success() throws Exception {
 		MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/missingids/ara")).andReturn(), null);
 
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t022getMissingDynamicFieldsTest() throws Exception {
+	public void testGetMissingDynamicFieldsByFieldNameAndLanguage_Success() throws Exception {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/missingids/ara").param("fieldName", "name")).andReturn(),
 				null);
@@ -429,22 +418,23 @@ public class DynamicFieldControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t000getDynamicFieldByNameTest() throws Exception {
+	public void testGetDynamicFieldByNameAndLanguage_Fail() throws Exception {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/bloodType1/eng")).andReturn(),
-				null);
+				"KER-SCH-003");
 	}
+
 	@Test
 	@WithUserDetails("global-admin")
-	public void t000getDynamicFieldByNameTest3() throws Exception {
+	public void testGetDynamicFieldByNameAndLanguageWithInvalidValues_Fail() throws Exception {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/bloodType1/eng").param("withValue", "true")).andReturn(),
-				null);
+				"KER-SCH-003");
 	}
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t000getDynamicFieldByNameTest1() throws Exception {
+	public void testGetDynamicFieldByNameAndLanguage_NotFound_Error() throws Exception {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/blod/eng")).andReturn(),
 				"KER-SCH-003");
@@ -452,7 +442,7 @@ public class DynamicFieldControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void t022getDynamicFieldByNameTest2() throws Exception {
+	public void testGetDynamicFieldByNameAndLanguage_InvalidLanguage_Error() throws Exception {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/bloodType/eng1")).andReturn(),
 				"KER-SCH-003");
@@ -460,7 +450,7 @@ public class DynamicFieldControllerTest {
 
 	@Test
 	@WithUserDetails("global-admin")
-	public void t000getAllDynamicFieldByNameTest() throws Exception {
+	public void testGetAllDynamicFieldsByName_Success() throws Exception {
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.get("/dynamicfields/gender")).andReturn(),
 				null);

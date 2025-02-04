@@ -6122,7 +6122,6 @@ public class MasterdataIntegrationTest {
 				.andExpect(status().isOk());
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void deleteRegistrationCenterTest() throws Exception {
