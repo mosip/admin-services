@@ -225,7 +225,7 @@ public class ZoneUtilTest {
 		String langCode = "en";
 		Mockito.when(zoneRepository.findZoneByCodeAndLangCodeNonDeleted(zoneCode, langCode)).thenReturn(null);
 		List<Zone> childZones = zoneUtils.getChildZoneList(zoneIds, zoneCode, langCode);
-		assertNotEquals(createMockZones().getFirst(), childZones);
+		assertTrue("Expected an empty list when zone is not found", childZones.isEmpty());
 	}
 
 	@Test
