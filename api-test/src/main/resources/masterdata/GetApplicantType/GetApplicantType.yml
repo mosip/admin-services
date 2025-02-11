@@ -254,7 +254,7 @@ GetApplicantType:
       role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
-      outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
+      outputTemplate: masterdata/error
       input: '{
     "attributes": [{
         "attribute": "residenceStatus",
@@ -276,7 +276,12 @@ GetApplicantType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-      "applicantTypeCode": "000"
+   "errors": [
+    {
+      "errorCode": "KER-MSD-147",
+      "message": "Invalid query passed for applicant type"
+    }
+  ]
 }'
    Masterdata_GetApplicantType_invalid_gender:
       endPoint: /v1/masterdata/getApplicantType
@@ -285,7 +290,7 @@ GetApplicantType:
       role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
-      outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
+      outputTemplate: masterdata/error
       input: '{
     "attributes": [{
         "attribute": "residenceStatus",
@@ -307,7 +312,12 @@ GetApplicantType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-      "applicantTypeCode": "000"
+   "errors": [
+    {
+      "errorCode": "KER-MSD-147",
+      "message": "Invalid query passed for applicant type"
+    }
+  ]
 }'
    Masterdata_GetApplicantType_invalid_dateOfBirth:
       endPoint: /v1/masterdata/getApplicantType
@@ -352,7 +362,7 @@ GetApplicantType:
       role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
-      outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
+      outputTemplate: masterdata/error
       input: '{
     "attributes": [{
         "attribute": "residenceStatus",
@@ -374,7 +384,12 @@ GetApplicantType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-      "applicantTypeCode": "002"
+   "errors": [
+    {
+      "errorCode": "KER-MSD-147",
+      "message": "Invalid query passed for applicant type"
+    }
+  ]
 }'
 
    Masterdata_GetApplicantType_Future_date_as_DOB:
