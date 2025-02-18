@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.testng.SkipException;
 
@@ -20,6 +21,13 @@ public class MasterDataUtil extends AdminTestUtil {
 	private static final Logger logger = Logger.getLogger(MasterDataUtil.class);
 	public static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 	public static String infantDob = LocalDateTime.now().minusYears(getInfantMaxAge()).format(dateFormatter);
+	
+	public static void setLogLevel() {
+		if (MasterDataConfigManager.IsDebugEnabled())
+			logger.setLevel(Level.ALL);
+		else
+			logger.setLevel(Level.ERROR);
+	}
 
 	public static String isTestCaseValidForExecution(TestCaseDTO testCaseDTO) {
 		String testCaseName = testCaseDTO.getTestCaseName();
