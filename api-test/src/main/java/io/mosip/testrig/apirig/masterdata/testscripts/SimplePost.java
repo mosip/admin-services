@@ -33,7 +33,7 @@ import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.restassured.response.Response;
 
-public class SimplePost extends AdminTestUtil implements ITest {
+public class SimplePost extends MasterDataUtil implements ITest {
 	private static final Logger logger = Logger.getLogger(SimplePost.class);
 	private MasterDataUtil masterDataUtil = new MasterDataUtil();
 	protected String testCaseName = "";
