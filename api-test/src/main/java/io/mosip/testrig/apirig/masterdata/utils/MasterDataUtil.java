@@ -45,7 +45,7 @@ public class MasterDataUtil extends AdminTestUtil {
 		return testCaseName;
 	}
 
-	public String inputJsonKeyWordHandeler(String jsonString, String testCaseName) {
+	public String inputJsonStringKeyWordHandeler(String jsonString, String testCaseName) {
 
 		if (jsonString.contains("$INFANT$")) {
 			jsonString = replaceKeywordWithValue(jsonString, "$INFANT$", infantDob);

@@ -89,7 +89,7 @@ public class SimplePost extends MasterDataUtil implements ITest {
 		}
 
 		String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
-		inputJson = masterDataUtil.inputJsonKeyWordHandeler(inputJson, testCaseName);
+		inputJson = masterDataUtil.inputJsonStringKeyWordHandeler(inputJson, testCaseName);
 
 		if (testCaseDTO.getTemplateFields() != null && templateFields.length > 0) {
 			ArrayList<JSONObject> inputtestCases = AdminTestUtil.getInputTestCase(testCaseDTO);
