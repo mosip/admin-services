@@ -22,6 +22,7 @@ import org.testng.TestNG;
 import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
 
+import io.mosip.testrig.apirig.dataprovider.BiometricDataProvider;
 import io.mosip.testrig.apirig.dbaccess.DBManager;
 import io.mosip.testrig.apirig.masterdata.utils.MasterDataConfigManager;
 import io.mosip.testrig.apirig.masterdata.utils.MasterDataUtil;
@@ -82,12 +83,18 @@ public class MosipTestRunner {
 			setLogLevels();
 
 			// For now we are not doing health check for qa-115.
-			if (BaseTestCase.isTargetEnvLTS()) {
-				HealthChecker healthcheck = new HealthChecker();
-				healthcheck.setCurrentRunningModule(BaseTestCase.currentModule);
-				Thread trigger = new Thread(healthcheck);
-				trigger.start();
-			}
+//			if (BaseTestCase.isTargetEnvLTS()) {
+//				HealthChecker healthcheck = new HealthChecker();
+//				healthcheck.setCurrentRunningModule(BaseTestCase.currentModule);
+//				Thread trigger = new Thread(healthcheck);
+//				trigger.start();
+//			}
+			
+			HealthChecker healthcheck = new HealthChecker();
+			healthcheck.setCurrentRunningModule(BaseTestCase.currentModule);
+			Thread trigger = new Thread(healthcheck);
+			trigger.start();
+			
 			KeycloakUserManager.removeUser();
 			KeycloakUserManager.createUsers();
 			KeycloakUserManager.closeKeycloakInstance();
@@ -118,8 +125,10 @@ public class MosipTestRunner {
 			LOGGER.error("Exception " + e.getMessage());
 		}
 
-		if (BaseTestCase.isTargetEnvLTS())
-			HealthChecker.bTerminate = true;
+//		if (BaseTestCase.isTargetEnvLTS())
+//			HealthChecker.bTerminate = true;
+		
+		HealthChecker.bTerminate = true;
 
 		System.exit(0);
 
@@ -156,6 +165,9 @@ public class MosipTestRunner {
 		KernelAuthentication.setLogLevel();
 		BaseTestCase.setLogLevel();
 		MasterDataUtil.setLogLevel();
+		KeycloakUserManager.setLogLevel();
+		DBManager.setLogLevel();
+		BiometricDataProvider.setLogLevel();
 	}
 
 	/**
