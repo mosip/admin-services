@@ -22,7 +22,7 @@ CreateDocumentType:
 	"isActive": "$IGNORE$",
 	"name": "TestDocType0010 Card"
 }'
-   MasterData_CreateDocumentType_All_Valid_Mandatory_Fields_Eng:
+   MasterData_CreateDocumentType_All_Valid_Mandatory_Fields_Smoke_Eng:
       endPoint: /v1/masterdata/documenttypes
       uniqueIdentifier: TC_Masterdata_CreateDocumentType_02
       description: Create Document Type with all mandatory data
