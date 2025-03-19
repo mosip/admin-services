@@ -19,7 +19,7 @@ UpdateDeviceType:
       output: '{
 	"code": "GST3"
 }'
-   MasterData_UpdateDeviceType_All_Valid_Mandatory_Fields:
+   MasterData_UpdateDeviceType_All_Valid_Mandatory_Fields_Smoke:
       endPoint: /v1/masterdata/devicetypes
       uniqueIdentifier: TC_Masterdata_UpdateDeviceType_02
       description: Update Device Type with all mandatory fields
