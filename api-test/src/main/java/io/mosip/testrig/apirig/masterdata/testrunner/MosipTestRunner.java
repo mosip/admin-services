@@ -116,9 +116,9 @@ public class MosipTestRunner {
 		} catch (Exception e) {
 			LOGGER.error("Exception " + e.getMessage());
 		}
-		
-		KeycloakUserManager.removeUser();
-		KeycloakUserManager.closeKeycloakInstance();
+//		Commenting out the remove keycloak user as it is failing on DSL. will uncomment once the fix is given from DSL.
+//		KeycloakUserManager.removeUser();
+//		KeycloakUserManager.closeKeycloakInstance();
 
 		HealthChecker.bTerminate = true;
 
