@@ -28,7 +28,7 @@ GetApplicantType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-      "applicantTypeCode": "002"
+      "applicantTypeCode": "010"
 }'
    Masterdata_GetApplicantType_MLE_NFR_CHL_True:
       endPoint: /v1/masterdata/getApplicantType
@@ -59,7 +59,7 @@ GetApplicantType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-      "applicantTypeCode": "003"
+      "applicantTypeCode": "011"
 }'
    Masterdata_GetApplicantType_MLE_NFR_CHL_False:
       endPoint: /v1/masterdata/getApplicantType
@@ -121,7 +121,7 @@ GetApplicantType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-      "applicantTypeCode": "004"
+      "applicantTypeCode": "012"
 }'
    Masterdata_GetApplicantType_MLE_NFR_ADL_False:
       endPoint: /v1/masterdata/getApplicantType
@@ -214,7 +214,7 @@ GetApplicantType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-      "applicantTypeCode": "002"
+      "applicantTypeCode": "010"
 }'
    Masterdata_GetApplicantType_MLE_FR_ADL_False:
       endPoint: /v1/masterdata/getApplicantType
@@ -254,7 +254,7 @@ GetApplicantType:
       role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
-      outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
+      outputTemplate: masterdata/error
       input: '{
     "attributes": [{
         "attribute": "residenceStatus",
@@ -276,7 +276,12 @@ GetApplicantType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-      "applicantTypeCode": "000"
+   "errors": [
+    {
+      "errorCode": "KER-MSD-147",
+      "message": "Invalid query passed for applicant type"
+    }
+  ]
 }'
    Masterdata_GetApplicantType_invalid_gender:
       endPoint: /v1/masterdata/getApplicantType
@@ -285,7 +290,7 @@ GetApplicantType:
       role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
-      outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
+      outputTemplate: masterdata/error
       input: '{
     "attributes": [{
         "attribute": "residenceStatus",
@@ -307,7 +312,12 @@ GetApplicantType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-      "applicantTypeCode": "000"
+   "errors": [
+    {
+      "errorCode": "KER-MSD-147",
+      "message": "Invalid query passed for applicant type"
+    }
+  ]
 }'
    Masterdata_GetApplicantType_invalid_dateOfBirth:
       endPoint: /v1/masterdata/getApplicantType
@@ -352,7 +362,7 @@ GetApplicantType:
       role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType
-      outputTemplate: masterdata/GetApplicantType/getApplicantTypeResult
+      outputTemplate: masterdata/error
       input: '{
     "attributes": [{
         "attribute": "residenceStatus",
@@ -374,7 +384,12 @@ GetApplicantType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-      "applicantTypeCode": "002"
+   "errors": [
+    {
+      "errorCode": "KER-MSD-147",
+      "message": "Invalid query passed for applicant type"
+    }
+  ]
 }'
 
    Masterdata_GetApplicantType_Future_date_as_DOB:
@@ -442,7 +457,7 @@ GetApplicantType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-      "applicantTypeCode": "007"
+      "applicantTypeCode": "015"
 }'
    Masterdata_GetApplicantType_FLE_NFR_CHL_False:
       endPoint: /v1/masterdata/getApplicantType
@@ -504,7 +519,7 @@ GetApplicantType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-      "applicantTypeCode": "008"
+      "applicantTypeCode": "016"
 }'
    Masterdata_GetApplicantType_FLE_NFR_ADL_False:
       endPoint: /v1/masterdata/getApplicantType
@@ -566,7 +581,7 @@ GetApplicantType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-      "applicantTypeCode": "005"
+      "applicantTypeCode": "013"
 }'
    Masterdata_GetApplicantType_FLE_FR_CHL_False:
       endPoint: /v1/masterdata/getApplicantType
@@ -628,7 +643,7 @@ GetApplicantType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-      "applicantTypeCode": "006"
+      "applicantTypeCode": "014"
 }'
    Masterdata_GetApplicantType_FLE_FR_ADL_False:
       endPoint: /v1/masterdata/getApplicantType
@@ -721,5 +736,5 @@ GetApplicantType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-      "applicantTypeCode": "002"
+      "applicantTypeCode": "010"
 }'
