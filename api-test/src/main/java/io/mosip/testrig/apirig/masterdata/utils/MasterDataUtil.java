@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
+import io.mosip.testrig.apirig.masterdata.testrunner.MosipTestRunner;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.ConfigManager;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
@@ -41,6 +42,14 @@ public class MasterDataUtil extends AdminTestUtil {
 
 		if (SkipTestCaseHandler.isTestCaseInSkippedList(testCaseName)) {
 			throw new SkipException(GlobalConstants.KNOWN_ISSUES);
+		}
+		
+		if ((testCaseName.contains("_GetBiometricTypesByLangcode_")
+				|| testCaseName.contains("_GetBiometricTypeByCodeAndLangcode_")
+				|| testCaseName.contains("_GetExceptionalHolidays_") || testCaseName.contains("_GetModuleByLangCode_")
+				|| testCaseName.contains("_GetModuleByIdLangCode_"))
+				&& languageList.get(0) != MosipTestRunner.localLanguageList.get(0)) {
+			throw new SkipException(MasterDataConstants.NOT_SUPPORT_FOR_OPTIONAL_LANGUAGE);
 		}
 		return testCaseName;
 	}
