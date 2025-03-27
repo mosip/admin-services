@@ -506,6 +506,7 @@
 							<serverId>ossrh</serverId>
 							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 							<autoReleaseAfterClose>false</autoReleaseAfterClose>
+							<skipStaging>true</skipStaging>
 						</configuration>
 					</plugin>
 				</plugins>
