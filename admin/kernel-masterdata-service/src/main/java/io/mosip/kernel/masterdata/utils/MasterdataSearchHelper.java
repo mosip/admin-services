@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import  jakarta.persistence.Column;
@@ -113,7 +114,7 @@ public class MasterdataSearchHelper {
 		Root<E> rootSelectQuery = selectQuery.from(entity);
 		Root<E> rootCountQuery = countQuery.from(entity);
 		// count query
-		countQuery.select(countCriteriaBuilder.count(countQuery.from(entity)));
+		countQuery.select(countCriteriaBuilder.count(rootCountQuery));
 		// applying filters
 		filterQuery(selectCriteriaBuilder, countCriteriaBuilder, rootSelectQuery, rootCountQuery, selectQuery, countQuery, searchDto.getFilters(),
 				searchDto.getLanguageCode(), optionalFilters);
@@ -127,7 +128,7 @@ public class MasterdataSearchHelper {
 			// creating executable query from count criteria query
 			TypedQuery<Long> countExecutableQuery = entityManager.createQuery(countQuery);
 			// getting the rows count
-			rows = countExecutableQuery.getSingleResult();
+			rows = Optional.ofNullable(countExecutableQuery.getSingleResult()).orElse(0L);
 			// adding pagination
 			paginationQuery(executableQuery, searchDto.getPagination());
 			// executing query and returning data
@@ -170,7 +171,7 @@ public class MasterdataSearchHelper {
 		Root<E> selectRootQuery = selectQuery.from(entity);
 		Root<E> countRootQuery = countQuery.from(entity);
 		// count query
-		countQuery.select(countQueryCriteriaBuilder.count(countQuery.from(entity)));
+		countQuery.select(countQueryCriteriaBuilder.count(countRootQuery));
 		// applying filters
 		filterQueryWithoutLang(selectQueryCriteriaBuilder, countQueryCriteriaBuilder, selectRootQuery, countRootQuery, selectQuery, countQuery, searchDto.getFilters(),
 				optionalFilters);
@@ -184,7 +185,7 @@ public class MasterdataSearchHelper {
 			// creating executable query from count criteria query
 			TypedQuery<Long> countExecutableQuery = entityManager.createQuery(countQuery);
 			// getting the rows count
-			rows = countExecutableQuery.getSingleResult();
+			rows = Optional.ofNullable(countExecutableQuery.getSingleResult()).orElse(0L);
 			// adding pagination
 			paginationQuery(executableQuery, searchDto.getPagination());
 			// executing query and returning data
