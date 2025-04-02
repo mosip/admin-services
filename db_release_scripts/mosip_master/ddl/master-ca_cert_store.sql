@@ -32,6 +32,7 @@ CREATE TABLE master.ca_cert_store (
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp,
+	ca_cert_type character varying(25),
 	CONSTRAINT ca_cert_store_pk PRIMARY KEY (cert_id)
 
 );
