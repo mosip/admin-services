@@ -15,7 +15,7 @@ DeleteHoliday:
 }'
       output: '{
       "holidayDate": "2020-08-15",
-      "locationCode": "$IGNORE$"
+      "locationCode": "$REMOVE$"
 }'
 
    MasterData_DeleteHoliday_Invalid_requesttime_Neg:  
@@ -40,7 +40,7 @@ DeleteHoliday:
     }
   ],
       "holidayDate": "2020-08-15",
-      "locationCode": "$IGNORE$"
+      "locationCode": "$REMOVE$"
 }'
 
    MasterData_DeleteHoliday_Invalid_locationCode:  
@@ -65,7 +65,7 @@ DeleteHoliday:
     }
   ],
       "holidayDate": "2020-08-15",
-      "locationCode": "$IGNORE$"
+      "locationCode": "$REMOVE$"
 }'
 
    MasterData_DeleteHoliday_Invalid_holidayDate_Neg:  
@@ -90,5 +90,5 @@ DeleteHoliday:
     }
   ],
       "holidayDate": "2020-08-15",
-      "locationCode": "$IGNORE$"
+      "locationCode": "$REMOVE$"
 }'

@@ -31,15 +31,15 @@ DeviceSearch:
   }'
       output: '{
 	"data": [{
-	"id": "$IGNORE$",
-	"name": "$IGNORE$",
+	"id": "$REMOVE$",
+	"name": "$REMOVE$",
 	"serialNum": "3456789012",
-	"description": "$IGNORE$",
+	"description": "$REMOVE$",
 	"macAddress": "85-BB-97-4B-14-05",
-	"ipAddress": "$IGNORE$",
+	"ipAddress": "$REMOVE$",
 	"deviceSpecId": "327",
-	"isActive": "$IGNORE$",
-	"validityDateTime": "$IGNORE$"
+	"isActive": "$REMOVE$",
+	"validityDateTime": "$REMOVE$"
 	}]
 }'
    
@@ -75,15 +75,15 @@ DeviceSearch:
   }'
       output: '{
 	"data": [{
-	"id": "$IGNORE$",
-	"name": "$IGNORE$",
+	"id": "$REMOVE$",
+	"name": "$REMOVE$",
 	"serialNum": "3456789012",
-	"description": "$IGNORE$",
+	"description": "$REMOVE$",
 	"macAddress": "85-BB-97-4B-14-05",
-	"ipAddress": "$IGNORE$",
+	"ipAddress": "$REMOVE$",
 	"deviceSpecId": "327",
-	"isActive": "$IGNORE$",
-	"validityDateTime": "$IGNORE$"
+	"isActive": "$REMOVE$",
+	"validityDateTime": "$REMOVE$"
 	}]
 }'
    MasterData_DeviceSearch_Equals_MacAddress_smoke:
@@ -151,16 +151,16 @@ DeviceSearch:
   }'
       output: '{
 	"data": [{
-	"id": "$IGNORE$",
-	"name": "$IGNORE$",
+	"id": "$REMOVE$",
+	"name": "$REMOVE$",
 	"serialNum": "3456789012",
-	"description": "$IGNORE$",
+	"description": "$REMOVE$",
 	"macAddress": "85-BB-97-4B-14-05",
-	"ipAddress": "$IGNORE$",
+	"ipAddress": "$REMOVE$",
 	"deviceSpecId": "327",
-	"langCode": "$IGNORE$",
-	"isActive": "$IGNORE$",
-	"validityDateTime": "$IGNORE$"
+	"langCode": "$REMOVE$",
+	"isActive": "$REMOVE$",
+	"validityDateTime": "$REMOVE$"
 	}]
 }'
    
@@ -196,16 +196,16 @@ DeviceSearch:
   }'
       output: '{
 	"data": [{
-	"id": "$IGNORE$",
-	"name": "$IGNORE$",
+	"id": "$REMOVE$",
+	"name": "$REMOVE$",
 	"serialNum": "3456789012",
-	"description": "$IGNORE$",
+	"description": "$REMOVE$",
 	"macAddress": "85-BB-97-4B-14-05",
-	"ipAddress": "$IGNORE$",
+	"ipAddress": "$REMOVE$",
 	"deviceSpecId": "327",
-	"langCode": "$IGNORE$",
-	"isActive": "$IGNORE$",
-	"validityDateTime": "$IGNORE$"
+	"langCode": "$REMOVE$",
+	"isActive": "$REMOVE$",
+	"validityDateTime": "$REMOVE$"
 	}]
 }'
    

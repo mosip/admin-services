@@ -16,7 +16,7 @@ FetchRegCentHistory:
 }'
       output: '{
 "registrationCentersHistory": [{
-			"isActive": "$IGNORE$"
+			"id": "$ID:CreateRegCenter_allValid_smoke_sid_id$"
 		}]
 }'
    Masterdata_FetchRegCentHistory_invalid_registrationCenterId:

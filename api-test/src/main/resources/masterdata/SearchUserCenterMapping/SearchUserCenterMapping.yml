@@ -21,10 +21,7 @@ SearchUserCenterMapping:
 }'
       output: '{
        "data": [{
-        "userId": "globaladmin",
-        "zoneName": "$IGNORE$",
-        "regCenterId": "$IGNORE$",
-        "zoneCode": "$IGNORE$"
+        "userId": "globaladmin"
        }]
 }'
 
@@ -52,8 +49,7 @@ SearchUserCenterMapping:
       output: '{
         "errors": [
     {
-      "errorCode": "KER-MSD-500",
-       "message": "$IGNORE$"
+      "errorCode": "KER-MSD-500"
     }
   ]
 }'

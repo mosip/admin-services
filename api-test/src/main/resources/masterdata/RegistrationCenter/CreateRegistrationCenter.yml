@@ -40,7 +40,7 @@ CreateRegistrationCenter:
    "requesttime":"$TIMESTAMP$"
 }'
       output: '{
-   "name": "$IGNORE$"
+   "name": "$REMOVE$"
 }'   
    MasterData_CreateRegCenter_Invalid_HolidayLocationCode_blank_eng:
       endPoint: /v1/masterdata/registrationcenters
@@ -173,8 +173,7 @@ CreateRegistrationCenter:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-307",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-307"
     }
   ]
 }'
@@ -222,8 +221,7 @@ CreateRegistrationCenter:
       output: '{
   "errors": [
     {
-      "errorCode": "KER-MSD-281",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-281"
     }
   ]
 }' 
@@ -270,8 +268,7 @@ CreateRegistrationCenter:
       output: '{
   "errors": [
     {
-      "errorCode": "KER-MSD-281",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-281"
     }
   ]
 }'

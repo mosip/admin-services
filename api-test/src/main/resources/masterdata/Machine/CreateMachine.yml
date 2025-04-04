@@ -25,15 +25,15 @@ CreateMachine:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-    "id": "$IGNORE$", 
+    "id": "$REMOVE$", 
     "name": "Mach-Test",
-	"machineSpecId": "$IGNORE$",
+	"machineSpecId": "$REMOVE$",
 	"serialNum": "FB5962911687",
 	"ipAddress": "192.168.0.424",
-	"isActive": "$IGNORE$",
+	"isActive": "$REMOVE$",
 	"macAddress": "61-D3-FD-12-C9-ED",
-	"zoneCode": "$IGNORE$",
-	"validityDateTime": "$IGNORE$"
+	"zoneCode": "$REMOVE$",
+	"validityDateTime": "$REMOVE$"
 }'
    Masterdata_CreateMachine_Invalid_publicKey:
       endPoint: /v1/masterdata/machines

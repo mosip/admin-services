@@ -33,9 +33,7 @@ SearchBlockListedWords:
       output: '{
    "data": [
      {
-        "isActive": "$IGNORE$",
-        "description": "$IGNORE$",
-        "word": "$IGNORE$"
+        "isActive": "true"
       }
     ]
 }'
@@ -73,9 +71,7 @@ SearchBlockListedWords:
       output: '{
    "data": [
      {
-        "isActive": "$IGNORE$",
-        "description": "$IGNORE$",
-        "word": "$IGNORE$"
+        "isActive": "true"
       }
     ]
 }'
@@ -113,9 +109,7 @@ SearchBlockListedWords:
       output: '{
    "data": [
      {
-        "isActive": "$IGNORE$",
-        "description": "$IGNORE$",
-        "word": "$IGNORE$"
+        "isActive": "true"
       }
     ]
 }'
@@ -152,8 +146,7 @@ SearchBlockListedWords:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-317",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-317"
     }
   ]
 }'
@@ -191,9 +184,7 @@ SearchBlockListedWords:
       output: '{
    "data": [
      {
-        "isActive": "$IGNORE$",
-        "description": "$IGNORE$",
-        "word": "$IGNORE$"
+        "isActive": "true"
       }
     ]
 }'

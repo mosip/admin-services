@@ -28,8 +28,7 @@ GetLocationHierarchyLevelByLastUpdatedDate:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-261",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-261"
     }
   ]
 }'  

@@ -37,7 +37,7 @@ SearchDocCategories:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-   "totalRecord": "$IGNORE$"
+   "totalRecord": "$REMOVE$"
 }'
    MasterData_SearchDocCategories_Valid_sortBy_code:
       endPoint: /v1/masterdata/documentcategories/search
@@ -73,11 +73,11 @@ SearchDocCategories:
    "totalRecord": "$IGNORE$",
    "data": [
      {
-        "isActive": "$IGNORE$",
-        "description": "$IGNORE$",
+        "isActive": "$REMOVE$",
+        "description": "$REMOVE$",
         "code": "POA",
-        "langCode": "$IGNORE$",
-        "name": "$IGNORE$"
+        "langCode": "$REMOVE$",
+        "name": "$REMOVE$"
       }
     ]
 }'
@@ -113,14 +113,14 @@ SearchDocCategories:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-   "totalRecord": "$IGNORE$",
+   "totalRecord": "$REMOVE$",
    "data": [
      {
-        "isActive": "$IGNORE$",
-        "description": "$IGNORE$",
-        "code": "$IGNORE$",
-        "langCode": "$IGNORE$",
-        "name": "$IGNORE$"
+        "isActive": "$REMOVE$",
+        "description": "$REMOVE$",
+        "code": "$REMOVE$",
+        "langCode": "$REMOVE$",
+        "name": "$REMOVE$"
       }
     ]
 }'
@@ -195,8 +195,7 @@ SearchDocCategories:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-357",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-357"
     }
   ]
 }'
@@ -533,8 +532,7 @@ SearchDocCategories:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-318",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-318"
     }
   ]
 }'
@@ -609,8 +607,7 @@ SearchDocCategories:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-318",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-318"
     }
   ]
 }'
@@ -647,8 +644,7 @@ SearchDocCategories:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-318",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-318"
     }
   ]
 }'

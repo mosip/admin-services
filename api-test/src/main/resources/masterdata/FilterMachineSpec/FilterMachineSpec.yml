@@ -73,7 +73,7 @@ FilterMachineSpec:
     "filters": [
       {
         "fieldID": "name",
-        "fieldValue": "$IGNORE$"
+        "fieldValue": "HP"
       }
     ]
   }'
@@ -99,7 +99,7 @@ FilterMachineSpec:
     "filters": [
       {
         "fieldID": "name",
-        "fieldValue": "$IGNORE$"
+        "fieldValue": "HP"
       }
     ]
   }'
@@ -125,7 +125,7 @@ FilterMachineSpec:
     "filters": [
       {
         "fieldID": "brand",
-        "fieldValue": "$IGNORE$"
+        "fieldValue": "HP"
       }
     ]
   }'

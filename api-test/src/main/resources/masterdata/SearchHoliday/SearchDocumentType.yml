@@ -32,11 +32,11 @@ SearchDocumentType:
       output: '{
    "data": [
      {
-        "isActive": "$IGNORE$",
-        "description": "$IGNORE$",
+        "isActive": "$REMOVE$",
+        "description": "$REMOVE$",
         "code": "TestDocType0010",
-        "langCode": "$IGNORE$",
-        "name": "$IGNORE$"
+        "langCode": "$REMOVE$",
+        "name": "$REMOVE$"
       }
     ]
 }'  
@@ -73,11 +73,11 @@ SearchDocumentType:
       output: '{
    "data": [
      {
-        "isActive": "$IGNORE$",
-        "description": "$IGNORE$",
+        "isActive": "$REMOVE$",
+        "description": "$REMOVE$",
         "code": "TestDocType0010",
-        "langCode": "$IGNORE$",
-        "name": "$IGNORE$"
+        "langCode": "$REMOVE$",
+        "name": "$REMOVE$"
       }
     ]
 }'
@@ -114,11 +114,11 @@ SearchDocumentType:
       output: '{
    "data": [
      {
-        "isActive": "$IGNORE$",
-        "description": "$IGNORE$",
+        "isActive": "$REMOVE$",
+        "description": "$REMOVE$",
         "code": "TestDocType0010",
-        "langCode": "$IGNORE$",
-        "name": "$IGNORE$"
+        "langCode": "$REMOVE$",
+        "name": "$REMOVE$"
       }
     ]
 }'
@@ -193,8 +193,7 @@ SearchDocumentType:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-317",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-317"
     }
   ]
 }'
@@ -264,8 +263,7 @@ SearchDocumentType:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-390",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-390"
     }
   ]
 }'
@@ -531,8 +529,7 @@ SearchDocumentType:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-318",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-318"
     }
   ]
 }'
@@ -607,8 +604,7 @@ SearchDocumentType:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-318",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-318"
     }
   ]
 }'
@@ -645,8 +641,7 @@ SearchDocumentType:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-318",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-318"
     }
   ]
 }'

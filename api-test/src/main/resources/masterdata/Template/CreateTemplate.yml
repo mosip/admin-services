@@ -24,7 +24,6 @@ CreateTemplate:
 	    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
-	"id": "$IGNORE$"
 }'
    MasterData_CreateTemplate_InputParameter_Name_Missing:
       endPoint: /v1/masterdata/templates

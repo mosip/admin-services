@@ -14,7 +14,6 @@ UpdateRegistrationCenterNonLanguage:
     "requesttime": "$TIMESTAMP$"
 }'
       output: '{
-    "id": "$IGNORE$",
     "contactPhone": "9663089998",
     "centerTypeCode": "REG"
 }'
