@@ -40,7 +40,7 @@ CreateDeviceType:
       output: '{
 	"code": "REG"
 }'
-   MasterData_CreateDeviceType_All_Valid_Mandatory_Fields:
+   MasterData_CreateDeviceType_All_Valid_Mandatory_Fields_Smoke:
       endPoint: /v1/masterdata/devicetypes
       uniqueIdentifier: TC_Masterdata_CreateDeviceType_03
       description: Create Device Type with all mandatory fields

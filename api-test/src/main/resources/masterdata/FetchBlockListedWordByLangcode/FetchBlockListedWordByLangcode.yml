@@ -28,8 +28,8 @@ FetchBlockListedWordByLangcode:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-008",
-      "message": "Blocklisted word not found"
+      "errorCode": "KER-MSD-023",
+      "message": "Invalid language code"
     }
   ]
 }'    

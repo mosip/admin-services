@@ -33,7 +33,7 @@ import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.restassured.response.Response;
 
-public class SimplePost extends AdminTestUtil implements ITest {
+public class SimplePost extends MasterDataUtil implements ITest {
 	private static final Logger logger = Logger.getLogger(SimplePost.class);
 	private MasterDataUtil masterDataUtil = new MasterDataUtil();
 	protected String testCaseName = "";
@@ -89,7 +89,7 @@ public class SimplePost extends AdminTestUtil implements ITest {
 		}
 
 		String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
-		inputJson = masterDataUtil.inputJsonKeyWordHandeler(inputJson, testCaseName);
+		inputJson = masterDataUtil.inputJsonStringKeyWordHandeler(inputJson, testCaseName);
 
 		if (testCaseDTO.getTemplateFields() != null && templateFields.length > 0) {
 			ArrayList<JSONObject> inputtestCases = AdminTestUtil.getInputTestCase(testCaseDTO);

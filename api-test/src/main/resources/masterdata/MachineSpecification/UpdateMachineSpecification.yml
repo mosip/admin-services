@@ -22,7 +22,6 @@ UpdateMachineSpecification:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-	"id": "$IGNORE$"
 }'
    Masterdata_UpdateMachineSpecification_InputParameter_Name_Missing:
       endPoint: /v1/masterdata/machinespecifications
