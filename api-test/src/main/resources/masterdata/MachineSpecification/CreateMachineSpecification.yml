@@ -22,7 +22,6 @@ CreateMachineSpecification:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-    "id": "$IGNORE$"
 }'
    Masterdata_CreateMachineSpecification_InputParameter_Name_Missing:
       endPoint: /v1/masterdata/machinespecifications
@@ -552,10 +551,11 @@ CreateMachineSpecification:
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_20
       description: Create machine specification details duplicate details
       role: admin
+      checkErrorsOnlyInResponse: true
       templateFields: ["description"]
       restMethod: post
       inputTemplate: masterdata/MachineSpecification/machineSpecification
-      outputTemplate: masterdata/error
+      outputTemplate: masterdata/MachineSpecification/MachineSpecificationResult
       input: '{
     "brand": "HP",
     "description": "HP brand",
@@ -569,9 +569,4 @@ CreateMachineSpecification:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-    "errors": [
-    {
-      "errorCode": "KER-MSD-999"
-    }
-  ]
 }'
