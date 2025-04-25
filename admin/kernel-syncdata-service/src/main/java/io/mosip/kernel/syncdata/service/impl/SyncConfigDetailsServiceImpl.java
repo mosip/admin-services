@@ -1,6 +1,6 @@
 package io.mosip.kernel.syncdata.service.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoRequestDto;
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
@@ -9,6 +9,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.constant.SyncConfigDetailsErrorCode;
@@ -40,11 +41,20 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.security.PublicKey;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.time.OffsetDateTime;
+import java.util.Set;
+import java.util.Properties;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.Base64;
 
 /**
  * Implementation class
@@ -58,6 +68,8 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SyncConfigDetailsServiceImpl.class);
 	private static final String SLASH = "/";
+	private static final String BEGIN_KEY = "-----BEGIN PUBLIC KEY-----";
+	private static final String END_KEY = "-----END PUBLIC KEY-----";
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -185,17 +197,34 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 		}
 
 		try {
-			publicKeyResponseMapped = objectMapper.readValue(publicKeyResponseEntity.getBody(),
-					new TypeReference<ResponseWrapper<PublicKeyResponse<String>>>() {
-					});
+			JsonNode root = objectMapper.readTree(publicKeyResponseEntity.getBody());
+			String certificatePem = root.path("response").path("certificate").asText();
+			String issuedAt = root.path("response").path("issuedAt").asText();
+			String expiryAt = root.path("response").path("expiryAt").asText();
 
-		} catch (IOException | NullPointerException e) {
+			CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+			ByteArrayInputStream certStream = new ByteArrayInputStream(certificatePem.getBytes(StandardCharsets.UTF_8));
+			X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(certStream);
+			PublicKey publicKey = certificate.getPublicKey();
+
+			String publicKeyPEM = convertToPEM(publicKey);
+
+			OffsetDateTime issued = OffsetDateTime.parse(issuedAt);
+			OffsetDateTime expiry = OffsetDateTime.parse(expiryAt);
+
+			PublicKeyResponse<String> response = new PublicKeyResponse<>();
+			response.setPublicKey(publicKeyPEM);
+			response.setLastSyncTime(DateUtils.getUTCCurrentDateTimeString());
+			response.setIssuedAt(issued.toLocalDateTime());
+			response.setExpiryAt(expiry.toLocalDateTime());
+			response.setProfile(environment.getActiveProfiles()[0]);
+
+			return response;
+
+		} catch (Exception e) {
 			throw new SyncDataServiceException(SyncConfigDetailsErrorCode.SYNC_IO_EXCEPTION.getErrorCode(),
 					SyncConfigDetailsErrorCode.SYNC_IO_EXCEPTION.getErrorMessage(), e);
 		}
-
-		publicKeyResponseMapped.getResponse().setProfile(environment.getActiveProfiles()[0]);
-		return publicKeyResponseMapped.getResponse();
 
 	}
 
@@ -269,5 +298,16 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 				SyncConfigDetailsErrorCode.SYNC_SERIALIZATION_ERROR.getErrorMessage());
 	}
 
+	private String convertToPEM(PublicKey publicKey) {
+		String encoded = Base64.getEncoder().encodeToString(publicKey.getEncoded());
+		StringBuilder pemBuilder = new StringBuilder();
+		pemBuilder.append(BEGIN_KEY).append("\n");
+		for (int i = 0; i < encoded.length(); i += 64) {
+			int endIndex = Math.min(i + 64, encoded.length());
+			pemBuilder.append(encoded, i, endIndex).append("\n");
+		}
+		pemBuilder.append(END_KEY);
+		return pemBuilder.toString();
+	}
 
 }
