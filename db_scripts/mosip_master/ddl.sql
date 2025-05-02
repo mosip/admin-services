@@ -8,7 +8,6 @@
 \ir ddl/master-applicant_valid_document.sql
 \ir ddl/master-biometric_attribute.sql
 \ir ddl/master-biometric_type.sql
-\ir ddl/master-blacklisted_words.sql
 \ir ddl/master-blocklisted_words.sql
 \ir ddl/master-device_master.sql
 \ir ddl/master-device_master_h.sql
