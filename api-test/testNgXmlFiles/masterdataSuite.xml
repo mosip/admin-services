@@ -8,7 +8,7 @@
 		<listener class-name="io.mosip.testrig.apirig.report.EmailableReport"/>
 	</listeners>
 
-<!-- <test name="BulkUpload">
+   <test name="BulkUpload">
 		<parameter name="ymlFile"
 			value="masterdata/BulkUpload/BulkUpload.yml" />
 		<classes>
@@ -31,7 +31,7 @@
 			<class name="io.mosip.testrig.apirig.masterdata.testscripts.GetWithQueryParam" />
 		</classes>
 	</test>
--->
+
 
 
 	<test name="CreateBlockListedWords">
@@ -41,7 +41,7 @@
 			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePost" />
 		</classes>
 	</test>
-<!-- <test name="UpdateBlockListedWordStatus">
+     <test name="UpdateBlockListedWordStatus">
 		<parameter name="ymlFile"
 			value="masterdata/UpdateBlockListedWordStatus/UpdateBlockListedWordStatus.yml" />
 		<classes>
@@ -1048,7 +1048,6 @@
 			<class name="io.mosip.testrig.apirig.masterdata.testscripts.GetWithParam" />
 		</classes>
 	</test>
-	Commenting for MOSIP-33731
 	<test name="GetIdTypeByLangCode">
 		<parameter name="ymlFile"
 			value="masterdata/GetIdTypeByLangCode/GetIdTypeByLangCode.yml" />
@@ -1161,8 +1160,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.masterdata.testscripts.GetWithParam" />
 		</classes>
-	</test>  
-Commenting for MOSIP-33731	
+	</test>  	
 	<test name="CreateIdType">
 		<parameter name="ymlFile"
 			value="masterdata/CreateIdType/CreateIdType.yml" />
@@ -1460,5 +1458,5 @@ Commenting for MOSIP-33731
 		<classes>
 			<class name="io.mosip.testrig.apirig.masterdata.testscripts.GetWithParam" />
 		</classes>
-	</test> -->
+	</test> 
 </suite>
