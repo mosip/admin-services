@@ -6,7 +6,7 @@
 
 	<groupId>io.mosip.admin</groupId>
 	<artifactId>admin-parent</artifactId>
-	<version>1.3.0-beta.2-SNAPSHOT</version>
+	<version>1.3.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>admin</name>
