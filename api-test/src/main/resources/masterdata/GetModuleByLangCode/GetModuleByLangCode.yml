@@ -1,0 +1,42 @@
+GetModuleByLangCode:
+   Admin_GetModuleByLangCode_allValid_smoke:
+      endPoint: /v1/masterdata/modules/{langcode}
+      uniqueIdentifier: TC_Masterdata_GetModuleByLangCode_01
+      description: Retrieve module details by valid language code
+      role: admin
+      templateFields: ["langcode"]
+      restMethod: get
+      inputTemplate: masterdata/GetModuleByLangCode/getModuleByLangCode
+      outputTemplate: masterdata/GetModuleByLangCode/getModuleByLangCodeResult
+      input: '{
+  "langcode":"eng"
+}'
+      output: '{
+"modules": [{
+       "id": "$IGNORE$",
+        "name": "$IGNORE$",
+        "langCode": "$IGNORE$",
+        "description": "$IGNORE$",
+        "isActive": true
+    }]
+}'
+
+   Admin_GetModuleByLangCode_Invalid_Invalid_langcode:
+      endPoint: /v1/masterdata/modules/{langcode}
+      uniqueIdentifier: TC_Masterdata_GetModuleByLangCode_02
+      description: Retrieve module details by invalid language code
+      role: admin
+      restMethod: get
+      inputTemplate: masterdata/GetModuleByLangCode/getModuleByLangCode
+      outputTemplate: masterdata/error
+      input: '{
+  "langcode":"abc"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-248",
+      "message": "Module not Found"
+    }
+  ]
+}'  

@@ -1,0 +1,93 @@
+RegCenterFilter:
+   MasterData_RegCenterFilter_Name_eng_Unique_smoke:
+      endPoint: /v1/masterdata/registrationcenters/filtervalues
+      uniqueIdentifier: TC_Masterdata_RegCenterFilter_01
+      description: Filter the registration center by name, language set to English, and type as unique
+      role: admin
+      checkErrorsOnlyInResponse: true
+      templateFields: ["languageCode"]
+      restMethod: post
+      inputTemplate: masterdata/RegCenterFilter/regCenterFilter
+      outputTemplate: masterdata/RegCenterFilter/regCenterFilterResult
+      input: '{
+	"filters": [{
+		"columnName": "name",
+		"type": "unique",
+		"text": "Dynamiccenterstory"
+	}],
+	"languageCode": "eng",
+	"requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  }'    
+   MasterData_RegCenterFilter_Name_eng_All_smoke:
+      endPoint: /v1/masterdata/registrationcenters/filtervalues
+      uniqueIdentifier: TC_Masterdata_RegCenterFilter_02
+      description: Filter the registration center by name, language set to English, and type as all
+      role: admin
+      checkErrorsOnlyInResponse: true
+      templateFields: ["languageCode"]
+      restMethod: post
+      inputTemplate: masterdata/RegCenterFilter/regCenterFilter
+      outputTemplate: masterdata/RegCenterFilter/regCenterFilterResult
+      input: '{
+	"filters": [{
+		"columnName": "name",
+		"type": "all",
+		"text": "Dynamiccenterstory"
+	}],
+	"languageCode": "eng",
+	"requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  }'    
+      
+   MasterData_RegCenterFilter_Invalid_RequestTime:
+      endPoint: /v1/masterdata/registrationcenters/filtervalues
+      uniqueIdentifier: TC_Masterdata_RegCenterFilter_03
+      description: Filter the registration center with invalid request time
+      role: admin
+      templateFields: ["languageCode"]
+      restMethod: post
+      inputTemplate: masterdata/RegCenterFilter/regCenterFilter
+      outputTemplate: masterdata/error
+      input: '{
+	"filters": [{
+		"columnName": "name",
+		"type": "unique",
+		"text": "Center A Ben Mansour"
+	}],
+	"languageCode": "eng",
+	"requesttime": "2019-7-3T05:22:35.845"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "message": "Invalid Format in field : requesttime"
+    }
+  ]
+}'    
+       
+   MasterData_RegCenterFilter_inValid_columnName:
+      endPoint: /v1/masterdata/registrationcenters/filtervalues
+      uniqueIdentifier: TC_Masterdata_RegCenterFilter_04
+      description: Filter the registration center with invalid column name
+      role: admin
+      checkErrorsOnlyInResponse: true
+      templateFields: ["languageCode"]
+      restMethod: post
+      inputTemplate: masterdata/RegCenterFilter/regCenterFilter
+      outputTemplate: masterdata/NilFilterResult
+      input: '{
+	"filters": [{
+		"columnName": "fbheafg",
+		"type": "unique",
+		"text": "Center A Ben Mansour"
+	}],
+	"languageCode": "eng",
+	"requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+	"totalCount": "0"
+  }'    
