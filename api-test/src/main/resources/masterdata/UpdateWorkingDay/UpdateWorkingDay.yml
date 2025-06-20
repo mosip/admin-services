@@ -1,0 +1,24 @@
+UpdateWorkingDay:
+   MasterData_UpdateWorkingDay_Invalid_code:  
+      endPoint: /v1/masterdata/workingdays
+      uniqueIdentifier: TC_Masterdata_UpdateWorkingDay_01
+      description: Update working day details with invalid code
+      role: admin
+      templateFields: ["langCode", "name"]
+      restMethod: put
+      inputTemplate: masterdata/UpdateWorkingDay/updateWorkingDay
+      outputTemplate: masterdata/error
+      input: '{
+  "code": "asfd",
+  "langCode": "eng",
+  "requesttime": "$TIMESTAMP$",
+  "name": "xyz"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-WKDS-003",
+      "message": "No working/non working day data found"
+    }
+  ]
+}'

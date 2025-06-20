@@ -1,0 +1,95 @@
+FetchLocationHierarchy:
+   MasterData_FetchLocationHierarchy_allValid_smoke:
+      endPoint: /v1/masterdata/locationHierarchyLevels/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchLocationHierarchy_01
+      description: Retrieve Location Hierarchy details with all valid data
+      role: admin
+      restMethod: get
+      inputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchy
+      outputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchyResult
+      input: '{
+  "langcode": "eng",
+  "level": "$REMOVE$"
+}'
+      output: '{
+"locationHierarchyLevels": [{
+			"isActive": "true"
+		}]
+}'
+   MasterData_FetchLocationHierarchy_inValid_langcode:
+      endPoint: /v1/masterdata/locationHierarchyLevels/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchLocationHierarchy_02
+      description: Retrieve Location Hierarchy details with invalid langcode
+      role: admin
+      restMethod: get
+      inputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchy
+      outputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchyResult
+      input: '{
+  "langcode": "rrr",
+  "level": "$REMOVE$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-398",
+      "message": "Location Hierarchy not Found"
+    }
+  ]
+}'
+   MasterData_FetchLocationHierarchy_level_langcode_smoke:
+      endPoint: /v1/masterdata/locationHierarchyLevels/{level}/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchLocationHierarchy_03
+      description: Retrieve Location Hierarchy details with level and langcode
+      role: admin
+      restMethod: get
+      inputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchy
+      outputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchyResult
+      input: '{
+  "langcode": "eng",
+  "level": "2"
+}'
+      output: '{
+"locationHierarchyLevels": [{
+			"isActive": "true"
+		}]
+}'
+   MasterData_FetchLocationHierarchy_invalid_level:
+      endPoint: /v1/masterdata/locationHierarchyLevels/{level}/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchLocationHierarchy_04
+      description: Retrieve Location Hierarchy details with invalid level and valid langcode
+      role: admin
+      restMethod: get
+      inputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchy
+      outputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchyResult
+      input: '{
+  "langcode": "eng",
+  "level": "14"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-398",
+      "message": "Location Hierarchy not Found"
+    }
+  ]
+}'
+   MasterData_FetchLocationHierarchy_invalid_langcode:
+      endPoint: /v1/masterdata/locationHierarchyLevels/{level}/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchLocationHierarchy_05
+      description: Retrieve Location Hierarchy details with valid level and invalid langcode
+      role: admin
+      restMethod: get
+      inputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchy
+      outputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchyResult
+      input: '{
+  "langcode": "eee",
+  "level": "2"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-398",
+      "message": "Location Hierarchy not Found"
+    }
+  ]
+}'
