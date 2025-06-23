@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.mosip.hotlist</groupId>
 	<artifactId>hotlist-service</artifactId>
-	<version>1.2.1-SNAPSHOT</version>
+	<version>1.2.1-rc1</version>
 	<name>Hotlist Service</name>
 	<description>Service to block/unblock ids in MOSIP</description>
      <url>https://github.com/mosip/admin-services</url>
@@ -21,23 +21,25 @@
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
 		<maven.compiler.version>3.9.6</maven.compiler.version>
+		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
+		<spring.boot.version>3.2.5</spring.boot.version>
 
 		<!-- test -->
 		<junit.version>4.12</junit.version>
 		<mockito.version>3.3.3</mockito.version>
 
 		<!-- kernel properties -->
-		<kernel-core.version>1.2.1-SNAPSHOT</kernel-core.version>
-		<kernel-websubclient-api.version>1.2.1-SNAPSHOT</kernel-websubclient-api.version>
-		<kernel-logger-logback.version>1.2.1-SNAPSHOT</kernel-logger-logback.version>
-		<kernel.auth.adaptor.version>1.2.1-SNAPSHOT</kernel.auth.adaptor.version>
+		<kernel-core.version>1.2.1-rc1</kernel-core.version>
+		<kernel-websubclient-api.version>1.2.1-rc1</kernel-websubclient-api.version>
+		<kernel-logger-logback.version>1.2.1-rc1</kernel-logger-logback.version>
+		<kernel.auth.adaptor.version>1.2.1-rc1</kernel.auth.adaptor.version>
 	</properties>
 
 	<repositories>
 		<repository>
 			<id>ossrh</id>
 			<name>CentralRepository</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<url>https://central.sonatype.com/repositories/snapshots</url>
 			<layout>default</layout>
 			<snapshots>
 				<enabled>true</enabled>
@@ -59,7 +61,7 @@
 			<dependency>
 				<groupId>io.mosip.kernel</groupId>
 				<artifactId>kernel-bom</artifactId>
-				<version>1.2.1-SNAPSHOT</version>
+				<version>1.2.1-rc1</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -194,11 +196,11 @@
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<url>https://central.sonatype.com/repository/maven-snapshots/</url>
 		</snapshotRepository>
 		<repository>
 			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<url>https://central.sonatype.com/api/v1/publisher</url>
 		</repository>
 	</distributionManagement>
 	<build>
@@ -242,6 +244,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring.boot.version}</version>
 				<configuration>
 					<executable>true</executable>
 					<layout>ZIP</layout>
@@ -252,6 +255,9 @@
 							<goal>build-info</goal>
 							<goal>repackage</goal>
 						</goals>
+						<configuration>
+							<attach>false</attach>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -269,23 +275,13 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.14</version>
+				<groupId>org.sonatype.central</groupId>
+				<artifactId>central-publishing-maven-plugin</artifactId>
+				<version>${central.publishing.maven.plugin.version}</version>
 				<extensions>true</extensions>
-				<executions>
-					<execution>
-						<id>default-deploy</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>deploy</goal>
-						</goals>
-					</execution>
-				</executions>
 				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>false</autoReleaseAfterClose>
+					<publishingServerId>ossrh</publishingServerId>
+					<autoPublish>false</autoPublish>
 				</configuration>
 			</plugin>
 
@@ -443,13 +439,27 @@
 					<plugin>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-maven-plugin</artifactId>
+						<version>${spring.boot.version}</version>
 						<configuration>
 							<executable>true</executable>
 							<layout>ZIP</layout>
 						</configuration>
 						<executions>
+							<!-- Build info and repackage -->
+							<execution>
+								<id>build-info-repackage</id>
+								<goals>
+									<goal>build-info</goal>
+									<goal>repackage</goal>
+								</goals>
+								<configuration>
+									<attach>false</attach>
+								</configuration>
+							</execution>
+							<!-- Integration test startup -->
 							<execution>
 								<id>pre-integration-test</id>
+								<phase>pre-integration-test</phase>
 								<goals>
 									<goal>start</goal>
 								</goals>
@@ -462,21 +472,16 @@
 									</profiles>
 									<arguments>
 										<argument>--server.port=8090</argument>
-										<argument>--server.servlet.context-path=/app/generic</argument>
+										<argument>--server.servlet.path=/app/generic</argument>
 									</arguments>
-
 								</configuration>
 							</execution>
+							<!-- Integration test shutdown -->
 							<execution>
 								<id>post-integration-test</id>
+								<phase>post-integration-test</phase>
 								<goals>
 									<goal>stop</goal>
-								</goals>
-							</execution>
-							<execution>
-								<goals>
-									<goal>build-info</goal>
-									<goal>repackage</goal>
 								</goals>
 							</execution>
 						</executions>
