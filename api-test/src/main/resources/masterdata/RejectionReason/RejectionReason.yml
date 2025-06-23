@@ -1,0 +1,23 @@
+RejectionReason:
+   MasterData_RejectionReason_All_Valid_Smoke_sid:
+      endPoint: /v1/masterdata/packetrejectionreasons/reasoncategory
+      uniqueIdentifier: TC_Masterdata_RejectionReason_01
+      description: Create rejection reason with valid details
+      role: admin
+      templateFields: ["langCode","description"]
+      restMethod: post
+      inputTemplate: masterdata/RejectionReason/rejectionReason
+      outputTemplate: masterdata/RejectionReason/rejectionReasonResult
+      input: '{
+    "code": "ABC",
+    "description": "Rejection in Registration Client",
+    "isActive": true,
+    "langCode": "eng",
+    "name": "Client Rejection",
+	  "requesttime": "$TIMESTAMP$"
+	}'
+      output: '{
+     "code": "ABC",
+    "langCode": "$IGNORE$",
+	  "requesttime": "$IGNORE$"
+}'

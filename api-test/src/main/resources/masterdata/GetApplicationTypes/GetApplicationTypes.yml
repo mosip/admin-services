@@ -1,0 +1,15 @@
+GetApplicationTypes:
+   Masterdata_GetApplicationTypes_allValid_smoke:
+      endPoint: /v1/masterdata/applicationtypes
+      uniqueIdentifier: TC_Masterdata_GetApplicationTypes_01
+      description: Retrieve Application Types with valid data
+      role: admin
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: masterdata/GetApplicationTypes/getApplicationTypes
+      outputTemplate: masterdata/GetApplicationTypes/getApplicationTypesResult
+      input: '{
+      
+}'
+      output: '{
+}'

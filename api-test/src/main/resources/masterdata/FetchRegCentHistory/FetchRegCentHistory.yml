@@ -1,0 +1,63 @@
+FetchRegCentHistory:
+   Masterdata_FetchRegCentHistory_allValid_smoke:
+      endPoint: /v1/masterdata/registrationcentershistory/{registrationCenterId}/{langCode}/{effectiveDate}
+      uniqueIdentifier: TC_Masterdata_FetchRegCentHistory_01
+      description: Retrieve Registration Center History with all valid data
+      role: admin
+      checkErrorsOnlyInResponse: true
+      templateFields: ["langCode"]
+      restMethod: get
+      inputTemplate: masterdata/FetchRegCentHistory/fetchRegCentHistory
+      outputTemplate: masterdata/FetchRegCentHistory/fetchRegCentHistoryResult
+      input: '{
+  "registrationCenterId": "$ID:CreateRegCenter_allValid_smoke_sid_id$",
+  "effectiveDate": "$TIMESTAMP$",
+  "langCode": "eng"
+}'
+      output: '{
+"registrationCentersHistory": [{
+			"isActive": "$IGNORE$"
+		}]
+}'
+   Masterdata_FetchRegCentHistory_invalid_registrationCenterId:
+      endPoint: /v1/masterdata/registrationcentershistory/{registrationCenterId}/{langCode}/{effectiveDate}
+      uniqueIdentifier: TC_Masterdata_FetchRegCentHistory_02
+      description: Retrieve Registration Center History with invalid registrationCenterId
+      role: admin
+      restMethod: get
+      inputTemplate: masterdata/FetchRegCentHistory/fetchRegCentHistory
+      outputTemplate: masterdata/error
+      input: '{
+  "registrationCenterId": "19098",
+  "effectiveDate": "2021-01-21T04:58:42.064Z",
+  "langCode": "eng"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-215",
+      "message": "Registration Center not found"
+    }
+  ]
+}'
+   Masterdata_FetchRegCentHistory_invalid_langcode:
+      endPoint: /v1/masterdata/registrationcentershistory/{registrationCenterId}/{langCode}/{effectiveDate}
+      uniqueIdentifier: TC_Masterdata_FetchRegCentHistory_03
+      description: Retrieve Registration Center History with invalid langCode
+      role: admin
+      restMethod: get
+      inputTemplate: masterdata/FetchRegCentHistory/fetchRegCentHistory
+      outputTemplate: masterdata/error
+      input: '{
+  "registrationCenterId": "10001",
+  "effectiveDate": "2021-01-21T04:58:42.064Z",
+  "langCode": "ori"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-215",
+      "message": "Registration Center not found"
+    }
+  ]
+}'

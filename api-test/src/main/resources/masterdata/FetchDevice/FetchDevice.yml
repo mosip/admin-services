@@ -1,0 +1,100 @@
+FetchDevice:
+   MasterData_FetchDevice_allValid_smoke_with_lang:
+      endPoint: /v1/masterdata/devices/{langCode}
+      uniqueIdentifier: TC_Masterdata_FetchDevice_01
+      description: Retrieve Device details with valid data By langcode
+      role: admin
+      templateFields: ["name","description"]
+      restMethod: get
+      inputTemplate: masterdata/FetchDevice/fetchDevice
+      outputTemplate: masterdata/FetchDevice/fetchDeviceResult
+      input: '{
+  "deviceType": "$REMOVE$",
+  "langCode": "eng",
+  "regCenterId": "$REMOVE$"
+}'
+      output: '{
+"devices": [{
+            "isActive": true
+        }]
+}'       
+   MasterData_FetchDevice_allValid_smoke_with_lang_and_deviceType:
+      endPoint: /v1/masterdata/devices/{langCode}/{deviceType}
+      uniqueIdentifier: TC_Masterdata_FetchDevice_02
+      description: Retrieve Device details with valid data By langcode and deviceType
+      role: admin
+      templateFields: ["name","description"]
+      restMethod: get
+      inputTemplate: masterdata/FetchDevice/fetchDevice
+      outputTemplate: masterdata/FetchDevice/fetchDeviceResult
+      input: '{
+  "deviceType": "GST4",
+  "langCode": "eng",
+  "regCenterId": "$REMOVE$"
+}'
+      output: '{
+"devices": [{
+            "isActive": true
+        }]
+}'
+   MasterData_FetchDevice_allValid_smoke_with_regCentre:
+      endPoint: /v1/masterdata/devices/mappeddevices/{regCenterId}
+      uniqueIdentifier: TC_Masterdata_FetchDevice_03
+      description: Retrieve Device details with valid data By regCenterId
+      role: admin
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: masterdata/FetchDevice/fetchDevice
+      outputTemplate: masterdata/FetchDevice/fetchDeviceByCenterResult
+      input: '{
+  "regCenterId": "10005",
+  "deviceType": "$REMOVE$",
+  "langCode": "$REMOVE$"
+}'
+      output: '{
+"devices": [{
+            "isActive": true
+        }]
+}'
+   MasterData_FetchDevice_invalid_regCentre:
+      endPoint: /v1/masterdata/devices/mappeddevices/{regCenterId}
+      uniqueIdentifier: TC_Masterdata_FetchDevice_04
+      description: Retrieve mapped Device details to a regCenterId
+      role: admin
+      restMethod: get
+      inputTemplate: masterdata/FetchDevice/fetchDevice
+      outputTemplate: masterdata/error
+      input: '{
+  "regCenterId": "100@@345",
+  "deviceType": "$REMOVE$",
+  "langCode": "$REMOVE$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-441",
+      "message": "Registration Center and Device Not Found"
+    }
+  ]
+}'       
+   MasterData_FetchDevice_invalid_deviceType_unexisting:
+      endPoint: /v1/masterdata/devices/{langCode}/{deviceType}
+      uniqueIdentifier: TC_Masterdata_FetchDevice_05
+      description: Retrieve Device details non existing deviceType
+      role: admin
+      restMethod: get
+      inputTemplate: masterdata/FetchDevice/fetchDevice
+      outputTemplate: masterdata/error
+      input: '{
+  "deviceType": "notInDB",
+  "langCode": "eng",
+  "regCenterId": "$REMOVE$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-010",
+      "message": "Device not Found"
+    }
+  ]
+}'       

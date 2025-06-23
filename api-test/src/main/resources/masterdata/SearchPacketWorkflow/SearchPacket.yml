@@ -1,0 +1,99 @@
+SearchPacketWorkflow:
+   MasterData_SearchPacketWorkflow_Valid_Smoke:
+      endPoint: /v1/masterdata/packet/search
+      uniqueIdentifier: TC_Masterdata_SearchPacketWorkflow_01
+      description: Search for packet work flow details with valid details
+      role: admin
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: masterdata/SearchPacketWorkflow/searchPacket
+      outputTemplate: masterdata/SearchPacketWorkflow/searchPacketResult
+      input: '{
+    "filters": [
+      {
+        "columnName": "statusCode",
+        "type": "equals",
+        "value": "PROCESSED"
+      }
+    ],
+    "sort": [
+      {
+        "sortField": "createDateTime",
+        "sortType": "desc"
+      }
+    ],
+      "pageStart": 0,
+      "pageFetch": 10,
+    "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+   "statusCode": "PROCESSED"
+}'
+   MasterData_SearchPacketWorkflow_Empty_ColumnName:
+      endPoint: /v1/masterdata/packet/search
+      uniqueIdentifier: TC_Masterdata_SearchPacketWorkflow_02
+      description: Search for packet work flow details with with column name as empty
+      role: admin
+      restMethod: post
+      inputTemplate: masterdata/SearchPacketWorkflow/searchPacket
+      outputTemplate: masterdata/error
+      input: '{
+    "filters": [
+      {
+        "columnName": "",
+        "type": "equals",
+        "value": "PROCESSED"
+      }
+    ],
+    "sort": [
+      {
+        "sortField": "createDateTime",
+        "sortType": "desc"
+      }
+    ],
+      "pageStart": 0,
+      "pageFetch": 1,
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "RPR-WAA-000",
+      "message": "$IGNORE$"
+    }
+  ]
+}'
+   MasterData_SearchPacketWorkflow_Invalid_Pagination:
+      endPoint: /v1/masterdata/packet/search
+      uniqueIdentifier: TC_Masterdata_SearchPacketWorkflow_03
+      description: Search for packet work flow details with with invalid pagination data
+      role: admin
+      restMethod: post
+      inputTemplate: masterdata/SearchPacketWorkflow/searchPacket
+      outputTemplate: masterdata/error
+      input: '{
+    "filters": [
+      {
+        "columnName": "statusCode",
+        "type": "equals",
+        "value": "PROCESSED"
+      }
+    ],
+    "sort": [
+      {
+        "sortField": "createDateTime",
+        "sortType": "desc"
+      }
+    ],
+      "pageStart": 0,
+      "pageFetch": -1,
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "RPR-WAA-002",
+      "message": "$IGNORE$"
+    }
+  ]
+}'
