@@ -72,13 +72,14 @@ public class MosipTestRunner {
 			ExtractResource.removeOldMosipTestTestResource();
 			if (getRunType().equalsIgnoreCase("JAR")) {
 				ExtractResource.extractCommonResourceFromJar();
+				copyTestCaseSkippedListFromJar();
 			} else {
 				ExtractResource.copyCommonResources();
+				copyTestCaseSkippedList();
 			}
 			AdminTestUtil.init();
 			MasterDataConfigManager.init();
 			suiteSetup(getRunType());
-			SkipTestCaseHandler.loadTestcaseToBeSkippedList("testCaseSkippedList.txt");
 			GlobalMethods.setModuleNameAndReCompilePattern(MasterDataConfigManager.getproperty("moduleNamePattern"));
 			setLogLevels();
 
@@ -104,6 +105,7 @@ public class MosipTestRunner {
 			for (int i = 0; i < localLanguageList.size(); i++) {
 				BaseTestCase.languageList.clear();
 				BaseTestCase.languageList.add(localLanguageList.get(i));
+				SkipTestCaseHandler.loadTestcaseToBeSkippedList("testCaseSkippedList_"+ localLanguageList.get(i) +".txt");
 
 				DBManager.executeDBQueries(MasterDataConfigManager.getMASTERDbUrl(),
 						MasterDataConfigManager.getMasterDbUser(), MasterDataConfigManager.getMasterDbPass(),
@@ -327,6 +329,26 @@ public class MosipTestRunner {
 			return "JAR";
 		else
 			return "IDE";
+	}
+	
+	private static void copyTestCaseSkippedList() {
+		ExtractResource.copyCommonResources("testCaseSkippedList_eng.txt");
+		ExtractResource.copyCommonResources("testCaseSkippedList_ara.txt");
+		ExtractResource.copyCommonResources("testCaseSkippedList_fra.txt");
+		ExtractResource.copyCommonResources("testCaseSkippedList_hin.txt");
+		ExtractResource.copyCommonResources("testCaseSkippedList_kan.txt");
+		ExtractResource.copyCommonResources("testCaseSkippedList_tam.txt");
+		
+	}
+	
+	private static void copyTestCaseSkippedListFromJar() {
+		ExtractResource.getListOfFilesFromJarAndCopyToExternalResource("testCaseSkippedList_eng.txt");
+		ExtractResource.getListOfFilesFromJarAndCopyToExternalResource("testCaseSkippedList_ara.txt");
+		ExtractResource.getListOfFilesFromJarAndCopyToExternalResource("testCaseSkippedList_fra.txt");
+		ExtractResource.getListOfFilesFromJarAndCopyToExternalResource("testCaseSkippedList_hin.txt");
+		ExtractResource.getListOfFilesFromJarAndCopyToExternalResource("testCaseSkippedList_kan.txt");
+		ExtractResource.getListOfFilesFromJarAndCopyToExternalResource("testCaseSkippedList_tam.txt");
+		
 	}
 
 }
