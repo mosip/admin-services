@@ -1,0 +1,36 @@
+UpdateWorkingDayStatus:
+   MasterData_UpdateWorkingDayStatus_All_Valid_Smoke:  
+      endPoint: /v1/masterdata/workingdays?isActive={isActive}&code={code}
+      uniqueIdentifier: TC_Masterdata_UpdateWorkingDayStatus_01
+      description: Update working day status details with valid data
+      role: admin
+      restMethod: patch
+      inputTemplate: masterdata/UpdateWorkingDayStatus/updateWorkingDayStatus
+      outputTemplate: masterdata/UpdateWorkingDayStatus/updateWorkingDayStatusResult
+      input: '{
+    "code": "102",
+    "isActive": true
+}'
+      output: '{
+    "status": "Status updated successfully for workingDays"
+}'
+   MasterData_UpdateWorkingDayStatus_Invalid_id:  
+      endPoint: /v1/masterdata/workingdays?isActive={isActive}&code={code}
+      uniqueIdentifier: TC_Masterdata_UpdateWorkingDayStatus_02
+      description: Update working day status details with invalid ID
+      role: admin
+      restMethod: patch
+      inputTemplate: masterdata/UpdateWorkingDayStatus/updateWorkingDayStatus
+      outputTemplate: masterdata/error
+      input: '{
+    "code": "notexist",
+    "isActive": true
+}'
+      output: '{
+    "errors": [
+        {
+            "errorCode": "KER-WKDS-003",
+            "message": "No working/non working day data found"
+        }
+    ]
+}'

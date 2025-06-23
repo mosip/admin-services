@@ -1,0 +1,15 @@
+FetchDistinctDynamicFieldByLangcode:
+   Masterdata_FetchDistinctDynamicFieldByLangcode_AllValid_smoke:
+      endPoint: /v1/masterdata/dynamicfields/distinct/{langCode}
+      uniqueIdentifier: TC_Masterdata_FetchDistinctDynamicFieldByLangcode_01
+      description: Retrieve distinct Dynamic field values By langCode
+      role: admin
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: masterdata/FetchDistinctDynamicFieldByLangcode/fetchDistinctDynamicFieldByLangcode
+      outputTemplate: masterdata/FetchDistinctDynamicFieldByLangcode/fetchDistinctDynamicFieldByLangcodeResult
+      input: '{
+   "langCode":"eng"
+}'
+      output: '{
+}'

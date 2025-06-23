@@ -1,0 +1,70 @@
+FetchDeviceSpec:
+   MasterData_FetchDeviceSpec_allValid_smoke_with_lang:
+      endPoint: /v1/masterdata/devicespecifications/{langcode}
+      uniqueIdentifier: TC_Masterdata_FetchDeviceSpec_01
+      description: Retrieve device specification with valid langcode
+      role: admin
+      checkErrorsOnlyInResponse: true
+      templateFields: []
+      restMethod: get
+      inputTemplate: masterdata/FetchDeviceSpec/fetchDeviceSpec
+      outputTemplate: masterdata/FetchDeviceSpec/fetchDeviceSpecResult
+      input: '{
+  "devicetypecode": "$REMOVE$",
+  "langcode": "eng"
+}'
+      output: '{
+}'
+   MasterData_FetchDeviceSpec_allValid_byDeviceTypeCode_smoke:
+      endPoint: /v1/masterdata/devicespecifications/devicetypecode/{devicetypecode}
+      uniqueIdentifier: TC_Masterdata_FetchDeviceSpec_02
+      description: Retrieve device specification with valid devicetypecode
+      role: admin
+      checkErrorsOnlyInResponse: true
+      templateFields: []
+      restMethod: get
+      inputTemplate: masterdata/FetchDeviceSpec/fetchDeviceSpec
+      outputTemplate: masterdata/FetchDeviceSpec/fetchDeviceSpecResult
+      input: '{
+  "devicetypecode": "FRS",
+  "langcode": "$REMOVE$"
+}'
+      output: '{
+}'
+   MasterData_FetchDeviceSpec_allValid_smoke_with_lang_and_deviceType:
+      endPoint: /v1/masterdata/devicespecifications/{langcode}/{devicetypecode}
+      uniqueIdentifier: TC_Masterdata_FetchDeviceSpec_03
+      description: Retrieve device specification with valid devicetypecode and langcode
+      role: admin
+      checkErrorsOnlyInResponse: true
+      templateFields: []
+      restMethod: get
+      inputTemplate: masterdata/FetchDeviceSpec/fetchDeviceSpec
+      outputTemplate: masterdata/FetchDeviceSpec/fetchDeviceSpecResult
+      input: '{
+  "devicetypecode": "GST4",
+  "langcode": "eng"
+}'
+      output: '{
+}'
+   MasterData_FetchDeviceSpec_invalid_devicetypecode_unexisting:
+      endPoint: /v1/masterdata/devicespecifications/{langcode}/{devicetypecode}
+      uniqueIdentifier: TC_Masterdata_FetchDeviceSpec_04
+      description: Retrieve device specification with non existing devicetypecode
+      role: admin
+      templateFields: []
+      restMethod: get
+      inputTemplate: masterdata/FetchDeviceSpec/fetchDeviceSpec
+      outputTemplate: masterdata/error
+      input: '{
+  "devicetypecode": "notInDB",
+  "langcode": "eng"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-012",
+      "message": "Device Specification not found"
+    }
+  ]
+}'
