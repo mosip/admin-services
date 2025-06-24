@@ -105,6 +105,7 @@ public class MosipTestRunner {
 			for (int i = 0; i < localLanguageList.size(); i++) {
 				BaseTestCase.languageList.clear();
 				BaseTestCase.languageList.add(localLanguageList.get(i));
+				SkipTestCaseHandler.clearTestCaseInSkippedList();
 				SkipTestCaseHandler.loadTestcaseToBeSkippedList("testCaseSkippedList_"+ localLanguageList.get(i) +".txt");
 
 				DBManager.executeDBQueries(MasterDataConfigManager.getMASTERDbUrl(),
