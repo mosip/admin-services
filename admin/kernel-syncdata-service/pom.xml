@@ -82,12 +82,12 @@
 		<micrometer.registry.prometheus.version>1.4.2</micrometer.registry.prometheus.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
-		<kernel.core.version>1.2.1-rc1</kernel.core.version>
-		<kernel.auth.adaptor.version>1.2.1-rc1</kernel.auth.adaptor.version>
-		<kernel.logger.version>1.2.1-rc1</kernel.logger.version>
-		<kernel.crypto.version>1.2.1-rc1</kernel.crypto.version>
-		<kernel.keymanager.version>1.3.0-beta.1</kernel.keymanager.version>
-		<kernel-websubclient-api.version>1.2.1-rc1</kernel-websubclient-api.version>
+		<kernel.core.version>1.2.1-SNAPSHOT</kernel.core.version>
+		<kernel.auth.adaptor.version>1.2.1-SNAPSHOT</kernel.auth.adaptor.version>
+		<kernel.logger.version>1.2.1-SNAPSHOT</kernel.logger.version>
+		<kernel.crypto.version>1.2.1-SNAPSHOT</kernel.crypto.version>
+		<kernel.keymanager.version>1.2.1-SNAPSHOT</kernel.keymanager.version>
+		<kernel-websubclient-api.version>1.2.1-SNAPSHOT</kernel-websubclient-api.version>
 	</properties>
 
     <repositories>
@@ -116,7 +116,7 @@
 			<dependency>
 				<groupId>io.mosip.kernel</groupId>
 				<artifactId>kernel-bom</artifactId>
-				<version>1.2.1-rc1</version>
+				<version>1.2.1-SNAPSHOT</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
