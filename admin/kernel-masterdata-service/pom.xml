@@ -18,7 +18,6 @@
 		<maven.compiler.target>21</maven.compiler.target>
 		<maven.compiler.version>3.8.0</maven.compiler.version>
 		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
-
 		<maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
 		<maven.war.plugin.version>3.1.0</maven.war.plugin.version>
 		<maven.jacoco.version>0.8.11</maven.jacoco.version>
@@ -108,6 +107,7 @@
 		<micrometer.core.version>1.4.2</micrometer.core.version>
 		<micrometer.registry.prometheus.version>1.4.2</micrometer.registry.prometheus.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
 		<kernel.applicant-type.version>1.2.1-SNAPSHOT</kernel.applicant-type.version>
 		<kernel.logger.logback.version>1.2.1-SNAPSHOT</kernel.logger.logback.version>
 		<tss.version>0.3.0</tss.version>
@@ -119,7 +119,7 @@
 		<repository>
 			<id>ossrh</id>
 			<name>CentralRepository</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<url>https://central.sonatype.com/repositories/snapshots</url>
 			<layout>default</layout>
 			<snapshots>
 				<enabled>true</enabled>
@@ -281,11 +281,11 @@
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<url>https://central.sonatype.com/repository/maven-snapshots/</url>
 		</snapshotRepository>
 		<repository>
 			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<url>https://central.sonatype.com/api/v1/publisher</url>
 		</repository>
 	</distributionManagement>
 	<build>
@@ -351,6 +351,9 @@
 							<goal>build-info</goal>
 							<goal>repackage</goal>
 						</goals>
+						<configuration>
+							<attach>false</attach>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -368,23 +371,13 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.14</version>
+				<groupId>org.sonatype.central</groupId>
+				<artifactId>central-publishing-maven-plugin</artifactId>
+				<version>${central.publishing.maven.plugin.version}</version>
 				<extensions>true</extensions>
-				<executions>
-					<execution>
-						<id>default-deploy</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>deploy</goal>
-						</goals>
-					</execution>
-				</executions>
 				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>false</autoReleaseAfterClose>
+					<publishingServerId>ossrh</publishingServerId>
+					<autoPublish>false</autoPublish>
 				</configuration>
 			</plugin>
 
@@ -541,8 +534,21 @@
 							<layout>ZIP</layout>
 						</configuration>
 						<executions>
+							<!-- Build info and repackage -->
+							<execution>
+								<id>build-info-repackage</id>
+								<goals>
+									<goal>build-info</goal>
+									<goal>repackage</goal>
+								</goals>
+								<configuration>
+									<attach>false</attach>
+								</configuration>
+							</execution>
+							<!-- Integration test startup -->
 							<execution>
 								<id>pre-integration-test</id>
+								<phase>pre-integration-test</phase>
 								<goals>
 									<goal>start</goal>
 								</goals>
@@ -551,30 +557,24 @@
 										<folder>src/test/resources</folder>
 									</folders>
 									<profiles>
-										<profile>dev</profile>
+										<profile>openapi-profile</profile>
 									</profiles>
 									<arguments>
 										<argument>--server.port=8090</argument>
-										<argument>--server.servlet.context-path=/app/generic</argument>
+										<argument>--server.servlet.path=/app/generic</argument>
 									</arguments>
-
 								</configuration>
 							</execution>
+							<!-- Integration test shutdown -->
 							<execution>
 								<id>post-integration-test</id>
+								<phase>post-integration-test</phase>
 								<goals>
 									<goal>stop</goal>
 								</goals>
 							</execution>
-							<execution>
-								<goals>
-									<goal>build-info</goal>
-									<goal>repackage</goal>
-								</goals>
-							</execution>
 						</executions>
-					</plugin>
-					<plugin>
+					</plugin>					<plugin>
 						<groupId>org.springdoc</groupId>
 						<artifactId>springdoc-openapi-maven-plugin</artifactId>
 						<version>0.2</version>
