@@ -1,23 +1,2 @@
 ##### JIRA number;testcase 
 #MOSIP-12456------Mimoto_AddIdentity_Binding_smoke_Pos
-MOSIP-41839------Masterdata_FetchBlackListedWord_invalid_langcode
-MOSIP-41839------MasterData_FetchDocumentTypes_invalid_langcode
-MOSIP-41839------MasterData_FetchDocumentCategories_invalid_langcode
-MOSIP-41839------MasterData_CreateRegCenter_Blank_NumberOfKiosks_Neg
-MOSIP-41839------MasterData_CreateRegCenter_Negavtive_NumberOfKiosks_Neg
-MOSIP-41839------MasterData_FetchMissingRegCenterDetails_valid_smoke
-MOSIP-41839------Masterdata_GetDocumentTypeByLangCode_InValid_langcode
-MOSIP-41839------MasterData_CreateValidDocument_All_Valid_Smoke
-MOSIP-41839------MasterData_GetUserDetails_allValid_smoke
-MOSIP-41839------Masterdata_GetApplicantType_FLE_FR_ADL_true
-MOSIP-41839------Masterdata_GetApplicantType_FLE_FR_CHL_True
-MOSIP-41839------Masterdata_GetApplicantType_FLE_NFR_ADL_true
-MOSIP-41839------Masterdata_GetApplicantType_FLE_NFR_CHL_true
-MOSIP-41839------Masterdata_GetApplicantType_MLE_FR_ADL_True
-MOSIP-41839------Masterdata_GetApplicantType_MLE_NFR_ADL_True
-MOSIP-41839------Masterdata_GetApplicantType_MLE_NFR_CHL_True
-MOSIP-41839------Masterdata_GetApplicantType_invalid_biometricAvailable
-MOSIP-41839------Masterdata_GetApplicantType_invalid_gender
-MOSIP-41839------Masterdata_GetApplicantType_invalid_residenceStatus
-MOSIP-41839------Masterdata_GetApplicantType_response_time
-MOSIP-41839------Masterdata_GetApplicantType_valid_smoke
