@@ -7,11 +7,11 @@
 	<parent>
 		<groupId>io.mosip.admin</groupId>
 		<artifactId>admin-parent</artifactId>
-		<version>1.2.1.1</version>
+		<version>1.2.1.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>admin-service</artifactId>
 	<name>admin-service</name>
-	<version>1.2.1.1</version>
+	<version>1.2.1.2-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
 	<packaging>jar</packaging>
 	<properties>
@@ -58,13 +58,13 @@
 		    <artifactId>poi-ooxml</artifactId>
 		    <version>5.2.2</version>
 		</dependency>
-		
+
 		<dependency>
 		  <groupId>org.springframework.batch.extensions</groupId>
 		  <artifactId>spring-batch-excel</artifactId>
 		  <version>0.1.0</version>
 		</dependency>
-	
+
 	    <dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-authcodeflowproxy-api</artifactId>
@@ -90,13 +90,13 @@
 	      <groupId>org.springframework.boot</groupId>
 	      <artifactId>spring-boot-starter-batch</artifactId>
 	      <version>${spring.boot.version}</version>
-	    </dependency>		
+	    </dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>${postgresql.version}</version>
 		</dependency>
-		
+
 		<dependency>
 		    <groupId>javax.xml.bind</groupId>
 		     <artifactId>jaxb-api</artifactId>
