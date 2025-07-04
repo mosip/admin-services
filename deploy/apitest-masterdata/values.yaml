@@ -3,5 +3,5 @@ modules:
     enabled: true
     image:
       repository: mosipqa/apitest-masterdata
-      tag: develop
+      tag: 1.2.1.x
       pullPolicy: Always
