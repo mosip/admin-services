@@ -4,7 +4,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.mosip.admin</groupId>
 	<artifactId>apitest-masterdata</artifactId>
-	<artifactId>apitest-admin</artifactId>
 	<packaging>jar</packaging>
 	<name>apitest-masterdata</name>
 	<description>Parent project of MOSIP Admin Services apitests</description>
