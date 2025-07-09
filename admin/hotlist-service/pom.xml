@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.mosip.hotlist</groupId>
 	<artifactId>hotlist-service</artifactId>
-	<version>1.3.0-SNAPSHOT</version>
+	<version>1.3.0-beta.2</version>
 	<name>Hotlist Service</name>
 	<description>Service to block/unblock ids in MOSIP</description>
      <url>https://github.com/mosip/admin-services</url>
@@ -495,7 +495,7 @@
 						<artifactId>maven-deploy-plugin</artifactId>
 						<version>${maven.deploy.plugin.version}</version>
 						<configuration>
-							<skip>true</skip>
+							<skip>false</skip>
 						</configuration>
 						<executions>
 							<execution>
@@ -505,7 +505,7 @@
 									<goal>deploy</goal>
 								</goals>
 								<configuration>
-									<skip>true</skip>
+									<skip>false</skip>
 								</configuration>
 							</execution>
 						</executions>
