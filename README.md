@@ -78,6 +78,45 @@ Replace `<service-folder>`, `<service-name>`, `<host-port>`, and `<container-por
 
 **Verify**: Service endpoint is accessible and responds to requests.
 
+## Admin UI
+
+For the complete Admin UI implementation, refer to the [Admin UI GitHub repository](https://github.com/mosip/admin-ui/).
+
+### Running Admin UI
+
+The Admin UI is built with Angular CLI version 8.0.3. Follow these steps to run the Admin UI:
+
+#### Prerequisites
+- Node.js (latest LTS version)
+- Angular CLI
+
+#### Development Server
+```bash
+ng serve
+```
+Navigate to `http://localhost:4200/`. The application will automatically reload when you make changes to the source files.
+
+#### Build
+```bash
+# Development build
+ng build
+
+# Production build
+ng build --prod
+```
+The build artifacts will be stored in the `dist/` directory.
+
+#### Testing
+```bash
+# Unit tests
+ng test
+
+# End-to-end tests
+ng e2e
+```
+
+For detailed setup instructions and configuration, please refer to the [Admin UI repository](https://github.com/mosip/admin-ui/).
+
 ## Running the Release Version with Docker
 
 To run the latest release version of the Docker container:
