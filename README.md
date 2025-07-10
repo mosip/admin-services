@@ -34,7 +34,7 @@ Database SQL scripts are available in the [db_scripts](db_scripts) directory.
 
 ### 1. Build
 
-```
+```bash
 git clone <repo-url>
 cd admin-services
 mvn install -Dmaven.javadoc.skip=true -Dgpg.skip=true
@@ -47,7 +47,7 @@ mvn install -Dmaven.javadoc.skip=true -Dgpg.skip=true
 **Prerequisites**
 The Config Server must be running before starting any service. Start the config server first:
 
-```
+```bash
 cd config-server
 mvn spring-boot:run
 ```
@@ -59,7 +59,7 @@ The admin module uses configuration files accessible in the [MOSIP Config reposi
 - [Application Configuration](https://github.com/mosip/mosip-config/blob/master/application-default.properties)
 
 **Run Service**
-```
+```bash
 cd <service-folder>
 mvn spring-boot:run
 ```
@@ -82,16 +82,16 @@ Replace `<service-folder>`, `<service-name>`, `<host-port>`, and `<container-por
 
 To run the latest release version of the Docker container:
 
-#### 1. Pull the Latest Image
+### 1. Pull the Latest Image
 
-```
+```bash
 docker pull mosipid/admin-service:latest
 ```
 
-#### 2. Run the Container
+### 2. Run the Container
 
 **Basic Run:**
-```
+```bash
 docker run -d -p 8080:8080 \
   -e SPRING_CLOUD_CONFIG_URI=http://localhost:8888 \
   -e SPRING_PROFILES_ACTIVE=default \
@@ -99,11 +99,11 @@ docker run -d -p 8080:8080 \
   mosipid/admin-service:latest
 ```
 
-#### 3. Using Environment File
+### 3. Using Environment File
 
 Create a `.env` file with your configuration:
 
-```
+```env
 SPRING_CLOUD_CONFIG_URI=http://localhost:8888
 SPRING_PROFILES_ACTIVE=default
 DATABASE_URL=jdbc:postgresql://localhost:5432/mosip_admin
@@ -111,22 +111,22 @@ DATABASE_URL=jdbc:postgresql://localhost:5432/mosip_admin
 
 Then run the container:
 
-```
+```bash
 docker run -d -p 8080:8080 \
   --env-file .env \
   --name admin-service \
   mosipid/admin-service:latest
 ```
 
-#### 4. Verify the Container
+### 4. Verify the Container
 
 Check container status:
-```
+```bash
 docker ps
 ```
 
 Test the health endpoint:
-```
+```bash
 curl http://localhost:8080/actuator/health
 ```
 
