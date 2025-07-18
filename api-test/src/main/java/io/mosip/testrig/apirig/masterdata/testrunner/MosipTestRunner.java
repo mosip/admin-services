@@ -32,6 +32,7 @@ import io.mosip.testrig.apirig.testrunner.OTPListener;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthTestsUtil;
 import io.mosip.testrig.apirig.utils.CertsUtil;
+import io.mosip.testrig.apirig.utils.DependencyResolver;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.GlobalMethods;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
@@ -113,7 +114,17 @@ public class MosipTestRunner {
 						getGlobalResourcePath() + "/" + "config/masterDataDeleteQueries.txt");
 				BaseTestCase.currentModule = GlobalConstants.MASTERDATA;
 				BaseTestCase.setReportName("masterdata-" + localLanguageList.get(i));
+				
+				String testCasesToExecuteString = MasterDataConfigManager.getproperty("testCasesToExecute");
+
+				DependencyResolver
+						.loadDependencies(getGlobalResourcePath() + "/" + "config/testCaseInterDependency.json");
+				if (!testCasesToExecuteString.isBlank()) {
+					MasterDataUtil.testCasesInRunScope = DependencyResolver.getDependencies(testCasesToExecuteString);
+				}
+				 
 				startTestRunner();
+				//AdminTestUtil.generateTestCaseInterDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency.json");
 			}
 		} catch (Exception e) {
 			LOGGER.error("Exception " + e.getMessage());
@@ -123,6 +134,8 @@ public class MosipTestRunner {
 //		KeycloakUserManager.closeKeycloakInstance();
 
 		HealthChecker.bTerminate = true;
+		
+		//AdminTestUtil.generateTestCaseInterDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency.json");
 
 		System.exit(0);
 
