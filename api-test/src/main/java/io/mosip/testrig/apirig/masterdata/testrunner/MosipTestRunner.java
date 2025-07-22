@@ -135,8 +135,6 @@ public class MosipTestRunner {
 
 		HealthChecker.bTerminate = true;
 		
-		//AdminTestUtil.generateTestCaseInterDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency.json");
-
 		System.exit(0);
 
 	}
