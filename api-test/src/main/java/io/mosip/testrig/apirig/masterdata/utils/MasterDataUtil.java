@@ -43,6 +43,7 @@ public class MasterDataUtil extends AdminTestUtil {
 
 	public static String isTestCaseValidForExecution(TestCaseDTO testCaseDTO) {
 		String testCaseName = testCaseDTO.getTestCaseName();
+		currentTestCaseName = testCaseName;
 		
 		int indexof = testCaseName.indexOf("_");
 		String modifiedTestCaseName = testCaseName.substring(indexof + 1);
@@ -71,7 +72,7 @@ public class MasterDataUtil extends AdminTestUtil {
 	public String inputJsonStringKeyWordHandeler(String jsonString, String testCaseName) {
 
 		if (jsonString.contains("$INFANT$")) {
-			jsonString = replaceKeywordWithValue(jsonString, "$INFANT$", infantDob, testCaseName);
+			jsonString = replaceKeywordWithValue(jsonString, "$INFANT$", infantDob);
 		}
 
 		return jsonString;
