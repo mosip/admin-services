@@ -124,6 +124,8 @@ public class MosipTestRunner {
 				}
 				 
 				startTestRunner();
+				
+				// Used for generating the test case interdependency JSON file
 				//AdminTestUtil.generateTestCaseInterDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency.json");
 			}
 		} catch (Exception e) {
