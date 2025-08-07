@@ -32,3 +32,4 @@ MOSIP-41838------Masterdata_GetApplicantType_invalid_gender
 MOSIP-41838------Masterdata_GetApplicantType_invalid_residenceStatus
 MOSIP-41838------Masterdata_GetApplicantType_response_time
 MOSIP-41838------Masterdata_GetApplicantType_valid_smoke
+MOSIP-42429------Master_FetchAllBlockListedWord_valid_smoke

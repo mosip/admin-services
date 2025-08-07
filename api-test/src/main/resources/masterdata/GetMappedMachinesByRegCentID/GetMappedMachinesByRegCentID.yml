@@ -9,7 +9,7 @@ GetMappedMachinesByRegCentID:
       inputTemplate: masterdata/GetMappedMachinesByRegCentID/getMappedMachinesByRegCentID
       outputTemplate: masterdata/GetMappedMachinesByRegCentID/getMappedMachinesByRegCentIDResult
       input: '{
-      "regCenterId":"10001"
+      "regCenterId":"$ID:CreateRegCenter_allValid_smoke_sid_id$"
 }'
       output: '{
 }'

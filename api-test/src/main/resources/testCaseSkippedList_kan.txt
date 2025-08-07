@@ -28,6 +28,7 @@ MOSIP-41840------Masterdata_GetApplicantType_MLE_FR_ADL_True
 MOSIP-41840------Masterdata_GetApplicantType_MLE_NFR_ADL_True
 MOSIP-41840------Masterdata_GetApplicantType_MLE_NFR_CHL_True
 MOSIP-41840------Masterdata_GetApplicantType_invalid_biometricAvailable
+MOSIP-42429------Master_FetchAllBlockListedWord_valid_smoke
 MOSIP-41840------Masterdata_GetApplicantType_invalid_gender
 MOSIP-41840------Masterdata_GetApplicantType_invalid_residenceStatus
 MOSIP-41840------Masterdata_GetApplicantType_response_time
