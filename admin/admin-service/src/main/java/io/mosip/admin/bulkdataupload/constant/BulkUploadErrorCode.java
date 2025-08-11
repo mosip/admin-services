@@ -17,7 +17,8 @@ public enum BulkUploadErrorCode {
 	EMPTY_FILE("ADM-BLK-006", "Empty file is not acceptable please provide valid file"),
 	NO_FILE("ADM-BLK-007", "No file uploaded"),
 	ENTRY_EXISTS_SAME_IDENTIFIER("ADM-BLK-008", "Entry found with same primary key values"),
-	BATCH_ERROR("ADM-BLK-009", "Failed to process entry");
+	BATCH_ERROR("ADM-BLK-009", "Failed to process entry"),
+	INVALID_DELIMITER("ADM-BLK-010","Invalid delimiter used");
 
 
 	private final String errorCode;

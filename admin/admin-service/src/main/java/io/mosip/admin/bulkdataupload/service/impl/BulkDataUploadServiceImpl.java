@@ -16,6 +16,9 @@ import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.admin.packetstatusupdater.util.EventEnum;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -57,11 +60,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-import jakarta.validation.Validator;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -252,16 +253,30 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 			try {
 				logger.info("Is file empty ? {}, file-size :{}", file.isEmpty(), file.getSize());
 				if (file.isEmpty()) {
+					bulkUploadTranscation.setStatusCode("FAILED");
+					updateBulkUploadTransaction(bulkUploadTranscation);
 					throw new RequestException(BulkUploadErrorCode.EMPTY_FILE.getErrorCode(),
 							BulkUploadErrorCode.EMPTY_FILE.getErrorMessage());
 				}
 
 				if (!file.getOriginalFilename().endsWith(".csv") && !file.getOriginalFilename().endsWith(".xls") && !file.getOriginalFilename().endsWith(".xlsx")) {
+					bulkUploadTranscation.setStatusCode("FAILED");
+					updateBulkUploadTransaction(bulkUploadTranscation);
 					throw new RequestException(BulkUploadErrorCode.INVALID_FILE_FORMAT.getErrorCode(),
 							BulkUploadErrorCode.INVALID_FILE_FORMAT.getErrorMessage());
 				}
 				
 				Boolean isCSV = file.getOriginalFilename().endsWith(".csv");
+
+				try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+					String firstLine = reader.readLine();
+					if (firstLine != null && !firstLine.contains(lineDelimiter)) {
+						bulkUploadTranscation.setStatusCode("FAILED");
+						updateBulkUploadTransaction(bulkUploadTranscation);
+						throw new RequestException(BulkUploadErrorCode.INVALID_DELIMITER.getErrorCode(),
+								"Invalid delimiter used. Expected delimiter: " + lineDelimiter);
+					}
+				}
 				
 				auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD_CSV,
 						operation + " from " + file.getOriginalFilename()),null);
@@ -318,7 +333,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 
 
 	private void updateBulkUploadTransaction(BulkUploadTranscation bulkUploadTranscation) {
-		bulkUploadTranscation.setStatusCode("COMPLETED");
+		if (bulkUploadTranscation.getStatusCode() == null || !bulkUploadTranscation.getStatusCode().equalsIgnoreCase("FAILED")) {
+			bulkUploadTranscation.setStatusCode("COMPLETED");
+		}
 		bulkUploadTranscation.setUploadedDateTime(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))));
 		bulkUploadTranscation.setUpdatedBy("JOB");
 		bulkTranscationRepo.save(bulkUploadTranscation);
