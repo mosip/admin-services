@@ -70,7 +70,7 @@ SearchDocCategories:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-   "totalRecord": "$IGNORE$",
+   "totalRecord": "$REMOVE$",
    "data": [
      {
         "isActive": "$REMOVE$",

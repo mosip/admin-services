@@ -20,10 +20,10 @@ UserCenterMapping:
       output: '{
     "name": "automation",
     "statusCode": "active",
-    "regCenterId": "$IGNORE$",
-    "zoneCode": "$IGNORE$",
-    "zoneName": "$IGNORE$",
-    "regCenterName": "$IGNORE$"
+    "regCenterId": "$REMOVE$",
+    "zoneCode": "$REMOVE$",
+    "zoneName": "$REMOVE$",
+    "regCenterName": "$REMOVE$"
     }'
    MasterData_UserCenterMapping_Invalid_duplicate_entry:
       endPoint: /v1/masterdata/usercentermapping
