@@ -14,15 +14,7 @@ CreateIdSchema:
 	  "requesttime": "$TIMESTAMP$"
 	}'
       output: '{
-    "id": "$IGNORE$",
     "title": "test-schema",
-    "description": "Testing purpose",
-    "schemaJson": "$IGNORE$"
-    "status": "$IGNORE$",
-    "effectiveFrom": "$IGNORE$",
-    "createdBy": "$IGNORE$",
-    "updatedBy": "$IGNORE$",
-    "createdOn": "$IGNORE$",
-    "updatedOn": "$IGNORE$",
+    "description": "Testing purpose"
 	  "requesttime": "$TIMESTAMP$"
 }'

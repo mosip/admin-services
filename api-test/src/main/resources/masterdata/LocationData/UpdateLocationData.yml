@@ -18,13 +18,13 @@ UpdateLocationData:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-"isActive": "$IGNORE$",
+"isActive": "$REMOVE$",
 "code": "TST12",
 "name": "Test_Loc_A_updated",
 "hierarchyLevel": "4",
-"hierarchyName": "$IGNORE$",
+"hierarchyName": "$REMOVE$",
 "parentLocCode": "KNT",
-"langCode": "$IGNORE$"
+"langCode": "$REMOVE$"
 }'
    MasterData_UpdateLocationData_Invalid_code_for_primaryLang_eng:
       endPoint: /v1/masterdata/locations

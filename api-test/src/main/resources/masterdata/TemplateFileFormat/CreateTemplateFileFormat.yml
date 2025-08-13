@@ -181,8 +181,7 @@ CreateTemplateFileFormat:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-999",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-999"
     }
   ]
 }'

@@ -63,13 +63,13 @@ FilterRegCenterType:
     "filters": [
       {
         "fieldID": "code",
-        "fieldValue": "$IGNORE$",
-        "fieldCode": "$IGNORE$"
+        "fieldValue": "$REMOVE$",
+        "fieldCode": "$REMOVE$"
       },
       {
-        "fieldID": "$IGNORE$",
-        "fieldValue": "$IGNORE$",
-        "fieldCode": "$IGNORE$"
+        "fieldID": "$REMOVE$",
+        "fieldValue": "$REMOVE$",
+        "fieldCode": "$REMOVE$"
       }
     ]
   }'
@@ -95,12 +95,12 @@ FilterRegCenterType:
     "filters": [
       {
         "fieldID": "isActive",
-        "fieldValue": "$IGNORE$",
+        "fieldValue": "$REMOVE$",
         "fieldCode":""
       },
       {
         "fieldID": "isActive",
-        "fieldValue": "$IGNORE$",
+        "fieldValue": "$REMOVE$",
         "fieldCode":""
       }
     ]
@@ -227,8 +227,7 @@ FilterRegCenterType:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-317",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-317"
     }
   ]
 }'  
