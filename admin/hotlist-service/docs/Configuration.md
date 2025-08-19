@@ -9,50 +9,60 @@ Hotlist-default.properties
 ```
 The above files are located in [mosip-config](https://github.com/mosip/mosip-config/blob/develop2-v2/) repo
 
+
+## Data Source
+* `mosip.hotlist.datasource.url`= specify datasource url here
+* `mosip.hotlist.datasource.username`= datasource username here
+* `mosip.hotlist.datasource.password`= datasource password here
+
 ## DB
-* `mosip.hotlist.datasource.url`
-* `mosip.hotlist.datasource.username`
-* `mosip.hotlist.datasource.password`
+* `mosip.hotlist.db.url`= specify db url here
+* `mosip.hotlist.db.port`= specify db port here
+* `mosip.hotlist.db.password`= specify db password here
+* `mosip.hotlist.db.db-name`= specify db name here
+
+* `mosip.iam.adapter.self-token-renewal-enable`
+* `mosip.auth.filter_disable`
+
 
 Point the above to your DB .  Default is set to point to in-cluster Postgres installed with sandbox.
 
 ## Data Validation
 * `mosip.hotlist.allowedIdTypes`
-Above property is used to specify ID type.Example:
+  Above property is used to specify ID type.Example:
+* `mosip.hotlist.allowedIdTypes=UIN,VID,MACHINE_ID,PARTNER_ID,OPERATOR_ID,CENTER_ID,DEVICE,DEVICE_MODEL,FTM_PUBLIC_KEY`
 
-* `mosip.hotlist.allowedIdTypes= UIN,VID,MACHINE_ID,PARTNER_ID,OPERATOR_ID,CENTER_ID,DEVICE,DEVICE_MODEL,FTM_PUBLIC_KEY`
 ## Websub topic configuration
-* `mosip.hotlist.topic-to-publish: specify websub topic name`
+* `mosip.hotlist.topic-to-publish`= specify websub topic name
 
 ## Encryption/decyrption configuration
-* `mosip.hotlist.crypto.app-id:specify application id`
-* `mosip.hotlist.crypto.ref-id:specify reference id` 
+* `mosip.hotlist.crypto.app-id`= specify application id
+* `mosip.hotlist.crypto.ref-id`= specify reference id
 
 ## Cleanup schedule
-* `mosip.hotlist.cleanup-schedule.init-delay:specify initial delay in Hours`
-* `mosip.hotlist.cleanup-schedule.fixed-rat:specify fixed delay in which cleanup will be done in Hours` 
+* `mosip.hotlist.cleanup-schedule.init-delay`= specify initial delay in Hours
+* `mosip.hotlist.cleanup-schedule.fixed-rat`= specify fixed delay in which cleanup will be done in Hours
 
 Above properties are used to specify initial and fixed delay for a clean up job
 
 ## REST services
-* `mosip.hotlist.encryptor.rest.uri: specify keymanager encrypt url`
-* `mosip.hotlist.encryptor.rest.httpMethod: specify method type`
-* `mosip.hotlist.encryptor.rest.headers.mediaType: specify media type`
-* `mosip.hotlist.encryptor.rest.timeout: specify time out for encrypt response`
+* `mosip.hotlist.encryptor.rest.uri`= specify keymanager encrypt url
+* `mosip.hotlist.encryptor.rest.httpMethod`= specify method type
+* `mosip.hotlist.encryptor.rest.headers.mediaType`= specify media type
+* `mosip.hotlist.encryptor.rest.timeout`= specify time out for encrypt response
 
-* `mosip.hotlist.decryptor.rest.uri=specify keymanager decrypt url`
-* `mosip.hotlist.decryptor.rest.httpMethod: specify method type`
-* `mosip.hotlist.decryptor.rest.headers.mediaType: specify media type`
-* `mosip.hotlist.decryptor.rest.timeout: specify time out for decrypt response`
+* `mosip.hotlist.decryptor.rest.uri`= specify keymanager decrypt url
+* `mosip.hotlist.decryptor.rest.httpMethod`= specify method type
+* `mosip.hotlist.decryptor.rest.headers.mediaType`= specify media type
+* `mosip.hotlist.decryptor.rest.timeout`= specify time out for decrypt response
 
-* `mosip.hotlist.audit.rest.uri=specify audit url`
-* `mosip.hotlist.audit.rest.httpMethod: specify method type`
-* `mosip.hotlist.audit.rest.headers.mediaType: specify media type`
+* `mosip.hotlist.audit.rest.uri`= specify audit url
+* `mosip.hotlist.audit.rest.httpMethod`= specify method type
+* `mosip.hotlist.audit.rest.headers.mediaType`= specify media type
 
 ## Roles for the API
 All the API's of hotlist service is associated with roles , only authorized person can access concerned API.
 Example:
 *`mosip.role.admin.hotlist.postHotlistUnblock=HOTLIST_ADMIN`
 In the above example only zonal admin can access postHotlistUnblock API, similarly authorization is given for all the API's
-
 
