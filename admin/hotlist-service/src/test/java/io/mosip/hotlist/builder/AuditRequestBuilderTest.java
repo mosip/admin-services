@@ -56,7 +56,7 @@ public class AuditRequestBuilderTest {
 			expectedRequest.setEventId(AuditEvents.BLOCK_REQUEST.getEventId());
 			expectedRequest.setEventName(AuditEvents.BLOCK_REQUEST.getEventName());
 			expectedRequest.setEventType(AuditEvents.BLOCK_REQUEST.getEventType());
-			expectedRequest.setActionTimeStamp(null);
+			expectedRequest.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
 			expectedRequest.setHostName(inetAddress.getHostName());
 			expectedRequest.setHostIp(inetAddress.getHostAddress());
 			expectedRequest.setApplicationId("HOTLIST");
