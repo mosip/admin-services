@@ -4,6 +4,7 @@ import io.mosip.hotlist.constant.AuditEvents;
 import io.mosip.hotlist.constant.AuditModules;
 import io.mosip.hotlist.dto.AuditRequestDTO;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.util.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +48,7 @@ public class AuditRequestBuilderTest {
 	public void testBuildRequest() {
 		RequestWrapper<AuditRequestDTO> actualRequest = auditBuilder.buildRequest(AuditModules.HOTLIST_SERVICE,
 				AuditEvents.BLOCK_REQUEST, "id", "RID", "desc");
-		actualRequest.getRequest().setActionTimeStamp(null);
+		actualRequest.getRequest().setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
 		AuditRequestDTO expectedRequest = new AuditRequestDTO();
 		try {
 			InetAddress inetAddress = InetAddress.getLocalHost();

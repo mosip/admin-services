@@ -4,6 +4,7 @@ import io.mosip.admin.TestBootApplication;
 import io.mosip.admin.packetstatusupdater.dto.AuditManagerRequestDto;
 import io.mosip.admin.packetstatusupdater.exception.MasterDataServiceException;
 import io.mosip.admin.packetstatusupdater.service.impl.AuditManagerProxyServiceImpl;
+import io.mosip.kernel.core.util.DateUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.Assert;
 import org.junit.Before;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -68,8 +70,9 @@ public class AuditManagerProxyServiceTest {
     @WithUserDetails("zonal-admin")
     public void auditLogTest() {
         AuditManagerRequestDto auditManagerRequestDto = new AuditManagerRequestDto();
-        auditManagerRequestDto.setActionTimeStamp(LocalDateTime.now(ZoneOffset.UTC));
+        auditManagerRequestDto.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
         auditManagerRequestDto.setDescription("Test description");
+        auditManagerRequestDto.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
 
         auditManagerRequestDto.setApplicationName("Admin Portal");
         auditManagerRequestDto.setApplicationId("10009");
