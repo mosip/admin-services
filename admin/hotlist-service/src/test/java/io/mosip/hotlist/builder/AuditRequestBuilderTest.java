@@ -20,6 +20,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.LocalDateTime;
 
 import static org.junit.Assert.assertEquals;
 
@@ -48,7 +49,9 @@ public class AuditRequestBuilderTest {
 	public void testBuildRequest() {
 		RequestWrapper<AuditRequestDTO> actualRequest = auditBuilder.buildRequest(AuditModules.HOTLIST_SERVICE,
 				AuditEvents.BLOCK_REQUEST, "id", "RID", "desc");
-		actualRequest.getRequest().setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
+		LocalDateTime utcNow = DateUtils.getUTCCurrentDateTime();
+		actualRequest.getRequest().setActionTimeStamp(utcNow);
+
 		AuditRequestDTO expectedRequest = new AuditRequestDTO();
 		try {
 			InetAddress inetAddress = InetAddress.getLocalHost();
@@ -56,7 +59,7 @@ public class AuditRequestBuilderTest {
 			expectedRequest.setEventId(AuditEvents.BLOCK_REQUEST.getEventId());
 			expectedRequest.setEventName(AuditEvents.BLOCK_REQUEST.getEventName());
 			expectedRequest.setEventType(AuditEvents.BLOCK_REQUEST.getEventType());
-			expectedRequest.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
+			expectedRequest.setActionTimeStamp(utcNow);
 			expectedRequest.setHostName(inetAddress.getHostName());
 			expectedRequest.setHostIp(inetAddress.getHostAddress());
 			expectedRequest.setApplicationId("HOTLIST");
