@@ -6,6 +6,7 @@ import io.mosip.admin.TestBootApplication;
 import io.mosip.admin.packetstatusupdater.dto.AuditManagerRequestDto;
 import io.mosip.admin.util.AdminDataUtil;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import org.junit.Before;
@@ -69,7 +70,7 @@ public class AuditManagerProxyControllerTest {
 		mapper.registerModule(new JavaTimeModule());
 
 		AuditManagerRequestDto auditManagerRequestDto = new AuditManagerRequestDto();
-		auditManagerRequestDto.setActionTimeStamp(LocalDateTime.now(ZoneOffset.UTC));
+		auditManagerRequestDto.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
 		auditManagerRequestDto.setDescription("Test description");
 
 		auditManagerRequestDto.setApplicationName("Admin Portal");
