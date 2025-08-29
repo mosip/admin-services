@@ -94,7 +94,7 @@ public class AuditManagerProxyServiceTest {
     @Test
     public void auditLogEmptyValuesTest() {
         AuditManagerRequestDto auditManagerRequestDto = new AuditManagerRequestDto();
-        auditManagerRequestDto.setActionTimeStamp(LocalDateTime.now(ZoneOffset.UTC));
+        auditManagerRequestDto.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
         auditManagerRequestDto.setDescription("Test description");
 
         auditManagerRequestDto.setApplicationName("");
