@@ -8,7 +8,7 @@
 	<name>apitest-masterdata</name>
 	<description>Parent project of MOSIP Admin Services apitests</description>
 	<url>https://github.com/mosip/admin-services</url>
-	<version>1.3.0-beta.2</version>
+	<version>1.3.1-SNAPSHOT</version>
 
 	<licenses>
 		<license>
