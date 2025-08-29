@@ -225,21 +225,32 @@ public class SyncClientSettingsIntegrationTest {
 
 	@Before
 	public void setup() {
-
 		LocalDateTime localdateTime = LocalDateTime.parse("2018-11-01T01:01:01");
 		LocalTime localTime = LocalTime.parse("09:00:00");
+
+		// ✅ Initialize with a dummy Base64 value
+		encodedTPMPublicKey = Base64.getEncoder().encodeToString("dummy-key".getBytes());
+
 		applications = new ArrayList<>();
 		applications.add(new Application("101", "ENG", "MOSIP", "MOSIP"));
+
 		machines = new ArrayList<>();
-		String keyIndex = CryptoUtil.computeFingerPrint(cryptomanagerUtils.decodeBase64Data(encodedTPMPublicKey), null);
-		machine = new Machine("1001", "Laptop", "9876427", "172.12.01.128", "21:21:21:12", "1001", "ENG", localdateTime,
-				encodedTPMPublicKey, keyIndex, "ZONE", "10002", null, encodedTPMPublicKey, keyIndex);
+		String keyIndex = CryptoUtil.computeFingerPrint(
+				cryptomanagerUtils.decodeBase64Data(encodedTPMPublicKey), null);
+
+		machine = new Machine("1001", "Laptop", "9876427", "172.12.01.128", "21:21:21:12",
+				"1001", "ENG", localdateTime, encodedTPMPublicKey, keyIndex,
+				"ZONE", "10002", null, encodedTPMPublicKey, keyIndex);
+
 		machines.add(machine);
+
 		machineSpecification = new ArrayList<>();
 		machineSpecification.add(
 				new MachineSpecification("1001", "Laptop", "Lenovo", "T480", "1001", "1.0", "Laptop", "ENG", null));
+
 		machineType = new ArrayList<>();
 		machineType.add(new MachineType("1001", "ENG", "System", "System"));
+
 		devices = new ArrayList<>();
 		Device device = new Device();
 		device.setId("1000");
@@ -253,7 +264,7 @@ public class SyncClientSettingsIntegrationTest {
 		device.setValidityDateTime(localdateTime);
 		devices.add(device);
 
-		deviceSpecification = new ArrayList<>();
+	deviceSpecification = new ArrayList<>();
 		deviceSpecification.add(new DeviceSpecification("1011", "SP-1011", "HP", "E1011", "T1011", "1.0", "HP-SP1011",
 				"Hp Printer", null));
 		deviceType = new ArrayList<>();
