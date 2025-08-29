@@ -38,6 +38,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
