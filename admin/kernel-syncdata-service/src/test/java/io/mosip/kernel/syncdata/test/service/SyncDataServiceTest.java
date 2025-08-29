@@ -506,13 +506,26 @@ public class SyncDataServiceTest {
 	@Test
 	public void verifyPublicKeyMachineMappingInvalidKey() {
 		try {
-			String keyIndex = CryptoUtil.computeFingerPrint(cryptomanagerUtils.decodeBase64Data(encodedTPMPublicKey), null);
-			LocalDateTime localdateTime = LocalDateTime.parse("2018-11-01T01:01:01");
-			Machine machine = new Machine("1001", "Laptop", "9876427", "172.12.01.128", "21:21:21:12", "1001", "ENG", localdateTime,
-					encodedTPMPublicKey, keyIndex, "ZONE", "10002", null, encodedTPMPublicKey, keyIndex);
-			List<Machine> machines = new ArrayList<Machine>();
-			machines.add(machine);
-			lenient().when(machineRespository.findByMachineName(Mockito.anyString())).thenReturn(machines);
+		cryptomanagerUtils = Mockito.mock(CryptomanagerUtils.class);
+
+		// Stub decodeBase64Data to return some fake bytes
+		Mockito.when(cryptomanagerUtils.decodeBase64Data(Mockito.anyString()))
+				.thenReturn("fake-public-key".getBytes());
+
+		encodedTPMPublicKey = "FAKE_BASE64_STRING";
+		String keyIndex = CryptoUtil.computeFingerPrint(
+				cryptomanagerUtils.decodeBase64Data(encodedTPMPublicKey), null);
+
+		LocalDateTime localdateTime = LocalDateTime.parse("2018-11-01T01:01:01");
+		Machine machine = new Machine("1001", "Laptop", "9876427", "172.12.01.128",
+				"21:21:21:12", "1001", "ENG", localdateTime,
+				encodedTPMPublicKey, keyIndex,
+				"ZONE","10002", null, encodedTPMPublicKey, keyIndex);
+
+		List<Machine> machines = new ArrayList<>();
+		machines.add(machine);
+		
+		lenient().when(machineRespository.findByMachineName(Mockito.anyString())).thenReturn(machines);
 
 			UploadPublicKeyRequestDto dto = new UploadPublicKeyRequestDto("laptop", "invalidKey", "invalidKey");
 			masterDataService.validateKeyMachineMapping(dto);
