@@ -222,17 +222,22 @@ public class SyncDataIntegrationTest {
 
 	@Before
 	public void setup() {
-		String keyIndex = CryptoUtil.computeFingerPrint(cryptomanagerUtils.decodeBase64Data(encodedTPMPublicKey), null);
-		signResponse = new SignatureResponse();
-		signResponse.setData("asdasdsadf4e");
-		signResponse.setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
 		LocalDateTime localdateTime = LocalDateTime.parse("2018-11-01T01:01:01");
 		LocalTime localTime = LocalTime.parse("09:00:00");
-		applications = new ArrayList<>();
-		applications.add(new Application("101", "ENG", "MOSIP", "MOSIP"));
+		// Mock cryptomanagerUtils so decodeBase64Data never returns null
+		cryptomanagerUtils = Mockito.mock(CryptomanagerUtils.class);
+
+		encodedTPMPublicKey = "FAKE_BASE64_STRING";
+
+		String keyIndex = CryptoUtil.computeFingerPrint("fake-public-key".getBytes(), null);
+
 		machines = new ArrayList<>();
-		machine = new Machine("1001", "Laptop", "9876427", "172.12.01.128", "21:21:21:12", "1001", "ENG", localdateTime,
-				encodedTPMPublicKey, keyIndex, "ZONE","10002", null, encodedTPMPublicKey, keyIndex);
+		machine = new Machine(
+				"1001", "Laptop", "9876427", "172.12.01.128", "21:21:21:12",
+				"1001", "ENG", localdateTime,
+				encodedTPMPublicKey, keyIndex,
+				"ZONE", "10002", null, encodedTPMPublicKey, keyIndex
+		);
 		machines.add(machine);
 		machineSpecification = new ArrayList<>();
 		machineSpecification.add(
