@@ -1440,36 +1440,49 @@ public class SyncMasterDataServiceHelper {
 	 */
 	public RegistrationCenterMachineDto getRegistrationCenterMachine(String registrationCenterId, String keyIndex)
 			throws SyncDataServiceException {
+		Machine machine;
 		try {
-			//get the machine entry without status check
-			Machine machine = machineRepository.findOneByKeyIndexIgnoreCase(keyIndex);
-
-			if (machine == null) {
-				throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
-						MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
-			}
-
-			String mappedRegCenterId = machine.getRegCenterId();
-
-			if (mappedRegCenterId == null)
-				throw new RequestException(MasterDataErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
-						MasterDataErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
-
-			if (registrationCenterId != null && !mappedRegCenterId.equals(registrationCenterId))
-				throw new RequestException(MasterDataErrorCode.REG_CENTER_UPDATED.getErrorCode(),
-						MasterDataErrorCode.REG_CENTER_UPDATED.getErrorMessage());
-
-			return new RegistrationCenterMachineDto(mappedRegCenterId,machine.getId(), machine.getPublicKey(),
-					machine.getMachineSpecId(), machine.getMachineSpecification() != null ?
-					machine.getMachineSpecification().getMachineTypeCode() : null, getClientType(machine));
-
+			// Fetch machine entry (ignore case)
+			machine = machineRepository.findOneByKeyIndexIgnoreCase(keyIndex);
 		} catch (DataAccessException | DataAccessLayerException e) {
-			logger.error("Failed to fetch registrationCenterMachine : ", e);
+			logger.error("Failed to fetch registrationCenterMachine for keyIndex: {}", keyIndex, e);
+			throw new SyncDataServiceException(
+					MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorMessage());
 		}
 
-		throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
-				MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorMessage());
+		// Validate machine existence
+		if (machine == null) {
+			throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
+					MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
+		}
+
+		String mappedRegCenterId = machine.getRegCenterId();
+
+		// Validate registration center mapping
+		if (mappedRegCenterId == null) {
+			throw new RequestException(MasterDataErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+					MasterDataErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+		}
+
+		// Optional: Only check if caller provided registrationCenterId
+		if (registrationCenterId != null && !mappedRegCenterId.equals(registrationCenterId)) {
+			throw new RequestException(MasterDataErrorCode.REG_CENTER_UPDATED.getErrorCode(),
+					MasterDataErrorCode.REG_CENTER_UPDATED.getErrorMessage());
+		}
+
+		return new RegistrationCenterMachineDto(
+				mappedRegCenterId,
+				machine.getId(),
+				machine.getPublicKey(),
+				machine.getMachineSpecId(),
+				machine.getMachineSpecification() != null
+						? machine.getMachineSpecification().getMachineTypeCode()
+						: null,
+				getClientType(machine)
+		);
 	}
+
 
 	public static ClientType getClientType(Machine machine) {
 		if(machine.getMachineSpecification() == null)

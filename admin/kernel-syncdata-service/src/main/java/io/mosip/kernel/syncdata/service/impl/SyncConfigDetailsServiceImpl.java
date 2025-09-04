@@ -201,7 +201,8 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
 	@Override
 	public ConfigDto getConfigDetails(String keyIndex) {
-		LOGGER.debug("getConfigDetails() started for machine keyIndex >>> {}", keyIndex.replaceAll("[\n\r]", "_"));
+		String sanitizedKey = keyIndex.replace("\n", "_").replace("\r", "_");
+		LOGGER.debug("getConfigDetails() started for machine keyIndex >>> {}",sanitizedKey);
 		List<Machine> machines = machineRepo.findByMachineKeyIndex(keyIndex);
 		if(machines == null || machines.isEmpty())
 			machines = machineRepo.findByMachineName(keyIndex); //This is just for backward compatibility, since LTS
@@ -210,16 +211,15 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 			throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
 					MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
 
-		LOGGER.info("getConfigDetails() started for machine : {} with status {}", keyIndex.replaceAll("[\n\r]", "_"),  machines.get(0).getIsActive());
+		LOGGER.info("getConfigDetails() started for machine : {} with status {}", sanitizedKey,  machines.get(0).getIsActive());
 		JSONObject config = new JSONObject();
-		JSONObject globalConfig = new JSONObject();
 		JSONObject regConfig = parsePropertiesString(getConfigDetailsResponse(regCenterfileName));
 		//This is not completely removed only for backward compatibility, all the configs will be part of registrationConfiguration
-		config.put("globalConfiguration", getEncryptedData(globalConfig, machines.get(0)));
+		config.put("globalConfiguration", getEncryptedData(new JSONObject(), machines.get(0)));
 		config.put("registrationConfiguration", getEncryptedData(regConfig, machines.get(0)));
 		ConfigDto configDto = new ConfigDto();
 		configDto.setConfigDetail(config);
-		LOGGER.info("Get ConfigDetails() {} completed", keyIndex.replaceAll("[\n\r]", "_"));
+		LOGGER.info("Get ConfigDetails() {} completed", sanitizedKey);
 		return configDto;
 	}
 

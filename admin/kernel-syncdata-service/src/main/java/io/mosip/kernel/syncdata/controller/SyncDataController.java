@@ -211,9 +211,8 @@ public class SyncDataController {
 	public ResponseWrapper<ConfigDto> getMachineConfigDetails(@PathVariable(value = "keyIndex") String keyIndex,
 			@RequestParam(value = "version", required = false) String clientVersion) {
 		MDC.put("client_version", clientVersion == null ? "NA": clientVersion);
-		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
 		ConfigDto syncConfigResponse = syncConfigDetailsService.getConfigDetails(keyIndex);
-		syncConfigResponse.setLastSyncTime(currentTimeStamp);
+		syncConfigResponse.setLastSyncTime(DateUtils.getUTCCurrentDateTimeString());
 		ResponseWrapper<ConfigDto> response = new ResponseWrapper<>();
 		response.setResponse(syncConfigResponse);
 		return response;
@@ -229,9 +228,8 @@ public class SyncDataController {
 	@GetMapping("/userdetails")
 	public ResponseWrapper<SyncUserDto> getUserDetailsBasedOnKeyIndex(
 			@RequestParam(value = "keyindex", required = true) String keyIndex) {
-		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
 		SyncUserDto syncUserDto = syncUserDetailsService.getAllUserDetailsBasedOnKeyIndex(keyIndex);
-		syncUserDto.setLastSyncTime(currentTimeStamp);
+		syncUserDto.setLastSyncTime(DateUtils.getUTCCurrentDateTimeString());
 		ResponseWrapper<SyncUserDto> response = new ResponseWrapper<>();
 		response.setResponse(syncUserDto);
 		return response;

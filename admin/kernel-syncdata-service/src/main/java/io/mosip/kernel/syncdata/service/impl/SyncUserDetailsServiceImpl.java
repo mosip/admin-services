@@ -194,24 +194,47 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 
 	@Override
 	public SyncUserDto getAllUserDetailsBasedOnKeyIndex(String keyIndex) {
+		// Step 1: Get registration center details based on machine key
 		RegistrationCenterMachineDto regCenterMachineDto = serviceHelper.getRegistrationCenterMachine(null, keyIndex);
 
-		RegistrationCenterUserResponseDto registrationCenterResponseDto = getUsersBasedOnRegistrationCenterId(regCenterMachineDto.getRegCenterId());
-		List<String> userIds = registrationCenterResponseDto.getRegistrationCenterUsers()
+		// Step 2: Fetch users for this registration center
+		List<RegistrationCenterUserDto> registrationCenterUsers = userDetailsRepository
+				.findByUsersByRegCenterId(regCenterMachineDto.getRegCenterId())
 				.stream()
-				.map(RegistrationCenterUserDto::getUserId)
-				.collect(Collectors.toList());
+				.map(userDetails -> {
+					RegistrationCenterUserDto dto = new RegistrationCenterUserDto();
+					dto.setIsActive(userDetails.getIsActive());
+					dto.setIsDeleted(userDetails.getIsDeleted());
+					dto.setLangCode(userDetails.getLangCode());
+					dto.setRegCenterId(userDetails.getRegCenterId());
+					dto.setUserId(userDetails.getId());
+					return dto;
+				})
+				.toList();
 
+		// Step 3: Extract user IDs
+		List<String> userIds = registrationCenterUsers.stream()
+				.map(RegistrationCenterUserDto::getUserId)
+				.toList();
+
+		// Step 4: Fetch user details from Auth Server
 		UserDetailResponseDto userDetailResponseDto = getUserDetailsFromAuthServer(userIds);
+
 		SyncUserDto syncUserDto = new SyncUserDto();
+
+		// Step 5: Map and encrypt only if data is available
 		if (userDetailResponseDto != null && userDetailResponseDto.getMosipUserDtoList() != null) {
-			List<UserDetailMapDto> userDetails = MapperUtils.mapUserDetailsToUserDetailMap(userDetailResponseDto.getMosipUserDtoList(),
-					registrationCenterResponseDto.getRegistrationCenterUsers());
+			List<UserDetailMapDto> userDetails = MapperUtils.mapUserDetailsToUserDetailMap(
+					userDetailResponseDto.getMosipUserDtoList(),
+					registrationCenterUsers);
+
 			try {
-				if(userDetails.size() > 0) {
+				if (!userDetails.isEmpty()) {
 					TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
-					tpmCryptoRequestDto.setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(userDetails).getBytes()));
+					tpmCryptoRequestDto.setValue(CryptoUtil.encodeToURLSafeBase64(
+							mapper.getObjectAsJsonString(userDetails).getBytes()));
 					tpmCryptoRequestDto.setPublicKey(regCenterMachineDto.getPublicKey());
+
 					TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
 					syncUserDto.setUserDetails(tpmCryptoResponseDto.getValue());
 				}
@@ -219,6 +242,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 				logger.error("Failed to encrypt user data", e);
 			}
 		}
+
 		return syncUserDto;
 	}
 
