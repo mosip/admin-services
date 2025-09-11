@@ -431,7 +431,6 @@ public class SyncMasterDataServiceHelperTest {
         assertEquals(screenAuthorizationList.size(), result.size());
     }
 
-    @Ignore
     @Test
     public void convertprocessListEntityToDto_withValidInput_thenSuccess(){
         List<ProcessListDto> processListDtos = new ArrayList<>();
