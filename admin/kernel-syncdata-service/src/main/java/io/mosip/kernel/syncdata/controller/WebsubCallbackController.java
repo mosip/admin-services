@@ -3,6 +3,7 @@ package io.mosip.kernel.syncdata.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.websub.model.EventModel;
@@ -110,8 +111,11 @@ public class WebsubCallbackController {
     public void handleCACertificate(@RequestBody EventModel eventModel) {
         LOGGER.debug("Received CA certificate event");
         try {
-            Map<String, Object> data = eventModel.getEvent().getData();
+            Map<String, Object> data = (eventModel != null && eventModel.getEvent() != null)
+                    ? eventModel.getEvent().getData()
+                    : null;
             if (data == null) {
+                LOGGER.error("Event data is null");
                 throw new SyncDataServiceException(SyncAuthErrorCode.INVALID_REQUEST.getErrorCode(),
                         SyncAuthErrorCode.INVALID_REQUEST.getErrorMessage() + ": Event data is null");
             }
@@ -119,50 +123,31 @@ public class WebsubCallbackController {
             String partnerDomain = (String) data.get(PARTNER_DOMAIN);
             String dataShareUrl = (String) data.get(CERTIFICATE_DATA_SHARE_URL);
 
-            if (partnerDomain == null || dataShareUrl == null) {
-                throw new SyncDataServiceException(SyncAuthErrorCode.INVALID_REQUEST.getErrorCode(),
-                        SyncAuthErrorCode.INVALID_REQUEST.getErrorMessage() +
-                                ": Missing partnerDomain or certChainDatashareUrl");
+/*
+            if (partnerDomain == null || partnerDomain.isBlank()
+                    || dataShareUrl == null || dataShareUrl.isBlank()) {
+                throw new SyncDataServiceException(
+                        SyncAuthErrorCode.INVALID_REQUEST.getErrorCode(),
+                        SyncAuthErrorCode.INVALID_REQUEST.getErrorMessage()
+                                + ": Missing partnerDomain or certificateDataShareUrl");
             }
+*/
 
-            if (!partnerAllowedDomains.contains(partnerDomain)) {
-                LOGGER.error("Invalid partner domain: {}", partnerDomain);
-                throw new SyncDataServiceException(SyncAuthErrorCode.INVALID_REQUEST.getErrorCode(),
-                        SyncAuthErrorCode.INVALID_REQUEST.getErrorMessage() + ": Invalid partner domain: " + partnerDomain);
+            if (partnerAllowedDomains.contains(partnerDomain)) {
+                String certificateData = restTemplate.getForObject(dataShareUrl, String.class);
+                ServiceError serviceError = parseDataShareResponse(certificateData);
+                if (serviceError == null) {
+                    CACertificateRequestDto caCertRequestDto = new CACertificateRequestDto();
+                    caCertRequestDto.setPartnerDomain(partnerDomain);
+                    caCertRequestDto.setCertificateData(certificateData);
+                    partnerCertificateManagerService.uploadCACertificate(caCertRequestDto);
+                    LOGGER.info("CA certificate sync completed for domain: {}", partnerDomain);
+                } else {
+                    LOGGER.error("Failed to get certificate data from data-share service: {}", serviceError.getErrorCode());
+                }
             }
-
-            String certificateData = restTemplate.getForObject(dataShareUrl, String.class);
-            if (certificateData == null) {
-                LOGGER.error("Failed to retrieve certificate data from URL: {}", dataShareUrl);
-                throw new SyncDataServiceException(SyncAuthErrorCode.ERROR_GETTING_TOKEN.getErrorCode(),
-                        SyncAuthErrorCode.ERROR_GETTING_TOKEN.getErrorMessage() +
-                                ": Null certificate data from URL: " + dataShareUrl);
-            }
-
-            ServiceError serviceError = parseDataShareResponse(certificateData);
-            if (serviceError == null) {
-                CACertificateRequestDto caCertRequestDto = new CACertificateRequestDto();
-                caCertRequestDto.setPartnerDomain(partnerDomain);
-                caCertRequestDto.setCertificateData(certificateData);
-                partnerCertificateManagerService.uploadCACertificate(caCertRequestDto);
-                LOGGER.info("CA certificate sync completed for domain: {}", partnerDomain);
-            } else {
-                LOGGER.error("Failed to get certificate data from data-share service: {}", serviceError.getErrorCode());
-                throw new SyncDataServiceException(SyncAuthErrorCode.ERROR_HANDLE_CA_CERTIFICATE.getErrorCode(),
-                        SyncAuthErrorCode.ERROR_HANDLE_CA_CERTIFICATE.getErrorMessage() +
-                                ": Data-share service error: " + serviceError.getErrorCode());
-            }
-        } catch (RestClientException e) {
-            LOGGER.error("Failed to retrieve certificate data from URL: {}", e.getMessage());
-            throw new SyncDataServiceException(SyncAuthErrorCode.ERROR_HANDLE_CA_CERTIFICATE.getErrorCode(),
-                    SyncAuthErrorCode.ERROR_HANDLE_CA_CERTIFICATE.getErrorMessage() + ": REST call failed", e);
-        } catch (SyncDataServiceException e) {
-            LOGGER.error("Failed to process CA certificate event: {}", e.getMessage());
-            throw e;
         } catch (Exception e) {
-            LOGGER.error("Unexpected error processing CA certificate event: {}", e.getMessage());
-            throw new SyncDataServiceException(SyncAuthErrorCode.ERROR_HANDLE_CA_CERTIFICATE.getErrorCode(),
-                    SyncAuthErrorCode.ERROR_HANDLE_CA_CERTIFICATE.getErrorMessage() + ": Unexpected error", e);
+            LOGGER.error("Unexpected error processing CA certificate event: {}", ExceptionUtils.getStackTrace(e));
         }
     }
 
