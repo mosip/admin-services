@@ -451,7 +451,7 @@ public class SyncMasterDataServiceHelperTest {
         processList1.setDescr("description");
         processList.add(processList1);
 
-        List<ProcessListDto> result = ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertprocessListEntityToDto",processList);
+        List<ProcessListDto> result = ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertProcessListEntityToDto",processList);
         assertNotNull(result);
         assertEquals(processList.size(), result.size());
     }
