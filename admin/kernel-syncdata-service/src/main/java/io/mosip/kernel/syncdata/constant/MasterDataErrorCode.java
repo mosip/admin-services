@@ -86,7 +86,8 @@ public enum MasterDataErrorCode {
 	DYNAMIC_FIELD_FETCH_FAILED("KER-SNC-167", "Dynamic fields fetch failed"),
 	LOCATION_HIERARCHY_DESERIALIZATION_FAILED("KER-SNC-168", "Location hierarchy deserialization failed"),
 	PERMITTED_CONFIG_FETCH_FAILED("KER-SNC-169", "Failed to fetch permitted local config"),
-	CLIENT_SETTINGS_DATA_FILE_NOT_FOUND("KER-SNC-170", "Entity file not found");
+	CLIENT_SETTINGS_DATA_FILE_NOT_FOUND("KER-SNC-170", "Entity file not found"),
+	LOCATION_HIERARCHY_FETCH_FAILED("KER-SNC-171", "Location hierarchy fetch failed");
 
 	private final String errorCode;
 	private final String errorMessage;

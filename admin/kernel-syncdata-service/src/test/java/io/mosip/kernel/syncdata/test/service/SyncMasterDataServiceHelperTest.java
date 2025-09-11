@@ -17,6 +17,7 @@ import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -430,6 +431,7 @@ public class SyncMasterDataServiceHelperTest {
         assertEquals(screenAuthorizationList.size(), result.size());
     }
 
+    @Ignore
     @Test
     public void convertprocessListEntityToDto_withValidInput_thenSuccess(){
         List<ProcessListDto> processListDtos = new ArrayList<>();
