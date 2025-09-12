@@ -82,26 +82,27 @@ public class SyncResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> 
 	 */
 	@Override
 	@Nullable
-	public Object beforeBodyWrite(@Nullable Object body, MethodParameter returnType,
-								  MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType,
-								  ServerHttpRequest request, ServerHttpResponse response) {
+	public Object beforeBodyWrite(@Nullable Object body,
+								  MethodParameter returnType,
+								  MediaType selectedContentType,
+								  Class<? extends HttpMessageConverter<?>> selectedConverterType,
+								  ServerHttpRequest request,
+								  ServerHttpResponse response) {
 		if (!(body instanceof ResponseWrapper<?> responseWrapper)) {
-			return body;
+			return body; // Not a ResponseWrapper, return as is
 		}
 		RequestWrapper<?> requestWrapper = null;
 		String requestBody = null;
-		// Only read and deserialize request if id or version is not already set (optimization to skip unnecessary deserialization)
+		// Only populate id/version if not already set
 		if (responseWrapper.getId() == null || responseWrapper.getVersion() == null) {
 			try {
-				HttpServletRequest httpServletRequest = ((ServletServerHttpRequest) request).getServletRequest();
-				if (httpServletRequest instanceof ContentCachingRequestWrapper) {
-					requestBody = new String(((ContentCachingRequestWrapper) httpServletRequest).getContentAsByteArray());
-				} else if (httpServletRequest instanceof HttpServletRequestWrapper
-						&& ((HttpServletRequestWrapper) httpServletRequest)
-						.getRequest() instanceof ContentCachingRequestWrapper) {
-					requestBody = new String(
-							((ContentCachingRequestWrapper) ((HttpServletRequestWrapper) httpServletRequest).getRequest())
-									.getContentAsByteArray());
+				HttpServletRequest httpServletRequest =
+						((ServletServerHttpRequest) request).getServletRequest();
+				if (httpServletRequest instanceof ContentCachingRequestWrapper cachingRequest) {
+					requestBody = new String(cachingRequest.getContentAsByteArray());
+				} else if (httpServletRequest instanceof HttpServletRequestWrapper wrapper
+						&& wrapper.getRequest() instanceof ContentCachingRequestWrapper cachingRequest) {
+					requestBody = new String(cachingRequest.getContentAsByteArray());
 				}
 				if (!EmptyCheckUtils.isNullEmpty(requestBody)) {
 					requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
@@ -112,21 +113,23 @@ public class SyncResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> 
 				logger.error("", "", "", ExceptionUtils.parseException(e));
 			}
 		}
-		// Assuming errors are already handled appropriately; only set to null if necessary
+		// Normalize empty errors to null
 		if (responseWrapper.getErrors() != null && responseWrapper.getErrors().isEmpty()) {
 			responseWrapper.setErrors(null);
 		}
+		// Ensure response time is always set
 		if (responseWrapper.getResponsetime() == null) {
 			String timestamp = DateUtils.getUTCCurrentDateTimeString();
 			responseWrapper.setResponsetime(DateUtils.convertUTCToLocalDateTime(timestamp));
 		}
 		try {
-			// Serialize once, sign the JSON string, and return the string to avoid double serialization
+			// Serialize once only to compute signature, not for returning
 			String json = objectMapper.writeValueAsString(responseWrapper);
 			response.getHeaders().add("response-signature", keymanagerHelper.getSignature(json));
-			return json;
 		} catch (IOException e) {
 			throw new SyncDataServiceException("KER-SIG-ERR", e.getMessage(), e);
 		}
+		// ✅ Return the object, so Spring/Jackson does final serialization
+		return responseWrapper;
 	}
 }
