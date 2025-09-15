@@ -247,54 +247,108 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 	@org.springframework.transaction.annotation.Transactional(readOnly = true)
 	@Override
 	public SyncUserDto getAllUserDetailsBasedOnKeyIndex(String keyIndex) {
+		final long tAllStart = System.nanoTime();
+
 		if (keyIndex == null || keyIndex.isEmpty()) {
 			LOGGER.error("Invalid request: keyIndex is null or empty");
 		}
 
+		// 1) machine lookup
+		final long tLookupStart = System.nanoTime();
 		RegistrationCenterMachineDto regCenterMachineDto = serviceHelper.getRegistrationCenterMachine(null, keyIndex);
+		final long tLookupMs = java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - tLookupStart);
 		if (regCenterMachineDto == null) {
 			LOGGER.error("No registration center machine found for keyIndex: {}", keyIndex);
 		}
+		LOGGER.info("getAllUserDetailsBasedOnKeyIndex timing: machineLookup={} ms", tLookupMs);
 
+		// 2) paged user fetch
+		final long tFetchStart = System.nanoTime();
 		List<RegistrationCenterUserDto> rcUsers = fetchUsersPaged(regCenterMachineDto.getRegCenterId());
+		final long tFetchMs = java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - tFetchStart);
+		LOGGER.info("getAllUserDetailsBasedOnKeyIndex timing: fetchUsersPaged={} ms (users={})", tFetchMs, rcUsers.size());
+
 		if (rcUsers.isEmpty()) {
 			LOGGER.warn("No valid user IDs found for registration center: {}", regCenterMachineDto.getRegCenterId());
+			LOGGER.info("getAllUserDetailsBasedOnKeyIndex total={} ms (early exit: no users)",
+					java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - tAllStart));
 			return new SyncUserDto();
 		}
 
-		// Batch call to Auth + single compress→encrypt (exactly as discussed)
+		// 3) auth batches (call + map timings)
 		final int BATCH = 200;
 		List<String> userIds = rcUsers.stream().map(RegistrationCenterUserDto::getUserId).collect(Collectors.toList());
 		List<List<String>> parts = new ArrayList<>();
-		for (int i = 0; i < userIds.size(); i += BATCH) parts.add(userIds.subList(i, Math.min(i + BATCH, userIds.size())));
+		for (int i = 0; i < userIds.size(); i += BATCH) {
+			parts.add(userIds.subList(i, Math.min(i + BATCH, userIds.size())));
+		}
 
+		long authTotalNs = 0L;
+		long mapTotalNs  = 0L;
 		List<UserDetailMapDto> merged = new ArrayList<>(userIds.size());
-		for (List<String> ids : parts) {
+
+		for (int i = 0; i < parts.size(); i++) {
+			List<String> ids = parts.get(i);
+
+			long tCallStart = System.nanoTime();
 			UserDetailResponseDto part = getUserDetailsFromAuthServer(ids);
+			long callNs = System.nanoTime() - tCallStart;
+			authTotalNs += callNs;
+
+			long tMapStart = System.nanoTime();
 			if (part != null && part.getMosipUserDtoList() != null) {
 				merged.addAll(MapperUtils.mapUserDetailsToUserDetailMap(part.getMosipUserDtoList(), rcUsers));
 			}
+			long mapNs = System.nanoTime() - tMapStart;
+			mapTotalNs += mapNs;
+
+			LOGGER.info("getAllUserDetailsBasedOnKeyIndex timing: authBatch {}/{} size={} call={} ms map={} ms",
+					(i + 1), parts.size(), ids.size(),
+					java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(callNs),
+					java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(mapNs));
 		}
 
+		// 4) serialize + 5) encrypt
 		SyncUserDto syncUserDto = new SyncUserDto();
+		long serMs = 0L, encMs = 0L;
 		try {
 			if (!merged.isEmpty()) {
+				long tSerStart = System.nanoTime();
 				byte[] json = mapper.getObjectAsJsonString(merged).getBytes(java.nio.charset.StandardCharsets.UTF_8);
-				// Optional but recommended: gzip before encrypt (toggle via property if needed)
+				serMs = java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - tSerStart);
+
+				// Optional gzip here if you enable it:
 				// byte[] gz = gzip(json);
+
+				long tEncStart = System.nanoTime();
 				TpmCryptoRequestDto req = new TpmCryptoRequestDto();
-				req.setValue(CryptoUtil.encodeToURLSafeBase64(json)); // or gz if you enable compression
+				req.setValue(CryptoUtil.encodeToURLSafeBase64(json)); // or gz if compression enabled
 				req.setPublicKey(regCenterMachineDto.getPublicKey());
 				TpmCryptoResponseDto enc = clientCryptoManagerService.csEncrypt(req);
+				encMs = java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - tEncStart);
+
 				syncUserDto.setUserDetails(enc.getValue());
 				LOGGER.debug("Encrypted {} user details for keyIndex: {}", merged.size(), keyIndex);
 			}
 		} catch (Exception e) {
 			LOGGER.error("Failed to encrypt user data for keyIndex: {}", keyIndex, e);
 		}
+
+		// summary
+		long totalMs   = java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - tAllStart);
+		long authMs    = java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(authTotalNs);
+		long mapMs     = java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(mapTotalNs);
+
+		LOGGER.info("getAllUserDetailsBasedOnKeyIndex summary keyIndex={} regCenterId={} users={} batches={} total={} ms "
+						+ "[lookup={} ms, fetchUsers={} ms, auth={} ms, map={} ms, serialize={} ms, encrypt={} ms]",
+				keyIndex,
+				regCenterMachineDto.getRegCenterId(),
+				rcUsers.size(),
+				parts.size(),
+				totalMs, tLookupMs, tFetchMs, authMs, mapMs, serMs, encMs);
+
 		return syncUserDto;
 	}
-
 	/**
 	 * Fetches user details from the auth service for the specified user IDs.
 	 * <p>
