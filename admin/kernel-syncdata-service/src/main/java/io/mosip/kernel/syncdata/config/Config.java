@@ -95,10 +95,4 @@ public class Config {
 		methodInvokingFactoryBean.setArguments(new String[]{SecurityContextHolder.MODE_INHERITABLETHREADLOCAL});
 		return methodInvokingFactoryBean;
 	}
-
-	@Bean
-	public AfterburnerModule afterburnerModule() {
-		return new AfterburnerModule();
-	}
-
 }
