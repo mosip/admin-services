@@ -5,7 +5,9 @@ public enum SyncAuthErrorCode {
     INVALID_REQUEST("KER-SYN-AUTH-001", "Invalid Request"),
     INVALID_REQUEST_TIME("KER-SYN-AUTH-002", "Invalid Request Time"),
     ERROR_GETTING_TOKEN("KER-SYN-AUTH-003","Error while getting token"),
-    ERROR_HANDLE_CA_CERTIFICATE("KER-SYN-AUTH-004","Error while getting CA certificate");
+    ERROR_SENDING_OTP("KER-SYN-AUTH-004","Error sending OTP"),
+    ERROR_HANDLE_CA_CERTIFICATE("KER-SYN-AUTH-005","Error handling CA-Certificate");
+
 
 
     private final String errorCode;

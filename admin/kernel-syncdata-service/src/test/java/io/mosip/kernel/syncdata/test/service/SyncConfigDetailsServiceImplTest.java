@@ -108,7 +108,7 @@ public class SyncConfigDetailsServiceImplTest {
     public void getScript_machineNotFound() throws Exception {
         String scriptName = "applicanttype.mvel";
         String keyIndex = "not-found-machine";
-        lenient().when(machineRepository.findByMachineKeyIndex(keyIndex)).thenReturn(Collections.emptyList());
+        lenient().when(machineRepository.findByMachineKeyIndex(Mockito.anyString())).thenReturn(new ArrayList<>());
 
         syncConfigDetailsService.getScript(scriptName, keyIndex);
     }

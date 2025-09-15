@@ -17,7 +17,6 @@ import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -215,20 +214,20 @@ public class SyncMasterDataServiceHelperTest {
 
     @Test
     public void validateMapperRegisteredModule() {
-       Set<Object> modules = objectMapper.getRegisteredModuleIds();
-       boolean afterburnerPresent = false;
-       boolean javaTimeModulePresent = false;
-       for(Object module : modules) {
-           if(module.equals("com.fasterxml.jackson.module.afterburner.AfterburnerModule")) {
-               afterburnerPresent = true;
-           }
-           if(module.equals("com.fasterxml.jackson.datatype.jsr310.JavaTimeModule")) {
-               javaTimeModulePresent = true;
-           }
-       }
+        Set<Object> modules = objectMapper.getRegisteredModuleIds();
+        boolean afterburnerPresent = false;
+        boolean javaTimeModulePresent = false;
+        for(Object module : modules) {
+            if(module.equals("com.fasterxml.jackson.module.afterburner.AfterburnerModule")) {
+                afterburnerPresent = true;
+            }
+            if(module.equals("com.fasterxml.jackson.datatype.jsr310.JavaTimeModule")) {
+                javaTimeModulePresent = true;
+            }
+        }
 
-       Assert.assertFalse(afterburnerPresent);
-       Assert.assertFalse(javaTimeModulePresent);
+        Assert.assertFalse(afterburnerPresent);
+        Assert.assertFalse(javaTimeModulePresent);
     }
 
     @Test (expected = IllegalArgumentException.class)
@@ -359,7 +358,7 @@ public class SyncMasterDataServiceHelperTest {
         assertNotNull(responseEntity.getHeaders().get("file-signature"));
         assertNotNull(responseEntity.getHeaders().get(HttpHeaders.CONTENT_DISPOSITION));
     }
-    
+
     @Test
     public void getClientSettingsJsonFileTest3() {
         ResponseWrapper<LocationHierarchyLevelResponseDto> locationsResponse = new ResponseWrapper<>();
@@ -432,7 +431,7 @@ public class SyncMasterDataServiceHelperTest {
     }
 
     @Test
-    public void convertprocessListEntityToDto_withValidInput_thenSuccess(){
+    public void convertProcessListEntityToDto_withValidInput_thenSuccess(){
         List<ProcessListDto> processListDtos = new ArrayList<>();
         ProcessListDto processListDto = new ProcessListDto();
         processListDto.setId("id");

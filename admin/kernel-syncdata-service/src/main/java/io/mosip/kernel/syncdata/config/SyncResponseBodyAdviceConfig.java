@@ -129,7 +129,6 @@ public class SyncResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> 
 		} catch (IOException e) {
 			throw new SyncDataServiceException("KER-SIG-ERR", e.getMessage(), e);
 		}
-		// ✅ Return the object, so Spring/Jackson does final serialization
 		return responseWrapper;
 	}
 }
