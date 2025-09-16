@@ -13,6 +13,7 @@ import io.mosip.kernel.syncdata.service.helper.beans.RegistrationCenterMachine;
 import io.mosip.kernel.syncdata.service.helper.beans.RegistrationCenterUser;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
+import jakarta.annotation.PostConstruct;
 import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Helper class for client settings synchronization in the MOSIP system.
@@ -95,6 +97,26 @@ public class ClientSettingsHelper {
 	 * Cache for storing whether URL details are available for entity classes.
 	 */
 	private final Map<String, Boolean> hasUrlDetailsCache = new ConcurrentHashMap<>();
+
+	/**
+	 * Precomputed map of script URL details, initialized at startup for performance.
+	 */
+	private Map<String, Map<String, Object>> precomputedScriptUrls;
+
+	/**
+	 * Initializes the helper by precomputing script URL details at application startup.
+	 * This avoids runtime computation and improves response time for script-related operations.
+	 */
+	@PostConstruct
+	private void init() {
+		precomputedScriptUrls = scriptNames.stream()
+				.collect(Collectors.toMap(
+						name -> name,
+						this::buildUrlDetailMap,
+						(a, b) -> a,
+						ConcurrentHashMap::new
+				));
+	}
 
 	/**
 	 * Checks if URL details are configured for the given class, considering API version and sync type.
@@ -378,23 +400,30 @@ public class ClientSettingsHelper {
 	 * @param regCenterMachineDto the DTO for encryption details
 	 * @return a list of encrypted {@link SyncDataBaseDto} for scripts
 	 */
+	/**
+	 * Retrieves and encrypts configured script URL details.
+	 * Processes scripts in parallel for efficiency.
+	 *
+	 * @param regCenterMachineDto the DTO for encryption details
+	 * @return a list of encrypted {@link SyncDataBaseDto} for scripts
+	 */
 	public List<SyncDataBaseDto> getConfiguredScriptUrlDetail(RegistrationCenterMachineDto regCenterMachineDto) {
-		List<SyncDataBaseDto> list = new ArrayList<>();
-		scriptNames.forEach(fileName -> {
-			Map<String, Object> urlDetail = buildUrlDetailMap(fileName);
-			try {
-				TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
-				tpmCryptoRequestDto
-						.setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(urlDetail).getBytes()));
-				tpmCryptoRequestDto.setPublicKey(regCenterMachineDto.getPublicKey());
-				tpmCryptoRequestDto.setClientType(regCenterMachineDto.getClientType());
-				TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
-				list.add(new SyncDataBaseDto(fileName, "script", tpmCryptoResponseDto.getValue()));
-			} catch (Exception e) {
-				LOGGER.error("Failed to create script url detail {} data to json", fileName, e);
-			}
-		});
-		return list;
+		return precomputedScriptUrls.entrySet().parallelStream()
+				.map(entry -> {
+					try {
+						TpmCryptoRequestDto request = new TpmCryptoRequestDto();
+						request.setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(entry.getValue()).getBytes()));
+						request.setPublicKey(regCenterMachineDto.getPublicKey());
+						request.setClientType(regCenterMachineDto.getClientType());
+						TpmCryptoResponseDto response = clientCryptoManagerService.csEncrypt(request);
+						return new SyncDataBaseDto(entry.getKey(), "script", response.getValue());
+					} catch (Exception e) {
+						LOGGER.error("Encryption failed for script: {}", entry.getKey(), e);
+						return null;
+					}
+				})
+				.filter(Objects::nonNull)
+				.collect(Collectors.toList());
 	}
 
 	/**
