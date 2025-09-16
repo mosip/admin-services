@@ -33,6 +33,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -1674,33 +1675,32 @@ public class SyncMasterDataServiceHelper {
 	 * @param entityName                the name of the entity
 	 * @param entityType                the type of the entity
 	 * @param entities                  the list of entities to process
-	 * @param registrationCenterMachineDto the registration center machine DTO for encryption
 	 * @param result                    the list to store the resulting {@link SyncDataBaseDto}
 	 */
-	public void getSyncDataBaseDtoV2(String entityName, String entityType, List entities, RegistrationCenterMachineDto
-			registrationCenterMachineDto, List result) {
-		if (entities == null || entities.isEmpty()) {
-			return;
-		}
+	public void getSyncDataBaseDtoV2(String entityName, String entityType,
+									 List<?> entities,
+									 RegistrationCenterMachineDto regCenterMachineDto,
+									 List<SyncDataBaseDto> result) {
+		if (entities == null || entities.isEmpty()) return;
+
+		List<?> filtered = entities.stream().filter(Objects::nonNull).toList();
+		if (filtered.isEmpty()) return;
 
 		try {
-			List<?> filteredEntities = (List<?>) entities.parallelStream()
-					.filter(Objects::nonNull)
-					.collect(Collectors.toList());
-			if (!filteredEntities.isEmpty()) {
-				TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
-				tpmCryptoRequestDto.setValue(CryptoUtil.encodeToURLSafeBase64(
-						mapper.getObjectAsJsonString(filteredEntities).getBytes()));
-				tpmCryptoRequestDto.setPublicKey(registrationCenterMachineDto.getPublicKey());
-				tpmCryptoRequestDto.setClientType(registrationCenterMachineDto.getClientType());
-				TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
-				result.add(new SyncDataBaseDto(entityName, entityType, tpmCryptoResponseDto.getValue()));
+			String json = mapper.getObjectAsJsonString(filtered);
+			if (json != null) {
+				TpmCryptoRequestDto req = new TpmCryptoRequestDto();
+				req.setValue(CryptoUtil.encodeToURLSafeBase64(json.getBytes(StandardCharsets.UTF_8)));
+				req.setPublicKey(regCenterMachineDto.getPublicKey());
+				req.setClientType(regCenterMachineDto.getClientType());
+
+				TpmCryptoResponseDto enc = clientCryptoManagerService.csEncrypt(req);
+				result.add(new SyncDataBaseDto(entityName, entityType, enc.getValue()));
 			}
 		} catch (Exception e) {
 			logger.error("Failed to encrypt {} data to JSON", entityName, e);
 		}
 	}
-
 	/**
 	 * Fetches registration center machine details by key index.
 	 *

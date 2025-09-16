@@ -320,33 +320,29 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	public SyncDataResponseDto syncClientSettings(String regCenterId, String keyIndex,
 												  LocalDateTime lastUpdated, LocalDateTime currentTimestamp) {
 		//validateSyncClientSettingsInputs(regCenterId, keyIndex, lastUpdated, currentTimestamp);
+		String safeKeyIndex = keyIndex.replace('\n', '_').replace('\r', '_');
+		LOGGER.info("syncClientSettings invoked for regCenterId: {}, keyIndex: {}, timespan {} to {}",
+				regCenterId, safeKeyIndex, lastUpdated, currentTimestamp);
 
-		LOGGER.info("syncClientSettings invoked for regCenterId: {}, keyIndex: {}, timespan from {} to {}",
-				regCenterId, keyIndex.replaceAll("[\n\r]", "_"), lastUpdated, currentTimestamp);
+		RegistrationCenterMachineDto regCenterMachineDto =
+				serviceHelper.getRegistrationCenterMachine(regCenterId, keyIndex);
+
+		Map<Class<?>, CompletableFuture<?>> futureMap =
+				clientSettingsHelper.getInitiateDataFetch(
+						regCenterMachineDto.getMachineId(),
+						regCenterMachineDto.getRegCenterId(),
+						lastUpdated,
+						currentTimestamp,
+						false,
+						lastUpdated != null,
+						null);
+
+		// Wait for all futures once
+		CompletableFuture.allOf(futureMap.values().toArray(CompletableFuture[]::new)).join();
+
 		SyncDataResponseDto response = new SyncDataResponseDto();
-		RegistrationCenterMachineDto regCenterMachineDto = serviceHelper.getRegistrationCenterMachine(regCenterId, keyIndex);
-		String machineId = regCenterMachineDto.getMachineId();
-		String registrationCenterId = regCenterMachineDto.getRegCenterId();
-
-		Map<Class, CompletableFuture> futureMap = clientSettingsHelper.getInitiateDataFetch(machineId, registrationCenterId,
-				lastUpdated, currentTimestamp, false, lastUpdated!=null, null);
-
-		CompletableFuture[] array = new CompletableFuture[futureMap.size()];
-		CompletableFuture<Void> future = CompletableFuture.allOf(futureMap.values().toArray(array));
-
-		try {
-			future.join();
-		} catch (CompletionException e) {
-			LOGGER.error("Failed to fetch client settings for regCenterId: {}, keyIndex: {}",
-					regCenterId, keyIndex.replaceAll("[\n\r]", "_"), e);
-			if (e.getCause() instanceof SyncDataServiceException) {
-				throw (SyncDataServiceException) e.getCause();
-			} else {
-				throw (RuntimeException) e.getCause();
-			}
-		}
-
-		response.setDataToSync(clientSettingsHelper.retrieveData(futureMap, regCenterMachineDto, false));
+		response.setDataToSync(
+				clientSettingsHelper.retrieveData(futureMap, regCenterMachineDto, false));
 		return response;
 	}
 
@@ -497,7 +493,8 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		String machineId = regCenterMachineDto.getMachineId();
 		String registrationCenterId = regCenterMachineDto.getRegCenterId();
 
-		Map<Class, CompletableFuture> futureMap = clientSettingsHelper.getInitiateDataFetch(machineId, registrationCenterId,
+		Map<Class<?>, CompletableFuture<?>> futureMap = clientSettingsHelper.getInitiateDataFetch(
+				machineId, registrationCenterId,
 				lastUpdated, currentTimestamp, true, lastUpdated!=null, fullSyncEntities);
 
 		CompletableFuture[] array = new CompletableFuture[futureMap.size()];

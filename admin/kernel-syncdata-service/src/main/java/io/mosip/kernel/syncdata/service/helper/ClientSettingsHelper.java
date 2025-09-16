@@ -137,11 +137,11 @@ public class ClientSettingsHelper {
 	 * @param fullSyncEntities       comma-separated list of entities for full sync; may be blank
 	 * @return a map of entity classes to CompletableFutures containing fetched data
 	 */
-	public Map<Class, CompletableFuture> getInitiateDataFetch(String machineId, String regCenterId,
+	public Map<Class<?>, CompletableFuture<?>> getInitiateDataFetch(String machineId, String regCenterId,
 															  LocalDateTime lastUpdated, LocalDateTime currentTimestamp, boolean isV2API, boolean deltaSync, String fullSyncEntities) {
 		List<String> entities = StringUtils.isNotBlank(fullSyncEntities) ? List.of(StringUtils.split(fullSyncEntities, ",")) : new ArrayList<>();
 
-		Map<Class, CompletableFuture> futuresMap = new ConcurrentHashMap<>();
+		Map<Class<?>, CompletableFuture<?>> futuresMap = new ConcurrentHashMap<>();
 		futuresMap.put(AppAuthenticationMethod.class,
 				hasURLDetails(AppAuthenticationMethod.class, isV2API, deltaSync)
 						? getURLDetails(AppAuthenticationMethod.class)
@@ -250,46 +250,72 @@ public class ClientSettingsHelper {
 	 * @return a list of encrypted {@link SyncDataBaseDto} objects
 	 * @throws RuntimeException if an error occurs during data retrieval or processing
 	 */
-	public List<SyncDataBaseDto> retrieveData(Map<Class, CompletableFuture> futures, RegistrationCenterMachineDto regCenterMachineDto, boolean isV2API)
-			throws RuntimeException {
-		final List<SyncDataBaseDto> list = Collections.synchronizedList(new ArrayList<>());
-		futures.entrySet().parallelStream().forEach(entry -> {
-			try {
-				Object result = entry.getValue().join();  // Use join() to avoid checked exceptions
-				if (result != null) {
-					String entityType = (result instanceof Map)
-							? (entry.getKey() == DynamicFieldDto.class ? "dynamic-url" : "structured-url")
-							: (entry.getKey() == DynamicFieldDto.class ? "dynamic" : "structured");
+	public List<SyncDataBaseDto> retrieveData(
+			Map<Class<?>, CompletableFuture<?>> futures,
+			RegistrationCenterMachineDto regCenterMachineDto,
+			boolean isV2API) {
 
-					switch (entityType) {
-						case "structured-url":
-						case "dynamic-url":
-							SyncDataBaseDto dto = getEncryptedSyncDataBaseDto(entry.getKey(), regCenterMachineDto, entityType, result);
-							if (dto != null) {
-								list.add(dto);
-							}
-							break;
-						case "dynamic":
-							handleDynamicData((List) result, list, regCenterMachineDto, isV2API);
-							break;
-						case "structured":
-							if (isV2API) {
-								serviceHelper.getSyncDataBaseDtoV2(entry.getKey().getSimpleName(), entityType,
-										(List) result, regCenterMachineDto, list);
-							} else {
-								serviceHelper.getSyncDataBaseDto(entry.getKey().getSimpleName(), entityType, (List) result,
-										regCenterMachineDto, list);
-							}
-							break;
+		return futures.entrySet()
+				.parallelStream()
+				.flatMap(e -> processEntry(e, regCenterMachineDto, isV2API).stream())
+				.toList();   // Java 16+. For Java 8–15 use .collect(Collectors.toList())
+	}
+	private List<SyncDataBaseDto> processEntry(
+			Map.Entry<Class<?>, CompletableFuture<?>> entry,
+			RegistrationCenterMachineDto regCenterMachineDto,
+			boolean isV2API) {
+
+		try {
+			Object result = entry.getValue().join();
+			if (result == null) return List.of();
+
+			boolean isDynamic = entry.getKey() == DynamicFieldDto.class;
+			boolean isUrl     = result instanceof Map;
+
+			String entityType = isUrl
+					? (isDynamic ? "dynamic-url" : "structured-url")
+					: (isDynamic ? "dynamic"     : "structured");
+
+			List<SyncDataBaseDto> out = new ArrayList<>();
+
+			switch (entityType) {
+				case "structured-url", "dynamic-url" -> {
+					SyncDataBaseDto dto =
+							getEncryptedSyncDataBaseDto(entry.getKey(), regCenterMachineDto, entityType, result);
+					if (dto != null) out.add(dto);
+				}
+				case "dynamic" ->
+						handleDynamicData(castList(result), out, regCenterMachineDto, isV2API);
+				case "structured" -> {
+					if (isV2API) {
+						serviceHelper.getSyncDataBaseDtoV2(entry.getKey().getSimpleName(),
+								entityType,
+								castList(result),
+								regCenterMachineDto,
+								out);
+					} else {
+						serviceHelper.getSyncDataBaseDto(entry.getKey().getSimpleName(),
+								entityType,
+								castList(result),
+								regCenterMachineDto,
+								out);
 					}
 				}
-			} catch (Throwable e) {
-				LOGGER.error("Failed to construct client settings response for entity: {}", entry.getKey().getSimpleName(), e);
-				throw new RuntimeException(e);
 			}
-		});
-		return list;
+			return out;
+
+		} catch (Throwable e) {
+			LOGGER.error("Failed to construct client settings response for entity: {}",
+					entry.getKey().getSimpleName(), e);
+			throw new RuntimeException(e);
+		}
 	}
+
+	@SuppressWarnings("unchecked")
+	private static <T> List<T> castList(Object obj) {
+		return (List<T>) obj;
+	}
+
 
 	/**
 	 * Handles grouping and encryption of dynamic field data.
