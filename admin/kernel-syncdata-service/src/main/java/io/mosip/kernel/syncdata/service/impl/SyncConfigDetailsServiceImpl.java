@@ -1,4 +1,5 @@
 package io.mosip.kernel.syncdata.service.impl;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoRequestDto;
@@ -11,6 +12,7 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.constant.SyncConfigDetailsErrorCode;
+import io.mosip.kernel.syncdata.constant.SyncDataConstant;
 import io.mosip.kernel.syncdata.dto.ConfigDto;
 import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
 import io.mosip.kernel.syncdata.entity.Machine;
@@ -28,6 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
@@ -38,11 +42,13 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.Map.Entry;
+
 /**
  * Implementation class for {@link SyncConfigDetailsService}.
  * <p>
@@ -57,41 +63,55 @@ import java.util.Map.Entry;
 @RefreshScope
 @Service
 public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(SyncConfigDetailsServiceImpl.class);
 	private static final String SLASH = "/";
+
 	@Autowired
 	private RestTemplate restTemplate;
+
 	@Autowired
 	private ObjectMapper objectMapper;
+
 	/**
 	 * file name referred from the properties file
 	 */
 	@Value("${mosip.kernel.syncdata.registration-center-config-file}")
 	private String regCenterfileName;
+
 	/**
 	 * file name referred from the properties file
 	 */
 	@Value("${mosip.kernel.syncdata.global-config-file}")
 	private String globalConfigFileName;
+
 	/**
 	 * URL read from properties file
 	 */
 	@Value("${mosip.kernel.keymanager-service-publickey-url}")
 	private String publicKeyUrl;
+
 	@Autowired
 	private ClientCryptoManagerService clientCryptoManagerService;
+
 	@Autowired
 	private MapperUtils mapper;
+
 	@Autowired
 	private MachineRepository machineRepo;
+
 	@Autowired
 	private Environment environment;
+
 	@Value("#{'${mosip.registration.sync.scripts:applicanttype.mvel}'.split(',')}")
 	private Set<String> scriptNames;
+
 	@Value("${mosip.syncdata.clientsettings.data.dir:./clientsettings-dir}")
 	private String clientSettingsDir;
+
 	@Autowired
 	private KeymanagerHelper keymanagerHelper;
+
 	/**
 	 * Validates inputs for the {@link #getPublicKey} method.
 	 *
@@ -111,6 +131,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_INPUT_PARAMETER_EXCEPTION.getErrorMessage() + " Timestamp is null or empty");
 		}
 	}
+
 	/**
 	 * Validates the key index for the {@link #getConfigDetails} and {@link #getScript} methods.
 	 *
@@ -134,6 +155,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 		}
 		return machines.get(0);
 	}
+
 	/**
 	 * Validates the script name for the {@link #getScript} method.
 	 *
@@ -146,12 +168,13 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_INPUT_PARAMETER_EXCEPTION.getErrorCode(),
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_INPUT_PARAMETER_EXCEPTION.getErrorMessage() + " Script name is null or empty");
 		}
-		/*if (!scriptNames.contains(scriptName)) {
-			throw new RequestException(
-					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_INPUT_PARAMETER_EXCEPTION.getErrorCode(),
-					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_INPUT_PARAMETER_EXCEPTION.getErrorMessage() + " Invalid script name: " + scriptName.replaceAll("[\n\r]", "_"));
-		}*/
+       /* if (!scriptNames.contains(scriptName)) {
+            throw new RequestException(
+                    SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_INPUT_PARAMETER_EXCEPTION.getErrorCode(),
+                    SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_INPUT_PARAMETER_EXCEPTION.getErrorMessage() + " Invalid script name: " + scriptName.replaceAll("[\n\r]", "_"));
+        }*/
 	}
+
 	/**
 	 * Fetches configuration details from the Spring Cloud Config server.
 	 *
@@ -159,18 +182,21 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	 * @return the configuration content as a string
 	 * @throws SyncDataServiceException if the request fails or the response is null
 	 */
+	@Cacheable(value = SyncDataConstant.CACHE_NAME_SYNC_DATA, key = "#fileName")
 	private String getConfigDetailsResponse(@NotNull String fileName) {
 		if (fileName == null || fileName.trim().isEmpty()) {
 			throw new SyncDataServiceException(
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorCode(),
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorMessage() + " File name is null or empty");
 		}
+
 		UriComponentsBuilder uriBuilder = UriComponentsBuilder
 				.fromUriString(environment.getProperty("spring.cloud.config.uri")).
 				path(SLASH).path(environment.getProperty("spring.application.name")).
 				path(SLASH).path(environment.getProperty("spring.profiles.active")).
 				path(SLASH).path(environment.getProperty("spring.cloud.config.label")).
 				path(SLASH).path(fileName);
+
 		try {
 			LOGGER.debug("Fetching config from URL: {}", uriBuilder.toUriString());
 			String str = restTemplate.getForObject(uriBuilder.toUriString(), String.class);
@@ -187,6 +213,12 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 							+ ExceptionUtils.buildMessage(e.getMessage(), e.getCause()));
 		}
 	}
+
+	@CacheEvict(value = "configCache", key = "#fileName")
+	public void clearConfigCache(String fileName) {
+		LOGGER.info("Cleared cache for fileName: {}", fileName);
+	}
+
 	/**
 	 * Parses a properties string into a JSON object.
 	 *
@@ -210,6 +242,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 		}
 		return result;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -221,6 +254,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	public PublicKeyResponse<String> getPublicKey(String applicationId, String timeStamp, String referenceId) {
 		ResponseEntity<String> publicKeyResponseEntity = null;
+
 		ResponseWrapper<PublicKeyResponse<String>> publicKeyResponseMapped = null;
 		Map<String, String> uriParams = new HashMap<>();
 		uriParams.put("applicationId", applicationId);
@@ -229,12 +263,15 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(publicKeyUrl)
 					// Add query parameter
 					.queryParam("referenceId", referenceId).queryParam("timeStamp", timeStamp);
+
 			publicKeyResponseEntity = restTemplate.getForEntity(builder.buildAndExpand(uriParams).toUri(),
 					String.class);
 			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(publicKeyResponseEntity.getBody());
+
 			if (!validationErrorsList.isEmpty()) {
 				throw new SyncInvalidArgumentException(validationErrorsList);
 			}
+
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
 			LOGGER.error("Failed to fetch public key: {}", ex.getMessage());
 			throw new SyncDataServiceException(
@@ -242,10 +279,12 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.buildMessage(ex.getMessage(), ex.getCause()));
 		}
+
 		try {
 			publicKeyResponseMapped = objectMapper.readValue(publicKeyResponseEntity.getBody(),
 					new TypeReference<ResponseWrapper<PublicKeyResponse<String>>>() {
 					});
+
 			publicKeyResponseMapped.getResponse().setProfile(environment.getActiveProfiles()[0]);
 			LOGGER.debug("Public key fetched successfully for applicationId: {}", applicationId);
 			return publicKeyResponseMapped.getResponse();
@@ -255,6 +294,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 					SyncConfigDetailsErrorCode.SYNC_IO_EXCEPTION.getErrorMessage(), e);
 		}
 	}
+
 	/**
 	 * Retrieves and encrypts configuration details for a machine.
 	 *
@@ -268,17 +308,20 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 		Machine machine = validateKeyIndexAndGetMachine(keyIndex);
 		LOGGER.debug("Fetching config details for machine keyIndex: {}, machine: {}",
 				keyIndex.replaceAll("[\n\r]", "_"), machine.getName());
+
 		JSONObject config = new JSONObject();
 		JSONObject globalConfig = new JSONObject();
 		JSONObject regConfig = parsePropertiesString(getConfigDetailsResponse(regCenterfileName));
 		//This is not completely removed only for backward compatibility, all the configs will be part of registrationConfiguration
 		config.put("globalConfiguration", getEncryptedData(globalConfig, machine));
 		config.put("registrationConfiguration", getEncryptedData(regConfig, machine));
+
 		ConfigDto configDto = new ConfigDto();
 		configDto.setConfigDetail(config);
 		LOGGER.info("Get ConfigDetails() {} completed", keyIndex.replaceAll("[\n\r]", "_"));
 		return configDto;
 	}
+
 	/**
 	 * Retrieves a script, optionally encrypted, for a machine.
 	 *
@@ -295,19 +338,24 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 		Machine machine = validateKeyIndexAndGetMachine(keyIndex);
 		LOGGER.debug("Fetching script {} for machine keyIndex: {}",
 				scriptName.replaceAll("[\n\r]", "_"), keyIndex.replaceAll("[\n\r]", "_"));
+
 		String content = getConfigDetailsResponse(scriptName);
 		Boolean isEncrypted = environment.getProperty(String.format("mosip.sync.entity.encrypted.%s",
 				scriptName.toUpperCase().replaceAll("[\n\r]", "_")), Boolean.class, false);
+
 		String responseBody = isEncrypted ? getEncryptedData(content, machine) : content;
 		String fileSignature = keymanagerHelper.getFileSignature(
 				HMACUtils2.digestAsPlainText(content.getBytes(StandardCharsets.UTF_8)));
+
 		LOGGER.debug("Script {} fetched for machine: {}, encrypted: {}",
 				scriptName.replaceAll("[\n\r]", "_"), keyIndex.replaceAll("[\n\r]", "_"), isEncrypted);
+
 		return ResponseEntity.ok()
 				.contentType(MediaType.TEXT_PLAIN)
 				.header("file-signature", fileSignature)
 				.body(responseBody);
 	}
+
 	/**
 	 * Encrypts a JSON object using the machine's public key.
 	 *
@@ -326,6 +374,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 					SyncConfigDetailsErrorCode.SYNC_SERIALIZATION_ERROR.getErrorMessage());
 		}
 	}
+
 	/**
 	 * Encrypts a string using the machine's public key.
 	 *
