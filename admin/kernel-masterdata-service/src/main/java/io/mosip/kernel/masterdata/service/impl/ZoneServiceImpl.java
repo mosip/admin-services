@@ -295,6 +295,30 @@ public class ZoneServiceImpl implements ZoneService {
 	}
 
 	@Override
+	public List<ZoneNameResponseDto> getZonesByCodesAndLanguage(List<String> zonesCodes, String langCode) {
+		final List<ZoneNameResponseDto> zonesResponse = new ArrayList<>();
+		List<Zone> zones = null;
+		try {
+			final String effectiveLangCode = ((langCode == null) ? languageUtils.getDefaultLanguage() : langCode);
+			zones = this.zoneRepository.findZonesByCodesAndLangCodeNonDeletedAndIsActive(zonesCodes, effectiveLangCode);
+		} catch (DataAccessException | DataAccessLayerException exception) {
+			throw new MasterDataServiceException(ZoneErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
+					ZoneErrorCode.INTERNAL_SERVER_ERROR.getErrorMessage());
+		}
+		if (zones == null || zones.isEmpty()) {
+			throw new DataNotFoundException(ZoneErrorCode.ZONE_ENTITY_NOT_FOUND.getErrorCode(),
+					ZoneErrorCode.ZONE_ENTITY_NOT_FOUND.getErrorMessage());
+		}
+		zones.forEach(zone -> {
+			ZoneNameResponseDto zoneNameResponseDto = new ZoneNameResponseDto();
+			zoneNameResponseDto.setZoneCode(zone.getCode());
+			zoneNameResponseDto.setZoneName(zone.getName());
+			zonesResponse.add(zoneNameResponseDto);
+		});
+		return zonesResponse;
+	}
+
+	@Override
 	public FilterResponseCodeDto zoneFilterValues(FilterValueDto filterValueDto) {
 		// TODO Auto-generated method stub
 		FilterResponseCodeDto filterResponseDto = new FilterResponseCodeDto();
