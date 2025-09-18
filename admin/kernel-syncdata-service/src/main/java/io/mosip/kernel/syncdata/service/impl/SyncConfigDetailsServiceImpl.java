@@ -214,7 +214,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 		}
 	}
 
-	@CacheEvict(value = "configCache", key = "#fileName")
+	@CacheEvict(value = SyncDataConstant.CACHE_NAME_SYNC_DATA, key = "#fileName")
 	public void clearConfigCache(String fileName) {
 		LOGGER.info("Cleared cache for fileName: {}", fileName);
 	}
