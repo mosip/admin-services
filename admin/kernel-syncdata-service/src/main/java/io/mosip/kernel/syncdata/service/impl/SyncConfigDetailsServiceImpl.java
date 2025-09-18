@@ -183,7 +183,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	 * @throws SyncDataServiceException if the request fails or the response is null
 	 */
 	@Cacheable(value = SyncDataConstant.CACHE_NAME_SYNC_DATA, key = "#fileName")
-	private String getConfigDetailsResponse(@NotNull String fileName) {
+	public String getConfigDetailsResponse(@NotNull String fileName) {
 		if (fileName == null || fileName.trim().isEmpty()) {
 			throw new SyncDataServiceException(
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorCode(),
