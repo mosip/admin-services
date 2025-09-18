@@ -182,8 +182,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	 * @return the configuration content as a string
 	 * @throws SyncDataServiceException if the request fails or the response is null
 	 */
-	@Cacheable(value = SyncDataConstant.CACHE_NAME_SYNC_DATA, key = "#fileName")
-	public String getConfigDetailsResponse(@NotNull String fileName) {
+	private String getConfigDetailsResponse(@NotNull String fileName) {
 		if (fileName == null || fileName.trim().isEmpty()) {
 			throw new SyncDataServiceException(
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorCode(),
@@ -212,11 +211,6 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.buildMessage(e.getMessage(), e.getCause()));
 		}
-	}
-
-	@CacheEvict(value = SyncDataConstant.CACHE_NAME_SYNC_DATA, key = "#fileName")
-	public void clearConfigCache(String fileName) {
-		LOGGER.info("Cleared cache for fileName: {}", fileName);
 	}
 
 	/**
@@ -304,6 +298,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	 * @throws SyncDataServiceException if fetching or encryption fails
 	 */
 	@Override
+	@Cacheable(value = SyncDataConstant.CACHE_NAME_SYNC_DATA, key = "#keyIndex")
 	public ConfigDto getConfigDetails(String keyIndex) {
 		Machine machine = validateKeyIndexAndGetMachine(keyIndex);
 		LOGGER.debug("Fetching config details for machine keyIndex: {}, machine: {}",
@@ -318,8 +313,13 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
 		ConfigDto configDto = new ConfigDto();
 		configDto.setConfigDetail(config);
-		LOGGER.info("Get ConfigDetails() {} completed", keyIndex.replaceAll("[\n\r]", "_"));
+		LOGGER.debug("Get ConfigDetails() {} completed", keyIndex.replaceAll("[\n\r]", "_"));
 		return configDto;
+	}
+
+	@CacheEvict(value = {SyncDataConstant.CACHE_NAME_SYNC_DATA, SyncDataConstant.CACHE_NAME_INITIAL_SYNC}, allEntries = true)
+	public void clearConfigCache() {
+		LOGGER.info("Cleared all entries in caches: syncDataConfigCache, initial-sync");
 	}
 
 	/**
