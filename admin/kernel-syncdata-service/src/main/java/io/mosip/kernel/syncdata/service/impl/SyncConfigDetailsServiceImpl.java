@@ -182,7 +182,8 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	 * @return the configuration content as a string
 	 * @throws SyncDataServiceException if the request fails or the response is null
 	 */
-	private String getConfigDetailsResponse(@NotNull String fileName) {
+	@Cacheable(value = SyncDataConstant.CACHE_NAME_SYNC_DATA, key = "#fileName")
+	public String getConfigDetailsResponse(@NotNull String fileName) {
 		if (fileName == null || fileName.trim().isEmpty()) {
 			throw new SyncDataServiceException(
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorCode(),
@@ -298,7 +299,6 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	 * @throws SyncDataServiceException if fetching or encryption fails
 	 */
 	@Override
-	@Cacheable(value = SyncDataConstant.CACHE_NAME_SYNC_DATA, key = "#keyIndex")
 	public ConfigDto getConfigDetails(String keyIndex) {
 		Machine machine = validateKeyIndexAndGetMachine(keyIndex);
 		LOGGER.debug("Fetching config details for machine keyIndex: {}, machine: {}",
