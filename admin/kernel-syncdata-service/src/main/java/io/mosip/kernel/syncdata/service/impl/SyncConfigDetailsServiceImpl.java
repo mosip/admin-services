@@ -184,6 +184,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	 */
 	@Cacheable(value = SyncDataConstant.CACHE_NAME_SYNC_DATA, key = "#fileName")
 	public String getConfigDetailsResponse(@NotNull String fileName) {
+		LOGGER.info("getConfigDetailsResponse fileName :{}", fileName);
 		if (fileName == null || fileName.trim().isEmpty()) {
 			throw new SyncDataServiceException(
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorCode(),

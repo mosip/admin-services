@@ -1,6 +1,9 @@
 package io.mosip.kernel.syncdata.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
+import io.mosip.kernel.syncdata.service.impl.SyncConfigDetailsServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import io.mosip.kernel.syncdata.constant.SyncDataConstant;
 import org.springframework.cache.CacheManager;
@@ -16,6 +19,8 @@ import java.util.concurrent.TimeUnit;
 @EnableCaching
 public class CacheConfig {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CacheConfig.class);
+
     /** Cache TTL in minutes (configurable). */
     @Value("${mosip.syncdata.cache.expire-after-write-minutes:30}")
     private long cacheTtlMinutes;
@@ -25,9 +30,11 @@ public class CacheConfig {
 
     @Bean
     public CacheManager cacheManager() {
+        LOGGER.info("cacheManager entry: ");
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
         cacheManager.setCacheNames(Arrays.asList(SyncDataConstant.CACHE_NAME_SYNC_DATA, SyncDataConstant.CACHE_NAME_INITIAL_SYNC)); // Add initial-sync cache
         cacheManager.setCaffeine(caffeineCacheBuilder());
+        LOGGER.info("cacheManager exit: {}",cacheManager);
         return cacheManager;
     }
 
