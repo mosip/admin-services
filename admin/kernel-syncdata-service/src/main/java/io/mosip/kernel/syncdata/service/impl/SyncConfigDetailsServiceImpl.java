@@ -209,7 +209,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
      * @return the configuration content as a string
      * @throws SyncDataServiceException if the request fails or the response is null
      */
-    @Cacheable(cacheNames = "delta-sync", key = "#fileName")
+    @Cacheable(cacheNames = "initial-sync", key = "#fileName")
     public String getConfigDetailsResponse(@NotNull String fileName) {
         LOGGER.info("getConfigDetailsResponse fileName :{}", fileName);
         if (fileName == null || fileName.trim().isEmpty()) {
