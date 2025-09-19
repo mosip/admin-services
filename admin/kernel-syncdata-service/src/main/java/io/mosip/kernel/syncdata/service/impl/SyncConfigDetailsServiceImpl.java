@@ -209,7 +209,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
      * @return the configuration content as a string
      * @throws SyncDataServiceException if the request fails or the response is null
      */
-    @Cacheable(value = SyncDataConstant.CACHE_NAME_SYNC_DATA, key = "#fileName")
+    @Cacheable(cacheNames = "delta-sync", key = "#fileName")
     public String getConfigDetailsResponse(@NotNull String fileName) {
         LOGGER.info("getConfigDetailsResponse fileName :{}", fileName);
         if (fileName == null || fileName.trim().isEmpty()) {
@@ -343,11 +343,6 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
         configDto.setConfigDetail(config);
         LOGGER.debug("Get ConfigDetails() {} completed", keyIndex.replaceAll("[\n\r]", "_"));
         return configDto;
-    }
-
-    @CacheEvict(value = {SyncDataConstant.CACHE_NAME_SYNC_DATA, SyncDataConstant.CACHE_NAME_INITIAL_SYNC}, allEntries = true)
-    public void clearConfigCache() {
-        LOGGER.info("Cleared all entries in caches: syncDataConfigCache, initial-sync");
     }
 
     /**
