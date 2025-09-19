@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-@EnableCaching
+//@EnableCaching
 public class CacheConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CacheConfig.class);
