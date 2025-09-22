@@ -13,10 +13,4 @@ GetValidDocument:
   "langCode": "eng"
 }'
       output: '{
-      "response": [{
-      "docTypeCode": "$IGNORE$",
-      "docCategoryCode": "$IGNORE$",
-      "docTypeName": "$IGNORE$",
-      "isActive": "$IGNORE$"
-      }]
 }'

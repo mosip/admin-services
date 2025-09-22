@@ -19,13 +19,13 @@ CreateLocationData:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-"isActive": "$IGNORE$",
+"isActive": "$REMOVE$",
 "code": "TST12",
 "name": "Test_Loc_A_",
-"hierarchyLevel": "$IGNORE$",
-"hierarchyName": "$IGNORE$",
-"parentLocCode": "$IGNORE$",
-"langCode": "$IGNORE$"
+"hierarchyLevel": "$REMOVE$",
+"hierarchyName": "$REMOVE$",
+"parentLocCode": "$REMOVE$",
+"langCode": "$REMOVE$"
 }'
    MasterData_CreateLocationData_Invalid_EmptyCode_SecondaryLang_eng:
       endPoint: /v1/masterdata/locations
@@ -152,8 +152,7 @@ CreateLocationData:
       output: '{
    "errors": [
      {
-      "errorCode": "KER-MSD-244",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-244"
     }
   ]
 }'

@@ -62,11 +62,7 @@ SearchRegCenterType:
       output: '{
    "data": [
      {
-        "isActive": true,
-        "code": "$IGNORE$",
-        "name": "$IGNORE$",
-        "descr": "$IGNORE$",
-        "langCode": "$IGNORE$"
+        "isActive": true
       }
     ]
 }'
@@ -199,8 +195,7 @@ SearchRegCenterType:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-317",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-317"
     }
   ]
 }'
@@ -485,8 +480,7 @@ SearchRegCenterType:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-318",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-318"
     }
   ]
 }'

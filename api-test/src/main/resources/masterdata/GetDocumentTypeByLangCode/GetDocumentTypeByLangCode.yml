@@ -13,10 +13,7 @@ GetDocumentTypeByLangCode:
 }'
       output: '{
 "documenttypes": [{
-       "code": "$IGNORE$",
-        "name": "$IGNORE$",
-        "description": "$IGNORE$",
-        "isActive": "$IGNORE$"
+        "isActive": "true"
     }]
 }'
 

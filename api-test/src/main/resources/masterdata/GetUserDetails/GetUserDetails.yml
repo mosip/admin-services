@@ -12,11 +12,6 @@ GetUserDetails:
   "id":"$REMOVE$"
 }'
       output: '{
-      "name": "$IGNORE$",
-      "statusCode": "$IGNORE$",
-      "regCenterId": "$IGNORE$",
-      "isActive": "$IGNORE$",
-      "zoneCode": "$IGNORE$"
 }'
    MasterData_GetUserDetails_ByUserId_allValid_smoke:
       endPoint: /v1/masterdata/users/{id}
@@ -31,11 +26,6 @@ GetUserDetails:
   "id":"$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$"
 }'
       output: '{
-      "name": "$IGNORE$",
-      "statusCode": "$IGNORE$",
-      "regCenterId": "$IGNORE$",
-      "isActive": "$IGNORE$",
-      "zoneCode": "$IGNORE$"
 }'
    MasterData_GetUserDetails_InValid_InvalidUserID:
       endPoint: /v1/masterdata/users/{id}

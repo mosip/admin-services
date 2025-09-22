@@ -32,12 +32,12 @@ DeviceTypeSearch:
       output: '{
    "data": [
      {
-        "isActive": "$IGNORE$",
-        "createdBy": "$IGNORE$",
+        "isActive": "$REMOVE$",
+        "createdBy": "$REMOVE$",
         "code": "FRS",
-        "langCode": "$IGNORE$",
-        "name": "$IGNORE$",
-        "description": "$IGNORE$"
+        "langCode": "$REMOVE$",
+        "name": "$REMOVE$",
+        "description": "$REMOVE$"
       }
     ]
 }'
@@ -115,12 +115,12 @@ DeviceTypeSearch:
       output: '{
    "data": [
      {
-        "isActive": "$IGNORE$",
-        "createdBy": "$IGNORE$",
+        "isActive": "$REMOVE$",
+        "createdBy": "$REMOVE$",
         "code": "FRS",
-        "langCode": "$IGNORE$",
-        "name": "$IGNORE$",
-        "description": "$IGNORE$"
+        "langCode": "$REMOVE$",
+        "name": "$REMOVE$",
+        "description": "$REMOVE$"
       }
     ]
 }'

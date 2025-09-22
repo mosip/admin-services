@@ -1,25 +1,25 @@
 {
-"responsetime": "$IGNORE$",	
+"responsetime": "$REMOVE$",	
 "response": {
   "machines": [
   {{#each machines}}
     {
-        "id": "$IGNORE$",
-        "name": "$IGNORE$",
-        "serialNum": "$IGNORE$",
-        "macAddress": "$IGNORE$",
-        "ipAddress": "$IGNORE$",
-        "machineSpecId": "$IGNORE$",
-        "regCenterId": "$IGNORE$",
-        "langCode": "$IGNORE$",
+        "id": "$REMOVE$",
+        "name": "$REMOVE$",
+        "serialNum": "$REMOVE$",
+        "macAddress": "$REMOVE$",
+        "ipAddress": "$REMOVE$",
+        "machineSpecId": "$REMOVE$",
+        "regCenterId": "$REMOVE$",
+        "langCode": "$REMOVE$",
         "isActive": "{{isActive}}",
-        "validityDateTime": "$IGNORE$",
-        "publicKey": "$IGNORE$",
-        "signPublicKey": "$IGNORE$"
+        "validityDateTime": "$REMOVE$",
+        "publicKey": "$REMOVE$",
+        "signPublicKey": "$REMOVE$"
       }
      {{#unless @last}},{{/unless}}
       	{{/each}}
   ]
   },
-  "errors": "$IGNORE$"
+  "errors": "$REMOVE$"
 }

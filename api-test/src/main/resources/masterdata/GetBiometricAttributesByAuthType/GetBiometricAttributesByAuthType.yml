@@ -13,11 +13,7 @@ GetBiometricAttributesByAuthType:
 }'
       output: '{
 "biometricattributes": [{
-       "code": "$IGNORE$",
-        "name": "$IGNORE$",
-        "description": "$IGNORE$",
-        "biometricTypeCode": "FNR",
-        "isActive": "$IGNORE$"
+        "biometricTypeCode": "FNR"
     }]
 }'
 
