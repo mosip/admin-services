@@ -29,7 +29,7 @@ SearchTemplateDetails:
   "requesttime": "$TIMESTAMP$"
 }'
       output: '{
-   "totalRecord": "$IGNORE$"
+   "totalRecord": "$REMOVE$"
 }'
    MasterData_SearchTemplateDetails_ColumnName_Name_LangCode_eng_filterType_contain:
       endPoint: /v1/masterdata/templates/search
@@ -61,7 +61,7 @@ SearchTemplateDetails:
   "requesttime": "$TIMESTAMP$"
 }'
       output: '{
-   "totalRecord": "$IGNORE$"
+   "totalRecord": "$REMOVE$"
 }'
    MasterData_SearchTemplateDetails_ColumnName_Name_LangCode_eng_filterType_equals_filterValue_null:
       endPoint: /v1/masterdata/templates/search
@@ -370,8 +370,7 @@ SearchTemplateDetails:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-317",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-317"
     }
   ]
 }'

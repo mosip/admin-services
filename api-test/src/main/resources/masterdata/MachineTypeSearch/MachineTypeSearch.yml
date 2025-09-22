@@ -32,11 +32,11 @@ MachineTypeSearch:
       output: '{
    "data": [
      {
-        "isActive": "$IGNORE$",
-        "createdBy": "$IGNORE$",
+        "isActive": "$REMOVE$",
+        "createdBy": "$REMOVE$",
         "code": "Laptop2",
-        "name": "$IGNORE$",
-        "description": "$IGNORE$"
+        "name": "$REMOVE$",
+        "description": "$REMOVE$"
       }
     ]
 }'
@@ -66,12 +66,12 @@ MachineTypeSearch:
       output: '{
    "data": [
      {
-        "isActive": "$IGNORE$",
-        "createdBy": "$IGNORE$",
-        "code": "$IGNORE$",
-        "langCode": "$IGNORE$",
-        "name": "$IGNORE$",
-        "description": "$IGNORE$"
+        "isActive": "$REMOVE$",
+        "createdBy": "$REMOVE$",
+        "code": "$REMOVE$",
+        "langCode": "$REMOVE$",
+        "name": "$REMOVE$",
+        "description": "$REMOVE$"
       }
     ]
 }'
@@ -147,7 +147,7 @@ MachineTypeSearch:
    "errors": [
     {
       "errorCode": "KER-MSD-317",
-      "message": "$IGNORE$"
+      "message": "$REMOVE$"
     }
   ]
 }'
@@ -374,8 +374,7 @@ MachineTypeSearch:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-318",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-318"
     }
   ]
 }'

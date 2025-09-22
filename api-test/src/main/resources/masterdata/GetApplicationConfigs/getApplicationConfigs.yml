@@ -11,7 +11,4 @@ GetCredentialTypes:
       input: '{
       }'
       output: '{
-          "primaryLangCode": "$IGNORE$",
-		  "secondaryLangCode": "$IGNORE$",
-		  "version": "$IGNORE$"
       }'

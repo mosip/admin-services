@@ -14,10 +14,6 @@ GetModuleByIdLangCode:
 }'
       output: '{
 "modules": [{
-       "id": "$IGNORE$",
-        "name": "$IGNORE$",
-        "langCode": "$IGNORE$",
-        "description": "$IGNORE$",
         "isActive": true
     }]
 }'

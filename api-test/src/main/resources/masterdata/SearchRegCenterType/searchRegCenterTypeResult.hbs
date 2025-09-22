@@ -3,11 +3,7 @@
     "data": [
       {{#each data}}
           {
-            "isActive": "{{isActive}}",
-			      "code": "{{code}}",
-            "name": "{{name}}",
-            "descr": "{{descr}}",
-            "langCode": "{{langCode}}"
+            "isActive": "{{isActive}}"
           }
           {{#unless @last}},{{/unless}}
       	{{/each}}

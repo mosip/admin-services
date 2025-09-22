@@ -13,10 +13,6 @@ GetLanguage:
 }'
       output: '{
 "languages": [{
-       "code": "$IGNORE$",
-        "name": "$IGNORE$",
-        "family": "$IGNORE$",
-        "nativeName": "$IGNORE$",
-        "isActive": "$IGNORE$"
+        "isActive": "true"
     }]
 }'  

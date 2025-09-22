@@ -19,7 +19,7 @@ CreateDocumentType:
       output: '{
 	"code": "TestDocType0010",
 	"description": "TestDocType0010 Card Holder",
-	"isActive": "$IGNORE$",
+	"isActive": "$REMOVE$",
 	"name": "TestDocType0010 Card"
 }'
    MasterData_CreateDocumentType_All_Valid_Mandatory_Fields_Smoke_Eng:
@@ -41,8 +41,8 @@ CreateDocumentType:
 }'
       output: '{
 	"code": "TestDocType0020",
-	"description": "$IGNORE$",
-	"isActive": "$IGNORE$",
+	"description": "$REMOVE$",
+	"isActive": "$REMOVE$",
 	"name": "TestDocType0020 Card"
 }'
    

@@ -20,8 +20,7 @@ FilterDocumentType:
       output: '{
     "filters": [
       {
-        "fieldID": "name",
-        "fieldValue": "$IGNORE$"
+        "fieldID": "name"
       }
     ]
   }'
@@ -46,8 +45,7 @@ FilterDocumentType:
       output: '{
     "filters": [
       {
-        "fieldID": "name",
-        "fieldValue": "$IGNORE$"
+        "fieldID": "name"
       }
     ]
   }'
@@ -146,8 +144,7 @@ FilterDocumentType:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-317",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-317"
     }
   ]
 }'

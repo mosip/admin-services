@@ -30,11 +30,11 @@ SearchLocationData:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-        "createdBy": "$IGNORE$",
-        "createdDateTime": "$IGNORE$",
-        "region": "$IGNORE$",
-        "city": "$IGNORE$",
-        "province": "$IGNORE$",
-        "zone": "$IGNORE$",
-        "postalCode": "$IGNORE$" 
+        "createdBy": "$REMOVE$",
+        "createdDateTime": "$REMOVE$",
+        "region": "$REMOVE$",
+        "city": "$REMOVE$",
+        "province": "$REMOVE$",
+        "zone": "$REMOVE$",
+        "postalCode": "$REMOVE$" 
       }'

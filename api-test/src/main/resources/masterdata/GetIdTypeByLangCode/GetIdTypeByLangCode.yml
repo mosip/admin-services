@@ -13,10 +13,10 @@ GetIdTypeByLangCode:
 }'
       output: '{
 "idtypes": [{
-       "code": "$IGNORE$",
-        "descr": "$IGNORE$",
-        "name": "$IGNORE$",
-        "isActive": "$IGNORE$"
+       "code": "$REMOVE$",
+        "descr": "$REMOVE$",
+        "name": "$REMOVE$",
+        "isActive": "$REMOVE$"
     }]
 }'
 

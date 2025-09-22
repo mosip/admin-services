@@ -13,9 +13,7 @@ GetPossiableValues:
 }'
       output: '{
 "eng": [{
-			 "code": "$IGNORE$",
-       "value": "$IGNORE$",
-       "dataType": "$IGNORE$"
+       "dataType": "string"
 		}]
 }'
 
@@ -32,12 +30,6 @@ GetPossiableValues:
   "fieldName":"abc"
 }'
       output: '{
-   "errors": [
-    {
-      "errorCode": "$IGNORE$",
-      "message": "$IGNORE$"
-    }
-  ]
 }'  
 
    Admin_GetPossiableValues_Invalid_Invalid_langCode:
@@ -53,10 +45,4 @@ GetPossiableValues:
   "fieldName":"bloodType"
 }'
       output: '{
-   "errors": [
-    {
-      "errorCode": "$IGNORE$",
-      "message": "$IGNORE$"
-    }
-  ]
 }'
