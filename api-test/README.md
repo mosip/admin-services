@@ -147,6 +147,21 @@ To execute the tests using Eclipse IDE, use the following steps:
 
 ---
 
+## Test Report Column Definitions
+This section describes the meaning of each column in the test report:
+- **Total (T)**
+  The total number of test cases considered in the report.
+- **Passed (P)**
+  Indicates the number of test cases that executed successfully with the expected results.
+- **Failed (F)**
+  Indicates the number of test cases that failed due to issues such as output validation mismatches or unexpected errors during execution.
+- **Skipped (S)**
+  Represents test cases that were not executed due to missing prerequisites or data dependencies.
+- **Ignored (I)**
+  Represents test cases that were intentionally not executed due to limitations such as unsupported features, incompatibilities, or undeployed services.
+- **Known Issues (KI)**
+  Indicates test cases that failed but are already acknowledged as known issues for the current release, typically linked with a bug or defect ID.
+
 ## Details of Arguments Used
 
 - **env.user**: Replace `<env_name>` with the appropriate environment name (e.g., `dev`, `qa`, etc.).

@@ -661,3 +661,249 @@ FetchRegCent:
     }
   ]
 }'
+
+   MasterData_FetchRegCent_By_Pagination_HierarchyLevel_Text_langCode_PageSize_AllValid_smoke:
+      endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}?pageNumber=0&pageSize=5
+      uniqueIdentifier: TC_Masterdata_FetchRegCent_24
+      description: Retrieve Registration Centers Per Page By langcode, hierarchylevel and name 
+      role: admin
+      templateFields: [""]
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      inputTemplate: masterdata/FetchRegCent/fetchRegCent
+      outputTemplate: masterdata/FetchRegCent/fetchAllRegCentWithPaginationResult
+      input: '{
+  "longitude": "$REMOVE$",
+  "latitude": "$REMOVE$",
+  "langcode": "eng",
+  "proximitydistance": "$REMOVE$",
+  "locationcode": "$REMOVE$",
+  "registrationcenterid": "$REMOVE$",
+  "year": "$REMOVE$",
+  "id": "$REMOVE$",
+  "hierarchylevel": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_hierarchyLevel$",
+  "name": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_name$",
+  "zonecode": "$REMOVE$",
+  "timestamp": "$REMOVE$"
+}'
+      output: '{
+}'
+
+   MasterData_FetchRegCent_By_Pagination_HierarchyLevel_Text_langCode_PageSize_Zero_Neg:
+      endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}?pageNumber=0&pageSize=0
+      uniqueIdentifier: TC_Masterdata_FetchRegCent_25
+      description: Retrieve Registration Centers Per Page By langcode, hierarchylevel and name with page size zero
+      role: admin
+      templateFields: [""]
+      restMethod: get
+      inputTemplate: masterdata/FetchRegCent/fetchRegCent
+      outputTemplate: masterdata/error
+      input: '{
+  "longitude": "$REMOVE$",
+  "latitude": "$REMOVE$",
+  "langcode": "eng",
+  "proximitydistance": "$REMOVE$",
+  "locationcode": "$REMOVE$",
+  "registrationcenterid": "$REMOVE$",
+  "year": "$REMOVE$",
+  "id": "$REMOVE$",
+  "hierarchylevel": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_hierarchyLevel$",
+  "name": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_name$",
+  "zonecode": "$REMOVE$",
+  "timestamp": "$REMOVE$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-500",
+      "message": "Page size must not be less than one!"
+    }
+  ]
+}'
+
+   MasterData_FetchRegCent_By_Pagination_HierarchyLevel_Text_langCode_EmptyName_Neg:
+      endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}
+      uniqueIdentifier: TC_Masterdata_FetchRegCent_26
+      description: Retrieve Registration Centers Per Page By langcode, hierarchylevel and empty name
+      role: admin
+      templateFields: [""]
+      restMethod: get
+      inputTemplate: masterdata/FetchRegCent/fetchRegCent
+      outputTemplate: masterdata/error
+      input: '{
+  "longitude": "$REMOVE$",
+  "latitude": "$REMOVE$",
+  "langcode": "eng",
+  "proximitydistance": "$REMOVE$",
+  "locationcode": "$REMOVE$",
+  "registrationcenterid": "$REMOVE$",
+  "year": "$REMOVE$",
+  "id": "$REMOVE$",
+  "hierarchylevel": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_hierarchyLevel$",
+  "name": "",
+  "zonecode": "$REMOVE$",
+  "timestamp": "$REMOVE$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-500",
+      "message": "$IGNORE$"
+    }
+  ]
+}'
+
+   MasterData_FetchRegCent_By_Pagination_EmptyHierarchyLevel_Text_langCode_Neg:
+      endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}
+      uniqueIdentifier: TC_Masterdata_FetchRegCent_27
+      description: Retrieve Registration Centers Per Page By langcode, name and empty hierarchylevel 
+      role: admin
+      templateFields: [""]
+      restMethod: get
+      inputTemplate: masterdata/FetchRegCent/fetchRegCent
+      outputTemplate: masterdata/error
+      input: '{
+  "longitude": "$REMOVE$",
+  "latitude": "$REMOVE$",
+  "langcode": "eng",
+  "proximitydistance": "$REMOVE$",
+  "locationcode": "$REMOVE$",
+  "registrationcenterid": "$REMOVE$",
+  "year": "$REMOVE$",
+  "id": "$REMOVE$",
+  "hierarchylevel": "",
+  "name": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_name$",
+  "zonecode": "$REMOVE$",
+  "timestamp": "$REMOVE$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-500",
+      "message": "$IGNORE$"
+    }
+  ]
+}'
+
+   MasterData_FetchRegCent_By_Pagination_HierarchyLevel_Text_langCode_WithPageNumber_AllValid:
+      endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}?pageNumber=0&pageSize=5
+      uniqueIdentifier: TC_Masterdata_FetchRegCent_28
+      description: Retrieve Registration Centers Per Page By langcode, hierarchylevel and name with page number
+      role: admin
+      templateFields: [""]
+      restMethod: get
+      checkErrorsOnlyInResponse: true
+      inputTemplate: masterdata/FetchRegCent/fetchRegCent
+      outputTemplate: masterdata/FetchRegCent/fetchAllRegCentWithPaginationResult
+      input: '{
+  "longitude": "$REMOVE$",
+  "latitude": "$REMOVE$",
+  "langcode": "eng",
+  "proximitydistance": "$REMOVE$",
+  "locationcode": "$REMOVE$",
+  "registrationcenterid": "$REMOVE$",
+  "year": "$REMOVE$",
+  "id": "$REMOVE$",
+  "hierarchylevel": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_hierarchyLevel$",
+  "name": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_name$",
+  "zonecode": "$REMOVE$",
+  "timestamp": "$REMOVE$"
+}'
+      output: '{
+}'
+
+   MasterData_FetchRegCent_By_Pagination_HierarchyLevel_Text_langCode_MorePageSize_Neg:
+      endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}?pageNumber=100&pageSize=5
+      uniqueIdentifier: TC_Masterdata_FetchRegCent_29
+      description: Retrieve Registration Centers Per Page By langcode, hierarchylevel and name with pages more than available
+      role: admin
+      templateFields: [""]
+      restMethod: get
+      inputTemplate: masterdata/FetchRegCent/fetchRegCent
+      outputTemplate: masterdata/error
+      input: '{
+  "longitude": "$REMOVE$",
+  "latitude": "$REMOVE$",
+  "langcode": "eng",
+  "proximitydistance": "$REMOVE$",
+  "locationcode": "$REMOVE$",
+  "registrationcenterid": "$REMOVE$",
+  "year": "$REMOVE$",
+  "id": "$REMOVE$",
+  "hierarchylevel": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_hierarchyLevel$",
+  "name": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_name$",
+  "zonecode": "$REMOVE$",
+  "timestamp": "$REMOVE$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-215",
+      "message": "Registration Center not found"
+    }
+  ]
+}'
+
+   MasterData_FetchRegCent_By_Pagination_HierarchyLevel_Text_Without_langCode_Neg:
+      endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}
+      uniqueIdentifier: TC_Masterdata_FetchRegCent_30
+      description: Retrieve Registration Centers Per Page By langcode, hierarchylevel and name 
+      role: admin
+      templateFields: []
+      restMethod: get
+      inputTemplate: masterdata/FetchRegCent/fetchRegCent
+      outputTemplate: masterdata/error
+      input: '{
+  "longitude": "$REMOVE$",
+  "latitude": "$REMOVE$",
+  "langcode": "hhgghaJ",
+  "proximitydistance": "$REMOVE$",
+  "locationcode": "$REMOVE$",
+  "registrationcenterid": "$REMOVE$",
+  "year": "$REMOVE$",
+  "id": "$REMOVE$",
+  "hierarchylevel": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_hierarchyLevel$",
+  "name": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_name$",
+  "zonecode": "$REMOVE$",
+  "timestamp": "$REMOVE$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-026",
+      "message": "Location not found"
+    }
+  ]
+}'
+
+   MasterData_FetchRegCent_By_Pagination_Mismatch_HierarchyLevelAndName_Neg:
+      endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}
+      uniqueIdentifier: TC_Masterdata_FetchRegCent_31
+      description: Retrieve Registration Centers Per Page By mismatching hierarchylevel and name
+      role: admin
+      templateFields: [""]
+      restMethod: get
+      inputTemplate: masterdata/FetchRegCent/fetchRegCent
+      outputTemplate: masterdata/error
+      input: '{
+  "longitude": "$REMOVE$",
+  "latitude": "$REMOVE$",
+  "langcode": "eng",
+  "proximitydistance": "$REMOVE$",
+  "locationcode": "$REMOVE$",
+  "registrationcenterid": "$REMOVE$",
+  "year": "$REMOVE$",
+  "id": "$REMOVE$",
+  "hierarchylevel": "20",
+  "name": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_name$",
+  "zonecode": "$REMOVE$",
+  "timestamp": "$REMOVE$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "KER-MSD-026",
+      "message": "Location not found"
+    }
+  ]
+}'

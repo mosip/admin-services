@@ -36,8 +36,8 @@ FetchDocumentCategories:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-014",
-      "message": "Document Category not found"
+      "errorCode": "KER-MSD-023",
+      "message": "Invalid language code"
     }
   ]
 }'
