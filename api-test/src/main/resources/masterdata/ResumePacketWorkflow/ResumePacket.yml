@@ -15,8 +15,7 @@ ResumePacketWorkflow:
       output: '{
    "errors": [
     {
-      "errorCode": "RPR-WAA-003",
-      "message": "$IGNORE$"
+      "errorCode": "RPR-WAA-003"
     }
   ]
 }'

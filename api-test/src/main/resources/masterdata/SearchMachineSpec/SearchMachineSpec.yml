@@ -31,14 +31,14 @@ SearchMachineSpec:
   }'
       output: '{
 	"data": [{
-	"id": "$IGNORE$",
+	"id": "$REMOVE$",
 	"name": "HP",
 	"brand": "HP",
 	"model": "1234",
-	"machineTypeCode": "$IGNORE$",
+	"machineTypeCode": "$REMOVE$",
 	"minDriverversion": "3.2",
 	"description": "HP brand",
-	"isActive": "$IGNORE$"
+	"isActive": "$REMOVE$"
 	}]
 }'
    Masterdata_SearchMachineSpec_Valid_sortType_DESC:
@@ -71,14 +71,14 @@ SearchMachineSpec:
   }'
       output: '{
 	"data": [{
-	"id": "$IGNORE$",
+	"id": "$REMOVE$",
 	"name": "HP",
 	"brand": "HP",
 	"model": "1234",
-	"machineTypeCode": "$IGNORE$",
+	"machineTypeCode": "$REMOVE$",
 	"minDriverversion": "3.2",
 	"description": "HP brand",
-	"isActive": "$IGNORE$"
+	"isActive": "$REMOVE$"
 	}]
 }'
    Masterdata_SearchMachineSpec_Valid_col_as_Model:
@@ -111,14 +111,14 @@ SearchMachineSpec:
   }'
       output: '{
 	"data": [{
-	"id": "$IGNORE$",
-	"name": "$IGNORE$",
+	"id": "$REMOVE$",
+	"name": "$REMOVE$",
 	"brand": "HP",
 	"model": "1234",
-	"machineTypeCode": "$IGNORE$",
+	"machineTypeCode": "$REMOVE$",
 	"minDriverversion": "3.2",
-	"description": "$IGNORE$",
-	"isActive": "$IGNORE$"
+	"description": "$REMOVE$",
+	"isActive": "$REMOVE$"
 	}]
 }'
    Masterdata_SearchMachineSpec_Valid_col_as_Brand:
@@ -151,14 +151,14 @@ SearchMachineSpec:
   }'
       output: '{
 	"data": [{
-	"id": "$IGNORE$",
-	"name": "$IGNORE$",
+	"id": "$REMOVE$",
+	"name": "$REMOVE$",
 	"brand": "HP",
-	"model": "$IGNORE$",
-	"machineTypeCode": "$IGNORE$",
-	"minDriverversion": "$IGNORE$",
-	"description": "$IGNORE$",
-	"isActive": "$IGNORE$"
+	"model": "$REMOVE$",
+	"machineTypeCode": "$REMOVE$",
+	"minDriverversion": "$REMOVE$",
+	"description": "$REMOVE$",
+	"isActive": "$REMOVE$"
 	}]
 }'
    Masterdata_SearchMachineSpec_Valid_col_as_isActive:
@@ -222,14 +222,14 @@ SearchMachineSpec:
   }'
       output: '{
 	"data": [{
-	"id": "$IGNORE$",
+	"id": "$REMOVE$",
 	"name": "HP",
 	"brand": "HP",
 	"model": "1234",
-	"machineTypeCode": "$IGNORE$",
+	"machineTypeCode": "$REMOVE$",
 	"minDriverversion": "3.2",
 	"description": "HP brand",
-	"isActive": "$IGNORE$"
+	"isActive": "$REMOVE$"
 	}]
 }'
    Masterdata_SearchMachineSpec_Valid_col_as_Name_FltrTyp_contains:
@@ -262,14 +262,14 @@ SearchMachineSpec:
   }'
       output: '{
 	"data": [{
-	"id": "$IGNORE$",
+	"id": "$REMOVE$",
 	"name": "HP",
 	"brand": "HP",
 	"model": "1234",
-	"machineTypeCode": "$IGNORE$",
+	"machineTypeCode": "$REMOVE$",
 	"minDriverversion": "3.2",
 	"description": "HP brand",
-	"isActive": "$IGNORE$"
+	"isActive": "$REMOVE$"
 	}]
 }'
    Masterdata_SearchMachineSpec_inValid_columnName_blank:
@@ -339,8 +339,7 @@ SearchMachineSpec:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-317",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-317"
     }
   ]
 }'
@@ -591,8 +590,7 @@ SearchMachineSpec:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-313",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-313"
     }
   ]
 }'
@@ -663,8 +661,7 @@ SearchMachineSpec:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-318",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-318"
     }
   ]
 }'
@@ -735,8 +732,7 @@ SearchMachineSpec:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-318",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-318"
     }
   ]
 }'
@@ -771,8 +767,7 @@ SearchMachineSpec:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-318",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-318"
     }
   ]
 }'

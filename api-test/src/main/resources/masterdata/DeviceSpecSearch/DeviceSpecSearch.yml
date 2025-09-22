@@ -31,16 +31,16 @@ DeviceSpecSearch:
   }'
       output: '{
 	"data": [{
-	"id": "$IGNORE$",
+	"id": "$REMOVE$",
 	"name": "Webcam",
 	"brand": "Logitech",
-	"model": "$IGNORE$",
+	"model": "$REMOVE$",
 	"deviceTypeCode": "CMR",
-	"minDriverversion": "$IGNORE$",
-	"description": "$IGNORE$",
-	"langCode": "$IGNORE$",
-	"isActive": "$IGNORE$",
-	"deviceTypeName": "$IGNORE$"
+	"minDriverversion": "$REMOVE$",
+	"description": "$REMOVE$",
+	"langCode": "$REMOVE$",
+	"isActive": "$REMOVE$",
+	"deviceTypeName": "$REMOVE$"
 	}]
 }'
    MasterData_DeviceSpecSearch_Equals_Brand:
@@ -75,16 +75,16 @@ DeviceSpecSearch:
   }'
       output: '{
   "data": [{
-  "id": "$IGNORE$",
-  "name": "$IGNORE$",
+  "id": "$REMOVE$",
+  "name": "$REMOVE$",
   "brand": "Logitech",
-  "model": "$IGNORE$",
-  "deviceTypeCode": "$IGNORE$",
-  "minDriverversion": "$IGNORE$",
-  "description": "$IGNORE$",
-  "langCode": "$IGNORE$",
-  "isActive": "$IGNORE$",
-  "deviceTypeName": "$IGNORE$"
+  "model": "$REMOVE$",
+  "deviceTypeCode": "$REMOVE$",
+  "minDriverversion": "$REMOVE$",
+  "description": "$REMOVE$",
+  "langCode": "$REMOVE$",
+  "isActive": "$REMOVE$",
+  "deviceTypeName": "$REMOVE$"
   }]
 }'
   
@@ -121,16 +121,16 @@ DeviceSpecSearch:
   }'
       output: '{
   "data": [{
-  "id": "$IGNORE$",
-  "name": "$IGNORE$",
-  "brand": "$IGNORE$",
-  "model": "$IGNORE$",
-  "deviceTypeCode": "$IGNORE$",
-  "minDriverversion": "$IGNORE$",
-  "description": "$IGNORE$",
-  "langCode": "$IGNORE$",
-  "isActive": "$IGNORE$",
-  "deviceTypeName": "$IGNORE$"
+  "id": "$REMOVE$",
+  "name": "$REMOVE$",
+  "brand": "$REMOVE$",
+  "model": "$REMOVE$",
+  "deviceTypeCode": "$REMOVE$",
+  "minDriverversion": "$REMOVE$",
+  "description": "$REMOVE$",
+  "langCode": "$REMOVE$",
+  "isActive": "$REMOVE$",
+  "deviceTypeName": "$REMOVE$"
   }]
 }'
    MasterData_DeviceSpecSearch_Equals_DeviceTypeName:
@@ -165,15 +165,15 @@ DeviceSpecSearch:
   }'
       output: '{
   "data": [{
-  "id": "$IGNORE$",
-  "name": "$IGNORE$",
-  "brand": "$IGNORE$",
-  "model": "$IGNORE$",
-  "deviceTypeCode": "$IGNORE$",
-  "minDriverversion": "$IGNORE$",
-  "description": "$IGNORE$",
-  "langCode": "$IGNORE$",
-  "isActive": "$IGNORE$",
+  "id": "$REMOVE$",
+  "name": "$REMOVE$",
+  "brand": "$REMOVE$",
+  "model": "$REMOVE$",
+  "deviceTypeCode": "$REMOVE$",
+  "minDriverversion": "$REMOVE$",
+  "description": "$REMOVE$",
+  "langCode": "$REMOVE$",
+  "isActive": "$REMOVE$",
   "deviceTypeName": "Camera"
   }]
 }'
@@ -318,16 +318,16 @@ DeviceSpecSearch:
   }'
       output: '{
   "data": [{
-  "id": "$IGNORE$",
+  "id": "$REMOVE$",
   "name": "Webcam",
   "brand": "Logitech",
-  "model": "$IGNORE$",
+  "model": "$REMOVE$",
   "deviceTypeCode": "CMR",
-  "minDriverversion": "$IGNORE$",
-  "description": "$IGNORE$",
-  "langCode": "$IGNORE$",
-  "isActive": "$IGNORE$",
-  "deviceTypeName": "$IGNORE$"
+  "minDriverversion": "$REMOVE$",
+  "description": "$REMOVE$",
+  "langCode": "$REMOVE$",
+  "isActive": "$REMOVE$",
+  "deviceTypeName": "$REMOVE$"
   }]
 }'
    MasterData_DeviceSpecSearch_DESC_Name_eng:
@@ -362,16 +362,16 @@ DeviceSpecSearch:
   }'
       output: '{
   "data": [{
-  "id": "$IGNORE$",
+  "id": "$REMOVE$",
   "name": "Webcam",
-  "brand": "$IGNORE$",
-  "model": "$IGNORE$",
-  "deviceTypeCode": "$IGNORE$",
-  "minDriverversion": "$IGNORE$",
-  "description": "$IGNORE$",
-  "langCode": "$IGNORE$",
-  "isActive": "$IGNORE$",
-  "deviceTypeName": "$IGNORE$"
+  "brand": "$REMOVE$",
+  "model": "$REMOVE$",
+  "deviceTypeCode": "$REMOVE$",
+  "minDriverversion": "$REMOVE$",
+  "description": "$REMOVE$",
+  "langCode": "$REMOVE$",
+  "isActive": "$REMOVE$",
+  "deviceTypeName": "$REMOVE$"
   }]
 }'
    MasterData_DeviceSpecSearch_Invalid_FilterType:
@@ -555,16 +555,16 @@ DeviceSpecSearch:
   }'
       output: '{
   "data": [{
-  "id": "$IGNORE$",
+  "id": "$REMOVE$",
   "name": "Webcam",
   "brand": "Logitech",
-  "model": "$IGNORE$",
+  "model": "$REMOVE$",
   "deviceTypeCode": "CMR",
-  "minDriverversion": "$IGNORE$",
-  "description": "$IGNORE$",
-  "langCode": "$IGNORE$",
-  "isActive": "$IGNORE$",
-  "deviceTypeName": "$IGNORE$"
+  "minDriverversion": "$REMOVE$",
+  "description": "$REMOVE$",
+  "langCode": "$REMOVE$",
+  "isActive": "$REMOVE$",
+  "deviceTypeName": "$REMOVE$"
   }]
 }'
    MasterData_DeviceSpecSearch_TwoValueSearch_pos:
@@ -640,15 +640,15 @@ DeviceSpecSearch:
   }'
       output: '{
   "data": [{
-  "id": "$IGNORE$",
+  "id": "$REMOVE$",
   "name": "Webcam",
-  "brand": "$IGNORE$",
-  "model": "$IGNORE$",
-  "deviceTypeCode": "$IGNORE$",
-  "minDriverversion": "$IGNORE$",
-  "description": "$IGNORE$",
-  "langCode": "$IGNORE$",
-  "isActive": "$IGNORE$",
-  "deviceTypeName": "$IGNORE$"
+  "brand": "$REMOVE$",
+  "model": "$REMOVE$",
+  "deviceTypeCode": "$REMOVE$",
+  "minDriverversion": "$REMOVE$",
+  "description": "$REMOVE$",
+  "langCode": "$REMOVE$",
+  "isActive": "$REMOVE$",
+  "deviceTypeName": "$REMOVE$"
   }]
 }'

@@ -12,12 +12,12 @@ GetLocationHierarchyByHierarchyName:
 }'
       output: '{
 "locations": [{
-       "code": "$IGNORE$",
-        "name": "$IGNORE$",
-        "hierarchyLevel": "$IGNORE$",
+       "code": "$REMOVE$",
+        "name": "$REMOVE$",
+        "hierarchyLevel": "$REMOVE$",
         "hierarchyName": "City",
-        "parentLocCode": "$IGNORE$",
-        "isActive": "$IGNORE$"
+        "parentLocCode": "$REMOVE$",
+        "isActive": "$REMOVE$"
     }]
 }'
 

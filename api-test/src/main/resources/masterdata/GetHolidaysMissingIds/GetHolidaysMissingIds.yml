@@ -13,9 +13,6 @@ GetHolidaysMissingIds:
       "langcode":"eng"
 }'
       output: '{
-      "id": "$IGNORE$",
-      "fieldValue": "$IGNORE$",
-      "langCode": "$IGNORE$"  
 }'
 
    Admin_GetHolidaysMissingIds_InValid_Inavild_langCode:

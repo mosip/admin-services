@@ -12,7 +12,6 @@ DeleteLocation:
     "locationcode": "$LOCATIONCODE$"
 	}'
       output: '{
-    "code": "$IGNORE$"
 }'
    MasterData_DeleteLocation_Invalid_ID: 
       endPoint: /v1/masterdata/locations/{locationcode}

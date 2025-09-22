@@ -14,12 +14,7 @@ GetimmediateChildrenByLocationCode:
 }'
       output: '{
 "locations": [{
-        "code": "$IGNORE$",
-        "name": "$IGNORE$",
-        "hierarchyLevel": "$IGNORE$",
-        "hierarchyName": "$IGNORE$",
-        "parentLocCode": "$IGNORE$",
-        "isActive": "$IGNORE$"
+        "isActive": "true"
     }]
 }'
 
