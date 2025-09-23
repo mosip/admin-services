@@ -183,7 +183,6 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
      * @throws SyncDataServiceException if the request fails or the response is null
      */
     @Cacheable(
-            cacheManager = "cacheManager",
             cacheNames = SyncDataConstant.CACHE_NAME_SYNC_DATA,
             key = "#p0",                  // always works
             sync = true,                  // collapse concurrent loads per key

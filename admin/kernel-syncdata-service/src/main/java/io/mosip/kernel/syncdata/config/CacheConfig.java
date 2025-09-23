@@ -48,7 +48,7 @@ public class CacheConfig {
     private Caffeine<Object, Object> caffeineCacheBuilder() {
         return Caffeine.newBuilder()
                 .expireAfterWrite(cacheTtlMinutes, TimeUnit.MINUTES) // UNCOMMENTED: TTL from config
-                .refreshAfterWrite(refreshAfterMinutes, TimeUnit.MINUTES) // Background refresh
+                //.refreshAfterWrite(refreshAfterMinutes, TimeUnit.MINUTES) // Background refresh
                 //.maximumSize(maxSize) // UNCOMMENTED: Limit cache size
                 .recordStats() // Enable cache statistics for monitoring
                 .removalListener((key, value, cause) -> {
