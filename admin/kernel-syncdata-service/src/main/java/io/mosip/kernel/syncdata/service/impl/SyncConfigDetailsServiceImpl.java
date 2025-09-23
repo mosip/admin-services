@@ -24,16 +24,12 @@ import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.helper.KeymanagerHelper;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
-import jakarta.annotation.PostConstruct;
 import jakarta.validation.constraints.NotNull;
 import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.actuate.metrics.cache.CacheMetricsRegistrar;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -116,29 +112,6 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
     @Autowired
     private KeymanagerHelper keymanagerHelper;
 
-    @Autowired(required = false)
-    private CacheMetricsRegistrar cacheMetricsRegistrar;
-
-    @Autowired
-    private CacheManager cacheManager;
-
-    @PostConstruct
-    public void bindCacheMetrics() {
-        if (cacheMetricsRegistrar != null) {
-            Cache cache = cacheManager.getCache(SyncDataConstant.CACHE_NAME_SYNC_DATA);
-            if (cache != null) {
-                cacheMetricsRegistrar.bindCacheToRegistry(cache);
-                LOGGER.info("Bound cache '{}' to Micrometer metrics",
-                        SyncDataConstant.CACHE_NAME_SYNC_DATA);
-            } else {
-                LOGGER.warn("Could not bind cache metrics: cache '{}' not found",
-                        SyncDataConstant.CACHE_NAME_SYNC_DATA);
-            }
-        } else {
-            LOGGER.warn("CacheMetricsRegistrar not present; cache metrics may remain zero");
-        }
-    }
-
     /**
      * Validates inputs for the {@link #getPublicKey} method.
      *
@@ -209,9 +182,9 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
      * @return the configuration content as a string
      * @throws SyncDataServiceException if the request fails or the response is null
      */
-    @Cacheable(cacheNames = "initial-sync", key = "#fileName")
+    @Cacheable(cacheNames = SyncDataConstant.CACHE_NAME_SYNC_DATA, key = "#fileName")
     public String getConfigDetailsResponse(@NotNull String fileName) {
-        LOGGER.info("getConfigDetailsResponse fileName :{}", fileName);
+        LOGGER.info("getConfigDetailsResponse: {}", fileName);
         if (fileName == null || fileName.trim().isEmpty()) {
             throw new SyncDataServiceException(
                     SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorCode(),
@@ -323,7 +296,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
      *
      * @param keyIndex the machine key index or name
      * @return the {@link ConfigDto} containing encrypted global and registration configurations
-     * @throws RequestException         if no machine is found
+     * @throws RequestException if no machine is found
      * @throws SyncDataServiceException if fetching or encryption fails
      */
     @Override
@@ -351,9 +324,9 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
      * @param scriptName the name of the script
      * @param keyIndex   the machine key index or name
      * @return a {@link ResponseEntity} containing the script content
-     * @throws RequestException             if no machine is found
+     * @throws RequestException if no machine is found
      * @throws SyncInvalidArgumentException if the script name is invalid
-     * @throws SyncDataServiceException     if fetching or encryption fails
+     * @throws SyncDataServiceException if fetching or encryption fails
      */
     @Override
     public ResponseEntity getScript(String scriptName, String keyIndex) throws Exception {
