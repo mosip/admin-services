@@ -187,7 +187,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
             cacheNames = SyncDataConstant.CACHE_NAME_SYNC_DATA,
             key = "#p0",                  // always works
             sync = true,                  // collapse concurrent loads per key
-            unless = "#result == null"    // avoid caching nulls
+            unless = "#result == null or #result.isEmpty()"    // avoid caching nulls
     )
     public String getConfigDetailsResponse(@NotNull String fileName) {
         LOGGER.info("getConfigDetailsResponse: {}", fileName);
