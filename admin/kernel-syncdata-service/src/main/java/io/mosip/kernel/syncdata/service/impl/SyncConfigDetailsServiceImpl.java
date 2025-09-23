@@ -182,11 +182,10 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
      * @return the configuration content as a string
      * @throws SyncDataServiceException if the request fails or the response is null
      */
-    @Cacheable(
-            cacheNames = {SyncDataConstant.CACHE_NAME_SYNC_DATA},  // constant avoids typos
-            key = "#root.methodName + ':' + #p0",                // namespace per method+arg
-            sync = true,                                         // collapse concurrent loads
-            unless = "#result == null or #result.isEmpty()"      // don’t cache invalid results
+    @Cacheable(cacheNames = "initial-sync",
+            key = "#root.methodName + ':' + #p0",
+            sync = true,                  // collapse concurrent loads per key
+            unless = "#result == null or #result.isEmpty()"    // avoid caching nulls
     )
     public String getConfigDetailsResponse(@NotNull String fileName) {
         LOGGER.info("getConfigDetailsResponse: {}", fileName);
