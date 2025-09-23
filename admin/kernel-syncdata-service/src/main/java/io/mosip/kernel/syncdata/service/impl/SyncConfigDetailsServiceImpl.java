@@ -12,7 +12,6 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.constant.SyncConfigDetailsErrorCode;
-import io.mosip.kernel.syncdata.constant.SyncDataConstant;
 import io.mosip.kernel.syncdata.dto.ConfigDto;
 import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
 import io.mosip.kernel.syncdata.entity.Machine;
@@ -21,18 +20,15 @@ import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
+import io.mosip.kernel.syncdata.service.helper.ConfigServerClient;
 import io.mosip.kernel.syncdata.service.helper.KeymanagerHelper;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
-import jakarta.validation.constraints.NotNull;
 import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
@@ -40,7 +36,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -63,7 +58,6 @@ import java.util.Map.Entry;
  */
 @RefreshScope
 @Service
-@EnableCaching
 public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncConfigDetailsServiceImpl.class);
@@ -113,6 +107,9 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
     @Autowired
     private KeymanagerHelper keymanagerHelper;
+
+    @Autowired
+    private ConfigServerClient configServerClient;
 
     /**
      * Validates inputs for the {@link #getPublicKey} method.
@@ -175,49 +172,6 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
                     SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_INPUT_PARAMETER_EXCEPTION.getErrorCode(),
                     SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_INPUT_PARAMETER_EXCEPTION.getErrorMessage() + " Invalid script name: " + scriptName.replaceAll("[\n\r]", "_"));
         }*/
-    }
-
-    /**
-     * Fetches configuration details from the Spring Cloud Config server.
-     *
-     * @param fileName the name of the configuration file
-     * @return the configuration content as a string
-     * @throws SyncDataServiceException if the request fails or the response is null
-     */
-    @Cacheable(cacheNames = "initial-sync",
-            key = "#root.methodName + ':' + #p0",
-            sync = true,                  // collapse concurrent loads per key
-            unless = "#result == null or #result.isEmpty()"    // avoid caching nulls
-    )
-    public String getConfigDetailsResponse(@NotNull String fileName) {
-        LOGGER.info("getConfigDetailsResponse: {}", fileName);
-        if (fileName == null || fileName.trim().isEmpty()) {
-            throw new SyncDataServiceException(
-                    SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorCode(),
-                    SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorMessage() + " File name is null or empty");
-        }
-
-        UriComponentsBuilder uriBuilder = UriComponentsBuilder
-                .fromUriString(environment.getProperty("spring.cloud.config.uri")).
-                path(SLASH).path(environment.getProperty("spring.application.name")).
-                path(SLASH).path(environment.getProperty("spring.profiles.active")).
-                path(SLASH).path(environment.getProperty("spring.cloud.config.label")).
-                path(SLASH).path(fileName);
-
-        try {
-            LOGGER.debug("Fetching config from URL: {}", uriBuilder.toUriString());
-            String response = restTemplate.getForObject(uriBuilder.toUriString(), String.class);
-            if (response == null) {
-                throw new RestClientException("Obtained null response from the config server");
-            }
-            return response;
-        } catch (RestClientException e) {
-            LOGGER.error("Failed to fetch config for file {}: {}", fileName, e.getMessage());
-            throw new SyncDataServiceException(
-                    SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorCode(),
-                    SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorMessage() + " "
-                            + ExceptionUtils.buildMessage(e.getMessage(), e.getCause()));
-        }
     }
 
     /**
@@ -312,7 +266,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
         JSONObject config = new JSONObject();
         JSONObject globalConfig = new JSONObject();
-        JSONObject regConfig = parsePropertiesString(getConfigDetailsResponse(regCenterfileName));
+        JSONObject regConfig = parsePropertiesString(configServerClient.fetch(regCenterfileName));
         //This is not completely removed only for backward compatibility, all the configs will be part of registrationConfiguration
         config.put("globalConfiguration", getEncryptedData(globalConfig, machine));
         config.put("registrationConfiguration", getEncryptedData(regConfig, machine));
@@ -340,7 +294,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
         LOGGER.debug("Fetching script {} for machine keyIndex: {}",
                 scriptName.replaceAll("[\n\r]", "_"), keyIndex.replaceAll("[\n\r]", "_"));
 
-        String content = getConfigDetailsResponse(scriptName);
+        String content = configServerClient.fetch(scriptName);
         Boolean isEncrypted = environment.getProperty(String.format("mosip.sync.entity.encrypted.%s",
                 scriptName.toUpperCase().replaceAll("[\n\r]", "_")), Boolean.class, false);
 

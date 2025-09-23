@@ -52,7 +52,7 @@ public class LocalDateTimeUtil {
 	 */
 	public LocalDateTime getLocalDateTimeFromTimeStamp(LocalDateTime currentTimeStamp, String lastUpdated) {
 		if (lastUpdated == null) {
-			LOGGER.error("Invalid request: requestWrapper or request is null");
+			LOGGER.error("Invalid request: lastUpdated parameter is null");
 			return null;
 		}
 
