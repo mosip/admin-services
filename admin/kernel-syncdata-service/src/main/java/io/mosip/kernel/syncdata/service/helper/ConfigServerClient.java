@@ -6,6 +6,7 @@ import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.env.Environment;
@@ -19,18 +20,14 @@ public class ConfigServerClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigServerClient.class);
     private static final String SLASH = "/";
 
-    private final RestTemplate restTemplate;
-    private final Environment environment;
-
-    public ConfigServerClient(@Qualifier("restTemplate") RestTemplate restTemplate, Environment environment) {
-        this.restTemplate = restTemplate;
-        this.environment = environment;
-    }
+    @Autowired
+    private RestTemplate restTemplate;
+    @Autowired
+    private Environment environment;
 
     @Cacheable(
             cacheNames = "sync-data-config-cache",
             key = "'config:' + #fileName",
-            sync = true,
             unless = "#result == null || #result.isEmpty()"
     )
     public String fetch(@NotNull String fileName) {
