@@ -205,7 +205,6 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
         try {
             LOGGER.debug("Fetching config from URL: {}", uriBuilder.toUriString());
-            String str = restTemplate.getForObject(uriBuilder.toUriString(), String.class);
             String response = restTemplate.getForObject(uriBuilder.toUriString(), String.class);
             if (response == null) {
                 throw new RestClientException("Obtained null response from the config server");
