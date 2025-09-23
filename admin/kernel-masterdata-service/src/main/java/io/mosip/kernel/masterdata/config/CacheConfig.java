@@ -1,42 +1,36 @@
-package io.mosip.kernel.syncdata.config;
+package io.mosip.kernel.masterdata.config;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
-import org.springframework.beans.factory.annotation.Value;
-import io.mosip.kernel.syncdata.constant.SyncDataConstant;
-import org.springframework.cache.CacheManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.caffeine.CaffeineCacheManager;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
+import io.mosip.kernel.masterdata.service.CacheManagementService;
 
+/**
+ * @author GOVINDARAJ VELU
+ *
+ */
 @Configuration
 @EnableCaching
+@EnableScheduling
 public class CacheConfig {
 
-	/** Cache TTL in minutes (configurable). */
-	@Value("${mosip.syncdata.cache.expire-after-write-minutes:30}")
-	private long cacheTtlMinutes;
+	private static final Logger log = LoggerFactory.getLogger(CacheConfig.class);
 
-	@Value("${mosip.syncdata.cache.maximum-size:100000}")
-	private long maxSize;
+	@Autowired
+	private CacheManagementService cacheManagementService;
 
-	@Bean
-	@Primary
-	public CacheManager cacheManager() {
-		CaffeineCacheManager cacheManager = new CaffeineCacheManager();
-		cacheManager.setCacheNames(Arrays.asList(SyncDataConstant.CACHE_NAME_SYNC_DATA,
-				SyncDataConstant.CACHE_NAME_INITIAL_SYNC, SyncDataConstant.CACHE_NAME_DELTA_SYNC)); // Add initial-sync and delta-sync cache
-		cacheManager.setCaffeine(caffeineCacheBuilder());
-		return cacheManager;
+	/**
+	 * Scheduler Remove's the entire cache based on the cron time
+	 */
+	@Scheduled(cron = "${scheduling.job.cron}")
+	public void clearCacheSchedule() {
+		log.info("Cache evict scheduler started");
+		cacheManagementService.clearCache();
 	}
 
-	private Caffeine<Object, Object> caffeineCacheBuilder() {
-		return Caffeine.newBuilder();
-		//.expireAfterWrite(cacheTtlMinutes, TimeUnit.MINUTES) // TTL from config
-		//.maximumSize(maxSize); // Optional: Limit cache size to prevent memory issues
-	}
 }
