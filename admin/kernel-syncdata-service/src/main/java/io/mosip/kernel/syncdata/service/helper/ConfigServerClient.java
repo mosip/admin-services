@@ -6,6 +6,7 @@ import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ public class ConfigServerClient {
     private final RestTemplate restTemplate;
     private final Environment environment;
 
-    public ConfigServerClient(RestTemplate restTemplate, Environment environment) {
+    public ConfigServerClient(@Qualifier("restTemplate") RestTemplate restTemplate, Environment environment) {
         this.restTemplate = restTemplate;
         this.environment = environment;
     }
