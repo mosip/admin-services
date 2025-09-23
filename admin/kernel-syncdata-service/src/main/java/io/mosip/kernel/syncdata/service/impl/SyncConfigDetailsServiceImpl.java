@@ -26,6 +26,7 @@ import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import jakarta.validation.constraints.NotNull;
 import net.minidev.json.JSONObject;
+import io.mosip.kernel.core.util.CryptoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -299,7 +300,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	}
 
 	private String convertToPEM(PublicKey publicKey) {
-		String encoded = Base64.getEncoder().encodeToString(publicKey.getEncoded());
+		String encoded = CryptoUtil.encodeBase64String(publicKey.getEncoded());
 		StringBuilder pemBuilder = new StringBuilder();
 		pemBuilder.append(BEGIN_KEY).append("\n");
 		for (int i = 0; i < encoded.length(); i += 64) {
