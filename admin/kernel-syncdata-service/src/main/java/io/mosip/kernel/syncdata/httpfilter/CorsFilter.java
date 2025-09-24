@@ -109,91 +109,49 @@ public class CorsFilter implements Filter {
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
 
-		if (request.isAsyncSupported()) {
+		String origin = request.getHeader("Origin");
+		if (origin != null && !origin.isBlank()) {
+			// Echo specific origin (required when credentials=true)
+			response.setHeader("Access-Control-Allow-Origin", origin);
+			// Cache varies by Origin to avoid cross-origin cache poisoning
+			response.setHeader("Vary", "Origin");
+		}
+		response.setHeader("Access-Control-Allow-Methods", ALLOW_METHODS);
+		response.setHeader("Access-Control-Max-Age", MAX_AGE);
+
+		response.setHeader("Access-Control-Allow-Headers", ALLOW_HEADERS);
+		response.setHeader("Access-Control-Expose-Headers", EXPOSE_HEADERS);
+		response.setHeader("Access-Control-Allow-Credentials", ALLOW_CREDENTIALS);
+		/*
+		 * response.setHeader("X-Frame-Options", "SAMEORIGIN");
+		 * response.setHeader("X-Content-Type-Options", "nosniff");
+		 * response.setHeader("X-XSS-Protection", "1; mode=block");
+		 * response.setHeader("Cache-Control", "No-store"); response.setHeader("Pragma",
+		 * "no-cache");
+		 */
+
+		if (OPTIONS_METHOD.equalsIgnoreCase(request.getMethod())) {
+			response.setStatus(HttpServletResponse.SC_NO_CONTENT); // 204
+			response.setContentLength(0);
+			return;
+		}
+
+		if (request.isAsyncStarted()) {
+			LOGGER.debug("Skipping asyncStart as request is already async: {}", request.getRequestURI());
+			chain.doFilter(req, res);
+		}
+		else if (request.isAsyncSupported()) {
 			AsyncContext asyncContext = request.startAsync();
 			asyncContext.start(() -> {
 				try {
-					doFilterInternal(request, response, chain);
+					chain.doFilter(request, response);
 					asyncContext.complete();
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
 			});
 		} else {
-			doFilterInternal(request, response, chain);
-		}
-	}
-
-	/**
-	 * Processes a single HTTP request to add CORS headers and handle preflight requests.
-	 *
-	 * <p><b>Behavior</b></p>
-	 * <ul>
-	 *   <li>If the request contains an {@code Origin} header, the same value is echoed in
-	 *       {@code Access-Control-Allow-Origin} and {@code Vary: Origin} is set to ensure
-	 *       caches vary by origin.</li>
-	 *   <li>Sets {@code Access-Control-Allow-Methods}, {@code Access-Control-Max-Age},
-	 *       {@code Access-Control-Allow-Headers} (echoing {@code Access-Control-Request-Headers}
-	 *       when present), {@code Access-Control-Expose-Headers}, and
-	 *       {@code Access-Control-Allow-Credentials}.</li>
-	 *   <li>If the request method is {@code OPTIONS} (CORS preflight), responds with
-	 *       {@code 204 No Content} and returns without invoking the remaining filter chain.</li>
-	 *   <li>For all other methods, continues the filter chain.</li>
-	 * </ul>
-	 *
-	 * <p><b>Security notes</b></p>
-	 * <ul>
-	 *   <li>When {@code Access-Control-Allow-Credentials=true}, the filter must not use {@code *}
-	 *       for {@code Access-Control-Allow-Origin}; this method echoes the concrete request origin.</li>
-	 *   <li>Consider replacing origin echoing with an origin allow-list if stricter security is required.</li>
-	 * </ul>
-	 *
-	 * <p><b>Performance notes</b></p>
-	 * <ul>
-	 *   <li>Preflight requests return early (204) to avoid unnecessary work in downstream filters/servlets.</li>
-	 *   <li>Setting {@code Vary: Origin} prevents cache poisoning across different origins.</li>
-	 * </ul>
-	 *
-	 * @param request  the incoming HTTP request (never {@code null})
-	 * @param response the outgoing HTTP response (never {@code null})
-	 * @param chain    the filter chain to continue processing for non-preflight requests
-	 * @throws IOException      if an I/O error occurs during processing
-	 * @throws ServletException if a servlet error occurs during processing
-	 */
-	private void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-			throws IOException, ServletException {
-		try {
-			String origin = request.getHeader("Origin");
-			if (origin != null && !origin.isBlank()) {
-				// Echo specific origin (required when credentials=true)
-				response.setHeader("Access-Control-Allow-Origin", origin);
-				// Cache varies by Origin to avoid cross-origin cache poisoning
-				response.setHeader("Vary", "Origin");
-			}
-			response.setHeader("Access-Control-Allow-Methods", ALLOW_METHODS);
-			response.setHeader("Access-Control-Max-Age", MAX_AGE);
-
-			response.setHeader("Access-Control-Allow-Headers", ALLOW_HEADERS);
-			response.setHeader("Access-Control-Expose-Headers", EXPOSE_HEADERS);
-			response.setHeader("Access-Control-Allow-Credentials", ALLOW_CREDENTIALS);
-			/*
-			 * response.setHeader("X-Frame-Options", "SAMEORIGIN");
-			 * response.setHeader("X-Content-Type-Options", "nosniff");
-			 * response.setHeader("X-XSS-Protection", "1; mode=block");
-			 * response.setHeader("Cache-Control", "No-store"); response.setHeader("Pragma",
-			 * "no-cache");
-			 */
-
-			if (OPTIONS_METHOD.equalsIgnoreCase(request.getMethod())) {
-				response.setStatus(HttpServletResponse.SC_NO_CONTENT); // 204
-				response.setContentLength(0);
-				return;
-			}
-
-			chain.doFilter(request, response);
-		} catch (Exception e) {
-			LOGGER.error("CorsFilter error: {}", e.getMessage());
-			throw e;
+			chain.doFilter(req, res);
 		}
 	}
 
