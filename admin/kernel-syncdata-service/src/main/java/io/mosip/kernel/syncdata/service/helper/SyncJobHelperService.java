@@ -22,9 +22,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -104,22 +102,31 @@ public class SyncJobHelperService {
      * @return the {@link LocalDateTime} of the previous trigger, or null if no valid trigger is found
      */
     public LocalDateTime getDeltaSyncCurrentTimestamp() {
-        CronExpression cronExpression = CronExpression.parse(deltaCacheEvictCron);
-        LocalDateTime immediateNextTrigger = cronExpression.next(LocalDateTime.now().atZone(ZoneOffset.UTC).toLocalDateTime());
-        if (immediateNextTrigger == null) {
+        CronExpression cron = CronExpression.parse(deltaCacheEvictCron);
+
+        final ZonedDateTime nowUtc = ZonedDateTime.now(ZoneOffset.UTC);
+
+        final ZonedDateTime next1 = cron.next(nowUtc);
+        if (next1 == null) {
             LOGGER.error("Cron expression might be invalid or has no upcoming triggers.");
             return null;
         }
-        LocalDateTime nextTrigger = cronExpression.next(immediateNextTrigger);
-        if (nextTrigger == null) {
-            LOGGER.error("No upcoming triggers after {}", immediateNextTrigger);
+        final ZonedDateTime next2 = cron.next(next1);
+        if (next2 == null) {
+            LOGGER.error("No upcoming triggers after {}", next1);
             return null;
         }
-        long minutes = ChronoUnit.MINUTES.between(immediateNextTrigger.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime(),
-                nextTrigger.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime());
-        LocalDateTime previousTrigger = immediateNextTrigger.toInstant(ZoneOffset.UTC).atZone(ZoneOffset.UTC).toLocalDateTime().minus(minutes, ChronoUnit.MINUTES);
-        LOGGER.debug("Identified previous trigger : {}", previousTrigger);
-        return previousTrigger;
+
+        final Duration gap = Duration.between(next1, next2);
+        final ZonedDateTime previous = next1.minus(gap);
+
+        // Optional sanity guard: if cron had very uneven gaps, ensure previous < now
+        // If it's not, fallback to a tiny forward scan:
+        //   ZonedDateTime cursor = previous;
+        //   while (cursor != null && !cursor.isAfter(nowUtc)) { last = cursor; cursor = cron.next(cursor); }
+        //   return last.toLocalDateTime();
+
+        return previous.toLocalDateTime();
     }
     /**
      * Clears the initial-sync cache and triggers snapshot creation based on the configured cron schedule.

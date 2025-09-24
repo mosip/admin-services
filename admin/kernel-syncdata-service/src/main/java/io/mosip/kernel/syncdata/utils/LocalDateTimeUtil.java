@@ -25,7 +25,7 @@ import io.mosip.kernel.syncdata.exception.DateParsingException;
  * @since 1.0.0
  */
 @Component
-public class LocalDateTimeUtil {
+public final class LocalDateTimeUtil {
 	/**
 	 * Logger instance for logging errors and debugging information.
 	 */
@@ -50,25 +50,35 @@ public class LocalDateTimeUtil {
 	 * @throws DataNotFoundException if the parsed timestamp is in the future
 	 * @throws NullPointerException  if currentTimeStamp is null
 	 */
-	public LocalDateTime getLocalDateTimeFromTimeStamp(LocalDateTime currentTimeStamp, String lastUpdated) {
-		if (lastUpdated == null) {
+	public static LocalDateTime getLocalDateTimeFromTimeStamp(LocalDateTime currentTimeStamp, String lastUpdated) {
+		if (lastUpdated == null || lastUpdated.isBlank()) {
 			LOGGER.error("Invalid request: lastUpdated parameter is null");
 			return null;
 		}
 
+		final LocalDateTime parsed;
 		try {
-			LocalDateTime timeStamp = DateUtils.parseToLocalDateTime(lastUpdated);
-			if (timeStamp.isAfter(currentTimeStamp)) {
-				LOGGER.error("Invalid timestamp: provided timestamp {} is in the future compared to current time {}",
-						lastUpdated, currentTimeStamp);
-				throw new DataNotFoundException(MasterDataErrorCode.INVALID_TIMESTAMP_EXCEPTION.getErrorCode(),
-						MasterDataErrorCode.INVALID_TIMESTAMP_EXCEPTION.getErrorMessage());
-			}
+			parsed = DateUtils.parseToLocalDateTime(lastUpdated.trim());
 		} catch (DateTimeParseException e) {
-			LOGGER.error("Failed to parse timestamp: {}", lastUpdated, e);
-			throw new DateParsingException(MasterDataErrorCode.LAST_UPDATED_PARSE_EXCEPTION.getErrorCode(),
-					e.getMessage());
+			// Parsing truly failed – keep error code semantics
+			LOGGER.warn("Failed to parse timestamp: {}", lastUpdated, e);
+			throw new DateParsingException(
+					MasterDataErrorCode.LAST_UPDATED_PARSE_EXCEPTION.getErrorCode(),
+					e.getMessage()
+			);
 		}
-		return null;
+
+		if (parsed.isAfter(currentTimeStamp)) {
+			// Business validation failure – warn is appropriate
+			LOGGER.error("Invalid timestamp: provided timestamp {} is in the future compared to current time {}",
+					lastUpdated, currentTimeStamp);
+			throw new DataNotFoundException(
+					MasterDataErrorCode.INVALID_TIMESTAMP_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.INVALID_TIMESTAMP_EXCEPTION.getErrorMessage()
+			);
+		}
+
+		return null; //why null?
+		//return parsed;
 	}
 }

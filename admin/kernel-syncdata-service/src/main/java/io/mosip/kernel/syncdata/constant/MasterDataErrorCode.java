@@ -1,7 +1,7 @@
 package io.mosip.kernel.syncdata.constant;
 
 public enum MasterDataErrorCode {
-	LAST_UPDATED_PARSE_EXCEPTION("KER_SNC-100", "Erro occurred while parsing lastUpdated timesatamp"),
+	LAST_UPDATED_PARSE_EXCEPTION("KER_SNC-100", "Error occurred while parsing lastUpdated timesatamp"),
 	APPLICATION_FETCH_EXCEPTION("KER-SNC-101", "Error occurred while fetching Applications"),
 	MACHINE_DETAIL_FETCH_EXCEPTION("KER-SNC-102", "Error occurred while fetching Machine Details"),
 	MACHINE_REG_CENTER_FETCH_EXCEPTION("KER-SNC-103", "Error occurred while fetching Machine Registration Center"),

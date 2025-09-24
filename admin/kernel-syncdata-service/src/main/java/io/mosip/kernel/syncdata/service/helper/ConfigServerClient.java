@@ -26,7 +26,7 @@ public class ConfigServerClient {
     private Environment environment;
 
     @Cacheable(
-            cacheNames = "sync-data-config-cache",
+            cacheNames = "initial-sync",
             key = "'config:' + #fileName",
             unless = "#result == null || #result.isEmpty()"
     )
