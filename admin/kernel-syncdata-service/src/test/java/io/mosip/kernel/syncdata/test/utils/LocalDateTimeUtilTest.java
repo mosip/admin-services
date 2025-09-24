@@ -32,7 +32,7 @@ public class LocalDateTimeUtilTest {
 
 	@Test
 	public void getLocalDateTimeTest() {
-		Assert.assertNull(LocalDateTimeUtil.getLocalDateTimeFromTimeStamp(LocalDateTime.now(), "2019-01-09T09:00:00.000Z"));
+		Assert.assertNotNull(LocalDateTimeUtil.getLocalDateTimeFromTimeStamp(LocalDateTime.now(), "2019-01-09T09:00:00.000Z"));
 	}
 
 	@Ignore

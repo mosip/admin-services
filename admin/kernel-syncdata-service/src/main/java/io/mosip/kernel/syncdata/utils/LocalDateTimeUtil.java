@@ -77,8 +77,6 @@ public final class LocalDateTimeUtil {
 					MasterDataErrorCode.INVALID_TIMESTAMP_EXCEPTION.getErrorMessage()
 			);
 		}
-
-		return null; //why null?
-		//return parsed;
+		return parsed;
 	}
 }

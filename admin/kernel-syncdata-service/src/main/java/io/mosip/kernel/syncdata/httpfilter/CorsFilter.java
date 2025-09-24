@@ -108,50 +108,33 @@ public class CorsFilter implements Filter {
 			throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
+		try {
+			String origin = request.getHeader("Origin");
+			if (origin != null && !origin.isBlank()) {
+				// Echo specific origin (required when credentials=true)
+				response.setHeader("Access-Control-Allow-Origin", origin);
+				// Cache varies by Origin to avoid cross-origin cache poisoning
+				response.setHeader("Vary", "Origin");
+			}
+			response.setHeader("Access-Control-Allow-Methods", ALLOW_METHODS);
+			response.setHeader("Access-Control-Max-Age", MAX_AGE);
+			response.setHeader("Access-Control-Allow-Headers", ALLOW_HEADERS);
+			response.setHeader("Access-Control-Expose-Headers", EXPOSE_HEADERS);
+			response.setHeader("Access-Control-Allow-Credentials", ALLOW_CREDENTIALS);
+			/*
+			 * response.setHeader("X-Frame-Options", "SAMEORIGIN");
+			 * response.setHeader("X-Content-Type-Options", "nosniff");
+			 * response.setHeader("X-XSS-Protection", "1; mode=block");
+			 * response.setHeader("Cache-Control", "No-store"); response.setHeader("Pragma",
+			 * "no-cache");
+			 */
 
-		String origin = request.getHeader("Origin");
-		if (origin != null && !origin.isBlank()) {
-			// Echo specific origin (required when credentials=true)
-			response.setHeader("Access-Control-Allow-Origin", origin);
-			// Cache varies by Origin to avoid cross-origin cache poisoning
-			response.setHeader("Vary", "Origin");
-		}
-		response.setHeader("Access-Control-Allow-Methods", ALLOW_METHODS);
-		response.setHeader("Access-Control-Max-Age", MAX_AGE);
-
-		response.setHeader("Access-Control-Allow-Headers", ALLOW_HEADERS);
-		response.setHeader("Access-Control-Expose-Headers", EXPOSE_HEADERS);
-		response.setHeader("Access-Control-Allow-Credentials", ALLOW_CREDENTIALS);
-		/*
-		 * response.setHeader("X-Frame-Options", "SAMEORIGIN");
-		 * response.setHeader("X-Content-Type-Options", "nosniff");
-		 * response.setHeader("X-XSS-Protection", "1; mode=block");
-		 * response.setHeader("Cache-Control", "No-store"); response.setHeader("Pragma",
-		 * "no-cache");
-		 */
-
-		if (OPTIONS_METHOD.equalsIgnoreCase(request.getMethod())) {
-			response.setStatus(HttpServletResponse.SC_NO_CONTENT); // 204
-			response.setContentLength(0);
-			return;
-		}
-
-		if (request.isAsyncStarted()) {
-			LOGGER.debug("Skipping asyncStart as request is already async: {}", request.getRequestURI());
-			chain.doFilter(req, res);
-		}
-		else if (request.isAsyncSupported()) {
-			AsyncContext asyncContext = request.startAsync();
-			asyncContext.start(() -> {
-				try {
-					chain.doFilter(request, response);
-					asyncContext.complete();
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-			});
-		} else {
-			chain.doFilter(req, res);
+			if (!OPTIONS_METHOD.equalsIgnoreCase(request.getMethod())) {
+				chain.doFilter(req, res);
+			}
+		} catch (Exception e) {
+			LOGGER.error("CorsFilter error: {}", e.getMessage());
+			throw e;
 		}
 	}
 
