@@ -45,6 +45,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
@@ -433,41 +434,61 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	@Override
 	public CACertificates getPartnerCACertificates(LocalDateTime lastUpdated, LocalDateTime currentTimestamp) {
 		LOGGER.debug("Fetching CA certificates from {} to {}", lastUpdated, currentTimestamp);
-		CACertificates caCertificates = new CACertificates();
-		caCertificates.setCertificateDTOList(new ArrayList<CACertificateDTO>());
+		final long t0 = System.nanoTime();
 
 		if (lastUpdated == null) {
 			lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 		}
 
+		final long t1 = System.nanoTime();
 		List<CACertificateStore> certs = caCertificateStoreRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimestamp);
+		final long t2 = System.nanoTime();
+
+		final CACertificates caCertificates = new CACertificates();
+		caCertificates.setCertificateDTOList(new ArrayList<>());
+
 		if(certs == null){
-			LOGGER.warn("No CA certificates found for the given time range");
+			LOGGER.warn("No CA certificates found for the given time range lastUpdated={} currentTimestamp={}",
+					lastUpdated, currentTimestamp);
 			return caCertificates;
 		}
+		else {
+			for (CACertificateStore cert : certs) {
+				CACertificateDTO dto = new CACertificateDTO();
+				dto.setCertId(cert.getCertId());
+				dto.setCertIssuer(cert.getCertIssuer());
+				dto.setCertSubject(cert.getCertSubject());
+				dto.setCertSerialNo(cert.getCertSerialNo());
+				dto.setCertNotAfter(cert.getCertNotAfter());
+				dto.setCertNotBefore(cert.getCertNotBefore());
+				dto.setCertThumbprint(cert.getCertThumbprint());
+				dto.setCertData(cert.getCertData());
+				dto.setIssuerId(cert.getIssuerId());
+				dto.setCreatedtimes(cert.getCreatedtimes());
+				dto.setPartnerDomain(cert.getPartnerDomain());
+				dto.setCrlUri(cert.getCrlUri());
+				dto.setCreatedBy(cert.getCreatedBy());
+				dto.setUpdatedBy(cert.getUpdatedBy());
+				dto.setUpdatedtimes(cert.getUpdatedtimes());
+				dto.setIsDeleted(cert.getIsDeleted());
+				dto.setDeletedtimes(cert.getDeletedtimes());
+				caCertificates.getCertificateDTOList().add(dto);
+			}
+		}
+		final long t3 = System.nanoTime();
+		// --- timings ---
+		long sanitizeMs = Duration.ofNanos(t1 - t0).toMillis();
+		long queryMs    = Duration.ofNanos(t2 - t1).toMillis();
+		long mapMs      = Duration.ofNanos(t3 - t2).toMillis();
+		long totalMs    = Duration.ofNanos(t3 - t0).toMillis();
 
-		certs.forEach(cert -> {
-			CACertificateDTO caCertDto = new CACertificateDTO();
-			caCertDto.setCertId(cert.getCertId());
-			caCertDto.setCertIssuer(cert.getCertIssuer());
-			caCertDto.setCertSubject(cert.getCertSubject());
-			caCertDto.setCertSerialNo(cert.getCertSerialNo());
-			caCertDto.setCertNotAfter(cert.getCertNotAfter());
-			caCertDto.setCertNotBefore(cert.getCertNotBefore());
-			caCertDto.setCertThumbprint(cert.getCertThumbprint());
-			caCertDto.setCertData(cert.getCertData());
-			caCertDto.setIssuerId(cert.getIssuerId());
-			caCertDto.setCreatedtimes(cert.getCreatedtimes());
-			caCertDto.setPartnerDomain(cert.getPartnerDomain());
-			caCertDto.setCrlUri(cert.getCrlUri());
-			caCertDto.setCreatedBy(cert.getCreatedBy());
-			caCertDto.setUpdatedBy(cert.getUpdatedBy());
-			caCertDto.setUpdatedtimes(cert.getUpdatedtimes());
-			caCertDto.setIsDeleted(cert.getIsDeleted());
-			caCertDto.setDeletedtimes(cert.getDeletedtimes());
-			caCertificates.getCertificateDTOList().add(caCertDto);
-		});
-		LOGGER.debug("Fetched {} CA certificates", caCertificates.getCertificateDTOList().size());
+		int count = caCertificates.getCertificateDTOList().size();
+		long avgMapUs = (count == 0) ? 0 : Duration.ofNanos((t3 - t2) / count).toNanos() / 1_000;
+
+		LOGGER.info("syncdata.cacerts timings | sanitize={}ms | query={}ms | map={}ms (avg={}µs/item) | total={}ms | range=[{}, {}] | count={}",
+				sanitizeMs, queryMs, mapMs, avgMapUs, totalMs, lastUpdated, currentTimestamp, count);
+
+		LOGGER.info("Fetched {} CA certificates", count);
 		return caCertificates;
 	}
 
