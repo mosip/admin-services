@@ -1580,7 +1580,6 @@ public class SyncMasterDataServiceHelper {
 		regDTO.setAddressLine3(regEntity.getAddressLine3());
 		regDTO.setLatitude(regEntity.getLatitude());
 		regDTO.setLongitude(regEntity.getLongitude());
-
 		regDTO.setLocationCode(regEntity.getLocationCode());
 		regDTO.setHolidayLocationCode(regEntity.getHolidayLocationCode());
 		regDTO.setContactPhone(regEntity.getContactPhone());
