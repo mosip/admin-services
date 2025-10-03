@@ -1,19 +1,38 @@
 package io.mosip.kernel.masterdata.test.controller;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
+import io.mosip.kernel.masterdata.constant.BlocklistedWordsErrorCode;
+import io.mosip.kernel.masterdata.constant.LocationErrorCode;
+import io.mosip.kernel.masterdata.dto.*;
+import io.mosip.kernel.masterdata.dto.getresponse.*;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
+import io.mosip.kernel.masterdata.dto.response.LocationPostResponseDto;
+import io.mosip.kernel.masterdata.dto.response.LocationPutResponseDto;
+import io.mosip.kernel.masterdata.entity.Holiday;
+import io.mosip.kernel.masterdata.entity.IdType;
+import io.mosip.kernel.masterdata.entity.Location;
+import io.mosip.kernel.masterdata.entity.RegistrationCenter;
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
+import io.mosip.kernel.masterdata.repository.HolidayRepository;
+import io.mosip.kernel.masterdata.repository.IdTypeRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
+import io.mosip.kernel.masterdata.service.*;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.mosip.kernel.masterdata.utils.LocalDateTimeUtil;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,92 +53,19 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.masterdata.constant.BlocklistedWordsErrorCode;
-import io.mosip.kernel.masterdata.constant.LocationErrorCode;
-import io.mosip.kernel.masterdata.dto.ApplicationDto;
-import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
-import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
-import io.mosip.kernel.masterdata.dto.BlockListedWordsRequest;
-import io.mosip.kernel.masterdata.dto.BlocklistedWordListRequestDto;
-import io.mosip.kernel.masterdata.dto.BlocklistedWordsDto;
-import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
-import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
-import io.mosip.kernel.masterdata.dto.ExceptionalHolidayDto;
-import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.LocationDto;
-import io.mosip.kernel.masterdata.dto.LocationHierarchyLevelDto;
-import io.mosip.kernel.masterdata.dto.LocationHierarchyLevelResponseDto;
-import io.mosip.kernel.masterdata.dto.TemplateDto;
-import io.mosip.kernel.masterdata.dto.WeekDaysResponseDto;
-import io.mosip.kernel.masterdata.dto.WorkingDaysResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.BiometricAttributeResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.BlockListedWordsResponse;
-import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.ExceptionalHolidayResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
-import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.WeekDaysDto;
-import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
-import io.mosip.kernel.masterdata.dto.request.FilterDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
-import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
-import io.mosip.kernel.masterdata.dto.response.LocationPostResponseDto;
-import io.mosip.kernel.masterdata.dto.response.LocationPutResponseDto;
-import io.mosip.kernel.masterdata.entity.Holiday;
-import io.mosip.kernel.masterdata.entity.IdType;
-import io.mosip.kernel.masterdata.entity.Location;
-import io.mosip.kernel.masterdata.entity.RegistrationCenter;
-import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
-import io.mosip.kernel.masterdata.exception.DataNotFoundException;
-import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-import io.mosip.kernel.masterdata.repository.DynamicFieldRepository;
-import io.mosip.kernel.masterdata.repository.HolidayRepository;
-import io.mosip.kernel.masterdata.repository.IdTypeRepository;
-import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
-import io.mosip.kernel.masterdata.service.ApplicationService;
-import io.mosip.kernel.masterdata.service.BiometricAttributeService;
-import io.mosip.kernel.masterdata.service.BiometricTypeService;
-import io.mosip.kernel.masterdata.service.BlocklistedWordsService;
-import io.mosip.kernel.masterdata.service.DeviceService;
-import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
-import io.mosip.kernel.masterdata.service.DeviceTypeService;
-import io.mosip.kernel.masterdata.service.DocumentCategoryService;
-import io.mosip.kernel.masterdata.service.DocumentTypeService;
-import io.mosip.kernel.masterdata.service.DynamicFieldService;
-import io.mosip.kernel.masterdata.service.ExceptionalHolidayService;
-import io.mosip.kernel.masterdata.service.HolidayService;
-import io.mosip.kernel.masterdata.service.LanguageService;
-import io.mosip.kernel.masterdata.service.LocationHierarchyService;
-import io.mosip.kernel.masterdata.service.LocationService;
-import io.mosip.kernel.masterdata.service.MachineService;
-import io.mosip.kernel.masterdata.service.MachineSpecificationService;
-import io.mosip.kernel.masterdata.service.MachineTypeService;
-import io.mosip.kernel.masterdata.service.RegWorkingNonWorkingService;
-import io.mosip.kernel.masterdata.service.RegistrationCenterService;
-import io.mosip.kernel.masterdata.service.RegistrationCenterTypeService;
-import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
-import io.mosip.kernel.masterdata.service.TemplateService;
-import io.mosip.kernel.masterdata.service.ZoneService;
-import io.mosip.kernel.masterdata.test.TestBootApplication;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
-import io.mosip.kernel.masterdata.utils.LocalDateTimeUtil;
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
@@ -1262,13 +1208,22 @@ public class MasterdataControllerTest {
 
 		StatusResponseDto dto = new StatusResponseDto();
 		dto.setStatus("Status updated successfully for BlocklistedWords");
-		Mockito.when(blocklistedWordsService.updateBlockListedWordStatus(Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(blocklistedWordsService.updateBlockListedWordStatus(Mockito.any(BlockListedWordStatusUpdateDto.class)))
 				.thenReturn(dto);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/blocklistedwords").characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).param("word", "ABC")
-				.param("isActive", "true");
-		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+		BlockListedWordStatusUpdateDto requestDto = new BlockListedWordStatusUpdateDto();
+		requestDto.setWord("ABC");
+		requestDto.setIsActive(true);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String requestBody = objectMapper.writeValueAsString(requestDto);
+
+		mockMvc.perform(MockMvcRequestBuilders.patch("/blocklistedwords")
+						.characterEncoding("UTF-8")
+						.accept(MediaType.APPLICATION_JSON_VALUE)
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(requestBody))
+						.andExpect(status().isOk());
 	}
 
 	@Test
