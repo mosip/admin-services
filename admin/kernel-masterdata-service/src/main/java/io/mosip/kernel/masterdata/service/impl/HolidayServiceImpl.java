@@ -243,20 +243,29 @@ public class HolidayServiceImpl implements HolidayService {
 					entity.setIsActive(existingHoliday.get().getIsActive());
 				}
 				else {
-					entity.setHolidayId(holidayRepository.findMaxHolidayId()+1);
+					Optional<Holiday> existingSameHoliday = holidayRepository.findFirstByHolidayDateAndLocationCode(
+						holidayDto.getHolidayDate(),
+						holidayDto.getLocationCode()
+					);
+					if (existingSameHoliday.isPresent()) {
+						entity.setHolidayId(existingSameHoliday.get().getHolidayId());
+						entity.setIsActive(existingSameHoliday.get().getIsActive());
+					} else {
+						entity.setHolidayId(holidayRepository.findMaxHolidayId() + 1);
+					}
 				}
 			
-			holiday = holidayRepository.save(entity);
-			/*
-			 * if (holiday.getIsActive() == true &&
-			 * supportedLang.contains(holiday.getLangCode())) { Holiday
-			 * primholiday=holidayRepository.
-			 * findHolidayByHolidayNameHolidayDateLocationCodeLangCode(holiday.
-			 * getHolidayName(),holiday.getHolidayDate(),
-			 * holiday.getLocationCode(),primaryLang); primholiday.setIsActive(true);
-			 * holidayRepository.update(primholiday); }
-			 */
-			MapperUtils.map(holiday, holidayId);
+				holiday = holidayRepository.save(entity);
+				/*
+				 * if (holiday.getIsActive() == true &&
+				 * supportedLang.contains(holiday.getLangCode())) { Holiday
+				 * primholiday=holidayRepository.
+				 * findHolidayByHolidayNameHolidayDateLocationCodeLangCode(holiday.
+				 * getHolidayName(),holiday.getHolidayDate(),
+				 * holiday.getLocationCode(),primaryLang); primholiday.setIsActive(true);
+				 * holidayRepository.update(primholiday); }
+				 */
+				MapperUtils.map(holiday, holidayId);
 			}
 		}catch (DataAccessLayerException | DataAccessException | IllegalArgumentException |  SecurityException e) {
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, Holiday.class.getSimpleName()),
