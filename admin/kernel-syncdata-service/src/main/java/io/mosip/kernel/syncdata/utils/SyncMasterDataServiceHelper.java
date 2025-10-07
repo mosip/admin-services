@@ -1972,7 +1972,7 @@ public class SyncMasterDataServiceHelper {
 		regDTO.setAddressLine2(regEntity.getAddressLine2());
 		regDTO.setAddressLine3(regEntity.getAddressLine3());
 		regDTO.setLatitude(regEntity.getLatitude());
-		regDTO.setLangCode(regEntity.getLongitude());
+		regDTO.setLongitude(regEntity.getLongitude());
 		regDTO.setLocationCode(regEntity.getLocationCode());
 		regDTO.setHolidayLocationCode(regEntity.getHolidayLocationCode());
 		regDTO.setContactPhone(regEntity.getContactPhone());
