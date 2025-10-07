@@ -51,3 +51,14 @@ COMMENT ON COLUMN master.machine_master.upd_by IS 'Updated By : ID or name of th
 COMMENT ON COLUMN master.machine_master.upd_dtimes IS 'Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.';
 COMMENT ON COLUMN master.machine_master.is_deleted IS 'IS_Deleted : Flag to mark whether the record is Soft deleted.';
 COMMENT ON COLUMN master.machine_master.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
+
+-- PERFORMANCE OPTIMIZATION INDEXES
+CREATE INDEX CONCURRENTLY idx_machine_keyindex_not_deleted ON master.machine_master (LOWER(key_index)) WHERE is_deleted = false OR is_deleted IS NULL;
+CREATE INDEX idx_machine_keyindex_lower ON master.machine_master (LOWER(key_index));
+CREATE INDEX IF NOT EXISTS idx_mac_master_regcntr_id_id ON master.machine_master (regcntr_id, id);
+CREATE INDEX IF NOT EXISTS idx_mac_master_cr_dtimes ON master.machine_master (cr_dtimes);
+CREATE INDEX IF NOT EXISTS idx_mac_master_upd_dtimes ON master.machine_master (upd_dtimes);
+CREATE INDEX IF NOT EXISTS idx_mac_master_del_dtimes ON master.machine_master (del_dtimes);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_mac_master_key_index_lower ON master.machine_master (LOWER(key_index));
+CREATE UNIQUE INDEX IF NOT EXISTS uq_mac_master_name_lower ON master.machine_master (LOWER(name)) WHERE is_deleted = false;
+CREATE UNIQUE INDEX IF NOT EXISTS uq_mac_master_key_index_lower ON master.machine_master (LOWER(key_index)) WHERE is_deleted = false;
