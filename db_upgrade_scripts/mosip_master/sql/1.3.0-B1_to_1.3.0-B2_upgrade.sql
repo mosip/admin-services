@@ -6,7 +6,7 @@ ALTER TABLE IF EXISTS master.ca_cert_store ADD COLUMN ca_cert_type character var
 CREATE INDEX idx_ca_cert_store_cr_dtimes ON master.ca_cert_store (cr_dtimes);
 CREATE INDEX idx_ca_cert_store_upd_dtimes ON master.ca_cert_store (upd_dtimes);
 CREATE INDEX idx_ca_cert_store_del_dtimes ON master.ca_cert_store (del_dtimes);
-CREATE INDEX idx_ca_cert_times ON ca_cert_store (createdtimes, updatedtimes, deletedtimes);
+CREATE INDEX idx_ca_cert_times ON ca_cert_store (cr_dtimes, upd_dtimes, del_dtimes);
 
 CREATE INDEX CONCURRENTLY idx_machine_keyindex_not_deleted ON master.machine_master (LOWER(key_index)) WHERE is_deleted = false OR is_deleted IS NULL;
 CREATE INDEX idx_machine_keyindex_lower ON master.machine_master (LOWER(key_index));
