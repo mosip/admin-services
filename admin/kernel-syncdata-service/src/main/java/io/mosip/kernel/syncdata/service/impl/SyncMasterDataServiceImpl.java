@@ -522,10 +522,10 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 
 
 		CompletableFuture[] array = new CompletableFuture[futureMap.size()];
-		LOGGER.info("Size for futureMap", futureMap.size());
+		LOGGER.info("Size for futureMap: {}", futureMap.size());
 		CompletableFuture<Void> future = CompletableFuture.allOf(futureMap.values().toArray(array));
 
-		try {
+		/*try {
 			// Add timeout for debugging
 			future.get(60, TimeUnit.SECONDS);
 		} catch (TimeoutException te) {
@@ -540,8 +540,21 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		} catch (InterruptedException ie) {
 			Thread.currentThread().interrupt();
 			throw new SyncDataServiceException("KER-SYNC-003", "Async task interrupted", ie);
+		}*/
+
+		try {
+			future.join();
+		} catch (CompletionException e) {
+			LOGGER.error("Failed to fetch client settings V2 for regCenterId: {}, keyIndex: {}",
+					regCenterId, keyIndex.replaceAll("[\n\r]", "_"), e);
+			if (e.getCause() instanceof SyncDataServiceException) {
+				throw (SyncDataServiceException) e.getCause();
+			} else {
+				throw (RuntimeException) e.getCause();
+			}
 		}
 
+		LOGGER.info("future is finished");
 
 		List<SyncDataBaseDto> list = clientSettingsHelper.retrieveData(futureMap, regCenterMachineDto, true);
 		LOGGER.info("Retrieved {} data items for sync (base)", list.size());
