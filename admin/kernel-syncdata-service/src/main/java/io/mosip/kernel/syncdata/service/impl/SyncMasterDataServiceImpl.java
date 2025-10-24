@@ -556,10 +556,10 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 
 		LOGGER.info("future is finished");
 
-		List<SyncDataBaseDto> list = clientSettingsHelper.retrieveData(futureMap, regCenterMachineDto, true);
+		List<SyncDataBaseDto> list = new ArrayList<>(clientSettingsHelper.retrieveData(futureMap, regCenterMachineDto, true));
 		LOGGER.info("Retrieved {} data items for sync (base)", list.size());
 		list.addAll(clientSettingsHelper.getConfiguredScriptUrlDetail(regCenterMachineDto));
-		LOGGER.info("Retrieved {} script URL items for sync", clientSettingsHelper.getConfiguredScriptUrlDetail(regCenterMachineDto).size());
+		LOGGER.info("Retrieved {} script URL items for sync", list.size());
 		response.setDataToSync(list);
 		LOGGER.info("syncClientSettingsV2 completed for regCenterId: {}, keyIndex: {}",
 				regCenterId, keyIndex.replaceAll("[\n\r]", "_"));
