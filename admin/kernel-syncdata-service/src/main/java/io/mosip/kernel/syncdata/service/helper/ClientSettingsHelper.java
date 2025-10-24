@@ -116,7 +116,6 @@ public class ClientSettingsHelper {
 						(a, b) -> a,
 						ConcurrentHashMap::new
 				));
-		LOGGER.info("value for precomputedScriptUrls {}", precomputedScriptUrls);
 	}
 
 	/**
@@ -162,8 +161,6 @@ public class ClientSettingsHelper {
 	 */
 	public Map<Class<?>, CompletableFuture<?>> getInitiateDataFetch(String machineId, String regCenterId,
 															  LocalDateTime lastUpdated, LocalDateTime currentTimestamp, boolean isV2API, boolean deltaSync, String fullSyncEntities) {
-		LOGGER.info("Initiating data fetch for machineId: {}, regCenterId: {}, lastUpdated: {}, currentTimestamp: {}, isV2API: {}, deltaSync: {}, fullSyncEntities: {}",
-				machineId, regCenterId, lastUpdated, currentTimestamp, isV2API, deltaSync, fullSyncEntities);
 		List<String> entities = StringUtils.isNotBlank(fullSyncEntities) ? List.of(StringUtils.split(fullSyncEntities, ",")) : new ArrayList<>();
 
 		Map<Class<?>, CompletableFuture<?>> futuresMap = new ConcurrentHashMap<>();
@@ -240,9 +237,6 @@ public class ClientSettingsHelper {
 			futuresMap.put(ValidDocument.class,
 					hasURLDetails(ValidDocument.class, isV2API, deltaSync) ? getURLDetails(ValidDocument.class)
 							: serviceHelper.getValidDocuments(lastUpdated, currentTimestamp));
-
-			LOGGER.info("Non-V2 API entities added: TemplateFileFormat, TemplateType, RegistrationCenterMachine, RegistrationCenterUser, ValidDocument");
-
 		}
 
 		// Invoke master-data-service for specific entities
@@ -252,8 +246,6 @@ public class ClientSettingsHelper {
 		futuresMap.put(DynamicFieldDto.class,
 				hasURLDetails(DynamicFieldDto.class, isV2API, deltaSync) ? getURLDetails(DynamicFieldDto.class)
 						: serviceHelper.getAllDynamicFields(getLastUpdatedTimeFromEntity(DynamicFieldDto.class, lastUpdated, entities)));
-
-		LOGGER.info("Data fetch tasks initiated for entities: {}", futuresMap.keySet());
 
 		return futuresMap;
 	}
@@ -435,7 +427,6 @@ public class ClientSettingsHelper {
 				LOGGER.error("Failed to encrypt script URL detail for {}", scriptName, e);
 			}
 		});
-		LOGGER.info("List Values {}", list);
 		return list;
 	}
 
