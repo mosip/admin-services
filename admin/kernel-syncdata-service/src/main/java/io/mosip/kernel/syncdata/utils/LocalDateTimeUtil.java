@@ -54,14 +54,14 @@ public final class LocalDateTimeUtil {
 		LOGGER.info("Invoked getLocalDateTimeFromTimeStamp with currentTimeStamp: {} and lastUpdated: {}", currentTimeStamp, lastUpdated);
 
 		if (lastUpdated == null || lastUpdated.isBlank()) {
-			LOGGER.debug("lastUpdated parameter is null or blank, proceeding with full sync. currentTimeStamp: {}", currentTimeStamp);
+			LOGGER.info("lastUpdated parameter is null or blank, proceeding with full sync. currentTimeStamp: {}", currentTimeStamp);
 			return null;
 		}
 
 		final LocalDateTime parsed;
 		try {
 			parsed = DateUtils.parseToLocalDateTime(lastUpdated.trim());
-			LOGGER.debug("Successfully parsed lastUpdated '{}' into LocalDateTime: {}", lastUpdated, parsed);
+			LOGGER.info("Successfully parsed lastUpdated '{}' into LocalDateTime: {}", lastUpdated, parsed);
 		} catch (DateTimeParseException e) {
 			LOGGER.warn("Failed to parse lastUpdated timestamp '{}'. Error: {}", lastUpdated, e.getMessage(), e);
 			throw new DateParsingException(

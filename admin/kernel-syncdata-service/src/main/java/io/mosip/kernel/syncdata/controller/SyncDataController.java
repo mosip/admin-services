@@ -367,13 +367,13 @@ public class SyncDataController {
 		MDC.put(CLIENT_VERSION_KEY, clientVersion == null ? NA : clientVersion);
 		MDC.put(KEY_INDEX_KEY, keyIndex == null ? NA : keyIndex);
 		LOGGER.info("Request received to sync client settings V2");
-		LOGGER.debug("Parameters: keyIndex={}, regCenterId={}, lastUpdated={}, clientVersion={}, fullSyncEntities={}",
+		LOGGER.info("Parameters: keyIndex={}, regCenterId={}, lastUpdated={}, clientVersion={}, fullSyncEntities={}",
 				keyIndex.replaceAll("[\n\r]", "_"), regCenterId, lastUpdated, clientVersion, fullSyncEntities);
 		try {
 			LocalDateTime currentTimeStamp = lastUpdated == null ? syncJobHelperService.getFullSyncCurrentTimestamp() :
 					syncJobHelperService.getDeltaSyncCurrentTimestamp();
 			LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
-			LOGGER.debug("Calculated timestamps - current: {}, parsed lastUpdated: {}", currentTimeStamp, timestamp);
+			LOGGER.info("Calculated timestamps - current: {}, parsed lastUpdated: {}", currentTimeStamp, timestamp);
 			SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettingsV2(regCenterId, keyIndex,
 					timestamp, currentTimeStamp, clientVersion, fullSyncEntities);
 			syncDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
@@ -385,7 +385,7 @@ public class SyncDataController {
 		} finally {
 			MDC.remove(KEY_INDEX_KEY);
 			MDC.remove(CLIENT_VERSION_KEY);
-			LOGGER.debug("MDC keys cleared after request processing for syncClientSettingsV2");
+			LOGGER.info("MDC keys cleared after request processing for syncClientSettingsV2");
 		}
 	}
 

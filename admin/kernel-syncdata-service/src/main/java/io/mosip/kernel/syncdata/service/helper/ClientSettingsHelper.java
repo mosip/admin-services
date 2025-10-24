@@ -240,7 +240,7 @@ public class ClientSettingsHelper {
 					hasURLDetails(ValidDocument.class, isV2API, deltaSync) ? getURLDetails(ValidDocument.class)
 							: serviceHelper.getValidDocuments(lastUpdated, currentTimestamp));
 
-			LOGGER.debug("Non-V2 API entities added: TemplateFileFormat, TemplateType, RegistrationCenterMachine, RegistrationCenterUser, ValidDocument");
+			LOGGER.info("Non-V2 API entities added: TemplateFileFormat, TemplateType, RegistrationCenterMachine, RegistrationCenterUser, ValidDocument");
 
 		}
 

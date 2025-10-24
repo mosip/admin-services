@@ -507,19 +507,19 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	@Override
 	public SyncDataResponseDto syncClientSettingsV2(String regCenterId, String keyIndex, LocalDateTime lastUpdated,
 													LocalDateTime currentTimestamp, String clientVersion, String fullSyncEntities) {
-		LOGGER.debug("syncClientSettingsV2 invoked for regCenterId: {}, keyIndex: {}, timespan from {} to {}, clientVersion: {}",
+		LOGGER.info("syncClientSettingsV2 invoked for regCenterId: {}, keyIndex: {}, timespan from {} to {}, clientVersion: {}",
 				regCenterId, keyIndex.replaceAll("[\n\r]", "_"), lastUpdated, currentTimestamp, clientVersion);
 		SyncDataResponseDto response = new SyncDataResponseDto();
 		RegistrationCenterMachineDto regCenterMachineDto = serviceHelper.getRegistrationCenterMachine(regCenterId, keyIndex);
 		String machineId = regCenterMachineDto.getMachineId();
 		String registrationCenterId = regCenterMachineDto.getRegCenterId();
-		LOGGER.debug("Fetched RegistrationCenterMachineDto - machineId: {}, regCenterId: {}", machineId, registrationCenterId);
+		LOGGER.info("Fetched RegistrationCenterMachineDto - machineId: {}, regCenterId: {}", machineId, registrationCenterId);
 
 
 		Map<Class<?>, CompletableFuture<?>> futureMap = clientSettingsHelper.getInitiateDataFetch(
 				machineId, registrationCenterId,
 				lastUpdated, currentTimestamp, true, lastUpdated!=null, fullSyncEntities);
-		LOGGER.debug("Initiated data fetch tasks: {}", futureMap.keySet());
+		LOGGER.info("Initiated data fetch tasks: {}", futureMap.keySet());
 
 
 		CompletableFuture[] array = new CompletableFuture[futureMap.size()];
@@ -538,11 +538,11 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		}
 
 		List<SyncDataBaseDto> list = clientSettingsHelper.retrieveData(futureMap, regCenterMachineDto, true);
-		LOGGER.debug("Retrieved {} data items for sync (base)", list.size());
+		LOGGER.info("Retrieved {} data items for sync (base)", list.size());
 		list.addAll(clientSettingsHelper.getConfiguredScriptUrlDetail(regCenterMachineDto));
-		LOGGER.debug("Retrieved {} script URL items for sync", clientSettingsHelper.getConfiguredScriptUrlDetail(regCenterMachineDto).size());
+		LOGGER.info("Retrieved {} script URL items for sync", clientSettingsHelper.getConfiguredScriptUrlDetail(regCenterMachineDto).size());
 		response.setDataToSync(list);
-		LOGGER.debug("syncClientSettingsV2 completed for regCenterId: {}, keyIndex: {}",
+		LOGGER.info("syncClientSettingsV2 completed for regCenterId: {}, keyIndex: {}",
 				regCenterId, keyIndex.replaceAll("[\n\r]", "_"));
 		return response;
 	}
