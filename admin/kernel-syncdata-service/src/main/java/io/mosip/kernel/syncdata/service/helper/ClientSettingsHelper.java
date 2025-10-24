@@ -116,6 +116,7 @@ public class ClientSettingsHelper {
 						(a, b) -> a,
 						ConcurrentHashMap::new
 				));
+		LOGGER.info("value for precomputedScriptUrls {}", precomputedScriptUrls);
 	}
 
 	/**
@@ -415,23 +416,29 @@ public class ClientSettingsHelper {
 	 * @return a list of encrypted {@link SyncDataBaseDto} for scripts
 	 */
 	public List<SyncDataBaseDto> getConfiguredScriptUrlDetail(RegistrationCenterMachineDto regCenterMachineDto) {
-		return precomputedScriptUrls.entrySet().parallelStream()
-				.map(entry -> {
-					try {
-						TpmCryptoRequestDto request = new TpmCryptoRequestDto();
-						request.setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(entry.getValue()).getBytes()));
-						request.setPublicKey(regCenterMachineDto.getPublicKey());
-						request.setClientType(regCenterMachineDto.getClientType());
-						TpmCryptoResponseDto response = clientCryptoManagerService.csEncrypt(request);
-						return new SyncDataBaseDto(entry.getKey(), "script", response.getValue());
-					} catch (Exception e) {
-						LOGGER.error("Encryption failed for script: {}", entry.getKey(), e);
-						return null;
-					}
-				})
-				.filter(Objects::nonNull)
-				.collect(Collectors.toList());
+		List<SyncDataBaseDto> list = new ArrayList<>();
+		precomputedScriptUrls.forEach((scriptName, scriptDetail) -> {
+			try {
+				// Convert map value to Base64 encoded JSON
+				String json = mapper.getObjectAsJsonString(scriptDetail);
+				String encodedValue = CryptoUtil.encodeToURLSafeBase64(json.getBytes());
+				// Prepare encryption request
+				TpmCryptoRequestDto request = new TpmCryptoRequestDto();
+				request.setValue(encodedValue);
+				request.setPublicKey(regCenterMachineDto.getPublicKey());
+				request.setClientType(regCenterMachineDto.getClientType());
+				// Encrypt the value
+				TpmCryptoResponseDto response = clientCryptoManagerService.csEncrypt(request);
+				// Add result to list
+				list.add(new SyncDataBaseDto(scriptName, "script", response.getValue()));
+			} catch (Exception e) {
+				LOGGER.error("Failed to encrypt script URL detail for {}", scriptName, e);
+			}
+		});
+		LOGGER.info("List Values {}", list);
+		return list;
 	}
+
 
 	/**
 	 * Asynchronously retrieves URL details for the given class.
