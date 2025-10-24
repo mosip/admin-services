@@ -49,8 +49,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
+import java.util.concurrent.*;
 
 /**
  * Implementation of {@link SyncMasterDataService} for synchronizing client settings and certificates.
@@ -523,19 +522,26 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 
 
 		CompletableFuture[] array = new CompletableFuture[futureMap.size()];
+		LOGGER.info("Size for futureMap", futureMap.size());
 		CompletableFuture<Void> future = CompletableFuture.allOf(futureMap.values().toArray(array));
 
 		try {
-			future.join();
-		} catch (CompletionException e) {
-			LOGGER.error("Failed to fetch client settings V2 for regCenterId: {}, keyIndex: {}",
-					regCenterId, keyIndex.replaceAll("[\n\r]", "_"), e);
-			if (e.getCause() instanceof SyncDataServiceException) {
-				throw (SyncDataServiceException) e.getCause();
-			} else {
-				throw (RuntimeException) e.getCause();
-			}
+			// Add timeout for debugging
+			future.get(60, TimeUnit.SECONDS);
+		} catch (TimeoutException te) {
+			LOGGER.error("Timeout waiting for async tasks. Checking which futures are incomplete:");
+			futureMap.forEach((cls, f) ->
+					LOGGER.error("Task {} -> done={}, exceptional={}",
+							cls.getSimpleName(), f.isDone(), f.isCompletedExceptionally())
+			);
+			throw new SyncDataServiceException("KER-SYNC-001", "Timeout waiting for async tasks", te);
+		} catch (ExecutionException ee) {
+			throw new SyncDataServiceException("KER-SYNC-002", "Async task failed", ee.getCause());
+		} catch (InterruptedException ie) {
+			Thread.currentThread().interrupt();
+			throw new SyncDataServiceException("KER-SYNC-003", "Async task interrupted", ie);
 		}
+
 
 		List<SyncDataBaseDto> list = clientSettingsHelper.retrieveData(futureMap, regCenterMachineDto, true);
 		LOGGER.info("Retrieved {} data items for sync (base)", list.size());
