@@ -513,10 +513,14 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		RegistrationCenterMachineDto regCenterMachineDto = serviceHelper.getRegistrationCenterMachine(regCenterId, keyIndex);
 		String machineId = regCenterMachineDto.getMachineId();
 		String registrationCenterId = regCenterMachineDto.getRegCenterId();
+		LOGGER.debug("Fetched RegistrationCenterMachineDto - machineId: {}, regCenterId: {}", machineId, registrationCenterId);
+
 
 		Map<Class<?>, CompletableFuture<?>> futureMap = clientSettingsHelper.getInitiateDataFetch(
 				machineId, registrationCenterId,
 				lastUpdated, currentTimestamp, true, lastUpdated!=null, fullSyncEntities);
+		LOGGER.debug("Initiated data fetch tasks: {}", futureMap.keySet());
+
 
 		CompletableFuture[] array = new CompletableFuture[futureMap.size()];
 		CompletableFuture<Void> future = CompletableFuture.allOf(futureMap.values().toArray(array));
@@ -534,7 +538,9 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		}
 
 		List<SyncDataBaseDto> list = clientSettingsHelper.retrieveData(futureMap, regCenterMachineDto, true);
+		LOGGER.debug("Retrieved {} data items for sync (base)", list.size());
 		list.addAll(clientSettingsHelper.getConfiguredScriptUrlDetail(regCenterMachineDto));
+		LOGGER.debug("Retrieved {} script URL items for sync", clientSettingsHelper.getConfiguredScriptUrlDetail(regCenterMachineDto).size());
 		response.setDataToSync(list);
 		LOGGER.debug("syncClientSettingsV2 completed for regCenterId: {}, keyIndex: {}",
 				regCenterId, keyIndex.replaceAll("[\n\r]", "_"));

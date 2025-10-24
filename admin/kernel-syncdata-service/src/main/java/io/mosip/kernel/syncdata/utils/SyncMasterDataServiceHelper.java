@@ -1721,6 +1721,7 @@ public class SyncMasterDataServiceHelper {
 	 */
 	public RegistrationCenterMachineDto getRegistrationCenterMachine(String registrationCenterId, String keyIndex)
 			throws SyncDataServiceException {
+		logger.info("Fetching RegistrationCenterMachine for regCenterId: {}, keyIndex: {}", registrationCenterId, keyIndex);
 		try {
 			//get the machine entry without status check
 			Machine machine = machineRepository.findOneByKeyIndexIgnoreCase(keyIndex);
@@ -1737,6 +1738,8 @@ public class SyncMasterDataServiceHelper {
 			if (registrationCenterId != null && !mappedRegCenterId.equals(registrationCenterId))
 				throw new RequestException(MasterDataErrorCode.REG_CENTER_UPDATED.getErrorCode(),
 						MasterDataErrorCode.REG_CENTER_UPDATED.getErrorMessage());
+
+			logger.info("Successfully created RegistrationCenterMachineDto for regCenterId: {}, keyIndex: {}", mappedRegCenterId, keyIndex);
 
 			return new RegistrationCenterMachineDto(mappedRegCenterId,machine.getId(), machine.getPublicKey(),
 					machine.getMachineSpecId(), machine.getMachineSpecification() != null ?

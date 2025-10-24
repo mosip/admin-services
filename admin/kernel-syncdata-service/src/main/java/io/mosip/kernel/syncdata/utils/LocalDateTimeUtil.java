@@ -51,17 +51,19 @@ public final class LocalDateTimeUtil {
 	 * @throws NullPointerException  if currentTimeStamp is null
 	 */
 	public static LocalDateTime getLocalDateTimeFromTimeStamp(LocalDateTime currentTimeStamp, String lastUpdated) {
+		LOGGER.info("Invoked getLocalDateTimeFromTimeStamp with currentTimeStamp: {} and lastUpdated: {}", currentTimeStamp, lastUpdated);
+
 		if (lastUpdated == null || lastUpdated.isBlank()) {
-			LOGGER.debug("lastUpdated parameter is null, proceeding with full sync");
+			LOGGER.debug("lastUpdated parameter is null or blank, proceeding with full sync. currentTimeStamp: {}", currentTimeStamp);
 			return null;
 		}
 
 		final LocalDateTime parsed;
 		try {
 			parsed = DateUtils.parseToLocalDateTime(lastUpdated.trim());
+			LOGGER.debug("Successfully parsed lastUpdated '{}' into LocalDateTime: {}", lastUpdated, parsed);
 		} catch (DateTimeParseException e) {
-			// Parsing truly failed – keep error code semantics
-			LOGGER.warn("Failed to parse timestamp: {}", lastUpdated, e);
+			LOGGER.warn("Failed to parse lastUpdated timestamp '{}'. Error: {}", lastUpdated, e.getMessage(), e);
 			throw new DateParsingException(
 					MasterDataErrorCode.LAST_UPDATED_PARSE_EXCEPTION.getErrorCode(),
 					e.getMessage()
@@ -69,14 +71,14 @@ public final class LocalDateTimeUtil {
 		}
 
 		if (parsed.isAfter(currentTimeStamp)) {
-			// Business validation failure – warn is appropriate
-			LOGGER.error("Invalid timestamp: provided timestamp {} is in the future compared to current time {}",
-					lastUpdated, currentTimeStamp);
+			LOGGER.error("Invalid timestamp: lastUpdated '{}' is after currentTimeStamp '{}'", lastUpdated, currentTimeStamp);
 			throw new DataNotFoundException(
 					MasterDataErrorCode.INVALID_TIMESTAMP_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.INVALID_TIMESTAMP_EXCEPTION.getErrorMessage()
 			);
 		}
+
+		LOGGER.info("Returning parsed LocalDateTime: {}", parsed);
 		return parsed;
 	}
 }
