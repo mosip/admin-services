@@ -60,6 +60,16 @@ public class SyncMasterDataServiceHelper {
 	private final static Logger logger = LoggerFactory.getLogger(SyncMasterDataServiceHelper.class);
 
 	/**
+	 * Normalizes the last updated timestamp by setting it to epoch if null.
+	 *
+	 * @param lastUpdated the last updated timestamp
+	 * @return the normalized timestamp
+	 */
+	private LocalDateTime normalizeLastUpdated(LocalDateTime lastUpdated) {
+		return lastUpdated == null ? LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC) : lastUpdated;
+	}
+
+	/**
 	 * Utility for mapping entities to DTOs.
 	 */
 	@Autowired
@@ -384,7 +394,7 @@ public class SyncMasterDataServiceHelper {
 		}
 
 		try {
-			LocalDateTime effectiveLastUpdated = lastUpdated != null ? lastUpdated : LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			LocalDateTime effectiveLastUpdated = normalizeLastUpdated(lastUpdated);
 			List<Machine> machineDetailList = machineRepository.findMachineLatestCreatedUpdatedDeleted(regCenterId, effectiveLastUpdated, currentTimeStamp, machineId);
 			return CompletableFuture.completedFuture(convertMachinesToDto(machineDetailList));
 		} catch (DataAccessException e) {

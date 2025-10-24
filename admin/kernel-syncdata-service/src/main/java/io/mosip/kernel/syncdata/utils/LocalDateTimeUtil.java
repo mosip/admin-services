@@ -52,7 +52,7 @@ public final class LocalDateTimeUtil {
 	 */
 	public static LocalDateTime getLocalDateTimeFromTimeStamp(LocalDateTime currentTimeStamp, String lastUpdated) {
 		if (lastUpdated == null || lastUpdated.isBlank()) {
-			LOGGER.error("Invalid request: lastUpdated parameter is null");
+			LOGGER.debug("lastUpdated parameter is null, proceeding with full sync");
 			return null;
 		}
 
