@@ -23,7 +23,6 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.*;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -106,19 +105,19 @@ public class SyncJobHelperService {
 
         final ZonedDateTime nowUtc = ZonedDateTime.now(ZoneOffset.UTC);
 
-        final ZonedDateTime next1 = cron.next(nowUtc);
-        if (next1 == null) {
+        final ZonedDateTime immediateNextTrigger = cron.next(nowUtc);
+        if (immediateNextTrigger == null) {
             LOGGER.error("Cron expression might be invalid or has no upcoming triggers.");
             return null;
         }
-        final ZonedDateTime next2 = cron.next(next1);
+        final ZonedDateTime next2 = cron.next(immediateNextTrigger);
         if (next2 == null) {
-            LOGGER.error("No upcoming triggers after {}", next1);
+            LOGGER.error("No upcoming triggers after {}", immediateNextTrigger);
             return null;
         }
 
-        final Duration gap = Duration.between(next1, next2);
-        final ZonedDateTime previous = next1.minus(gap);
+        final Duration gap = Duration.between(immediateNextTrigger, next2);
+        final ZonedDateTime previous = immediateNextTrigger.minus(gap);
 
         // Optional sanity guard: if cron had very uneven gaps, ensure previous < now
         // If it's not, fallback to a tiny forward scan:

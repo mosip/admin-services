@@ -54,11 +54,6 @@ import io.swagger.annotations.ApiParam;
 @RestController
 public class SyncDataController {
 
-	/**
-	 * Logger instance for logging errors and debugging information.
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(SyncDataController.class);
-
 	private static final String CLIENT_VERSION_KEY = "client_version";
 	private static final String KEY_INDEX_KEY = "key_index";
 	private static final String NA = "NA";
@@ -105,9 +100,6 @@ public class SyncDataController {
 			throws Throwable {
 		MDC.put(KEY_INDEX_KEY, keyIndex);
 		try {
-			LOGGER.debug("syncClientSettings invoked with keyIndex: {}, regCenterId: {}, lastUpdated: {}",
-					keyIndex.replaceAll("[\n\r]", "_"), regCenterId, lastUpdated);
-
 			LocalDateTime currentTimeStamp = lastUpdated == null ? syncJobHelperService.getFullSyncCurrentTimestamp() :
 					syncJobHelperService.getDeltaSyncCurrentTimestamp();
 			LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
@@ -116,8 +108,6 @@ public class SyncDataController {
 					timestamp, currentTimeStamp);
 
 			syncDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
-
-			LOGGER.debug("syncClientSettings completed for keyIndex: {}", keyIndex.replaceAll("[\n\r]", "_"));
 			return buildResponse(syncDataResponseDto);
 		} finally {
 			MDC.remove(KEY_INDEX_KEY);
@@ -140,14 +130,11 @@ public class SyncDataController {
 			@ApiParam("Application ID") @PathVariable("applicationId") String applicationId,
 			@ApiParam("Request timestamp as metadata") @RequestParam(value = "timeStamp", required = false) String timeStamp,
 			@ApiParam("Reference ID as metadata") @RequestParam(value = "referenceId", required = false) String referenceId) {
-		LOGGER.debug("getPublicKey invoked with applicationId: {}, timeStamp: {}, referenceId: {}",
-				applicationId, timeStamp, referenceId);
 		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
 		PublicKeyResponse<String> publicKeyResponse = syncConfigDetailsService.getPublicKey(applicationId, timeStamp,
 				referenceId);
 		publicKeyResponse.setLastSyncTime(currentTimeStamp);
 
-		LOGGER.debug("getPublicKey completed for applicationId: {}", applicationId);
 		return buildResponse(publicKeyResponse);
 	}
 
@@ -165,12 +152,9 @@ public class SyncDataController {
 	public ResponseWrapper<UploadPublicKeyResponseDto> validateKeyMachineMapping(
 			@ApiParam("public key in BASE64 encoded") @RequestBody @Valid RequestWrapper<UploadPublicKeyRequestDto> uploadPublicKeyRequestDto,
 			@RequestParam(value = "version", required = false) String clientVersion) {
-		LOGGER.debug("validateKeyMachineMapping invoked with clientVersion: {}", clientVersion);
 		MDC.put(CLIENT_VERSION_KEY, clientVersion == null ? NA : clientVersion);
 		try {
 			UploadPublicKeyResponseDto responseDto = masterDataService.validateKeyMachineMapping(uploadPublicKeyRequestDto.getRequest());
-			LOGGER.debug("validateKeyMachineMapping completed for machine: {}",
-					uploadPublicKeyRequestDto.getRequest().getMachineName().replaceAll("[\n\r]", "_"));
 			return buildResponse(responseDto);
 		} finally {
 			MDC.remove(CLIENT_VERSION_KEY);
@@ -187,8 +171,6 @@ public class SyncDataController {
 			@ApiParam("Domain") @RequestParam(name = "domain", required = false) String domain,
 			@ApiParam("Type") @RequestParam(name = "type", required = false) String type,
 			@ApiParam("Client version") @RequestParam(value = "version", required = false) String clientVersion) {
-		LOGGER.debug("getLatestPublishedIdSchema invoked with lastUpdated: {}, schemaVersion: {}, domain: {}, type: {}",
-				lastUpdated, schemaVersion, domain, type);
 		MDC.put(CLIENT_VERSION_KEY, clientVersion == null ? NA : clientVersion);
 		try {
 			LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
@@ -201,7 +183,6 @@ public class SyncDataController {
 				type = "schema";
 			}
 			JsonNode schema = masterDataService.getLatestPublishedIdSchema(timestamp, schemaVersion, domain, type);
-			LOGGER.debug("getLatestPublishedIdSchema completed for domain: {}, type: {}", domain, type);
 			return buildResponse(schema);
 		} finally {
 			MDC.remove(CLIENT_VERSION_KEY);
@@ -226,10 +207,7 @@ public class SyncDataController {
 			@ApiParam("Client version") @RequestParam(value = "version", required = false) String clientVersion) {
 		MDC.put(CLIENT_VERSION_KEY, clientVersion == null ? NA : clientVersion);
 		try {
-			LOGGER.debug("getCertificate invoked with applicationId: {}, referenceId: {}",
-					applicationId, referenceId.orElse("null"));
 			KeyPairGenerateResponseDto responseDto = masterDataService.getCertificate(applicationId, referenceId);
-			LOGGER.debug("getCertificate completed for applicationId: {}", applicationId);
 			return buildResponse(responseDto);
 		} finally {
 			MDC.remove(CLIENT_VERSION_KEY);
@@ -252,9 +230,7 @@ public class SyncDataController {
 			@ApiParam("Client version") @RequestParam(value = "version", required = false) String clientVersion) {
 		MDC.put(CLIENT_VERSION_KEY, clientVersion == null ? NA : clientVersion);
 		try {
-			LOGGER.debug("getClientPublicKey invoked with machineId: {}", machineId);
 			ClientPublicKeyResponseDto responseDto = masterDataService.getClientPublicKey(machineId);
-			LOGGER.debug("getClientPublicKey completed for machineId: {}", machineId);
 			return buildResponse(responseDto);
 		} finally {
 			MDC.remove(CLIENT_VERSION_KEY);
@@ -277,11 +253,9 @@ public class SyncDataController {
 			@ApiParam("Client version") @RequestParam(value = "version", required = false) String clientVersion) {
 		MDC.put(CLIENT_VERSION_KEY, clientVersion == null ? NA : clientVersion);
 		try {
-			LOGGER.debug("getMachineConfigDetails invoked with keyIndex: {}", keyIndex.replaceAll("[\n\r]", "_"));
 			String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
 			ConfigDto configDto = syncConfigDetailsService.getConfigDetails(keyIndex);
 			configDto.setLastSyncTime(currentTimeStamp);
-			LOGGER.info("getMachineConfigDetails completed for keyIndex: {}", keyIndex.replaceAll("[\n\r]", "_"));
 			return buildResponse(configDto);
 		} finally {
 			MDC.remove(CLIENT_VERSION_KEY);
@@ -302,11 +276,9 @@ public class SyncDataController {
 			@ApiParam("Machine key index") @RequestParam(value = "keyindex", required = true) String keyIndex) {
 		MDC.put(KEY_INDEX_KEY, keyIndex);
 		try {
-			LOGGER.debug("getUserDetailsBasedOnKeyIndex invoked with keyIndex: {}", keyIndex.replaceAll("[\n\r]", "_"));
 			String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
 			SyncUserDto syncUserDto = syncUserDetailsService.getAllUserDetailsBasedOnKeyIndex(keyIndex);
 			syncUserDto.setLastSyncTime(currentTimeStamp);
-			LOGGER.debug("getUserDetailsBasedOnKeyIndex completed for keyIndex: {}", keyIndex.replaceAll("[\n\r]", "_"));
 			return buildResponse(syncUserDto);
 		} finally {
 			MDC.remove(KEY_INDEX_KEY);
@@ -329,13 +301,10 @@ public class SyncDataController {
 			@ApiParam("Client version") @RequestParam(value = "version", required = false) String clientVersion) {
 		MDC.put(CLIENT_VERSION_KEY, clientVersion == null ? NA : clientVersion);
 		try {
-			LOGGER.debug("getCACertificates invoked with lastUpdated: {}", lastUpdated);
 			LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 			LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 			CACertificates caCertificates = masterDataService.getPartnerCACertificates(timestamp, currentTimeStamp);
 			caCertificates.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
-
-			LOGGER.info("getCACertificates completed with {} certificates", caCertificates.getCertificateDTOList().size());
 			return buildResponse(caCertificates);
 		} finally {
 			MDC.remove(CLIENT_VERSION_KEY);
@@ -367,15 +336,12 @@ public class SyncDataController {
 		MDC.put(CLIENT_VERSION_KEY, clientVersion == null ? NA : clientVersion);
 		MDC.put(KEY_INDEX_KEY, keyIndex == null ? NA : keyIndex);
 		try {
-			LOGGER.debug("syncClientSettingsV2 invoked with keyIndex: {}, regCenterId: {}, lastUpdated: {}, clientVersion: {}, fullSyncEntities: {}",
-					keyIndex.replaceAll("[\n\r]", "_"), regCenterId, lastUpdated, clientVersion, fullSyncEntities);
 			LocalDateTime currentTimeStamp = lastUpdated == null ? syncJobHelperService.getFullSyncCurrentTimestamp() :
 					syncJobHelperService.getDeltaSyncCurrentTimestamp();
 			LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 			SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettingsV2(regCenterId, keyIndex,
 					timestamp, currentTimeStamp, clientVersion, fullSyncEntities);
 			syncDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
-			LOGGER.debug("Sync completed successfully for keyIndex: {}", keyIndex.replaceAll("[\n\r]", "_"));
 			return buildResponse(syncDataResponseDto);
 		} finally {
 			MDC.remove(KEY_INDEX_KEY);
@@ -402,12 +368,7 @@ public class SyncDataController {
 			throws Exception {
 		MDC.put(CLIENT_VERSION_KEY, clientVersion == null ? NA : clientVersion);
 		try {
-			LOGGER.debug("downloadScript invoked with scriptName: {}, keyIndex: {}",
-					scriptName.replaceAll("[\n\r]", "_"), keyIndex.replaceAll("[\n\r]", "_"));
-			ResponseEntity<?> response = syncConfigDetailsService.getScript(scriptName, keyIndex);
-			LOGGER.debug("downloadScript completed for scriptName: {}, keyIndex: {}",
-					scriptName.replaceAll("[\n\r]", "_"), keyIndex.replaceAll("[\n\r]", "_"));
-			return response;
+			return syncConfigDetailsService.getScript(scriptName, keyIndex);
 		} finally {
 			MDC.remove(CLIENT_VERSION_KEY);
 		}
@@ -432,12 +393,7 @@ public class SyncDataController {
 			throws Exception {
 		MDC.put(CLIENT_VERSION_KEY, clientVersion == null ? NA : clientVersion);
 		try {
-			LOGGER.debug("downloadEntityData invoked with entityIdentifier: {}, keyIndex: {}",
-					entityIdentifier.replaceAll("[\n\r]", "_"), keyIndex.replaceAll("[\n\r]", "_"));
-			ResponseEntity<?> response = masterDataService.getClientSettingsJsonFile(entityIdentifier, keyIndex);
-			LOGGER.debug("downloadEntityData completed for entityIdentifier: {}, keyIndex: {}",
-					entityIdentifier.replaceAll("[\n\r]", "_"), keyIndex.replaceAll("[\n\r]", "_"));
-			return response;
+			return masterDataService.getClientSettingsJsonFile(entityIdentifier, keyIndex);
 		} finally {
 			MDC.remove(CLIENT_VERSION_KEY);
 		}
@@ -459,11 +415,9 @@ public class SyncDataController {
 			@ApiParam("Client version") @RequestParam(value = "version", required = false) String clientVersion) {
 		MDC.put(CLIENT_VERSION_KEY, clientVersion == null ? NA : clientVersion);
 		try {
-			LOGGER.debug("getUserDetailsBasedOnKeyIndexV2 invoked with keyIndex: {}", keyIndex.replaceAll("[\n\r]", "_"));
 			String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
 			SyncUserDto syncUserDto = syncUserDetailsService.getAllUserDetailsBasedOnKeyIndexV2(keyIndex);
 			syncUserDto.setLastSyncTime(currentTimeStamp);
-			LOGGER.debug("getUserDetailsBasedOnKeyIndexV2 completed for keyIndex: {}", keyIndex.replaceAll("[\n\r]", "_"));
 			return buildResponse(syncUserDto);
 		} finally {
 			MDC.remove(CLIENT_VERSION_KEY);

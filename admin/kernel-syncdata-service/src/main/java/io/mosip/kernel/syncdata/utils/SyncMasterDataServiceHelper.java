@@ -1857,39 +1857,5 @@ public class SyncMasterDataServiceHelper {
 				(result.getUpdatedDateTime() != null && lastUpdated.isBefore(result.getUpdatedDateTime())) ||
 				(result.getCreatedDateTime() != null && lastUpdated.isBefore(result.getCreatedDateTime())) );
 	}
-
-	/**
-	 * copy the properties from RegistrationCenterEntity to RegistrationCenterDTO
-	 * 
-	 * @param regEntity
-	 * @return
-	 */
-	private RegistrationCenterDto copyRegistrationCenterProperties(RegistrationCenter regEntity) {
-		RegistrationCenterDto regDTO = new RegistrationCenterDto();
-		regDTO.setId(regEntity.getId());
-		regDTO.setName(regEntity.getName());
-		regDTO.setCenterTypeCode(regEntity.getCenterTypeCode());
-		regDTO.setAddressLine1(regEntity.getAddressLine1());
-		regDTO.setAddressLine2(regEntity.getAddressLine2());
-		regDTO.setAddressLine3(regEntity.getAddressLine3());
-		regDTO.setLatitude(regEntity.getLatitude());
-		regDTO.setLongitude(regEntity.getLongitude());
-		regDTO.setLocationCode(regEntity.getLocationCode());
-		regDTO.setHolidayLocationCode(regEntity.getHolidayLocationCode());
-		regDTO.setContactPhone(regEntity.getContactPhone());
-		regDTO.setWorkingHours(regEntity.getWorkingHours());
-		regDTO.setNumberOfKiosks(regEntity.getNumberOfKiosks());
-		regDTO.setPerKioskProcessTime(regEntity.getPerKioskProcessTime());
-		regDTO.setCenterStartTime(regEntity.getCenterStartTime());
-		regDTO.setCenterEndTime(regEntity.getCenterEndTime());
-		regDTO.setTimeZone(regEntity.getTimeZone());
-		regDTO.setContactPerson(regEntity.getContactPerson());
-		regDTO.setLunchStartTime(regEntity.getLunchStartTime());
-		regDTO.setLunchEndTime(regEntity.getLunchEndTime());
-		regDTO.setIsDeleted(regEntity.getIsDeleted());
-		regDTO.setIsActive(regEntity.getIsActive());
-		regDTO.setLangCode(regEntity.getLangCode());
-		return regDTO;
-	}
 }
 

@@ -96,6 +96,9 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 	@Value("${mosip.kernel.syncdata.syncdata-version-id:v1.0}")
 	private String syncDataVersionId;
 
+	@Value("${mosip.kernel.syncdata.user.fetch.page.size:200}")
+	private int pageSize;
+
 	@Autowired
 	private UserDetailsRepository userDetailsRepository;
 
@@ -439,13 +442,12 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 	}
 
 	private List<RegistrationCenterUserDto> fetchUsersPaged(String regCenterId) {
-		final int PAGE_SIZE = 1000; // tune 500–2000
 		List<RegistrationCenterUserDto> out = new ArrayList<>(2048);
 		int page = 0;
 		org.springframework.data.domain.Page<UserDetails> p;
 		do {
 			p = userDetailsRepository.findPageByRegCenterId(
-					regCenterId, org.springframework.data.domain.PageRequest.of(page++, PAGE_SIZE));
+					regCenterId, org.springframework.data.domain.PageRequest.of(page++, pageSize));
 			for (UserDetails u : p.getContent()) {
 				RegistrationCenterUserDto dto = new RegistrationCenterUserDto();
 				dto.setIsActive(u.getIsActive());

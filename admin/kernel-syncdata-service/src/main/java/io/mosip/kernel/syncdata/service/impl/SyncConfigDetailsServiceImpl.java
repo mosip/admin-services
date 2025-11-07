@@ -291,8 +291,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
     public ResponseEntity getScript(String scriptName, String keyIndex) throws Exception {
         validateScriptName(scriptName);
         Machine machine = validateKeyIndexAndGetMachine(keyIndex);
-        LOGGER.debug("Fetching script {} for machine keyIndex: {}",
-                scriptName.replaceAll("[\n\r]", "_"), keyIndex.replaceAll("[\n\r]", "_"));
+        LOGGER.info("getScripts({}) started for machine : {}", io.mosip.kernel.syncdata.utils.ExceptionUtils.neutralizeParam(scriptName.replaceAll("[\n\r]", "_")), io.mosip.kernel.syncdata.utils.ExceptionUtils.neutralizeParam(keyIndex.replaceAll("[\n\r]", "_")));
 
         String content = configServerClient.fetch(scriptName);
         Boolean isEncrypted = environment.getProperty(String.format("mosip.sync.entity.encrypted.%s",
@@ -301,9 +300,6 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
         String responseBody = isEncrypted ? getEncryptedData(content, machine) : content;
         String fileSignature = keymanagerHelper.getFileSignature(
                 HMACUtils2.digestAsPlainText(content.getBytes(StandardCharsets.UTF_8)));
-
-        LOGGER.debug("Script {} fetched for machine: {}, encrypted: {}",
-                scriptName.replaceAll("[\n\r]", "_"), keyIndex.replaceAll("[\n\r]", "_"), isEncrypted);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.TEXT_PLAIN)

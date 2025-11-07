@@ -96,7 +96,7 @@ public class Config {
 	public FilterRegistrationBean<Filter> registerCORSFilterBean() {
 		try {
 			FilterRegistrationBean<Filter> corsBean = new FilterRegistrationBean<>();
-			corsBean.setFilter(new CorsFilter());
+			corsBean.setFilter(registerCORSFilter());
 			corsBean.setOrder(2);
 			return corsBean;
 		} catch (Exception e) {

@@ -67,16 +67,6 @@ public final class LocalDateTimeUtil {
 					e.getMessage()
 			);
 		}
-
-		if (parsed.isAfter(currentTimeStamp)) {
-			// Business validation failure – warn is appropriate
-			LOGGER.error("Invalid timestamp: provided timestamp {} is in the future compared to current time {}",
-					lastUpdated, currentTimeStamp);
-			throw new DataNotFoundException(
-					MasterDataErrorCode.INVALID_TIMESTAMP_EXCEPTION.getErrorCode(),
-					MasterDataErrorCode.INVALID_TIMESTAMP_EXCEPTION.getErrorMessage()
-			);
-		}
 		return parsed;
 	}
 }

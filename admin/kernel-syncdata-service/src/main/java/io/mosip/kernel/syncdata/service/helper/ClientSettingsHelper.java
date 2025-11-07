@@ -298,33 +298,33 @@ public class ClientSettingsHelper {
 					? (isDynamic ? "dynamic-url" : "structured-url")
 					: (isDynamic ? "dynamic"     : "structured");
 
-			List<SyncDataBaseDto> out = new ArrayList<>();
+			List<SyncDataBaseDto> syncDataBaseDtoList = new ArrayList<>();
 
 			switch (entityType) {
 				case "structured-url", "dynamic-url" -> {
 					SyncDataBaseDto dto =
 							getEncryptedSyncDataBaseDto(entry.getKey(), regCenterMachineDto, entityType, result);
-					if (dto != null) out.add(dto);
+					if (dto != null) syncDataBaseDtoList.add(dto);
 				}
 				case "dynamic" ->
-						handleDynamicData(castList(result), out, regCenterMachineDto, isV2API);
+						handleDynamicData(castList(result), syncDataBaseDtoList, regCenterMachineDto, isV2API);
 				case "structured" -> {
 					if (isV2API) {
 						serviceHelper.getSyncDataBaseDtoV2(entry.getKey().getSimpleName(),
 								entityType,
 								castList(result),
 								regCenterMachineDto,
-								out);
+								syncDataBaseDtoList);
 					} else {
 						serviceHelper.getSyncDataBaseDto(entry.getKey().getSimpleName(),
 								entityType,
 								castList(result),
 								regCenterMachineDto,
-								out);
+								syncDataBaseDtoList);
 					}
 				}
 			}
-			return out;
+			return syncDataBaseDtoList;
 
 		} catch (Throwable e) {
 			LOGGER.error("Failed to construct client settings response for entity: {}",
