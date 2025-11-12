@@ -261,9 +261,6 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
     @Override
     public ConfigDto getConfigDetails(String keyIndex) {
         Machine machine = validateKeyIndexAndGetMachine(keyIndex);
-        LOGGER.debug("Fetching config details for machine keyIndex: {}, machine: {}",
-                keyIndex.replaceAll("[\n\r]", "_"), machine.getName());
-
         JSONObject config = new JSONObject();
         JSONObject globalConfig = new JSONObject();
         JSONObject regConfig = parsePropertiesString(configServerClient.fetch(regCenterfileName));
@@ -273,7 +270,6 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
         ConfigDto configDto = new ConfigDto();
         configDto.setConfigDetail(config);
-        LOGGER.debug("Get ConfigDetails() {} completed", keyIndex.replaceAll("[\n\r]", "_"));
         return configDto;
     }
 
@@ -291,7 +287,8 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
     public ResponseEntity getScript(String scriptName, String keyIndex) throws Exception {
         validateScriptName(scriptName);
         Machine machine = validateKeyIndexAndGetMachine(keyIndex);
-        LOGGER.info("getScripts({}) started for machine : {}", io.mosip.kernel.syncdata.utils.ExceptionUtils.neutralizeParam(scriptName.replaceAll("[\n\r]", "_")), io.mosip.kernel.syncdata.utils.ExceptionUtils.neutralizeParam(keyIndex.replaceAll("[\n\r]", "_")));
+        LOGGER.info("getScripts({}) started for machine : {}", io.mosip.kernel.syncdata.utils.ExceptionUtils.neutralizeParam(scriptName),
+                io.mosip.kernel.syncdata.utils.ExceptionUtils.neutralizeParam(keyIndex));
 
         String content = configServerClient.fetch(scriptName);
         Boolean isEncrypted = environment.getProperty(String.format("mosip.sync.entity.encrypted.%s",
