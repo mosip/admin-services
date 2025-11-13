@@ -3,7 +3,7 @@ package io.mosip.kernel.syncdata.utils;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +25,7 @@ public class LocalDateTimeUtil {
 		LocalDateTime timeStamp = null;
 		if (lastUpdated != null) {
 			try {
-				timeStamp = DateUtils.parseToLocalDateTime(lastUpdated);
+				timeStamp = DateUtils2.parseToLocalDateTime(lastUpdated);
 				if (timeStamp.isAfter(currentTimeStamp)) {
 					throw new DataNotFoundException(MasterDataErrorCode.INVALID_TIMESTAMP_EXCEPTION.getErrorCode(),
 							MasterDataErrorCode.INVALID_TIMESTAMP_EXCEPTION.getErrorMessage());

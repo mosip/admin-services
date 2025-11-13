@@ -5,7 +5,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.service.helper.KeymanagerHelper;
@@ -73,8 +73,8 @@ public class SyncResponseBodyAdviceConfig implements ResponseBodyAdvice<Response
 			logger.error("", "", "", ExceptionUtils.parseException(e));
 		}
 		if (body != null) {
-			String timestamp = DateUtils.getUTCCurrentDateTimeString();
-			body.setResponsetime(DateUtils.convertUTCToLocalDateTime(timestamp));
+			String timestamp = DateUtils2.getUTCCurrentDateTimeString();
+			body.setResponsetime(DateUtils2.convertUTCToLocalDateTime(timestamp));
 			try {
 				response.getHeaders().add("response-signature", keymanagerHelper.getSignature(objectMapper.writeValueAsString(body)));
 			} catch (IOException e) {

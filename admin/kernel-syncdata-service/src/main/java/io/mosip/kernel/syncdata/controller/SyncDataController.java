@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
 import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
@@ -95,7 +95,7 @@ public class SyncDataController {
 		SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettings(regCenterId, keyIndex,
 				timestamp, currentTimeStamp);
 
-		syncDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
+		syncDataResponseDto.setLastSyncTime(DateUtils2.formatToISOString(currentTimeStamp));
 
 		ResponseWrapper<SyncDataResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(syncDataResponseDto);
@@ -119,7 +119,7 @@ public class SyncDataController {
 			@ApiParam("Timestamp as metadata") @RequestParam(value = "timeStamp", required = false) String timeStamp,
 			@ApiParam("Refrence Id as metadata") @RequestParam(value = "referenceId", required = false) String referenceId) {
 
-		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
+		String currentTimeStamp = DateUtils2.getUTCCurrentDateTimeString();
 		PublicKeyResponse<String> publicKeyResponse = syncConfigDetailsService.getPublicKey(applicationId, timeStamp,
 				referenceId);
 		publicKeyResponse.setLastSyncTime(currentTimeStamp);
@@ -211,7 +211,7 @@ public class SyncDataController {
 	public ResponseWrapper<ConfigDto> getMachineConfigDetails(@PathVariable(value = "keyIndex") String keyIndex,
 			@RequestParam(value = "version", required = false) String clientVersion) {
 		MDC.put("client_version", clientVersion == null ? "NA": clientVersion);
-		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
+		String currentTimeStamp = DateUtils2.getUTCCurrentDateTimeString();
 		ConfigDto syncConfigResponse = syncConfigDetailsService.getConfigDetails(keyIndex);
 		syncConfigResponse.setLastSyncTime(currentTimeStamp);
 		ResponseWrapper<ConfigDto> response = new ResponseWrapper<>();
@@ -229,7 +229,7 @@ public class SyncDataController {
 	@GetMapping("/userdetails")
 	public ResponseWrapper<SyncUserDto> getUserDetailsBasedOnKeyIndex(
 			@RequestParam(value = "keyindex", required = true) String keyIndex) {
-		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
+		String currentTimeStamp = DateUtils2.getUTCCurrentDateTimeString();
 		SyncUserDto syncUserDto = syncUserDetailsService.getAllUserDetailsBasedOnKeyIndex(keyIndex);
 		syncUserDto.setLastSyncTime(currentTimeStamp);
 		ResponseWrapper<SyncUserDto> response = new ResponseWrapper<>();
@@ -252,7 +252,7 @@ public class SyncDataController {
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		CACertificates caCertificates = masterDataService.getPartnerCACertificates(timestamp, currentTimeStamp);
 		ResponseWrapper<CACertificates> response = new ResponseWrapper<>();
-		caCertificates.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
+		caCertificates.setLastSyncTime(DateUtils2.formatToISOString(currentTimeStamp));
 		response.setResponse(caCertificates);
 		return response;
 	}
@@ -284,7 +284,7 @@ public class SyncDataController {
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettingsV2(regCenterId, keyIndex,
 				timestamp, currentTimeStamp, clientVersion, fullSyncEntities);
-		syncDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
+		syncDataResponseDto.setLastSyncTime(DateUtils2.formatToISOString(currentTimeStamp));
 		ResponseWrapper<SyncDataResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(syncDataResponseDto);
 		return response;
@@ -324,7 +324,7 @@ public class SyncDataController {
 			@RequestParam(value = "keyindex", required = true) String keyIndex,
 			@RequestParam(value = "version", required = false) String clientVersion) {
 		MDC.put("client_version", clientVersion == null ? "NA": clientVersion);
-		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
+		String currentTimeStamp = DateUtils2.getUTCCurrentDateTimeString();
 		SyncUserDto syncUserDto = syncUserDetailsService.getAllUserDetailsBasedOnKeyIndexV2(keyIndex);
 		syncUserDto.setLastSyncTime(currentTimeStamp);
 		ResponseWrapper<SyncUserDto> response = new ResponseWrapper<>();

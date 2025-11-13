@@ -11,7 +11,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.syncdata.constant.AdminServiceErrorCode;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.*;
@@ -234,7 +234,7 @@ public class SyncMasterDataServiceHelper {
 		List<LocationHierarchyDto> locationHierarchyLevelDtos = new ArrayList<LocationHierarchyDto>();
 
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(locationHirerarchyUrl);
-		if(lastUpdated != null) {	builder.queryParam("lastUpdated", DateUtils.formatToISOString(lastUpdated)); }
+		if(lastUpdated != null) {	builder.queryParam("lastUpdated", DateUtils2.formatToISOString(lastUpdated)); }
 		ResponseEntity<String> response = restTemplate.getForEntity(builder.build().toUri(), String.class);
 
 		if (response.getStatusCode().equals(HttpStatus.OK)) {
@@ -265,7 +265,7 @@ public class SyncMasterDataServiceHelper {
 		List<LocationHierarchyDto> locationHierarchyLevelDtos = new ArrayList<LocationHierarchyDto>();
 
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(locationHirerarchyUrl);
-		if(lastUpdated != null) {	builder.queryParam("lastUpdated", DateUtils.formatToISOString(lastUpdated)); }
+		if(lastUpdated != null) {	builder.queryParam("lastUpdated", DateUtils2.formatToISOString(lastUpdated)); }
 		ResponseEntity<String> response = restClient.getForEntity(builder.build().toUri(), String.class);
 
 		if (response.getStatusCode().equals(HttpStatus.OK)) {
@@ -1237,7 +1237,7 @@ public class SyncMasterDataServiceHelper {
 			int pageNo = 0;
 			do {
 				UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(dynamicfieldUrl);
-				if(lastUpdated != null) {	builder.queryParam("lastUpdated", DateUtils.formatToISOString(lastUpdated)); }
+				if(lastUpdated != null) {	builder.queryParam("lastUpdated", DateUtils2.formatToISOString(lastUpdated)); }
 				builder.queryParam("pageNumber", pageNo++);
 				//its with default sort on crd_dtimes
 				ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().toUri(), String.class);
@@ -1270,7 +1270,7 @@ public class SyncMasterDataServiceHelper {
 			int pageNo = 0;
 			do {
 				UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(dynamicfieldUrl);
-				if(lastUpdated != null) {	builder.queryParam("lastUpdated", DateUtils.formatToISOString(lastUpdated)); }
+				if(lastUpdated != null) {	builder.queryParam("lastUpdated", DateUtils2.formatToISOString(lastUpdated)); }
 				builder.queryParam("pageNumber", pageNo++);
 				//its with default sort on crd_dtimes
 				ResponseEntity<String> responseEntity = restClient.getForEntity(builder.build().toUri(), String.class);
