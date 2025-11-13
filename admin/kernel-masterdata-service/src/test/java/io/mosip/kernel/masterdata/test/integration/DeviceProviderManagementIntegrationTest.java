@@ -31,7 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.dto.DigitalIdDto;
@@ -161,7 +161,7 @@ public class DeviceProviderManagementIntegrationTest {
 		validateDeviceHistoryDto.setDeviceCode("10001");
 		validateDeviceHistoryDto.setDeviceServiceVersion("0.1v");
 		validateDeviceHistoryDto.setDigitalId(digitalIdDto);
-		validateDeviceHistoryDto.setTimeStamp(DateUtils.formatToISOString(LocalDateTime.now()));
+		validateDeviceHistoryDto.setTimeStamp(DateUtils2.formatToISOString(LocalDateTime.now()));
 
 		requestWrapper = new RequestWrapper<>();
 		requestWrapper.setId("1.0");

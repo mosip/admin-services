@@ -39,7 +39,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 
 /**
  * AuditUtil.
@@ -188,7 +188,7 @@ public class AuditUtil {
 				SecurityContextHolder.getContext().getAuthentication().getName() : username);
 		auditRequestDto.setCreatedBy(username == null ?
 				SecurityContextHolder.getContext().getAuthentication().getName() : username);
-		auditRequestDto.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
+		auditRequestDto.setActionTimeStamp(DateUtils2.getUTCCurrentDateTime());
 		auditRequestDto.setDescription(eventEnum.getDescription());
 		auditRequestDto.setEventType(eventEnum.getType());
 		auditRequestDto.setEventName(eventEnum.getName());

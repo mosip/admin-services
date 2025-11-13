@@ -25,7 +25,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.core.util.HMACUtils2;
 
 /**
@@ -103,7 +103,7 @@ public class HotlistSecurityManager {
 	 */
 	public String encrypt(String dataToEncrypt) throws HotlistAppException {
 		RequestWrapper<CryptomanagerRequestDto> requestWrapper = new RequestWrapper<>();
-		CryptomanagerRequestDto request = new CryptomanagerRequestDto(appId, refId, DateUtils.getUTCCurrentDateTime(),
+		CryptomanagerRequestDto request = new CryptomanagerRequestDto(appId, refId, DateUtils2.getUTCCurrentDateTime(),
 				CryptoUtil.encodeToURLSafeBase64(dataToEncrypt.getBytes()), null, null, true);
 		requestWrapper.setRequest(request);
 		return encryptDecryptData(restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_ENCRYPT, requestWrapper,
@@ -119,7 +119,7 @@ public class HotlistSecurityManager {
 	 */
 	public String decrypt(String dataToDecrypt) throws HotlistAppException {
 		RequestWrapper<CryptomanagerRequestDto> requestWrapper = new RequestWrapper<>();
-		CryptomanagerRequestDto request = new CryptomanagerRequestDto(appId, refId, DateUtils.getUTCCurrentDateTime(),
+		CryptomanagerRequestDto request = new CryptomanagerRequestDto(appId, refId, DateUtils2.getUTCCurrentDateTime(),
 				dataToDecrypt, null, null, true);
 		requestWrapper.setRequest(request);
 		return new String(CryptoUtil.decodeURLSafeBase64(encryptDecryptData(restBuilder
