@@ -71,7 +71,7 @@ public class IntegratedControllerTest {
 	@WithUserDetails(value = "reg-officer")
 	public void syncClientSettingsTest_dataFetchSucceeds() {
 
-		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
+		Map<Class<?>, CompletableFuture<?>> futuresMap = new HashMap<>();
 		lenient().when(clientSettingsHelper.getInitiateDataFetch(Mockito.anyString(), Mockito.anyString(), Mockito.any(),
 				Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anyString())).thenReturn(futuresMap);
 		String str3 = "{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
@@ -85,7 +85,7 @@ public class IntegratedControllerTest {
 	@WithUserDetails(value = "reg-officer")
 	public void syncClientSettingsTest_dataFetchFails() {
 
-		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
+		Map<Class<?>, CompletableFuture<?>> futuresMap = new HashMap<>();
 		lenient().when(clientSettingsHelper.getInitiateDataFetch(Mockito.anyString(), Mockito.anyString(), Mockito.any(),
 				Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anyString())).thenReturn(futuresMap);
 		String str3 = "{\"id\":null,\"version\":null,\"responsetime\":\"2021-12-08T09:52:44.551Z\",\"metadata\":null,\"response\":{\"jwtSignedData\":\"signed\",\"timestamp\":null},\"errors\":[]}";
@@ -119,7 +119,7 @@ public class IntegratedControllerTest {
 	//@WithUserDetails(value = "reg-officer")
 	public void testGetClientSettings_withFailedDataFetch_throwsException() {
 
-		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
+		Map<Class<?>, CompletableFuture<?>> futuresMap = new HashMap<>();
 		CompletableFuture c = new CompletableFuture<>();
 		c.completeExceptionally(new SyncDataServiceException("", ""));
 		futuresMap.put(Location.class, c);
@@ -141,7 +141,7 @@ public class IntegratedControllerTest {
 	//@WithUserDetails(value = "reg-officer")
 	public void syncClientSettingsTest_withCompletionException() {
 
-		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
+		Map<Class<?>, CompletableFuture<?>> futuresMap = new HashMap<>();
 		CompletableFuture c=new CompletableFuture<>();
 		c.completeExceptionally(new CompletionException("",new RuntimeException()));
 		futuresMap.put(Location.class, c);

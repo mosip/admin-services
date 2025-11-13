@@ -1,7 +1,7 @@
 package io.mosip.kernel.syncdata.constant;
 
 public enum MasterDataErrorCode {
-	LAST_UPDATED_PARSE_EXCEPTION("KER_SNC-100", "Erro occurred while parsing lastUpdated timesatamp"),
+	LAST_UPDATED_PARSE_EXCEPTION("KER_SNC-100", "Error occurred while parsing lastUpdated timesatamp"),
 	APPLICATION_FETCH_EXCEPTION("KER-SNC-101", "Error occurred while fetching Applications"),
 	MACHINE_DETAIL_FETCH_EXCEPTION("KER-SNC-102", "Error occurred while fetching Machine Details"),
 	MACHINE_REG_CENTER_FETCH_EXCEPTION("KER-SNC-103", "Error occurred while fetching Machine Registration Center"),
@@ -86,7 +86,8 @@ public enum MasterDataErrorCode {
 	DYNAMIC_FIELD_FETCH_FAILED("KER-SNC-167", "Dynamic fields fetch failed"),
 	LOCATION_HIERARCHY_DESERIALIZATION_FAILED("KER-SNC-168", "Location hierarchy deserialization failed"),
 	PERMITTED_CONFIG_FETCH_FAILED("KER-SNC-169", "Failed to fetch permitted local config"),
-	CLIENT_SETTINGS_DATA_FILE_NOT_FOUND("KER-SNC-170", "Entity file not found");
+	CLIENT_SETTINGS_DATA_FILE_NOT_FOUND("KER-SNC-170", "Entity file not found"),
+	LOCATION_HIERARCHY_FETCH_FAILED("KER-SNC-171", "Location hierarchy fetch failed");
 
 	private final String errorCode;
 	private final String errorMessage;
