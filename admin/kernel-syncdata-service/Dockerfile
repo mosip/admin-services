@@ -75,10 +75,13 @@ COPY ./target/kernel-syncdata-service-*.jar kernel-syncdata-service.jar
 # change permissions of file inside working dir
 RUN chown -R ${container_user}:${container_user} /home/${container_user}
 
+# ✅ One-liner: Add debugging tools (Linux + networking + Java debug symbols)
+RUN apk add --no-cache bash curl wget vim tcpdump net-tools iputils bind-tools busybox-extras strace lsof openjdk21-dbg && echo 'JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"' >> /etc/profile
+
 # select container user for all tasks
 USER ${container_user_uid}:${container_user_gid}
 
-EXPOSE 8089
+EXPOSE 8089 5005
 
 CMD wget -q --show-progress "${iam_adapter_url_env}" -O "${loader_path_env}"/kernel-auth-adapter.jar; \
     java -XX:-UseG1GC -XX:+ExplicitGCInvokesConcurrent -XX:-UseParallelGC -XX:+UseZGC -XX:+ZGenerational -XX:-UseShenandoahGC -XX:MaxGCPauseMillis=200  -XX:+UnlockExperimentalVMOptions -XX:+UseStringDeduplication -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8 -XX:+UseCompressedOops \
