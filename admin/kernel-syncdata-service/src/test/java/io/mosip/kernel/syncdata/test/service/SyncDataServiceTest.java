@@ -131,9 +131,6 @@ public class SyncDataServiceTest {
 	@Mock
 	private CACertificateStoreRepository caCertificateStoreRepository;
 
-	@Mock
-	LocalDateTimeUtil localDateTimeUtil;
-
 	@Value("${mosip.kernel.syncdata-service-machine-url}")
 	private String machineUrl;
 

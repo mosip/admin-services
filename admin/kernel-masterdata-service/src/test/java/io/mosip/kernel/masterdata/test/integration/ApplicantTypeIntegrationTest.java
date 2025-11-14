@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.masterdata.dto.KeyValues;
@@ -55,7 +55,7 @@ public class ApplicantTypeIntegrationTest {
 		RequestDTO dto = new RequestDTO();
 		request.setId("applicanttype.getapplicanttype");
 		request.setVersion("V1.0");
-		request.setRequesttime(DateUtils.getUTCCurrentDateTime());
+		request.setRequesttime(DateUtils2.getUTCCurrentDateTime());
 		List<KeyValues<String, Object>> list = new LinkedList<>();
 
 		KeyValues<String, Object> k1 = new KeyValues<>();
@@ -89,7 +89,7 @@ public class ApplicantTypeIntegrationTest {
 		RequestDTO dto = new RequestDTO();
 		request.setId("applicanttype.getapplicanttype");
 		request.setVersion("V1.0");
-		request.setRequesttime(DateUtils.getUTCCurrentDateTime());
+		request.setRequesttime(DateUtils2.getUTCCurrentDateTime());
 		List<KeyValues<String, Object>> list = new LinkedList<>();
 
 		KeyValues<String, Object> k1 = new KeyValues<>();
@@ -123,7 +123,7 @@ public class ApplicantTypeIntegrationTest {
 		RequestDTO dto = new RequestDTO();
 		request.setId("applicanttype.getapplicanttype");
 		request.setVersion("V1.0");
-		request.setRequesttime(DateUtils.getUTCCurrentDateTime());
+		request.setRequesttime(DateUtils2.getUTCCurrentDateTime());
 		List<KeyValues<String, Object>> list = new LinkedList<>();
 
 		KeyValues<String, Object> k1 = new KeyValues<>();

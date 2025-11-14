@@ -18,12 +18,12 @@ import io.mosip.kernel.masterdata.service.CacheManagementService;
 @EnableCaching
 @EnableScheduling
 public class CacheConfig {
-	
+
 	private static final Logger log = LoggerFactory.getLogger(CacheConfig.class);
 
 	@Autowired
 	private CacheManagementService cacheManagementService;
-	
+
 	/**
 	 * Scheduler Remove's the entire cache based on the cron time
 	 */
@@ -32,5 +32,5 @@ public class CacheConfig {
 		log.info("Cache evict scheduler started");
 		cacheManagementService.clearCache();
 	}
-	
+
 }
