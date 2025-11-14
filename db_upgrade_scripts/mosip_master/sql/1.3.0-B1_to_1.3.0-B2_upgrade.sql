@@ -1,7 +1,7 @@
 -- ca_cert_type column is added to the ca_cert_store table --
 ALTER TABLE IF EXISTS master.ca_cert_store ADD COLUMN ca_cert_type character varying(25);
 
--- PERFORMANCE OPTIMIZATION INDEXES
+-- UPGRADE FOR PERFORMANCE OPTIMIZATION INDEXES
 
 CREATE INDEX idx_ca_cert_store_cr_dtimes ON master.ca_cert_store (cr_dtimes);
 CREATE INDEX idx_ca_cert_store_upd_dtimes ON master.ca_cert_store (upd_dtimes);
@@ -35,3 +35,4 @@ CREATE INDEX IF NOT EXISTS idx_user_detail_regcntr ON master.user_detail(regcntr
 CREATE INDEX IF NOT EXISTS idx_user_detail_regcntr_flags ON master.user_detail(regcntr_id, is_deleted, is_active);
 CREATE INDEX IF NOT EXISTS idx_user_detail_regcntr_change ON master.user_detail(regcntr_id, cr_dtimes, upd_dtimes, del_dtimes);
 
+---END UPGRADE FOR PERFORMANCE OPTIMIZATION INDEXES--
