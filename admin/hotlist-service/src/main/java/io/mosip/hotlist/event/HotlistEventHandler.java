@@ -6,7 +6,7 @@ import io.mosip.hotlist.logger.HotlistLogger;
 import io.mosip.hotlist.security.HotlistSecurityManager;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.retry.WithRetry;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.core.websub.model.Event;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
@@ -67,7 +67,7 @@ public class HotlistEventHandler {
 			EventModel payload = new EventModel();
 			payload.setPublisher(appId);
 			payload.setTopic(topic);
-			String publishedOn = DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
+			String publishedOn = DateUtils2.formatToISOString(DateUtils2.getUTCCurrentDateTime());
 			payload.setPublishedOn(publishedOn);
 			Event event = new Event();
 			event.setId(UUID.randomUUID().toString());
@@ -77,7 +77,7 @@ public class HotlistEventHandler {
 			data.put("idType", idType);
 			data.put("status", status);
 			data.put("expiryTimestamp",
-					Objects.nonNull(expiryTimestamp) ? DateUtils.formatToISOString(expiryTimestamp) : expiryTimestamp);
+					Objects.nonNull(expiryTimestamp) ? DateUtils2.formatToISOString(expiryTimestamp) : expiryTimestamp);
 			event.setData(data);
 			payload.setEvent(event);
 			mosipLogger.debug(HotlistSecurityManager.getUser(), "HotlistServiceImpl", PUBLISH_EVENT,

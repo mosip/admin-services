@@ -5,7 +5,7 @@ import io.mosip.hotlist.logger.HotlistLogger;
 import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.core.util.StringUtils;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
@@ -127,7 +127,7 @@ public class HotlistValidator implements Validator {
 	}
 
 	private void validateExpiryTimestamp(LocalDateTime expiryTimestamp, Errors errors) {
-		if (Objects.nonNull(expiryTimestamp) && expiryTimestamp.isBefore(DateUtils.getUTCCurrentDateTime())) {
+		if (Objects.nonNull(expiryTimestamp) && expiryTimestamp.isBefore(DateUtils2.getUTCCurrentDateTime())) {
 			mosipLogger.debug("Expiry Timestamp is past dated");
 			errors.reject(INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), "expiryTimestamp"));

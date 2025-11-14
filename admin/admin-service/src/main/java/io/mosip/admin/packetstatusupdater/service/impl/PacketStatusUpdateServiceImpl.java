@@ -33,7 +33,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.logger.logback.factory.Logfactory;
 
 /**
@@ -211,8 +211,8 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	Comparator<PacketStatusUpdateDto> createdDateTimesResultComparator = new Comparator<PacketStatusUpdateDto>() {
 		@Override
 		public int compare(PacketStatusUpdateDto o1, PacketStatusUpdateDto o2) {
-			LocalDateTime o1CreatedDateTimes = DateUtils.parseToLocalDateTime(o1.getCreatedDateTimes());
-			LocalDateTime o2CreatedDateTimes = DateUtils.parseToLocalDateTime(o2.getCreatedDateTimes());
+			LocalDateTime o1CreatedDateTimes = DateUtils2.parseToLocalDateTime(o1.getCreatedDateTimes());
+			LocalDateTime o2CreatedDateTimes = DateUtils2.parseToLocalDateTime(o2.getCreatedDateTimes());
 			return o1CreatedDateTimes.compareTo(o2CreatedDateTimes);
 		}
 	};

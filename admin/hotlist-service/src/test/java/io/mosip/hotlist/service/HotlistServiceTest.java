@@ -10,7 +10,7 @@ import io.mosip.hotlist.repository.HotlistHistoryRepository;
 import io.mosip.hotlist.repository.HotlistRepository;
 import io.mosip.hotlist.service.impl.HotlistServiceImpl;
 import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -122,7 +122,7 @@ public class HotlistServiceTest {
 		entity.setIdValue("id");
 		entity.setIdType("idType");
 		entity.setStatus(HotlistStatus.BLOCKED);
-		LocalDateTime expiryTimestamp = DateUtils.getUTCCurrentDateTime().now().withYear(9999);
+		LocalDateTime expiryTimestamp = DateUtils2.getUTCCurrentDateTime().now().withYear(9999);
 		entity.setExpiryTimestamp(expiryTimestamp);
 		when(hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(Optional.of(entity));

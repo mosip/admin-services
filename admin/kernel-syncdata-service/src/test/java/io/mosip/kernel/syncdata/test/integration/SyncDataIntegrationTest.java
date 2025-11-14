@@ -5,7 +5,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import io.mosip.kernel.syncdata.dto.UploadPublicKeyRequestDto;
 import io.mosip.kernel.syncdata.entity.*;
@@ -504,7 +504,7 @@ public class SyncDataIntegrationTest {
 		uploadPublicKeyRequestDto.setSignPublicKey(encodedTPMPublicKey);
 		reqWrapper.setId(ID);
 		reqWrapper.setVersion(VERSION);
-		reqWrapper.setRequesttime(DateUtils.parseToLocalDateTime("2018-12-06T12:07:44.403Z"));
+		reqWrapper.setRequesttime(DateUtils2.parseToLocalDateTime("2018-12-06T12:07:44.403Z"));
 		reqWrapper.setRequest(uploadPublicKeyRequestDto);
 	}
 

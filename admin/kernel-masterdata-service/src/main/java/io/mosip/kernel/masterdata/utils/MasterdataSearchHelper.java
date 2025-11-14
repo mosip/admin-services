@@ -34,7 +34,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
@@ -450,8 +450,8 @@ public class MasterdataSearchHelper {
 			String toValue = filter.getToValue();
 			String fromValue = filter.getFromValue();
 			if (LocalDateTime.class.getName().equals(fieldType)) {
-				return builder.between(root.get(columnName), DateUtils.parseToLocalDateTime(fromValue),
-						DateUtils.convertUTCToLocalDateTime(toValue));
+				return builder.between(root.get(columnName), DateUtils2.parseToLocalDateTime(fromValue),
+						DateUtils2.convertUTCToLocalDateTime(toValue));
 			}
 			if (LocalDate.class.getName().equals(fieldType)) {
 				return builder.between(root.get(columnName), LocalDate.parse(fromValue), LocalDate.parse(toValue));
@@ -494,7 +494,7 @@ public class MasterdataSearchHelper {
 			Class<? extends Object> type = path.getJavaType();
 			String fieldType = type.getTypeName();
 			if (LocalDateTime.class.getName().equals(fieldType)) {
-				return DateUtils.parseToLocalDateTime(value);
+				return DateUtils2.parseToLocalDateTime(value);
 			}
 			if (LocalDate.class.getName().equals(fieldType)) {
 				return LocalDate.parse(value);
@@ -537,7 +537,7 @@ public class MasterdataSearchHelper {
 			Class<? extends Object> type = path.getJavaType();
 			String fieldType = type.getTypeName();
 			if (LocalDateTime.class.getName().equals(fieldType)) {
-				LocalDateTime start = DateUtils.parseToLocalDateTime(value);
+				LocalDateTime start = DateUtils2.parseToLocalDateTime(value);
 				predicate = builder.between(root.get(column), start, start.plusNanos(1000000l));
 			} else if (String.class.getName().equals(fieldType)) {
 				if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false"))
