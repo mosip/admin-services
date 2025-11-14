@@ -1,3 +1,6 @@
+-- ca_cert_type column is removed/deleted from ca_cert_store table --
+ALTER TABLE IF EXISTS master.ca_cert_store DROP COLUMN IF EXISTS ca_cert_type;
+
 -- ROLLBACK FOR PERFORMANCE OPTIMIZATION INDEXES
 
 DROP INDEX IF EXISTS master.idx_ca_cert_store_cr_dtimes;
@@ -13,7 +16,6 @@ DROP INDEX IF EXISTS master.idx_mac_master_cr_dtimes;
 DROP INDEX IF EXISTS master.idx_mac_master_upd_dtimes;
 DROP INDEX IF EXISTS master.idx_mac_master_del_dtimes;
 
-DROP INDEX IF EXISTS master.uq_mac_master_key_index_lower;
 DROP INDEX IF EXISTS master.uq_mac_master_name_lower;
 DROP INDEX IF EXISTS master.uq_mac_master_key_index_lower;
 
