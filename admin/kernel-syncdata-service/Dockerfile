@@ -75,6 +75,10 @@ COPY ./target/kernel-syncdata-service-*.jar kernel-syncdata-service.jar
 # change permissions of file inside working dir
 RUN chown -R ${container_user}:${container_user} /home/${container_user}
 
+# One-liner without the JDK debug package
+RUN apk add --no-cache bash curl wget vim tcpdump net-tools iputils bind-tools busybox-extras strace lsof \
+ && echo 'JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"' >> /etc/profile
+
 # select container user for all tasks
 USER ${container_user_uid}:${container_user_gid}
 
