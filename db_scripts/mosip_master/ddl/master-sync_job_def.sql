@@ -52,3 +52,12 @@ COMMENT ON COLUMN master.sync_job_def.is_deleted IS 'IS_Deleted : Flag to mark w
 -- ddl-end --
 COMMENT ON COLUMN master.sync_job_def.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
 -- ddl-end --
+
+-- PERFORMANCE OPTIMIZATION INDEXES
+CREATE INDEX IF NOT EXISTS idx_syncjob_cr_dtimes ON master.sync_job_def (cr_dtimes);
+CREATE INDEX IF NOT EXISTS idx_syncjob_upd_dtimes ON master.sync_job_def (upd_dtimes);
+CREATE INDEX IF NOT EXISTS idx_syncjob_del_dtimes ON master.sync_job_def (del_dtimes);
+CREATE INDEX IF NOT EXISTS idx_syncjob_active_upd ON master.sync_job_def (upd_dtimes) WHERE is_deleted = false;
+
+CREATE MATERIALIZED VIEW mv_syncjob_max_times AS SELECT MAX(cr_dtimes) AS max_cr, MAX(upd_dtimes) AS max_upd, MAX(del_dtimes) AS max_del FROM master.sync_job_def;
+REFRESH MATERIALIZED VIEW mv_syncjob_max_times;
