@@ -9,7 +9,7 @@ fi
 
 NS=admin
 KNS=kernel
-CHART_VERSION=1.3.0-beta.2-develop
+CHART_VERSION=1.3.0-develop
 COPY_UTIL=../copy_cm_func.sh
 
 echo Create $NS namespace
