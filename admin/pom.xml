@@ -85,6 +85,7 @@
 		<maven.deploy.plugin.version>3.1.1</maven.deploy.plugin.version>
 		<!-- spring -->
 		<spring.security.test.version>5.0.5.RELEASE</spring.security.test.version>
+        <spring-boot-maven-plugin.version>3.2.3</spring-boot-maven-plugin.version>
 
 
 		<springfox.version>2.9.2</springfox.version>
@@ -219,6 +220,15 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-maven-plugin</artifactId>
+                            <version>${spring-boot-maven-plugin.version}</version>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
 				<plugins>
 					<plugin>
 						<groupId>org.sonarsource.scanner.maven</groupId>
