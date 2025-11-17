@@ -148,6 +148,7 @@ public class MosipTestRunner {
 		if (!runType.equalsIgnoreCase("JAR")) {
 			AuthTestsUtil.removeOldMosipTempTestResource();
 		}
+		BaseTestCase.currentModule = GlobalConstants.MASTERDATA;
 		MasterDataUtil.dbCleanUp();
 		AdminTestUtil.initiateMasterDataTest();
 	}

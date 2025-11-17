@@ -141,7 +141,6 @@ public class MasterDataUtil extends AdminTestUtil {
 		DBManager.executeDBQueries(MasterDataConfigManager.getMASTERDbUrl(), MasterDataConfigManager.getMasterDbUser(),
 				MasterDataConfigManager.getMasterDbPass(), MasterDataConfigManager.getMasterDbSchema(),
 				getGlobalResourcePath() + "/" + "config/masterDataDeleteQueries.txt");
-		BaseTestCase.currentModule = GlobalConstants.MASTERDATA;
 	}
 
 }
