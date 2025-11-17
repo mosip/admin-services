@@ -17,8 +17,10 @@ import org.testng.SkipException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import io.mosip.testrig.apirig.dbaccess.DBManager;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.masterdata.testrunner.MosipTestRunner;
+import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.ConfigManager;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
@@ -133,6 +135,13 @@ public class MasterDataUtil extends AdminTestUtil {
 			return "";
 		}
 
+	}
+	
+	public static void dbCleanUp() {
+		DBManager.executeDBQueries(MasterDataConfigManager.getMASTERDbUrl(), MasterDataConfigManager.getMasterDbUser(),
+				MasterDataConfigManager.getMasterDbPass(), MasterDataConfigManager.getMasterDbSchema(),
+				getGlobalResourcePath() + "/" + "config/masterDataDeleteQueries.txt");
+		BaseTestCase.currentModule = GlobalConstants.MASTERDATA;
 	}
 
 }

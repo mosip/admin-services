@@ -108,10 +108,7 @@ public class MosipTestRunner {
 				SkipTestCaseHandler.clearTestCaseInSkippedList();
 				SkipTestCaseHandler.loadTestcaseToBeSkippedList("testCaseSkippedList_"+ localLanguageList.get(i) +".txt");
 
-				DBManager.executeDBQueries(MasterDataConfigManager.getMASTERDbUrl(),
-						MasterDataConfigManager.getMasterDbUser(), MasterDataConfigManager.getMasterDbPass(),
-						MasterDataConfigManager.getMasterDbSchema(),
-						getGlobalResourcePath() + "/" + "config/masterDataDeleteQueries.txt");
+				MasterDataUtil.dbCleanUp();
 				BaseTestCase.currentModule = GlobalConstants.MASTERDATA;
 				BaseTestCase.setReportName("masterdata-" + localLanguageList.get(i));
 				
@@ -131,9 +128,8 @@ public class MosipTestRunner {
 		} catch (Exception e) {
 			LOGGER.error("Exception " + e.getMessage());
 		}
-//		Commenting out the remove keycloak user as it is failing on DSL. will uncomment once the fix is given from DSL.
-//		KeycloakUserManager.removeUser();
-//		KeycloakUserManager.closeKeycloakInstance();
+		KeycloakUserManager.removeUser();
+		KeycloakUserManager.closeKeycloakInstance();
 
 		HealthChecker.bTerminate = true;
 		
@@ -152,10 +148,7 @@ public class MosipTestRunner {
 		if (!runType.equalsIgnoreCase("JAR")) {
 			AuthTestsUtil.removeOldMosipTempTestResource();
 		}
-		DBManager.executeDBQueries(MasterDataConfigManager.getMASTERDbUrl(), MasterDataConfigManager.getMasterDbUser(),
-				MasterDataConfigManager.getMasterDbPass(), MasterDataConfigManager.getMasterDbSchema(),
-				getGlobalResourcePath() + "/" + "config/masterDataDeleteQueries.txt");
-		BaseTestCase.currentModule = GlobalConstants.MASTERDATA;
+		MasterDataUtil.dbCleanUp();
 		AdminTestUtil.initiateMasterDataTest();
 	}
 	
