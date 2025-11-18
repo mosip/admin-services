@@ -536,9 +536,9 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		List<SyncDataBaseDto> list = new ArrayList<>(clientSettingsHelper.retrieveData(futureMap, regCenterMachineDto, true));
 		list.addAll(new ArrayList<>(clientSettingsHelper.getConfiguredScriptUrlDetail(regCenterMachineDto)));
 		response.setDataToSync(list);
-		LOGGER.info("syncClientSettingsV2 completed for regCenterId: {}, keyIndex: {}, synced {} entities",
-				regCenterId, keyIndex.replaceAll("[\n\r]", "_"),
-				list != null ? list.size() : 0);
+        LOGGER.info("syncClientSettingsV2 completed for regCenterId: {}, keyIndex: {}, synced {} entities",
+                regCenterId, keyIndex.replaceAll("[\n\r]", "_"),
+                list.size());
 		LOGGER.debug("syncClientSettingsV2 completed for regCenterId: {}, keyIndex: {}",
 				regCenterId, keyIndex.replaceAll("[\n\r]", "_"));
 		return response;
