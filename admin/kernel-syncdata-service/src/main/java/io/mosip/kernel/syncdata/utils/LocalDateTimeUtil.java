@@ -1,16 +1,15 @@
 package io.mosip.kernel.syncdata.utils;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
-
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
+import io.mosip.kernel.syncdata.exception.DataNotFoundException;
+import io.mosip.kernel.syncdata.exception.DateParsingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.syncdata.exception.DataNotFoundException;
-import io.mosip.kernel.syncdata.exception.DateParsingException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 
 /**
  * Utility class for parsing and validating timestamp strings to {@link LocalDateTime}.
@@ -58,7 +57,7 @@ public final class LocalDateTimeUtil {
 
 		final LocalDateTime parsed;
 		try {
-			parsed = DateUtils.parseToLocalDateTime(lastUpdated.trim());
+			parsed = DateUtils2.parseToLocalDateTime(lastUpdated.trim());
 		} catch (DateTimeParseException e) {
 			// Parsing truly failed – keep error code semantics
 			LOGGER.warn("Failed to parse timestamp: {}", lastUpdated, e);
