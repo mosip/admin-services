@@ -4,7 +4,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.service.helper.KeymanagerHelper;
@@ -119,8 +119,8 @@ public class SyncResponseBodyAdviceConfig implements ResponseBodyAdvice<Object> 
 		}
 		// Ensure response time is always set
 		if (responseWrapper.getResponsetime() == null) {
-			String timestamp = DateUtils.getUTCCurrentDateTimeString();
-			responseWrapper.setResponsetime(DateUtils.convertUTCToLocalDateTime(timestamp));
+			String timestamp = DateUtils2.getUTCCurrentDateTimeString();
+			responseWrapper.setResponsetime(DateUtils2.convertUTCToLocalDateTime(timestamp));
 		}
 		try {
 			// Serialize once only to compute signature, not for returning

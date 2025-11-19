@@ -1,40 +1,33 @@
 package io.mosip.kernel.syncdata.controller;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.util.Optional;
-
-import jakarta.validation.Valid;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.syncdata.dto.*;
-import io.mosip.kernel.syncdata.dto.response.*;
+import io.mosip.kernel.syncdata.dto.response.CACertificates;
+import io.mosip.kernel.syncdata.dto.response.ClientPublicKeyResponseDto;
+import io.mosip.kernel.syncdata.dto.response.KeyPairGenerateResponseDto;
+import io.mosip.kernel.syncdata.dto.response.SyncDataResponseDto;
+import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
+import io.mosip.kernel.syncdata.service.SyncMasterDataService;
+import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
 import io.mosip.kernel.syncdata.service.helper.SyncJobHelperService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.mosip.kernel.syncdata.utils.LocalDateTimeUtil;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import jakarta.validation.Valid;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.http.ResponseFilter;
-import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
-import io.mosip.kernel.syncdata.service.SyncMasterDataService;
-import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
-import io.mosip.kernel.syncdata.utils.LocalDateTimeUtil;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 /**
  * REST Controller for synchronizing master data, configurations, and user details.
@@ -107,7 +100,7 @@ public class SyncDataController {
 			SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettings(regCenterId, keyIndex,
 					timestamp, currentTimeStamp);
 
-			syncDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
+			syncDataResponseDto.setLastSyncTime(DateUtils2.formatToISOString(currentTimeStamp));
 			return buildResponse(syncDataResponseDto);
 		} finally {
 			MDC.remove(KEY_INDEX_KEY);
@@ -130,7 +123,7 @@ public class SyncDataController {
 			@ApiParam("Application ID") @PathVariable("applicationId") String applicationId,
 			@ApiParam("Request timestamp as metadata") @RequestParam(value = "timeStamp", required = false) String timeStamp,
 			@ApiParam("Reference ID as metadata") @RequestParam(value = "referenceId", required = false) String referenceId) {
-		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
+		String currentTimeStamp = DateUtils2.getUTCCurrentDateTimeString();
 		PublicKeyResponse<String> publicKeyResponse = syncConfigDetailsService.getPublicKey(applicationId, timeStamp,
 				referenceId);
 		publicKeyResponse.setLastSyncTime(currentTimeStamp);
@@ -253,7 +246,7 @@ public class SyncDataController {
 			@ApiParam("Client version") @RequestParam(value = "version", required = false) String clientVersion) {
 		MDC.put(CLIENT_VERSION_KEY, clientVersion == null ? NA : clientVersion);
 		try {
-			String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
+			String currentTimeStamp = DateUtils2.getUTCCurrentDateTimeString();
 			ConfigDto configDto = syncConfigDetailsService.getConfigDetails(keyIndex);
 			configDto.setLastSyncTime(currentTimeStamp);
 			return buildResponse(configDto);
@@ -276,7 +269,7 @@ public class SyncDataController {
 			@ApiParam("Machine key index") @RequestParam(value = "keyindex", required = true) String keyIndex) {
 		MDC.put(KEY_INDEX_KEY, keyIndex);
 		try {
-			String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
+			String currentTimeStamp = DateUtils2.getUTCCurrentDateTimeString();
 			SyncUserDto syncUserDto = syncUserDetailsService.getAllUserDetailsBasedOnKeyIndex(keyIndex);
 			syncUserDto.setLastSyncTime(currentTimeStamp);
 			return buildResponse(syncUserDto);
@@ -304,7 +297,7 @@ public class SyncDataController {
 			LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 			LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 			CACertificates caCertificates = masterDataService.getPartnerCACertificates(timestamp, currentTimeStamp);
-			caCertificates.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
+			caCertificates.setLastSyncTime(DateUtils2.formatToISOString(currentTimeStamp));
 			return buildResponse(caCertificates);
 		} finally {
 			MDC.remove(CLIENT_VERSION_KEY);
@@ -341,7 +334,7 @@ public class SyncDataController {
 			LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 			SyncDataResponseDto syncDataResponseDto = masterDataService.syncClientSettingsV2(regCenterId, keyIndex,
 					timestamp, currentTimeStamp, clientVersion, fullSyncEntities);
-			syncDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
+			syncDataResponseDto.setLastSyncTime(DateUtils2.formatToISOString(currentTimeStamp));
 			return buildResponse(syncDataResponseDto);
 		} finally {
 			MDC.remove(KEY_INDEX_KEY);
@@ -415,7 +408,7 @@ public class SyncDataController {
 			@ApiParam("Client version") @RequestParam(value = "version", required = false) String clientVersion) {
 		MDC.put(CLIENT_VERSION_KEY, clientVersion == null ? NA : clientVersion);
 		try {
-			String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
+			String currentTimeStamp = DateUtils2.getUTCCurrentDateTimeString();
 			SyncUserDto syncUserDto = syncUserDetailsService.getAllUserDetailsBasedOnKeyIndexV2(keyIndex);
 			syncUserDto.setLastSyncTime(currentTimeStamp);
 			return buildResponse(syncUserDto);

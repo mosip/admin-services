@@ -11,7 +11,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.syncdata.constant.AdminServiceErrorCode;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.*;
@@ -459,7 +459,7 @@ public class SyncMasterDataServiceHelper {
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(locationHirerarchyUrl);
 			if (lastUpdated != null) {
-				builder.queryParam("lastUpdated", DateUtils.formatToISOString(lastUpdated));
+				builder.queryParam("lastUpdated", DateUtils2.formatToISOString(lastUpdated));
 			}
 			ResponseEntity<String> response = restClient.getForEntity(builder.build().toUri(), String.class);
 
@@ -1528,7 +1528,7 @@ public class SyncMasterDataServiceHelper {
 			do {
 				UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(dynamicfieldUrl);
 				if (lastUpdated != null) {
-					builder.queryParam("lastUpdated", DateUtils.formatToISOString(lastUpdated));
+					builder.queryParam("lastUpdated", DateUtils2.formatToISOString(lastUpdated));
 				}
 				builder.queryParam("pageNumber", pageNo++);
 				ResponseEntity<String> responseEntity = restClient.getForEntity(builder.build().toUri(), String.class);
