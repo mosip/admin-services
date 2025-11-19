@@ -8,7 +8,7 @@
 	<name>apitest-masterdata</name>
 	<description>Parent project of MOSIP Admin Services apitests</description>
 	<url>https://github.com/mosip/admin-services</url>
-	<version>1.2.1.4</version>
+	<version>1.2.1.4-SNAPSHOT</version>
 
 	<licenses>
 		<license>
@@ -62,7 +62,7 @@
 		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
 
 		<git.commit.id.plugin.version>3.0.1</git.commit.id.plugin.version>
-		<fileName>apitest-masterdata-1.2.1.4-jar-with-dependencies</fileName>
+		<fileName>apitest-masterdata-1.2.1.4-SNAPSHOT-jar-with-dependencies</fileName>
 	</properties>
 
 	<dependencies>
