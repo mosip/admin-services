@@ -89,3 +89,7 @@ CREATE INDEX IF NOT EXISTS idx_user_detail_regcntr_flags ON master.user_detail(r
 CREATE INDEX IF NOT EXISTS idx_user_detail_regcntr_change ON master.user_detail(regcntr_id, cr_dtimes, upd_dtimes, del_dtimes);
 
 ---END UPGRADE FOR PERFORMANCE OPTIMIZATION INDEXES--
+
+-- Below script required to upgrade from 1.3.0-B2 to 1.3.0
+-- ca_cert_type column is added to the ca_cert_store table --
+ALTER TABLE IF EXISTS master.ca_cert_store ADD COLUMN ca_cert_type character varying(25);

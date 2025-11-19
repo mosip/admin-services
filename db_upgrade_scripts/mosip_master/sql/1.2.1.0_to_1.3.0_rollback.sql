@@ -94,3 +94,7 @@ DROP INDEX IF EXISTS master.idx_user_detail_regcntr_flags;
 DROP INDEX IF EXISTS master.idx_user_detail_regcntr_change;
 
 -- END ROLLBACK FOR PERFORMANCE OPTIMIZATION INDEXES
+
+-- Below script required to rollback from 1.3.0 to 1.3.0-B2
+-- ca_cert_type column is removed/deleted from ca_cert_store table --
+ALTER TABLE IF EXISTS master.ca_cert_store DROP COLUMN IF EXISTS ca_cert_type;
