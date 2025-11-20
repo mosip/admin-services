@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
@@ -22,6 +25,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -94,6 +98,13 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 
 	@Autowired
 	private AuditUtil auditUtil;
+
+    @Autowired
+    private ExecutorService enrichmentExecutor;
+
+	@Value("${mosip.kernel.masterdata.enrichment.executor.timeout-seconds:30}")
+	private int enrichmentExecutorTimeoutSeconds;
+
 
 	private ObjectMapper mapper = new ObjectMapper();
 
@@ -374,6 +385,37 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		Page<ZoneUser> page = masterDataSearchHelper.searchMasterdataWithoutLangCode(ZoneUser.class, searchDto, new OptionalFilter[] { zoneOptionalFilter });
 		if (page.getContent() != null && !page.getContent().isEmpty()) {
 			zoneUserSearchDetails = MapperUtils.mapAll(page.getContent(), ZoneUserExtnDto.class);
+            // recover Users Ids for batch user's names search
+            final List<String> usersIds = zoneUserSearchDetails.stream().map(ZoneUserExtnDto::getUserId).toList();
+            // recover Users ZonesCodes for batch zones search
+            final List<String> usersZonesCodes = zoneUserSearchDetails.stream().map(
+                    ZoneUserExtnDto::getZoneCode
+            ).filter(StringUtils::hasText).toList();
+            // Launch both calls of batch user's names search and  zone's names search in parallel
+            CompletableFuture<Map<String, String>> usersNamesByIdsFuture = CompletableFuture.supplyAsync(
+                    () -> this.getUsersNames(usersIds),
+                    this.enrichmentExecutor
+            );
+            CompletableFuture<List<ZoneNameResponseDto>> zoneNamesByCodesFuture = CompletableFuture.supplyAsync(
+                    () -> this.zoneservice.getZonesByCodesAndLanguage(usersZonesCodes, searchDto.getLanguageCode()),
+                    this.enrichmentExecutor
+            );
+            // Retrieve results (blocks here until available)
+			final Map<String, String> usersNamesByIds = usersNamesByIdsFuture.orTimeout(
+					this.enrichmentExecutorTimeoutSeconds,
+					TimeUnit.SECONDS
+			).exceptionally(ex -> {
+				logger.error("Failed to fetch user names in batch", ex);
+				return Collections.emptyMap();
+			}).join();
+			final List<ZoneNameResponseDto> zoneNamesByCodes = zoneNamesByCodesFuture.orTimeout(
+					this.enrichmentExecutorTimeoutSeconds,
+					TimeUnit.SECONDS
+			).exceptionally(ex -> {
+				logger.error("Failed to fetch zone names in batch", ex);
+				return Collections.emptyList();
+			}).join();
+            // Complete page result construction
 			pageDto = PageUtils.pageResponse(page);
 			zoneUserSearchDetails.forEach(z -> {
 				ZoneUserSearchDto dto = new ZoneUserSearchDto();
@@ -387,12 +429,13 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 				dto.setUserId(z.getUserId());
 				dto.setUpdatedDateTime(z.getUpdatedDateTime());
 				dto.setUpdatedBy(z.getUpdatedBy());
-				String username = getUserName(z.getUserId());
+				String username = usersNamesByIds.getOrDefault(z.getUserId(), null);
 				dto.setUserName(username == null || username.isBlank() ? z.getUserId() :
 						String.format(USERNAME_FORMAT, z.getUserId(), username));
-
 				if (null != z.getZoneCode()) {
-					ZoneNameResponseDto zn = zoneservice.getZone(z.getZoneCode(),searchDto.getLanguageCode());
+                    ZoneNameResponseDto zn = zoneNamesByCodes.stream().filter(
+                            znr -> znr.getZoneCode().equals(z.getZoneCode())
+                    ).findFirst().orElse(null);
 					dto.setZoneName(null != zn ? zn.getZoneName() : null);
 				} else
 					dto.setZoneName(null);
@@ -439,6 +482,47 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 		return null;
 
 	}
+
+    private Map<String, String> getUsersNames(List<String> usersIds) {
+        if (usersIds == null || usersIds.isEmpty()) {
+			return Collections.emptyMap();
+        }
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        final UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(userDetails + "/admin");
+        final List<String> userDetails = new ArrayList<>(usersIds);
+        final RequestWrapper<Map<String, List<String>>> requestWrapper = new RequestWrapper<>();
+        final Map<String, List<String>> requestEntry = new HashMap<>();
+        requestEntry.put("userDetails", userDetails);
+        requestWrapper.setRequest(requestEntry);
+        final HttpEntity<RequestWrapper<Map<String, List<String>>>> httpEntity = new HttpEntity<>(
+                requestWrapper,
+                headers
+        );
+        ResponseEntity<String> response = restTemplate.exchange(
+                uribuilder.toUriString(),
+                HttpMethod.POST,
+                httpEntity,
+                String.class
+        );
+        try {
+            final Map responseBody = mapper.readValue(response.getBody(), Map.class);
+            List<Map<String, String>> usersListResponse = (
+                    (Map<String, List<Map<String, String>>>) responseBody.get("response")
+            ).get("mosipUserDtoList");
+            if (usersListResponse.isEmpty()) {
+                return Collections.emptyMap();
+            } else {
+                return usersListResponse.stream().collect(Collectors.toMap(
+                        entry -> entry.get("userId"),
+                        entry -> entry.get("name")
+                ));
+            }
+        } catch (Exception e) {
+            logger.error("failed to get users names from authmanager", e);
+        }
+        return Collections.emptyMap();
+    }
 
 	private String getUserDetailsBasedonUserName(String userName) {
 		HttpHeaders h = new HttpHeaders();

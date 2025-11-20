@@ -387,6 +387,9 @@ public class ZoneUtils {
 	public Zone getZoneBasedOnZoneCodeLanguage(String zoneCode, String langCode) {
         return zoneRepository.findZoneByCodeAndLangCodeNonDeleted(zoneCode, langCode);
 	}
+	public List<Zone> getZonesByCodesAndLanguage(List<String> zonesCodes, String langCode) {
+		return zoneRepository.findZonesByCodesAndLangCodeNonDeletedAndIsActive(zonesCodes, langCode);
+	}
 	public List<Zone> getZoneListBasedonZoneName(String zoneName) {
 		return zoneRepository.findListZonesFromZoneName(zoneName.toLowerCase());
 	}

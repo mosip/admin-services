@@ -3,10 +3,12 @@ package io.mosip.kernel.masterdata.config;
 
 import jakarta.servlet.Filter;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.security.concurrent.DelegatingSecurityContextExecutorService;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 import io.mosip.kernel.core.masterdata.util.model.Node;
@@ -16,6 +18,9 @@ import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.httpfilter.ReqResFilter;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.DefaultSort;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Config class with beans for modelmapper and request logging
@@ -28,6 +33,12 @@ import io.mosip.kernel.masterdata.utils.DefaultSort;
 @Configuration
 @EnableAspectJAutoProxy
 public class CommonConfig {
+
+	@Value("${mosip.kernel.masterdata.enrichment.executor.min-fixed-thread-pool:2}")
+	private int minFixedThreadPool;
+
+	@Value("${mosip.kernel.masterdata.enrichment.executor.max-fixed-thread-pool:8}")
+	private int maxFixedThreadPool;
 
 	/**
 	 * Produce Request Logging bean
@@ -76,6 +87,17 @@ public class CommonConfig {
 	@Bean
 	public AuditUtil auditUtil() {
 		return new AuditUtil();
+	}
+
+	@Bean(destroyMethod = "shutdown")
+	public ExecutorService enrichmentExecutor() {
+		final ExecutorService executorService = Executors.newFixedThreadPool(
+				Math.min(
+						Math.max(this.minFixedThreadPool, Runtime.getRuntime().availableProcessors()),
+						this.maxFixedThreadPool
+				)
+		);
+		return new DelegatingSecurityContextExecutorService(executorService);
 	}
 	
 }
