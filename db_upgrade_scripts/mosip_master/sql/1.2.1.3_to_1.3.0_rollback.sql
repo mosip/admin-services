@@ -1,3 +1,5 @@
+-- Below script required to upgrade from 1.3.0-B2 to 1.3.0
+
 \c mosip_master
 
 -- Rollback script for master.app_detail
