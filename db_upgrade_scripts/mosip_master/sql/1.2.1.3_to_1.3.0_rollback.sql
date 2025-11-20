@@ -1,4 +1,4 @@
--- Below script required to upgrade from 1.3.0-B2 to 1.3.0
+-- Below script required to upgrade from 1.3.0-B2 to 1.3.0 
 
 \c mosip_master
 
