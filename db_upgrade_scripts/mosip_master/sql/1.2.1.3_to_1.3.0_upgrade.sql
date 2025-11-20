@@ -1,3 +1,5 @@
+\c mosip_master
+
 -- Upgrade script for master.app_detail
 SELECT * INTO master.app_detail_bkp FROM master.app_detail;
 DELETE FROM master.app_detail WHERE lang_code !='eng';

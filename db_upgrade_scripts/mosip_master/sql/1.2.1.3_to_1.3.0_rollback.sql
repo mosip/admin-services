@@ -1,3 +1,5 @@
+\c mosip_master
+
 -- Rollback script for master.app_detail
 ALTER TABLE master.app_detail ALTER COLUMN lang_code SET NOT NULL;
 ALTER TABLE master.app_detail DROP CONSTRAINT pk_appdtl_id;
