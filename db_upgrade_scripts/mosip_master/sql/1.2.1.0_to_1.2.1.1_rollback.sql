@@ -1,3 +1,5 @@
+\c mosip_master
+
 DELETE FROM master.template WHERE template_typ_code= 'vid-card-download-positive-purpose' AND lang_code = 'fra';
 DELETE FROM master.template WHERE template_typ_code= 'vid-card-download-positive-purpose' AND lang_code = 'ara';
 DELETE FROM master.template WHERE template_typ_code= 'vid-card-download-negative-purpose' AND lang_code = 'fra';
