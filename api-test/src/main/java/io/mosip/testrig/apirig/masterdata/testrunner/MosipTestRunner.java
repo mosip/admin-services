@@ -137,8 +137,6 @@ public class MosipTestRunner {
 
 		HealthChecker.bTerminate = true;
 
-		HealthChecker.bTerminate = true;
-		
 		System.exit(0);
 
 	}
