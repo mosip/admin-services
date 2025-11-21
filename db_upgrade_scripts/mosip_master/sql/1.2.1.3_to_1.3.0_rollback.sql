@@ -1,3 +1,7 @@
+-- Below script is required to rollback from 1.3.0 to 1.2.1.3 --
+
+\c mosip_master
+
 -- Rollback script for master.app_detail
 ALTER TABLE master.app_detail ALTER COLUMN lang_code SET NOT NULL;
 ALTER TABLE master.app_detail DROP CONSTRAINT pk_appdtl_id;
@@ -57,6 +61,8 @@ DROP SEQUENCE master.BATCH_JOB_SEQ;
 
 ----------ca_cert_store-rollback- db script-------------
 ALTER TABLE IF EXISTS master.ca_cert_store DROP COLUMN IF EXISTS ca_cert_type;
+
+-- Below scripts are required to rollback from 1.3.0 to 1.3.0-beta.2 --
 
 -- ROLLBACK FOR PERFORMANCE OPTIMIZATION INDEXES
 

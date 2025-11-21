@@ -1,3 +1,5 @@
+\c mosip_master
+
 INSERT INTO master.template_type
 (code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
 VALUES('mosip.auth-type-code.Wallet', 'Wallet', 'ara', true, 'admin', now(), NULL, NULL, false, NULL);
