@@ -15,16 +15,7 @@ GetMachineHistory:
 }'
       output: '{
 "machineHistoryDetails": [{
-       "id": "10001",
-        "name": "$IGNORE$",
-        "langCode": "$IGNORE$",
-        "isActive": true,
-        "serialNum": "$IGNORE$",
-        "ipAddress": "$IGNORE$",
-        "macAddress": "$IGNORE$",
-        "machineSpecId": "$IGNORE$",
-        "effectDateTime": "$IGNORE$",
-        "validityDateTime": "$IGNORE$"
+       "id": "10001"
     }]
 }'
 
@@ -66,8 +57,7 @@ GetMachineHistory:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-033",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-033"
     }
   ]
 }'
@@ -88,8 +78,7 @@ GetMachineHistory:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-032",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-032"
     }
   ]
 }'

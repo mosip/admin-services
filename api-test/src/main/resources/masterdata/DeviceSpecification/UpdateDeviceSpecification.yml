@@ -22,7 +22,6 @@ UpdateDeviceSpecification:
       "requesttime": "$TIMESTAMP$"
       }'
       output: '{
-      "id": "$IGNORE$"
       }'
       
    MasterData_UpdateDeviceSpecification_InputParameter_Name_Missing:

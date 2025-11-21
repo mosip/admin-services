@@ -17,7 +17,5 @@ RejectionReason:
 	  "requesttime": "$TIMESTAMP$"
 	}'
       output: '{
-     "code": "ABC",
-    "langCode": "$IGNORE$",
-	  "requesttime": "$IGNORE$"
+     "code": "ABC"
 }'

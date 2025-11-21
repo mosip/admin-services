@@ -63,6 +63,15 @@ You can access the test automation code using either of the following methods:
 
 ---
 
+## Update the property file
+1. Navigate to the masterdata.properties file located at:
+    ```sh
+    admin-services\api-test\src\main\resources\config\masterdata.properties
+2. Open the file in your preferred editor
+3. Update the client secret values and other required credentials as per your environment
+
+---
+
 ## Build Test Automation Code
 
 Once the repository is cloned or downloaded, follow these steps to build and install the test automation code:
@@ -144,6 +153,9 @@ To execute the tests using Eclipse IDE, use the following steps:
 ## 6. **View Test Results**
 
    - After the tests are executed, you can view the detailed results in the `api-test\testng-report` directory.
+   - The report will have two sections:
+       - One section for pre-requisite APIs test cases.
+       - Another section for core test cases.
 
 ---
 
@@ -162,6 +174,7 @@ This section describes the meaning of each column in the test report:
 - **Known Issues (KI)**
   Indicates test cases that failed but are already acknowledged as known issues for the current release, typically linked with a bug or defect ID.
 
+ 
 ## Details of Arguments Used
 
 - **env.user**: Replace `<env_name>` with the appropriate environment name (e.g., `dev`, `qa`, etc.).

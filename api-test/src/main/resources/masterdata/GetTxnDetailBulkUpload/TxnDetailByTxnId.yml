@@ -11,7 +11,4 @@ GetTxnDetailBulkUpload:
    "transcationId":"$ID:BulkUpload_Smoke_sid_transcationId$"
   }'
       output: '{
-    "entityName": "$IGNORE$",
-    "operation": "$IGNORE$",
-    "category": "$IGNORE$"
 }'

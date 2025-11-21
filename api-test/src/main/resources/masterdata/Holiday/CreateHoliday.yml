@@ -19,10 +19,9 @@ CreateHoliday:
 	"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-     "locationCode": "$IGNORE$",
+     "locationCode": "$REMOVE$",
      "holidayDate": "2020-08-15",
-     "holidayName": "AutoTest user Eng",
-     "langCode": "$IGNORE$"
+     "holidayName": "AutoTest user Eng"
     }'
    MasterData_CreateHoliday_Invalid_InputParameter_HolidayDate_Missing:
       endPoint: /v1/masterdata/holidays
@@ -208,8 +207,7 @@ CreateHoliday:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-730",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-730"
     }
   ]
 }'

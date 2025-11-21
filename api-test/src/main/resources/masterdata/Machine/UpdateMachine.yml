@@ -25,16 +25,16 @@ UpdateMachine:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-    "id":"$IGNORE$", 
+    "id":"$REMOVE$", 
     "name": "Mach-Test updated",
-	"machineSpecId": "$IGNORE$",
+	"machineSpecId": "$REMOVE$",
 	"serialNum":"FB5962911687",
 	"ipAddress": "192.168.0.424",
-	"isActive": "$IGNORE$",
-	"langCode": "$IGNORE$",
+	"isActive": "$REMOVE$",
+	"langCode": "$REMOVE$",
 	"macAddress": "61-D3-FD-12-C9-ED",
-	"zoneCode": "$IGNORE$",
-	"validityDateTime": "$IGNORE$"
+	"zoneCode": "$REMOVE$",
+	"validityDateTime": "$REMOVE$"
 }'
    Masterdata_UpdateMachine_Invalid_validitydate_Format:
       endPoint: /v1/masterdata/machines

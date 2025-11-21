@@ -27,8 +27,8 @@ CreateDevice:
 	"ipAddress": "172.23.174.113",
 	"isActive": false,
 	"macAddress": "D4-3D-7E-C0-8C-4A",
-	"zoneCode": "$IGNORE$",
-	"validityDateTime": "$IGNORE$",
+	"zoneCode": "$REMOVE$",
+	"validityDateTime": "$REMOVE$",
 	"serialNum": "ceec5f62-77b7-46f3-816b-3e734305a9c8",
 	"requesttime": "$TIMESTAMP$"
 }'
@@ -60,8 +60,8 @@ CreateDevice:
 	"ipAddress": "172.23.174.113",
 	"isActive": false,
 	"macAddress": "D4-3D-7E-C0-8C-4A",
-	"zoneCode": "$IGNORE$",
-	"validityDateTime": "$IGNORE$",
+	"zoneCode": "$REMOVE$",
+	"validityDateTime": "$REMOVE$",
 	"serialNum": "ceec5f62-77b7-46f3-816b-3e734305a9c8",
 	"requesttime": "$TIMESTAMP$"
 }'

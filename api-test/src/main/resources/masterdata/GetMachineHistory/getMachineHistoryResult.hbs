@@ -4,15 +4,7 @@
 	
     {{#each machineHistoryDetails}}
       {
-        "id": "{{id}}",
-        "name": "{{name}}",
-        "isActive": {{isActive}},
-        "serialNum": "{{serialNum}}",
-        "ipAddress": "{{ipAddress}}",
-        "macAddress": "{{macAddress}}",
-        "machineSpecId": "{{machineSpecId}}",
-        "effectDateTime": "{{effectDateTime}}",
-        "validityDateTime": {{validityDateTime}}
+        "id": "{{id}}"
       }
       {{#unless @last}},{{/unless}}
       	{{/each}}

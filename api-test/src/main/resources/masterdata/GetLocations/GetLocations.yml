@@ -12,5 +12,4 @@ GetLocations:
       
 }'
       output: '{
-"data": "$IGNORE$"
 }'  

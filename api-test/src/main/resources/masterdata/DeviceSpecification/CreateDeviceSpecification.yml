@@ -22,7 +22,6 @@ CreateDeviceSpecification:
       "requesttime": "$TIMESTAMP$"
       }'
       output: '{
-      "id": "$IGNORE$"
       }'
       
    MasterData_CreateDeviceSpecification_Duplicate_DeviceSpecification_Neg:

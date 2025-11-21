@@ -11,7 +11,7 @@ GetZoneHierarchyByLangCode:
   "langCode": "eng"
 }'
       output: '{
-      "langCode": "$IGNORE$"
+      "langCode": "$REMOVE$"
 }'
    MasterData_GetZoneHierarchyByLangCode_inValid_code:
       endPoint: /v1/masterdata/zones/hierarchy/{langCode}

@@ -19,11 +19,10 @@ UpdateHoliday:
 	"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-        "holidayId": "$IGNORE$",
-        "locationCode": "$IGNORE$",
+        "holidayId": "$REMOVE$",
+        "locationCode": "$REMOVE$",
         "holidayDate": "2020-08-15",
-        "holidayName": "AutoTest user",
-        "langCode": "$IGNORE$"
+        "holidayName": "AutoTest user"
     }'
    MasterData_UpdateHoliday_Invalid_InputParameter_HolidayDate_Missing:
       endPoint: /v1/masterdata/holidays
@@ -209,8 +208,7 @@ UpdateHoliday:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-732",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-732"
     }
   ]
 }'

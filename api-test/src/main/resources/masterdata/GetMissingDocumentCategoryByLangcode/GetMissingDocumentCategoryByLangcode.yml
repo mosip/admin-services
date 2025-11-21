@@ -13,7 +13,6 @@ GetMissingDocumentCategoryByLangcode:
       "langcode":"eng"
 }'
       output: '{
-    "id": "$IGNORE$"
 }'
    Masterdata_GetDocumentTypeByLangCode_InValid_langcode:
       endPoint: /v1/masterdata/documentcategories/missingids/{langcode}

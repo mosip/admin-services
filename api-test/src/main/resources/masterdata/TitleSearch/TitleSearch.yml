@@ -127,8 +127,7 @@ TitleSearch:
    "data": [
      {
         "code": "TEST0011",
-        "titleName": "TEST0011",
-        "titleDescription": "$IGNORE$"
+        "titleName": "TEST0011"
       }
     ]
 }'
@@ -411,8 +410,7 @@ TitleSearch:
       output: '{
    "errors": [
     {
-      "errorCode": "KER-MSD-317",
-      "message": "$IGNORE$"
+      "errorCode": "KER-MSD-317"
     }
   ]
 }'

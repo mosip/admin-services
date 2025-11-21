@@ -19,9 +19,9 @@ UpdateUserCenterMapping:
       output: '{
     "name": "automationUpdated",
     "statusCode": "active",
-    "regCenterId": "$IGNORE$",
-    "zoneCode": "$IGNORE$",
-    "zoneName": "$IGNORE$",
+    "regCenterId": "$REMOVE$",
+    "zoneCode": "$REMOVE$",
+    "zoneName": "$REMOVE$",
     "regCenterName": "HSR Center updated"
     }'
    MasterData_UserCenterMapping_Invalid_InputParameter_regCenterId_Missing:
