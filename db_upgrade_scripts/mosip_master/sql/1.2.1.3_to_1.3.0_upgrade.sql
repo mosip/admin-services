@@ -1,4 +1,4 @@
--- Below script is required to upgrade from 1.3.0-beta.2 to 1.3.0
+-- Below script is required to upgrade from 1.2.1.3 to 1.3.0 --
 
 \c mosip_master
 
@@ -59,6 +59,7 @@ CREATE SEQUENCE  master.BATCH_JOB_SEQ START WITH 0 MINVALUE 0 MAXVALUE 922337203
 --------ca_cert_store-upgrade-db script------------
 ALTER TABLE IF EXISTS master.ca_cert_store ADD COLUMN ca_cert_type character varying(25);
 
+-- Below script is required to upgrade from 1.3.0-beta.2 to 1.3.0 --
 -- UPGRADE FOR PERFORMANCE OPTIMIZATION INDEXES
 
 CREATE INDEX idx_ca_cert_store_cr_dtimes ON master.ca_cert_store (cr_dtimes);
@@ -93,7 +94,3 @@ CREATE INDEX IF NOT EXISTS idx_user_detail_regcntr_flags ON master.user_detail(r
 CREATE INDEX IF NOT EXISTS idx_user_detail_regcntr_change ON master.user_detail(regcntr_id, cr_dtimes, upd_dtimes, del_dtimes);
 
 ---END UPGRADE FOR PERFORMANCE OPTIMIZATION INDEXES--
-
--- Below script required to upgrade from 1.3.0-B1 to 1.3.0-B2 --
--- ca_cert_type column is added to the ca_cert_store table --
-ALTER TABLE IF EXISTS master.ca_cert_store ADD COLUMN ca_cert_type character varying(25);

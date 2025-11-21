@@ -1,4 +1,4 @@
--- Below script is required to rollback from 1.3.0-B2 to 1.3.0 --
+-- Below script is required to rollback from 1.3.0 to 1.2.1.3 --
 
 \c mosip_master
 
@@ -62,6 +62,8 @@ DROP SEQUENCE master.BATCH_JOB_SEQ;
 ----------ca_cert_store-rollback- db script-------------
 ALTER TABLE IF EXISTS master.ca_cert_store DROP COLUMN IF EXISTS ca_cert_type;
 
+-- Below scripts are required to rollback from 1.3.0 to 1.3.0-beta.2 --
+
 -- ROLLBACK FOR PERFORMANCE OPTIMIZATION INDEXES
 
 DROP INDEX IF EXISTS master.idx_ca_cert_store_cr_dtimes;
@@ -98,7 +100,3 @@ DROP INDEX IF EXISTS master.idx_user_detail_regcntr_flags;
 DROP INDEX IF EXISTS master.idx_user_detail_regcntr_change;
 
 -- END ROLLBACK FOR PERFORMANCE OPTIMIZATION INDEXES
-
--- Below script required to rollback from 1.3.0-B2 to 1.3.0-B1 --
--- ca_cert_type column is removed/deleted from ca_cert_store table --
-ALTER TABLE IF EXISTS master.ca_cert_store DROP COLUMN IF EXISTS ca_cert_type;
