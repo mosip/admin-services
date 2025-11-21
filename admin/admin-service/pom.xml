@@ -17,7 +17,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<springdoc.version>1.8.0</springdoc.version>
-		<mosip.commons.packetmanager.version>1.3.0-beta.2</mosip.commons.packetmanager.version>
+		<mosip.commons.packetmanager.version>1.3.0-SNAPSHOT</mosip.commons.packetmanager.version>
 		<kernel.core.version>1.3.0-SNAPSHOT</kernel.core.version>
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
