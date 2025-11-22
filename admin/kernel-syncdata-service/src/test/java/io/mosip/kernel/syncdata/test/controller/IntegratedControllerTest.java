@@ -94,7 +94,7 @@ public class IntegratedControllerTest {
 				.andRespond(withSuccess().body(str3).contentType(MediaType.APPLICATION_JSON));
 	}
 
-	//TODO Mock not working on clientSettingsHelper
+	//TODO Mock not working on clientSettingsHelper.
 	@Test
 	//@WithUserDetails(value = "reg-officer")
 	public void testGetClientSettings_withSuccessfulDataFetch() {
