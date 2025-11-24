@@ -25,11 +25,11 @@ public class ConfigServerClient {
     @Autowired
     private Environment environment;
 
-    @Cacheable(
-            cacheNames = "initial-sync",
-            key = "'config:' + #fileName",
-            unless = "#result == null || #result.isEmpty()"
-    )
+//    @Cacheable(
+//            cacheNames = "initial-sync",
+//            key = "'config:' + #fileName",
+//            unless = "#result == null || #result.isEmpty()"
+//    )
     public String fetch(@NotNull String fileName) {
         LOGGER.info("fetch config file: {}", fileName);
         String response = null;
