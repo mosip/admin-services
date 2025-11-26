@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.service;
 
-import java.util.List;
-
+import io.mosip.kernel.masterdata.dto.BlockListedWordStatusUpdateDto;
 import io.mosip.kernel.masterdata.dto.BlockListedWordsUpdateDto;
 import io.mosip.kernel.masterdata.dto.BlocklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlocklistedWordsResponseDto;
@@ -13,6 +12,8 @@ import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
+
+import java.util.List;
 
 /**
  * blocklisted words service
@@ -95,6 +96,6 @@ public interface BlocklistedWordsService {
 	 */
 	public FilterResponseDto blockListedWordsFilterValues(FilterValueDto filterValueDto);
 	
-	public StatusResponseDto updateBlockListedWordStatus(String word, boolean isActive);
+	public StatusResponseDto updateBlockListedWordStatus(BlockListedWordStatusUpdateDto requestDto);
 
 }
