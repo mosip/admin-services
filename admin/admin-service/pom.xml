@@ -226,17 +226,6 @@
 			<artifactId>bcutil-jdk18on</artifactId>
 			<version>1.78.1</version>
 		</dependency>
-		<!--<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-auth-adapter</artifactId>
-			<version>1.2.1-java21-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-webflux</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>-->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
