@@ -102,7 +102,7 @@ public class MosipTestRunner {
 			AdminTestUtil.getZoneName();
 			AdminTestUtil.getLeafZone();
 
-			for (int i = 0; i < 1; i++) {
+			for (int i = 0; i < localLanguageList.size(); i++) {
 				BaseTestCase.languageList.clear();
 				BaseTestCase.languageList.add(localLanguageList.get(i));
 				SkipTestCaseHandler.clearTestCaseInSkippedList();
@@ -123,7 +123,7 @@ public class MosipTestRunner {
 				startTestRunner();
 				
 				// Used for generating the test case interdependency JSON file
-//				AdminTestUtil.generateTestCaseInterDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency.json");
+				//AdminTestUtil.generateTestCaseInterDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency.json");
 			}
 		} catch (Exception e) {
 			LOGGER.error("Exception " + e.getMessage());
