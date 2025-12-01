@@ -1,5 +1,3 @@
--- Below script is required to upgrade from 1.2.1.4 to 1.3.0 --
-
 \c mosip_master
 
 -- Upgrade script for master.app_detail
