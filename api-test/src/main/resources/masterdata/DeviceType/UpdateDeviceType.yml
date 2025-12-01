@@ -6,6 +6,7 @@ UpdateDeviceType:
       role: admin
       templateFields: ["description"]
       restMethod: put
+	  additionalDependencies: TC_Masterdata_CreateDeviceType_01
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/DeviceType/deviceTypeResult
       input: '{
@@ -26,6 +27,7 @@ UpdateDeviceType:
       role: admin
       templateFields: ["description"]
       restMethod: put
+	  additionalDependencies: TC_Masterdata_CreateDeviceType_01
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/DeviceType/deviceTypeResult
       input: '{
@@ -46,6 +48,7 @@ UpdateDeviceType:
       role: admin
       templateFields: ["description"]
       restMethod: put
+	  additionalDependencies: TC_Masterdata_CreateDeviceType_01
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error
       input: '{
@@ -71,6 +74,7 @@ UpdateDeviceType:
       role: admin
       templateFields: ["description"]
       restMethod: put
+	  additionalDependencies: TC_Masterdata_CreateDeviceType_01
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error
       input: '{
@@ -96,6 +100,7 @@ UpdateDeviceType:
       role: admin
       templateFields: ["description"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateDeviceType_01
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error
       input: '{
@@ -121,6 +126,7 @@ UpdateDeviceType:
       role: admin
       templateFields: ["description"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateDeviceType_01
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error
       input: '{
@@ -146,6 +152,7 @@ UpdateDeviceType:
       role: admin
       templateFields: ["description"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateDeviceType_01
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error
       input: '{
@@ -171,6 +178,7 @@ UpdateDeviceType:
       role: admin
       templateFields: ["description"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateDeviceType_01
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error
       input: '{
@@ -196,6 +204,7 @@ UpdateDeviceType:
       role: admin
       templateFields: ["name"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateDeviceType_01
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error
       input: '{

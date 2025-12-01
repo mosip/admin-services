@@ -6,6 +6,7 @@ FilterBlockListedWords:
       role: admin
       templateFields: ["text","fieldValue"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/FilterBlockListedWords/filterBlockListedWords
       outputTemplate: masterdata/FilterBlockListedWords/filterBlockListedWordsResult
       input: '{
@@ -32,6 +33,7 @@ FilterBlockListedWords:
       role: admin
       templateFields: ["text","fieldValue"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/FilterBlockListedWords/filterBlockListedWords
       outputTemplate: masterdata/FilterBlockListedWords/filterBlockListedWordsResult
       input: '{
@@ -58,6 +60,7 @@ FilterBlockListedWords:
       role: admin
       templateFields: ["text"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/FilterBlockListedWords/filterBlockListedWords
       outputTemplate: masterdata/error
       input: '{
@@ -84,6 +87,7 @@ FilterBlockListedWords:
       role: admin
       templateFields: ["text"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/FilterBlockListedWords/filterBlockListedWords
       outputTemplate: masterdata/error
       input: '{
@@ -110,6 +114,7 @@ FilterBlockListedWords:
       role: admin
       templateFields: ["text"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/FilterBlockListedWords/filterBlockListedWords
       outputTemplate: masterdata/error
       input: '{
@@ -135,6 +140,7 @@ FilterBlockListedWords:
       role: admin
       templateFields: ["text"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/FilterBlockListedWords/filterBlockListedWords
       outputTemplate: masterdata/error
       input: '{

@@ -5,6 +5,7 @@ UpdateDocType:
       description: Update document type with valid data
       role: admin
       restMethod: patch
+      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/UpdateDocType/updateDocType
       outputTemplate: masterdata/UpdateDocType/updateDocTypeResult
       input: '{
@@ -20,6 +21,7 @@ UpdateDocType:
       description: Update document type with invalid status
       role: admin
       restMethod: patch
+      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/UpdateDocType/updateDocType
       outputTemplate: masterdata/error
       input: '{
@@ -40,6 +42,7 @@ UpdateDocType:
       description: Update document type with invalid code
       role: admin
       restMethod: patch
+      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/UpdateDocType/updateDocType
       outputTemplate: masterdata/error
       input: '{

@@ -6,6 +6,7 @@ UpdateBlockListedWordDetails:
       role: admin
       templateFields: ["description","word"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/UpdateBlockListedWordDetails/updateBlockListedWordDetails
       outputTemplate: masterdata/UpdateBlockListedWordDetails/updateblockListedWordDetailsResult
       input: '{
@@ -25,6 +26,7 @@ UpdateBlockListedWordDetails:
       role: admin
       templateFields: ["description"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/UpdateBlockListedWordDetails/updateBlockListedWordDetails
       outputTemplate: masterdata/error
       input: '{
@@ -49,6 +51,7 @@ UpdateBlockListedWordDetails:
       role: admin
       templateFields: ["word"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/UpdateBlockListedWordDetails/updateBlockListedWordDetails
       outputTemplate: masterdata/error
       input: '{
@@ -73,6 +76,7 @@ UpdateBlockListedWordDetails:
       role: admin
       templateFields: ["word"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/UpdateBlockListedWordDetails/updateBlockListedWordDetails
       outputTemplate: masterdata/error
       input: '{
@@ -97,6 +101,7 @@ UpdateBlockListedWordDetails:
       role: admin
       templateFields: ["description"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/UpdateBlockListedWordDetails/updateBlockListedWordDetails
       outputTemplate: masterdata/error
       input: '{

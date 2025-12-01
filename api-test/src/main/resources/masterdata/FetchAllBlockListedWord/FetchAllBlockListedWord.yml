@@ -6,6 +6,7 @@ FetchAllBlockListedWord:
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
+      TC_Masterdata_FetchAllBlockListedWord_01
       inputTemplate: masterdata/FetchAllBlockListedWord/fetchAllBlockListedWord
       outputTemplate: masterdata/FetchAllBlockListedWord/fetchAllBlockListedWordResult
       input: '{

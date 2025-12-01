@@ -7,6 +7,7 @@ FetchBlockListedWordByLangcode:
       checkErrorsOnlyInResponse: true
       templateFields: ["langCode"]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/FetchBlockListedWordByLangcode/fetchBlockListedWordByLangcode
       outputTemplate: masterdata/FetchBlockListedWordByLangcode/fetchBlockListedWordByLangcodeResult
       input: '{
@@ -20,6 +21,7 @@ FetchBlockListedWordByLangcode:
       description: Retrieve Block Listed Word with invalid langcode
       role: admin
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/FetchBlockListedWordByLangcode/fetchBlockListedWordByLangcode
       outputTemplate: masterdata/error
       input: '{

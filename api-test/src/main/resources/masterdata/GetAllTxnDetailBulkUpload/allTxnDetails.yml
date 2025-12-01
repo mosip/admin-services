@@ -6,6 +6,7 @@ GetAllTxnDetailBulkUpload:
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
+	  additionalDependencies: TC_Masterdata_BulkUpload_01,TC_Masterdata_BulkUpload_02
       inputTemplate: masterdata/GetAllTxnDetailBulkUpload/allTxnDetails
       outputTemplate: masterdata/GetAllTxnDetailBulkUpload/allTxnDetailsResult
       input: '{

@@ -6,6 +6,7 @@ UpdateBlockListedWords:
       role: admin
       templateFields: ["description","word","oldWord"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/BlockListedWords/updateBlockListedWords
       outputTemplate: masterdata/BlockListedWords/blockListedWordsResult
       input: '{
@@ -26,6 +27,7 @@ UpdateBlockListedWords:
       role: admin
       templateFields: ["description","word","oldWord"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/BlockListedWords/updateBlockListedWords
       outputTemplate: masterdata/error
       input: '{
@@ -51,6 +53,7 @@ UpdateBlockListedWords:
       role: admin
       templateFields: ["description"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/BlockListedWords/updateBlockListedWords
       outputTemplate: masterdata/error
       input: '{
@@ -75,6 +78,7 @@ UpdateBlockListedWords:
       role: admin
       templateFields: ["description"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/BlockListedWords/updateBlockListedWords
       outputTemplate: masterdata/error
       input: '{
@@ -100,6 +104,7 @@ UpdateBlockListedWords:
       role: admin
       templateFields: ["word"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/BlockListedWords/updateBlockListedWords
       outputTemplate: masterdata/error
       input: '{
@@ -124,6 +129,7 @@ UpdateBlockListedWords:
       role: admin
       templateFields: ["word"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/BlockListedWords/updateBlockListedWords
       outputTemplate: masterdata/error
       input: '{
@@ -149,6 +155,7 @@ UpdateBlockListedWords:
       role: admin
       templateFields: ["description"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/BlockListedWords/updateBlockListedWords
       outputTemplate: masterdata/error
       input: '{
