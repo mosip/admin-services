@@ -1,4 +1,4 @@
--- Below script is required to rollback from 1.3.0 to 1.2.1.3 --
+-- Below script is required to rollback from 1.3.0 to 1.2.1.4 --
 
 \c mosip_master
 
