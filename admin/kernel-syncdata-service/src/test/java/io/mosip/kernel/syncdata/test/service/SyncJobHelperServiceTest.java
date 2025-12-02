@@ -3,6 +3,7 @@ package io.mosip.kernel.syncdata.test.service;
 import io.mosip.kernel.syncdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.syncdata.dto.DynamicFieldDto;
 import io.mosip.kernel.syncdata.entity.*;
+import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.service.helper.SyncJobHelperService;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
@@ -15,6 +16,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
@@ -175,5 +177,106 @@ public class SyncJobHelperServiceTest {
         verify(cacheManager).getCache("initial-sync");
         verify(cacheManager, never()).getCache("delta-sync");
     }
+
+
+    @Test
+    public void testEvictDeltaCaches_NullCache() {
+        when(cacheManager.getCache("delta-sync")).thenReturn(null);
+        syncJobHelperService.evictDeltaCaches();
+        verify(cacheManager, times(1)).getCache("delta-sync");
+        verifyNoMoreInteractions(cacheManager);
+    }
+
+    @Test
+    public void testGetDeltaSyncCurrentTimestamp_ReturnsNonNull() {
+        ReflectionTestUtils.setField(syncJobHelperService, "deltaCacheEvictCron", "0 0/15 * * * *");
+        LocalDateTime ts = syncJobHelperService.getDeltaSyncCurrentTimestamp();
+        Assert.assertNotNull(ts);
+        Assert.assertTrue(ts.isBefore(LocalDateTime.now(ZoneOffset.UTC).plusMinutes(1)));
+    }
+
+    @Test
+    public void testCreateEntitySnapshot_SuccessWithStructuredAndDynamicData() throws Exception {
+        CompletableFuture okFutureEmpty = CompletableFuture.completedFuture(new ArrayList<>());
+        List<DynamicFieldDto> dynamicFieldDtos = new ArrayList<>();
+        DynamicFieldDto df = new DynamicFieldDto();
+        ReflectionTestUtils.setField(df, "name", "field1");
+        dynamicFieldDtos.add(df);
+        CompletableFuture dynamicFuture = CompletableFuture.completedFuture(dynamicFieldDtos);
+        CompletableFuture templatesFuture = CompletableFuture.completedFuture(new ArrayList<Template>());
+        when(serviceHelper.getAppAuthenticationMethodDetails(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getAppRolePriorityDetails(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getTemplates(any(), any(), any())).thenReturn(templatesFuture);
+        when(serviceHelper.getDocumentTypes(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getApplicantValidDocument(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getLocationHierarchy(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getLocationHierarchyList(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getAllDynamicFields(any(), any())).thenReturn(dynamicFuture);
+        when(serviceHelper.getReasonCategory(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getReasonList(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getScreenAuthorizationDetails(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getScreenDetails(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getBlackListedWords(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getProcessList(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getSyncJobDefDetails(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getPermittedConfig(any(), any())).thenReturn(okFutureEmpty);
+        when(mapper.getObjectAsJsonString(any())).thenReturn("json");
+        ReflectionTestUtils.setField(syncJobHelperService, "clientSettingsDir", "./target/test-snapshots");
+        syncJobHelperService.createEntitySnapshot();
+        verify(mapper, atLeastOnce()).getObjectAsJsonString(any());
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testCreateEntitySnapshot_FutureFailureWithSyncDataServiceException() {
+        SyncDataServiceException syncEx = org.mockito.Mockito.mock(SyncDataServiceException.class);
+        CompletableFuture failedFuture = new CompletableFuture<>();
+        failedFuture.completeExceptionally(syncEx);
+        CompletableFuture okFuture = CompletableFuture.completedFuture(new ArrayList<>());
+        when(serviceHelper.getAppAuthenticationMethodDetails(any(), any())).thenReturn(failedFuture);
+        when(serviceHelper.getAppRolePriorityDetails(any(), any())).thenReturn(okFuture);
+        when(serviceHelper.getTemplates(any(), any(), any())).thenReturn(okFuture);
+        when(serviceHelper.getDocumentTypes(any(), any())).thenReturn(okFuture);
+        when(serviceHelper.getApplicantValidDocument(any(), any())).thenReturn(okFuture);
+        when(serviceHelper.getLocationHierarchy(any(), any())).thenReturn(okFuture);
+        when(serviceHelper.getLocationHierarchyList(any(), any())).thenReturn(okFuture);
+        when(serviceHelper.getAllDynamicFields(any(), any())).thenReturn(okFuture);
+        when(serviceHelper.getReasonCategory(any(), any())).thenReturn(okFuture);
+        when(serviceHelper.getReasonList(any(), any())).thenReturn(okFuture);
+        when(serviceHelper.getScreenAuthorizationDetails(any(), any())).thenReturn(okFuture);
+        when(serviceHelper.getScreenDetails(any(), any())).thenReturn(okFuture);
+        when(serviceHelper.getBlackListedWords(any(), any())).thenReturn(okFuture);
+        when(serviceHelper.getProcessList(any(), any())).thenReturn(okFuture);
+        when(serviceHelper.getSyncJobDefDetails(any(), any())).thenReturn(okFuture);
+        when(serviceHelper.getPermittedConfig(any(), any())).thenReturn(okFuture);
+        syncJobHelperService.createEntitySnapshot();
+    }
+
+    @Test
+    public void testCreateEntitySnapshot_SnapshotContentEmptyIsIgnored() throws Exception {
+        List<Template> templates = new ArrayList<>();
+        templates.add(new Template());
+        CompletableFuture templatesFuture = CompletableFuture.completedFuture(templates);
+        CompletableFuture okFutureEmpty = CompletableFuture.completedFuture(new ArrayList<>());
+        when(serviceHelper.getAppAuthenticationMethodDetails(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getAppRolePriorityDetails(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getTemplates(any(), any(), any())).thenReturn(templatesFuture);
+        when(serviceHelper.getDocumentTypes(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getApplicantValidDocument(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getLocationHierarchy(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getLocationHierarchyList(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getAllDynamicFields(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getReasonCategory(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getReasonList(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getScreenAuthorizationDetails(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getScreenDetails(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getBlackListedWords(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getProcessList(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getSyncJobDefDetails(any(), any())).thenReturn(okFutureEmpty);
+        when(serviceHelper.getPermittedConfig(any(), any())).thenReturn(okFutureEmpty);
+        when(mapper.getObjectAsJsonString(any())).thenReturn("");
+        syncJobHelperService.createEntitySnapshot();
+        verify(mapper, atLeastOnce()).getObjectAsJsonString(any());
+    }
+
 
 }
