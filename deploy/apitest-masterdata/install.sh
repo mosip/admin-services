@@ -7,7 +7,7 @@ if [ $# -ge 1 ] ; then
 fi
 
 NS=apitestrig
-CHART_VERSION=12.1.4-develop
+CHART_VERSION=1.3.5
 COPY_UTIL=../copy_cm_func.sh
 
 echo Create $NS namespace
