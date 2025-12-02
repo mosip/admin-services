@@ -6,6 +6,7 @@ UpdateRegistrationCenterNonLanguage:
       role: admin
       templateFields: ["contactPerson","name"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/UpdateRegistrationCenterNonLanguage/updateRegistrationCenter
       outputTemplate: masterdata/UpdateRegistrationCenterNonLanguage/updateRegistrationCenterResult
       input: '{

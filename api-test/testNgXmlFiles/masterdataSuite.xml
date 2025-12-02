@@ -37,8 +37,9 @@
 	<test name="CreateBlockListedWords">
 		<parameter name="ymlFile"
 			value="masterdata/BlockListedWords/CreateBlockListedWords.yml" />
+			<parameter name="idKeyName" value="word" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePost" />
+			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 	<test name="UpdateBlockListedWordStatus">
@@ -593,8 +594,9 @@
 	<test name="CreateMachineType">
 		<parameter name="ymlFile"
 			value="masterdata/MachineType/CreateMachineType.yml" />
+			<parameter name="idKeyName" value="code" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePost" />
+			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 	<test name="UpdateMachineTypeStatus">

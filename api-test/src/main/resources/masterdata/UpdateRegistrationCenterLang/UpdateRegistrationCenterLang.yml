@@ -6,6 +6,7 @@ UpdateRegistrationCenterLang:
       role: globalAdmin
       templateFields: ["addressLine1","addressLine2","addressLine3","contactPerson","name"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/UpdateRegistrationCenterLang/updateRegistrationCenter
       outputTemplate: masterdata/UpdateRegistrationCenterLang/updateRegistrationCenterResult
       input: '{

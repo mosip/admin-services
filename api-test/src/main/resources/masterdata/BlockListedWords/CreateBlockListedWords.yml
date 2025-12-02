@@ -1,5 +1,5 @@
 CreateBlockListedWords:
-   Masterdata_CreateBlockListedWords_All_Valid_Smoke:
+   Masterdata_CreateBlockListedWords_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/blocklistedwords
       uniqueIdentifier: TC_Masterdata_CreateBlockListedWords_01
       description: Create block listed words with valid data

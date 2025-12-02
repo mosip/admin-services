@@ -6,11 +6,10 @@ UpdateBlockListedWordStatus:
       role: admin
       templateFields: ["word"]
       restMethod: patch
-	  additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/UpdateBlockListedWordStatus/updateBlockListedWordStatus
       outputTemplate: masterdata/UpdateBlockListedWordStatus/updateBlockListedWordStatusResult
       input: '{
-    "word": "dumboo",
+    "word": "$ID:CreateBlockListedWords_All_Valid_Smoke_sid_word$",
     "isActive": true
 }'
       output: '{
@@ -22,7 +21,7 @@ UpdateBlockListedWordStatus:
       description: Update block listed word status with invalid word
       role: admin
       restMethod: patch
-	  additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/UpdateBlockListedWordStatus/updateBlockListedWordStatus
       outputTemplate: masterdata/error
       input: '{
