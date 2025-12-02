@@ -358,7 +358,7 @@ SearchRegCenterType:
       role: admin
       templateFields: ["value"]
       restMethod: post
-	  additionalDependencies: TC_Masterdata_CreateRegCenterType_01
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/SearchRegCenterType/searchRegCenterType
       outputTemplate: masterdata/error
       input: '{
