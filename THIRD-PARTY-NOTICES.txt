@@ -111,7 +111,7 @@ Homepage: http://www.slf4j.org/
 ================================================================================
 Package: H2 Database (com.h2database:h2)
 Version: (Not specified)
-License: EPL 1.0 (Inferred from project’s official repository)
+License: MPL 2.0 OR EPL 1.0 (dual-licensed)
 Homepage: https://www.h2database.com/
 ================================================================================
 
@@ -132,7 +132,21 @@ Homepage: https://projects.eclipse.org/projects/ee4j.ja
 ================================================================================
 Package: Jakarta XML Bind (jakarta.xml.bind:jakarta.xml.bind-api, javax.xml.bind:jaxb-api)
 Version: (Not specified)
-License: Eclipse Public License 2.0 (Inferred from project’s official repository)
+License: EDL 1.0 (BSD-3-Clause), OR EPL-2.0, OR GPL-2.0 with Classpath Exception
+Homepage: https://projects.eclipse.org/projects/ee4j.jaxb/
+================================================================================
+
+================================================================================
+Package: H2 Database (com.h2database:h2)
+Version: (Not specified)
+License: MPL 2.0 OR EPL 1.0 (dual-licensed)
+Homepage: https://www.h2database.com/
+================================================================================
+
+================================================================================
+Package: Jakarta XML Bind (jakarta.xml.bind:jakarta.xml.bind-api, javax.xml.bind:jaxb-api)
+Version: (Not specified)
+License: EDL 1.0 (BSD-3-Clause), OR EPL-2.0, OR GPL-2.0 with Classpath Exception
 Homepage: https://projects.eclipse.org/projects/ee4j.jaxb/
 ================================================================================
 
