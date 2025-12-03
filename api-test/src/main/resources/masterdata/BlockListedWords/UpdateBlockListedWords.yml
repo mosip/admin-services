@@ -34,7 +34,7 @@ UpdateBlockListedWords:
     "description": "wrong word updated",
 	"isActive": "true",
     "langCode": "eng",
-     "oldWord": "$ID:CreateBlockListedWords_All_Valid_Smoke_sid_word$",	
+    "oldWord": "$ID:CreateBlockListedWords_All_Valid_Smoke_sid_word$",	
     "word": "dumbooo",
     "requesttime": "$TIMESTAMP$"
 }'
