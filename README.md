@@ -134,7 +134,7 @@ API endpoints, base URL, and mock server details are available via Stoplight and
 
 ### Product Documentation
 
-To learn more about admin services from a functional perspective and use case scenarios, refer to our main documentation: [Click here]()
+To learn more about admin services from a functional perspective and use case scenarios, refer to our main documentation: [Click here](https://docs.mosip.io/1.2.0/id-lifecycle-management/support-systems/administration)
 
 ## Testing
 
