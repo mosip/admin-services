@@ -29,7 +29,9 @@ The Admin module contains the following services:
 
 ## Database
 
-Database SQL scripts are available in the [db_scripts](db_scripts) directory.
+Before starting the local setup, execute the required SQL scripts to initialize the database.
+
+All database SQL scripts are available in the [db_scripts](db_scripts) directory.
 
 ## Local Setup
 
@@ -54,7 +56,7 @@ Before you begin, ensure you have the following installed:
 
 ### Local Setup (for Development or Contribution)
 
-1. Make sure the config server is running.
+1. Make sure the config server is running. For detailed instructions on setting up and running the config server, refer to the [MOSIP Config Server Setup Guide](https://docs.mosip.io/1.2.0/modules/registration-processor/registration-processor-developers-guide#environment-setup).
 
 2. Clone the repository:
 ```text
@@ -75,6 +77,8 @@ mvn clean install -Dmaven.javadoc.skip=true -Dgpg.skip=true
 
 #### Option 1: Pull from Docker Hub
 
+Recommended for users who want a quick, ready-to-use setup — testers, students, and external users.
+
 Pull the pre-built images from Docker Hub:
 ```text
 docker pull mosipid/admin-service
@@ -84,6 +88,8 @@ docker pull mosipid/admin-hotlist-service
 ```
 
 #### Option 2: Build Docker Images Locally
+
+Recommended for contributors or developers who want to modify or build the services from source.
 
 1. Clone and build the project:
 ```text
