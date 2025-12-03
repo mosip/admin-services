@@ -5,7 +5,18 @@
 
 ## Overview
 
-This repository contains the source code for the MOSIP Admin module. For a comprehensive overview, refer to the [official documentation](https://docs.mosip.io/1.2.0/modules/administration). The module exposes API endpoints, and for a reference front-end UI implementation, see the [Admin UI GitHub repository](https://github.com/mosip/admin-ui/).
+The **Admin module** provides a secure and configurable system for:
+
+- Managing master data including zones, registration centers, devices, and machines
+- Resource creation
+- Bulk upload of packets
+- Packet status tracking
+- RID recovery
+- Resuming paused registrations
+
+It exposes a set of APIs that enable administrators to manage operational data efficiently. A reference front-end implementation is available in the **[Admin UI repository](https://github.com/mosip/admin-ui/)**.
+
+For a complete functional overview and capabilities, refer to the **[official documentation](https://docs.mosip.io/1.2.0/modules/administration)**.
 
 ## Services
 
@@ -20,9 +31,16 @@ The Admin module contains the following services:
 
 Database SQL scripts are available in the [db_scripts](db_scripts) directory.
 
-## Build & Run (for developers)
+## Local Setup
+
+The project can be set up in two ways:
+
+1. [Local Setup (for Development or Contribution)](#local-setup-for-development-or-contribution)
+2. [Local Setup with Docker (Easy Setup for Demos)](#local-setup-with-docker-easy-setup-for-demos)
 
 ### Prerequisites
+
+Before you begin, ensure you have the following installed:
 
 - **JDK**: 21.0.3
 - **Maven**: 3.9.6
@@ -30,157 +48,106 @@ Database SQL scripts are available in the [db_scripts](db_scripts) directory.
 
 ### Runtime Dependencies
 
-- `kernel-auth-adapter.jar`
+- Add `kernel-auth-adapter.jar` to the classpath, or include it as a Maven dependency — [Download](https://central.sonatype.com/artifact/io.mosip.kernel/kernel-auth-adapter)
 
-### 1. Build
+## Installation
 
-```bash
+### Local Setup (for Development or Contribution)
+
+1. Make sure the config server is running.
+
+2. Clone the repository:
+```text
 git clone <repo-url>
 cd admin-services
-mvn install -Dmaven.javadoc.skip=true -Dgpg.skip=true
 ```
 
-### 2. Run Services
-
-#### Option A: Run using Maven
-
-**Prerequisites**
-The Config Server must be running before starting any service. Start the config server first:
-
-```bash
-cd config-server
-mvn spring-boot:run
+3. Build the project:
+```text
+mvn clean install -Dmaven.javadoc.skip=true -Dgpg.skip=true
 ```
 
-**Configuration**
-The admin module uses configuration files accessible in the [MOSIP Config repository](https://github.com/mosip/mosip-config/tree/master). Please refer to the required released tagged version for configuration:
+4. Start the application:
+    - Click the Run button in your IDE, or
+    - Run via command: `mvn spring-boot:run`
 
-- [Admin Configuration](https://github.com/mosip/mosip-config/blob/master/admin-default.properties)
-- [Application Configuration](https://github.com/mosip/mosip-config/blob/master/application-default.properties)
+### Local Setup with Docker (Easy Setup for Demos)
 
-**Run Service**
-```bash
-cd <service-folder>
-mvn spring-boot:run
+#### Option 1: Pull from Docker Hub
+
+Pull the pre-built images from Docker Hub:
+```text
+docker pull mosipid/admin-service
+docker pull mosipid/kernel-masterdata-service
+docker pull mosipid/kernel-syncdata-service
+docker pull mosipid/admin-hotlist-service
 ```
 
-**Verify**: Service starts, logs show it is running, and the health endpoint (`http://localhost:8080/actuator/health`) returns status.
+#### Option 2: Build Docker Images Locally
 
-#### Option B: Run using Docker
-
-```bash
-cd <service-folder>
-docker build -t <service-name>:latest -f Dockerfile .
-docker run -p <host-port>:<container-port> <service-name>:latest
+1. Clone and build the project:
+```text
+git clone <repo-url>
+cd admin-services
+mvn clean install -Dmaven.javadoc.skip=true -Dgpg.skip=true
 ```
 
-Replace `<service-folder>`, `<service-name>`, `<host-port>`, and `<container-port>` as needed.
-
-**Verify**: Service endpoint is accessible and responds to requests.
-
-## Admin UI
-
-For the complete Admin UI implementation, refer to the [Admin UI GitHub repository](https://github.com/mosip/admin-ui/).
-
-### Running Admin UI
-
-The Admin UI is built with Angular CLI version 8.0.3. Follow these steps to run the Admin UI:
-
-#### Prerequisites
-- Node.js (latest LTS version)
-- Angular CLI
-
-#### Development Server
-```bash
-ng serve
-```
-Navigate to `http://localhost:4200/`. The application will automatically reload when you make changes to the source files.
-
-#### Build
-```bash
-# Development build
-ng build
-
-# Production build
-ng build --prod
-```
-The build artifacts will be stored in the `dist/` directory.
-
-#### Testing
-```bash
-# Unit tests
-ng test
-
-# End-to-end tests
-ng e2e
+2. Navigate to each service directory and build the Docker image:
+```text
+cd admin/<service-directory>
+docker build -t <service-name> .
 ```
 
-For detailed setup instructions and configuration, please refer to the [Admin UI repository](https://github.com/mosip/admin-ui/).
+#### Running the Services
 
-## Running the Release Version with Docker
-
-To run the latest release version of the Docker container:
-
-### 1. Pull the Latest Image
-
-```bash
-docker pull mosipid/admin-service:latest
+Start each service using Docker:
+```text
+docker run -d -p <port>:<port> --name <service-name> <service-name>
 ```
 
-### 2. Run the Container
+#### Verify Installation
 
-**Basic Run:**
-```bash
-docker run -d -p 8080:8080 \
-  -e SPRING_CLOUD_CONFIG_URI=http://localhost:8888 \
-  -e SPRING_PROFILES_ACTIVE=default \
-  --name admin-service \
-  mosipid/admin-service:latest
-```
-
-### 3. Using Environment File
-
-Create a `.env` file with your configuration:
-
-```env
-SPRING_CLOUD_CONFIG_URI=http://localhost:8888
-SPRING_PROFILES_ACTIVE=default
-DATABASE_URL=jdbc:postgresql://localhost:5432/mosip_admin
-```
-
-Then run the container:
-
-```bash
-docker run -d -p 8080:8080 \
-  --env-file .env \
-  --name admin-service \
-  mosipid/admin-service:latest
-```
-
-### 4. Verify the Container
-
-Check container status:
-```bash
+Check that all containers are running:
+```text
 docker ps
 ```
 
-Test the health endpoint:
-```bash
-curl http://localhost:8080/actuator/health
-```
+Access the services at `http://localhost:<port>` using the port mappings listed above.
 
 ## Deployment
 
-To deploy Admin on a Kubernetes cluster using Docker, refer to the [Sandbox Deployment Guide](https://docs.mosip.io/1.2.0/deploymentnew/v3-installation).
+### Kubernetes
+
+To deploy Admin services on a Kubernetes cluster, refer to the [Sandbox Deployment Guide](https://docs.mosip.io/1.2.0/deploymentnew/v3-installation).
+
+## Usage
+
+### Admin UI
+
+For the complete Admin UI implementation and usage instructions, refer to the [Admin UI GitHub repository](https://github.com/mosip/admin-ui/).
+
+## Documentation
+
+### API Documentation
+
+API endpoints, base URL, and mock server details are available via Stoplight and Swagger documentation: [MOSIP Admin Service API Documentation](https://mosip.github.io/documentation/1.2.0/admin-service.html).
+
+### Product Documentation
+
+To learn more about admin services from a functional perspective and use case scenarios, refer to our main documentation: [Click here]()
 
 ## Testing
 
 Automated functional tests are available in the [Functional Tests repository](api-test).
 
-## API Documentation
+## Contribution & Community
 
-Comprehensive API documentation is available at [MOSIP Admin Service API Documentation](https://mosip.github.io/documentation/1.2.0/admin-service.html).
+• To learn how you can contribute code to this application, [click here](https://docs.mosip.io/1.2.0/community/code-contributions).
+
+• If you have questions or encounter issues, visit the [MOSIP Community](https://community.mosip.io/) for support.
+
+• For any GitHub issues: [Report here](https://github.com/mosip/admin-services/issues)
 
 ## License
 
-This project is licensed under the terms of the [Mozilla Public License 2.0](LICENSE).
+This project is licensed under the [Mozilla Public License 2.0](LICENSE).
