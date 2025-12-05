@@ -7,6 +7,7 @@ DeleteMachineSpec:
       checkErrorsOnlyInResponse: true
       templateFields: []
       restMethod: delete
+      additionalDependencies: TC_Masterdata_UpdateMachineSpecification_01
       inputTemplate: masterdata/DeleteMachineSpec/deleteMachineSpec
       outputTemplate: masterdata/DeleteMachineSpec/deleteMachineSpecResult
       input: '{

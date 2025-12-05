@@ -6,7 +6,6 @@ BlockListedWordValidation:
       role: admin
       templateFields: []
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/BlockListedWordValidation/blockListedWordValidation
       outputTemplate: masterdata/BlockListedWordValidation/blockListedWordValidationResult
       input: '{

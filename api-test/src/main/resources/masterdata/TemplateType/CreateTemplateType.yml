@@ -1,5 +1,5 @@
 CreateTemplateType:
-   MasterData_CreateTemplateType_All_Valid_Smoke:
+   MasterData_CreateTemplateType_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/templatetypes
       uniqueIdentifier: TC_Masterdata_CreateTemplateType_01
       description: Create template type with valid details

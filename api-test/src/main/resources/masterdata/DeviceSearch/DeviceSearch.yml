@@ -221,7 +221,6 @@ DeviceSearch:
       role: globalAdmin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDevice_01
       inputTemplate: masterdata/DeviceSearch/deviceSearch
       outputTemplate: masterdata/NilSearchResult
       input: '{
@@ -257,7 +256,6 @@ DeviceSearch:
       role: globalAdmin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDevice_01
       inputTemplate: masterdata/DeviceSearch/deviceSearch
       outputTemplate: masterdata/error
       input: '{
@@ -296,7 +294,6 @@ DeviceSearch:
       role: globalAdmin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDevice_01
       inputTemplate: masterdata/DeviceSearch/deviceSearch
       outputTemplate: masterdata/error
       input: '{

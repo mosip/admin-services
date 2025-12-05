@@ -637,7 +637,7 @@
 	<test name="CreateMachineSpecification">
 		<parameter name="ymlFile"
 			value="masterdata/MachineSpecification/CreateMachineSpecification.yml" />
-		<parameter name="idKeyName" value="id" />
+		<parameter name="idKeyName" value="id,brand,model" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePostForAutoGenId" />
 		</classes>
@@ -730,7 +730,7 @@
 	<test name="CreateHoliday">
 		<parameter name="ymlFile"
 			value="masterdata/Holiday/CreateHoliday.yml" />
-		<parameter name="idKeyName" value="holidayId" />
+		<parameter name="idKeyName" value="holidayId,holidayName,holidayDate" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePostForAutoGenId" />
 		</classes>
@@ -810,8 +810,9 @@
 	<test name="CreateTemplateType">
 		<parameter name="ymlFile"
 			value="masterdata/TemplateType/CreateTemplateType.yml" />
+			<parameter name="idKeyName" value="code" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePost" />
+			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 	
@@ -932,7 +933,7 @@
 		</classes>
 	</test>
 	
-	<!--<test name="UpdateUISpec">
+	<test name="UpdateUISpec">
 		<parameter name="ymlFile"
 			value="masterdata/UpdateUISpec/UpdateUISpec.yml" />
 		<classes>
@@ -946,7 +947,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePut" />
 		</classes>
-	</test> -->
+	</test> 
 	
 	<test name="GetPossiableValues">
 		<parameter name="ymlFile"
@@ -1050,14 +1051,14 @@
 			<class name="io.mosip.testrig.apirig.masterdata.testscripts.GetWithParam" />
 		</classes>
 	</test>
-	<!--Commenting for MOSIP-33731-->
-	<!--<test name="GetIdTypeByLangCode">
+	Commenting for MOSIP-33731
+	<test name="GetIdTypeByLangCode">
 		<parameter name="ymlFile"
 			value="masterdata/GetIdTypeByLangCode/GetIdTypeByLangCode.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.masterdata.testscripts.GetWithParam" />
 		</classes>
-	</test>-->
+	</test>
 	<test name="GetHolidaysMissingIds">
 		<parameter name="ymlFile"
 			value="masterdata/GetHolidaysMissingIds/GetHolidaysMissingIds.yml" />
@@ -1164,14 +1165,14 @@
 			<class name="io.mosip.testrig.apirig.masterdata.testscripts.GetWithParam" />
 		</classes>
 	</test>  
-<!--Commenting for MOSIP-33731-->	
-	<!--<test name="CreateIdType">
+Commenting for MOSIP-33731	
+	<test name="CreateIdType">
 		<parameter name="ymlFile"
 			value="masterdata/CreateIdType/CreateIdType.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePost" />
 		</classes>
-	</test>-->
+	</test>
 	<test name="FetchValidDocumentsByDocCategoryCode">
 		<parameter name="ymlFile"
 			value="masterdata/FetchValidDocumentsByDocCategoryCode/FetchValidDocumentsByDocCategoryCode.yml" />
@@ -1217,7 +1218,7 @@
 	<test name="CreateDynamicField">
 		<parameter name="ymlFile"
 			value="masterdata/DynamicField/CreateDynamicField.yml" />
-		<parameter name="idKeyName" value="id" />
+		<parameter name="idKeyName" value="id,code,value,name" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePostForAutoGenId" />
 		</classes>

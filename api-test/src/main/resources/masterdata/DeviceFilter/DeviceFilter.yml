@@ -166,7 +166,6 @@ DeviceFilter:
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDevice_01
       inputTemplate: masterdata/DeviceFilter/deviceFilter
       outputTemplate: masterdata/error
       input: '{

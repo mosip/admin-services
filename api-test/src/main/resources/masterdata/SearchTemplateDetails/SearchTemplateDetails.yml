@@ -7,6 +7,7 @@ SearchTemplateDetails:
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateTemplate_01
       inputTemplate: masterdata/SearchTemplateDetails/searchTemplateDetails
       outputTemplate: masterdata/SearchTemplateDetails/searchTemplateDetailsResult
       input: '{
@@ -39,6 +40,7 @@ SearchTemplateDetails:
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateTemplate_01
       inputTemplate: masterdata/SearchTemplateDetails/searchTemplateDetails
       outputTemplate: masterdata/SearchTemplateDetails/searchTemplateDetailsResult
       input: '{
@@ -70,6 +72,7 @@ SearchTemplateDetails:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateTemplate_01
       inputTemplate: masterdata/SearchTemplateDetails/searchTemplateDetails
       outputTemplate: masterdata/error
       input: '{

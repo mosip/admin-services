@@ -13,7 +13,7 @@ MachineTypeSearch:
       {
         "columnName": "code",
         "type": "equals",
-        "value": "Laptop2",
+        "value": "$ID:CreateMachineType_All_Valid_Smoke_sid_code$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -34,7 +34,7 @@ MachineTypeSearch:
      {
         "isActive": "$REMOVE$",
         "createdBy": "$REMOVE$",
-        "code": "Laptop2",
+        "code": "$ID:CreateMachineType_All_Valid_Smoke_sid_code$",
         "name": "$REMOVE$",
         "description": "$REMOVE$"
       }
@@ -89,7 +89,7 @@ MachineTypeSearch:
       {
         "columnName": "code",
         "type": "equals",
-        "value": "Laptop-2",
+        "value": "$ID:CreateMachineType_All_Valid_Smoke_sid_code$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -127,7 +127,7 @@ MachineTypeSearch:
       {
         "columnName": "fbheafg",
         "type": "equals",
-        "value": "Laptop-2",
+        "value": "$ID:CreateMachineType_All_Valid_Smoke_sid_code$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -165,7 +165,7 @@ MachineTypeSearch:
       {
         "columnName": "code",
         "type": "equals",
-        "value": "Laptop-2",
+        "value": "$ID:CreateMachineType_All_Valid_Smoke_sid_code$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -203,7 +203,7 @@ MachineTypeSearch:
       {
         "columnName": "code",
         "type": "equals",
-        "value": "Laptop-2",
+        "value": "$ID:CreateMachineType_All_Valid_Smoke_sid_code$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -241,7 +241,7 @@ MachineTypeSearch:
       {
         "columnName": "",
         "type": "equals",
-        "value": "Laptop-2",
+        "value": "$ID:CreateMachineType_All_Valid_Smoke_sid_code$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -279,7 +279,7 @@ MachineTypeSearch:
       {
         "columnName": "code",
         "type": "",
-        "value": "Laptop-2",
+        "value": "$ID:CreateMachineType_All_Valid_Smoke_sid_code$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -317,7 +317,7 @@ MachineTypeSearch:
       {
         "columnName": "code",
         "type": "equals",
-        "value": "Laptop-2",
+        "value": "$ID:CreateMachineType_All_Valid_Smoke_sid_code$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -355,7 +355,7 @@ MachineTypeSearch:
       {
         "columnName": "code",
         "type": "between",
-        "value": "Laptop-2",
+        "value": "$ID:CreateMachineType_All_Valid_Smoke_sid_code$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -392,7 +392,7 @@ MachineTypeSearch:
       {
         "columnName": "code",
         "type": "equals",
-        "value": "Laptop-2",
+        "value": "$ID:CreateMachineType_All_Valid_Smoke_sid_code$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }

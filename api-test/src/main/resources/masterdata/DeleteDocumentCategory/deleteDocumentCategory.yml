@@ -20,7 +20,6 @@ DeleteDocumentCategory:
       description: Delete Document Categoty with invalid code
       role: admin
       restMethod: delete
-      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/DeleteDocumentCategory/deleteDocumentCategory
       outputTemplate: masterdata/error
       input: '{

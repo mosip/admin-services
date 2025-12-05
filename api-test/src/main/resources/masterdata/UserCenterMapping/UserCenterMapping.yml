@@ -6,6 +6,7 @@ UserCenterMapping:
       role: globalAdmin
       templateFields: ["name"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_UpdateUserCenterMapping_01,TC_Masterdata_UpdateZoneUserStatus_01
       inputTemplate: masterdata/UserCenterMapping/userCenterMapping
       outputTemplate: masterdata/UserCenterMapping/userCenterMappingResult
       input: '{

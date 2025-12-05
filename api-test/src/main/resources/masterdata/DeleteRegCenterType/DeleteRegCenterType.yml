@@ -20,7 +20,6 @@ DeleteRegCenterType:
       description: Delete RegCenter Type with invalid code
       role: admin
       restMethod: delete
-      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/DeleteRegCenterType/deleteRegCenterType
       outputTemplate: masterdata/error
       input: '{

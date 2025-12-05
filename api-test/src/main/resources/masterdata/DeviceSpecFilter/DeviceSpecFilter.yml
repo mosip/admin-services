@@ -164,7 +164,6 @@ DeviceSpecFilter:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/DeviceSpecFilter/deviceSpecFilter
       outputTemplate: masterdata/error
       input: '{
