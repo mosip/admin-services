@@ -6,6 +6,7 @@ FetchTemplate:
       role: admin
       checkErrorsOnlyInResponse: true 
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateTemplate_01
       inputTemplate: masterdata/FetchTemplate/fetchTemplate
       outputTemplate: masterdata/FetchTemplate/fetchTemplateResult
       input: '{
@@ -22,6 +23,7 @@ FetchTemplate:
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateTemplate_01
       inputTemplate: masterdata/FetchTemplate/fetchTemplate
       outputTemplate: masterdata/FetchTemplate/fetchTemplateResult
       input: '{
@@ -38,6 +40,7 @@ FetchTemplate:
       role: admin
       templateFields: ["langcode"]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateTemplate_01
       inputTemplate: masterdata/FetchTemplate/fetchTemplate
       outputTemplate: masterdata/FetchTemplate/fetchTemplateResult
       input: '{

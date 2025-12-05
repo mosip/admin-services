@@ -6,6 +6,7 @@ GetDeviceHistory:
       role: admin
       templateFields: ["langCode"]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateDevice_01
       inputTemplate: masterdata/GetDeviceHistory/getDeviceHistory
       outputTemplate: masterdata/GetDeviceHistory/getDeviceHistoryResult
       input: '{

@@ -23,7 +23,7 @@ CreateDynamicField:
     "code": "500",
     "value": "A"
 }'
-   MasterData_CreateDynamicField_ByfieldName_All_Valid_Smoke:
+   MasterData_CreateDynamicField_ByfieldName_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/dynamicfields
       uniqueIdentifier: TC_Masterdata_CreateDynamicField_02
       description: Create Dynamic Fields By field name with all valid data

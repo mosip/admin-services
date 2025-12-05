@@ -6,6 +6,7 @@ FetchAllRegCenterType:
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/FetchAllRegCenterType/fetchAllRegCenterType
       outputTemplate: masterdata/FetchAllRegCenterType/fetchAllRegCenterTypeResult
       input: '{

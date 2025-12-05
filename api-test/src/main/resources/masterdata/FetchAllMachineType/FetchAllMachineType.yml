@@ -7,6 +7,7 @@ FetchAllMachineType:
       checkErrorsOnlyInResponse: true
       templateFields: []
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateMachineType_01
       inputTemplate: masterdata/FetchAllMachineType/fetchAllMachineType
       outputTemplate: masterdata/FetchAllMachineType/fetchAllMachineTypeResult
       input: '{

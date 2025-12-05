@@ -7,6 +7,7 @@ FetchDeviceSpec:
       checkErrorsOnlyInResponse: true
       templateFields: []
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/FetchDeviceSpec/fetchDeviceSpec
       outputTemplate: masterdata/FetchDeviceSpec/fetchDeviceSpecResult
       input: '{
@@ -23,6 +24,7 @@ FetchDeviceSpec:
       checkErrorsOnlyInResponse: true
       templateFields: []
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/FetchDeviceSpec/fetchDeviceSpec
       outputTemplate: masterdata/FetchDeviceSpec/fetchDeviceSpecResult
       input: '{
@@ -39,6 +41,7 @@ FetchDeviceSpec:
       checkErrorsOnlyInResponse: true
       templateFields: []
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/FetchDeviceSpec/fetchDeviceSpec
       outputTemplate: masterdata/FetchDeviceSpec/fetchDeviceSpecResult
       input: '{
@@ -54,6 +57,7 @@ FetchDeviceSpec:
       role: admin
       templateFields: []
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/FetchDeviceSpec/fetchDeviceSpec
       outputTemplate: masterdata/error
       input: '{

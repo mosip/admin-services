@@ -7,6 +7,7 @@ DeleteMachine:
       checkErrorsOnlyInResponse: true
       templateFields: []
       restMethod: delete
+      additionalDependencies: TC_Masterdata_UpdateMachineStatus_01
       inputTemplate: masterdata/DeleteMachine/deleteMachine
       outputTemplate: masterdata/DeleteMachine/deleteMachineResult
       input: '{

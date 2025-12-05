@@ -6,6 +6,7 @@ FetchDocumentTypes:
       role: admin
       templateFields: []
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/FetchDocumentTypes/fetchDocumentTypes
       outputTemplate: masterdata/error
       input: '{
@@ -27,6 +28,7 @@ FetchDocumentTypes:
       role: admin
       templateFields: []
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/FetchDocumentTypes/fetchDocumentTypes
       outputTemplate: masterdata/error
       input: '{
@@ -48,6 +50,7 @@ FetchDocumentTypes:
       role: admin
       templateFields: []
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/FetchDocumentTypes/fetchDocumentTypes
       outputTemplate: masterdata/error
       input: '{

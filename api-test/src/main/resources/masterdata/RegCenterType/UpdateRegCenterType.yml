@@ -6,6 +6,7 @@ UpdateRegCenterType:
       role: admin
       templateFields: ["name","descr","langCode"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/RegCenterType/regCenterType
       outputTemplate: masterdata/RegCenterType/regCenterTypeResult
       input: '{
@@ -27,6 +28,7 @@ UpdateRegCenterType:
       role: admin
       templateFields: ["descr"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/RegCenterType/regCenterType
       outputTemplate: masterdata/error
       input: '{
@@ -52,6 +54,7 @@ UpdateRegCenterType:
       role: admin
       templateFields: ["descr"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/RegCenterType/regCenterType
       outputTemplate: masterdata/error
       input: '{
@@ -77,6 +80,7 @@ UpdateRegCenterType:
       role: admin
       templateFields: ["name","descr"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/RegCenterType/regCenterType
       outputTemplate: masterdata/error
       input: '{
@@ -102,6 +106,7 @@ UpdateRegCenterType:
       role: admin
       templateFields: ["name","descr"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/RegCenterType/regCenterType
       outputTemplate: masterdata/error
       input: '{

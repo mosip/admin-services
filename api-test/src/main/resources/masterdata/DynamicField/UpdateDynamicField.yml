@@ -8,13 +8,13 @@ UpdateDynamicField:
       inputTemplate: masterdata/DynamicField/dynamicField
       outputTemplate: masterdata/DynamicField/dynamicFieldResult
       input: '{
-    "id": "$ID:CreateDynamicField_All_Valid_Smoke_sid_id$",
+    "id": "$ID:CreateDynamicField_ByfieldName_All_Valid_Smoke_sid_id$",
     "dataType": "string",
     "description": "Test dynamic field updated",
     "langCode": "eng",
-    "name": "TestAPL",
-    "code": "500",
-    "value": "A",
+    "name": "$ID:CreateDynamicField_ByfieldName_All_Valid_Smoke_sid_name$",
+    "code": "$ID:CreateDynamicField_ByfieldName_All_Valid_Smoke_sid_code$",
+    "value": "$ID:CreateDynamicField_ByfieldName_All_Valid_Smoke_sid_value$",
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{

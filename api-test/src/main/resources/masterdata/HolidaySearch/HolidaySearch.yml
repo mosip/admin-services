@@ -14,7 +14,7 @@ HolidaySearch:
       {
         "columnName": "holidayName",
         "type": "equals",
-        "value": "AutoTest user Eng",
+        "value": "$ID:CreateHoliday_All_Valid_Smoke_sid_holidayName$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }

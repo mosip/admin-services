@@ -9,15 +9,15 @@ UpdateMachineType:
       inputTemplate: masterdata/MachineType/machineType
       outputTemplate: masterdata/MachineType/machineTypeResult
       input: '{
-    "code": "Laptop2",
-    "description": "Laptop2 info updated",
+    "code": "$ID:CreateMachineType_All_Valid_Smoke_sid_code$",
+    "description": "$ID:CreateMachineType_All_Valid_Smoke_sid_code$ info updated",
 	"isActive": true,
 	"langCode": "eng",
-	"name": "Laptop2 test",
+	"name": "$ID:CreateMachineType_All_Valid_Smoke_sid_code$ test",
 	"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-	"code": "Laptop2"
+	"code": "$ID:CreateMachineType_All_Valid_Smoke_sid_code$"
 }'
    Masterdata_UpdateMachineType_Invalid_InputParameter_Code_Missing:
       endPoint: /v1/masterdata/machinetypes

@@ -6,6 +6,7 @@ FilterDocumentType:
       role: admin
       templateFields: ["text"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/FilterDocumentType/filterDocumentType
       outputTemplate: masterdata/FilterDocumentType/filterDocumentTypeResult
       input: '{
@@ -31,6 +32,7 @@ FilterDocumentType:
       role: admin
       templateFields: ["text"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/FilterDocumentType/filterDocumentType
       outputTemplate: masterdata/FilterDocumentType/filterDocumentTypeResult
       input: '{
@@ -57,6 +59,7 @@ FilterDocumentType:
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/FilterDocumentType/filterDocumentType
       outputTemplate: masterdata/FilterDocumentType/filterDocumentTypeResult
       input: '{
@@ -77,6 +80,7 @@ FilterDocumentType:
       role: admin
       templateFields: ["text"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/FilterDocumentType/filterDocumentType
       outputTemplate: masterdata/error
       input: '{
@@ -104,6 +108,7 @@ FilterDocumentType:
       role: admin
       templateFields: ["text"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/FilterDocumentType/filterDocumentType
       outputTemplate: masterdata/error
       input: '{
@@ -130,6 +135,7 @@ FilterDocumentType:
       role: admin
       templateFields: ["text"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/FilterDocumentType/filterDocumentType
       outputTemplate: masterdata/error
       input: '{
@@ -155,6 +161,7 @@ FilterDocumentType:
       role: admin
       templateFields: ["text"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/FilterDocumentType/filterDocumentType
       outputTemplate: masterdata/error
       input: '{
@@ -181,6 +188,7 @@ FilterDocumentType:
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/FilterDocumentType/filterDocumentType
       outputTemplate: masterdata/FilterDocumentType/filterDocumentTypeResult
       input: '{

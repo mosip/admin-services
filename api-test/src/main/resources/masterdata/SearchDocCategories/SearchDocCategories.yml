@@ -7,6 +7,7 @@ SearchDocCategories:
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/SearchDocCategories/searchDocCategories
       outputTemplate: masterdata/SearchDocCategories/searchDocCategoriesResult
       input: '{
@@ -46,6 +47,7 @@ SearchDocCategories:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/SearchDocCategories/searchDocCategories
       outputTemplate: masterdata/SearchDocCategories/searchDocCategoriesResult
       input: '{
@@ -88,6 +90,7 @@ SearchDocCategories:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       checkErrorsOnlyInResponse: true
       inputTemplate: masterdata/SearchDocCategories/searchDocCategories
       outputTemplate: masterdata/SearchDocCategories/searchDocCategoriesResult
@@ -131,6 +134,7 @@ SearchDocCategories:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/SearchDocCategories/searchDocCategories
       outputTemplate: masterdata/error
       input: '{
@@ -169,6 +173,7 @@ SearchDocCategories:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/SearchDocCategories/searchDocCategories
       outputTemplate: masterdata/error
       input: '{
@@ -206,6 +211,7 @@ SearchDocCategories:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/SearchDocCategories/searchDocCategories
       outputTemplate: masterdata/SearchDocCategories/searchDocCategoriesResult
       input: '{
@@ -239,6 +245,7 @@ SearchDocCategories:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/SearchDocCategories/searchDocCategories
       outputTemplate: masterdata/error
       input: '{
@@ -278,6 +285,7 @@ SearchDocCategories:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/SearchDocCategories/searchDocCategories
       outputTemplate: masterdata/error
       input: '{
@@ -316,6 +324,7 @@ SearchDocCategories:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/SearchDocCategories/searchDocCategories
       outputTemplate: masterdata/error
       input: '{
@@ -354,6 +363,7 @@ SearchDocCategories:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/SearchDocCategories/searchDocCategories
       outputTemplate: masterdata/error
       input: '{
@@ -392,6 +402,7 @@ SearchDocCategories:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/SearchDocCategories/searchDocCategories
       outputTemplate: masterdata/error
       input: '{
@@ -430,6 +441,7 @@ SearchDocCategories:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/SearchDocCategories/searchDocCategories
       outputTemplate: masterdata/error
       input: '{
@@ -468,6 +480,7 @@ SearchDocCategories:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/SearchDocCategories/searchDocCategories
       outputTemplate: masterdata/error
       input: '{
@@ -506,6 +519,7 @@ SearchDocCategories:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/SearchDocCategories/searchDocCategories
       outputTemplate: masterdata/error
       input: '{
@@ -543,6 +557,7 @@ SearchDocCategories:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/SearchDocCategories/searchDocCategories
       outputTemplate: masterdata/error
       input: '{
@@ -581,6 +596,7 @@ SearchDocCategories:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/SearchDocCategories/searchDocCategories
       outputTemplate: masterdata/error
       input: '{
@@ -618,6 +634,7 @@ SearchDocCategories:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/SearchDocCategories/searchDocCategories
       outputTemplate: masterdata/error
       input: '{

@@ -6,13 +6,14 @@ FilterMachineSpec:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateMachineSpecification_01
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
       input: '{
 	"filters": [{
-		"columnName": "name",
-		"type": "unique",
-		"text": "HP"
+        "columnName": "name",
+        "type": "unique",
+        "text": "HP"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -32,13 +33,14 @@ FilterMachineSpec:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateMachineSpecification_01
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
       input: '{
 	"filters": [{
-		"columnName": "name",
-		"type": "all",
-		"text": "HP"
+        "columnName": "name",
+        "type": "all",
+        "text": "HP"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -58,13 +60,14 @@ FilterMachineSpec:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateMachineSpecification_01
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
       input: '{
 	"filters": [{
-		"columnName": "name",
-		"type": "all",
-		"text": "HP"
+        "columnName": "name",
+        "type": "all",
+        "text": "HP"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -84,13 +87,14 @@ FilterMachineSpec:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateMachineSpecification_01
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
       input: '{
 	"filters": [{
-		"columnName": "name",
-		"type": "unique",
-		"text": "HP"
+        "columnName": "name",
+        "type": "unique",
+        "text": "HP"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -110,13 +114,14 @@ FilterMachineSpec:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateMachineSpecification_01
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
       input: '{
 	"filters": [{
-		"columnName": "brand",
-		"type": "unique",
-		"text": "HP"
+        "columnName": "brand",
+        "type": "unique",
+        "text": "1234"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -125,7 +130,7 @@ FilterMachineSpec:
     "filters": [
       {
         "fieldID": "brand",
-        "fieldValue": "HP"
+        "fieldValue": "1234"
       }
     ]
   }'
@@ -136,13 +141,14 @@ FilterMachineSpec:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateMachineSpecification_01
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
       input: '{
 	"filters": [{
-		"columnName": "model",
-		"type": "all",
-		"text": "1234"
+        "columnName": "model",
+        "type": "all",
+        "text": "1234"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"

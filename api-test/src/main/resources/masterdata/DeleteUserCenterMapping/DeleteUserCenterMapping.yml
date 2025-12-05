@@ -6,6 +6,7 @@ DeleteUserCenterMapping:
       role: admin
       checkErrorsOnlyInResponse: true  
       restMethod: delete
+      additionalDependencies: TC_Masterdata_UpdateRegCentStatus_01,TC_Masterdata_UserCenterMapping_01
       inputTemplate: masterdata/DeleteUserCenterMapping/deleteUserCenterMapping
       outputTemplate: masterdata/DeleteUserCenterMapping/deleteUserCenterMappingResult
       input: '{

@@ -7,6 +7,7 @@ SearchRegCenterType:
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/SearchRegCenterType/searchRegCenterType
       outputTemplate: masterdata/SearchRegCenterType/searchRegCenterTypeResult
       input: '{
@@ -38,6 +39,7 @@ SearchRegCenterType:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/SearchRegCenterType/searchRegCenterType
       outputTemplate: masterdata/SearchRegCenterType/searchRegCenterTypeResult
       input: '{
@@ -74,6 +76,7 @@ SearchRegCenterType:
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/SearchRegCenterType/searchRegCenterType
       outputTemplate: masterdata/SearchRegCenterType/searchRegCenterTypeResult
       input: '{
@@ -105,6 +108,7 @@ SearchRegCenterType:
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/SearchRegCenterType/searchRegCenterType
       outputTemplate: masterdata/SearchRegCenterType/searchRegCenterTypeResult
       input: '{
@@ -135,6 +139,7 @@ SearchRegCenterType:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/SearchRegCenterType/searchRegCenterType
       outputTemplate: masterdata/error
       input: '{
@@ -171,6 +176,7 @@ SearchRegCenterType:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/SearchRegCenterType/searchRegCenterType
       outputTemplate: masterdata/error
       input: '{
@@ -206,6 +212,7 @@ SearchRegCenterType:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/SearchRegCenterType/searchRegCenterType
       outputTemplate: masterdata/NilSearchResult
       input: '{
@@ -239,6 +246,7 @@ SearchRegCenterType:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/SearchRegCenterType/searchRegCenterType
       outputTemplate: masterdata/error
       input: '{
@@ -276,6 +284,7 @@ SearchRegCenterType:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/SearchRegCenterType/searchRegCenterType
       outputTemplate: masterdata/error
       input: '{
@@ -312,6 +321,7 @@ SearchRegCenterType:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/SearchRegCenterType/searchRegCenterType
       outputTemplate: masterdata/error
       input: '{
@@ -348,6 +358,7 @@ SearchRegCenterType:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/SearchRegCenterType/searchRegCenterType
       outputTemplate: masterdata/error
       input: '{
@@ -384,6 +395,7 @@ SearchRegCenterType:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/SearchRegCenterType/searchRegCenterType
       outputTemplate: masterdata/error
       input: '{
@@ -420,6 +432,7 @@ SearchRegCenterType:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/SearchRegCenterType/searchRegCenterType
       outputTemplate: masterdata/error
       input: '{
@@ -456,6 +469,7 @@ SearchRegCenterType:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/SearchRegCenterType/searchRegCenterType
       outputTemplate: masterdata/error
       input: '{
@@ -491,6 +505,7 @@ SearchRegCenterType:
       role: admin
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/SearchRegCenterType/searchRegCenterType
       outputTemplate: masterdata/error
       input: '{

@@ -6,6 +6,7 @@ SearchMachineSpec:
       role: admin
       templateFields: ["description"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_UpdateMachineSpecification_01
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
       input: '{
@@ -48,6 +49,7 @@ SearchMachineSpec:
       role: admin
       templateFields: ["description"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_UpdateMachineSpecification_01
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
       input: '{
@@ -88,6 +90,7 @@ SearchMachineSpec:
       role: admin
       templateFields: []
       restMethod: post
+      additionalDependencies: TC_Masterdata_UpdateMachineSpecification_01
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
       input: '{
@@ -128,6 +131,7 @@ SearchMachineSpec:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_UpdateMachineSpecification_01
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
       input: '{
@@ -169,6 +173,7 @@ SearchMachineSpec:
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_UpdateMachineSpecification_01
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
       input: '{
@@ -199,6 +204,7 @@ SearchMachineSpec:
       role: admin
       templateFields: ["description"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_UpdateMachineSpecification_01
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
       input: '{
@@ -239,6 +245,7 @@ SearchMachineSpec:
       role: admin
       templateFields: ["description"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_UpdateMachineSpecification_01
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
       outputTemplate: masterdata/SearchMachineSpec/searchMachineSpecResult
       input: '{

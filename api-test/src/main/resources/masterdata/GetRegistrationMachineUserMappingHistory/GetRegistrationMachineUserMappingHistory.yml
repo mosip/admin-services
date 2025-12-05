@@ -6,6 +6,7 @@ GetRegistrationMachineUserMappingHistory:
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_Masterdata_UpdateZoneUserStatus_01,TC_Masterdata_UpdateMachineTypeStatus_01,TC_Masterdata_UpdateMachineSpecification_01,TC_Masterdata_UpdateMachineStatus_01
       inputTemplate: masterdata/GetRegistrationMachineUserMappingHistory/getRegistrationMachineUserMappingHistory
       outputTemplate: masterdata/GetRegistrationMachineUserMappingHistory/getRegistrationMachineUserMappingHistoryResult
       input: '{

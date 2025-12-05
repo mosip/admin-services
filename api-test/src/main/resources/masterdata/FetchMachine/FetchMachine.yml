@@ -5,6 +5,7 @@ FetchMachine:
       description: Retrieve Machine details with all valid data
       role: admin
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateMachine_01
       inputTemplate: masterdata/FetchMachine/fetchMachine
       outputTemplate: masterdata/FetchMachine/fetchMachineResult
       input: '{

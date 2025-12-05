@@ -6,6 +6,7 @@ RegCenterSearch:
       role: admin
       templateFields: ["name","value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/RegCenterSearch/regCenterSearch
       outputTemplate: masterdata/RegCenterSearch/regCenterSearchResult
       input: '{

@@ -6,6 +6,7 @@ GetMappedMachinesByRegCentID:
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_Masterdata_UpdateRegCentStatus_01
       inputTemplate: masterdata/GetMappedMachinesByRegCentID/getMappedMachinesByRegCentID
       outputTemplate: masterdata/GetMappedMachinesByRegCentID/getMappedMachinesByRegCentIDResult
       input: '{

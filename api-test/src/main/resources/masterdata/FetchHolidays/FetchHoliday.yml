@@ -6,6 +6,7 @@ FetchHolidays:
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateHoliday_01
       inputTemplate: masterdata/FetchHolidays/fetchHoliday
       outputTemplate: masterdata/FetchHolidays/fetchHolidayResult
       input: '{
@@ -22,6 +23,7 @@ FetchHolidays:
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateHoliday_01
       inputTemplate: masterdata/FetchHolidays/fetchHoliday
       outputTemplate: masterdata/FetchHolidays/fetchHolidayResult
       input: '{
@@ -38,6 +40,7 @@ FetchHolidays:
       templateFields: ["langcode"]
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateHoliday_01
       inputTemplate: masterdata/FetchHolidays/fetchHoliday
       outputTemplate: masterdata/FetchHolidays/fetchHolidayResult
       input: '{
@@ -72,6 +75,7 @@ FetchHolidays:
       description: Retrieve Holiday details with nonexisting holidayid and valid langCode
       role: admin
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateHoliday_01
       inputTemplate: masterdata/FetchHolidays/fetchHoliday
       outputTemplate: masterdata/error
       input: '{

@@ -6,6 +6,7 @@ UpdateUserCenterMapping:
       role: globalAdmin
       templateFields: ["regCenterName"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_UpdateZoneUserStatus_01,TC_Masterdata_UpdateRegCentStatus_01
       inputTemplate: masterdata/UserCenterMapping/updateUserCenterMapping
       outputTemplate: masterdata/UserCenterMapping/userCenterMappingResult
       input: '{
@@ -22,7 +23,7 @@ UpdateUserCenterMapping:
     "regCenterId": "$REMOVE$",
     "zoneCode": "$REMOVE$",
     "zoneName": "$REMOVE$",
-    "regCenterName": "HSR Center updated"
+    "regCenterName": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_name$"
     }'
    MasterData_UserCenterMapping_Invalid_InputParameter_regCenterId_Missing:
       endPoint: /v1/masterdata/usercentermapping
