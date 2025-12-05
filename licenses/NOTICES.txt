@@ -1,0 +1,306 @@
+================================================================================
+COPYRIGHT NOTICES
+================================================================================
+
+This file contains the copyright notices and license information for all
+third-party packages used in this project. Each package's copyright holder,
+year range, and license terms are listed below.
+
+================================================================================
+1. COPYLEFT LICENSES (GNU LGPL)
+================================================================================
+
+Sonar Maven Plugin (org.sonarsource.scanner.maven:sonar-maven-plugin)
+Version: 3.7.0.1746, 3.11.0.3922
+Copyright (C) 2011-2025 SonarSource SA
+License: GNU Lesser General Public License v3.0 (LGPL-3.0)
+Full License: https://www.gnu.org/licenses/lgpl-3.0.html
+
+Hibernate ORM (org.hibernate.orm:hibernate-core, org.hibernate.orm:hibernate-hikaricp)
+Version: 5.2.17.Final (managed by Spring Boot BOM for most modules)
+Copyright: Hibernate Authors and Contributors
+License: GNU Lesser General Public License v2.1 or later (LGPL-2.1-or-later)
+Note: Recent versions (7.0+) relicensed to Apache 2.0
+Full License: https://www.gnu.org/licenses/lgpl-2.1.html
+
+================================================================================
+2. ECLIPSE PUBLIC LICENSE (EPL)
+================================================================================
+
+JUnit 4 (junit:junit)
+Version: 4.12
+Copyright (c) 2002-2023 JUnit Contributors and Eclipse Foundation
+License: Eclipse Public License 1.0 (EPL-1.0)
+Full License: https://www.eclipse.org/legal/epl-v10.html
+
+JaCoCo Maven Plugin (org.jacoco:jacoco-maven-plugin)
+Version: 0.8.11
+Copyright (c) 2009-2025 Mountainminds GmbH & Co. KG and Contributors
+License: Eclipse Public License 2.0 (EPL-2.0)
+Full License: https://www.eclipse.org/legal/epl-2.0/
+
+H2 Database Engine (com.h2database:h2)
+Version: (Managed by Spring Boot BOM)
+Copyright (c) 2004-2025 H2 Group (Thomas Müller and Contributors)
+License: Mozilla Public License 2.0 (MPL-2.0) OR Eclipse Public License 1.0 (EPL-1.0) [dual-licensed]
+Full License: https://h2database.com/html/license.html
+
+Jakarta Persistence API (jakarta.persistence:jakarta.persistence-api)
+Version: 3.1.0
+Copyright (c) 2017-2021 Oracle and/or its affiliates, Eclipse Foundation
+License: BSD-3-Clause OR Eclipse Public License 2.0 (EPL-2.0) [dual-licensed]
+Full License: https://projects.eclipse.org/projects/ee4j.jpa
+
+================================================================================
+3. APACHE LICENSE 2.0
+================================================================================
+
+Spring Boot & Spring Framework (org.springframework.boot:*, org.springframework:*, org.springframework.security:*, org.springframework.batch:*, org.springframework.data:*)
+Version: 3.2.3 (Spring Boot), managed versions for other Spring modules
+Copyright (c) 2002-2025 VMware, Inc. (formerly Pivotal Software, Inc.)
+License: Apache License 2.0
+Full License: https://www.apache.org/licenses/LICENSE-2.0
+
+Spring Cloud (org.springframework.cloud:spring-cloud-starter-config, org.springframework.cloud:spring-cloud-starter-bootstrap)
+Version: (Managed by Spring Cloud BOM)
+Copyright (c) 2013-2025 VMware, Inc. (formerly Pivotal Software, Inc.)
+License: Apache License 2.0
+Full License: https://www.apache.org/licenses/LICENSE-2.0
+
+Apache Maven Plugins (org.apache.maven.plugins:*)
+- maven-resources-plugin (3.3.1)
+- maven-shade-plugin (3.2.4)
+- maven-surefire-plugin (2.22.0)
+- maven-gpg-plugin (1.5)
+- maven-javadoc-plugin (3.2.0, 3.6.3)
+- maven-source-plugin (2.2.1)
+- maven-jar-plugin (3.0.2)
+- maven-war-plugin (3.1.0)
+- maven-compiler-plugin (3.8.0)
+- maven-antrun-plugin (3.0.0)
+Copyright 2001-2025 The Apache Software Foundation
+License: Apache License 2.0
+Full License: https://www.apache.org/licenses/LICENSE-2.0
+
+Spring Boot Maven Plugin (org.springframework.boot:spring-boot-maven-plugin)
+Version: 3.2.3
+Copyright (c) 2002-2025 VMware, Inc. (formerly Pivotal Software, Inc.)
+License: Apache License 2.0
+Full License: https://www.apache.org/licenses/LICENSE-2.0
+
+Jackson Datatype JSR310 (com.fasterxml.jackson.datatype:jackson-datatype-jsr310)
+Version: (Managed by Spring Boot BOM)
+Copyright (c) 2007-2025 FasterXML, LLC
+License: Apache License 2.0
+Full License: https://www.apache.org/licenses/LICENSE-2.0
+
+SpringDoc OpenAPI (org.springdoc:springdoc-openapi-maven-plugin, org.springdoc:springdoc-openapi-starter-webmvc-ui)
+Version: 0.2, 1.3, 1.4 (Maven plugin), 2.5.0 (starter)
+Copyright (c) 2019-2025 SpringDoc Contributors
+License: Apache License 2.0
+Full License: https://www.apache.org/licenses/LICENSE-2.0
+
+Central Publishing Maven Plugin (org.sonatype.central:central-publishing-maven-plugin)
+Version: 0.7.0
+Copyright (c) 2022-2025 Sonatype, Inc.
+License: Apache License 2.0
+Full License: https://www.apache.org/licenses/LICENSE-2.0
+
+Git Commit ID Maven Plugin (pl.project13.maven:git-commit-id-plugin)
+Version: 3.0.1
+Copyright (c) 2013-2025 Konrad Malawski and Contributors
+License: Apache License 2.0
+Full License: https://www.apache.org/licenses/LICENSE-2.0
+
+Apache POI (org.apache.poi:poi-ooxml)
+Version: 5.2.5
+Copyright The Apache Software Foundation
+License: Apache License 2.0
+Full License: https://www.apache.org/licenses/LICENSE-2.0
+
+Google Gson (com.google.code.gson:gson)
+Version: 2.10.1
+Copyright (c) 2008-2025 Google Inc.
+License: Apache License 2.0
+Full License: https://www.apache.org/licenses/LICENSE-2.0
+
+Apache Commons IO (commons-io:commons-io)
+Version: (Managed by kernel-bom)
+Copyright (c) 2002-2025 The Apache Software Foundation
+License: Apache License 2.0
+Full License: https://www.apache.org/licenses/LICENSE-2.0
+
+Apache Commons Logging (commons-logging:commons-logging)
+Version: 1.2
+Copyright (c) 2001-2025 The Apache Software Foundation
+License: Apache License 2.0
+Full License: https://www.apache.org/licenses/LICENSE-2.0
+
+Apache Commons Collections (org.apache.commons:commons-collections4)
+Version: 4.3
+Copyright (c) 2001-2025 The Apache Software Foundation
+License: Apache License 2.0
+Full License: https://www.apache.org/licenses/LICENSE-2.0
+
+Hibernate Validator (org.hibernate.validator:hibernate-validator)
+Version: 6.0.12.Final (managed by Spring Boot BOM for most modules)
+Copyright Hibernate Validator Authors and Contributors
+License: Apache License 2.0
+Full License: https://www.apache.org/licenses/LICENSE-2.0
+
+Apache Tomcat Annotations API (org.apache.tomcat:tomcat-annotations-api)
+Version: (Managed by Spring Boot BOM)
+Copyright 1999-2025 The Apache Software Foundation
+License: Apache License 2.0
+Full License: https://www.apache.org/licenses/LICENSE-2.0
+
+Spring Batch Extensions (org.springframework.batch.extensions:spring-batch-excel)
+Version: 0.1.0
+Copyright (c) 2018-2025 Spring Batch Excel Contributors
+License: Apache License 2.0
+Full License: https://www.apache.org/licenses/LICENSE-2.0
+
+Spring Batch Security (org.digibooster.spring.batch:spring-batch-security)
+Version: 1.1.0
+Copyright (c) 2018-2025 DigiBooster Spring Batch Contributors
+License: Apache License 2.0 (Inferred from project's official repository)
+Full License: https://www.apache.org/licenses/LICENSE-2.0
+
+Powermock (org.powermock:powermock-api-mockito2, org.powermock:powermock-module-junit4)
+Version: 1.7.4, 2.0.7
+Copyright (c) 2007-2017 PowerMock Contributors
+License: Apache License 2.0
+Full License: https://www.apache.org/licenses/LICENSE-2.0
+
+================================================================================
+4. BSD LICENSE
+================================================================================
+
+PostgreSQL JDBC Driver (org.postgresql:postgresql)
+Version: 42.2.2 (kernel-syncdata-service, kernel-masterdata-service, hotlist-service), 42.7.2 (admin-service)
+Copyright (c) 1997-2025 PostgreSQL Global Development Group
+License: BSD 2-Clause License
+Full License: https://jdbc.postgresql.org/about/license.html
+
+Jakarta Activation API (jakarta.activation:jakarta.activation-api)
+Version: 2.1.3
+Copyright (c) 1997, 2021 Oracle and/or its affiliates, Eclipse Foundation
+License: BSD-3-Clause (Eclipse Distribution License v1.0)
+Full License: https://github.com/eclipse-ee4j/jaf
+
+Jakarta XML Bind (jakarta.xml.bind:jakarta.xml.bind-api, javax.xml.bind:jaxb-api)
+Version: (Managed by Spring Boot BOM)
+Copyright (c) 2018, 2021 Oracle and/or its affiliates, Eclipse Foundation
+License: Eclipse Distribution License (EDL) v1.0 (BSD-3-Clause), OR EPL-2.0, OR GPL-2.0 with Classpath Exception [multi-licensed]
+Full License: https://projects.eclipse.org/projects/ee4j.jaxb
+
+================================================================================
+5. MIT LICENSE
+================================================================================
+
+SLF4J API (org.slf4j:slf4j-api, org.slf4j:jcl-over-slf4j, org.slf4j:jul-to-slf4j)
+Version: 1.7.5 (bridges), managed version for slf4j-api
+Copyright (c) 2004-2025 QOS.ch
+License: MIT License
+Full License: https://www.slf4j.org/license.html
+
+Mockito (org.mockito:mockito-core, org.mockito:mockito-inline)
+Version: 3.11.2, 5.2.0
+Copyright (c) 2007-2025 Mockito Contributors
+License: MIT License
+Full License: https://github.com/mockito/mockito/blob/main/LICENSE
+
+Bouncy Castle (org.bouncycastle:bcutil-jdk18on, org.bouncycastle:bcprov-jdk18on)
+Version: 1.78.1
+Copyright (c) 2000-2025 The Legion of the Bouncy Castle Inc.
+License: MIT License (Bouncy Castle License)
+Full License: https://www.bouncycastle.org/licence.html
+
+Project Lombok (org.projectlombok:lombok)
+Version: 1.18.30
+Copyright (C) 2009-2021 The Project Lombok Authors
+License: MIT License
+Full License: https://github.com/projectlombok/lombok/blob/master/LICENSE
+
+TSS.Java - Microsoft TPM 2.0 Software Stack (com.github.microsoft:TSS.Java)
+Version: 0.3.0
+Copyright (c) Microsoft Corporation
+License: MIT License
+Full License: https://github.com/microsoft/TSS.MSR/blob/master/LICENSE
+
+================================================================================
+6. MOZILLA/ECLIPSE DUAL LICENSE
+================================================================================
+
+H2 Database Engine (com.h2database:h2)
+Version: (Managed by Spring Boot BOM)
+Copyright (c) 2004-2025 H2 Group (Thomas Müller and Contributors)
+License: Mozilla Public License 2.0 (MPL-2.0) OR Eclipse Public License 1.0 (EPL-1.0) [dual-licensed]
+Full License (MPL-2.0): https://mozilla.org/MPL/2.0/
+Full License (EPL-1.0): https://www.eclipse.org/legal/epl-v10.html
+
+MOSIP Kernel Modules (io.mosip.kernel:*)
+Including:
+- kernel-bom
+- kernel-core
+- kernel-logger-logback
+- kernel-auth-adapter
+- kernel-auditmanager-api
+- kernel-keymanager-service
+- kernel-applicanttype-api
+- kernel-idvalidator-rid
+- kernel-idgenerator-machineid
+- kernel-idgenerator-regcenterid
+- kernel-dataaccess-hibernate
+- kernel-openid-bridge-api
+- kernel-datamapper-orika
+- kernel-cbeffutil-api
+- kernel-websubclient-api
+- kernel-authcodeflowproxy-api
+Version: 1.3.0-SNAPSHOT
+Copyright (c) 2018-2025 MOSIP Contributors
+License: Mozilla Public License 2.0 (MPL-2.0)
+Full License: https://mozilla.org/MPL/2.0/
+
+MOSIP Biometrics Util (io.mosip.biometric.util:biometrics-util)
+Version: 1.3.0-SNAPSHOT
+Copyright (c) 2018-2025 MOSIP Contributors
+License: Mozilla Public License 2.0 (MPL-2.0)
+Full License: https://mozilla.org/MPL/2.0/
+
+MOSIP Commons Packet Manager (io.mosip.commons:commons-packet-manager)
+Version: 1.3.0-SNAPSHOT
+Copyright (c) 2018-2025 MOSIP Contributors
+License: Mozilla Public License 2.0 (MPL-2.0)
+Full License: https://mozilla.org/MPL/2.0/
+
+================================================================================
+IMPORTANT NOTES
+================================================================================
+
+1. All licenses listed above require preservation of copyright notices.
+
+2. For Apache License 2.0 dependencies: You must include the LICENSE file
+   and preserve copyright notices. If a NOTICE file exists, it must be
+   included in your distribution.
+
+3. For LGPL dependencies: Usage of unmodified binaries is unrestricted.
+   If you modify and redistribute LGPL-licensed code, source code must be
+   made available under the LGPL.
+
+4. For EPL dependencies: Similar to LGPL - unmodified binaries can be used
+   freely. Modified versions must be distributed under EPL terms.
+
+5. For MIT/BSD dependencies: Copyright notice and license text must be
+   included in all copies or substantial portions of the software.
+
+6. For MPL dependencies: Source code for any modifications to MPL-licensed
+   files must be made available. Files not modified remain under their
+   original license.
+
+7. Version numbers marked as "(Managed by BOM)" are controlled by parent
+   dependency management (Spring Boot BOM, Spring Cloud BOM, or kernel-bom).
+
+================================================================================
+END OF COPYRIGHT NOTICES
+================================================================================
