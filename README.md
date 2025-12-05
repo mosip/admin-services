@@ -17,7 +17,6 @@ The **Admin module** provides a secure and configurable system for:
 It exposes a set of APIs that enable administrators to manage operational data efficiently. A reference front-end implementation is available in the **[Admin UI repository](https://github.com/mosip/admin-ui/)**.
 
 For a complete functional overview and capabilities, refer to the **[official documentation](https://docs.mosip.io/1.2.0/modules/administration)**.
-
 ## Services
 
 The Admin module contains the following services:
@@ -56,10 +55,12 @@ Before you begin, ensure you have the following installed:
 
 ### Configuration
 
-Admin module uses the following configuration files that are accessible in this [repository](https://github.com/mosip/mosip-config/tree/master).
+- Admin module uses the following configuration files that are accessible in this [repository](https://github.com/mosip/mosip-config/tree/master).
 Please refer to the required released tagged version for configuration.
 [Configuration-Admin](https://github.com/mosip/mosip-config/blob/master/admin-default.properties) and
 [Configuration-Application](https://github.com/mosip/mosip-config/blob/master/application-default.properties) are defined here. You need to run the config-server along with the files mentioned above.
+- For generating clients, refer to MOSIP’s documentation here: [Client Generation Guide](https://docs.mosip.io/1.2.0/interoperability/integrations/mosip-crvs/approach/technical-details#id-1.-create-client-id-role-for-the-crvs)
+- To authenticate a client, use the Auth Manager API as described here: [Auth API Documentation](https://docs.mosip.io/1.2.0/interoperability/integrations/mosip-crvs/approach/technical-details#id-2.-fetch-access-token-to-call-the-apis)
 
 #### Required Configuration Properties
 
