@@ -110,37 +110,21 @@ public class PacketUploadService {
             int pageNo = 0;
 
             do {
-                UriComponentsBuilder builder = UriComponentsBuilder
-                        .fromUriString(MACHINE_GET_API)
-                        .pathSegment(centerId)
-                        .queryParam("pageNumber", pageNo++);
+                UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(MACHINE_GET_API).pathSegment(centerId);
+                builder.queryParam("pageNumber", pageNo++);
 
-                URI uri = builder.build().toUri();
+                ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().toUri(), String.class);
+                ResponseWrapper<PageDto<MachineRegistrationCenterDto>> response = objectMapper.readValue(responseEntity.getBody(),
+                        new TypeReference<ResponseWrapper<PageDto<MachineRegistrationCenterDto>>>() {});
 
-                HttpHeaders headers = new HttpHeaders();
-                headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-
-                HttpEntity<Void> request = new HttpEntity<>(headers);
-
-                ResponseEntity<String> responseEntity =
-                        restTemplate.exchange(uri, HttpMethod.GET, request, String.class);
-
-                ResponseWrapper<PageDto<MachineRegistrationCenterDto>> response =
-                        objectMapper.readValue(
-                                responseEntity.getBody(),
-                                new TypeReference<ResponseWrapper<PageDto<MachineRegistrationCenterDto>>>() {});
-
-                if (response.getErrors() != null && !response.getErrors().isEmpty()) {
-                    logger.error("Failed to fetch machines mapped to center : {} {} {} {}",
-                            centerId,
-                            response.getErrors().get(0).getErrorCode(),
-                            response.getErrors().get(0).getMessage(),
-                            pageNo);
+                if(response.getErrors() != null && !response.getErrors().isEmpty()) {
+                    logger.error("Failed to fetch machines mapped to center : {} {} {} {}", centerId,
+                            response.getErrors().get(0).getErrorCode(), response.getErrors().get(0).getMessage(), pageNo);
                     break;
                 }
 
                 pageDto = response.getResponse();
-                if (pageDto != null) {
+                if(pageDto != null) {
                     machineList.addAll(pageDto.getData());
                 }
 
@@ -153,7 +137,7 @@ public class PacketUploadService {
     }
 
     public PacketUploadStatus syncAndUploadPacket(String fileName, byte[] file, String centerId, String supervisorStatus,
-                                    String source, String process, String transactionId) throws JSONException {
+                                                  String source, String process, String transactionId) throws JSONException {
         String[] nameFields = nameFieldNames.split(",");
         List<String> additionalInfoFields = new ArrayList<>();
         additionalInfoFields.addAll(List.of(nameFields));
@@ -207,7 +191,7 @@ public class PacketUploadService {
     }
 
     private ResponseEntity<String> syncRegistration(String centerId, String source, String process, String fileName, byte[] file, String supervisorStatus,
-                                 List<String> additionalInfoFields, List<MachineRegistrationCenterDto> machineList, String transactionId) {
+                                                    List<String> additionalInfoFields, List<MachineRegistrationCenterDto> machineList, String transactionId) {
         String containerName = fileName.replace(".zip", "");
         String id = containerName.split("-")[0];
 

@@ -23,34 +23,32 @@ public class PacketJobResultListener implements JobExecutionListener {
 	private static final Logger logger = LoggerFactory.getLogger(PacketJobResultListener.class);
 
 	private static final String STATUS_MESSAGE = " <br/> READ: %d, STATUS: %s, MESSAGE: %s";
-	private static final String SECURITY_PARAM_NAME = "security-param";
 
 	private final AuditUtil auditUtil;
+
+	private final JobExecutionSecurityContextListener jobExecutionSecurityContextListener;
+
 	private final BulkUploadTranscationRepository bulkUploadTranscationRepository;
 
-	// ✅ MUST be Spring managed
-	private final JobExecutionSecurityContextListener securityContextListener;
-
-	// ✅ Safe ThreadLocal restore
+	private static final String SECURITY_PARAM_NAME = "security-param";
 	private static final ThreadLocal<Authentication> ORIGINAL_CONTEXT = new ThreadLocal<>();
 
 	public PacketJobResultListener(
 			BulkUploadTranscationRepository bulkUploadTranscationRepository,
 			AuditUtil auditUtil,
-			JobExecutionSecurityContextListener securityContextListener) {
+			JobExecutionSecurityContextListener jobExecutionSecurityContextListener) {
 
 		this.bulkUploadTranscationRepository = bulkUploadTranscationRepository;
 		this.auditUtil = auditUtil;
-		this.securityContextListener = securityContextListener;
+		this.jobExecutionSecurityContextListener = jobExecutionSecurityContextListener;
 	}
 
-	// =========================================================
-	// ✅ BEFORE JOB — RESTORE SECURITY CONTEXT SAFELY
-	// =========================================================
 	@Override
 	public void beforeJob(JobExecution jobExecution) {
 		String jobId = jobExecution.getJobParameters().getString("transactionId");
 		logger.info("Job started : {}", jobId);
+
+		this.jobExecutionSecurityContextListener.restoreContext(jobExecution);
 
 		if (jobExecution.getExecutionContext().containsKey(SECURITY_PARAM_NAME)) {
 			Authentication authentication =
@@ -59,17 +57,11 @@ public class PacketJobResultListener implements JobExecutionListener {
 			SecurityContext securityContext = SecurityContextHolder.getContext();
 			ORIGINAL_CONTEXT.set(securityContext.getAuthentication());
 			securityContext.setAuthentication(authentication);
-
-			logger.info("✅ Security context restored successfully for job {}", jobId);
 		} else {
-			logger.error("❌ Missing security-param in job context for job {}", jobId);
-			// ❗ DO NOT FAIL JOB — just log (Batch 5 is strict)
+			logger.error("Missing security-param in job context for job {}", jobId);
 		}
 	}
 
-	// =========================================================
-	// ✅ AFTER JOB — AUDIT + CLEANUP
-	// =========================================================
 	@Override
 	public void afterJob(JobExecution jobExecution) {
 		String jobId = jobExecution.getJobParameters().getString("transactionId");
@@ -120,15 +112,14 @@ public class PacketJobResultListener implements JobExecutionListener {
 			);
 
 		} catch (Throwable t) {
-			logger.error("❌ Failed to update job status {}", jobId, t);
+			logger.error("Failed to update job status {}", jobId, t);
 		} finally {
 			clearContext();
-			securityContextListener.clearContext(jobExecution);
+			this.jobExecutionSecurityContextListener.clearContext(jobExecution);
 		}
 	}
 
 	private void clearContext() {
-		logger.debug("Clearing Security Context");
 		SecurityContextHolder.clearContext();
 
 		Authentication originalAuth = ORIGINAL_CONTEXT.get();
