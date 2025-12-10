@@ -10,7 +10,7 @@ CreateZoneUser:
       outputTemplate: masterdata/ZoneUser/zoneUserResult
       input: '{
     "zoneCode": "$ID:CreateRegCenter_allValid_smoke_sid_zoneCode$",
-    "userId": "masterdata-220005",
+    "userId": "$RUNCONTEXT$masterdata-220005",
     "isActive": true,
     "langCode": "eng",
 	"requesttime": "$TIMESTAMP$"

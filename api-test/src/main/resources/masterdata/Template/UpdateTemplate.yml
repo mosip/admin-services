@@ -20,7 +20,7 @@ UpdateTemplate:
         "moduleId": "10001",
         "moduleName": "Pre-Registration",
         "name": "Test-template",
-        "templateTypeCode": "Test-info-Template-auto",
+        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_Sid_code$",
 	    "requesttime": "$TIMESTAMP$"
 }'
       output: '{

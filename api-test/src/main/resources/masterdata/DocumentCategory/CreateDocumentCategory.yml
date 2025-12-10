@@ -1,5 +1,5 @@
 CreateDocumentCategory:
-   MasterData_CreateDocumentCategory_Valid_Smoke:
+   MasterData_CreateDocumentCategory_Valid_Smoke_Sid:
       endPoint: /v1/masterdata/documentcategories
       uniqueIdentifier: TC_Masterdata_CreateDocumentCategory_01
       description: Create Document Category with all valid data
@@ -9,7 +9,7 @@ CreateDocumentCategory:
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/DocumentCategory/documentCategoryResult
       input: '{
-     "code": "DocTestCode123",
+     "code": "Automation123$TESTDATACONTEXT$",
     "description": "Testing positive Doc",
     "isActive": true,
     "langCode": "eng",
@@ -17,9 +17,9 @@ CreateDocumentCategory:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-	"code": "DocTestCode123"
+	"code": "Automation123$TESTDATACONTEXT$"
 }'
-   MasterData_CreateDocumentCategory_All_Valid_Mandatory_Fields:
+   MasterData_CreateDocumentCategory_All_Valid_Mandatory_Fields_Sid:
       endPoint: /v1/masterdata/documentcategories
       uniqueIdentifier: TC_Masterdata_CreateDocumentCategory_02
       description: Create Document Category with all mandatory data
@@ -29,7 +29,7 @@ CreateDocumentCategory:
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/DocumentCategory/documentCategoryResult
       input: '{
-     "code": "DocTestCode321",
+     "code": "Automation321$TESTDATACONTEXT$",
     "description": "$REMOVE$",
     "isActive": true,
     "langCode": "eng",
@@ -37,7 +37,7 @@ CreateDocumentCategory:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-	"code": "DocTestCode321"
+	"code": "Automation321$TESTDATACONTEXT$"
 }'
    
    MasterData_CreateDocumentCategory_Invalid_InputParameter_Code_Missing:

@@ -16,7 +16,7 @@ UpdateTemplateFileFormat:
 	"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-	"code": "Doc"
+	"code": "$ID:CreateTemplateFileFormat_All_Valid_Smoke_sid_code$"
 }'
    Masterdata_UpdateTemplateFileFormat_InputParameter_Description_AboveMaxLen256:
       endPoint: /v1/masterdata/templatefileformats

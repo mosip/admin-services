@@ -17,7 +17,7 @@ UpdateRegCenterType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-	"code": "ALT-3"
+	"code": "$ID:CreateRegCenterType_All_Valid_Smoke_sid_code$"
 }'
    
    MasterData_UpdateRegCenterType_InputParameter_Name_Missing:

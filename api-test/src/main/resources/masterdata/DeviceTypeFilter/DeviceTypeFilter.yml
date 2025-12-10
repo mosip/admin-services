@@ -12,7 +12,7 @@ DeviceTypeFilter:
 	"filters": [{
 		"columnName": "code",
 		"type": "unique",
-		"text": "GST4"
+		"text": "$ID:CreateDeviceType_All_Valid_Mandatory_Fields_Smoke_Sid_code$"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -21,7 +21,7 @@ DeviceTypeFilter:
     "filters": [
       {
         "fieldID": "code",
-        "fieldValue": "GST4"
+        "fieldValue": "$ID:CreateDeviceType_All_Valid_Mandatory_Fields_Smoke_Sid_code$"
       }
     ]
   }'  
@@ -38,7 +38,7 @@ DeviceTypeFilter:
 	"filters": [{
 		"columnName": "code",
 		"type": "all",
-		"text": "GST4"
+		"text": "$ID:CreateDeviceType_All_Valid_Mandatory_Fields_Smoke_Sid_code$"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -47,7 +47,7 @@ DeviceTypeFilter:
     "filters": [
       {
         "fieldID": "code",
-        "fieldValue": "GST4"
+        "fieldValue": "$ID:CreateDeviceType_All_Valid_Mandatory_Fields_Smoke_Sid_code$"
       }
     ]
   }'    

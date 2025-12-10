@@ -12,7 +12,7 @@ FetchRegCent:
       input: '{
   "longitude": "$REMOVE$",
   "latitude": "$REMOVE$",
-  "langcode": "$REMOVE$",
+  "langcode": "eng",
   "proximitydistance": "$REMOVE$",
   "locationcode": "$REMOVE$",
   "registrationcenterid": "$REMOVE$",

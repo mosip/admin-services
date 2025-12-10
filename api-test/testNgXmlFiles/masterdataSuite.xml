@@ -37,8 +37,9 @@
 	<test name="CreateBlockListedWords">
 		<parameter name="ymlFile"
 			value="masterdata/BlockListedWords/CreateBlockListedWords.yml" />
+		<parameter name="idKeyName" value="word" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePost" />
+			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 	<test name="UpdateBlockListedWordStatus">
@@ -51,8 +52,9 @@
 	<test name="UpdateBlockListedWords">
 		<parameter name="ymlFile"
 			value="masterdata/BlockListedWords/UpdateBlockListedWords.yml" />
+		<parameter name="idKeyName" value="word" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePut" />
+			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePutForAutoGenId" />
 		</classes>
 	</test>
 	<test name="UpdateBlockListedWordDetails">
@@ -109,8 +111,9 @@
 	<test name="CreateDeviceType">
 		<parameter name="ymlFile"
 			value="masterdata/DeviceType/CreateDeviceType.yml" />
+		<parameter name="idKeyName" value="code" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePost" />
+			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 	<test name="UpdateDeviceType">
@@ -275,8 +278,9 @@
 	<test name="CreateDocumentCategory">
 		<parameter name="ymlFile"
 			value="masterdata/DocumentCategory/CreateDocumentCategory.yml" />
+		<parameter name="idKeyName" value="code" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePost" />
+			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 	<test name="UpdateDocumentCategory">
@@ -326,8 +330,9 @@
 	<test name="CreateDocumentType">
 		<parameter name="ymlFile"
 			value="masterdata/DocumentType/CreateDocumentType.yml" />
+		<parameter name="idKeyName" value="code,name" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePost" />
+			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 	<test name="UpdateDocumentType">
@@ -593,8 +598,9 @@
 	<test name="CreateMachineType">
 		<parameter name="ymlFile"
 			value="masterdata/MachineType/CreateMachineType.yml" />
+		<parameter name="idKeyName" value="code" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePost" />
+			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 	<test name="UpdateMachineTypeStatus">
@@ -808,8 +814,9 @@
 	<test name="CreateTemplateType">
 		<parameter name="ymlFile"
 			value="masterdata/TemplateType/CreateTemplateType.yml" />
+		<parameter name="idKeyName" value="code" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePost" />
+			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 	
@@ -965,8 +972,9 @@
 	<test name="PacketRejectionReasonCategory">
 		<parameter name="ymlFile"
 			value="masterdata/PacketRejectionReasonCategory/PacketRejectionReasonCategory.yml" />
+		<parameter name="idKeyName" value="code" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePost" />
+			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 

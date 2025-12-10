@@ -10,8 +10,8 @@ CreateLocationData:
       inputTemplate: masterdata/LocationController/locationData
       outputTemplate: masterdata/LocationController/locationDataResult
       input: '{
-    "code": "TST12",
-    "name": "Test_Loc_A_",
+    "code": "TST12$TESTDATACONTEXT$",
+    "name": "Test_Loc_A_$TESTDATACONTEXT$",
     "hierarchyLevel": "$HIERARCHYLEVEL$",
     "hierarchyName": "$HIERARCHYNAME$",
     "parentLocCode": "$PARENTLOCCODE$",
@@ -21,8 +21,8 @@ CreateLocationData:
   }'
       output: '{
 "isActive": "$REMOVE$",
-"code": "TST12",
-"name": "Test_Loc_A_",
+"code": "TST12$TESTDATACONTEXT$",
+"name": "Test_Loc_A_$TESTDATACONTEXT$",
 "hierarchyLevel": "$REMOVE$",
 "hierarchyName": "$REMOVE$",
 "parentLocCode": "$REMOVE$",

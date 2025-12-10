@@ -28,7 +28,6 @@ import io.mosip.testrig.apirig.masterdata.utils.MasterDataUtil;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.testrunner.ExtractResource;
 import io.mosip.testrig.apirig.testrunner.HealthChecker;
-import io.mosip.testrig.apirig.testrunner.OTPListener;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthTestsUtil;
 import io.mosip.testrig.apirig.utils.CertsUtil;
@@ -109,7 +108,7 @@ public class MosipTestRunner {
 				SkipTestCaseHandler.loadTestcaseToBeSkippedList("testCaseSkippedList_"+ localLanguageList.get(i) +".txt");
 
 				MasterDataUtil.dbCleanUp();
-				BaseTestCase.currentModule = GlobalConstants.MASTERDATA;
+				BaseTestCase.currentModule = BaseTestCase.runContext + GlobalConstants.MASTERDATA;
 				BaseTestCase.setReportName("masterdata-" + localLanguageList.get(i));
 				
 				String testCasesToExecuteString = MasterDataConfigManager.getproperty("testCasesToExecute");
@@ -128,6 +127,7 @@ public class MosipTestRunner {
 		} catch (Exception e) {
 			LOGGER.error("Exception " + e.getMessage());
 		}
+		MasterDataUtil.dbCleanUp();
 		KeycloakUserManager.removeUser();
 		KeycloakUserManager.closeKeycloakInstance();
 
@@ -148,7 +148,7 @@ public class MosipTestRunner {
 		if (!runType.equalsIgnoreCase("JAR")) {
 			AuthTestsUtil.removeOldMosipTempTestResource();
 		}
-		BaseTestCase.currentModule = GlobalConstants.MASTERDATA;
+		BaseTestCase.currentModule = BaseTestCase.runContext + GlobalConstants.MASTERDATA;
 		MasterDataUtil.dbCleanUp();
 		AdminTestUtil.initiateMasterDataTest();
 	}

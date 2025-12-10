@@ -12,7 +12,7 @@ FilterMachineSpec:
 	"filters": [{
 		"columnName": "name",
 		"type": "unique",
-		"text": "HP"
+		"text": "HP-$TESTDATACONTEXT$"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -21,7 +21,7 @@ FilterMachineSpec:
     "filters": [
       {
         "fieldID": "name",
-        "fieldValue": "HP"
+        "fieldValue": "HP-$TESTDATACONTEXT$"
       }
     ]
   }'
@@ -38,7 +38,7 @@ FilterMachineSpec:
 	"filters": [{
 		"columnName": "name",
 		"type": "all",
-		"text": "HP"
+		"text": "HP-$TESTDATACONTEXT$"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -47,7 +47,7 @@ FilterMachineSpec:
     "filters": [
       {
         "fieldID": "name",
-        "fieldValue": "HP"
+        "fieldValue": "HP-$TESTDATACONTEXT$"
       }
     ]
   }'
@@ -64,7 +64,7 @@ FilterMachineSpec:
 	"filters": [{
 		"columnName": "name",
 		"type": "all",
-		"text": "HP"
+		"text": "HP-$TESTDATACONTEXT$"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -73,7 +73,7 @@ FilterMachineSpec:
     "filters": [
       {
         "fieldID": "name",
-        "fieldValue": "HP"
+        "fieldValue": "HP-$TESTDATACONTEXT$"
       }
     ]
   }'
@@ -90,7 +90,7 @@ FilterMachineSpec:
 	"filters": [{
 		"columnName": "name",
 		"type": "unique",
-		"text": "HP"
+		"text": "HP-$TESTDATACONTEXT$"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -99,7 +99,7 @@ FilterMachineSpec:
     "filters": [
       {
         "fieldID": "name",
-        "fieldValue": "HP"
+        "fieldValue": "HP-$TESTDATACONTEXT$"
       }
     ]
   }'
@@ -116,7 +116,7 @@ FilterMachineSpec:
 	"filters": [{
 		"columnName": "brand",
 		"type": "unique",
-		"text": "HP"
+		"text": "HP-$TESTDATACONTEXT$"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -125,7 +125,7 @@ FilterMachineSpec:
     "filters": [
       {
         "fieldID": "brand",
-        "fieldValue": "HP"
+        "fieldValue": "HP-$TESTDATACONTEXT$"
       }
     ]
   }'
@@ -142,7 +142,7 @@ FilterMachineSpec:
 	"filters": [{
 		"columnName": "model",
 		"type": "all",
-		"text": "1234"
+		"text": "1234-$TESTDATACONTEXT$"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -151,7 +151,7 @@ FilterMachineSpec:
     "filters": [
       {
         "fieldID": "model",
-        "fieldValue": "1234"
+        "fieldValue": "1234-$TESTDATACONTEXT$"
       }
     ]
   }'

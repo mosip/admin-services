@@ -9,17 +9,17 @@ PacketRejectionReasonList:
       inputTemplate: masterdata/PacketRejectionReasonList/packetRejectionReasonList
       outputTemplate: masterdata/PacketRejectionReasonList/packetRejectionReasonListResult
       input: '{
-    "code": "TEST_LIST_CODE",
+    "code": "TEST_LIST_CODE_$TESTDATACONTEXT$",
     "name": "TEST_LIST",
     "description": "test reason list",
-    "rsnCatCode": "TEST_CAT_CODE",
+    "rsnCatCode": "$ID:PacketRejectionReasonCategory_All_Valid_Smoke_Sid_code$",
     "langCode": "eng",
     "isActive": true,
 	  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
-        "rsnCatCode": "TEST_CAT_CODE",
-        "code": "TEST_LIST_CODE"
+        "rsnCatCode": "$ID:PacketRejectionReasonCategory_All_Valid_Smoke_Sid_code$",
+        "code": "TEST_LIST_CODE_$TESTDATACONTEXT$"
     }'
     
    MasterData_PacketRejectionReasonList_Invalid_Invalid_langCode:

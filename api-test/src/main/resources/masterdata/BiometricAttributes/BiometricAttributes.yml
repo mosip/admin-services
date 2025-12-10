@@ -10,7 +10,7 @@ BiometricAttributes:
       inputTemplate: masterdata/BiometricAttributes/biometricAttributes
       outputTemplate: masterdata/BiometricAttributes/biometricAttributesResult
       input: '{
-     "code": "TST",
+     "code": "TST-$TESTDATACONTEXT$",
     "name": "Test",
     "description": "Auto Test",
     "biometricTypeCode": "PHT",
@@ -19,7 +19,7 @@ BiometricAttributes:
 	"requesttime": "$TIMESTAMP$"
 	}'
       output: '{
-      "code": "TST"
+      "code": "TST-$TESTDATACONTEXT$"
 }'
 
    MasterData_BiometricAttributes_Invalid_empty_biometricTypeCode:

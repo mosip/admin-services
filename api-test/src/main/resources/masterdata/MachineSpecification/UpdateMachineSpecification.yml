@@ -10,15 +10,15 @@ UpdateMachineSpecification:
       inputTemplate: masterdata/MachineSpecification/machineSpecification
       outputTemplate: masterdata/MachineSpecification/MachineSpecificationResult
       input: '{
-    "brand": "HP",
-    "description": "HP brand updated",
+    "brand": "HP-$TESTDATACONTEXT$",
+    "description": "HP brand updated-$TESTDATACONTEXT$",
     "id": "$ID:CreateMachineSpecification_All_Valid_Smoke_sid_id$",
     "isActive": true,
     "langCode": "eng",
-    "machineTypeCode": "Laptop2",
+    "machineTypeCode": "$ID:CreateMachineType_All_Valid_Smoke_Sid_code$",
     "minDriverversion": "3.2",
-    "model": "1234",
-    "name": "HP",
+    "model": "1234-$TESTDATACONTEXT$",
+    "name": "HP-$TESTDATACONTEXT$",
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{

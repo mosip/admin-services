@@ -12,8 +12,8 @@ CreateDeviceSpecification:
       input: '{
       "brand": "hogwarts",
       "description": "Test DeviceSpec",
-      "deviceTypeCode": "GST4",
-      "id": "743",
+      "deviceTypeCode": "AUTO4$TESTDATACONTEXT$",
+      "id": "743$TESTDATACONTEXT$",
       "isActive": true,
       "langCode": "eng",
       "minDriverversion": "1.0",
@@ -36,8 +36,8 @@ CreateDeviceSpecification:
       input: '{
       "brand": "hogwarts",
       "description": "Test DeviceSpec",
-      "deviceTypeCode": "GST4",
-      "id": "743",
+      "deviceTypeCode": "AUTO4$TESTDATACONTEXT$",
+      "id": "743$TESTDATACONTEXT$",
       "isActive": true,
       "langCode": "eng",
       "minDriverversion": "1.0",

@@ -12,11 +12,11 @@ UpdateBlockListedWordDetails:
     "description": "wrong word updated again",
 	"isActive": true,
 	"langCode": "eng",
-	"word": "dumbooo",
+	"word": "automation$TESTDATACONTEXT$updated",
 	"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-	"word": "dumbooo"
+	"word": "automation$TESTDATACONTEXT$updated"
 }'
    Masterdata_CreateBlockListedWords_Invalid_BlocklistedWordsLength129:
       endPoint: /v1/masterdata/blocklistedwords/details

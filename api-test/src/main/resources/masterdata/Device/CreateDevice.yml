@@ -11,7 +11,7 @@ CreateDevice:
       input: '{
     "name": "testDevicedummy",
     "description": "testDevicedummy",
-	"deviceSpecId": "743",
+	"deviceSpecId": "$ID:CreateDeviceSpecification_All_Valid_Smoke_sid_id$",
 	"ipAddress": "172.23.174.113",
 	"isActive": true,
 	"langCode": "eng",
@@ -23,7 +23,7 @@ CreateDevice:
 	}'
       output: '{
     "name": "testDevicedummy",
-	"deviceSpecId": "743",
+	"deviceSpecId": "$ID:CreateDeviceSpecification_All_Valid_Smoke_sid_id$",
 	"ipAddress": "172.23.174.113",
 	"isActive": false,
 	"macAddress": "D4-3D-7E-C0-8C-4A",

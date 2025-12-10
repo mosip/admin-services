@@ -8,10 +8,10 @@ DeleteRegCenterType:
       inputTemplate: masterdata/DeleteRegCenterType/deleteRegCenterType
       outputTemplate: masterdata/DeleteRegCenterType/deleteRegCenterTypeResult
       input: '{
-    "code": "ALT-3"
+    "code": "$ID:CreateRegCenterType_All_Valid_Smoke_sid_code$"
 	}'
       output: '{
-    "code": "ALT-3"
+    "code": "$ID:CreateRegCenterType_All_Valid_Smoke_sid_code$"
 }'
    MasterData_DeleteRegCenterType_Invalid_CODE: 
       endPoint: /v1/masterdata/registrationcentertypes/{code}
@@ -22,7 +22,7 @@ DeleteRegCenterType:
       inputTemplate: masterdata/DeleteRegCenterType/deleteRegCenterType
       outputTemplate: masterdata/error
       input: '{
-      "code": "ALT-3"
+      "code": "$ID:CreateRegCenterType_All_Valid_Smoke_sid_code$"
 	}'
       output: '{
    "errors": [

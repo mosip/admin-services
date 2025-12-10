@@ -18,6 +18,6 @@ GetRegistrationMachineUserMappingHistory:
    "registrationCenters": [{
         "cntrId": "$ID:CreateRegCenter_allValid_smoke_sid_id$",
         "machineId": "$ID:CreateMachine_All_Valid_Smoke_sid_id$",
-        "usrId": "masterdata-220005"
+        "usrId": "$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$"
     }]
 }'

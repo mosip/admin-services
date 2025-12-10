@@ -10,15 +10,15 @@ CreateMachineSpecification:
       inputTemplate: masterdata/MachineSpecification/machineSpecification
       outputTemplate: masterdata/MachineSpecification/MachineSpecificationResult
       input: '{
-    "brand": "HP",
-    "description": "HP brand",
+    "brand": "HP-$TESTDATACONTEXT$",
+    "description": "HP brand-$TESTDATACONTEXT$",
     "id": "HP04",
     "isActive": true,
     "langCode": "eng",
-    "machineTypeCode": "Laptop2",
+    "machineTypeCode": "$ID:CreateMachineType_All_Valid_Smoke_Sid_code$",
     "minDriverversion": "3.2",
-    "model": "1234",
-    "name": "HP",
+    "model": "1234-$TESTDATACONTEXT$",
+    "name": "HP-$TESTDATACONTEXT$",
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
@@ -557,15 +557,15 @@ CreateMachineSpecification:
       inputTemplate: masterdata/MachineSpecification/machineSpecification
       outputTemplate: masterdata/MachineSpecification/MachineSpecificationResult
       input: '{
-    "brand": "HP",
-    "description": "HP brand",
+    "brand": "HP-$TESTDATACONTEXT$",
+    "description": "HP brand-$TESTDATACONTEXT$",
     "id": "HP04",
     "isActive": true,
     "langCode": "eng",
-    "machineTypeCode": "Laptop2",
+    "machineTypeCode": "$ID:CreateMachineType_All_Valid_Smoke_Sid_code$",
     "minDriverversion": "3.2",
-    "model": "1234",
-    "name": "HP",
+    "model": "1234-$TESTDATACONTEXT$",
+    "name": "HP-$TESTDATACONTEXT$",
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{

@@ -15,7 +15,7 @@ CreateMachine:
     "langCode":"eng",
     "macAddress":"61-D3-FD-12-C9-ED",
     "machineSpecId":"$ID:CreateMachineSpecification_All_Valid_Smoke_sid_id$",
-    "name":"Mach-Test",
+    "name":"Mach-Test-$TESTDATACONTEXT$",
     "serialNum":"FB5962911687",
     "validityDateTime":"2021-12-24T05:52:46.758Z",
     "publicKey":"$PUBLICKEY$",
@@ -26,7 +26,7 @@ CreateMachine:
   }'
       output: '{
     "id": "$REMOVE$", 
-    "name": "Mach-Test",
+    "name": "Mach-Test-$TESTDATACONTEXT$",
 	"machineSpecId": "$REMOVE$",
 	"serialNum": "FB5962911687",
 	"ipAddress": "192.168.0.424",

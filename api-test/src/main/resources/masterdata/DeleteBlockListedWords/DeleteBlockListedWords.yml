@@ -9,8 +9,8 @@ DeleteBlockListedWords:
       inputTemplate: masterdata/DeleteBlockListedWords/deleteBlockListedWords
       outputTemplate: masterdata/DeleteBlockListedWords/deleteBlockListedWordsResult
       input: '{
-   "word": "dumbooo"
+   "word": "$ID:UpdateBlockListedWords_All_Valid_Smoked_Sid_word$"
       }'
       output: '{
-  "code":"dumbooo"
+  "code":"$ID:UpdateBlockListedWords_All_Valid_Smoked_Sid_word$"
 }'

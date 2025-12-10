@@ -28,7 +28,7 @@ FetchDevice:
       inputTemplate: masterdata/FetchDevice/fetchDevice
       outputTemplate: masterdata/FetchDevice/fetchDeviceResult
       input: '{
-  "deviceType": "GST4",
+  "deviceType": "AUTO4$TESTDATACONTEXT$",
   "langCode": "eng",
   "regCenterId": "$REMOVE$"
 }'

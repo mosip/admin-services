@@ -1,5 +1,5 @@
 CreateMachineType:
-   Masterdata_CreateMachineType_All_Valid_Smoke:
+   Masterdata_CreateMachineType_All_Valid_Smoke_Sid:
       endPoint: /v1/masterdata/machinetypes
       uniqueIdentifier: TC_Masterdata_CreateMachineType_01
       description: Create machine type details with valid data
@@ -9,7 +9,7 @@ CreateMachineType:
       inputTemplate: masterdata/MachineType/machineType
       outputTemplate: masterdata/MachineType/machineTypeResult
       input: '{
-    "code": "Laptop2",
+    "code": "Laptop2$TESTDATACONTEXT$",
     "description": "Laptop2 info",
 	"isActive": true,
 	"langCode": "eng",
@@ -17,7 +17,7 @@ CreateMachineType:
 	"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-	"code": "Laptop2"
+	"code": "Laptop2$TESTDATACONTEXT$"
 }'
    Masterdata_CreateMachineType_Invalid_InputParameter_Code_Missing:
       endPoint: /v1/masterdata/machinetypes
@@ -229,7 +229,7 @@ CreateMachineType:
       inputTemplate: masterdata/MachineType/machineType
       outputTemplate: masterdata/error
       input: '{
-    "code": "Laptop2",
+    "code": "Laptop2$TESTDATACONTEXT$",
     "description": "Laptop2 info",
 	"isActive": true,
 	"langCode": "eng",
