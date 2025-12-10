@@ -101,3 +101,14 @@ DROP INDEX IF EXISTS master.idx_ca_cert_isdeleted;
 DROP INDEX IF EXISTS master.idx_mac_master_sign_key_index_active;
 
 -- END ROLLBACK FOR PERFORMANCE OPTIMIZATION INDEXES
+
+BEGIN;
+
+UPDATE master.valid_document
+SET lang_code = 'eng'
+WHERE lang_code IS NULL;
+
+ALTER TABLE master.valid_document
+  ALTER COLUMN lang_code SET NOT NULL;
+
+COMMIT;

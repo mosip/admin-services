@@ -96,3 +96,6 @@ CREATE INDEX IF NOT EXISTS idx_ca_cert_isdeleted ON master.ca_cert_store USING b
 CREATE INDEX IF NOT EXISTS idx_mac_master_sign_key_index_active ON master.machine_master USING btree (lower(sign_key_index)) WHERE is_deleted = false AND is_active = true;
 
 ---END UPGRADE FOR PERFORMANCE OPTIMIZATION INDEXES--
+
+ALTER TABLE master.valid_document
+ALTER COLUMN lang_code DROP NOT NULL;
