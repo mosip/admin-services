@@ -137,7 +137,7 @@ public class PacketUploadService {
     }
 
     public PacketUploadStatus syncAndUploadPacket(String fileName, byte[] file, String centerId, String supervisorStatus,
-                                    String source, String process, String transactionId) throws JSONException {
+                                                  String source, String process, String transactionId) throws JSONException {
         String[] nameFields = nameFieldNames.split(",");
         List<String> additionalInfoFields = new ArrayList<>();
         additionalInfoFields.addAll(List.of(nameFields));
@@ -191,7 +191,7 @@ public class PacketUploadService {
     }
 
     private ResponseEntity<String> syncRegistration(String centerId, String source, String process, String fileName, byte[] file, String supervisorStatus,
-                                 List<String> additionalInfoFields, List<MachineRegistrationCenterDto> machineList, String transactionId) {
+                                                    List<String> additionalInfoFields, List<MachineRegistrationCenterDto> machineList, String transactionId) {
         String containerName = fileName.replace(".zip", "");
         String id = containerName.split("-")[0];
 
