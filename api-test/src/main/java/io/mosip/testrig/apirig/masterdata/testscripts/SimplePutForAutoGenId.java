@@ -95,6 +95,9 @@ public class SimplePutForAutoGenId extends MasterDataUtil implements ITest {
 			ArrayList<JSONObject> outputtestcase = AdminTestUtil.getOutputTestCase(testCaseDTO);
 
 			languageList = new ArrayList<>(BaseTestCase.languageList);
+			if (inputtestCases.size() != languageList.size() || outputtestcase.size() != languageList.size()) {
+				throw new AdminTestException("Mismatch between language list size and test case data size");
+			}
 			for (int i = 0; i < languageList.size(); i++) {
 				response = putWithBodyAndCookieForAutoGenId(ApplnURI + testCaseDTO.getEndPoint(),
 						getJsonFromTemplate(inputtestCases.get(i).toString(), testCaseDTO.getInputTemplate()),
