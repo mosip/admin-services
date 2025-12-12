@@ -30,7 +30,7 @@ ALTER TABLE master.template_file_format ALTER COLUMN lang_code SET NOT NULL;
 ALTER TABLE master.template_file_format DROP CONSTRAINT pk_tffmt_code;
 ALTER TABLE master.template_file_format ADD CONSTRAINT pk_tffmt_code PRIMARY KEY (code, lang_code);
 INSERT INTO master.template_file_format SELECT * FROM master.template_file_format_bkp WHERE lang_code !='eng';
-DROP TABLE IF EXISTS master.template_file_format;
+DROP TABLE IF EXISTS master.template_file_format_bkp;
 
 -- Rollback script for master.template
 ALTER TABLE master.template ADD CONSTRAINT fk_tmplt_tffmt FOREIGN KEY (file_format_code, lang_code) REFERENCES master.template_file_format (code, lang_code);
