@@ -1,5 +1,5 @@
 UpdateBlockListedWords:
-   Masterdata_UpdateBlockListedWords_All_Valid_Smoke:
+   Masterdata_UpdateBlockListedWords_All_Valid_Smoked_Sid:
       endPoint: /v1/masterdata/blocklistedwords
       uniqueIdentifier: TC_Masterdata_UpdateBlockListedWords_01
       description: Update Block Listed Words with valid data
@@ -12,12 +12,12 @@ UpdateBlockListedWords:
     "description": "wrong word updated",
 	"isActive": "true",
 	"langCode": "eng",
-	"oldWord": "dumboo",	
-	"word": "dumbooo",
+	"oldWord": "$ID:CreateBlockListedWords_All_Valid_Smoke_Sid_word$",
+	"word": "automation$TESTDATACONTEXT$updated",
 	"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-	"word": "dumbooo"
+	"word": "automation$TESTDATACONTEXT$updated"
 }'
    Masterdata_UpdateBlockListedWords_with_spaces:
       endPoint: /v1/masterdata/blocklistedwords

@@ -12,9 +12,9 @@ CreateBiometricTypes:
     "description": "wrong word",
 	"name": "dumbo6",
 	"langCode": "eng",
-	"code": "dumbo6",
+	"code": "dumbo6$TESTDATACONTEXT$",
 	"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-	"code": "dumbo6"
+	"code": "dumbo6$TESTDATACONTEXT$"
 }'

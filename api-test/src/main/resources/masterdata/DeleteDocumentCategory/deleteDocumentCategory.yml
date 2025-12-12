@@ -8,10 +8,10 @@ DeleteDocumentCategory:
       inputTemplate: masterdata/DeleteDocumentCategory/deleteDocumentCategory
       outputTemplate: masterdata/DeleteDocumentCategory/deleteDocumentCategoryResult
       input: '{
-    "code": "DocTestCode123"
+    "code": "$ID:CreateDocumentCategory_Valid_Smoke_Sid_code$"
 	}'
       output: '{
-    "code": "DocTestCode123"
+    "code": "$ID:CreateDocumentCategory_Valid_Smoke_Sid_code$"
 }'
    MasterData_DeleteDocumentCategory_Invalid_ID: 
       endPoint: /v1/masterdata/documentcategories/{code}

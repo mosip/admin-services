@@ -1,5 +1,5 @@
 CreateDeviceType:
-   MasterData_CreateDeviceType_All_Valid_Smoke:
+   MasterData_CreateDeviceType_All_Valid_Smoke_Sid:
       endPoint: /v1/masterdata/devicetypes
       uniqueIdentifier: TC_Masterdata_CreateDeviceType_01
       description: Create Device Type with all valid data
@@ -9,15 +9,15 @@ CreateDeviceType:
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/DeviceType/deviceTypeResult
       input: '{
-    "code": "GST3",
+    "code": "AUTO3$TESTDATACONTEXT$",
     "description": "test 1.0.8",
 	"isActive": true,
 	"langCode": "eng",
-	"name": "GST",
+	"name": "AUTO",
 	"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-	"code": "GST3"
+	"code": "AUTO3$TESTDATACONTEXT$"
 }'
 
    MasterData_CreateDeviceType_TO_verify_Deactivation:
@@ -30,7 +30,7 @@ CreateDeviceType:
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/DeviceType/deviceTypeResult
       input: '{
-    "code": "REG",
+    "code": "REG$TESTDATACONTEXT$",
     "description": "test 1.0.8",
 	"isActive": true,
 	"langCode": "eng",
@@ -38,27 +38,27 @@ CreateDeviceType:
 	"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-	"code": "REG"
+	"code": "REG$TESTDATACONTEXT$"
 }'
-   MasterData_CreateDeviceType_All_Valid_Mandatory_Fields_Smoke:
+   MasterData_CreateDeviceType_All_Valid_Mandatory_Fields_Smoke_Sid:
       endPoint: /v1/masterdata/devicetypes
       uniqueIdentifier: TC_Masterdata_CreateDeviceType_03
       description: Create Device Type with all mandatory fields
       role: admin
-      templateFields: ["description","name"]
+      templateFields: ["name"]
       restMethod: post
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/DeviceType/deviceTypeResult
       input: '{
-    "code": "GST4",
+    "code": "AUTO4$TESTDATACONTEXT$",
     "description": "$REMOVE$",
 	"isActive": true,
 	"langCode": "eng",
-	"name": "GST4",
+	"name": "AUTO4",
 	"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-	"code": "GST4"
+	"code": "AUTO4$TESTDATACONTEXT$"
 }'
 
    MasterData_CreateDeviceType_Dublicate_Device_Neg:
@@ -71,11 +71,11 @@ CreateDeviceType:
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error
       input: '{
-    "code": "GST3",
+    "code": "AUTO3$TESTDATACONTEXT$",
     "description": "test 1.0.8",
 	"isActive": true,
 	"langCode": "eng",
-	"name": "GST",
+	"name": "AUTO",
 	"requesttime": "$TIMESTAMP$"
 }'
       output: '{
@@ -216,7 +216,7 @@ CreateDeviceType:
       uniqueIdentifier: TC_Masterdata_CreateDeviceType_10
       description: Create Device Type with special characters in code
       role: admin
-      templateFields: ["description","name"]
+      templateFields: ["name"]
       restMethod: post
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/error

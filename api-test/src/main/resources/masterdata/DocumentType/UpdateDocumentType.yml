@@ -9,18 +9,18 @@ UpdateDocumentType:
       inputTemplate: masterdata/DocumentType/documentType
       outputTemplate: masterdata/DocumentType/documentTypeResult
       input: '{
-	"code": "TestDocType0010",
+	"code": "$ID:CreateDocumentType_Valid_Smoke_Sid_code$",
 	"description": "TestDocType0010 Card Holder updated",
 	"isActive": true,
 	"langCode": "eng",
-	"name": "TestDocType0010 Card",
+	"name": "$ID:CreateDocumentType_Valid_Smoke_Sid_name$",
 	"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-	"code": "TestDocType0010",
+	"code": "$ID:CreateDocumentType_Valid_Smoke_Sid_code$",
 	"description": "TestDocType0010 Card Holder updated",
 	"isActive": "$REMOVE$",
-	"name": "TestDocType0010 Card"
+	"name": "$ID:CreateDocumentType_Valid_Smoke_Sid_name$"
 }'
    
    MasterData_UpdateDocumentType_Invalid_Code_Char37:

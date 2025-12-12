@@ -9,7 +9,7 @@ UpdateDeviceTypeStatus:
       inputTemplate: masterdata/UpdateDeviceTypeStatus/updateDeviceTypeStatus
       outputTemplate: masterdata/UpdateDeviceTypeStatus/updateteDeviceTypeStatusResult
       input: '{
-    "code": "GST4",
+    "code": "$ID:CreateDeviceType_All_Valid_Mandatory_Fields_Smoke_Sid_code$",
     "isActive": "true"
 }'
       output: '{

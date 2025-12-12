@@ -13,7 +13,7 @@ SearchDocumentType:
       {
         "columnName": "name",
         "type": "equals",
-        "value": "TestDocType0010 Card",
+        "value": "$ID:CreateDocumentType_Valid_Smoke_Sid_name$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -35,7 +35,7 @@ SearchDocumentType:
      {
         "isActive": "$REMOVE$",
         "description": "$REMOVE$",
-        "code": "TestDocType0010",
+        "code": "$ID:CreateDocumentType_Valid_Smoke_Sid_code$",
         "langCode": "$REMOVE$",
         "name": "$REMOVE$"
       }
@@ -55,7 +55,7 @@ SearchDocumentType:
       {
         "columnName": "name",
         "type": "contains",
-        "value": "TestDocType0010 Card",
+        "value": "$ID:CreateDocumentType_Valid_Smoke_Sid_name$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -77,7 +77,7 @@ SearchDocumentType:
      {
         "isActive": "$REMOVE$",
         "description": "$REMOVE$",
-        "code": "TestDocType0010",
+        "code": "$ID:CreateDocumentType_Valid_Smoke_Sid_code$",
         "langCode": "$REMOVE$",
         "name": "$REMOVE$"
       }
@@ -97,7 +97,7 @@ SearchDocumentType:
       {
         "columnName": "name",
         "type": "startsWith",
-        "value": "TestDocType0010 Card",
+        "value": "$ID:CreateDocumentType_Valid_Smoke_Sid_name$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -119,7 +119,7 @@ SearchDocumentType:
      {
         "isActive": "$REMOVE$",
         "description": "$REMOVE$",
-        "code": "TestDocType0010",
+        "code": "$ID:CreateDocumentType_Valid_Smoke_Sid_code$",
         "langCode": "$REMOVE$",
         "name": "$REMOVE$"
       }
@@ -139,7 +139,7 @@ SearchDocumentType:
       {
         "columnName": "",
         "type": "equals",
-        "value": "TestDocType0010",
+        "value": "$ID:CreateDocumentType_Valid_Smoke_Sid_code$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -177,7 +177,7 @@ SearchDocumentType:
       {
         "columnName": "agshshs",
         "type": "equals",
-        "value": "TestDocType0010",
+        "value": "$ID:CreateDocumentType_Valid_Smoke_Sid_code$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -286,7 +286,7 @@ SearchDocumentType:
       {
         "columnName": "name",
         "type": "equals",
-        "value": "TestDocType0010 Card",
+        "value": "$ID:CreateDocumentType_Valid_Smoke_Sid_name$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -324,7 +324,7 @@ SearchDocumentType:
       {
         "columnName": "name",
         "type": "equals",
-        "value": "TestDocType0010 Card",
+        "value": "$ID:CreateDocumentType_Valid_Smoke_Sid_name$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -362,7 +362,7 @@ SearchDocumentType:
       {
         "columnName": "name",
         "type": "equals",
-        "value": "TestDocType0010 Card",
+        "value": "$ID:CreateDocumentType_Valid_Smoke_Sid_name$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -400,7 +400,7 @@ SearchDocumentType:
       {
         "columnName": "name",
         "type": "equals",
-        "value": "TestDocType0010 Card",
+        "value": "$ID:CreateDocumentType_Valid_Smoke_Sid_name$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -438,7 +438,7 @@ SearchDocumentType:
       {
         "columnName": "name",
         "type": "equals",
-        "value": "TestDocType0010 Card",
+        "value": "$ID:CreateDocumentType_Valid_Smoke_Sid_name$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -476,7 +476,7 @@ SearchDocumentType:
       {
         "columnName": "name",
         "type": "",
-        "value": "TestDocType0010 Card",
+        "value": "$ID:CreateDocumentType_Valid_Smoke_Sid_name$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -514,7 +514,7 @@ SearchDocumentType:
       {
         "columnName": "name",
         "type": "kfdjfkd",
-        "value": "TestDocType0010 Card",
+        "value": "$ID:CreateDocumentType_Valid_Smoke_Sid_name$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -551,7 +551,7 @@ SearchDocumentType:
       {
         "columnName": "code",
         "type": "equals",
-        "value": "TestDocType0010 Card",
+        "value": "$ID:CreateDocumentType_Valid_Smoke_Sid_name$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }

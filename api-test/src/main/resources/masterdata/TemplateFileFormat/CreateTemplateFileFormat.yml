@@ -9,14 +9,14 @@ CreateTemplateFileFormat:
       inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
       outputTemplate: masterdata/TemplateFileFormat/templateFileFormatResult
       input: '{
-    "code": "Doc",
+    "code": "Doc-$TESTDATACONTEXT$",
     "description": "Doc Test",
 	"isActive": false,
 	"langCode": "eng",
 	"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-	"code": "Doc"
+	"code": "Doc-$TESTDATACONTEXT$"
 }'
    Masterdata_CreateTemplateFileFormat_InputParameter_Description_AboveMaxLen256:
       endPoint: /v1/masterdata/templatefileformats

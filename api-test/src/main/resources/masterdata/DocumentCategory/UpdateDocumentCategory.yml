@@ -9,7 +9,7 @@ UpdateDocumentCategory:
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/DocumentCategory/documentCategoryResult
       input: '{
-     "code": "DocTestCode123",
+     "code": "$ID:CreateDocumentCategory_Valid_Smoke_Sid_code$",
     "description": "Testing positive Doc updated",
     "isActive": true,
     "langCode": "eng",
@@ -17,7 +17,7 @@ UpdateDocumentCategory:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-	"code": "DocTestCode123"
+	"code": "$ID:CreateDocumentCategory_Valid_Smoke_Sid_code$"
 }'
    MasterData_UpdateDocumentCategory_All_Valid_Mandatory_Fields:
       endPoint: /v1/masterdata/documentcategories
@@ -29,7 +29,7 @@ UpdateDocumentCategory:
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/DocumentCategory/documentCategoryResult
       input: '{
-     "code": "DocTestCode321",
+     "code": "$ID:CreateDocumentCategory_All_Valid_Mandatory_Fields_Sid_code$",
     "description": "DocTestCode321 updated",
     "isActive": true,
     "langCode": "eng",
@@ -37,7 +37,7 @@ UpdateDocumentCategory:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-	"code": "DocTestCode321"
+	"code": "$ID:CreateDocumentCategory_All_Valid_Mandatory_Fields_Sid_code$"
 }'
    
    MasterData_UpdateDocumentCategory_Invalid_InputParameter_Code_Missing:

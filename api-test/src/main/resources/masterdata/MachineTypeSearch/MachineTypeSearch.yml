@@ -13,7 +13,7 @@ MachineTypeSearch:
       {
         "columnName": "code",
         "type": "equals",
-        "value": "Laptop2",
+        "value": "$ID:CreateMachineType_All_Valid_Smoke_Sid_code$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -34,7 +34,7 @@ MachineTypeSearch:
      {
         "isActive": "$REMOVE$",
         "createdBy": "$REMOVE$",
-        "code": "Laptop2",
+        "code": "$ID:CreateMachineType_All_Valid_Smoke_Sid_code$",
         "name": "$REMOVE$",
         "description": "$REMOVE$"
       }

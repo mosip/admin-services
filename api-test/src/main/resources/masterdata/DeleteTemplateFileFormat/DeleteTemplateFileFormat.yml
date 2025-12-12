@@ -11,7 +11,7 @@ DeleteTemplateFileFormat:
     "code": "$ID:CreateTemplateFileFormat_All_Valid_Smoke_sid_code$"
 	}'
       output: '{
-    "code": "Doc"
+    "code": "$ID:CreateTemplateFileFormat_All_Valid_Smoke_sid_code$"
 }'
    MasterData_DeleteTemplateFileFormat_Invalid_code: 
       endPoint: /v1/masterdata/templatefileformats/{code}

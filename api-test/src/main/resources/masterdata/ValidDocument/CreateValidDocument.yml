@@ -8,13 +8,13 @@ CreateValidDocument:
       inputTemplate: masterdata/ValidDocument/validDocument
       outputTemplate: masterdata/ValidDocument/validDocumentResult
       input: '{
-     "docTypeCode": "doc_auto_test",
+     "docTypeCode": "doc_auto_test_$TESTDATACONTEXT$",
      "docCategoryCode": "POA",
      "isActive": true,
 	   "requesttime": "$TIMESTAMP$"
 }'
       output: '{
-       "docTypeCode": "doc_auto_test",
+       "docTypeCode": "doc_auto_test_$TESTDATACONTEXT$",
        "docCategoryCode": "POA"
     }'
   

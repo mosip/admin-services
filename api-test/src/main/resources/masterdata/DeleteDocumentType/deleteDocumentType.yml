@@ -8,10 +8,10 @@ DeleteDocumentType:
       inputTemplate: masterdata/DeleteDocumentType/deleteDocumentType
       outputTemplate: masterdata/DeleteDocumentType/deleteDocumentTypeResult
       input: '{
-    "code": "TestDocType0010"
+    "code": "$ID:CreateDocumentType_Valid_Smoke_Sid_code$"
 	}'
       output: '{
-    "code": "TestDocType0010"
+    "code": "$ID:CreateDocumentType_Valid_Smoke_Sid_code$"
 }'
    MasterData_DeleteDocumentType_Invalid_ID: 
       endPoint: /v1/masterdata/documenttypes/{code}

@@ -9,7 +9,7 @@ UpdateMachineTypeStatus:
       inputTemplate: masterdata/UpdateMachineTypeStatus/updateMachineTypeStatus
       outputTemplate: masterdata/UpdateMachineTypeStatus/updateteMachineTypeStatusResult
       input: '{
-	"code": "Laptop2",
+	"code": "$ID:CreateMachineType_All_Valid_Smoke_Sid_code$",
 	"isActive": "true"
 }'
       output: '{

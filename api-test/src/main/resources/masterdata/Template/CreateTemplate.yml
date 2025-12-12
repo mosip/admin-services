@@ -13,14 +13,14 @@ CreateTemplate:
         "description": "test template",
         "fileFormatCode": "json",
         "fileText": "abc",
-        "id": "445566777",
+        "id": "445566777-$TESTDATACONTEXT$",
         "isActive": false,
         "langCode": "eng",
         "model": "model-1",
         "moduleId": "10001",
         "moduleName": "Pre-Registration",
         "name": "Test-template",
-        "templateTypeCode": "Test-info-Template-auto",
+        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_Sid_code$",
 	    "requesttime": "$TIMESTAMP$"
 }'
       output: '{

@@ -10,14 +10,14 @@ UpdateUserCenterMapping:
       outputTemplate: masterdata/UserCenterMapping/userCenterMappingResult
       input: '{
      "id": "$ID:CreateZoneUser_All_Valid_Smoke_Sid_userId$",
-     "name": "automationUpdated",
+     "name": "automationUpdated$TESTDATACONTEXT$",
      "statusCode": "active",
      "regCenterId": "$ID:CreateRegCenter_allValid_smoke_sid_id$",
      "langCode": "eng",
      "requesttime": "$TIMESTAMP$"
 }'
       output: '{
-    "name": "automationUpdated",
+    "name": "automationUpdated$TESTDATACONTEXT$",
     "statusCode": "active",
     "regCenterId": "$REMOVE$",
     "zoneCode": "$REMOVE$",

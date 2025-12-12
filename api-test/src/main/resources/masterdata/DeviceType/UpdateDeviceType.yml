@@ -9,35 +9,35 @@ UpdateDeviceType:
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/DeviceType/deviceTypeResult
       input: '{
-    "code": "GST3",
+    "code": "$ID:CreateDeviceType_All_Valid_Smoke_Sid_code$",
     "description": "test 1.0.8",
 	"isActive": true,
 	"langCode": "eng",
-	"name": "GST updated",
+	"name": "AUTO updated",
 	"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-	"code": "GST3"
+	"code": "$ID:CreateDeviceType_All_Valid_Smoke_Sid_code$"
 }'
    MasterData_UpdateDeviceType_All_Valid_Mandatory_Fields_Smoke:
       endPoint: /v1/masterdata/devicetypes
       uniqueIdentifier: TC_Masterdata_UpdateDeviceType_02
       description: Update Device Type with all mandatory fields
       role: admin
-      templateFields: ["description"]
+      templateFields: ["langCode"]
       restMethod: put
       inputTemplate: masterdata/DeviceType/deviceType
       outputTemplate: masterdata/DeviceType/deviceTypeResult
       input: '{
-    "code": "GST4",
+    "code": "$ID:CreateDeviceType_All_Valid_Mandatory_Fields_Smoke_Sid_code$",
     "description": "$REMOVE$",
 	"isActive": true,
 	"langCode": "eng",
-	"name": "GST updated",
+	"name": "AUTO updated",
 	"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-	"code": "GST4"
+	"code": "$ID:CreateDeviceType_All_Valid_Mandatory_Fields_Smoke_Sid_code$"
 }'
    MasterData_UpdateDeviceType_InputParameter_Code_Missing:
       endPoint: /v1/masterdata/devicetypes
