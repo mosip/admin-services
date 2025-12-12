@@ -4,178 +4,312 @@ This project includes third-party packages that are distributed under various op
 
 ================================================================================
 Package: Spring Boot & Spring Security
-(Starter Cache, Starter Security, Starter Validation, Starter Data JPA, Starter Web, Starter Batch, Starter Test, Configuration Processor, Spring Boot Maven Plugin)
-Version: 3.2.3 (most packages) or 3.x family
+Coordinates: org.springframework.boot:*, org.springframework:*, org.springframework.security:*
+(Starter Cache, Starter Security, Starter Validation, Starter Data JPA, Starter Web,
+Starter Batch, Starter Test, Configuration Processor)
+Version: 3.2.3 (Spring Boot); other Spring modules BOM-managed
 License: Apache License 2.0
+Copyright: © 2002-2025 VMware, Inc. and contributors
+Homepage: https://spring.io/projects/spring-boot
+================================================================================
+
+================================================================================
+Package: Spring Boot Maven Plugin
+Coordinates: org.springframework.boot:spring-boot-maven-plugin
+Version: 3.2.3
+License: Apache License 2.0
+Copyright: © 2002-2025 VMware, Inc.
 Homepage: https://spring.io/projects/spring-boot
 ================================================================================
 
 ================================================================================
 Package: SpringDoc OpenAPI
-(SpringDoc OpenAPI Maven Plugin, SpringDoc OpenAPI Starter WebMVC UI)
-Version: 0.2, 1.3, 1.4, 2.5.0
-License: Apache License 2.0 (Inferred from project’s official repository)
+Coordinates: org.springdoc:springdoc-openapi-maven-plugin, org.springdoc:springdoc-openapi-starter-webmvc-ui
+Version: 0.2, 1.3, 1.4 (Maven plugin); 2.5.0 (starter)
+License: Apache License 2.0
+Copyright: © 2019-2025 SpringDoc contributors
 Homepage: https://springdoc.org
 ================================================================================
 
 ================================================================================
-Package: PostgreSQL JDBC Driver (org.postgresql:postgresql)
-Version: 42.2.2, 42.7.2
-License: BSD-2-Clause (Inferred from project’s official repository)
+Package: PostgreSQL JDBC Driver
+Coordinates: org.postgresql:postgresql
+Version: 42.2.2 (kernel-syncdata-service, kernel-masterdata-service, hotlist-service); 42.7.2 (admin-service)
+License: BSD-2-Clause
+Copyright: © 1997-2025 PostgreSQL Global Development Group
 Homepage: https://jdbc.postgresql.org/
 ================================================================================
 
 ================================================================================
-Package: JSON Simple (com.googlecode.json-simple:json-simple)
-Version: (Not specified)
-License: Apache License 2.0 (Inferred from project’s official repository)
-Homepage: https://code.google.com/archive/p/json-simple/
-================================================================================
-
-================================================================================
 Package: Apache Maven Plugins
-(maven-resources-plugin, maven-shade-plugin, maven-surefire-plugin, maven-gpg-plugin, maven-javadoc-plugin, maven-source-plugin, maven-jar-plugin, maven-war-plugin, maven-compiler-plugin, maven-antrun-plugin)
-Version:
-  - maven-resources-plugin: 3.3.1
-  - maven-shade-plugin: 3.2.4
-  - maven-surefire-plugin: 2.22.0
-  - maven-gpg-plugin: 1.5
-  - maven-javadoc-plugin: 3.2.0, 3.6.3
-  - maven-source-plugin: 2.2.1
-  - maven-jar-plugin: 3.0.2
-  - maven-war-plugin: 3.1.0
-  - maven-compiler-plugin: 3.8.0
-  - maven-antrun-plugin: 3.0.0
+Coordinates: org.apache.maven.plugins:*
+Including: maven-resources-plugin 3.3.1, maven-shade-plugin 3.2.4, maven-surefire-plugin 2.22.0,
+maven-gpg-plugin 1.5, maven-javadoc-plugin 3.2.0 & 3.6.3, maven-source-plugin 2.2.1,
+maven-jar-plugin 3.0.2, maven-war-plugin 3.1.0, maven-compiler-plugin 3.8.0, maven-antrun-plugin 3.0.0
 License: Apache License 2.0
+Copyright: © 2001-2025 The Apache Software Foundation
 Homepage: https://maven.apache.org/plugins/
 ================================================================================
 
 ================================================================================
-Package: JUnit (junit:junit, org.junit.vintage:junit-vintage-engine)
-Version: 4.12 (JUnit), (not specified for vintage)
-License: Eclipse Public License 1.0/2.0 (Inferred from project’s official repository)
+Package: JUnit 4
+Coordinates: junit:junit
+Version: 4.12
+License: Eclipse Public License 1.0 (EPL-1.0)
+Copyright: © 2002-2025 JUnit contributors and Eclipse Foundation
 Homepage: https://junit.org/junit4/
 ================================================================================
 
-
 ================================================================================
-Package: ModelMapper (org.modelmapper:modelmapper)
-Version: (Not specified)
-License: Apache License 2.0
-Homepage: http://modelmapper.org/
-================================================================================
-
-================================================================================
-Package: Log4j API (org.apache.logging.log4j:log4j-api)
-Version: (Not specified)
-License: Apache License 2.0
-Homepage: https://logging.apache.org/log4j/2.x/
+Package: JaCoCo Maven Plugin
+Coordinates: org.jacoco:jacoco-maven-plugin
+Version: 0.8.11
+License: Eclipse Public License 2.0 (EPL-2.0)
+Copyright: © 2009-2025 Mountainminds GmbH & Co. KG and contributors
+Homepage: https://www.jacoco.org/
 ================================================================================
 
 ================================================================================
-Package: Jackson (com.fasterxml.jackson.datatype:jackson-datatype-jsr310)
-Version: (Not specified)
+Package: Jackson Datatype JSR310
+Coordinates: com.fasterxml.jackson.datatype:jackson-datatype-jsr310
+Version: BOM-managed
 License: Apache License 2.0
+Copyright: © 2007-2025 FasterXML, LLC
 Homepage: https://github.com/FasterXML/jackson-datatype-jsr310
 ================================================================================
 
 ================================================================================
 Package: MOSIP Kernel
-(kernel-bom, kernel-core, kernel-logger-logback, kernel-auth-adapter, kernel-auditmanager-api, kernel-keymanager-service, kernel-applicanttype-api, kernel-idvalidator-rid, kernel-idgenerator-machineid, kernel-idgenerator-regcenterid, kernel-dataaccess-hibernate, kernel-openid-bridge-api, kernel-datamapper-orika, kernel-cbeffutil-api, kernel-websubclient-api)
+Coordinates: io.mosip.kernel:* (multiple modules)
 Version: 1.3.0-SNAPSHOT
-License: Mozilla Public License 2.0 (Inferred from project’s official repository)
+License: Mozilla Public License 2.0 (MPL-2.0)
+Copyright: © 2018-2025 MOSIP contributors
 Homepage: https://github.com/mosip/
 ================================================================================
 
 ================================================================================
-Package: SLF4J API (org.slf4j:slf4j-api, org.slf4j:jcl-over-slf4j, org.slf4j:jul-to-slf4j)
-Version: 1.7.5 (for bridges), (not specified for API)
-License: MIT License (Inferred from project’s official repository)
-Homepage: http://www.slf4j.org/
+Package: MOSIP Biometrics Util
+Coordinates: io.mosip.biometric.util:biometrics-util
+Version: 1.3.0-SNAPSHOT
+License: Mozilla Public License 2.0 (MPL-2.0)
+Copyright: © 2018-2025 MOSIP contributors
+Homepage: https://github.com/mosip/
 ================================================================================
 
 ================================================================================
-Package: H2 Database (com.h2database:h2)
-Version: (Not specified)
-License: MPL 2.0 OR EPL 1.0 (dual-licensed)
+Package: MOSIP Commons Packet Manager
+Coordinates: io.mosip.commons:commons-packet-manager
+Version: 1.3.0-SNAPSHOT
+License: Mozilla Public License 2.0 (MPL-2.0)
+Copyright: © 2018-2025 MOSIP contributors
+Homepage: https://github.com/mosip/
+================================================================================
+
+================================================================================
+Package: SLF4J API and Bridges
+Coordinates: org.slf4j:slf4j-api, org.slf4j:jcl-over-slf4j, org.slf4j:jul-to-slf4j
+Version: slf4j-api BOM-managed; bridges 1.7.5
+License: MIT License
+Copyright: © 2004-2025 QOS.ch
+Homepage: https://www.slf4j.org/
+================================================================================
+
+================================================================================
+Package: H2 Database Engine
+Coordinates: com.h2database:h2
+Version: BOM-managed
+License: Dual-licensed: MPL 2.0 OR EPL 1.0
+Copyright: © 2004-2025 H2 Group (Thomas Müller and contributors)
 Homepage: https://www.h2database.com/
 ================================================================================
 
 ================================================================================
-Package: Jakarta Activation (jakarta.activation:jakarta.activation-api)
+Package: Jakarta Activation API
+Coordinates: jakarta.activation:jakarta.activation-api
 Version: 2.1.3
-License: BSD-3-Clause (Inferred from project’s official repository)
+License: BSD-3-Clause (EDL-1.0)
+Copyright: © 1997-2025 Oracle and/or its affiliates; Eclipse Foundation
 Homepage: https://github.com/eclipse-ee4j/jaf
 ================================================================================
 
 ================================================================================
-Package: Jakarta Persistence (jakarta.persistence:jakarta.persistence-api)
+Package: Jakarta Persistence API
+Coordinates: jakarta.persistence:jakarta.persistence-api
 Version: 3.1.0
-License: BSD-3-Clause OR EPL-2.0 (Inferred from project’s official repository)
-Homepage: https://projects.eclipse.org/projects/ee4j.ja
+License: Dual-licensed: BSD-3-Clause OR EPL-2.0
+Copyright: © 2017-2025 Oracle and/or its affiliates; Eclipse Foundation
+Homepage: https://projects.eclipse.org/projects/ee4j.jpa
 ================================================================================
 
 ================================================================================
-Package: Jakarta XML Bind (jakarta.xml.bind:jakarta.xml.bind-api, javax.xml.bind:jaxb-api)
-Version: (Not specified)
-License: EDL 1.0 (BSD-3-Clause), OR EPL-2.0, OR GPL-2.0 with Classpath Exception
+Package: Jakarta XML Bind API
+Coordinates: jakarta.xml.bind:jakarta.xml.bind-api, javax.xml.bind:jaxb-api
+Version: BOM-managed
+License: Multi-licensed: EDL-1.0 (BSD-3-Clause), OR EPL-2.0, OR GPL-2.0 with Classpath Exception
+Copyright: © 2018-2025 Oracle and/or its affiliates; Eclipse Foundation
 Homepage: https://projects.eclipse.org/projects/ee4j.jaxb/
 ================================================================================
 
 ================================================================================
-Package: H2 Database (com.h2database:h2)
-Version: (Not specified)
-License: MPL 2.0 OR EPL 1.0 (dual-licensed)
-Homepage: https://www.h2database.com/
-================================================================================
-
-================================================================================
-Package: Jakarta XML Bind (jakarta.xml.bind:jakarta.xml.bind-api, javax.xml.bind:jaxb-api)
-Version: (Not specified)
-License: EDL 1.0 (BSD-3-Clause), OR EPL-2.0, OR GPL-2.0 with Classpath Exception
-Homepage: https://projects.eclipse.org/projects/ee4j.jaxb/
-================================================================================
-
-================================================================================
-Package: Spring Batch Extensions (org.springframework.batch.extensions:spring-batch-excel)
+Package: Spring Batch Extensions (Excel)
+Coordinates: org.springframework.batch.extensions:spring-batch-excel
 Version: 0.1.0
-License: Apache License 2.0 (Inferred from project’s official repository)
+License: Apache License 2.0
+Copyright: © 2018-2025 Spring Batch Excel contributors
 Homepage: https://github.com/kulmam92/spring-batch-excel
 ================================================================================
 
 ================================================================================
-Package: Mockito (org.mockito:mockito-core, org.mockito:mockito-inline)
-Version: 3.11.2, 5.2.0
-License: MIT License (Inferred from project’s official repository)
+Package: Spring Batch Security
+Coordinates: org.digibooster.spring.batch:spring-batch-security
+Version: 1.1.0
+License: Apache License 2.0
+Copyright: © 2018-2025 DigiBooster Spring Batch contributors
+Homepage: https://github.com/marschall/spring-batch-security
+================================================================================
+
+================================================================================
+Package: Mockito
+Coordinates: org.mockito:mockito-core, org.mockito:mockito-inline
+Version: 3.11.2; 5.2.0
+License: MIT License
+Copyright: © 2007-2025 Mockito contributors
 Homepage: https://site.mockito.org/
 ================================================================================
 
 ================================================================================
-Package: Powermock (org.powermock:powermock-api-mockito2, org.powermock:powermock-module-junit4)
-Version: (Not specified)
-License: Apache License 2.0 (Inferred from project’s official repository)
+Package: Powermock
+Coordinates: org.powermock:powermock-api-mockito2, org.powermock:powermock-module-junit4
+Version: 1.7.4; 2.0.7
+License: Apache License 2.0
+Copyright: © 2007-2017 Powermock contributors
 Homepage: https://github.com/powermock/powermock
 ================================================================================
 
 ================================================================================
-Package: Bouncy Castle (org.bouncycastle:bcutil-jdk18on)
+Package: Bouncy Castle
+Coordinates: org.bouncycastle:bcutil-jdk18on
 Version: 1.78.1
-License: MIT License (Inferred from project’s official repository)
+License: MIT License (Bouncy Castle License)
+Copyright: © 2000-2025 The Legion of the Bouncy Castle Inc.
 Homepage: https://www.bouncycastle.org/
 ================================================================================
 
 ================================================================================
-Package: Apache POI (org.apache.poi:poi-ooxml)
+Package: Apache POI
+Coordinates: org.apache.poi:poi-ooxml
 Version: 5.2.5
 License: Apache License 2.0
+Copyright: © The Apache Software Foundation
 Homepage: https://poi.apache.org/
 ================================================================================
 
 ================================================================================
-Package: Google Gson (com.google.code.gson:gson)
+Package: Google Gson
+Coordinates: com.google.code.gson:gson
 Version: 2.10.1
 License: Apache License 2.0
+Copyright: © 2008-2025 Google Inc.
 Homepage: https://github.com/google/gson
+================================================================================
+
+================================================================================
+Package: Project Lombok
+Coordinates: org.projectlombok:lombok
+Version: 1.18.30
+License: MIT License
+Copyright: © 2009-2021 The Project Lombok Authors
+Homepage: https://projectlombok.org/
+================================================================================
+
+================================================================================
+Package: Sonar Maven Plugin
+Coordinates: org.sonarsource.scanner.maven:sonar-maven-plugin
+Version: 3.7.0.1746; 3.11.0.3922
+License: GNU Lesser General Public License v3.0 (LGPL-3.0)
+Copyright: © 2011-2025 SonarSource SA
+Homepage: https://github.com/SonarSource/sonar-scanner-maven
+================================================================================
+
+================================================================================
+Package: TSS.Java (Microsoft TPM 2.0 Software Stack)
+Coordinates: com.github.microsoft:TSS.Java
+Version: 0.3.0
+License: MIT License
+Copyright: © Microsoft Corporation
+Homepage: https://github.com/microsoft/TSS.MSR
+================================================================================
+
+================================================================================
+Package: Apache Commons IO
+Coordinates: commons-io:commons-io
+Version: 2.6
+License: Apache License 2.0
+Copyright: © 2002-2025 The Apache Software Foundation
+Homepage: https://commons.apache.org/proper/commons-io/
+================================================================================
+
+================================================================================
+Package: Apache Commons Logging
+Coordinates: commons-logging:commons-logging
+Version: 1.2
+License: Apache License 2.0
+Copyright: © 2001-2025 The Apache Software Foundation
+Homepage: https://commons.apache.org/proper/commons-logging/
+================================================================================
+
+================================================================================
+Package: Apache Commons Collections
+Coordinates: org.apache.commons:commons-collections4
+Version: 4.3
+License: Apache License 2.0
+Copyright: © 2001-2025 The Apache Software Foundation
+Homepage: https://commons.apache.org/proper/commons-collections/
+================================================================================
+
+================================================================================
+Package: Hibernate ORM
+Coordinates: org.hibernate.orm:hibernate-core, org.hibernate.orm:hibernate-hikaricp
+Version: 5.2.17.Final
+License: GNU Lesser General Public License v2.1 or later (LGPL-2.1-or-later)
+Copyright: © Hibernate Authors and Contributors
+Homepage: https://hibernate.org/orm/
+================================================================================
+
+================================================================================
+Package: Hibernate Validator
+Coordinates: org.hibernate.validator:hibernate-validator
+Version: 6.0.12.Final
+License: Apache License 2.0
+Copyright: © Hibernate Validator Authors and Contributors
+Homepage: https://hibernate.org/validator/
+================================================================================
+
+================================================================================
+Package: Spring Cloud
+Coordinates: org.springframework.cloud:spring-cloud-starter-config, org.springframework.cloud:spring-cloud-starter-bootstrap
+Version: BOM-managed
+License: Apache License 2.0
+Copyright: © 2013-2025 VMware, Inc. (formerly Pivotal Software, Inc.)
+Homepage: https://spring.io/projects/spring-cloud
+================================================================================
+
+================================================================================
+Package: Apache Tomcat Annotations API
+Coordinates: org.apache.tomcat:tomcat-annotations-api
+Version: BOM-managed
+License: Apache License 2.0
+Copyright: © 1999-2025 The Apache Software Foundation
+Homepage: https://tomcat.apache.org/
+================================================================================
+
+================================================================================
+Package: Central Publishing Maven Plugin
+Coordinates: org.sonatype.central:central-publishing-maven-plugin
+Version: 0.7.0
+License: Apache License 2.0
+Copyright: © 2022-2025 Sonatype, Inc.
+Homepage: https://central.sonatype.com/
 ================================================================================
 
 Full license texts and additional details for each of the above packages are available in the license/ directory of this repository. Please refer to those files or the original source of each package for complete legal terms and conditions.
