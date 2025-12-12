@@ -28,7 +28,7 @@ CREATE TABLE master.blocklisted_words(
 
 );
 -- ddl-end --
-COMMENT ON TABLE master.blocklisted_words IS 'Black Listed Words : List of words that are black listed.';
+COMMENT ON TABLE master.blocklisted_words IS 'Block Listed Words : List of words that are block listed.';
 -- ddl-end --
 COMMENT ON COLUMN master.blocklisted_words.word IS 'Word: Word that is blocklisted by the system';
 -- ddl-end --

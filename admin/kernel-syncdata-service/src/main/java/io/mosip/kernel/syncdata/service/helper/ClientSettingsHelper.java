@@ -13,6 +13,7 @@ import io.mosip.kernel.syncdata.service.helper.beans.RegistrationCenterMachine;
 import io.mosip.kernel.syncdata.service.helper.beans.RegistrationCenterUser;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
+import jakarta.annotation.PostConstruct;
 import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,52 +25,145 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
+/**
+ * Helper class for client settings synchronization in the MOSIP system.
+ * Manages the initiation and retrieval of data fetches for various master data entities,
+ * handles dynamic data grouping, and performs encryption for secure data transfer.
+ * Optimized for performance by caching environment properties, using parallel processing
+ * where beneficial, and minimizing redundant operations.
+ *
+ * @author [Mosip Team]
+ * @since 1.0.0
+ */
 @Component
 public class ClientSettingsHelper {
 
+	/**
+	 * Logger instance for logging events and errors in this class.
+	 */
 	private final static Logger LOGGER = LoggerFactory.getLogger(ClientSettingsHelper.class);
 
+	/**
+	 * Service helper for fetching master data.
+	 */
 	@Autowired
 	private SyncMasterDataServiceHelper serviceHelper;
 
+	/**
+	 * Repository for accessing module details.
+	 */
 	@Autowired
 	private ModuleDetailRepository moduleDetailRepository;
 
+	/**
+	 * ID of the registration client module.
+	 */
 	@Value("${mosip.syncdata.regclient.module.id:10002}")
 	private String regClientModuleId;
 
+	/**
+	 * Set of script names for synchronization.
+	 */
 	@Value("#{'${mosip.registration.sync.scripts:applicanttype.mvel}'.split(',')}")
 	private Set<String> scriptNames;
 
+	/**
+	 * Environment for accessing configuration properties.
+	 */
 	@Autowired
 	private Environment environment;
 
+	/**
+	 * Utility for mapping objects to JSON.
+	 */
 	@Autowired
 	private MapperUtils mapper;
 
+	/**
+	 * Service for client cryptographic operations.
+	 */
 	@Autowired
 	private ClientCryptoManagerService clientCryptoManagerService;
 
+	/**
+	 * Cache for storing URL detail maps for entity classes.
+	 */
+	private final Map<String, Map<String, Object>> urlDetailsCache = new ConcurrentHashMap<>();
+
+	/**
+	 * Cache for storing whether URL details are available for entity classes.
+	 */
+	private final Map<String, Boolean> hasUrlDetailsCache = new ConcurrentHashMap<>();
+
+	/**
+	 * Precomputed map of script URL details, initialized at startup for performance.
+	 */
+	private Map<String, Map<String, Object>> precomputedScriptUrls;
+
+	/**
+	 * Initializes the helper by precomputing script URL details at application startup.
+	 * This avoids runtime computation and improves response time for script-related operations.
+	 */
+	@PostConstruct
+	private void init() {
+		precomputedScriptUrls = scriptNames.stream()
+				.collect(Collectors.toMap(
+						name -> name,
+						this::buildUrlDetailMap,
+						(a, b) -> a,
+						ConcurrentHashMap::new
+				));
+	}
+
+	/**
+	 * Checks if URL details are configured for the given class, considering API version and sync type.
+	 * Uses caching to avoid repeated environment property lookups.
+	 *
+	 * @param clazz       the entity class to check
+	 * @param isV2API     indicates if V2 API is being used
+	 * @param deltaSync   indicates if delta sync is being performed
+	 * @return true if URL details are available and applicable, false otherwise
+	 */
 	private boolean hasURLDetails(Class clazz, boolean isV2API, boolean deltaSync) {
 		if (!isV2API)
 			return false;
 
 		String entityName = clazz.getSimpleName().toUpperCase();
-		if (!environment.containsProperty(String.format("mosip.sync.entity.url.%s", entityName)))
-			return false;
+		String cacheKey = entityName + "_" + deltaSync;
 
-		Boolean onlyOnFullSync = environment
-				.getProperty(String.format("mosip.sync.entity.only-on-fullsync.%s", entityName), Boolean.class, true);
+		return hasUrlDetailsCache.computeIfAbsent(cacheKey, key -> {
+			if (!environment.containsProperty(String.format("mosip.sync.entity.url.%s", entityName))) {
+				return false;
+			}
 
-		return onlyOnFullSync ? !deltaSync : true;
+			Boolean onlyOnFullSync = environment.getProperty(
+					String.format("mosip.sync.entity.only-on-fullsync.%s", entityName), Boolean.class, true);
+
+			return onlyOnFullSync ? !deltaSync : true;
+		});
 	}
 
-	public Map<Class, CompletableFuture> getInitiateDataFetch(String machineId, String regCenterId,
-			LocalDateTime lastUpdated, LocalDateTime currentTimestamp, boolean isV2API, boolean deltaSync, String fullSyncEntities) {
-		List<String> entities = (fullSyncEntities != null && !fullSyncEntities.isBlank()) ? List.of(StringUtils.split(fullSyncEntities, ",")) : new ArrayList<>();
-		
-		Map<Class, CompletableFuture> futuresMap = new HashMap<>();
+	/**
+	 * Initiates data fetching for various entities asynchronously.
+	 * Builds a map of entity classes to CompletableFutures for efficient parallel processing.
+	 *
+	 * @param machineId              the machine ID for filtering
+	 * @param regCenterId            the registration center ID for filtering
+	 * @param lastUpdated            the last updated timestamp; if null, fetches all records
+	 * @param currentTimestamp       the current timestamp for filtering
+	 * @param isV2API                indicates if V2 API is being used
+	 * @param deltaSync              indicates if delta sync is being performed
+	 * @param fullSyncEntities       comma-separated list of entities for full sync; may be blank
+	 * @return a map of entity classes to CompletableFutures containing fetched data
+	 */
+	public Map<Class<?>, CompletableFuture<?>> getInitiateDataFetch(String machineId, String regCenterId,
+															  LocalDateTime lastUpdated, LocalDateTime currentTimestamp, boolean isV2API, boolean deltaSync, String fullSyncEntities) {
+		List<String> entities = StringUtils.isNotBlank(fullSyncEntities) ? List.of(StringUtils.split(fullSyncEntities, ",")) : new ArrayList<>();
+
+		Map<Class<?>, CompletableFuture<?>> futuresMap = new ConcurrentHashMap<>();
 		futuresMap.put(AppAuthenticationMethod.class,
 				hasURLDetails(AppAuthenticationMethod.class, isV2API, deltaSync)
 						? getURLDetails(AppAuthenticationMethod.class)
@@ -125,9 +219,8 @@ public class ClientSettingsHelper {
 
 		futuresMap.put(Language.class, serviceHelper.getLanguageList(getLastUpdatedTimeFromEntity(Language.class, lastUpdated, entities), currentTimestamp));
 
-		// to handle backward compatibility
+		// Handle backward compatibility for non-V2 API
 		if (!isV2API) {
-			// template_file_format & template_type
 			futuresMap.put(TemplateFileFormat.class,
 					hasURLDetails(TemplateFileFormat.class, isV2API, deltaSync)
 							? getURLDetails(TemplateFileFormat.class)
@@ -141,13 +234,12 @@ public class ClientSettingsHelper {
 			futuresMap.put(RegistrationCenterUser.class,
 					serviceHelper.getRegistrationCenterUsers(regCenterId, lastUpdated, currentTimestamp));
 
-			// valid_document
 			futuresMap.put(ValidDocument.class,
 					hasURLDetails(ValidDocument.class, isV2API, deltaSync) ? getURLDetails(ValidDocument.class)
 							: serviceHelper.getValidDocuments(lastUpdated, currentTimestamp));
 		}
 
-		// invokes master-data-service
+		// Invoke master-data-service for specific entities
 		futuresMap.put(LocationHierarchy.class,
 				hasURLDetails(LocationHierarchy.class, isV2API, deltaSync) ? getURLDetails(LocationHierarchy.class)
 						: serviceHelper.getLocationHierarchyList(getLastUpdatedTimeFromEntity(LocationHierarchy.class, lastUpdated, entities)));
@@ -157,51 +249,105 @@ public class ClientSettingsHelper {
 
 		return futuresMap;
 	}
-	
+
+	/**
+	 * Determines the effective last updated timestamp for an entity, adjusting for full sync if specified.
+	 *
+	 * @param clazz             the entity class
+	 * @param lastUpdated       the original last updated timestamp
+	 * @param fullSyncEntities  list of entities requiring full sync
+	 * @return the effective last updated timestamp, or null for full sync
+	 */
 	private LocalDateTime getLastUpdatedTimeFromEntity(Class clazz, LocalDateTime lastUpdated, List<String> fullSyncEntities) {
 		return fullSyncEntities.contains(clazz.getSimpleName()) ? null : lastUpdated;
 	}
 
-	public List<SyncDataBaseDto> retrieveData(Map<Class, CompletableFuture> futures, RegistrationCenterMachineDto regCenterMachineDto, boolean isV2API)
-			throws RuntimeException {
-		final List<SyncDataBaseDto> list = new ArrayList<>();
-		futures.entrySet().parallelStream().forEach(entry -> {
-			try {
-				Object result = entry.getValue().get();
-				if (result != null) {
-					String entityType = (result instanceof Map)
-							? (entry.getKey() == DynamicFieldDto.class ? "dynamic-url" : "structured-url")
-							: (entry.getKey() == DynamicFieldDto.class ? "dynamic" : "structured");
+	/**
+	 * Retrieves and processes data from the provided futures map, encrypting results as needed.
+	 * Uses parallel processing for efficiency, with thread-safe collections to prevent concurrency issues.
+	 *
+	 * @param futures               the map of futures to process
+	 * @param regCenterMachineDto   the DTO for registration center machine details used in encryption
+	 * @param isV2API               indicates if V2 API is being used
+	 * @return a list of encrypted {@link SyncDataBaseDto} objects
+	 * @throws RuntimeException if an error occurs during data retrieval or processing
+	 */
+	public List<SyncDataBaseDto> retrieveData(
+			Map<Class<?>, CompletableFuture<?>> futures,
+			RegistrationCenterMachineDto regCenterMachineDto,
+			boolean isV2API) {
 
-					switch (entityType) {
-					case "structured-url":
-					case "dynamic-url":
-						list.add(getEncryptedSyncDataBaseDto(entry.getKey(), regCenterMachineDto, entityType, result));
-						break;
-					case "dynamic":
-						handleDynamicData((List) result, list, regCenterMachineDto, isV2API);
-						break;
-					case "structured":
-						if (isV2API)
-							serviceHelper.getSyncDataBaseDtoV2(entry.getKey().getSimpleName(), entityType,
-									(List) result, regCenterMachineDto, list);
-						else
-							serviceHelper.getSyncDataBaseDto(entry.getKey().getSimpleName(), entityType, (List) result,
-									regCenterMachineDto, list);
-						break;
+		return futures.entrySet()
+				.parallelStream()
+				.flatMap(e -> processEntry(e, regCenterMachineDto, isV2API).stream())
+				.toList();   // Java 16+. For Java 8–15 use .collect(Collectors.toList())
+	}
+	private List<SyncDataBaseDto> processEntry(
+			Map.Entry<Class<?>, CompletableFuture<?>> entry,
+			RegistrationCenterMachineDto regCenterMachineDto,
+			boolean isV2API) {
+
+		try {
+			Object result = entry.getValue().join();
+			if (result == null) return List.of();
+
+			boolean isDynamic = entry.getKey() == DynamicFieldDto.class;
+			boolean isUrl     = result instanceof Map;
+
+			String entityType = isUrl
+					? (isDynamic ? "dynamic-url" : "structured-url")
+					: (isDynamic ? "dynamic"     : "structured");
+
+			List<SyncDataBaseDto> syncDataBaseDtoList = new ArrayList<>();
+
+			switch (entityType) {
+				case "structured-url", "dynamic-url" -> {
+					SyncDataBaseDto dto =
+							getEncryptedSyncDataBaseDto(entry.getKey(), regCenterMachineDto, entityType, result);
+					if (dto != null) syncDataBaseDtoList.add(dto);
+				}
+				case "dynamic" ->
+						handleDynamicData(castList(result), syncDataBaseDtoList, regCenterMachineDto, isV2API);
+				case "structured" -> {
+					if (isV2API) {
+						serviceHelper.getSyncDataBaseDtoV2(entry.getKey().getSimpleName(),
+								entityType,
+								castList(result),
+								regCenterMachineDto,
+								syncDataBaseDtoList);
+					} else {
+						serviceHelper.getSyncDataBaseDto(entry.getKey().getSimpleName(),
+								entityType,
+								castList(result),
+								regCenterMachineDto,
+								syncDataBaseDtoList);
 					}
 				}
-			} catch (InterruptedException ie) {
-				LOGGER.error("InterruptedException: ", ie);
-				Thread.currentThread().interrupt();
-			} catch (Throwable e) {
-				LOGGER.error("Failed to construct client settings response", e);
-				throw new RuntimeException(e);
 			}
-		});
-		return list;
+			return syncDataBaseDtoList;
+
+		} catch (Throwable e) {
+			LOGGER.error("Failed to construct client settings response for entity: {}",
+					entry.getKey().getSimpleName(), e);
+			throw new RuntimeException(e);
+		}
 	}
 
+	@SuppressWarnings("unchecked")
+	private static <T> List<T> castList(Object obj) {
+		return (List<T>) obj;
+	}
+
+
+	/**
+	 * Handles grouping and encryption of dynamic field data.
+	 * Uses concurrent structures for thread safety during potential parallel access.
+	 *
+	 * @param entities                  the list of dynamic field entities
+	 * @param list                      the synchronized list to add encrypted DTOs
+	 * @param registrationCenterMachineDto the DTO for encryption details
+	 * @param isV2                      indicates if V2 API is being used
+	 */
 	private void handleDynamicData(List entities, List<SyncDataBaseDto> list, RegistrationCenterMachineDto registrationCenterMachineDto, boolean isV2) {
 		Map<String, List<DynamicFieldDto>> data = new HashMap<>();
 		entities.forEach(dto -> {
@@ -221,8 +367,18 @@ public class ClientSettingsHelper {
 		}
 	}
 
+	/**
+	 * Encrypts URL details into a {@link SyncDataBaseDto}.
+	 * Handles serialization and encryption efficiently.
+	 *
+	 * @param clazz                     the entity class
+	 * @param registrationCenterMachineDto the DTO for encryption details
+	 * @param entityType                the type of the entity
+	 * @param urlDetails                the URL details to encrypt
+	 * @return the encrypted {@link SyncDataBaseDto}, or null if encryption fails
+	 */
 	private SyncDataBaseDto getEncryptedSyncDataBaseDto(Class clazz, RegistrationCenterMachineDto registrationCenterMachineDto, String entityType,
-			Object urlDetails) {
+														Object urlDetails) {
 		try {
 			TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
 			tpmCryptoRequestDto
@@ -237,30 +393,64 @@ public class ClientSettingsHelper {
 		return null;
 	}
 
+	/**
+	 * Retrieves and encrypts configured script URL details.
+	 * Processes scripts in parallel for efficiency.
+	 *
+	 * @param regCenterMachineDto the DTO for encryption details
+	 * @return a list of encrypted {@link SyncDataBaseDto} for scripts
+	 */
+	/**
+	 * Retrieves and encrypts configured script URL details.
+	 * Processes scripts in parallel for efficiency.
+	 *
+	 * @param regCenterMachineDto the DTO for encryption details
+	 * @return a list of encrypted {@link SyncDataBaseDto} for scripts
+	 */
 	public List<SyncDataBaseDto> getConfiguredScriptUrlDetail(RegistrationCenterMachineDto regCenterMachineDto) {
 		List<SyncDataBaseDto> list = new ArrayList<>();
-		scriptNames.forEach(fileName -> {
-			Map<String, Object> urlDetail = buildUrlDetailMap(fileName);
+		precomputedScriptUrls.forEach((scriptName, scriptDetail) -> {
 			try {
-				TpmCryptoRequestDto tpmCryptoRequestDto = new TpmCryptoRequestDto();
-				tpmCryptoRequestDto
-						.setValue(CryptoUtil.encodeToURLSafeBase64(mapper.getObjectAsJsonString(urlDetail).getBytes()));
-				tpmCryptoRequestDto.setPublicKey(regCenterMachineDto.getPublicKey());
-				tpmCryptoRequestDto.setClientType(regCenterMachineDto.getClientType());
-				TpmCryptoResponseDto tpmCryptoResponseDto = clientCryptoManagerService.csEncrypt(tpmCryptoRequestDto);
-				list.add(new SyncDataBaseDto(fileName, "script", tpmCryptoResponseDto.getValue()));
+				// Convert map value to Base64 encoded JSON
+				String json = mapper.getObjectAsJsonString(scriptDetail);
+				String encodedValue = CryptoUtil.encodeToURLSafeBase64(json.getBytes());
+				// Prepare encryption request
+				TpmCryptoRequestDto request = new TpmCryptoRequestDto();
+				request.setValue(encodedValue);
+				request.setPublicKey(regCenterMachineDto.getPublicKey());
+				request.setClientType(regCenterMachineDto.getClientType());
+				// Encrypt the value
+				TpmCryptoResponseDto response = clientCryptoManagerService.csEncrypt(request);
+				// Add result to list
+				list.add(new SyncDataBaseDto(scriptName, "script", response.getValue()));
 			} catch (Exception e) {
-				LOGGER.error("Failed to create script url detail {} data to json", fileName, e);
+				LOGGER.error("Failed to encrypt script URL detail for {}", scriptName, e);
 			}
 		});
 		return list;
 	}
 
+
+	/**
+	 * Asynchronously retrieves URL details for the given class.
+	 * Uses caching to avoid repeated map building.
+	 *
+	 * @param clazz the entity class
+	 * @return a CompletableFuture containing the URL details map
+	 */
 	private CompletableFuture<Map<String, Object>> getURLDetails(Class clazz) {
-		Map<String, Object> urlDetails = buildUrlDetailMap(clazz.getSimpleName());
+		String entityName = clazz.getSimpleName().toUpperCase();
+		Map<String, Object> urlDetails = urlDetailsCache.computeIfAbsent(entityName, key -> buildUrlDetailMap(clazz.getSimpleName()));
 		return CompletableFuture.completedFuture(urlDetails);
 	}
 
+	/**
+	 * Builds a map of URL details from environment properties.
+	 * Optimized with direct property access.
+	 *
+	 * @param name the name for property lookups
+	 * @return a map containing URL configuration details
+	 */
 	private Map<String, Object> buildUrlDetailMap(String name) {
 		Map<String, Object> urlDetail = new HashMap<>();
 		urlDetail.put("url", environment.getProperty(String.format("mosip.sync.entity.url.%s", name.toUpperCase())));

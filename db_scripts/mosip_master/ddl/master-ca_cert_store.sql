@@ -32,3 +32,10 @@ CREATE INDEX pk_cacs_id ON master.ca_cert_store USING btree (cert_id);
 -- ddl-end --
 
 
+-- PERFORMANCE OPTIMIZATION INDEXES
+CREATE INDEX idx_ca_cert_store_cr_dtimes ON master.ca_cert_store (cr_dtimes);
+CREATE INDEX idx_ca_cert_store_upd_dtimes ON master.ca_cert_store (upd_dtimes);
+CREATE INDEX idx_ca_cert_store_del_dtimes ON master.ca_cert_store (del_dtimes);
+CREATE INDEX idx_ca_cert_times ON ca_cert_store (cr_dtimes, upd_dtimes, del_dtimes);
+CREATE INDEX IF NOT EXISTS idx_ca_cert_domain ON master.ca_cert_store USING btree (partner_domain);
+CREATE INDEX IF NOT EXISTS idx_ca_cert_isdeleted ON master.ca_cert_store USING btree (is_deleted);

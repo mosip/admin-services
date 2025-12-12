@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.core.websub.model.Event;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.model.Type;
@@ -94,12 +94,12 @@ public class WebsubCallbackControllerTest {
 
 		EventModel eventModel = new EventModel();
 		eventModel.setTopic(topic);
-		eventModel.setPublishedOn(DateUtils.formatToISOString(LocalDateTime.now(ZoneOffset.UTC)));
+		eventModel.setPublishedOn(DateUtils2.formatToISOString(LocalDateTime.now(ZoneOffset.UTC)));
 		eventModel.setPublisher("");
 		Event event = new Event();
 		event.setData(data);
 		event.setId("test");
-		event.setTimestamp(DateUtils.formatToISOString(LocalDateTime.now(ZoneOffset.UTC)));
+		event.setTimestamp(DateUtils2.formatToISOString(LocalDateTime.now(ZoneOffset.UTC)));
 		event.setType(new Type());
 		eventModel.setEvent(event);
 
@@ -123,12 +123,12 @@ public class WebsubCallbackControllerTest {
 
 		EventModel eventModel = new EventModel();
 		eventModel.setTopic(topic);
-		eventModel.setPublishedOn(DateUtils.formatToISOString(LocalDateTime.now(ZoneOffset.UTC)));
+		eventModel.setPublishedOn(DateUtils2.formatToISOString(LocalDateTime.now(ZoneOffset.UTC)));
 		eventModel.setPublisher("");
 		Event event = new Event();
 		event.setData(data);
 		event.setId("test");
-		event.setTimestamp(DateUtils.formatToISOString(LocalDateTime.now(ZoneOffset.UTC)));
+		event.setTimestamp(DateUtils2.formatToISOString(LocalDateTime.now(ZoneOffset.UTC)));
 		event.setType(new Type());
 		eventModel.setEvent(event);
 
@@ -155,12 +155,12 @@ public class WebsubCallbackControllerTest {
 
 		EventModel eventModel = new EventModel();
 		eventModel.setTopic(topic);
-		eventModel.setPublishedOn(DateUtils.formatToISOString(LocalDateTime.now(ZoneOffset.UTC)));
+		eventModel.setPublishedOn(DateUtils2.formatToISOString(LocalDateTime.now(ZoneOffset.UTC)));
 		eventModel.setPublisher("");
 		Event event = new Event();
 		event.setData(data);
 		event.setId("test");
-		event.setTimestamp(DateUtils.formatToISOString(LocalDateTime.now(ZoneOffset.UTC)));
+		event.setTimestamp(DateUtils2.formatToISOString(LocalDateTime.now(ZoneOffset.UTC)));
 		event.setType(new Type());
 		eventModel.setEvent(event);
 

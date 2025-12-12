@@ -8,7 +8,7 @@ import io.mosip.commons.packet.facade.PacketReader;
 import io.mosip.commons.packet.spi.IPacketCryptoService;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.HMACUtils2;
 import org.json.JSONException;
@@ -137,7 +137,7 @@ public class PacketUploadService {
     }
 
     public PacketUploadStatus syncAndUploadPacket(String fileName, byte[] file, String centerId, String supervisorStatus,
-                                    String source, String process, String transactionId) throws JSONException {
+                                                  String source, String process, String transactionId) throws JSONException {
         String[] nameFields = nameFieldNames.split(",");
         List<String> additionalInfoFields = new ArrayList<>();
         additionalInfoFields.addAll(List.of(nameFields));
@@ -191,7 +191,7 @@ public class PacketUploadService {
     }
 
     private ResponseEntity<String> syncRegistration(String centerId, String source, String process, String fileName, byte[] file, String supervisorStatus,
-                                 List<String> additionalInfoFields, List<MachineRegistrationCenterDto> machineList, String transactionId) {
+                                                    List<String> additionalInfoFields, List<MachineRegistrationCenterDto> machineList, String transactionId) {
         String containerName = fileName.replace(".zip", "");
         String id = containerName.split("-")[0];
 
@@ -229,7 +229,7 @@ public class PacketUploadService {
 
                 RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
                 registrationPacketSyncDTO
-                        .setRequesttime(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
+                        .setRequesttime(DateUtils2.formatToISOString(DateUtils2.getUTCCurrentDateTime()));
                 registrationPacketSyncDTO.setRequest(Collections.singletonList(syncdto));
                 registrationPacketSyncDTO.setId(PACKET_SYNC_STATUS_ID);
                 registrationPacketSyncDTO.setVersion(PACKET_SYNC_VERSION);
@@ -241,7 +241,7 @@ public class PacketUploadService {
                 URI uri = uriComponentsBuilder.build().toUri();
                 HttpHeaders httpHeaders = new HttpHeaders();
                 httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
-                httpHeaders.add("timestamp", DateUtils.formatToISOString(LocalDateTime.now()));
+                httpHeaders.add("timestamp", DateUtils2.formatToISOString(LocalDateTime.now()));
                 httpHeaders.add("Center-Machine-RefId", refId);
                 HttpEntity<String> httpEntity = new HttpEntity<String>(javaObjectToJsonString(encodedData), httpHeaders);
                 return restTemplate.exchange(uri, HttpMethod.POST, httpEntity, String.class);
