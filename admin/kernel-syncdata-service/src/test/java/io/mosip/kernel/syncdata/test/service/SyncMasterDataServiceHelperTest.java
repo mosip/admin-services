@@ -1,6 +1,8 @@
 package io.mosip.kernel.syncdata.test.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.clientcrypto.constant.ClientType;
 import io.mosip.kernel.core.exception.FileNotFoundException;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -9,6 +11,7 @@ import io.mosip.kernel.signature.dto.JWTSignatureResponseDto;
 import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.SyncDataResponseDto;
 import io.mosip.kernel.syncdata.entity.*;
+import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.repository.*;
 import io.mosip.kernel.syncdata.service.helper.SyncJobHelperService;
 import io.mosip.kernel.syncdata.service.impl.SyncMasterDataServiceImpl;
@@ -28,6 +31,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -44,6 +49,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
@@ -57,6 +63,8 @@ public class SyncMasterDataServiceHelperTest {
 
     @Mock
     private SyncMasterDataServiceHelper syncMasterDataServiceHelper;
+
+    private SyncMasterDataServiceHelper realHelper;
 
     @Mock
     private AppAuthenticationMethodRepository appAuthenticationMethodRepository;
@@ -210,6 +218,21 @@ public class SyncMasterDataServiceHelperTest {
         locationHierarchyDto.setIsDeleted(false);
         locations.add(locationHierarchyDto);
         locationHierarchyLevelResponseDto.setLocationHierarchyLevels(locations);
+
+        realHelper = new SyncMasterDataServiceHelper();
+        ReflectionTestUtils.setField(realHelper, "documentTypeRepository", documentTypeRepository);
+        ObjectMapper realObjectMapper = new ObjectMapper();
+        ReflectionTestUtils.setField(realHelper, "objectMapper", realObjectMapper);
+        ReflectionTestUtils.setField(realHelper, "locationHirerarchyUrl", "http://localhost/location-hierarchy");
+        ReflectionTestUtils.setField(realHelper, "machineRepository", machineRepository);
+        ReflectionTestUtils.setField(realHelper, "registrationCenterRepository", registrationCenterRepository);
+        ReflectionTestUtils.setField(realHelper, "templateRepository", templateRepository);
+        ReflectionTestUtils.setField(realHelper, "templateFileFormatRepository", templateFileFormatRepository);
+        ReflectionTestUtils.setField(realHelper, "reasonCategoryRepository", reasonCategoryRepository);
+        ReflectionTestUtils.setField(realHelper, "reasonListRepository", reasonListRepository);
+        ReflectionTestUtils.setField(realHelper, "holidayRepository", holidayRepository);
+        ReflectionTestUtils.setField(realHelper, "blocklistedWordsRepository", blocklistedWordsRepository);
+        ReflectionTestUtils.setField(realHelper, "locationRepository", locationRepository);
     }
 
     @Test
@@ -217,11 +240,11 @@ public class SyncMasterDataServiceHelperTest {
         Set<Object> modules = objectMapper.getRegisteredModuleIds();
         boolean afterburnerPresent = false;
         boolean javaTimeModulePresent = false;
-        for(Object module : modules) {
-            if(module.equals("com.fasterxml.jackson.module.afterburner.AfterburnerModule")) {
+        for (Object module : modules) {
+            if (module.equals("com.fasterxml.jackson.module.afterburner.AfterburnerModule")) {
                 afterburnerPresent = true;
             }
-            if(module.equals("com.fasterxml.jackson.datatype.jsr310.JavaTimeModule")) {
+            if (module.equals("com.fasterxml.jackson.datatype.jsr310.JavaTimeModule")) {
                 javaTimeModulePresent = true;
             }
         }
@@ -230,7 +253,7 @@ public class SyncMasterDataServiceHelperTest {
         Assert.assertFalse(javaTimeModulePresent);
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void getInitiateDataFetchV1Test() throws Throwable {
         ResponseWrapper<LocationHierarchyLevelResponseDto> locationsResponse = new ResponseWrapper<>();
         locationsResponse.setResponse(locationHierarchyLevelResponseDto);
@@ -240,16 +263,16 @@ public class SyncMasterDataServiceHelperTest {
         ResponseWrapper<PageDto<DynamicFieldDto>> dynamicDataResponseWrapper = new ResponseWrapper<>();
         dynamicDataResponseWrapper.setResponse(pagedDynamicFields);
         dynamicDataResponseWrapper.setResponsetime(LocalDateTime.now(ZoneOffset.UTC));
-        mockRestServiceServer.expect(requestTo(dynamicfieldUrl+"?pageNumber=0"))
+        mockRestServiceServer.expect(requestTo(dynamicfieldUrl + "?pageNumber=0"))
                 .andRespond(withSuccess().body(objectMapper.writeValueAsString(dynamicDataResponseWrapper)));
 
         LocalDateTime lastUpdated = LocalDateTime.now(ZoneOffset.UTC).minusYears(10);
-        mockRestServiceServer.expect(requestTo(locationHirerarchyUrl+"?lastUpdated="+
+        mockRestServiceServer.expect(requestTo(locationHirerarchyUrl + "?lastUpdated=" +
                 DateUtils2.formatToISOString(lastUpdated))).andRespond(withSuccess()
                 .body(objectMapper.writeValueAsString(locationsResponse)));
 
-        mockRestServiceServer.expect(requestTo(dynamicfieldUrl+"?lastUpdated="+
-                        DateUtils2.formatToISOString(lastUpdated)+"&pageNumber=0"))
+        mockRestServiceServer.expect(requestTo(dynamicfieldUrl + "?lastUpdated=" +
+                        DateUtils2.formatToISOString(lastUpdated) + "&pageNumber=0"))
                 .andRespond(withSuccess().body(objectMapper.writeValueAsString(dynamicDataResponseWrapper)));
 
         SyncDataResponseDto syncDataResponseDto = syncMasterDataService.syncClientSettings("10001",
@@ -280,7 +303,7 @@ public class SyncMasterDataServiceHelperTest {
         dynamicDataResponseWrapper.setResponse(pagedDynamicFields);
         dynamicDataResponseWrapper.setResponsetime(LocalDateTime.now(ZoneOffset.UTC));
         try {
-            mockRestServiceServer.expect(requestTo(dynamicfieldUrl+"?pageNumber=0"))
+            mockRestServiceServer.expect(requestTo(dynamicfieldUrl + "?pageNumber=0"))
                     .andRespond(withSuccess().body(objectMapper.writeValueAsString(dynamicDataResponseWrapper)));
         } catch (Exception e) {
             e.getCause();
@@ -288,7 +311,7 @@ public class SyncMasterDataServiceHelperTest {
 
         LocalDateTime lastUpdated = LocalDateTime.now(ZoneOffset.UTC).minusYears(10);
         try {
-            mockRestServiceServer.expect(requestTo(locationHirerarchyUrl+"?lastUpdated="+
+            mockRestServiceServer.expect(requestTo(locationHirerarchyUrl + "?lastUpdated=" +
                     DateUtils2.formatToISOString(lastUpdated))).andRespond(withSuccess()
                     .body(objectMapper.writeValueAsString(locationsResponse)));
         } catch (Exception e) {
@@ -296,8 +319,8 @@ public class SyncMasterDataServiceHelperTest {
         }
 
         try {
-            mockRestServiceServer.expect(requestTo(dynamicfieldUrl+"?lastUpdated="+
-                            DateUtils2.formatToISOString(lastUpdated)+"&pageNumber=0"))
+            mockRestServiceServer.expect(requestTo(dynamicfieldUrl + "?lastUpdated=" +
+                            DateUtils2.formatToISOString(lastUpdated) + "&pageNumber=0"))
                     .andRespond(withSuccess().body(objectMapper.writeValueAsString(dynamicDataResponseWrapper)));
         } catch (Exception e) {
             e.getCause();
@@ -326,8 +349,8 @@ public class SyncMasterDataServiceHelperTest {
         assertEquals(null, errorCode);
     }
 
-    @Test (expected = IllegalArgumentException.class)
-    public void getClientSettingsJsonFileTest() throws Exception{
+    @Test(expected = IllegalArgumentException.class)
+    public void getClientSettingsJsonFileTest() throws Exception {
         MockRestServiceServer mockRestServiceServer2 = MockRestServiceServer.bindTo(selfTokenRestTemplate)
                 .ignoreExpectOrder(true)
                 .build();
@@ -339,7 +362,7 @@ public class SyncMasterDataServiceHelperTest {
         ResponseWrapper<PageDto<DynamicFieldDto>> dynamicDataResponseWrapper = new ResponseWrapper<>();
         dynamicDataResponseWrapper.setResponse(pagedDynamicFields);
         dynamicDataResponseWrapper.setResponsetime(LocalDateTime.now(ZoneOffset.UTC));
-        mockRestServiceServer2.expect(requestTo(dynamicfieldUrl+"?pageNumber=0"))
+        mockRestServiceServer2.expect(requestTo(dynamicfieldUrl + "?pageNumber=0"))
                 .andRespond(withSuccess().body(objectMapper.writeValueAsString(dynamicDataResponseWrapper)));
 
         ResponseWrapper<JWTSignatureResponseDto> signResponse = new ResponseWrapper<>();
@@ -381,7 +404,7 @@ public class SyncMasterDataServiceHelperTest {
     }
 
     @Test
-    public void convertAppRolePrioritiesToDto_withValidInput_thenSuccess(){
+    public void convertAppRolePrioritiesToDto_withValidInput_thenSuccess() {
         List<AppRolePriorityDto> appAuthenticationMethods = new ArrayList<>();
         AppRolePriorityDto appRolePriorityDto = new AppRolePriorityDto();
         appRolePriorityDto.setAppId("id");
@@ -400,13 +423,13 @@ public class SyncMasterDataServiceHelperTest {
         appRolePriority.setRoleCode("code");
         appRolePriorities.add(appRolePriority);
 
-        List<AppRolePriorityDto> result = ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertAppRolePrioritiesToDto",appRolePriorities);
+        List<AppRolePriorityDto> result = ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper, "convertAppRolePrioritiesToDto", appRolePriorities);
         assertNotNull(result);
         assertEquals(appRolePriorities.size(), result.size());
     }
 
     @Test
-    public void convertScreenAuthorizationToDto_withValidInput_thenSuccess(){
+    public void convertScreenAuthorizationToDto_withValidInput_thenSuccess() {
         List<ScreenAuthorizationDto> screenAuthorizationDtos = new ArrayList<>();
         ScreenAuthorizationDto screenAuthorizationDto = new ScreenAuthorizationDto();
         screenAuthorizationDto.setScreenId("id");
@@ -425,13 +448,13 @@ public class SyncMasterDataServiceHelperTest {
         screenAuthorization.setIsPermitted(true);
         screenAuthorizationList.add(screenAuthorization);
 
-        List<ScreenAuthorizationDto> result = ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertScreenAuthorizationToDto",screenAuthorizationList);
+        List<ScreenAuthorizationDto> result = ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper, "convertScreenAuthorizationToDto", screenAuthorizationList);
         assertNotNull(result);
         assertEquals(screenAuthorizationList.size(), result.size());
     }
 
     @Test
-    public void convertProcessListEntityToDto_withValidInput_thenSuccess(){
+    public void convertProcessListEntityToDto_withValidInput_thenSuccess() {
         List<ProcessListDto> processListDtos = new ArrayList<>();
         ProcessListDto processListDto = new ProcessListDto();
         processListDto.setId("id");
@@ -450,13 +473,13 @@ public class SyncMasterDataServiceHelperTest {
         processList1.setDescr("description");
         processList.add(processList1);
 
-        List<ProcessListDto> result = ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertProcessListEntityToDto",processList);
+        List<ProcessListDto> result = ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper, "convertProcessListEntityToDto", processList);
         assertNotNull(result);
         assertEquals(processList.size(), result.size());
     }
 
     @Test
-    public void convertSyncJobDefEntityToDto_withValidInput_thenSuccess(){
+    public void convertSyncJobDefEntityToDto_withValidInput_thenSuccess() {
         List<SyncJobDefDto> syncJobDefDtos = new ArrayList<>();
         SyncJobDefDto syncJobDefDto = new SyncJobDefDto();
         syncJobDefDto.setId("id");
@@ -475,13 +498,13 @@ public class SyncMasterDataServiceHelperTest {
         syncJobDef.setApiName("api");
         syncJobDefs.add(syncJobDef);
 
-        List<SyncJobDefDto> result = ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertSyncJobDefEntityToDto",syncJobDefs);
+        List<SyncJobDefDto> result = ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper, "convertSyncJobDefEntityToDto", syncJobDefs);
         assertNotNull(result);
         assertEquals(syncJobDefs.size(), result.size());
     }
 
     @Test
-    public void convertScreenDetailToDto_withValidInput_thenSuccess(){
+    public void convertScreenDetailToDto_withValidInput_thenSuccess() {
         List<ScreenDetailDto> screenDetailDtos = new ArrayList<>();
         ScreenDetailDto screenDetailDto = new ScreenDetailDto();
         screenDetailDto.setAppId("id");
@@ -499,13 +522,13 @@ public class SyncMasterDataServiceHelperTest {
         screenDetail.setDescr("description");
         screenDetails.add(screenDetail);
 
-        List<ScreenDetailDto> result = ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertScreenDetailToDto",screenDetails);
+        List<ScreenDetailDto> result = ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper, "convertScreenDetailToDto", screenDetails);
         assertNotNull(result);
         assertEquals(screenDetails.size(), result.size());
     }
 
     @Test
-    public void convertPermittedConfigEntityToDto_withValidInput_thenSuccess(){
+    public void convertPermittedConfigEntityToDto_withValidInput_thenSuccess() {
         List<PermittedConfigDto> permittedConfigDtos = new ArrayList<>();
         PermittedConfigDto permittedConfigDto = new PermittedConfigDto();
         permittedConfigDto.setCode("code");
@@ -523,74 +546,75 @@ public class SyncMasterDataServiceHelperTest {
         permittedLocalConfig.setIsActive(true);
         PermittedLocalConfigList.add(permittedLocalConfig);
 
-        List<PermittedConfigDto> result = ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertPermittedConfigEntityToDto",PermittedLocalConfigList);
+        List<PermittedConfigDto> result = ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper, "convertPermittedConfigEntityToDto", PermittedLocalConfigList);
         assertNotNull(result);
         assertEquals(PermittedLocalConfigList.size(), result.size());
     }
 
     @Test
-    public void convertRegistrationCenterToDto_withEmptyList_thenSuccess(){
+    public void convertRegistrationCenterToDto_withEmptyList_thenSuccess() {
         List<RegistrationCenter> list = new ArrayList<>();
 
-        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertRegistrationCenterToDto",list);
+        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper, "convertRegistrationCenterToDto", list);
         assertNotNull(list);
     }
 
     @Test
-    public void convertEntityToHoliday_withEmptyHoliday_thenSuccess(){
+    public void convertEntityToHoliday_withEmptyHoliday_thenSuccess() {
         List<Holiday> holidays = new ArrayList<>();
 
-        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertEntityToHoliday",holidays);
+        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper, "convertEntityToHoliday", holidays);
         assertNotNull(holidays);
     }
 
     @Test
-    public void convertBlocklistedWordsEntityToDto_withEmptyBlockListedWords_thenSuccess(){
+    public void convertBlocklistedWordsEntityToDto_withEmptyBlockListedWords_thenSuccess() {
         List<BlocklistedWords> words = new ArrayList<>();
 
-        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertBlocklistedWordsEntityToDto",words);
+        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper, "convertBlocklistedWordsEntityToDto", words);
         assertNotNull(words);
     }
 
     @Test
-    public void convertDocumentTypeEntityToDto_withEmptyDocumentTypes_thenSuccess(){
+    public void convertDocumentTypeEntityToDto_withEmptyDocumentTypes_thenSuccess() {
         List<DocumentType> documentTypes = new ArrayList<>();
 
-        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertDocumentTypeEntityToDto",documentTypes);
+        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper, "convertDocumentTypeEntityToDto", documentTypes);
         assertNotNull(documentTypes);
     }
 
     @Test
-    public void convertLocationsEntityToDto_withEmptyLocations_thenSuccess(){
+    public void convertLocationsEntityToDto_withEmptyLocations_thenSuccess() {
         List<Location> locations = new ArrayList<>();
 
-        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertLocationsEntityToDto",locations);
+        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper, "convertLocationsEntityToDto", locations);
         assertNotNull(locations);
     }
 
     @Test
-    public void convertValidDocumentEntityToDtoWithEmptyValidDocuments_thenSuccess(){
+    public void convertValidDocumentEntityToDtoWithEmptyValidDocuments_thenSuccess() {
         List<ValidDocument> validDocuments = new ArrayList<>();
 
-        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertValidDocumentEntityToDto",validDocuments);
+        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper, "convertValidDocumentEntityToDto", validDocuments);
         assertNotNull(validDocuments);
     }
 
     @Test
-    public void convertApplicantValidDocumentEntityToDtoWithEmptyApplicantValidDocuments_thenSuccess(){
+    public void convertApplicantValidDocumentEntityToDtoWithEmptyApplicantValidDocuments_thenSuccess() {
         List<ApplicantValidDocument> applicantValidDocuments = new ArrayList<>();
 
-        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertApplicantValidDocumentEntityToDto",applicantValidDocuments);
+        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper, "convertApplicantValidDocumentEntityToDto", applicantValidDocuments);
         assertNotNull(applicantValidDocuments);
     }
 
     @Test
-    public void convertLanguageEntityToDtoWithEmptyLanguageList_thenSuccess(){
+    public void convertLanguageEntityToDtoWithEmptyLanguageList_thenSuccess() {
         List<Language> languageList = new ArrayList<>();
 
-        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper,"convertLanguageEntityToDto",languageList);
+        ReflectionTestUtils.invokeMethod(syncMasterDataServiceHelper, "convertLanguageEntityToDto", languageList);
         assertNotNull(languageList);
     }
+
     @Test
     public void testGetMachines() {
         LocalDateTime createdDateTime = LocalDate.of(2024, 1, 1).atStartOfDay();
@@ -2078,6 +2102,500 @@ public class SyncMasterDataServiceHelperTest {
         machine.setZoneCode("Zone Code");
 
         assertEquals(ClientType.ANDROID, SyncMasterDataServiceHelper.getClientType(machine));
+    }
+
+    @Test
+    public void normalizeLastUpdated_withNull_shouldReturnEpoch() {
+        LocalDateTime result = ReflectionTestUtils.invokeMethod(realHelper, "normalizeLastUpdated", (Object) null);
+        assertEquals(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC), result);
+    }
+
+    @Test
+    public void normalizeLastUpdated_withNonNull_shouldReturnSameValue() {
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime result = ReflectionTestUtils.invokeMethod(realHelper, "normalizeLastUpdated", now);
+        assertEquals(now, result);
+    }
+
+    @Test
+    public void convertDocumentTypeEntityToDto_withNullOrEmpty_shouldReturnEmptyList() {
+        List<DocumentTypeDto> resultNull = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertDocumentTypeEntityToDto",
+                (Object) null
+        );
+        assertNotNull(resultNull);
+        assertTrue(resultNull.isEmpty());
+        List<DocumentTypeDto> resultEmpty = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertDocumentTypeEntityToDto",
+                new ArrayList<DocumentType>()
+        );
+        assertNotNull(resultEmpty);
+        assertTrue(resultEmpty.isEmpty());
+    }
+
+    @Test
+    public void convertDocumentTypeEntityToDto_withValidEntity_shouldMapAllFields() {
+        DocumentType entity = new DocumentType();
+        entity.setCode("DOC_CODE");
+        entity.setName("Passport");
+        entity.setDescription("Passport document");
+        entity.setIsActive(true);
+        entity.setIsDeleted(false);
+        entity.setLangCode("eng");
+        List<DocumentType> entities = Collections.singletonList(entity);
+        @SuppressWarnings("unchecked")
+        List<DocumentTypeDto> result = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertDocumentTypeEntityToDto",
+                entities
+        );
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        DocumentTypeDto dto = result.get(0);
+        assertEquals("DOC_CODE", dto.getCode());
+        assertEquals("Passport", dto.getName());
+        assertEquals("Passport document", dto.getDescription());
+        assertEquals(Boolean.TRUE, dto.getIsActive());
+        assertEquals(Boolean.FALSE, dto.getIsDeleted());
+        assertEquals("eng", dto.getLangCode());
+    }
+
+    @Test
+    public void convertBlocklistedWordsEntityToDto_withNullOrEmpty_shouldReturnEmptyList() {
+        List<BlacklistedWordsDto> resultNull = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertBlocklistedWordsEntityToDto",
+                (Object) null
+        );
+        assertNotNull(resultNull);
+        assertTrue(resultNull.isEmpty());
+        List<BlacklistedWordsDto> resultEmpty = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertBlocklistedWordsEntityToDto",
+                new ArrayList<BlocklistedWords>()
+        );
+        assertNotNull(resultEmpty);
+        assertTrue(resultEmpty.isEmpty());
+    }
+
+    @Test
+    public void convertBlocklistedWordsEntityToDto_withValidEntity_shouldMapAllFields() {
+        BlocklistedWords entity = new BlocklistedWords();
+        entity.setWord("badWord");
+        entity.setDescription("bad description");
+        entity.setIsActive(true);
+        entity.setIsDeleted(false);
+        entity.setLangCode("eng");
+        List<BlocklistedWords> entities = Collections.singletonList(entity);
+        @SuppressWarnings("unchecked")
+        List<BlacklistedWordsDto> result = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertBlocklistedWordsEntityToDto",
+                entities
+        );
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        BlacklistedWordsDto dto = result.get(0);
+        assertEquals("badWord", dto.getWord());
+        assertEquals("bad description", dto.getDescription());
+        assertEquals(Boolean.TRUE, dto.getIsActive());
+        assertEquals(Boolean.FALSE, dto.getIsDeleted());
+        assertEquals("eng", dto.getLangCode());
+    }
+
+    @Test
+    public void getDocumentTypes_whenNoChangesSinceLastUpdated_shouldReturnEmptyList() {
+        LocalDateTime lastUpdated = LocalDateTime.of(2024, 1, 1, 0, 0);
+        lenient().when(documentTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime()).thenReturn(null);
+        List<DocumentTypeDto> result = realHelper.getDocumentTypes(
+                lastUpdated,
+                LocalDateTime.of(2024, 2, 1, 0, 0)
+        ).join();
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void getDocumentTypes_whenChangesFound_shouldReturnMappedDtos() {
+        LocalDateTime lastUpdated = LocalDateTime.of(2024, 1, 1, 0, 0);
+        LocalDateTime created = LocalDateTime.of(2024, 2, 1, 0, 0); // > lastUpdated
+        LocalDateTime updated = LocalDateTime.of(2024, 2, 1, 0, 0);
+        lenient().when(documentTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime()).thenReturn(
+                new EntityDtimes(created, updated, null)
+        );
+        DocumentType entity = new DocumentType();
+        entity.setCode("DOC_CODE");
+        entity.setName("Passport");
+        entity.setDescription("Passport document");
+        entity.setIsActive(true);
+        entity.setIsDeleted(false);
+        entity.setLangCode("eng");
+        lenient().when(documentTypeRepository.findAllLatestCreatedUpdateDeleted(
+                any(LocalDateTime.class), any(LocalDateTime.class)
+        )).thenReturn(Collections.singletonList(entity));
+        List<DocumentTypeDto> result = realHelper.getDocumentTypes(
+                lastUpdated,
+                LocalDateTime.of(2024, 3, 1, 0, 0)
+        ).join();
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        DocumentTypeDto dto = result.get(0);
+        assertEquals("DOC_CODE", dto.getCode());
+        assertEquals("Passport", dto.getName());
+        assertEquals("Passport document", dto.getDescription());
+        assertEquals("eng", dto.getLangCode());
+    }
+
+    @Test
+    public void getLocationHierarchyList_withValidHttpResponse_shouldReturnLocations() throws Exception {
+        RestTemplate rt = new RestTemplate();
+        MockRestServiceServer server = MockRestServiceServer.bindTo(rt).build();
+        ObjectMapper om = new ObjectMapper();
+        om.registerModule(new JavaTimeModule());
+        om.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        ReflectionTestUtils.setField(realHelper, "objectMapper", om);
+        LocationHierarchyDto dto = new LocationHierarchyDto();
+        dto.setHierarchyLevel((short) 1);
+        dto.setHierarchyLevelName("Country");
+        dto.setLangCode("eng");
+        dto.setIsActive(true);
+        dto.setIsDeleted(false);
+        LocationHierarchyLevelResponseDto body = new LocationHierarchyLevelResponseDto();
+        body.setLocationHierarchyLevels(Collections.singletonList(dto));
+        ResponseWrapper<LocationHierarchyLevelResponseDto> wrapper = new ResponseWrapper<>();
+        wrapper.setResponse(body);
+        String json = om.writeValueAsString(wrapper);
+        server.expect(requestTo("http://localhost/location-hierarchy")).andRespond(withSuccess(
+                json,
+                MediaType.APPLICATION_JSON
+        ));
+        List<LocationHierarchyDto> result = realHelper.getLocationHierarchyList(null, rt).join();
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("Country", result.get(0).getHierarchyLevelName());
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void getLocationHierarchyList_withHttpError_shouldThrowSyncDataServiceException() {
+        RestTemplate rtMock = Mockito.mock(RestTemplate.class);
+        ReflectionTestUtils.setField(
+                realHelper,
+                "locationHirerarchyUrl",
+                "http://localhost/location-hierarchy"
+        );
+        Mockito.when(rtMock.getForEntity(
+                Mockito.any(),
+                Mockito.eq(String.class)
+        )).thenReturn(new ResponseEntity<>("error", HttpStatus.INTERNAL_SERVER_ERROR));
+        realHelper.getLocationHierarchyList(null, rtMock).join();
+    }
+
+    @Test
+    public void getMachines_whenChangesFound_shouldReturnEmptyListWhenNoMachine() {
+        LocalDateTime lastUpdated = LocalDateTime.of(2024, 1, 1, 0, 0);
+        LocalDateTime current = lastUpdated.plusDays(2);
+        EntityDtimes dt = new EntityDtimes(
+                lastUpdated.plusDays(1),
+                lastUpdated.plusDays(1),
+                null
+        );
+        Mockito.when(machineRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(dt);
+
+        List<MachineDto> result = realHelper.getMachines(
+                "REG-001",
+                lastUpdated,
+                current,
+                "M-001"
+        ).join();
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void getLocationHierarchyList_withoutExplicitRestTemplate_shouldUseInternalRestTemplate() throws Exception {
+        RestTemplate rt = new RestTemplate();
+        MockRestServiceServer server = MockRestServiceServer.bindTo(rt).build();
+        ObjectMapper om = new ObjectMapper();
+        om.registerModule(new JavaTimeModule());
+        om.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        ReflectionTestUtils.setField(realHelper, "objectMapper", om);
+        ReflectionTestUtils.setField(realHelper, "restTemplate", rt);
+        ReflectionTestUtils.setField(realHelper, "locationHirerarchyUrl", "http://localhost/location-hierarchy");
+        LocationHierarchyDto dto = new LocationHierarchyDto();
+        dto.setHierarchyLevel((short) 1);
+        dto.setHierarchyLevelName("Country");
+        dto.setLangCode("eng");
+        dto.setIsActive(true);
+        dto.setIsDeleted(false);
+        LocationHierarchyLevelResponseDto body = new LocationHierarchyLevelResponseDto();
+        body.setLocationHierarchyLevels(Collections.singletonList(dto));
+        ResponseWrapper<LocationHierarchyLevelResponseDto> wrapper = new ResponseWrapper<>();
+        wrapper.setResponse(body);
+        String json = om.writeValueAsString(wrapper);
+        server.expect(requestTo("http://localhost/location-hierarchy")).andRespond(
+                withSuccess(json, MediaType.APPLICATION_JSON)
+        );
+        List<LocationHierarchyDto> result = realHelper.getLocationHierarchyList(null).join();
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("Country", result.get(0).getHierarchyLevelName());
+    }
+
+    @Test
+    public void getRegistrationCenter_whenChangesFound_shouldReturnEmptyListWhenNoCenter() {
+        LocalDateTime lastUpdated = LocalDateTime.of(2024, 1, 1, 0, 0);
+        LocalDateTime current = lastUpdated.plusDays(2);
+        EntityDtimes dt = new EntityDtimes(
+                lastUpdated.plusDays(1),
+                lastUpdated.plusDays(1),
+                null
+        );
+        Mockito.when(registrationCenterRepository.getMaxCreatedDateTimeMaxUpdatedDateTime()).thenReturn(dt);
+        List<RegistrationCenterDto> result = realHelper.getRegistrationCenter(
+                "CENTER-001",
+                lastUpdated,
+                current
+        ).join();
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void getTemplates_whenChangesFound_shouldReturnEmptyListWhenNoTemplate() {
+        LocalDateTime lastUpdated = LocalDateTime.of(2024, 1, 1, 0, 0);
+        LocalDateTime current = lastUpdated.plusDays(2);
+        EntityDtimes dt = new EntityDtimes(
+                lastUpdated.plusHours(1),
+                lastUpdated.plusHours(1),
+                null
+        );
+        Mockito.when(templateRepository.getMaxCreatedDateTimeMaxUpdatedDateTime()).thenReturn(dt);
+        List<TemplateDto> result = realHelper.getTemplates("MODULE-ID", lastUpdated, current).join();
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void getTemplateFileFormats_whenChangesFound_shouldReturnEmptyListWhenNoFormat() {
+        LocalDateTime lastUpdated = LocalDateTime.of(2024, 1, 1, 0, 0);
+        LocalDateTime current = lastUpdated.plusDays(2);
+        EntityDtimes dt = new EntityDtimes(
+                lastUpdated.plusMinutes(10),
+                lastUpdated.plusMinutes(10),
+                null
+        );
+        Mockito.when(templateFileFormatRepository.getMaxCreatedDateTimeMaxUpdatedDateTime()).thenReturn(dt);
+        List<TemplateFileFormatDto> result = realHelper.getTemplateFileFormats(lastUpdated, current).join();
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void getReasonCategory_whenChangesFound_shouldReturnEmptyListWhenNoCategory() {
+        LocalDateTime lastUpdated = LocalDateTime.of(2024, 1, 1, 0, 0);
+        LocalDateTime current = lastUpdated.plusDays(2);
+        EntityDtimes dt = new EntityDtimes(
+                lastUpdated.plusDays(1),
+                lastUpdated.plusDays(1),
+                null
+        );
+        Mockito.when(reasonCategoryRepository.getMaxCreatedDateTimeMaxUpdatedDateTime()).thenReturn(dt);
+        List<PostReasonCategoryDto> result = realHelper.getReasonCategory(lastUpdated, current).join();
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void getReasonList_whenChangesFound_shouldReturnEmptyListWhenNoReason() {
+        LocalDateTime lastUpdated = LocalDateTime.of(2024, 1, 1, 0, 0);
+        LocalDateTime current = lastUpdated.plusDays(2);
+        EntityDtimes dt = new EntityDtimes(
+                lastUpdated.plusDays(1),
+                lastUpdated.plusDays(1),
+                null
+        );
+        Mockito.when(reasonListRepository.getMaxCreatedDateTimeMaxUpdatedDateTime()).thenReturn(dt);
+        List<ReasonListDto> result = realHelper.getReasonList(lastUpdated, current).join();
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void getHolidays_whenChangesFound_shouldReturnEmptyListWhenNoHoliday() {
+        LocalDateTime lastUpdated = LocalDateTime.of(2024, 1, 1, 0, 0);
+        LocalDateTime current = lastUpdated.plusDays(2);
+        EntityDtimes dt = new EntityDtimes(
+                lastUpdated.plusDays(1),
+                lastUpdated.plusDays(1),
+                null
+        );
+        Mockito.when(holidayRepository.getMaxCreatedDateTimeMaxUpdatedDateTime()).thenReturn(dt);
+        List<HolidayDto> result = realHelper.getHolidays(lastUpdated, "M1", current).join();
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void getBlackListedWords_whenChangesFound_shouldReturnEmptyListWhenNoWords() {
+        LocalDateTime lastUpdated = LocalDateTime.of(2024, 1, 1, 0, 0);
+        LocalDateTime current = lastUpdated.plusDays(2);
+        EntityDtimes dt = new EntityDtimes(
+                lastUpdated.plusDays(1),
+                lastUpdated.plusDays(1),
+                null
+        );
+        Mockito.when(blocklistedWordsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime()).thenReturn(dt);
+        List<BlacklistedWordsDto> result = realHelper.getBlackListedWords(lastUpdated, current).join();
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void getLocationHierarchy_whenChangesFound_shouldReturnEmptyListWhenNoLocation() {
+        LocalDateTime lastUpdated = LocalDateTime.of(2024, 1, 1, 0, 0);
+        LocalDateTime current = lastUpdated.plusDays(2);
+        EntityDtimes dt = new EntityDtimes(
+                lastUpdated.plusDays(1),
+                lastUpdated.plusDays(1),
+                null
+        );
+        Mockito.when(locationRepository.getMaxCreatedDateTimeMaxUpdatedDateTime()).thenReturn(dt);
+        List<LocationDto> result = realHelper.getLocationHierarchy(lastUpdated, current).join();
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testConvertMachinesToDto() {
+        List<MachineDto> resultNull = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertMachinesToDto",
+                (Object) null
+        );
+        assertNotNull(resultNull);
+        assertTrue(resultNull.isEmpty());
+        List<MachineDto> resultEmpty = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertMachinesToDto",
+                new ArrayList<Machine>()
+        );
+        assertNotNull(resultEmpty);
+        assertTrue(resultEmpty.isEmpty());
+        final Machine machine = new Machine();
+        List<MachineDto> result = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertMachinesToDto",
+                Collections.singletonList(machine)
+        );
+        assertNotNull(result);
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    public void test_convertRegistrationCenterToDto() {
+        List<RegistrationCenterDto> resultNull = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertRegistrationCenterToDto",
+                (Object) null
+        );
+        assertNotNull(resultNull);
+        assertTrue(resultNull.isEmpty());
+        List<RegistrationCenterDto> resultEmpty = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertRegistrationCenterToDto",
+                new ArrayList<RegistrationCenter>()
+        );
+        assertNotNull(resultEmpty);
+        assertTrue(resultEmpty.isEmpty());
+        final RegistrationCenter registrationCenter = new RegistrationCenter();
+        List<RegistrationCenterDto> result = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertRegistrationCenterToDto",
+                Collections.singletonList(registrationCenter)
+        );
+        assertNotNull(result);
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    public void testConvertTemplateEntityToDto() {
+        List<TemplateDto> resultNull = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertTemplateEntityToDto",
+                (Object) null
+        );
+        assertNotNull(resultNull);
+        assertTrue(resultNull.isEmpty());
+        List<TemplateDto> resultEmpty = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertTemplateEntityToDto",
+                new ArrayList<Template>()
+        );
+        assertNotNull(resultEmpty);
+        assertTrue(resultEmpty.isEmpty());
+        final Template template = new Template();
+        List<TemplateDto> result = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertTemplateEntityToDto",
+                Collections.singletonList(template)
+        );
+        assertNotNull(result);
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    public void test_convertTemplateFileFormatEntityToDto() {
+        List<TemplateFileFormatDto> resultNull = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertTemplateFileFormatEntityToDto",
+                (Object) null
+        );
+        assertNotNull(resultNull);
+        assertTrue(resultNull.isEmpty());
+        List<TemplateFileFormatDto> resultEmpty = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertTemplateFileFormatEntityToDto",
+                new ArrayList<TemplateFileFormat>()
+        );
+        assertNotNull(resultEmpty);
+        assertTrue(resultEmpty.isEmpty());
+        final TemplateFileFormat templateFileFormat = new TemplateFileFormat();
+        List<TemplateFileFormatDto> result = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertTemplateFileFormatEntityToDto",
+                Collections.singletonList(templateFileFormat)
+        );
+        assertNotNull(result);
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    public void test_convertPostReasonCategoryEntityToDto() {
+        List<PostReasonCategoryDto> resultNull = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertPostReasonCategoryEntityToDto",
+                (Object) null
+        );
+        assertNotNull(resultNull);
+        assertTrue(resultNull.isEmpty());
+        List<PostReasonCategoryDto> resultEmpty = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertPostReasonCategoryEntityToDto",
+                new ArrayList<ReasonCategory>()
+        );
+        assertNotNull(resultEmpty);
+        assertTrue(resultEmpty.isEmpty());
+        final ReasonCategory reasonCategory = new ReasonCategory();
+        List<PostReasonCategoryDto> result = ReflectionTestUtils.invokeMethod(
+                realHelper,
+                "convertPostReasonCategoryEntityToDto",
+                Collections.singletonList(reasonCategory)
+        );
+        assertNotNull(result);
+        assertEquals(1, result.size());
     }
 
 }
