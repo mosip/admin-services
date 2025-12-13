@@ -118,7 +118,7 @@ Homepage: https://www.slf4j.org/
 Package: H2 Database Engine
 Coordinates: com.h2database:h2
 Version: BOM-managed
-License: Dual-licensed: MPL 2.0 OR EPL 1.0
+License: Mozilla Public License 2.0 
 Copyright: © 2004-2025 H2 Group (Thomas Müller and contributors)
 Homepage: https://www.h2database.com/
 ================================================================================
@@ -136,7 +136,7 @@ Homepage: https://github.com/eclipse-ee4j/jaf
 Package: Jakarta Persistence API
 Coordinates: jakarta.persistence:jakarta.persistence-api
 Version: 3.1.0
-License: Dual-licensed: BSD-3-Clause OR EPL-2.0
+License: BSD-3-Clause
 Copyright: © 2017-2025 Oracle and/or its affiliates; Eclipse Foundation
 Homepage: https://projects.eclipse.org/projects/ee4j.jpa
 ================================================================================
@@ -145,7 +145,7 @@ Homepage: https://projects.eclipse.org/projects/ee4j.jpa
 Package: Jakarta XML Bind API
 Coordinates: jakarta.xml.bind:jakarta.xml.bind-api, javax.xml.bind:jaxb-api
 Version: BOM-managed
-License: Multi-licensed: EDL-1.0 (BSD-3-Clause), OR EPL-2.0, OR GPL-2.0 with Classpath Exception
+License: BSD-3-Clause (EDL-1.0)
 Copyright: © 2018-2025 Oracle and/or its affiliates; Eclipse Foundation
 Homepage: https://projects.eclipse.org/projects/ee4j.jaxb/
 ================================================================================
@@ -270,7 +270,7 @@ Homepage: https://commons.apache.org/proper/commons-collections/
 ================================================================================
 Package: Hibernate ORM
 Coordinates: org.hibernate.orm:hibernate-core, org.hibernate.orm:hibernate-hikaricp
-Version: 5.2.17.Final
+Version: 6.x (BOM-managed via Spring Boot 3.2.3)
 License: GNU Lesser General Public License v2.1 or later (LGPL-2.1-or-later)
 Copyright: © Hibernate Authors and Contributors
 Homepage: https://hibernate.org/orm/
