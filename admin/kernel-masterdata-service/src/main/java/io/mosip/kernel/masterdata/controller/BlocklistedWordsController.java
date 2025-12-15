@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.controller;
 
+import io.mosip.kernel.masterdata.dto.BlockListedWordStatusUpdateDto;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -278,15 +279,14 @@ public class BlocklistedWordsController {
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPatchblocklistedwords())")
 	@PatchMapping
 	@ApiOperation(value = "update the blocklisted word")
-	public ResponseWrapper<StatusResponseDto> updateBlockListedWordStatus(@RequestParam boolean isActive,
-			@RequestParam String word) {
+	public ResponseWrapper<StatusResponseDto> updateBlockListedWordStatus(@RequestBody @Valid RequestWrapper<BlockListedWordStatusUpdateDto> requestWrapper) {
 		auditUtil.auditRequest(
 				MasterDataConstant.STATUS_API_IS_CALLED + BlockListedWordsUpdateDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.STATUS_API_IS_CALLED + BlockListedWordsUpdateDto.class.getCanonicalName(),
 				"ADM-552");
 		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(blocklistedWordsService.updateBlockListedWordStatus(word, isActive));
+		responseWrapper.setResponse(blocklistedWordsService.updateBlockListedWordStatus(requestWrapper.getRequest()));
 		auditUtil.auditRequest(
 				MasterDataConstant.STATUS_UPDATED_SUCCESS + BlockListedWordsUpdateDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
