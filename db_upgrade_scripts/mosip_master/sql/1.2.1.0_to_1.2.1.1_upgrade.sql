@@ -9419,17 +9419,12 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
        tr,
        td {
        border: 2px solid black;
-
        word-break: break-word;
-
        font-family: Verdana, sans-serif;
-
        }
        p {
        word-break: break-word;
-
        font-family: Verdana, sans-serif;
-
        }
        </style>
        <title>home page</title>
