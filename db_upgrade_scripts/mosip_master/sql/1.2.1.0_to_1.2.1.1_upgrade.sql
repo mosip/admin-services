@@ -9617,7 +9617,6 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
        1184;mso-padding-alt:0in 0in 0in 0in''>
        <tr style=''mso-yfti-irow:0;mso-yfti-firstrow:yes''>
        <td width=586 colspan=2 valign=top style=''width:439.4pt;border:solid windowtext 1.0pt;
-
        padding:0in 5.4pt 0in 5.4pt''>
        <p class=MsoListParagraph align=center style=''margin:0in;text-align:center''><b><span
        lang=EN-IN style=''font-family:Verdana,sans-serif;color:black;background:
@@ -9627,7 +9626,6 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
 
        <tr style=''mso-yfti-irow:1''>
        <td width=298 valign=top style=''width:223.35pt;border:solid windowtext 1.0pt;
-
        border-top:none;padding:0in 5.4pt 0in 5.4pt''>
        <p class=MsoListParagraph style=''margin:0in;text-align:justify''><span
        lang=EN-IN style=''font-family:Verdana,sans-serif;color:black;background:
@@ -9635,17 +9633,14 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
 
        <td width=288 valign=top style=''width:216.05pt;border-top:none;border-left:
        none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
-
        padding:0in 5.4pt 0in 5.4pt''>
        <p class=MsoListParagraph style=''margin:0in''><span lang=EN-IN
        style=''font-family:Verdana,sans-serif;color:black;background:white;
-
        mso-ansi-language:EN-IN''>$timestamp</span></p></td>
        </tr>
 
        <tr style=''mso-yfti-irow:1''>
        <td width=298 valign=top style=''width:223.35pt;border:solid windowtext 1.0pt;
-
        border-top:none;padding:0in 5.4pt 0in 5.4pt''>
        <p class=MsoListParagraph style=''margin:0in;text-align:justify''><span
        lang=EN-IN style=''font-family:Verdana,sans-serif;color:black;background:
@@ -9653,17 +9648,14 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
 
        <td width=288 valign=top style=''width:216.05pt;border-top:none;border-left:
        none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
-
        padding:0in 5.4pt 0in 5.4pt''>
        <p class=MsoListParagraph style=''margin:0in''><span lang=EN-IN
        style=''font-family:Verdana,sans-serif;color:black;background:white;
-
        mso-ansi-language:EN-IN''>$eventId</span></p></td>
        </tr>
 
        <tr style=''mso-yfti-irow:1''>
        <td width=298 valign=top style=''width:223.35pt;border:solid windowtext 1.0pt;
-
        border-top:none;padding:0in 5.4pt 0in 5.4pt''>
        <p class=MsoListParagraph style=''margin:0in;text-align:justify''><span
        lang=EN-IN style=''font-family:Verdana,sans-serif;color:black;background:
@@ -9671,16 +9663,13 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
 
        <td width=288 valign=top style=''width:216.05pt;border-top:none;border-left:
        none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
-
        padding:0in 5.4pt 0in 5.4pt''>
        <p class=MsoListParagraph style=''margin:0in''><span lang=EN-IN
        style=''font-family:Verdana,sans-serif;color:black;background:white;
-
        mso-ansi-language:EN-IN''>$authenticationMode</span></p></td>
        </tr>
        <tr style=''mso-yfti-irow:1''>
        <td width=298 valign=top style=''width:223.35pt;border:solid windowtext 1.0pt;
-
        border-top:none;padding:0in 5.4pt 0in 5.4pt''>
        <p class=MsoListParagraph style=''margin:0in;text-align:justify''><span
        lang=EN-IN style=''font-family:Verdana,sans-serif;color:black;background:
