@@ -11,9 +11,9 @@ FilterMachineSpec:
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
       input: '{
 	"filters": [{
-        "columnName": "name",
-        "type": "unique",
-        "text": "HP"
+		"columnName": "name",
+		"type": "unique",
+		"text": "HP-$TESTDATACONTEXT$"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -22,7 +22,7 @@ FilterMachineSpec:
     "filters": [
       {
         "fieldID": "name",
-        "fieldValue": "HP"
+        "fieldValue": "HP-$TESTDATACONTEXT$"
       }
     ]
   }'
@@ -38,9 +38,9 @@ FilterMachineSpec:
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
       input: '{
 	"filters": [{
-        "columnName": "name",
-        "type": "all",
-        "text": "HP"
+		"columnName": "name",
+		"type": "all",
+		"text": "HP-$TESTDATACONTEXT$"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -49,7 +49,7 @@ FilterMachineSpec:
     "filters": [
       {
         "fieldID": "name",
-        "fieldValue": "HP"
+        "fieldValue": "HP-$TESTDATACONTEXT$"
       }
     ]
   }'
@@ -65,9 +65,9 @@ FilterMachineSpec:
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
       input: '{
 	"filters": [{
-        "columnName": "name",
-        "type": "all",
-        "text": "HP"
+		"columnName": "name",
+		"type": "all",
+		"text": "HP-$TESTDATACONTEXT$"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -76,7 +76,7 @@ FilterMachineSpec:
     "filters": [
       {
         "fieldID": "name",
-        "fieldValue": "HP"
+        "fieldValue": "HP-$TESTDATACONTEXT$"
       }
     ]
   }'
@@ -92,9 +92,9 @@ FilterMachineSpec:
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
       input: '{
 	"filters": [{
-        "columnName": "name",
-        "type": "unique",
-        "text": "HP"
+		"columnName": "name",
+		"type": "unique",
+		"text": "HP-$TESTDATACONTEXT$"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -103,7 +103,7 @@ FilterMachineSpec:
     "filters": [
       {
         "fieldID": "name",
-        "fieldValue": "HP"
+        "fieldValue": "HP-$TESTDATACONTEXT$"
       }
     ]
   }'
@@ -119,9 +119,9 @@ FilterMachineSpec:
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
       input: '{
 	"filters": [{
-        "columnName": "brand",
-        "type": "unique",
-        "text": "1234"
+		"columnName": "brand",
+		"type": "unique",
+		"text": "HP-$TESTDATACONTEXT$"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -130,7 +130,7 @@ FilterMachineSpec:
     "filters": [
       {
         "fieldID": "brand",
-        "fieldValue": "1234"
+        "fieldValue": "HP-$TESTDATACONTEXT$"
       }
     ]
   }'
@@ -146,9 +146,9 @@ FilterMachineSpec:
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
       input: '{
 	"filters": [{
-        "columnName": "model",
-        "type": "all",
-        "text": "1234"
+		"columnName": "model",
+		"type": "all",
+		"text": "1234-$TESTDATACONTEXT$"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -157,7 +157,7 @@ FilterMachineSpec:
     "filters": [
       {
         "fieldID": "model",
-        "fieldValue": "1234"
+        "fieldValue": "1234-$TESTDATACONTEXT$"
       }
     ]
   }'

@@ -9,7 +9,7 @@ UpdateBlockListedWordStatus:
       inputTemplate: masterdata/UpdateBlockListedWordStatus/updateBlockListedWordStatus
       outputTemplate: masterdata/UpdateBlockListedWordStatus/updateBlockListedWordStatusResult
       input: '{
-    "word": "$ID:CreateBlockListedWords_All_Valid_Smoke_sid_word$",
+    "word": "$ID:CreateBlockListedWords_All_Valid_Smoke_Sid_word$",
     "isActive": true
 }'
       output: '{

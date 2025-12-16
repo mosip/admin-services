@@ -11,7 +11,7 @@ UpdateDevice:
       input: '{
      "id": "$ID:CreateDevice_All_Valid_Smoke_sid_id$",
     "name": "testDevicedummy updated",
-	"deviceSpecId": "743",
+	"deviceSpecId": "$ID:CreateDeviceSpecification_All_Valid_Smoke_sid_id$",
 	"ipAddress": "172.23.174.113",
 	"isActive": true,
 	"langCode": "eng",
@@ -23,7 +23,7 @@ UpdateDevice:
 	}'
       output: '{
     "name": "testDevicedummy updated",
-	"deviceSpecId": "743",
+	"deviceSpecId": "$ID:CreateDeviceSpecification_All_Valid_Smoke_sid_id$",
 	"ipAddress": "172.23.174.113",
 	"isActive": "$REMOVE$",
 	"macAddress": "D4-3D-7E-C0-8C-4A",

@@ -1,5 +1,5 @@
 CreateTemplateType:
-   MasterData_CreateTemplateType_All_Valid_Smoke_sid:
+   MasterData_CreateTemplateType_All_Valid_Smoke_Sid:
       endPoint: /v1/masterdata/templatetypes
       uniqueIdentifier: TC_Masterdata_CreateTemplateType_01
       description: Create template type with valid details
@@ -9,14 +9,14 @@ CreateTemplateType:
       inputTemplate: masterdata/TemplateType/templateType
       outputTemplate: masterdata/TemplateType/templateTypeResult
       input: '{
-     "code": "Test-info-Template-auto",
+     "code": "Test-info-Template-auto-$TESTDATACONTEXT$",
     "description": "Test-info-Template auto description",
     "isActive":true,
     "langCode": "eng",
 	"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-	"code": "Test-info-Template-auto"
+	"code": "Test-info-Template-auto-$TESTDATACONTEXT$"
 }'
    
    

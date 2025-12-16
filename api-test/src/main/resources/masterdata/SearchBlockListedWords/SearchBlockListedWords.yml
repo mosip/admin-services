@@ -15,7 +15,7 @@ SearchBlockListedWords:
       {
         "columnName": "word",
         "type": "equals",
-        "value": "dumbooo",
+        "value": "$ID:UpdateBlockListedWords_All_Valid_Smoked_Sid_word$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -54,7 +54,7 @@ SearchBlockListedWords:
       {
         "columnName": "word",
         "type": "contains",
-        "value": "dumbooo",
+        "value": "$ID:UpdateBlockListedWords_All_Valid_Smoked_Sid_word$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -93,7 +93,7 @@ SearchBlockListedWords:
       {
         "columnName": "word",
         "type": "startsWith",
-        "value": "dumbooo",
+        "value": "$ID:UpdateBlockListedWords_All_Valid_Smoked_Sid_word$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -170,7 +170,7 @@ SearchBlockListedWords:
       {
         "columnName": "word",
         "type": "equals",
-        "value": "dumbooo",
+        "value": "$ID:UpdateBlockListedWords_All_Valid_Smoked_Sid_word$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }

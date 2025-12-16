@@ -13,7 +13,7 @@ FilterBlockListedWords:
 	"filters": [{
 		"columnName": "word",
 		"type": "unique",
-		"text": "dumbooo"
+		"text": "$ID:UpdateBlockListedWords_All_Valid_Smoked_Sid_word$"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -22,7 +22,7 @@ FilterBlockListedWords:
     "filters": [
       {
         "fieldID": "word",
-        "fieldValue": "dumbooo"
+        "fieldValue": "$ID:UpdateBlockListedWords_All_Valid_Smoked_Sid_word$"
       }
     ]
   }'
@@ -40,7 +40,7 @@ FilterBlockListedWords:
 	"filters": [{
 		"columnName": "word",
 		"type": "All",
-		"text": "dumbooo"
+		"text": "$ID:UpdateBlockListedWords_All_Valid_Smoked_Sid_word$"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -49,7 +49,7 @@ FilterBlockListedWords:
     "filters": [
       {
         "fieldID": "word",
-        "fieldValue": "dumbooo"
+        "fieldValue": "$ID:UpdateBlockListedWords_All_Valid_Smoked_Sid_word$"
       }
     ]
   }'

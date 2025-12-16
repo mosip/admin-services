@@ -13,14 +13,14 @@ CreateTemplate:
         "description": "test template",
         "fileFormatCode": "json",
         "fileText": "abc",
-        "id": "445566777",
+        "id": "445566777-$TESTDATACONTEXT$",
         "isActive": false,
         "langCode": "eng",
         "model": "model-1",
         "moduleId": "10001",
         "moduleName": "Pre-Registration",
         "name": "Test-template",
-        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_sid_code$",
+        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_Sid_code$",
 	    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
@@ -45,7 +45,7 @@ CreateTemplate:
         "moduleId": "10001",
         "moduleName": "Pre-Registration",
         "name": "$REMOVE$",
-        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_sid_code$",
+        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_Sid_code$",
 	    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
@@ -76,7 +76,7 @@ CreateTemplate:
         "moduleId": "10001",
         "moduleName": "Pre-Registration",
         "name": "",
-        "templateTypeCode": "T$ID:CreateTemplateType_All_Valid_Smoke_sid_code$",
+        "templateTypeCode": "T$ID:CreateTemplateType_All_Valid_Smoke_Sid_code$",
 	    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
@@ -107,7 +107,7 @@ CreateTemplate:
         "moduleId": "10001",
         "moduleName": "Pre-Registration",
         "name": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxy",
-        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_sid_code$",
+        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_Sid_code$",
 	    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
@@ -138,7 +138,7 @@ CreateTemplate:
         "moduleId": "10001",
         "moduleName": "Pre-Registration",
         "name": "Test-template",
-        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_sid_code$",
+        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_Sid_code$",
 	    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
@@ -169,7 +169,7 @@ CreateTemplate:
         "moduleId": "10001",
         "moduleName": "Pre-Registration",
         "name": "Test-template",
-        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_sid_code$",
+        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_Sid_code$",
 	    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
@@ -200,7 +200,7 @@ CreateTemplate:
         "moduleId": "10001",
         "moduleName": "Pre-Registration",
         "name": "Test-template",
-        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_sid_code$",
+        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_Sid_code$",
 	    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
@@ -231,7 +231,7 @@ CreateTemplate:
         "moduleId": "10001",
         "moduleName": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxy",
         "name": "Test-template",
-        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_sid_code$",
+        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_Sid_code$",
 	    "requesttime": "$TIMESTAMP$"
 }'
       output: '{

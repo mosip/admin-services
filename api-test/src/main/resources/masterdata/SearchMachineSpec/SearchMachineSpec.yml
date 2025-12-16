@@ -14,7 +14,7 @@ SearchMachineSpec:
       {
         "columnName": "name",
         "type": "equals",
-        "value": "HP",
+        "value": "HP-$TESTDATACONTEXT$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -33,12 +33,12 @@ SearchMachineSpec:
       output: '{
 	"data": [{
 	"id": "$REMOVE$",
-	"name": "HP",
-	"brand": "HP",
-	"model": "1234",
+	"name": "HP-$TESTDATACONTEXT$",
+	"brand": "HP-$TESTDATACONTEXT$",
+	"model": "1234-$TESTDATACONTEXT$",
 	"machineTypeCode": "$REMOVE$",
 	"minDriverversion": "3.2",
-	"description": "HP brand",
+	"description": "HP brand-$TESTDATACONTEXT$",
 	"isActive": "$REMOVE$"
 	}]
 }'
@@ -57,7 +57,7 @@ SearchMachineSpec:
       {
         "columnName": "name",
         "type": "equals",
-        "value": "HP",
+        "value": "HP-$TESTDATACONTEXT$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -74,12 +74,12 @@ SearchMachineSpec:
       output: '{
 	"data": [{
 	"id": "$REMOVE$",
-	"name": "HP",
-	"brand": "HP",
-	"model": "1234",
+	"name": "HP-$TESTDATACONTEXT$",
+	"brand": "HP-$TESTDATACONTEXT$",
+	"model": "1234-$TESTDATACONTEXT$",
 	"machineTypeCode": "$REMOVE$",
 	"minDriverversion": "3.2",
-	"description": "HP brand",
+	"description": "HP brand-$TESTDATACONTEXT$",
 	"isActive": "$REMOVE$"
 	}]
 }'
@@ -98,7 +98,7 @@ SearchMachineSpec:
       {
         "columnName": "model",
         "type": "equals",
-        "value": "1234",
+        "value": "1234-$TESTDATACONTEXT$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -116,8 +116,8 @@ SearchMachineSpec:
 	"data": [{
 	"id": "$REMOVE$",
 	"name": "$REMOVE$",
-	"brand": "HP",
-	"model": "1234",
+	"brand": "HP-$TESTDATACONTEXT$",
+	"model": "1234-$TESTDATACONTEXT$",
 	"machineTypeCode": "$REMOVE$",
 	"minDriverversion": "3.2",
 	"description": "$REMOVE$",
@@ -139,7 +139,7 @@ SearchMachineSpec:
       {
         "columnName": "brand",
         "type": "equals",
-        "value": "HP",
+        "value": "HP-$TESTDATACONTEXT$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -157,7 +157,7 @@ SearchMachineSpec:
 	"data": [{
 	"id": "$REMOVE$",
 	"name": "$REMOVE$",
-	"brand": "HP",
+	"brand": "HP-$TESTDATACONTEXT$",
 	"model": "$REMOVE$",
 	"machineTypeCode": "$REMOVE$",
 	"minDriverversion": "$REMOVE$",
@@ -202,7 +202,7 @@ SearchMachineSpec:
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_06
       description: Search for machine spec details where the condition column name is name and the filter type is starts with
       role: admin
-      templateFields: ["description"]
+      templateFields: ["languageCode"]
       restMethod: post
       additionalDependencies: TC_Masterdata_UpdateMachineSpecification_01
       inputTemplate: masterdata/SearchMachineSpec/searchMachineSpec
@@ -229,12 +229,12 @@ SearchMachineSpec:
       output: '{
 	"data": [{
 	"id": "$REMOVE$",
-	"name": "HP",
-	"brand": "HP",
-	"model": "1234",
+	"name": "$REMOVE$",
+	"brand": "$REMOVE$",
+	"model": "$REMOVE$",
 	"machineTypeCode": "$REMOVE$",
 	"minDriverversion": "3.2",
-	"description": "HP brand",
+	"description": "$REMOVE$",
 	"isActive": "$REMOVE$"
 	}]
 }'
@@ -253,7 +253,7 @@ SearchMachineSpec:
       {
         "columnName": "name",
         "type": "contains",
-        "value": "P",
+        "value": "$TESTDATACONTEXT$",
         "fromValue": "$REMOVE$",
         "toValue": "$REMOVE$"
       }
@@ -270,12 +270,12 @@ SearchMachineSpec:
       output: '{
 	"data": [{
 	"id": "$REMOVE$",
-	"name": "HP",
-	"brand": "HP",
-	"model": "1234",
+	"name": "HP-$TESTDATACONTEXT$",
+	"brand": "HP-$TESTDATACONTEXT$",
+	"model": "1234-$TESTDATACONTEXT$",
 	"machineTypeCode": "$REMOVE$",
 	"minDriverversion": "3.2",
-	"description": "HP brand",
+	"description": "HP brand-$TESTDATACONTEXT$",
 	"isActive": "$REMOVE$"
 	}]
 }'

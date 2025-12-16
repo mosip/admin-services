@@ -1,5 +1,5 @@
 PacketRejectionReasonCategory:
-   MasterData_PacketRejectionReasonCategory_All_Valid_Smoke:
+   MasterData_PacketRejectionReasonCategory_All_Valid_Smoke_Sid:
       endPoint: /v1/masterdata/packetrejectionreasons/reasoncategory
       uniqueIdentifier: TC_Masterdata_PacketRejectionReasonCategory_01
       description: Create packer rejection reason category with valid data
@@ -9,7 +9,7 @@ PacketRejectionReasonCategory:
       inputTemplate: masterdata/PacketRejectionReasonCategory/packetRejectionReasonCategory
       outputTemplate: masterdata/PacketRejectionReasonCategory/packetRejectionReasonCategoryResult
       input: '{
-    "code": "TEST_CAT_CODE",
+    "code": "TEST_CAT_CODE_$TESTDATACONTEXT$",
     "name": "TEST_CAT",
     "description": "test reason category code",
     "langCode": "eng",
@@ -17,7 +17,7 @@ PacketRejectionReasonCategory:
 	"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-       "code": "TEST_CAT_CODE"
+       "code": "TEST_CAT_CODE_$TESTDATACONTEXT$"
     }'
 
    MasterData_PacketRejectionReasonCategory_Invalid_langCode:

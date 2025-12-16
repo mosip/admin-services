@@ -147,6 +147,11 @@ public class MasterDataUtil extends AdminTestUtil {
 		DBManager.executeDBQueries(MasterDataConfigManager.getMASTERDbUrl(), MasterDataConfigManager.getMasterDbUser(),
 				MasterDataConfigManager.getMasterDbPass(), MasterDataConfigManager.getMasterDbSchema(),
 				getGlobalResourcePath() + "/" + "config/masterDataDeleteQueries.txt");
+
+		// Deleting the records created by api testrig before 2 days and left in the DB
+		DBManager.executeDBQueries(MasterDataConfigManager.getMASTERDbUrl(), MasterDataConfigManager.getMasterDbUser(),
+				MasterDataConfigManager.getMasterDbPass(), MasterDataConfigManager.getMasterDbSchema(),
+				getGlobalResourcePath() + "/" + "config/masterDataCleanUpDeleteQueries.txt");
 	}
 
 }

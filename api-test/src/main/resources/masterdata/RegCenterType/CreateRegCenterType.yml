@@ -9,7 +9,7 @@ CreateRegCenterType:
       inputTemplate: masterdata/RegCenterType/regCenterType
       outputTemplate: masterdata/RegCenterType/regCenterTypeResult
       input: '{
-    "code": "ALT-3",
+    "code": "ALT-3$TESTDATACONTEXT$",
     "langCode": "eng",
     "name": "alternate",
     "descr": "alternate center",
@@ -17,7 +17,7 @@ CreateRegCenterType:
     "requesttime": "$TIMESTAMP$"
   }'
       output: '{
-	"code": "ALT-3",
+	"code": "ALT-3$TESTDATACONTEXT$",
 	"langCode": "eng"
 }'
 
@@ -31,7 +31,7 @@ CreateRegCenterType:
       inputTemplate: masterdata/RegCenterType/regCenterType
       outputTemplate: masterdata/error
       input: '{
-    "code": "ALT-3",
+    "code": "ALT-3$TESTDATACONTEXT$",
     "langCode": "eng",
     "name": "alternate",
     "descr": "alternate center",

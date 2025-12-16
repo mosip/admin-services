@@ -1,5 +1,5 @@
 CreateBlockListedWords:
-   Masterdata_CreateBlockListedWords_All_Valid_Smoke_sid:
+   Masterdata_CreateBlockListedWords_All_Valid_Smoke_Sid:
       endPoint: /v1/masterdata/blocklistedwords
       uniqueIdentifier: TC_Masterdata_CreateBlockListedWords_01
       description: Create block listed words with valid data
@@ -12,11 +12,11 @@ CreateBlockListedWords:
     "description": "wrongword",
 	"isActive": true,
 	"langCode": "eng",
-	"word": "dumboo",
+	"word": "automation$TESTDATACONTEXT$",
 	"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-    "word": "dumboo"
+    "word": "automation$TESTDATACONTEXT$"
 }'
    Masterdata_CreateBlockListedWords_space_in_word:
       endPoint: /v1/masterdata/blocklistedwords

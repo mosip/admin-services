@@ -46,7 +46,7 @@ FetchTemplate:
       input: '{
       "langcode": "eng",
       "code": "$REMOVE$",
-"templatetypecode": "Test-info-Template-auto"  
+"templatetypecode": "$ID:CreateTemplateType_All_Valid_Smoke_Sid_code$"  
 }'
       output: '{
 "templates": [{

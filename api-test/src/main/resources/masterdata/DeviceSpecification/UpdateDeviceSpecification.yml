@@ -12,7 +12,7 @@ UpdateDeviceSpecification:
       input: '{
       "brand": "Techno DeviceSpec",
       "description": "Test DeviceSpec updated",
-      "deviceTypeCode": "GST4",
+      "deviceTypeCode": "AUTO4$TESTDATACONTEXT$",
       "id": "$ID:CreateDeviceSpecification_All_Valid_Smoke_sid_id$",
       "isActive": true,
       "langCode": "eng",

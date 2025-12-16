@@ -10,7 +10,7 @@ UpdateMachineType:
       outputTemplate: masterdata/MachineType/machineTypeResult
       input: '{
     "code": "$ID:CreateMachineType_All_Valid_Smoke_sid_code$",
-    "description": "$ID:CreateMachineType_All_Valid_Smoke_sid_code$ info updated",
+    "description": "Laptop2 info updated",
 	"isActive": true,
 	"langCode": "eng",
 	"name": "$ID:CreateMachineType_All_Valid_Smoke_sid_code$ test",

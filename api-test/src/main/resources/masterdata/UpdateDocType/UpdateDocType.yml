@@ -1,6 +1,6 @@
 UpdateDocType:
    MasterData_UpdateDocType_All_Valid_Smoke_sid:  
-      endPoint: /v1/masterdata/documenttypes?isActive=true&code=TestDocType0020
+      endPoint: /v1/masterdata/documenttypes?isActive=true
       uniqueIdentifier: TC_Masterdata_UpdateDocType_01
       description: Update document type with valid data
       role: admin
@@ -9,14 +9,14 @@ UpdateDocType:
       inputTemplate: masterdata/UpdateDocType/updateDocType
       outputTemplate: masterdata/UpdateDocType/updateDocTypeResult
       input: '{
-    
+    "code": "$ID:CreateDocumentType_All_Valid_Mandatory_Fields_Smoke_Eng_Sid_code$"
 }'
       output: '{
     "status": "Status updated successfully for Document Types"
 }'
 
    MasterData_UpdateDocType_Invalid_status:  
-      endPoint: /v1/masterdata/documenttypes?isActive=false&code=CIN
+      endPoint: /v1/masterdata/documenttypes?isActive=false
       uniqueIdentifier: TC_Masterdata_UpdateDocType_02
       description: Update document type with invalid status
       role: admin
@@ -25,7 +25,7 @@ UpdateDocType:
       inputTemplate: masterdata/UpdateDocType/updateDocType
       outputTemplate: masterdata/error
       input: '{
-    
+    "code": "CIN"    
 }'
       output: '{
    "errors": [
