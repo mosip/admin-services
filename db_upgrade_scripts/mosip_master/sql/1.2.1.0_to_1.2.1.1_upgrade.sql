@@ -9291,7 +9291,7 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
       </body>
 
       </html>', module_id='10006', module_name='Resident Services', template_typ_code='vid-card-type', is_active=true, cr_by='superadmin', cr_dtimes=now(), upd_by=NULL, upd_dtimes=NULL, is_deleted=false, del_dtimes=NULL
-     WHERE id='1508' AND lang_code='eng';
+     WHERE template_typ_code='vid-card-type' AND lang_code='eng';
 
      UPDATE master.template_type
      SET descr='Authentication History Request Success Email', is_active=true, cr_by='admin', cr_dtimes=now(), upd_by=NULL, upd_dtimes=NULL, is_deleted=false, del_dtimes=NULL
