@@ -58,8 +58,7 @@ public class MasterDataUtil extends AdminTestUtil {
 		}
 
 		// Handle extra workflow dependencies
-		if (testCaseDTO != null && testCaseDTO.getAdditionalDependencies() != null
-				&& AdminTestUtil.generateDependency == true) {
+		if (testCaseDTO.getAdditionalDependencies() != null && AdminTestUtil.generateDependency) {
 			addAdditionalDependencies(testCaseDTO);
 		}
 				
