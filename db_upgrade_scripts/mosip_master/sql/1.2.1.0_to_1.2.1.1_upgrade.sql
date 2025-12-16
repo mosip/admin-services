@@ -10101,37 +10101,27 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
        /* Font Definitions */
        @font-face
       {font-family:Cambria Math;
-
       panose-1:2 4 5 3 5 4 6 3 2 4;}
       @font-face
       {font-family:Calibri;
-
       panose-1:2 15 5 2 2 2 4 3 2 4;}
        /* Style Definitions */
        p.MsoNormal, li.MsoNormal, div.MsoNormal
       {margin-top:0in;
-
       margin-right:0in;
-
       margin-bottom:8.0pt;
-
       margin-left:0in;
-
       line-height:107%;
-
       font-size:11.0pt;
-
       font-family:Calibri,sans-serif;}
       .MsoChpDefault
       {font-family:Calibri,sans-serif;}
       .MsoPapDefault
       {margin-bottom:8.0pt;
-
       line-height:107%;}
        /* Page Definitions */
        @page WordSection1
       {size:595.3pt 841.9pt;
-
       margin:1.0in 1.0in 1.0in 1.0in;}
       div.WordSection1
       {page:WordSection1;}
@@ -10145,9 +10135,7 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
       <div class=WordSection1>
 
       <p class=MsoNormal style=''line-height:normal''><span style=''position:relative;
-
       z-index:251659264''><span style=''position:absolute;left:-3px;top:-1px;
-
       width:352px;height:183px''><img width=352 height=183
       src=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWAAAAC3CAMAAAAb83RdAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABjUExURQAAAECAn0Bwn0B1n0Bwn0BzmUBwmkBym0Bwm0BxnEBwnEBxnEBwnUBxmkBwm0Bxm0Jym0JxnUJynUJxnUJynUJxnEJynEFxnEFxnEFxnEFxnEFxnUFxnUFxnEFxnEFxnEFxnGJA1PgAAAAgdFJOUwAIEBggKDA4QEhQWGBocHiAh4+Xn6evt7/Hz9ff5+/3v+H4wgAAAAlwSFlzAAAOwwAADsMBx2+oZAAABGxJREFUeF7t2sli2jAURmFjAzHzECAGDOb9n7K68s3UQDBB/+58C8BqujlVZckku6FXTperqjpfcEdTVa/LeVl4uE7yybbxv46uqlnf890z3flfwYMO89wb/mJ88J/GH5zmPe94Q7n3n7zU2+VyVA58HDcVZblYvn5My3ri49fk74vDcTX0IXTUn1ce73BzLe4f25/YMm//pFi2W4Nz6QP/eWn3ZG9M3j8r1jFhM/PrbyYx//5GfXTT38bEa7/8YhL/YHvnJoi75jHkq199KOP8XfgVnjCKS+3cr1zfBpuxX+Epg9oKj/wqyuP+gb6JxOl6/roXe7O+rA/JlNaz/ryfje166xdIIN7pPpdhO+ft2T+ktAlJm/dHmHECc7xIqrBdme+GezaBd+1npGKLhE/hGRNYoHcKVdv7mj0F2sRPSMjmbWM3tsImcNdvO9CdHTfsaDEN7/t2CCnZkzVbGeyQwRlDwE4bp3BKtv0ET9gFenZgLuNjyqMPISk7bCzifu3Hw0ukYPuITbYKr0sfQVKjkHYX5/HUR5DUMKTdx2PGt2fDSMVOGHVmj9o5J2uEtJfMdmkP/WYgOrN9WlsZErEtgXUILEZgMQKLEViMwGIEFiOwGIHFCCxGYDECixFYjMBiBBYjsBiBxQgsRmAxAosRWIzAYgQWI7AYgcUILEZgMQKLEViMwGIEFiOwGIHFCCxGYDECixFYjMBiBBYjsBiBxQgsRmAxAosRWIzAYgQWI7AYgcUILEZgMQKLEViMwGIEFiOwGIHFCCxGYDECixFYjMBiBBYjsBiBxQgsRmAxAosRWIzAYgQWI7AYgcUILEZgMQKLEViMwGIEFiOwGIHFCCxGYDECixFYjMBiBBYjsBiBxQgsRmAxAosRWIzAYgQWI7AYgcUILEZgMQKLEViMwGIEFiOwGIHFCCxGYDECixFYjMBiBBYjsBiBxQgsRmAxAosRWIzAYgQWI7DYR+CeDyCtxgLX4aXvA0grBt6Hl9IHkFQe0p6yXXid+AiSGoS0x2wdXuc+gqTKkLbKFuF15SNIahrSbuLrm48gqVWcu7ZQNLkPIaVjSBtub/Y29SEk1PepuwzvWx9DQvMQtgrvLxaas1x6VQg7sw92lmOjltwwZG3PyHazOzGFU7MT3D5+KuzIvIgfkczYJvC4/WyHuaZoPyORQ4hqtziTn8LF2i+QxMQm8NAv4obifTojhYEtuzu/yLKeTeHmozeeldvOrPnymP3Fgtcsw4n0bAv8/Xgcl4wDjyTS2FjN/25qthm+1KwSCeRx/v54Qmn74kvDne5pA1t/L/WP1aD3ZuOXJUe650zOse+175HtvBEOzTy6fEJp3yGHE8b1u9nM9hLhXjfyazxoENfZXw5tZZzeIfFi4CPorJh53iY+o7yuaJeJoF6PSn4fpaO8LBf27CHa/T45+/7P4OyIh1+d/b99a3//l3iG7XYCf3Dsts0tprv2dodH7OcP3Ll642VV2ffN6OBUVevp1Sc5WfYPwR32gG13uhEAAAAASUVORK5CYII=>
       <img width=41 height=44
@@ -10156,24 +10144,19 @@ INSERT INTO master.template (id,"name",descr,file_format_code,model,file_txt,mod
       card</p></span>
 
       <p class=MsoNormal style=''margin-top:0in;margin-right:0in;margin-bottom:0in;
-
       line-height:normal''><img width=84 height=84
       src=$image alt=user image align=left hspace=12><b>Name:</b> $name</p>
 
       <p class=MsoNormal style=''margin-top:0in;margin-right:0in;margin-bottom:0in;
-
       line-height:normal''><b>DOB:</b> $dateOfBirth</p>
 
       <p class=MsoNormal style=''margin-top:0in;margin-right:0in;margin-bottom:0in;
-
       line-height:normal''><b>VID:</b> $vid</p>
 
       <p class=MsoNormal style=''margin-top:0in;margin-right:0in;margin-bottom:0in;
-
       line-height:normal''><b>VID Type:</b> $vidType</p>
 
       <p class=MsoNormal style=''margin-top:0in;margin-right:0in;margin-bottom:0in;
-
       line-height:normal''><b>Generated on:</b> $genratedOnTimestamp</p>
 
       <p class=MsoNormal style=''margin-top:0in;margin-right:0in;margin-bottom:0in;
