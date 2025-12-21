@@ -1,5 +1,3 @@
--- Below script is required to rollback from 1.3.0 to 1.2.1.3 --
-
 \c mosip_master
 
 -- Rollback script for master.app_detail
@@ -32,7 +30,7 @@ ALTER TABLE master.template_file_format ALTER COLUMN lang_code SET NOT NULL;
 ALTER TABLE master.template_file_format DROP CONSTRAINT pk_tffmt_code;
 ALTER TABLE master.template_file_format ADD CONSTRAINT pk_tffmt_code PRIMARY KEY (code, lang_code);
 INSERT INTO master.template_file_format SELECT * FROM master.template_file_format_bkp WHERE lang_code !='eng';
-DROP TABLE IF EXISTS master.template_file_format;
+DROP TABLE IF EXISTS master.template_file_format_bkp;
 
 -- Rollback script for master.template
 ALTER TABLE master.template ADD CONSTRAINT fk_tmplt_tffmt FOREIGN KEY (file_format_code, lang_code) REFERENCES master.template_file_format (code, lang_code);
@@ -98,5 +96,19 @@ DROP INDEX IF EXISTS master.idx_user_detail_active_id;
 DROP INDEX IF EXISTS master.idx_user_detail_regcntr;
 DROP INDEX IF EXISTS master.idx_user_detail_regcntr_flags;
 DROP INDEX IF EXISTS master.idx_user_detail_regcntr_change;
+DROP INDEX IF EXISTS master.idx_ca_cert_domain;
+DROP INDEX IF EXISTS master.idx_ca_cert_isdeleted;
+DROP INDEX IF EXISTS master.idx_mac_master_sign_key_index_active;
 
 -- END ROLLBACK FOR PERFORMANCE OPTIMIZATION INDEXES
+
+BEGIN;
+
+UPDATE master.valid_document
+SET lang_code = 'eng'
+WHERE lang_code IS NULL;
+
+ALTER TABLE master.valid_document
+  ALTER COLUMN lang_code SET NOT NULL;
+
+COMMIT;
