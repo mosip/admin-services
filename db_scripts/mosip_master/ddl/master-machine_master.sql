@@ -61,3 +61,4 @@ CREATE INDEX IF NOT EXISTS idx_mac_master_upd_dtimes ON master.machine_master (u
 CREATE INDEX IF NOT EXISTS idx_mac_master_del_dtimes ON master.machine_master (del_dtimes);
 CREATE UNIQUE INDEX IF NOT EXISTS uq_mac_master_name_lower ON master.machine_master (LOWER(name)) WHERE is_deleted = false;
 CREATE UNIQUE INDEX IF NOT EXISTS uq_mac_master_key_index_lower ON master.machine_master (LOWER(key_index)) WHERE is_deleted = false;
+CREATE INDEX IF NOT EXISTS idx_mac_master_sign_key_index_active ON master.machine_master USING btree (lower(sign_key_index)) WHERE is_deleted = false AND is_active = true;

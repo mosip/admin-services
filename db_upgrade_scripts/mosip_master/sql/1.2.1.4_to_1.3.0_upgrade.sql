@@ -91,4 +91,11 @@ CREATE INDEX IF NOT EXISTS idx_user_detail_regcntr ON master.user_detail(regcntr
 CREATE INDEX IF NOT EXISTS idx_user_detail_regcntr_flags ON master.user_detail(regcntr_id, is_deleted, is_active);
 CREATE INDEX IF NOT EXISTS idx_user_detail_regcntr_change ON master.user_detail(regcntr_id, cr_dtimes, upd_dtimes, del_dtimes);
 
+CREATE INDEX IF NOT EXISTS idx_ca_cert_domain ON master.ca_cert_store USING btree (partner_domain);
+CREATE INDEX IF NOT EXISTS idx_ca_cert_isdeleted ON master.ca_cert_store USING btree (is_deleted);
+CREATE INDEX IF NOT EXISTS idx_mac_master_sign_key_index_active ON master.machine_master USING btree (lower(sign_key_index)) WHERE is_deleted = false AND is_active = true;
+
 ---END UPGRADE FOR PERFORMANCE OPTIMIZATION INDEXES--
+
+ALTER TABLE master.valid_document
+ALTER COLUMN lang_code DROP NOT NULL;
