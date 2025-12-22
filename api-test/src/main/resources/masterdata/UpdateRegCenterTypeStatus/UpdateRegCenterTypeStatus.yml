@@ -5,6 +5,7 @@ UpdateRegCenterTypeStatus:
       description: Update registration center type status details with valid data
       role: admin
       restMethod: patch
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/UpdateRegCenterTypeStatus/updateRegCenterTypeStatus
       outputTemplate: masterdata/UpdateRegCenterTypeStatus/updateRegCenterTypeStatusResult
       input: '{

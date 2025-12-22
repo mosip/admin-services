@@ -45,7 +45,7 @@ CreateTemplate:
         "moduleId": "10001",
         "moduleName": "Pre-Registration",
         "name": "$REMOVE$",
-        "templateTypeCode": "Test-info-Template-auto",
+        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_Sid_code$",
 	    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
@@ -76,7 +76,7 @@ CreateTemplate:
         "moduleId": "10001",
         "moduleName": "Pre-Registration",
         "name": "",
-        "templateTypeCode": "Test-info-Template-auto",
+        "templateTypeCode": "T$ID:CreateTemplateType_All_Valid_Smoke_Sid_code$",
 	    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
@@ -107,7 +107,7 @@ CreateTemplate:
         "moduleId": "10001",
         "moduleName": "Pre-Registration",
         "name": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxy",
-        "templateTypeCode": "Test-info-Template-auto",
+        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_Sid_code$",
 	    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
@@ -138,7 +138,7 @@ CreateTemplate:
         "moduleId": "10001",
         "moduleName": "Pre-Registration",
         "name": "Test-template",
-        "templateTypeCode": "Test-info-Template-auto",
+        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_Sid_code$",
 	    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
@@ -169,7 +169,7 @@ CreateTemplate:
         "moduleId": "10001",
         "moduleName": "Pre-Registration",
         "name": "Test-template",
-        "templateTypeCode": "Test-info-Template-auto",
+        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_Sid_code$",
 	    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
@@ -200,7 +200,7 @@ CreateTemplate:
         "moduleId": "10001",
         "moduleName": "Pre-Registration",
         "name": "Test-template",
-        "templateTypeCode": "Test-info-Template-auto",
+        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_Sid_code$",
 	    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
@@ -231,7 +231,7 @@ CreateTemplate:
         "moduleId": "10001",
         "moduleName": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxy",
         "name": "Test-template",
-        "templateTypeCode": "Test-info-Template-auto",
+        "templateTypeCode": "$ID:CreateTemplateType_All_Valid_Smoke_Sid_code$",
 	    "requesttime": "$TIMESTAMP$"
 }'
       output: '{

@@ -6,6 +6,7 @@ DeviceSpecSearch:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearch
       outputTemplate: masterdata/DeviceSpecSearch/deviceSpecSearchResult
       input: '{

@@ -641,7 +641,7 @@
 	<test name="CreateMachineSpecification">
 		<parameter name="ymlFile"
 			value="masterdata/MachineSpecification/CreateMachineSpecification.yml" />
-		<parameter name="idKeyName" value="id" />
+		<parameter name="idKeyName" value="id,brand,model" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePostForAutoGenId" />
 		</classes>
@@ -734,7 +734,7 @@
 	<test name="CreateHoliday">
 		<parameter name="ymlFile"
 			value="masterdata/Holiday/CreateHoliday.yml" />
-		<parameter name="idKeyName" value="holidayId" />
+		<parameter name="idKeyName" value="holidayId,holidayName,holidayDate" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePostForAutoGenId" />
 		</classes>
@@ -1223,7 +1223,7 @@
 	<test name="CreateDynamicField">
 		<parameter name="ymlFile"
 			value="masterdata/DynamicField/CreateDynamicField.yml" />
-		<parameter name="idKeyName" value="id" />
+		<parameter name="idKeyName" value="id,code,value,name" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.masterdata.testscripts.SimplePostForAutoGenId" />
 		</classes>

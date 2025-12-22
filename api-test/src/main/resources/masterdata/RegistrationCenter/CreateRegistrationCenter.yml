@@ -7,6 +7,7 @@ CreateRegistrationCenter:
       checkErrorsOnlyInResponse: true
       templateFields: ["addressLine1","addressLine2","addressLine3","langCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_UpdateLocationStatus_01
       inputTemplate: masterdata/RegistrationCenter/registrationCenter
       outputTemplate: masterdata/RegistrationCenter/registrationCenterResult
       input: '{

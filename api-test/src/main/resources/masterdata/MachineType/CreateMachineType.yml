@@ -1,5 +1,5 @@
 CreateMachineType:
-   Masterdata_CreateMachineType_All_Valid_Smoke_Sid:
+   Masterdata_CreateMachineType_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/machinetypes
       uniqueIdentifier: TC_Masterdata_CreateMachineType_01
       description: Create machine type details with valid data

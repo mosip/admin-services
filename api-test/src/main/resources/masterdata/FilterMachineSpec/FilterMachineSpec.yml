@@ -6,6 +6,7 @@ FilterMachineSpec:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateMachineSpecification_01
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
       input: '{
@@ -32,6 +33,7 @@ FilterMachineSpec:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateMachineSpecification_01
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
       input: '{
@@ -58,6 +60,7 @@ FilterMachineSpec:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateMachineSpecification_01
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
       input: '{
@@ -84,6 +87,7 @@ FilterMachineSpec:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateMachineSpecification_01
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
       input: '{
@@ -110,6 +114,7 @@ FilterMachineSpec:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateMachineSpecification_01
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
       input: '{
@@ -136,6 +141,7 @@ FilterMachineSpec:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateMachineSpecification_01
       inputTemplate: masterdata/FilterMachineSpec/filterMachineSpec
       outputTemplate: masterdata/FilterMachineSpec/filterMachineSpecResult
       input: '{

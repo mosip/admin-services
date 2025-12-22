@@ -6,6 +6,7 @@ GetUserDetails:
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_Masterdata_UpdateZoneUserStatus_01,TC_Masterdata_UpdateUserCenterMapping_01
       inputTemplate: masterdata/GetUserDetails/getUserDetails
       outputTemplate: masterdata/GetUserDetails/getUserDetailsResult
       input: '{
@@ -18,6 +19,7 @@ GetUserDetails:
       uniqueIdentifier: TC_Masterdata_GetUserDetails_02
       description: Retrieve all the user details by valid user ID
       role: admin
+      additionalDependencies: TC_Masterdata_UpdateZoneUserStatus_01,TC_Masterdata_UpdateUserCenterMapping_01
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: masterdata/GetUserDetails/getUserDetails

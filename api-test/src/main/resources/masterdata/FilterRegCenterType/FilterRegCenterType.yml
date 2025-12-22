@@ -7,6 +7,7 @@ FilterRegCenterType:
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType
       outputTemplate: masterdata/FilterRegCenterType/filterRegCenterTypeResult
       input: '{
@@ -28,6 +29,7 @@ FilterRegCenterType:
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType
       outputTemplate: masterdata/FilterRegCenterType/filterRegCenterTypeResult
       input: '{
@@ -48,6 +50,7 @@ FilterRegCenterType:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType
       outputTemplate: masterdata/FilterRegCenterType/filterRegCenterTypeResult
       input: '{
@@ -80,6 +83,7 @@ FilterRegCenterType:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType
       outputTemplate: masterdata/FilterRegCenterType/filterRegCenterTypeResult
       input: '{

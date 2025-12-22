@@ -6,15 +6,16 @@ UpdateBlockListedWords:
       role: admin
       templateFields: ["description","word","oldWord"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_UpdateBlockListedWordStatus_01
       inputTemplate: masterdata/BlockListedWords/updateBlockListedWords
       outputTemplate: masterdata/BlockListedWords/blockListedWordsResult
       input: '{
     "description": "wrong word updated",
-	"isActive": "true",
-	"langCode": "eng",
-	"oldWord": "$ID:CreateBlockListedWords_All_Valid_Smoke_Sid_word$",
-	"word": "automation$TESTDATACONTEXT$updated",
-	"requesttime": "$TIMESTAMP$"
+    "isActive": "true",
+    "langCode": "eng",
+    "oldWord": "$ID:CreateBlockListedWords_All_Valid_Smoke_Sid_word$",
+    "word": "automation$TESTDATACONTEXT$updated",
+    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
 	"word": "automation$TESTDATACONTEXT$updated"
@@ -26,15 +27,16 @@ UpdateBlockListedWords:
       role: admin
       templateFields: ["description","word","oldWord"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_UpdateBlockListedWordStatus_01
       inputTemplate: masterdata/BlockListedWords/updateBlockListedWords
       outputTemplate: masterdata/error
       input: '{
     "description": "wrong word updated",
 	"isActive": "true",
-	"langCode": "eng",
-	"oldWord": "dumboo",	
-	"word": "dumbooo",
-	"requesttime": "$TIMESTAMP$"
+    "langCode": "eng",
+    "oldWord": "automation$TESTDATACONTEXT$updated",	
+    "word": "dumbooo",
+    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
    "errors": [
@@ -57,9 +59,9 @@ UpdateBlockListedWords:
     "description": "dummydataupdated",
 	"isActive": "true",
 	"langCode": "eng",
-	"oldWord": "defdefghijklmnopqrstuvddwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx",	
-	"word": "defdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx upd",
-	"requesttime": "$TIMESTAMP$"
+    "oldWord": "defdefghijklmnopqrstuvddwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx",	
+    "word": "defdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx upd",
+    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
    "errors": [
@@ -81,9 +83,9 @@ UpdateBlockListedWords:
     "description": "dummydata",
 	"isActive": "true",
 	"langCode": "eng",
-	"oldWord": "dumb",	
-	"word": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxy",
-	"requesttime": "$TIMESTAMP$"
+    "oldWord": "dumb",	
+    "word": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxy",
+    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
    "errors": [
@@ -106,9 +108,9 @@ UpdateBlockListedWords:
     "description": "",
 	"isActive": "true",
 	"langCode": "eng",
-	"oldWord": "bullword",	
-	"word": "bullwordupd",
-	"requesttime": "$TIMESTAMP$"
+    "oldWord": "bullword",	
+    "word": "bullwordupd",
+    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "errors": [
@@ -130,9 +132,9 @@ UpdateBlockListedWords:
     "description": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvW",
 	"isActive": "true",
 	"langCode": "eng",
-	"oldWord": "bullword",	
-	"word": "bullword",
-	"requesttime": "$TIMESTAMP$"
+    "oldWord": "bullword",	
+    "word": "bullword",
+    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
    "errors": [
@@ -154,10 +156,10 @@ UpdateBlockListedWords:
       input: '{
     "description": "badwords",
 	"isActive": "true",
-	"oldWord": "bull word",	
-	"langCode": "eng",
-	"word": "",
-	"requesttime": "$TIMESTAMP$"
+    "oldWord": "bull word",	
+    "langCode": "eng",
+    "word": "",
+    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
    "errors": [

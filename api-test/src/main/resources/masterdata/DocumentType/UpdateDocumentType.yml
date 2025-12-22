@@ -6,6 +6,7 @@ UpdateDocumentType:
       role: admin
       templateFields: ["name","description"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/DocumentType/documentType
       outputTemplate: masterdata/DocumentType/documentTypeResult
       input: '{

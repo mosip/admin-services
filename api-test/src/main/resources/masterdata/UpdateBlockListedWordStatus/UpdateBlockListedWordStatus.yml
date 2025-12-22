@@ -21,6 +21,7 @@ UpdateBlockListedWordStatus:
       description: Update block listed word status with invalid word
       role: admin
       restMethod: patch
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/UpdateBlockListedWordStatus/updateBlockListedWordStatus
       outputTemplate: masterdata/error
       input: '{

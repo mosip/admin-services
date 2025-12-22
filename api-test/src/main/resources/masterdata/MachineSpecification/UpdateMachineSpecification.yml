@@ -15,7 +15,7 @@ UpdateMachineSpecification:
     "id": "$ID:CreateMachineSpecification_All_Valid_Smoke_sid_id$",
     "isActive": true,
     "langCode": "eng",
-    "machineTypeCode": "$ID:CreateMachineType_All_Valid_Smoke_Sid_code$",
+    "machineTypeCode": "$ID:CreateMachineType_All_Valid_Smoke_sid_code$",
     "minDriverversion": "3.2",
     "model": "1234-$TESTDATACONTEXT$",
     "name": "HP-$TESTDATACONTEXT$",

@@ -6,6 +6,7 @@ FetchAllDocumentTypes:
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/FetchAllDocumentTypes/fetchAllDocumentTypes
       outputTemplate: masterdata/FetchAllDocumentTypes/fetchAllDocumentTypesResult
       input: '{

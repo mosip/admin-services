@@ -5,6 +5,7 @@ DeleteRegCenterType:
       description: Delete RegCenter Type with all valid data
       role: admin
       restMethod: delete
+      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/DeleteRegCenterType/deleteRegCenterType
       outputTemplate: masterdata/DeleteRegCenterType/deleteRegCenterTypeResult
       input: '{

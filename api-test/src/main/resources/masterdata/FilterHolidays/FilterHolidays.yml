@@ -13,7 +13,7 @@ FilterHolidays:
 	"filters": [{
 		"columnName": "holidayName",
 		"type": "unique",
-		"text": "AutoTest user Eng"
+		"text": "$ID:CreateHoliday_All_Valid_Smoke_sid_holidayName$"
 	}],
 	"languageCode": "eng",
 	"requesttime": "$TIMESTAMP$"
@@ -40,10 +40,7 @@ FilterHolidays:
 	"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-<<<<<<< HEAD
-=======
     "totalCount": 0
->>>>>>> upstream/develop
 }'
    MasterData_FilterHolidays_inValid_filterType_blank:
       endPoint: /v1/masterdata/holidays/filtervalues
@@ -101,7 +98,7 @@ FilterHolidays:
    MasterData_FilterHolidays_inValid_langCode:
       endPoint: /v1/masterdata/holidays/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterHolidays_05
-      description: Filter Holidays by inalid languageCode
+      description: Filter Holidays by invalid languageCode
       role: admin
       restMethod: post
       inputTemplate: masterdata/FilterHolidays/filterHolidays
@@ -126,7 +123,7 @@ FilterHolidays:
    MasterData_FilterHolidays_inValid_RequestTime_format:
       endPoint: /v1/masterdata/holidays/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterHolidays_06
-      description: Filter Holidays by inalid requesttime format
+      description: Filter Holidays by invalid requesttime format
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -152,7 +149,7 @@ FilterHolidays:
    MasterData_FilterHolidays_inValid_filterColumnName:
       endPoint: /v1/masterdata/holidays/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterHolidays_07
-      description: Filter Holidays by inalid columnName
+      description: Filter Holidays by invalid columnName
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -177,7 +174,7 @@ FilterHolidays:
    MasterData_FilterHolidays_inValid_filterType:
       endPoint: /v1/masterdata/holidays/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterHolidays_08
-      description: Filter Holidays by inalid filter Type
+      description: Filter Holidays by invalid filter Type
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -203,7 +200,7 @@ FilterHolidays:
    MasterData_FilterHolidays_inValid_FilterText:
       endPoint: /v1/masterdata/holidays/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterHolidays_09
-      description: Filter Holidays by inalid filter text
+      description: Filter Holidays by invalid filter text
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]

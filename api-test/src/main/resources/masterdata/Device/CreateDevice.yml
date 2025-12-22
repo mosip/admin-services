@@ -6,6 +6,7 @@ CreateDevice:
       role: globalAdmin
       templateFields: ["name","description"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/Device/createDeviceResult
       input: '{
@@ -39,6 +40,7 @@ CreateDevice:
       role: globalAdmin
       templateFields: ["name","description"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/Device/createDeviceResult
       input: '{
@@ -72,6 +74,7 @@ CreateDevice:
       role: admin
       templateFields: ["name","description"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -102,6 +105,7 @@ CreateDevice:
       role: admin
       templateFields: ["name","description"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -132,6 +136,7 @@ CreateDevice:
       role: admin
       templateFields: ["name","description"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -162,6 +167,7 @@ CreateDevice:
       role: admin
       templateFields: ["description"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -192,6 +198,7 @@ CreateDevice:
       role: admin
       templateFields: ["name","description"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -222,6 +229,7 @@ CreateDevice:
       role: admin
       templateFields: ["name","description"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -252,6 +260,7 @@ CreateDevice:
       role: admin
       templateFields: ["name","description"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -282,6 +291,7 @@ CreateDevice:
       role: admin
       templateFields: ["name","description"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -312,6 +322,7 @@ CreateDevice:
       role: admin
       templateFields: ["name","description"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -342,6 +353,7 @@ CreateDevice:
       role: admin
       templateFields: ["name","description"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -372,6 +384,7 @@ CreateDevice:
       role: admin
       templateFields: ["name","description"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{

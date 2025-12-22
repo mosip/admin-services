@@ -6,6 +6,7 @@ UpdateDocumentCategory:
       role: admin
       templateFields: ["name","description"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/DocumentCategory/documentCategoryResult
       input: '{
@@ -26,6 +27,7 @@ UpdateDocumentCategory:
       role: admin
       templateFields: ["name","description"]
       restMethod: put
+      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/DocumentCategory/documentCategory
       outputTemplate: masterdata/DocumentCategory/documentCategoryResult
       input: '{

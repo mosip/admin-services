@@ -7,6 +7,7 @@ FetchRegCent:
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchRegCentResult
       input: '{
@@ -33,6 +34,7 @@ FetchRegCent:
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchRegCentResult
       input: '{
@@ -120,6 +122,7 @@ FetchRegCent:
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchRegCentResult
       input: '{
@@ -177,6 +180,7 @@ FetchRegCent:
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchRegCentHolidayResult
       input: '{
@@ -202,6 +206,7 @@ FetchRegCent:
       description: Retrieve Registration Center Holiday details with invalid registrationcenterid
       role: admin
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
       input: '{
@@ -234,6 +239,7 @@ FetchRegCent:
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchRegCentResult
       input: '{
@@ -261,6 +267,7 @@ FetchRegCent:
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchRegCentResult
       input: '{
@@ -287,6 +294,7 @@ FetchRegCent:
       role: admin
       templateFields: ["name"]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
       input: '{
@@ -318,6 +326,7 @@ FetchRegCent:
       role: admin
       templateFields: ["name"]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
       input: '{
@@ -350,6 +359,7 @@ FetchRegCent:
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchRegCentResult
       input: '{
@@ -375,6 +385,7 @@ FetchRegCent:
       role: admin
       templateFields: ["langcode"]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchRegCentValidateResult
       input: '{
@@ -401,6 +412,7 @@ FetchRegCent:
       description: Retrieve Registration Center details By langcode, timestamp and invalid Id
       role: admin
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
       input: '{
@@ -431,6 +443,7 @@ FetchRegCent:
       description: Retrieve Registration Center details By langcode, Id and invalid timestamp
       role: admin
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
       input: '{
@@ -462,6 +475,7 @@ FetchRegCent:
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchRegCentResult
       input: '{
@@ -487,6 +501,7 @@ FetchRegCent:
       description: Retrieve Registration Center for a Zone By langcode and zonecode
       role: admin
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
       input: '{
@@ -519,6 +534,7 @@ FetchRegCent:
       templateFields: ["langcode"]
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchAllRegCentWithPaginationResult
       input: '{
@@ -548,6 +564,7 @@ FetchRegCent:
       role: admin
       templateFields: ["name"]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
       input: '{
@@ -579,6 +596,7 @@ FetchRegCent:
       role: admin
       templateFields: ["name"]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
       input: '{
@@ -612,6 +630,7 @@ FetchRegCent:
       checkErrorsOnlyInResponse: true
       templateFields: []
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchAllRegCentResult
       input: '{
@@ -637,6 +656,7 @@ FetchRegCent:
       role: admin
       templateFields: []
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
       input: '{
@@ -669,6 +689,7 @@ FetchRegCent:
       role: admin
       templateFields: [""]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       checkErrorsOnlyInResponse: true
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchAllRegCentWithPaginationResult
@@ -696,6 +717,7 @@ FetchRegCent:
       role: admin
       templateFields: [""]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
       input: '{
@@ -728,6 +750,7 @@ FetchRegCent:
       role: admin
       templateFields: [""]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
       input: '{
@@ -759,6 +782,7 @@ FetchRegCent:
       role: admin
       templateFields: [""]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
       input: '{
@@ -790,6 +814,7 @@ FetchRegCent:
       role: admin
       templateFields: [""]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       checkErrorsOnlyInResponse: true
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/FetchRegCent/fetchAllRegCentWithPaginationResult
@@ -817,6 +842,7 @@ FetchRegCent:
       role: admin
       templateFields: [""]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
       input: '{
@@ -849,6 +875,7 @@ FetchRegCent:
       role: admin
       templateFields: []
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
       input: '{
@@ -881,6 +908,7 @@ FetchRegCent:
       role: admin
       templateFields: [""]
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
       input: '{

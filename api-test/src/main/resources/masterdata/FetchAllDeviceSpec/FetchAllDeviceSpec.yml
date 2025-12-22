@@ -6,6 +6,7 @@ FetchAllDeviceSpec:
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/FetchAllDeviceSpec/fetchAllDeviceSpec
       outputTemplate: masterdata/FetchAllDeviceSpec/fetchAllDeviceSpecResult
       input: '{

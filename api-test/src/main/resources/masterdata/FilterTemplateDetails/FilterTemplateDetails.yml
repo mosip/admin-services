@@ -7,6 +7,7 @@ FilterTemplateDetails:
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateTemplate_01
       inputTemplate: masterdata/FilterTemplateDetails/filterTemplateDetails
       outputTemplate: masterdata/FilterTemplateDetails/filterTemplateDetailsResult
       input: '{
@@ -34,6 +35,7 @@ FilterTemplateDetails:
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateTemplate_01
       inputTemplate: masterdata/FilterTemplateDetails/filterTemplateDetails
       outputTemplate: masterdata/FilterTemplateDetails/filterTemplateDetailsResult
       input: '{

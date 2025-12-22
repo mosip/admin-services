@@ -7,6 +7,7 @@ SearchBlockListedWords:
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWords
       outputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWordsResult
       input: '{
@@ -45,6 +46,7 @@ SearchBlockListedWords:
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWords
       outputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWordsResult
       input: '{
@@ -83,6 +85,7 @@ SearchBlockListedWords:
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWords
       outputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWordsResult
       input: '{
@@ -158,6 +161,7 @@ SearchBlockListedWords:
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
       restMethod: post
+      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWords
       outputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWordsResult
       input: '{
