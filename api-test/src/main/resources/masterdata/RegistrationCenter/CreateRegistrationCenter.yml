@@ -50,7 +50,6 @@ CreateRegistrationCenter:
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_UpdateLocationStatus_01
       inputTemplate: masterdata/RegistrationCenter/registrationCenter
       outputTemplate: masterdata/error
       input: '{
@@ -97,7 +96,6 @@ CreateRegistrationCenter:
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_UpdateLocationStatus_01
       inputTemplate: masterdata/RegistrationCenter/registrationCenter
       outputTemplate: masterdata/error
       input: '{
@@ -143,7 +141,6 @@ CreateRegistrationCenter:
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_UpdateLocationStatus_01
       inputTemplate: masterdata/RegistrationCenter/registrationCenter
       outputTemplate: masterdata/error
       input: '{
@@ -189,7 +186,6 @@ CreateRegistrationCenter:
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone","langCode"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_UpdateLocationStatus_01
       inputTemplate: masterdata/RegistrationCenter/registrationCenter
       outputTemplate: masterdata/error
       input: '{
@@ -238,7 +234,6 @@ CreateRegistrationCenter:
       role: admin
       templateFields: ["name","addressLine1","addressLine2","addressLine3","timeZone","langCode"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_UpdateLocationStatus_01
       inputTemplate: masterdata/RegistrationCenter/registrationCenter
       outputTemplate: masterdata/error
       input: '{

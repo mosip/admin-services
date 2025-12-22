@@ -31,7 +31,6 @@ UpdateDocumentType:
       role: admin
       templateFields: ["name","description"]
       restMethod: put
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/DocumentType/documentType
       outputTemplate: masterdata/error
       input: '{
@@ -57,7 +56,6 @@ UpdateDocumentType:
       role: admin
       templateFields: ["name","description"]
       restMethod: put
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/DocumentType/documentType
       outputTemplate: masterdata/error
       input: '{
@@ -82,7 +80,6 @@ UpdateDocumentType:
       description: Update Document Type with invalid Description more than 128 characters
       role: admin
       restMethod: put
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       templateFields: ["name","description"]
       inputTemplate: masterdata/DocumentType/documentType
       outputTemplate: masterdata/error
@@ -110,7 +107,6 @@ UpdateDocumentType:
       role: admin
       templateFields: ["description"]
       restMethod: put
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/DocumentType/documentType
       outputTemplate: masterdata/error
       input: '{
@@ -136,7 +132,6 @@ UpdateDocumentType:
       role: admin
       templateFields: ["name","description"]
       restMethod: put
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/DocumentType/documentType
       outputTemplate: masterdata/error
       input: '{

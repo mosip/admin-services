@@ -117,7 +117,6 @@ FilterRegCenterType:
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType
       outputTemplate: masterdata/NilFilterResult
       input: '{
@@ -139,7 +138,6 @@ FilterRegCenterType:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType
       outputTemplate: masterdata/error
       input: '{
@@ -166,7 +164,6 @@ FilterRegCenterType:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType
       outputTemplate: masterdata/error
       input: '{
@@ -194,7 +191,6 @@ FilterRegCenterType:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType
       outputTemplate: masterdata/error
       input: '{
@@ -221,7 +217,6 @@ FilterRegCenterType:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType
       outputTemplate: masterdata/error
       input: '{
@@ -247,7 +242,6 @@ FilterRegCenterType:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateRegCenterType_01
       inputTemplate: masterdata/FilterRegCenterType/filterRegCenterType
       outputTemplate: masterdata/error
       input: '{

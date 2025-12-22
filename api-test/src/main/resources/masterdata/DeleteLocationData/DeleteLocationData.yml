@@ -6,7 +6,6 @@ DeleteLocationData:
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: delete
-      additionalDependencies: TC_Masterdata_UpdateLocationStatus_01
       inputTemplate: masterdata/DeleteLocationData/DeleteLocationData
       outputTemplate: masterdata/DeleteLocationData/DeleteLocationDataResult
       input: '{

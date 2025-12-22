@@ -6,7 +6,6 @@ DeleteBlockListedWords:
       role: admin
       templateFields: ["word","code"]
       restMethod: Delete
-      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/DeleteBlockListedWords/deleteBlockListedWords
       outputTemplate: masterdata/DeleteBlockListedWords/deleteBlockListedWordsResult
       input: '{

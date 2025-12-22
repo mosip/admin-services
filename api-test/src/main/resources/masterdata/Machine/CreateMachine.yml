@@ -43,7 +43,6 @@ CreateMachine:
       role: globalAdmin
       templateFields: ["name"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_UpdateRegCentStatus_01
       inputTemplate: masterdata/Machine/machine
       outputTemplate: masterdata/error
       input: '{
@@ -77,7 +76,6 @@ CreateMachine:
       role: admin
       templateFields: ["name"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_UpdateRegCentStatus_01
       inputTemplate: masterdata/Machine/machine
       outputTemplate: masterdata/error
       input: '{
@@ -111,7 +109,6 @@ CreateMachine:
       role: admin
       templateFields: ["name"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_UpdateRegCentStatus_01
       inputTemplate: masterdata/Machine/machine
       outputTemplate: masterdata/error
       input: '{
@@ -145,7 +142,6 @@ CreateMachine:
       role: admin
       templateFields: ["name"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_UpdateRegCentStatus_01
       inputTemplate: masterdata/Machine/machine
       outputTemplate: masterdata/error
       input: '{

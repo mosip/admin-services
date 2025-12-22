@@ -60,7 +60,6 @@ FetchRegCent:
       description: Retrieve Registration Center details with invalid latitude
       role: admin
       restMethod: get
-      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
       input: '{
@@ -91,7 +90,6 @@ FetchRegCent:
       description: Retrieve Registration Center details with invalid longitude
       role: admin
       restMethod: get
-      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
       input: '{
@@ -149,7 +147,6 @@ FetchRegCent:
       description: Retrieve Registration Center details with invalid locationcode
       role: admin
       restMethod: get
-      additionalDependencies: TC_Masterdata_CreateRegCenter_01
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
       outputTemplate: masterdata/error
       input: '{

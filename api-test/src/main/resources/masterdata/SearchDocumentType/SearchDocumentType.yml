@@ -135,7 +135,6 @@ SearchDocumentType:
       role: admin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/SearchDocumentType/searchDocumentType
       outputTemplate: masterdata/error
       input: '{
@@ -174,7 +173,6 @@ SearchDocumentType:
       role: admin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/SearchDocumentType/searchDocumentType
       outputTemplate: masterdata/error
       input: '{
@@ -213,7 +211,6 @@ SearchDocumentType:
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/SearchDocumentType/searchDocumentType
       outputTemplate: masterdata/SearchDocumentType/searchDocumentTypeResult
       input: '{
@@ -247,7 +244,6 @@ SearchDocumentType:
       role: admin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/SearchDocumentType/searchDocumentType
       outputTemplate: masterdata/error
       input: '{
@@ -286,7 +282,6 @@ SearchDocumentType:
       role: admin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/SearchDocumentType/searchDocumentType
       outputTemplate: masterdata/error
       input: '{
@@ -325,7 +320,6 @@ SearchDocumentType:
       role: admin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/SearchDocumentType/searchDocumentType
       outputTemplate: masterdata/error
       input: '{
@@ -364,7 +358,6 @@ SearchDocumentType:
       role: admin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/SearchDocumentType/searchDocumentType
       outputTemplate: masterdata/error
       input: '{
@@ -403,7 +396,6 @@ SearchDocumentType:
       role: admin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/SearchDocumentType/searchDocumentType
       outputTemplate: masterdata/error
       input: '{
@@ -442,7 +434,6 @@ SearchDocumentType:
       role: admin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/SearchDocumentType/searchDocumentType
       outputTemplate: masterdata/error
       input: '{
@@ -481,7 +472,6 @@ SearchDocumentType:
       role: admin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/SearchDocumentType/searchDocumentType
       outputTemplate: masterdata/error
       input: '{
@@ -520,7 +510,6 @@ SearchDocumentType:
       role: admin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/SearchDocumentType/searchDocumentType
       outputTemplate: masterdata/error
       input: '{
@@ -558,7 +547,6 @@ SearchDocumentType:
       role: admin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/SearchDocumentType/searchDocumentType
       outputTemplate: masterdata/error
       input: '{
@@ -597,7 +585,6 @@ SearchDocumentType:
       role: admin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/SearchDocumentType/searchDocumentType
       outputTemplate: masterdata/error
       input: '{
@@ -635,7 +622,6 @@ SearchDocumentType:
       role: admin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/SearchDocumentType/searchDocumentType
       outputTemplate: masterdata/error
       input: '{

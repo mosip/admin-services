@@ -5,7 +5,6 @@ DeleteDocumentType:
       description: Delete Document Type with valid data
       role: admin
       restMethod: delete
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/DeleteDocumentType/deleteDocumentType
       outputTemplate: masterdata/DeleteDocumentType/deleteDocumentTypeResult
       input: '{
@@ -20,7 +19,6 @@ DeleteDocumentType:
       description: Delete Document Type with invalid code
       role: admin
       restMethod: delete
-      additionalDependencies: TC_Masterdata_CreateDocumentType_01
       inputTemplate: masterdata/DeleteDocumentType/deleteDocumentType
       outputTemplate: masterdata/error
       input: '{

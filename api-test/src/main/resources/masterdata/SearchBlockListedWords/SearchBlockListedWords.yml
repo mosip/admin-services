@@ -123,7 +123,6 @@ SearchBlockListedWords:
       role: admin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWords
       outputTemplate: masterdata/error
       input: '{
@@ -200,7 +199,6 @@ SearchBlockListedWords:
       role: admin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWords
       outputTemplate: masterdata/error
       input: '{
@@ -239,7 +237,6 @@ SearchBlockListedWords:
       role: admin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWords
       outputTemplate: masterdata/error
       input: '{
@@ -278,7 +275,6 @@ SearchBlockListedWords:
       role: admin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWords
       outputTemplate: masterdata/error
       input: '{
@@ -317,7 +313,6 @@ SearchBlockListedWords:
       role: admin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateBlockListedWords_01
       inputTemplate: masterdata/SearchBlockListedWords/searchBlockListedWords
       outputTemplate: masterdata/error
       input: '{

@@ -169,7 +169,6 @@ DeviceTypeSearch:
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceType_01
       inputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearch
       outputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearchResult
       input: '{
@@ -202,7 +201,6 @@ DeviceTypeSearch:
       role: admin
       templateFields: ["value"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceType_01
       inputTemplate: masterdata/DeviceTypeSearch/deviceTypeSearch
       outputTemplate: masterdata/error
       input: '{

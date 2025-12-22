@@ -87,7 +87,6 @@ DeviceTypeFilter:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceType_01
       inputTemplate: masterdata/DeviceTypeFilter/deviceTypeFilter
       outputTemplate: masterdata/error
       input: '{
@@ -115,7 +114,6 @@ DeviceTypeFilter:
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceType_01
       inputTemplate: masterdata/DeviceTypeFilter/deviceTypeFilter
       outputTemplate: masterdata/NilFilterResult
       input: '{
@@ -137,7 +135,6 @@ DeviceTypeFilter:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceType_01
       inputTemplate: masterdata/DeviceTypeFilter/deviceTypeFilter
       outputTemplate: masterdata/error
       input: '{
@@ -163,7 +160,6 @@ DeviceTypeFilter:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceType_01
       inputTemplate: masterdata/DeviceTypeFilter/deviceTypeFilter
       outputTemplate: masterdata/error
       input: '{
@@ -190,7 +186,6 @@ DeviceTypeFilter:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceType_01
       inputTemplate: masterdata/DeviceTypeFilter/deviceTypeFilter
       outputTemplate: masterdata/error
       input: '{

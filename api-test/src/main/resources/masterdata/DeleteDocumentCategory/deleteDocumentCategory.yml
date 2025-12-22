@@ -5,7 +5,6 @@ DeleteDocumentCategory:
       description: Delete Document Categoty with valid data
       role: admin
       restMethod: delete
-      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/DeleteDocumentCategory/deleteDocumentCategory
       outputTemplate: masterdata/DeleteDocumentCategory/deleteDocumentCategoryResult
       input: '{
