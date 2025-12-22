@@ -121,7 +121,6 @@ additionalResources:
   ## Specify any JAVA_OPTS string here. These typically will be specified in conjunction with above resources
   ## Example: java_opts: "-Xms500M -Xmx500M"
   javaOpts: "-Xms720M -Xmx1200M"
-
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
 ## Clamav container already runs as 'mosip' user, so we may not need to enable this
 containerSecurityContext:
@@ -198,10 +197,8 @@ lifecycleHooks:
         - sh
         - -c
         - sleep 30
-
 ## Termination grace perios : the maximum amount of time (in seconds) Kubernetes will wait for a container to gracefully shut down
 terminationGracePeriodSeconds: 60
-
 ## Custom Liveness probes for
 ##
 customLivenessProbe: {}
