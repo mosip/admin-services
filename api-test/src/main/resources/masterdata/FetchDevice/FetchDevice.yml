@@ -65,7 +65,6 @@ FetchDevice:
       description: Retrieve mapped Device details to a regCenterId
       role: admin
       restMethod: get
-      additionalDependencies: TC_Masterdata_CreateDevice_01
       inputTemplate: masterdata/FetchDevice/fetchDevice
       outputTemplate: masterdata/error
       input: '{
@@ -87,7 +86,6 @@ FetchDevice:
       description: Retrieve Device details non existing deviceType
       role: admin
       restMethod: get
-      additionalDependencies: TC_Masterdata_CreateDevice_01
       inputTemplate: masterdata/FetchDevice/fetchDevice
       outputTemplate: masterdata/error
       input: '{

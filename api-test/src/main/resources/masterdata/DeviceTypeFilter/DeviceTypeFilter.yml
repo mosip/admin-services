@@ -6,7 +6,6 @@ DeviceTypeFilter:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceType_01
       inputTemplate: masterdata/DeviceTypeFilter/deviceTypeFilter
       outputTemplate: masterdata/DeviceTypeFilter/deviceTypeFilterResult
       input: '{
@@ -33,7 +32,6 @@ DeviceTypeFilter:
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceType_01
       inputTemplate: masterdata/DeviceTypeFilter/deviceTypeFilter
       outputTemplate: masterdata/DeviceTypeFilter/deviceTypeFilterResult
       input: '{

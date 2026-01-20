@@ -27,15 +27,14 @@ UpdateBlockListedWords:
       role: admin
       templateFields: ["description","word","oldWord"]
       restMethod: put
-      additionalDependencies: TC_Masterdata_UpdateBlockListedWordStatus_01
       inputTemplate: masterdata/BlockListedWords/updateBlockListedWords
       outputTemplate: masterdata/error
       input: '{
     "description": "wrong word updated",
 	"isActive": "true",
     "langCode": "eng",
-    "oldWord": "automation$TESTDATACONTEXT$updated",	
-    "word": "dumbooo",
+    "oldWord": "$ID:CreateBlockListedWords_All_Valid_Smoke_Sid_word$",	
+    "word": "dumbooo ",
     "requesttime": "$TIMESTAMP$"
 }'
       output: '{

@@ -6,7 +6,6 @@ UpdateDeviceTypeStatus:
       role: admin
       templateFields: []
       restMethod: patch
-      additionalDependencies: TC_Masterdata_CreateDeviceType_01
       inputTemplate: masterdata/UpdateDeviceTypeStatus/updateDeviceTypeStatus
       outputTemplate: masterdata/UpdateDeviceTypeStatus/updateteDeviceTypeStatusResult
       input: '{
@@ -24,7 +23,6 @@ UpdateDeviceTypeStatus:
       role: admin
       templateFields: []
       restMethod: patch
-      additionalDependencies: TC_Masterdata_CreateDeviceType_01
       inputTemplate: masterdata/UpdateDeviceTypeStatus/updateDeviceTypeStatus
       outputTemplate: masterdata/error
       input: '{

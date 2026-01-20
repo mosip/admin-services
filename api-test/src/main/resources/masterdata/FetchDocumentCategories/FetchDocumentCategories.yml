@@ -6,7 +6,6 @@ FetchDocumentCategories:
       role: admin
       templateFields: []
       restMethod: get
-      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/FetchDocumentCategories/fetchDocumentCategories
       outputTemplate: masterdata/error
       input: '{
@@ -28,7 +27,6 @@ FetchDocumentCategories:
       role: admin
       templateFields: []
       restMethod: get
-      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/FetchDocumentCategories/fetchDocumentCategories
       outputTemplate: masterdata/error
       input: '{
@@ -51,7 +49,6 @@ FetchDocumentCategories:
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
       restMethod: get
-      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/FetchDocumentCategories/fetchDocumentCategories
       outputTemplate: masterdata/FetchDocumentCategories/fetchDocumentCategoriesResult
       input: '{

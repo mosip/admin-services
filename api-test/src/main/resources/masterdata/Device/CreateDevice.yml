@@ -6,7 +6,6 @@ CreateDevice:
       role: globalAdmin
       templateFields: ["name","description"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/Device/createDeviceResult
       input: '{
@@ -40,13 +39,12 @@ CreateDevice:
       role: globalAdmin
       templateFields: ["name","description"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/Device/createDeviceResult
       input: '{
     "name": "testDevicedummy",
     "description": "testDevicedummy",
-	"deviceSpecId": "736",
+	"deviceSpecId": "$ID:CreateDeviceSpecification_All_Valid_Smoke_sid_id$",
 	"ipAddress": "172.23.174.113",
 	"isActive": true,
 	"langCode": "eng",
@@ -58,7 +56,7 @@ CreateDevice:
 	}'
       output: '{
     "name": "testDevicedummy",
-	"deviceSpecId": "736",
+	"deviceSpecId": "$ID:CreateDeviceSpecification_All_Valid_Smoke_sid_id$",
 	"ipAddress": "172.23.174.113",
 	"isActive": false,
 	"macAddress": "D4-3D-7E-C0-8C-4A",
@@ -74,7 +72,6 @@ CreateDevice:
       role: admin
       templateFields: ["name","description"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -105,7 +102,6 @@ CreateDevice:
       role: admin
       templateFields: ["name","description"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -136,7 +132,6 @@ CreateDevice:
       role: admin
       templateFields: ["name","description"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -167,7 +162,6 @@ CreateDevice:
       role: admin
       templateFields: ["description"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -198,7 +192,6 @@ CreateDevice:
       role: admin
       templateFields: ["name","description"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -229,7 +222,6 @@ CreateDevice:
       role: admin
       templateFields: ["name","description"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -260,7 +252,6 @@ CreateDevice:
       role: admin
       templateFields: ["name","description"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -322,7 +313,6 @@ CreateDevice:
       role: admin
       templateFields: ["name","description"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -353,7 +343,6 @@ CreateDevice:
       role: admin
       templateFields: ["name","description"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{
@@ -384,7 +373,6 @@ CreateDevice:
       role: admin
       templateFields: ["name","description"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDeviceSpecification_01
       inputTemplate: masterdata/Device/createDevice
       outputTemplate: masterdata/error
       input: '{

@@ -51,7 +51,6 @@ FilterDocCategory:
       role: admin
       templateFields: ["text"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/FilterDocCategory/filterDocCategory
       outputTemplate: masterdata/error
       input: '{
@@ -79,7 +78,6 @@ FilterDocCategory:
       role: admin
       templateFields: ["text"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/FilterDocCategory/filterDocCategory
       outputTemplate: masterdata/error
       input: '{
@@ -106,7 +104,6 @@ FilterDocCategory:
       role: admin
       templateFields: ["text"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/FilterDocCategory/filterDocCategory
       outputTemplate: masterdata/error
       input: '{
@@ -132,7 +129,6 @@ FilterDocCategory:
       role: admin
       templateFields: ["text"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/FilterDocCategory/filterDocCategory
       outputTemplate: masterdata/error
       input: '{
@@ -160,7 +156,6 @@ FilterDocCategory:
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]
       restMethod: post
-      additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
       inputTemplate: masterdata/FilterDocCategory/filterDocCategory
       outputTemplate: masterdata/FilterDocCategory/filterDocCategoryResult
       input: '{
