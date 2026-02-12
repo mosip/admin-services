@@ -2,7 +2,7 @@ DeviceFilter:
    MasterData_DeviceFilter_Name_eng_Unique_smoke:
       endPoint: /v1/masterdata/devices/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceFilter_01
-      description: Filter devices by columnName name with type unique
+      description: Verify that the system correctly filters devices by unique name in English and returns accurate results
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -29,7 +29,7 @@ DeviceFilter:
    MasterData_DeviceFilter_Name_eng_All_smoke:
       endPoint: /v1/masterdata/devices/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceFilter_02
-      description: Filter devices by columnName name and type all
+      description: Verify that the system correctly filters devices by name in English and returns all matching records
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -57,7 +57,7 @@ DeviceFilter:
    MasterData_DeviceFilter_MacAddress_Unique_smoke:
       endPoint: /v1/masterdata/devices/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceFilter_03
-      description: Filter devices by columnName macAddress and type unique
+      description: Verify that the system correctly filters devices by unique MAC address and returns the exact matching record
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -84,7 +84,7 @@ DeviceFilter:
    MasterData_DeviceFilter_MacAddress_All_smoke:
       endPoint: /v1/masterdata/devices/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceFilter_04
-      description: Filter devices by macAddress with type all
+      description: Verify that the system correctly filters devices by MAC address and returns all matching records
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -111,7 +111,7 @@ DeviceFilter:
    MasterData_DeviceFilter_SerialNum_Unique_smoke:
       endPoint: /v1/masterdata/devices/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceFilter_05
-      description: Filter devices by columnName serialNum with type Unique
+      description: Verify that the system correctly filters devices by unique serial number and returns the exact matching record
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -134,7 +134,7 @@ DeviceFilter:
    MasterData_DeviceFilter_Invalid_RequestTime:
       endPoint: /v1/masterdata/devices/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceFilter_06
-      description: Filter devices by invalid Request Time
+      description: Verify that the system returns an error when the device filter request contains an invalid request time
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -162,7 +162,7 @@ DeviceFilter:
    MasterData_DeviceFilter_inValid_columnName:
       endPoint: /v1/masterdata/devices/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceFilter_07
-      description: Filter devices by invalid columnName
+      description: Verify that the system returns an error when an invalid column name is used in the device filter request
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post

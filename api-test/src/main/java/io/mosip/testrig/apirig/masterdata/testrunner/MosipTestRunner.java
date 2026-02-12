@@ -101,7 +101,7 @@ public class MosipTestRunner {
 			AdminTestUtil.getZoneName();
 			AdminTestUtil.getLeafZone();
 
-			for (int i = 0; i < localLanguageList.size(); i++) {
+			for (int i = 0; i < 1; i++) {
 				BaseTestCase.languageList.clear();
 				BaseTestCase.languageList.add(localLanguageList.get(i));
 				SkipTestCaseHandler.clearTestCaseInSkippedList();

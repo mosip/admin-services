@@ -2,7 +2,7 @@ DeviceSpecFilter:
    MasterData_DeviceSpecFilter_Unique_Name_eng_smoke:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_01
-      description: Filter Device Specification by columnName name with type unique
+      description: Verify that the system correctly filters device specifications by unique name in English
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -29,7 +29,7 @@ DeviceSpecFilter:
    MasterData_DeviceSpecFilter_All_Name_eng_smoke:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_02
-      description: Filter Device Specification by columnName name with type all
+      description: Verify that the system correctly filters device specifications by name in English and returns all matching records
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -56,7 +56,7 @@ DeviceSpecFilter:
    MasterData_DeviceSpecFilter_Unique_Brand_eng_smoke:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_03
-      description: Filter Device Specification by columnName brand and type unique
+      description: Verify that the system correctly filters device specifications by unique brand in English and returns the exact matching record
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -83,7 +83,7 @@ DeviceSpecFilter:
    MasterData_DeviceSpecFilter_All_Brand_eng_smoke:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_04
-      description: Filter Device Specification by columnName brand and type all
+      description: Verify that the system correctly filters device specifications by brand in English and returns all matching records
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -106,7 +106,7 @@ DeviceSpecFilter:
    MasterData_DeviceSpecFilter_Unique_Model_smoke:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_05
-      description: Filter Device Specification by columnName model and type unique
+      description: Verify that the system correctly filters device specifications by unique model and returns the exact matching record
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -133,7 +133,7 @@ DeviceSpecFilter:
    MasterData_DeviceSpecFilter_Unique_IsActive_smoke:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_06
-      description: Filter Device Specification by columnName isActive with type unique
+      description: Verify that the system correctly filters device specifications by unique active status and returns the exact matching record
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -160,7 +160,7 @@ DeviceSpecFilter:
    MasterData_DeviceSpecFilter_Invalid_RequestTime_neg:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_07
-      description: Filter Device Specification by invalid requesttime
+      description: Verify that the system returns an error when an invalid request time is provided in the device specification filter
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -186,7 +186,7 @@ DeviceSpecFilter:
    MasterData_DeviceSpecFilter_Invalid_Value_Name_neg:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_08
-      description: Filter Device Specification by columnName name and invalid text
+      description: Verify that the system returns an error when an invalid value is used while filtering device specifications by name
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -207,7 +207,7 @@ DeviceSpecFilter:
    MasterData_DeviceSpecFilter_Invalid_FilterType_neg:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_09
-      description: Filter Device Specification by columnName name with invalid text
+      description: Verify that the system returns an error when an invalid filter type is used in the device specification filter
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -233,7 +233,7 @@ DeviceSpecFilter:
    MasterData_DeviceSpecFilter_inValid_blank_FilterType_neg:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_10
-      description: Filter Device Specification by columnName name and empty type
+      description: Verify that the system returns an error when the filter type is blank in the device specification filter request
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -259,7 +259,7 @@ DeviceSpecFilter:
    MasterData_DeviceSpecFilter_inValid_columnName:
       endPoint: /v1/masterdata/devicespecifications/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceSpecFilter_11
-      description: Filter Device Specification by invalid columnName
+      description: Verify that the system returns an error when an invalid column name is used in the device specification filter
       role: admin
       templateFields: ["languageCode"]
       restMethod: post

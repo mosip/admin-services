@@ -2,7 +2,7 @@ CreateBlockListedWords:
    Masterdata_CreateBlockListedWords_All_Valid_Smoke_Sid:
       endPoint: /v1/masterdata/blocklistedwords
       uniqueIdentifier: TC_Masterdata_CreateBlockListedWords_01
-      description: Create block listed words with valid data
+      description: Verify that the system successfully creates a block-listed word when the API is called with valid input details and a valid SID  
       role: admin
       templateFields: ["description","word"]
       restMethod: post
@@ -21,7 +21,7 @@ CreateBlockListedWords:
    Masterdata_CreateBlockListedWords_space_in_word:
       endPoint: /v1/masterdata/blocklistedwords
       uniqueIdentifier: TC_Masterdata_CreateBlockListedWords_02
-      description: Create block listed word with space in word value
+      description: Verify that the system correctly handles creating a block-listed word when the word contains spaces 
       role: admin
       templateFields: ["description","word"]
       restMethod: post
@@ -45,7 +45,7 @@ CreateBlockListedWords:
    Masterdata_CreateBlockListedWords_Invalid_BlocklistedWordsLength129:
       endPoint: /v1/masterdata/blocklistedwords
       uniqueIdentifier: TC_Masterdata_CreateBlockListedWords_03
-      description: Create block listed words with invalid length of word more than 128 charectars
+      description: Verify that the system rejects the request when attempting to create a block-listed word that exceeds the maximum allowed length (129 characters) 
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -69,7 +69,7 @@ CreateBlockListedWords:
    Masterdata_CreateBlockListedWords_Invalid_DescriptionLength257:
       endPoint: /v1/masterdata/blocklistedwords
       uniqueIdentifier: TC_Masterdata_CreateBlockListedWords_04
-      description: Create block listed words with invalid Description of more than 256 charectars
+      description: Verify that the system does not allow creating a block-listed word when the description is longer than 257 characters 
       role: admin
       templateFields: ["word"]
       restMethod: post
@@ -93,7 +93,7 @@ CreateBlockListedWords:
    Masterdata_CreateBlockListedWords_Invalid_EmptyWord:
       endPoint: /v1/masterdata/blocklistedwords
       uniqueIdentifier: TC_Masterdata_CreateBlockListedWords_05
-      description: Create block listed words with empty word value
+      description: Verify that the system does not allow creating a block-listed word when the word field is empty
       role: admin
       templateFields: ["description"]
       restMethod: post

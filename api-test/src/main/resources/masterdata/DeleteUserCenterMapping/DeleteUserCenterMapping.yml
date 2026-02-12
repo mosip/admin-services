@@ -2,7 +2,7 @@ DeleteUserCenterMapping:
    MasterData_DeleteUserCenterMapping_All_Valid_Smoke:  
       endPoint: /v1/masterdata/usercentermapping/{id}
       uniqueIdentifier: TC_Masterdata_DeleteUserCenterMapping_01
-      description: Delete User Center Mapping with all valid data
+      description: Verify that the system successfully deletes a user-center mapping when all details are vali
       role: admin
       checkErrorsOnlyInResponse: true  
       restMethod: delete
@@ -17,7 +17,7 @@ DeleteUserCenterMapping:
    MasterData_DeleteUserCenterMapping_in_Valid:  
       endPoint: /v1/masterdata/usercentermapping/{id}
       uniqueIdentifier: TC_Masterdata_DeleteUserCenterMapping_02
-      description: Delete User Center Mapping with invalid id
+      description: Verify that the system does not delete a user-center mapping when invalid details are provided
       role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteUserCenterMapping/deleteUserCenterMapping
