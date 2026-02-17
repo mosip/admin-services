@@ -2,7 +2,7 @@ FetchDynamicField:
    Masterdata_FetchDynamicField_AllValid_smoke:
       endPoint: /v1/masterdata/dynamicfields
       uniqueIdentifier: TC_Masterdata_FetchDynamicField_01
-      description: Retrieve Dynamic Fields with all valid data
+      description: Verify that the system successfully fetches all dynamic field records with valid input data
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

@@ -2,7 +2,7 @@ GetTemplatesByCode:
    MasterData_GetTemplatesByCode_allValid_smoke:
       endPoint: /v1/masterdata/templates/templatetypecodes/{code}
       uniqueIdentifier: TC_Masterdata_GetTemplatesByCode_01
-      description: Retrieve template details by valid code
+      description: Verify that the system successfully returns template details for a valid template code (smoke test)
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetTemplatesByCode/getTemplatesByCode
@@ -19,7 +19,7 @@ GetTemplatesByCode:
    MasterData_GetTemplatesByCode_InValid_InvalidTemplateCode:
       endPoint: /v1/masterdata/templates/templatetypecodes/{code}
       uniqueIdentifier: TC_Masterdata_GetTemplatesByCode_02
-      description: Retrieve template details by invalid code
+      description: Verify that the system returns an error or handles gracefully when an invalid template code is provided while fetching template details
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetTemplatesByCode/getTemplatesByCode

@@ -2,7 +2,7 @@ FetchValidDocumentsByDocCategoryCode:
    MasterData_FetchValidDocumentsByDocCategoryCode_allValid_smoke_with_lang:
       endPoint: /v1/masterdata/validdocuments/{doccategorycode}/{languagecode}
       uniqueIdentifier: TC_Masterdata_FetchValidDocumentsByDocCategoryCode_01
-      description: Retrieve Valid Documents details By doccategorycode and languagecode
+      description: Verify that the system successfully fetches valid document details by document category code for the specified language when valid input parameters are provided
       role: admin
       templateFields: ["languagecode"]
       restMethod: get
@@ -22,7 +22,7 @@ FetchValidDocumentsByDocCategoryCode:
    MasterData_FetchValidDocumentsByDocCategoryCode_inValid_DocCategory:
       endPoint: /v1/masterdata/validdocuments/{doccategorycode}/{languagecode}
       uniqueIdentifier: TC_Masterdata_FetchValidDocumentsByDocCategoryCode_02
-      description: Retrieve Valid Documents details with invalid doccategorycode and valid languagecode
+      description: Verify that the system returns an error when an invalid document category code is provided while fetching valid documents
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

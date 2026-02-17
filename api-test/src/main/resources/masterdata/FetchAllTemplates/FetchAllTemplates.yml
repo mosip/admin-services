@@ -2,7 +2,7 @@ FetchAllTemplates:
    MasterData_FetchAllTemplates_AllValid_smoke:
       endPoint: /v1/masterdata/templates/all
       uniqueIdentifier: TC_Masterdata_FetchAllTemplates_01
-      description: Retrieve All Template details with valid data
+      description: Verify that the system successfully fetches all templates with valid input data
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

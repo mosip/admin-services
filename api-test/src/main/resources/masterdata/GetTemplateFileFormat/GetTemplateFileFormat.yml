@@ -2,7 +2,7 @@ GetTemplateFileFormat:
    Masterdata_GetTemplateFileFormat_allValid_smoke:
       endPoint: /v1/masterdata/templatefileformats/{code}/{langcode}
       uniqueIdentifier: TC_Masterdata_GetTemplateFileFormat_01
-      description: Retrieve template file format with valid language code and code
+      description: Verify that the system successfully returns all template file formats when a valid request is made (smoke test)
       role: admin
       templateFields: ["langcode"]
       restMethod: get
@@ -21,7 +21,7 @@ GetTemplateFileFormat:
    Masterdata_GetTemplateFileFormat_inValid_code:
       endPoint: /v1/masterdata/templatefileformats/{code}/{langcode}
       uniqueIdentifier: TC_Masterdata_GetTemplateFileFormat_02
-      description: Retrieve template file format with valid language code and invalid code
+      description: Verify that the system returns an error or handles gracefully when an invalid code is provided while fetching template file formats
       role: admin
       templateFields: ["langcode"]
       restMethod: get
@@ -42,7 +42,7 @@ GetTemplateFileFormat:
    Masterdata_GetTemplateFileFormat_langcode_allValid_smoke:
       endPoint: /v1/masterdata/templatefileformats/code/{code}
       uniqueIdentifier: TC_Masterdata_GetTemplateFileFormat_02
-      description: Retrieve template file format without language code and code
+      description: Verify that the system successfully returns all template file formats for a valid language code (smoke test)
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetTemplateFileFormat/getTemplateFileFormat

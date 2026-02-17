@@ -2,7 +2,7 @@ GetIndividualType:
    MasterData_GetIndividualType_allValid_smoke:
       endPoint: /v1/masterdata/individualtypes/all
       uniqueIdentifier: TC_Masterdata_GetIndividualType_01
-      description: Retrieve individual type details
+      description: Verify that the system successfully returns all individual types when a valid request is made (smoke test)
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetIndividualType/getIndividualType

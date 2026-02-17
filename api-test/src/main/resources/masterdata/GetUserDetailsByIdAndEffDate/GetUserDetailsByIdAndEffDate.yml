@@ -2,7 +2,7 @@ GetUserDetailsByIdAndEffDate:
    MasterData_GetUserDetailsByIdAndEffDate_allValid_smoke:
       endPoint: /v1/masterdata/users/{id}/{effDate}
       uniqueIdentifier: TC_Masterdata_GetUserDetailsByIdAndEffDate_01
-      description: Retrieve user details by valid ID and effective date
+      description: Verify that the system successfully returns user details for a valid user ID and effective date (smoke test)
       role: admin
       templateFields: ["langCode"]
       restMethod: get
@@ -18,7 +18,7 @@ GetUserDetailsByIdAndEffDate:
    MasterData_GetUserDetailsByIdAndEffDate_InValid_dateFormat:
       endPoint: /v1/masterdata/users/{id}/{effDate}
       uniqueIdentifier: TC_Masterdata_GetUserDetailsByIdAndEffDate_02
-      description: Retrieve user details using a valid ID and an invalid date format for the effective date
+      description: Verify that the system returns an error or handles gracefully when an invalid date format is provided while fetching user details by ID and effective date
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetUserDetailsByIdAndEffDate/getUserDetailsByIdAndEffDate
@@ -38,7 +38,7 @@ GetUserDetailsByIdAndEffDate:
    MasterData_GetUserDetailsByIsAndEffDate_InValid_effDate:
       endPoint: /v1/masterdata/users/{id}/{effDate}
       uniqueIdentifier: TC_Masterdata_GetUserDetailsByIdAndEffDate_03
-      description: Retrieve user details using a valid ID and an invalid for the invalid effective date
+      description: Verify that the system returns an error or handles gracefully when an invalid effective date is provided while fetching user details by ID
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetUserDetailsByIdAndEffDate/getUserDetailsByIdAndEffDate
@@ -58,7 +58,7 @@ GetUserDetailsByIdAndEffDate:
    MasterData_GetUserDetailsByIdAndEffDate_InValid_UserID:
       endPoint: /v1/masterdata/users/{id}/{effDate}
       uniqueIdentifier: TC_Masterdata_GetUserDetailsByIdAndEffDate_04
-      description: Retrieve user details using a invalid ID
+      description: Verify that the system returns an error or handles gracefully when an invalid user ID is provided while fetching user details by ID and effective date
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetUserDetailsByIdAndEffDate/getUserDetailsByIdAndEffDate

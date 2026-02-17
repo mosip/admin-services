@@ -2,7 +2,7 @@ GetLanguage:
    Admin_GetLanguage_allValid_smoke:
       endPoint: /v1/masterdata/languages
       uniqueIdentifier: TC_Masterdata_GetLanguage_01
-      description: Retrieve all the languages list
+      description: Verify that the system successfully returns all available languages when a valid request is made (smoke test)
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

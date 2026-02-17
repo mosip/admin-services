@@ -2,7 +2,7 @@ GetAllTxnDetailBulkUpload:
    Master_GetAllTxnDetailBulkUpload_Smoke:
       endPoint: /v1/admin/bulkupload/getAllTransactions
       uniqueIdentifier: TC_Masterdata_GetAllTxnDetailBulkUpload_01
-      description: Retrieve all transcation details for bulk upload
+      description: Verify that the system successfully fetches all transaction details during a bulk upload as a basic smoke test
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

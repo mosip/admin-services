@@ -2,7 +2,7 @@ FilterDynamicField:
    MasterData_FilterDynamicField_Valid_Smoke:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterDynamicField_01
-      description: Filter Dynamic Fields By all valid data
+      description: Verify that the system successfully filters dynamic fields and returns the expected results when a valid request is provided
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -33,7 +33,7 @@ FilterDynamicField:
    MasterData_FilterDynamicField_Invalid_RequestTime:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterDynamicField_02
-      description: Filter Dynamic Fields By invalid requesttime format
+      description: Verify that the system returns an error when the request time is provided in an invalid format while filtering dynamic fields
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -59,7 +59,7 @@ FilterDynamicField:
    MasterData_FilterDynamicField_InValid_FilterType:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterDynamicField_03
-      description: Filter Dynamic Fields By invalid type
+      description: Verify that the system returns an error when an invalid filter type is provided while filtering dynamic fields
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -85,7 +85,7 @@ FilterDynamicField:
    MasterData_FilterDynamicField_Blank_FilterType:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterDynamicField_04
-      description: Filter Dynamic Fields By empty type
+      description: Verify that the system returns an error when a blank filter type is provided while filtering dynamic fields
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -111,7 +111,7 @@ FilterDynamicField:
    MasterData_FilterDynamicField_InValid_columnName:
       endPoint: /v1/masterdata/dynamicfields/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterDynamicField_05
-      description: Filter Dynamic Fields By empty text
+      description: Verify that the system returns an error when an invalid column name is provided while filtering dynamic fields
       role: admin
       templateFields: ["languageCode"]
       restMethod: post

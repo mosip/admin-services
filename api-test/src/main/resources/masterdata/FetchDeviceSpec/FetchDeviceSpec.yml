@@ -2,7 +2,7 @@ FetchDeviceSpec:
    MasterData_FetchDeviceSpec_allValid_smoke_with_lang:
       endPoint: /v1/masterdata/devicespecifications/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchDeviceSpec_01
-      description: Retrieve device specification with valid langcode
+      description: Verify that the system successfully fetches all device specification records using valid input data and language code
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: []
@@ -19,7 +19,7 @@ FetchDeviceSpec:
    MasterData_FetchDeviceSpec_allValid_byDeviceTypeCode_smoke:
       endPoint: /v1/masterdata/devicespecifications/devicetypecode/{devicetypecode}
       uniqueIdentifier: TC_Masterdata_FetchDeviceSpec_02
-      description: Retrieve device specification with valid devicetypecode
+      description: Verify that the system successfully fetches device specification records using a valid device type code
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: []
@@ -36,7 +36,7 @@ FetchDeviceSpec:
    MasterData_FetchDeviceSpec_allValid_smoke_with_lang_and_deviceType:
       endPoint: /v1/masterdata/devicespecifications/{langcode}/{devicetypecode}
       uniqueIdentifier: TC_Masterdata_FetchDeviceSpec_03
-      description: Retrieve device specification with valid devicetypecode and langcode
+      description: Verify that the system successfully fetches device specification records using valid language code and device type
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: []
@@ -53,7 +53,7 @@ FetchDeviceSpec:
    MasterData_FetchDeviceSpec_invalid_devicetypecode_unexisting:
       endPoint: /v1/masterdata/devicespecifications/{langcode}/{devicetypecode}
       uniqueIdentifier: TC_Masterdata_FetchDeviceSpec_04
-      description: Retrieve device specification with non existing devicetypecode
+      description: Verify that the system returns an error when an unexisting device type code is used to fetch device specification records
       role: admin
       templateFields: []
       restMethod: get

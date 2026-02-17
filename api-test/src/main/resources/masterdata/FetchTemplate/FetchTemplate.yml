@@ -2,7 +2,7 @@ FetchTemplate:
    MasterData_FetchTemplate_allValid_smoke_Get:
       endPoint: /v1/masterdata/templates
       uniqueIdentifier: TC_Masterdata_FetchTemplate_01
-      description: Retrieve Templates with all valid data
+      description: Verify that the system successfully fetches template details using the GET method when all valid input parameters are provided
       role: admin
       checkErrorsOnlyInResponse: true 
       restMethod: get
@@ -19,7 +19,7 @@ FetchTemplate:
    MasterData_FetchTemplate_allValid_ByLangcode_smoke:
       endPoint: /v1/masterdata/templates/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchTemplate_02
-      description: Retrieve Templates with langcode
+      description: Verify that the system successfully fetches template details for the specified language code when valid input parameters are provided
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -36,7 +36,7 @@ FetchTemplate:
    MasterData_FetchTemplate_allValid_smoke_with_lang_and_templatetypecode:
       endPoint: /v1/masterdata/templates/{langcode}/{templatetypecode}
       uniqueIdentifier: TC_Masterdata_FetchTemplate_03
-      description: Retrieve Templates with langcode and templatetypecode
+      description: Verify that the system successfully fetches template details when valid language code and template type code are provided
       role: admin
       templateFields: ["langcode"]
       restMethod: get
@@ -56,7 +56,7 @@ FetchTemplate:
    MasterData_FetchTemplate_invalid_templatetypecode_unexisting:
       endPoint: /v1/masterdata/templates/{langcode}/{templatetypecode}
       uniqueIdentifier: TC_Masterdata_FetchTemplate_04
-      description: Retrieve Templates with langcode and nonexisting templatetypecode
+      description: Verify that the system returns an error when a non-existing template type code is provided while fetching template details
       role: admin
       templateFields: []
       restMethod: get
@@ -78,7 +78,7 @@ FetchTemplate:
    MasterData_FetchTemplate_invalid_code:
       endPoint: /v1/masterdata/templates/templatetypecodes/{code}
       uniqueIdentifier: TC_Masterdata_FetchTemplate_05
-      description: Retrieve Templates with invalid code
+      description: Verify that the system returns an error when an invalid template code is provided while fetching template details
       role: admin
       templateFields: []
       restMethod: get

@@ -2,7 +2,7 @@ FetchAllDocumentCategories:
    MasterData_FetchAllDocumentCategories_valid_smoke_langcodeandCode:
       endPoint: /v1/masterdata/documentcategories/all
       uniqueIdentifier: TC_Masterdata_FetchAllDocumentCategories_01
-      description: Retrieve All Document Categories with valid data
+      description: Verify that the system can fetch all document categories successfully using language code and code filters
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

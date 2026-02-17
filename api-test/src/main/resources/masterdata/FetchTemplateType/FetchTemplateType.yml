@@ -2,7 +2,7 @@ FetchTemplateType:
    MasterData_FetchTemplateType_allValid_smoke:
       endPoint: /v1/masterdata/templatetypes/{code}/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchTemplateType_01
-      description: Retrieve Templates Types with all valid data
+      description: Verify that the system successfully fetches template type details when all valid input parameters are provided
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
@@ -18,7 +18,7 @@ FetchTemplateType:
    MasterData_FetchTemplateType_inValid_code:
       endPoint: /v1/masterdata/templatetypes/{code}/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchTemplateType_02
-      description: Retrieve Templates Types with invalid code and Valid langcode
+      description: Verify that the system returns an error when an invalid template type code is provided while fetching template type details
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchTemplateType/fetchTemplateType
@@ -39,7 +39,7 @@ FetchTemplateType:
    MasterData_FetchTemplateType_allValid_smoke_langcode:
       endPoint: /v1/masterdata/templatetypes/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchTemplateType_03
-      description: Retrieve Templates Types with only langcode
+      description: Verify that the system successfully fetches template type details for the specified language code when valid input parameters are provided
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]

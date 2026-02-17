@@ -2,7 +2,7 @@ FetchAllDeviceType:
    MasterData_FetchAllDeviceTypes_valid_smoke:
       endPoint: /v1/masterdata/devicetypes/all
       uniqueIdentifier: TC_Masterdata_FetchAllDeviceTypes_01
-      description: Retrieve All Device Type details with valid data
+      description: Verify that the system successfully fetches all device type records with valid input data
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: []

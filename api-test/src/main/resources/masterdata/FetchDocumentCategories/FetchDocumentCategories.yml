@@ -2,7 +2,7 @@ FetchDocumentCategories:
    MasterData_FetchDocumentCategories_invalid_code_notpresent:
       endPoint: /v1/masterdata/documentcategories/{code}/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchDocumentCategories_01
-      description: Retrieve Document Categories with invalid code and valid langcode
+      description: Verify that the system returns an error when a non-existing document category code is used to fetch records
       role: admin
       templateFields: []
       restMethod: get
@@ -23,7 +23,7 @@ FetchDocumentCategories:
    MasterData_FetchDocumentCategories_invalid_langcode:
       endPoint: /v1/masterdata/documentcategories/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchDocumentCategories_02
-      description: Retrieve Document Categories with invalid langcode
+      description: Verify that the system returns an error when an invalid language code is used to fetch document categories
       role: admin
       templateFields: []
       restMethod: get
@@ -44,7 +44,7 @@ FetchDocumentCategories:
    MasterData_FetchDocumentCategories_valid_smoke_langcode:
       endPoint: /v1/masterdata/documentcategories/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchDocumentCategories_03
-      description: Retrieve Document Categories with valid langcode
+      description: Verify that the system successfully fetches document categories using a valid language code
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]

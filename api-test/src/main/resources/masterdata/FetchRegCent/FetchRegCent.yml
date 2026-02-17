@@ -2,7 +2,7 @@ FetchRegCent:
    MasterData_FetchRegCent_allValid_smoke:
       endPoint: /v1/masterdata/registrationcenters
       uniqueIdentifier: TC_Masterdata_FetchRegCent_01
-      description: Retrieve Registration Center details with valid data
+      description: Verify that the system successfully fetches all registration center records with valid input data
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
@@ -29,7 +29,7 @@ FetchRegCent:
    MasterData_FetchRegCent_coordinate_specific_allValid_smoke:
       endPoint: /v1/masterdata/getcoordinatespecificregistrationcenters/{langcode}/{longitude}/{latitude}/{proximitydistance}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_02
-      description: Retrieve Registration Center details with specific coordinates
+      description: Verify that the system successfully fetches all registration center records for a specific coordinate with valid input data
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
@@ -57,7 +57,7 @@ FetchRegCent:
    MasterData_FetchRegCent_coordinate_specific_invalid_latitude:
       endPoint: /v1/masterdata/getcoordinatespecificregistrationcenters/{langcode}/{longitude}/{latitude}/{proximitydistance}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_03
-      description: Retrieve Registration Center details with invalid latitude
+      description: Verify that the system returns an error when an invalid latitude is used to fetch registration center records
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
@@ -87,7 +87,7 @@ FetchRegCent:
    MasterData_FetchRegCent_coordinate_specific_invalid_longitude:
       endPoint: /v1/masterdata/getcoordinatespecificregistrationcenters/{langcode}/{longitude}/{latitude}/{proximitydistance}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_04
-      description: Retrieve Registration Center details with invalid longitude
+      description: Verify that the system returns an error when an invalid longitude is used to fetch registration center records
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
@@ -117,7 +117,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_LocationCode_allValid_smoke:
       endPoint: /v1/masterdata/getlocspecificregistrationcenters/{langcode}/{locationcode}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_05
-      description: Retrieve Registration Center details By langcode
+      description: Verify that the system successfully fetches registration center records using a valid location code
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
@@ -144,7 +144,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_LocationCode_invalid_locationcode:
       endPoint: /v1/masterdata/getlocspecificregistrationcenters/{langcode}/{locationcode}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_06
-      description: Retrieve Registration Center details with invalid locationcode
+      description: Verify that the system returns an error when an invalid location code is used to fetch registration center records
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchRegCent/fetchRegCent
@@ -175,7 +175,7 @@ FetchRegCent:
    MasterData_FetchRegCent_Holidays_allValid_smoke:
       endPoint: /v1/masterdata/getregistrationcenterholidays/{langcode}/{registrationcenterid}/{year}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_07
-      description: Retrieve Registration Center Holiday details By Id Lang Code and Year
+      description: Verify that the system successfully fetches all holiday records for registration centers with valid input data
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
@@ -203,7 +203,7 @@ FetchRegCent:
    MasterData_FetchRegCent_Holidays_invalid_registrationcenterid:
       endPoint: /v1/masterdata/getregistrationcenterholidays/{langcode}/{registrationcenterid}/{year}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_08
-      description: Retrieve Registration Center Holiday details with invalid registrationcenterid
+      description: Verify that the system returns an error when an invalid registration center ID is used to fetch holiday records
       role: admin
       restMethod: get
       additionalDependencies: TC_Masterdata_CreateRegCenter_01
@@ -234,7 +234,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_id_allValid_smoke:
       endPoint: /v1/masterdata/registrationcenters/{id}/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_09
-      description: Retrieve Registration Center details By Id and langcode
+      description: Verify that the system successfully fetches registration center records using a valid registration center ID
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
@@ -262,7 +262,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_HierarchyLevel_Text_langCode_allValid_smoke:
       endPoint: /v1/masterdata/registrationcenters/{langcode}/{hierarchylevel}/{name}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_10
-      description: Retrieve Registration Center details By hierarchylevel langcode and name
+      description: Verify that the system successfully fetches registration center records by hierarchy level and text using a valid language code
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
@@ -290,7 +290,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_HierarchyLevel_Text_langCode_invalid_hierarchylevel:
       endPoint: /v1/masterdata/registrationcenters/{langcode}/{hierarchylevel}/{name}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_11
-      description: Retrieve Registration Center details By langcode and invalid hierarchylevel
+      description: Verify that the system returns an error when an invalid hierarchy level is used to fetch registration center records by text and language code
       role: admin
       templateFields: ["name"]
       restMethod: get
@@ -322,7 +322,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_HierarchyLevel_Text_langCode_invalid_name:
       endPoint: /v1/masterdata/registrationcenters/{langcode}/{hierarchylevel}/{name}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_12
-      description: Retrieve Registration Center details By langcode hierarchylevel and invalid Name
+      description: Verify that the system returns an error when an invalid name is used to fetch registration center records by hierarchy level and language code
       role: admin
       templateFields: ["name"]
       restMethod: get
@@ -354,7 +354,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_HierarchyLevel__ListText_langCode_allValid_smoke:
       endPoint: /v1/masterdata/registrationcenters/{langcode}/{hierarchylevel}/names?name={name}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_13
-      description: Retrieve Registration Center details By langcode hierarchylevel and valid name
+      description: Verify that the system fetches registration center records by hierarchy level and list of text using a valid language code.
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
@@ -381,7 +381,7 @@ FetchRegCent:
    MasterData_FetchRegCent_validateTimestamp_allValid_smoke:
       endPoint: /v1/masterdata/registrationcenters/validate/{id}/{langcode}/{timestamp}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_14
-      description: Retrieve Registration Center details By langcode Id and valid timestamp
+      description: Verify that the system successfully fetches registration center records and validates timestamps with valid input data
       role: admin
       templateFields: ["langcode"]
       restMethod: get
@@ -409,7 +409,7 @@ FetchRegCent:
    MasterData_FetchRegCent_validateTimestamp_invalid_id:
       endPoint: /v1/masterdata/registrationcenters/validate/{id}/{langcode}/{timestamp}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_15
-      description: Retrieve Registration Center details By langcode, timestamp and invalid Id
+      description: Verify that the system returns an error when an invalid registration center ID is used to validate timestamps
       role: admin
       restMethod: get
       additionalDependencies: TC_Masterdata_CreateRegCenter_01
@@ -440,7 +440,7 @@ FetchRegCent:
    MasterData_FetchRegCent_validateTimestamp_invalid_timestamp:
       endPoint: /v1/masterdata/registrationcenters/validate/{id}/{langcode}/{timestamp}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_16
-      description: Retrieve Registration Center details By langcode, Id and invalid timestamp
+      description: Verify that the system returns an error when an invalid timestamp is used to fetch registration center records
       role: admin
       restMethod: get
       additionalDependencies: TC_Masterdata_CreateRegCenter_01
@@ -470,7 +470,7 @@ FetchRegCent:
    MasterData_FetchRegCent_by_langCode_zoneCode_allValid_smoke:
       endPoint: /v1/masterdata/getzonespecificregistrationcenters/{langcode}/{zonecode}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_17
-      description: Retrieve Registration Center details By langcode and zonecode
+      description: Verify that the system successfully fetches registration center records using valid language code and zone code
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
@@ -498,7 +498,7 @@ FetchRegCent:
    MasterData_FetchRegCent_by_langCode_zoneCode_InValid_zonecode:
       endPoint: /v1/masterdata/getzonespecificregistrationcenters/{langcode}/{zonecode}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_18
-      description: Retrieve Registration Center for a Zone By langcode and zonecode
+      description: Verify that the system returns an error when an invalid zone code is used with a language code to fetch registration center records
       role: admin
       restMethod: get
       additionalDependencies: TC_Masterdata_CreateRegCenter_01
@@ -529,7 +529,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_Pagenation_HierarchyLevel_Text_langCode_allValid_smoke:
       endPoint: /v1/masterdata/registrationcenters/{langcode}/{hierarchylevel}/{name}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_19
-      description: Retrieve Registration Center By langcode, hierarchylevel and name
+      description: Verify that the system fetches registration center records with pagination by hierarchy level and text using a valid language code
       role: admin
       templateFields: ["langcode"]
       checkErrorsOnlyInResponse: true
@@ -560,7 +560,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_Pagination_HierarchyLevel_Text_langCode_invalid_hierarchylevel:
       endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_20
-      description: Retrieve Registration Centers Per Page By langcode, hierarchylevel and name
+      description: Verify that the system returns an error when an invalid hierarchy level is used to fetch paginated registration center records by text and language code
       role: admin
       templateFields: ["name"]
       restMethod: get
@@ -592,7 +592,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_Pagination_HierarchyLevel_Text_langCode_invalid_name:
       endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_21
-      description: Retrieve Registration Center By Pagination By langcode, hierarchylevel and name
+      description: Verify that the system returns an error when an invalid name is used to fetch paginated registration center records by hierarchy level and language code
       role: admin
       templateFields: ["name"]
       restMethod: get
@@ -625,7 +625,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_zoneCode:
       endPoint: /v1/masterdata/getzonespecificregistrationcenters/{langcode}/{zonecode}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_22
-      description: Retrieve Registration Centers for a Zone By langcode and zonecode
+      description: Verify that the system successfully fetches registration center records using a valid zone code
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: []
@@ -652,7 +652,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_zoneCode_invalid_invalid_zonecode:
       endPoint: /v1/masterdata/getzonespecificregistrationcenters/{langcode}/{zonecode}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_23
-      description: Retrieve Registration Centers for Zone by langcode and invalid zonecode
+      description: Verify that the system returns an error when an invalid zone code is used to fetch registration center records
       role: admin
       templateFields: []
       restMethod: get
@@ -685,7 +685,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_Pagination_HierarchyLevel_Text_langCode_PageSize_AllValid_smoke:
       endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}?pageNumber=0&pageSize=5
       uniqueIdentifier: TC_Masterdata_FetchRegCent_24
-      description: Retrieve Registration Centers Per Page By langcode, hierarchylevel and name 
+      description: Verify that the system successfully fetches paginated registration center records by hierarchy level and text with a valid page size and language code. 
       role: admin
       templateFields: [""]
       restMethod: get
@@ -713,7 +713,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_Pagination_HierarchyLevel_Text_langCode_PageSize_Zero_Neg:
       endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}?pageNumber=0&pageSize=0
       uniqueIdentifier: TC_Masterdata_FetchRegCent_25
-      description: Retrieve Registration Centers Per Page By langcode, hierarchylevel and name with page size zero
+      description: Verify that the system returns an error when a zero or negative page size is used to fetch paginated registration center records
       role: admin
       templateFields: [""]
       restMethod: get
@@ -746,7 +746,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_Pagination_HierarchyLevel_Text_langCode_EmptyName_Neg:
       endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_26
-      description: Retrieve Registration Centers Per Page By langcode, hierarchylevel and empty name
+      description: Verify that the system returns an error when an empty name is used to fetch paginated registration center records by hierarchy level and language code
       role: admin
       templateFields: [""]
       restMethod: get
@@ -778,7 +778,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_Pagination_EmptyHierarchyLevel_Text_langCode_Neg:
       endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_27
-      description: Retrieve Registration Centers Per Page By langcode, name and empty hierarchylevel 
+      description: Verify that the system returns an error when an empty hierarchy level is used to fetch paginated registration center records by text and language code 
       role: admin
       templateFields: [""]
       restMethod: get
@@ -810,7 +810,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_Pagination_HierarchyLevel_Text_langCode_WithPageNumber_AllValid:
       endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}?pageNumber=0&pageSize=5
       uniqueIdentifier: TC_Masterdata_FetchRegCent_28
-      description: Retrieve Registration Centers Per Page By langcode, hierarchylevel and name with page number
+      description: Verify that the system successfully fetches paginated registration center records by hierarchy level and text using a valid page number and language code
       role: admin
       templateFields: [""]
       restMethod: get
@@ -838,7 +838,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_Pagination_HierarchyLevel_Text_langCode_MorePageSize_Neg:
       endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}?pageNumber=100&pageSize=5
       uniqueIdentifier: TC_Masterdata_FetchRegCent_29
-      description: Retrieve Registration Centers Per Page By langcode, hierarchylevel and name with pages more than available
+      description: Verify that the system returns an error when a page size larger than allowed is used to fetch paginated registration center records by hierarchy level and language code
       role: admin
       templateFields: [""]
       restMethod: get
@@ -871,7 +871,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_Pagination_HierarchyLevel_Text_Without_langCode_Neg:
       endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_30
-      description: Retrieve Registration Centers Per Page By langcode, hierarchylevel and name 
+      description: Verify that the system returns an error when language code is missing while fetching paginated registration center records by hierarchy level and text 
       role: admin
       templateFields: []
       restMethod: get
@@ -904,7 +904,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_Pagination_Mismatch_HierarchyLevelAndName_Neg:
       endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}
       uniqueIdentifier: TC_Masterdata_FetchRegCent_31
-      description: Retrieve Registration Centers Per Page By mismatching hierarchylevel and name
+      description: Verify that the system returns an error when hierarchy level and name do not match while fetching paginated registration center records
       role: admin
       templateFields: [""]
       restMethod: get

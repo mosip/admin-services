@@ -2,7 +2,7 @@ GetHolidaysMissingIds:
    Admin_GetHolidaysMissingIds_allValid_smoke:
       endPoint: /v1/masterdata/holidays/missingids/{langcode}
       uniqueIdentifier: TC_Masterdata_GetHolidaysMissingIds_01
-      description: Retrieve holidays for missing IDs with a valid language code
+      description: Verify that the system successfully returns all holidays with missing IDs when a valid request is made (smoke test)
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
@@ -18,7 +18,7 @@ GetHolidaysMissingIds:
    Admin_GetHolidaysMissingIds_InValid_Inavild_langCode:
       endPoint: /v1/masterdata/holidays/missingids/{langcode}
       uniqueIdentifier: TC_Masterdata_GetHolidaysMissingIds_02
-      description: Retrieve holidays for missing IDs with a invalid language code
+      description: Verify that the system returns an error or handles gracefully when an invalid language code is provided while fetching holidays with missing IDs
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetHolidaysMissingIds/getHolidaysMissingIds

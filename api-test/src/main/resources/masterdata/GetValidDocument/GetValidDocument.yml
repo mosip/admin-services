@@ -2,7 +2,7 @@ GetValidDocument:
    MasterData_GetValidDocument_allValid_smoke:
       endPoint: /v1/masterdata/validdocuments/{docCategoryCode}/{langCode}
       uniqueIdentifier: TC_Masterdata_GetValidDocument_01
-      description: Retrieve valid document details by document category code and valid language code
+      description: Verify that the system successfully returns all valid documents when a valid request is made (smoke test)
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

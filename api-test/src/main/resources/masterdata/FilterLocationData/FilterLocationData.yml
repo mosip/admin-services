@@ -2,7 +2,7 @@ FilterLocationData:
    MasterData_FilterLocationData_Valid_Smoke:
       endPoint: /v1/masterdata/locations/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterLocationData_01
-      description: Filter Location details by all valid data
+      description: Verify that the system successfully filters location data and returns the expected results when a valid request is provided
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -24,7 +24,7 @@ FilterLocationData:
    MasterData_FilterLocationData_Invalid_EmptyFilterType:
       endPoint: /v1/masterdata/locations/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterLocationData_02
-      description: Filter Location details by invalid filter Type
+      description: Verify that the system returns an error when a blank filter type is provided while filtering location data
       role: admin
       templateFields: ["columnName"]
       restMethod: post

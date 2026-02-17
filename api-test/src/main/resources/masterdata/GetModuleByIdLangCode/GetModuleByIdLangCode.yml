@@ -2,7 +2,7 @@ GetModuleByIdLangCode:
    Admin_GetModuleByIdLangCode_allValid_smoke:
       endPoint: /v1/masterdata/modules/{id}/{langcode}
       uniqueIdentifier: TC_Masterdata_GetModuleByIdLangCode_01
-      description: Retrieve module details by by valid ID and language code
+      description: Verify that the system successfully returns module details for a valid module ID and language code (smoke test)
       role: admin
       templateFields: ["langcode"]
       restMethod: get
@@ -21,7 +21,7 @@ GetModuleByIdLangCode:
    Admin_GetModuleByIdLangCode_Invalid_Invalid_langcode:
       endPoint: /v1/masterdata/modules/{id}/{langcode}
       uniqueIdentifier: TC_Masterdata_GetModuleByIdLangCode_02
-      description: Retrieve module details by by valid ID and invalid language code
+      description: Verify that the system returns an error or handles gracefully when an invalid language code is provided while fetching module details by ID
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetModuleByIdLangCode/getModuleByIdLangCode
@@ -42,7 +42,7 @@ GetModuleByIdLangCode:
    Admin_GetModuleByIdLangCode_Invalid_Invalid_lD:
       endPoint: /v1/masterdata/modules/{id}/{langcode}
       uniqueIdentifier: TC_Masterdata_GetModuleByIdLangCode_03
-      description: Retrieve module details by by invalid ID and valid language code
+      description: Verify that the system returns an error or handles gracefully when an invalid module ID is provided while fetching module details by language code
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetModuleByIdLangCode/getModuleByIdLangCode

@@ -2,7 +2,7 @@ CreateGender:
    Masterdata_CreateGender_Valid_Smoke_sid:
       endPoint: /v1/masterdata/gendertypes
       uniqueIdentifier: TC_Masterdata_CreateGender_01
-      description: Create Gender details by all valid data
+      description: Verify that the system successfully creates a gender entry when all input parameters are valid
       role: admin
       templateFields: ["genderName"]
       restMethod: post
@@ -21,7 +21,7 @@ CreateGender:
    Masterdata_CreateGender_Invalid_InputParameter_Code_Missing:
       endPoint: /v1/masterdata/gendertypes
       uniqueIdentifier: TC_Masterdata_CreateGender_02
-      description: Create Gender details by missing code field
+      description: Verify that the system returns an error when the gender code is missing while creating a gender entry
       role: admin
       templateFields: ["genderName"]
       restMethod: post
@@ -45,7 +45,7 @@ CreateGender:
    Masterdata_CreateGender_Invalid_InputParameter_Code_Empty:
       endPoint: /v1/masterdata/gendertypes
       uniqueIdentifier: TC_Masterdata_CreateGender_03
-      description: Create Gender details by empty code
+      description: Verify that the system returns an error when the gender code is empty while creating a gender entry
       role: admin
       templateFields: ["genderName"]
       restMethod: post
@@ -70,7 +70,7 @@ CreateGender:
    Masterdata_CreateGender_Invalid_InputParameter_GenderName_Empty:
       endPoint: /v1/masterdata/gendertypes
       uniqueIdentifier: TC_Masterdata_CreateGender_04
-      description: Create Gender details by invalid code value
+      description: Verify that the system returns an error when the gender name is empty while creating a gender entry
       role: admin
       templateFields: ["langCode"]
       restMethod: post
@@ -94,7 +94,7 @@ CreateGender:
    Masterdata_CreateGender_Invalid_InputParameter_GenderName_AboveMaxLen64:
       endPoint: /v1/masterdata/gendertypes
       uniqueIdentifier: TC_Masterdata_CreateGender_05
-      description: Create Gender details by name more than 64 characters
+      description: Verify that the system returns an error when the gender name exceeds the maximum length of 64 characters while creating a gender entry
       role: admin
       templateFields: []
       restMethod: post
@@ -118,7 +118,7 @@ CreateGender:
    Masterdata_CreateGender_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/gendertypes
       uniqueIdentifier: TC_Masterdata_CreateGender_06
-      description: Create Gender details by missing isActive field
+      description: Verify that the system returns an error when the isActive parameter is missing while creating a gender entry
       role: admin
       templateFields: ["genderName"]
       restMethod: post

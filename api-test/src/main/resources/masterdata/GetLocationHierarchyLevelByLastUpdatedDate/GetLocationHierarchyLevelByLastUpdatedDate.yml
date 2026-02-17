@@ -2,7 +2,7 @@ GetLocationHierarchyLevelByLastUpdatedDate:
    Admin_GetLocationHierarchyLevelByLastUpdatedDate_allValid_smoke:
       endPoint: /v1/masterdata/locationHierarchyLevels?lastUpdated=2020-10-20T17:13:44.793Z
       uniqueIdentifier: TC_Masterdata_GetLocationHierarchyLevelByLastUpdatedDate_01
-      description: Retrieve location hierarchy details based on valid last updated date
+      description: Verify that the system successfully returns location hierarchy levels updated after a given date when a valid request is made (smoke test)
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -17,7 +17,7 @@ GetLocationHierarchyLevelByLastUpdatedDate:
    Admin_GetLocationHierarchyLevelByLastUpdatedDate_with_Invalid_lD:
       endPoint: /v1/masterdata/locationHierarchyLevels?lastUpdated=abc
       uniqueIdentifier: TC_Masterdata_GetLocationHierarchyLevelByLastUpdatedDate_02
-      description: Retrieve location hierarchy details based on invalid last updated date
+      description: Verify that the system returns an error or handles gracefully when an invalid ID is provided while fetching location hierarchy levels by last updated date
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetLocationHierarchyLevelByLastUpdatedDate/getLocationHierarchyLevelByLastUpdatedDate

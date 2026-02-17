@@ -2,7 +2,7 @@ GetIdTypeByLangCode:
    Admin_GetIdTypeByLangCode_allValid_smoke:
       endPoint: /v1/masterdata/idtypes/{langcode}
       uniqueIdentifier: TC_Masterdata_GetIdTypeByLangCode_01
-      description: Retrieve ID type by valid language code
+      description: Verify that the system successfully returns all ID types for a valid language code (smoke test)
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -23,7 +23,7 @@ GetIdTypeByLangCode:
    Admin_GetIdTypeByLangCode_InValid_Invalid_langCode:
       endPoint: /v1/masterdata/idtypes/{langcode}
       uniqueIdentifier: TC_Masterdata_GetIdTypeByLangCode_02
-      description: Retrieve ID type by valid inlanguage code
+      description: Verify that the system returns an error or handles gracefully when an invalid language code is provided while fetching ID types
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetIdTypeByLangCode/getIdTypeByLangCode

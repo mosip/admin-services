@@ -2,7 +2,7 @@ FetchTitle:
    MasterData_FetchTitle_all_valid_smoke:
       endPoint: /v1/masterdata/title
       uniqueIdentifier: TC_Masterdata_FetchTitle_01
-      description: Retrieve Titles with all valid data
+      description: Verify that the system successfully fetches title details when all valid input parameters are provided
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchTitle/fetchTitle
@@ -18,7 +18,7 @@ FetchTitle:
    MasterData_FetchTitle_valid_smoke:
       endPoint: /v1/masterdata/title/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchTitle_02
-      description: Retrieve Titles By langcode with all valid data
+      description: Verify that the system successfully fetches title details when valid input parameters are provided
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchTitle/fetchTitle
@@ -34,7 +34,7 @@ FetchTitle:
    MasterData_FetchTitle_invalid_langcode:
       endPoint: /v1/masterdata/title/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchTitle_03
-      description: Retrieve Titles By invalid langcode
+      description: Verify that the system returns an error when an invalid language code is provided while fetching title details
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchTitle/fetchTitle

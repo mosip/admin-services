@@ -2,7 +2,7 @@ FetchHolidays:
    MasterData_FetchHolidays_allValid_smoke_get:
       endPoint: /v1/masterdata/holidays
       uniqueIdentifier: TC_Masterdata_FetchHolidays_01
-      description: Retrieve Holiday details with all valid data
+      description: Verify that the system successfully fetches all holiday records with valid input data
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -19,7 +19,7 @@ FetchHolidays:
    MasterData_FetchHolidays_allValid_smoke_with_Id:
       endPoint: /v1/masterdata/holidays/{holidayid}
       uniqueIdentifier: TC_Masterdata_FetchHolidays_02
-      description: Retrieve Holiday details with valid holidayid
+      description: Verify that the system successfully fetches holiday records using a valid ID
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -35,7 +35,7 @@ FetchHolidays:
    MasterData_FetchHolidays_allValid_smoke_with_Id_and_langCode:
       endPoint: /v1/masterdata/holidays/{holidayid}/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchHolidays_03
-      description: Retrieve Holiday details with valid holidayid and langcode
+      description: Verify that the system successfully fetches holiday records using valid ID and language code
       role: admin
       templateFields: ["langcode"]
       checkErrorsOnlyInResponse: true
@@ -52,7 +52,7 @@ FetchHolidays:
    MasterData_FetchHolidays_invalid_holidayid_unexisting:
       endPoint: /v1/masterdata/holidays/{holidayid}
       uniqueIdentifier: TC_Masterdata_FetchHolidays_04
-      description: Retrieve Holiday details with nonexisting holidayid
+      description: Verify that the system returns an error when an unexisting holiday ID is used to fetch holiday records
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchHolidays/fetchHoliday
@@ -72,7 +72,7 @@ FetchHolidays:
    MasterData_FetchHolidays_invalid_holidayid_unexisting with langCode:
       endPoint: /v1/masterdata/holidays/{holidayid}/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchHolidays_05
-      description: Retrieve Holiday details with nonexisting holidayid and valid langCode
+      description: Verify that the system returns an error when an unexisting holiday ID is used with a language code to fetch holiday records
       role: admin
       restMethod: get
       additionalDependencies: TC_Masterdata_CreateHoliday_01
@@ -93,7 +93,7 @@ FetchHolidays:
    MasterData_FetchHolidays_invalid_langcode_unexisting:
       endPoint: /v1/masterdata/holidays/{holidayid}/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchHolidays_06
-      description: Retrieve Holiday details with nonexisting langcode
+      description: Verify that the system returns an error when an unexisting language code is used to fetch holiday records
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchHolidays/fetchHoliday
