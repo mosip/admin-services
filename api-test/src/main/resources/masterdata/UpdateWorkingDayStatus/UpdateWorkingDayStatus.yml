@@ -2,7 +2,7 @@ UpdateWorkingDayStatus:
    MasterData_UpdateWorkingDayStatus_All_Valid_Smoke:  
       endPoint: /v1/masterdata/workingdays?isActive={isActive}&code={code}
       uniqueIdentifier: TC_Masterdata_UpdateWorkingDayStatus_01
-      description: Update working day status details with valid data
+      description: Verify that the system successfully updates the status of a working day with all valid input parameters (smoke test)
       role: admin
       restMethod: patch
       inputTemplate: masterdata/UpdateWorkingDayStatus/updateWorkingDayStatus
@@ -17,7 +17,7 @@ UpdateWorkingDayStatus:
    MasterData_UpdateWorkingDayStatus_Invalid_id:  
       endPoint: /v1/masterdata/workingdays?isActive={isActive}&code={code}
       uniqueIdentifier: TC_Masterdata_UpdateWorkingDayStatus_02
-      description: Update working day status details with invalid ID
+      description: Verify that the system returns an error when updating the status of a working day with an invalid id parameter
       role: admin
       restMethod: patch
       inputTemplate: masterdata/UpdateWorkingDayStatus/updateWorkingDayStatus

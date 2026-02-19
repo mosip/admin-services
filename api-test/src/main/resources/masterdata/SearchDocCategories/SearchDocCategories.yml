@@ -2,7 +2,7 @@ SearchDocCategories:
    MasterData_SearchDocCategories_Valid_Request_Smoke:
       endPoint: /v1/masterdata/documentcategories/search
       uniqueIdentifier: TC_Masterdata_SearchDocCategories_01
-      description: Search document categories where the column name code equals to
+      description: Verify that the system successfully fetches all document categories when a valid request is provided
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -43,8 +43,7 @@ SearchDocCategories:
    MasterData_SearchDocCategories_Valid_sortBy_code:
       endPoint: /v1/masterdata/documentcategories/search
       uniqueIdentifier: TC_Masterdata_SearchDocCategories_02
-      description: Search document categories and sort by code
-      role: admin
+      description:  Verify that the system successfully fetches document categories sorted by code when a valid sort parameter is provided
       templateFields: ["languageCode"]
       restMethod: post
       additionalDependencies: TC_Masterdata_CreateDocumentCategory_01
@@ -86,7 +85,7 @@ SearchDocCategories:
    MasterData_SearchDocCategories_Valid_sortType_DESC:
       endPoint: /v1/masterdata/documentcategories/search
       uniqueIdentifier: TC_Masterdata_SearchDocCategories_03
-      description: Search document categories with sort type as descending order
+      description: Verify that the system successfully fetches document categories in descending order when a valid sort type is provided
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -130,7 +129,7 @@ SearchDocCategories:
    MasterData_SearchDocCategories_inValid_columnName_blank:
       endPoint: /v1/masterdata/documentcategories/search
       uniqueIdentifier: TC_Masterdata_SearchDocCategories_04
-      description: Search document categories with column name as empty
+      description: Verify that the system returns an error when the column name is blank while searching document categories
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -168,7 +167,7 @@ SearchDocCategories:
    MasterData_SearchDocCategories_inValid_columnName:
       endPoint: /v1/masterdata/documentcategories/search
       uniqueIdentifier: TC_Masterdata_SearchDocCategories_05
-      description: Search document categories with invalid column name
+      description: Verify that the system returns an error when an invalid column name is provided while searching document categories
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -205,7 +204,7 @@ SearchDocCategories:
    MasterData_SearchDocCategories_inValid_filter_value:
       endPoint: /v1/masterdata/documentcategories/search
       uniqueIdentifier: TC_Masterdata_SearchDocCategories_06
-      description: Search document categories with invalid filter value
+      description: Verify that the system returns an error when an invalid filter value is provided while searching document categories
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -238,7 +237,7 @@ SearchDocCategories:
    MasterData_SearchDocCategories_inValid_filter_value_blank:
       endPoint: /v1/masterdata/documentcategories/search
       uniqueIdentifier: TC_Masterdata_SearchDocCategories_07
-      description: Search document categories with filter value as empty
+      description: Verify that the system returns an error when the filter value is blank while searching document categories
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -277,7 +276,7 @@ SearchDocCategories:
    MasterData_SearchDocCategories_inValid_sortField:
       endPoint: /v1/masterdata/documentcategories/search
       uniqueIdentifier: TC_Masterdata_SearchDocCategories_08
-      description: Search document categories with invalid sort field
+      description: Verify that the system returns an error when an invalid sort field is provided while searching document categories
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -315,7 +314,7 @@ SearchDocCategories:
    MasterData_SearchDocCategories_inValid_sortType:
       endPoint: /v1/masterdata/documentcategories/search
       uniqueIdentifier: TC_Masterdata_SearchDocCategories_09
-      description: Search document categories with invalid sort type
+      description: Verify that the system returns an error when an invalid sort type is provided while searching document categories
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -353,7 +352,7 @@ SearchDocCategories:
    MasterData_SearchDocCategories_inValid_sortField_blank:
       endPoint: /v1/masterdata/documentcategories/search
       uniqueIdentifier: TC_Masterdata_SearchDocCategories_10
-      description: Search document categories with sort field as empty
+      description: Verify that the system returns an error when the sort field is blank while searching document categories
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -391,7 +390,7 @@ SearchDocCategories:
    MasterData_SearchDocCategories_inValid_sortType_blank:
       endPoint: /v1/masterdata/documentcategories/search
       uniqueIdentifier: TC_Masterdata_SearchDocCategories_11
-      description: Search document categories with sort type as empty
+      description: Verify that the system returns an error when the sort type is blank while searching document categories
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -429,7 +428,7 @@ SearchDocCategories:
    MasterData_SearchDocCategories_inValid_pagesize:
       endPoint: /v1/masterdata/documentcategories/search
       uniqueIdentifier: TC_Masterdata_SearchDocCategories_12
-      description: Search document categories with invalid page size
+      description: Verify that the system returns an error when an invalid page size is provided while searching document categories
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -467,7 +466,7 @@ SearchDocCategories:
    MasterData_SearchDocCategories_inValid_filterType_blank:
       endPoint: /v1/masterdata/documentcategories/search
       uniqueIdentifier: TC_Masterdata_SearchDocCategories_13
-      description: Search document categories with filter type as empty
+      description: Verify that the system returns an error when the filter type is blank while searching document categories
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -505,7 +504,7 @@ SearchDocCategories:
    MasterData_SearchDocCategories_inValid_filterType:
       endPoint: /v1/masterdata/documentcategories/search
       uniqueIdentifier: TC_Masterdata_SearchDocCategories_14
-      description: Search document categories with invalid filter type
+      description: Verify that the system returns an error when an invalid filter type is provided while searching document categories
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -542,7 +541,7 @@ SearchDocCategories:
    MasterData_SearchDocCategories_inValid_requestTime_format:
       endPoint: /v1/masterdata/documentcategories/search
       uniqueIdentifier: TC_Masterdata_SearchDocCategories_15
-      description: Search document categories with invalid request time
+      description: Verify that the system returns an error when the request time format is invalid while searching document categories
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -580,7 +579,7 @@ SearchDocCategories:
    MasterData_SearchDocCategories_inValid_typeFilter_contains:
       endPoint: /v1/masterdata/documentcategories/search
       uniqueIdentifier: TC_Masterdata_SearchDocCategories_16
-      description: Search document categories with invalid type filter
+      description: Verify that the system returns an error when an invalid type filter with "Contains" is provided while searching document categories
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -617,7 +616,7 @@ SearchDocCategories:
    MasterData_SearchDocCategories_inValid_typeFilter_startsWith:
       endPoint: /v1/masterdata/documentcategories/search
       uniqueIdentifier: TC_Masterdata_SearchDocCategories_17
-      description: Search document categories with invalid type filter starts with
+      description: Verify that the system returns an error when an invalid type filter with "StartsWith" is provided while searching document categories
       role: admin
       templateFields: ["value"]
       restMethod: post

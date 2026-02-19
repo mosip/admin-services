@@ -2,7 +2,7 @@ CreateTemplateType:
    MasterData_CreateTemplateType_All_Valid_Smoke_Sid:
       endPoint: /v1/masterdata/templatetypes
       uniqueIdentifier: TC_Masterdata_CreateTemplateType_01
-      description: Create template type with valid details
+      description: Verify that the system successfully creates a template type when all input parameters are valid (smoke test)
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -23,7 +23,7 @@ CreateTemplateType:
    MasterData_CreateTemplateType_InputParameter_Code_Missing:
       endPoint: /v1/masterdata/templatetypes
       uniqueIdentifier: TC_Masterdata_CreateTemplateType_02
-      description: Create template type with input parameter code as missing
+      description: Verify that the system returns an error when the Code input parameter is missing while creating a template type
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -47,7 +47,7 @@ CreateTemplateType:
    MasterData_CreateTemplateType_InputParameter_Code_AboveMaxLen36:
       endPoint: /v1/masterdata/templatetypes
       uniqueIdentifier: TC_Masterdata_CreateTemplateType_03
-      description: Create template type with input parameter code exceeding the maximum length of 36 characters
+      description: Verify that the system returns an error when Code exceeds 36 characters while creating a template type
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -73,7 +73,7 @@ CreateTemplateType:
    MasterData_CreateTemplateType_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/templatetypes
       uniqueIdentifier: TC_Masterdata_CreateTemplateType_04
-      description: Create template type with input parameter is active as missing
+      description: Verify that the system returns an error when the isActive input parameter is missing while creating a template type
       role: admin
       templateFields: ["description"]
       restMethod: post

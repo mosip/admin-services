@@ -2,7 +2,7 @@ UpdateTemplateStatus:
    MasterData_UpdateTemplateStatus_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/templates
       uniqueIdentifier: TC_Masterdata_UpdateTemplateStatus_01
-      description: Update template status details with valid data
+      description: Verify that the system successfully updates the status of a template with all valid input parameters (smoke test)
       role: admin
       templateFields: []
       restMethod: patch

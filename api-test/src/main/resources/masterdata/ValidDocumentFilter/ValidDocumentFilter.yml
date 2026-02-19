@@ -2,7 +2,7 @@ ValidDocumentFilter:
    MasterData_ValidDocumentFilter_Valid_Smoke:
       endPoint: /v1/masterdata/validdocuments/filtervalues
       uniqueIdentifier: TC_Masterdata_ValidDocumentFilter_01
-      description: Filter the valid document details with valid data
+      description: Verify that the system successfully filters documents with valid input parameters (smoke test)
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -33,7 +33,7 @@ ValidDocumentFilter:
    MasterData_ValidDocumentFilter_Invalid_RequestTime:
       endPoint: /v1/masterdata/validdocuments/filtervalues
       uniqueIdentifier: TC_Masterdata_ValidDocumentFilter_02
-      description: Filter the valid document details with invalid request time
+      description: Verify that the system returns an error when filtering documents with an invalid RequestTime parameter
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -85,7 +85,7 @@ ValidDocumentFilter:
    MasterData_ValidDocumentFilter_Blank_FilterType:
       endPoint: /v1/masterdata/validdocuments/filtervalues
       uniqueIdentifier: TC_Masterdata_ValidDocumentFilter_04
-      description: Filter the valid document details with filter type as blank
+      description: Verify that the system returns an error when filtering documents with an invalid FilterType parameter
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -111,7 +111,7 @@ ValidDocumentFilter:
    MasterData_ValidDocumentFilter_InValid_columnName:
       endPoint: /v1/masterdata/validdocuments/filtervalues
       uniqueIdentifier: TC_Masterdata_ValidDocumentFilter_05
-      description: Filter the valid document details with invalid column name
+      description: Verify that the system returns an error when filtering documents with an invalid columnName parameter
       role: admin
       templateFields: ["languageCode"]
       restMethod: post

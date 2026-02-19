@@ -2,7 +2,7 @@ HolidaySearch:
    MasterData_HolidaySearch_equals_holidayName_eng_pos:
       endPoint: /v1/masterdata/holidays/search
       uniqueIdentifier: TC_Masterdata_HolidaySearch_01
-      description: Search holiday details with the condition that it matches the holiday name and the page position for the English language
+      description: Verify that the system retrieves the holiday details successfully when the holidayName filter is applied with an exact English name
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -35,7 +35,7 @@ HolidaySearch:
    MasterData_HolidaySearch_equals_holidayName_ara_pos:
       endPoint: /v1/masterdata/holidays/search
       uniqueIdentifier: TC_Masterdata_HolidaySearch_02
-      description: Search holiday details with the condition that it matches the holiday name and the page position for the Arabic language
+      description: Verify that the system returns the holiday details when an exact Arabic holiday name is provided in the search filter
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -68,7 +68,7 @@ HolidaySearch:
    MasterData_HolidaySearch_startsWith_holidayName_eng_pos:
       endPoint: /v1/masterdata/holidays/search
       uniqueIdentifier: TC_Masterdata_HolidaySearch_03
-      description: Search holiday details with the condition that it starts with the holiday name and the page position for the English language
+      description: Verify that the system returns holiday records whose English names start with the provided value using the “starts with” filter
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -101,7 +101,7 @@ HolidaySearch:
    MasterData_HolidaySearch_startsWith_holidayName_ara_pos:
       endPoint: /v1/masterdata/holidays/search
       uniqueIdentifier: TC_Masterdata_HolidaySearch_04
-      description: Search holiday details with the condition that it starts with the holiday name and the page position for the Arabic language
+      description: Verify that the system returns holiday records whose Arabic names start with the provided value using the “starts with” filter
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -134,7 +134,7 @@ HolidaySearch:
    MasterData_HolidaySearch_contains_holidayName_eng_pos:
       endPoint: /v1/masterdata/holidays/search
       uniqueIdentifier: TC_Masterdata_HolidaySearch_05
-      description: Search holiday details with the condition that it contains the holiday name and the page position for the English language
+      description: Verify that the system returns holiday records whose English names contain the provided value using the “contains” filter
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -169,7 +169,7 @@ HolidaySearch:
    MasterData_HolidaySearch_Invalid_FilterType_neg:
       endPoint: /v1/masterdata/holidays/search
       uniqueIdentifier: TC_Masterdata_HolidaySearch_06
-      description: Search holiday details with invalid filter type
+      description: Verify that the system returns an error or handles gracefully when an invalid filter type is provided in the holiday search
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -208,7 +208,7 @@ HolidaySearch:
    MasterData_HolidaySearch_Invalid_SortType_neg:
       endPoint: /v1/masterdata/holidays/search
       uniqueIdentifier: TC_Masterdata_HolidaySearch_07
-      description: Search holiday details with invalid sort type
+      description: Verify that the system returns an error or handles gracefully when an invalid sort type is provided in the holiday search
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -246,7 +246,7 @@ HolidaySearch:
    MasterData_HolidaySearch_Invalid_SortField_neg:
       endPoint: /v1/masterdata/holidays/search
       uniqueIdentifier: TC_Masterdata_HolidaySearch_08
-      description: Search holiday details with invalid sort field
+      description: Verify that the system returns an error or handles gracefully when an invalid sort field is provided in the holiday search
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -284,7 +284,7 @@ HolidaySearch:
    MasterData_HolidaySearch_Invalid_RequestTime_neg:
       endPoint: /v1/masterdata/holidays/search
       uniqueIdentifier: TC_Masterdata_HolidaySearch_09
-      description: Search holiday details with invalid request time
+      description: Verify that the system returns an error or handles gracefully when the request contains an invalid or improperly formatted request time during holiday search
       role: admin
       templateFields: ["value"]
       restMethod: post

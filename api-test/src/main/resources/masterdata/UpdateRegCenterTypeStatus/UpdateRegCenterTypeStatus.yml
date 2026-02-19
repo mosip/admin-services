@@ -2,7 +2,7 @@ UpdateRegCenterTypeStatus:
    MasterData_UpdateRegCenterTypeStatus_All_Valid_Smoke:  
       endPoint: /v1/masterdata/registrationcentertypes?isActive={isActive}&code={code}
       uniqueIdentifier: TC_Masterdata_UpdateRegCenterTypeStatus_01
-      description: Update registration center type status details with valid data
+      description: Verify that the system successfully updates the status of a registration center type with all valid input parameters (smoke test)
       role: admin
       restMethod: patch
       inputTemplate: masterdata/UpdateRegCenterTypeStatus/updateRegCenterTypeStatus

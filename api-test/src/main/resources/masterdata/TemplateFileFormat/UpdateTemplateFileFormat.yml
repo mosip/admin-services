@@ -2,7 +2,7 @@ UpdateTemplateFileFormat:
    Masterdata_UpdateTemplateFileFormat_All_Valid_Smoke:
       endPoint: /v1/masterdata/templatefileformats
       uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_01
-      description: Update template file format with valid details
+      description: Verify that the system successfully updates a template file format when all input parameters are valid (smoke test)
       role: admin
       templateFields: ["langCode"]
       restMethod: put
@@ -21,7 +21,7 @@ UpdateTemplateFileFormat:
    Masterdata_UpdateTemplateFileFormat_InputParameter_Description_AboveMaxLen256:
       endPoint: /v1/masterdata/templatefileformats
       uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_02
-      description: Update a template file format with the input parameter description exceeding the maximum length of 256 characters
+      description: Verify that the system returns an error when Description exceeds 256 characters while updating a template file format
       role: admin
       templateFields: ["langCode"]
       restMethod: put
@@ -45,7 +45,7 @@ UpdateTemplateFileFormat:
    Masterdata_UpdateTemplateFileFormat_InputParameter_Description_Missing:
       endPoint: /v1/masterdata/templatefileformats
       uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_03
-      description: Update a template file format with the input parameter description as missing
+      description: Verify that the system returns an error when the Description input parameter is missing while updating a template file format
       role: admin
       templateFields: ["langCode"]
       restMethod: put
@@ -69,7 +69,7 @@ UpdateTemplateFileFormat:
    Masterdata_UpdateTemplateFileFormat_InputParameter_Description_Empty:
       endPoint: /v1/masterdata/templatefileformats
       uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_04
-      description: Update a template file format with the input parameter description as empty
+      description: Verify that the system returns an error when the Description input parameter is empty while updating a template file format
       role: admin
       templateFields: ["langCode"]
       restMethod: put
@@ -93,7 +93,7 @@ UpdateTemplateFileFormat:
    Masterdata_UpdateTemplateFileFormat_InputParameter_Code_Missing:
       endPoint: /v1/masterdata/templatefileformats
       uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_05
-      description: Update a template file format with the input parameter code as missing
+      description: Verify that the system returns an error when the Code input parameter is missing while updating a template file format
       role: admin
       templateFields: ["langCode"]
       restMethod: put
@@ -117,7 +117,7 @@ UpdateTemplateFileFormat:
    Masterdata_UpdateTemplateFileFormat_InputParameter_Code_Empty:
       endPoint: /v1/masterdata/templatefileformats
       uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_06
-      description: Update a template file format with the input parameter code as empty
+      description: Verify that the system returns an error when the Code input parameter is empty while updating a template file format
       role: admin
       templateFields: ["langCode"]
       restMethod: put
@@ -141,7 +141,7 @@ UpdateTemplateFileFormat:
    Masterdata_UpdateTemplateFileFormat_InputParameter_Code_AboveMaxLen36:
       endPoint: /v1/masterdata/templatefileformats
       uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_07
-      description: Update a template file format with the input parameter code exceeding the maximum length of 36 characters
+      description: Verify that the system returns an error when Code exceeds 36 characters while updating a template file format
       role: admin
       templateFields: ["langCode"]
       restMethod: put
@@ -165,7 +165,7 @@ UpdateTemplateFileFormat:
    Masterdata_UpdateTemplateFileFormat_InputParameter_LangCode_Missing:
       endPoint: /v1/masterdata/templatefileformats
       uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_08
-      description: Update a template file format with the input parameter language code as missing
+      description: Verify that the system returns an error when the LangCode input parameter is missing while updating a template file format
       role: admin
       restMethod: put
       inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
@@ -188,7 +188,7 @@ UpdateTemplateFileFormat:
    Masterdata_UpdateTemplateFileFormat_InputParameter_LangCode_Empty:
       endPoint: /v1/masterdata/templatefileformats
       uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_09
-      description: Update a template file format with the input parameter language code as empty
+      description: Verify that the system returns an error when the LangCode input parameter is empty while updating a template file format
       role: admin
       restMethod: put
       inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
@@ -211,7 +211,7 @@ UpdateTemplateFileFormat:
    AMasterdata_UpdateTemplateFileFormat_InputParameter_LangCode_AboveMaxLen3:
       endPoint: /v1/masterdata/templatefileformats
       uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_10
-      description: Update a template file format with the input parameter language code exceeding the maximum length of 3 characters
+      description: Verify that the system returns an error when LangCode exceeds 3 characters while updating a template file format
       role: admin
       restMethod: put
       inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
@@ -234,7 +234,7 @@ UpdateTemplateFileFormat:
    Masterdata_UpdateTemplateFileFormat_InputParameter_Invalid_LangCode:
       endPoint: /v1/masterdata/templatefileformats
       uniqueIdentifier: TC_Masterdata_UpdateTemplateFileFormat_11
-      description: Update a template file format with the input parameter language code as invalid
+      description: Verify that the system returns an error when an invalid LangCode is provided while updating a template file format
       role: admin
       restMethod: put
       inputTemplate: masterdata/TemplateFileFormat/templateFileFormat
