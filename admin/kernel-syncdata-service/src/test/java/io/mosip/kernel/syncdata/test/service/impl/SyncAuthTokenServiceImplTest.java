@@ -1,11 +1,8 @@
 package io.mosip.kernel.syncdata.test.service.impl;
 
-import com.auth0.jwt.impl.JWTParser;
-import com.auth0.jwt.interfaces.Header;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.clientcrypto.exception.ClientCryptoException;
 import io.mosip.kernel.clientcrypto.service.impl.ClientCryptoFacade;
 import io.mosip.kernel.core.authmanager.model.AuthNResponse;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -108,7 +105,7 @@ class SyncAuthTokenServiceImplTest {
 
     // ======================= SUCCESS =======================
     @Test
-    void getAuthToken_success_verifiedTrue() throws Exception {
+    void getAuthToken_emptyTokenResponse_throwsRequestException() throws Exception {
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
 
         // Create JWT-like token
