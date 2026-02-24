@@ -32,9 +32,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -115,6 +113,101 @@ class SyncAuthTokenServiceImplTest {
                     setUserId("user1");
                     setPassword("pass123");
                     setAuthType("NEW");
+                    setTimestamp(now);
+                }});
+
+        // 4️⃣ Mock REST call inside getTokenResponseDTO
+        String fakeResponse = "{\"response\":{}}"; // minimal valid JSON
+        when(restTemplate.postForEntity(any(), any(), eq(String.class)))
+                .thenReturn(ResponseEntity.ok(fakeResponse));
+
+        // 5️⃣ Mock ObjectMapper.readValue to convert fake response
+        ResponseWrapper<TokenResponseDto> wrapper = new ResponseWrapper<>();
+        wrapper.setResponse(new TokenResponseDto());
+        when(objectMapper.readValue(eq(fakeResponse), any(TypeReference.class))).thenReturn(wrapper);
+
+        // 6️⃣ Mock encryption
+        when(cryptomanagerUtils.decodeBase64Data(anyString())).thenReturn("decoded".getBytes());
+
+        // Call public method
+        assertThrows(RequestException.class, () -> {
+            service.getAuthToken(token);
+        });
+
+    }
+
+    // ======================= SUCCESS =======================
+    @Test
+    void getAuthToken_emptyTokenResponse() throws Exception {
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+
+        // Create JWT-like token
+        String headerJson = "{\"kid\":\"KEY1\"}";
+        String payloadJson = "{\"machineName\":\"machine1\",\"userId\":\"user1\",\"password\":\"pass123\",\"timestamp\":\"" + now + "\",\"authType\":\"OTP\"}";
+        String token = Base64.getUrlEncoder().encodeToString(headerJson.getBytes()) + "." +
+                Base64.getUrlEncoder().encodeToString(payloadJson.getBytes()) + "." +
+                Base64.getUrlEncoder().encodeToString("sig".getBytes());
+
+        // 1️⃣ Mock machineRepository to return the machine (used in validateRequestData)
+        when(machineRepository.findBySignKeyIndex("KEY1")).thenReturn(List.of(machine));
+
+        // 2️⃣ Force validateSignature = true
+        when(clientCryptoFacade.validateSignature(any(), any(), any(), any())).thenReturn(true);
+
+        // 3️⃣ Mock payload to MachineAuthDto
+        when(objectMapper.readValue(any(byte[].class), eq(MachineAuthDto.class)))
+                .thenReturn(new MachineAuthDto() {{
+                    setMachineName("machine1");
+                    setUserId("user1");
+                    setPassword("pass123");
+                    setAuthType("OTP");
+                    setTimestamp(now);
+                }});
+
+        // 4️⃣ Mock REST call inside getTokenResponseDTO
+        String fakeResponse = "{\"response\":{}}"; // minimal valid JSON
+        when(restTemplate.postForEntity(any(), any(), eq(String.class)))
+                .thenReturn(ResponseEntity.ok(fakeResponse));
+
+        // 5️⃣ Mock ObjectMapper.readValue to convert fake response
+        ResponseWrapper<TokenResponseDto> wrapper = new ResponseWrapper<>();
+        wrapper.setResponse(new TokenResponseDto());
+        when(objectMapper.readValue(eq(fakeResponse), any(TypeReference.class))).thenReturn(wrapper);
+
+        // 6️⃣ Mock encryption
+        when(cryptomanagerUtils.decodeBase64Data(anyString())).thenReturn("decoded".getBytes());
+
+        // Call public method
+        assertThrows(RequestException.class, () -> {
+            service.getAuthToken(token);
+        });
+
+    }
+
+    @Test
+    void getAuthToken_whenTokenResponseIsEmpty_thenThrowsRequestException() throws Exception {
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+
+        // Create JWT-like token
+        String headerJson = "{\"kid\":\"KEY1\"}";
+        String payloadJson = "{\"machineName\":\"machine1\",\"userId\":\"user1\",\"password\":\"pass123\",\"timestamp\":\"" + now + "\",\"authType\":\"OTP\"}";
+        String token = Base64.getUrlEncoder().encodeToString(headerJson.getBytes()) + "." +
+                Base64.getUrlEncoder().encodeToString(payloadJson.getBytes()) + "." +
+                Base64.getUrlEncoder().encodeToString("sig".getBytes());
+
+        // 1️⃣ Mock machineRepository to return the machine (used in validateRequestData)
+        when(machineRepository.findBySignKeyIndex("KEY1")).thenReturn(List.of(machine));
+
+        // 2️⃣ Force validateSignature = true
+        when(clientCryptoFacade.validateSignature(any(), any(), any(), any())).thenReturn(true);
+
+        // 3️⃣ Mock payload to MachineAuthDto
+        when(objectMapper.readValue(any(byte[].class), eq(MachineAuthDto.class)))
+                .thenReturn(new MachineAuthDto() {{
+                    setMachineName("machine1");
+                    setUserId("user1");
+                    setPassword("pass123");
+                    setAuthType("REFRESH");
                     setTimestamp(now);
                 }});
 
@@ -234,4 +327,5 @@ class SyncAuthTokenServiceImplTest {
                         "{}".getBytes(),
                         "sig".getBytes()));
     }
+
 }
