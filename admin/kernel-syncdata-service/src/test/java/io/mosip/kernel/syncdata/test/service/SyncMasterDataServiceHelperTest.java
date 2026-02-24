@@ -4,7 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.core.exception.ServiceError;
+import com.fasterxml.jackson.core.type.TypeReference;
+import io.mosip.kernel.syncdata.entity.id.ApplicantValidDocumentID;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
+import io.mosip.kernel.syncdata.exception.AdminServiceException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import org.mockito.InjectMocks;
@@ -46,6 +49,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -165,6 +169,9 @@ public class SyncMasterDataServiceHelperTest {
 
     @Mock
     private ObjectMapper objectMapper;
+
+    @Mock
+    private ApplicantValidDocumentRespository applicantValidDocumentRepository;
 
     @Autowired
     private MockMvc mockMvc;
@@ -3224,6 +3231,1508 @@ public class SyncMasterDataServiceHelperTest {
         syncMasterData.getDocumentTypes(
                 LocalDateTime.now().minusDays(1),
                 LocalDateTime.now());
+    }
+
+    @Test
+    public void testGetValidDocuments_NoChangesFound() throws Exception {
+
+        // Arrange
+        when(validDocumentRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null); // makes isChangesFound return false
+
+        // Act
+        CompletableFuture<List<ValidDocumentDto>> future =
+                syncMasterData.getValidDocuments(
+                        LocalDateTime.now(ZoneOffset.UTC).minusDays(1),
+                        LocalDateTime.now(ZoneOffset.UTC));
+
+        List<ValidDocumentDto> result = future.get();
+
+        // Assert
+        assertNull(result);  // method returns completedFuture(null)
+    }
+
+    @Test
+    public void testGetValidDocuments_LastUpdatedNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+
+        // Make isChangesFound return true
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(validDocumentRepository.findAllLatestCreatedUpdateDeleted(
+                any(), any()))
+                .thenReturn(Collections.emptyList());
+
+        // Act
+        CompletableFuture<List<ValidDocumentDto>> future =
+                syncMasterData.getValidDocuments(null, now);
+
+        List<ValidDocumentDto> result = future.get();
+
+        // Assert
+        assertNull(result); // because convert method returns null for empty list
+    }
+
+    @Test
+    public void testGetValidDocuments_WithData_ShouldMapFields() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        // Changes found
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(validDocumentRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        // Prepare entity
+        ValidDocument entity = new ValidDocument();
+        entity.setDocTypeCode("DOC1");
+        entity.setDocCategoryCode("CAT1");
+        entity.setIsActive(true);
+        entity.setIsDeleted(false);
+        entity.setLangCode("eng");
+
+        when(validDocumentRepository.findAllLatestCreatedUpdateDeleted(
+                any(), any()))
+                .thenReturn(Collections.singletonList(entity));
+
+        // Act
+        CompletableFuture<List<ValidDocumentDto>> future =
+                syncMasterData.getValidDocuments(lastUpdated, now);
+
+        List<ValidDocumentDto> result = future.get();
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1, result.size());
+
+        ValidDocumentDto dto = result.get(0);
+
+        assertEquals("DOC1", dto.getDocTypeCode());
+        assertEquals("CAT1", dto.getDocCategoryCode());
+        assertTrue(dto.getIsActive());
+        assertFalse(dto.getIsDeleted());
+        assertEquals("eng", dto.getLangCode());
+    }
+
+    @Test
+    public void testGetValidDocuments_EmptyRepositoryResult() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(3);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(validDocumentRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(validDocumentRepository.findAllLatestCreatedUpdateDeleted(
+                any(), any()))
+                .thenReturn(Collections.emptyList());
+
+        CompletableFuture<List<ValidDocumentDto>> future =
+                syncMasterData.getValidDocuments(lastUpdated, now);
+
+        List<ValidDocumentDto> result = future.get();
+
+        assertNull(result);  // convert method returns null for empty list
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetValidDocuments_DataAccessException() throws Throwable {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(1);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(validDocumentRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(validDocumentRepository.findAllLatestCreatedUpdateDeleted(
+                any(), any()))
+                .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        try {
+            syncMasterData
+                    .getValidDocuments(lastUpdated, now)
+                    .get();
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
+    }
+
+    @Test
+    public void testGetRegistrationCenterMachines_NoChangesFound() throws Exception {
+
+        // Arrange
+        when(machineRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null);  // makes isChangesFound return false
+
+        // Act
+        CompletableFuture<List<RegistrationCenterMachineDto>> future =
+                syncMasterData.getRegistrationCenterMachines(
+                        "1001",
+                        LocalDateTime.now(ZoneOffset.UTC).minusDays(1),
+                        LocalDateTime.now(ZoneOffset.UTC),
+                        null);
+
+        List<RegistrationCenterMachineDto> result = future.get();
+
+        // Assert
+        assertNull(result);
+    }
+
+    @Test
+    public void testGetRegistrationCenterMachines_LastUpdatedNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(machineRepository.findMachineLatestCreatedUpdatedDeleted(
+                any(), any(), any(), any()))
+                .thenReturn(Collections.emptyList());
+
+        CompletableFuture<List<RegistrationCenterMachineDto>> future =
+                syncMasterData.getRegistrationCenterMachines(
+                        "1001",
+                        null,
+                        now,
+                        null);
+
+        List<RegistrationCenterMachineDto> result = future.get();
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testGetRegistrationCenterMachines_WithData_ShouldMapFields() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(machineRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        Machine machine = new Machine();
+        machine.setId("M1");
+        machine.setRegCenterId("1001");
+        machine.setIsActive(true);
+        machine.setIsDeleted(false);
+        machine.setLangCode("eng");
+
+        when(machineRepository.findMachineLatestCreatedUpdatedDeleted(
+                any(), any(), any(), any()))
+                .thenReturn(Collections.singletonList(machine));
+
+        CompletableFuture<List<RegistrationCenterMachineDto>> future =
+                syncMasterData.getRegistrationCenterMachines(
+                        "1001",
+                        lastUpdated,
+                        now,
+                        null);
+
+        List<RegistrationCenterMachineDto> result = future.get();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+
+        RegistrationCenterMachineDto dto = result.get(0);
+
+        assertEquals("M1", dto.getMachineId());
+        assertEquals("1001", dto.getRegCenterId());
+        assertTrue(dto.getIsActive());
+        assertFalse(dto.getIsDeleted());
+        assertEquals("eng", dto.getLangCode());
+    }
+
+    @Test
+    public void testGetRegistrationCenterMachines_RepositoryReturnsNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(1);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(machineRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(machineRepository.findMachineLatestCreatedUpdatedDeleted(
+                any(), any(), any(), any()))
+                .thenReturn(null);
+
+        CompletableFuture<List<RegistrationCenterMachineDto>> future =
+                syncMasterData.getRegistrationCenterMachines(
+                        "1001",
+                        lastUpdated,
+                        now,
+                        null);
+
+        List<RegistrationCenterMachineDto> result = future.get();
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetRegistrationCenterMachines_DataAccessException() throws Throwable {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(machineRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(machineRepository.findMachineLatestCreatedUpdatedDeleted(
+                any(), any(), any(), any()))
+                .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        try {
+            syncMasterData
+                    .getRegistrationCenterMachines("1001", lastUpdated, now, null)
+                    .get();
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
+    }
+
+    @Test
+    public void testGetRegistrationCenterUsers_NoChangesFound() throws Exception {
+
+        // Arrange
+        when(userDetailsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null);  // makes isChangesFound return false
+
+        // Act
+        CompletableFuture<List<RegistrationCenterUserDto>> future =
+                syncMasterData.getRegistrationCenterUsers(
+                        "1001",
+                        LocalDateTime.now(ZoneOffset.UTC).minusDays(1),
+                        LocalDateTime.now(ZoneOffset.UTC));
+
+        List<RegistrationCenterUserDto> result = future.get();
+
+        // Assert
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testGetRegistrationCenterUsers_LastUpdatedNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(userDetailsRepository.findAllLatestCreatedUpdatedDeleted(
+                any(), any(), any()))
+                .thenReturn(Collections.emptyList());
+
+        CompletableFuture<List<RegistrationCenterUserDto>> future =
+                syncMasterData.getRegistrationCenterUsers(
+                        "1001",
+                        null,
+                        now);
+
+        List<RegistrationCenterUserDto> result = future.get();
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testGetRegistrationCenterUsers_WithData_ShouldMapFields() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(userDetailsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        UserDetails user = new UserDetails();
+        user.setId("U1");
+        user.setRegCenterId("1001");
+        user.setIsActive(true);
+        user.setIsDeleted(false);
+        user.setLangCode("eng");
+
+        when(userDetailsRepository.findAllLatestCreatedUpdatedDeleted(
+                any(), any(), any()))
+                .thenReturn(Collections.singletonList(user));
+
+        CompletableFuture<List<RegistrationCenterUserDto>> future =
+                syncMasterData.getRegistrationCenterUsers(
+                        "1001",
+                        lastUpdated,
+                        now);
+
+        List<RegistrationCenterUserDto> result = future.get();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+
+        RegistrationCenterUserDto dto = result.get(0);
+
+        assertEquals("U1", dto.getUserId());
+        assertEquals("1001", dto.getRegCenterId());
+        assertTrue(dto.getIsActive());
+        assertFalse(dto.getIsDeleted());
+        assertEquals("eng", dto.getLangCode());
+    }
+
+    @Test
+    public void testGetRegistrationCenterUsers_RepositoryReturnsNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(1);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(userDetailsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(userDetailsRepository.findAllLatestCreatedUpdatedDeleted(
+                any(), any(), any()))
+                .thenReturn(null);
+
+        CompletableFuture<List<RegistrationCenterUserDto>> future =
+                syncMasterData.getRegistrationCenterUsers(
+                        "1001",
+                        lastUpdated,
+                        now);
+
+        List<RegistrationCenterUserDto> result = future.get();
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetRegistrationCenterUsers_DataAccessException() throws Throwable {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(userDetailsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(userDetailsRepository.findAllLatestCreatedUpdatedDeleted(
+                any(), any(), any()))
+                .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        try {
+            syncMasterData
+                    .getRegistrationCenterUsers("1001", lastUpdated, now)
+                    .get();
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
+    }
+
+    @Test
+    public void testGetApplicantValidDocument_NoChangesFound() throws Exception {
+
+        when(applicantValidDocumentRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null);   // makes isChangesFound return false
+
+        CompletableFuture<List<ApplicantValidDocumentDto>> future =
+                syncMasterData.getApplicantValidDocument(
+                        LocalDateTime.now(ZoneOffset.UTC).minusDays(1),
+                        LocalDateTime.now(ZoneOffset.UTC));
+
+        List<ApplicantValidDocumentDto> result = future.get();
+
+        assertNull(result);
+    }
+
+    @Test
+    public void testGetApplicantValidDocument_LastUpdatedNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(applicantValidDocumentRepository.findAllByTimeStamp(any(), any()))
+                .thenReturn(Collections.emptyList());
+
+        CompletableFuture<List<ApplicantValidDocumentDto>> future =
+                syncMasterData.getApplicantValidDocument(null, now);
+
+        List<ApplicantValidDocumentDto> result = future.get();
+
+        assertNull(result);  // convert method returns null
+    }
+
+    @Test
+    public void testGetApplicantValidDocument_WithData_ShouldMapFields() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(applicantValidDocumentRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        // Prepare composite ID
+        ApplicantValidDocumentID id = new ApplicantValidDocumentID();
+        id.setAppTypeCode("APP1");
+        id.setDocTypeCode("DOC1");
+        id.setDocCatCode("CAT1");
+
+        ApplicantValidDocument entity = new ApplicantValidDocument();
+        entity.setApplicantValidDocumentId(id);
+        entity.setLangCode("eng");
+        entity.setIsActive(true);
+        entity.setIsDeleted(false);
+
+        when(applicantValidDocumentRepository.findAllByTimeStamp(any(), any()))
+                .thenReturn(Collections.singletonList(entity));
+
+        CompletableFuture<List<ApplicantValidDocumentDto>> future =
+                syncMasterData.getApplicantValidDocument(lastUpdated, now);
+
+        List<ApplicantValidDocumentDto> result = future.get();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+
+        ApplicantValidDocumentDto dto = result.get(0);
+
+        assertEquals("APP1", dto.getAppTypeCode());
+        assertEquals("DOC1", dto.getDocTypeCode());
+        assertEquals("CAT1", dto.getDocCatCode());
+        assertEquals("eng", dto.getLangCode());
+        assertTrue(dto.getIsActive());
+        assertFalse(dto.getIsDeleted());
+    }
+
+    @Test
+    public void testGetApplicantValidDocument_RepositoryReturnsNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(1);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(applicantValidDocumentRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(applicantValidDocumentRepository.findAllByTimeStamp(any(), any()))
+                .thenReturn(null);
+
+        CompletableFuture<List<ApplicantValidDocumentDto>> future =
+                syncMasterData.getApplicantValidDocument(lastUpdated, now);
+
+        List<ApplicantValidDocumentDto> result = future.get();
+
+        assertNull(result);
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetApplicantValidDocument_DataAccessException() throws Throwable {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(applicantValidDocumentRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(applicantValidDocumentRepository.findAllByTimeStamp(any(), any()))
+                .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        try {
+            syncMasterData
+                    .getApplicantValidDocument(lastUpdated, now)
+                    .get();
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
+    }
+
+    @Test
+    public void testGetAppAuthenticationMethodDetails_NoChangesFound() throws Exception {
+
+        when(appAuthenticationMethodRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null);   // makes isChangesFound return false
+
+        CompletableFuture<List<AppAuthenticationMethodDto>> future =
+                syncMasterData.getAppAuthenticationMethodDetails(
+                        LocalDateTime.now(ZoneOffset.UTC).minusDays(1),
+                        LocalDateTime.now(ZoneOffset.UTC));
+
+        List<AppAuthenticationMethodDto> result = future.get();
+
+        assertNull(result);
+    }
+
+    @Test
+    public void testGetAppAuthenticationMethodDetails_LastUpdatedNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(appAuthenticationMethodRepository
+                .findByLastUpdatedAndCurrentTimeStamp(any(), any()))
+                .thenReturn(Collections.emptyList());
+
+        CompletableFuture<List<AppAuthenticationMethodDto>> future =
+                syncMasterData.getAppAuthenticationMethodDetails(null, now);
+
+        List<AppAuthenticationMethodDto> result = future.get();
+
+        assertNull(result);  // convert returns null
+    }
+
+    @Test
+    public void testGetAppAuthenticationMethodDetails_WithData_ShouldMapFields() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(appAuthenticationMethodRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        AppAuthenticationMethod entity = new AppAuthenticationMethod();
+        entity.setAppId("APP1");
+        entity.setProcessId("PROC1");
+        entity.setRoleCode("ROLE1");
+        entity.setAuthMethodCode("AUTH1");
+        entity.setMethodSequence(1);
+        entity.setLangCode("eng");
+        entity.setIsActive(true);
+        entity.setIsDeleted(false);
+
+        when(appAuthenticationMethodRepository
+                .findByLastUpdatedAndCurrentTimeStamp(any(), any()))
+                .thenReturn(Collections.singletonList(entity));
+
+        CompletableFuture<List<AppAuthenticationMethodDto>> future =
+                syncMasterData.getAppAuthenticationMethodDetails(lastUpdated, now);
+
+        List<AppAuthenticationMethodDto> result = future.get();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+
+        AppAuthenticationMethodDto dto = result.get(0);
+
+        assertEquals("APP1", dto.getAppId());
+        assertEquals("PROC1", dto.getProcessId());
+        assertEquals("ROLE1", dto.getRoleCode());
+        assertEquals("AUTH1", dto.getAuthMethodCode());
+        assertEquals(Integer.valueOf(1), dto.getMethodSequence());
+        assertEquals("eng", dto.getLangCode());
+        assertTrue(dto.getIsActive());
+        assertFalse(dto.getIsDeleted());
+    }
+
+    @Test
+    public void testGetAppAuthenticationMethodDetails_RepositoryReturnsNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(1);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(appAuthenticationMethodRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(appAuthenticationMethodRepository
+                .findByLastUpdatedAndCurrentTimeStamp(any(), any()))
+                .thenReturn(null);
+
+        CompletableFuture<List<AppAuthenticationMethodDto>> future =
+                syncMasterData.getAppAuthenticationMethodDetails(lastUpdated, now);
+
+        List<AppAuthenticationMethodDto> result = future.get();
+
+        assertNull(result);
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetAppAuthenticationMethodDetails_DataAccessException() throws Throwable {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(appAuthenticationMethodRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(appAuthenticationMethodRepository
+                .findByLastUpdatedAndCurrentTimeStamp(any(), any()))
+                .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        try {
+            syncMasterData
+                    .getAppAuthenticationMethodDetails(lastUpdated, now)
+                    .get();
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
+    }
+
+    @Test
+    public void testGetAppRolePriorityDetails_NoChangesFound() throws Exception {
+
+        when(appRolePriorityRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null);   // makes isChangesFound return false
+
+        CompletableFuture<List<AppRolePriorityDto>> future =
+                syncMasterData.getAppRolePriorityDetails(
+                        LocalDateTime.now(ZoneOffset.UTC).minusDays(1),
+                        LocalDateTime.now(ZoneOffset.UTC));
+
+        List<AppRolePriorityDto> result = future.get();
+
+        assertNull(result);
+    }
+
+    @Test
+    public void testGetAppRolePriorityDetails_LastUpdatedNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(appRolePriorityRepository
+                .findByLastUpdatedAndCurrentTimeStamp(any(), any()))
+                .thenReturn(Collections.emptyList());
+
+        CompletableFuture<List<AppRolePriorityDto>> future =
+                syncMasterData.getAppRolePriorityDetails(null, now);
+
+        List<AppRolePriorityDto> result = future.get();
+
+        assertNull(result);  // convert returns null
+    }
+
+    @Test
+    public void testGetAppRolePriorityDetails_WithData_ShouldMapFields() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(appRolePriorityRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        AppRolePriority entity = new AppRolePriority();
+        entity.setAppId("APP1");
+        entity.setProcessId("PROC1");
+        entity.setRoleCode("ROLE1");
+        entity.setPriority(5);
+        entity.setLangCode("eng");
+        entity.setIsActive(true);
+        entity.setIsDeleted(false);
+
+        when(appRolePriorityRepository
+                .findByLastUpdatedAndCurrentTimeStamp(any(), any()))
+                .thenReturn(Collections.singletonList(entity));
+
+        CompletableFuture<List<AppRolePriorityDto>> future =
+                syncMasterData.getAppRolePriorityDetails(lastUpdated, now);
+
+        List<AppRolePriorityDto> result = future.get();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+
+        AppRolePriorityDto dto = result.get(0);
+
+        assertEquals("APP1", dto.getAppId());
+        assertEquals("PROC1", dto.getProcessId());
+        assertEquals("ROLE1", dto.getRoleCode());
+        assertEquals(Integer.valueOf(5), dto.getPriority());
+        assertEquals("eng", dto.getLangCode());
+        assertTrue(dto.getIsActive());
+        assertFalse(dto.getIsDeleted());
+    }
+
+    @Test
+    public void testGetAppRolePriorityDetails_RepositoryReturnsNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(1);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(appRolePriorityRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(appRolePriorityRepository
+                .findByLastUpdatedAndCurrentTimeStamp(any(), any()))
+                .thenReturn(null);
+
+        CompletableFuture<List<AppRolePriorityDto>> future =
+                syncMasterData.getAppRolePriorityDetails(lastUpdated, now);
+
+        List<AppRolePriorityDto> result = future.get();
+
+        assertNull(result);
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetAppRolePriorityDetails_DataAccessException() throws Throwable {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(appRolePriorityRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(appRolePriorityRepository
+                .findByLastUpdatedAndCurrentTimeStamp(any(), any()))
+                .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        try {
+            syncMasterData
+                    .getAppRolePriorityDetails(lastUpdated, now)
+                    .get();
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
+    }
+
+    @Test
+    public void testGetScreenAuthorizationDetails_NoChangesFound() throws Exception {
+
+        when(screenAuthorizationRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null);  // makes isChangesFound return false
+
+        CompletableFuture<List<ScreenAuthorizationDto>> future =
+                syncMasterData.getScreenAuthorizationDetails(
+                        LocalDateTime.now(ZoneOffset.UTC).minusDays(1),
+                        LocalDateTime.now(ZoneOffset.UTC));
+
+        List<ScreenAuthorizationDto> result = future.get();
+
+        assertNull(result);
+    }
+
+    @Test
+    public void testGetScreenAuthorizationDetails_LastUpdatedNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(screenAuthorizationRepository
+                .findByLastUpdatedAndCurrentTimeStamp(any(), any()))
+                .thenReturn(Collections.emptyList());
+
+        CompletableFuture<List<ScreenAuthorizationDto>> future =
+                syncMasterData.getScreenAuthorizationDetails(null, now);
+
+        List<ScreenAuthorizationDto> result = future.get();
+
+        assertNull(result); // convert returns null
+    }
+
+    @Test
+    public void testGetScreenAuthorizationDetails_WithData_ShouldMapFields() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(screenAuthorizationRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        ScreenAuthorization entity = new ScreenAuthorization();
+        entity.setScreenId("SCR001");
+        entity.setRoleCode("ADMIN");
+        entity.setIsPermitted(true);
+        entity.setIsActive(true);
+        entity.setIsDeleted(false);
+        entity.setLangCode("eng");
+
+        when(screenAuthorizationRepository
+                .findByLastUpdatedAndCurrentTimeStamp(any(), any()))
+                .thenReturn(Collections.singletonList(entity));
+
+        CompletableFuture<List<ScreenAuthorizationDto>> future =
+                syncMasterData.getScreenAuthorizationDetails(lastUpdated, now);
+
+        List<ScreenAuthorizationDto> result = future.get();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+
+        ScreenAuthorizationDto dto = result.get(0);
+
+        assertEquals("SCR001", dto.getScreenId());
+        assertEquals("ADMIN", dto.getRoleCode());
+        assertTrue(dto.getIsPermitted());
+        assertTrue(dto.getIsActive());
+        assertFalse(dto.getIsDeleted());
+        assertEquals("eng", dto.getLangCode());
+    }
+
+    @Test
+    public void testGetScreenAuthorizationDetails_RepositoryReturnsNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(1);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(screenAuthorizationRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(screenAuthorizationRepository
+                .findByLastUpdatedAndCurrentTimeStamp(any(), any()))
+                .thenReturn(null);
+
+        CompletableFuture<List<ScreenAuthorizationDto>> future =
+                syncMasterData.getScreenAuthorizationDetails(lastUpdated, now);
+
+        List<ScreenAuthorizationDto> result = future.get();
+
+        assertNull(result);
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetScreenAuthorizationDetails_DataAccessException() throws Throwable {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        when(screenAuthorizationRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(screenAuthorizationRepository
+                .findByLastUpdatedAndCurrentTimeStamp(any(), any()))
+                .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        try {
+            syncMasterData
+                    .getScreenAuthorizationDetails(lastUpdated, now)
+                    .get();
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
+    }
+
+    @Test
+    public void testGetProcessList_NoChangesFound() throws Exception {
+
+        when(processListRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null);  // makes isChangesFound return false
+
+        CompletableFuture<List<ProcessListDto>> future =
+                syncMasterData.getProcessList(
+                        LocalDateTime.now(ZoneOffset.UTC).minusDays(1),
+                        LocalDateTime.now(ZoneOffset.UTC));
+
+        List<ProcessListDto> result = future.get();
+
+        assertNull(result);
+    }
+
+    @Test
+    public void testGetProcessList_LastUpdatedNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(processListRepository
+                .findByLastUpdatedTimeAndCurrentTimeStamp(any(), any()))
+                .thenReturn(Collections.emptyList());
+
+        CompletableFuture<List<ProcessListDto>> future =
+                syncMasterData.getProcessList(null, now);
+
+        List<ProcessListDto> result = future.get();
+
+        assertNull(result); // convert returns null
+    }
+
+    @Test
+    public void testGetProcessList_WithData_ShouldMapFields() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(processListRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        ProcessList entity = new ProcessList();
+        entity.setId("P001");
+        entity.setName("Registration");
+        entity.setDescr("Registration Process");
+        entity.setIsActive(true);
+        entity.setIsDeleted(false);
+        entity.setLangCode("eng");
+
+        when(processListRepository
+                .findByLastUpdatedTimeAndCurrentTimeStamp(any(), any()))
+                .thenReturn(Collections.singletonList(entity));
+
+        CompletableFuture<List<ProcessListDto>> future =
+                syncMasterData.getProcessList(lastUpdated, now);
+
+        List<ProcessListDto> result = future.get();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+
+        ProcessListDto dto = result.get(0);
+
+        assertEquals("P001", dto.getId());
+        assertEquals("Registration", dto.getName());
+        assertEquals("Registration Process", dto.getDescr());
+        assertTrue(dto.getIsActive());
+        assertFalse(dto.getIsDeleted());
+        assertEquals("eng", dto.getLangCode());
+    }
+
+    @Test
+    public void testGetProcessList_RepositoryReturnsNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(1);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(processListRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(processListRepository
+                .findByLastUpdatedTimeAndCurrentTimeStamp(any(), any()))
+                .thenReturn(null);
+
+        CompletableFuture<List<ProcessListDto>> future =
+                syncMasterData.getProcessList(lastUpdated, now);
+
+        List<ProcessListDto> result = future.get();
+
+        assertNull(result);
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetProcessList_DataAccessException() throws Throwable {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(processListRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(processListRepository
+                .findByLastUpdatedTimeAndCurrentTimeStamp(any(), any()))
+                .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        try {
+            syncMasterData
+                    .getProcessList(lastUpdated, now)
+                    .get();
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
+    }
+
+    @Test
+    public void testGetSyncJobDefDetails_NoChangesFound() throws Exception {
+
+        when(syncJobDefRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null);  // makes isChangesFound return false
+
+        CompletableFuture<List<SyncJobDefDto>> future =
+                syncMasterData.getSyncJobDefDetails(
+                        LocalDateTime.now(ZoneOffset.UTC).minusDays(1),
+                        LocalDateTime.now(ZoneOffset.UTC));
+
+        List<SyncJobDefDto> result = future.get();
+
+        assertNull(result);
+    }
+
+    @Test
+    public void testGetSyncJobDefDetails_LastUpdatedNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(syncJobDefRepository
+                .findLatestByLastUpdatedTimeAndCurrentTimeStamp(any(), any()))
+                .thenReturn(Collections.emptyList());
+
+        CompletableFuture<List<SyncJobDefDto>> future =
+                syncMasterData.getSyncJobDefDetails(null, now);
+
+        List<SyncJobDefDto> result = future.get();
+
+        assertNull(result); // convert method returns null
+    }
+
+    @Test
+    public void testGetSyncJobDefDetails_WithData_ShouldMapFields() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(syncJobDefRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        SyncJobDef entity = new SyncJobDef();
+        entity.setId("JOB001");
+        entity.setName("Sync Master Data");
+        entity.setApiName("syncMasterDataApi");
+        entity.setParentSyncJobId("PARENT001");
+        entity.setSyncFreq("DAILY");
+        entity.setLockDuration("30");
+        entity.setIsActive(true);
+        entity.setIsDeleted(false);
+        entity.setLangCode("eng");
+
+        when(syncJobDefRepository
+                .findLatestByLastUpdatedTimeAndCurrentTimeStamp(any(), any()))
+                .thenReturn(Collections.singletonList(entity));
+
+        CompletableFuture<List<SyncJobDefDto>> future =
+                syncMasterData.getSyncJobDefDetails(lastUpdated, now);
+
+        List<SyncJobDefDto> result = future.get();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+
+        SyncJobDefDto dto = result.get(0);
+
+        assertEquals("JOB001", dto.getId());
+        assertEquals("Sync Master Data", dto.getName());
+        assertEquals("syncMasterDataApi", dto.getApiName());
+        assertEquals("PARENT001", dto.getParentSyncJobId());
+        assertEquals("DAILY", dto.getSyncFreq());
+        assertEquals("30", dto.getLockDuration());
+        assertTrue(dto.getIsActive());
+        assertFalse(dto.getIsDeleted());
+        assertEquals("eng", dto.getLangCode());
+    }
+
+    @Test
+    public void testGetSyncJobDefDetails_RepositoryReturnsNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(1);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(syncJobDefRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(syncJobDefRepository
+                .findLatestByLastUpdatedTimeAndCurrentTimeStamp(any(), any()))
+                .thenReturn(null);
+
+        CompletableFuture<List<SyncJobDefDto>> future =
+                syncMasterData.getSyncJobDefDetails(lastUpdated, now);
+
+        List<SyncJobDefDto> result = future.get();
+
+        assertNull(result);
+    }
+
+    @Test(expected = AdminServiceException.class)
+    public void testGetSyncJobDefDetails_DataAccessException() throws Throwable {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(syncJobDefRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(syncJobDefRepository
+                .findLatestByLastUpdatedTimeAndCurrentTimeStamp(any(), any()))
+                .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        try {
+            syncMasterData
+                    .getSyncJobDefDetails(lastUpdated, now)
+                    .get();
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
+    }
+
+    @Test
+    public void testGetScreenDetails_NoChangesFound() throws Exception {
+
+        when(screenDetailRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null);  // makes isChangesFound return false
+
+        CompletableFuture<List<ScreenDetailDto>> future =
+                syncMasterData.getScreenDetails(
+                        LocalDateTime.now(ZoneOffset.UTC).minusDays(1),
+                        LocalDateTime.now(ZoneOffset.UTC));
+
+        List<ScreenDetailDto> result = future.get();
+
+        assertNull(result);
+    }
+
+    @Test
+    public void testGetScreenDetails_LastUpdatedNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(screenDetailRepository
+                .findByLastUpdatedAndCurrentTimeStamp(any(), any()))
+                .thenReturn(Collections.emptyList());
+
+        CompletableFuture<List<ScreenDetailDto>> future =
+                syncMasterData.getScreenDetails(null, now);
+
+        List<ScreenDetailDto> result = future.get();
+
+        assertNull(result); // convert returns null
+    }
+
+    @Test
+    public void testGetScreenDetails_WithData_ShouldMapFields() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(screenDetailRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        ScreenDetail entity = new ScreenDetail();
+        entity.setId("SCR001");
+        entity.setAppId("APP01");
+        entity.setName("Home Screen");
+        entity.setDescr("Main Screen");
+        entity.setIsActive(true);
+        entity.setIsDeleted(false);
+        entity.setLangCode("eng");
+
+        when(screenDetailRepository
+                .findByLastUpdatedAndCurrentTimeStamp(any(), any()))
+                .thenReturn(Collections.singletonList(entity));
+
+        CompletableFuture<List<ScreenDetailDto>> future =
+                syncMasterData.getScreenDetails(lastUpdated, now);
+
+        List<ScreenDetailDto> result = future.get();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+
+        ScreenDetailDto dto = result.get(0);
+
+        assertEquals("SCR001", dto.getId());
+        assertEquals("APP01", dto.getAppId());
+        assertEquals("Home Screen", dto.getName());
+        assertEquals("Main Screen", dto.getDescr());
+        assertTrue(dto.getIsActive());
+        assertFalse(dto.getIsDeleted());
+        assertEquals("eng", dto.getLangCode());
+    }
+
+    @Test
+    public void testGetScreenDetails_RepositoryReturnsNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(1);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(screenDetailRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(screenDetailRepository
+                .findByLastUpdatedAndCurrentTimeStamp(any(), any()))
+                .thenReturn(null);
+
+        CompletableFuture<List<ScreenDetailDto>> future =
+                syncMasterData.getScreenDetails(lastUpdated, now);
+
+        List<ScreenDetailDto> result = future.get();
+
+        assertNull(result);
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetScreenDetails_DataAccessException() throws Throwable {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(screenDetailRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(screenDetailRepository
+                .findByLastUpdatedAndCurrentTimeStamp(any(), any()))
+                .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        try {
+            syncMasterData
+                    .getScreenDetails(lastUpdated, now)
+                    .get();
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
+    }
+
+    @Test
+    public void testGetPermittedConfig_NoChangesFound() throws Exception {
+
+        when(permittedLocalConfigRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null);  // makes isChangesFound return false
+
+        CompletableFuture<List<PermittedConfigDto>> future =
+                syncMasterData.getPermittedConfig(
+                        LocalDateTime.now(ZoneOffset.UTC).minusDays(1),
+                        LocalDateTime.now(ZoneOffset.UTC));
+
+        List<PermittedConfigDto> result = future.get();
+
+        assertNull(result);
+    }
+
+    @Test
+    public void testGetPermittedConfig_LastUpdatedNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(permittedLocalConfigRepository
+                .findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenReturn(Collections.emptyList());
+
+        CompletableFuture<List<PermittedConfigDto>> future =
+                syncMasterData.getPermittedConfig(null, now);
+
+        List<PermittedConfigDto> result = future.get();
+
+        assertNull(result); // convert returns null
+    }
+
+    @Test
+    public void testGetPermittedConfig_WithData_ShouldMapFields() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(permittedLocalConfigRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        PermittedLocalConfig entity = new PermittedLocalConfig();
+        entity.setCode("CFG001");
+        entity.setName("BiometricEnabled");
+        entity.setType("BOOLEAN");
+        entity.setIsActive(true);
+        entity.setIsDeleted(false);
+
+        when(permittedLocalConfigRepository
+                .findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenReturn(Collections.singletonList(entity));
+
+        CompletableFuture<List<PermittedConfigDto>> future =
+                syncMasterData.getPermittedConfig(lastUpdated, now);
+
+        List<PermittedConfigDto> result = future.get();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+
+        PermittedConfigDto dto = result.get(0);
+
+        assertEquals("CFG001", dto.getCode());
+        assertEquals("BiometricEnabled", dto.getName());
+        assertEquals("BOOLEAN", dto.getType());
+        assertTrue(dto.getIsActive());
+        assertFalse(dto.getIsDeleted());
+    }
+
+    @Test
+    public void testGetPermittedConfig_RepositoryReturnsNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(1);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(permittedLocalConfigRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(permittedLocalConfigRepository
+                .findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenReturn(null);
+
+        CompletableFuture<List<PermittedConfigDto>> future =
+                syncMasterData.getPermittedConfig(lastUpdated, now);
+
+        List<PermittedConfigDto> result = future.get();
+
+        assertNull(result);
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetPermittedConfig_DataAccessException() throws Throwable {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(permittedLocalConfigRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(permittedLocalConfigRepository
+                .findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        try {
+            syncMasterData
+                    .getPermittedConfig(lastUpdated, now)
+                    .get();
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
+    }
+
+    @Test
+    public void testGetLanguageList_NoChangesFound() throws Exception {
+
+        when(languageRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null);  // makes isChangesFound return false
+
+        CompletableFuture<List<LanguageDto>> future =
+                syncMasterData.getLanguageList(
+                        LocalDateTime.now(ZoneOffset.UTC).minusDays(1),
+                        LocalDateTime.now(ZoneOffset.UTC));
+
+        List<LanguageDto> result = future.get();
+
+        assertNull(result);
+    }
+
+    @Test
+    public void testGetLanguageList_LastUpdatedNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        CompletableFuture<List<LanguageDto>> future =
+                syncMasterData.getLanguageList(null, now);
+
+        List<LanguageDto> result = future.get();
+
+        assertNull(result); // convert returns null
+    }
+
+    @Test
+    public void testGetLanguageList_WithData_ShouldMapFields() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(languageRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        Language entity = new Language();
+        entity.setCode("eng");
+        entity.setName("English");
+        entity.setFamily("Indo-European");
+        entity.setNativeName("English");
+        entity.setIsActive(true);
+        entity.setIsDeleted(false);
+
+        when(languageRepository
+                .findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenReturn(Collections.singletonList(entity));
+
+        CompletableFuture<List<LanguageDto>> future =
+                syncMasterData.getLanguageList(lastUpdated, now);
+
+        List<LanguageDto> result = future.get();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+
+        LanguageDto dto = result.get(0);
+
+        assertEquals("eng", dto.getCode());
+        assertEquals("English", dto.getName());
+        assertEquals("Indo-European", dto.getFamily());
+        assertEquals("English", dto.getNativeName());
+        assertTrue(dto.getIsActive());
+        assertFalse(dto.getIsDeleted());
+    }
+
+    @Test
+    public void testGetLanguageList_RepositoryReturnsNull() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(1);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(languageRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(languageRepository
+                .findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenReturn(null);
+
+        CompletableFuture<List<LanguageDto>> future =
+                syncMasterData.getLanguageList(lastUpdated, now);
+
+        List<LanguageDto> result = future.get();
+
+        assertNull(result);
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetLanguageList_DataAccessException() throws Throwable {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+
+        when(languageRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(languageRepository
+                .findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        try {
+            syncMasterData
+                    .getLanguageList(lastUpdated, now)
+                    .get();
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
     }
 
 }
