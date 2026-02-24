@@ -327,7 +327,7 @@ public class WebsubCallbackControllerTest {
 	 * ✅ ObjectMapper Parsing Exception
 	 */
 	@Test
-	public void handleCACertificate_objectMapperThrowsException() throws Exception {
+	public void handleCACertificate_whenInvalidJsonResponse_shouldStillUpload() throws Exception {
 
 		Map<String, Object> data = new HashMap<>();
 		data.put("partnerDomain", "FTM");
