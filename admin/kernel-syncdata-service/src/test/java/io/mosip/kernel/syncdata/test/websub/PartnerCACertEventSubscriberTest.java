@@ -25,9 +25,6 @@ import static org.mockito.Mockito.*;
 class PartnerCACertEventSubscriberTest {
 
     @Mock
-    private PublisherClient<String, EventModel, HttpHeaders> publisherClient;
-
-    @Mock
     private SubscriptionClient<SubscriptionChangeRequest,
             UnsubscriptionRequest,
             SubscriptionChangeResponse> subscribe;
@@ -112,7 +109,7 @@ class PartnerCACertEventSubscriberTest {
      * ✅ Test When Required Fields Are Null
      */
     @Test
-    void subscribeTopics_withNullValues_shouldStillCallSubscribe() throws Exception {
+    void subscribeTopics_withNullSubscriptionFields_shouldStillCallSubscribe() throws Exception {
 
         setField("topicName", null);
         setField("callbackUrl", null);

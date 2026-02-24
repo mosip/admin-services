@@ -247,7 +247,7 @@ public class WebsubCallbackControllerTest {
 	 * ✅ Error In Response → Should Not Upload
 	 */
 	@Test
-	public void handleCACertificate_whenServiceError_shouldNotUpload() throws Exception {
+	public void handleCACertificate_whenServiceError_shouldStillUpload() throws Exception {
 
 		Map<String, Object> data = new HashMap<>();
 		data.put("partnerDomain", "FTM");
