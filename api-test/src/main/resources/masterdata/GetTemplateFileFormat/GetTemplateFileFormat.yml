@@ -41,7 +41,7 @@ GetTemplateFileFormat:
 }'
    Masterdata_GetTemplateFileFormat_langcode_allValid_smoke:
       endPoint: /v1/masterdata/templatefileformats/code/{code}
-      uniqueIdentifier: TC_Masterdata_GetTemplateFileFormat_02
+      uniqueIdentifier: TC_Masterdata_GetTemplateFileFormat_03
       description: Verify that the system successfully returns all template file formats for a valid language code (smoke test)
       role: admin
       restMethod: get

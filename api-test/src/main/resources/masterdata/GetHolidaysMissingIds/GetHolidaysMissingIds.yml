@@ -15,7 +15,7 @@ GetHolidaysMissingIds:
       output: '{
 }'
 
-   Admin_GetHolidaysMissingIds_InValid_Inavild_langCode:
+   Admin_GetHolidaysMissingIds_InValid_Invalid_langCode:
       endPoint: /v1/masterdata/holidays/missingids/{langcode}
       uniqueIdentifier: TC_Masterdata_GetHolidaysMissingIds_02
       description: Verify that the system returns an error or handles gracefully when an invalid language code is provided while fetching holidays with missing IDs

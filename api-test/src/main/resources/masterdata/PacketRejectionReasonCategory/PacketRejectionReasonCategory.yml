@@ -23,7 +23,7 @@ PacketRejectionReasonCategory:
    MasterData_PacketRejectionReasonCategory_Invalid_langCode:
       endPoint: /v1/masterdata/packetrejectionreasons/reasoncategory
       uniqueIdentifier: TC_Masterdata_PacketRejectionReasonCategory_02
-      description:Verify that the system returns an error when an invalid language code is provided for fetching packet rejection reason categories
+      description: Verify that the system returns an error when an invalid language code is provided for fetching packet rejection reason categories
       role: admin
       restMethod: get
       inputTemplate: masterdata/PacketRejectionReasonCategory/packetRejectionReasonCategory
