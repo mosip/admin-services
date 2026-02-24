@@ -37,9 +37,9 @@ class CacheManagementServiceImplTest {
 
     @Test
     void clearCacheByCacheName_existingCache_clearsOnlyMatched() {
-        when(cacheManager.getCacheNames()).thenReturn(Arrays.asList("CACHE1", "CACHE2"));
-        when(cacheManager.getCache("CACHE1")).thenReturn(mockCache1);
-        when(cacheManager.getCache("CACHE2")).thenReturn(mockCache2);
+        when(cacheManager.getCacheNames()).thenReturn(Arrays.asList("blocklisted-words", "other-cache"));
+        when(cacheManager.getCache("blocklisted-words")).thenReturn(mockCache1);
+        when(cacheManager.getCache("other-cache")).thenReturn(mockCache2);
 
         cacheService.clearCacheByCacheName(CacheName.BLOCK_LISTED_WORDS);
 

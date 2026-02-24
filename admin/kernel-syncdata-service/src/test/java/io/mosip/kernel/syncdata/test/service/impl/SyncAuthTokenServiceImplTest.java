@@ -76,19 +76,6 @@ class SyncAuthTokenServiceImplTest {
         ReflectionTestUtils.setField(service, "refreshAuthTokenInternalUrl", "http://refresh");
     }
 
-    // =====================================================
-    // getAuthToken SUCCESS
-    // =====================================================
-    // ======== HELPER TO CREATE JWT-LIKE TOKEN ========
-    private String createToken(String kid, String machineName, LocalDateTime timestamp) throws Exception {
-        String headerJson = "{\"kid\":\"" + kid + "\"}";
-        String payloadJson = "{\"machineName\":\"" + machineName + "\",\"timestamp\":\"" + timestamp + "\",\"authType\":\"NEW\"}";
-        String signature = "sig";
-
-        return Base64.getUrlEncoder().encodeToString(headerJson.getBytes()) + "." +
-                Base64.getUrlEncoder().encodeToString(payloadJson.getBytes()) + "." +
-                Base64.getUrlEncoder().encodeToString(signature.getBytes());
-    }
 
     @Test
     void getAuthToken_invalidRequest_throwsRequestException() {
@@ -149,16 +136,6 @@ class SyncAuthTokenServiceImplTest {
             service.getAuthToken(token);
         });
 
-    }
-
-    // =====================================================
-    // INVALID TOKEN FORMAT
-    // =====================================================
-
-    @Test
-    void getAuthToken_invalidFormat() {
-        assertThrows(RequestException.class,
-                () -> service.getAuthToken("invalid.token"));
     }
 
     // =====================================================

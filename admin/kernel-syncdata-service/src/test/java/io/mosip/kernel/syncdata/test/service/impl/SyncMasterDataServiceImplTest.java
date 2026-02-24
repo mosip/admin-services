@@ -1,12 +1,10 @@
 package io.mosip.kernel.syncdata.test.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
 import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.keymanagerservice.entity.CACertificateStore;
-import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.*;
 import io.mosip.kernel.syncdata.dto.response.*;
 import io.mosip.kernel.syncdata.entity.Machine;

@@ -1,10 +1,6 @@
 package io.mosip.kernel.syncdata.test.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.mosip.kernel.core.exception.ServiceError;
-import com.fasterxml.jackson.core.type.TypeReference;
 import io.mosip.kernel.syncdata.entity.id.ApplicantValidDocumentID;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
 import io.mosip.kernel.syncdata.exception.AdminServiceException;
@@ -13,7 +9,6 @@ import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import org.mockito.InjectMocks;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import io.mosip.kernel.clientcrypto.constant.ClientType;
 import io.mosip.kernel.core.exception.FileNotFoundException;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -47,9 +42,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
-import io.mosip.kernel.core.exception.ExceptionUtils;
 
-import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -2291,15 +2284,6 @@ public class SyncMasterDataServiceHelperTest {
         assertEquals("Country", result.get(0).getHierarchyLevelName());
     }
 
-//    @Test(expected = RuntimeException.class)
-//    public void testGetLocationHierarchyList_WhenRestTemplateFails() {
-//
-//        when(restTemplate.getForEntity(any(), eq(String.class)))
-//                .thenThrow(new RuntimeException("Failure"));
-//
-//        syncMasterData.getLocationHierarchyList(null);
-//    }
-
     @Test(expected = SyncServiceException.class)
     public void testGetLocationHierarchyList_WithValidationErrors() {
 
@@ -3652,8 +3636,6 @@ public class SyncMasterDataServiceHelperTest {
     public void testGetApplicantValidDocument_LastUpdatedNull() throws Exception {
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
-
-        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
 
         when(applicantValidDocumentRepository.findAllByTimeStamp(any(), any()))
                 .thenReturn(Collections.emptyList());
