@@ -163,9 +163,6 @@ public class SyncMasterDataServiceHelperTest {
     @Mock
     private ObjectMapper objectMapper;
 
-    @Mock
-    private ApplicantValidDocumentRespository applicantValidDocumentRepository;
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -3619,7 +3616,7 @@ public class SyncMasterDataServiceHelperTest {
     @Test
     public void testGetApplicantValidDocument_NoChangesFound() throws Exception {
 
-        when(applicantValidDocumentRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+        when(applicantValidDocumentRespository.getMaxCreatedDateTimeMaxUpdatedDateTime())
                 .thenReturn(null);   // makes isChangesFound return false
 
         CompletableFuture<List<ApplicantValidDocumentDto>> future =
@@ -3637,7 +3634,7 @@ public class SyncMasterDataServiceHelperTest {
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
 
-        when(applicantValidDocumentRepository.findAllByTimeStamp(any(), any()))
+        when(applicantValidDocumentRespository.findAllByTimeStamp(any(), any()))
                 .thenReturn(Collections.emptyList());
 
         CompletableFuture<List<ApplicantValidDocumentDto>> future =
@@ -3655,7 +3652,7 @@ public class SyncMasterDataServiceHelperTest {
         LocalDateTime lastUpdated = now.minusDays(2);
 
         EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
-        when(applicantValidDocumentRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+        when(applicantValidDocumentRespository.getMaxCreatedDateTimeMaxUpdatedDateTime())
                 .thenReturn(entityDtimes);
 
         // Prepare composite ID
@@ -3670,7 +3667,7 @@ public class SyncMasterDataServiceHelperTest {
         entity.setIsActive(true);
         entity.setIsDeleted(false);
 
-        when(applicantValidDocumentRepository.findAllByTimeStamp(any(), any()))
+        when(applicantValidDocumentRespository.findAllByTimeStamp(any(), any()))
                 .thenReturn(Collections.singletonList(entity));
 
         CompletableFuture<List<ApplicantValidDocumentDto>> future =
@@ -3698,10 +3695,10 @@ public class SyncMasterDataServiceHelperTest {
         LocalDateTime lastUpdated = now.minusDays(1);
 
         EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
-        when(applicantValidDocumentRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+        when(applicantValidDocumentRespository.getMaxCreatedDateTimeMaxUpdatedDateTime())
                 .thenReturn(entityDtimes);
 
-        when(applicantValidDocumentRepository.findAllByTimeStamp(any(), any()))
+        when(applicantValidDocumentRespository.findAllByTimeStamp(any(), any()))
                 .thenReturn(null);
 
         CompletableFuture<List<ApplicantValidDocumentDto>> future =
@@ -3719,10 +3716,10 @@ public class SyncMasterDataServiceHelperTest {
         LocalDateTime lastUpdated = now.minusDays(2);
 
         EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
-        when(applicantValidDocumentRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+        when(applicantValidDocumentRespository.getMaxCreatedDateTimeMaxUpdatedDateTime())
                 .thenReturn(entityDtimes);
 
-        when(applicantValidDocumentRepository.findAllByTimeStamp(any(), any()))
+        when(applicantValidDocumentRespository.findAllByTimeStamp(any(), any()))
                 .thenThrow(new DataAccessResourceFailureException("DB error"));
 
         try {
