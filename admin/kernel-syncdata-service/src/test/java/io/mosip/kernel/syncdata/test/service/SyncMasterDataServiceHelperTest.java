@@ -1,6 +1,16 @@
 package io.mosip.kernel.syncdata.test.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.syncdata.entity.id.HolidayID;
+import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
+import io.mosip.kernel.syncdata.exception.SyncServiceException;
+import org.mockito.InjectMocks;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import io.mosip.kernel.clientcrypto.constant.ClientType;
 import io.mosip.kernel.core.exception.FileNotFoundException;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -34,6 +44,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,9 +53,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.lenient;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
@@ -57,6 +72,11 @@ public class SyncMasterDataServiceHelperTest {
 
     @Mock
     private SyncMasterDataServiceHelper syncMasterDataServiceHelper;
+
+    @InjectMocks
+    private SyncMasterDataServiceHelper syncMasterData;
+
+    private SyncMasterDataServiceHelper realHelper;
 
     @Mock
     private AppAuthenticationMethodRepository appAuthenticationMethodRepository;
@@ -210,6 +230,21 @@ public class SyncMasterDataServiceHelperTest {
         locationHierarchyDto.setIsDeleted(false);
         locations.add(locationHierarchyDto);
         locationHierarchyLevelResponseDto.setLocationHierarchyLevels(locations);
+
+        realHelper = new SyncMasterDataServiceHelper();
+        ReflectionTestUtils.setField(realHelper, "documentTypeRepository", documentTypeRepository);
+        ObjectMapper realObjectMapper = new ObjectMapper();
+        ReflectionTestUtils.setField(realHelper, "objectMapper", realObjectMapper);
+        ReflectionTestUtils.setField(realHelper, "locationHirerarchyUrl", "http://localhost/location-hierarchy");
+        ReflectionTestUtils.setField(realHelper, "machineRepository", machineRepository);
+        ReflectionTestUtils.setField(realHelper, "registrationCenterRepository", registrationCenterRepository);
+        ReflectionTestUtils.setField(realHelper, "templateRepository", templateRepository);
+        ReflectionTestUtils.setField(realHelper, "templateFileFormatRepository", templateFileFormatRepository);
+        ReflectionTestUtils.setField(realHelper, "reasonCategoryRepository", reasonCategoryRepository);
+        ReflectionTestUtils.setField(realHelper, "reasonListRepository", reasonListRepository);
+        ReflectionTestUtils.setField(realHelper, "holidayRepository", holidayRepository);
+        ReflectionTestUtils.setField(realHelper, "blocklistedWordsRepository", blocklistedWordsRepository);
+        ReflectionTestUtils.setField(realHelper, "locationRepository", locationRepository);
     }
 
     @Test
@@ -2078,6 +2113,1117 @@ public class SyncMasterDataServiceHelperTest {
         machine.setZoneCode("Zone Code");
 
         assertEquals(ClientType.ANDROID, SyncMasterDataServiceHelper.getClientType(machine));
+    }
+
+    @Test
+    public void testGetMachines_NoChangesFound() throws Exception {
+
+        // Arrange
+        when(machineRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null);  // This makes isChangesFound return false
+
+        // Act
+        CompletableFuture<List<MachineDto>> future =
+                syncMasterData.getMachines(
+                        "1001",
+                        LocalDateTime.now(ZoneOffset.UTC).minusDays(1),
+                        LocalDateTime.now(ZoneOffset.UTC),
+                        null);
+
+        List<MachineDto> result = future.get();
+
+        // Assert
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testGetMachines_WithData_ShouldMapFields() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        // Make isChangesFound return true
+        EntityDtimes entityDtimes = new EntityDtimes(now, null, null);
+        entityDtimes.setCreatedDateTime(now);
+        when(machineRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        // Prepare entity
+        Machine machine = new Machine();
+        machine.setId("M1");
+        machine.setName("Machine1");
+        machine.setIpAddress("192.168.1.1");
+        machine.setPublicKey("pubKey");
+        machine.setIsActive(true);
+        machine.setIsDeleted(false);
+        machine.setKeyIndex("1");
+        machine.setLangCode("eng");
+        machine.setMacAddress("AA:BB:CC");
+        machine.setMachineSpecId("SPEC1");
+        machine.setSerialNum("SER123");
+        machine.setValidityDateTime(now.plusDays(10));
+        machine.setRegCenterId("1001");
+
+        when(machineRepository.findMachineLatestCreatedUpdatedDeleted(
+                any(), any(), any(), any()))
+                .thenReturn(Collections.singletonList(machine));
+
+        CompletableFuture<List<MachineDto>> future =
+                syncMasterData.getMachines("1001", lastUpdated, now, null);
+
+        List<MachineDto> result = future.get();
+
+        assertEquals(1, result.size());
+
+        MachineDto dto = result.get(0);
+
+        assertEquals("M1", dto.getId());
+        assertEquals("Machine1", dto.getName());
+        assertEquals("192.168.1.1", dto.getIpAddress());
+        assertEquals("pubKey", dto.getPublicKey());
+        assertEquals("1001", dto.getRegCenterId());
+    }
+
+    @Test
+    public void testGetMachines_EmptyRepositoryResult() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(5);
+
+        EntityDtimes entityDtimes =
+                new EntityDtimes(null, now, null);
+        entityDtimes.setUpdatedDateTime(now);
+        when(machineRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(machineRepository.findMachineLatestCreatedUpdatedDeleted(
+                any(), any(), any(), any()))
+                .thenReturn(Collections.emptyList());
+
+        CompletableFuture<List<MachineDto>> future =
+                syncMasterData.getMachines("1001", lastUpdated, now, null);
+
+        List<MachineDto> result = future.get();
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetMachines_DataAccessException() throws Throwable {
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime lastUpdated = now.minusDays(2);
+
+        // deletedDateTime is after lastUpdated → changes found
+        EntityDtimes entityDtimes =
+                new EntityDtimes(null, null, now);
+
+        when(machineRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(machineRepository.findMachineLatestCreatedUpdatedDeleted(
+                any(), any(), any(), any()))
+                .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        try {
+            syncMasterData
+                    .getMachines("1001", lastUpdated, now, null)
+                    .get();
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
+    }
+
+    @Test
+    public void testGetLocationHierarchyList_Success() throws Exception {
+
+        ReflectionTestUtils.setField(syncMasterData,
+                "locationHirerarchyUrl",
+                "http://localhost/location");
+        LocalDateTime lastUpdated = LocalDateTime.now(ZoneOffset.UTC);
+
+        // Prepare response DTO
+        LocationHierarchyDto dto = new LocationHierarchyDto();
+        dto.setHierarchyLevel((short)1);
+        dto.setHierarchyLevelName("Country");
+
+        LocationHierarchyLevelResponseDto responseDto =
+                new LocationHierarchyLevelResponseDto();
+        responseDto.setLocationHierarchyLevels(
+                Collections.singletonList(dto));
+
+        ResponseWrapper<LocationHierarchyLevelResponseDto> wrapper =
+                new ResponseWrapper<>();
+        wrapper.setResponse(responseDto);
+
+        String json = "{}"; // actual content doesn't matter because ObjectMapper is mocked
+
+        ResponseEntity<String> responseEntity =
+                new ResponseEntity<>(json, HttpStatus.OK);
+
+        when(restTemplate.getForEntity(any(), eq(String.class)))
+                .thenReturn(responseEntity);
+
+        when(objectMapper.readValue(anyString(), eq(ResponseWrapper.class)))
+                .thenReturn(wrapper);
+
+        when(objectMapper.writeValueAsString(any()))
+                .thenReturn("{}");
+
+        when(objectMapper.readValue(anyString(),
+                eq(LocationHierarchyLevelResponseDto.class)))
+                .thenReturn(responseDto);
+
+        CompletableFuture<List<LocationHierarchyDto>> future =
+                syncMasterData.getLocationHierarchyList(lastUpdated);
+
+        List<LocationHierarchyDto> result = future.get();
+
+        assertEquals(1, result.size());
+        assertEquals("Country", result.get(0).getHierarchyLevelName());
+    }
+
+//    @Test(expected = RuntimeException.class)
+//    public void testGetLocationHierarchyList_WhenRestTemplateFails() {
+//
+//        when(restTemplate.getForEntity(any(), eq(String.class)))
+//                .thenThrow(new RuntimeException("Failure"));
+//
+//        syncMasterData.getLocationHierarchyList(null);
+//    }
+
+    @Test(expected = SyncServiceException.class)
+    public void testGetLocationHierarchyList_WithValidationErrors() {
+
+        ReflectionTestUtils.setField(syncMasterData,
+                "locationHirerarchyUrl",   // EXACT field name
+                "http://localhost/test");
+        String errorJson = "{\"errors\":[{\"errorCode\":\"100\",\"message\":\"error\"}]}";
+
+
+        ResponseEntity<String> responseEntity =
+                new ResponseEntity<>(errorJson, HttpStatus.OK);
+
+        when(restTemplate.getForEntity(any(), eq(String.class)))
+                .thenReturn(responseEntity);
+
+        syncMasterData.getLocationHierarchyList(null);
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetLocationHierarchyList_DeserializationFailure() throws Exception {
+
+        ReflectionTestUtils.setField(syncMasterData,
+                "locationHirerarchyUrl",   // EXACT field name
+                "http://localhost/test");
+        String jsonResponse = "{\"response\": {}}";
+
+        ResponseEntity<String> responseEntity =
+                new ResponseEntity<>(jsonResponse, HttpStatus.OK);
+
+        when(restTemplate.getForEntity(any(), eq(String.class)))
+                .thenReturn(responseEntity);
+
+        // Force exception inside try block
+        when(objectMapper.readValue(anyString(), eq(ResponseWrapper.class)))
+                .thenThrow(new RuntimeException("JSON parsing failed"));
+
+        syncMasterData.getLocationHierarchyList(null);
+    }
+
+    @Test
+    public void testGetLocationHierarchyList() throws Exception {
+
+        ReflectionTestUtils.setField(syncMasterData,
+                "locationHirerarchyUrl",   // EXACT field name
+                "http://localhost/test");
+        String jsonResponse = "{\"response\":{}}";
+
+        ResponseEntity<String> responseEntity =
+                new ResponseEntity<>(jsonResponse, HttpStatus.OK);
+
+        when(restTemplate.getForEntity(any(), eq(String.class)))
+                .thenReturn(responseEntity);
+
+        // No validation errors (assuming empty list returned naturally)
+
+        ResponseWrapper wrapper = new ResponseWrapper();
+        wrapper.setResponse(new Object());
+
+        LocationHierarchyLevelResponseDto dto =
+                new LocationHierarchyLevelResponseDto();
+
+        List<LocationHierarchyDto> list = new ArrayList<>();
+        list.add(new LocationHierarchyDto());
+        dto.setLocationHierarchyLevels(list);
+
+        when(objectMapper.readValue(anyString(), eq(ResponseWrapper.class)))
+                .thenReturn(wrapper);
+
+        when(objectMapper.writeValueAsString(any()))
+                .thenReturn("{}");
+
+        when(objectMapper.readValue(anyString(),
+                eq(LocationHierarchyLevelResponseDto.class)))
+                .thenReturn(dto);
+
+        CompletableFuture<List<LocationHierarchyDto>> result =
+                syncMasterData.getLocationHierarchyList(null, restTemplate);
+
+        assertNotNull(result);
+        assertEquals(1, result.get().size());
+    }
+
+    @Test(expected = SyncServiceException.class)
+    public void testGetLocationHierarchyList_ValidationErrors() {
+
+        ReflectionTestUtils.setField(syncMasterData,
+                "locationHirerarchyUrl",   // EXACT field name
+                "http://localhost/test");
+        String errorJson = "{\"errors\":[{\"errorCode\":\"100\",\"message\":\"error\"}]}";
+
+        ResponseEntity<String> responseEntity =
+                new ResponseEntity<>(errorJson, HttpStatus.OK);
+
+        when(restTemplate.getForEntity(any(), eq(String.class)))
+                .thenReturn(responseEntity);
+
+        syncMasterData.getLocationHierarchyList(null, restTemplate);
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetLocationHierarchyList_ShouldEnterCatchBlock() throws Exception {
+
+        ReflectionTestUtils.setField(syncMasterData,
+                "locationHirerarchyUrl",   // EXACT field name
+                "http://localhost/test");
+        String jsonResponse = "{\"response\":{}}";
+
+        ResponseEntity<String> responseEntity =
+                new ResponseEntity<>(jsonResponse, HttpStatus.OK);
+
+        when(restTemplate.getForEntity(any(), eq(String.class)))
+                .thenReturn(responseEntity);
+
+        when(objectMapper.readValue(anyString(), eq(ResponseWrapper.class)))
+                .thenThrow(new RuntimeException("JSON parse error"));
+
+        syncMasterData.getLocationHierarchyList(null, restTemplate);
+    }
+
+    @Test
+    public void testGetRegistrationCenter_LastUpdatedNull_ShouldProceed() throws Exception {
+
+        // repository for actual data fetch
+        when(registrationCenterRepository.findRegistrationCentersById(
+                anyString(), any(), any()))
+                .thenReturn(new ArrayList<>());
+
+        CompletableFuture<List<RegistrationCenterDto>> result =
+                syncMasterData.getRegistrationCenter(
+                        "C1",
+                        null,
+                        LocalDateTime.now());
+
+        // Since repo returns empty list -> converter returns null
+        assertNull(result.get());
+    }
+
+    @Test
+    public void testGetRegistrationCenter_NoDataInTable_ShouldReturnNull() throws Exception {
+
+        LocalDateTime lastUpdated = LocalDateTime.now().minusDays(1);
+
+        // Mock delta table max dates = null
+        when(registrationCenterRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null);
+
+        CompletableFuture<List<RegistrationCenterDto>> result =
+                syncMasterData.getRegistrationCenter(
+                        "C1",
+                        lastUpdated,
+                        LocalDateTime.now());
+
+        // isChangesFound returns false → method returns completedFuture(null)
+        assertNull(result.get());
+    }
+
+    @Test
+    public void testGetRegistrationCenter_ChangesFound_ShouldFetchData() throws Exception {
+
+        LocalDateTime lastUpdated = LocalDateTime.now().minusDays(5);
+
+        EntityDtimes entityDtimes = new EntityDtimes(
+                LocalDateTime.now(),   // createdDateTime
+                null,
+                null
+        );
+
+        when(registrationCenterRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        RegistrationCenter entity = new RegistrationCenter();
+        entity.setId("C1");
+
+        List<RegistrationCenter> list = new ArrayList<>();
+        list.add(entity);
+
+        when(registrationCenterRepository.findRegistrationCentersById(
+                anyString(), any(), any()))
+                .thenReturn(list);
+
+        CompletableFuture<List<RegistrationCenterDto>> result =
+                syncMasterData.getRegistrationCenter(
+                        "C1",
+                        lastUpdated,
+                        LocalDateTime.now());
+
+        assertNotNull(result.get());
+        assertEquals(1, result.get().size());
+    }
+
+    @Test
+    public void testGetRegistrationCenter_NoChanges_ShouldReturnNull() throws Exception {
+
+        LocalDateTime lastUpdated = LocalDateTime.now();
+
+        EntityDtimes entityDtimes = new EntityDtimes(
+                lastUpdated.minusDays(2),
+                null,
+                null
+        );
+
+        when(registrationCenterRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        CompletableFuture<List<RegistrationCenterDto>> result =
+                syncMasterData.getRegistrationCenter(
+                        "C1",
+                        lastUpdated,
+                        LocalDateTime.now());
+
+        assertNull(result.get());
+    }
+
+    @Test
+    public void testGetTemplates_NoChangesFound_ShouldReturnNull() throws Exception {
+
+        LocalDateTime lastUpdated = LocalDateTime.now().minusDays(1);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        // Mock repository used inside isChangesFound()
+        when(templateRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null);  // result == null → isChangesFound() returns false
+
+        CompletableFuture<List<TemplateDto>> future =
+                syncMasterData.getTemplates("REG", lastUpdated, currentTime);
+
+        List<TemplateDto> result = future.get();
+
+        assertNull(result);
+
+        // Ensure actual fetch method is NOT called
+        verify(templateRepository, never())
+                .findAllLatestCreatedUpdateDeletedByModule(any(), any(), any());
+    }
+
+    @Test
+    public void testGetTemplates_WithChanges_ShouldReturnTemplateList() throws Exception {
+
+        LocalDateTime lastUpdated = LocalDateTime.now().minusDays(2);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        EntityDtimes entityDtimes = new EntityDtimes(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                null
+        );
+
+        when(templateRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        Template template = new Template();
+        template.setId("1");
+        template.setName("TestTemplate");
+        template.setDescription("Desc");
+        template.setFileFormatCode("PDF");
+        template.setModel("model");
+        template.setFileText("text");
+        template.setModuleId("REG");
+        template.setModuleName("Registration");
+        template.setTemplateTypeCode("TYPE1");
+        template.setIsActive(true);
+        template.setIsDeleted(false);
+        template.setLangCode("eng");
+
+        when(templateRepository.findAllLatestCreatedUpdateDeletedByModule(
+                any(), any(), any()))
+                .thenReturn(List.of(template));
+
+        CompletableFuture<List<TemplateDto>> future =
+                syncMasterData.getTemplates("REG", lastUpdated, currentTime);
+
+        List<TemplateDto> result = future.get();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("1", result.get(0).getId());
+    }
+
+    @Test
+    public void testGetTemplates_LastUpdatedNull_ShouldSetEpoch() throws Exception {
+
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        Template template = new Template();
+        template.setId("1");
+
+        when(templateRepository.findAllLatestCreatedUpdateDeletedByModule(
+                any(), any(), any()))
+                .thenReturn(List.of(template));
+
+        CompletableFuture<List<TemplateDto>> future =
+                syncMasterData.getTemplates("REG", null, currentTime);
+
+        List<TemplateDto> result = future.get();
+
+        assertNotNull(result);
+        verify(templateRepository)
+                .findAllLatestCreatedUpdateDeletedByModule(any(), any(), eq("REG"));
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetTemplates_DataAccessException_ShouldThrowSyncDataServiceException() {
+
+        LocalDateTime lastUpdated = LocalDateTime.now().minusDays(1);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        EntityDtimes entityDtimes = new EntityDtimes(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                null
+        );
+
+        when(templateRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(templateRepository.findAllLatestCreatedUpdateDeletedByModule(
+                any(), any(), any()))
+                .thenThrow(new DataAccessResourceFailureException("DB Error"));
+
+        syncMasterData.getTemplates("REG", lastUpdated, currentTime);
+    }
+
+    @Test
+    public void testGetTemplateFileFormats_NoChangesFound_ShouldReturnNull() throws Exception {
+
+        LocalDateTime lastUpdated = LocalDateTime.now().minusDays(1);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        when(templateFileFormatRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null);  // isChangesFound() returns false
+
+        CompletableFuture<List<TemplateFileFormatDto>> future =
+                syncMasterData.getTemplateFileFormats(lastUpdated, currentTime);
+
+        List<TemplateFileFormatDto> result = future.get();
+
+        assertNull(result);
+
+        verify(templateFileFormatRepository, never())
+                .findAllLatestCreatedUpdateDeleted(any(), any());
+    }
+
+    @Test
+    public void testGetTemplateFileFormats_WithChanges_ShouldReturnList() throws Exception {
+
+        LocalDateTime lastUpdated = LocalDateTime.now().minusDays(2);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        EntityDtimes entityDtimes = new EntityDtimes(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                null
+        );
+
+        when(templateFileFormatRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        TemplateFileFormat entity = new TemplateFileFormat();
+        entity.setCode("PDF");
+        entity.setDescription("PDF Format");
+        entity.setIsActive(true);
+        entity.setIsDeleted(false);
+        entity.setLangCode("eng");
+
+        when(templateFileFormatRepository.findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenReturn(List.of(entity));
+
+        CompletableFuture<List<TemplateFileFormatDto>> future =
+                syncMasterData.getTemplateFileFormats(lastUpdated, currentTime);
+
+        List<TemplateFileFormatDto> result = future.get();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("PDF", result.get(0).getCode());
+    }
+
+    @Test
+    public void testGetTemplateFileFormats_LastUpdatedNull_ShouldSetEpoch() throws Exception {
+
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        TemplateFileFormat entity = new TemplateFileFormat();
+        entity.setCode("DOC");
+
+        when(templateFileFormatRepository.findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenReturn(List.of(entity));
+
+        CompletableFuture<List<TemplateFileFormatDto>> future =
+                syncMasterData.getTemplateFileFormats(null, currentTime);
+
+        List<TemplateFileFormatDto> result = future.get();
+
+        assertNotNull(result);
+
+        verify(templateFileFormatRepository)
+                .findAllLatestCreatedUpdateDeleted(any(), eq(currentTime));
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetTemplateFileFormats_DataAccessException_ShouldThrowException() {
+
+        LocalDateTime lastUpdated = LocalDateTime.now().minusDays(1);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        EntityDtimes entityDtimes = new EntityDtimes(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                null
+        );
+
+        when(templateFileFormatRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(templateFileFormatRepository.findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenThrow(new DataAccessResourceFailureException("DB Error"));
+
+        syncMasterData.getTemplateFileFormats(lastUpdated, currentTime);
+    }
+
+    @Test
+    public void testGetReasonCategory_NoChangesFound_ShouldReturnNull() throws Exception {
+
+        LocalDateTime lastUpdated = LocalDateTime.now().minusDays(1);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        when(reasonCategoryRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null);
+
+        CompletableFuture<List<PostReasonCategoryDto>> future =
+                syncMasterData.getReasonCategory(lastUpdated, currentTime);
+
+        assertNull(future.get());
+
+        verify(reasonCategoryRepository, never())
+                .findAllLatestCreatedUpdateDeleted(any(), any());
+    }
+
+    @Test
+    public void testGetReasonCategory_WithChanges_ShouldReturnList() throws Exception {
+
+        LocalDateTime lastUpdated = LocalDateTime.now().minusDays(2);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        EntityDtimes entityDtimes = new EntityDtimes(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                null
+        );
+
+        when(reasonCategoryRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        ReasonCategory entity = new ReasonCategory();
+        entity.setCode("RC1");
+        entity.setDescription("Reason Desc");
+        entity.setName("Reason Name");
+        entity.setIsActive(true);
+        entity.setIsDeleted(false);
+        entity.setLangCode("eng");
+
+        when(reasonCategoryRepository.findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenReturn(List.of(entity));
+
+        CompletableFuture<List<PostReasonCategoryDto>> future =
+                syncMasterData.getReasonCategory(lastUpdated, currentTime);
+
+        List<PostReasonCategoryDto> result = future.get();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("RC1", result.get(0).getCode());
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetReasonCategory_DataAccessException_ShouldThrowException() {
+
+        LocalDateTime lastUpdated = LocalDateTime.now().minusDays(1);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        EntityDtimes entityDtimes = new EntityDtimes(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                null
+        );
+
+        when(reasonCategoryRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(reasonCategoryRepository.findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenThrow(new DataAccessResourceFailureException("DB Error"));
+
+        syncMasterData.getReasonCategory(lastUpdated, currentTime);
+    }
+
+    @Test
+    public void testGetReasonList_NoChangesFound_ShouldReturnNull() throws Exception {
+
+        LocalDateTime lastUpdated = LocalDateTime.now().minusDays(1);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        when(reasonListRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null);   // isChangesFound() returns false
+
+        CompletableFuture<List<ReasonListDto>> future =
+                syncMasterData.getReasonList(lastUpdated, currentTime);
+
+        assertNull(future.get());
+
+        verify(reasonListRepository, never())
+                .findAllLatestCreatedUpdateDeleted(any(), any());
+    }
+
+    @Test
+    public void testGetReasonList_WithChanges_ShouldReturnList() throws Exception {
+
+        LocalDateTime lastUpdated = LocalDateTime.now().minusDays(2);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        EntityDtimes entityDtimes = new EntityDtimes(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                null
+        );
+
+        when(reasonListRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        ReasonList entity = new ReasonList();
+        entity.setCode("R001");
+        entity.setName("Reason Name");
+        entity.setDescription("Reason Desc");
+        entity.setRsnCatCode("CAT1");
+        entity.setIsActive(true);
+        entity.setIsDeleted(false);
+        entity.setLangCode("eng");
+
+        when(reasonListRepository.findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenReturn(List.of(entity));
+
+        CompletableFuture<List<ReasonListDto>> future =
+                syncMasterData.getReasonList(lastUpdated, currentTime);
+
+        List<ReasonListDto> result = future.get();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("R001", result.get(0).getCode());
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetReasonList_DataAccessException_ShouldThrowException() {
+
+        LocalDateTime lastUpdated = LocalDateTime.now().minusDays(1);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        EntityDtimes entityDtimes = new EntityDtimes(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                null
+        );
+
+        when(reasonListRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(reasonListRepository.findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenThrow(new DataAccessResourceFailureException("DB Error"));
+
+        syncMasterData.getReasonList(lastUpdated, currentTime);
+    }
+
+    @Test
+    public void testGetHolidays_NoChangesFound_ShouldReturnNull() throws Exception {
+
+        LocalDateTime lastUpdated = LocalDateTime.now().minusDays(1);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        when(holidayRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null);
+
+        CompletableFuture<List<HolidayDto>> future =
+                syncMasterData.getHolidays(lastUpdated, "M1", currentTime);
+
+        assertNull(future.get());
+
+        verify(holidayRepository, never())
+                .findAllLatestCreatedUpdateDeletedByMachineId(any(), any(), any());
+    }
+
+    @Test
+    public void testGetHolidays_WithChanges_ShouldReturnList() throws Exception {
+
+        LocalDateTime lastUpdated = LocalDateTime.now().minusDays(2);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        EntityDtimes entityDtimes = new EntityDtimes(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                null
+        );
+
+        when(holidayRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        // Prepare HolidayID
+        HolidayID holidayID = new HolidayID();
+        holidayID.setHolidayDate(LocalDate.of(2025, 1, 26));
+        holidayID.setHolidayName("Republic Day");
+        holidayID.setLangCode("eng");
+        holidayID.setLocationCode("LOC1");
+
+        Holiday holiday = new Holiday();
+        holiday.setId(1);
+        holiday.setHolidayId(holidayID);
+        holiday.setIsActive(true);
+        holiday.setIsDeleted(false);
+
+        when(holidayRepository.findAllLatestCreatedUpdateDeletedByMachineId(
+                any(), any(), any()))
+                .thenReturn(List.of(holiday));
+
+        CompletableFuture<List<HolidayDto>> future =
+                syncMasterData.getHolidays(lastUpdated, "M1", currentTime);
+
+        List<HolidayDto> result = future.get();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+
+        HolidayDto dto = result.get(0);
+        assertEquals("Republic Day", dto.getHolidayName());
+        assertEquals("2025", dto.getHolidayYear());
+    }
+
+    @Test
+    public void testGetHolidays_EmptyList_ShouldReturnNull() throws Exception {
+
+        LocalDateTime lastUpdated = LocalDateTime.now().minusDays(2);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        EntityDtimes entityDtimes = new EntityDtimes(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                null
+        );
+
+        when(holidayRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(holidayRepository.findAllLatestCreatedUpdateDeletedByMachineId(
+                any(), any(), any()))
+                .thenReturn(Collections.emptyList());
+
+        CompletableFuture<List<HolidayDto>> future =
+                syncMasterData.getHolidays(lastUpdated, "M1", currentTime);
+
+        assertNull(future.get());
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetHolidays_DataAccessException_ShouldThrowException() {
+
+        LocalDateTime lastUpdated = LocalDateTime.now().minusDays(1);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        EntityDtimes entityDtimes = new EntityDtimes(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                null
+        );
+
+        when(holidayRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(entityDtimes);
+
+        when(holidayRepository.findAllLatestCreatedUpdateDeletedByMachineId(
+                any(), any(), any()))
+                .thenThrow(new DataAccessResourceFailureException("DB Error"));
+
+        syncMasterData.getHolidays(lastUpdated, "M1", currentTime);
+    }
+
+    @Test
+    public void testGetBlackListedWords_NoChangesFound_ShouldReturnNull() throws Exception {
+
+        when(blocklistedWordsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null);
+
+        CompletableFuture<List<BlacklistedWordsDto>> future =
+                syncMasterData.getBlackListedWords(
+                        LocalDateTime.now().minusDays(1),
+                        LocalDateTime.now());
+
+        assertNull(future.get());
+
+        verify(blocklistedWordsRepository, never())
+                .findAllLatestCreatedUpdateDeleted(any(), any());
+    }
+
+    @Test
+    public void testGetBlackListedWords_WithChanges_ShouldReturnList() throws Exception {
+
+        EntityDtimes dtimes = new EntityDtimes(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                null);
+
+        when(blocklistedWordsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(dtimes);
+
+        BlocklistedWords entity = new BlocklistedWords();
+        entity.setWord("badword");
+        entity.setDescription("desc");
+        entity.setIsActive(true);
+        entity.setIsDeleted(false);
+        entity.setLangCode("eng");
+
+        when(blocklistedWordsRepository.findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenReturn(List.of(entity));
+
+        List<BlacklistedWordsDto> result =
+                syncMasterData.getBlackListedWords(
+                        LocalDateTime.now().minusDays(2),
+                        LocalDateTime.now()).get();
+
+        assertNotNull(result);
+        assertEquals("badword", result.get(0).getWord());
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetBlackListedWords_DataAccessException() {
+
+        EntityDtimes dtimes = new EntityDtimes(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                null);
+
+        when(blocklistedWordsRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(dtimes);
+
+        when(blocklistedWordsRepository.findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenThrow(new DataAccessResourceFailureException("DB Error"));
+
+        syncMasterData.getBlackListedWords(
+                LocalDateTime.now().minusDays(1),
+                LocalDateTime.now());
+    }
+
+    @Test
+    public void testGetDocumentTypes_WithChanges_ShouldReturnList() throws Exception {
+
+        EntityDtimes dtimes = new EntityDtimes(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                null);
+
+        when(documentTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(dtimes);
+
+        DocumentType entity = new DocumentType();
+        entity.setCode("DOC1");
+        entity.setName("Passport");
+        entity.setDescription("Passport Doc");
+        entity.setIsActive(true);
+        entity.setIsDeleted(false);
+        entity.setLangCode("eng");
+
+        when(documentTypeRepository.findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenReturn(List.of(entity));
+
+        List<DocumentTypeDto> result =
+                syncMasterData.getDocumentTypes(
+                        LocalDateTime.now().minusDays(2),
+                        LocalDateTime.now()).get();
+
+        assertEquals("DOC1", result.get(0).getCode());
+    }
+
+    @Test
+    public void testGetLocationHierarchy_WithChanges_ShouldReturnList() throws Exception {
+
+        EntityDtimes dtimes = new EntityDtimes(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                null);
+
+        when(locationRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(dtimes);
+
+        Location entity = new Location();
+        entity.setCode("LOC1");
+        entity.setName("Bihar");
+        entity.setHierarchyLevel(1);
+        entity.setHierarchyName("State");
+        entity.setParentLocCode(null);
+        entity.setIsActive(true);
+        entity.setIsDeleted(false);
+        entity.setLangCode("eng");
+
+        when(locationRepository.findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenReturn(List.of(entity));
+
+        List<LocationDto> result =
+                syncMasterData.getLocationHierarchy(
+                        LocalDateTime.now().minusDays(2),
+                        LocalDateTime.now()).get();
+
+        assertEquals("LOC1", result.get(0).getCode());
+    }
+
+    @Test
+    public void testGetTemplateTypes_WithChanges_ShouldReturnList() throws Exception {
+
+        EntityDtimes dtimes = new EntityDtimes(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                null);
+
+        when(templateTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(dtimes);
+
+        TemplateType entity = new TemplateType();
+        entity.setCode("TT1");
+        entity.setDescription("Template Type");
+        entity.setIsActive(true);
+        entity.setIsDeleted(false);
+        entity.setLangCode("eng");
+
+        when(templateTypeRepository.findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenReturn(List.of(entity));
+
+        List<TemplateTypeDto> result =
+                syncMasterData.getTemplateTypes(
+                        LocalDateTime.now().minusDays(2),
+                        LocalDateTime.now()).get();
+
+        assertEquals("TT1", result.get(0).getCode());
+    }
+
+    @Test
+    public void testGetDocumentTypes_LastUpdatedNull_ShouldFetch() throws Exception {
+
+        DocumentType entity = new DocumentType();
+        entity.setCode("DOC1");
+
+        when(documentTypeRepository.findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenReturn(List.of(entity));
+
+        List<DocumentTypeDto> result =
+                syncMasterData.getDocumentTypes(null, LocalDateTime.now()).get();
+
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testGetDocumentTypes_ResultNull_ShouldReturnNull() throws Exception {
+
+        when(documentTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(null);
+
+        List<DocumentTypeDto> result =
+                syncMasterData.getDocumentTypes(
+                        LocalDateTime.now().minusDays(1),
+                        LocalDateTime.now()).get();
+
+        assertNull(result);
+    }
+
+    @Test
+    public void testDeletedDateTimeCondition_ShouldFetch() throws Exception {
+
+        LocalDateTime lastUpdated = LocalDateTime.now().minusDays(5);
+
+        EntityDtimes dtimes = new EntityDtimes(
+                null,
+                null,
+                LocalDateTime.now().minusDays(1)
+        );
+
+        when(documentTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(dtimes);
+
+        when(documentTypeRepository.findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenReturn(List.of(new DocumentType()));
+
+        List<DocumentTypeDto> result =
+                syncMasterData.getDocumentTypes(lastUpdated, LocalDateTime.now()).get();
+
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testUpdatedDateTimeCondition_ShouldFetch() throws Exception {
+
+        LocalDateTime lastUpdated = LocalDateTime.now().minusDays(5);
+
+        EntityDtimes dtimes = new EntityDtimes(
+                null,
+                LocalDateTime.now().minusDays(1),
+                null
+        );
+
+        when(documentTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(dtimes);
+
+        when(documentTypeRepository.findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenReturn(List.of(new DocumentType()));
+
+        List<DocumentTypeDto> result =
+                syncMasterData.getDocumentTypes(lastUpdated, LocalDateTime.now()).get();
+
+        assertNotNull(result);
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testDataAccessException_ShouldThrowSyncDataServiceException() {
+
+        EntityDtimes dtimes = new EntityDtimes(
+                LocalDateTime.now(),
+                null,
+                null
+        );
+
+        when(documentTypeRepository.getMaxCreatedDateTimeMaxUpdatedDateTime())
+                .thenReturn(dtimes);
+
+        when(documentTypeRepository.findAllLatestCreatedUpdateDeleted(any(), any()))
+                .thenThrow(new DataAccessResourceFailureException("DB Error"));
+
+        syncMasterData.getDocumentTypes(
+                LocalDateTime.now().minusDays(1),
+                LocalDateTime.now());
     }
 
 }
