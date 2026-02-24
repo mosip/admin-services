@@ -1,4 +1,4 @@
-package io.mosip.kernel.syncdata.test.service;
+package io.mosip.kernel.syncdata.test.service.helper;
 
 import io.mosip.kernel.syncdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.syncdata.dto.DynamicFieldDto;
@@ -7,6 +7,7 @@ import io.mosip.kernel.syncdata.service.helper.SyncJobHelperService;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -15,14 +16,14 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.Mockito.*;
@@ -42,6 +43,16 @@ public class SyncJobHelperServiceTest {
 
     @InjectMocks
     private SyncJobHelperService syncJobHelperService;
+
+    private Path tempDir;
+
+    @Before
+    public void setup() throws Exception {
+        tempDir = Files.createTempDirectory("snapshot-test");
+        ReflectionTestUtils.setField(syncJobHelperService, "clientSettingsDir", tempDir.toString());
+        ReflectionTestUtils.setField(syncJobHelperService, "regClientModuleId", "10002");
+        ReflectionTestUtils.setField(syncJobHelperService, "deltaCacheEvictCron", "0 0/15 * * * *");
+    }
 
     @Test
     public void testEvictDeltaCaches_Success() {
@@ -174,6 +185,128 @@ public class SyncJobHelperServiceTest {
 
         verify(cacheManager).getCache("initial-sync");
         verify(cacheManager, never()).getCache("delta-sync");
+    }
+
+    // ===============================
+    // Cache Eviction Tests
+    // ===============================
+
+    @Test
+    public void testEvictDeltaCaches_success() {
+        Cache cache = mock(Cache.class);
+        when(cacheManager.getCache("delta-sync")).thenReturn(cache);
+
+        syncJobHelperService.evictDeltaCaches();
+
+        verify(cache).clear();
+    }
+
+    // ===============================
+    // Timestamp Tests
+    // ===============================
+
+    @Test
+    public void testGetFullSyncCurrentTimestamp() {
+        LocalDateTime result = syncJobHelperService.getFullSyncCurrentTimestamp();
+        Assert.assertEquals(0, result.getHour());
+        Assert.assertEquals(0, result.getMinute());
+        Assert.assertEquals(0, result.getSecond());
+    }
+
+    @Test
+    public void testGetDeltaSyncCurrentTimestamp_validCron() {
+        LocalDateTime result = syncJobHelperService.getDeltaSyncCurrentTimestamp();
+        Assert.assertNotNull(result);
+    }
+
+    @Test
+    public void testGetDeltaSyncCurrentTimestamp_invalidCron() {
+        ReflectionTestUtils.setField(syncJobHelperService, "deltaCacheEvictCron", "invalid");
+        try {
+            syncJobHelperService.getDeltaSyncCurrentTimestamp();
+            Assert.fail();
+        } catch (Exception ignored) {
+        }
+    }
+
+    // ===============================
+    // Snapshot Creation Tests
+    // ===============================
+
+    @Test
+    public void testCreateEntitySnapshot_success() {
+
+        List<AppAuthenticationMethod> list = new ArrayList<>();
+        CompletableFuture<List<AppAuthenticationMethod>> future =
+                CompletableFuture.completedFuture(list);
+
+        // mock all other service calls to return empty future
+        mockAllServiceCalls();
+
+        syncJobHelperService.createEntitySnapshot();
+    }
+
+    @Test
+    public void testCreateEntitySnapshot_completionException() {
+
+        CompletableFuture future = mock(CompletableFuture.class);
+
+        when(serviceHelper.getAppAuthenticationMethodDetails(any(), any()))
+                .thenReturn(future);
+
+        try {
+            syncJobHelperService.createEntitySnapshot();
+            Assert.fail();
+        } catch (Exception ignored) {
+        }
+    }
+
+    @Test
+    public void testDynamicFieldHandling() {
+
+        DynamicFieldDto dto1 = new DynamicFieldDto();
+        dto1.setName("field1");
+
+        DynamicFieldDto dto2 = new DynamicFieldDto();
+        dto2.setName("field1");
+
+        List<DynamicFieldDto> list = Arrays.asList(dto1, dto2);
+
+        CompletableFuture<List<DynamicFieldDto>> future =
+                CompletableFuture.completedFuture(list);
+
+        when(serviceHelper.getAllDynamicFields(any(), any()))
+                .thenReturn(future);
+
+        mockAllServiceCalls();
+
+        syncJobHelperService.createEntitySnapshot();
+    }
+
+    // ===============================
+    // Helper
+    // ===============================
+
+    private void mockAllServiceCalls() {
+
+        CompletableFuture empty = CompletableFuture.completedFuture(new ArrayList<>());
+
+        lenient().when(serviceHelper.getAppAuthenticationMethodDetails(any(), any())).thenReturn(empty);
+        lenient().when(serviceHelper.getAppRolePriorityDetails(any(), any())).thenReturn(empty);
+        lenient().when(serviceHelper.getTemplates(anyString(), any(), any())).thenReturn(empty);
+        lenient().when(serviceHelper.getDocumentTypes(any(), any())).thenReturn(empty);
+        lenient().when(serviceHelper.getApplicantValidDocument(any(), any())).thenReturn(empty);
+        lenient().when(serviceHelper.getLocationHierarchy(any(), any())).thenReturn(empty);
+        lenient().when(serviceHelper.getLocationHierarchyList(any(), any())).thenReturn(empty);
+        lenient().when(serviceHelper.getAllDynamicFields(any(), any())).thenReturn(empty);
+        lenient().when(serviceHelper.getReasonCategory(any(), any())).thenReturn(empty);
+        lenient().when(serviceHelper.getReasonList(any(), any())).thenReturn(empty);
+        lenient().when(serviceHelper.getScreenAuthorizationDetails(any(), any())).thenReturn(empty);
+        lenient().when(serviceHelper.getScreenDetails(any(), any())).thenReturn(empty);
+        lenient().when(serviceHelper.getBlackListedWords(any(), any())).thenReturn(empty);
+        lenient().when(serviceHelper.getProcessList(any(), any())).thenReturn(empty);
+        lenient().when(serviceHelper.getSyncJobDefDetails(any(), any())).thenReturn(empty);
+        lenient().when(serviceHelper.getPermittedConfig(any(), any())).thenReturn(empty);
     }
 
 }
