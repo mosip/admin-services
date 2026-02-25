@@ -1,4 +1,4 @@
-package io.mosip.kernel.syncdata.test.service;
+package io.mosip.kernel.syncdata.test.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.syncdata.entity.id.ApplicantValidDocumentID;
