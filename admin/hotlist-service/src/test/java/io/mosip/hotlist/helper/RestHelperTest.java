@@ -1,5 +1,6 @@
 package io.mosip.hotlist.helper;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.mosip.hotlist.constant.HotlistErrorConstants;
@@ -20,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.LinkedMultiValueMap;
@@ -31,13 +33,11 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -433,5 +433,138 @@ public class RestHelperTest {
 			assertEquals(cause.getErrorCode(), HotlistErrorConstants.CLIENT_ERROR.getErrorCode());
 			assertEquals(cause.getErrorText(), HotlistErrorConstants.CLIENT_ERROR.getErrorMessage());
 		}
+	}
+
+	@Test
+	public void testRequestSyncSuccess() throws Exception {
+
+		RestRequestDTO dto = new RestRequestDTO();
+		dto.setUri("http://test.com");
+		dto.setHttpMethod(HttpMethod.GET);
+		dto.setResponseType(ObjectNode.class);
+
+		ReflectionTestUtils.setField(restHelper, "mapper", new ObjectMapper());
+		ReflectionTestUtils.setField(restHelper, "webClient", webClient);
+
+		String jsonResponse = "{\"response\":{\"status\":\"success\"}}";
+
+		when(webClient.method(HttpMethod.GET)).thenReturn(requestBodyUriSpec);
+		when(requestBodyUriSpec.uri("http://test.com")).thenReturn(requestBodySpec);
+		when(requestBodySpec.retrieve()).thenReturn(responseSpec);
+		when(responseSpec.bodyToMono(ObjectNode.class))
+				.thenReturn(Mono.just(new ObjectMapper().readValue(jsonResponse, ObjectNode.class)));
+
+		ObjectNode response = restHelper.requestSync(dto);
+
+		assertNotNull(response);
+		assertTrue(response.has("response"));
+	}
+
+	@Test
+	public void testRequestAsyncSuccess() {
+
+		RestRequestDTO dto = new RestRequestDTO();
+		dto.setUri("http://test.com");
+		dto.setHttpMethod(HttpMethod.GET);
+		dto.setResponseType(String.class);
+
+		when(webClient.method(HttpMethod.GET)).thenReturn(requestBodyUriSpec);
+		when(requestBodyUriSpec.uri("http://test.com")).thenReturn(requestBodySpec);
+		when(requestBodySpec.retrieve()).thenReturn(responseSpec);
+		when(responseSpec.bodyToMono(String.class)).thenReturn(Mono.just("ASYNC_OK"));
+
+		ReflectionTestUtils.setField(restHelper, "webClient", webClient);
+
+		Object result = restHelper.requestAsync(dto).get();
+
+		assertEquals("ASYNC_OK", result);
+	}
+
+	@Test(expected = RestServiceException.class)
+	public void testRequestSync_WebClientResponseException() throws Exception {
+
+		RestRequestDTO dto = new RestRequestDTO();
+		dto.setUri("http://test.com");
+		dto.setHttpMethod(HttpMethod.GET);
+		dto.setResponseType(ObjectNode.class);
+
+		ReflectionTestUtils.setField(restHelper, "mapper", new ObjectMapper());
+		ReflectionTestUtils.setField(restHelper, "webClient", webClient);
+
+		when(webClient.method(HttpMethod.GET)).thenReturn(requestBodyUriSpec);
+		when(requestBodyUriSpec.uri("http://test.com")).thenReturn(requestBodySpec);
+		when(requestBodySpec.retrieve()).thenReturn(responseSpec);
+
+		String errorBody = "{\"errors\":[{\"errorCode\":\"ERR-001\",\"message\":\"Bad Request\"}]}";
+
+		when(responseSpec.bodyToMono(ObjectNode.class))
+				.thenReturn(Mono.error(
+						new WebClientResponseException(
+								"Bad Request",
+								400,
+								"Bad Request",
+								null,
+								errorBody.getBytes(),
+								null)));
+
+		restHelper.requestSync(dto);
+	}
+
+	@Test
+	public void testRequestSync_WithHeadersAndBody() throws Exception {
+
+		RestRequestDTO dto = new RestRequestDTO();
+		dto.setUri("http://test.com");
+		dto.setHttpMethod(HttpMethod.POST);
+		dto.setResponseType(ObjectNode.class);
+
+		// ✅ Use HttpHeaders (IMPORTANT)
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Type", "application/json");
+		dto.setHeaders(headers);
+
+		dto.setRequestBody("{\"name\":\"test\"}");
+
+		ReflectionTestUtils.setField(restHelper, "mapper", new ObjectMapper());
+		ReflectionTestUtils.setField(restHelper, "webClient", webClient);
+
+		when(webClient.method(HttpMethod.POST)).thenReturn(requestBodyUriSpec);
+		when(requestBodyUriSpec.uri("http://test.com")).thenReturn(requestBodySpec);
+
+		when(requestBodySpec.headers(any())).thenReturn(requestBodySpec);
+		when(requestBodySpec.syncBody(any())).thenReturn(requestHeadersSpec);
+		when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
+
+		ObjectNode node = new ObjectMapper()
+				.readValue("{\"response\":\"ok\"}", ObjectNode.class);
+
+		when(responseSpec.bodyToMono(ObjectNode.class))
+				.thenReturn(Mono.just(node));
+
+		ObjectNode response = restHelper.requestSync(dto);
+
+		assertNotNull(response);
+		verify(requestBodySpec).headers(any());
+		verify(requestBodySpec).syncBody(any());
+	}
+
+	@Test
+	public void testCheckErrorResponse_ResponseHasErrors_ThrowsClientError() throws Exception {
+		// Arrange
+		RestRequestDTO dto = new RestRequestDTO();
+		dto.setUri("http://dummy.com");
+		dto.setHttpMethod(HttpMethod.GET);
+		dto.setResponseType(ObjectNode.class);
+
+		String json = "{\"errors\":[{\"errorCode\":\"ERR-001\",\"message\":\"some error\"}]}";
+		ObjectMapper realMapper = new ObjectMapper();
+		Object response = realMapper.readValue(json, Object.class);
+
+		ReflectionTestUtils.setField(restHelper, "mapper", realMapper);
+
+		// Act & Assert
+		assertThrows(UndeclaredThrowableException.class, () -> {
+			ReflectionTestUtils.invokeMethod(restHelper, "checkErrorResponse", response, ObjectNode.class);
+		});
 	}
 }
