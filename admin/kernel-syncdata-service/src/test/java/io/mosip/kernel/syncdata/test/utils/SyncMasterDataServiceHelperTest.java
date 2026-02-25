@@ -1,12 +1,18 @@
 package io.mosip.kernel.syncdata.test.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.kernel.clientcrypto.dto.TpmCryptoResponseDto;
+import io.mosip.kernel.clientcrypto.service.spi.ClientCryptoManagerService;
+import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
+import io.mosip.kernel.syncdata.dto.response.SyncDataBaseDto;
 import io.mosip.kernel.syncdata.entity.id.ApplicantValidDocumentID;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
 import io.mosip.kernel.syncdata.exception.AdminServiceException;
+import io.mosip.kernel.syncdata.exception.RequestException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import org.mockito.InjectMocks;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.HttpStatus;
 import io.mosip.kernel.clientcrypto.constant.ClientType;
@@ -43,17 +49,20 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -181,6 +190,8 @@ public class SyncMasterDataServiceHelperTest {
 
     private static LocationHierarchyLevelResponseDto locationHierarchyLevelResponseDto;
 
+    private RegistrationCenterMachineDto registrationCenterMachineDto;
+
     @Before
     public void setUp() {
         //it is important to ignore the order as its completely async during client settings sync
@@ -242,6 +253,12 @@ public class SyncMasterDataServiceHelperTest {
         ReflectionTestUtils.setField(realHelper, "holidayRepository", holidayRepository);
         ReflectionTestUtils.setField(realHelper, "blocklistedWordsRepository", blocklistedWordsRepository);
         ReflectionTestUtils.setField(realHelper, "locationRepository", locationRepository);
+
+        registrationCenterMachineDto = new RegistrationCenterMachineDto();
+        registrationCenterMachineDto.setMachineId("M1");
+        registrationCenterMachineDto.setPublicKey("PUBLIC_KEY_SAMPLE");
+        registrationCenterMachineDto.setMachineSpecId("SPEC1");
+        registrationCenterMachineDto.setClientType(ClientType.TPM);
     }
 
     @Test
@@ -4714,4 +4731,273 @@ public class SyncMasterDataServiceHelperTest {
         }
     }
 
+    @Test
+    public void testGetRegistrationCenterMachine_machineNotFound() {
+        String keyIndex = "KEY1";
+        when(machineRepository.findOneByKeyIndexIgnoreCase(keyIndex)).thenReturn(null);
+
+        RequestException exception = assertThrows(RequestException.class,
+                () -> realHelper.getRegistrationCenterMachine("RC1", keyIndex));
+        assertEquals(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(), exception.getErrorCode());
+    }
+
+    @Test
+    public void testGetRegistrationCenterMachine_registrationCenterNotFound() {
+        Machine machine = new Machine();
+        machine.setRegCenterId(null);
+        when(machineRepository.findOneByKeyIndexIgnoreCase("KEY2")).thenReturn(machine);
+
+        RequestException exception = assertThrows(RequestException.class,
+                () -> realHelper.getRegistrationCenterMachine("RC1", "KEY2"));
+        assertEquals(MasterDataErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(), exception.getErrorCode());
+    }
+
+    @Test
+    public void testGetRegistrationCenterMachine_registrationCenterMismatch() {
+        Machine machine = new Machine();
+        machine.setRegCenterId("RC2");
+        when(machineRepository.findOneByKeyIndexIgnoreCase("KEY3")).thenReturn(machine);
+
+        RequestException exception = assertThrows(RequestException.class,
+                () -> realHelper.getRegistrationCenterMachine("RC1", "KEY3"));
+        assertEquals(MasterDataErrorCode.REG_CENTER_UPDATED.getErrorCode(), exception.getErrorCode());
+    }
+
+    @Test
+    public void testGetRegistrationCenterMachine_success() throws SyncDataServiceException {
+        Machine machine = new Machine();
+        machine.setId("M1");
+        machine.setRegCenterId("RC1");
+        machine.setPublicKey("PUBKEY");
+        machine.setMachineSpecId("SPEC1");
+
+        MachineSpecification spec = new MachineSpecification();
+        spec.setMachineTypeCode("TYPE1");
+        machine.setMachineSpecification(spec);
+
+        when(machineRepository.findOneByKeyIndexIgnoreCase("KEY4")).thenReturn(machine);
+
+        RegistrationCenterMachineDto dto = realHelper.getRegistrationCenterMachine("RC1", "KEY4");
+
+        assertNotNull(dto);
+        assertEquals("M1", dto.getMachineId());
+        assertEquals("PUBKEY", dto.getPublicKey());
+        assertEquals("SPEC1", dto.getMachineSpecId());
+    }
+
+    @Test
+    public void testGetRegistrationCenterMachine_machineSpecNull() throws SyncDataServiceException {
+        Machine machine = new Machine();
+        machine.setId("M2");
+        machine.setRegCenterId("RC1");
+        machine.setPublicKey("PUBKEY");
+        machine.setMachineSpecId("SPEC2");
+        machine.setMachineSpecification(null);
+
+        when(machineRepository.findOneByKeyIndexIgnoreCase("KEY5")).thenReturn(machine);
+
+        RegistrationCenterMachineDto dto = realHelper.getRegistrationCenterMachine("RC1", "KEY5");
+
+        assertNotNull(dto);
+    }
+
+    @Test
+    public void testGetRegistrationCenterMachine_dataAccessException() {
+        when(machineRepository.findOneByKeyIndexIgnoreCase("KEY6"))
+                .thenThrow(new DataAccessException("DB error") {});
+
+        SyncDataServiceException exception = assertThrows(SyncDataServiceException.class,
+                () -> realHelper.getRegistrationCenterMachine("RC1", "KEY6"));
+
+        assertEquals(MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
+                exception.getErrorCode());
+    }
+
+    @Test
+    public void testGetSyncDataBaseDtoV2_entitiesNull() {
+        List<SyncDataBaseDto> result = new ArrayList<>();
+        realHelper.getSyncDataBaseDtoV2("entityName", "entityType", null,
+                registrationCenterMachineDto, result);
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testGetSyncDataBaseDtoV2_entitiesAllNull() {
+        List<Object> entities = Arrays.asList(null, null);
+        List<SyncDataBaseDto> result = new ArrayList<>();
+        realHelper.getSyncDataBaseDtoV2("entityName", "entityType", entities,
+                registrationCenterMachineDto, result);
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testGetSyncDataBaseDtoV2_success() throws Exception {
+        List<Object> entities = Arrays.asList("val1", "val2");
+        List<SyncDataBaseDto> result = new ArrayList<>();
+
+        // Mock crypto service
+        TpmCryptoResponseDto cryptoResponse = new TpmCryptoResponseDto();
+        cryptoResponse.setValue("ENCRYPTED_DATA");
+        realHelper.getSyncDataBaseDtoV2("entityName", "entityType", entities,
+                registrationCenterMachineDto, result);
+
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    public void testGetSyncDataBaseDtoV2_mapperThrowsException() throws Exception {
+        List<Object> entities = Arrays.asList("val1");
+        List<SyncDataBaseDto> result = new ArrayList<>();
+
+        // Should catch exception and result remains empty
+        realHelper.getSyncDataBaseDtoV2("entityName", "entityType", entities,
+                registrationCenterMachineDto, result);
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testGetSyncDataBaseDto_entitiesNull() {
+        List<SyncDataBaseDto> result = new ArrayList<>();
+        realHelper.getSyncDataBaseDto("entityName", "entityType", null,
+                registrationCenterMachineDto, result);
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testGetSyncDataBaseDto_entitiesAllNull() {
+        List<Object> entities = Arrays.asList(null, null);
+        List<SyncDataBaseDto> result = new ArrayList<>();
+        realHelper.getSyncDataBaseDto("entityName", "entityType", entities,
+                registrationCenterMachineDto, result);
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testGetSyncDataBaseDto_blocklistedWords() throws Exception {
+        List<Object> entities = Arrays.asList("val1");
+        List<SyncDataBaseDto> result = new ArrayList<>();
+
+        realHelper.getSyncDataBaseDto(BlocklistedWords.class.getSimpleName(), "entityType",
+                entities, registrationCenterMachineDto, result);
+
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    public void testGetSyncDataBaseDto_mapperThrowsPerEntity() {
+        List<Object> entities = Arrays.asList("val1", "val2");
+        List<SyncDataBaseDto> result = new ArrayList<>();
+
+        TpmCryptoResponseDto cryptoResponse = new TpmCryptoResponseDto();
+        cryptoResponse.setValue("ENCRYPTED_DATA");
+
+        realHelper.getSyncDataBaseDto("entityName", "entityType", entities,
+                registrationCenterMachineDto, result);
+
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    public void testGetAllDynamicFields_success() throws Exception {
+
+        ReflectionTestUtils.setField(realHelper, "dynamicfieldUrl", "http://localhost/dynamic-fields");
+        // --- Prepare mock dynamic fields ---
+        DynamicFieldDto field1 = new DynamicFieldDto();
+        field1.setId("f1");
+        field1.setName("Field1");
+
+        DynamicFieldDto field2 = new DynamicFieldDto();
+        field2.setId("f2");
+        field2.setName("Field2");
+
+        // --- Prepare paged responses as JSON ---
+        String resp0Json = "{ \"response\": { \"data\": [ {\"id\": \"f1\", \"name\": \"Field1\"} ], \"totalPages\": 2 } }";
+        String resp1Json = "{ \"response\": { \"data\": [ {\"id\": \"f2\", \"name\": \"Field2\"} ], \"totalPages\": 2 } }";
+
+        doReturn(new ResponseEntity<>(resp1Json, HttpStatus.OK))
+                .when(restTemplate).getForEntity(any(URI.class), eq(String.class));
+
+        // --- Call the async method ---
+        CompletableFuture<List<DynamicFieldDto>> future = realHelper.getAllDynamicFields(null, restTemplate);
+
+        // Wait for completion
+        List<DynamicFieldDto> result = future.get();
+
+        // --- Assertions ---
+        assertEquals(2, result.size());
+        assertEquals("f2", result.get(0).getId());
+        assertEquals("Field2", result.get(0).getName());
+    }
+
+    @Test
+    public void testGetAllDynamicFields_WithLastUpdated_ShouldSuccess() throws Exception {
+        // --- Step 1: Set the dynamicfieldUrl in the helper ---
+        ReflectionTestUtils.setField(realHelper, "dynamicfieldUrl", "http://localhost/dynamic-fields");
+        realHelper = new SyncMasterDataServiceHelper();
+
+        // Inject the mock RestTemplate
+        ReflectionTestUtils.setField(realHelper, "restTemplate", restTemplate);
+
+        // Inject dynamicfieldUrl (cannot be null)
+        ReflectionTestUtils.setField(realHelper, "dynamicfieldUrl", "http://localhost/dynamic-fields");
+
+        // Inject ObjectMapper
+        ReflectionTestUtils.setField(realHelper, "objectMapper", new ObjectMapper());
+
+        // --- Step 2: Prepare mock dynamic fields ---
+        DynamicFieldDto field1 = new DynamicFieldDto();
+        field1.setId("f1");
+        field1.setName("Field1");
+
+        DynamicFieldDto field2 = new DynamicFieldDto();
+        field2.setId("f2");
+        field2.setName("Field2");
+
+        // --- Step 3: Prepare paged responses ---
+        PageDto<DynamicFieldDto> page0 = new PageDto<>();
+        page0.setData(Collections.singletonList(field1));
+        page0.setTotalPages(2);
+        page0.setPageNo(0);
+
+        PageDto<DynamicFieldDto> page1 = new PageDto<>();
+        page1.setData(Collections.singletonList(field2));
+        page1.setTotalPages(2);
+        page1.setPageNo(1);
+
+        ResponseWrapper<PageDto<DynamicFieldDto>> resp0 = new ResponseWrapper<>();
+        resp0.setResponse(page0);
+
+        ResponseWrapper<PageDto<DynamicFieldDto>> resp1 = new ResponseWrapper<>();
+        resp1.setResponse(page1);
+
+        // --- Step 4: Mock RestTemplate calls ---
+        doReturn(new ResponseEntity<>("{\"response\":{\"data\":[{\"id\":\"f1\",\"name\":\"Field1\"}],\"totalPages\":2}}", HttpStatus.OK))
+                .doReturn(new ResponseEntity<>("{\"response\":{\"data\":[{\"id\":\"f2\",\"name\":\"Field2\"}],\"totalPages\":2}}", HttpStatus.OK))
+                .when(restTemplate).getForEntity(any(URI.class), eq(String.class));
+
+        // --- Step 5: Call the async method ---
+        CompletableFuture<List<DynamicFieldDto>> future = realHelper.getAllDynamicFields(null);
+        List<DynamicFieldDto> result = future.get(); // block until completion
+
+        // --- Step 6: Assertions ---
+        assertEquals(2, result.size());
+        assertEquals("f1", result.get(0).getId());
+        assertEquals("Field1", result.get(0).getName());
+        assertEquals("f2", result.get(1).getId());
+        assertEquals("Field2", result.get(1).getName());
+    }
+
+    @Test(expected = SyncDataServiceException.class)
+    public void testGetAllDynamicFields_restTemplateException() throws Exception {
+        // Set the dynamicfieldUrl
+        ReflectionTestUtils.setField(realHelper, "dynamicfieldUrl", "http://localhost/dynamic-fields");
+
+        // Call the method (should throw SyncDataServiceException)
+        realHelper.getAllDynamicFields(null).get();
+    }
 }
