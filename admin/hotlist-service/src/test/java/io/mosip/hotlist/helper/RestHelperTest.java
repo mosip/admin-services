@@ -1,6 +1,5 @@
 package io.mosip.hotlist.helper;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.mosip.hotlist.constant.HotlistErrorConstants;
@@ -33,7 +32,10 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.*;
