@@ -90,7 +90,7 @@ class SyncAuthTokenServiceImplTest {
 
     // ======================= SUCCESS =======================
     @Test
-    void getAuthToken_emptyTokenResponse_throwsRequestException() throws Exception {
+    void getAuthToken_invalidTimestamp_throwsRequestException() throws Exception {
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
 
         // Create JWT-like token
