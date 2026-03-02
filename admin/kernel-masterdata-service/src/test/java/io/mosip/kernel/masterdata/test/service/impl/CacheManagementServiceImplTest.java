@@ -43,6 +43,7 @@ class CacheManagementServiceImplTest {
 
         cacheService.clearCacheByCacheName(CacheName.BLOCK_LISTED_WORDS);
 
+        verify(mockCache1).clear();
         verify(mockCache2, never()).clear();
     }
 

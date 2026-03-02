@@ -2598,7 +2598,7 @@ public class SyncMasterDataServiceHelperTest {
                 .findAllLatestCreatedUpdateDeletedByModule(any(), any(), eq("REG"));
     }
 
-    @Test(expected = SyncDataServiceException.class)
+    @Test
     public void testGetTemplates_DataAccessException_ShouldThrowSyncDataServiceException() {
 
         LocalDateTime lastUpdated = LocalDateTime.now().minusDays(1);
@@ -2617,7 +2617,8 @@ public class SyncMasterDataServiceHelperTest {
                 any(), any(), any()))
                 .thenThrow(new DataAccessResourceFailureException("DB Error"));
 
-        syncMasterData.getTemplates("REG", lastUpdated, currentTime);
+        assertThrows(SyncDataServiceException.class,
+                () -> syncMasterData.getTemplates("REG", lastUpdated, currentTime));
     }
 
     @Test
