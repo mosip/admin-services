@@ -2,7 +2,7 @@ UpdateUserCenterMappingStatus:
    MasterData_UpdateUserCenterMappingStatus_All_Valid_Smoke:  
       endPoint: /v1/masterdata/usercentermapping?isActive={isActive}&id={id}
       uniqueIdentifier: TC_Masterdata_UpdateUserCenterMappingStatus_01
-      description: Verify that the system successfully updates the status of a user-center mapping with all valid input parameters (smoke test)
+      description: Verify that the system successfully updates the status of a user-center mapping with all valid input parameters
       role: globalAdmin
       restMethod: patch
       inputTemplate: masterdata/UpdateUserCenterMappingStatus/updateUserCenterMappingStatus

@@ -3,6 +3,7 @@ RegCenterFilter:
       endPoint: /v1/masterdata/registrationcenters/filtervalues
       uniqueIdentifier: TC_Masterdata_RegCenterFilter_01
       description: Verify that the system successfully fetches registration centers when a unique English name is provided
+      role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
       restMethod: post

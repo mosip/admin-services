@@ -44,6 +44,7 @@ SearchDocCategories:
       endPoint: /v1/masterdata/documentcategories/search
       uniqueIdentifier: TC_Masterdata_SearchDocCategories_02
       description:  Verify that the system successfully fetches document categories sorted by code when a valid sort parameter is provided
+      role: admin
       templateFields: ["languageCode"]
       restMethod: post
       additionalDependencies: TC_Masterdata_CreateDocumentCategory_01

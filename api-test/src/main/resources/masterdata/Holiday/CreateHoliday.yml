@@ -188,7 +188,7 @@ CreateHoliday:
    MasterData_CreateHoliday_Invalid_InputParameter_LocationCode_NotInDB:
       endPoint: /v1/masterdata/holidays
       uniqueIdentifier: TC_Masterdata_CreateHoliday_08
-      description:Verify that the system returns an error or handles gracefully when the provided location code does not exist in the database while creating a holiday
+      description: Verify that the system returns an error or handles gracefully when the provided location code does not exist in the database while creating a holiday
       role: admin
       templateFields: ["holidayDesc","holidayName"]
       restMethod: post
