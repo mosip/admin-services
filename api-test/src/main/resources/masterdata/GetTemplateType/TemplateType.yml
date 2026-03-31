@@ -39,7 +39,7 @@ TemplateType:
    Kernel_TemplateType_inValid_langcode:
       endPoint: /v1/masterdata/templatetypes/{code}/{langcode}
       uniqueIdentifier: TC_Masterdata_TemplateType_03
-      description: Verify that the system returns an error or handles gracefully when an invalid language code is provided while fetching template types
+      description: Verify that the system returns an error or handles gracefully when an invalid language code is provided along with a valid template type code
       role: admin
       restMethod: get
       inputTemplate: masterdata/TemplateType/templateType
@@ -76,7 +76,7 @@ TemplateType:
    Kernel_TemplateType_INValid_langcode:
       endPoint: /v1/masterdata/templatetypes/{langcode}
       uniqueIdentifier: TC_Masterdata_TemplateType_05
-      description: Verify that the system returns an error or handles gracefully when an invalid language code is provided while fetching template types
+      description: Verify that the system returns an error or handles gracefully when an invalid language code is provided without a template type code
       role: admin
       restMethod: get
       inputTemplate: masterdata/TemplateType/templateType
