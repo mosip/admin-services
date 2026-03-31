@@ -24,7 +24,7 @@ FilterHolidays:
    MasterData_FilterHolidays_inValid_filterText:
       endPoint: /v1/masterdata/holidays/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterHolidays_02
-      description: Verify that the system returns an error when an invalid filter text is provided while filtering holiday details
+      description: Verify that the system returns an error when an invalid value is provided for the isActive filter while retrieving holiday data
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -200,7 +200,7 @@ FilterHolidays:
    MasterData_FilterHolidays_inValid_FilterText:
       endPoint: /v1/masterdata/holidays/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterHolidays_09
-      description: Verify that the system returns an error when an invalid filter text is provided while filtering holiday details
+      description: Verify that the system returns an error when an invalid value is provided for the holidayName filter while retrieving holiday data
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]

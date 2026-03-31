@@ -68,7 +68,7 @@ FetchRegCentDeviceHistory:
    MasterData_FetchRegCentDeviceHistory_invalid_invalid_effdatetimes:
       endPoint: /v1/masterdata/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}
       uniqueIdentifier: TC_Masterdata_FetchRegCentDeviceHistory_04
-      description: verify that the system returns an error when invalid effective date-time values are provided while fetching the registration center device history
+      description: Verify that the system returns an error when invalid effective date-time values are provided while fetching the registration center device history
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchRegCentDeviceHistory/fetchRegCentDeviceHistory

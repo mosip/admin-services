@@ -53,7 +53,7 @@ FetchDeviceSpec:
    MasterData_FetchDeviceSpec_invalid_devicetypecode_unexisting:
       endPoint: /v1/masterdata/devicespecifications/{langcode}/{devicetypecode}
       uniqueIdentifier: TC_Masterdata_FetchDeviceSpec_04
-      description: Verify that the system returns an error when an unexisting device type code is used to fetch device specification records
+      description: Verify that the system returns an error when an non-existing device type code is used to fetch device specification records
       role: admin
       templateFields: []
       restMethod: get

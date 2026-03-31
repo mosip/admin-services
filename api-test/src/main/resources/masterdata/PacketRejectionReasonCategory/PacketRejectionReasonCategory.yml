@@ -2,7 +2,7 @@ PacketRejectionReasonCategory:
    MasterData_PacketRejectionReasonCategory_All_Valid_Smoke_Sid:
       endPoint: /v1/masterdata/packetrejectionreasons/reasoncategory
       uniqueIdentifier: TC_Masterdata_PacketRejectionReasonCategory_01
-      description: Verify that the system successfully fetches all packet rejection reason categories when all input parameters are valid
+      description: Verify that the system successfully creates a packet rejection reason category when all input parameters are valid
       role: admin
       templateFields: ["langCode"]
       restMethod: post

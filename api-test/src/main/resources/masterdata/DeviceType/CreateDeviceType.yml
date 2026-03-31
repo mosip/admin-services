@@ -64,7 +64,7 @@ CreateDeviceType:
    MasterData_CreateDeviceType_Dublicate_Device_Neg:
       endPoint: /v1/masterdata/devicetypes
       uniqueIdentifier: TC_Masterdata_CreateDeviceType_04
-      description: Verify that the system does not allow creating a device type with a duplicate name
+      description: Verify that the system does not allow creating a device type with a duplicate code
       role: admin
       templateFields: ["description"]
       restMethod: post

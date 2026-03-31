@@ -83,7 +83,7 @@ FetchDevice:
    MasterData_FetchDevice_invalid_deviceType_unexisting:
       endPoint: /v1/masterdata/devices/{langCode}/{deviceType}
       uniqueIdentifier: TC_Masterdata_FetchDevice_05
-      description: Verify that the system returns an error when an unexisting device type is used to fetch device records
+      description: Verify that the system returns an error when a non-existent device type is used to fetch device records
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchDevice/fetchDevice

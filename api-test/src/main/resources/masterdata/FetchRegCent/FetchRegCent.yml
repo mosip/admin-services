@@ -838,7 +838,7 @@ FetchRegCent:
    MasterData_FetchRegCent_By_Pagination_HierarchyLevel_Text_langCode_MorePageSize_Neg:
       endPoint: /v1/masterdata/registrationcenters/page/{langcode}/{hierarchylevel}/{name}?pageNumber=100&pageSize=5
       uniqueIdentifier: TC_Masterdata_FetchRegCent_29
-      description: Verify that the system returns an error when a page size larger than allowed is used to fetch paginated registration center records by hierarchy level and language code
+      description: Verify that the system returns an error when a page number larger than available is used to fetch paginated registration center records by hierarchy level and language code
       role: admin
       templateFields: [""]
       restMethod: get

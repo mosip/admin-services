@@ -2,7 +2,7 @@ FetchIdSchema:
    MasterData_FetchIdSchema_allValid_smoke_with_lang:
       endPoint: /v1/masterdata/idschema/latest
       uniqueIdentifier: TC_Masterdata_FetchIdSchema_01
-      description: Verify that the system successfully fetches all ID schema records using a valid language code
+      description: Verify that the system successfully fetches the latest ID schema record using a valid language code
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

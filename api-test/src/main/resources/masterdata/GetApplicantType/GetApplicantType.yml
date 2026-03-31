@@ -679,7 +679,7 @@ GetApplicantType:
    Masterdata_GetApplicantType_DOB_lessThanAYear:
       endPoint: /v1/masterdata/getApplicantType
       uniqueIdentifier: TC_Masterdata_GetApplicantType_22
-      description: Verify that the system returns an error or handles gracefully when the date of birth provided is less than a year old while fetching applicant type entries
+      description: Verify that the system returns applicant type code "005" when the provided date of birth is less than one year
       role: admin
       restMethod: post
       inputTemplate: masterdata/GetApplicantType/getApplicantType

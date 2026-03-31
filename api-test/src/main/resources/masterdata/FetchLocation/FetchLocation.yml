@@ -108,7 +108,7 @@ FetchLocation:
    MasterData_FetchLocation_details_by_Langcode_smoke:
       endPoint: /v1/masterdata/locations/info/{locationcode}/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchLocation_06
-      description: Verify that the system successfully fetches location details using a valid language code
+      description: Verify that the system successfully fetches location info using a valid location code and language code
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -170,7 +170,7 @@ FetchLocation:
    MasterData_FetchLocation_details_Langcode_smoke:
       endPoint: /v1/masterdata/locations/level/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchLocation_09
-      description: Verify that the system successfully fetches location details using a valid language code
+      description: Verify that the system successfully fetches location level details using a valid language code
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -225,7 +225,7 @@ FetchLocation:
    MasterData_FetchLocation_details_invalid_locationname:
       endPoint: /v1/masterdata/locations/validate/{locationname}
       uniqueIdentifier: TC_Masterdata_FetchLocation_12
-      description: Verify that the system returns an error when an invalid location name is used to fetch location details
+      description: Verify that the system returns an 'Invalid' status when a non-existent location name is used for validation
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchLocation/fetchLocation
