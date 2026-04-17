@@ -514,7 +514,7 @@ public class RegistrationCenterControllerTest {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10003")).andReturn(),
-				"KER-MSD-351");
+				"KER-MSD-352");
 
 	}
 	
