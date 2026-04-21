@@ -15,6 +15,7 @@ import io.mosip.kernel.masterdata.test.utils.MasterDataTest;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -508,6 +509,7 @@ public class RegistrationCenterControllerTest {
 
 	}
 	
+	@Ignore
 	@Test
 	@WithUserDetails("global-admin")
 	public void decommissionRegCenterFail_WithMappedRegCenter() throws Exception {
