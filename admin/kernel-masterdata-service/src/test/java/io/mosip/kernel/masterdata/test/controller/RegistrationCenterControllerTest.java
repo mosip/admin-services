@@ -510,7 +510,7 @@ public class RegistrationCenterControllerTest {
 	
 	@Test
 	@WithUserDetails("global-admin")
-	public void A_decommissionRegCenterFail_WithMappedRegCenter() throws Exception {
+	public void decommissionRegCenterFail_WithMappedRegCenter() throws Exception {
 
 		MasterDataTest.checkResponse(
 				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10003")).andReturn(),
