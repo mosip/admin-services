@@ -259,7 +259,7 @@ INSERT INTO MASTER.machine_master_h(id, name, mac_address, serial_num, ip_addres
 DELETE FROM MASTER.user_detail_h;
 INSERT INTO MASTER.user_detail_h(id, name, status_code, regcntr_id, lang_code, last_login_dtimes, last_login_method, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes, eff_dtimes) VALUES
 ('1','abc','ACT','10001','eng',NULL,'PWD', true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL, TIMESTAMP '2023-12-10 11:42:52.994'),
-('100','abc','ACT','10001','eng',NULL,'PWD', true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL, TIMESTAMP '2023-12-10 11:42:52.994');
+('100','abc','ACT','10003','eng',NULL,'PWD', true,'superadmin', TIMESTAMP '2018-12-10 11:42:52.994',NULL, NULL, NULL, NULL, TIMESTAMP '2023-12-10 11:42:52.994');
 
 DELETE FROM MASTER.zone_user;
 INSERT INTO MASTER.zone_user(zone_code, usr_id, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes) values
