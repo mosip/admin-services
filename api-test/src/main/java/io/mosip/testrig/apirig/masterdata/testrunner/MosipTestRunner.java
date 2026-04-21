@@ -65,7 +65,7 @@ public class MosipTestRunner {
 	public static void main(String[] arg) {
 
 		try {
-			LOGGER.info("** ------------- API Test Rig Run Started --------------------------------------------- **");
+			LOGGER.info("** -------------- API Test Rig Run Started --------------------------------------------- **");
 			
 			BaseTestCase.setRunContext(getRunType(), jarUrl);
 			ExtractResource.removeOldMosipTestTestResource();
