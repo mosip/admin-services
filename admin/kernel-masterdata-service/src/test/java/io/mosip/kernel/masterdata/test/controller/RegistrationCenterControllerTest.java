@@ -29,7 +29,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
@@ -39,7 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
 
 @RunWith(SpringRunner.class)
@@ -515,15 +513,9 @@ public class RegistrationCenterControllerTest {
 	@WithUserDetails("global-admin")
 	public void decommissionRegCenterFail_WithMappedRegCenter() throws Exception {
 
-		MvcResult result = mockMvc
-				.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10003"))
-				.andReturn();
-
-		String body = result.getResponse().getContentAsString();
-		assertTrue(
-				"Expected KER-MSD-351 (machine mapped) or KER-MSD-352 (user mapped), got: " + body,
-				body.contains("KER-MSD-351") || body.contains("KER-MSD-352")
-		);
+		MasterDataTest.checkResponse(
+				mockMvc.perform(MockMvcRequestBuilders.put("/registrationcenters/decommission/10003")).andReturn(),
+				"KER-MSD-351");
 
 	}
 	
