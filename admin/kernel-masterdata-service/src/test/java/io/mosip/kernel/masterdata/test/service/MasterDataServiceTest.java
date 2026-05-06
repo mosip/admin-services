@@ -1586,7 +1586,12 @@ public class MasterDataServiceTest {
 		when(wordsRepository.findtoUpdateBlocklistedWordByWord(Mockito.anyString())).thenReturn(words);
 		when(masterdataCreationUtil.updateMasterDataStatus(Mockito.eq(BlocklistedWords.class), Mockito.anyString(),
 				Mockito.anyBoolean(), Mockito.anyString())).thenReturn(1);
-		StatusResponseDto actual = blocklistedWordsService.updateBlockListedWordStatus("abc", false);
+
+		BlockListedWordStatusUpdateDto requestDto = new BlockListedWordStatusUpdateDto();
+		requestDto.setWord("abc");
+		requestDto.setIsActive(false);
+
+		StatusResponseDto actual = blocklistedWordsService.updateBlockListedWordStatus(requestDto);
 		Assert.assertEquals(dto, actual);
 	}
 
@@ -1594,13 +1599,23 @@ public class MasterDataServiceTest {
 	public void updateBlockListedWordStatusFailureTest() {
 		when(wordsRepository.findtoUpdateBlocklistedWordByWord(Mockito.anyString()))
 				.thenThrow(MasterDataServiceException.class);
-		blocklistedWordsService.updateBlockListedWordStatus("abc", false);
+
+		BlockListedWordStatusUpdateDto requestDto = new BlockListedWordStatusUpdateDto();
+		requestDto.setWord("abc");
+		requestDto.setIsActive(false);
+
+		blocklistedWordsService.updateBlockListedWordStatus(requestDto);
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void updateBlockListedWordStatusFailureDataNotFoundTest() {
 		when(wordsRepository.findtoUpdateBlocklistedWordByWord(Mockito.anyString())).thenReturn(null);
-		blocklistedWordsService.updateBlockListedWordStatus("abc", false);
+
+		BlockListedWordStatusUpdateDto requestDto = new BlockListedWordStatusUpdateDto();
+		requestDto.setWord("abc");
+		requestDto.setIsActive(false);
+
+		blocklistedWordsService.updateBlockListedWordStatus(requestDto);
 	}
 
 	// ------------------ DeviceSpecificationServiceTest -----------------//

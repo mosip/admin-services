@@ -2,23 +2,15 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
-import io.mosip.kernel.masterdata.constant.BlocklistedWordsErrorCode;
-import io.mosip.kernel.masterdata.constant.LanguageErrorCode;
-import io.mosip.kernel.masterdata.constant.MachineErrorCode;
-import io.mosip.kernel.masterdata.constant.MasterDataConstant;
-import io.mosip.kernel.masterdata.constant.UpdateQueryConstants;
+import io.mosip.kernel.masterdata.constant.*;
+import io.mosip.kernel.masterdata.dto.BlockListedWordStatusUpdateDto;
 import io.mosip.kernel.masterdata.dto.BlockListedWordsUpdateDto;
 import io.mosip.kernel.masterdata.dto.BlocklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlocklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.BlocklistedWordsExtnDto;
-import io.mosip.kernel.masterdata.dto.request.FilterDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
-import io.mosip.kernel.masterdata.dto.request.Pagination;
-import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.request.SearchFilter;
-import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.dto.request.*;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResult;
@@ -30,14 +22,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.BlocklistedWordsRepository;
 import io.mosip.kernel.masterdata.service.BlocklistedWordsService;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
-import io.mosip.kernel.masterdata.utils.ExceptionUtils;
-import io.mosip.kernel.masterdata.utils.MapperUtils;
-import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
-import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
-import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
-import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.utils.*;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 import jakarta.persistence.EntityManager;
@@ -58,14 +43,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * Service implementation class for {@link BlocklistedWordsService}.
@@ -455,13 +433,23 @@ public class BlocklistedWordsServiceImpl implements BlocklistedWordsService {
 
 	@CacheEvict(value = "blocklisted-words", allEntries = true)
 	@Override
-	public StatusResponseDto updateBlockListedWordStatus(String word, boolean isActive) {
+	public StatusResponseDto updateBlockListedWordStatus(BlockListedWordStatusUpdateDto requestDto) {
 		// TODO Auto-generated method stub
 		StatusResponseDto response = new StatusResponseDto();
 
+		if (requestDto == null || requestDto.getWord() == null || requestDto.getWord().isBlank()) {
+			throw new IllegalArgumentException("Word cannot be null or empty");
+		}
+		String normalizedWord = requestDto.getWord().trim().toLowerCase();
+
+		Boolean isActive = requestDto.getIsActive();
+		if (requestDto.getIsActive() == null) {
+			throw new IllegalArgumentException("isActive field cannot be null");
+		}
+
 		List<BlocklistedWords> wordEntity = null;
 		try {
-			wordEntity = blocklistedWordsRepository.findtoUpdateBlocklistedWordByWord(word);
+			wordEntity = blocklistedWordsRepository.findtoUpdateBlocklistedWordByWord(normalizedWord);
 		} catch (DataAccessException | DataAccessLayerException accessException) {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_UPDATE, BlockListedWordsUpdateDto.class.getSimpleName()),
@@ -477,7 +465,7 @@ public class BlocklistedWordsServiceImpl implements BlocklistedWordsService {
 		}
 
 		if (wordEntity != null && !wordEntity.isEmpty()) {
-			masterdataCreationUtil.updateMasterDataStatus(BlocklistedWords.class, word, isActive, "word");
+			masterdataCreationUtil.updateMasterDataStatus(BlocklistedWords.class, normalizedWord, isActive, "word");
 		} else {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_UPDATE, BlockListedWordsUpdateDto.class.getSimpleName()),
