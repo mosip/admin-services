@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -115,7 +117,9 @@ public class AuditUtil {
 
 		RequestWrapper<AuditRequestDto> auditReuestWrapper = new RequestWrapper<>();
 		auditReuestWrapper.setRequest(auditRequestDto);
-		HttpEntity<RequestWrapper<AuditRequestDto>> httpEntity = new HttpEntity<>(auditReuestWrapper);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<RequestWrapper<AuditRequestDto>> httpEntity = new HttpEntity<>(auditReuestWrapper, headers);
 		ResponseEntity<String> response = null;
 		try {
 			response = restTemplate.exchange(auditUrl, HttpMethod.POST, httpEntity, String.class);
