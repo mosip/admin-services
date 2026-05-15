@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jre-alpine
+FROM mosipid/openjdk-21-jre:21.0.4
 
 ARG SOURCE
 ARG COMMIT_HASH
