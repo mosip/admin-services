@@ -1,1 +1,1 @@
-drop role if exists hotlistuser;
+drop role if exists :dbuname;

@@ -1,4 +1,4 @@
-\c mosip_master 
+\c :mosipdbname
 
 \ir ddl/master-app_authentication_method.sql
 \ir ddl/master-app_detail.sql
