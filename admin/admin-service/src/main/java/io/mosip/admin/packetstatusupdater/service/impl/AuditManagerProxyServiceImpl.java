@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -118,9 +118,7 @@ public class AuditManagerProxyServiceImpl implements AuditManagerProxyService {
 		request.setRequesttime(LocalDateTime.now());
 		request.setRequest(auditManagerRequestDto);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<RequestWrapper<AuditManagerRequestDto>> entity = new HttpEntity<>(request, headers);
+		HttpEntity<RequestWrapper<AuditManagerRequestDto>> entity = new HttpEntity<>(request);
 
 		try {
 			restTemplate.postForEntity(auditmanagerapi, entity, String.class);
