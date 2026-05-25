@@ -1,1 +1,1 @@
-drop role if exists masteruser;
+drop role if exists :dbuname;

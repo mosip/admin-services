@@ -1,18 +1,18 @@
-\c mosip_hotlist
+\c :mosipdbname
 
 GRANT CONNECT
-   ON DATABASE mosip_hotlist
-   TO hotlistuser;
+   ON DATABASE :mosipdbname
+   TO :dbuname;
 
 GRANT USAGE
    ON SCHEMA hotlist
-   TO hotlistuser;
+   TO :dbuname;
 
 
 GRANT SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES
-   ON ALL TABLES IN SCHEMA hotlist 
-   TO hotlistuser;
+      ON ALL TABLES IN SCHEMA hotlist
+          TO :dbuname;
 
-ALTER DEFAULT PRIVILEGES IN SCHEMA hotlist 
-	GRANT SELECT,INSERT,UPDATE,DELETE,REFERENCES ON TABLES TO hotlistuser;
+ALTER DEFAULT PRIVILEGES IN SCHEMA hotlist
+	GRANT SELECT,INSERT,UPDATE,DELETE,REFERENCES ON TABLES TO :dbuname;
 

@@ -1,4 +1,4 @@
-\c mosip_master 
+\c :mosipdbname
 
 -------------- Level 1 data load scripts ------------------------
 
@@ -70,20 +70,3 @@ TRUNCATE TABLE master.screen_detail cascade ;
 TRUNCATE TABLE master.screen_authorization cascade ;
 
 \COPY master.screen_authorization (screen_id,role_code,lang_code,is_permitted,is_active,cr_by,cr_dtimes) FROM './dml/master-screen_authorization.csv' delimiter ',' HEADER  csv;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
