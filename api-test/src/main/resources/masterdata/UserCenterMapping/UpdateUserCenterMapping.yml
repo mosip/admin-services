@@ -23,7 +23,7 @@ UpdateUserCenterMapping:
     "regCenterId": "$REMOVE$",
     "zoneCode": "$REMOVE$",
     "zoneName": "$REMOVE$",
-    "regCenterName": "$ID:CreateLocationData_WithMandatoryLanguage_All_Valid_Smoke_Sid_name$"
+    "regCenterName": "HSR Center updated"
     }'
    MasterData_UserCenterMapping_Invalid_InputParameter_regCenterId_Missing:
       endPoint: /v1/masterdata/usercentermapping
