@@ -9,13 +9,13 @@ GetMachineHistory:
       inputTemplate: masterdata/GetMachineHistory/getMachineHistory
       outputTemplate: masterdata/GetMachineHistory/getMachineHistoryResult
       input: '{
-      "id":"10001",
+      "id":"$ID:CreateMachine_All_Valid_Smoke_sid_id$",
       "langcode":"eng",
       "effdatetimes":"$TIMESTAMP$"
 }'
       output: '{
 "machineHistoryDetails": [{
-       "id": "10001"
+       "id": "$ID:CreateMachine_All_Valid_Smoke_sid_id$"
     }]
 }'
 
