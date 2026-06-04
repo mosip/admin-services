@@ -35,7 +35,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.masterdata.constant.AuditErrorCode;
 import io.mosip.kernel.masterdata.dto.AuditResponseDto;
 import io.mosip.kernel.masterdata.dto.request.AuditRequestDto;
@@ -100,7 +100,7 @@ public class AuditUtil {
 		auditRequestDto.setModuleId("KER-MSD");
 		auditRequestDto.setModuleName("Kernel masterdata");
 		auditRequestDto.setDescription(description);
-		auditRequestDto.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
+		auditRequestDto.setActionTimeStamp(DateUtils2.getUTCCurrentDateTime());
 		auditRequestDto.setHostIp(hostIpAddress);
 		auditRequestDto.setHostName(hostName);
 		auditRequestDto.setApplicationId(APPLICATION_ID);

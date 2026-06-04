@@ -21,10 +21,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -89,7 +86,9 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 	private static String STATUS_MESSAGE = "SUCCESS: %d, FAILED: %d";
 	private static String CSV_UPLOAD_MESSAGE = "FILE: %s, READ: %d, STATUS: %s, MESSAGE: %s";
 	private static String PKT_UPLOAD_MESSAGE = "FILE: %s, STATUS: %s, MESSAGE: %s";
-	
+
+	private static final String SECURITY_PARAM_NAME = "security-param";
+
 	@Autowired
 	ApplicationContext applicationContext;
 
@@ -349,7 +348,7 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 			throw new RequestException(BulkUploadErrorCode.EMPTY_FILE.getErrorCode(),
 					BulkUploadErrorCode.EMPTY_FILE.getErrorMessage());
 		}
-	
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		auditUtil.setAuditRequestDto(EventEnum.getEventEnumWithValue(EventEnum.BULKDATA_UPLOAD,
 				"{category:'" + category + "',operation:'" + operation + "'}"),null);
 
@@ -389,8 +388,8 @@ public class BulkDataUploadServiceImpl implements BulkDataService {
 						.addString("username", SecurityContextHolder.getContext().getAuthentication().getName())
 						.addLong("time", System.currentTimeMillis())
 						.toJobParameters();
-
-				jobLauncher.run(job, jobParameters);
+				JobExecution execution = jobLauncher.run(job, jobParameters);
+				execution.getExecutionContext().put(SECURITY_PARAM_NAME, authentication);
 
 			} catch (Throwable e) {
 				logger.error("Failed to sync and upload packet", e);

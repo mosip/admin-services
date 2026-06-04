@@ -53,3 +53,12 @@ COMMENT ON COLUMN master.user_detail.is_deleted IS 'IS_Deleted : Flag to mark wh
 COMMENT ON COLUMN master.user_detail.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
 -- ddl-end --
 
+-- PERFORMANCE OPTIMIZATION INDEXES
+CREATE INDEX CONCURRENTLY idx_userdetails_regcenter_active ON user_detail (regcntr_id) WHERE is_deleted = false;
+CREATE INDEX IF NOT EXISTS idx_user_detail_regcntr_id_active ON master.user_detail (regcntr_id) WHERE is_deleted = false;
+CREATE INDEX IF NOT EXISTS idx_user_detail_sync_window ON master.user_detail (regcntr_id, cr_dtimes, upd_dtimes, del_dtimes);
+CREATE INDEX IF NOT EXISTS idx_user_detail_timestamps ON master.user_detail (cr_dtimes, upd_dtimes, del_dtimes);
+CREATE INDEX IF NOT EXISTS idx_user_detail_active_id ON master.user_detail (LOWER(id)) WHERE is_active = true AND is_deleted = false;
+CREATE INDEX IF NOT EXISTS idx_user_detail_regcntr ON master.user_detail(regcntr_id);
+CREATE INDEX IF NOT EXISTS idx_user_detail_regcntr_flags ON master.user_detail(regcntr_id, is_deleted, is_active);
+CREATE INDEX IF NOT EXISTS idx_user_detail_regcntr_change ON master.user_detail(regcntr_id, cr_dtimes, upd_dtimes, del_dtimes);

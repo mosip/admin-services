@@ -17,7 +17,7 @@ import io.mosip.hotlist.security.HotlistSecurityManager;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import lombok.NoArgsConstructor;
 
 /**
@@ -70,7 +70,7 @@ public class AuditRequestBuilder {
 		auditRequest.setEventId(event.getEventId());
 		auditRequest.setEventName(event.getEventName());
 		auditRequest.setEventType(event.getEventType());
-		auditRequest.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
+		auditRequest.setActionTimeStamp(DateUtils2.getUTCCurrentDateTime());
 		auditRequest.setHostName(hostName);
 		auditRequest.setHostIp(hostAddress);
 		auditRequest.setApplicationId(appId);
@@ -87,7 +87,7 @@ public class AuditRequestBuilder {
 		request.setId("audit");
 		request.setRequest(auditRequest);
 		request.setVersion("1.0");
-		request.setRequesttime(DateUtils.getUTCCurrentDateTime());
+		request.setRequesttime(DateUtils2.getUTCCurrentDateTime());
 
 		return request;
 	}

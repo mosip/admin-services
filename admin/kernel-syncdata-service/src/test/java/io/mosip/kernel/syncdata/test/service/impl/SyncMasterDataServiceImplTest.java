@@ -172,7 +172,7 @@ class SyncMasterDataServiceImplTest {
         when(serviceHelper.getRegistrationCenterMachine(any(), any()))
                 .thenReturn(dto);
 
-        Map<Class, CompletableFuture> futureMap = new HashMap<>();
+        Map<Class<?>, CompletableFuture<?>> futureMap = new HashMap<>();
         futureMap.put(String.class, CompletableFuture.completedFuture("data"));
 
         when(clientSettingsHelper.getInitiateDataFetch(any(), any(), any(), any(),
@@ -202,7 +202,7 @@ class SyncMasterDataServiceImplTest {
         when(serviceHelper.getRegistrationCenterMachine(any(), any()))
                 .thenReturn(dto);
 
-        Map<Class, CompletableFuture> futureMap = new HashMap<>();
+        Map<Class<?>, CompletableFuture<?>> futureMap = new HashMap<>();
         futureMap.put(String.class, CompletableFuture.completedFuture("data"));
 
         when(clientSettingsHelper.getInitiateDataFetch(any(), any(), any(), any(),

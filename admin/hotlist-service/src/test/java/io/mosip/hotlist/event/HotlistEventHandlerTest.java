@@ -2,7 +2,7 @@ package io.mosip.hotlist.event;
 
 import io.mosip.hotlist.constant.HotlistErrorConstants;
 import io.mosip.hotlist.exception.HotlistRetryException;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class HotlistEventHandlerTest {
 
 	@Test
 	public void testPublishEvent() {
-		handler.publishEvent("id", "idType", "status", DateUtils.getUTCCurrentDateTime());
+		handler.publishEvent("id", "idType", "status", DateUtils2.getUTCCurrentDateTime());
 	}
 
 	@Test
@@ -45,7 +45,7 @@ public class HotlistEventHandlerTest {
 		try {
 			doThrow(new NullPointerException()).when(publisher).publishUpdate(Mockito.any(), Mockito.any(),
 					Mockito.any(), Mockito.any(), Mockito.any());
-			handler.publishEvent("id", "idType", "status", DateUtils.getUTCCurrentDateTime());
+			handler.publishEvent("id", "idType", "status", DateUtils2.getUTCCurrentDateTime());
 		} catch (HotlistRetryException e) {
 			assertTrue(e.getErrorCode().contentEquals(HotlistErrorConstants.UNKNOWN_ERROR.getErrorCode()));
 			assertTrue(e.getErrorText().contentEquals(HotlistErrorConstants.UNKNOWN_ERROR.getErrorMessage()));

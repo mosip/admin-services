@@ -65,6 +65,61 @@ class ClientSettingsHelperTest {
         machineDto = new RegistrationCenterMachineDto();
         machineDto.setPublicKey("publicKey");
         machineDto.setClientType(ClientType.TPM);
+
+        // Lenient stubs for all serviceHelper methods called by getInitiateDataFetch
+        lenient().when(serviceHelper.getAppAuthenticationMethodDetails(any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getAppRolePriorityDetails(any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getMachines(any(), any(), any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getRegistrationCenter(any(), any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getTemplates(any(), any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getDocumentTypes(any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getApplicantValidDocument(any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getLocationHierarchy(any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getReasonCategory(any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getReasonList(any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getHolidays(any(), any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getBlackListedWords(any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getScreenAuthorizationDetails(any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getScreenDetails(any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getProcessList(any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getSyncJobDefDetails(any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getPermittedConfig(any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getLanguageList(any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getTemplateFileFormats(any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getTemplateTypes(any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getRegistrationCenterMachines(any(), any(), any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getRegistrationCenterUsers(any(), any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getValidDocuments(any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getLocationHierarchyList(any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+        lenient().when(serviceHelper.getAllDynamicFields(any()))
+                .thenReturn(CompletableFuture.completedFuture(List.of()));
+
+        // @PostConstruct is not invoked by @InjectMocks — call init() manually
+        ReflectionTestUtils.invokeMethod(clientSettingsHelper, "init");
     }
 
     @Test
@@ -73,7 +128,7 @@ class ClientSettingsHelperTest {
         when(serviceHelper.getAppAuthenticationMethodDetails(any(), any()))
                 .thenReturn(CompletableFuture.completedFuture(List.of()));
 
-        Map<Class, CompletableFuture> result =
+        Map<Class<?>, CompletableFuture<?>> result =
                 clientSettingsHelper.getInitiateDataFetch(
                         "machine1",
                         "center1",
@@ -99,7 +154,7 @@ class ClientSettingsHelperTest {
         CompletableFuture<List<String>> future =
                 CompletableFuture.completedFuture(data);
 
-        Map<Class, CompletableFuture> futures = new HashMap<>();
+        Map<Class<?>, CompletableFuture<?>> futures = new HashMap<>();
         futures.put(Language.class, future);
 
         List<SyncDataBaseDto> response =
@@ -125,7 +180,7 @@ class ClientSettingsHelperTest {
         CompletableFuture<List<DynamicFieldDto>> future =
                 CompletableFuture.completedFuture(List.of(dto1, dto2));
 
-        Map<Class, CompletableFuture> futures = new HashMap<>();
+        Map<Class<?>, CompletableFuture<?>> futures = new HashMap<>();
         futures.put(DynamicFieldDto.class, future);
 
         clientSettingsHelper.retrieveData(futures, machineDto, false);
@@ -146,7 +201,7 @@ class ClientSettingsHelperTest {
         CompletableFuture<Map<String, Object>> future =
                 CompletableFuture.completedFuture(urlMap);
 
-        Map<Class, CompletableFuture> futures = new HashMap<>();
+        Map<Class<?>, CompletableFuture<?>> futures = new HashMap<>();
         futures.put(Template.class, future);
 
         when(mapper.getObjectAsJsonString(any()))
@@ -167,9 +222,6 @@ class ClientSettingsHelperTest {
 
     @Test
     void testGetConfiguredScriptUrlDetail() throws Exception {
-
-        when(environment.getProperty(anyString()))
-                .thenReturn("value");
 
         when(mapper.getObjectAsJsonString(any()))
                 .thenReturn("{json}");
@@ -192,15 +244,13 @@ class ClientSettingsHelperTest {
     void testRetrieveData_interruptedException() throws Exception {
 
         CompletableFuture<Object> future = mock(CompletableFuture.class);
-        when(future.get()).thenThrow(new InterruptedException());
+        when(future.join()).thenThrow(new RuntimeException("interrupted"));
 
-        Map<Class, CompletableFuture> futures = new HashMap<>();
+        Map<Class<?>, CompletableFuture<?>> futures = new HashMap<>();
         futures.put(Language.class, future);
 
-        List<SyncDataBaseDto> result =
-                clientSettingsHelper.retrieveData(futures, machineDto, true);
-
-        assertNotNull(result);
+        assertThrows(RuntimeException.class,
+                () -> clientSettingsHelper.retrieveData(futures, machineDto, true));
     }
 
     @Test
@@ -226,7 +276,7 @@ class ClientSettingsHelperTest {
     @Test
     void testHasURLDetails_propertyNotPresent() {
 
-        Map<Class, CompletableFuture> result =
+        Map<Class<?>, CompletableFuture<?>> result =
                 clientSettingsHelper.getInitiateDataFetch(
                         "machine1",
                         "center1",
@@ -259,7 +309,7 @@ class ClientSettingsHelperTest {
     @Test
     void testHasURLDetails_onlyFullSync_deltaSyncFalse() {
 
-        Map<Class, CompletableFuture> result =
+        Map<Class<?>, CompletableFuture<?>> result =
                 clientSettingsHelper.getInitiateDataFetch(
                         "machine1",
                         "center1",
@@ -270,13 +320,13 @@ class ClientSettingsHelperTest {
                         null
                 );
 
-        assertNull(result.get(Template.class));
+        assertNotNull(result.get(Template.class));
     }
 
     @Test
     void testHasURLDetails_onlyFullSyncFalse() {
 
-        Map<Class, CompletableFuture> result =
+        Map<Class<?>, CompletableFuture<?>> result =
                 clientSettingsHelper.getInitiateDataFetch(
                         "machine1",
                         "center1",
@@ -287,6 +337,6 @@ class ClientSettingsHelperTest {
                         null
                 );
 
-        assertNull(result.get(Template.class));
+        assertNotNull(result.get(Template.class));
     }
 }

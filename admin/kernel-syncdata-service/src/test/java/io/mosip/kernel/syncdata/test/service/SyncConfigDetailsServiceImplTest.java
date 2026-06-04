@@ -5,6 +5,7 @@ import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.exception.RequestException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
+import io.mosip.kernel.syncdata.service.helper.ConfigServerClient;
 import io.mosip.kernel.syncdata.service.impl.SyncConfigDetailsServiceImpl;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
 import net.minidev.json.JSONObject;
@@ -38,6 +39,9 @@ public class SyncConfigDetailsServiceImplTest {
 
     @InjectMocks
     private SyncConfigDetailsServiceImpl syncConfigDetailsService;
+
+    @InjectMocks
+    private ConfigServerClient configServerClient;
 
     @Mock
     private MachineRepository machineRepository;
@@ -108,7 +112,7 @@ public class SyncConfigDetailsServiceImplTest {
     public void getScript_machineNotFound() throws Exception {
         String scriptName = "applicanttype.mvel";
         String keyIndex = "not-found-machine";
-        lenient().when(machineRepository.findByMachineKeyIndex(keyIndex)).thenReturn(Collections.emptyList());
+        lenient().when(machineRepository.findByMachineKeyIndex(Mockito.anyString())).thenReturn(new ArrayList<>());
 
         syncConfigDetailsService.getScript(scriptName, keyIndex);
     }
@@ -256,7 +260,7 @@ public class SyncConfigDetailsServiceImplTest {
         Mockito.when(environment.getProperty("spring.cloud.config.label")).thenReturn("my-label");
         Mockito.when(restTemplate.getForObject(expectedUri, String.class)).thenReturn(responseBody);
 
-        String actualResponse = ReflectionTestUtils.invokeMethod(syncConfigDetailsService, "getConfigDetailsResponse", fileName);
+        String actualResponse = ReflectionTestUtils.invokeMethod(configServerClient, "fetch", fileName);
 
         assertEquals(responseBody, actualResponse);
     }
@@ -272,7 +276,7 @@ public class SyncConfigDetailsServiceImplTest {
         Mockito.when(environment.getProperty("spring.cloud.config.label")).thenReturn("my-label");
         Mockito.when(restTemplate.getForObject(expectedUri, String.class)).thenReturn(null);
 
-        ReflectionTestUtils.invokeMethod(syncConfigDetailsService, "getConfigDetailsResponse", fileName);
+        ReflectionTestUtils.invokeMethod(configServerClient, "fetch", fileName);
     }
 
     @Test(expected = SyncDataServiceException.class)
@@ -286,7 +290,7 @@ public class SyncConfigDetailsServiceImplTest {
         Mockito.when(environment.getProperty("spring.cloud.config.label")).thenReturn("my-label");
         Mockito.when(restTemplate.getForObject(expectedUri, String.class)).thenThrow(new RestClientException("Connection refused"));
 
-        ReflectionTestUtils.invokeMethod(syncConfigDetailsService, "getConfigDetailsResponse", fileName);
+        ReflectionTestUtils.invokeMethod(configServerClient, "fetch", fileName);
     }
 
 }

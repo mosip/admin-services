@@ -27,7 +27,7 @@ import io.mosip.admin.packetstatusupdater.constant.ApiName;
 import io.mosip.admin.packetstatusupdater.exception.RequestException;
 import io.mosip.admin.packetstatusupdater.util.RestClient;
 import io.mosip.admin.service.AdminService;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 
 
 @Service
@@ -79,7 +79,7 @@ public class AdminServiceImpl implements AdminService {
 		procRequestWrapper.setId(lostRidRequestId);
 		procRequestWrapper.setVersion(lostRidReqVersion);
 		procRequestWrapper.setRequest(searchInfo);
-		String dateTime = DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
+		String dateTime = DateUtils2.formatToISOString(DateUtils2.getUTCCurrentDateTime());
 		procRequestWrapper.setRequesttime(dateTime);
 		try {
 			String response = restClient.postApi(ApiName.LOST_RID_API, MediaType.APPLICATION_JSON,

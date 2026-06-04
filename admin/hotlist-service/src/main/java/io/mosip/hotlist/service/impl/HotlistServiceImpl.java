@@ -14,7 +14,7 @@ import io.mosip.hotlist.security.HotlistSecurityManager;
 import io.mosip.hotlist.service.HotlistService;
 import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -98,7 +98,7 @@ public class HotlistServiceImpl implements HotlistService {
 				Hotlist hotlist = new Hotlist();
 				buildHotlistEntity(blockRequest, idHash, status, hotlist);
 				hotlist.setCreatedBy(HotlistSecurityManager.getUser());
-				hotlist.setCreatedDateTime(DateUtils.getUTCCurrentDateTime());
+				hotlist.setCreatedDateTime(DateUtils2.getUTCCurrentDateTime());
 				hotlist.setIsDeleted(false);
 				hotlistHRepo.save(mapper.convertValue(hotlist, HotlistHistory.class));
 				hotlistRepo.save(hotlist);
@@ -200,7 +200,7 @@ public class HotlistServiceImpl implements HotlistService {
 		Hotlist hotlist = hotlistedOptionalData.get();
 		buildHotlistEntity(updateRequest, idHash, status, hotlist);
 		hotlist.setUpdatedBy(HotlistSecurityManager.getUser());
-		hotlist.setUpdatedDateTime(DateUtils.getUTCCurrentDateTime());
+		hotlist.setUpdatedDateTime(DateUtils2.getUTCCurrentDateTime());
 		hotlistHRepo.save(mapper.convertValue(hotlist, HotlistHistory.class));
 		hotlistRepo.save(hotlist);
 		eventHandler.publishEvent(idHash, updateRequest.getIdType(), status, hotlist.getExpiryTimestamp());
@@ -220,12 +220,12 @@ public class HotlistServiceImpl implements HotlistService {
 		hotlist.setIdValue(request.getId());
 		hotlist.setIdType(request.getIdType());
 		hotlist.setStatus(status);
-		hotlist.setStartTimestamp(DateUtils.getUTCCurrentDateTime());
+		hotlist.setStartTimestamp(DateUtils2.getUTCCurrentDateTime());
 		hotlist.setExpiryTimestamp(Objects.nonNull(request.getExpiryTimestamp()) ? request.getExpiryTimestamp() : null);
 	}
 
 	private LocalDateTime isExpired(LocalDateTime expiryTimestamp) {
-		return Objects.nonNull(expiryTimestamp) && expiryTimestamp.isAfter(DateUtils.getUTCCurrentDateTime()) ? expiryTimestamp
+		return Objects.nonNull(expiryTimestamp) && expiryTimestamp.isAfter(DateUtils2.getUTCCurrentDateTime()) ? expiryTimestamp
 				: null;
 	}
 

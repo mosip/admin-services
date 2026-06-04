@@ -510,9 +510,9 @@ public class RegistrationCenterControllerTest {
 	}
 	
 	@Test
-	@WithUserDetails("global-admin")
 	@Sql(statements = "DELETE FROM master.user_detail WHERE regcntr_id='10003'",
 	executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+	@WithUserDetails("global-admin")
 	public void decommissionRegCenterFail_WithMappedRegCenter() throws Exception {
 
 		MasterDataTest.checkResponse(
