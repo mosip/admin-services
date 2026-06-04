@@ -121,10 +121,6 @@ All properties are externalized to a Spring Cloud Config Server. Local developme
 | Library | Version | Why |
 |---|---|---|
 | Spring Boot | 3.2.3 | Core framework |
-| kernel-core BOM | 1.3.0 | MOSIP shared utilities, imported as BOM |
-| kernel-auth-adapter | 1.3.0 | Token validation, provided scope |
-| kernel-dataaccess-hibernate | 1.3.0 | JPA/Hibernate wrapper |
-| kernel-datamapper-orika | 1.3.0 | DTO↔Entity mapping |
 | springdoc-openapi | 2.5.0 | OpenAPI 3 / Swagger UI |
 | PostgreSQL driver | 42.2.2 | Production DB |
 | H2 | 1.4.197 | Test DB only |
@@ -137,13 +133,6 @@ Workflow: `.github/workflows/push-trigger.yml` (uses reusable workflows from `mo
 Triggers on push to: `release-1*`, `master`, `develop*`, `MOSIP*` branches, and on PRs.
 
 Jobs in order: build → publish to Nexus (non-master) → Docker build → Sonar analysis → api-test build → api-test Docker.
-
-## Helm / Kubernetes
-
-Charts are in `helm/{admin-hotlist,admin-service,masterdata,syncdata}/`. All charts:
-- Version: `0.0.1-develop` (develop branch)
-- Image: `mosipqa/<service>:develop`
-- `extraEnvVarsSecret` is a **YAML list** (`[]`), not a string — the deployment template iterates it with `{{- range }}`.
 
 ## Sonar Coverage
 
