@@ -292,7 +292,6 @@ public class DocumentTypeControllerTest {
 				.andReturn(),null);
 
 	}
-	
 
 	//this test case is ignored to resolve the build issue after the build issue is resolved it should be removed
 	@Ignore

@@ -55,7 +55,7 @@ ARG container_user_gid=1001
 
 # install packages and create user
 RUN apk -q update \
-&& apk add -q unzip \
+&& apk add -q unzip wget \
 && addgroup -g ${container_user_gid} ${container_user_group} \
 && adduser -s /bin/sh -u ${container_user_uid} -G ${container_user_group} -h /home/${container_user} --disabled-password ${container_user}
 
@@ -81,5 +81,5 @@ USER ${container_user_uid}:${container_user_gid}
 EXPOSE 8095
 
 CMD wget -q --show-progress "${iam_adapter_url_env}" -O "${loader_path_env}"/kernel-auth-adapter.jar; \
-    java -XX:+ExplicitGCInvokesConcurrent -XX:+UseZGC -XX:+ZGenerational -XX:MaxGCPauseMillis=200  -XX:+UnlockExperimentalVMOptions -XX:+UseStringDeduplication -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8 -XX:+UseCompressedOops \
+    java -XX:-UseG1GC -XX:+ExplicitGCInvokesConcurrent -XX:-UseParallelGC -XX:+UseZGC -XX:+ZGenerational -XX:-UseShenandoahGC -XX:MaxGCPauseMillis=200  -XX:+UnlockExperimentalVMOptions -XX:+UseStringDeduplication -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8 -XX:+UseCompressedOops \
     -jar -Dloader.path="${loader_path_env}" -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" hotlist-service.jar; \

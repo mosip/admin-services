@@ -36,6 +36,9 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.test.util.ReflectionTestUtils;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doReturn;
@@ -67,6 +70,11 @@ public class SyncUserDetailsServiceImplTest {
 
     private final String REG_CENTER_ID = "RC01";
     private final String KEY_INDEX = "KEY01";
+
+    @BeforeEach
+    void setUp() {
+        ReflectionTestUtils.setField(service, "pageSize", 100);
+    }
 
     // ---------------------------------------------------------
     // 1️⃣ getUsersBasedOnRegistrationCenterId SUCCESS
@@ -216,8 +224,10 @@ public class SyncUserDetailsServiceImplTest {
         user.setIsDeleted(false);
         user.setLangCode("ENG");
 
-        when(userDetailsRepository.findByUsersByRegCenterId(REG_CENTER_ID))
-                .thenReturn(List.of(user));
+        org.springframework.data.domain.Page<UserDetails> mockPage =
+                new org.springframework.data.domain.PageImpl<>(List.of(user));
+        when(userDetailsRepository.findPageByRegCenterId(eq(REG_CENTER_ID), any()))
+                .thenReturn(mockPage);
 
         // mock auth response
         UserDetailResponseDto userDetailResponseDto = new UserDetailResponseDto();
@@ -257,8 +267,10 @@ public class SyncUserDetailsServiceImplTest {
         user.setIsDeleted(false);
         user.setLangCode("ENG");
 
-        when(userDetailsRepository.findByUsersByRegCenterId(REG_CENTER_ID))
-                .thenReturn(List.of(user));
+        org.springframework.data.domain.Page<UserDetails> mockPage =
+                new org.springframework.data.domain.PageImpl<>(List.of(user));
+        when(userDetailsRepository.findPageByRegCenterId(eq(REG_CENTER_ID), any()))
+                .thenReturn(mockPage);
 
         when(mapper.getObjectAsJsonString(any())).thenReturn("json");
 

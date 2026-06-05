@@ -1,7 +1,7 @@
 # Kernel Masterdata Service
 
 ## Overview
-This services exposes API to perform CRUD operations on masterdata.
+This services exposes API to perform CRUD operations on materdata.
 
 ## Build & run (for developers)
 The project requires JDK 21.0.3

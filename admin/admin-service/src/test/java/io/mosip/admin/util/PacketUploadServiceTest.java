@@ -1,6 +1,6 @@
 package io.mosip.admin.util;
 
-import com.amazonaws.util.StringInputStream;
+import java.io.ByteArrayInputStream;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.admin.TestBootApplication;
@@ -175,7 +175,7 @@ public class PacketUploadServiceTest {
                 new MockMultipartFile("10003101070000220211225191146-10003_10107-20211225191543",
                         "10003101070000220211225191146-10003_10107-20211225191543.zip",
                         "application/zip",
-                        new StringInputStream("dsdgsdfgsdfgdfgdfgsdfgsdfgsdfgsdfgsdfgsdfg")).getBytes(),
+                        new ByteArrayInputStream("dsdgsdfgsdfgdfgdfgsdfgsdfgsdfgsdfgsdfgsdfg".getBytes())).getBytes(),
                 "10003",
                 "APPROVED",
                 "REGISTRATION_CLIENT",
