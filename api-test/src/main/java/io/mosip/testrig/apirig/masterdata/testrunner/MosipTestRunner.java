@@ -11,7 +11,6 @@ import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.List;
-//import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Level;
@@ -29,10 +28,10 @@ import io.mosip.testrig.apirig.masterdata.utils.MasterDataUtil;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.testrunner.ExtractResource;
 import io.mosip.testrig.apirig.testrunner.HealthChecker;
-import io.mosip.testrig.apirig.testrunner.OTPListener;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthTestsUtil;
 import io.mosip.testrig.apirig.utils.CertsUtil;
+import io.mosip.testrig.apirig.utils.DependencyResolver;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.GlobalMethods;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
@@ -84,7 +83,7 @@ public class MosipTestRunner {
 			setLogLevels();
 
 			HealthChecker healthcheck = new HealthChecker();
-			healthcheck.setCurrentRunningModule(BaseTestCase.currentModule);
+			healthcheck.setCurrentRunningModule(GlobalConstants.MASTERDATA);
 			Thread trigger = new Thread(healthcheck);
 			trigger.start();
 			
@@ -108,23 +107,32 @@ public class MosipTestRunner {
 				SkipTestCaseHandler.clearTestCaseInSkippedList();
 				SkipTestCaseHandler.loadTestcaseToBeSkippedList("testCaseSkippedList_"+ localLanguageList.get(i) +".txt");
 
-				DBManager.executeDBQueries(MasterDataConfigManager.getMASTERDbUrl(),
-						MasterDataConfigManager.getMasterDbUser(), MasterDataConfigManager.getMasterDbPass(),
-						MasterDataConfigManager.getMasterDbSchema(),
-						getGlobalResourcePath() + "/" + "config/masterDataDeleteQueries.txt");
-				BaseTestCase.currentModule = GlobalConstants.MASTERDATA;
+				MasterDataUtil.dbCleanUp();
+				BaseTestCase.currentModule = BaseTestCase.runContext + GlobalConstants.MASTERDATA;
 				BaseTestCase.setReportName("masterdata-" + localLanguageList.get(i));
+				
+				String testCasesToExecuteString = MasterDataConfigManager.getproperty("testCasesToExecute");
+
+				DependencyResolver
+						.loadDependencies(getGlobalResourcePath() + "/" + "config/testCaseInterDependency.json");
+				if (!testCasesToExecuteString.isBlank()) {
+					MasterDataUtil.testCasesInRunScope = DependencyResolver.getDependencies(testCasesToExecuteString);
+				}
+				 
 				startTestRunner();
+				
+				// Used for generating the test case interdependency JSON file
+				//AdminTestUtil.generateTestCaseInterDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency.json");
 			}
 		} catch (Exception e) {
 			LOGGER.error("Exception " + e.getMessage());
 		}
-//		Commenting out the remove keycloak user as it is failing on DSL. will uncomment once the fix is given from DSL.
-//		KeycloakUserManager.removeUser();
-//		KeycloakUserManager.closeKeycloakInstance();
+		MasterDataUtil.dbCleanUp();
+		KeycloakUserManager.removeUser();
+		KeycloakUserManager.closeKeycloakInstance();
 
 		HealthChecker.bTerminate = true;
-
+		
 		System.exit(0);
 
 	}
@@ -140,10 +148,8 @@ public class MosipTestRunner {
 		if (!runType.equalsIgnoreCase("JAR")) {
 			AuthTestsUtil.removeOldMosipTempTestResource();
 		}
-		DBManager.executeDBQueries(MasterDataConfigManager.getMASTERDbUrl(), MasterDataConfigManager.getMasterDbUser(),
-				MasterDataConfigManager.getMasterDbPass(), MasterDataConfigManager.getMasterDbSchema(),
-				getGlobalResourcePath() + "/" + "config/masterDataDeleteQueries.txt");
-		BaseTestCase.currentModule = GlobalConstants.MASTERDATA;
+		BaseTestCase.currentModule = BaseTestCase.runContext + GlobalConstants.MASTERDATA;
+		MasterDataUtil.dbCleanUp();
 		AdminTestUtil.initiateMasterDataTest();
 	}
 	
@@ -339,9 +345,9 @@ public class MosipTestRunner {
 		ExtractResource.copyCommonResources("testCaseSkippedList_hin.txt");
 		ExtractResource.copyCommonResources("testCaseSkippedList_kan.txt");
 		ExtractResource.copyCommonResources("testCaseSkippedList_tam.txt");
-		
+
 	}
-	
+
 	private static void copyTestCaseSkippedListFromJar() {
 		ExtractResource.getListOfFilesFromJarAndCopyToExternalResource("testCaseSkippedList_eng.txt");
 		ExtractResource.getListOfFilesFromJarAndCopyToExternalResource("testCaseSkippedList_ara.txt");
@@ -349,7 +355,7 @@ public class MosipTestRunner {
 		ExtractResource.getListOfFilesFromJarAndCopyToExternalResource("testCaseSkippedList_hin.txt");
 		ExtractResource.getListOfFilesFromJarAndCopyToExternalResource("testCaseSkippedList_kan.txt");
 		ExtractResource.getListOfFilesFromJarAndCopyToExternalResource("testCaseSkippedList_tam.txt");
-		
+
 	}
 
 }
