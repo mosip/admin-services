@@ -1,4 +1,4 @@
-CREATE DATABASE mosip_hotlist
+CREATE DATABASE :mosipdbname
 	ENCODING = 'UTF8'
 	LC_COLLATE = 'en_US.UTF-8'
 	LC_CTYPE = 'en_US.UTF-8'
@@ -6,27 +6,27 @@ CREATE DATABASE mosip_hotlist
 	OWNER = postgres
 	TEMPLATE  = template0;
 
-COMMENT ON DATABASE mosip_hotlist IS 'Hotlist data related logs and the data is stored in this database';
+COMMENT ON DATABASE :mosipdbname IS 'Hotlist data related logs and the data is stored in this database';
 
-\c mosip_hotlist
+\c :mosipdbname
 
 DROP SCHEMA IF EXISTS hotlist CASCADE;
 CREATE SCHEMA hotlist;
 ALTER SCHEMA hotlist OWNER TO postgres;
-ALTER DATABASE mosip_hotlist SET search_path TO hotlist,pg_catalog,public;
+ALTER DATABASE :mosipdbname SET search_path TO hotlist,pg_catalog,public;
 
-CREATE ROLE hotlistuser WITH
+CREATE ROLE :dbuname WITH
 	INHERIT
 	LOGIN
 	PASSWORD :dbuserpwd;
 
 GRANT CONNECT
-   ON DATABASE mosip_hotlist
-   TO hotlistuser;
+   ON DATABASE :mosipdbname
+   TO :dbuname;
 
 GRANT USAGE
    ON SCHEMA hotlist
-   TO hotlistuser;
+   TO :dbuname;
 
 -- DROP TABLE IF EXISTS hotlist.hotlist CASCADE;
 CREATE TABLE hotlist.hotlist (
@@ -91,7 +91,7 @@ COMMENT ON COLUMN hotlist.hotlist_h.start_timestamp IS E'startTimestamp: Timesta
 
 GRANT SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES
    ON ALL TABLES IN SCHEMA hotlist
-   TO hotlistuser;
+   TO :dbuname;
 
 ALTER DEFAULT PRIVILEGES IN SCHEMA hotlist
-	GRANT SELECT,INSERT,UPDATE,DELETE,REFERENCES ON TABLES TO hotlistuser;
+	GRANT SELECT,INSERT,UPDATE,DELETE,REFERENCES ON TABLES TO :dbuname;
