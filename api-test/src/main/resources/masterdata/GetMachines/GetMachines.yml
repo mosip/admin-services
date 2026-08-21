@@ -2,7 +2,7 @@ GetMachines:
    Admin_GetMachines_allValid_smoke:
       endPoint: /v1/masterdata/machines
       uniqueIdentifier: TC_Masterdata_GetMachines_01
-      description: Retrieve machine details
+      description: Verify that the system successfully returns all machines when a valid request is made (smoke test)
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

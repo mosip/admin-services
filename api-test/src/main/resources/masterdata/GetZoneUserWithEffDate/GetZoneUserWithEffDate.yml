@@ -2,7 +2,7 @@ GetZoneUserWithEffDate:
    admin_GetZoneUserWithEffDate_smoke:
       endPoint: /v1/masterdata/zoneuser/history/{userid}/{eff_dtimes}
       uniqueIdentifier: TC_Masterdata_GetZoneUserWithEffDate_01
-      description: Retrieve zone user with effective date
+      description: Verify that the system successfully returns zone-user mappings for a given effective date when a valid request is made (smoke test)
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetZoneUserWithEffDate/getZoneUserWithEffDate

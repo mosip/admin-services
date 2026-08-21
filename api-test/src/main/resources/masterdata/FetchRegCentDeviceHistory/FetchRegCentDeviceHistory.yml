@@ -2,7 +2,7 @@ FetchRegCentDeviceHistory:
    MasterData_FetchRegCentDeviceHistory_valid_smoke:
       endPoint: /v1/masterdata/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}
       uniqueIdentifier: TC_Masterdata_FetchRegCentDeviceHistory_01
-      description: Retrieve Registration Center Device History with all valid data
+      description: Verify that the system successfully fetches the registration center device history when valid input parameters are provided
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchRegCentDeviceHistory/fetchRegCentDeviceHistory
@@ -24,7 +24,7 @@ FetchRegCentDeviceHistory:
    MasterData_FetchRegCentDeviceHistory_invalid_invalid_regcenterid:
       endPoint: /v1/masterdata/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}
       uniqueIdentifier: TC_Masterdata_FetchRegCentDeviceHistory_02
-      description: Retrieve Registration Center Device History with invalid regcenterid
+      description: Verify that the system returns an error when an invalid registration center ID is provided while fetching the registration center device history
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchRegCentDeviceHistory/fetchRegCentDeviceHistory
@@ -46,7 +46,7 @@ FetchRegCentDeviceHistory:
    MasterData_FetchRegCentDeviceHistory_invalid_invalid_deviceid:
       endPoint: /v1/masterdata/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}
       uniqueIdentifier: TC_Masterdata_FetchRegCentDeviceHistory_03
-      description: Retrieve Registration Center Device History with invalid deviceid
+      description: Verify that the system returns an error when an invalid device ID is provided while fetching the registration center device history
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchRegCentDeviceHistory/fetchRegCentDeviceHistory
@@ -68,7 +68,7 @@ FetchRegCentDeviceHistory:
    MasterData_FetchRegCentDeviceHistory_invalid_invalid_effdatetimes:
       endPoint: /v1/masterdata/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}
       uniqueIdentifier: TC_Masterdata_FetchRegCentDeviceHistory_04
-      description: Retrieve Registration Center Device History with invalid effdatetimes
+      description: Verify that the system returns an error when invalid effective date-time values are provided while fetching the registration center device history
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchRegCentDeviceHistory/fetchRegCentDeviceHistory

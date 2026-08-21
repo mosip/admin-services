@@ -2,7 +2,7 @@ RegCenterFilter:
    MasterData_RegCenterFilter_Name_eng_Unique_smoke:
       endPoint: /v1/masterdata/registrationcenters/filtervalues
       uniqueIdentifier: TC_Masterdata_RegCenterFilter_01
-      description: Filter the registration center by name, language set to English, and type as unique
+      description: Verify that the system successfully fetches registration centers when a unique English name is provided
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -24,7 +24,7 @@ RegCenterFilter:
    MasterData_RegCenterFilter_Name_eng_All_smoke:
       endPoint: /v1/masterdata/registrationcenters/filtervalues
       uniqueIdentifier: TC_Masterdata_RegCenterFilter_02
-      description: Filter the registration center by name, language set to English, and type as all
+      description: Verify that the system successfully fetches all registration centers when a valid English name filter is applied
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -47,7 +47,7 @@ RegCenterFilter:
    MasterData_RegCenterFilter_Invalid_RequestTime:
       endPoint: /v1/masterdata/registrationcenters/filtervalues
       uniqueIdentifier: TC_Masterdata_RegCenterFilter_03
-      description: Filter the registration center with invalid request time
+      description: Verify that the system returns an error when an invalid request time is provided while filtering registration centers
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -74,7 +74,7 @@ RegCenterFilter:
    MasterData_RegCenterFilter_inValid_columnName:
       endPoint: /v1/masterdata/registrationcenters/filtervalues
       uniqueIdentifier: TC_Masterdata_RegCenterFilter_04
-      description: Filter the registration center with invalid column name
+      description: Verify that the system returns an error when an invalid column name is provided while filtering registration centers
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]

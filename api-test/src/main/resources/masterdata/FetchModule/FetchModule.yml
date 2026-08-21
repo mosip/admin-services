@@ -2,7 +2,7 @@ FetchModule:
    MasterData_FetchModule_allValid_smoke_with_lang:
       endPoint: /v1/masterdata/modules/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchModule_01
-      description: Retrieve Module Details by langcode
+      description: Verify that the system successfully fetches all module records using a valid language code
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -16,7 +16,7 @@ FetchModule:
    MasterData_FetchModule_Invalid_smoke_with_Invalid_langcode:
       endPoint: /v1/masterdata/modules/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchModule_02
-      description: Retrieve Module Details by invalid langcode
+      description: Verify that the system returns an error when an invalid language code is used to fetch module records
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchModule/fetchModule

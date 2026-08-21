@@ -2,7 +2,7 @@ DeviceSpecSearch:
    MasterData_DeviceSpecSearch_Equals_Name_eng_smoke:
       endPoint: /v1/masterdata/devicespecifications/search
       uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_01
-      description: Search Device Specification by columnName name and type equals
+      description: Verify that the system can find a device when searching by exact name in English
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -47,7 +47,7 @@ DeviceSpecSearch:
    MasterData_DeviceSpecSearch_Equals_Brand:
       endPoint: /v1/masterdata/devicespecifications/search
       uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_02
-      description: Search Device Specification by columnName brand and type equals
+      description: Verify that the system can find a device when searching by exact brand name
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -92,7 +92,7 @@ DeviceSpecSearch:
    MasterData_DeviceSpecSearch_Equals_Model:
       endPoint: /v1/masterdata/devicespecifications/search
       uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_03
-      description: Search Device Specification by columnName model and type equals
+      description: Verify that the system can find a device when searching by exact model name 
       role: admin
       templateFields: ["languageCode"]
       checkErrorsOnlyInResponse: true
@@ -137,7 +137,7 @@ DeviceSpecSearch:
    MasterData_DeviceSpecSearch_Equals_DeviceTypeName:
       endPoint: /v1/masterdata/devicespecifications/search
       uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_04
-      description: Search Device Specification by columnName deviceTypeName and type equals
+      description: Verify that the system can find a device when searching by exact device type name
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -181,7 +181,7 @@ DeviceSpecSearch:
    MasterData_DeviceSpecSearch_Invalid_Value_Name:
       endPoint: /v1/masterdata/devicespecifications/search
       uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_05
-      description: Search Device Specification with columnName name and invalid value
+      description: Verify that the system does not return results when searching with an invalid device name
       role: admin
       templateFields: []
       restMethod: post
@@ -216,7 +216,7 @@ DeviceSpecSearch:
    MasterData_DeviceSpecSearch_InvalidPageFetch:
       endPoint: /v1/masterdata/devicespecifications/search
       uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_06
-      description: Search Device Specification with columnName name and invalid pageFetch -ve value
+      description: Verify that the system handles invalid page requests correctly when fetching device specifications
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -253,7 +253,7 @@ DeviceSpecSearch:
    MasterData_DeviceSpecSearch_InvalidPageStart:
       endPoint: /v1/masterdata/devicespecifications/search
       uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_07
-      description: Search Device Specification with invalid pageStart -ve value
+      description: Verify that the system handles invalid starting page values correctly when fetching device specifications
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -290,7 +290,7 @@ DeviceSpecSearch:
    MasterData_DeviceSpecSearch_ASC_Name_eng:
       endPoint: /v1/masterdata/devicespecifications/search
       uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_08
-      description: Search Device Specification by columnName name and sortType ASC
+      description: Verify that the system sorts device specifications in ascending order by name in English
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -334,7 +334,7 @@ DeviceSpecSearch:
    MasterData_DeviceSpecSearch_DESC_Name_eng:
       endPoint: /v1/masterdata/devicespecifications/search
       uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_09
-      description: Search Device Specification by columnName name and sortType DESC
+      description: Verify that the system sorts device specifications in descending order by name in English
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -378,7 +378,7 @@ DeviceSpecSearch:
    MasterData_DeviceSpecSearch_Invalid_FilterType:
       endPoint: /v1/masterdata/devicespecifications/search
       uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_10
-      description: Search Device Specification with invalid Filter Type
+      description: Verify that the system handles invalid filter types correctly when searching for device specifications
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -415,7 +415,7 @@ DeviceSpecSearch:
    MasterData_DeviceSpecSearch_Invalid_SortType:
       endPoint: /v1/masterdata/devicespecifications/search
       uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_11
-      description: Search Device Specification with invalid sortType
+      description: Verify that the system handles invalid sort types correctly when searching for device specifications
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -452,7 +452,7 @@ DeviceSpecSearch:
    MasterData_DeviceSpecSearch_Invalid_ColumnName:
       endPoint: /v1/masterdata/devicespecifications/search
       uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_12
-      description: Search Device Specification with invalid columnName
+      description: Verify that the system handles invalid column names correctly when searching for device specifications
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -489,7 +489,7 @@ DeviceSpecSearch:
    MasterData_DeviceSpecSearch_Invalid_RequestTime:
       endPoint: /v1/masterdata/devicespecifications/search
       uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_13
-      description: Search Device Specification with invalid requesttime
+      description: Verify that the system handles invalid request time correctly when searching for device specifications
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -527,7 +527,7 @@ DeviceSpecSearch:
    MasterData_DeviceSpecSearch_Contains_Name_eng:
       endPoint: /v1/masterdata/devicespecifications/search
       uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_14
-      description: Search Device Specification by columnName name and type contains
+      description: Verify that the system can find devices when the name partially matches the search text in English
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -571,7 +571,7 @@ DeviceSpecSearch:
    MasterData_DeviceSpecSearch_TwoValueSearch_pos:
       endPoint: /v1/masterdata/devicespecifications/search
       uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_15
-      description: Search Device Specification by 2 values like columnName name and brand
+      description: Verify that the system can find devices when searching with two valid values together
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -612,7 +612,7 @@ DeviceSpecSearch:
    MasterData_DeviceSpecSearch_StartsWith_Name_eng:
       endPoint: /v1/masterdata/devicespecifications/search
       uniqueIdentifier: TC_Masterdata_DeviceSpecSearch_16
-      description: Search Device Specification by Name and type Starts with
+      description: Verify that the system can find devices when the name starts with the search text in English
       role: admin
       templateFields: ["languageCode"]
       restMethod: post

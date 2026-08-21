@@ -2,7 +2,7 @@ GetDocumentTypeByLangCode:
    Masterdata_GetDocumentTypeByLangCode_allValid_smoke:
       endPoint: /v1/masterdata/documenttypes/{langcode}
       uniqueIdentifier: TC_Masterdata_GetDocumentTypeByLangCode_01
-      description: Retrieve document type by valid language code
+      description: Verify that the system successfully returns all document types for a valid language code (smoke test)
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -20,7 +20,7 @@ GetDocumentTypeByLangCode:
    Masterdata_GetDocumentTypeByLangCode_InValid_langcode:
       endPoint: /v1/masterdata/documenttypes/{langcode}
       uniqueIdentifier: TC_Masterdata_GetDocumentTypeByLangCode_02
-      description: Retrieve document type by invalid language code
+      description: Verify that the system returns an error or handles gracefully when an invalid language code is provided while fetching document types
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetDocumentTypeByLangCode/getDocumentTypeByLangCode

@@ -1,7 +1,7 @@
 GetBiometricTypeByCodeAndLangcode:
    Masterdata_GetBiometricTypeByCodeAndLangcode_allValid_FNR_smoke:
       endPoint: /v1/masterdata/biometrictypes/{code}/{langCode}
-      description: Retrieve Biometric Type details by code and langCode
+      description: Verify that the system successfully returns biometric type details for a valid code and language code (FNR) as a smoke test
       role: admin
       templateFields: ["langCode"]
       restMethod: get
@@ -16,7 +16,7 @@ GetBiometricTypeByCodeAndLangcode:
 }'
    Masterdata_GetBiometricTypeByCodeAndLangcode_allValid_IRS_smoke:
       endPoint: /v1/masterdata/biometrictypes/{code}/{langCode}
-      description: Retrieve Biometric Type details for IRIS by code and langCode
+      description: Verify that the system successfully returns biometric type details for a valid code and language code (IRS) as a smoke test
       role: admin
       templateFields: ["langCode"]
       restMethod: get
@@ -31,7 +31,7 @@ GetBiometricTypeByCodeAndLangcode:
 }'
    Masterdata_GetBiometricTypeByCodeAndLangcode_allValid_PHT_smoke:
       endPoint: /v1/masterdata/biometrictypes/{code}/{langCode}
-      description: Retrieve Biometric Type details by code PHT and langCode
+      description: Verify that the system successfully returns biometric type details for a valid code and language code (PHT) as a smoke test
       role: admin
       templateFields: ["langCode"]
       restMethod: get
@@ -46,7 +46,7 @@ GetBiometricTypeByCodeAndLangcode:
 }'
    Masterdata_GetBiometricTypeByCodeAndLangcode_InValid_Code:
       endPoint: /v1/masterdata/biometrictypes/{code}/{langCode}
-      description: Retrieve Biometric Type details by invalid code and valid langCode
+      description: Verify that the system returns an error or handles gracefully when an invalid biometric type code is provided
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetBiometricTypeByCodeAndLangcode/getBiometricTypeByCodeAndLangcode
@@ -65,7 +65,7 @@ GetBiometricTypeByCodeAndLangcode:
 }'
    Masterdata_GetBiometricTypeByCodeAndLangcode_InValid_langCode:
       endPoint: /v1/masterdata/biometrictypes/{code}/{langCode}
-      description: Retrieve Biometric Type details by valid code and invalid langCode
+      description: Verify that the system returns an error or handles gracefully when an invalid language code is provided while fetching biometric type details
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetBiometricTypeByCodeAndLangcode/getBiometricTypeByCodeAndLangcode

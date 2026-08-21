@@ -2,7 +2,7 @@ DeleteLocation:
    MasterData_DeleteLocation_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/locations/{locationcode}
       uniqueIdentifier: TC_Masterdata_DeleteLocation_01
-      description: Delete Location with valid data
+      description: Verify that the system successfully deletes a location when all details are valid
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: delete
@@ -16,7 +16,7 @@ DeleteLocation:
    MasterData_DeleteLocation_Invalid_ID: 
       endPoint: /v1/masterdata/locations/{locationcode}
       uniqueIdentifier: TC_Masterdata_DeleteLocation_02
-      description: Delete Location with invalid locationcode
+      description: Verify that the system does not delete a location when an invalid ID is provided
       role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteLocation/deleteLocation

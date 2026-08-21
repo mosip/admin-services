@@ -2,7 +2,7 @@ FetchMachine:
    Masterdata_FetchMachine_allValid_smoke:
       endPoint: /v1/masterdata/machines
       uniqueIdentifier: TC_Masterdata_FetchMachine_01
-      description: Retrieve Machine details with all valid data
+      description: Verify that the system successfully fetches all machine records with valid input data
       role: admin
       restMethod: get
       additionalDependencies: TC_Masterdata_CreateMachine_01
@@ -21,7 +21,7 @@ FetchMachine:
    Masterdata_FetchMachine_allValid_smoke_with_id:
       endPoint: /v1/masterdata/machines/{id}
       uniqueIdentifier: TC_Masterdata_FetchMachine_02
-      description: Retrieve Machine details using id with all valid data
+      description: Verify that the system successfully fetches machine records using a valid machine ID
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchMachine/fetchMachine
@@ -39,7 +39,7 @@ FetchMachine:
    Masterdata_FetchMachine_allValid_smoke_with_regCenterId:
       endPoint: /v1/masterdata/machines/mappedmachines/{regCenterId}
       uniqueIdentifier: TC_Masterdata_FetchMachine_03
-      description: Retrieve Machine details mapped to a valid regCenterId
+      description: Verify that the system successfully fetches machine records using a valid registration center ID
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchMachine/fetchMachine
@@ -57,7 +57,7 @@ FetchMachine:
    Masterdata_FetchMachine_inValid_regCenterId:
       endPoint: /v1/masterdata/machines/mappedmachines/{regCenterId}
       uniqueIdentifier: TC_Masterdata_FetchMachine_04
-      description: Retrieve Machine details mapped to a invalid regCenterId
+      description: Verify that the system returns an error when an invalid registration center ID is used to fetch machine records
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchMachine/fetchMachine

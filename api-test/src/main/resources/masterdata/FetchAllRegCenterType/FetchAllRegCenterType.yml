@@ -2,7 +2,7 @@ FetchAllRegCenterType:
    MasterData_FetchAllRegCenterType_valid_smoke:
       endPoint: /v1/masterdata/registrationcentertypes/all
       uniqueIdentifier: TC_Masterdata_FetchAllRegCenterType_01
-      description: Retrieve All Registration Center Type details with valid data
+      description: Verify that the system successfully fetches all registration center type records with valid input data
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

@@ -2,7 +2,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_Equals_Name_eng_smoke:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_01
-      description: Search for machine spec details where the name parameter equals the specified condition
+      description: Verify that the system successfully retrieves machine specifications when filtering by Name_eng using the equals filter (smoke test)
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -45,7 +45,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_Valid_sortType_DESC:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_02
-      description: Search for machine spec details sorted in descending order
+      description: Verify that the system successfully retrieves machine specifications sorted in descending order using a valid sortType
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -86,7 +86,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_Valid_col_as_Model:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_03
-      description: Search for machine spec details with condition column as model
+      description: Verify that the system successfully retrieves machine specifications when filtering or sorting by the Model column
       role: admin
       templateFields: []
       restMethod: post
@@ -127,7 +127,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_Valid_col_as_Brand:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_04
-      description: Search for machine spec details with condition column as brand
+      description: Verify that the system successfully retrieves machine specifications when filtering or sorting by the Brand column
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -168,7 +168,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_Valid_col_as_isActive:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_05
-      description: Search for machine spec details with condition column as is active
+      description: Verify that the system successfully retrieves machine specifications when filtering or sorting by the isActive column
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -200,7 +200,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_Valid_col_as_Name_FltrTyp_startsWith:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_06
-      description: Search for machine spec details where the condition column name is name and the filter type is starts with
+      description: Verify that the system successfully retrieves machine specifications when filtering the Name column using a startsWith filter type
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -241,7 +241,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_Valid_col_as_Name_FltrTyp_contains:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_07
-      description: Search for machine spec details where the condition column name is name and the filter type is contains
+      description: Verify that the system successfully retrieves machine specifications when filtering the Name column using a contains filter type
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -282,7 +282,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_inValid_columnName_blank:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_08
-      description: Search for machine spec details with column name as empty
+      description: Verify that the system returns an error when the columnName is blank while searching machine specifications
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -318,7 +318,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_inValid_columnName:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_09
-      description: Search for machine spec details with invalid column name
+      description: Verify that the system returns an error when an invalid columnName is provided while searching machine specifications
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -353,7 +353,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_inValid_filter_value:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_10
-      description: Search for machine spec details with invalid filter value
+      description: Verify that the system returns an error when an invalid filter value is provided while searching machine specifications
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -389,7 +389,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_inValid_filter_value_blank:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_11
-      description: Search for machine spec details with filter value as empty
+      description: Verify that the system returns an error when the filter value is blank while searching machine specifications
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -425,7 +425,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_inValid_sortField:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_12
-      description: Search for machine spec details with invalid sort field
+      description: Verify that the system returns an error when an invalid sortField is provided while searching machine specifications
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -461,7 +461,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_inValid_sortType:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_13
-      description: Search for machine spec details with invalid sort type
+      description: Verify that the system returns an error when an invalid sortType is provided while searching machine specifications
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -497,7 +497,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_inValid_sortField_blank:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_14
-      description: Search for machine spec details with sort field as empty
+      description: Verify that the system returns an error when the sortField is blank while searching machine specifications
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -533,7 +533,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_inValid_sortType_blank:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_15
-      description: Search for machine spec details with sort type as empty
+      description: Verify that the system returns an error when the sortType is blank while searching machine specifications
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -569,7 +569,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_inValid_pagesize:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_16
-      description: Search for machine spec details with invalid page size
+      description: Verify that the system returns an error when an invalid pageSize is provided while searching machine specifications
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -604,7 +604,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_inValid_filterType_blank:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_17
-      description: Search for machine spec details with filter type as empty
+      description: Verify that the system returns an error when the filterType is blank while searching machine specifications
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -640,7 +640,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_inValid_filterType:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_18
-      description: Search for machine spec details with invalid filter type
+      description: Verify that the system returns an error when an invalid filterType is provided while searching machine specifications
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -675,7 +675,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_inValid_requestTime_format:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_19
-      description: Search for machine spec details with invalid request time format
+      description: Verify that the system returns an error when the requestTime format is invalid while searching machine specifications
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -711,7 +711,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_inValid_typeFilter_contains:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_20
-      description: Search for machine spec details with an invalid condition where the type filter contains specific criteria
+      description: Verify that the system returns an error when an invalid typeFilter value is used with the contains filter type while searching machine specifications
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -746,7 +746,7 @@ SearchMachineSpec:
    Masterdata_SearchMachineSpec_inValid_typeFilter_startsWith:
       endPoint: /v1/masterdata/machinespecifications/search
       uniqueIdentifier: TC_Masterdata_SearchMachineSpec_21
-      description: Search for machine spec details with an invalid condition where the type filter starts with specific criteria
+      description: Verify that the system returns an error when an invalid typeFilter value is used with the startsWith filter type while searching machine specifications
       role: admin
       templateFields: ["value"]
       restMethod: post

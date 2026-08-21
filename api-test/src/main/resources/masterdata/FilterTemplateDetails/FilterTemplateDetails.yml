@@ -2,7 +2,7 @@ FilterTemplateDetails:
    MasterData_FilterTemplateDetails_All_Valid_Smoke:
       endPoint: /v1/masterdata/templates/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterTemplateDetails_01
-      description: Filter Template details by filter type unique and all valid data
+      description: Verify that the system successfully filters template details and returns the expected results when all input parameters are valid
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -30,7 +30,7 @@ FilterTemplateDetails:
    MasterData_FilterTemplateDetails_FilterType_all:
       endPoint: /v1/masterdata/templates/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterTemplateDetails_02
-      description: Filter Template details by filter type all and valid data
+      description: Verify that the system successfully filters template details with filter type set to "All" when a valid request is provided
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -58,7 +58,7 @@ FilterTemplateDetails:
    MasterData_FilterTemplateDetails_Invalid_filterType:
       endPoint: /v1/masterdata/templates/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterTemplateDetails_03
-      description: Filter Template details by invalid filter type value
+      description: Verify that the system returns an error when an invalid filter type is provided while filtering template details
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -84,7 +84,7 @@ FilterTemplateDetails:
    MasterData_FilterTemplateDetails_invalid_text:
       endPoint: /v1/masterdata/templates/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterTemplateDetails_04
-      description: Filter Template details by invalid filter text value
+      description: Verify that the system returns an error when an invalid filter text is provided while filtering template details
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: []
@@ -106,7 +106,7 @@ FilterTemplateDetails:
    MasterData_FilterTemplateDetails_empty_filterType:
       endPoint: /v1/masterdata/templates/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterTemplateDetails_05
-      description: Filter Template details by empty filter text value
+      description: Verify that the system returns an error when the filter type is empty while filtering template details
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -132,7 +132,7 @@ FilterTemplateDetails:
    MasterData_FilterTemplateDetails_empty_columnName:
       endPoint: /v1/masterdata/templates/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterTemplateDetails_06
-      description: Filter Template details by empty filter columnName
+      description: Verify that the system returns an error when the column name is empty while filtering template details
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -158,7 +158,7 @@ FilterTemplateDetails:
    MasterData_FilterTemplateDetails_invalid_columnName:
       endPoint: /v1/masterdata/templates/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterTemplateDetails_07
-      description: Filter Template details by invalid filter columnName
+      description: Verify that the system returns an error when an invalid column name is provided while filtering template details
       role: admin
       templateFields: ["text"]
       restMethod: post

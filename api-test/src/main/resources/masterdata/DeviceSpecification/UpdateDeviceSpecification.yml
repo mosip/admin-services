@@ -2,7 +2,7 @@ UpdateDeviceSpecification:
    MasterData_UpdateDeviceSpecification_All_Valid_Smoke:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_01
-      description: Update Device Specification with all valid data
+      description: Verify that the system successfully updates a device specification when all input fields are valid
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["name","description"]
@@ -27,7 +27,7 @@ UpdateDeviceSpecification:
    MasterData_UpdateDeviceSpecification_InputParameter_Name_Missing:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_02
-      description: Update Device Specification with missing input parameter Name
+      description: Verify that the system does not update a device specification when the name input parameter is missing
       role: admin
       templateFields: ["description"]
       restMethod: put
@@ -56,7 +56,7 @@ UpdateDeviceSpecification:
    MasterData_UpdateDeviceSpecification_InputParameter_Name_Empty:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_03
-      description: Update Device Specification with empty input parameter Name
+      description: Verify that the system does not update a device specification when the name input parameter is empty
       role: admin
       templateFields: ["description"]
       restMethod: put
@@ -85,7 +85,7 @@ UpdateDeviceSpecification:
    MasterData_UpdateDeviceSpecification_InputParameter_Name_AboveMaxLen64:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_04
-      description: Update Device Specification with Name more than 64 charectars
+      description: Verify that the system does not update a device specification when the name exceeds 64 characters
       role: admin
       templateFields: ["description"]
       restMethod: put
@@ -114,7 +114,7 @@ UpdateDeviceSpecification:
    MasterData_UpdateDeviceSpecification_InputParameter_Brand_Missing:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_05
-      description: Update Device Specification with missing input parameter Brand
+      description: Verify that the system does not update a device specification when the brand input parameter is missing
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -143,7 +143,7 @@ UpdateDeviceSpecification:
    MasterData_UpdateDeviceSpecification_InputParameter_Brand_Empty:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_06
-      description: Update Device Specification with empty input parameter Brand
+      description: Verify that the system does not update a device specification when the brand input parameter is empty
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -172,7 +172,7 @@ UpdateDeviceSpecification:
    MasterData_UpdateDeviceSpecification_InputParameter_Brand_AboveMaxLen32:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_07
-      description: Update Device Specification with Brand more than 32 charectars
+      description: Verify that the system does not update a device specification when the brand exceeds 32 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -201,7 +201,7 @@ UpdateDeviceSpecification:
    MasterData_UpdateDeviceSpecification_InputParameter_Model_Missing:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_08
-      description: Update Device Specification with missing input parameter Model
+      description: Verify that the system does not update a device specification when the model input parameter is missing
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -230,7 +230,7 @@ UpdateDeviceSpecification:
    MasterData_UpdateDeviceSpecification_InputParameter_Model_Empty:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_09
-      description: Update Device Specification with empty input parameter Model
+      description: Verify that the system does not update a device specification when the model input parameter is empty
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -259,7 +259,7 @@ UpdateDeviceSpecification:
    MasterData_UpdateDeviceSpecification_InputParameter_Model_AboveMaxLen16:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_10
-      description: Update Device Specification with Model more than 16 charectars
+      description: Verify that the system does not update a device specification when the model exceeds 16 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -288,7 +288,7 @@ UpdateDeviceSpecification:
    MasterData_UpdateDeviceSpecification_InputParameter_DeviceTypeCode_Missing:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_11
-      description: Update Device Specification with missing input parameter Device Type Code
+      description: Verify that the system does not update a device specification when the device type code input parameter is missing
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -317,7 +317,7 @@ UpdateDeviceSpecification:
    MasterData_UpdateDeviceSpecification_InputParameter_DeviceTypeCode_Empty:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_12
-      description: Update Device Specification with empty input parameter Device Type Code
+      description: Verify that the system does not update a device specification when the device type code input parameter is empty
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -346,7 +346,7 @@ UpdateDeviceSpecification:
    MasterData_UpdateDeviceSpecification_InputParameter_DeviceTypeCode_AboveMaxLen36:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_13
-      description: Update Device Specification with Device Type Code motre than 36 charectars
+      description: Verify that the system does not update a device specification when the device type code exceeds 36 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -375,7 +375,7 @@ UpdateDeviceSpecification:
    MasterData_UpdateDeviceSpecification_InputParameter_Invalid_DeviceTypeCode:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_14
-      description: Update Device Specification with invalid input parameter Device Type Code
+      description: Verify that the system does not update a device specification when an invalid device type code is provided
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -404,7 +404,7 @@ UpdateDeviceSpecification:
    MasterData_UpdateDeviceSpecification_InputParameter_MinDriverversion_Missing:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_15
-      description: Update Device Specification with missing input parameter Minimum Driver Version
+      description: Verify that the system does not update a device specification when the minimum driver version input parameter is missing
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -433,7 +433,7 @@ UpdateDeviceSpecification:
    MasterData_UpdateDeviceSpecification_InputParameter_MinDriverversion_Empty:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_16
-      description: Update Device Specification with empty input parameter Minimum Driver Version
+      description: Verify that the system does not update a device specification when the minimum driver version input parameter is empty
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -464,7 +464,7 @@ UpdateDeviceSpecification:
       uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_17
       role: admin
       templateFields: ["name","description"]
-      description: Update Device Specification with Minimum Driver Version more than 64 charectars
+      description: Verify that the system does not update a device specification when the minimum driver version exceeds 16 characters
       restMethod: put
       inputTemplate: masterdata/DeviceSpecification/deviceSpecification
       outputTemplate: masterdata/error
@@ -491,7 +491,7 @@ UpdateDeviceSpecification:
    MasterData_UpdateDeviceSpecification_InputParameter_Description_AboveMaxLen256:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecification_18
-      description: Update Device Specification with Description more than 256 charectars
+      description: Verify that the system does not update a device specification when the description exceeds 256 characters
       role: admin
       templateFields: ["name"]
       restMethod: put

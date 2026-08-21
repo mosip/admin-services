@@ -2,7 +2,7 @@ FetchAllDocumentTypes:
    MasterData_FetchAllDocumentTypes_valid_smoke_langcodeandCode:
       endPoint: /v1/masterdata/documentcategories/all
       uniqueIdentifier: TC_Masterdata_FetchAllDocumentTypes_01
-      description: Retrieve All Document Types with all valid data
+      description: Verify that the system successfully fetches all document types using valid language code and document type code
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

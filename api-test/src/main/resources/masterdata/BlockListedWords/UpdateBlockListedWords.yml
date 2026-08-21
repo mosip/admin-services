@@ -2,7 +2,7 @@ UpdateBlockListedWords:
    Masterdata_UpdateBlockListedWords_All_Valid_Smoked_Sid:
       endPoint: /v1/masterdata/blocklistedwords
       uniqueIdentifier: TC_Masterdata_UpdateBlockListedWords_01
-      description: Update Block Listed Words with valid data
+      description: Verify that the system successfully updates a block-listed word when valid details and a valid SID are provided 
       role: admin
       templateFields: ["description","word","oldWord"]
       restMethod: put
@@ -23,7 +23,7 @@ UpdateBlockListedWords:
    Masterdata_UpdateBlockListedWords_with_spaces:
       endPoint: /v1/masterdata/blocklistedwords
       uniqueIdentifier: TC_Masterdata_UpdateBlockListedWords_02
-      description: Update Block Listed Words with spaces in word
+      description: Verify that the system correctly updates a block-listed word when the word contains spaces
       role: admin
       templateFields: ["description","word","oldWord"]
       restMethod: put
@@ -48,7 +48,7 @@ UpdateBlockListedWords:
    Masterdata_UpdateBlockListedWords_Valid_WordLength128:
       endPoint: /v1/masterdata/blocklistedwords
       uniqueIdentifier: TC_Masterdata_UpdateBlockListedWords_03
-      description: Update Block Listed Words with valid word length of 128 charectars
+      description: Verify that the system successfully updates a block-listed word when the word length is exactly 128 characters
       role: admin
       templateFields: ["description"]
       restMethod: put
@@ -72,7 +72,7 @@ UpdateBlockListedWords:
    Masterdata_UpdateBlockListedWords_Invalid_BlocklistedWordsLength129:
       endPoint: /v1/masterdata/blocklistedwords
       uniqueIdentifier: TC_Masterdata_UpdateBlockListedWords_04
-      description: Update Block Listed Words with invalid length of word more than 128 charectars
+      description: Verify that the system does not allow updating a block-listed word when the word length is more than 128 characters (129 characters) 
       role: admin
       templateFields: ["description"]
       restMethod: put
@@ -97,7 +97,7 @@ UpdateBlockListedWords:
    Masterdata_UpdateBlockListedWords_inValid_descriptionBlank:
       endPoint: /v1/masterdata/blocklistedwords
       uniqueIdentifier: TC_Masterdata_UpdateBlockListedWords_05
-      description: Update Block Listed Words with invalid Description empty
+      description: Verify that the system does not allow updating a block-listed word when the description field is blank
       role: admin
       templateFields: ["word"]
       restMethod: put
@@ -121,7 +121,7 @@ UpdateBlockListedWords:
    Masterdata_UpdateBlockListedWords_Invalid_DescriptionLength257:
       endPoint: /v1/masterdata/blocklistedwords
       uniqueIdentifier: TC_Masterdata_UpdateBlockListedWords_06
-      description: Update Block Listed Words with invalid length of Description more than 256 charectars
+      description: Verify that the system does not allow updating a block-listed word when the description is longer than 257 characters
       role: admin
       templateFields: ["word"]
       restMethod: put
@@ -146,7 +146,7 @@ UpdateBlockListedWords:
    Masterdata_UpdateBlockListedWords_Invalid_EmptyWord:
       endPoint: /v1/masterdata/blocklistedwords
       uniqueIdentifier: TC_Masterdata_UpdateBlockListedWords_07
-      description: Update Block Listed Words with invalid word empty
+      description: Verify that the system does not allow updating a block-listed word when the word field is empty
       role: admin
       templateFields: ["description"]
       restMethod: put

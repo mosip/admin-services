@@ -2,7 +2,7 @@ CreateDevice:
    MasterData_CreateDevice_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/devices
       uniqueIdentifier: TC_Masterdata_CreateDevice_01
-      description: Create Device with all valid data
+      description: Verify that the system successfully creates a device when all details are valid
       role: globalAdmin
       templateFields: ["name","description"]
       restMethod: post
@@ -35,7 +35,7 @@ CreateDevice:
    MasterData_CreateDevice_Valid_Smoke_decommison_sid:
       endPoint: /v1/masterdata/devices
       uniqueIdentifier: TC_Masterdata_CreateDevice_02
-      description: Create Device with valid specification ID
+      description: Verify that the system successfully creates a device and allows decommissioning when all details are valid
       role: globalAdmin
       templateFields: ["name","description"]
       restMethod: post
@@ -68,7 +68,7 @@ CreateDevice:
    MasterData_CreateDevice_Invalid_InputParameterInvalid_Format:
       endPoint: /v1/masterdata/devices
       uniqueIdentifier: TC_Masterdata_CreateDevice_03
-      description: Create Device with invalid input parameter format
+      description: Verify that the system does not create a device when input parameters are in an invalid format
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -98,7 +98,7 @@ CreateDevice:
    MasterData_CreateDevice_Invalid_Device_Zone_notPresentInDB:
       endPoint: /v1/masterdata/devices
       uniqueIdentifier: TC_Masterdata_CreateDevice_04
-      description: Create Device with invalid Zone which is not present in the DB
+      description: Verify that the system does not create a device when the specified device zone is not present in the database
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -128,7 +128,7 @@ CreateDevice:
    MasterData_CreateDevice_Invalid_Machine_Name_Blank:
       endPoint: /v1/masterdata/devices
       uniqueIdentifier: TC_Masterdata_CreateDevice_05
-      description: Create Device with blank Machine name
+      description: Verify that the system does not create a device when the machine name is blank
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -158,7 +158,7 @@ CreateDevice:
    MasterData_CreateDevice_Invalid_DeviceName_AboveMaxLen64:
       endPoint: /v1/masterdata/devices
       uniqueIdentifier: TC_Masterdata_CreateDevice_06
-      description: Create Device with invalid Device Name with morethan 64 characters
+      description: Verify that the system does not create a device when the device name exceeds the maximum length of 64 characters
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -188,7 +188,7 @@ CreateDevice:
    MasterData_CreateDevice_Invalid_Zone_Code_Blank:
       endPoint: /v1/masterdata/devices
       uniqueIdentifier: TC_Masterdata_CreateDevice_07
-      description: Create Device with blank zonecode
+      description: Verify that the system does not create a device when the zone code is blank
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -218,7 +218,7 @@ CreateDevice:
    MasterData_CreateDevice_Invalid_MAC_Address_Blank:
       endPoint: /v1/masterdata/devices
       uniqueIdentifier: TC_Masterdata_CreateDevice_08
-      description: Create Device with blank macAddress
+      description: Verify that the system does not create a device when the MAC address is blank
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -248,7 +248,7 @@ CreateDevice:
    MasterData_CreateDevice_Invalid_MacAddress_AboveMaxLen64:
       endPoint: /v1/masterdata/devices
       uniqueIdentifier: TC_Masterdata_CreateDevice_09
-      description: Create Device with invalid macAddress with morethan 64 characters
+      description: Verify that the system does not create a device when the MAC address exceeds the maximum length of 64 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -278,7 +278,7 @@ CreateDevice:
    MasterData_CreateDevice_Invalid_Serial_Number_Blank:
       endPoint: /v1/masterdata/devices
       uniqueIdentifier: TC_Masterdata_CreateDevice_10
-      description: Create Device with empty serialNum
+      description: Verify that the system does not create a device when the serial number is blank
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -309,7 +309,7 @@ CreateDevice:
    MasterData_CreateDevice_Invalid_SerialNumber_AboveMaxLen64:
       endPoint: /v1/masterdata/devices
       uniqueIdentifier: TC_Masterdata_CreateDevice_11
-      description: Create Device with serialNum with morethan 64 characters
+      description: Verify that the system does not create a device when the serial number exceeds the maximum length of 64 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -339,7 +339,7 @@ CreateDevice:
    MasterData_CreateDevice_Invalid_IPAddress_AboveMaxLen17:
       endPoint: /v1/masterdata/devices
       uniqueIdentifier: TC_Masterdata_CreateDevice_12
-      description: Create Device with ipAddress with morethan 16 characters
+      description: Verify that the system does not create a device when the IP address is longer than 17 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -369,7 +369,7 @@ CreateDevice:
    MasterData_CreateDevice_Invalid_DSpecID_AboveMaxLen36:
       endPoint: /v1/masterdata/devices
       uniqueIdentifier: TC_Masterdata_CreateDevice_13
-      description: Create Device with id with morethan 36 characters
+      description: Verify that the system does not create a device when the DSpec ID exceeds the maximum length of 36 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: post

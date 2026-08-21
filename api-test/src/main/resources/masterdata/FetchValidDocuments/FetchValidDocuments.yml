@@ -2,7 +2,7 @@ FetchValidDocuments:
    MasterData_FetchValidDocuments_allValid_smoke_with_lang:
       endPoint: /v1/masterdata/validdocuments/{languageCode}
       uniqueIdentifier: TC_Masterdata_FetchValidDocuments_01
-      description: Retrieve valid Documents By languagecode with all valid data
+      description: Verify that the system successfully fetches valid document details for the specified language when valid input parameters are provided
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]

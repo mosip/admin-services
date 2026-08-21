@@ -2,7 +2,7 @@ GetWeekDay:
    MasterData_GetWeekDay_allValid_smoke:
       endPoint: /v1/masterdata/weekdays/{registrationCenterId}/{langCode}
       uniqueIdentifier: TC_Masterdata_GetWeekDay_01
-      description: Retrieve weekday details with registration center ID and valid language code
+      description: Verify that the system successfully returns all weekdays when a valid request is made (smoke test)
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetWeekDay/getWeekDay
@@ -18,7 +18,7 @@ GetWeekDay:
    MasterData_GetWeekDay_InValid_InvalidLangCode:
       endPoint: /v1/masterdata/weekdays/{registrationCenterId}/{langCode}
       uniqueIdentifier: TC_Masterdata_GetWeekDay_02
-      description: Retrieve weekday details with registration center ID and invalid language code
+      description: Verify that the system returns an error or handles gracefully when an invalid language code is provided while fetching weekdays
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetWeekDay/getWeekDay
@@ -39,7 +39,7 @@ GetWeekDay:
    MasterData_GetWeekDay_InValid_InvalidRegCentCode:
       endPoint: /v1/masterdata/weekdays/{registrationCenterId}/{langCode}
       uniqueIdentifier: TC_Masterdata_GetWeekDay_03
-      description: Retrieve weekday details with invalid registration center ID and valid language code
+      description: Verify that the system returns an error or handles gracefully when an invalid registration center code is provided while fetching weekdays
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetWeekDay/getWeekDay

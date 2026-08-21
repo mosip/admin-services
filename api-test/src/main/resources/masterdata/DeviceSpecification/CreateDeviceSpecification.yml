@@ -2,7 +2,7 @@ CreateDeviceSpecification:
    MasterData_CreateDeviceSpecification_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_CreateDeviceSpecification_01
-      description: Create Device Specification with all valid data
+      description: Verify that the system successfully creates a device specification when all input fields are valid
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["name","description"]
@@ -28,7 +28,7 @@ CreateDeviceSpecification:
    MasterData_CreateDeviceSpecification_Duplicate_DeviceSpecification_Neg:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_CreateDeviceSpecification_02
-      description: Create Device Specification with Duplicate data
+      description: Verify that the system does not create a device specification when a duplicate device specification is provided
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -58,7 +58,7 @@ CreateDeviceSpecification:
    MasterData_CreateDeviceSpecification_InputParameter_Name_Missing:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_CreateDeviceSpecification_03
-      description: Create Device Specification with missing input parameter Name
+      description: Verify that the system does not create a device specification when the name input parameter is missing
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -87,7 +87,7 @@ CreateDeviceSpecification:
    MasterData_CreateDeviceSpecification_InputParameter_Name_Empty:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_CreateDeviceSpecification_04
-      description: Create Device Specification with empty input parameter name
+      description: Verify that the system does not create a device specification when the name input parameter is empty
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -116,7 +116,7 @@ CreateDeviceSpecification:
    MasterData_CreateDeviceSpecification_InputParameter_Name_AboveMaxLen64:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_CreateDeviceSpecification_05
-      description: Create Device Specification with name more than 64 characters
+      description: Verify that the system does not create a device specification when the name exceeds the maximum length of 64 characters
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -145,7 +145,7 @@ CreateDeviceSpecification:
    MasterData_CreateDeviceSpecification_InputParameter_Brand_Missing:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_CreateDeviceSpecification_06
-      description: Create Device Specification with missing input parameter brand
+      description: Verify that the system does not create a device specification when the brand input parameter is missing
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -174,7 +174,7 @@ CreateDeviceSpecification:
    MasterData_CreateDeviceSpecification_InputParameter_Brand_Empty:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_CreateDeviceSpecification_07
-      description: Create Device Specification with empty input parameter brand
+      description: Verify that the system does not create a device specification when the brand input parameter is empty
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -203,7 +203,7 @@ CreateDeviceSpecification:
    MasterData_CreateDeviceSpecification_InputParameter_Brand_AboveMaxLen32:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_CreateDeviceSpecification_08
-      description: Create Device Specification with Brand more than 64 characters
+      description: Verify that the system does not create a device specification when the brand exceeds the maximum length of 32 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -232,7 +232,7 @@ CreateDeviceSpecification:
    MasterData_CreateDeviceSpecification_InputParameter_Model_Missing:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_CreateDeviceSpecification_09
-      description: Create Device Specification with missing input parameter model
+      description: Verify that the system does not create a device specification when the model input parameter is missing
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -261,7 +261,7 @@ CreateDeviceSpecification:
    MasterData_CreateDeviceSpecification_InputParameter_Model_Empty:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_CreateDeviceSpecification_10
-      description: Create Device Specification with empty input parameter brand
+      description: Verify that the system does not create a device specification when the model input parameter is empty
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -290,7 +290,7 @@ CreateDeviceSpecification:
    MasterData_CreateDeviceSpecification_InputParameter_Model_AboveMaxLen16:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_CreateDeviceSpecification_11
-      description: Create Device Specification with Model more than 16 characters
+      description: Verify that the system does not create a device specification when the model exceeds 16 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -319,7 +319,7 @@ CreateDeviceSpecification:
    MasterData_CreateDeviceSpecification_InputParameter_DeviceTypeCode_Missing:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_CreateDeviceSpecification_12
-      description: Create Device Specification with missing input parameter Device Type code
+      description: Verify that the system does not create a device specification when the device type code input parameter is missing
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -348,7 +348,7 @@ CreateDeviceSpecification:
    MasterData_CreateDeviceSpecification_InputParameter_DeviceTypeCode_Empty:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_CreateDeviceSpecification_13
-      description: Create Device Specification with empty input parameter deviceTypeCode
+      description: Verify that the system does not create a device specification when the device type code input parameter is empty
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -377,7 +377,7 @@ CreateDeviceSpecification:
    MasterData_CreateDeviceSpecification_InputParameter_DeviceTypeCode_AboveMaxLen36:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_CreateDeviceSpecification_14
-      description: Create Device Specification with deviceTypeCode more than 36 characters
+      description: Verify that the system does not create a device specification when the device type code exceeds 36 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -406,7 +406,7 @@ CreateDeviceSpecification:
    MasterData_CreateDeviceSpecification_InputParameter_Invalid_DeviceTypeCode:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_CreateDeviceSpecification_15
-      description: Create Device Specification with invalid input parameter deviceTypeCode
+      description: Verify that the system does not create a device specification when an invalid device type code is provided
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -435,7 +435,7 @@ CreateDeviceSpecification:
    MasterData_CreateDeviceSpecification_InputParameter_MinDriverversion_Missing:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_CreateDeviceSpecification_16
-      description: Create Device Specification with missing input parameter minDriverversion
+      description: Verify that the system does not create a device specification when the minimum driver version input parameter is missing
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -464,7 +464,7 @@ CreateDeviceSpecification:
    MasterData_CreateDeviceSpecification_InputParameter_MinDriverversion_Empty:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_CreateDeviceSpecification_17
-      description: Create Device Specification with empty input parameter minDriverversion
+      description: Verify that the system does not create a device specification when the minimum driver version input parameter is empty
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -493,7 +493,7 @@ CreateDeviceSpecification:
    MasterData_CreateDeviceSpecification_InputParameter_MinDriverversion_AboveMaxLen16:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_CreateDeviceSpecification_18
-      description: Create Device Specification with minDriverversion more than 16 characters
+      description: Verify that the system does not create a device specification when the minimum driver version exceeds 16 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -522,7 +522,7 @@ CreateDeviceSpecification:
    MasterData_CreateDeviceSpecification_InputParameter_Description_AboveMaxLen256:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_CreateDeviceSpecification_19
-      description: Create Device Specification with description more than 256 characters
+      description: Verify that the system does not create a device specification when the description exceeds 256 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: post
@@ -551,7 +551,7 @@ CreateDeviceSpecification:
    MasterData_CreateDeviceSpecification_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/devicespecifications
       uniqueIdentifier: TC_Masterdata_CreateDeviceSpecification_20
-      description: Create Device Specification with missing input parameter isActive
+      description: Verify that the system does not create a device specification when the isActive input parameter is missing
       role: admin
       templateFields: ["name","description"]
       restMethod: post

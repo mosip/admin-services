@@ -2,7 +2,7 @@ GetRegistrationMachineUserMappingHistory:
    MasterData_GetRegistrationMachineUserMappingHistory_allValid_smoke:
       endPoint: /v1/masterdata/getregistrationmachineusermappinghistory/{effdtimes}/{registrationcenterid}/{machineid}/{userid}
       uniqueIdentifier: TC_Masterdata_GetRegistrationMachineUserMappingHistory_01
-      description: Retrieve registration machine user mapping history using valid effdtimes, registration center ID, machine ID, user id
+      description: Verify that the system successfully returns the complete registration machine-user mapping history when a valid request is made (smoke test) 
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

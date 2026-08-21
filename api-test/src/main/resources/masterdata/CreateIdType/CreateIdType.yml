@@ -2,7 +2,7 @@ CreateIdType:
    MasterData_CreateIdType_allValid_smoke:
       endPoint: /v1/masterdata/idtypes
       uniqueIdentifier: TC_Masterdata_CreateIdType_01
-      description: Create Id Type with valid data
+      description: Verify that the system successfully creates an ID type with valid data
       role: admin
       templateFields: ["langCode"]
       restMethod: post
@@ -21,7 +21,7 @@ CreateIdType:
    MasterData_CreateIdType_Invalid_langCode:
       endPoint: /v1/masterdata/idtypes
       uniqueIdentifier: TC_Masterdata_CreateIdType_02
-      description: Create Id Type with invalid langcode
+      description: Verify that the system does not create an ID type when an invalid language code is provided
       role: admin
       restMethod: post
       inputTemplate: masterdata/CreateIdType/createIdType

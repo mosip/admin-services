@@ -2,7 +2,7 @@ CreateLanguage:
    Masterdata_CreateLanguage_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/languages
       uniqueIdentifier: TC_Masterdata_CreateLanguage_01
-      description: Create the language with valid details
+      description: Verify that the system successfully creates a new language entry when all required fields are provided with valid values
       role: admin
       restMethod: post
       inputTemplate: masterdata/Language/language

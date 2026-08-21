@@ -2,7 +2,7 @@ DeviceTypeSearch:
    MasterData_DeviceTypeSearch_Equals_Name_eng_smoke:
       endPoint: /v1/masterdata/devicetypes/search
       uniqueIdentifier: TC_Masterdata_DeviceTypeSearch_01
-      description: Search Device type with columnName name and type equals
+      description: Verify that the system can find a device type when searching by exact name in English
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -45,7 +45,7 @@ DeviceTypeSearch:
    MasterData_DeviceTypeSearch_Equals_isActive_eng_smoke:
       endPoint: /v1/masterdata/devicetypes/search
       uniqueIdentifier: TC_Masterdata_DeviceTypeSearch_02
-      description: Search Device type with columnName isActive and type Equals
+      description: Verify that the system can find device types when searching by exact isActive status in English
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -87,7 +87,7 @@ DeviceTypeSearch:
    MasterData_DeviceTypeSearch_Contains_Name_eng_smoke:
       endPoint: /v1/masterdata/devicetypes/search
       uniqueIdentifier: TC_Masterdata_DeviceTypeSearch_03
-      description: Search Device type with columnName name and type contains
+      description: Verify that the system can find device types when the name partially matches the search text in English
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -130,7 +130,7 @@ DeviceTypeSearch:
    MasterData_DeviceTypeSearch_startsWith_Name_eng_smoke:
       endPoint: /v1/masterdata/devicetypes/search
       uniqueIdentifier: TC_Masterdata_DeviceTypeSearch_04
-      description: Search Device type with columnName name and type startsWith
+      description: Verify that the system can find device types when the name starts with the search text in English
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -164,7 +164,7 @@ DeviceTypeSearch:
    MasterData_DeviceTypeSearch_Invalid_Value_Name_smoke:
       endPoint: /v1/masterdata/devicetypes/search
       uniqueIdentifier: TC_Masterdata_DeviceTypeSearch_05
-      description: Search Device type with invalid columnName name
+      description: Verify that the system does not return results when searching device types with an invalid name
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -197,7 +197,7 @@ DeviceTypeSearch:
    MasterData_DeviceTypeSearch_Invalid_ColumnName_neg:
       endPoint: /v1/masterdata/devicetypes/search
       uniqueIdentifier: TC_Masterdata_DeviceTypeSearch_06
-      description: Search Device type with invalid columnName
+      description: Verify that the system handles invalid column names correctly when searching for device types
       role: admin
       templateFields: ["value"]
       restMethod: post

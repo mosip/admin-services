@@ -2,7 +2,7 @@ BulkUpload:
    Masterdata_BulkUpload_Smoke_sid:
       endPoint: /v1/admin/bulkupload
       uniqueIdentifier: TC_Masterdata_BulkUpload_01
-      description: Bulk Upload with valid data
+      description: Verify that the system successfully performs bulk upload with valid details and a valid SID
       role: admin
       restMethod: post
       inputTemplate: masterdata/BulkUpload/bulkUpload
@@ -20,7 +20,7 @@ BulkUpload:
    Masterdata_BulkUpload_update_gender_name:
       endPoint: /v1/admin/bulkupload
       uniqueIdentifier: TC_Masterdata_BulkUpload_02
-      description: Update Gender Name from Bulk upload
+      description: Verify that the system successfully updates the gender name through bulk upload with valid data
       role: admin
       restMethod: post
       inputTemplate: masterdata/BulkUpload/bulkUpload

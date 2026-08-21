@@ -2,7 +2,7 @@ DecommisionDevice:
    MasterData_DecommisionDevice_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/devices/decommission/{deviceId}
       uniqueIdentifier: TC_Masterdata_DecommisionDevice_01
-      description: Decommission Device with all valid data
+      description: Verify that the system successfully decommissions a device when all details are valid
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       restMethod: put
@@ -16,7 +16,7 @@ DecommisionDevice:
    MasterData_DecommisionDevice_Invalid_ID: 
       endPoint: /v1/masterdata/devices/decommission/{deviceId}
       uniqueIdentifier: TC_Masterdata_DecommisionDevice_02
-      description: Decommission Device with invalid deviceId
+      description: Verify that the system does not decommission a device when an invalid device ID is provided
       role: admin
       restMethod: put
       inputTemplate: masterdata/DecommisionDevice/decommisionDevice

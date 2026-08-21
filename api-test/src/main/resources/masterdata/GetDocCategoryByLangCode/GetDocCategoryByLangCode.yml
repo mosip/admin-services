@@ -2,7 +2,7 @@ GetDocCategoryByLangCode:
    Admin_GetDocCategoryByLangCode_allValid_smoke:
       endPoint: /v1/masterdata/documentcategories/{code}/{langcode}
       uniqueIdentifier: TC_Masterdata_GetDocCategoryByLangCode_01
-      description: Retrieve document categories based on a valid code and language code
+      description: Verify that the system successfully returns all document categories for a valid language code (smoke test)
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -18,7 +18,7 @@ GetDocCategoryByLangCode:
    Admin_GetDocCategoryByLangCode_Invalid_code:
       endPoint: /v1/masterdata/documentcategories/{code}/{langcode}
       uniqueIdentifier: TC_Masterdata_GetDocCategoryByLangCode_02
-      description: Retrieve document categories based on a invalid code and an valid language code
+      description: Verify that the system returns an error or handles gracefully when an invalid language code is provided while fetching document categories
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetDocCategoryByLangCode/getDocCategoryByLangCode
@@ -39,7 +39,7 @@ GetDocCategoryByLangCode:
    Admin_GetDocCategoryByLangCode_Invalid_langcode:
       endPoint: /v1/masterdata/documentcategories/{code}/{langcode}
       uniqueIdentifier: TC_Masterdata_GetDocCategoryByLangCode_03
-      description: Retrieve document categories based on a valid code and an invalid language code
+      description: Verify that the system returns an error or handles gracefully when an invalid or unsupported language code is provided while fetching document categories
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetDocCategoryByLangCode/getDocCategoryByLangCode

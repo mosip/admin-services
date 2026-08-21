@@ -2,7 +2,7 @@ FetchUISpec:
    MasterData_FetchUISpec_allValid_smoke_with_lang:
       endPoint: /v1/masterdata/uispec/{domain}/latest
       uniqueIdentifier: TC_Masterdata_FetchUISpec_01
-      description: Retrieve UI Specs with all valid data
+      description: Verify that the system successfully fetches UI specification details for the specified language when valid input parameters are provided
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

@@ -2,7 +2,7 @@ UpdateLanguage:
    Masterdata_UpdateLanguage_All_Valid_Smoke:
       endPoint: /v1/masterdata/languages
       uniqueIdentifier: TC_Masterdata_UpdateLanguage_01
-      description: Update the language with valid details
+      description: Verify that the system successfully updates an existing language entry when all fields are provided with valid values
       role: admin
       restMethod: put
       inputTemplate: masterdata/Language/Updatelanguage

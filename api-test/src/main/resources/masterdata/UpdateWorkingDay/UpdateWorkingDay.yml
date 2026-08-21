@@ -2,7 +2,7 @@ UpdateWorkingDay:
    MasterData_UpdateWorkingDay_Invalid_code:  
       endPoint: /v1/masterdata/workingdays
       uniqueIdentifier: TC_Masterdata_UpdateWorkingDay_01
-      description: Update working day details with invalid code
+      description: Verify that the system returns an error when updating a working day with an invalid code parameter
       role: admin
       templateFields: ["langCode", "name"]
       restMethod: put

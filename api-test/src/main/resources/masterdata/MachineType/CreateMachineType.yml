@@ -2,7 +2,7 @@ CreateMachineType:
    Masterdata_CreateMachineType_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/machinetypes
       uniqueIdentifier: TC_Masterdata_CreateMachineType_01
-      description: Create machine type details with valid data
+      description: Verify that the system successfully creates a new machine type when all required fields are provided with valid values
       role: admin
       templateFields: ["description","name"]
       restMethod: post
@@ -22,7 +22,7 @@ CreateMachineType:
    Masterdata_CreateMachineType_Invalid_InputParameter_Code_Missing:
       endPoint: /v1/masterdata/machinetypes
       uniqueIdentifier: TC_Masterdata_CreateMachineType_02
-      description: Create machine type details with code parameter as missing
+      description: Verify that the system returns an error when the Code parameter is missing during machine type creation
       role: admin
       templateFields: ["description","name"]
       restMethod: post
@@ -47,7 +47,7 @@ CreateMachineType:
    Masterdata_CreateMachineType_Invalid_InputParameter_Code_Empty:
       endPoint: /v1/masterdata/machinetypes
       uniqueIdentifier: TC_Masterdata_CreateMachineType_03
-      description: Create machine type details with code parameter as empty
+      description: Verify that the system returns an error when the Code parameter is empty during machine type creation
       role: admin
       templateFields: ["description","name"]
       restMethod: post
@@ -72,7 +72,7 @@ CreateMachineType:
    Masterdata_CreateMachineType_InputParameter_Name_Missing:
       endPoint: /v1/masterdata/machinetypes
       uniqueIdentifier: TC_Masterdata_CreateMachineType_04
-      description: Create machine type details with Name parameter as missing
+      description: Verify that the system returns an error when the Name parameter is missing during machine type creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -97,7 +97,7 @@ CreateMachineType:
    Masterdata_CreateMachineType_InputParameter_Name_Empty:
       endPoint: /v1/masterdata/machinetypes
       uniqueIdentifier: TC_Masterdata_CreateMachineType_05
-      description: Create machine type details with Name parameter as empty
+      description: Verify that the system returns an error when the Name parameter is empty during machine type creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -122,7 +122,7 @@ CreateMachineType:
    Masterdata_CreateMachineType_InputParameter_Name_AboveMaxLen64:
       endPoint: /v1/masterdata/machinetypes
       uniqueIdentifier: TC_Masterdata_CreateMachineType_06
-      description: Create machine type details with Name parameter characters above maximum length 64
+      description: Verify that the system returns an error when the Name parameter exceeds 64 characters during machine type creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -147,7 +147,7 @@ CreateMachineType:
    Masterdata_CreateMachineType_InputParameter_Description_AboveMaxLen128:
       endPoint: /v1/masterdata/machinetypes
       uniqueIdentifier: TC_Masterdata_CreateMachineType_07
-      description: Create machine type details with Name parameter description above maximum length 64
+      description: Verify that the system returns an error when the Description parameter exceeds 128 characters during machine type creation
       role: admin
       templateFields: ["name"]
       restMethod: post
@@ -172,7 +172,7 @@ CreateMachineType:
    Masterdata_CreateMachineType_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/machinetypes
       uniqueIdentifier: TC_Masterdata_CreateMachineType_08
-      description: Create machine type details with is active parameter as missing
+      description: Verify that the system returns an error when the isActive parameter is missing during machine type creation
       role: admin
       restMethod: post
       inputTemplate: masterdata/MachineType/machineType
@@ -197,7 +197,7 @@ CreateMachineType:
    Masterdata_CreateMachineType_With_Spacial_Characters_Neg:
       endPoint: /v1/masterdata/machinetypes
       uniqueIdentifier: TC_Masterdata_CreateMachineType_09
-      description: Create machine type details with special characters added in input
+      description: Verify that the system returns an error when special characters are used in machine type creation
       role: admin
       templateFields: ["description","name"]
       restMethod: post
@@ -222,7 +222,7 @@ CreateMachineType:
    Masterdata_CreateMachineType_Dublicate_Neg:
       endPoint: /v1/masterdata/machinetypes
       uniqueIdentifier: TC_Masterdata_CreateMachineType_10
-      description: Create machine type details with duplicate details
+      description: Verify that the system returns an error when attempting to create a machine type that already exists (duplicate entry)
       role: admin
       templateFields: ["description","name"]
       restMethod: post

@@ -2,7 +2,7 @@ FetchAllMachineType:
    MasterData_FetchAllMachineType_valid_smoke_langcodeandCode:
       endPoint: /v1/masterdata/machinetypes/all
       uniqueIdentifier: TC_Masterdata_FetchAllMachineType_01
-      description: Retrieve All Machine Type details with valid data
+      description: Verify that the system successfully fetches all machine type records using valid language code and machine type code
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: []

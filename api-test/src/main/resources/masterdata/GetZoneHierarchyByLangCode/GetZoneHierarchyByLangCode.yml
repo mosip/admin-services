@@ -2,7 +2,7 @@ GetZoneHierarchyByLangCode:
    MasterData_GetZoneHierarchyByLangCode_allValid_smoke:
       endPoint: /v1/masterdata/zones/hierarchy/{langCode}
       uniqueIdentifier: TC_Masterdata_GetZoneHierarchyByLangCode_01
-      description: Retrieve zone hierarchy by valid language code
+      description: Verify that the system successfully returns the zone hierarchy for a valid language code (smoke test)
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetZoneHierarchyByLangCode/getZoneHierarchyByLangCode
@@ -16,7 +16,7 @@ GetZoneHierarchyByLangCode:
    MasterData_GetZoneHierarchyByLangCode_inValid_code:
       endPoint: /v1/masterdata/zones/hierarchy/{langCode}
       uniqueIdentifier: TC_Masterdata_GetZoneHierarchyByLangCode_02
-      description: Retrieve zone hierarchy by invalid language code
+      description: Verify that the system returns an error or handles gracefully when an invalid language code is provided while fetching the zone hierarchy
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetZoneHierarchyByLangCode/getZoneHierarchyByLangCode

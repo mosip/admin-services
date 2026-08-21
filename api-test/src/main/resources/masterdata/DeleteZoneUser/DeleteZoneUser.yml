@@ -2,7 +2,7 @@ DeleteZoneUser:
    MasterData_DeleteZoneUser_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/zoneuser/{userid}/{zonecode}
       uniqueIdentifier: TC_Masterdata_DeleteZoneUser_01
-      description: Delete Zone User with all valid data
+      description: Verify that the system successfully deletes a zone user when all details are valid
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: delete
