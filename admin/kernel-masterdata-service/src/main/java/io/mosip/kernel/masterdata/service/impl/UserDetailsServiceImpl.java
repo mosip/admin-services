@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -148,6 +151,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
 	ZoneUserRepository zoneUserRepository;
+
+	@Autowired
+	private ExecutorService enrichmentExecutor;
+
+	@Value("${mosip.kernel.masterdata.enrichment.executor.timeout-seconds:30}")
+	private int enrichmentExecutorTimeoutSeconds;
+
+
 
 	@Override
 	public UserDetailsGetExtnDto getUser(String id) {
@@ -685,6 +696,37 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				new OptionalFilter[] { zoneOptionalFilter });
 		if (page.getContent() != null && !page.getContent().isEmpty()) {
 			zoneUserSearchDetails = MapperUtils.mapAll(page.getContent(), ZoneUserExtnDto.class);
+			// recover Users Ids for batch user's names search
+			final List<String> usersIds = zoneUserSearchDetails.stream().map(ZoneUserExtnDto::getUserId).toList();
+			// recover Users ZonesCodes for batch zones search
+			final List<String> usersZonesCodes   = zoneUserSearchDetails.stream().map(
+					ZoneUserExtnDto::getZoneCode
+			).filter(org.springframework.util.StringUtils::hasText).toList();
+			// Launch both calls of batch user's names search and  zone's names search in parallel
+			CompletableFuture<Map<String, String>> usersNamesByIdsFuture = CompletableFuture.supplyAsync(
+					() -> this.getUsersNames(usersIds),
+					this.enrichmentExecutor
+			);
+			CompletableFuture<List<Zone>> recoveredZonesFuture = CompletableFuture.supplyAsync(
+					() -> this.zoneUtils.getZonesByCodesAndLanguage(usersZonesCodes, searchDto.getLanguageCode()),
+					this.enrichmentExecutor
+			);
+			// Retrieve results (blocks here until available)
+			final Map<String, String> usersNamesByIds = usersNamesByIdsFuture.orTimeout(
+					this.enrichmentExecutorTimeoutSeconds,
+					TimeUnit.SECONDS
+			).exceptionally(ex -> {
+				logger.error("Failed to fetch user names in batch", ex);
+				return Collections.emptyMap();
+			}).join();
+			final List<Zone> recoveredZones = recoveredZonesFuture.orTimeout(
+					this.enrichmentExecutorTimeoutSeconds,
+					TimeUnit.SECONDS
+			).exceptionally(ex -> {
+				logger.error("Failed to fetch zones in batch", ex);
+				return Collections.emptyList();
+			}).join();
+			// Complete page result construction
 			pageDto = PageUtils.pageResponse(page);
 			zoneUserSearchDetails.forEach(z -> {
 				ZoneUserSearchDto dto = new ZoneUserSearchDto();
@@ -698,12 +740,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				dto.setUserId(z.getUserId());
 				dto.setUpdatedDateTime(z.getUpdatedDateTime());
 				dto.setUpdatedBy(z.getUpdatedBy());
-				String username = getUserName(z.getUserId());
+				String username = usersNamesByIds.getOrDefault(z.getUserId(), null);
 				dto.setUserName(username == null || username.isBlank() ? z.getUserId() :
 						String.format(USERNAME_FORMAT, z.getUserId(), username));
 
 				if (null != z.getZoneCode()) {
-					Zone zn = zoneUtils.getZoneBasedOnZoneCodeLanguage(z.getZoneCode(), searchDto.getLanguageCode());
+					Zone zn = recoveredZones.stream().filter(
+							rzn -> z.getZoneCode().equals(rzn.getCode())
+					).findFirst().orElse(null);
 					dto.setZoneName(null != zn ? zn.getName() : null);
 				} else
 					dto.setZoneName(null);
@@ -747,6 +791,48 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		}
 		return null;
 
+	}
+
+	private Map<String, String> getUsersNames(List<String> usersIds) {
+		if(usersIds == null || usersIds.isEmpty()) {
+			return Collections.emptyMap();
+		}
+		final HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		final UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(userDetails + "/admin");
+		final List<String> userDetails = new ArrayList<>(usersIds);
+		final RequestWrapper<Map<String, List<String>>> requestWrapper = new RequestWrapper<>();
+		final Map<String, List<String>> requestEntry = new HashMap<>();
+		requestEntry.put("userDetails", userDetails);
+		requestWrapper.setRequest(requestEntry);
+		final HttpEntity<RequestWrapper<Map<String, List<String>>>> httpEntity = new HttpEntity<>(
+				requestWrapper,
+				headers
+		);
+		ResponseEntity<String> response = restTemplate.exchange(
+				uribuilder.toUriString(),
+				HttpMethod.POST,
+				httpEntity,
+				String.class
+		);
+		try {
+			final ObjectMapper mapper = new ObjectMapper();
+			final Map responseBody = mapper.readValue(response.getBody(), Map.class);
+			List<Map<String, String>> usersListResponse = (
+					(Map<String, List<Map<String, String>>>) responseBody.get("response")
+			).get("mosipUserDtoList");
+			if (usersListResponse.isEmpty()) {
+				return Collections.emptyMap();
+			} else {
+				return usersListResponse.stream().collect(Collectors.toMap(
+						entry -> entry.get("userId"),
+						entry -> entry.get("name")
+				));
+			}
+		} catch (Exception e) {
+			logger.error("failed to get users names from authmanager", e);
+		}
+		return Collections.emptyMap();
 	}
 	
 	private List<UserCenterMappingExtnDto> dtoMapper(List<ZoneUserSearchDto> zoneUserSearchDtos, String languageCode) {

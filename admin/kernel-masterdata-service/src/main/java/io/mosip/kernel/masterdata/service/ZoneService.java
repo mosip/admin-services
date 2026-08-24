@@ -43,6 +43,8 @@ public interface ZoneService {
 
 	public ZoneNameResponseDto getZone(String zoneCode, String langCode);
 
+	public List<ZoneNameResponseDto> getZonesByCodesAndLanguage(List<String> zonesCodes, String langCode);
+
 	public FilterResponseCodeDto zoneFilterValues(FilterValueDto filterValueDto);
 	
 	public List<Zone> getZoneListBasedonZoneName(String zoneName);
