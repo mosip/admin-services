@@ -1,0 +1,116 @@
+NOTICE
+
+This product includes third-party open-source software components.
+The following attributions are provided in accordance with the
+license requirements of the respective projects.
+
+----------------------------------------------------------------
+Apache License 2.0 Components
+----------------------------------------------------------------
+
+This product includes software developed by:
+
+• The Apache Software Foundation (http://www.apache.org/)
+  - Apache Maven Plugins
+  - Apache POI
+  - Apache Commons IO
+  - Apache Commons Logging
+  - Apache Commons Collections
+  - Apache Tomcat Annotations API
+
+• VMware, Inc. and contributors
+  - Spring Boot
+  - Spring Framework
+  - Spring Security
+  - Spring Cloud
+
+• SpringDoc contributors
+  - SpringDoc OpenAPI
+
+• FasterXML, LLC
+  - Jackson Datatype JSR310
+
+• DigiBooster contributors
+  - Spring Batch Security
+
+• Kulmam92 contributors
+  - Spring Batch Excel
+
+• Powermock contributors
+  - Powermock
+
+• Google Inc.
+  - Gson
+
+• Sonatype, Inc.
+  - Central Publishing Maven Plugin
+
+----------------------------------------------------------------
+BSD Licensed Components
+----------------------------------------------------------------
+
+• PostgreSQL Global Development Group
+  - PostgreSQL JDBC Driver
+  Licensed under the BSD 2-Clause License.
+
+• Eclipse Foundation
+  - Jakarta Activation API
+  - Jakarta Persistence API
+  - Jakarta XML Bind API
+  Licensed under the BSD 3-Clause License (EDL-1.0).
+
+----------------------------------------------------------------
+MIT Licensed Components
+----------------------------------------------------------------
+
+• QOS.ch
+  - SLF4J API and Bridges
+
+• Mockito contributors
+  - Mockito
+
+• The Legion of the Bouncy Castle Inc.
+  - Bouncy Castle
+
+• Project Lombok Authors
+  - Lombok
+
+• Microsoft Corporation
+  - TSS.Java (TPM 2.0 Software Stack)
+
+----------------------------------------------------------------
+Eclipse Public License Components
+----------------------------------------------------------------
+
+• Eclipse Foundation
+  - JUnit 4 (EPL 1.0)
+
+• Mountainminds GmbH & Co. KG
+  - JaCoCo Maven Plugin (EPL 2.0)
+
+----------------------------------------------------------------
+LGPL Licensed Components
+----------------------------------------------------------------
+
+• SonarSource SA
+  - Sonar Maven Plugin
+  Licensed under the GNU Lesser General Public License v3.0.
+
+• Hibernate Authors and Contributors
+  - Hibernate ORM
+  Licensed under the GNU Lesser General Public License v2.1 or later.
+
+----------------------------------------------------------------
+Mozilla Public License Components
+----------------------------------------------------------------
+
+• MOSIP Contributors
+  - MOSIP Kernel
+  - MOSIP Biometrics Util
+  - MOSIP Commons Packet Manager
+  Licensed under the Mozilla Public License 2.0.
+
+----------------------------------------------------------------
+
+Full license texts for all third-party components are available in
+the LICENSES directory of this repository.
