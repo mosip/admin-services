@@ -163,6 +163,10 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	@Query(value = "FROM Holiday where holidayDate = ?1 and locationCode = ?2 and langCode=?3 and (isDeleted = false or isDeleted is null) ")
 	Optional<Holiday> findFirstByHolidayByHolidayDateLocationCodeLangCode(LocalDate holidayDate, String locationCode, String langCode);
 
+	@Query("FROM Holiday WHERE holidayDate = ?1 AND locationCode = ?2 AND (isDeleted = false OR isDeleted IS NULL)")
+	Optional<Holiday> findFirstByHolidayDateAndLocationCode(LocalDate holidayDate, String locationCode);
+
+
 	/**
 	 * Get all the holidays
 	 * @param locationCode

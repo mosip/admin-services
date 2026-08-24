@@ -1,17 +1,24 @@
 package io.mosip.kernel.masterdata.test.service;
 
+import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.HolidayIDDto;
 import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.HolidayExtnDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.response.HolidaySearchDto;
+import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
+import io.mosip.kernel.masterdata.repository.HolidayRepository;
+import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.service.impl.HolidayServiceImpl;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -22,6 +29,7 @@ import java.time.ZoneId;
 import java.util.*;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @RunWith(MockitoJUnitRunner.class)
@@ -30,8 +38,19 @@ public class HolidayServiceImplTest {
     @InjectMocks
     HolidayServiceImpl holidayService;
 
+    @Mock
+    private HolidayRepository holidayRepository;
+
+    @Mock
+    private LocationRepository  locationRepository;
+
+    @Mock
+    private AuditUtil auditUtil;
+
+
     private HolidayUpdateDto holidayUpdateDto;
     private Location location;
+
 
     @Before
     public void setUp() {
@@ -116,6 +135,106 @@ public class HolidayServiceImplTest {
         assertNotNull(holidays);
         assertNotNull(locations);
     }
+
+    @Test
+    public void saveHoliday_reusesExistingHolidayId_whenSameDateAndLocationDifferentLanguage() {
+        // GIVEN
+        final int holidayId = 123;
+        final String existingHolidayName = "Test Holiday";
+        final String existingHolidayDesc = "Test Description";
+        final String holidayName = "Test Holiday Clone";
+        final String holidayDesc = "Test Description Clone";
+        final LocalDate date = LocalDate.now();
+        final String locationCode = "10036";
+        final String englishLanguageCode = "eng";
+        final String arabicLanguageCode = "ara";
+        final boolean activeStatus = true;
+        // mock audit call
+        doNothing().when(auditUtil).auditRequest(anyString(), anyString(), anyString(), anyString());
+        // Existing location with code = "10036"
+        final Location locEntity = new Location();
+        locEntity.setCode(locationCode);
+        locEntity.setLangCode(englishLanguageCode);
+        final List<Location> locationsResult = Collections.singletonList(locEntity);
+        when(locationRepository.findByCode(locationCode)).thenReturn(locationsResult);
+        // Existing holiday (any language, e.g. ENG) for same (date, locationCode) with holidayId = 123
+        final Holiday existing = new Holiday();
+        existing.setHolidayId(holidayId);
+        existing.setHolidayName(existingHolidayName);
+        existing.setHolidayDesc(existingHolidayDesc);
+        existing.setHolidayDate(date);
+        existing.setLocationCode(locationCode);
+        existing.setLangCode(englishLanguageCode);
+        existing.setIsActive(activeStatus);
+        // No existing ARABIC row (same date+locationCode+lang)
+        when(holidayRepository.findFirstByHolidayByHolidayDateLocationCodeLangCode(
+                date, locationCode, arabicLanguageCode
+        )).thenReturn(Optional.empty());
+        // But an existing row exists for same (date, locationCode) in another language → reuse its holidayId
+        when(holidayRepository.findFirstByHolidayDateAndLocationCode(
+                date, locationCode
+        )).thenReturn(Optional.of(existing));
+        // Avoid “empty table” branch if the service checks it
+        when(holidayRepository.count()).thenReturn(1L);
+        // Capture entity passed to save(...)
+        ArgumentCaptor<Holiday> captor = ArgumentCaptor.forClass(Holiday.class);
+        when(holidayRepository.save(captor.capture())).thenAnswer(inv -> {
+            final Holiday h = captor.getValue();
+            final Holiday persisted = new Holiday();
+            persisted.setHolidayId(h.getHolidayId());
+            persisted.setHolidayDate(h.getHolidayDate());
+            persisted.setLocationCode(h.getLocationCode());
+            persisted.setLangCode(h.getLangCode());
+            persisted.setHolidayName(h.getHolidayName());
+            persisted.setHolidayDesc(h.getHolidayDesc());
+            persisted.setIsActive(h.getIsActive());
+            return persisted;
+        });
+        when(holidayRepository.findHolidayByHolidayNameHolidayDateLocationCodeLangCode(
+                holidayName,
+                date,
+                locationCode,
+                arabicLanguageCode
+        )).thenReturn(null);
+        // DTO to create for Arabic, same (date, locationCode)
+        HolidayDto dto = new HolidayDto();
+        dto.setHolidayDate(date);
+        dto.setLocationCode(locationCode);
+        dto.setLangCode(arabicLanguageCode);
+        dto.setHolidayName(holidayName);
+        dto.setHolidayDesc(holidayDesc);
+        // WHEN
+        HolidayIDDto out = holidayService.saveHoliday(dto);
+        // THEN — the new row must reuse holidayId = 123
+        Holiday saved = captor.getValue();
+        assertNotNull(saved);
+        assertEquals(holidayId, saved.getHolidayId());
+        assertEquals(arabicLanguageCode, saved.getLangCode());
+        assertEquals(date, saved.getHolidayDate());
+        assertEquals(locationCode, saved.getLocationCode());
+        assertEquals(activeStatus, saved.getIsActive());
+        assertEquals(holidayName, saved.getHolidayName());
+        assertEquals(holidayDesc, saved.getHolidayDesc());
+        assertNotNull(out);
+        assertEquals(holidayId, out.getHolidayId());
+        assertEquals(arabicLanguageCode, out.getLangCode());
+        assertEquals(holidayName, out.getHolidayName());
+        // Should not request a new max id
+        verify(holidayRepository, never()).findMaxHolidayId();
+        // Verification of flow
+        verify(holidayRepository).count();
+        verify(locationRepository).findByCode(locationCode);
+        verify(holidayRepository).findFirstByHolidayByHolidayDateLocationCodeLangCode(date, locationCode, arabicLanguageCode);
+        verify(holidayRepository).findFirstByHolidayDateAndLocationCode(date, locationCode);
+        verify(holidayRepository).findHolidayByHolidayNameHolidayDateLocationCodeLangCode(
+                holidayName,
+                date,
+                locationCode,
+                arabicLanguageCode
+        );
+        verify(holidayRepository).save(any(Holiday.class));
+    }
+
 
     private SearchFilter buildExpectedSearchFilter_Success() {
         SearchFilter filter = new SearchFilter();
