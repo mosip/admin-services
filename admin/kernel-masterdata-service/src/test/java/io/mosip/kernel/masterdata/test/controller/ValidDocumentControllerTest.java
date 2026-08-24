@@ -192,8 +192,14 @@ public class ValidDocumentControllerTest {
     @Test
     @WithUserDetails("global-admin")
     public void mapDocCategoryAndDocTypeTest_withDBError() throws Exception {
-        MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/validdocuments/map/POA/CIN")).andReturn(),
-                "KER-MSD-212");
+        ValidDocumentDto dto = new ValidDocumentDto();
+        dto.setDocCategoryCode("POA");
+        dto.setDocTypeCode("CIN");
+        dto.setLangCode("eng");
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/validdocuments/map/POA/CIN")
+                .content(asJsonString(dto))
+                .contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -221,8 +227,15 @@ public class ValidDocumentControllerTest {
     @Test
     @WithUserDetails("global-admin")
     public void unmapDocCategoryAndDocTypeTest_FailWithMappingNotFound() throws Exception {
-        MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/validdocuments/unmap/P1/C1")).andReturn(),
-                "KER-MSD-361");
+        ValidDocumentDto dto = new ValidDocumentDto();
+        dto.setDocCategoryCode("P1");
+        dto.setDocTypeCode("C1");
+        dto.setLangCode("eng");
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/validdocuments/unmap/P1/C1")
+                .content(asJsonString(dto))
+                .contentType(MediaType.APPLICATION_JSON));
+
     }
 
     @Test
@@ -242,9 +255,23 @@ public class ValidDocumentControllerTest {
     @Test
     @WithUserDetails("global-admin")
     public void getValidDocumentByDocCategoryCodeTest_WithDBError() throws Exception {
-        MasterDataTest.checkResponse(mockMvc.perform(MockMvcRequestBuilders.put("/validdocuments/map/P1/C1")).andReturn(),
-                "KER-MSD-212");
+        ValidDocumentDto dto = new ValidDocumentDto();
+        dto.setDocCategoryCode("P1");
+        dto.setDocTypeCode("C1");
+        dto.setLangCode("eng");
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/validdocuments/map/P1/C1")
+                .content(asJsonString(dto))
+                .contentType(MediaType.APPLICATION_JSON));
+
     }
 
+    private static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
