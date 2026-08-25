@@ -1,12 +1,12 @@
-\c mosip_master
+\c :mosipdbname
 
 REASSIGN OWNED BY sysadmin TO postgres;
 
-REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA master FROM masteruser;
+REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA master FROM :dbuname;
 
 REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA master FROM sysadmin;
 
-GRANT SELECT, INSERT, TRUNCATE, REFERENCES, UPDATE, DELETE ON ALL TABLES IN SCHEMA master TO masteruser;
+GRANT SELECT, INSERT, TRUNCATE, REFERENCES, UPDATE, DELETE ON ALL TABLES IN SCHEMA master TO :dbuname;
 
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA master TO postgres;
 
@@ -66,7 +66,7 @@ COMMENT ON COLUMN master.blocklisted_words.is_deleted IS 'IS_Deleted : Flag to m
 -- ddl-end --
 COMMENT ON COLUMN master.blocklisted_words.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
 -- ddl-end --
-GRANT SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES ON master.blocklisted_words TO masteruser;
+GRANT SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES ON master.blocklisted_words TO :dbuname;
 
 ALTER TABLE master.blocklisted_words DROP CONSTRAINT IF EXISTS pk_blwrd_code CASCADE;
 ALTER TABLE master.blocklisted_words ALTER COLUMN lang_code DROP NOT NULL;
@@ -106,7 +106,7 @@ COMMENT ON TABLE master.ui_spec IS E'UI Specifications :  Stores UI Specificatio
 -- ddl-end --
 COMMENT ON CONSTRAINT unq_dmn_type_vrsn_ischmid ON master.ui_spec  IS E'Unique Constraint on domain,title,version,identity_schema_id';
 -- ddl-end --
-GRANT SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES ON master.ui_spec TO masteruser;
+GRANT SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES ON master.ui_spec TO :dbuname;
 
 TRUNCATE TABLE master.ui_spec cascade;
 INSERT into master.ui_spec (id,version,domain,title,description,type,json_spec,identity_schema_id,identity_schema_version,effective_from,status_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes) SELECT id,id_version,'registration-client', title,description,'schema',id_attr_json,id,id_version,effective_from,status_code,is_active,cr_by,cr_dtimes,upd_by,upd_dtimes,is_deleted,del_dtimes FROM master.identity_schema;
@@ -270,7 +270,7 @@ CREATE TABLE master.permitted_local_config (
 	del_dtimes timestamp,
 	CONSTRAINT permitted_local_config_pk PRIMARY KEY (code)
 );
-GRANT SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES ON master.permitted_local_config TO masteruser;
+GRANT SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES ON master.permitted_local_config TO :dbuname;
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 SELECT * INTO master.loc_holiday_migr_bkp FROM master.loc_holiday;

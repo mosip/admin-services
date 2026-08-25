@@ -1,4 +1,4 @@
-\c mosip_master
+\c :mosipdbname
 
 -- Upgrade script for master.app_detail
 SELECT * INTO master.app_detail_bkp FROM master.app_detail;
