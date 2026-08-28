@@ -124,7 +124,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 
 
 		try {
-			String uniqueId = generateId();
+			String uniqueId = machineSpecification.getId() != null ? machineSpecification.getId() : generateId();
 			machineSpecification.setId(uniqueId);
 			MachineSpecification entity = MetaDataUtils.setCreateMetaData(machineSpecification,
 					MachineSpecification.class);
