@@ -33,7 +33,8 @@ public enum DeviceErrorCode {
 	INVALID_DEVICE_ZONE("KER-MSD-439", "Admin not authorized to access this Device for this Zone"),
 	DECOMMISSIONED("KER-MSD-DDD", "Device has been already decommissioned or Device not found"), 
 	INVALID_CENTER_ZONE("KER-MSD-219", "The zone of the  registration center in the request does not match the zone of the device"),
-	INVALID_CENTER("KER-MSD-222", "The registration center in the request is not present in db");
+	INVALID_CENTER("KER-MSD-222", "The registration center in the request is not present in db"),
+	NO_REG_CENTER_FOUND("KER-MSD-444", "Registration Center cannot be empty or null");
 
 	private final String errorCode;
 	private final String errorMessage;

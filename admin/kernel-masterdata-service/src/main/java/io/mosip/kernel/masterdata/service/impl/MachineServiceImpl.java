@@ -1,27 +1,5 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import io.mosip.kernel.masterdata.dto.response.*;
-import io.mosip.kernel.masterdata.utils.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.StringUtils;
@@ -46,6 +24,11 @@ import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
+import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
+import io.mosip.kernel.masterdata.dto.response.FilterResult;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
@@ -62,9 +45,41 @@ import io.mosip.kernel.masterdata.repository.MachineTypeRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.service.MachineService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.mosip.kernel.masterdata.utils.ZoneUtils;
+import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.utils.MachineUtil;
+import io.mosip.kernel.masterdata.utils.LanguageUtils;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.OptionalFilter;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
+import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
+import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
+import io.mosip.kernel.masterdata.utils.RegistrationCenterValidator;
+import io.mosip.kernel.masterdata.utils.RegistrationCenterServiceHelper;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * This class have methods to fetch a Machine Details
@@ -784,8 +799,8 @@ public class MachineServiceImpl implements MachineService {
 	
 	private void validateRegistrationCenter(String regCenterId) {
 		if(regCenterId == null || regCenterId.isEmpty())
-			throw new RequestException(DeviceErrorCode.INVALID_CENTER.getErrorCode(),
-					DeviceErrorCode.INVALID_CENTER.getErrorMessage());
+			throw new RequestException(DeviceErrorCode.NO_REG_CENTER_FOUND.getErrorCode(),
+					DeviceErrorCode.NO_REG_CENTER_FOUND.getErrorMessage());
 
 		List<RegistrationCenter> centers=regCenterRepository.findByIdAndIsDeletedFalseOrNull(regCenterId);
 		if(centers==null ||centers.isEmpty()) {
@@ -814,11 +829,9 @@ public class MachineServiceImpl implements MachineService {
 		// call method to check the machineZone will come under Accessed user zone or
 		// not
 		validateZone(machineZone, null);
+		validateRegistrationCenter(machinePutReqDto.getRegCenterId());
+		regCenterServiceHelper.validateRegistrationCenterZone(machineZone,machinePutReqDto.getRegCenterId());
 		try {
-			if(machinePutReqDto.getRegCenterId() != null && !machinePutReqDto.getRegCenterId().isEmpty()) {
-				validateRegistrationCenter(machinePutReqDto.getRegCenterId());
-				regCenterServiceHelper.validateRegistrationCenterZone(machineZone,machinePutReqDto.getRegCenterId());
-			}
 			// find requested machine is there or not in Machine Table
 			List<Machine> renMachine = machineRepository.findMachineById(machinePutReqDto.getId());
 			if(renMachine == null) {
