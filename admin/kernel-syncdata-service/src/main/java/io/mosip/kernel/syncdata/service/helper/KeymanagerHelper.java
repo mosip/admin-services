@@ -2,7 +2,6 @@ package io.mosip.kernel.syncdata.service.helper;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -56,8 +55,7 @@ public class KeymanagerHelper {
         try {
             UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(certificateUrl);
             builder.queryParam("applicationId", applicationId);
-            if (referenceId.isPresent())
-                builder.queryParam("referenceId", referenceId.get());
+            referenceId.ifPresent(id -> builder.queryParam("referenceId", id));
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().toUri(), String.class);
 
             ResponseWrapper<KeyPairGenerateResponseDto> resp = objectMapper.readValue(responseEntity.getBody(),
@@ -67,6 +65,9 @@ public class KeymanagerHelper {
                 throw new SyncInvalidArgumentException(resp.getErrors());
 
             return resp.getResponse();
+        } catch (SyncInvalidArgumentException e) {
+            LOGGER.warn("Validation error while fetching Certificate: {}", e.getMessage());
+            throw new SyncDataServiceException(AdminServiceErrorCode.VALIDATION_ERROR.getErrorCode(), e.getMessage(), e);
         } catch (Exception e) {
             LOGGER.error("Failed to fetch Certificate from keymanager", e);
             throw new SyncDataServiceException(AdminServiceErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
