@@ -2,9 +2,13 @@ package io.mosip.admin.config;
 
 import jakarta.servlet.Filter;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 import io.mosip.admin.httpfilter.ReqResFilter;
@@ -43,6 +47,20 @@ public class CommonConfig {
 	@Bean
 	public Filter getReqResFilter() {
 		return new ReqResFilter();
+	}
+
+	@Bean
+	public BeanPostProcessor removeXmlMessageConverter() {
+		return new BeanPostProcessor() {
+			@Override
+			public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+				if (bean instanceof RestTemplate) {
+					((RestTemplate) bean).getMessageConverters()
+							.removeIf(c -> c instanceof MappingJackson2XmlHttpMessageConverter);
+				}
+				return bean;
+			}
+		};
 	}
 
 	@Bean

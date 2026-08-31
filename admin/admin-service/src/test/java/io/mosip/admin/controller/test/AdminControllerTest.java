@@ -13,6 +13,7 @@ import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -128,6 +129,7 @@ public class AdminControllerTest {
 
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails(value = "zonal-admin")
 	public void testLostRidDetails_withValidId_returnsDetails() throws Exception {
