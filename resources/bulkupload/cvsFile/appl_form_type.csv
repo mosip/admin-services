@@ -1,2 +1,2 @@
-code,name,description,langCode,isActive
-AAA,Test,Test,eng,TRUE
+code|name|description|langCode|isActive
+AAA|Test|Test|eng|TRUE

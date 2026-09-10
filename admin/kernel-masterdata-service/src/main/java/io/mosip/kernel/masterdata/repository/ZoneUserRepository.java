@@ -21,34 +21,40 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface ZoneUserRepository extends BaseRepository<ZoneUser, String> {
 
-	@Query("FROM ZoneUser zu WHERE zu.userId=?1 and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
+	@Query("FROM ZoneUser zu WHERE LOWER(zu.userId)=LOWER(?1) and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
 	public List<ZoneUser> findByUserIdNonDeleted(String userId);
 
-	@Query("FROM ZoneUser zu WHERE zu.userId=?1 and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
+	@Query("FROM ZoneUser zu WHERE LOWER(zu.userId)=LOWER(?1) and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
 	public ZoneUser findZoneByUserIdNonDeleted(String userId);
 
-	@Query("FROM ZoneUser zu WHERE zu.userId=?1 ")
+	@Query("FROM ZoneUser zu WHERE LOWER(zu.userId)=LOWER(?1) ")
 	public ZoneUser findByUserId(String userId);
 	
-	@Query("FROM ZoneUser zu WHERE zu.userId=?1 and zu.zoneCode=?2 ")
+	@Query("FROM ZoneUser zu WHERE LOWER(zu.userId)=LOWER(?1) and zu.zoneCode=?2 ")
 	public List<ZoneUser> findByUserIdAndZoneCode(String userId, String zoneCode);
 
-	@Query("FROM ZoneUser zu WHERE zu.userId=?1 and zu.zoneCode=?2 and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
+	@Query("FROM ZoneUser zu WHERE LOWER(zu.userId)=LOWER(?1) and zu.zoneCode=?2 and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
 	public ZoneUser findByIdAndIsDeletedFalseOrIsDeletedIsNull(String userId, String zoneCode);
 
 	@Query("FROM ZoneUser zu WHERE zu.zoneCode=?1 and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
 	public List<ZoneUser> findtoUpdateZoneUserByCode(String zoneCode);
 	
-	@Query("FROM ZoneUser zu WHERE zu.userId=?1 and zu.langCode=?2 and zu.zoneCode=?3 and (zu.isDeleted IS NULL OR zu.isDeleted = false) and zu.isActive=true")
+	@Query("FROM ZoneUser zu WHERE LOWER(zu.userId)=LOWER(?1) and zu.langCode=?2 and zu.zoneCode=?3 and (zu.isDeleted IS NULL OR zu.isDeleted = false) and zu.isActive=true")
 	public ZoneUser findZoneUserByUserIdZoneCodeLangCodeIsActive(String userId, String langCode, String zoneCode);
 	
 	@Query("FROM ZoneUser zu WHERE zu.userId IN :userids")
 	public List<ZoneUser> findByUserIds(@Param("userids") List<String> userIds);
 
-	@Query("FROM ZoneUser zu WHERE zu.userId=?1 and zu.isActive=true and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
+	@Query("FROM ZoneUser zu WHERE LOWER(zu.userId)=LOWER(?1) and zu.isActive=true and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
 	public ZoneUser findZoneByUserIdActiveAndNonDeleted(String userId);
 	
-	@Query("FROM ZoneUser zu WHERE LOWER(zu.zoneCode) like (%?1%)  and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
+	/*
+	 * This is a query used by a deprecated end point /users/search, this should be removed in next release.
+	 * The end point using this query was added in version 1.2.0-rc1 and marked as deprecated in version 1.2.0 
+	 * For security reason, we replaced the 'LIKE' query with equals in where clause.
+	 */
+	
+	@Query("FROM ZoneUser zu WHERE LOWER(zu.zoneCode)=?1  and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
 	public List<ZoneUser> findZoneByZoneCodeActiveAndNonDeleted(String zoneCode);
 	
 	@Modifying

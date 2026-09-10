@@ -127,7 +127,6 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 
 			// Throws exception if not found
 			zoneservice.getZone(zoneUserDto.getZoneCode(), languageUtils.getDefaultLanguage());
-
 			zu = zoneUserRepo.save(zu);
 			ZoneUserHistory zuh = new ZoneUserHistory();
 			MapperUtils.map(zu, zuh);
@@ -309,7 +308,7 @@ public class ZoneUserServiceImpl implements ZoneUserService {
 				throw new MasterDataServiceException(ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorCode(),
 						ZoneUserErrorCode.USER_MAPPING_EXIST.getErrorMessage());
 			}
-			masterdataCreationUtil.updateMasterDataStatus(ZoneUser.class, userId, isActive, "userId");
+			masterdataCreationUtil.updateMasterDataStatus(ZoneUser.class, userId.toLowerCase(), isActive, "userId");
 
 			ZoneUserHistory zoneUserHistory = new ZoneUserHistory();
 			MetaDataUtils.setUpdateMetaData(zoneUser, zoneUserHistory, true);
