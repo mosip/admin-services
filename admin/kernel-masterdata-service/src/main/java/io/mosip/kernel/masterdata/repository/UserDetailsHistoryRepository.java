@@ -25,11 +25,11 @@ public interface UserDetailsHistoryRepository extends BaseRepository<UserDetails
 	 */
 	// select a.id,a.langCode,a.name,a.uin,a.email,a.mobile,a.statusCode
 	// SELECT m.id,m.langCode,m.name,m.uin,m.email,m.mobile,m.statusCode,m.effDTimes
-	@Query(value = "select * from (SELECT * FROM master.user_detail_h m WHERE id = ?1 AND eff_dtimes<= ?2 and (is_deleted is null or is_deleted =false) ORDER BY eff_dtimes DESC) a LIMIT 1", nativeQuery = true)
+	@Query(value = "select * from (SELECT * FROM master.user_detail_h m WHERE LOWER(id) = LOWER(?1) AND eff_dtimes<= ?2 and (is_deleted is null or is_deleted =false) ORDER BY eff_dtimes DESC) a LIMIT 1", nativeQuery = true)
 	List<UserDetailsHistory> getByUserIdAndTimestamp(String userId, LocalDateTime effDTimes);
 	// (?2 BETWEEN effDTimes AND CURRENT_TIMESTAMP)
 
-	@Query(value = "Select 	* from master.user_detail_h m where m.regcntr_id = ?1 and m.id = ?2 and m.eff_dtimes <= ?3 and ( m.is_deleted = false or m.is_deleted is null) order by m.eff_dtimes desc ", nativeQuery = true)
+	@Query(value = "Select 	* from master.user_detail_h m where m.regcntr_id = ?1 and LOWER(m.id) = LOWER(?2) and m.eff_dtimes <= ?3 and ( m.is_deleted = false or m.is_deleted is null) order by m.eff_dtimes desc ", nativeQuery = true)
 	List<UserDetailsHistory> findByCntrIdAndUsrIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 			String registrationCenterId, String userId, LocalDateTime lDateAndTime);
 

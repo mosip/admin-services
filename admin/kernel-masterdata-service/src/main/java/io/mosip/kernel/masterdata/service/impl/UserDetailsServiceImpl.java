@@ -653,7 +653,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 	
 	@Override
-	public PageResponseDto<UserCenterMappingExtnDto> serachUserCenterMappingDetails(SearchDtoWithoutLangCode searchDto) {
+	public PageResponseDto<UserCenterMappingExtnDto> searchUserCenterMappingDetails(SearchDtoWithoutLangCode searchDto) {
 		PageResponseDto<ZoneUserSearchDto> pageDto = new PageResponseDto<>();
 		PageResponseDto<UserCenterMappingExtnDto> userCenterPageDto = new PageResponseDto<>();
 		List<UserCenterMappingExtnDto> userCenterMappingExtnDtos = null;
