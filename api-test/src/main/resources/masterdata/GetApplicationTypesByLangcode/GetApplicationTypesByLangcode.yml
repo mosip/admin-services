@@ -2,7 +2,7 @@ GetApplicationTypesByLangcode:
    Masterdata_GetApplicationTypesByLangcode_allValid_smoke:
       endPoint: /v1/masterdata/applicationtypes/{langcode}
       uniqueIdentifier: TC_Masterdata_GetApplicationTypesByLangcode_01
-      description: Retrieve Application Types By langcode
+      description: Verify that the system successfully returns all application types for a valid language code (smoke test)
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
@@ -18,7 +18,7 @@ GetApplicationTypesByLangcode:
    Masterdata_GetApplicationTypesByLangcode_InValid_langCode:
       endPoint: /v1/masterdata/applicationtypes/{langcode}
       uniqueIdentifier: TC_Masterdata_GetApplicationTypesByLangcode_02
-      description: Retrieve Application Types By invalid langcode
+      description: Verify that the system returns an error or handles gracefully when an invalid language code is provided while fetching application types
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetApplicationTypesByLangcode/getApplicationTypesByLangcode

@@ -2,7 +2,7 @@ UpdateBlockListedWordDetails:
    Masterdata_UpdateBlockListedWordDetails_eng_All_Valid_Smoke:
       endPoint: /v1/masterdata/blocklistedwords/details
       uniqueIdentifier: TC_Masterdata_UpdateBlockListedWordDetails_01
-      description: Update block listed word details with valid data and language code as english
+      description: Verify that the system successfully updates blocklisted word details with all valid input parameters in English (smoke test)
       role: admin
       templateFields: ["description","word"]
       restMethod: put
@@ -22,7 +22,7 @@ UpdateBlockListedWordDetails:
    Masterdata_CreateBlockListedWords_Invalid_BlocklistedWordsLength129:
       endPoint: /v1/masterdata/blocklistedwords/details
       uniqueIdentifier: TC_Masterdata_UpdateBlockListedWordDetails_02
-      description: Update blocklisted word details with blocklisted words exceeding the character length of 128
+      description: Verify that the system returns an error when creating a blocklisted word with length exceeding 128 characters
       role: admin
       templateFields: ["description"]
       restMethod: put
@@ -46,7 +46,7 @@ UpdateBlockListedWordDetails:
    Masterdata_UpdateBlockListedWords_inValid_descriptionBlank:
       endPoint: /v1/masterdata/blocklistedwords/details
       uniqueIdentifier: TC_Masterdata_UpdateBlockListedWordDetails_03
-      description: Update blocklisted word details with description as blank
+      description: Verify that the system returns an error when updating blocklisted words with a blank description parameter
       role: admin
       templateFields: ["word"]
       restMethod: put
@@ -70,7 +70,7 @@ UpdateBlockListedWordDetails:
    Masterdata_CreateBlockListedWords_Invalid_DescriptionLength257:
       endPoint: /v1/masterdata/blocklistedwords/details
       uniqueIdentifier: TC_Masterdata_UpdateBlockListedWordDetails_04
-      description: Update blocklisted word details with description exceeding the character length of 256
+      description: Verify that the system returns an error when creating a blocklisted word with Description exceeding 256 characters
       role: admin
       templateFields: ["word"]
       restMethod: put
@@ -94,7 +94,7 @@ UpdateBlockListedWordDetails:
    Masterdata_CreateBlockListedWords_Invalid_EmptyWord:
       endPoint: /v1/masterdata/blocklistedwords/details
       uniqueIdentifier: TC_Masterdata_UpdateBlockListedWordDetails_05
-      description: Update blocklisted word details with word parameter as empty
+      description: Verify that the system returns an error when creating a blocklisted word with the Word parameter empty
       role: admin
       templateFields: ["description"]
       restMethod: put

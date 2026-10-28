@@ -2,7 +2,7 @@ GetBiometricTypesByLangcode:
    Masterdata_GetBiometricTypesByLangcode_allValid_smoke:
       endPoint: /v1/masterdata/biometrictypes/{langcode}
       uniqueIdentifier: TC_Masterdata_GetBiometricTypesByLangcode_01
-      description: Retrieve biometric data in a specific language
+      description: Verify that the system successfully returns all biometric types for a valid language code (smoke test)
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langcode"]
@@ -18,7 +18,7 @@ GetBiometricTypesByLangcode:
    Masterdata_GetBiometricTypesByLangcode_InValid_langCode:
       endPoint: /v1/masterdata/biometrictypes/{langcode}
       uniqueIdentifier: TC_Masterdata_GetBiometricTypesByLangcode_02
-      description: Retrieve biometric data for an invalid language code
+      description: Verify that the system returns an error or handles gracefully when an invalid language code is provided while fetching biometric types
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetBiometricTypesByLangcode/getBiometricTypesByLangcode

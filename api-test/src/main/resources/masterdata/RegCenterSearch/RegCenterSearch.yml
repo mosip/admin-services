@@ -2,7 +2,7 @@ RegCenterSearch:
    MasterData_RegCenterSearch_Equals_Name_eng_smoke:
       endPoint: /v1/masterdata/registrationcenters/search
       uniqueIdentifier: TC_Masterdata_RegCenterSearch_01
-      description: Search the registration center with the condition that the name column is equal to English
+      description: Verify that the system successfully fetches registration centers when searching by exact English name
       role: admin
       templateFields: ["name","value"]
       restMethod: post

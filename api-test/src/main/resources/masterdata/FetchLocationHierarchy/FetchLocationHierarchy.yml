@@ -2,7 +2,7 @@ FetchLocationHierarchy:
    MasterData_FetchLocationHierarchy_allValid_smoke:
       endPoint: /v1/masterdata/locationHierarchyLevels/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchLocationHierarchy_01
-      description: Retrieve Location Hierarchy details with all valid data
+      description: Verify that the system successfully fetches all location hierarchy records with valid input data
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchy
@@ -19,7 +19,7 @@ FetchLocationHierarchy:
    MasterData_FetchLocationHierarchy_inValid_langcode:
       endPoint: /v1/masterdata/locationHierarchyLevels/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchLocationHierarchy_02
-      description: Retrieve Location Hierarchy details with invalid langcode
+      description: Verify that the system returns an error when an invalid language code is used to fetch location hierarchy records
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchy
@@ -39,7 +39,7 @@ FetchLocationHierarchy:
    MasterData_FetchLocationHierarchy_level_langcode_smoke:
       endPoint: /v1/masterdata/locationHierarchyLevels/{level}/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchLocationHierarchy_03
-      description: Retrieve Location Hierarchy details with level and langcode
+      description: Verify that the system successfully fetches location hierarchy records for a specific level using a valid language code
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchy
@@ -56,7 +56,7 @@ FetchLocationHierarchy:
    MasterData_FetchLocationHierarchy_invalid_level:
       endPoint: /v1/masterdata/locationHierarchyLevels/{level}/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchLocationHierarchy_04
-      description: Retrieve Location Hierarchy details with invalid level and valid langcode
+      description: Verify that the system returns an error when an invalid level is used to fetch location hierarchy records
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchy
@@ -76,7 +76,7 @@ FetchLocationHierarchy:
    MasterData_FetchLocationHierarchy_invalid_langcode:
       endPoint: /v1/masterdata/locationHierarchyLevels/{level}/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchLocationHierarchy_05
-      description: Retrieve Location Hierarchy details with valid level and invalid langcode
+      description: Verify that the system returns an error when an invalid language code is used to fetch location hierarchy records
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchLocationHierarchy/fetchLocationHierarchy

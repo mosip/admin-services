@@ -2,7 +2,7 @@ FetchAllRegCent:
    MasterData_FetchAllRegCent_valid_smoke:
       endPoint: /v1/masterdata/registrationcenters/all
       uniqueIdentifier: TC_Masterdata_FetchAllRegCent_01
-      description: Retrieve All Registration Center details with valid data
+      description: Verify that the system successfully fetches all registration center records with valid input data
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

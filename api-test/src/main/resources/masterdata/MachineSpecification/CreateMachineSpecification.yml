@@ -2,7 +2,7 @@ CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/machinespecifications
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_01
-      description: Create machine specification details with valid details
+      description: Verify that the system successfully creates a new machine specification when all required fields are provided with valid values
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["description"]
@@ -26,7 +26,7 @@ CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_InputParameter_Name_Missing:
       endPoint: /v1/masterdata/machinespecifications
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_02
-      description: Create machine specification details with parameter name as missing
+      description: Verify that the system returns an error when the Name parameter is missing during machine specification creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -55,7 +55,7 @@ CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_InputParameter_Name_Empty:
       endPoint: /v1/masterdata/machinespecifications
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_03
-      description: Create machine specification details with parameter name as empty
+      description: Verify that the system returns an error when the Name parameter is empty during machine specification creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -84,7 +84,7 @@ CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_InputParameter_Name_AboveMaxLen64:
       endPoint: /v1/masterdata/machinespecifications
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_04
-      description: Create machine specification details with parameter name characters above maximum level 64
+      description: Verify that the system returns an error when the Name parameter exceeds 64 characters during machine specification creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -113,7 +113,7 @@ CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_InputParameter_Brand_Missing:
       endPoint: /v1/masterdata/machinespecifications
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_05
-      description: Create machine specification details with parameter brand as missing
+      description: Verify that the system returns an error when the Brand parameter is missing during machine specification creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -142,7 +142,7 @@ CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_InputParameter_Brand_Empty:
       endPoint: /v1/masterdata/machinespecifications
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_06
-      description: Create machine specification details with parameter brand as empty
+      description: Verify that the system returns an error when the Brand parameter is empty during machine specification creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -171,7 +171,7 @@ CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_InputParameter_Brand_AboveMaxLen32:
       endPoint: /v1/masterdata/machinespecifications
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_07
-      description: Create machine specification details with parameter brand characters above maximum length 32
+      description: Verify that the system returns an error when the Brand parameter exceeds 32 characters during machine specification creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -200,7 +200,7 @@ CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_InputParameter_Model_Missing:
       endPoint: /v1/masterdata/machinespecifications
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_08
-      description: Create machine specification details with parameter model as missing
+      description: Verify that the system returns an error when the Model parameter is missing during machine specification creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -229,7 +229,7 @@ CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_InputParameter_Model_Empty:
       endPoint: /v1/masterdata/machinespecifications
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_09
-      description: Create machine specification details with parameter model as empty
+      description: Verify that the system returns an error when the Model parameter is empty during machine specification creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -258,7 +258,7 @@ CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_InputParameter_Model_AboveMaxLen16:
       endPoint: /v1/masterdata/machinespecifications
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_10
-      description: Create machine specification details with parameter model characters above maximum length 16
+      description: Verify that the system returns an error when the Model parameter exceeds 16 characters during machine specification creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -287,7 +287,7 @@ CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_InputParameter_machineTypeCode_Missing:
       endPoint: /v1/masterdata/machinespecifications
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_11
-      description: Create machine specification details with parameter machine type code as missing
+      description: Verify that the system returns an error when the machineTypeCode parameter is missing during machine specification creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -316,7 +316,7 @@ CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_InputParameter_machineTypeCode_Empty:
       endPoint: /v1/masterdata/machinespecifications
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_12
-      description: Create machine specification details with parameter machine type code as empty
+      description: Verify that the system returns an error when the machineTypeCode parameter is empty during machine specification creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -345,7 +345,7 @@ CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_InputParameter_machineTypeCode_AboveMaxLen36:
       endPoint: /v1/masterdata/machinespecifications
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_13
-      description: Create machine specification details with parameter machine type code characters above maximum length 36
+      description: Verify that the system returns an error when the machineTypeCode parameter exceeds 36 characters during machine specification creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -374,7 +374,7 @@ CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_InputParameter_Invalid_machineTypeCode:
       endPoint: /v1/masterdata/machinespecifications
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_14
-      description: Create machine specification details with invalid machine type code
+      description: Verify that the system returns an error when an invalid machineTypeCode is provided during machine specification creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -403,7 +403,7 @@ CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_InputParameter_MinDriverversion_Missing:
       endPoint: /v1/masterdata/machinespecifications
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_15
-      description: Create machine specification details with invalid min driver version as missing
+      description: Verify that the system returns an error when the MinDriverversion parameter is missing during machine specification creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -432,7 +432,7 @@ CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_InputParameter_MinDriverversion_Empty:
       endPoint: /v1/masterdata/machinespecifications
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_16
-      description: Create machine specification details with invalid min driver version as empty
+      description: Verify that the system returns an error when the MinDriverversion parameter is empty during machine specification creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -461,7 +461,7 @@ CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_InputParameter_MinDriverversion_AboveMaxLen16:
       endPoint: /v1/masterdata/machinespecifications
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_17
-      description: Create machine specification details with invalid min driver version characters above maximum length 16
+      description: Verify that the system returns an error when the MinDriverversion parameter exceeds 16 characters during machine specification creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -490,7 +490,7 @@ CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_InputParameter_Description_AboveMaxLen256:
       endPoint: /v1/masterdata/machinespecifications
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_18
-      description: Create machine specification details with invalid description characters above maximum length 256
+      description: Verify that the system returns an error when the Description parameter exceeds 256 characters during machine specification creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -519,7 +519,7 @@ CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/machinespecifications
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_19
-      description: Create machine specification details with ia active parameter as missing
+      description: Verify that the system returns an error when the isActive parameter is missing during machine specification creation
       role: admin
       templateFields: ["description"]
       restMethod: post
@@ -549,7 +549,7 @@ CreateMachineSpecification:
    Masterdata_CreateMachineSpecification_Duplicate_Neg:
       endPoint: /v1/masterdata/machinespecifications
       uniqueIdentifier: TC_Masterdata_CreateMachineSpecification_20
-      description: Create machine specification details duplicate details
+      description: Verify that the system returns an error when attempting to create a machine specification that already exists (duplicate entry)
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["description"]

@@ -2,7 +2,7 @@ DeviceSearch:
    MasterData_DeviceSearch_Equals_Name_eng_smoke:
       endPoint: /v1/masterdata/devices/search
       uniqueIdentifier: TC_Masterdata_DeviceSearch_01
-      description: Search Devices by columnName name and type startswith
+      description: Verify that the system correctly returns devices when searching by name using the equals condition in English
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -47,7 +47,7 @@ DeviceSearch:
    MasterData_DeviceSearch_Equals_SerialNo_smoke:
       endPoint: /v1/masterdata/devices/search
       uniqueIdentifier: TC_Masterdata_DeviceSearch_02
-      description: Search Devices by columnName serialNum and type equals
+      description: Verify that the system correctly returns devices when searching by serial number using the equals condition
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -91,7 +91,7 @@ DeviceSearch:
    MasterData_DeviceSearch_Equals_MacAddress_smoke:
       endPoint: /v1/masterdata/devices/search
       uniqueIdentifier: TC_Masterdata_DeviceSearch_03
-      description: Search Devices by columnName macAddress and type equals
+      description: Verify that the system correctly returns devices when searching by MAC address using the equals condition
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -125,7 +125,7 @@ DeviceSearch:
    MasterData_DeviceSearch_ASC_Name_eng_pos:
       endPoint: /v1/masterdata/devices/search
       uniqueIdentifier: TC_Masterdata_DeviceSearch_04
-      description: Search Devices by columnName name and sortType By ASC
+      description: Verify that the system correctly sorts devices in ascending order by name in English
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -171,7 +171,7 @@ DeviceSearch:
    MasterData_DeviceSearch_DESC_Name_eng_pos:
       endPoint: /v1/masterdata/devices/search
       uniqueIdentifier: TC_Masterdata_DeviceSearch_05
-      description: Search Devices by columnName name and sortType By Desc
+      description: Verify that the system correctly sorts devices in descending order by name in English
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -217,7 +217,7 @@ DeviceSearch:
    MasterData_DeviceSearch_Invalid_Value_Name_smoke:
       endPoint: /v1/masterdata/devices/search
       uniqueIdentifier: TC_Masterdata_DeviceSearch_06
-      description: Search Devices by columnName name and invalid value
+      description: Verify that the system returns an error when an invalid value is used while searching devices by name
       role: globalAdmin
       templateFields: ["value"]
       restMethod: post
@@ -252,7 +252,7 @@ DeviceSearch:
    MasterData_DeviceSearch_Invalid_SortType_neg:
       endPoint: /v1/masterdata/devices/search
       uniqueIdentifier: TC_Masterdata_DeviceSearch_07
-      description: Search Devices by columnName name and invalid sortType value
+      description: Verify that the system returns an error when an invalid sort type is used in the device search
       role: globalAdmin
       templateFields: ["value"]
       restMethod: post
@@ -290,7 +290,7 @@ DeviceSearch:
    MasterData_DeviceSearch_Invalid_RequestTime_neg:
       endPoint: /v1/masterdata/devices/search
       uniqueIdentifier: TC_Masterdata_DeviceSearch_08
-      description: Search Devices by invalid Request Time
+      description: Verify that the system returns an error when an invalid request time is provided in the device search
       role: globalAdmin
       templateFields: ["value"]
       restMethod: post

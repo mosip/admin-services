@@ -2,7 +2,7 @@ RejectionReason:
    MasterData_RejectionReason_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/packetrejectionreasons/reasoncategory
       uniqueIdentifier: TC_Masterdata_RejectionReason_01
-      description: Create rejection reason with valid details
+      description: Verify that the system successfully fetches all rejection reasons when all input parameters are valid
       role: admin
       templateFields: ["langCode","description"]
       restMethod: post

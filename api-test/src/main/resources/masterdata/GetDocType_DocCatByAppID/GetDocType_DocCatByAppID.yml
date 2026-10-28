@@ -2,7 +2,7 @@ GetDocType_DocCatByAppID:
    Masterdata_GetDocType_DocCatByAppID_valid_smoke:
       endPoint: /v1/masterdata/applicanttype/{applicantId}/languages?languages={languages}
       uniqueIdentifier: TC_Masterdata_GetDocType_DocCatByAppID_01
-      description: Retrieve document type and document categories based on an applicant ID and language code
+      description: Verify that the system successfully returns document types for a valid application ID (smoke test)
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetDocType_DocCatByAppID/getDocType_DocCatByAppID
@@ -21,7 +21,7 @@ GetDocType_DocCatByAppID:
    Masterdata_GetDocType_DocCatByAppID_invalid_language:
       endPoint: /v1/masterdata/applicanttype/{applicantId}/languages?languages={languages}
       uniqueIdentifier: TC_Masterdata_GetDocType_DocCatByAppID_02
-      description: Retrieve document type and document categories based on an applicant ID and an invalid language code
+      description: Verify that the system returns an error or handles gracefully when an invalid language code is provided while fetching document types by application ID
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetDocType_DocCatByAppID/getDocType_DocCatByAppID

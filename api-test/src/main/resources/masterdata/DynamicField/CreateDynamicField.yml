@@ -2,7 +2,7 @@ CreateDynamicField:
    MasterData_CreateDynamicField_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/dynamicfields
       uniqueIdentifier: TC_Masterdata_CreateDynamicField_01
-      description: Create Dynamic Fields with all valid data
+      description: Verify that the system can create a dynamic field successfully with all valid inputs
       role: admin
       templateFields: ["langCode"]
       restMethod: post
@@ -26,7 +26,7 @@ CreateDynamicField:
    MasterData_CreateDynamicField_ByfieldName_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/dynamicfields
       uniqueIdentifier: TC_Masterdata_CreateDynamicField_02
-      description: Create Dynamic Fields By field name with all valid data
+      description: Verify that the system can create a dynamic field successfully using the field name with all valid inputs
       role: admin
       templateFields: ["langCode"]
       restMethod: post

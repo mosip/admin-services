@@ -2,7 +2,7 @@ PacketRejectionReasonList:
    MasterData_PacketRejectionReasonList_All_Valid_Smoke:
       endPoint: /v1/masterdata/packetrejectionreasons/reasonlist
       uniqueIdentifier: TC_Masterdata_PacketRejectionReasonList_01
-      description: Create packer rejection list with valid data
+      description: Verify that the system successfully fetches all packet rejection reasons when all input parameters are valid
       role: admin
       templateFields: ["langCode"]
       restMethod: post
@@ -25,7 +25,7 @@ PacketRejectionReasonList:
    MasterData_PacketRejectionReasonList_Invalid_Invalid_langCode:
       endPoint: /v1/masterdata/packetrejectionreasons/reasonlist
       uniqueIdentifier: TC_Masterdata_PacketRejectionReasonList_02
-      description: Create packer rejection list with invalid language code
+      description: Verify that the system returns an error when an invalid language code is provided while fetching packet rejection reasons
       role: admin
       restMethod: get
       inputTemplate: masterdata/PacketRejectionReasonList/packetRejectionReasonList

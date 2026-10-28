@@ -2,7 +2,7 @@ UpdateIdSchema:
    MasterData_Invalid_UpdateIdSchema_older_date_Smoke:  
       endPoint: /v1/masterdata/idschema/publish
       uniqueIdentifier: TC_Masterdata_UpdateIdSchema_01
-      description: Update ID schema details with older date
+      description: Verify that the system returns an error when updating a record using an outdated IdSchema with an older date (smoke test)
       role: admin
       restMethod: put
       inputTemplate: masterdata/UpdateIdSchema/updateIdSchema
@@ -24,7 +24,7 @@ UpdateIdSchema:
    MasterData_Invalid_UpdateIdSchemac_Already_exists:  
       endPoint: /v1/masterdata/idschema/publish
       uniqueIdentifier: TC_Masterdata_UpdateIdSchema_02
-      description: Update ID schema details which already exists
+      description: Verify that the system returns an error when updating a record with an IdSchema that already exists
       role: admin
       restMethod: put
       inputTemplate: masterdata/UpdateIdSchema/updateIdSchema

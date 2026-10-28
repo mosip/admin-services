@@ -2,7 +2,7 @@ UpdateDocumentType:
    MasterData_UpdateDocumentType_Valid_Smoke:
       endPoint: /v1/masterdata/documenttypes
       uniqueIdentifier: TC_Masterdata_UpdateDocumentType_01
-      description: Update Document Type with all valid data
+      description: Verify that the system can update a document type successfully with all valid inputs
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -26,7 +26,7 @@ UpdateDocumentType:
    MasterData_UpdateDocumentType_Invalid_Code_Char37:
       endPoint: /v1/masterdata/documenttypes
       uniqueIdentifier: TC_Masterdata_UpdateDocumentType_02
-      description: Update Document Type with invalid Code more than 36 characters
+      description: Verify that the system does not allow updating a document type when the code exceeds 36 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -51,7 +51,7 @@ UpdateDocumentType:
    MasterData_UpdateDocumentType_Invalid_Name_Char65:
       endPoint: /v1/masterdata/documenttypes
       uniqueIdentifier: TC_Masterdata_UpdateDocumentType_03
-      description: Update Document Type with invalid Description more than 64 characters
+      description: Verify that the system does not allow updating a document type when the name exceeds 64 characters
       role: admin
       templateFields: ["name","description"]
       restMethod: put
@@ -76,7 +76,7 @@ UpdateDocumentType:
    MasterData_UpdateDocumentType_Invalid_Descr_Char129:
       endPoint: /v1/masterdata/documenttypes
       uniqueIdentifier: TC_Masterdata_UpdateDocumentType_04
-      description: Update Document Type with invalid Description more than 128 characters
+      description: Verify that the system does not allow updating a document type when the description exceeds 128 characters
       role: admin
       restMethod: put
       templateFields: ["name","description"]
@@ -102,7 +102,7 @@ UpdateDocumentType:
    MasterData_UpdateDocumentType_Invalid_Name_Blank:
       endPoint: /v1/masterdata/documenttypes
       uniqueIdentifier: TC_Masterdata_UpdateDocumentType_05
-      description: Update Document Type with invalid empty Name
+      description: Verify that the system does not allow updating a document type when the name field is blank
       role: admin
       templateFields: ["description"]
       restMethod: put
@@ -127,7 +127,7 @@ UpdateDocumentType:
    MasterData_UpdateDocumentType_Invalid_Code_Blank:
       endPoint: /v1/masterdata/documenttypes
       uniqueIdentifier: TC_Masterdata_UpdateDocumentType_06
-      description: Update Document Type with invalid empty Code
+      description: Verify that the system does not allow updating a document type when the code field is blank
       role: admin
       templateFields: ["name","description"]
       restMethod: put

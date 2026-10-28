@@ -2,7 +2,7 @@ DecommisionMachine:
    MasterData_DecommisionMachine_Invalid_ID: 
       endPoint: /v1/masterdata/machines/decommission/{id}
       uniqueIdentifier: TC_Masterdata_DecommisionMachine_01
-      description: Decommission Machine with invalid id
+      description: Verify that the system does not decommission a machine when an invalid machine ID is provided
       role: admin
       templateFields: []
       restMethod: put

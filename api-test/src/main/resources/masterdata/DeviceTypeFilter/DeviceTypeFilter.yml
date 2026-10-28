@@ -2,7 +2,7 @@ DeviceTypeFilter:
    MasterData_DeviceTypeFilter_Valid_Smoke:
       endPoint: /v1/masterdata/devicetypes/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceTypeFilter_01
-      description: Filter Device Type with all valid data
+      description: Verify that the system can filter device types correctly using valid filter criteria
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -28,7 +28,7 @@ DeviceTypeFilter:
    MasterData_DeviceTypeFilter_All_Name_eng_smoke:
       endPoint: /v1/masterdata/devicetypes/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceTypeFilter_02
-      description: Filter Device type with columnName code and type all
+      description: Verify that the system can filter device types by name in English correctly
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -54,7 +54,7 @@ DeviceTypeFilter:
    MasterData_DeviceTypeFilter_isActive_eng_smoke:
       endPoint: /v1/masterdata/devicetypes/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceTypeFilter_03
-      description: Filter Device type with columnName isActive and type unique
+      description: Verify that the system can filter device types based on the isActive status in English correctly
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -81,7 +81,7 @@ DeviceTypeFilter:
    MasterData_DeviceTypeFilter_Invalid_RequestTime_neg:
       endPoint: /v1/masterdata/devicetypes/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceTypeFilter_04
-      description: Filter Device type with invalid Request Time
+      description: Verify that the system handles invalid request time correctly when filtering device types
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -107,7 +107,7 @@ DeviceTypeFilter:
    MasterData_DeviceTypeFilter_Invalid_Value_Name_neg:
       endPoint: /v1/masterdata/devicetypes/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceTypeFilter_05
-      description: Filter Device type with invalid text value
+      description: Verify that the system does not return results when filtering device types with an invalid name
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -129,7 +129,7 @@ DeviceTypeFilter:
    MasterData_DeviceTypeFilter_Invalid_FilterType_neg:
       endPoint: /v1/masterdata/devicetypes/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceTypeFilter_06
-      description: Filter Device type with invalid type
+      description: Verify that the system handles invalid filter types correctly when filtering device types
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -154,7 +154,7 @@ DeviceTypeFilter:
    MasterData_DeviceTypeFilter_inValid_blank_FilterType_neg:
       endPoint: /v1/masterdata/devicetypes/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceTypeFilter_07
-      description: Filter Device type with blank filter type
+      description: Verify that the system does not allow filtering device types when the filter type is blank
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -180,7 +180,7 @@ DeviceTypeFilter:
    MasterData_DeviceTypeFilter_inValid_columnName:
       endPoint: /v1/masterdata/devicetypes/filtervalues
       uniqueIdentifier: TC_Masterdata_DeviceTypeFilter_08
-      description: Filter Device type with invalid columnName
+      description: Verify that the system handles invalid column names correctly when filtering device types
       role: admin
       templateFields: ["languageCode"]
       restMethod: post

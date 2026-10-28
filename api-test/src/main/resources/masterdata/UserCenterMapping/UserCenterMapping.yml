@@ -2,7 +2,7 @@ UserCenterMapping:
    MasterData_UserCenterMapping_All_Valid_Smoke_FullResponse_sid:
       endPoint: /v1/masterdata/usercentermapping
       uniqueIdentifier: TC_Masterdata_UserCenterMapping_01
-      description: Create user center mapping details with valid data
+      description: Verify that the system successfully updates a user-center mapping with all valid input parameters and returns a full response (smoke test)
       role: globalAdmin
       templateFields: ["name"]
       restMethod: post
@@ -29,7 +29,7 @@ UserCenterMapping:
    MasterData_UserCenterMapping_Invalid_duplicate_entry:
       endPoint: /v1/masterdata/usercentermapping
       uniqueIdentifier: TC_Masterdata_UserCenterMapping_02
-      description: Create user center mapping details with the duplicate entry
+      description: Verify that the system returns an error when attempting to create or update a user-center mapping with a duplicate entry
       role: admin
       templateFields: ["name"]
       restMethod: post
@@ -55,7 +55,7 @@ UserCenterMapping:
    MasterData_UserCenterMapping_Invalid_InputParameter_regCenterId_Missing:
       endPoint: /v1/masterdata/usercentermapping
       uniqueIdentifier: TC_Masterdata_UserCenterMapping_03
-      description: Create user center mapping details with the parameter registration center ID as missing
+      description: Verify that the system returns an error when updating a user-center mapping with the regCenterId parameter missing
       role: admin
       templateFields: ["name"]
       restMethod: post
@@ -81,7 +81,7 @@ UserCenterMapping:
    MasterData_UserCenterMapping_Invalid_InputParameter_Invalid_regCenterId:
       endPoint: /v1/masterdata/usercentermapping
       uniqueIdentifier: TC_Masterdata_UserCenterMapping_04
-      description: Create user center mapping details with the parameter registration center ID as invalid
+      description: Verify that the system returns an error when updating a user-center mapping with an invalid regCenterId parameter
       role: admin
       templateFields: ["name"]
       restMethod: post

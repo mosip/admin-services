@@ -2,7 +2,7 @@ UpdateDeviceSpecStatus:
    MasterData_UpdateDeviceSpecStatus_All_Valid_Smoke:  
       endPoint: /v1/masterdata/devicespecifications?isActive={isActive}&id={id}
       uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecStatus_01
-      description: Update device spec status with valid data
+      description: Verify that the system successfully updates the status of a device specification with all valid input parameters (smoke test)
       role: admin
       restMethod: patch
       inputTemplate: masterdata/UpdateDeviceSpecStatus/updateDeviceSpecStatus
@@ -17,7 +17,7 @@ UpdateDeviceSpecStatus:
    MasterData_UpdateDeviceSpecStatus_Invalid_id:  
       endPoint: /v1/masterdata/devicespecifications?isActive={isActive}&id={id}
       uniqueIdentifier: TC_Masterdata_UpdateDeviceSpecStatus_02
-      description: Update device spec status with invalid ID
+      description: Verify that the system returns an error when updating the status of a device specification with an invalid id parameter
       role: admin
       restMethod: patch
       inputTemplate: masterdata/UpdateDeviceSpecStatus/updateDeviceSpecStatus

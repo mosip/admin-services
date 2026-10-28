@@ -2,7 +2,7 @@ DeleteTemplateFileFormat:
    MasterData_DeleteTemplateFileFormat_All_Valid_Smoke:  
       endPoint: /v1/masterdata/templatefileformats/{code}
       uniqueIdentifier: TC_Masterdata_DeleteTemplateFileFormat_01
-      description: Delete Template File Format with all valid data
+      description: Verify that the system successfully deletes a template file format when all details are valid
       role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteTemplateFileFormat/deleteTemplateFileFormat
@@ -16,7 +16,7 @@ DeleteTemplateFileFormat:
    MasterData_DeleteTemplateFileFormat_Invalid_code: 
       endPoint: /v1/masterdata/templatefileformats/{code}
       uniqueIdentifier: TC_Masterdata_DeleteTemplateFileFormat_02
-      description: Delete Template File Format with invalid code
+      description: Verify that the system does not delete a template file format when an invalid code is provided
       role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteTemplateFileFormat/deleteTemplateFileFormat

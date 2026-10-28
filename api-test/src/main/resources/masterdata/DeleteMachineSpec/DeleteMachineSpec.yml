@@ -2,7 +2,7 @@ DeleteMachineSpec:
    MasterData_DeleteMachineSpec_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/machinespecifications/{id}
       uniqueIdentifier: TC_Masterdata_DeleteMachineSpec_01
-      description: Delete Machine Spec with valid data
+      description: Verify that the system successfully deletes a machine specification when all details are valid
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: []
@@ -18,7 +18,7 @@ DeleteMachineSpec:
    MasterData_DeleteMachineSpec_Invalid_ID: 
       endPoint: /v1/masterdata/machinespecifications/{id}
       uniqueIdentifier: TC_Masterdata_DeleteMachineSpec_02
-      description: Delete Machine Spec with invalid id
+      description: Verify that the system does not delete a machine specification when an invalid ID is provided
       role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteMachine/deleteMachine

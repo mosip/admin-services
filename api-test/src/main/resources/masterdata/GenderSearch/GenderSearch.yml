@@ -2,7 +2,7 @@ GenderSearch:
    Masterdata_GenderSearch_Valid_Smoke:
       endPoint: /v1/masterdata/gendertypes/search
       uniqueIdentifier: TC_Masterdata_GenderSearch_01
-      description: Search gender details by all valid data
+      description: Verify that the system successfully returns gender entries when a valid filter is applied
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -26,7 +26,7 @@ GenderSearch:
    Masterdata_GenderSearch_valid_lang:
       endPoint: /v1/masterdata/gendertypes/search
       uniqueIdentifier: TC_Masterdata_GenderSearch_02
-      description: Search gender details by languageCode
+      description: Verify that the system returns gender entries correctly when the language code is valid
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -56,7 +56,7 @@ GenderSearch:
    Masterdata_GenderSearch_Valid_langCodeAsEng_sortBy_code:
       endPoint: /v1/masterdata/gendertypes/search
       uniqueIdentifier: TC_Masterdata_GenderSearch_03
-      description: Search gender details by languageCode eng and sort by sortType ASC order
+      description: Verify that the system returns gender entries correctly sorted by code when the language code is set to English
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -80,7 +80,7 @@ GenderSearch:
    Masterdata_GenderSearch_InvalidSortFieldAsEmpty:
       endPoint: /v1/masterdata/gendertypes/search
       uniqueIdentifier: TC_Masterdata_GenderSearch_04
-      description: Search gender details by languageCode eng and empty sortField
+      description: Verify that the system returns an error or handles gracefully when the sort field is empty while searching gender entries
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -110,7 +110,7 @@ GenderSearch:
    Masterdata_GenderSearch_InvalidSortFieldAsNonExisting:
       endPoint: /v1/masterdata/gendertypes/search
       uniqueIdentifier: TC_Masterdata_GenderSearch_05
-      description: Search gender details by languageCode eng and invalid sortField
+      description: Verify that the system returns an error or handles gracefully when a non-existing sort field is used while searching gender entries
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -140,7 +140,7 @@ GenderSearch:
    Masterdata_GenderSearch_InvalidSortTypeAsEmpty:
       endPoint: /v1/masterdata/gendertypes/search
       uniqueIdentifier: TC_Masterdata_GenderSearch_06
-      description: Search gender details by languageCode eng and empty sortType
+      description: Verify that the system returns an error or handles gracefully when the sort type is empty while searching gender entries
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -171,7 +171,7 @@ GenderSearch:
    Masterdata_GenderSearch_InvalidRequestTimeAsEmpty:
       endPoint: /v1/masterdata/gendertypes/search
       uniqueIdentifier: TC_Masterdata_GenderSearch_07
-      description: Search gender details by languageCode eng and empty requesttime
+      description: Verify that the system returns an error or handles gracefully when the request time is empty while searching gender entries
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -201,7 +201,7 @@ GenderSearch:
    Masterdata_GenderSearch_Valid_Searchby_code_FLE:
       endPoint: /v1/masterdata/gendertypes/search
       uniqueIdentifier: TC_Masterdata_GenderSearch_08
-      description: Search gender details by languageCode eng and code FLE(female)
+      description: Verify that the system successfully returns gender entries when searching by code using a valid filter (FLE)
       role: admin
       templateFields: ["languageCode"]
       restMethod: post

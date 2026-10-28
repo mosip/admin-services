@@ -2,7 +2,7 @@ GetTxnDetailBulkUpload:
    master_GetTxnDetailBulkUpload_Smoke:
       endPoint: /v1/admin/bulkupload/transcation/{transcationId}
       uniqueIdentifier: TC_Masterdata_GetTxnDetailBulkUpload_01
-      description: Retrieve transaction detail bulk upload details using an transaction code
+      description: Verify that the system successfully performs a bulk upload of transaction details when valid data is provided (smoke test)
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetTxnDetailBulkUpload/txnDetail

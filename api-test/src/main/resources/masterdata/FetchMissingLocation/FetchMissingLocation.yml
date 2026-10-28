@@ -2,7 +2,7 @@ FetchMissingLocation:
    MasterData_FetchMissingLocation_valid_smoke:
       endPoint: /v1/masterdata/locations/missingids/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchMissingLocation_01
-      description: Retrieve Missing Location details by langcode
+      description: Verify that the system successfully fetches all missing location records with valid input data
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

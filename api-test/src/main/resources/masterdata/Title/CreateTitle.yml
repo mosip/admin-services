@@ -2,7 +2,7 @@ CreateTitle:
    MasterData_CreateTitle_All_Valid_Smoke:
       endPoint: /v1/masterdata/title
       uniqueIdentifier: TC_Masterdata_CreateTitle_01
-      description: Create title details with valid data
+      description: Verify that the system successfully creates a title when all input parameters are valid (smoke test)
       role: admin
       templateFields: ["titleName","titleDescription"]
       restMethod: post
@@ -24,7 +24,7 @@ CreateTitle:
    MasterData_CreateTitle_Invalid_InputParameter_TitleName_Missing:
       endPoint: /v1/masterdata/title
       uniqueIdentifier: TC_Masterdata_CreateTitle_02
-      description: Create title details with input parameter title name as missing
+      description: Verify that the system returns an error when the TitleName input parameter is missing while creating a title
       role: admin
       templateFields: ["titleDescription"]
       restMethod: post
@@ -49,7 +49,7 @@ CreateTitle:
    MasterData_CreateTitle_Invalid_InputParameter_TitleName_Empty:
       endPoint: /v1/masterdata/title
       uniqueIdentifier: TC_Masterdata_CreateTitle_03
-      description: Create title details with input parameter title name as empty
+      description: Verify that the system returns an error when the TitleName input parameter is empty while creating a title
       role: admin
       templateFields: ["titleDescription"]
       restMethod: post
@@ -74,7 +74,7 @@ CreateTitle:
    MasterData_CreateTitle_Invalid_InputParameter_TitleName_AboveMaxLen64:
       endPoint: /v1/masterdata/title
       uniqueIdentifier: TC_Masterdata_CreateTitle_04
-      description: Create title details with input parameter title name exceeding the maximum length of 64 characters
+      description: Verify that the system returns an error when TitleName exceeds 64 characters while creating a title
       role: admin
       templateFields: ["titleDescription"]
       restMethod: post
@@ -99,7 +99,7 @@ CreateTitle:
    MasterData_CreateTitle_Invalid_InputParameter_TitleDescription_AboveMaxLen128:
       endPoint: /v1/masterdata/title
       uniqueIdentifier: TC_Masterdata_CreateTitle_05
-      description: Create title details with input parameter title description exceeding the maximum length of 128 characters
+      description: Verify that the system returns an error when TitleDescription exceeds 128 characters while creating a title
       role: admin
       templateFields: ["titleName"]
       restMethod: post
@@ -124,7 +124,7 @@ CreateTitle:
    MasterData_CreateTitle_Invalid_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/title
       uniqueIdentifier: TC_Masterdata_CreateTitle_06
-      description: Create title details with input parameter is active as missing
+      description: Verify that the system returns an error when the isActive input parameter is missing while creating a title
       role: admin
       templateFields: ["titleName","titleDescription"]
       restMethod: post

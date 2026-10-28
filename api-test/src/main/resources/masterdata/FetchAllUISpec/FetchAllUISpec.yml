@@ -2,7 +2,7 @@ FetchAllUISpec:
    MasterData_FetchAllUISpec_valid_smoke:
       endPoint: /v1/masterdata/uispec/all
       uniqueIdentifier: TC_Masterdata_FetchAllUISpec_01
-      description: Retrieve All UI Spec details with valid data
+      description: Verify that the system successfully fetches all UI specification records with valid input data
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

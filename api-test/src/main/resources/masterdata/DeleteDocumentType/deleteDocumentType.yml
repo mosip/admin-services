@@ -2,7 +2,7 @@ DeleteDocumentType:
    MasterData_DeleteDocumentType_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/documenttypes/{code}
       uniqueIdentifier: TC_Masterdata_DeleteDocumentType_01
-      description: Delete Document Type with valid data
+      description: Verify that the system successfully deletes a document type when all details are valid
       role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteDocumentType/deleteDocumentType
@@ -16,7 +16,7 @@ DeleteDocumentType:
    MasterData_DeleteDocumentType_Invalid_ID: 
       endPoint: /v1/masterdata/documenttypes/{code}
       uniqueIdentifier: TC_Masterdata_DeleteDocumentType_02
-      description: Delete Document Type with invalid code
+      description: Verify that the system does not delete a document type when an invalid ID is provided
       role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteDocumentType/deleteDocumentType

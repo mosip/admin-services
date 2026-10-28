@@ -2,7 +2,7 @@ GetExceptionalHolidays:
    Admin_GetExceptionalHolidays_allValid_smoke:
       endPoint: /v1/masterdata/exceptionalholidays/{registrationCenterId}/{langCode}
       uniqueIdentifier: TC_Masterdata_GetExceptionalHolidays_01
-      description: Retrieve exceptional holidays based on a valid registration center ID and language code
+      description: Verify that the system successfully returns all exceptional holidays when a valid request is made (smoke test)
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["langCode"]
@@ -19,7 +19,7 @@ GetExceptionalHolidays:
    Admin_GetExceptionalHolidays_InValid_Invalid_registrationCenterId:
       endPoint: /v1/masterdata/exceptionalholidays/{registrationCenterId}/{langCode}
       uniqueIdentifier: TC_Masterdata_GetExceptionalHolidays_02
-      description: Retrieve exceptional holidays based on a invalid registration center ID and valid language code
+      description: Verify that the system returns an error or handles gracefully when an invalid registration center ID is provided while fetching exceptional holidays
       role: admin
       templateFields: ["langCode"]
       restMethod: get
@@ -41,7 +41,7 @@ GetExceptionalHolidays:
    Admin_GetExceptionalHolidays_InValid_Invalid_langCode:
       endPoint: /v1/masterdata/exceptionalholidays/{registrationCenterId}/{langCode}
       uniqueIdentifier: TC_Masterdata_GetExceptionalHolidays_03
-      description: Retrieve exceptional holidays based on a valid registration center ID and invalid language code
+      description: Verify that the system returns an error or handles gracefully when an invalid language code is provided while fetching exceptional holidays
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetExceptionalHolidays/getExceptionalHolidays

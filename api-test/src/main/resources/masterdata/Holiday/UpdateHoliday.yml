@@ -2,7 +2,7 @@ UpdateHoliday:
    MasterData_UpdateHoliday_All_Valid_Smoke:
       endPoint: /v1/masterdata/holidays
       uniqueIdentifier: TC_Masterdata_UpdateHoliday_01
-      description: Update the holiday details
+      description: Verify that the system successfully updates a holiday when all input fields are valid (smoke test)
       role: admin
       templateFields: ["holidayDesc","holidayName"]
       restMethod: put
@@ -27,7 +27,7 @@ UpdateHoliday:
    MasterData_UpdateHoliday_Invalid_InputParameter_HolidayDate_Missing:
       endPoint: /v1/masterdata/holidays
       uniqueIdentifier: TC_Masterdata_UpdateHoliday_02
-      description: Update the holiday detail with invalid input parameter that is holiday date is missing
+      description: Verify that the system returns an error or handles gracefully when the holiday date is missing while updating a holiday
       role: admin
       templateFields: ["holidayDesc","holidayName"]
       restMethod: put
@@ -54,7 +54,7 @@ UpdateHoliday:
    MasterData_UpdateHoliday_Invalid_InputParameter_HolidayDate_Empty:
       endPoint: /v1/masterdata/holidays
       uniqueIdentifier: TC_Masterdata_UpdateHoliday_03
-      description: Updating the holiday with holiday date parameter as empty
+      description: Verify that the system returns an error or handles gracefully when the holiday date is empty while updating a holiday
       role: admin
       templateFields: ["holidayDesc","holidayName"]
       restMethod: put
@@ -81,7 +81,7 @@ UpdateHoliday:
    MasterData_UpdateHoliday_Invalid_HolidayDate_Format:
       endPoint: /v1/masterdata/holidays
       uniqueIdentifier: TC_Masterdata_UpdateHoliday_04
-      description: Updating the holiday with invalid date format for holiday date parameter
+      description: Verify that the system returns an error or handles gracefully when the holiday date is provided in an invalid format while updating a holiday
       role: admin
       templateFields: ["holidayDesc","holidayName"]
       restMethod: put
@@ -108,7 +108,7 @@ UpdateHoliday:
    MasterData_UpdateHoliday_Invalid_InputParameter_HolidayName_Missing:
       endPoint: /v1/masterdata/holidays
       uniqueIdentifier: TC_Masterdata_UpdateHoliday_05
-      description: Updating the holiday with holiday name parameter as missing
+      description: Verify that the system returns an error or handles gracefully when the holiday name is missing while updating a holiday
       role: admin
       templateFields: ["holidayDesc"]
       restMethod: put
@@ -135,7 +135,7 @@ UpdateHoliday:
    MasterData_UpdateHoliday_Invalid_InputParameter_HolidayName_AboveMaxLen64:
       endPoint: /v1/masterdata/holidays
       uniqueIdentifier: TC_Masterdata_UpdateHoliday_06
-      description: Updating the holiday with invalid holiday name parameter as above maximum length of 64 character
+      description: Verify that the system returns an error or handles gracefully when the holiday name exceeds the maximum length of 64 characters while updating a holiday
       role: admin
       templateFields: ["holidayDesc","holidayName"]
       restMethod: put
@@ -162,7 +162,7 @@ UpdateHoliday:
    MasterData_UpdateHoliday_Invalid_InputParameter_LocationCode_Missing:
       endPoint: /v1/masterdata/holidays
       uniqueIdentifier: TC_Masterdata_UpdateHoliday_07
-      description: Updating the holiday with location code parameter as missing
+      description: Verify that the system returns an error or handles gracefully when the location code is missing while updating a holiday
       role: admin
       templateFields: ["holidayDesc","holidayName"]
       restMethod: put
@@ -189,7 +189,7 @@ UpdateHoliday:
    MasterData_UpdateHoliday_Invalid_InputParameter_LocationCode_NotInDB:
       endPoint: /v1/masterdata/holidays
       uniqueIdentifier: TC_Masterdata_UpdateHoliday_08
-      description: Updating the holiday with location code which is not available in database
+      description: Verify that the system returns an error or handles gracefully when the provided location code does not exist in the database while updating a holiday
       role: admin
       templateFields: ["holidayDesc","holidayName"]
       restMethod: put
@@ -215,7 +215,7 @@ UpdateHoliday:
    MasterData_UpdateHoliday_Invalid_InputParameter_LocationCode_AboveMaxLen128:
       endPoint: /v1/masterdata/holidays
       uniqueIdentifier: TC_Masterdata_UpdateHoliday_09
-      description: Updating the holiday with location code with parameter as above maximum length of 128 character
+      description: Verify that the system returns an error or handles gracefully when the location code exceeds the maximum length of 128 characters while updating a holiday
       role: admin
       templateFields: ["holidayDesc","holidayName"]
       restMethod: put

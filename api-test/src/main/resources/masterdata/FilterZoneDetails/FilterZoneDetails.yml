@@ -2,7 +2,7 @@ FilterZoneDetails:
    Admin_FilterZoneDetails_Valid_Request_Smoke:
       endPoint: /v1/masterdata/zones/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterZoneDetails_01
-      description: Filter Zone details by all valid details
+      description: Verify that the system successfully filters zone details and returns the expected results when a valid request is provided
       role: admin
       restMethod: post
       inputTemplate: masterdata/FilterZoneDetails/filterZoneDetails
@@ -29,7 +29,7 @@ FilterZoneDetails:
    Admin_FilterZoneDetails_Invalid_EmptyFilterType:
       endPoint: /v1/masterdata/zones/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterZoneDetails_02
-      description: Filter Zone details by empty filter type
+      description: Verify that the system returns an error when a blank filter type is provided while filtering zone details
       role: admin
       restMethod: post
       inputTemplate: masterdata/FilterZoneDetails/filterZoneDetails
@@ -55,7 +55,7 @@ FilterZoneDetails:
    Admin_FilterZoneDetails_Invalid_InvalidFilterType:
       endPoint: /v1/masterdata/zones/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterZoneDetails_03
-      description: Filter Zone details by invalid filter type
+      description: Verify that the system returns an error when an invalid filter type is provided while filtering zone details
       role: admin
       restMethod: post
       inputTemplate: masterdata/FilterZoneDetails/filterZoneDetails
@@ -81,7 +81,7 @@ FilterZoneDetails:
    Admin_FilterZoneDetails_Invalid_InvalidcolumnName:
       endPoint: /v1/masterdata/zones/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterZoneDetails_04
-      description: Filter Zone details by invalid filter columnname
+      description: Verify that the system returns an error when an invalid column name is provided while filtering zone details
       role: admin
       restMethod: post
       inputTemplate: masterdata/FilterZoneDetails/filterZoneDetails
@@ -106,7 +106,7 @@ FilterZoneDetails:
    Admin_FilterZoneDetails_Invalid_EmptycolumnName:
       endPoint: /v1/masterdata/zones/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterZoneDetails_05
-      description: Filter Zone details by empty columnname
+      description: Verify that the system returns an error when a blank column name is provided while filtering zone details
       role: admin
       restMethod: post
       inputTemplate: masterdata/FilterZoneDetails/filterZoneDetails

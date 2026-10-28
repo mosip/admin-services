@@ -2,7 +2,7 @@ FetchAllIdschema:
    MasterData_FetchAllIdschema_valid_smoke:
       endPoint: /v1/masterdata/idschema/all
       uniqueIdentifier: TC_Masterdata_FetchAllIdschema_01
-      description: Retrieve All ID Schema details with valid data
+      description: Verify that the system successfully fetches all ID schema records with valid input data
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

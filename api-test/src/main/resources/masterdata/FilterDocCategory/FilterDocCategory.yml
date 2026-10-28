@@ -2,7 +2,7 @@ FilterDocCategory:
    MasterData_FilterDocCategory_Valid_Request_Smoke:
       endPoint: /v1/masterdata/documentcategories/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterDocCategory_01
-      description: Filter Document Category with all valid details
+      description: Verify that the system successfully filters document categories and returns the expected results when a valid request is provided
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]
@@ -24,7 +24,7 @@ FilterDocCategory:
    MasterData_FilterDocCategory_Valid_column_code_filterType_all:
       endPoint: /v1/masterdata/documentcategories/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterDocCategory_02
-      description: Filter Document Category By type all and all valid details
+      description: Verify that the system successfully filters document categories by code when a valid request with filter type set to "All" is provided
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]
@@ -47,7 +47,7 @@ FilterDocCategory:
    MasterData_FilterDocCategory_inValid_filterColumnName_blank:
       endPoint: /v1/masterdata/documentcategories/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterDocCategory_03
-      description: Filter Document Category By type all and empty columnName
+      description: Verify that the system returns an error when a blank filter column name is provided while filtering document categories
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -74,7 +74,7 @@ FilterDocCategory:
    MasterData_FilterDocCategory_inValid_RequestTime_format:
       endPoint: /v1/masterdata/documentcategories/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterDocCategory_04
-      description: Filter Document Category By type all and invalid requesttime format
+      description: Verify that the system returns an error when the request time is provided in an invalid format while filtering document categories
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -100,7 +100,7 @@ FilterDocCategory:
    MasterData_FilterDocCategory_inValid_filterColumnName:
       endPoint: /v1/masterdata/documentcategories/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterDocCategory_05
-      description: Filter Document Category By yype all and invalid columnName
+      description: Verify that the system returns an error when an invalid filter column name is provided while filtering document categories
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -125,7 +125,7 @@ FilterDocCategory:
    MasterData_FilterDocCategory_inValid_filterType:
       endPoint: /v1/masterdata/documentcategories/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterDocCategory_06
-      description: Filter Document Category By invalid type
+      description: Verify that the system returns an error when an invalid filter type is provided while filtering document categories
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -151,7 +151,7 @@ FilterDocCategory:
    MasterData_FilterDocCategory_Empty_FilterText_Pos:
       endPoint: /v1/masterdata/documentcategories/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterDocCategory_07
-      description: Filter Document Category By type all and empty text
+      description: Verify that the system successfully processes the request and returns appropriate results when the filter text is empty while filtering document categories
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]

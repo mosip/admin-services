@@ -2,7 +2,7 @@ TitleFilter:
    MasterData_TitleFilter_Unique_Name_eng_smoke:
       endPoint: /v1/masterdata/title/filtervalues
       uniqueIdentifier: TC_Masterdata_TitleFilter_01
-      description: Filter the title details by unique name and language code set to English
+      description: Verify that the system successfully filters titles by unique Name in English (smoke test)
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -29,7 +29,7 @@ TitleFilter:
    MasterData_TitleFilter_isActive__eng_smoke:
       endPoint: /v1/masterdata/title/filtervalues
       uniqueIdentifier: TC_Masterdata_TitleFilter_02
-      description: Filter the title details by is active, type is unique and language code set to English
+      description: Verify that the system successfully filters titles by the isActive status in English (smoke test)
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -55,7 +55,7 @@ TitleFilter:
    MasterData_TitleFilter_Invalid_RequestTime_neg:
       endPoint: /v1/masterdata/title/filtervalues
       uniqueIdentifier: TC_Masterdata_TitleFilter_03
-      description: Filter the title details with invalid request time
+      description: Verify that the system returns an error when filtering titles with a negative RequestTime value
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -81,7 +81,7 @@ TitleFilter:
    MasterData_TitleFilter_Invalid_Value_Name_neg:
       endPoint: /v1/masterdata/title/filtervalues
       uniqueIdentifier: TC_Masterdata_TitleFilter_04
-      description: Filter the title details with invalid name
+      description: Verify that the system returns an error when filtering titles with a negative Name value
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -102,7 +102,7 @@ TitleFilter:
    MasterData_TitleFilter_isActive__eng_smoke:
       endPoint: /v1/masterdata/title/filtervalues
       uniqueIdentifier: TC_Masterdata_TitleFilter_05
-      description: Filter the title details by is active, type is between and language code set to English
+      description: Verify that the system successfully filters titles by isActive status in English (smoke test)
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -129,7 +129,7 @@ TitleFilter:
    MasterData_TitleFilter_inValid_FilterType_blank:
       endPoint: /v1/masterdata/title/filtervalues
       uniqueIdentifier: TC_Masterdata_TitleFilter_06
-      description: Filter the title details with invalid filter type
+      description: Verify that the system returns an error when filtering titles with a blank FilterType parameter
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -155,7 +155,7 @@ TitleFilter:
    MasterData_TitleFilter_inValid_columnName:
       endPoint: /v1/masterdata/title/filtervalues
       uniqueIdentifier: TC_Masterdata_TitleFilter_07
-      description: Filter the title details with invalid column name
+      description: Verify that the system returns an error when filtering titles with an invalid columnName parameter
       role: admin
       templateFields: ["text"]
       restMethod: post

@@ -2,7 +2,7 @@ DeleteHoliday:
    MasterData_DeleteHoliday_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/holidays
       uniqueIdentifier: TC_Masterdata_DeleteHoliday_01
-      description: Delete Holiday with all valid data
+      description: Verify that the system successfully deletes a holiday when all details are valid
       role: admin
       templateFields: []
       restMethod: delete
@@ -21,7 +21,7 @@ DeleteHoliday:
    MasterData_DeleteHoliday_Invalid_requesttime_Neg:  
       endPoint: /v1/masterdata/holidays
       uniqueIdentifier: TC_Masterdata_DeleteHoliday_02
-      description: Delete Holiday with invalid requesttime
+      description: Verify that the system does not delete a holiday when an invalid request time is provided
       role: admin
       templateFields: []
       restMethod: delete
@@ -46,7 +46,7 @@ DeleteHoliday:
    MasterData_DeleteHoliday_Invalid_locationCode:  
       endPoint: /v1/masterdata/holidays
       uniqueIdentifier: TC_Masterdata_DeleteHoliday_03
-      description: Delete Holiday with invalid locationCode
+      description: Verify that the system does not delete a holiday when an invalid location code is provided
       role: admin
       templateFields: []
       restMethod: delete
@@ -71,7 +71,7 @@ DeleteHoliday:
    MasterData_DeleteHoliday_Invalid_holidayDate_Neg:  
       endPoint: /v1/masterdata/holidays
       uniqueIdentifier: TC_Masterdata_DeleteHoliday_04
-      description: Delete Holiday with invalid holidayDate
+      description: Verify that the system does not delete a holiday when an invalid holiday date is provided
       role: admin
       templateFields: []
       restMethod: delete

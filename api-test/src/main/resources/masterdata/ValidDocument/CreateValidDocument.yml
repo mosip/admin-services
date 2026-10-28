@@ -2,7 +2,7 @@ CreateValidDocument:
    MasterData_CreateValidDocument_All_Valid_Smoke:
       endPoint: /v1/masterdata/validdocuments
       uniqueIdentifier: TC_Masterdata_CreateValidDocument_01
-      description: Create valid document details with valid data
+      description: Verify that the system successfully creates a document with all valid input parameters (smoke test)
       role: admin
       restMethod: post
       inputTemplate: masterdata/ValidDocument/validDocument
@@ -21,7 +21,7 @@ CreateValidDocument:
    MasterData_CreateValidDocument_Invalid_InputParameter_docTypeCode_Missing:
       endPoint: /v1/masterdata/validdocuments
       uniqueIdentifier: TC_Masterdata_CreateValidDocument_02
-      description: Create valid document details with the parameter document type code as missing
+      description: Verify that the system returns an error when creating a document with the docTypeCode parameter missing
       role: admin
       restMethod: post
       inputTemplate: masterdata/ValidDocument/validDocument
@@ -44,7 +44,7 @@ CreateValidDocument:
    MasterData_CreateValidDocument_Invalid_InputParameter_docCategoryCode_Missing:
       endPoint: /v1/masterdata/validdocuments
       uniqueIdentifier: TC_Masterdata_CreateValidDocument_03
-      description: Create valid document details with the parameter document category code as missing
+      description: Verify that the system returns an error when creating a document with the docCategoryCode parameter missing
       role: admin
       restMethod: post
       inputTemplate: masterdata/ValidDocument/validDocument
@@ -67,7 +67,7 @@ CreateValidDocument:
    MasterData_CreateValidDocument_Invalid_isActive:
       endPoint: /v1/masterdata/validdocuments
       uniqueIdentifier: TC_Masterdata_CreateValidDocument_04
-      description: Create valid document details with parameter is active as invalid
+      description: Verify that the system returns an error when creating a document with an invalid isActive parameter
       role: admin
       restMethod: post
       inputTemplate: masterdata/ValidDocument/validDocument

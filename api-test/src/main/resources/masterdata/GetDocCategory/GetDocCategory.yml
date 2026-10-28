@@ -2,7 +2,7 @@ GetDocCategory:
    Admin_GetDocCategory_allValid_smoke:
       endPoint: /v1/masterdata/documentcategories
       uniqueIdentifier: TC_Masterdata_GetDocCategory_01
-      description: Retrieve all the document categories
+      description: Verify that the system successfully returns all document categories when a valid request is made (smoke test)
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

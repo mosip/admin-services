@@ -2,7 +2,7 @@ UpdateUserCenterMapping:
    MasterData_UpdateUserCenterMapping_All_Valid_Smoke:
       endPoint: /v1/masterdata/usercentermapping
       uniqueIdentifier: TC_Masterdata_UpdateUserCenterMapping_01
-      description: Update user center mapping details with valid data
+      description: Verify that the system successfully updates a user-center mapping with all valid input parameters (smoke test)
       role: globalAdmin
       templateFields: ["regCenterName"]
       restMethod: put
@@ -28,7 +28,7 @@ UpdateUserCenterMapping:
    MasterData_UserCenterMapping_Invalid_InputParameter_regCenterId_Missing:
       endPoint: /v1/masterdata/usercentermapping
       uniqueIdentifier: TC_Masterdata_UpdateUserCenterMapping_02
-      description: Update user center mapping details with the parameter registration center ID as missing
+      description: Verify that the system returns an error when updating a user-center mapping with the regCenterId parameter missing
       role: admin
       templateFields: ["langCode"]
       restMethod: put
@@ -53,7 +53,7 @@ UpdateUserCenterMapping:
    MasterData_UserCenterMapping_Invalid_InputParameter_Invalid_regCenterId:
       endPoint: /v1/masterdata/usercentermapping
       uniqueIdentifier: TC_Masterdata_UpdateUserCenterMapping_03
-      description: Update user center mapping details with the parameter registration center ID as invalid
+      description: Verify that the system returns an error when updating a user-center mapping with an invalid regCenterId parameter
       role: admin
       templateFields: ["langCode"]
       restMethod: put

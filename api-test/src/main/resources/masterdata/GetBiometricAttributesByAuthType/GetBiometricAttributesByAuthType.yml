@@ -2,7 +2,7 @@ GetBiometricAttributesByAuthType:
    Admin_GetBiometricAttributesByAuthType_allValid_smoke:
       endPoint: /v1/masterdata/getbiometricattributesbyauthtype/{langcode}/{biometrictypecode}
       uniqueIdentifier: TC_Masterdata_GetBiometricAttributesByAuthType_01
-      description: Retrieve Biometric Attributes By Auth Type by langcode and biometrictypecode
+      description: Verify that the system successfully returns all biometric attributes for a valid authentication type (smoke test)
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetBiometricAttributesByAuthType/getBiometricAttributesByAuthType
@@ -20,7 +20,7 @@ GetBiometricAttributesByAuthType:
    Admin_GetBiometricAttributesByAuthType_InValid_Invalid_langcode:
       endPoint: /v1/masterdata/getbiometricattributesbyauthtype/{langcode}/{biometrictypecode}
       uniqueIdentifier: TC_Masterdata_GetBiometricAttributesByAuthType_02
-      description: Retrieve Biometric Attributes By Auth Type by invalid langcode and valid biometrictypecode
+      description: Verify that the system returns an error or handles gracefully when an invalid language code is provided while fetching biometric attributes by authentication type
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetBiometricAttributesByAuthType/getBiometricAttributesByAuthType
@@ -41,7 +41,7 @@ GetBiometricAttributesByAuthType:
    Admin_GetBiometricAttributesByAuthType_InValid_Invalid_biometrictypecode:
       endPoint: /v1/masterdata/getbiometricattributesbyauthtype/{langcode}/{biometrictypecode}
       uniqueIdentifier: TC_Masterdata_GetBiometricAttributesByAuthType_03
-      description: Retrieve Biometric Attributes By Auth Type by valid langcode and invalid biometrictypecode
+      description: Verify that the system returns an error or handles gracefully when an invalid biometric type code is provided while fetching biometric attributes by authentication type
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetBiometricAttributesByAuthType/getBiometricAttributesByAuthType

@@ -2,7 +2,7 @@ ValidDocumentSearch:
    MasterData_ValidDocumentSearch_Valid_Smoke:
       endPoint: /v1/masterdata/validdocuments/search
       uniqueIdentifier: TC_Masterdata_ValidDocumentSearch_01
-      description: Search document details with valid data
+      description: Verify that the system successfully searches documents with valid input parameters (smoke test)
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -25,7 +25,7 @@ ValidDocumentSearch:
    MasterData_ValidDocumentSearch_Valid_Filter_DocCatcode:
       endPoint: /v1/masterdata/validdocuments/search
       uniqueIdentifier: TC_Masterdata_ValidDocumentSearch_02
-      description: Search document details with filter as document category code
+      description: Verify that the system successfully searches documents using a valid DocCategoryCode filter
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -52,7 +52,7 @@ ValidDocumentSearch:
    MasterData_ValidDocumentSearch_Invalid_NegPageFetch:
       endPoint: /v1/masterdata/validdocuments/search
       uniqueIdentifier: TC_Masterdata_ValidDocumentSearch_03
-      description: Search document details with page fetch data as invalid
+      description: Verify that the system returns an error when searching documents with a negative PageFetch value
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -84,7 +84,7 @@ ValidDocumentSearch:
    MasterData_ValidDocumentSearch_Invalid_NegPageStart:
       endPoint: /v1/masterdata/validdocuments/search
       uniqueIdentifier: TC_Masterdata_ValidDocumentSearch_04
-      description: Search document details with page start data as invalid
+      description: Verify that the system returns an error when searching documents with a negative PageStart value
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -116,7 +116,7 @@ ValidDocumentSearch:
    MasterData_ValidDocumentSearch_Invalid_FilterType_neg:
       endPoint: /v1/masterdata/validdocuments/search
       uniqueIdentifier: TC_Masterdata_ValidDocumentSearch_05
-      description: Search document details with page filter type as invalid
+      description: Verify that the system returns an error when searching documents with a negative FilterType value
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -147,7 +147,7 @@ ValidDocumentSearch:
    MasterData_ValidDocumentSearch_Invalid_SortType_neg:
       endPoint: /v1/masterdata/validdocuments/search
       uniqueIdentifier: TC_Masterdata_ValidDocumentSearch_06
-      description: Search document details with page sort type as invalid
+      description: Verify that the system returns an error when searching documents with a negative SortType value
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -179,7 +179,7 @@ ValidDocumentSearch:
    MasterData_ValidDocumentSearch_Invalid_SortField_neg:
       endPoint: /v1/masterdata/validdocuments/search
       uniqueIdentifier: TC_Masterdata_ValidDocumentSearch_07
-      description: Search document details with sort field data as invalid
+      description: Verify that the system returns an error when searching documents with a negative SortField value
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -212,7 +212,7 @@ ValidDocumentSearch:
    MasterData_ValidDocumentSearch_Blank_SortField:
       endPoint: /v1/masterdata/validdocuments/search
       uniqueIdentifier: TC_Masterdata_ValidDocumentSearch_08
-      description: Search document details with sort field data as blank
+      description: Verify that the system successfully searches documents when the SortField parameter is left blank (positive test)
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -244,7 +244,7 @@ ValidDocumentSearch:
    MasterData_ValidDocumentSearch_Invalid_ColumnName:
       endPoint: /v1/masterdata/validdocuments/search
       uniqueIdentifier: TC_Masterdata_ValidDocumentSearch_09
-      description: Search document details with column name data as invalid
+      description: Verify that the system returns an error when searching documents with an invalid ColumnName parameter
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -275,7 +275,7 @@ ValidDocumentSearch:
    MasterData_ValidDocumentSearch_Invalid_RequestTime:
       endPoint: /v1/masterdata/validdocuments/search
       uniqueIdentifier: TC_Masterdata_ValidDocumentSearch_10
-      description: Search document details with request time data as invalid
+      description: Verify that the system returns an error when searching documents with an invalid RequestTime parameter
       role: admin
       templateFields: ["languageCode"]
       restMethod: post

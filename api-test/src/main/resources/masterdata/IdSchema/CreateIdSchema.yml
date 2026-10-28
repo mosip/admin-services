@@ -2,7 +2,7 @@ CreateIdSchema:
    MasterData_CreateIdSchema_Valid_Smoke_sid:
       endPoint: /v1/masterdata/idschema
       uniqueIdentifier: TC_Masterdata_CreateIdSchema_01
-      description: Create ID schema with valid details
+      description: Verify that the system successfully creates a new ID schema when all required fields are provided with valid values
       role: admin
       restMethod: post
       inputTemplate: masterdata/IdSchema/createIdSchema

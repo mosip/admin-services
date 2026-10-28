@@ -2,7 +2,7 @@ SearchUserCenterMapping:
    MasterData_SearchUserCenterMapping_All_ValidUser_Smoke:
       endPoint: /v1/masterdata/usercentermapping/search
       uniqueIdentifier: TC_Masterdata_SearchUserCenterMapping_01
-      description: Search for user center mapping details with valid user data
+      description: Verify that the system successfully fetches all user-center mappings for a valid user (smoke test)
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -29,7 +29,7 @@ SearchUserCenterMapping:
    MasterData_SearchUserCenterMapping_InValid_ColumnInvalid:
       endPoint: /v1/masterdata/usercentermapping/search
       uniqueIdentifier: TC_Masterdata_SearchUserCenterMapping_02
-      description: Search for user center mapping details with invalid column data
+      description: Verify that the system returns an error when an invalid columnName is provided while searching user-center mappings
       role: admin
       templateFields: ["languageCode"]
       restMethod: post

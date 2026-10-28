@@ -2,7 +2,7 @@ FetchAllBlockListedWord:
    Master_FetchAllBlockListedWord_valid_smoke:
       endPoint: /v1/masterdata/blocklistedwords/all
       uniqueIdentifier: TC_Masterdata_FetchAllBlockListedWord_01
-      description: Retrieve all Block Listed words with valid data
+      description: Verify that the system can fetch all blocklisted words successfully
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

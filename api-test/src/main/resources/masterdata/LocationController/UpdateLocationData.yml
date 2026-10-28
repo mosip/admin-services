@@ -2,7 +2,7 @@ UpdateLocationData:
    MasterData_UpdateLocationData_All_Valid_Smoke_Sid:
       endPoint: /v1/masterdata/locations
       uniqueIdentifier: TC_Masterdata_UpdateLocationData_01
-      description: Updating location data with valid details
+      description: Verify that the system successfully updates existing location data when all required fields are provided with valid values
       role: admin
       templateFields: ["name"]
       restMethod: put
@@ -30,7 +30,7 @@ UpdateLocationData:
    MasterData_UpdateLocationData_Invalid_code_for_primaryLang_eng:
       endPoint: /v1/masterdata/locations
       uniqueIdentifier: TC_Masterdata_UpdateLocationData_02
-      description: Updating location data with invalid code as for primary language english
+      description: Verify that the system returns an error when an invalid location code is provided for the primary language (English) during location data update
       role: admin
       templateFields: ["langCode"]
       restMethod: put
@@ -57,7 +57,7 @@ UpdateLocationData:
    MasterData_UpdateLocationData_Invalid_EmptyCode_PrimaryLang_eng:
       endPoint: /v1/masterdata/locations
       uniqueIdentifier: TC_Masterdata_UpdateLocationData_03
-      description: Updating location data with code as empty for primary language english
+      description: Verify that the system returns an error when the location code is empty for the primary language (English) during location data update
       role: admin
       templateFields: ["langCode"]
       restMethod: put
@@ -84,7 +84,7 @@ UpdateLocationData:
    MasterData_UpdateLocationData_Invalid_NameLength129:
       endPoint: /v1/masterdata/locations
       uniqueIdentifier: TC_Masterdata_UpdateLocationData_04
-      description: Updating location data with an invalid name length of 129 characters
+      description: Verify that the system returns an error when the location name exceeds the maximum allowed length of 128 characters during location data update
       role: admin
       templateFields: ["hierarchyName"]
       restMethod: put
@@ -111,7 +111,7 @@ UpdateLocationData:
    MasterData_UpdateLocationData_Invalid_EmptyName:
       endPoint: /v1/masterdata/locations
       uniqueIdentifier: TC_Masterdata_UpdateLocationData_05
-      description: Updating location data with an name parameter as empty
+      description: Verify that the system returns an error when the location name is empty during location data update
       role: admin
       templateFields: ["hierarchyName"]
       restMethod: put
@@ -138,7 +138,7 @@ UpdateLocationData:
    MasterData_UpdateLocationData_Invalid_HierarchyLevel_LongInt:
       endPoint: /v1/masterdata/locations
       uniqueIdentifier: TC_Masterdata_UpdateLocationData_06
-      description: Updating location data with the hierarchy level parameter as a long integer
+      description: Verify that the system returns an error when the hierarchy level value exceeds the allowed integer range during location data update
       role: admin
       templateFields: ["hierarchyName"]
       restMethod: put
@@ -165,7 +165,7 @@ UpdateLocationData:
    MasterData_UpdateLocationData_inValid_hierLevel_locHierCombo:
       endPoint: /v1/masterdata/locations
       uniqueIdentifier: TC_Masterdata_UpdateLocationData_07
-      description: Updating location data with the hierarchy level parameter using invalid data for the location and hierarchy combination
+      description: Verify that the system returns an error when the hierarchy level does not match the location hierarchy combination during location data update
       role: admin
       templateFields: ["hierarchyName"]
       restMethod: put
@@ -192,7 +192,7 @@ UpdateLocationData:
    MasterData_UpdateLocationData_inValid_HierarchyName65:
       endPoint: /v1/masterdata/locations
       uniqueIdentifier: TC_Masterdata_UpdateLocationData_08
-      description: Updating location data with the hierarchy name parameter set to 65 characters
+      description: Verify that the system returns an error when the hierarchy name exceeds the maximum allowed length during location data update
       role: admin
       templateFields: ["hierarchyName"]
       restMethod: put
@@ -219,7 +219,7 @@ UpdateLocationData:
    MasterData_UpdateLocationData_Invalid_EmptyHierarchyName:
       endPoint: /v1/masterdata/locations
       uniqueIdentifier: TC_Masterdata_UpdateLocationData_09
-      description: Updating location data with the hierarchy name parameter as empty
+      description: Verify that the system returns an error when the hierarchy name is empty during location data update
       role: admin
       templateFields: ["hierarchyName"]
       restMethod: put
@@ -246,7 +246,7 @@ UpdateLocationData:
    MasterData_UpdateLocationData_inValid_parentLocCode_nonExisting_inDB:
       endPoint: /v1/masterdata/locations
       uniqueIdentifier: TC_Masterdata_UpdateLocationData_10
-      description: Updating location data with a parent location code parameter that is not available in the database
+      description: Verify that the system returns an error when a non-existing parent location code is provided during location data update
       role: admin
       templateFields: ["hierarchyName"]
       restMethod: put
@@ -275,7 +275,7 @@ UpdateLocationData:
    MasterData_UpdateLocationData_Invalid_requestTime_format:
       endPoint: /v1/masterdata/locations
       uniqueIdentifier: TC_Masterdata_UpdateLocationData_11
-      description: Updating location data with invalid request time format
+      description: Verify that the system returns an error when the request time format is invalid during location data update
       role: admin
       templateFields: ["hierarchyName"]
       restMethod: put

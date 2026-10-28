@@ -2,7 +2,7 @@ GetMappedMachinesByRegCentID:
    Admin_GetMappedMachinesByRegCentID_allValid_smoke:
       endPoint: /v1/masterdata/machines/mappedmachines/{regCenterId}
       uniqueIdentifier: TC_Masterdata_GetMappedMachinesByRegCentID_01
-      description: Retrieve mapped machine details by valid regisration centre ID
+      description: Verify that the system successfully returns all machines mapped to a registration center when a valid registration center ID is provided (smoke test)
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -18,7 +18,7 @@ GetMappedMachinesByRegCentID:
    Admin_GetMappedMachinesByRegCentID_Invalid_Invalid_regCenterId:
       endPoint: /v1/masterdata/machines/mappedmachines/{regCenterId}
       uniqueIdentifier: TC_Masterdata_GetMappedMachinesByRegCentID_02
-      description: Retrieve mapped machine details by invalid regisration centre ID
+      description: Verify that the system returns an error or handles gracefully when an invalid registration center ID is provided while fetching mapped machines
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetMappedMachinesByRegCentID/getMappedMachinesByRegCentID

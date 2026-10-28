@@ -2,7 +2,7 @@ FetchAllLocation:
    MasterData_FetchAllLocation_valid_smoke:
       endPoint: /v1/masterdata/locations/all
       uniqueIdentifier: TC_Masterdata_FetchAllLocation_01
-      description: Retrieve All Location details with valid data
+      description: Verify that the system successfully fetches all location records with valid input data
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

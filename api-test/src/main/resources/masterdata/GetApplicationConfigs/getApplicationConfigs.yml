@@ -2,7 +2,7 @@ GetCredentialTypes:
    Master_GetApplicationConfigs_smoke:
       endPoint: /v1/masterdata/applicationconfigs
       uniqueIdentifier: TC_Masterdata_GetApplicationConfigs_01
-      description: Retrieve Application Configs by all valid data
+      description: Verify that the system successfully retrieves application configuration settings as a basic smoke test
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

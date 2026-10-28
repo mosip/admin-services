@@ -2,7 +2,7 @@ FilterBlockListedWords:
    Masterdata_FilterBlockListedWords_Valid_Request_Smoke:
       endPoint: /v1/masterdata/blocklistedwords/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterBlockListedWords_01
-      description: Filter Block Listed Words with valid columnName and type unique
+      description: Verify that the system successfully filters block-listed words and returns the expected results when a valid request is provided
       role: admin
       templateFields: ["text","fieldValue"]
       restMethod: post
@@ -29,7 +29,7 @@ FilterBlockListedWords:
    Masterdata_FilterBlockListedWords_Valid_TypeAll:
       endPoint: /v1/masterdata/blocklistedwords/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterBlockListedWords_02
-      description: Filter Block Listed Words with valid columnName and type All
+      description: Verify that the system successfully filters and returns all block-listed words when a valid request with type set to "All" is provided
       role: admin
       templateFields: ["text","fieldValue"]
       restMethod: post
@@ -56,7 +56,7 @@ FilterBlockListedWords:
    Masterdata_FilterBlockListedWords_Invalid_EmptyColumnName:
       endPoint: /v1/masterdata/blocklistedwords/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterBlockListedWords_03
-      description: Filter Block Listed Words with empty columnName and type All
+      description: Verify that the system returns an error when an empty column name is provided while filtering block-listed words
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -82,7 +82,7 @@ FilterBlockListedWords:
    Masterdata_FilterBlockListedWords_Invalid_EmptyFilterType:
       endPoint: /v1/masterdata/blocklistedwords/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterBlockListedWords_04
-      description: Filter Block Listed Words with empty type
+      description: Verify that the system returns an error when an empty filter type is provided while filtering block-listed words
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -108,7 +108,7 @@ FilterBlockListedWords:
    Masterdata_FilterBlockListedWords_Invalid_ColumnName:
       endPoint: /v1/masterdata/blocklistedwords/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterBlockListedWords_05
-      description: Filter Block Listed Words with invalid columnName and type all
+      description: Verify that the system returns an error when an invalid column name is provided while filtering block-listed words
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -133,7 +133,7 @@ FilterBlockListedWords:
    Masterdata_FilterBlockListedWords_Invalid_FilterType:
       endPoint: /v1/masterdata/blocklistedwords/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterBlockListedWords_06
-      description: Filter Block Listed Words with valid columnName and invalid type
+      description: Verify that the system returns an error when an invalid filter type is provided while filtering block-listed words
       role: admin
       templateFields: ["text"]
       restMethod: post

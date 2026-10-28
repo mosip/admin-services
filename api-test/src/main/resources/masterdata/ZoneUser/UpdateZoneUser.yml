@@ -2,7 +2,7 @@ UpdateZoneUser:
    MasterData_UpdateZoneUser_All_Valid_Smoke_Sid:
       endPoint: /v1/masterdata/zoneuser
       uniqueIdentifier: TC_Masterdata_UpdateZoneUser_01
-      description: Update zone user with valid user data
+      description: Verify that the system successfully updates a zone user with all valid input parameters (smoke test)
       role: globalAdmin
       checkErrorsOnlyInResponse: true
       restMethod: put

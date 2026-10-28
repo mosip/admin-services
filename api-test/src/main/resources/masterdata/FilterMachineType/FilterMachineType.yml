@@ -2,7 +2,7 @@ FilterMachineType:
    Masterdata_FilterMachineType_Valid_Smoke:
       endPoint: /v1/masterdata/machinetypes/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterMachineType_01
-      description: Filter Machine Type details by all valid data
+      description: Verify that the system successfully filters machine types and returns the expected results when a valid request is provided
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]
@@ -23,7 +23,7 @@ FilterMachineType:
    Masterdata_FilterMachineType_Valid_col_as_name_filterType_all:
       endPoint: /v1/masterdata/machinetypes/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterMachineType_02
-      description: Filter Machine Type details by filter type all
+      description: Verify that the system successfully filters machine types by name with filter type set to "All" when a valid request is provided
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]
@@ -45,7 +45,7 @@ FilterMachineType:
    Masterdata_FilterMachineType_inValid_filterType_blank:
       endPoint: /v1/masterdata/machinetypes/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterMachineType_03
-      description: Filter Machine Type details by blank filter type
+      description: Verify that the system returns an error when a blank filter type is provided while filtering machine types
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -71,7 +71,7 @@ FilterMachineType:
    Masterdata_FilterMachineType_inValid_filterColumnName_blank:
       endPoint: /v1/masterdata/machinetypes/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterMachineType_04
-      description: Filter Machine Type details by blank filter columnName
+      description: Verify that the system returns an error when a blank filter column name is provided while filtering machine types
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -97,7 +97,7 @@ FilterMachineType:
    Masterdata_FilterMachineType_inValid_RequestTime_format:
       endPoint: /v1/masterdata/machinetypes/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterMachineType_05
-      description: Filter Machine Type details by invalid requesttime format
+      description: Verify that the system returns an error when the request time is provided in an invalid format while filtering machine types
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -123,7 +123,7 @@ FilterMachineType:
    Masterdata_FilterMachineType_inValid_filterColumnName:
       endPoint: /v1/masterdata/machinetypes/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterMachineType_06
-      description: Filter Machine Type details by invalid filter columnName
+      description: Verify that the system returns an error when an invalid filter column name is provided while filtering machine types
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -148,7 +148,7 @@ FilterMachineType:
    Masterdata_FilterMachineType_inValid_filterType:
       endPoint: /v1/masterdata/machinetypes/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterMachineType_07
-      description: Filter Machine Type details by invalid filter type
+      description: Verify that the system returns an error when an invalid filter type is provided while filtering machine types
       role: admin
       templateFields: ["text"]
       restMethod: post
@@ -174,7 +174,7 @@ FilterMachineType:
    Masterdata_FilterMachineType_inValid_FilterText:
       endPoint: /v1/masterdata/machinetypes/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterMachineType_08
-      description: Filter Machine Type details by invalid filter text
+      description: Verify that the system returns an error when an invalid filter text is provided while filtering machine types
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["text"]

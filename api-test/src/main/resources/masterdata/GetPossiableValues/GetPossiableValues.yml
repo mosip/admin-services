@@ -2,7 +2,7 @@ GetPossiableValues:
    Admin_GetPossiableValues_allValid_smoke:
       endPoint: /v1/masterdata/possiblevalues/{fieldName}?langCode=eng
       uniqueIdentifier: TC_Masterdata_GetPossiableValues_01
-      description: Retrieve possible values with valid field name and language code
+      description: Verify that the system successfully returns all possible values when a valid request is made (smoke test)
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -20,7 +20,7 @@ GetPossiableValues:
    Admin_GetPossiableValues_Invalid_Invalid_FieldName:
       endPoint: /v1/masterdata/possiblevalues/{fieldName}?langCode=eng
       uniqueIdentifier: TC_Masterdata_GetPossiableValues_02
-      description: Retrieve possible values with invalid field name and valid language code
+      description: Verify that the system returns an error or handles gracefully when an invalid field name is provided while fetching possible values
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -35,7 +35,7 @@ GetPossiableValues:
    Admin_GetPossiableValues_Invalid_Invalid_langCode:
       endPoint: /v1/masterdata/possiblevalues/{fieldName}?langCode=abc
       uniqueIdentifier: TC_Masterdata_GetPossiableValues_03
-      description: Retrieve possible values with valid field name and invalid language code
+      description: Verify that the system returns an error or handles gracefully when an invalid language code is provided while fetching possible values
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

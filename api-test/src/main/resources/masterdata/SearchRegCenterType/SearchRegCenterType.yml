@@ -2,7 +2,7 @@ SearchRegCenterType:
    MasterData_SearchRegCenterType_allValid_somke:
       endPoint: /v1/masterdata/registrationcentertypes/search
       uniqueIdentifier: TC_Masterdata_SearchRegCenterType_01
-      description: Search for registration center type details with valid data
+      description: Verify that the system successfully retrieves all registration center types when all valid parameters are provided (smoke test)
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -35,7 +35,7 @@ SearchRegCenterType:
    MasterData_SearchRegCenterType_valid_col_isActive_true:
       endPoint: /v1/masterdata/registrationcentertypes/search
       uniqueIdentifier: TC_Masterdata_SearchRegCenterType_02
-      description: Search for registration center type details with condition column name is active as true
+      description: Verify that the system successfully retrieves registration center types where the isActive column is true
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -71,7 +71,7 @@ SearchRegCenterType:
    MasterData_SearchRegCenterType_valid_typeFilter_contains:
       endPoint: /v1/masterdata/registrationcentertypes/search
       uniqueIdentifier: TC_Masterdata_SearchRegCenterType_03
-      description: Search for registration center type details with condition filter type contains specific keywords
+      description: Verify that the system successfully retrieves registration center types when a valid typeFilter of contains is applied
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -103,7 +103,7 @@ SearchRegCenterType:
    MasterData_SearchRegCenterType_valid_typeFilter_startsWith:
       endPoint: /v1/masterdata/registrationcentertypes/search
       uniqueIdentifier: TC_Masterdata_SearchRegCenterType_04
-      description: Search for registration center type details with condition filter type starts with specific keywords
+      description: Verify that the system successfully retrieves registration center types when a valid typeFilter of startsWith is applied
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -135,7 +135,7 @@ SearchRegCenterType:
    MasterData_SearchRegCenterType_inValid_columnName_blank:
       endPoint: /v1/masterdata/registrationcentertypes/search
       uniqueIdentifier: TC_Masterdata_SearchRegCenterType_05
-      description: Search for registration center type details with column name as empty
+      description: Verify that the system returns an error when the columnName is blank while searching registration center types
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -171,7 +171,7 @@ SearchRegCenterType:
    MasterData_SearchRegCenterType_inValid_columnName:
       endPoint: /v1/masterdata/registrationcentertypes/search
       uniqueIdentifier: TC_Masterdata_SearchRegCenterType_06
-      description: Search for registration center type details with invalid column name
+      description: Verify that the system returns an error when an invalid columnName is provided while searching registration center types
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -206,7 +206,7 @@ SearchRegCenterType:
    MasterData_SearchRegCenterType_inValid_filter_value:
       endPoint: /v1/masterdata/registrationcentertypes/search
       uniqueIdentifier: TC_Masterdata_SearchRegCenterType_07
-      description: Search for registration center type details with invalid filter data
+      description: Verify that the system returns an error when an invalid filter value is provided while searching registration center types
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -239,7 +239,7 @@ SearchRegCenterType:
    MasterData_SearchRegCenterType_inValid_filter_value_blank:
       endPoint: /v1/masterdata/registrationcentertypes/search
       uniqueIdentifier: TC_Masterdata_SearchRegCenterType_08
-      description: Search for registration center type details with filter as empty
+      description: Verify that the system returns an error when the filter value is blank while searching registration center types
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -276,7 +276,7 @@ SearchRegCenterType:
    MasterData_SearchRegCenterType_inValid_sortField:
       endPoint: /v1/masterdata/registrationcentertypes/search
       uniqueIdentifier: TC_Masterdata_SearchRegCenterType_09
-      description: Search for registration center type details with invalid sort field
+      description: Verify that the system returns an error when an invalid sortField is provided while searching registration center types
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -312,7 +312,7 @@ SearchRegCenterType:
    MasterData_SearchRegCenterType_inValid_sortType:
       endPoint: /v1/masterdata/registrationcentertypes/search
       uniqueIdentifier: TC_Masterdata_SearchRegCenterType_10
-      description: Search for registration center type details with invalid sort type
+      description: Verify that the system returns an error when an invalid sortType is provided while searching registration center types
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -348,7 +348,7 @@ SearchRegCenterType:
    MasterData_SearchRegCenterType_inValid_sortField_blank:
       endPoint: /v1/masterdata/registrationcentertypes/search
       uniqueIdentifier: TC_Masterdata_SearchRegCenterType_11
-      description: Search for registration center type details with sort field as empty
+      description: Verify that the system returns an error when the sortField is blank while searching registration center types
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -384,7 +384,7 @@ SearchRegCenterType:
    MasterData_SearchRegCenterType_inValid_sortType_blank:
       endPoint: /v1/masterdata/registrationcentertypes/search
       uniqueIdentifier: TC_Masterdata_SearchRegCenterType_12
-      description: Search for registration center type details with sort type as empty
+      description: Verify that the system returns an error when the sortType is blank while searching registration center types
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -420,7 +420,7 @@ SearchRegCenterType:
    MasterData_SearchRegCenterType_inValid_filterType_blank:
       endPoint: /v1/masterdata/registrationcentertypes/search
       uniqueIdentifier: TC_Masterdata_SearchRegCenterType_13
-      description: Search for registration center type details with filter type as empty
+      description: Verify that the system returns an error when the filterType is blank while searching registration center types
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -456,7 +456,7 @@ SearchRegCenterType:
    MasterData_SearchRegCenterType_inValid_filterType:
       endPoint: /v1/masterdata/registrationcentertypes/search
       uniqueIdentifier: TC_Masterdata_SearchRegCenterType_14
-      description: Search for registration center type details with invalid filter type
+      description: Verify that the system returns an error when an invalid filterType is provided while searching registration center types
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -491,7 +491,7 @@ SearchRegCenterType:
    MasterData_SearchRegCenterType_inValid_requestTime_format:
       endPoint: /v1/masterdata/registrationcentertypes/search
       uniqueIdentifier: TC_Masterdata_SearchRegCenterType_15
-      description: Search for registration center type details with invalid request time format
+      description: Verify that the system returns an error when requestTime format is invalid while searching registration center types.
       role: admin
       templateFields: ["value"]
       restMethod: post

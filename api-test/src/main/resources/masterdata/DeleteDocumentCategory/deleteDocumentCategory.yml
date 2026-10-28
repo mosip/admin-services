@@ -2,7 +2,7 @@ DeleteDocumentCategory:
    MasterData_DeleteDocumentCategory_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/documentcategories/{code}
       uniqueIdentifier: TC_Masterdata_DeleteDocumentCategory_01
-      description: Delete Document Categoty with valid data
+      description: Verify that the system successfully deletes a document category when all details are valid
       role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteDocumentCategory/deleteDocumentCategory
@@ -16,7 +16,7 @@ DeleteDocumentCategory:
    MasterData_DeleteDocumentCategory_Invalid_ID: 
       endPoint: /v1/masterdata/documentcategories/{code}
       uniqueIdentifier: TC_Masterdata_DeleteDocumentCategory_02
-      description: Delete Document Categoty with invalid code
+      description: Verify that the system does not delete a document category when an invalid ID is provided
       role: admin
       restMethod: delete
       inputTemplate: masterdata/DeleteDocumentCategory/deleteDocumentCategory

@@ -2,7 +2,7 @@ UpdateBlockListedWordStatus:
    MasterData_UpdateBlockListedWordStatus_All_Valid_Smoke:
       endPoint: /v1/masterdata/blocklistedwords?isActive={isActive}&word={word}
       uniqueIdentifier: TC_Masterdata_UpdateBlockListedWordStatus_01
-      description: Update block listed word status with valid data
+      description: Verify that the system successfully updates the status of blocklisted words with all valid input parameters (smoke test)
       role: admin
       templateFields: ["word"]
       restMethod: patch
@@ -18,7 +18,7 @@ UpdateBlockListedWordStatus:
    MasterData_UpdateBlockListedWordStatus_Invalid_word:  
       endPoint: /v1/masterdata/blocklistedwords?isActive={isActive}&word={word}
       uniqueIdentifier: TC_Masterdata_UpdateBlockListedWordStatus_02
-      description: Update block listed word status with invalid word
+      description: Verify that the system returns an error when updating the status of a blocklisted word with an invalid Word parameter
       role: admin
       restMethod: patch
       additionalDependencies: TC_Masterdata_CreateBlockListedWords_01

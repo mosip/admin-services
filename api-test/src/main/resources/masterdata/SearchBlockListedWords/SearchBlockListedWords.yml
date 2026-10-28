@@ -2,7 +2,7 @@ SearchBlockListedWords:
    Masterdata_SearchBlockListedWords_Valid_Request_Smoke:
       endPoint: /v1/masterdata/blocklistedwords/search
       uniqueIdentifier: TC_Masterdata_SearchBlockListedWords_01
-      description: Search blocklisted words where the column name word equals dumboo
+      description: Verify that the system successfully fetches all blocklisted words when a valid request is provided
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -41,7 +41,7 @@ SearchBlockListedWords:
    Masterdata_SearchBlockListedWords_Valid_FilterTypeContains:
       endPoint: /v1/masterdata/blocklistedwords/search
       uniqueIdentifier: TC_Masterdata_SearchBlockListedWords_02
-      description: Search blocklisted words with filter type contains the value as dumboo
+      description: Verify that the system successfully fetches blocklisted words when the filter type is set to "Contains" with valid input
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -80,7 +80,7 @@ SearchBlockListedWords:
    Masterdata_SearchBlockListedWords_Valid_FilterTypeStartsWith:
       endPoint: /v1/masterdata/blocklistedwords/search
       uniqueIdentifier: TC_Masterdata_SearchBlockListedWords_03
-      description: Search blocklisted words with filter type starts with the value as dumboo
+      description: Verify that the system successfully fetches blocklisted words when the filter type is set to "StartsWith" with valid input
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -119,7 +119,7 @@ SearchBlockListedWords:
    Masterdata_SearchBlockListedWords_Invalid_ColumnName:
       endPoint: /v1/masterdata/blocklistedwords/search
       uniqueIdentifier: TC_Masterdata_SearchBlockListedWords_04
-      description: Search blocklisted words with invalid column name
+      description: Verify that the system returns an error when an invalid column name is provided while searching blocklisted words
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -156,7 +156,7 @@ SearchBlockListedWords:
    Masterdata_SearchBlockListedWords_Valid_SortFieldDESC:
       endPoint: /v1/masterdata/blocklistedwords/search
       uniqueIdentifier: TC_Masterdata_SearchBlockListedWords_05
-      description: Search blocklisted words with sort field as descending order
+      description: Verify that the system successfully fetches blocklisted words sorted in descending order when a valid sort field is provided
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["value"]
@@ -195,7 +195,7 @@ SearchBlockListedWords:
    Masterdata_SearchBlockListedWords_Invalid_SortField:
       endPoint: /v1/masterdata/blocklistedwords/search
       uniqueIdentifier: TC_Masterdata_SearchBlockListedWords_06
-      description: Search blocklisted words with the sort field set to an invalid descending order
+      description: Verify that the system returns an error when an invalid sort field is provided while searching blocklisted words
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -233,7 +233,7 @@ SearchBlockListedWords:
    Masterdata_SearchBlockListedWords_Invalid_EmptyFilterType:
       endPoint: /v1/masterdata/blocklistedwords/search
       uniqueIdentifier: TC_Masterdata_SearchBlockListedWords_07
-      description: Search blocklisted words with the empty filter type
+      description: Verify that the system returns an error when the filter type is empty while searching blocklisted words
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -271,7 +271,7 @@ SearchBlockListedWords:
    Masterdata_SearchBlockListedWords_Invalid_EmptyColumn:
       endPoint: /v1/masterdata/blocklistedwords/search
       uniqueIdentifier: TC_Masterdata_SearchBlockListedWords_08
-      description: Search blocklisted words with the empty column
+      description: Verify that the system returns an error when the column name is empty while searching blocklisted words
       role: admin
       templateFields: ["value"]
       restMethod: post
@@ -309,7 +309,7 @@ SearchBlockListedWords:
    Masterdata_SearchBlockListedWords_Invalid_PageStart:
       endPoint: /v1/masterdata/blocklistedwords/search
       uniqueIdentifier: TC_Masterdata_SearchBlockListedWords_09
-      description: Search blocklisted words with the invalid page start data
+      description: Verify that the system returns an error when an invalid page start value is provided while searching blocklisted words
       role: admin
       templateFields: ["value"]
       restMethod: post

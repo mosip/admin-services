@@ -2,7 +2,7 @@ PacketRejectionReasonCategory:
    MasterData_PacketRejectionReasonCategory_All_Valid_Smoke_Sid:
       endPoint: /v1/masterdata/packetrejectionreasons/reasoncategory
       uniqueIdentifier: TC_Masterdata_PacketRejectionReasonCategory_01
-      description: Create packer rejection reason category with valid data
+      description: Verify that the system successfully creates a packet rejection reason category when all input parameters are valid
       role: admin
       templateFields: ["langCode"]
       restMethod: post
@@ -23,7 +23,7 @@ PacketRejectionReasonCategory:
    MasterData_PacketRejectionReasonCategory_Invalid_langCode:
       endPoint: /v1/masterdata/packetrejectionreasons/reasoncategory
       uniqueIdentifier: TC_Masterdata_PacketRejectionReasonCategory_02
-      description: Create packer rejection reason category with invalid language code
+      description: Verify that the system returns an error when an invalid language code is provided for fetching packet rejection reason categories
       role: admin
       restMethod: get
       inputTemplate: masterdata/PacketRejectionReasonCategory/packetRejectionReasonCategory

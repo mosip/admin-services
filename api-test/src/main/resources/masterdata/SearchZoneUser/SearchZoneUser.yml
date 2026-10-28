@@ -2,7 +2,7 @@ SearchZoneUser:
    MasterData_SearchZoneUser_Valid_Smoke:
       endPoint: /v1/masterdata/zoneuser/search
       uniqueIdentifier: TC_Masterdata_SearchZoneUser_01
-      description: Search for zone user details with valid data
+      description: Verify that the system successfully fetches zone-user details for valid inputs (smoke test)
       role: admin
       restMethod: post
       inputTemplate: masterdata/SearchZoneUser/searchZoneUser
@@ -43,7 +43,7 @@ SearchZoneUser:
    MasterData_SearchZoneUser_Empty_Value:
       endPoint: /v1/masterdata/zoneuser/search
       uniqueIdentifier: TC_Masterdata_SearchZoneUser_02
-      description: Search for zone user details with value as empty
+      description: Verify that the system returns an error when the search value is empty while fetching zone-user details
       role: admin
       restMethod: post
       inputTemplate: masterdata/SearchZoneUser/searchZoneUser
@@ -81,7 +81,7 @@ SearchZoneUser:
    MasterData_SearchZoneUser_Empty_ColumnName:
       endPoint: /v1/masterdata/zoneuser/search
       uniqueIdentifier: TC_Masterdata_SearchZoneUser_03
-      description: Search for zone user details with column name as empty
+      description: Verify that the system returns an error when columnName is empty while searching zone-user details
       role: admin
       restMethod: post
       inputTemplate: masterdata/SearchZoneUser/searchZoneUser
@@ -119,7 +119,7 @@ SearchZoneUser:
    MasterData_SearchZoneUser_Invalid_Pagination:
       endPoint: /v1/masterdata/zoneuser/search
       uniqueIdentifier: TC_Masterdata_SearchZoneUser_04
-      description: Search for zone user details with invalid pagination
+      description: Verify that the system returns an error when an invalid pagination value is provided while searching zone-user details
       role: admin
       restMethod: post
       inputTemplate: masterdata/SearchZoneUser/searchZoneUser

@@ -2,7 +2,7 @@ UpdateDeviceTypeStatus:
    MasterData_UpdateDeviceTypeStatus_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/devicetypes?isActive={isActive}&code={code}
       uniqueIdentifier: TC_Masterdata_UpdateDeviceTypeStatus_01
-      description: Update device type status with valid data
+      description: Verify that the system successfully updates the status of a device type with all valid input parameters (smoke test)
       role: admin
       templateFields: []
       restMethod: patch
@@ -19,7 +19,7 @@ UpdateDeviceTypeStatus:
    MasterData_UpdateDeviceTypeStatus_TO_Verify_Deactivation:  
       endPoint: /v1/masterdata/devicetypes?isActive={isActive}&code={code}
       uniqueIdentifier: TC_Masterdata_UpdateDeviceTypeStatus_02
-      description: Update device type status to verify the deactivation status
+      description: Verify that the system successfully deactivates a device type and reflects the status change correctly
       role: admin
       templateFields: []
       restMethod: patch

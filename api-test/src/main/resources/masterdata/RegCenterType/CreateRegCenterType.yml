@@ -2,7 +2,7 @@ CreateRegCenterType:
    MasterData_CreateRegCenterType_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/registrationcentertypes
       uniqueIdentifier: TC_Masterdata_CreateRegCenterType_01
-      description: Create registration centre type with valid data
+      description: Verify that the system successfully creates a registration center type when all input parameters are valid
       role: admin
       templateFields: ["name","descr"]
       restMethod: post
@@ -24,7 +24,7 @@ CreateRegCenterType:
    MasterData_CreateRegCenterType_Dublicate_Centertype_Neg:
       endPoint: /v1/masterdata/registrationcentertypes
       uniqueIdentifier: TC_Masterdata_CreateRegCenterType_02
-      description: Create a registration center type with a duplicate center type
+      description: Verify that the system returns an error when attempting to create a registration center type with a duplicate name
       role: admin
       templateFields: ["name","descr"]
       restMethod: post
@@ -50,7 +50,7 @@ CreateRegCenterType:
    MasterData_CreateRegCenterType_InputParameter_Name_Missing:
       endPoint: /v1/masterdata/registrationcentertypes
       uniqueIdentifier: TC_Masterdata_CreateRegCenterType_03
-      description: Create a registration center type with the name parameter as missing
+      description: Verify that the system returns an error when the registration center type name is missing in the creation request
       role: admin
       templateFields: ["descr"]
       restMethod: post
@@ -75,7 +75,7 @@ CreateRegCenterType:
    MasterData_CreateRegCenterType_InputParameter_Name_Empty:
       endPoint: /v1/masterdata/registrationcentertypes
       uniqueIdentifier: TC_Masterdata_CreateRegCenterType_04
-      description: Create a registration center type with the name parameter as empty
+      description: Verify that the system returns an error when the registration center type name is empty in the creation request
       role: admin
       templateFields: ["descr"]
       restMethod: post
@@ -100,7 +100,7 @@ CreateRegCenterType:
    MasterData_CreateRegCenterType_InputParameter_Name_AboveMaxLen64:
       endPoint: /v1/masterdata/registrationcentertypes
       uniqueIdentifier: TC_Masterdata_CreateRegCenterType_05
-      description: Create a registration center type with the name parameter exceeding the maximum length of 64 characters
+      description: Verify that the system returns an error when the registration center type name exceeds the maximum length of 64 characters
       role: admin
       templateFields: ["name","descr"]
       restMethod: post
@@ -125,7 +125,7 @@ CreateRegCenterType:
    MasterData_CreateRegCenterType_InputParameter_Description_AboveMaxLen256:
       endPoint: /v1/masterdata/registrationcentertypes
       uniqueIdentifier: TC_Masterdata_CreateRegCenterType_06
-      description: Create a registration center type with the description parameter exceeding the maximum length of 64 characters
+      description: Verify that the system returns an error when the registration center type description exceeds the maximum length of 256 characters
       role: admin
       templateFields: ["name","descr"]
       restMethod: post
@@ -152,7 +152,7 @@ CreateRegCenterType:
    MasterData_CreateRegCenterType_InputParameter_isActive_Missing:
       endPoint: /v1/masterdata/registrationcentertypes
       uniqueIdentifier: TC_Masterdata_CreateRegCenterType_07
-      description: Create a registration center type with the is active parameter missing
+      description: Verify that the system returns an error when the isActive parameter is missing while creating a registration center type
       role: admin
       templateFields: ["name","descr"]
       restMethod: post
@@ -178,7 +178,7 @@ CreateRegCenterType:
    MasterData_CreateRegCenterType_SpacialCharacter_Neg:
       endPoint: /v1/masterdata/registrationcentertypes
       uniqueIdentifier: TC_Masterdata_CreateRegCenterType_08
-      description: Create a registration center type with the special character
+      description: Verify that the system returns an error when the registration center type name contains special characters
       role: admin
       templateFields: ["name","descr"]
       restMethod: post

@@ -2,7 +2,7 @@ SearchLocationData:
    MasterData_SearchLocationData_Valid_Smoke:
       endPoint: /v1/masterdata/locations/search
       uniqueIdentifier: TC_Masterdata_SearchLocationData_01
-      description: Search location data with valid details
+      description: Verify that the system successfully retrieves location data when all valid parameters are provided (smoke test)
       role: admin
       templateFields: ["languageCode"]
       restMethod: post

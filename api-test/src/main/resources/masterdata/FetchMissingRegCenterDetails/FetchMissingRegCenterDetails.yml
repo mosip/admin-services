@@ -2,7 +2,7 @@ FetchMissingRegCenterDetails:
    MasterData_FetchMissingRegCenterDetails_valid_smoke:
       endPoint: /v1/masterdata/registrationcenters/missingids/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchMissingRegCenterDetails_01
-      description: Retrieve Missing Registration Center Details by langcode
+      description: Verify that the system successfully fetches all missing registration center details with valid input data
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

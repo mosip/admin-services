@@ -2,7 +2,7 @@ FilterMachines:
    Masterdata_FilterMachines_Valid_ColumnStatus:
       endPoint: /v1/masterdata/machines/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterMachines_01
-      description: Filter Active Machine details by columnName isActive
+      description: Verify that the system successfully filters machines by the status column and returns the expected results when a valid request is provided
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -29,7 +29,7 @@ FilterMachines:
    Masterdata_FilterMachines_Valid_ColumnMachineSpecId:
       endPoint: /v1/masterdata/machines/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterMachines_02
-      description: Filter All Machine details by columnName machineSpecId
+      description: Verify that the system successfully filters machines by machine specification ID when a valid request is provided
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -56,7 +56,7 @@ FilterMachines:
    Masterdata_FilterMachines_Invalid_EmptyColumnName:
       endPoint: /v1/masterdata/machines/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterMachines_03
-      description: Filter Machine details by empty columnName
+      description: Verify that the system returns an error when a blank column name is provided while filtering machines
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -82,7 +82,7 @@ FilterMachines:
    Masterdata_FilterMachines_Invalid_EmptyFilterType:
       endPoint: /v1/masterdata/machines/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterMachines_04
-      description: Filter Machine details by empty filter type
+      description: Verify that the system returns an error when a blank filter type is provided while filtering machines
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post
@@ -108,7 +108,7 @@ FilterMachines:
    Masterdata_FilterMachines_Invalid_ColumnName:
       endPoint: /v1/masterdata/machines/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterMachines_05
-      description: Filter Machine details by invalid columnName
+      description: Verify that the system returns an error when an invalid column name is provided while filtering machines
       role: globalAdmin
       templateFields: ["languageCode"]
       restMethod: post

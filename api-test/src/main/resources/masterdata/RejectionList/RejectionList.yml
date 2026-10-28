@@ -2,7 +2,7 @@ RejectionList:
    MasterData_RejectionList_All_Valid_Smoke_sid:
       endPoint: /v1/masterdata/packetrejectionreasons/reasonlist
       uniqueIdentifier: TC_Masterdata_RejectionList_01
-      description: Create the rejection list with valid details
+      description: Verify that the system successfully fetches all packet rejection reasons when all input parameters are valid
       role: admin
       templateFields: ["name","description"]
       restMethod: post

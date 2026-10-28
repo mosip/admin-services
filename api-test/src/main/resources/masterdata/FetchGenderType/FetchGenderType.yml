@@ -2,7 +2,7 @@ FetchGenderType:
    Masterdata_FetchGenderType_allValid_smoke_get:
       endPoint: /v1/masterdata/gendertypes
       uniqueIdentifier: TC_Masterdata_FetchGenderType_01
-      description: Retrieve Gender Types with all valid data
+      description: Verify that the system successfully fetches all gender type records with valid input data
       role: admin
       restMethod: get
       inputTemplate: masterdata/FetchGenderType/fetchGenderType
@@ -18,7 +18,7 @@ FetchGenderType:
    Masterdata_FetchGenderType_Validate_gender_name_smoke:
       endPoint: /v1/masterdata/gendertypes/validate/{gendername}
       uniqueIdentifier: TC_Masterdata_FetchGenderType_02
-      description: Retrieve Gender Types with valid gendername
+      description: Verify that the system correctly validates and fetches gender type records based on gender name
       role: admin
       templateFields: []
       restMethod: get
@@ -33,7 +33,7 @@ FetchGenderType:
    Masterdata_FetchGenderType_Validate_gender_name_invalid:
       endPoint: /v1/masterdata/gendertypes/validate/{gendername}
       uniqueIdentifier: TC_Masterdata_FetchGenderType_03
-      description: Retrieve Gender Types with invalid gendername
+      description: Verify that the system returns an error when an invalid gender name is used to fetch gender type records
       role: admin
       templateFields: []
       restMethod: get
@@ -49,7 +49,7 @@ FetchGenderType:
    Masterdata_FetchGenderType_invalid_langcode_unexisting:
       endPoint: /v1/masterdata/gendertypes/{langcode}
       uniqueIdentifier: TC_Masterdata_FetchGenderType_04
-      description: Retrieve Gender Types with invalid langcode
+      description: Verify that the system returns an error when an unexisting language code is used to fetch gender type records
       role: admin
       templateFields: []
       restMethod: get

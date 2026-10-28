@@ -2,7 +2,7 @@ FetchDistinctDynamicField:
    Masterdata_FetchDistinctDynamicField_AllValid_smoke:
       endPoint: /v1/masterdata/dynamicfields/distinct
       uniqueIdentifier: TC_Masterdata_FetchDistinctDynamicField_01
-      description: Retrieve distinct Dynamic field values
+      description: Verify that the system successfully fetches all distinct dynamic field records with valid input data
       role: admin
       checkErrorsOnlyInResponse: true
       restMethod: get

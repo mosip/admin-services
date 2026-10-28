@@ -2,7 +2,7 @@ GetApplicationTypeByCodeAndLangcode:
    Masterdata_GetApplicationTypeByCodeAndLangcode_allValid_AAA_smoke:
       endPoint: /v1/masterdata/applicationtypes/{code}/{langCode}
       uniqueIdentifier: TC_Masterdata_GetApplicationTypeByCodeAndLangcode_01
-      description: Retrieve Application Types By valid code and langcode
+      description: Verify that the system successfully returns application type details for a valid code and language code (AAA) as a smoke test
       role: admin
       templateFields: ["langCode"]
       restMethod: get
@@ -18,7 +18,7 @@ GetApplicationTypeByCodeAndLangcode:
    Masterdata_GetApplicationTypeByCodeAndLangcode_InValid_Code:
       endPoint: /v1/masterdata/applicationtypes/{code}/{langCode}
       uniqueIdentifier: TC_Masterdata_GetApplicationTypeByCodeAndLangcode_02
-      description: Retrieve Application Types By invalid code and valid langcode
+      description: Verify that the system returns an error or handles gracefully when an invalid application type code is provided
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetApplicationTypeByCodeAndLangcode/getApplicationTypeByCodeAndLangcode
@@ -38,7 +38,7 @@ GetApplicationTypeByCodeAndLangcode:
    Masterdata_GetApplicationTypeByCodeAndLangcode_InValid_langCode:
       endPoint: /v1/masterdata/applicationtypes/{code}/{langCode}
       uniqueIdentifier: TC_Masterdata_GetApplicationTypeByCodeAndLangcode_03
-      description: Retrieve Application Types By valid code and invalid langcode
+      description: Verify that the system returns an error or handles gracefully when an invalid language code is provided while fetching application type details
       role: admin
       restMethod: get
       inputTemplate: masterdata/GetApplicationTypeByCodeAndLangcode/getApplicationTypeByCodeAndLangcode

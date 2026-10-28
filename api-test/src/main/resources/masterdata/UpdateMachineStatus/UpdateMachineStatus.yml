@@ -2,7 +2,7 @@ UpdateMachineStatus:
    MasterData_UpdateMachineStatus_All_Valid_Smoke_sid:  
       endPoint: /v1/masterdata/machines
       uniqueIdentifier: TC_Masterdata_UpdateMachineStatus_01
-      description: Update machine status details with valid data
+      description: Verify that the system successfully updates the status of a machine with all valid input parameters (smoke test)
       role: globalAdmin
       templateFields: []
       restMethod: patch

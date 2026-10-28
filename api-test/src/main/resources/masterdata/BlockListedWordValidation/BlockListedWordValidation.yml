@@ -2,7 +2,7 @@ BlockListedWordValidation:
    Masterdata_BlockListedWordValidation_eng_All_Valid_Smoke:
       endPoint: /v1/masterdata/blocklistedwords/words
       uniqueIdentifier: TC_Masterdata_BlockListedWordValidation_01
-      description: Validate the Block Listed words
+      description: Verify that the system successfully validates a block-listed word in English when all input details are valid
       role: admin
       templateFields: []
       restMethod: post

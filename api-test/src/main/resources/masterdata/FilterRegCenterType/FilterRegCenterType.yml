@@ -2,7 +2,7 @@ FilterRegCenterType:
    MasterData_FilterRegCenterType_Valid_Smoke:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterRegCenterType_01
-      description: Filter Registration Center Type details by all valid data
+      description: Verify that the system successfully filters registration center types and returns the expected results when a valid request is provided
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -24,7 +24,7 @@ FilterRegCenterType:
    MasterData_FilterRegCenterType_Valid_col_name_withText:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterRegCenterType_02
-      description: Filter Registration Center Type details by columnName name
+      description: Verify that the system successfully filters registration center types by name when a valid text is provided
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -46,7 +46,7 @@ FilterRegCenterType:
    MasterData_FilterRegCenterType_Valid_col_code:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterRegCenterType_03
-      description: Filter Registration Center Type details by empty text
+      description: Verify that the system successfully filters registration center types by code when a valid request is provided
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -79,7 +79,7 @@ FilterRegCenterType:
    MasterData_FilterRegCenterType_Valid_col_isActive:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterRegCenterType_04
-      description: Filter Registration Center Type details by columnName isActive and empty text
+      description: Verify that the system successfully filters registration center types by active status when a valid request is provided
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -112,7 +112,7 @@ FilterRegCenterType:
    MasterData_FilterRegCenterType_inValid_filterText:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterRegCenterType_05
-      description: Filter Registration Center Type details by invalid filter text
+      description: Verify that the system returns an error when an invalid filter text is provided while filtering registration center types
       role: admin
       checkErrorsOnlyInResponse: true
       templateFields: ["languageCode"]
@@ -134,7 +134,7 @@ FilterRegCenterType:
    MasterData_FilterRegCenterType_inValid_filterType_blank:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterRegCenterType_06
-      description: Filter Registration Center Type details by empty filter type
+      description: Verify that the system returns an error when a blank filter type is provided while filtering registration center types
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -160,7 +160,7 @@ FilterRegCenterType:
    MasterData_FilterRegCenterType_inValid_filterColumnName_blank:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterRegCenterType_07
-      description: Filter Registration Center Type details by empty filter columnname
+      description: Verify that the system returns an error when a blank filter column name is provided while filtering registration center types
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -187,7 +187,7 @@ FilterRegCenterType:
    MasterData_FilterRegCenterType_inValid_RequestTime_format:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterRegCenterType_08
-      description: Filter Registration Center Type details by invalid requesttime format
+      description: Verify that the system returns an error when the request time is provided in an invalid format while filtering registration center types
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -213,7 +213,7 @@ FilterRegCenterType:
    MasterData_FilterRegCenterType_inValid_filterColumnName:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterRegCenterType_09
-      description: Filter Registration Center Type details by invalid filter column name
+      description: Verify that the system returns an error when an invalid filter column name is provided while filtering registration center types
       role: admin
       templateFields: ["languageCode"]
       restMethod: post
@@ -238,7 +238,7 @@ FilterRegCenterType:
    MasterData_FilterRegCenterType_inValid_filterType:
       endPoint: /v1/masterdata/registrationcentertypes/filtervalues
       uniqueIdentifier: TC_Masterdata_FilterRegCenterType_10
-      description: Filter Registration Center Type details by invalid filter type
+      description: Verify that the system returns an error when an invalid filter type is provided while filtering registration center types
       role: admin
       templateFields: ["languageCode"]
       restMethod: post

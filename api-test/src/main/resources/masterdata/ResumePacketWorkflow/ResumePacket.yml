@@ -2,7 +2,7 @@ ResumePacketWorkflow:
    MasterData_ResumePacketWorkflow_inValid_workFlowId:
       endPoint: /v1/masterdata/packet/resume
       uniqueIdentifier: TC_Masterdata_ResumePacketWorkflow_01
-      description: Resume packet workflow with invalid work flow data
+      description: Verify that the system returns an error when an invalid workflow ID is provided while resuming a packet workflow
       role: admin
       restMethod: post
       inputTemplate: masterdata/ResumePacketWorkflow/resumePacket
@@ -22,7 +22,7 @@ ResumePacketWorkflow:
    MasterData_ResumePacketWorkflow_inValid_requesttime:
       endPoint: /v1/masterdata/packet/resume
       uniqueIdentifier: TC_Masterdata_ResumePacketWorkflow_01
-      description: Resume packet workflow with invalid request time data
+      description: Verify that the system returns an error when an invalid request time is provided while resuming a packet workflow
       role: admin
       restMethod: post
       inputTemplate: masterdata/ResumePacketWorkflow/resumePacket
