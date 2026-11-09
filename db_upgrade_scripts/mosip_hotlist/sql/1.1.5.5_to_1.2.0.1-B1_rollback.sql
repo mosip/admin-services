@@ -1,3 +1,3 @@
-DROP DATABASE IF EXISTS mosip_hotlist;
+DROP DATABASE IF EXISTS :mosipdbname;
 
-drop role if exists hotlistuser;
+drop role if exists :dbuname;
