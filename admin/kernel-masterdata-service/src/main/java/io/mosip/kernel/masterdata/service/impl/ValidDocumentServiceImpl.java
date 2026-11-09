@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import jakarta.transaction.Transactional;
 
 import io.mosip.kernel.masterdata.dto.response.FilterResult;
+import io.mosip.kernel.masterdata.utils.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -61,12 +62,6 @@ import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.repository.ValidDocumentRepository;
 import io.mosip.kernel.masterdata.service.ValidDocumentService;
-import io.mosip.kernel.masterdata.utils.MapperUtils;
-import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
-import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
-import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import io.mosip.kernel.masterdata.utils.OptionalFilter;
-import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
@@ -113,6 +108,9 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 
 	@Autowired
 	private FilterTypeValidator filterTypeValidator;
+
+	@Autowired
+	private LanguageUtils languageUtils;
 	
   /*
 	 * (non-Javadoc)
@@ -127,6 +125,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 
 		ValidDocument validDocument = MetaDataUtils.setCreateMetaData(document, ValidDocument.class);
 		validDocument.setIsActive(true);
+		validDocument.setLangCode(languageUtils.getDefaultLanguage()); //setting lang-code, as its required to be non-null for pre-reg (<=1.2.0.1)
 		try {
 			validDocument = documentRepository.create(validDocument);
 		} catch (DataAccessLayerException | DataAccessException e) {
